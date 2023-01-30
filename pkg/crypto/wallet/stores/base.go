@@ -3,14 +3,13 @@ package stores
 import (
 	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto/wallet"
-	 "github.com/sonrhq/core/pkg/crypto/wallet/stores/internal"
-	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
+	"github.com/sonrhq/core/pkg/crypto/wallet/stores/internal"
 )
 
 // NewWalletStore returns a new WalletStore
-func New(cnfg *v1.AccountConfig, opts ...Option) (wallet.Store, error) {
+func New(acc wallet.Account, opts ...Option) (wallet.Store, error) {
 	cfg := &storeConfig{
-		accCfg: cnfg,
+		acc: acc,
 	}
 	for _, opt := range opts {
 		opt(cfg)
@@ -20,33 +19,35 @@ func New(cnfg *v1.AccountConfig, opts ...Option) (wallet.Store, error) {
 
 // storeConfig is the configuration for the store
 type storeConfig struct {
-	accCfg   *v1.AccountConfig
+	acc      wallet.Account
 	path     string
 	ipfsNode common.IPFSNode
 	isFile   bool
 	isIPFS   bool
+	pwd      []byte
 }
 
 // Apply applies the configuration to the store
 func (cfg *storeConfig) Apply() (wallet.Store, error) {
 	if cfg.isFile {
-		return internal.NewFileStore(cfg.path, cfg.accCfg)
+		return internal.NewFileStore(cfg.path, cfg.pwd, cfg.acc.Config())
 	}
 	if cfg.isIPFS {
-		return internal.NewIPFSStore(cfg.ipfsNode, cfg.accCfg)
+		return internal.NewIPFSStore(cfg.ipfsNode, cfg.acc.Config())
 	}
-	return internal.NewMemoryStore(cfg.accCfg)
+	return internal.NewMemoryStore(cfg.acc.Config())
 }
 
 // Option is a function that configures the store
 type Option func(*storeConfig)
 
-// SetFileStore sets the store to use a file store
-func SetFileStore(path string) Option {
+// SetFileStore sets the store to use a file store. Password must be 32 bytes and already hashed
+func SetFileStore(path string, password []byte) Option {
 	return func(cfg *storeConfig) {
 		cfg.path = path
 		cfg.isFile = true
 		cfg.isIPFS = false
+		cfg.pwd = password
 	}
 }
 

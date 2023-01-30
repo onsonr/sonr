@@ -7,8 +7,8 @@ import (
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 )
 
-// SerializeSignature marshals an ECDSA signature to DER format for use with the CMP protocol
-func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
+// SerializeECDSASecp256k1Signature marshals an ECDSA signature to DER format for use with the CMP protocol
+func SerializeECDSASecp256k1Signature(sig *ecdsa.Signature) ([]byte, error) {
 	rBytes, err := sig.R.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -29,7 +29,7 @@ func SerializeSignature(sig *ecdsa.Signature) ([]byte, error) {
 //   - Negative values are rejected
 //   - Zero is rejected
 //   - Values greater than or equal to the secp256k1 group order are rejected
-func DeserializeSignature(sigStr []byte) (*ecdsa.Signature, error) {
+func DeserializeECDSASecp256k1Signature(sigStr []byte) (*ecdsa.Signature, error) {
 	rBytes := sigStr[:33]
 	sBytes := sigStr[33:65]
 

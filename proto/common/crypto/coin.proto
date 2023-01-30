@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// Package common defines commonly used types agnostic to the node role on the Sonr network.
+package sonrhq.common.v1;
+
+option go_package = "github.com/sonrhq/core/pkg/crypto/types";
+
+
+enum CoinType {
+  CoinType_BITCOIN = 0; // 0x80000000
+  CoinType_TESTNET = 1; // 0x80000001
+  CoinType_LITECOIN = 2; // 0x80000002
+  CoinType_DOGE = 3; // 0x80000003
+  CoinType_ETHEREUM = 4; // 0x8000003c
+  CoinType_SONR = 5; // 0x800002bf
+  CoinType_COSMOS = 6; // 0x800002c0
+  CoinType_FILECOIN = 7; // 0x800002c1
+  CoinType_HNS = 8; // 0x800002c2
+}

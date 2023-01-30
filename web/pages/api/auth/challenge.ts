@@ -11,15 +11,14 @@ export default async function handler(req: NextRequest) {
   if (process && process.env.NODE_ENV === "development") {
     apiUrl = "http://localhost:1317";
   }
-  let username = req.headers.get("username");
-
   const requestOptions = {
-    method: "GET",
+    method: "POST",
     headers: { "Content-Type": "application/json" },
+    body: req.body,
   };
 
   const resp = await fetch(
-    apiUrl + "/sonr/protocol/auth/challenge/" + domain + "/" + username,
+    apiUrl + "/sonr/protocol/vault/register/start",
     requestOptions
   );
   const data = await resp.json();

@@ -1,12 +1,60 @@
 package internal
 
 import (
+	"crypto/sha256"
+
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
+	"github.com/sonrhq/core/pkg/client/rosetta"
+	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto/wallet"
 )
 
+// cosmosAccountImpl is an implementation of the Account interface for Cosmos
+type cosmosAccountImpl struct {
+	wallet.Account
+	rosetta.Client
+	rootAcc wallet.Account
+}
+
+// LoadCosmosAccount loads a Cosmos account from a wallet account
+func LoadCosmosAccount(root wallet.Account, cosmos wallet.Account, client rosetta.Client) wallet.CosmosAccount {
+	return &cosmosAccountImpl{
+		Account: cosmos,
+		rootAcc: root,
+		Client:  client,
+	}
+}
+
+// SignTx signs a transaction
+func (a *cosmosAccountImpl) SignTx(msg tx.TxRaw) ([]byte, error) {
+	bz, err := msg.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	txHash := sha256.Sum256(bz)
+	return a.rootAcc.Sign(txHash[:])
+}
+
+// GetSignerData returns the signer data for the account
+func (a *cosmosAccountImpl) GetSignerData() authsigning.SignerData {
+	return authsigning.SignerData{
+		ChainID: common.CURRENT_CHAIN_ID,
+		PubKey:  a.PubKey(),
+	}
+}
+
+// Verify verifies a signature for a message
+func (a *cosmosAccountImpl) VerifySignature(msg []byte, sig []byte) bool {
+	ok, err := a.rootAcc.Verify(msg, sig)
+	if err != nil {
+		return false
+	}
+	return ok
+}
 
 //
 // Cosmos TX Signing helper functions
@@ -115,7 +163,6 @@ func getSignDocBytes(authInfo *txtypes.AuthInfo, txBody *txtypes.TxBody) ([]byte
 	}
 	return signDoc.Marshal()
 }
-
 
 // Signing a transaction.
 func signTxDocDirectAux(w wallet.Account, txBody []byte) (*txtypes.SignDocDirectAux, []byte, error) {

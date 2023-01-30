@@ -8,11 +8,26 @@ import (
 
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/shengdoushi/base58"
-	common "github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
-func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential, error) {
-	if wvm.Type != KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+func ConvertBoolToString(v bool) string {
+	if v {
+		return "TRUE"
+	} else {
+		return "FALSE"
+	}
+}
+
+func ConvertStringToBool(v string) bool {
+	if v == "TRUE" {
+		return true
+	}
+	return false
+}
+
+func (wvm *VerificationMethod) WebAuthnCredential() (*crypto.WebauthnCredential, error) {
+	if wvm.Type != crypto.WebAuthnKeyType.PrettyString() {
 		return nil, errors.New("VerificationMethod is not a WebAuthn Credential")
 	}
 	data := KeyValueListToMap(wvm.GetMetadata())
@@ -69,12 +84,12 @@ func (wvm *VerificationMethod) WebAuthnCredential() (*common.WebauthnCredential,
 		return nil, err
 	}
 	signCount := uint32(u64)
-	return &common.WebauthnCredential{
+	return &crypto.WebauthnCredential{
 		Id:              credId,
 		Transport:       transport,
 		PublicKey:       pubBz,
 		AttestationType: attestionType,
-		Authenticator: &common.WebauthnAuthenticator{
+		Authenticator: &crypto.WebauthnAuthenticator{
 			SignCount:    signCount,
 			CloneWarning: cloneWarn,
 			Aaguid:       aaguid,
@@ -110,10 +125,10 @@ func (wvm *DidDocument) WebAuthnCredentials() []webauthn.Credential {
 	return wac
 }
 
-func (d *DidDocument) GetCommonWebauthCredentials() []*common.WebauthnCredential {
-	creds := []*common.WebauthnCredential{}
+func (d *DidDocument) GetCommonWebauthCredentials() []*crypto.WebauthnCredential {
+	creds := []*crypto.WebauthnCredential{}
 	for _, vm := range d.VerificationMethod {
-		if vm.Type == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+		if vm.Type == crypto.WebAuthnKeyType.PrettyString() {
 			vmcr, err := vm.WebAuthnCredential()
 			if err != nil {
 				return nil

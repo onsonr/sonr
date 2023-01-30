@@ -9,31 +9,27 @@ import "protocol/vault/v1/models.proto";
 
 option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
 
-// NewWalletRequest is the request to register a new account.
-message NewWalletRequest {
-  string session_id = 1;
+// RegisterStartRequest is the request to register a new account.
+message RegisterStartRequest {
+  string aka = 1;
+  int32 threshold = 2; // optional
+}
+
+// RegisterStartResponse is the response to a Register request.
+message RegisterStartResponse {
+  string account_address = 1;
+  string aka = 2;
+  string create_credential_options = 3;
+}
+
+// RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+message RegisterFinishRequest {
+  string account_address = 1;
   string credential_response = 2;
-  string prefix = 3; // optional
-  int32 threshold = 4; // optional
 }
 
-// NewWalletResponse is the response to a Register request.
-message NewWalletResponse {
-  bool success = 1;
-  string address = 2;
-  core.identity.v1.DidDocument did_document = 3;
-}
-
-// CreateAccountRequest is the request to CreateAccount a new key from the private key.
-message CreateAccountRequest {
-  string prefix = 1;
-  string account_name = 2;
-  string credential_response = 3;
-  string session_id = 4;
-}
-
-// CreateAccountResponse is the response to a CreateAccount request.
-message CreateAccountResponse {
+// RegisterFinishResponse is the response to a CreateAccount request.
+message RegisterFinishResponse {
   bytes id = 1;
   string address = 2;
   core.identity.v1.DidDocument did_document = 3;
@@ -65,21 +61,6 @@ message DeleteAccountResponse {
   AccountInfo deleted_account = 3;
 }
 
-// SignTransactionRequest is the request to sign data with the private key.
-message SignTransactionRequest {
-  string credential_response = 1;
-  string session_id = 2;
-  bytes data = 3;
-}
-
-// SignTransactionResponse is the response to a Sign request.
-message SignTransactionResponse {
-  bytes id = 1;
-  bytes signature = 2;
-  bytes data = 3;
-  string creator = 4;
-}
-
 // RefreshRequest is the request to refresh the keypair.
 message RefreshRequest {
   string credential_response = 1;
@@ -99,18 +80,18 @@ message RefreshResponse {
 
 // Vault is the service used for managing a node's keypair.
 service Vault {
-  // NewWallet creates a new Webauthn credential and returns it.
-  rpc NewWallet(NewWalletRequest) returns (NewWalletResponse) {
+  // RegisterStart creates a new Webauthn credential and returns it.
+  rpc RegisterStart(RegisterStartRequest) returns (RegisterStartResponse) {
     option (google.api.http) = {
-      post: "/sonr/protocol/vault/new-wallet"
+      post: "/sonr/protocol/vault/register/start"
       body: "*"
     };
   }
 
-  // CreateAccount creates a new Bip32 child key and returns the configuration.
-  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
+  // RegisterFinish creates a new Bip32 child key and returns the configuration.
+  rpc RegisterFinish(RegisterFinishRequest) returns (RegisterFinishResponse) {
     option (google.api.http) = {
-      post: "/sonr/protocol/vault/create-account"
+      post: "/sonr/protocol/vault/register/finish"
       body: "*"
     };
   }
@@ -127,14 +108,6 @@ service Vault {
   rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {
     option (google.api.http) = {
       post: "/sonr/protocol/vault/delete-account"
-      body: "*"
-    };
-  }
-
-  // SignTransaction signs the data with the Wallet and returns the signature.
-  rpc SignTransaction(SignTransactionRequest) returns (SignTransactionResponse) {
-    option (google.api.http) = {
-      post: "/sonr/protocol/vault/sign-transaction"
       body: "*"
     };
   }

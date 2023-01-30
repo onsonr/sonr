@@ -4,7 +4,6 @@ package sonrhq.core.identity.v1;
 import "core/identity/v1/did.proto";
 import "core/identity/v1/genesis.proto";
 import "core/identity/v1/hns.proto";
-import "core/identity/v1/vc.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";

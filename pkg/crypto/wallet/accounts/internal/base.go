@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/wallet"
 	"github.com/sonrhq/core/pkg/crypto/wallet/accounts/internal/mpc"
 	"github.com/sonrhq/core/pkg/crypto/wallet/accounts/internal/network"
@@ -31,8 +31,21 @@ type baseAccountImpl struct {
 	accountConfig *v1.AccountConfig
 }
 
+// Address returns the account address
+func (w *baseAccountImpl) Address() string {
+	pb, err := w.accountConfig.PubKey()
+	if err != nil {
+		return ""
+	}
+	addr, err := pb.Bech32(w.CoinType().AddrPrefix())
+	if err != nil {
+		return ""
+	}
+	return addr
+}
+
 // Deriving a new account from a BIP32 path.
-func (w *baseAccountImpl) Bip32Derive(name string, coinType common.CoinType) (wallet.Account, error) {
+func (w *baseAccountImpl) Bip32Derive(name string, coinType crypto.CoinType) (wallet.Account, error) {
 	newCnf, err := w.rootCmpConf().DeriveBIP32(uint32(coinType.Index()))
 	if err != nil {
 		return nil, err
@@ -45,7 +58,7 @@ func (w *baseAccountImpl) Bip32Derive(name string, coinType common.CoinType) (wa
 }
 
 // CoinType returns the account coin type
-func (w *baseAccountImpl) CoinType() common.CoinType {
+func (w *baseAccountImpl) CoinType() crypto.CoinType {
 	return w.accountConfig.CoinType()
 }
 
@@ -75,6 +88,11 @@ func (w *baseAccountImpl) Marshal() ([]byte, error) {
 	return w.accountConfig.Marshal()
 }
 
+// Name returns the account name
+func (w *baseAccountImpl) Name() string {
+	return w.accountConfig.Name
+}
+
 // NewOriginToken returns a new origin token for the account.
 func (w *baseAccountImpl) NewOriginToken(audienceDID string, att ucan.Attenuations, fct []ucan.Fact, notBefore, expires time.Time) (string, error) {
 	return token.NewUnsignedUCAN(w.accountConfig, audienceDID, nil, att, fct, notBefore, expires)
@@ -89,7 +107,7 @@ func (w *baseAccountImpl) NewAttenuatedToken(parent *ucan.Token, audienceDID str
 }
 
 // PubKey returns secp256k1 public key
-func (w *baseAccountImpl) PubKey() common.SNRPubKey {
+func (w *baseAccountImpl) PubKey() *crypto.PubKey {
 	pbKey, _ := w.accountConfig.PubKey()
 	return pbKey
 }
@@ -139,11 +157,7 @@ func (w *baseAccountImpl) Unmarshal(bz []byte) error {
 
 // Verifying a signature.
 func (w *baseAccountImpl) Verify(bz []byte, sig []byte) (bool, error) {
-	pubKey, err := w.accountConfig.PubKey()
-	if err != nil {
-		return false, err
-	}
-	return pubKey.VerifySignature(bz, sig), nil
+	return mpc.CmpVerify(w.rootCmpConf(), bz, sig)
 }
 
 func (w *baseAccountImpl) rootCmpConf() *cmp.Config {

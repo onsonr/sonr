@@ -4,6 +4,7 @@ package types
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 // AddAuthenticationMethod adds a VerificationMethod as AuthenticationMethod
@@ -20,13 +21,22 @@ func (d *DidDocument) AddAuthentication(v *VerificationMethod) {
 }
 
 // SetAuthentication sets the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
-func (d *DidDocument) SetAuthentication(pk *PubKey, opts ...VerificationMethodOption) error {
-	vm, err := pk.VerificationMethod(opts...)
+func (d *DidDocument) SetAuthentication(pub *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
+	vm, err := NewVMFromPubKey(pub, opts...)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	d.AddAuthentication(vm)
-	return nil
+	return vm, nil
+}
+
+// UpdateAuthentication updates the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
+func (d *DidDocument) UpdateAuthentication(vm *VerificationMethod) {
+	for _, a := range d.Authentication {
+		if a.VerificationMethod.Id == vm.Id {
+			a.VerificationMethod = vm
+		}
+	}
 }
 
 // AllowedWebauthnCredentials returns a list of CredentialDescriptors for Webauthn Credentials

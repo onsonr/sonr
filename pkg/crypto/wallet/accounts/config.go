@@ -1,7 +1,6 @@
 package accounts
 
 import (
-	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/wallet"
 	"github.com/sonrhq/core/pkg/crypto/wallet/accounts/internal"
@@ -18,7 +17,7 @@ var (
 	kDefaultThreshold = 1
 
 	// Default CoinType is the default coin type of the account.
-	kDefaultCoinType = common.CoinType_CoinType_SONR
+	kDefaultCoinType = crypto.SONRCoinType
 
 	// Default Self ID is the default ID of the account that is used to sign transactions.
 	kDefaultSelfID = "current"
@@ -42,7 +41,7 @@ type config struct {
 	Peers []string
 
 	// CoinType is the coin type of the account.
-	CoinType common.CoinType
+	CoinType crypto.CoinType
 }
 
 // defaultConfig returns the default configuration of an account.
@@ -118,7 +117,7 @@ func WithPeers(peers ...string) Option {
 }
 
 // WithCoinType sets the coin type of the account.
-func WithCoinType(coinType common.CoinType) Option {
+func WithCoinType(coinType crypto.CoinType) Option {
 	return func(c *config) {
 		c.CoinType = coinType
 	}

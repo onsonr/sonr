@@ -1,7 +1,6 @@
 package dispatcher
 
 import (
-	"context"
 	"sync"
 
 	"github.com/sonrhq/core/pkg/crypto/wallet/accounts"
@@ -35,7 +34,7 @@ func (d *Dispatcher) BuildNewDIDController() (controller.DIDController, error) {
 		if err != nil {
 			errCh <- err
 		}
-		control, err := controller.New(context.Background(), rootAcc)
+		control, err := controller.New(rootAcc)
 		if err != nil {
 			errCh <- err
 		}

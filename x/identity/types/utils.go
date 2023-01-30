@@ -51,21 +51,6 @@ func IndexOf(vs []string, t string) int {
 	return -1
 }
 
-func ConvertBoolToString(v bool) string {
-	if v {
-		return "TRUE"
-	} else {
-		return "FALSE"
-	}
-}
-
-func ConvertStringToBool(v string) bool {
-	if v == "TRUE" {
-		return true
-	}
-	return false
-}
-
 // Contains returns true if the string is in the slice
 func Contains(vs []string, t string) bool {
 	return IndexOf(vs, t) >= 0
@@ -236,14 +221,11 @@ func contains(s []string, e string) bool {
 	return false
 }
 
-// ConvertAccAddressToDid converts an AccAddress to a DID
+// WARNING: This method is used only for module simulation tests. Do not implement this method across different types in the
+// package. ConvertAccAddressToDid converts an AccAddress to a DID
 func ConvertAccAddressToDid(address interface{}) string {
 	fn := func(address string) string {
-		pfx, addr := findAddrPrefix(address)
-		if pfx == "" {
-			return "did:snr:" + address
-		}
-		return "did:" + pfx + ":" + addr
+		return "did:snr:" + address
 	}
 	// check if string or sdk.AccAddress
 	switch address.(type) {
@@ -256,7 +238,8 @@ func ConvertAccAddressToDid(address interface{}) string {
 	}
 }
 
-// ConvertDidToAccAddress converts a DID to an AccAddress
+// WARNING: This method is used only for module simulation tests. Do not implement this method across different types in the
+// package. ConvertDidToAccAddress converts a DID to an AccAddress
 func ConvertDidToAccAddress(did string) (sdk.AccAddress, error) {
 	if ok, base := ExtractBase(did); ok {
 		parts := strings.Split(base, ":")

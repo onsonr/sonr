@@ -1,5 +1,4 @@
 import type { NextRequest } from "next/server";
-import { NewWalletRequest } from "@buf/sonr-hq_sonr.grpc_web/protocol/vault/v1/api_pb";
 import axios from "axios";
 export const config = {
   runtime: "experimental-edge",
@@ -19,7 +18,7 @@ export default async function handler(req: NextRequest) {
     body: body,
   };
   const resp = await fetch(
-    process.env.API_URL + "/sonr/protocol/auth/register",
+    process.env.API_URL + "/sonr/protocol/vault/register/finish",
     requestOptions
   );
   const data = await resp.json();

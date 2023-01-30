@@ -3,12 +3,10 @@ package wallet
 import (
 	"time"
 
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
-	"github.com/sonrhq/core/pkg/common"
-	"github.com/sonrhq/core/pkg/common/rosetta"
+	"github.com/sonrhq/core/pkg/client/rosetta"
+	"github.com/sonrhq/core/pkg/crypto"
 	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 	"github.com/ucan-wg/go-ucan"
 )
@@ -31,11 +29,14 @@ type AccountConfig = v1.AccountConfig
 // @property Sign - This is the function that signs a transaction.
 // @property Verify - Verifies a signature
 type Account interface {
+	// Address returns the address of the account based on the coin type
+	Address() string
+
 	// Bip32Derive derives a new account from a BIP32 path
-	Bip32Derive(name string, coinType common.CoinType) (Account, error)
+	Bip32Derive(name string, coinType crypto.CoinType) (Account, error)
 
 	// CoinType returns the coin type of the account
-	CoinType() common.CoinType
+	CoinType() crypto.CoinType
 
 	// Config returns the account configuration
 	Config() *AccountConfig
@@ -49,6 +50,9 @@ type Account interface {
 	// Marshal returns the local config protobuf bytes
 	Marshal() ([]byte, error)
 
+	// Name returns the name of the account
+	Name() string
+
 	// NewOriginToken creates a new UCAN token
 	NewOriginToken(audienceDID string, att ucan.Attenuations, fct []ucan.Fact, notBefore, expires time.Time) (string, error)
 
@@ -56,7 +60,7 @@ type Account interface {
 	NewAttenuatedToken(parent *ucan.Token, audienceDID string, att ucan.Attenuations, fct []ucan.Fact, notBefore, expires time.Time) (string, error)
 
 	// PubKey returns secp256k1 public key
-	PubKey() common.SNRPubKey
+	PubKey() *crypto.PubKey
 
 	// Signs a message
 	Sign(bz []byte) ([]byte, error)
@@ -77,11 +81,11 @@ type BTCAccount interface {
 	Account
 	rosetta.Client
 
-	// Address returns the address of the account.
-	Address() string
-
-	// SignTx hashes the transaction for keccak256 (ETH Hashing Function) and signs it with the MPC Protocol
+	// SignTx hashes the transaction for SHA256 (Bitcoin Hashing Function) and signs it with the MPC Protocol
 	SignTx(bz []byte) ([]byte, error)
+
+	// VerifySignature verifies a signature for a hash using the public key
+	VerifySignature(msg []byte, sig []byte) bool
 }
 
 // CosmosAccount is an account that can be used to sign Cosmos transactions. It
@@ -90,17 +94,14 @@ type CosmosAccount interface {
 	Account
 	rosetta.Client
 
-	// Address returns the address of the account.
-	Address() string
-
 	// GetSignerData returns the signer data for the account
 	GetSignerData() authsigning.SignerData
 
-	// Equals returns true if the account is equal to the other account
-	Equals(other cryptotypes.LedgerPrivKey) bool
+	// SignTx signs a transaction for SHA256 (Cosmos Hashing Function) and signs it with the MPC Protocol
+	SignTx(tx txtypes.TxRaw) ([]byte, error)
 
-	// Signs a transaction
-	SignTxAux(msgs ...sdk.Msg) (txtypes.AuxSignerData, error)
+	// VerifySignature verifies a signature for a hash using the public key
+	VerifySignature(msg []byte, sig []byte) bool
 }
 
 // ETHAccount is an account that can be used to sign Ethereum transactions. It
@@ -109,9 +110,9 @@ type ETHAccount interface {
 	Account
 	rosetta.Client
 
-	// Address returns the address of the account.
-	Address() string
-
 	// SignTx hashes the transaction for keccak256 (ETH Hashing Function) and signs it with the MPC Protocol
 	SignTx(bz []byte) ([]byte, error)
+
+	// VerifySignature verifies a signature for a hash using the public key
+	VerifySignature(msg []byte, sig []byte) bool
 }

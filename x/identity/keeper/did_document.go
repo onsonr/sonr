@@ -10,8 +10,6 @@ import (
 
 // SetDidDocument set a specific didDocument in the store from its index
 func (k Keeper) SetDidDocument(ctx sdk.Context, didDocument types.DidDocument) {
-	acc := k.accountKeeper.NewAccountWithAddress(ctx, sdk.AccAddress(didDocument.Address()))
-	k.accountKeeper.SetAccount(ctx, acc)
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
 	b := k.cdc.MustMarshal(&didDocument)
 	store.Set(types.DidDocumentKey(

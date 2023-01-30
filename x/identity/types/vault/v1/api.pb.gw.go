@@ -33,8 +33,8 @@ var _ = utilities.NewDoubleArray
 var _ = descriptor.ForMessage
 var _ = metadata.Join
 
-func request_Vault_NewWallet_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NewWalletRequest
+func request_Vault_RegisterStart_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RegisterStartRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -45,13 +45,13 @@ func request_Vault_NewWallet_0(ctx context.Context, marshaler runtime.Marshaler,
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.NewWallet(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.RegisterStart(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Vault_NewWallet_0(ctx context.Context, marshaler runtime.Marshaler, server VaultServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq NewWalletRequest
+func local_request_Vault_RegisterStart_0(ctx context.Context, marshaler runtime.Marshaler, server VaultServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RegisterStartRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -62,13 +62,13 @@ func local_request_Vault_NewWallet_0(ctx context.Context, marshaler runtime.Mars
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.NewWallet(ctx, &protoReq)
+	msg, err := server.RegisterStart(ctx, &protoReq)
 	return msg, metadata, err
 
 }
 
-func request_Vault_CreateAccount_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateAccountRequest
+func request_Vault_RegisterFinish_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RegisterFinishRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -79,13 +79,13 @@ func request_Vault_CreateAccount_0(ctx context.Context, marshaler runtime.Marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.CreateAccount(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.RegisterFinish(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_Vault_CreateAccount_0(ctx context.Context, marshaler runtime.Marshaler, server VaultServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq CreateAccountRequest
+func local_request_Vault_RegisterFinish_0(ctx context.Context, marshaler runtime.Marshaler, server VaultServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq RegisterFinishRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -96,7 +96,7 @@ func local_request_Vault_CreateAccount_0(ctx context.Context, marshaler runtime.
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.CreateAccount(ctx, &protoReq)
+	msg, err := server.RegisterFinish(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -169,40 +169,6 @@ func local_request_Vault_DeleteAccount_0(ctx context.Context, marshaler runtime.
 
 }
 
-func request_Vault_SignTransaction_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignTransactionRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := client.SignTransaction(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
-	return msg, metadata, err
-
-}
-
-func local_request_Vault_SignTransaction_0(ctx context.Context, marshaler runtime.Marshaler, server VaultServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignTransactionRequest
-	var metadata runtime.ServerMetadata
-
-	newReader, berr := utilities.IOReaderFactory(req.Body)
-	if berr != nil {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
-	}
-	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
-		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
-	}
-
-	msg, err := server.SignTransaction(ctx, &protoReq)
-	return msg, metadata, err
-
-}
-
 func request_Vault_Refresh_0(ctx context.Context, marshaler runtime.Marshaler, client VaultClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq RefreshRequest
 	var metadata runtime.ServerMetadata
@@ -243,7 +209,7 @@ func local_request_Vault_Refresh_0(ctx context.Context, marshaler runtime.Marsha
 // Note that using this registration option will cause many gRPC library features to stop working. Consider using RegisterVaultHandlerFromEndpoint instead.
 func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, server VaultServer) error {
 
-	mux.Handle("POST", pattern_Vault_NewWallet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Vault_RegisterStart_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -254,7 +220,7 @@ func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Vault_NewWallet_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Vault_RegisterStart_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -262,11 +228,11 @@ func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			return
 		}
 
-		forward_Vault_NewWallet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Vault_RegisterStart_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Vault_CreateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Vault_RegisterFinish_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
@@ -277,7 +243,7 @@ func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_Vault_CreateAccount_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_Vault_RegisterFinish_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -285,7 +251,7 @@ func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 			return
 		}
 
-		forward_Vault_CreateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Vault_RegisterFinish_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -332,29 +298,6 @@ func RegisterVaultHandlerServer(ctx context.Context, mux *runtime.ServeMux, serv
 		}
 
 		forward_Vault_DeleteAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
-	mux.Handle("POST", pattern_Vault_SignTransaction_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		var stream runtime.ServerTransportStream
-		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := local_request_Vault_SignTransaction_0(rctx, inboundMarshaler, server, req, pathParams)
-		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_Vault_SignTransaction_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -422,7 +365,7 @@ func RegisterVaultHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc
 // "VaultClient" to call the correct interceptors.
 func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, client VaultClient) error {
 
-	mux.Handle("POST", pattern_Vault_NewWallet_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Vault_RegisterStart_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -431,18 +374,18 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Vault_NewWallet_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Vault_RegisterStart_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Vault_NewWallet_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Vault_RegisterStart_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
-	mux.Handle("POST", pattern_Vault_CreateAccount_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_Vault_RegisterFinish_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
@@ -451,14 +394,14 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_Vault_CreateAccount_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_Vault_RegisterFinish_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_Vault_CreateAccount_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_Vault_RegisterFinish_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -502,26 +445,6 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 
 	})
 
-	mux.Handle("POST", pattern_Vault_SignTransaction_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
-		ctx, cancel := context.WithCancel(req.Context())
-		defer cancel()
-		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-		resp, md, err := request_Vault_SignTransaction_0(rctx, inboundMarshaler, client, req, pathParams)
-		ctx = runtime.NewServerMetadataContext(ctx, md)
-		if err != nil {
-			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
-			return
-		}
-
-		forward_Vault_SignTransaction_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
-
-	})
-
 	mux.Handle("POST", pattern_Vault_Refresh_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
@@ -546,29 +469,25 @@ func RegisterVaultHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Vault_NewWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "new-wallet"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_RegisterStart_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"sonr", "protocol", "vault", "register", "start"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_CreateAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "create-account"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Vault_RegisterFinish_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 2, 4}, []string{"sonr", "protocol", "vault", "register", "finish"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Vault_ListAccounts_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "list-accounts"}, "", runtime.AssumeColonVerbOpt(false)))
 
 	pattern_Vault_DeleteAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "delete-account"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Vault_SignTransaction_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "sign-transaction"}, "", runtime.AssumeColonVerbOpt(false)))
-
 	pattern_Vault_Refresh_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr", "protocol", "vault", "refresh"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (
-	forward_Vault_NewWallet_0 = runtime.ForwardResponseMessage
+	forward_Vault_RegisterStart_0 = runtime.ForwardResponseMessage
 
-	forward_Vault_CreateAccount_0 = runtime.ForwardResponseMessage
+	forward_Vault_RegisterFinish_0 = runtime.ForwardResponseMessage
 
 	forward_Vault_ListAccounts_0 = runtime.ForwardResponseMessage
 
 	forward_Vault_DeleteAccount_0 = runtime.ForwardResponseMessage
-
-	forward_Vault_SignTransaction_0 = runtime.ForwardResponseMessage
 
 	forward_Vault_Refresh_0 = runtime.ForwardResponseMessage
 )

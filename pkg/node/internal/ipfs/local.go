@@ -21,8 +21,8 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/pkg/common"
-	cv1 "github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/types"
 )
 
 // `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
@@ -229,8 +229,8 @@ func (n *localIpfs) MultiAddrs() string {
 }
 
 // Peer returns the node's peer info
-func (n *localIpfs) Peer() *cv1.PeerInfo {
-	return &cv1.PeerInfo{
+func (n *localIpfs) Peer() *types.PeerInfo {
+	return &types.PeerInfo{
 		PeerId:    n.PeerID().String(),
 		Multiaddr: n.MultiAddrs(),
 		Type:      n.config.PeerType,

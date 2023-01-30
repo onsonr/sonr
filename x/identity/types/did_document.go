@@ -7,12 +7,12 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	common "github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 // NewDocument takes a SNRPubKey and returns a new DID Document
-func NewDocument(pubKey common.SNRPubKey) (*DidDocument, error) {
-	pk, err := PubKeyFromCommon(pubKey)
+func NewDocument(pubKey *crypto.PubKey) (*DidDocument, error) {
+	pk, err := crypto.PubKeyFromCommon(pubKey)
 	if err != nil {
 		return nil, err
 	}
@@ -21,7 +21,7 @@ func NewDocument(pubKey common.SNRPubKey) (*DidDocument, error) {
 		return nil, err
 	}
 	doc := NewBlankDocument(pk.DID())
-	vm, err := pk.VerificationMethod(WithBlockchainAccount(addr))
+	vm, err := NewVMFromPubKey(pk, WithBlockchainAccount(addr))
 	if err != nil {
 		return nil, err
 	}
@@ -95,6 +95,26 @@ func (d *DidDocument) CheckAccAddress(t interface{}) bool {
 	default:
 		return false
 	}
+}
+
+// GetVerificationMethodByFragment returns the VerificationMethod with the given fragment
+func (d *DidDocument) GetVerificationMethodByFragment(fragment string) *VerificationMethod {
+	for _, vm := range d.VerificationMethod {
+		if vm.Id == fmt.Sprintf("%s#%s", d.Id, fragment) {
+			return vm
+		}
+	}
+	return nil
+}
+
+// GetVerificationMethodByBlockchainAccountID returns the VerificationMethod with the given blockchain account
+func (d *DidDocument) GetVerificationMethodByBlockchainAccountID(account string) *VerificationMethod {
+	for _, vr := range d.AssertionMethod {
+		if vr.VerificationMethod.BlockchainAccountId == account {
+			return vr.VerificationMethod
+		}
+	}
+	return nil
 }
 
 // SetMetadata sets the metadata of the document

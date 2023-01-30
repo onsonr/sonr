@@ -5,7 +5,7 @@ type Store interface {
 	GetAccount(name string) (Account, error)
 
 	// PutShare stores the given *cmp.Config under the given name
-	PutAccount(acc Account) error
+	PutAccount(acc Account, name string) error
 
 	// JWKClaims returns the JWKClaims for the store to be signed by the identity
 	JWKClaims(aacc Account) (string, error)

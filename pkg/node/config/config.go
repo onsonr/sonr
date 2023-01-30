@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/node/types"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -39,13 +40,13 @@ type Config struct {
 	SelfPartyID party.ID
 
 	// PeerType is the type of peer
-	PeerType common.PeerType
+	PeerType types.PeerType
 }
 
 // DefaultConfig returns the default configuration
 func DefaultConfig(ctx *common.Context) *Config {
 	return &Config{
-		PeerType:    common.PeerType_HIGHWAY,
+		PeerType:    types.PeerType_HIGHWAY,
 		SelfPartyID: party.ID("current"),
 		Callback:    common.DefaultCallback(),
 		Context:     ctx,
@@ -69,7 +70,7 @@ func (c *Config) IsLocal() bool {
 
 // IsMotor returns true if the node is a motor
 func (c *Config) IsMotor() bool {
-	return c.PeerType == common.PeerType_MOTOR
+	return c.PeerType == types.PeerType_MOTOR
 }
 
 // Option is a function that configures a Node
@@ -102,13 +103,12 @@ func WithPartyId(partyId string) Option {
 }
 
 // WithPeerType sets the type of peer
-func WithPeerType(peerType common.PeerType) Option {
+func WithPeerType(peerType types.PeerType) Option {
 	return func(c *Config) error {
 		c.PeerType = peerType
 		return nil
 	}
 }
-
 
 type node struct {
 	host   common.P2PNode
@@ -124,6 +124,6 @@ func (n *node) IPFS() common.IPFSNode {
 	return n.ipfs
 }
 
-func (n *node) Type() common.PeerType {
+func (n *node) Type() types.PeerType {
 	return n.config.PeerType
 }

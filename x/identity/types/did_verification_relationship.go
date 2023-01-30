@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	fmt "fmt"
+	"strings"
 )
 
 func resolveVerificationRelationships(relationships []*VerificationRelationship, methods []*VerificationMethod) error {
@@ -58,4 +59,12 @@ func (v *VerificationRelationship) UnmarshalJSON(b []byte) error {
 		return errors.New("verificationRelation is invalid")
 	}
 	return nil
+}
+
+// MatchesBlockchainAddress returns true if the verification relationship is a blockchain account and matches the given address.
+func (v *VerificationRelationship) MatchesBlockchainAddress(addr string) bool {
+	if v.VerificationMethod == nil || !v.VerificationMethod.IsBlockchainAccount() {
+		return false
+	}
+	return strings.EqualFold(v.VerificationMethod.BlockchainAccountId, addr)
 }

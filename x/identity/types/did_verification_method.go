@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
 	"strings"
@@ -9,6 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 var (
@@ -52,20 +54,43 @@ func WithBlockchainAccount(v string) VerificationMethodOption {
 	}
 }
 
+// WithMetadataValue sets the metadata value of a verificationMethod
+func WithMetadataValue(k, v string) VerificationMethodOption {
+	return func(vm *VerificationMethod) error {
+		vm.SetMetadataValue(k, v)
+		return nil
+	}
+}
+
 //
 // VerificationMethod Creation Functions
 //
 
+// // VerificationMethod applies the given options and builds a verification method from this Key
+func NewVMFromPubKey(pk *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
+	vm := &VerificationMethod{
+		Id:                 pk.DID(),
+		Type:               pk.KeyType,
+		PublicKeyMultibase: pk.Multibase(),
+	}
+	for _, opt := range opts {
+		if err := opt(vm); err != nil {
+			return nil, err
+		}
+	}
+	return vm, nil
+}
+
 // NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
 // It automatically encodes the provided public key based on the keyType.
-func NewVerificationMethod(id string, keyType KeyType, controller string, key interface{}) (*VerificationMethod, error) {
+func NewVerificationMethod(id string, keyType crypto.KeyType, controller string, key interface{}) (*VerificationMethod, error) {
 	vm := &VerificationMethod{
 		Id:         id,
-		Type:       keyType,
+		Type:       keyType.PrettyString(),
 		Controller: controller,
 	}
 	// Check for Secp256k1 key
-	if keyType == KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019 {
+	if keyType == crypto.Secp256k1KeyType {
 		// Switch Interface to *secp256k1.PublicKey or string
 		switch key.(type) {
 		case *secp256k1.PubKey:
@@ -80,10 +105,11 @@ func NewVerificationMethod(id string, keyType KeyType, controller string, key in
 }
 
 // PubKey returns the public key of the verification method
-func (v *VerificationMethod) PubKey() (*PubKey, error) {
-	return PubKeyFromDID(v.Id)
+func (v *VerificationMethod) PubKey() (*crypto.PubKey, error) {
+	return crypto.PubKeyFromDID(v.Id)
 }
 
+// UnmarshalJSON implements the json.Unmarshaler interface for the VerificationMethod type.
 func (v *VerificationMethod) UnmarshalJSON(bytes []byte) error {
 	type Alias VerificationMethod
 	tmp := Alias{}
@@ -95,18 +121,9 @@ func (v *VerificationMethod) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func findAddrPrefix(addr string) (string, string) {
-	for _, prefix := range knownAddrPrefixes {
-		if strings.HasPrefix(addr, prefix) {
-			return prefix, strings.TrimPrefix(addr, prefix)
-		}
-	}
-	return "", addr
-}
-
 // CredentialDiscriptor is a descriptor for a credential for VerificationMethod which contains WebAuthnCredential
 func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescriptor, error) {
-	if vm.Type != KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 {
+	if vm.Type != crypto.WebAuthnKeyType.PrettyString() {
 		return protocol.CredentialDescriptor{}, fmt.Errorf("verification method is not of type WebAuthn")
 	}
 	cred, err := vm.WebAuthnCredential()
@@ -117,6 +134,18 @@ func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescrip
 	return stdCred.Descriptor(), nil
 }
 
+// IDFragmentSuffix returns the fragment of the ID of the VerificationMethod
+func (vm *VerificationMethod) IDFragmentSuffix() string {
+	ptrs := strings.Split(vm.Id, "#")
+	return ptrs[len(ptrs)-1]
+}
+
+// IssueChallenge issues a challenge for the VerificationMethod to sign and return
+func (vm *VerificationMethod) IssueChallenge(unsignedUcanStr string) (protocol.URLEncodedBase64, error) {
+	b64Ucan := base64.RawURLEncoding.EncodeToString([]byte(unsignedUcanStr))
+	return protocol.URLEncodedBase64(b64Ucan), nil
+}
+
 // IsBlockchainAccount returns true if the VerificationMethod is a blockchain account
 func (vm *VerificationMethod) IsBlockchainAccount() bool {
 	return vm.BlockchainAccountId != ""
@@ -125,9 +154,9 @@ func (vm *VerificationMethod) IsBlockchainAccount() bool {
 // PublicKey returns the public key of the VerificationMethod
 func (vm *VerificationMethod) PublicKey() ([]byte, error) {
 	switch vm.Type {
-	case KeyType_KeyType_ED25519_VERIFICATION_KEY_2018:
+	case crypto.Ed25519KeyType.PrettyString():
 		return base58.Decode(vm.PublicKeyMultibase, base58.BitcoinAlphabet)
-	case KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019:
+	case crypto.Secp256k1KeyType.PrettyString():
 		_, bz, err := bech32.DecodeAndConvert(vm.BlockchainAccountId)
 		if err != nil {
 			return nil, err
@@ -142,14 +171,29 @@ func (vm *VerificationMethod) SetMetadata(data map[string]string) {
 	vm.Metadata = MapToKeyValueList(data)
 }
 
-// GetMetadata returns the metadata value for the given key
-func (vm *VerificationMethod) GetMetadataValue(key string) string {
-	for _, kv := range vm.Metadata {
+// SetMetadataValue sets the metadata value for the given key
+func (vm *VerificationMethod) SetMetadataValue(key, value string) {
+	for i, kv := range vm.Metadata {
 		if kv.Key == key {
-			return kv.Value
+			vm.Metadata[i].Value = value
+			return
 		}
 	}
-	return ""
+	vm.Metadata = append(vm.Metadata, &KeyValuePair{Key: key, Value: value})
+}
+
+// GetMetadata returns the metadata value for the given key
+func (vm *VerificationMethod) GetMetadataValue(key string) (string, bool) {
+	ok := vm.HasMetadataValue(key)
+	if !ok {
+		return "", false
+	}
+	for _, kv := range vm.Metadata {
+		if kv.Key == key {
+			return kv.Value, true
+		}
+	}
+	return "", false
 }
 
 // HasMetadata returns true if the VerificationMethod has the given metadata key

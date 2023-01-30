@@ -16,6 +16,7 @@ export default async function handler(req: NextRequest) {
   const requestOptions = {
     method: "GET",
     headers: { "Content-Type": "application/json" },
+    body: req.body,
   };
 
   const resp = await fetch(

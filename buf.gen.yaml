@@ -10,3 +10,11 @@ plugins:
   # - name: protoc-gen-graphql
   #   out: .
   #   path: /usr/local/bin/protoc-gen-graphql.darwin
+  # - plugin: buf.build/bufbuild/connect-go
+  #   out: internal/gen
+  #   opt:
+  #     - paths=source_relative
+  # - plugin: buf.build/protocolbuffers/go
+  #   out: internal/gen
+  #   opt:
+  #     - paths=source_relative

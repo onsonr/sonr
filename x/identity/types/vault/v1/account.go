@@ -7,14 +7,14 @@ import (
 	"time"
 
 	"github.com/sonrhq/core/pkg/common"
-	types "github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
 // It takes a name, index, address prefix, and a slice of shares, and returns an account config
-func NewDerivedAccountConfig(name string, coinType common.CoinType, share *cmp.Config) (*AccountConfig, error) {
+func NewDerivedAccountConfig(name string, coinType crypto.CoinType, share *cmp.Config) (*AccountConfig, error) {
 	pub, err := ExtractPubKeyFromConfig(share)
 	if err != nil {
 		return nil, err
@@ -34,7 +34,7 @@ func NewDerivedAccountConfig(name string, coinType common.CoinType, share *cmp.C
 }
 
 // It takes a name, index, address prefix, and a slice of shares, and returns an account config
-func NewAccountConfigFromShares(name string, coinType common.CoinType, shares []*cmp.Config) (*AccountConfig, error) {
+func NewAccountConfigFromShares(name string, coinType crypto.CoinType, shares []*cmp.Config) (*AccountConfig, error) {
 	pub, err := ExtractPubKeyFromConfig(shares[0])
 	if err != nil {
 		return nil, err
@@ -63,8 +63,8 @@ func (a *AccountConfig) Address() (string, error) {
 }
 
 // Returning the coin type of the account.
-func (a *AccountConfig) CoinType() common.CoinType {
-	return common.CoinTypeFromIndex(a.CoinTypeIndex)
+func (a *AccountConfig) CoinType() crypto.CoinType {
+	return crypto.CoinTypeFromIndex(a.CoinTypeIndex)
 }
 
 // DID returns the DID of the account. It is the DID of the public key followed by the name of the account.
@@ -93,7 +93,7 @@ func (a *AccountConfig) GetConfigAtIndex(index int) (*cmp.Config, error) {
 		return nil, fmt.Errorf("index %d out of range", index)
 	}
 	share := a.Shares[index]
-	conf := &cmp.Config{}
+	conf := cmp.EmptyConfig(curve.Secp256k1{})
 	if err := conf.UnmarshalBinary(share); err != nil {
 		return nil, err
 	}
@@ -104,7 +104,10 @@ func (a *AccountConfig) GetConfigAtIndex(index int) (*cmp.Config, error) {
 func (a *AccountConfig) PartyIDs() []party.ID {
 	ids := make([]party.ID, 0, len(a.Shares))
 	for i := range a.Shares {
-		share, _ := a.GetConfigAtIndex(i)
+		share, err := a.GetConfigAtIndex(i)
+		if err != nil {
+			panic(err)
+		}
 		ids = append(ids, share.ID)
 	}
 	return ids
@@ -120,8 +123,8 @@ func (a *AccountConfig) PublicPoint() (curve.Point, error) {
 }
 
 // PubKey returns the public key of the first share.
-func (a *AccountConfig) PubKey() (*types.PubKey, error) {
-	return types.NewPubKey(a.PublicKey, types.KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019), nil
+func (a *AccountConfig) PubKey() (*crypto.PubKey, error) {
+	return crypto.NewSecp256k1PubKey(a.PublicKey), nil
 }
 
 // SerializeConfigList returns a slice of bytes representing the list of configs.
@@ -151,10 +154,14 @@ func DeserializeConfigList(bz [][]byte) ([]*cmp.Config, error) {
 }
 
 // ExtractPubKeyFromConfig takes a `cmp.Config` and returns the public key
-func ExtractPubKeyFromConfig(conf *cmp.Config) (*types.PubKey, error) {
+func ExtractPubKeyFromConfig(conf *cmp.Config) (*crypto.PubKey, error) {
 	skPP, ok := conf.PublicPoint().(*curve.Secp256k1Point)
 	if !ok {
 		return nil, errors.New("invalid public point")
 	}
-	return types.PubKeyFromCurvePoint(skPP)
+	bz, err := skPP.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return crypto.NewSecp256k1PubKey(bz), nil
 }

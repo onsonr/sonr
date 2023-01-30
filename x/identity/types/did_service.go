@@ -13,7 +13,7 @@ import (
 func NewIPNSService(id string, endpoint string) *Service {
 	return &Service{
 		Id:              id,
-		Type:            ServiceType_ServiceType_ENCRYPTED_DATA_VAULT,
+		Type:            "EncryptedVault",
 		ServiceEndpoint: endpoint,
 	}
 }
@@ -34,7 +34,7 @@ func (d *DidDocument) RemoveServiceByID(id string) bool {
 
 func (d *DidDocument) GetVaultService() *Service {
 	for _, s := range d.Service {
-		if s.Type == ServiceType_ServiceType_ENCRYPTED_DATA_VAULT && s.CID() != "" {
+		if s.Type == "EncryptedVault" && s.CID() != "" {
 			return s
 		}
 	}
@@ -50,7 +50,7 @@ func (d *DidDocument) GetVaultService() *Service {
 func (d *DidDocument) ResolveEndpointURL(serviceType string) (endpointID string, endpointURL string, err error) {
 	var services []*Service
 	for _, service := range d.Service {
-		if service.Type.FormatString() == serviceType {
+		if service.Type == serviceType {
 			services = append(services, service)
 		}
 	}

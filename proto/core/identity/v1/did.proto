@@ -1,23 +1,13 @@
 syntax = "proto3";
 package sonrhq.core.identity.v1;
 
-import "common/v1/data.proto";
-import "core/identity/v1/ssi.proto";
-import "core/identity/v1/vc.proto";
-
 option go_package = "github.com/sonrhq/core/x/identity/types";
 
-// DidDocument is a representation of a DID Document as defined in the W3C DID
+
 message DidDocument {
-  // context is a list of URIs that are used to identify the context of the DID
   repeated string context = 1;
-
-  // id is the DID of the DID Document
   string id = 2;
-
-  // verificationMethod is a list of verification methods that can be used to
   repeated string controller = 3; //optional
-
   repeated VerificationMethod verification_method = 4; // optional
   repeated VerificationRelationship authentication = 5; // optional
   repeated VerificationRelationship assertion_method = 6; // optional
@@ -31,7 +21,7 @@ message DidDocument {
 
 message VerificationMethod {
   string id = 1;
-  KeyType type = 2;
+  string type = 2;
   string controller = 3;
   repeated KeyValuePair public_key_jwk = 4; // optional
   string public_key_multibase = 5; // optional
@@ -46,7 +36,7 @@ message VerificationRelationship {
 
 message Service {
   string id = 1;
-  ServiceType type = 2;
+  string type = 2;
   string service_endpoint = 3;
   repeated KeyValuePair service_endpoints = 4; // optional
   repeated KeyValuePair metadata = 7;

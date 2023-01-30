@@ -14,9 +14,9 @@ package internal
 import (
 	"context"
 
-	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node"
 	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/pkg/node/types"
 )
 
 type MotorInstance struct {
@@ -27,7 +27,7 @@ type MotorInstance struct {
 
 // It creates a new node and wallet, and returns a MotorNode struct containing them
 func NewMotorInstance(ctx context.Context) (*MotorInstance, error) {
-	n, err := node.New(ctx, config.WithPeerType(common.PeerType_MOTOR))
+	n, err := node.New(ctx, config.WithPeerType(types.PeerType_MOTOR))
 	if err != nil {
 		return nil, err
 	}

@@ -41,22 +41,27 @@ func RegisterVaultIPFSService(cctx client.Context, mux *runtime.ServeMux, node c
 }
 
 // Register registers a new keypair and returns the public key.
-func (v *VaultService) NewWallet(ctx context.Context, req *v1.NewWalletRequest) (*v1.NewWalletResponse, error) {
+func (v *VaultService) RegisterStart(ctx context.Context, req *v1.RegisterStartRequest) (*v1.RegisterStartResponse, error) {
 	// // Get Session
 	wallet, err := v.dispatcher.BuildNewDIDController()
 	if err != nil {
 		return nil, err
 	}
 
+	credOpts, err := wallet.BeginRegistration(req.Aka)
+	if err != nil {
+		return nil, err
+	}
 	// Return response
-	return &v1.NewWalletResponse{
-		Success: false,
-		Address: wallet.Address(),
+	return &v1.RegisterStartResponse{
+		AccountAddress:          wallet.Address(),
+		CreateCredentialOptions: string(credOpts),
+		Aka:                     req.Aka,
 	}, nil
 }
 
 // CreateAccount derives a new key from the private key and returns the public key.
-func (v *VaultService) CreateAccount(ctx context.Context, req *v1.CreateAccountRequest) (*v1.CreateAccountResponse, error) {
+func (v *VaultService) RegisterFinish(ctx context.Context, req *v1.RegisterFinishRequest) (*v1.RegisterFinishResponse, error) {
 	return nil, fmt.Errorf("Method is unimplemented")
 }
 
@@ -72,10 +77,5 @@ func (v *VaultService) DeleteAccount(ctx context.Context, req *v1.DeleteAccountR
 
 // Refresh refreshes the keypair and returns the public key.
 func (v *VaultService) Refresh(ctx context.Context, req *v1.RefreshRequest) (*v1.RefreshResponse, error) {
-	return nil, fmt.Errorf("Method is unimplemented")
-}
-
-// Sign signs the data with the private key and returns the signature.
-func (v *VaultService) SignTransaction(ctx context.Context, req *v1.SignTransactionRequest) (*v1.SignTransactionResponse, error) {
 	return nil, fmt.Errorf("Method is unimplemented")
 }
