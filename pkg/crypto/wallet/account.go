@@ -3,6 +3,7 @@ package wallet
 import (
 	"time"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	authsigning "github.com/cosmos/cosmos-sdk/x/auth/signing"
 	"github.com/sonrhq/core/pkg/client/rosetta"
@@ -98,7 +99,7 @@ type CosmosAccount interface {
 	GetSignerData() authsigning.SignerData
 
 	// SignTx signs a transaction for SHA256 (Cosmos Hashing Function) and signs it with the MPC Protocol
-	SignTx(tx txtypes.TxRaw) ([]byte, error)
+	SendTx(note string, msgs ...sdk.Msg) (*txtypes.BroadcastTxResponse, error)
 
 	// VerifySignature verifies a signature for a hash using the public key
 	VerifySignature(msg []byte, sig []byte) bool

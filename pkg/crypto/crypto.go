@@ -102,8 +102,6 @@ func CoinTypeFromString(str string) CoinType {
 		return types.CoinType_CoinType_FILECOIN
 	case "hs":
 		return types.CoinType_CoinType_HNS
-	case "test":
-		return types.CoinType_CoinType_TESTNET
 	default:
 		return types.CoinType_CoinType_TESTNET
 	}

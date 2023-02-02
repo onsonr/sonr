@@ -43,20 +43,20 @@ func RegisterVaultIPFSService(cctx client.Context, mux *runtime.ServeMux, node c
 // Register registers a new keypair and returns the public key.
 func (v *VaultService) RegisterStart(ctx context.Context, req *v1.RegisterStartRequest) (*v1.RegisterStartResponse, error) {
 	// // Get Session
-	wallet, err := v.dispatcher.BuildNewDIDController()
+	controller, err := v.dispatcher.BuildNewDIDController()
 	if err != nil {
 		return nil, err
 	}
 
-	credOpts, err := wallet.BeginRegistration(req.Aka)
+	credOpts, err := controller.BeginRegistration(req.Aka)
 	if err != nil {
 		return nil, err
 	}
 	// Return response
 	return &v1.RegisterStartResponse{
-		AccountAddress:          wallet.Address(),
-		CreateCredentialOptions: string(credOpts),
-		Aka:                     req.Aka,
+		AccountAddress:  controller.Address(),
+		CreationOptions: string(credOpts),
+		Aka:             req.Aka,
 	}, nil
 }
 

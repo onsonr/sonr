@@ -26,8 +26,10 @@ func (d *DIDControllerImpl) BeginRegistration(aka string) ([]byte, error) {
 	}
 	caps := ucan.NewNestedCapabilities("DELEGATOR", "AUTHENTICATOR", "CREATE", "READ", "UPDATE")
 	att := ucan.Attenuations{
-		{Cap: caps.Cap("AUTHENTICATOR"), Rsc: ucan.NewStringLengthResource("mpc/acc", "*")},
-		{Cap: caps.Cap("SUPER_USER"), Rsc: ucan.NewStringLengthResource("mpc/acc", "b5:world_bank_population:*")},
+		{Cap: caps.Cap("AUTHENTICATOR"), Rsc: ucan.NewStringLengthResource("mpc/acc", d.authentication.Id)},
+		{Cap: caps.Cap("CREATE"), Rsc: ucan.NewStringLengthResource("mpc/acc", aka)},
+		{Cap: caps.Cap("READ"), Rsc: ucan.NewStringLengthResource("mpc/acc", aka)},
+		{Cap: caps.Cap("UPDATE"), Rsc: ucan.NewStringLengthResource("mpc/acc", aka)},
 	}
 	zero := time.Time{}
 	origin, err := d.primaryAccount.NewOriginToken(audId, att, nil, zero, zero)

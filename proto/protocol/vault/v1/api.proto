@@ -19,7 +19,7 @@ message RegisterStartRequest {
 message RegisterStartResponse {
   string account_address = 1;
   string aka = 2;
-  string create_credential_options = 3;
+  string creation_options = 3;
 }
 
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.

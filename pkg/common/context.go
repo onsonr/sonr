@@ -14,6 +14,11 @@ import (
 	"golang.org/x/crypto/nacl/box"
 )
 
+const (
+	// CURRENT_CHAIN_ID is the current chain ID.
+	CURRENT_CHAIN_ID = "sonrdevnet-1"
+)
+
 // Default configuration
 var (
 	// defaultBootstrapMultiaddrs is the default list of bootstrap nodes

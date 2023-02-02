@@ -1,8 +1,6 @@
 package internal
 
 import (
-	"crypto/sha256"
-
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/tx"
@@ -30,13 +28,28 @@ func LoadCosmosAccount(root wallet.Account, cosmos wallet.Account, client rosett
 }
 
 // SignTx signs a transaction
-func (a *cosmosAccountImpl) SignTx(msg tx.TxRaw) ([]byte, error) {
-	bz, err := msg.Marshal()
+func (a *cosmosAccountImpl) SendTx(note string, msgs ...sdk.Msg) (*tx.BroadcastTxResponse, error) {
+	txBody, err := makeTxBody(note, msgs...)
 	if err != nil {
 		return nil, err
 	}
-	txHash := sha256.Sum256(bz)
-	return a.rootAcc.Sign(txHash[:])
+	// Serialize the tx body
+	txBytes, err := txBody.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	_, sig, err := signTxDocDirectAux(a, txBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create a signature list and append the signature
+	sigList := make([][]byte, 1)
+	sigList[0] = sig
+
+	return &tx.BroadcastTxResponse{
+		//TxHash: signDocDir.TxBodyBytes,
+	}, nil
 }
 
 // GetSignerData returns the signer data for the account

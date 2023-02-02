@@ -17,43 +17,44 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sonr/core/identity/params";
   }
+
   // Queries a DidDocument by index.
   rpc Did(QueryGetDidRequest) returns (QueryGetDidResponse) {
-    option (google.api.http).get = "/sonr/core/did/{did}";
+    option (google.api.http).get = "/sonr/core/identity/did/{did}";
   }
 
   // Queries a list of DidDocument items.
   rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
-    option (google.api.http).get = "/sonr/core/did";
+    option (google.api.http).get = "/sonr/core/identity/did";
   }
 
   //Queries a DIDDocument for the matching service
   rpc QueryByService(QueryByServiceRequest) returns (QueryByServiceResponse) {
-    option (google.api.http).get = "/sonr/core/did/service/{service_id}";
+    option (google.api.http).get = "/sonr/core/identity/did/service/{service_id}";
   }
 
   //Queries a DIDDocument for the matching key
   rpc QueryByKeyID(QueryByKeyIDRequest) returns (QueryByKeyIDResponse) {
-    option (google.api.http).get = "/sonr/core/did/key/{key_id}";
+    option (google.api.http).get = "/sonr/core/identity/did/key/{key_id}";
   }
 
   //Queries a DIDDocument for the matching AlsoKnownAs
   rpc QueryByAlsoKnownAs(QueryByAlsoKnownAsRequest) returns (QueryByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/core/did/aka/{aka_id}";
+    option (google.api.http).get = "/sonr/core/identiy/did/aka/{aka_id}";
   }
 
   //Queries a list of DIDDocument for the matching method
   rpc QueryByMethod(QueryByMethodRequest) returns (QueryByMethodResponse) {
-    option (google.api.http).get = "/sonr/core/did/method/{method_id}";
+    option (google.api.http).get = "/sonr/core/identity/did/method/{method_id}";
   }
 
   // Queries a list of QueryByNetwork items.
   rpc QueryByNetwork(QueryByNetworkRequest) returns (QueryByNetworkResponse) {
-    option (google.api.http).get = "/sonr/core/did/network/{network_id}";
+    option (google.api.http).get = "/sonr/core/identity/did/network/{network_id}";
   }
   // Queries a DomainRecord by index.
   rpc DomainRecord(QueryGetDomainRecordRequest) returns (QueryGetDomainRecordResponse) {
-    option (google.api.http).get = "/sonr/core/domain/{tld}/{domain}";
+    option (google.api.http).get = "/sonr/core/identity/domain/{tld}/{domain}";
   }
 
   // Queries a list of DomainRecord items.
