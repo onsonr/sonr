@@ -30,3 +30,5 @@ type Client interface {
 	// SendTransaction sends the given transaction.
 	SendTransaction(tx string) (string, error)
 }
+
+// Path: pkg/client/rosetta/ethereum.go
