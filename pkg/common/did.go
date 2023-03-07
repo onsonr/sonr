@@ -19,6 +19,7 @@ type SNRPubKey interface {
 	Raw() []byte
 }
 
+// DIDConfig is a DID URI config
 type DIDConfig struct {
 	// Method is the DID method name
 	Method string `json:"method"`

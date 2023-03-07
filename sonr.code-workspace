@@ -49,7 +49,7 @@
       ".vercel": true,
       "**/docs.go": true,
       "third_party": true,
-      "**/x/**/*.pb.go": true
+      "**/x/**/*.pb.go": false
     }
   }
 }

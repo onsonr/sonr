@@ -1,0 +1,104 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.protocol.vault.v1;
+
+import "core/identity/v1/did.proto";
+import "google/api/annotations.proto";
+import "protocol/vault/v1/models.proto";
+
+option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
+
+// RegisterStartRequest is the request to register a new account.
+message RegisterStartRequest {
+  string aka = 1;
+  int32 threshold = 2; // optional
+}
+
+// RegisterStartResponse is the response to a Register request.
+message RegisterStartResponse {
+  string account_address = 1;
+  string aka = 2;
+  string creation_options = 3;
+}
+
+// RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+message RegisterFinishRequest {
+  string account_address = 1;
+  string credential_response = 2;
+}
+
+// RegisterFinishResponse is the response to a CreateAccount request.
+message RegisterFinishResponse {
+  bytes id = 1;
+  string address = 2;
+  core.identity.v1.DidDocument did_document = 3;
+  AccountInfo new_account = 4;
+}
+
+// LoginStartRequest is the request to login to an account.
+message LoginStartRequest {
+  string account_address = 1;
+}
+
+// LoginStartResponse is the response to a Login request.
+message LoginStartResponse {
+  bool success = 1;
+  string account_address = 2;
+  string aka = 3;
+  string credential_options = 4;
+}
+
+// LoginFinishRequest is the request to login to an account.
+message LoginFinishRequest {
+  string account_address = 1;
+  string credential_response = 2;
+}
+
+// LoginFinishResponse is the response to a Login request.
+message LoginFinishResponse {
+  bool success = 1;
+  string account_address = 2;
+  string aka = 3;
+  core.identity.v1.DidDocument did_document = 4;
+  AccountInfo account = 5;
+}
+
+// ==================================================================
+// GRPC/REST SERVICE
+// ==================================================================
+
+// Vault is the service used for managing a node's keypair.
+service VaultAuthentication {
+  // LoginStart starts the login process and returns the credential options.
+  rpc LoginStart(LoginStartRequest) returns (LoginStartResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/login/start"
+      body: "*"
+    };
+  }
+
+  // LoginFinish finishes the login process and returns the account info.
+  rpc LoginFinish(LoginFinishRequest) returns (LoginFinishResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/login/finish"
+      body: "*"
+    };
+  }
+
+  // RegisterStart creates a new Webauthn credential and returns it.
+  rpc RegisterStart(RegisterStartRequest) returns (RegisterStartResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/register/start"
+      body: "*"
+    };
+  }
+
+  // RegisterFinish creates a new Bip32 child key and returns the configuration.
+  rpc RegisterFinish(RegisterFinishRequest) returns (RegisterFinishResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/register/finish"
+      body: "*"
+    };
+  }
+}

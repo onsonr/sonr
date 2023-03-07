@@ -20,7 +20,7 @@ export default async function handler(req: NextRequest) {
   };
 
   const resp = await fetch(
-    apiUrl + "/sonr/protocol/auth/assertion/" + domain + "/" + username,
+    apiUrl + "/sonr/vault/auth/login/start",
     requestOptions
   );
   const data = await resp.json();

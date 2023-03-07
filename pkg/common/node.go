@@ -81,7 +81,7 @@ type IPFSNode interface {
 	LoadKeyValueStore(username string) (iface.KeyValueStore, error)
 }
 
-// `P2PNode` is an interface that defines the methods that a node must implement to be used by the
+// `PeerNode` is an interface that defines the methods that a node must implement to be used by the
 // Motor library.
 // @property PeerID - The peer ID of the node.
 // @property {error} Connect - Connect to a peer
@@ -91,7 +91,7 @@ type IPFSNode interface {
 // @property SetStreamHandler - This is a function that sets the handler for a given protocol.
 // @property Subscribe - Subscribe to a topic.
 // @property {error} Close - Closes the node.
-type P2PNode interface {
+type PeerNode interface {
 	Node
 
 	// NewStream creates a new stream to a peer

@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.protocol.vault.v1;
+
+import "core/identity/v1/did.proto";
+import "google/api/annotations.proto";
+import "protocol/vault/v1/models.proto";
+
+option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
+
+// RefreshSharesRequest is the request to refresh the keypair.
+message RefreshSharesRequest {
+  string credential_response = 1;
+  string session_id = 2;
+}
+
+// RefreshSharesResponse is the response to a Refresh request.
+message RefreshSharesResponse {
+  bytes id = 1;
+  string address = 2;
+  core.identity.v1.DidDocument did_document = 3;
+}
+
+// ==================================================================
+// GRPC/REST SERVICE
+// ==================================================================
+
+// Vault is the service used for managing a node's keypair.
+service VaultStorage {
+  // RefreshShares refreshes the Wallet shares and returns the updated configuration.
+  rpc RefreshShares(RefreshSharesRequest) returns (RefreshSharesResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/storage/refresh"
+      body: "*"
+    };
+  }
+}

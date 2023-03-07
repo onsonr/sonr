@@ -18,7 +18,7 @@ export default async function handler(req: NextRequest) {
   };
 
   const resp = await fetch(
-    apiUrl + "/sonr/protocol/vault/register/start",
+    apiUrl + "/sonr/vault/auth/register/start",
     requestOptions
   );
   const data = await resp.json();

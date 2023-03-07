@@ -18,7 +18,7 @@ type Callback = common.NodeCallback
 type IPFS = common.IPFSNode
 
 // P2P is an alias for a common.P2PNode.
-type P2P = common.P2PNode
+type P2P = common.PeerNode
 
 // PeerType is an alias for a types.PeerType.
 type PeerType = types.PeerType
@@ -102,7 +102,7 @@ func NewIPFS(ctx context.Context, opts ...Option) (common.IPFSNode, error) {
 }
 
 type node struct {
-	host   common.P2PNode
+	host   common.PeerNode
 	ipfs   common.IPFSNode
 	config *config.Config
 }

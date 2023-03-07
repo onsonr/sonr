@@ -40,7 +40,7 @@ service Query {
 
   //Queries a DIDDocument for the matching AlsoKnownAs
   rpc QueryByAlsoKnownAs(QueryByAlsoKnownAsRequest) returns (QueryByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/core/identiy/did/aka/{aka_id}";
+    option (google.api.http).get = "/sonr/core/identity/did/aka/{aka_id}";
   }
 
   //Queries a list of DIDDocument for the matching method

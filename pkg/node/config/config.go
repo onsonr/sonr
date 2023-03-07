@@ -111,12 +111,12 @@ func WithPeerType(peerType types.PeerType) Option {
 }
 
 type node struct {
-	host   common.P2PNode
+	host   common.PeerNode
 	ipfs   common.IPFSNode
 	config *Config
 }
 
-func (n *node) Host() common.P2PNode {
+func (n *node) Host() common.PeerNode {
 	return n.host
 }
 

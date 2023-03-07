@@ -83,6 +83,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	}
 
 	initRootCmd(rootCmd, encodingConfig)
+	rootCmd.AddCommand(server.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",

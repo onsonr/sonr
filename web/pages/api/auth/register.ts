@@ -18,7 +18,7 @@ export default async function handler(req: NextRequest) {
     body: body,
   };
   const resp = await fetch(
-    process.env.API_URL + "/sonr/protocol/vault/register/finish",
+    apiUrl + "/sonr/vault/auth/register/finish",
     requestOptions
   );
   const data = await resp.json();
