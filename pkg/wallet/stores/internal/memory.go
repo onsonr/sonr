@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/sonrhq/core/pkg/wallet"
+	"github.com/sonrhq/core/pkg/wallet/accounts"
 	vaultv1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 	"github.com/ucan-wg/go-ucan"
 )
@@ -22,7 +23,14 @@ func NewMemoryStore(accCfg *vaultv1.AccountConfig) (wallet.Store, error) {
 		accConfig: accCfg,
 		configs:   make(map[string]wallet.Account),
 	}
-
+	acc, err := accounts.Load(accCfg)
+	if err != nil {
+		return nil, err
+	}
+	err = ds.PutAccount(acc, accCfg.DID())
+	if err != nil {
+		return nil, err
+	}
 	return ds, nil
 }
 

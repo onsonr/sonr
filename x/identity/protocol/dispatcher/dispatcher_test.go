@@ -38,9 +38,10 @@ func TestDispatcherAccounts(t *testing.T) {
 	startTime := time.Now()
 	d := dispatcher.New()
 
-	w, err := d.BuildNewDIDController()
+	w, err := d.BuildNewDIDController("prad's iphone")
 	checkErr(t, err)
 	t.Logf("(%s) - Root Identifier", w.ID())
+	t.Logf("Address: %s", w.Address())
 	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
 
 	un := usedNetworks()
@@ -65,21 +66,6 @@ func TestDispatcherAccounts(t *testing.T) {
 		t.Logf("\t↪ [%d]<%s> %s", i, test.coinType.Symbol(), acc.Name())
 	}
 	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
-
-	msg := []byte("Hello World!")
-	t.Logf("\nSign msg (%v) with DID Controller....", msg)
-	startTime = time.Now()
-	sig, err := w.Sign(msg)
-	checkErr(t, err)
-	t.Logf("\t↪ %s", sig)
-	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
-
-	t.Logf("\nVerify msg (%v) with DID Controller....", msg)
-	startTime = time.Now()
-	ok, err := w.Verify(msg, sig)
-	checkErr(t, err)
-	t.Logf("\t↪ %t", ok)
-	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
 }
 
 func TestDispatcherSignature(t *testing.T) {
@@ -87,22 +73,23 @@ func TestDispatcherSignature(t *testing.T) {
 	startTime := time.Now()
 	d := dispatcher.New()
 
-	w, err := d.BuildNewDIDController()
+	w, err := d.BuildNewDIDController("prad's iphone")
 	checkErr(t, err)
 	t.Logf("(%s) - Root Identifier", w.ID())
+	t.Logf("Address: %s", w.Address())
 	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
 
 	msg := []byte("Hello World!")
 	t.Logf("\nSign msg with DID Controller....")
 	startTime = time.Now()
-	sig, err := w.Sign(msg)
+	sig, err := w.SignWithAccount(msg, "primary")
 	checkErr(t, err)
 	t.Logf("\t↪ %s", base64.RawStdEncoding.EncodeToString(sig))
 	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))
 
 	t.Logf("\nVerify msg with DID Controller....")
 	startTime = time.Now()
-	ok, err := w.Verify(msg, sig)
+	ok, err := w.VerifyWithAccount(msg, sig, "primary")
 	checkErr(t, err)
 	assert.True(t, ok)
 	t.Logf("DONE! Time elapsed: %s\n", time.Since(startTime))

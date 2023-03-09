@@ -3,7 +3,6 @@ package sonrhq.core.identity.v1;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
 
-
 message DidDocument {
   repeated string context = 1;
   string id = 2;
@@ -36,10 +35,12 @@ message VerificationRelationship {
 
 message Service {
   string id = 1;
-  string type = 2;
-  string service_endpoint = 3;
-  repeated KeyValuePair service_endpoints = 4; // optional
-  repeated KeyValuePair metadata = 7;
+  string controller = 2;
+  string type = 3;
+  string origin = 4;
+  string name = 5;
+  repeated KeyValuePair service_endpoints = 6; // optional
+  repeated KeyValuePair metadata = 7; // optional
 }
 
 message KeyValuePair {

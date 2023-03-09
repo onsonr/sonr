@@ -34,6 +34,14 @@ func NewFileStore(p string, pwd []byte, accCfg *vaultv1.AccountConfig) (wallet.S
 		bucketKey: []byte(accCfg.DID()),
 		pwd:       pwd,
 	}
+	acc, err := accounts.Load(accCfg)
+	if err != nil {
+		return nil, err
+	}
+	err = ds.PutAccount(acc, accCfg.DID())
+	if err != nil {
+		return nil, err
+	}
 	return ds, nil
 }
 

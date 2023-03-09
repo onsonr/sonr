@@ -34,7 +34,6 @@ message GetAccountRequest {
 message GetAccountResponse {
   bool success = 1;
   string coin_type = 2;
-  core.identity.v1.DidDocument did_document = 3;
   repeated AccountInfo accounts = 4;
 }
 
@@ -46,7 +45,6 @@ message ListAccountsRequest {
 // ListAccountsResponse is the response to a ListAccounts request.
 message ListAccountsResponse {
   bool success = 1;
-  core.identity.v1.DidDocument did_document = 2;
   repeated AccountInfo accounts = 3;
 }
 

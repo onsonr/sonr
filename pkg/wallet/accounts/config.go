@@ -1,6 +1,8 @@
 package accounts
 
 import (
+	"strings"
+
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/pkg/wallet"
@@ -98,6 +100,9 @@ func WithThreshold(threshold int) Option {
 // WithSelfID sets the ID of the account that is used to sign transactions.
 func WithSelfID(selfID string) Option {
 	return func(c *config) {
+		selfID = strings.ToLower(selfID)
+		selfID = strings.ReplaceAll(selfID, " ", "-")
+		selfID = strings.ReplaceAll(selfID, "[^a-zA-Z0-9]+", "")
 		c.ID = selfID
 	}
 }

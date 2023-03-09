@@ -7,11 +7,41 @@ import (
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
+// DefaultServices returns the default services
+func DefaultServices() []Service {
+	return []Service{
+		{
+			Id:     "did:sonr:0",
+			Type:   "LinkedDomains",
+			Origin: "https://sonr.io",
+			Name:   "Sonr Home",
+		},
+		{
+			Id:     "did:sonr:1",
+			Type:   "LinkedDomains",
+			Origin: "localhost",
+			Name:   "Localhost",
+		},
+		{
+			Id:     "did:sonr:2",
+			Type:   "LinkedDomains",
+			Origin: "https://mind.sonr.io",
+			Name:   "Sonr Mind",
+		},
+		{
+			Id:     "did:sonr:3",
+			Type:   "LinkedDomains",
+			Origin: "https://auth.sonr.io",
+			Name:   "Sonr Auth",
+		},
+	}
+}
+
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		DidDocumentList:  []DidDocument{},
-		DomainRecordList: []DomainRecord{},
+		DidDocumentList: []DidDocument{},
+		ServiceList:     DefaultServices(),
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -31,14 +61,14 @@ func (gs GenesisState) Validate() error {
 		didDocumentIndexMap[index] = struct{}{}
 	}
 	// Check for duplicated index in DomainRecord
-	DomainRecordIndexMap := make(map[string]struct{})
+	ServiceIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.DomainRecordList {
-		index := string(DomainRecordKey(elem.Domain, elem.Index))
-		if _, ok := DomainRecordIndexMap[index]; ok {
+	for _, elem := range gs.ServiceList {
+		index := string(ServiceKey(elem.Id))
+		if _, ok := ServiceIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for DomainRecord")
 		}
-		DomainRecordIndexMap[index] = struct{}{}
+		ServiceIndexMap[index] = struct{}{}
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

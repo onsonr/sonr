@@ -1,10 +1,10 @@
 package types
 
 import (
+"github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
@@ -12,10 +12,8 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateDidDocument{}, "identity/CreateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgUpdateDidDocument{}, "identity/UpdateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgDeleteDidDocument{}, "identity/DeleteDidDocument", nil)
-	cdc.RegisterConcrete(&MsgCreateDomainRecord{}, "identity/CreateDomainRecord", nil)
-	cdc.RegisterConcrete(&MsgUpdateDomainRecord{}, "identity/UpdateDomainRecord", nil)
-	cdc.RegisterConcrete(&MsgDeleteDomainRecord{}, "identity/DeleteDomainRecord", nil)
-	// this line is used by starport scaffolding # 2
+	cdc.RegisterConcrete(&MsgRegisterService{}, "identity/RegisterService", nil)
+// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -25,11 +23,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDeleteDidDocument{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateDomainRecord{},
-		&MsgUpdateDomainRecord{},
-		&MsgDeleteDomainRecord{},
-	)
-	// this line is used by starport scaffolding # 3
+	&MsgRegisterService{},
+)
+// this line is used by starport scaffolding # 3
+
+msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

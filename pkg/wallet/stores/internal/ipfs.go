@@ -21,12 +21,19 @@ type IPFSStore struct {
 func NewIPFSStore(node common.IPFSNode, accCfg *vaultv1.AccountConfig) (wallet.Store, error) {
 	docs, err := node.LoadKeyValueStore(accCfg.DID())
 	if err != nil {
-
 		return nil, err
 	}
 	ds := &IPFSStore{
 		accConfig:   accCfg,
 		ipfsKVStore: docs,
+	}
+	acc, err := accounts.Load(accCfg)
+	if err != nil {
+		return nil, err
+	}
+	err = ds.PutAccount(acc, accCfg.DID())
+	if err != nil {
+		return nil, err
 	}
 	return ds, nil
 }

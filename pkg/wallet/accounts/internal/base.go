@@ -152,5 +152,5 @@ func (w *baseAccountImpl) rootCmpConf() *cmp.Config {
 			return c
 		}
 	}
-	panic("no current config")
+	return cmps[0]
 }

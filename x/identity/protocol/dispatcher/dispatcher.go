@@ -13,13 +13,11 @@ type Dispatcher struct {
 
 // NewDispatcher creates a new wallet dispatcher
 func New() *Dispatcher {
-	return &Dispatcher{
-		// n: n,
-	}
+	return &Dispatcher{}
 }
 
 // BuildNewDIDController creates a new wallet
-func (d *Dispatcher) BuildNewDIDController() (controller.DIDController, error) {
+func (d *Dispatcher) BuildNewDIDController(deviceName string) (controller.DIDController, error) {
 	// Lock the dispatcher
 	d.Lock()
 	defer d.Unlock()
@@ -29,7 +27,7 @@ func (d *Dispatcher) BuildNewDIDController() (controller.DIDController, error) {
 	// Create the wallet in a goroutine
 	go func() {
 		// The default shards that are added to the MPC wallet
-		rootAcc, err := accounts.New()
+		rootAcc, err := accounts.New(accounts.WithSelfID(deviceName))
 		if err != nil {
 			errCh <- err
 		}

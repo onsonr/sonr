@@ -3,7 +3,6 @@ package sonrhq.core.identity.v1;
 
 import "core/identity/v1/did.proto";
 import "core/identity/v1/genesis.proto";
-import "core/identity/v1/hns.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -23,43 +22,29 @@ service Query {
     option (google.api.http).get = "/sonr/core/identity/did/{did}";
   }
 
+  //Queries a DIDDocument for the matching key
+  rpc DidByKeyID(QueryDidByKeyIDRequest) returns (QueryDidByKeyIDResponse) {
+    option (google.api.http).get = "/sonr/core/identity/did/key/{key_id}";
+  }
+
+  //Queries a DIDDocument for the matching AlsoKnownAs
+  rpc DidByAlsoKnownAs(QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
+    option (google.api.http).get = "/sonr/core/identity/did/aka/{aka_id}";
+  }
   // Queries a list of DidDocument items.
   rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
     option (google.api.http).get = "/sonr/core/identity/did";
   }
 
   //Queries a DIDDocument for the matching service
-  rpc QueryByService(QueryByServiceRequest) returns (QueryByServiceResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/service/{service_id}";
+  rpc Service(QueryGetServiceRequest) returns (QueryGetServiceResponse) {
+    option (google.api.http).get = "/sonr/core/identity/service/{origin}";
   }
 
-  //Queries a DIDDocument for the matching key
-  rpc QueryByKeyID(QueryByKeyIDRequest) returns (QueryByKeyIDResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/key/{key_id}";
-  }
 
-  //Queries a DIDDocument for the matching AlsoKnownAs
-  rpc QueryByAlsoKnownAs(QueryByAlsoKnownAsRequest) returns (QueryByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/aka/{aka_id}";
-  }
-
-  //Queries a list of DIDDocument for the matching method
-  rpc QueryByMethod(QueryByMethodRequest) returns (QueryByMethodResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/method/{method_id}";
-  }
-
-  // Queries a list of QueryByNetwork items.
-  rpc QueryByNetwork(QueryByNetworkRequest) returns (QueryByNetworkResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/network/{network_id}";
-  }
-  // Queries a DomainRecord by index.
-  rpc DomainRecord(QueryGetDomainRecordRequest) returns (QueryGetDomainRecordResponse) {
-    option (google.api.http).get = "/sonr/core/identity/domain/{tld}/{domain}";
-  }
-
-  // Queries a list of DomainRecord items.
-  rpc DomainRecordAll(QueryAllDomainRecordRequest) returns (QueryAllDomainRecordResponse) {
-    option (google.api.http).get = "/sonr/core/identity/domain_registry";
+  //Queries a DIDDocument for the matching service
+  rpc ServiceAll(QueryAllServiceRequest) returns (QueryAllServiceResponse) {
+    option (google.api.http).get = "/sonr/core/identity/service";
   }
 
   // this line is used by starport scaffolding # 2
@@ -82,38 +67,20 @@ message QueryGetDidResponse {
   DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryByServiceRequest {
-  string service_id = 1;
-}
-
-message QueryByServiceResponse {
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryByKeyIDRequest {
+message QueryDidByKeyIDRequest {
   string key_id = 1;
 }
 
-message QueryByKeyIDResponse {
+message QueryDidByKeyIDResponse {
   DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryByAlsoKnownAsRequest {
+message QueryDidByAlsoKnownAsRequest {
   string aka_id = 1;
 }
 
-message QueryByAlsoKnownAsResponse {
+message QueryDidByAlsoKnownAsResponse {
   DidDocument didDocument = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryByMethodRequest {
-  string method_id = 1;
-  cosmos.base.query.v1beta1.PageRequest pagination = 2;
-}
-
-message QueryByMethodResponse {
-  repeated DidDocument didDocument = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryAllDidRequest {
@@ -125,30 +92,21 @@ message QueryAllDidResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryByNetworkRequest {
-  string network_id = 1;
+
+message QueryGetServiceRequest {
+  string origin = 1;
 }
 
-message QueryByNetworkResponse {
-  repeated DidDocument didDocument = 1 [(gogoproto.nullable) = false];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+message QueryGetServiceResponse {
+  Service service = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetDomainRecordRequest {
-  string tld = 1;
-  string domain = 2;
-}
-
-message QueryGetDomainRecordResponse {
-  DomainRecord domainRecord = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryAllDomainRecordRequest {
+message QueryAllServiceRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message QueryAllDomainRecordResponse {
-  repeated DomainRecord domainRecord = 1 [(gogoproto.nullable) = false];
+message QueryAllServiceResponse {
+  repeated Service services = 1 [(gogoproto.nullable) = false];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 

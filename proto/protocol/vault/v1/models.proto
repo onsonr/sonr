@@ -20,6 +20,9 @@ message AccountInfo {
 
   // Index is the index of the account.
   uint32 index = 4;
+
+  // Balance is the balance of the account.
+  int32 balance = 5;
 }
 
 message AccountConfig {

@@ -29,12 +29,12 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: "1",
 					},
 				},
-				DomainRecordList: []types.DomainRecord{
+				ServiceList: []types.Service{
 					{
-						Index: "0",
+						Id: "0",
 					},
 					{
-						Index: "1",
+						Id: "1",
 					},
 				},
 				// this line is used by starport scaffolding # types/genesis/validField
@@ -58,12 +58,12 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated DomainRecord",
 			genState: &types.GenesisState{
-				DomainRecordList: []types.DomainRecord{
+				ServiceList: []types.Service{
 					{
-						Index: "0",
+						Id: "0",
 					},
 					{
-						Index: "0",
+						Id: "1",
 					},
 				},
 			},

@@ -2,7 +2,6 @@ syntax = "proto3";
 package sonrhq.core.identity.v1;
 
 import "core/identity/v1/did.proto";
-import "core/identity/v1/hns.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
@@ -12,9 +11,9 @@ service Msg {
   rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
   rpc UpdateDidDocument(MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
   rpc DeleteDidDocument(MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
-  rpc CreateDomainRecord(MsgCreateDomainRecord) returns (MsgCreateDomainRecordResponse);
-  rpc UpdateDomainRecord(MsgUpdateDomainRecord) returns (MsgUpdateDomainRecordResponse);
-  rpc DeleteDomainRecord(MsgDeleteDomainRecord) returns (MsgDeleteDomainRecordResponse);
+  rpc RegisterService(MsgRegisterService) returns (MsgRegisterServiceResponse);
+  rpc UpdateService(MsgUpdateService) returns (MsgUpdateServiceResponse);
+  rpc DeactivateService(MsgDeactivateService) returns (MsgDeactivateServiceResponse);
   // this line is used by starport scaffolding # proto/tx/rpc
 }
 
@@ -38,25 +37,27 @@ message MsgDeleteDidDocument {
 }
 message MsgDeleteDidDocumentResponse {}
 
-message MsgCreateDomainRecord {
+message MsgRegisterService {
   string creator = 1;
   string index = 2;
   string domain = 3;
 }
-message MsgCreateDomainRecordResponse {}
+message MsgRegisterServiceResponse {}
 
-message MsgUpdateDomainRecord {
+message MsgUpdateService {
   string creator = 1;
   string index = 2;
   string domain = 3;
 }
-message MsgUpdateDomainRecordResponse {}
+message MsgUpdateServiceResponse {}
 
-message MsgDeleteDomainRecord {
+
+message MsgDeactivateService {
   string creator = 1;
   string index = 2;
   string domain = 3;
 }
-message MsgDeleteDomainRecordResponse {}
+message MsgDeactivateServiceResponse {}
+
 
 // this line is used by starport scaffolding # proto/tx/message

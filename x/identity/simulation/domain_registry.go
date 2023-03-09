@@ -16,7 +16,7 @@ import (
 // Prevent strconv unused error
 var _ = strconv.IntSize
 
-func SimulateMsgCreateDomainRecord(
+func SimulateMsgRegisterService(
 	ak types.AccountKeeper,
 	bk types.BankKeeper,
 	k keeper.Keeper,
@@ -26,12 +26,12 @@ func SimulateMsgCreateDomainRecord(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		i := r.Int()
-		msg := &types.MsgCreateDomainRecord{
+		msg := &types.MsgRegisterService{
 			Creator: simAccount.Address.String(),
 			Index:   strconv.Itoa(i),
 		}
 
-		_, found := k.GetDomainRecord(ctx, msg.Domain, msg.Index)
+		_, found := k.GetService(ctx, msg.Domain)
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "DomainRecord already exist"), nil, nil
 		}
@@ -63,13 +63,13 @@ func SimulateMsgUpdateDomainRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount      = simtypes.Account{}
-			DomainRecord    = types.DomainRecord{}
-			msg             = &types.MsgUpdateDomainRecord{}
-			allDomainRecord = k.GetAllDomainRecord(ctx)
+			DomainRecord    = types.Service{}
+			msg             = &types.MsgUpdateService{}
+			allDomainRecord = k.GetAllServices(ctx)
 			found           = false
 		)
 		for _, obj := range allDomainRecord {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Id)
 			if found {
 				DomainRecord = obj
 				break
@@ -80,7 +80,7 @@ func SimulateMsgUpdateDomainRecord(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Index = DomainRecord.Index
+		msg.Index = DomainRecord.Id
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -109,13 +109,13 @@ func SimulateMsgDeleteDomainRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount      = simtypes.Account{}
-			DomainRecord    = types.DomainRecord{}
-			msg             = &types.MsgUpdateDomainRecord{}
-			allDomainRecord = k.GetAllDomainRecord(ctx)
+			DomainRecord    = types.Service{}
+			msg             = &types.MsgDeactivateService{}
+			allDomainRecord = k.GetAllServices(ctx)
 			found           = false
 		)
 		for _, obj := range allDomainRecord {
-			simAccount, found = FindAccount(accs, obj.Creator)
+			simAccount, found = FindAccount(accs, obj.Id)
 			if found {
 				DomainRecord = obj
 				break
@@ -126,7 +126,7 @@ func SimulateMsgDeleteDomainRecord(
 		}
 		msg.Creator = simAccount.Address.String()
 
-		msg.Index = DomainRecord.Index
+		msg.Index = DomainRecord.Id
 
 		txCtx := simulation.OperationInput{
 			R:               r,

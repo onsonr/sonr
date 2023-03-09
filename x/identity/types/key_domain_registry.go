@@ -2,26 +2,23 @@ package types
 
 import (
 	"encoding/binary"
-	"fmt"
 )
 
 var _ binary.ByteOrder
 
 const (
-	// DomainRecordKeyPrefix is the prefix to retrieve all DomainRecord
-	DomainRecordKeyPrefix = "DomainRecord/value/"
+	// ServiceKeyPrefix is the prefix to retrieve all DomainRecord
+	ServiceKeyPrefix = "Service/value/"
 )
 
-// DomainRecordKey returns the store key to retrieve a DomainRecord from the index fields
-func DomainRecordKey(
-	domain string,
-	tldIndex string,
+// ServiceKey returns the store key to retrieve a DomainRecord from the index fields
+func ServiceKey(
+	did string,
 ) []byte {
 	var key []byte
 
-	indexBytes := []byte(fmt.Sprintf("%s.%s", domain, tldIndex))
-	key = append(key, indexBytes...)
+	didBytes := []byte(did)
+	key = append(key, didBytes...)
 	key = append(key, []byte("/")...)
-
 	return key
 }

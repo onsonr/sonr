@@ -13,7 +13,7 @@ func (k Keeper) SetDidDocument(ctx sdk.Context, didDocument types.DidDocument) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
 	b := k.cdc.MustMarshal(&didDocument)
 	store.Set(types.DidDocumentKey(
-		didDocument.Address(),
+		didDocument.Id,
 	), b)
 }
 

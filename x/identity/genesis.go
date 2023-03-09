@@ -13,8 +13,8 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetDidDocument(ctx, elem)
 	}
 	// Set all the DomainRecord
-	for _, elem := range genState.DomainRecordList {
-		k.SetDomainRecord(ctx, elem)
+	for _, elem := range genState.ServiceList {
+		k.SetService(ctx, elem)
 	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
@@ -26,7 +26,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.DidDocumentList = k.GetAllDidDocument(ctx)
-	genesis.DomainRecordList = k.GetAllDomainRecord(ctx)
+	genesis.ServiceList = k.GetAllServices(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -57,59 +57,9 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	return &types.QueryGetDidResponse{DidDocument: val}, nil
 }
 
-func (k Keeper) QueryByService(c context.Context, req *types.QueryByServiceRequest) (*types.QueryByServiceResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(c)
 
-	//Gets `did:snr:addr` from `did:snr:addr#svc`
-	did := strings.Split(req.ServiceId, "#")[0]
 
-	val, found := k.GetDidDocument(
-		ctx,
-		did,
-	)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
-
-	return &types.QueryByServiceResponse{DidDocument: val}, nil
-}
-
-func (k Keeper) QueryByMethod(c context.Context, req *types.QueryByMethodRequest) (*types.QueryByMethodResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(c)
-
-	method := strings.TrimSpace(req.MethodId)
-
-	var didDocuments []types.DidDocument
-
-	store := ctx.KVStore(k.storeKey)
-	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(types.DidDocumentKeyPrefix))
-
-	pageRes, err := query.Paginate(didDocumentStore, req.Pagination, func(key []byte, value []byte) error {
-		if types.DidDocumentKeyToMethod(key) != method {
-			return nil
-		}
-		var didDocument types.DidDocument
-
-		if err := k.cdc.Unmarshal(value, &didDocument); err != nil {
-			return err
-		}
-		didDocuments = append(didDocuments, didDocument)
-		return nil
-	})
-
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	return &types.QueryByMethodResponse{DidDocument: didDocuments, Pagination: pageRes}, nil
-}
-
-func (k Keeper) QueryByKeyID(c context.Context, req *types.QueryByKeyIDRequest) (*types.QueryByKeyIDResponse, error) {
+func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest) (*types.QueryDidByKeyIDResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -126,10 +76,10 @@ func (k Keeper) QueryByKeyID(c context.Context, req *types.QueryByKeyIDRequest) 
 		return nil, status.Error(codes.NotFound, "not found")
 	}
 
-	return &types.QueryByKeyIDResponse{DidDocument: val}, nil
+	return &types.QueryDidByKeyIDResponse{DidDocument: val}, nil
 }
 
-func (k Keeper) QueryByAlsoKnownAs(c context.Context, req *types.QueryByAlsoKnownAsRequest) (*types.QueryByAlsoKnownAsResponse, error) {
+func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKnownAsRequest) (*types.QueryDidByAlsoKnownAsResponse, error) {
 
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -143,10 +93,29 @@ func (k Keeper) QueryByAlsoKnownAs(c context.Context, req *types.QueryByAlsoKnow
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	return &types.QueryByAlsoKnownAsResponse{DidDocument: val}, nil
+	return &types.QueryDidByAlsoKnownAsResponse{DidDocument: val}, nil
 }
 
-func (k Keeper) QueryByNetwork(goCtx context.Context, req *types.QueryByNetworkRequest) (*types.QueryByNetworkResponse, error) {
+
+func (k Keeper) Service(c context.Context, req *types.QueryGetServiceRequest) (*types.QueryGetServiceResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(c)
+
+	//Gets `did:snr:addr` from `did:snr:addr#svc`
+	val, found := k.GetService(
+		ctx,
+		req.Origin,
+	)
+	if !found {
+		return nil, status.Error(codes.NotFound, "not found")
+	}
+
+	return &types.QueryGetServiceResponse{Service: val}, nil
+}
+
+func (k Keeper) ServiceAll(goCtx context.Context, req *types.QueryAllServiceRequest) (*types.QueryAllServiceResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -156,5 +125,5 @@ func (k Keeper) QueryByNetwork(goCtx context.Context, req *types.QueryByNetworkR
 	// TODO: Process the query
 	_ = ctx
 
-	return &types.QueryByNetworkResponse{}, nil
+	return &types.QueryAllServiceResponse{}, nil
 }

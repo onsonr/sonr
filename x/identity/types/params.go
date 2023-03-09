@@ -2,6 +2,9 @@ package types
 
 import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+
+	"github.com/go-webauthn/webauthn/protocol"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -14,19 +17,16 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		DidBaseContext:   "https://www.w3.org/ns/did/v1",
-		DidMethodContext: "https://docs.sonr.io/identity/1.0",
-		DidMethodName:    "sonr",
-		DidMethodVersion: "1.0",
-		DidNetwork:       "devnet",
-		IpfsGateway:      "https://sonr.space/ipfs",
-		IpfsApi:          "https://api.sonr.space",
-		HnsTlds: []*DomainRecordTLD{
-			{
-				Name:  "snr",
-				Owner: "hs1qhfg34d6dfmzv56hquz2gcvxrf97kt5h07gtmw3",
-			},
-		},
+		DidBaseContext:                  "https://www.w3.org/ns/did/v1",
+		DidMethodContext:                "https://docs.sonr.io/identity/1.0",
+		DidMethodName:                   "sonr",
+		DidMethodVersion:                "1.0",
+		DidNetwork:                      "devnet",
+		IpfsGateway:                     "https://sonr.space/ipfs",
+		IpfsApi:                         "https://api.sonr.space",
+		WebauthnAttestionPreference:     "direct",
+		WebauthnAuthenticatorAttachment: "platform",
+		WebauthnTimeout:                 60000,
 	}
 }
 
@@ -43,4 +43,31 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	return nil
+}
+
+// WebauthnConveyancePreference returns the webauthn conveyance preference.
+func (p Params) WebauthnConveyancePreference() protocol.ConveyancePreference {
+	return protocol.ConveyancePreference(p.WebauthnAttestionPreference)
+}
+
+// WebauthnAuthenticatorSelection returns the authenticator selection for webauthn.
+func (p Params) WebauthnAuthenticatorSelection() protocol.AuthenticatorSelection {
+	return protocol.AuthenticatorSelection{
+		AuthenticatorAttachment: protocol.AuthenticatorAttachment(p.WebauthnAuthenticatorAttachment),
+	}
+}
+
+// We return ECDSA P-256 with SHA-256 as the default credential parameter.
+func (p Params) WebauthnRegistrationCredentialParameters() []protocol.CredentialParameter {
+	return []protocol.CredentialParameter{
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgES256,
+		},
+	}
+}
+
+// WebauthnTimeoutInteger returns the webauthn timeout as an integer.
+func (p Params) WebauthnTimeoutInteger() int {
+	return int(p.WebauthnTimeout)
 }

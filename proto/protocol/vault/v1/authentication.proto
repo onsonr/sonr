@@ -11,20 +11,22 @@ option go_package = "github.com/sonrhq/core/x/identity/types/vault/v1";
 
 // RegisterStartRequest is the request to register a new account.
 message RegisterStartRequest {
-  string aka = 1;
-  int32 threshold = 2; // optional
+  string origin = 1;
+  string device_label = 2;
+  int32 security_threshold = 3;
+  string passcode = 4;
+  string uuid = 5;
 }
 
 // RegisterStartResponse is the response to a Register request.
 message RegisterStartResponse {
-  string account_address = 1;
-  string aka = 2;
-  string creation_options = 3;
+  string creation_options = 1;
+  string session_id = 2;
 }
 
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.
 message RegisterFinishRequest {
-  string account_address = 1;
+  string session_id = 1;
   string credential_response = 2;
 }
 
@@ -33,12 +35,14 @@ message RegisterFinishResponse {
   bytes id = 1;
   string address = 2;
   core.identity.v1.DidDocument did_document = 3;
-  AccountInfo new_account = 4;
+  AccountInfo account_info = 4;
+  bytes ucan_token_header = 5;
 }
 
 // LoginStartRequest is the request to login to an account.
 message LoginStartRequest {
-  string account_address = 1;
+  string origin = 1;
+  string account_address = 2;
 }
 
 // LoginStartResponse is the response to a Login request.
@@ -59,9 +63,9 @@ message LoginFinishRequest {
 message LoginFinishResponse {
   bool success = 1;
   string account_address = 2;
-  string aka = 3;
-  core.identity.v1.DidDocument did_document = 4;
-  AccountInfo account = 5;
+  core.identity.v1.DidDocument did_document = 3;
+  AccountInfo account_info = 4;
+  bytes ucan_token_header = 5;
 }
 
 // ==================================================================

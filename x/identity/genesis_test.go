@@ -22,12 +22,12 @@ func TestGenesis(t *testing.T) {
 				Id: "1",
 			},
 		},
-		DomainRecordList: []types.DomainRecord{
+		ServiceList: []types.Service{
 			{
-				Index: "0",
+				Id: "0",
 			},
 			{
-				Index: "1",
+				Id: "1",
 			},
 		},
 		// this line is used by starport scaffolding # genesis/test/state
@@ -42,6 +42,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(got)
 
 	require.ElementsMatch(t, genesisState.DidDocumentList, got.DidDocumentList)
-	require.ElementsMatch(t, genesisState.DomainRecordList, got.DomainRecordList)
+	require.ElementsMatch(t, genesisState.ServiceList, got.ServiceList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

@@ -45,8 +45,12 @@ const (
 	defaultWeightMsgUpdateDomainRecord int = 100
 
 	opWeightMsgDeleteDomainRecord = "op_weight_msg_domain_registry"
-	// TODO: Determine the simulation weight value
+	// T-22 Determine the simulation weight value
 	defaultWeightMsgDeleteDomainRecord int = 100
+
+	opWeightMsgRegisterService = "op_weight_msg_register_service"
+	// T-23 Determine the simulation weight value
+	defaultWeightMsgRegisterService int = 100
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -70,14 +74,14 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 		},
-		DomainRecordList: []types.DomainRecord{
+		ServiceList: []types.Service{
 			{
-				Creator: sample.AccAddress(),
-				Index:   "0",
+				// Creator: sample.AccAddress(),
+				Id: "0",
 			},
 			{
-				Creator: sample.AccAddress(),
-				Index:   "1",
+				// Creator: sample.AccAddress(),
+				Id: "1",
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
@@ -136,37 +140,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		identitysimulation.SimulateMsgDeleteDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgCreateDomainRecord int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateDomainRecord, &weightMsgCreateDomainRecord, nil,
+	var weightMsgRegisterService int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterService, &weightMsgRegisterService, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateDomainRecord = defaultWeightMsgCreateDomainRecord
+			weightMsgRegisterService = defaultWeightMsgRegisterService
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateDomainRecord,
-		identitysimulation.SimulateMsgCreateDomainRecord(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgUpdateDomainRecord int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDomainRecord, &weightMsgUpdateDomainRecord, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdateDomainRecord = defaultWeightMsgUpdateDomainRecord
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateDomainRecord,
-		identitysimulation.SimulateMsgUpdateDomainRecord(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeleteDomainRecord int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteDomainRecord, &weightMsgDeleteDomainRecord, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeleteDomainRecord = defaultWeightMsgDeleteDomainRecord
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteDomainRecord,
-		identitysimulation.SimulateMsgDeleteDomainRecord(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgRegisterService,
+		identitysimulation.SimulateMsgRegisterService(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

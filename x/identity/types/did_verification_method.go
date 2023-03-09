@@ -1,7 +1,6 @@
 package types
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
 	"strings"
@@ -138,12 +137,6 @@ func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescrip
 func (vm *VerificationMethod) IDFragmentSuffix() string {
 	ptrs := strings.Split(vm.Id, "#")
 	return ptrs[len(ptrs)-1]
-}
-
-// IssueChallenge issues a challenge for the VerificationMethod to sign and return
-func (vm *VerificationMethod) IssueChallenge(unsignedUcanStr string) (protocol.URLEncodedBase64, error) {
-	b64Ucan := base64.RawURLEncoding.EncodeToString([]byte(unsignedUcanStr))
-	return protocol.URLEncodedBase64(b64Ucan), nil
 }
 
 // IsBlockchainAccount returns true if the VerificationMethod is a blockchain account
