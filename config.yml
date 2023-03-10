@@ -4,17 +4,17 @@ build:
   binary: "sonrd"
 accounts:
   - name: alice
-    coins: ["2000000000snr", "200000000usnr"]
+    coins: ["2000000000snr", "200000000stake"]
   - name: bob
-    coins: ["1000000000snr", "100000000usnr"]
+    coins: ["1000000000snr", "100000000stake"]
 genesis:
   app_state:
     staking:
       params:
-        bond_denom: "usnr"
+        bond_denom: "stake"
 validators:
   - name: alice
-    bonded: "100000000usnr"
+    bonded: "100000000stake"
     home: "~/.sonr"
     app:
       pruning: "nothing"
@@ -24,7 +24,7 @@ validators:
       output: "json"
 faucet:
   name: bob
-  coins: ["50000000snr", "100000000usnr"]
+  coins: ["50000000snr", "100000000stake"]
 init:
   app:
     minimum-gas-prices: "0.025snr"
