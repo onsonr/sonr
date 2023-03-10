@@ -72,7 +72,7 @@ func CoinTypeFromIndex(i int32) CoinType {
 		return types.CoinType_CoinType_DOGE
 	case 703:
 		return types.CoinType_CoinType_SONR
-	case 44:
+	case 118:
 		return types.CoinType_CoinType_COSMOS
 	case 461:
 		return types.CoinType_CoinType_FILECOIN

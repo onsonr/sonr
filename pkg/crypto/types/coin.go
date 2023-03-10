@@ -40,7 +40,7 @@ func (ct CoinType) Index() int32 {
 	case CoinType_CoinType_SONR:
 		return 703
 	case CoinType_CoinType_COSMOS:
-		return 44
+		return 118
 	case CoinType_CoinType_FILECOIN:
 		return 461
 	case CoinType_CoinType_HNS:
