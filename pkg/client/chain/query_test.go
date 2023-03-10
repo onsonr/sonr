@@ -16,7 +16,7 @@ func TestQueryLocalhostService(t *testing.T) {
 
 func TestQueryDevnetService(t *testing.T) {
 	c := NewClient(SonrPublicRpcOrigin)
-	s, err := c.GetAllServices(context.Background())
+	s, err := c.GetService(context.Background(), "localhost")
 	if err != nil {
 		t.Error(err)
 	}
