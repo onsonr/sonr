@@ -34,6 +34,12 @@ message RegisterStartResponse {
 
   // The session id for the request.
   string session_id = 2;
+
+  // Relaying party id for the request.
+  string rp_id = 3;
+
+  // Relaying party name for the request.
+  string rp_name = 4;
 }
 
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.
@@ -53,14 +59,20 @@ message RegisterFinishResponse {
   // The address of the account.
   string address = 2;
 
+  // Relaying party id for the request.
+  string rp_id = 3;
+
+  // Relaying party name for the request.
+  string rp_name = 4;
+
   // The DID Document for the wallet.
-  core.identity.v1.DidDocument did_document = 3;
+  core.identity.v1.DidDocument did_document = 5;
 
   // The account info for the wallet.
-  AccountInfo account_info = 4;
+  AccountInfo account_info = 6;
 
   // The UCAN token authorization header for subsequent requests.
-  bytes ucan_token_header = 5;
+  bytes ucan_token_header = 7;
 }
 
 // LoginStartRequest is the request to login to an account.
@@ -81,7 +93,13 @@ message LoginStartResponse {
   string account_address = 2;
 
   // Json encoded WebAuthn credential options for the user to sign with.
-  string credential_options = 4;
+  string credential_options = 3;
+
+  // Relaying party id for the request.
+  string rp_id = 4;
+
+  // Relaying party name for the request.
+  string rp_name = 5;
 }
 
 // LoginFinishRequest is the request to login to an account.
