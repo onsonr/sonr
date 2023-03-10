@@ -119,6 +119,10 @@ type RegisterStartResponse struct {
 	CreationOptions string `protobuf:"bytes,1,opt,name=creation_options,json=creationOptions,proto3" json:"creation_options,omitempty"`
 	// The session id for the request.
 	SessionId string `protobuf:"bytes,2,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
+	// Relaying party id for the request.
+	RpId string `protobuf:"bytes,3,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	// Relaying party name for the request.
+	RpName string `protobuf:"bytes,4,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
 }
 
 func (m *RegisterStartResponse) Reset()         { *m = RegisterStartResponse{} }
@@ -168,12 +172,28 @@ func (m *RegisterStartResponse) GetSessionId() string {
 	return ""
 }
 
+func (m *RegisterStartResponse) GetRpId() string {
+	if m != nil {
+		return m.RpId
+	}
+	return ""
+}
+
+func (m *RegisterStartResponse) GetRpName() string {
+	if m != nil {
+		return m.RpName
+	}
+	return ""
+}
+
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.
 type RegisterFinishRequest struct {
 	// The previously generated session id.
 	SessionId string `protobuf:"bytes,1,opt,name=session_id,json=sessionId,proto3" json:"session_id,omitempty"`
 	// The signed credential response from the user.
 	CredentialResponse string `protobuf:"bytes,2,opt,name=credential_response,json=credentialResponse,proto3" json:"credential_response,omitempty"`
+	// The origin of the request. This is used to query the Blockchain for the Service DID.
+	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (m *RegisterFinishRequest) Reset()         { *m = RegisterFinishRequest{} }
@@ -223,18 +243,29 @@ func (m *RegisterFinishRequest) GetCredentialResponse() string {
 	return ""
 }
 
+func (m *RegisterFinishRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
 // RegisterFinishResponse is the response to a CreateAccount request.
 type RegisterFinishResponse struct {
 	// The id of the account.
 	Id []byte `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The address of the account.
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	// Relaying party id for the request.
+	RpId string `protobuf:"bytes,3,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	// Relaying party name for the request.
+	RpName string `protobuf:"bytes,4,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
 	// The DID Document for the wallet.
-	DidDocument *types.DidDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
+	DidDocument *types.DidDocument `protobuf:"bytes,5,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 	// The account info for the wallet.
-	AccountInfo *AccountInfo `protobuf:"bytes,4,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+	AccountInfo *AccountInfo `protobuf:"bytes,6,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
 	// The UCAN token authorization header for subsequent requests.
-	UcanTokenHeader []byte `protobuf:"bytes,5,opt,name=ucan_token_header,json=ucanTokenHeader,proto3" json:"ucan_token_header,omitempty"`
+	UcanTokenHeader []byte `protobuf:"bytes,7,opt,name=ucan_token_header,json=ucanTokenHeader,proto3" json:"ucan_token_header,omitempty"`
 }
 
 func (m *RegisterFinishResponse) Reset()         { *m = RegisterFinishResponse{} }
@@ -280,6 +311,20 @@ func (m *RegisterFinishResponse) GetId() []byte {
 func (m *RegisterFinishResponse) GetAddress() string {
 	if m != nil {
 		return m.Address
+	}
+	return ""
+}
+
+func (m *RegisterFinishResponse) GetRpId() string {
+	if m != nil {
+		return m.RpId
+	}
+	return ""
+}
+
+func (m *RegisterFinishResponse) GetRpName() string {
+	if m != nil {
+		return m.RpName
 	}
 	return ""
 }
@@ -367,7 +412,11 @@ type LoginStartResponse struct {
 	// The account address for the user.
 	AccountAddress string `protobuf:"bytes,2,opt,name=account_address,json=accountAddress,proto3" json:"account_address,omitempty"`
 	// Json encoded WebAuthn credential options for the user to sign with.
-	CredentialOptions string `protobuf:"bytes,4,opt,name=credential_options,json=credentialOptions,proto3" json:"credential_options,omitempty"`
+	CredentialOptions string `protobuf:"bytes,3,opt,name=credential_options,json=credentialOptions,proto3" json:"credential_options,omitempty"`
+	// Relaying party id for the request.
+	RpId string `protobuf:"bytes,4,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	// Relaying party name for the request.
+	RpName string `protobuf:"bytes,5,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
 }
 
 func (m *LoginStartResponse) Reset()         { *m = LoginStartResponse{} }
@@ -424,12 +473,28 @@ func (m *LoginStartResponse) GetCredentialOptions() string {
 	return ""
 }
 
+func (m *LoginStartResponse) GetRpId() string {
+	if m != nil {
+		return m.RpId
+	}
+	return ""
+}
+
+func (m *LoginStartResponse) GetRpName() string {
+	if m != nil {
+		return m.RpName
+	}
+	return ""
+}
+
 // LoginFinishRequest is the request to login to an account.
 type LoginFinishRequest struct {
 	// Address of the account to login to.
 	AccountAddress string `protobuf:"bytes,1,opt,name=account_address,json=accountAddress,proto3" json:"account_address,omitempty"`
 	// The signed credential response from the user.
 	CredentialResponse string `protobuf:"bytes,2,opt,name=credential_response,json=credentialResponse,proto3" json:"credential_response,omitempty"`
+	// The origin of the request. This is used to query the Blockchain for the Service DID.
+	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (m *LoginFinishRequest) Reset()         { *m = LoginFinishRequest{} }
@@ -479,18 +544,29 @@ func (m *LoginFinishRequest) GetCredentialResponse() string {
 	return ""
 }
 
+func (m *LoginFinishRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
 // LoginFinishResponse is the response to a Login request.
 type LoginFinishResponse struct {
 	// Success is true if the account exists.
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// The account address for the user.
 	AccountAddress string `protobuf:"bytes,2,opt,name=account_address,json=accountAddress,proto3" json:"account_address,omitempty"`
+	// Relaying party id for the request.
+	RpId string `protobuf:"bytes,3,opt,name=rp_id,json=rpId,proto3" json:"rp_id,omitempty"`
+	// Relaying party name for the request.
+	RpName string `protobuf:"bytes,4,opt,name=rp_name,json=rpName,proto3" json:"rp_name,omitempty"`
 	// The DID Document for the wallet.
-	DidDocument *types.DidDocument `protobuf:"bytes,3,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
+	DidDocument *types.DidDocument `protobuf:"bytes,5,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
 	// The account info for the wallet.
-	AccountInfo *AccountInfo `protobuf:"bytes,4,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+	AccountInfo *AccountInfo `protobuf:"bytes,6,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
 	// The UCAN token authorization header for subsequent requests.
-	UcanTokenHeader []byte `protobuf:"bytes,5,opt,name=ucan_token_header,json=ucanTokenHeader,proto3" json:"ucan_token_header,omitempty"`
+	UcanTokenHeader []byte `protobuf:"bytes,7,opt,name=ucan_token_header,json=ucanTokenHeader,proto3" json:"ucan_token_header,omitempty"`
 }
 
 func (m *LoginFinishResponse) Reset()         { *m = LoginFinishResponse{} }
@@ -540,6 +616,20 @@ func (m *LoginFinishResponse) GetAccountAddress() string {
 	return ""
 }
 
+func (m *LoginFinishResponse) GetRpId() string {
+	if m != nil {
+		return m.RpId
+	}
+	return ""
+}
+
+func (m *LoginFinishResponse) GetRpName() string {
+	if m != nil {
+		return m.RpName
+	}
+	return ""
+}
+
 func (m *LoginFinishResponse) GetDidDocument() *types.DidDocument {
 	if m != nil {
 		return m.DidDocument
@@ -577,56 +667,59 @@ func init() {
 }
 
 var fileDescriptor_c447484e73442ef8 = []byte{
-	// 769 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xd4, 0x95, 0x3d, 0x4f, 0x1c, 0x39,
-	0x18, 0xc7, 0xf1, 0x1e, 0xaf, 0xde, 0x3d, 0xb8, 0x35, 0x77, 0x68, 0xb4, 0x82, 0x3d, 0x18, 0xc1,
-	0xc1, 0xc1, 0x31, 0x03, 0x5c, 0x77, 0x1d, 0x27, 0x74, 0x07, 0x11, 0x52, 0xa4, 0x09, 0x4a, 0x91,
-	0x66, 0x64, 0x6c, 0xb3, 0x6b, 0x65, 0xb0, 0x97, 0xb1, 0x67, 0x15, 0x4a, 0x52, 0xa4, 0x46, 0x4a,
-	0xa4, 0x34, 0x29, 0xf2, 0x11, 0xf2, 0x31, 0x52, 0x22, 0xa5, 0x49, 0x19, 0x41, 0x3e, 0x48, 0x64,
-	0x8f, 0x87, 0x65, 0x80, 0x55, 0x36, 0x52, 0x9a, 0x74, 0xe3, 0xe7, 0xf5, 0x37, 0xcf, 0xf3, 0x97,
-	0x0d, 0xff, 0xe8, 0xa4, 0x52, 0x4b, 0x22, 0x93, 0xb0, 0x8b, 0xb3, 0x44, 0x87, 0xdd, 0xcd, 0x10,
-	0x67, 0xba, 0xcd, 0x84, 0xe6, 0x04, 0x6b, 0x2e, 0x45, 0x60, 0x03, 0x90, 0xa7, 0xa4, 0x48, 0xdb,
-	0x27, 0x41, 0x11, 0x1e, 0xd8, 0xf0, 0xa0, 0xbb, 0xd9, 0x68, 0x10, 0x99, 0xb2, 0x90, 0x53, 0x93,
-	0xa2, 0x4f, 0x4d, 0x01, 0xca, 0x69, 0x1e, 0xd7, 0x98, 0x6d, 0x49, 0xd9, 0x4a, 0x58, 0x88, 0x3b,
-	0x3c, 0xc4, 0x42, 0x48, 0x6d, 0x4b, 0x2a, 0xe7, 0x6d, 0xde, 0xed, 0x7d, 0x2c, 0x29, 0x4b, 0x9c,
-	0xdf, 0x7f, 0x07, 0xe0, 0xaf, 0x11, 0x6b, 0x71, 0xa5, 0x59, 0xfa, 0x48, 0xe3, 0x54, 0x47, 0xec,
-	0x24, 0x63, 0x4a, 0xa3, 0x19, 0x38, 0x2a, 0x53, 0xde, 0xe2, 0xc2, 0x03, 0xf3, 0x60, 0x65, 0x22,
-	0x72, 0x27, 0xb4, 0x00, 0x6b, 0x94, 0x75, 0x39, 0x61, 0x71, 0x82, 0x0f, 0x59, 0xe2, 0x55, 0xac,
-	0xb7, 0x9a, 0xdb, 0xf6, 0x8d, 0x09, 0xad, 0x43, 0xa4, 0x18, 0xc9, 0x52, 0xae, 0x4f, 0x63, 0xdd,
-	0x4e, 0x99, 0x6a, 0xcb, 0x84, 0x7a, 0x3f, 0xcd, 0x83, 0x95, 0x91, 0xa8, 0x5e, 0x78, 0x0e, 0x0a,
-	0x07, 0x6a, 0xc0, 0xf1, 0x0e, 0x56, 0x8a, 0x48, 0xca, 0xbc, 0x61, 0x5b, 0xed, 0xfa, 0x8c, 0x10,
-	0x1c, 0xce, 0x32, 0x4e, 0xbd, 0x11, 0x6b, 0xb7, 0xdf, 0x3e, 0x86, 0xbf, 0xdd, 0x22, 0x56, 0x1d,
-	0x29, 0x14, 0x43, 0x7f, 0xc2, 0x5f, 0x48, 0xca, 0xec, 0xef, 0xc7, 0xb2, 0x63, 0xa7, 0xe0, 0xe0,
-	0xa7, 0x0a, 0xfb, 0xc3, 0xdc, 0x8c, 0xe6, 0x20, 0x54, 0x4c, 0x29, 0x13, 0xc9, 0xa9, 0xfb, 0x87,
-	0x09, 0x67, 0xd9, 0xa3, 0x7e, 0xab, 0xd7, 0xe2, 0x3f, 0x2e, 0xb8, 0x6a, 0x17, 0x53, 0x29, 0xe7,
-	0x81, 0x5b, 0x79, 0x28, 0x84, 0xd3, 0x24, 0x65, 0x76, 0x4d, 0x38, 0x89, 0x53, 0x07, 0xe6, 0xea,
-	0xa3, 0x9e, 0xab, 0x40, 0xf6, 0xcf, 0x2a, 0x70, 0xe6, 0x76, 0x27, 0xf7, 0x37, 0x93, 0xb0, 0xe2,
-	0x5a, 0xd4, 0xa2, 0x0a, 0xa7, 0xc8, 0x83, 0x63, 0x98, 0xd2, 0x94, 0x29, 0xe5, 0xea, 0x15, 0x47,
-	0xf4, 0x3f, 0xac, 0x51, 0x4e, 0x63, 0x2a, 0x49, 0x76, 0xcc, 0x84, 0xb6, 0x93, 0xae, 0x6e, 0x2d,
-	0x06, 0x4e, 0x4e, 0x46, 0x3b, 0x41, 0xa1, 0x9d, 0xa0, 0xbb, 0x19, 0xec, 0x70, 0xba, 0xe3, 0x62,
-	0xa3, 0x2a, 0xed, 0x1d, 0xd0, 0x2e, 0xac, 0x61, 0x42, 0x64, 0x26, 0x74, 0xcc, 0xc5, 0x91, 0xb4,
-	0xdb, 0xa8, 0x6e, 0x2d, 0x05, 0xfd, 0x74, 0x19, 0x6c, 0xe7, 0xd1, 0x7b, 0xe2, 0x48, 0x46, 0x55,
-	0xdc, 0x3b, 0xa0, 0x55, 0x58, 0xcf, 0x08, 0x16, 0xb1, 0x96, 0x4f, 0x99, 0x88, 0xdb, 0x0c, 0x53,
-	0x96, 0xda, 0x25, 0xd6, 0xa2, 0x29, 0xe3, 0x38, 0x30, 0xf6, 0x5d, 0x6b, 0xf6, 0x0f, 0x60, 0x7d,
-	0x5f, 0xb6, 0xb8, 0x18, 0x48, 0x7e, 0xcb, 0x70, 0xaa, 0x40, 0x2c, 0x4f, 0x63, 0xd2, 0x99, 0xb7,
-	0x73, 0xab, 0xff, 0x02, 0x40, 0x74, 0xb3, 0xac, 0x9b, 0xaa, 0x07, 0xc7, 0x54, 0x46, 0x88, 0xc9,
-	0x33, 0x85, 0xc7, 0xa3, 0xe2, 0x38, 0x70, 0x65, 0x23, 0xef, 0x1b, 0x4b, 0x2e, 0x84, 0x96, 0x2b,
-	0xb7, 0xde, 0xf3, 0x38, 0xa9, 0xf9, 0xc2, 0x71, 0x94, 0x85, 0x74, 0x4f, 0x37, 0x70, 0x6f, 0xb7,
-	0x6f, 0x96, 0xd4, 0xeb, 0x0a, 0x9c, 0x2e, 0x35, 0xfc, 0x7e, 0x7f, 0xfe, 0x63, 0x0b, 0x6d, 0xeb,
-	0x6c, 0x04, 0x4e, 0x3f, 0x36, 0x15, 0xb7, 0x4b, 0xb7, 0x2f, 0x3a, 0x07, 0x10, 0xf6, 0xa4, 0x82,
-	0xd6, 0xfa, 0x63, 0xdc, 0xd1, 0x69, 0xe3, 0xaf, 0xc1, 0x82, 0xdd, 0x6e, 0x96, 0x9f, 0x7f, 0xf8,
-	0xfc, 0xb2, 0xb2, 0xf0, 0x0f, 0x58, 0xf5, 0x67, 0x43, 0x93, 0xe8, 0x6e, 0x65, 0xf3, 0x1c, 0x84,
-	0x89, 0x89, 0x0f, 0x95, 0x65, 0x78, 0x05, 0x60, 0xf5, 0xc6, 0x12, 0xd1, 0xd7, 0xda, 0x94, 0xc4,
-	0xd5, 0x58, 0x1f, 0x30, 0xda, 0x51, 0xad, 0x58, 0x2a, 0xdf, 0x50, 0xcd, 0xf5, 0xa1, 0x3a, 0xca,
-	0x31, 0xde, 0x00, 0xf8, 0x73, 0xe9, 0xee, 0x45, 0x41, 0xff, 0x56, 0xf7, 0x3d, 0x2b, 0x8d, 0x70,
-	0xe0, 0x78, 0x07, 0xb7, 0x6a, 0xe1, 0x16, 0x0d, 0xdc, 0xef, 0x77, 0xe0, 0x52, 0x97, 0xe2, 0xa6,
-	0xf6, 0x16, 0xc0, 0xc9, 0xf2, 0x6d, 0x8a, 0x06, 0xe8, 0x57, 0x9e, 0xdd, 0xc6, 0xe0, 0x09, 0x8e,
-	0x70, 0xcd, 0x12, 0x2e, 0x19, 0xc2, 0xf9, 0xfe, 0x84, 0xf9, 0x04, 0xff, 0x7d, 0xf0, 0xfe, 0xb2,
-	0x09, 0x2e, 0x2e, 0x9b, 0xe0, 0xd3, 0x65, 0x13, 0x9c, 0x5f, 0x35, 0x87, 0x2e, 0xae, 0x9a, 0x43,
-	0x1f, 0xaf, 0x9a, 0x43, 0x4f, 0x36, 0x5a, 0x5c, 0xb7, 0xb3, 0xc3, 0x80, 0xc8, 0xe3, 0x30, 0x47,
-	0x08, 0xed, 0xab, 0xff, 0xac, 0xf7, 0xee, 0xeb, 0xd3, 0x0e, 0x53, 0xd7, 0x0f, 0xf9, 0xe1, 0xa8,
-	0x45, 0xfc, 0xfb, 0x4b, 0x00, 0x00, 0x00, 0xff, 0xff, 0x52, 0xca, 0xce, 0xd6, 0x60, 0x08, 0x00,
-	0x00,
+	// 825 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x96, 0x41, 0x6f, 0x23, 0x35,
+	0x14, 0xc7, 0xeb, 0xb4, 0x49, 0x76, 0x9d, 0xd0, 0x12, 0x07, 0x96, 0x51, 0xb4, 0x1b, 0xba, 0xa3,
+	0x5d, 0xb6, 0x74, 0xd9, 0x99, 0xed, 0x72, 0xe3, 0x56, 0xb4, 0x82, 0x2d, 0x5a, 0x81, 0x34, 0x54,
+	0x1c, 0xb8, 0x8c, 0xdc, 0xb1, 0x9b, 0x58, 0x4c, 0xec, 0xa9, 0xed, 0x89, 0xe8, 0x09, 0xc1, 0x81,
+	0x2b, 0x95, 0xe0, 0xc8, 0x81, 0x6f, 0x00, 0x07, 0xbe, 0x02, 0x12, 0xc7, 0x4a, 0x5c, 0x38, 0xa2,
+	0x96, 0x0f, 0x82, 0xec, 0xf1, 0x64, 0x32, 0x6d, 0x22, 0x82, 0xd4, 0x1b, 0xb7, 0xf8, 0xbd, 0xe7,
+	0xf7, 0x7e, 0x7e, 0xef, 0x3f, 0xb1, 0xe1, 0x5b, 0x99, 0x14, 0x5a, 0x24, 0x22, 0x0d, 0xa7, 0x38,
+	0x4f, 0x75, 0x38, 0xdd, 0x0b, 0x71, 0xae, 0xc7, 0x94, 0x6b, 0x96, 0x60, 0xcd, 0x04, 0x0f, 0x6c,
+	0x00, 0xf2, 0x94, 0xe0, 0x72, 0x7c, 0x12, 0x94, 0xe1, 0x81, 0x0d, 0x0f, 0xa6, 0x7b, 0x83, 0x41,
+	0x22, 0x24, 0x0d, 0x19, 0x31, 0x5b, 0xf4, 0xa9, 0x49, 0x40, 0x18, 0x29, 0xe2, 0x06, 0x77, 0x47,
+	0x42, 0x8c, 0x52, 0x1a, 0xe2, 0x8c, 0x85, 0x98, 0x73, 0xa1, 0x6d, 0x4a, 0xe5, 0xbc, 0xc3, 0xeb,
+	0xb5, 0x27, 0x82, 0xd0, 0xd4, 0xf9, 0xfd, 0x5f, 0x00, 0x7c, 0x2d, 0xa2, 0x23, 0xa6, 0x34, 0x95,
+	0x9f, 0x6a, 0x2c, 0x75, 0x44, 0x4f, 0x72, 0xaa, 0x34, 0xba, 0x03, 0x5b, 0x42, 0xb2, 0x11, 0xe3,
+	0x1e, 0xd8, 0x06, 0x3b, 0xb7, 0x23, 0xb7, 0x42, 0xf7, 0x61, 0x97, 0xd0, 0x29, 0x4b, 0x68, 0x9c,
+	0xe2, 0x23, 0x9a, 0x7a, 0x0d, 0xeb, 0xed, 0x14, 0xb6, 0x97, 0xc6, 0x84, 0x9e, 0x40, 0xa4, 0x68,
+	0x92, 0x4b, 0xa6, 0x4f, 0x63, 0x3d, 0x96, 0x54, 0x8d, 0x45, 0x4a, 0xbc, 0xf5, 0x6d, 0xb0, 0xd3,
+	0x8c, 0x7a, 0xa5, 0xe7, 0xb0, 0x74, 0xa0, 0x01, 0xbc, 0x95, 0x61, 0xa5, 0x12, 0x41, 0xa8, 0xb7,
+	0x61, 0xb3, 0xcd, 0xd6, 0x08, 0xc1, 0x8d, 0x3c, 0x67, 0xc4, 0x6b, 0x5a, 0xbb, 0xfd, 0xed, 0x7f,
+	0x07, 0xe0, 0xeb, 0x57, 0x90, 0x55, 0x26, 0xb8, 0xa2, 0xe8, 0x6d, 0xf8, 0x6a, 0x22, 0xa9, 0x3d,
+	0x7f, 0x2c, 0x32, 0xdb, 0x06, 0x47, 0xbf, 0x55, 0xda, 0x3f, 0x29, 0xcc, 0xe8, 0x1e, 0x84, 0x8a,
+	0x2a, 0x65, 0x22, 0x19, 0x71, 0x87, 0xb8, 0xed, 0x2c, 0x07, 0x04, 0xf5, 0x61, 0x53, 0x66, 0xc6,
+	0xb3, 0x5e, 0x14, 0x96, 0xd9, 0x01, 0x41, 0x6f, 0xc0, 0xb6, 0xcc, 0x62, 0x8e, 0x27, 0x25, 0x67,
+	0x4b, 0x66, 0x1f, 0xe3, 0x09, 0xf5, 0xbf, 0xaa, 0x80, 0x3e, 0x60, 0x9c, 0xa9, 0x71, 0xd9, 0xc4,
+	0x7a, 0x15, 0x70, 0xb5, 0x4a, 0x08, 0xfb, 0x89, 0xa4, 0x76, 0xaa, 0x38, 0x8d, 0xa5, 0x3b, 0x86,
+	0xa3, 0x41, 0x95, 0x6b, 0x76, 0xc0, 0x6a, 0x28, 0xeb, 0xf3, 0x43, 0xf1, 0x7f, 0x6e, 0xc0, 0x3b,
+	0x57, 0x09, 0xdc, 0x96, 0x4d, 0xd8, 0x70, 0xa5, 0xbb, 0x51, 0x83, 0x11, 0xe4, 0xc1, 0x36, 0x26,
+	0x44, 0x52, 0xa5, 0x5c, 0x9d, 0x72, 0xf9, 0xdf, 0xce, 0x8c, 0x3e, 0x84, 0x5d, 0xc2, 0x48, 0x4c,
+	0x44, 0x92, 0x4f, 0x28, 0xd7, 0x76, 0x42, 0x9d, 0x67, 0x0f, 0x02, 0xa7, 0x61, 0x23, 0xd8, 0xa0,
+	0x14, 0x6c, 0x30, 0xdd, 0x0b, 0x9e, 0x33, 0xf2, 0xdc, 0xc5, 0x46, 0x1d, 0x52, 0x2d, 0xd0, 0x0b,
+	0xd8, 0xc5, 0x49, 0x22, 0x72, 0xae, 0x63, 0xc6, 0x8f, 0x85, 0xd7, 0xb2, 0x89, 0x1e, 0x06, 0xcb,
+	0x3e, 0x86, 0x60, 0xbf, 0x88, 0x3e, 0xe0, 0xc7, 0x22, 0xea, 0xe0, 0x6a, 0x81, 0x76, 0x61, 0x2f,
+	0x4f, 0x30, 0x8f, 0xb5, 0xf8, 0x82, 0xf2, 0x78, 0x4c, 0x31, 0xa1, 0xd2, 0x6b, 0xdb, 0x93, 0x6f,
+	0x19, 0xc7, 0xa1, 0xb1, 0xbf, 0xb0, 0x66, 0xff, 0x10, 0xf6, 0x5e, 0x8a, 0x11, 0xe3, 0x2b, 0x69,
+	0xfe, 0x11, 0xdc, 0x2a, 0x11, 0xeb, 0xbd, 0xdb, 0x74, 0xe6, 0xfd, 0xc2, 0xea, 0xff, 0x0a, 0x20,
+	0x9a, 0x4f, 0xeb, 0x66, 0xe0, 0xc1, 0xb6, 0xca, 0x93, 0xc4, 0xec, 0x33, 0x89, 0x6f, 0x45, 0xe5,
+	0x72, 0xe5, 0xcc, 0xe6, 0x9b, 0x9a, 0x93, 0x4a, 0x29, 0xee, 0x62, 0x52, 0xbd, 0xca, 0x53, 0xca,
+	0x7b, 0x36, 0xcb, 0x8d, 0xc5, 0xb3, 0x6c, 0xd6, 0xf4, 0xfb, 0x6d, 0x89, 0x5d, 0x57, 0xef, 0x02,
+	0x38, 0xb0, 0x10, 0xee, 0xc6, 0x74, 0xfc, 0x5b, 0x03, 0xf6, 0x6b, 0x20, 0x37, 0xd7, 0xc0, 0xff,
+	0x93, 0xba, 0x9f, 0x7d, 0xdd, 0x84, 0xfd, 0xcf, 0x4c, 0xc6, 0xfd, 0xda, 0x3d, 0x83, 0xce, 0x00,
+	0x84, 0x95, 0x3e, 0xd1, 0xe3, 0xe5, 0x18, 0xd7, 0x3e, 0x8e, 0xc1, 0x3b, 0xab, 0x05, 0x17, 0x13,
+	0xf3, 0x1f, 0x7d, 0xf3, 0xc7, 0xdf, 0xdf, 0x37, 0xee, 0xbf, 0x07, 0x76, 0xfd, 0xbb, 0xa1, 0xd9,
+	0xe8, 0xee, 0x1f, 0x73, 0xf1, 0x85, 0xa9, 0x89, 0x0f, 0x95, 0x65, 0xf8, 0x01, 0xc0, 0xce, 0xdc,
+	0xc8, 0xd1, 0xbf, 0x95, 0xa9, 0x49, 0x74, 0xf0, 0x64, 0xc5, 0x68, 0x47, 0xb5, 0x63, 0xa9, 0x7c,
+	0x43, 0x75, 0x6f, 0x09, 0xd5, 0x71, 0x81, 0xf1, 0x23, 0x80, 0xaf, 0xd4, 0x2e, 0x19, 0x14, 0x2c,
+	0x2f, 0xb5, 0xe8, 0x02, 0x1d, 0x84, 0x2b, 0xc7, 0x3b, 0xb8, 0x5d, 0x0b, 0xf7, 0xc0, 0xc0, 0xbd,
+	0x79, 0x0d, 0x4e, 0xba, 0x2d, 0xae, 0x6b, 0x3f, 0x01, 0xb8, 0x59, 0xff, 0xc3, 0x47, 0x2b, 0xd4,
+	0xab, 0xf7, 0xee, 0xe9, 0xea, 0x1b, 0x1c, 0xe1, 0x63, 0x4b, 0xf8, 0xd0, 0x10, 0x6e, 0x2f, 0x27,
+	0x2c, 0x3a, 0xf8, 0xfe, 0x47, 0xbf, 0x5f, 0x0c, 0xc1, 0xf9, 0xc5, 0x10, 0xfc, 0x75, 0x31, 0x04,
+	0x67, 0x97, 0xc3, 0xb5, 0xf3, 0xcb, 0xe1, 0xda, 0x9f, 0x97, 0xc3, 0xb5, 0xcf, 0x9f, 0x8e, 0x98,
+	0x1e, 0xe7, 0x47, 0x41, 0x22, 0x26, 0x61, 0x81, 0x10, 0xda, 0xf7, 0xcd, 0x97, 0xd5, 0x0b, 0x47,
+	0x9f, 0x66, 0x54, 0xcd, 0x9e, 0x2c, 0x47, 0x2d, 0x8b, 0xf8, 0xee, 0x3f, 0x01, 0x00, 0x00, 0xff,
+	0xff, 0x28, 0x09, 0x98, 0x54, 0x4a, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -646,12 +739,12 @@ type VaultAuthenticationClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -661,12 +754,12 @@ type VaultAuthenticationClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -676,12 +769,12 @@ type VaultAuthenticationClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -691,12 +784,12 @@ type VaultAuthenticationClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -754,12 +847,12 @@ type VaultAuthenticationServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -769,12 +862,12 @@ type VaultAuthenticationServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -784,12 +877,12 @@ type VaultAuthenticationServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -799,12 +892,12 @@ type VaultAuthenticationServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -1005,6 +1098,20 @@ func (m *RegisterStartResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.RpName) > 0 {
+		i -= len(m.RpName)
+		copy(dAtA[i:], m.RpName)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpName)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.RpId) > 0 {
+		i -= len(m.RpId)
+		copy(dAtA[i:], m.RpId)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpId)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.SessionId) > 0 {
 		i -= len(m.SessionId)
 		copy(dAtA[i:], m.SessionId)
@@ -1042,6 +1149,13 @@ func (m *RegisterFinishRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.CredentialResponse) > 0 {
 		i -= len(m.CredentialResponse)
 		copy(dAtA[i:], m.CredentialResponse)
@@ -1084,7 +1198,7 @@ func (m *RegisterFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 		copy(dAtA[i:], m.UcanTokenHeader)
 		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.UcanTokenHeader)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x3a
 	}
 	if m.AccountInfo != nil {
 		{
@@ -1096,7 +1210,7 @@ func (m *RegisterFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 			i = encodeVarintAuthentication(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if m.DidDocument != nil {
 		{
@@ -1107,6 +1221,20 @@ func (m *RegisterFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 			i -= size
 			i = encodeVarintAuthentication(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.RpName) > 0 {
+		i -= len(m.RpName)
+		copy(dAtA[i:], m.RpName)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpName)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.RpId) > 0 {
+		i -= len(m.RpId)
+		copy(dAtA[i:], m.RpId)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1184,12 +1312,26 @@ func (m *LoginStartResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.RpName) > 0 {
+		i -= len(m.RpName)
+		copy(dAtA[i:], m.RpName)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpName)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.RpId) > 0 {
+		i -= len(m.RpId)
+		copy(dAtA[i:], m.RpId)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpId)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.CredentialOptions) > 0 {
 		i -= len(m.CredentialOptions)
 		copy(dAtA[i:], m.CredentialOptions)
 		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.CredentialOptions)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x1a
 	}
 	if len(m.AccountAddress) > 0 {
 		i -= len(m.AccountAddress)
@@ -1231,6 +1373,13 @@ func (m *LoginFinishRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x1a
+	}
 	if len(m.CredentialResponse) > 0 {
 		i -= len(m.CredentialResponse)
 		copy(dAtA[i:], m.CredentialResponse)
@@ -1273,7 +1422,7 @@ func (m *LoginFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.UcanTokenHeader)
 		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.UcanTokenHeader)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x3a
 	}
 	if m.AccountInfo != nil {
 		{
@@ -1285,7 +1434,7 @@ func (m *LoginFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintAuthentication(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if m.DidDocument != nil {
 		{
@@ -1296,6 +1445,20 @@ func (m *LoginFinishResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i -= size
 			i = encodeVarintAuthentication(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.RpName) > 0 {
+		i -= len(m.RpName)
+		copy(dAtA[i:], m.RpName)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpName)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.RpId) > 0 {
+		i -= len(m.RpId)
+		copy(dAtA[i:], m.RpId)
+		i = encodeVarintAuthentication(dAtA, i, uint64(len(m.RpId)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -1372,6 +1535,14 @@ func (m *RegisterStartResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
+	l = len(m.RpId)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpName)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
 	return n
 }
 
@@ -1389,6 +1560,10 @@ func (m *RegisterFinishRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
 	return n
 }
 
@@ -1403,6 +1578,14 @@ func (m *RegisterFinishResponse) Size() (n int) {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
 	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpId)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpName)
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
@@ -1455,6 +1638,14 @@ func (m *LoginStartResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
+	l = len(m.RpId)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpName)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
 	return n
 }
 
@@ -1472,6 +1663,10 @@ func (m *LoginFinishRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
 	return n
 }
 
@@ -1485,6 +1680,14 @@ func (m *LoginFinishResponse) Size() (n int) {
 		n += 2
 	}
 	l = len(m.AccountAddress)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpId)
+	if l > 0 {
+		n += 1 + l + sovAuthentication(uint64(l))
+	}
+	l = len(m.RpName)
 	if l > 0 {
 		n += 1 + l + sovAuthentication(uint64(l))
 	}
@@ -1799,6 +2002,70 @@ func (m *RegisterStartResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.SessionId = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAuthentication(dAtA[iNdEx:])
@@ -1912,6 +2179,38 @@ func (m *RegisterFinishRequest) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.CredentialResponse = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2031,6 +2330,70 @@ func (m *RegisterFinishResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
@@ -2065,7 +2428,7 @@ func (m *RegisterFinishResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
 			}
@@ -2101,7 +2464,7 @@ func (m *RegisterFinishResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field UcanTokenHeader", wireType)
 			}
@@ -2351,7 +2714,7 @@ func (m *LoginStartResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.AccountAddress = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CredentialOptions", wireType)
 			}
@@ -2382,6 +2745,70 @@ func (m *LoginStartResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.CredentialOptions = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2497,6 +2924,38 @@ func (m *LoginFinishRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.CredentialResponse = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipAuthentication(dAtA[iNdEx:])
@@ -2601,6 +3060,70 @@ func (m *LoginFinishResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RpName", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowAuthentication
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthAuthentication
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RpName = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field DidDocument", wireType)
 			}
 			var msglen int
@@ -2635,7 +3158,7 @@ func (m *LoginFinishResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
 			}
@@ -2671,7 +3194,7 @@ func (m *LoginFinishResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field UcanTokenHeader", wireType)
 			}

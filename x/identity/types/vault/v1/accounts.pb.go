@@ -551,12 +551,12 @@ type VaultAccountsClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -566,12 +566,12 @@ type VaultAccountsClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -581,12 +581,12 @@ type VaultAccountsClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -596,12 +596,12 @@ type VaultAccountsClient interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -659,12 +659,12 @@ type VaultAccountsServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -674,12 +674,12 @@ type VaultAccountsServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -689,12 +689,12 @@ type VaultAccountsServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
@@ -704,12 +704,12 @@ type VaultAccountsServer interface {
 	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
 	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	//
-	// ### {{.RequestType.Name}}
+	// #### {{.RequestType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	//
-	// ### {{.ResponseType.Name}}
+	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}

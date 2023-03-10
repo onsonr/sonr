@@ -11,7 +11,7 @@ paths:
   /sonr/core/identity/did:
     get:
       summary: Get All DIDDocuments
-      description: "DidAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllDidRequest\" and returns a \"QueryAllDidResponse\".\n\n### QueryAllDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      description: "DidAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllDidRequest\" and returns a \"QueryAllDidResponse\".\n\n#### QueryAllDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n\n#### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
       operationId: Query_DidAll
       responses:
         "200":
@@ -69,7 +69,7 @@ paths:
   /sonr/core/identity/did/{did}:
     get:
       summary: Get a DIDDocument by DID
-      description: "Did is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetDidRequest\" and returns a \"QueryGetDidResponse\".\n\n### QueryGetDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| did | TYPE_STRING | did is the unique identifier of the DIDDocument - it appears like (did:sonr:...) | \n\n### QueryGetDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      description: "Did is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetDidRequest\" and returns a \"QueryGetDidResponse\".\n\n#### QueryGetDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| did | TYPE_STRING | did is the unique identifier of the DIDDocument - it appears like (did:sonr:...) | \n\n\n#### QueryGetDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
       operationId: Query_Did
       responses:
         "200":
@@ -89,7 +89,7 @@ paths:
   /sonr/core/identity/did/aka/{akaId}:
     get:
       summary: Get a DIDDocument from an Alias
-      description: "DidByAlsoKnownAs is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByAlsoKnownAsRequest\" and returns a \"QueryDidByAlsoKnownAsResponse\".\n\n### QueryDidByAlsoKnownAsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| aka_id | TYPE_STRING | aka_id is the unique identifier of the DIDDocument - it appears like (\"example.snr\") | \n\n### QueryDidByAlsoKnownAsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      description: "DidByAlsoKnownAs is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByAlsoKnownAsRequest\" and returns a \"QueryDidByAlsoKnownAsResponse\".\n\n#### QueryDidByAlsoKnownAsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| aka_id | TYPE_STRING | aka_id is the unique identifier of the DIDDocument - it appears like (\"example.snr\") | \n\n\n#### QueryDidByAlsoKnownAsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
       operationId: Query_DidByAlsoKnownAs
       responses:
         "200":
@@ -109,7 +109,7 @@ paths:
   /sonr/core/identity/did/key/{keyId}:
     get:
       summary: Get a DIDDocument from a key id
-      description: "DidByKeyID is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByKeyIDRequest\" and returns a \"QueryDidByKeyIDResponse\".\n\n### QueryDidByKeyIDRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| key_id | TYPE_STRING | key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1) | \n\n### QueryDidByKeyIDResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      description: "DidByKeyID is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByKeyIDRequest\" and returns a \"QueryDidByKeyIDResponse\".\n\n#### QueryDidByKeyIDRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| key_id | TYPE_STRING | key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1) | \n\n\n#### QueryDidByKeyIDResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
       operationId: Query_DidByKeyID
       responses:
         "200":
@@ -133,11 +133,12 @@ paths:
         Params is a call with the method(s) GET within the "Query" service.
         It takes in "QueryParamsRequest" and returns a "QueryParamsResponse".
 
-        ### QueryParamsRequest
+        #### QueryParamsRequest
         | Name | Type | Description |
         | ---- | ---- | ----------- |
 
-        ### QueryParamsResponse
+
+        #### QueryParamsResponse
         | Name | Type | Description |
         | ---- | ---- | ----------- |
         | params | TYPE_MESSAGE | params holds all the parameters of this module. |
@@ -154,7 +155,7 @@ paths:
   /sonr/core/identity/service:
     get:
       summary: Get all Services
-      description: "ServiceAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllServiceRequest\" and returns a \"QueryAllServiceResponse\".\n\n### QueryAllServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      description: "ServiceAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllServiceRequest\" and returns a \"QueryAllServiceResponse\".\n\n#### QueryAllServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n\n#### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
       operationId: Query_ServiceAll
       responses:
         "200":
@@ -212,7 +213,7 @@ paths:
   /sonr/core/identity/service/{origin}:
     get:
       summary: Get a Service from Origin
-      description: "Service is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetServiceRequest\" and returns a \"QueryGetServiceResponse\".\n\n### QueryGetServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | origin is the hostname of the calling service - it appears like (\"test.com\") | \n\n### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |"
+      description: "Service is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetServiceRequest\" and returns a \"QueryGetServiceResponse\".\n\n#### QueryGetServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | origin is the hostname of the calling service - it appears like (\"test.com\") | \n\n\n#### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |"
       operationId: Query_Service
       responses:
         "200":
@@ -232,7 +233,7 @@ paths:
   /sonr/vault/accounts/{sonrId}:
     get:
       summary: List the accounts
-      description: "ListAccounts is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"ListAccountsRequest\" and returns a \"ListAccountsResponse\".\n\n### ListAccountsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n\n### ListAccountsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: "ListAccounts is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"ListAccountsRequest\" and returns a \"ListAccountsResponse\".\n\n#### ListAccountsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n\n\n#### ListAccountsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| accounts | []TYPE_MESSAGE |  |"
       operationId: VaultAccounts_ListAccounts
       responses:
         "200":
@@ -251,7 +252,7 @@ paths:
   /sonr/vault/accounts/{sonrId}/{coinType}:
     get:
       summary: Get Account
-      description: "GetAccount is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"GetAccountRequest\" and returns a \"GetAccountResponse\".\n\n### GetAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n### GetAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: "GetAccount is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"GetAccountRequest\" and returns a \"GetAccountResponse\".\n\n#### GetAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n\n#### GetAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| accounts | []TYPE_MESSAGE |  |"
       operationId: VaultAccounts_GetAccount
       responses:
         "200":
@@ -274,7 +275,7 @@ paths:
   /sonr/vault/accounts/{sonrId}/create:
     post:
       summary: Create a new account
-      description: "CreateAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"CreateAccountRequest\" and returns a \"CreateAccountResponse\".\n\n### CreateAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n### CreateAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: "CreateAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"CreateAccountRequest\" and returns a \"CreateAccountResponse\".\n\n#### CreateAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n\n#### CreateAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
       operationId: VaultAccounts_CreateAccount
       responses:
         "200":
@@ -302,7 +303,7 @@ paths:
   /sonr/vault/accounts/{targetDid}/delete:
     post:
       summary: Delete Account
-      description: "DeleteAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"DeleteAccountRequest\" and returns a \"DeleteAccountResponse\".\n\n### DeleteAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| target_did | TYPE_STRING |  | \n\n### DeleteAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: "DeleteAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"DeleteAccountRequest\" and returns a \"DeleteAccountResponse\".\n\n#### DeleteAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| target_did | TYPE_STRING |  | \n\n\n#### DeleteAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
       operationId: VaultAccounts_DeleteAccount
       responses:
         "200":
@@ -330,7 +331,7 @@ paths:
   /sonr/vault/auth/login/finish:
     post:
       summary: Login Finish
-      description: "LoginFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginFinishRequest\" and returns a \"LoginFinishResponse\".\n\n### LoginFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| account_address | TYPE_STRING | Address of the account to login to. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n\n### LoginFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      description: "LoginFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginFinishRequest\" and returns a \"LoginFinishResponse\".\n\n#### LoginFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| account_address | TYPE_STRING | Address of the account to login to. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### LoginFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
       operationId: VaultAuthentication_LoginFinish
       responses:
         "200":
@@ -351,7 +352,7 @@ paths:
   /sonr/vault/auth/login/start:
     post:
       summary: Login Start
-      description: "LoginStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginStartRequest\" and returns a \"LoginStartResponse\".\n\n### LoginStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| account_address | TYPE_STRING | The Sonr account address for the user. | \n\n### LoginStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| credential_options | TYPE_STRING | Json encoded WebAuthn credential options for the user to sign with. |"
+      description: "LoginStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginStartRequest\" and returns a \"LoginStartResponse\".\n\n#### LoginStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| account_address | TYPE_STRING | The Sonr account address for the user. | \n\n\n#### LoginStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| credential_options | TYPE_STRING | Json encoded WebAuthn credential options for the user to sign with. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
       operationId: VaultAuthentication_LoginStart
       responses:
         "200":
@@ -372,7 +373,7 @@ paths:
   /sonr/vault/auth/register/finish:
     post:
       summary: Register Finish
-      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| session_id | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n\n### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n#### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| session_id | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
       operationId: VaultAuthentication_RegisterFinish
       responses:
         "200":
@@ -393,7 +394,7 @@ paths:
   /sonr/vault/auth/register/start:
     post:
       summary: Register Start
-      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| session_id | TYPE_STRING | The session id for the request. |"
+      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n#### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n\n#### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| session_id | TYPE_STRING | The session id for the request. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
       operationId: VaultAuthentication_RegisterStart
       responses:
         "200":
@@ -414,7 +415,7 @@ paths:
   /sonr/vault/storage/refresh:
     post:
       summary: Refresh Shares
-      description: "RefreshShares is a call with the method(s) POST within the \"VaultStorage\" service.\nIt takes in \"RefreshSharesRequest\" and returns a \"RefreshSharesResponse\".\n\n### RefreshSharesRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| credential_response | TYPE_STRING |  | \n| session_id | TYPE_STRING |  | \n\n### RefreshSharesResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES |  | \n| address | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  |"
+      description: "RefreshShares is a call with the method(s) POST within the \"VaultStorage\" service.\nIt takes in \"RefreshSharesRequest\" and returns a \"RefreshSharesResponse\".\n\n#### RefreshSharesRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| credential_response | TYPE_STRING |  | \n| session_id | TYPE_STRING |  | \n\n\n#### RefreshSharesResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES |  | \n| address | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  |"
       operationId: VaultStorage_RefreshShares
       responses:
         "200":
@@ -608,6 +609,9 @@ definitions:
       credentialResponse:
         type: string
         description: The signed credential response from the user.
+      origin:
+        type: string
+        description: The origin of the request. This is used to query the Blockchain for the Service DID.
     description: LoginFinishRequest is the request to login to an account.
   v1LoginFinishResponse:
     type: object
@@ -618,6 +622,12 @@ definitions:
       accountAddress:
         type: string
         description: The account address for the user.
+      rpId:
+        type: string
+        description: Relaying party id for the request.
+      rpName:
+        type: string
+        description: Relaying party name for the request.
       didDocument:
         $ref: '#/definitions/v1DidDocument'
         description: The DID Document for the wallet.
@@ -651,6 +661,12 @@ definitions:
       credentialOptions:
         type: string
         description: Json encoded WebAuthn credential options for the user to sign with.
+      rpId:
+        type: string
+        description: Relaying party id for the request.
+      rpName:
+        type: string
+        description: Relaying party name for the request.
     description: LoginStartResponse is the response to a Login request.
   v1MsgCreateDidDocumentResponse:
     type: object
@@ -771,6 +787,9 @@ definitions:
       credentialResponse:
         type: string
         description: The signed credential response from the user.
+      origin:
+        type: string
+        description: The origin of the request. This is used to query the Blockchain for the Service DID.
     description: RegisterFinishRequest is the request to CreateAccount a new key from the private key.
   v1RegisterFinishResponse:
     type: object
@@ -782,6 +801,12 @@ definitions:
       address:
         type: string
         description: The address of the account.
+      rpId:
+        type: string
+        description: Relaying party id for the request.
+      rpName:
+        type: string
+        description: Relaying party name for the request.
       didDocument:
         $ref: '#/definitions/v1DidDocument'
         description: The DID Document for the wallet.
@@ -822,6 +847,12 @@ definitions:
       sessionId:
         type: string
         description: The session id for the request.
+      rpId:
+        type: string
+        description: Relaying party id for the request.
+      rpName:
+        type: string
+        description: Relaying party name for the request.
     description: RegisterStartResponse is the response to a Register request.
   v1Service:
     type: object

@@ -23,7 +23,7 @@ type AuthenticationService struct {
 // Register registers a new keypair and returns the public key.
 func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.RegisterStartRequest) (*v1.RegisterStartResponse, error) {
 	// Get service handler
-	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrLocalRpcOrigin)
+	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -36,20 +36,57 @@ func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.Regis
 	// Return response
 	return &v1.RegisterStartResponse{
 		CreationOptions: string(opts),
+		RpId:            handler.GetRPID(),
+		RpName:          handler.GetRPName(),
 	}, nil
 }
 
 // CreateAccount derives a new key from the private key and returns the public key.
 func (v *AuthenticationService) RegisterFinish(ctx context.Context, req *v1.RegisterFinishRequest) (*v1.RegisterFinishResponse, error) {
-	return nil, fmt.Errorf("Method is unimplemented")
+	// Get service handler
+	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get service handler: %w", err)
+	}
+	cred, err := handler.FinishRegistration(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to finish registration: %w", err)
+	}
+	return &v1.RegisterFinishResponse{
+		Address: cred.Address().String(),
+	}, nil
 }
 
 // LoginStart returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginStart(ctx context.Context, req *v1.LoginStartRequest) (*v1.LoginStartResponse, error) {
-	return nil, fmt.Errorf("Method is unimplemented")
+	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get service handler: %w", err)
+	}
+
+	opts, err := handler.BeginLogin(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to begin login: %w", err)
+	}
+
+	return &v1.LoginStartResponse{
+		AccountAddress:    req.AccountAddress,
+		CredentialOptions: string(opts),
+		RpId:              handler.GetRPID(),
+		RpName:            handler.GetRPName(),
+	}, nil
 }
 
 // LoginFinish returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginFinish(ctx context.Context, req *v1.LoginFinishRequest) (*v1.LoginFinishResponse, error) {
+	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get service handler: %w", err)
+	}
+
+	_, err = handler.FinishLogin(req)
+	if err != nil {
+		return nil, fmt.Errorf("failed to finish login: %w", err)
+	}
 	return nil, fmt.Errorf("Method is unimplemented")
 }

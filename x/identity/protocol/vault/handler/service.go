@@ -9,23 +9,30 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/pkg/client/chain"
+	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/x/identity/types"
 	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 )
 
 type ServiceHandler interface {
+	// GetRPID returns the RPID for the service.
+	GetRPID() string
+
+	// GetRPName returns the RPName for the service.
+	GetRPName() string
+
 	// This method is used to get the challenge response from the DID controller.
 	BeginRegistration(req *v1.RegisterStartRequest) ([]byte, error)
 
 	// This is the method that will be called when the user clicks on the "Register" button.
-	FinishRegistration(req *v1.RegisterFinishRequest) (bool, error)
+	FinishRegistration(req *v1.RegisterFinishRequest) (common.SNRPubKey, error)
 
 	// This method is used to get the options for the assertion.
 	BeginLogin(req *v1.LoginStartRequest) ([]byte, error)
 
 	// This is the method that will be called when the user clicks the "Login" button on the login page.
-	FinishLogin(req *v1.LoginFinishRequest) (bool, error)
+	FinishLogin(req *v1.LoginFinishRequest) (common.SNRPubKey, error)
 }
 
 type serviceHandlerImpl struct {
@@ -48,6 +55,16 @@ func NewServiceHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHan
 		service:         service,
 		sonrQueryClient: sonrQueryClient,
 	}, nil
+}
+
+// GetRPID returns the RPID for the service.
+func (s *serviceHandlerImpl) GetRPID() string {
+	return s.service.GetOrigin()
+}
+
+// GetRPName returns the RPName for the service.
+func (s *serviceHandlerImpl) GetRPName() string {
+	return s.service.GetName()
 }
 
 // BeginRegistration is the method that will be called when the user clicks on the "Register" button.
@@ -87,27 +104,22 @@ func (s *serviceHandlerImpl) BeginRegistration(req *v1.RegisterStartRequest) ([]
 }
 
 // FinishRegistration is the method that will be called when the user clicks on the "Register" button.
-func (s *serviceHandlerImpl) FinishRegistration(req *v1.RegisterFinishRequest) (bool, error) {
+func (s *serviceHandlerImpl) FinishRegistration(req *v1.RegisterFinishRequest) (common.SNRPubKey, error) {
 	// Get the parameters from the chain.
 	pccd, err := parseCreationData(req.CredentialResponse)
 	if err != nil {
-		return false, fmt.Errorf("failed to parse credential response: %w", err)
+		return nil, fmt.Errorf("failed to parse credential response: %w", err)
 	}
 
 	// Verify the challenge.
 	err = s.service.VerifyChallenge(pccd)
 	if err != nil {
-		return false, fmt.Errorf("failed to verify challenge: %w", err)
+		return nil, fmt.Errorf("failed to verify challenge: %w", err)
 	}
 
 	cred := crypto.NewWebAuthnCredential(pccd)
 	pk := crypto.NewWebAuthnPubKey(cred.PublicKey)
-	fmt.Println(pk)
-	return true, nil
-	// vm, err := types.NewVMFromPubKey(pk, types.WithController(d.primaryAccount.DID()), types.WithIDFragmentSuffix(aka))
-	// if err != nil {
-	// 	return false, err
-	// }
+	return pk, nil
 }
 
 // BeginLogin is the method that will be called when the user clicks on the "Login" button.
@@ -116,8 +128,8 @@ func (s *serviceHandlerImpl) BeginLogin(req *v1.LoginStartRequest) ([]byte, erro
 }
 
 // FinishLogin is the method that will be called when the user clicks on the "Login" button.
-func (s *serviceHandlerImpl) FinishLogin(req *v1.LoginFinishRequest) (bool, error) {
-	return false, fmt.Errorf("not implemented")
+func (s *serviceHandlerImpl) FinishLogin(req *v1.LoginFinishRequest) (common.SNRPubKey, error) {
+	return nil, fmt.Errorf("not implemented")
 }
 
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
