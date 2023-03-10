@@ -67,7 +67,20 @@ message DeleteAccountResponse {
 
 // Vault is the service used for managing a node's keypair.
 service VaultAccounts {
-  // CreateAccount creates the account and returns the configuration.
+  // Create a new account
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // ### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  // ### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
     option (google.api.http) = {
       post: "/sonr/vault/accounts/{sonr_id}/create"
@@ -75,21 +88,60 @@ service VaultAccounts {
     };
   }
 
-  // ListAccounts lists the accounts and returns the configuration.
+  // List the accounts
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // ### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  // ### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
     option (google.api.http) = {
       get: "/sonr/vault/accounts/{sonr_id}"
     };
   }
 
-  // GetAccount gets the account and returns the configuration.
+  // Get Account
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // ### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  // ### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {
     option (google.api.http) = {
       get: "/sonr/vault/accounts/{sonr_id}/{coin_type}"
     };
   }
 
-  // DeleteAccount deletes the account and returns the configuration.
+  // Delete Account
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // ### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  // ### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {
     option (google.api.http) = {
       post: "/sonr/vault/accounts/{target_did}/delete"

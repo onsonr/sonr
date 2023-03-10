@@ -193,7 +193,20 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type VaultStorageClient interface {
-	// RefreshShares refreshes the Wallet shares and returns the updated configuration.
+	// Refresh Shares
+	//
+	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+	//
+	// ### {{.RequestType.Name}}
+	// | Name | Type | Description |
+	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	//
+	// ### {{.ResponseType.Name}}
+	// | Name | Type | Description |
+	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	RefreshShares(ctx context.Context, in *RefreshSharesRequest, opts ...grpc.CallOption) (*RefreshSharesResponse, error)
 }
 
@@ -216,7 +229,20 @@ func (c *vaultStorageClient) RefreshShares(ctx context.Context, in *RefreshShare
 
 // VaultStorageServer is the server API for VaultStorage service.
 type VaultStorageServer interface {
-	// RefreshShares refreshes the Wallet shares and returns the updated configuration.
+	// Refresh Shares
+	//
+	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+	//
+	// ### {{.RequestType.Name}}
+	// | Name | Type | Description |
+	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+	//
+	// ### {{.ResponseType.Name}}
+	// | Name | Type | Description |
+	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	RefreshShares(context.Context, *RefreshSharesRequest) (*RefreshSharesResponse, error)
 }
 

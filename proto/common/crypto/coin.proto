@@ -1,6 +1,8 @@
 syntax = "proto3";
 
-// Package common defines commonly used types agnostic to the node role on the Sonr network.
+// Sonr API
+//
+// Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
 package sonrhq.common.v1;
 
 option go_package = "github.com/sonrhq/core/pkg/crypto/types";

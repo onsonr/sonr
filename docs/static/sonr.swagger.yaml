@@ -1,0 +1,951 @@
+swagger: "2.0"
+info:
+  title: Sonr API
+  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
+  version: version not set
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /sonr/core/identity/did:
+    get:
+      summary: Get All DIDDocuments
+      description: "DidAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllDidRequest\" and returns a \"QueryAllDidResponse\".\n\n### QueryAllDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      operationId: Query_DidAll
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryAllDidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: |-
+            offset is a numeric offset that can be used when key is unavailable.
+            It is less efficient than using key. Only one of offset or key should
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: |-
+            limit is the total number of results to be returned in the result page.
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.countTotal
+          description: |-
+            count_total is set to true  to indicate that the result set should include
+            a count of the total number of items available for pagination in UIs.
+            count_total is only respected when offset is used. It is ignored when key
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: |-
+            reverse is set to true if results are to be returned in the descending order.
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+  /sonr/core/identity/did/{did}:
+    get:
+      summary: Get a DIDDocument by DID
+      description: "Did is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetDidRequest\" and returns a \"QueryGetDidResponse\".\n\n### QueryGetDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| did | TYPE_STRING | did is the unique identifier of the DIDDocument - it appears like (did:sonr:...) | \n\n### QueryGetDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      operationId: Query_Did
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryGetDidResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: did
+          description: did is the unique identifier of the DIDDocument - it appears like (did:sonr:...)
+          in: path
+          required: true
+          type: string
+  /sonr/core/identity/did/aka/{akaId}:
+    get:
+      summary: Get a DIDDocument from an Alias
+      description: "DidByAlsoKnownAs is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByAlsoKnownAsRequest\" and returns a \"QueryDidByAlsoKnownAsResponse\".\n\n### QueryDidByAlsoKnownAsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| aka_id | TYPE_STRING | aka_id is the unique identifier of the DIDDocument - it appears like (\"example.snr\") | \n\n### QueryDidByAlsoKnownAsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      operationId: Query_DidByAlsoKnownAs
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryDidByAlsoKnownAsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: akaId
+          description: aka_id is the unique identifier of the DIDDocument - it appears like ("example.snr")
+          in: path
+          required: true
+          type: string
+  /sonr/core/identity/did/key/{keyId}:
+    get:
+      summary: Get a DIDDocument from a key id
+      description: "DidByKeyID is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByKeyIDRequest\" and returns a \"QueryDidByKeyIDResponse\".\n\n### QueryDidByKeyIDRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| key_id | TYPE_STRING | key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1) | \n\n### QueryDidByKeyIDResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      operationId: Query_DidByKeyID
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryDidByKeyIDResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: keyId
+          description: key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1)
+          in: path
+          required: true
+          type: string
+  /sonr/core/identity/params:
+    get:
+      summary: Parameters for the identity module.
+      description: |-
+        Params is a call with the method(s) GET within the "Query" service.
+        It takes in "QueryParamsRequest" and returns a "QueryParamsResponse".
+
+        ### QueryParamsRequest
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+
+        ### QueryParamsResponse
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+        | params | TYPE_MESSAGE | params holds all the parameters of this module. |
+      operationId: Query_Params
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryParamsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+  /sonr/core/identity/service:
+    get:
+      summary: Get all Services
+      description: "ServiceAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllServiceRequest\" and returns a \"QueryAllServiceResponse\".\n\n### QueryAllServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      operationId: Query_ServiceAll
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryAllServiceResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: |-
+            offset is a numeric offset that can be used when key is unavailable.
+            It is less efficient than using key. Only one of offset or key should
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: |-
+            limit is the total number of results to be returned in the result page.
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.countTotal
+          description: |-
+            count_total is set to true  to indicate that the result set should include
+            a count of the total number of items available for pagination in UIs.
+            count_total is only respected when offset is used. It is ignored when key
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: |-
+            reverse is set to true if results are to be returned in the descending order.
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+  /sonr/core/identity/service/{origin}:
+    get:
+      summary: Get a Service from Origin
+      description: "Service is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetServiceRequest\" and returns a \"QueryGetServiceResponse\".\n\n### QueryGetServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | origin is the hostname of the calling service - it appears like (\"test.com\") | \n\n### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |"
+      operationId: Query_Service
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1QueryGetServiceResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          description: origin is the hostname of the calling service - it appears like ("test.com")
+          in: path
+          required: true
+          type: string
+  /sonr/vault/accounts/{sonrId}:
+    get:
+      summary: List the accounts
+      description: "ListAccounts is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"ListAccountsRequest\" and returns a \"ListAccountsResponse\".\n\n### ListAccountsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n\n### ListAccountsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| accounts | []TYPE_MESSAGE |  |"
+      operationId: VaultAccounts_ListAccounts
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1ListAccountsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: sonrId
+          in: path
+          required: true
+          type: string
+  /sonr/vault/accounts/{sonrId}/{coinType}:
+    get:
+      summary: Get Account
+      description: "GetAccount is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"GetAccountRequest\" and returns a \"GetAccountResponse\".\n\n### GetAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n### GetAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| accounts | []TYPE_MESSAGE |  |"
+      operationId: VaultAccounts_GetAccount
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1GetAccountResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: sonrId
+          in: path
+          required: true
+          type: string
+        - name: coinType
+          in: path
+          required: true
+          type: string
+  /sonr/vault/accounts/{sonrId}/create:
+    post:
+      summary: Create a new account
+      description: "CreateAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"CreateAccountRequest\" and returns a \"CreateAccountResponse\".\n\n### CreateAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n### CreateAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      operationId: VaultAccounts_CreateAccount
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1CreateAccountResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: sonrId
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              coinType:
+                type: string
+            description: CreateAccountRequest is the request to create an account.
+  /sonr/vault/accounts/{targetDid}/delete:
+    post:
+      summary: Delete Account
+      description: "DeleteAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"DeleteAccountRequest\" and returns a \"DeleteAccountResponse\".\n\n### DeleteAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| target_did | TYPE_STRING |  | \n\n### DeleteAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      operationId: VaultAccounts_DeleteAccount
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1DeleteAccountResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: targetDid
+          in: path
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: object
+            properties:
+              sonrId:
+                type: string
+            description: DeleteAccountRequest is the request to delete an account.
+  /sonr/vault/auth/login/finish:
+    post:
+      summary: Login Finish
+      description: "LoginFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginFinishRequest\" and returns a \"LoginFinishResponse\".\n\n### LoginFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| account_address | TYPE_STRING | Address of the account to login to. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n\n### LoginFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      operationId: VaultAuthentication_LoginFinish
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1LoginFinishResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          description: LoginFinishRequest is the request to login to an account.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1LoginFinishRequest'
+  /sonr/vault/auth/login/start:
+    post:
+      summary: Login Start
+      description: "LoginStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginStartRequest\" and returns a \"LoginStartResponse\".\n\n### LoginStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| account_address | TYPE_STRING | The Sonr account address for the user. | \n\n### LoginStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| credential_options | TYPE_STRING | Json encoded WebAuthn credential options for the user to sign with. |"
+      operationId: VaultAuthentication_LoginStart
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1LoginStartResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          description: LoginStartRequest is the request to login to an account.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1LoginStartRequest'
+  /sonr/vault/auth/register/finish:
+    post:
+      summary: Register Finish
+      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| session_id | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n\n### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      operationId: VaultAuthentication_RegisterFinish
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1RegisterFinishResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          description: RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1RegisterFinishRequest'
+  /sonr/vault/auth/register/start:
+    post:
+      summary: Register Start
+      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| session_id | TYPE_STRING | The session id for the request. |"
+      operationId: VaultAuthentication_RegisterStart
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1RegisterStartResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          description: RegisterStartRequest is the request to register a new account.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1RegisterStartRequest'
+  /sonr/vault/storage/refresh:
+    post:
+      summary: Refresh Shares
+      description: "RefreshShares is a call with the method(s) POST within the \"VaultStorage\" service.\nIt takes in \"RefreshSharesRequest\" and returns a \"RefreshSharesResponse\".\n\n### RefreshSharesRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| credential_response | TYPE_STRING |  | \n| session_id | TYPE_STRING |  | \n\n### RefreshSharesResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES |  | \n| address | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  |"
+      operationId: VaultStorage_RefreshShares
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1RefreshSharesResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: body
+          description: RefreshSharesRequest is the request to refresh the keypair.
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/v1RefreshSharesRequest'
+definitions:
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
+  v1AccountInfo:
+    type: object
+    properties:
+      address:
+        type: string
+        description: Address is the associated Sonr address.
+      network:
+        type: string
+        description: Credentials is a list of all credentials associated with the account.
+      label:
+        type: string
+        description: Label is the label of the account.
+      index:
+        type: integer
+        format: int64
+        description: Index is the index of the account.
+      balance:
+        type: integer
+        format: int32
+        description: Balance is the balance of the account.
+    description: Account is used for storing all credentials and their locations to be encrypted.
+  v1CreateAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      coinType:
+        type: string
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1AccountInfo'
+    description: CreateAccountResponse is the response to a CreateAccount request.
+  v1DeleteAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1AccountInfo'
+    description: DeleteAccountResponse is the response to a DeleteAccount request.
+  v1DidDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+        title: optional
+      verificationMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationMethod'
+        title: optional
+      authentication:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationRelationship'
+        title: optional
+      assertionMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationRelationship'
+        title: optional
+      capabilityInvocation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationRelationship'
+        title: optional
+      capabilityDelegation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationRelationship'
+        title: optional
+      keyAgreement:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1VerificationRelationship'
+        title: optional
+      service:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1Service'
+        title: optional
+      alsoKnownAs:
+        type: array
+        items:
+          type: string
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1KeyValuePair'
+        title: optional
+  v1GetAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      coinType:
+        type: string
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1AccountInfo'
+    description: GetAccountResponse is the response to a GetAccount request.
+  v1KeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  v1ListAccountsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1AccountInfo'
+    description: ListAccountsResponse is the response to a ListAccounts request.
+  v1LoginFinishRequest:
+    type: object
+    properties:
+      accountAddress:
+        type: string
+        description: Address of the account to login to.
+      credentialResponse:
+        type: string
+        description: The signed credential response from the user.
+    description: LoginFinishRequest is the request to login to an account.
+  v1LoginFinishResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Success is true if the account exists.
+      accountAddress:
+        type: string
+        description: The account address for the user.
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+        description: The DID Document for the wallet.
+      accountInfo:
+        $ref: '#/definitions/v1AccountInfo'
+        description: The account info for the wallet.
+      ucanTokenHeader:
+        type: string
+        format: byte
+        description: The UCAN token authorization header for subsequent requests.
+    description: LoginFinishResponse is the response to a Login request.
+  v1LoginStartRequest:
+    type: object
+    properties:
+      origin:
+        type: string
+        description: The origin of the request. This is used to query the Blockchain for the Service DID.
+      accountAddress:
+        type: string
+        description: The Sonr account address for the user.
+    description: LoginStartRequest is the request to login to an account.
+  v1LoginStartResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        description: Success is true if the account exists.
+      accountAddress:
+        type: string
+        description: The account address for the user.
+      credentialOptions:
+        type: string
+        description: Json encoded WebAuthn credential options for the user to sign with.
+    description: LoginStartResponse is the response to a Login request.
+  v1MsgCreateDidDocumentResponse:
+    type: object
+  v1MsgDeactivateServiceResponse:
+    type: object
+  v1MsgDeleteDidDocumentResponse:
+    type: object
+  v1MsgRegisterServiceResponse:
+    type: object
+  v1MsgUpdateDidDocumentResponse:
+    type: object
+    properties:
+      creator:
+        type: string
+  v1MsgUpdateServiceResponse:
+    type: object
+  v1Params:
+    type: object
+    properties:
+      didBaseContext:
+        type: string
+      didMethodContext:
+        type: string
+      didMethodName:
+        type: string
+      didMethodVersion:
+        type: string
+      didNetwork:
+        type: string
+      ipfsGateway:
+        type: string
+      ipfsApi:
+        type: string
+      webauthnAttestionPreference:
+        type: string
+      webauthnAuthenticatorAttachment:
+        type: string
+      webauthnTimeout:
+        type: integer
+        format: int32
+    description: Params defines the parameters for the module.
+  v1QueryAllDidResponse:
+    type: object
+    properties:
+      didDocument:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1DidDocument'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  v1QueryAllServiceResponse:
+    type: object
+    properties:
+      services:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1Service'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  v1QueryDidByAlsoKnownAsResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  v1QueryDidByKeyIDResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  v1QueryGetDidResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  v1QueryGetServiceResponse:
+    type: object
+    properties:
+      service:
+        $ref: '#/definitions/v1Service'
+        title: A Service is a JSON-LD object that contains relaying information to authenticate a client
+  v1QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        $ref: '#/definitions/v1Params'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  v1RefreshSharesRequest:
+    type: object
+    properties:
+      credentialResponse:
+        type: string
+      sessionId:
+        type: string
+    description: RefreshSharesRequest is the request to refresh the keypair.
+  v1RefreshSharesResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: byte
+      address:
+        type: string
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+    description: RefreshSharesResponse is the response to a Refresh request.
+  v1RegisterFinishRequest:
+    type: object
+    properties:
+      sessionId:
+        type: string
+        description: The previously generated session id.
+      credentialResponse:
+        type: string
+        description: The signed credential response from the user.
+    description: RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+  v1RegisterFinishResponse:
+    type: object
+    properties:
+      id:
+        type: string
+        format: byte
+        description: The id of the account.
+      address:
+        type: string
+        description: The address of the account.
+      didDocument:
+        $ref: '#/definitions/v1DidDocument'
+        description: The DID Document for the wallet.
+      accountInfo:
+        $ref: '#/definitions/v1AccountInfo'
+        description: The account info for the wallet.
+      ucanTokenHeader:
+        type: string
+        format: byte
+        description: The UCAN token authorization header for subsequent requests.
+    description: RegisterFinishResponse is the response to a CreateAccount request.
+  v1RegisterStartRequest:
+    type: object
+    properties:
+      origin:
+        type: string
+        description: The origin of the request. This is used to query the Blockchain for the Service DID.
+      deviceLabel:
+        type: string
+        description: The user defined label for the device.
+      securityThreshold:
+        type: integer
+        format: int32
+        description: The security threshold for the wallet account.
+      passcode:
+        type: string
+        description: The recovery passcode for the wallet account.
+      uuid:
+        type: string
+        description: The Unique Identifier for the client device. Typically in a cookie.
+    description: RegisterStartRequest is the request to register a new account.
+  v1RegisterStartResponse:
+    type: object
+    properties:
+      creationOptions:
+        type: string
+        description: Credential options for the user to sign with WebAuthn.
+      sessionId:
+        type: string
+        description: The session id for the request.
+    description: RegisterStartResponse is the response to a Register request.
+  v1Service:
+    type: object
+    properties:
+      id:
+        type: string
+      controller:
+        type: string
+      type:
+        type: string
+      origin:
+        type: string
+      name:
+        type: string
+      serviceEndpoints:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1KeyValuePair'
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1KeyValuePair'
+        title: optional
+  v1VerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      publicKeyJwk:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1KeyValuePair'
+        title: optional
+      publicKeyMultibase:
+        type: string
+        title: optional
+      blockchainAccountId:
+        type: string
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/v1KeyValuePair'
+  v1VerificationRelationship:
+    type: object
+    properties:
+      verificationMethod:
+        $ref: '#/definitions/v1VerificationMethod'
+      reference:
+        type: string
+  v1beta1PageRequest:
+    type: object
+    properties:
+      key:
+        type: string
+        format: byte
+        description: |-
+          key is a value returned in PageResponse.next_key to begin
+          querying the next page most efficiently. Only one of offset or key
+          should be set.
+      offset:
+        type: string
+        format: uint64
+        description: |-
+          offset is a numeric offset that can be used when key is unavailable.
+          It is less efficient than using key. Only one of offset or key should
+          be set.
+      limit:
+        type: string
+        format: uint64
+        description: |-
+          limit is the total number of results to be returned in the result page.
+          If left empty it will default to a value to be set by each app.
+      countTotal:
+        type: boolean
+        description: |-
+          count_total is set to true  to indicate that the result set should include
+          a count of the total number of items available for pagination in UIs.
+          count_total is only respected when offset is used. It is ignored when key
+          is set.
+      reverse:
+        type: boolean
+        description: |-
+          reverse is set to true if results are to be returned in the descending order.
+
+          Since: cosmos-sdk 0.43
+    description: |-
+      message SomeRequest {
+               Foo some_parameter = 1;
+               PageRequest pagination = 2;
+       }
+    title: |-
+      PageRequest is to be embedded in gRPC request messages for efficient
+      pagination. Ex:
+  v1beta1PageResponse:
+    type: object
+    properties:
+      nextKey:
+        type: string
+        format: byte
+        description: |-
+          next_key is the key to be passed to PageRequest.key to
+          query the next page most efficiently. It will be empty if
+          there are no more results.
+      total:
+        type: string
+        format: uint64
+        title: |-
+          total is total number of results available if PageRequest.count_total
+          was set, its value is undefined otherwise
+    description: |-
+      PageResponse is to be embedded in gRPC response messages where the
+      corresponding request message has used PageRequest.
+
+       message SomeResponse {
+               repeated Bar results = 1;
+               PageResponse page = 2;
+       }
