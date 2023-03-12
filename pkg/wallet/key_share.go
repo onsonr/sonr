@@ -24,6 +24,12 @@ type KeyShare interface {
 
 	// AccountName returns the account name based on the account directory name
 	AccountName() string
+
+	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
+	Encrypt(credential *crypto.WebauthnCredential, pin string) error
+
+	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
+	Decrypt(credential *crypto.WebauthnCredential, pin string) error
 }
 
 type keyShare struct {
@@ -45,6 +51,11 @@ func NewKeyshare(path string) (KeyShare, error) {
 		cnfg: cnfg,
 		p:    path,
 	}, nil
+}
+
+// AccountName returns the account name based on the account directory name
+func (s *keyShare) AccountName() string {
+	return filepath.Dir(s.p)
 }
 
 // Path returns the path to the file.
@@ -69,7 +80,47 @@ func (s *keyShare) CoinType() crypto.CoinType {
 	return crypto.TestCoinType
 }
 
-// AccountName returns the account name based on the account directory name
-func (s *keyShare) AccountName() string {
-	return filepath.Dir(s.p)
+// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
+func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential, pin string) error {
+	bz, err := s.cnfg.MarshalBinary()
+	if err != nil {
+		return err
+	}
+	encBz, err := credential.Encrypt(bz, pin)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(s.p, encBz, 0600)
+}
+
+// Decrypt checks if the file at current path is encrypted and if not, encrypts it.
+func (s *keyShare) Decrypt(credential *crypto.WebauthnCredential, pin string) error {
+	bz, err := os.ReadFile(s.p)
+	if err != nil {
+		return err
+	}
+	decBz, err := credential.Decrypt(bz, pin)
+	if err != nil {
+		return err
+	}
+	cnfg := cmp.EmptyConfig(curve.Secp256k1{})
+	if err := cnfg.UnmarshalBinary(decBz); err != nil {
+		return err
+	}
+	s.cnfg = cnfg
+	return nil
+}
+
+// IsEncrypted checks if the file at current path is encrypted.
+func (s *keyShare) IsEncrypted() bool {
+	bz, err := os.ReadFile(s.p)
+	if err != nil {
+		return false
+	}
+
+	cnfg := cmp.EmptyConfig(curve.Secp256k1{})
+	if err := cnfg.UnmarshalBinary(bz); err != nil {
+		return true
+	}
+	return false
 }

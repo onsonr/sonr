@@ -77,6 +77,37 @@ func (fs *FileStore) ListAccounts() (map[crypto.CoinType][]Account, error) {
 }
 
 // WriteCmpConfig writes a CmpConfig to the BIP32 file system.
+func (fs *FileStore) WriteEncShares(ct crypto.CoinType, cmpConfigs map[string][]byte) (Account, error) {
+	// Get the path for the account directory
+	accountDir, err := getNextAccountDir(fs.basePath, ct)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get account directory for coin type %s: %w", ct.Ticker(), err)
+	}
+
+	// Create the account directory if it doesn't exist
+	if _, err := os.Stat(accountDir); os.IsNotExist(err) {
+		if err := os.Mkdir(accountDir, os.ModePerm); err != nil {
+			return nil, fmt.Errorf("failed to create account directory for coin type %s: %w", ct.Ticker(), err)
+		}
+	}
+
+	// Write each CmpConfig to the account directory
+	for id, binaryBytes := range cmpConfigs {
+		// Create or truncate the file at the specified path
+		file, err := os.Create(filepath.Join(accountDir, fmt.Sprintf("%s.key", id)))
+		if err != nil {
+			return nil, err
+		}
+		defer file.Close()
+		_, err = file.Write(binaryBytes)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return NewWalletAccount(accountDir)
+}
+
+// WriteCmpConfig writes a CmpConfig to the BIP32 file system.
 func (fs *FileStore) WriteCmpConfigs(ct crypto.CoinType, cmpConfigs []*cmp.Config) (Account, error) {
 	// Get the path for the account directory
 	accountDir, err := getNextAccountDir(fs.basePath, ct)

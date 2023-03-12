@@ -3,7 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.sonr.vault.v1;
 
-import "core/identity/v1/did.proto";
+import "core/identity/did.proto";
 import "google/api/annotations.proto";
 import "sonr/common/info.proto";
 
@@ -19,7 +19,7 @@ message CreateAccountRequest {
 message CreateAccountResponse {
   bool success = 1;
   string coin_type = 2;
-  core.identity.v1.DidDocument did_document = 3;
+  core.identity.DidDocument did_document = 3;
   repeated sonr.common.AccountInfo accounts = 4;
 }
 
@@ -56,7 +56,7 @@ message DeleteAccountRequest {
 // DeleteAccountResponse is the response to a DeleteAccount request.
 message DeleteAccountResponse {
   bool success = 1;
-  core.identity.v1.DidDocument did_document = 2;
+  core.identity.DidDocument did_document = 2;
   repeated sonr.common.AccountInfo accounts = 3;
 }
 

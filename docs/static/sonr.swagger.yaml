@@ -17,7 +17,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryAllDidResponse'
+            $ref: '#/definitions/identityQueryAllDidResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -75,7 +75,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryGetDidResponse'
+            $ref: '#/definitions/identityQueryGetDidResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -95,7 +95,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryDidByAlsoKnownAsResponse'
+            $ref: '#/definitions/identityQueryDidByAlsoKnownAsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -115,7 +115,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryDidByKeyIDResponse'
+            $ref: '#/definitions/identityQueryDidByKeyIDResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -147,7 +147,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryParamsResponse'
+            $ref: '#/definitions/identityQueryParamsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -161,7 +161,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryAllServiceResponse'
+            $ref: '#/definitions/identityQueryAllServiceResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -219,7 +219,7 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1QueryGetServiceResponse'
+            $ref: '#/definitions/identityQueryGetServiceResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -455,6 +455,229 @@ definitions:
         format: int32
         description: Balance is the balance of the account.
     description: Account is used for storing all credentials and their locations to be encrypted.
+  identityDidDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+        title: optional
+      verificationMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationMethod'
+        title: optional
+      authentication:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      assertionMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      capabilityInvocation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      capabilityDelegation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      keyAgreement:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      service:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityService'
+        title: optional
+      alsoKnownAs:
+        type: array
+        items:
+          type: string
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+        title: optional
+  identityKeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+      value:
+        type: string
+  identityMsgCreateDidDocumentResponse:
+    type: object
+  identityMsgDeactivateServiceResponse:
+    type: object
+  identityMsgDeleteDidDocumentResponse:
+    type: object
+  identityMsgRegisterServiceResponse:
+    type: object
+  identityMsgUpdateDidDocumentResponse:
+    type: object
+    properties:
+      creator:
+        type: string
+  identityMsgUpdateServiceResponse:
+    type: object
+  identityParams:
+    type: object
+    properties:
+      didBaseContext:
+        type: string
+      didMethodContext:
+        type: string
+      didMethodName:
+        type: string
+      didMethodVersion:
+        type: string
+      didNetwork:
+        type: string
+      ipfsGateway:
+        type: string
+      ipfsApi:
+        type: string
+      webauthnAttestionPreference:
+        type: string
+      webauthnAuthenticatorAttachment:
+        type: string
+      webauthnTimeout:
+        type: integer
+        format: int32
+    description: Params defines the parameters for the module.
+  identityQueryAllDidResponse:
+    type: object
+    properties:
+      didDocument:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityDidDocument'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  identityQueryAllServiceResponse:
+    type: object
+    properties:
+      services:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityService'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  identityQueryDidByAlsoKnownAsResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  identityQueryDidByKeyIDResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  identityQueryGetDidResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  identityQueryGetServiceResponse:
+    type: object
+    properties:
+      service:
+        $ref: '#/definitions/identityService'
+        title: A Service is a JSON-LD object that contains relaying information to authenticate a client
+  identityQueryParamsResponse:
+    type: object
+    properties:
+      params:
+        $ref: '#/definitions/identityParams'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  identityService:
+    type: object
+    properties:
+      id:
+        type: string
+      controller:
+        type: string
+      type:
+        type: string
+      origin:
+        type: string
+      name:
+        type: string
+      serviceEndpoints:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+        title: optional
+  identityVerificationMethod:
+    type: object
+    properties:
+      id:
+        type: string
+      type:
+        type: string
+      controller:
+        type: string
+      publicKeyJwk:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+        title: optional
+      publicKeyMultibase:
+        type: string
+        title: optional
+      blockchainAccountId:
+        type: string
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+  identityVerificationRelationship:
+    type: object
+    properties:
+      verificationMethod:
+        $ref: '#/definitions/identityVerificationMethod'
+      reference:
+        type: string
   protobufAny:
     type: object
     properties:
@@ -482,7 +705,7 @@ definitions:
       coinType:
         type: string
       didDocument:
-        $ref: '#/definitions/v1DidDocument'
+        $ref: '#/definitions/identityDidDocument'
       accounts:
         type: array
         items:
@@ -495,80 +718,13 @@ definitions:
       success:
         type: boolean
       didDocument:
-        $ref: '#/definitions/v1DidDocument'
+        $ref: '#/definitions/identityDidDocument'
       accounts:
         type: array
         items:
           type: object
           $ref: '#/definitions/commonAccountInfo'
     description: DeleteAccountResponse is the response to a DeleteAccount request.
-  v1DidDocument:
-    type: object
-    properties:
-      context:
-        type: array
-        items:
-          type: string
-      id:
-        type: string
-      controller:
-        type: array
-        items:
-          type: string
-        title: optional
-      verificationMethod:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationMethod'
-        title: optional
-      authentication:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationRelationship'
-        title: optional
-      assertionMethod:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationRelationship'
-        title: optional
-      capabilityInvocation:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationRelationship'
-        title: optional
-      capabilityDelegation:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationRelationship'
-        title: optional
-      keyAgreement:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1VerificationRelationship'
-        title: optional
-      service:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Service'
-        title: optional
-      alsoKnownAs:
-        type: array
-        items:
-          type: string
-        title: optional
-      metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1KeyValuePair'
-        title: optional
   v1GetAccountResponse:
     type: object
     properties:
@@ -582,13 +738,6 @@ definitions:
           type: object
           $ref: '#/definitions/commonAccountInfo'
     description: GetAccountResponse is the response to a GetAccount request.
-  v1KeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-      value:
-        type: string
   v1ListAccountsResponse:
     type: object
     properties:
@@ -629,7 +778,7 @@ definitions:
         type: string
         description: Relaying party name for the request.
       didDocument:
-        $ref: '#/definitions/v1DidDocument'
+        $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
       accountInfo:
         $ref: '#/definitions/commonAccountInfo'
@@ -668,97 +817,6 @@ definitions:
         type: string
         description: Relaying party name for the request.
     description: LoginStartResponse is the response to a Login request.
-  v1MsgCreateDidDocumentResponse:
-    type: object
-  v1MsgDeactivateServiceResponse:
-    type: object
-  v1MsgDeleteDidDocumentResponse:
-    type: object
-  v1MsgRegisterServiceResponse:
-    type: object
-  v1MsgUpdateDidDocumentResponse:
-    type: object
-    properties:
-      creator:
-        type: string
-  v1MsgUpdateServiceResponse:
-    type: object
-  v1Params:
-    type: object
-    properties:
-      didBaseContext:
-        type: string
-      didMethodContext:
-        type: string
-      didMethodName:
-        type: string
-      didMethodVersion:
-        type: string
-      didNetwork:
-        type: string
-      ipfsGateway:
-        type: string
-      ipfsApi:
-        type: string
-      webauthnAttestionPreference:
-        type: string
-      webauthnAuthenticatorAttachment:
-        type: string
-      webauthnTimeout:
-        type: integer
-        format: int32
-    description: Params defines the parameters for the module.
-  v1QueryAllDidResponse:
-    type: object
-    properties:
-      didDocument:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1DidDocument'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
-  v1QueryAllServiceResponse:
-    type: object
-    properties:
-      services:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Service'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
-  v1QueryDidByAlsoKnownAsResponse:
-    type: object
-    properties:
-      didDocument:
-        $ref: '#/definitions/v1DidDocument'
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  v1QueryDidByKeyIDResponse:
-    type: object
-    properties:
-      didDocument:
-        $ref: '#/definitions/v1DidDocument'
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  v1QueryGetDidResponse:
-    type: object
-    properties:
-      didDocument:
-        $ref: '#/definitions/v1DidDocument'
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  v1QueryGetServiceResponse:
-    type: object
-    properties:
-      service:
-        $ref: '#/definitions/v1Service'
-        title: A Service is a JSON-LD object that contains relaying information to authenticate a client
-  v1QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        $ref: '#/definitions/v1Params'
-        description: params holds all the parameters of this module.
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   v1RefreshSharesRequest:
     type: object
     properties:
@@ -776,7 +834,7 @@ definitions:
       address:
         type: string
       didDocument:
-        $ref: '#/definitions/v1DidDocument'
+        $ref: '#/definitions/identityDidDocument'
     description: RefreshSharesResponse is the response to a Refresh request.
   v1RegisterFinishRequest:
     type: object
@@ -808,7 +866,7 @@ definitions:
         type: string
         description: Relaying party name for the request.
       didDocument:
-        $ref: '#/definitions/v1DidDocument'
+        $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
       accountInfo:
         $ref: '#/definitions/commonAccountInfo'
@@ -851,64 +909,6 @@ definitions:
         type: string
         description: Relaying party name for the request.
     description: RegisterStartResponse is the response to a Register request.
-  v1Service:
-    type: object
-    properties:
-      id:
-        type: string
-      controller:
-        type: string
-      type:
-        type: string
-      origin:
-        type: string
-      name:
-        type: string
-      serviceEndpoints:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1KeyValuePair'
-        title: optional
-      metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1KeyValuePair'
-        title: optional
-  v1VerificationMethod:
-    type: object
-    properties:
-      id:
-        type: string
-      type:
-        type: string
-      controller:
-        type: string
-      publicKeyJwk:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1KeyValuePair'
-        title: optional
-      publicKeyMultibase:
-        type: string
-        title: optional
-      blockchainAccountId:
-        type: string
-        title: optional
-      metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1KeyValuePair'
-  v1VerificationRelationship:
-    type: object
-    properties:
-      verificationMethod:
-        $ref: '#/definitions/v1VerificationMethod'
-      reference:
-        type: string
   v1beta1PageRequest:
     type: object
     properties:

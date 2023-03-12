@@ -50,6 +50,9 @@ type Wallet interface {
 	// GetAccountByDID returns the account for the given DID and parses the coin type from the DID
 	GetAccountByDID(did string) (Account, error)
 
+	// SetAuthentication sets the authentication method for the wallet
+	SetAuthentication(credential *crypto.WebauthnCredential, pin string) error
+
 	// SignWithDID signs the given message with the private key of the account with the given DID
 	SignWithDID(did string, msg []byte) ([]byte, error)
 
@@ -107,6 +110,29 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 	}
 	w.info = info
 	return w, nil
+}
+
+// SetAuthentication sets the authentication method for the wallet
+func (w *wallet) SetAuthentication(credential *crypto.WebauthnCredential, pin string) error {
+	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
+	if err != nil {
+		return err
+	}
+
+	// Set the authentication method for all accounts
+	for _, acc := range accs {
+		ks, err := acc.ListKeyshares()
+		if err != nil {
+			return err
+		}
+		for _, k := range ks {
+			err := k.Encrypt(credential, pin)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // LoadWallet loads a wallet from the given path

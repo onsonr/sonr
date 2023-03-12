@@ -12,7 +12,6 @@ import (
 	"github.com/shengdoushi/base58"
 )
 
-
 // Extensions are discussed in §9. WebAuthn Extensions (https://www.w3.org/TR/webauthn/#extensions).
 
 // For a list of commonly supported extensions, see §10. Defined Extensions
@@ -45,7 +44,6 @@ func (a *WebauthnAuthenticator) UpdateCounter(authDataCount uint32) {
 	}
 	a.SignCount = authDataCount
 }
-
 
 // ConvertStdCredential creates a common.WebauthnCredential from a webauthn.Credential from the go-webauthn package
 func ConvertStdCredential(wa *webauthn.Credential) *WebauthnCredential {
@@ -126,11 +124,20 @@ func (c *WebauthnCredential) ToMetadata() map[string]string {
 	}
 }
 
-
 // Validate verifies that this WebauthnCredential is identical to the go-webauthn package credential
 func (c *WebauthnCredential) Validate(pc *webauthn.Credential) error {
 	if len(c.PublicKey) != len(pc.PublicKey) {
 		return errors.New("Credential Public Keys do not match")
 	}
 	return nil
+}
+
+// Encrypt encrypts a message using the public key of the WebauthnCredential
+func (c *WebauthnCredential) Encrypt(message []byte, pin string) ([]byte, error) {
+	return encryptData(message, c, pin)
+}
+
+// Decrypt decrypts a message using the private key of the WebauthnCredential
+func (c *WebauthnCredential) Decrypt(message []byte, pin string) ([]byte, error) {
+	return decryptData(message, c, pin)
 }

@@ -117,35 +117,7 @@ func (pk *PubKey) VerifySignature(msg []byte, sig []byte) bool {
 		return signature.Verify(pp, msg)
 	}
 	if pk.KeyType == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018.FormatString() {
-		keyFace, err := webauthncose.ParsePublicKey(pk.Key)
-		if err != nil {
-			return false
-		}
-		switch keyFace.(type) {
-		case webauthncose.OKPPublicKeyData:
-			key := keyFace.(webauthncose.OKPPublicKeyData)
-			ok, err := key.Verify(msg, sig)
-			if err != nil {
-				return false
-			}
-			return ok
-		case webauthncose.EC2PublicKeyData:
-			key := keyFace.(webauthncose.EC2PublicKeyData)
-			ok, err := key.Verify(msg, sig)
-			if err != nil {
-				return false
-			}
-			return ok
-		case webauthncose.RSAPublicKeyData:
-			key := keyFace.(webauthncose.RSAPublicKeyData)
-			ok, err := key.Verify(msg, sig)
-			if err != nil {
-				return false
-			}
-			return ok
-		default:
-			return false
-		}
+		return verifyWebAuthnSignature(pk.Key, msg, sig)
 	}
 	return false
 }
@@ -196,4 +168,36 @@ func deserializeSignature(sigStr []byte) (*ecdsa.Signature, error) {
 
 	// Create and return the signature.
 	return &sig, nil
+}
+
+func verifyWebAuthnSignature(msg []byte, sig []byte, key []byte) bool {
+	keyFace, err := webauthncose.ParsePublicKey(key)
+	if err != nil {
+		return false
+	}
+	switch keyFace.(type) {
+	case webauthncose.OKPPublicKeyData:
+		key := keyFace.(webauthncose.OKPPublicKeyData)
+		ok, err := key.Verify(msg, sig)
+		if err != nil {
+			return false
+		}
+		return ok
+	case webauthncose.EC2PublicKeyData:
+		key := keyFace.(webauthncose.EC2PublicKeyData)
+		ok, err := key.Verify(msg, sig)
+		if err != nil {
+			return false
+		}
+		return ok
+	case webauthncose.RSAPublicKeyData:
+		key := keyFace.(webauthncose.RSAPublicKeyData)
+		ok, err := key.Verify(msg, sig)
+		if err != nil {
+			return false
+		}
+		return ok
+	default:
+		return false
+	}
 }

@@ -47,6 +47,9 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 	k.SetDidDocument(ctx, *msg.Document)
+	ctx.EventManager().EmitTypedEvents(
+		msg.Document,
+	)
 	return &types.MsgUpdateDidDocumentResponse{}, nil
 }
 

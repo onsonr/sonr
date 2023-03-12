@@ -9,6 +9,7 @@ import (
 
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
+	"github.com/sonrhq/core/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
@@ -47,6 +48,9 @@ type Account interface {
 
 	// Type returns the type of the account
 	Type() string
+
+	// VerificationMethod returns the verification method for the account
+	VerificationMethod(controller string) *types.VerificationMethod
 
 	// Verifies a signature
 	Verify(bz []byte, sig []byte) (bool, error)
@@ -188,6 +192,17 @@ func (wa *walletAccount) Sign(bz []byte) ([]byte, error) {
 // Type returns the type of the account
 func (wa *walletAccount) Type() string {
 	return fmt.Sprintf("%s/ecdsa-secp256k1", wa.CoinType().Name())
+}
+
+// VerificationMethod returns the verification method of the account
+func (wa *walletAccount) VerificationMethod(controller string) *types.VerificationMethod {
+	return &types.VerificationMethod{
+		Id:                  wa.DID(),
+		Type:                crypto.Secp256k1KeyType.FormatString(),
+		Controller:          controller,
+		PublicKeyMultibase:  wa.PubKey().Multibase(),
+		BlockchainAccountId: wa.Address(),
+	}
 }
 
 // Verifies a signature

@@ -3,7 +3,7 @@ syntax = "proto3";
 // Sonr API
 //
 // Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
-package sonrhq.core.identity.v1;
+package sonrhq.core.identity;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
 

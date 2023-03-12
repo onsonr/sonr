@@ -3,7 +3,7 @@ syntax = "proto3";
 // Package Motor is used for defining a Motor node and its properties.
 package sonrhq.sonr.vault.v1;
 
-import "core/identity/v1/did.proto";
+import "core/identity/did.proto";
 import "google/api/annotations.proto";
 import "sonr/common/info.proto";
 
@@ -66,7 +66,7 @@ message RegisterFinishResponse {
   string rp_name = 4;
 
   // The DID Document for the wallet.
-  core.identity.v1.DidDocument did_document = 5;
+  core.identity.DidDocument did_document = 5;
 
   // The account info for the wallet.
   sonr.common.AccountInfo account_info = 6;
@@ -129,7 +129,7 @@ message LoginFinishResponse {
   string rp_name = 4;
 
   // The DID Document for the wallet.
-  core.identity.v1.DidDocument did_document = 5;
+  core.identity.DidDocument did_document = 5;
 
   // The account info for the wallet.
   sonr.common.AccountInfo account_info = 6;
