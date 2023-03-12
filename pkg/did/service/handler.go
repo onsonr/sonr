@@ -1,4 +1,4 @@
-package handler
+package service
 
 import (
 	"context"
@@ -6,13 +6,17 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
+
+	"github.com/patrickmn/go-cache"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/pkg/client/chain"
-	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/pkg/wallet"
+	"github.com/sonrhq/core/types/common"
 	v1 "github.com/sonrhq/core/types/vault/v1"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 type ServiceHandler interface {
@@ -41,19 +45,24 @@ type serviceHandlerImpl struct {
 
 	// Client is the client that will be used to interact with the chain.
 	sonrQueryClient *chain.SonrQueryClient
+
+	cache      *cache.Cache
+	newWallets chan wallet.Wallet
 }
 
-func NewServiceHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHandler, error) {
+func NewHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHandler, error) {
 	// Get the service from the chain.
 	sonrQueryClient := chain.NewClient(apiEndpoint)
 	service, err := sonrQueryClient.GetService(context.Background(), origin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service from chain: %w", err)
 	}
-
+	c := cache.New(5*time.Minute, 10*time.Minute)
 	return &serviceHandlerImpl{
 		service:         service,
 		sonrQueryClient: sonrQueryClient,
+		cache:           c,
+		newWallets:      make(chan wallet.Wallet),
 	}, nil
 }
 
@@ -73,7 +82,7 @@ func (s *serviceHandlerImpl) BeginRegistration(req *v1.RegisterStartRequest) ([]
 	params := types.NewParams()
 
 	// Issue the challenge.
-	chal, err := s.service.IssueChallenge()
+	chal, err := s.IssueChallenge(req.Uuid)
 	if err != nil {
 		return nil, fmt.Errorf("failed to issue challenge: %w", err)
 	}
@@ -100,6 +109,7 @@ func (s *serviceHandlerImpl) BeginRegistration(req *v1.RegisterStartRequest) ([]
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal response: %w", err)
 	}
+	go s.GenerateWallet(req.Uuid, 1)
 	return jsonResponse, nil
 }
 
@@ -112,7 +122,7 @@ func (s *serviceHandlerImpl) FinishRegistration(req *v1.RegisterFinishRequest) (
 	}
 
 	// Verify the challenge.
-	err = s.service.VerifyChallenge(pccd)
+	err = s.VerifyChallenge(pccd, req.Uuid)
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify challenge: %w", err)
 	}

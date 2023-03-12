@@ -32,20 +32,17 @@ message RegisterStartResponse {
   // Credential options for the user to sign with WebAuthn.
   string creation_options = 1;
 
-  // The session id for the request.
-  string session_id = 2;
-
   // Relaying party id for the request.
-  string rp_id = 3;
+  string rp_id = 2;
 
   // Relaying party name for the request.
-  string rp_name = 4;
+  string rp_name = 3;
 }
 
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.
 message RegisterFinishRequest {
   // The previously generated session id.
-  string session_id = 1;
+  string uuid = 1;
 
   // The signed credential response from the user.
   string credential_response = 2;

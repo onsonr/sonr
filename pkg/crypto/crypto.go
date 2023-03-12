@@ -10,7 +10,7 @@ import (
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 
-	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/types/common"
 	types "github.com/sonrhq/core/types/crypto"
 )
 

@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/sonrhq/core/pkg/client/chain"
-	"github.com/sonrhq/core/pkg/common"
+	"github.com/sonrhq/core/pkg/did/service"
+	"github.com/sonrhq/core/types/common"
 	v1 "github.com/sonrhq/core/types/vault/v1"
-	"github.com/sonrhq/core/x/identity/protocol/vault/handler"
 )
 
 // `AuthenticationService` is a type that implements the `v1.VaultServer` interface, and has a field called
@@ -21,7 +21,7 @@ type AuthenticationService struct {
 // Register registers a new keypair and returns the public key.
 func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.RegisterStartRequest) (*v1.RegisterStartResponse, error) {
 	// Get service handler
-	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -42,7 +42,7 @@ func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.Regis
 // CreateAccount derives a new key from the private key and returns the public key.
 func (v *AuthenticationService) RegisterFinish(ctx context.Context, req *v1.RegisterFinishRequest) (*v1.RegisterFinishResponse, error) {
 	// Get service handler
-	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -57,7 +57,7 @@ func (v *AuthenticationService) RegisterFinish(ctx context.Context, req *v1.Regi
 
 // LoginStart returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginStart(ctx context.Context, req *v1.LoginStartRequest) (*v1.LoginStartResponse, error) {
-	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -77,7 +77,7 @@ func (v *AuthenticationService) LoginStart(ctx context.Context, req *v1.LoginSta
 
 // LoginFinish returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginFinish(ctx context.Context, req *v1.LoginFinishRequest) (*v1.LoginFinishResponse, error) {
-	handler, err := handler.NewServiceHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}

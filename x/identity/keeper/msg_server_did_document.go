@@ -23,6 +23,10 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 		ctx,
 		*msg.Document,
 	)
+	ctx.EventManager().EmitTypedEvents(
+		msg.Document,
+	)
+
 	return &types.MsgCreateDidDocumentResponse{}, nil
 }
 

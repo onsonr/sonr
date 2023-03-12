@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/types/common"
 	"github.com/stretchr/testify/assert"
 )
 

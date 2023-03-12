@@ -1,10 +1,8 @@
-package v2
+package wallet
 
 import (
 	"encoding/base64"
 	"fmt"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/sonrhq/core/pkg/crypto"
@@ -48,13 +46,7 @@ func TestCreateAccount(t *testing.T) {
 }
 
 func TestGetAccount(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatal(err)
-	}
-	path := filepath.Join(homeDir, "Desktop", "_SONR_WALLET_")
-
-	w, err := LoadWallet(path)
+	w, err := LoadWallet()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -73,13 +65,7 @@ func TestGetAccount(t *testing.T) {
 }
 
 func TestSignWithAccount(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatal(err)
-	}
-	path := filepath.Join(homeDir, "Desktop", "_SONR_WALLET_")
-
-	w, err := LoadWallet(path)
+	w, err := LoadWallet()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -107,13 +93,8 @@ func TestSignWithAccount(t *testing.T) {
 }
 
 func TestSignWithDIDs(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		t.Fatal(err)
-	}
-	path := filepath.Join(homeDir, "Desktop", "_SONR_WALLET_")
 
-	w, err := LoadWallet(path)
+	w, err := LoadWallet()
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -140,14 +121,32 @@ func TestSignWithDIDs(t *testing.T) {
 	}
 }
 
-func TestMiscWalletActions(t *testing.T) {
-	homeDir, err := os.UserHomeDir()
+func TestExportImport(t *testing.T) {
+	w, err := LoadWallet()
 	if err != nil {
 		t.Fatal(err)
 	}
-	path := filepath.Join(homeDir, "Desktop", "_SONR_WALLET_")
 
-	w, err := LoadWallet(path)
+	// Export
+	enc, err := w.Export()
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Import
+	w2, err := Import(enc)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Compare
+	if w2 == nil {
+		t.Fatal("wallet is nil")
+	}
+}
+
+func TestMiscWalletActions(t *testing.T) {
+	w, err := LoadWallet()
 	if err != nil {
 		t.Fatal(err)
 	}

@@ -7,8 +7,8 @@ import (
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
 
-	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/types/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	mpc "github.com/taurusgroup/multi-party-sig/pkg/protocol"

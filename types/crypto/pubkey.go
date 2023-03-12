@@ -13,7 +13,7 @@ import (
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"github.com/shengdoushi/base58"
-	common "github.com/sonrhq/core/pkg/common"
+	common "github.com/sonrhq/core/types/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	tmcrypto "github.com/tendermint/tendermint/crypto"

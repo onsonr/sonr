@@ -1,8 +1,7 @@
 package config
 
 import (
-	"github.com/sonrhq/core/pkg/common"
-	types "github.com/sonrhq/core/types/common"
+	"github.com/sonrhq/core/types/common"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
@@ -38,15 +37,11 @@ type Config struct {
 
 	// SelfPartyID is the party id for the node
 	SelfPartyID party.ID
-
-	// PeerType is the type of peer
-	PeerType types.PeerType
 }
 
 // DefaultConfig returns the default configuration
 func DefaultConfig(ctx *common.Context) *Config {
 	return &Config{
-		PeerType:    types.PeerType_HIGHWAY,
 		SelfPartyID: party.ID("current"),
 		Callback:    common.DefaultCallback(),
 		Context:     ctx,
@@ -61,16 +56,6 @@ func (c *Config) Apply(opts ...Option) error {
 		}
 	}
 	return nil
-}
-
-// IsLocal returns true if the node is local
-func (c *Config) IsLocal() bool {
-	return !c.IsMotor()
-}
-
-// IsMotor returns true if the node is a motor
-func (c *Config) IsMotor() bool {
-	return c.PeerType == types.PeerType_MOTOR
 }
 
 // Option is a function that configures a Node
@@ -102,14 +87,6 @@ func WithPartyId(partyId string) Option {
 	}
 }
 
-// WithPeerType sets the type of peer
-func WithPeerType(peerType types.PeerType) Option {
-	return func(c *Config) error {
-		c.PeerType = peerType
-		return nil
-	}
-}
-
 type node struct {
 	host   common.PeerNode
 	ipfs   common.IPFSNode
@@ -122,8 +99,4 @@ func (n *node) Host() common.PeerNode {
 
 func (n *node) IPFS() common.IPFSNode {
 	return n.ipfs
-}
-
-func (n *node) Type() types.PeerType {
-	return n.config.PeerType
 }

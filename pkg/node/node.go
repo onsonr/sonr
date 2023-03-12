@@ -3,12 +3,10 @@ package node
 import (
 	"context"
 
-	"github.com/sonrhq/core/pkg/common"
-	identityprotocol "github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/pkg/node/internal/host"
 	"github.com/sonrhq/core/pkg/node/internal/ipfs"
-	types "github.com/sonrhq/core/types/common"
+	"github.com/sonrhq/core/types/common"
+	identityprotocol "github.com/sonrhq/core/types/common"
 )
 
 // Callback is an alias for a common.NodeCallback
@@ -20,17 +18,8 @@ type IPFS = common.IPFSNode
 // P2P is an alias for a common.P2PNode.
 type P2P = common.PeerNode
 
-// PeerType is an alias for a types.PeerType.
-type PeerType = types.PeerType
-
 // Options is an alias for a config.Options.
 type Option = config.Option
-
-// MotorType is an alias for a types.MotorType.
-const MotorType = types.PeerType_MOTOR
-
-// HighwayType is an alias for a types.HighwayType.
-const HighwayType = types.PeerType_HIGHWAY
 
 // `Node` is an interface that has three methods: `Host`, `IPFS`, and `Type`.
 //
@@ -48,7 +37,6 @@ type Node interface {
 	// Returning a Motor interface and an error.
 	Host() P2P
 	IPFS() IPFS
-	Type() PeerType
 }
 
 // It creates a new host, and then creates a new node with that host
@@ -62,16 +50,7 @@ func New(ctx context.Context, opts ...Option) (Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	if config.IsMotor() {
-		h, err := host.Initialize(config)
-		if err != nil {
-			return nil, err
-		}
-		return &node{
-			host:   h,
-			config: config,
-		}, nil
-	}
+
 	i, err := ipfs.Initialize(config)
 	if err != nil {
 		return nil, err
@@ -113,8 +92,4 @@ func (n *node) Host() P2P {
 
 func (n *node) IPFS() IPFS {
 	return n.ipfs
-}
-
-func (n *node) Type() PeerType {
-	return n.config.PeerType
 }

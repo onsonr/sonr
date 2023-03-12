@@ -1,9 +1,13 @@
-package v2
+package wallet
 
 import (
+	"archive/zip"
+	"bytes"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"time"
 
@@ -24,6 +28,9 @@ type Wallet interface {
 
 	// CreateAccount creates a new account for the given coin type
 	CreateAccount(coin crypto.CoinType) (Account, error)
+
+	// Export exports the wallet to the given path
+	Export() ([]byte, error)
 
 	// ListAllocatedCoins returns a list of coins that this currently has accounts for
 	ListCoins() ([]crypto.CoinType, error)
@@ -65,7 +72,7 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 	if err != nil {
 		return nil, err
 	}
-	path := filepath.Join(homeDir, "Desktop", "_SONR_WALLET_")
+	path := filepath.Join(homeDir, ".sonr", "wallets", time.Now().Format("2006-01-02"))
 	fs, err := NewFileStore(path)
 	if err != nil {
 		return nil, err
@@ -103,13 +110,19 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 }
 
 // LoadWallet loads a wallet from the given path
-func LoadWallet(path string) (Wallet, error) {
+func LoadWallet() (Wallet, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	path := filepath.Join(homeDir, ".sonr", "wallets", time.Now().Format("2006-01-02"))
 	fs, err := NewFileStore(path)
 	if err != nil {
 		return nil, err
 	}
 	w := &wallet{
 		fileStore: fs,
+		path:      path,
 	}
 	return w, nil
 }
@@ -156,6 +169,135 @@ func (w *wallet) CreateAccount(coin crypto.CoinType) (Account, error) {
 		return nil, err
 	}
 	return acc, nil
+}
+
+// with the specified name. Returns the path to the resulting archive file.
+func (w *wallet) Export() ([]byte, error) {
+	// Get temporary directory path
+	tempDir, err := os.MkdirTemp("", "sonr-wallet")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create temporary directory: %w", err)
+	}
+	defer os.RemoveAll(tempDir)
+	archiveName := filepath.Join(tempDir, "export.zip")
+	// Create the output file
+	outputFile, err := os.Create(archiveName)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create output file: %w", err)
+	}
+	defer outputFile.Close()
+
+	// Create a new ZIP archive
+	zipWriter := zip.NewWriter(outputFile)
+	defer zipWriter.Close()
+
+	// Collect the file paths in a slice and sort them
+	var filePaths []string
+	err = filepath.Walk(w.path, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if !info.IsDir() {
+			filePaths = append(filePaths, path)
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, fmt.Errorf("failed to collect file paths: %w", err)
+	}
+	sort.Strings(filePaths)
+
+	// Add each file to the ZIP archive
+	for _, filePath := range filePaths {
+		// Open the file
+		file, err := os.Open(filePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file %s: %w", filePath, err)
+		}
+		defer file.Close()
+
+		// Create a new file header for the file
+		fileInfo, err := file.Stat()
+		if err != nil {
+			return nil, fmt.Errorf("failed to get file info for %s: %w", filePath, err)
+		}
+		header, err := zip.FileInfoHeader(fileInfo)
+		if err != nil {
+			return nil, fmt.Errorf("failed to create file header for %s: %w", filePath, err)
+		}
+		header.Name, err = filepath.Rel(w.path, filePath)
+		if err != nil {
+			return nil, fmt.Errorf("failed to get relative path for %s: %w", filePath, err)
+		}
+
+		// Add the file to the ZIP archive
+		writer, err := zipWriter.CreateHeader(header)
+		if err != nil {
+			return nil, fmt.Errorf("failed to add file %s to ZIP archive: %w", filePath, err)
+		}
+		_, err = io.Copy(writer, file)
+		if err != nil {
+			return nil, fmt.Errorf("failed to write file %s to ZIP archive: %w", filePath, err)
+		}
+	}
+	return os.ReadFile(archiveName)
+}
+
+func Import(archiveData []byte) (Wallet, error) {
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		return nil, err
+	}
+	path := filepath.Join(homeDir, ".sonr", "wallets", time.Now().Format("2006-01-02"))
+	fs, err := NewFileStore(path)
+	if err != nil {
+		return nil, err
+	}
+	w := &wallet{
+		fileStore: fs,
+		path:      path,
+	}
+
+	// Get temporary directory path
+	tempDir, err := os.MkdirTemp("", "sonr-wallet")
+	if err != nil {
+		return nil, fmt.Errorf("failed to create temporary directory: %w", err)
+	}
+	defer os.RemoveAll(tempDir)
+
+	// Create a new ZIP reader from the input data
+	zipReader, err := zip.NewReader(bytes.NewReader(archiveData), int64(len(archiveData)))
+	if err != nil {
+		return nil, fmt.Errorf("failed to create ZIP reader: %w", err)
+	}
+
+	// Extract each file from the ZIP archive
+	for _, file := range zipReader.File {
+		// Open the file from the archive
+		reader, err := file.Open()
+		if err != nil {
+			return nil, fmt.Errorf("failed to open file %s from ZIP archive: %w", file.Name, err)
+		}
+		defer reader.Close()
+
+		// Create the output file with the same path and mode as the original
+		outputPath := filepath.Join(w.path, file.Name)
+		outputDir := filepath.Dir(outputPath)
+		if err := os.MkdirAll(outputDir, 0755); err != nil {
+			return nil, fmt.Errorf("failed to create directory %s: %w", outputDir, err)
+		}
+		outputFile, err := os.OpenFile(outputPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
+		if err != nil {
+			return nil, fmt.Errorf("failed to create output file %s: %w", outputPath, err)
+		}
+		defer outputFile.Close()
+
+		// Copy the file contents from the archive to the output file
+		if _, err := io.Copy(outputFile, reader); err != nil {
+			return nil, fmt.Errorf("failed to write file %s: %w", outputPath, err)
+		}
+	}
+	return w, nil
 }
 
 // ListCoins returns a list of coins that this currently has accounts for

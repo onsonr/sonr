@@ -1,6 +1,7 @@
 swagger: "2.0"
 info:
-  title: core/identity/v1/did.proto
+  title: Sonr API
+  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
   version: version not set
 consumes:
   - application/json
@@ -372,7 +373,7 @@ paths:
   /sonr/vault/auth/register/finish:
     post:
       summary: Register Finish
-      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n#### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| session_id | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n#### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| uuid | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
       operationId: VaultAuthentication_RegisterFinish
       responses:
         "200":
@@ -393,7 +394,7 @@ paths:
   /sonr/vault/auth/register/start:
     post:
       summary: Register Start
-      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n#### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n\n#### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| session_id | TYPE_STRING | The session id for the request. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
+      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n#### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n\n#### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
       operationId: VaultAuthentication_RegisterStart
       responses:
         "200":
@@ -780,7 +781,7 @@ definitions:
   v1RegisterFinishRequest:
     type: object
     properties:
-      sessionId:
+      uuid:
         type: string
         description: The previously generated session id.
       credentialResponse:
@@ -843,9 +844,6 @@ definitions:
       creationOptions:
         type: string
         description: Credential options for the user to sign with WebAuthn.
-      sessionId:
-        type: string
-        description: The session id for the request.
       rpId:
         type: string
         description: Relaying party id for the request.

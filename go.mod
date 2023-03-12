@@ -30,6 +30,7 @@ require (
 	github.com/multiformats/go-multiaddr v0.8.0
 	github.com/multiformats/go-multibase v0.1.1
 	github.com/multiformats/go-varint v0.0.7
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1
@@ -40,9 +41,9 @@ require (
 	github.com/tendermint/tm-db v0.6.7
 	github.com/ucan-wg/go-ucan v0.0.0-20220326223643-c90281f7a4ac
 	golang.org/x/crypto v0.5.0
-	golang.org/x/mobile v0.0.0-20221110043201-43a038452099
 	google.golang.org/genproto v0.0.0-20230223222841-637eb2293923
 	google.golang.org/grpc v1.53.0
+	lukechampine.com/blake3 v1.1.7
 )
 
 require (
@@ -391,7 +392,6 @@ require (
 	gopkg.in/warnings.v0 v0.1.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
-	lukechampine.com/blake3 v1.1.7 // indirect
 	nhooyr.io/websocket v1.8.6 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
