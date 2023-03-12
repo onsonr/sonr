@@ -59,7 +59,7 @@ func TestGetAccount(t *testing.T) {
 		t.Logf("<%s> %s (%d)", tt.coinType.Ticker(), tt.coinType.Name(), tt.coinType.BipPath())
 		t.Logf("- [%d] %s", tt.index, acc.DID())
 		t.Logf(" \t↪ Address: %s", acc.Address())
-		t.Logf(" \t↪ PubKey: %s", acc.PubKey().Multibase())
+		t.Logf(" \t↪ PubKey: %s", base64.RawStdEncoding.EncodeToString(acc.PubKey().Bytes())) // !!! This is what was used to connect two addresses from this test mpc wallet to the cosmos hub
 		t.Logf("")
 	}
 }

@@ -85,7 +85,7 @@ func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 
 // Did returns the DID for a WebauthnCredential
 func (c *WebauthnCredential) Did() string {
-	return fmt.Sprintf("did:snr:%s", base58.Encode(c.Id, base58.BitcoinAlphabet))
+	return fmt.Sprintf("did:key:%s#%s", base58.Encode(c.PublicKey, base58.BitcoinAlphabet), base58.Encode(c.Id, base58.BitcoinAlphabet))
 }
 
 // PublicKeyMultibase returns the public key in multibase format
@@ -140,4 +140,7 @@ func (c *WebauthnCredential) Encrypt(message []byte, pin string) ([]byte, error)
 // Decrypt decrypts a message using the private key of the WebauthnCredential
 func (c *WebauthnCredential) Decrypt(message []byte, pin string) ([]byte, error) {
 	return decryptData(message, c, pin)
+}
+func (c *WebauthnCredential) DID() string {
+	return c.Did()
 }
