@@ -1,11 +1,10 @@
 package types
 
 import (
-"github.com/cosmos/cosmos-sdk/types/msgservice"
 	"github.com/cosmos/cosmos-sdk/codec"
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/x/identity/types/internal/marshal"
+	"github.com/cosmos/cosmos-sdk/types/msgservice"
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
@@ -13,7 +12,7 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgUpdateDidDocument{}, "identity/UpdateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgDeleteDidDocument{}, "identity/DeleteDidDocument", nil)
 	cdc.RegisterConcrete(&MsgRegisterService{}, "identity/RegisterService", nil)
-// this line is used by starport scaffolding # 2
+	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
@@ -23,11 +22,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgDeleteDidDocument{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-	&MsgRegisterService{},
-)
-// this line is used by starport scaffolding # 3
+		&MsgRegisterService{},
+	)
+	// this line is used by starport scaffolding # 3
 
-msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
+	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }
@@ -46,5 +45,3 @@ const capabilityInvocationKey = "capabilityInvocation"
 const capabilityDelegationKey = "capabilityDelegation"
 const verificationMethodKey = "verificationMethod"
 const serviceEndpointKey = "serviceEndpoint"
-
-var pluralContext = marshal.Plural(contextKey)

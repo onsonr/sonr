@@ -12,7 +12,7 @@ import (
 	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/x/identity/types"
-	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
+	v1 "github.com/sonrhq/core/types/vault/v1"
 )
 
 type ServiceHandler interface {

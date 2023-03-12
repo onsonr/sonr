@@ -2,7 +2,7 @@ package config
 
 import (
 	"github.com/sonrhq/core/pkg/common"
-	"github.com/sonrhq/core/pkg/node/types"
+	types "github.com/sonrhq/core/types/common"
 
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )

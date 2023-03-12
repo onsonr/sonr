@@ -16,7 +16,7 @@ import (
 
 	"github.com/sonrhq/core/pkg/node"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/pkg/node/types"
+	types "github.com/sonrhq/core/types/common"
 )
 
 type MotorInstance struct {

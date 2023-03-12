@@ -5,58 +5,37 @@ import (
 	fmt "fmt"
 	"strings"
 
-	"github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/pkg/crypto"
 )
 
-var (
-	knownAddrPrefixes = []string{
-		"snr",
-		"btc",
-		"0x",
-		"cosmos",
-		"fil",
-	}
-)
-
 // VerificationMethodOption is used to define options that modify the creation of the verification method
-type VerificationMethodOption func(vm *VerificationMethod) error
+type VerificationMethodOption func(vm *VerificationMethod, method DIDMethod) error
 
 // WithController sets the controller of a verificationMethod
 func WithController(v string) VerificationMethodOption {
-	return func(vm *VerificationMethod) error {
-		_, err := ParseDID(v)
-		if err != nil {
-			return err
-		}
+	return func(vm *VerificationMethod, method DIDMethod) error {
 		vm.Controller = v
 		return nil
 	}
 }
 
-// WithIDFragmentSuffix sets the fragment of the ID on a verificationMethod
-func WithIDFragmentSuffix(v string) VerificationMethodOption {
-	return func(vm *VerificationMethod) error {
+// WithFragmentSuffix sets the fragment of the ID on a verificationMethod
+func WithFragmentSuffix(v string) VerificationMethodOption {
+	return func(vm *VerificationMethod, method DIDMethod) error {
 		vm.Id = fmt.Sprintf("%s#%s", vm.Id, v)
 		return nil
 	}
 }
 
-// WithBlockchainAccount sets the blockchain account of a verificationMethod
-func WithBlockchainAccount(v string) VerificationMethodOption {
-	return func(vm *VerificationMethod) error {
-		vm.BlockchainAccountId = v
-		return nil
-	}
-}
-
-// WithMetadataValue sets the metadata value of a verificationMethod
-func WithMetadataValue(k, v string) VerificationMethodOption {
-	return func(vm *VerificationMethod) error {
-		vm.SetMetadataValue(k, v)
+// WithMetadataValues sets the metadata value of a verificationMethod
+func WithMetadataValues(kvs ...KeyValuePair) VerificationMethodOption {
+	return func(vm *VerificationMethod, method DIDMethod) error {
+		for _, kv := range kvs {
+			vm.SetMetadataValue(kv.Key, kv.Value)
+		}
 		return nil
 	}
 }
@@ -66,39 +45,33 @@ func WithMetadataValue(k, v string) VerificationMethodOption {
 //
 
 // // VerificationMethod applies the given options and builds a verification method from this Key
-func NewVMFromPubKey(pk *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
+func NewVMFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMethodOption) (*VerificationMethod, error) {
 	vm := &VerificationMethod{
-		Id:                 pk.DID(),
+		Id:                 method.Format(pk.Multibase()),
 		Type:               pk.KeyType,
 		PublicKeyMultibase: pk.Multibase(),
+		Metadata:           make([]*KeyValuePair, 0),
 	}
 	for _, opt := range opts {
-		if err := opt(vm); err != nil {
+		if err := opt(vm, method); err != nil {
 			return nil, err
 		}
 	}
 	return vm, nil
 }
 
-// NewVerificationMethod is a convenience method to easily create verificationMethods based on a set of given params.
-// It automatically encodes the provided public key based on the keyType.
-func NewVerificationMethod(id string, keyType crypto.KeyType, controller string, key interface{}) (*VerificationMethod, error) {
-	vm := &VerificationMethod{
-		Id:         id,
-		Type:       keyType.PrettyString(),
-		Controller: controller,
+// NewPrimaryAccountVM creates a verification method from the default wallet account
+func NewPrimaryAccountVM(pk *crypto.PubKey, options ...FormatOption) (*VerificationMethod, error) {
+	accAddress, err := pk.Bech32(crypto.SONRCoinType.AddrPrefix())
+	if err != nil {
+		return nil, err
 	}
-	// Check for Secp256k1 key
-	if keyType == crypto.Secp256k1KeyType {
-		// Switch Interface to *secp256k1.PublicKey or string
-		switch key.(type) {
-		case *secp256k1.PubKey:
-			vm.BlockchainAccountId = key.(*secp256k1.PubKey).Address().String()
-		case string:
-			vm.BlockchainAccountId = key.(string)
-		default:
-			return nil, fmt.Errorf("key is not a secp256k1.PublicKey or string")
-		}
+	vm := &VerificationMethod{
+		Id:                  NewSonrID(accAddress),
+		Type:                crypto.Secp256k1KeyType.PrettyString(),
+		BlockchainAccountId: accAddress,
+		PublicKeyMultibase:  pk.Multibase(),
+		Metadata:            make([]*KeyValuePair, 0),
 	}
 	return vm, nil
 }

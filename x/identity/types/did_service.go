@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonrhq/core/x/identity/types/internal/marshal"
 )
 
 func NewIPNSService(id string, endpoint string) *Service {
@@ -60,7 +59,7 @@ func (s *Service) GetUserEntity(id, displayName string) protocol.UserEntity {
 // IssueChallenge issues a challenge for the VerificationMethod to sign and return
 func (vm *Service) IssueChallenge() (protocol.URLEncodedBase64, error) {
 	// Marshal the service into JSON.
-	bz, err := vm.MarshalJSON()
+	bz, err := vm.Marshal()
 	if err != nil {
 		return nil, err
 	}
@@ -115,30 +114,6 @@ func (d *DidDocument) ResolveEndpointURL(serviceType string) (endpointID string,
 		return "", "", fmt.Errorf("unable to unmarshal single URL from service (id=%s): %w", services[0].Id, err)
 	}
 	return services[0].Id, endpointURL, nil
-}
-
-func (s Service) MarshalJSON() ([]byte, error) {
-	type alias Service
-	tmp := alias(s)
-	if data, err := json.Marshal(tmp); err != nil {
-		return nil, err
-	} else {
-		return marshal.NormalizeDocument(data, marshal.Unplural(serviceEndpointKey))
-	}
-}
-
-func (s *Service) UnmarshalJSON(data []byte) error {
-	normalizedData, err := marshal.NormalizeDocument(data, pluralContext, marshal.PluralValueOrMap(serviceEndpointKey))
-	if err != nil {
-		return err
-	}
-	type alias Service
-	var result alias
-	if err := json.Unmarshal(normalizedData, &result); err != nil {
-		return err
-	}
-	*s = (Service)(result)
-	return nil
 }
 
 // Unmarshal unmarshalls the service endpoint into a domain-specific type.

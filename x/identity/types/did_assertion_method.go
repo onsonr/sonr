@@ -4,11 +4,19 @@ package types
 
 import "github.com/sonrhq/core/pkg/crypto"
 
-// SetAssertion sets the AssertionMethod of the DID Document to a PubKey and configured with the given options
-func (d *DidDocument) SetAssertion(pub *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
-	vm, err := NewVMFromPubKey(pub, opts...)
+// AddBlockchainAccount creates a verification method from a new wallet account
+func (d *DidDocument) AddBlockchainAccount(accName string, ct crypto.CoinType, pk *crypto.PubKey, metadata ...*KeyValuePair) (*VerificationMethod, error) {
+	accAddress, err := pk.Bech32(ct.AddrPrefix())
 	if err != nil {
 		return nil, err
+	}
+	vm := &VerificationMethod{
+		Id:                  NewBlockchainID(accAddress, accName),
+		Type:                crypto.Secp256k1KeyType.PrettyString(),
+		BlockchainAccountId: accAddress,
+		Controller:          d.Id,
+		PublicKeyMultibase:  pk.Multibase(),
+		Metadata:            metadata,
 	}
 	d.AddAssertion(vm)
 	return vm, nil

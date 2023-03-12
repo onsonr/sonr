@@ -1,0 +1,237 @@
+syntax = "proto3";
+
+// Package Motor is used for defining a Motor node and its properties.
+package sonrhq.sonr.vault.v1;
+
+import "core/identity/v1/did.proto";
+import "google/api/annotations.proto";
+import "sonr/common/info.proto";
+
+option go_package = "github.com/sonrhq/core/types/vault/v1";
+
+// RegisterStartRequest is the request to register a new account.
+message RegisterStartRequest {
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 1;
+
+  // The user defined label for the device.
+  string device_label = 2;
+
+  // The security threshold for the wallet account.
+  int32 security_threshold = 3;
+
+  // The recovery passcode for the wallet account.
+  string passcode = 4;
+
+  // The Unique Identifier for the client device. Typically in a cookie.
+  string uuid = 5;
+}
+
+// RegisterStartResponse is the response to a Register request.
+message RegisterStartResponse {
+  // Credential options for the user to sign with WebAuthn.
+  string creation_options = 1;
+
+  // The session id for the request.
+  string session_id = 2;
+
+  // Relaying party id for the request.
+  string rp_id = 3;
+
+  // Relaying party name for the request.
+  string rp_name = 4;
+}
+
+// RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+message RegisterFinishRequest {
+  // The previously generated session id.
+  string session_id = 1;
+
+  // The signed credential response from the user.
+  string credential_response = 2;
+
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 3;
+}
+
+// RegisterFinishResponse is the response to a CreateAccount request.
+message RegisterFinishResponse {
+  // The id of the account.
+  bytes id = 1;
+
+  // The address of the account.
+  string address = 2;
+
+  // Relaying party id for the request.
+  string rp_id = 3;
+
+  // Relaying party name for the request.
+  string rp_name = 4;
+
+  // The DID Document for the wallet.
+  core.identity.v1.DidDocument did_document = 5;
+
+  // The account info for the wallet.
+  sonr.common.AccountInfo account_info = 6;
+
+  // The UCAN token authorization header for subsequent requests.
+  bytes ucan_token_header = 7;
+}
+
+// LoginStartRequest is the request to login to an account.
+message LoginStartRequest {
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 1;
+
+  // The Sonr account address for the user.
+  string account_address = 2;
+}
+
+// LoginStartResponse is the response to a Login request.
+message LoginStartResponse {
+  // Success is true if the account exists.
+  bool success = 1;
+
+  // The account address for the user.
+  string account_address = 2;
+
+  // Json encoded WebAuthn credential options for the user to sign with.
+  string credential_options = 3;
+
+  // Relaying party id for the request.
+  string rp_id = 4;
+
+  // Relaying party name for the request.
+  string rp_name = 5;
+}
+
+// LoginFinishRequest is the request to login to an account.
+message LoginFinishRequest {
+  // Address of the account to login to.
+  string account_address = 1;
+
+  // The signed credential response from the user.
+  string credential_response = 2;
+
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 3;
+}
+
+// LoginFinishResponse is the response to a Login request.
+message LoginFinishResponse {
+  // Success is true if the account exists.
+  bool success = 1;
+
+  // The account address for the user.
+  string account_address = 2;
+
+  // Relaying party id for the request.
+  string rp_id = 3;
+
+  // Relaying party name for the request.
+  string rp_name = 4;
+
+  // The DID Document for the wallet.
+  core.identity.v1.DidDocument did_document = 5;
+
+  // The account info for the wallet.
+  sonr.common.AccountInfo account_info = 6;
+
+  // The UCAN token authorization header for subsequent requests.
+  bytes ucan_token_header = 7;
+}
+
+// ==================================================================
+// GRPC/REST SERVICE
+// ==================================================================
+
+// Vault is the service used for managing a node's keypair.
+service VaultAuthentication {
+  // Login Start
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // #### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  //
+  // #### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  rpc LoginStart(LoginStartRequest) returns (LoginStartResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/login/start"
+      body: "*"
+    };
+  }
+
+  // Login Finish
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // #### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  //
+  // #### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  rpc LoginFinish(LoginFinishRequest) returns (LoginFinishResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/login/finish"
+      body: "*"
+    };
+  }
+
+  // Register Start
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // #### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  //
+  // #### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  rpc RegisterStart(RegisterStartRequest) returns (RegisterStartResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/register/start"
+      body: "*"
+    };
+  }
+
+  // Register Finish
+  //
+  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+  //
+  // #### {{.RequestType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  //
+  //
+  // #### {{.ResponseType.Name}}
+  // | Name | Type | Description |
+  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+  rpc RegisterFinish(RegisterFinishRequest) returns (RegisterFinishResponse) {
+    option (google.api.http) = {
+      post: "/sonr/vault/auth/register/finish"
+      body: "*"
+    };
+  }
+}

@@ -1,11 +1,11 @@
 package token
 
 import (
+	"crypto"
 	"errors"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 	"github.com/ucan-wg/go-ucan"
 )
 
@@ -28,7 +28,7 @@ const (
 )
 
 // NewUnsignedToken It creates a new token, encodes it, and returns it
-func NewUnsignedUCAN(a *v1.AccountConfig, audienceDID string, prf []ucan.Proof, att ucan.Attenuations, fct []ucan.Fact, nbf, exp time.Time) (string, error) {
+func NewUnsignedUCAN(p crypto.PublicKey, audienceDID string, prf []ucan.Proof, att ucan.Attenuations, fct []ucan.Fact, nbf, exp time.Time) (string, error) {
 	t := jwt.New(jwt.SigningMethodES256)
 
 	t.Header[UCANVersionKey] = UCANVersion
@@ -44,15 +44,11 @@ func NewUnsignedUCAN(a *v1.AccountConfig, audienceDID string, prf []ucan.Proof, 
 	if !exp.IsZero() {
 		expUnix = exp.Unix()
 	}
-	pub, err := a.PubKey()
-	if err != nil {
-		return "", err
-	}
 
 	// set our claims
 	t.Claims = &ucan.Claims{
 		StandardClaims: &jwt.StandardClaims{
-			Issuer:    pub.DID(),
+			Issuer:    p.(crypto.Signer).Public().(crypto.PublicKey).(crypto.SignerOpts).HashFunc().String(),
 			Audience:  audienceDID,
 			NotBefore: nbfUnix,
 			// set the expire time

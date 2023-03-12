@@ -14,7 +14,6 @@ type SNRPubKey interface {
 	cryptotypes.PubKey
 
 	Bech32(pfix string) (string, error)
-	DID(opts ...DIDOption) string
 	Multibase() string
 	Raw() []byte
 }

@@ -1,4 +1,8 @@
 syntax = "proto3";
+
+// Sonr API
+//
+// Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
 package sonrhq.core.identity.v1;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
@@ -46,4 +50,22 @@ message Service {
 message KeyValuePair {
   string key = 1;
   string value = 2;
+}
+
+// DIDMethod is the DID method for each supported resolver.
+enum DIDMethod {
+  // DID method for the Sonr network
+  DIDMethod_BLOCKCHAIN = 0;
+
+  // DID method for the Ethereum network
+  DIDMethod_WEB = 1;
+
+  // DID method for the Cosmos network
+  DIDMethod_KEY = 2;
+
+  // DID method for the Filecoin network
+  DIDMethod_IPFS = 3;
+
+  // DID method for the Handshake network
+  DIDMethod_PEER = 4;
 }

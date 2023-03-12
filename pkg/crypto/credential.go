@@ -3,7 +3,7 @@ package crypto
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/sonrhq/core/pkg/crypto/types"
+	types "github.com/sonrhq/core/types/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"

@@ -22,7 +22,7 @@ func (d *DidDocument) AddAuthentication(v *VerificationMethod) {
 
 // SetAuthentication sets the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
 func (d *DidDocument) SetAuthentication(pub *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
-	vm, err := NewVMFromPubKey(pub, opts...)
+	vm, err := NewVMFromPubKey(pub, DIDMethod_DIDMethod_KEY, opts...)
 	if err != nil {
 		return nil, err
 	}

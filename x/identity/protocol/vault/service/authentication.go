@@ -6,9 +6,8 @@ import (
 
 	"github.com/sonrhq/core/pkg/client/chain"
 	"github.com/sonrhq/core/pkg/common"
-	"github.com/sonrhq/core/x/identity/protocol/dispatcher"
+	v1 "github.com/sonrhq/core/types/vault/v1"
 	"github.com/sonrhq/core/x/identity/protocol/vault/handler"
-	v1 "github.com/sonrhq/core/x/identity/types/vault/v1"
 )
 
 // `AuthenticationService` is a type that implements the `v1.VaultServer` interface, and has a field called
@@ -16,8 +15,7 @@ import (
 // @property  - `v1.VaultServer`: This is the interface that the Vault service implements.
 // @property highway - This is the HighwayNode that the AuthenticationService is running on.
 type AuthenticationService struct {
-	Node       common.IPFSNode
-	Dispatcher *dispatcher.Dispatcher
+	Node common.IPFSNode
 }
 
 // Register registers a new keypair and returns the public key.

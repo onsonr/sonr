@@ -7,27 +7,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/pkg/crypto"
 )
-
-// NewDocument takes a SNRPubKey and returns a new DID Document
-func NewDocument(pubKey *crypto.PubKey) (*DidDocument, error) {
-	pk, err := crypto.PubKeyFromCommon(pubKey)
-	if err != nil {
-		return nil, err
-	}
-	addr, err := pk.Bech32("snr")
-	if err != nil {
-		return nil, err
-	}
-	doc := NewBlankDocument(pk.DID())
-	vm, err := NewVMFromPubKey(pk, WithBlockchainAccount(addr))
-	if err != nil {
-		return nil, err
-	}
-	doc.AddAssertion(vm)
-	return doc, nil
-}
 
 // NewBlankDocument creates a blank document to begin the WebAuthnProcess
 func NewBlankDocument(idStr string) *DidDocument {

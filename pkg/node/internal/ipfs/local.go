@@ -22,7 +22,7 @@ import (
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/pkg/common"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/pkg/node/types"
+	types "github.com/sonrhq/core/types/common"
 )
 
 // `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a

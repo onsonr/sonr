@@ -1,7 +1,6 @@
 swagger: "2.0"
 info:
-  title: Sonr API
-  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
+  title: core/identity/v1/did.proto
   version: version not set
 consumes:
   - application/json
@@ -434,26 +433,7 @@ paths:
           schema:
             $ref: '#/definitions/v1RefreshSharesRequest'
 definitions:
-  protobufAny:
-    type: object
-    properties:
-      '@type':
-        type: string
-    additionalProperties: {}
-  rpcStatus:
-    type: object
-    properties:
-      code:
-        type: integer
-        format: int32
-      message:
-        type: string
-      details:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/protobufAny'
-  v1AccountInfo:
+  commonAccountInfo:
     type: object
     properties:
       address:
@@ -474,6 +454,25 @@ definitions:
         format: int32
         description: Balance is the balance of the account.
     description: Account is used for storing all credentials and their locations to be encrypted.
+  protobufAny:
+    type: object
+    properties:
+      '@type':
+        type: string
+    additionalProperties: {}
+  rpcStatus:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      details:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/protobufAny'
   v1CreateAccountResponse:
     type: object
     properties:
@@ -487,7 +486,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/v1AccountInfo'
+          $ref: '#/definitions/commonAccountInfo'
     description: CreateAccountResponse is the response to a CreateAccount request.
   v1DeleteAccountResponse:
     type: object
@@ -500,7 +499,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/v1AccountInfo'
+          $ref: '#/definitions/commonAccountInfo'
     description: DeleteAccountResponse is the response to a DeleteAccount request.
   v1DidDocument:
     type: object
@@ -580,7 +579,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/v1AccountInfo'
+          $ref: '#/definitions/commonAccountInfo'
     description: GetAccountResponse is the response to a GetAccount request.
   v1KeyValuePair:
     type: object
@@ -598,7 +597,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/v1AccountInfo'
+          $ref: '#/definitions/commonAccountInfo'
     description: ListAccountsResponse is the response to a ListAccounts request.
   v1LoginFinishRequest:
     type: object
@@ -632,7 +631,7 @@ definitions:
         $ref: '#/definitions/v1DidDocument'
         description: The DID Document for the wallet.
       accountInfo:
-        $ref: '#/definitions/v1AccountInfo'
+        $ref: '#/definitions/commonAccountInfo'
         description: The account info for the wallet.
       ucanTokenHeader:
         type: string
@@ -811,7 +810,7 @@ definitions:
         $ref: '#/definitions/v1DidDocument'
         description: The DID Document for the wallet.
       accountInfo:
-        $ref: '#/definitions/v1AccountInfo'
+        $ref: '#/definitions/commonAccountInfo'
         description: The account info for the wallet.
       ucanTokenHeader:
         type: string

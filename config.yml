@@ -1,35 +1,39 @@
 version: 1
 build:
-  main: "cmd/sonrd"
-  binary: "sonrd"
+  main: cmd/sonrd
+  binary: sonrd
+  proto:
+    path: ""
+    third_party_paths: []
 accounts:
-  - name: alice
-    coins: ["2000000000snr", "200000000stake"]
-  - name: bob
-    coins: ["1000000000snr", "100000000stake"]
+- name: alice
+  coins:
+  - 2000000000snr
+  - 200000000stake
+- name: bob
+  coins:
+  - 1000000000snr
+  - 100000000stake
+faucet:
+  name: bob
+  coins:
+  - 50000000snr
+  - 100000000stake
+client:
+  typescript:
+    path: ts-client
 genesis:
   app_state:
     staking:
       params:
-        bond_denom: "stake"
+        bond_denom: stake
 validators:
-  - name: alice
-    bonded: "100000000stake"
-    home: "~/.sonr"
-    app:
-      pruning: "nothing"
-    config:
-      moniker: "florence"
-    client:
-      output: "json"
-faucet:
-  name: bob
-  coins: ["50000000snr", "100000000stake"]
-init:
+- name: alice
+  bonded: 100000000stake
   app:
-    minimum-gas-prices: "0.025snr"
-    api:
-      enable: true
-      swagger: true
+    pruning: nothing
+  config:
+    moniker: florence
   client:
-    keyring-backend: "test"
+    output: json
+  home: ~/.sonr

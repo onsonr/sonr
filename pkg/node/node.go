@@ -8,7 +8,7 @@ import (
 	"github.com/sonrhq/core/pkg/node/config"
 	"github.com/sonrhq/core/pkg/node/internal/host"
 	"github.com/sonrhq/core/pkg/node/internal/ipfs"
-	"github.com/sonrhq/core/pkg/node/types"
+	types "github.com/sonrhq/core/types/common"
 )
 
 // Callback is an alias for a common.NodeCallback

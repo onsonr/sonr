@@ -11,25 +11,25 @@ const DefaultIndex uint64 = 1
 func DefaultServices() []Service {
 	return []Service{
 		{
-			Id:     "did:sonr:0",
+			Id:     "did:web:sonr.io",
 			Type:   "LinkedDomains",
 			Origin: "https://sonr.io",
 			Name:   "Sonr Home",
 		},
 		{
-			Id:     "did:sonr:1",
+			Id:     "did:web:localhost",
 			Type:   "LinkedDomains",
 			Origin: "localhost",
 			Name:   "Localhost",
 		},
 		{
-			Id:     "did:sonr:2",
+			Id:     "did:web:mind.sonr.io",
 			Type:   "LinkedDomains",
 			Origin: "https://mind.sonr.io",
 			Name:   "Sonr Mind",
 		},
 		{
-			Id:     "did:sonr:3",
+			Id:     "did:web:auth.sonr.io",
 			Type:   "LinkedDomains",
 			Origin: "https://auth.sonr.io",
 			Name:   "Sonr Auth",

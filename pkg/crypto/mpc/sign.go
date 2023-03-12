@@ -42,9 +42,7 @@ func SignCMP(configs []*cmp.Config, m []byte, peers []crypto.PartyID) ([]byte, e
 			if err != nil {
 				return
 			}
-			if conf.ID == "current" {
-				doneChan <- sig
-			}
+			doneChan <- sig
 		}(c)
 	}
 	wg.Wait()

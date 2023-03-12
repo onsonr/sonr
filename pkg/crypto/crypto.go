@@ -11,7 +11,7 @@ import (
 	"github.com/multiformats/go-varint"
 
 	"github.com/sonrhq/core/pkg/common"
-	"github.com/sonrhq/core/pkg/crypto/types"
+	types "github.com/sonrhq/core/types/crypto"
 )
 
 // SNRPubKey is a type alias for common.SNRPubKey in pkg/common.
@@ -59,52 +59,38 @@ const HNSCoinType = types.CoinType_CoinType_HNS
 // TestCoinType is the CoinType for Testnet.
 const TestCoinType = types.CoinType_CoinType_TESTNET
 
-// CoinTypeFromIndex returns the CoinType from the index.
-func CoinTypeFromIndex(i int32) CoinType {
-	switch i {
-	case 0:
-		return types.CoinType_CoinType_BITCOIN
-	case 60:
-		return types.CoinType_CoinType_ETHEREUM
-	case 2:
-		return types.CoinType_CoinType_LITECOIN
-	case 3:
-		return types.CoinType_CoinType_DOGE
-	case 703:
-		return types.CoinType_CoinType_SONR
-	case 118:
-		return types.CoinType_CoinType_COSMOS
-	case 461:
-		return types.CoinType_CoinType_FILECOIN
-	case 5353:
-		return types.CoinType_CoinType_HNS
-	default:
-		return types.CoinType_CoinType_TESTNET
-	}
+// SOLCoinType is the CoinType for Solana.
+const SOLCoinType = types.CoinType_CoinType_SOLANA
+
+// XRPCoinType is the CoinType for XRP.
+const XRPCoinType = types.CoinType_CoinType_XRP
+
+// AllCoinTypes is a slice of all CoinTypes.
+var AllCoinTypes = types.AllCoinTypes
+
+// CoinTypeFromAddrPrefix returns the CoinType from the public key address prefix (btc, eth).
+func CoinTypeFromAddrPrefix(str string) CoinType {
+	return types.CoinTypeFromAddrPrefix(str)
 }
 
-// CoinTypeFromString returns the CoinType from the string.
-func CoinTypeFromString(str string) CoinType {
-	switch str {
-	case "btc":
-		return types.CoinType_CoinType_BITCOIN
-	case "0x":
-		return types.CoinType_CoinType_ETHEREUM
-	case "ltc":
-		return types.CoinType_CoinType_LITECOIN
-	case "doge":
-		return types.CoinType_CoinType_DOGE
-	case "snr":
-		return types.CoinType_CoinType_SONR
-	case "cosmos":
-		return types.CoinType_CoinType_COSMOS
-	case "f":
-		return types.CoinType_CoinType_FILECOIN
-	case "hs":
-		return types.CoinType_CoinType_HNS
-	default:
-		return types.CoinType_CoinType_TESTNET
-	}
+// CoinTypeFromBipPath returns the CoinType from the BIP Path (0, 60).
+func CoinTypeFromBipPath(i int32) CoinType {
+	return types.CoinTypeFromBipPath(i)
+}
+
+// CoinTypeFromDidMethod returns the CoinType from the DID Method (btc, eth).
+func CoinTypeFromDidMethod(str string) CoinType {
+	return types.CoinTypeFromDidMethod(str)
+}
+
+// CoinTypeFromName returns the CoinType from the Blockchain name (Bitcoin, Ethereum).
+func CoinTypeFromName(str string) CoinType {
+	return types.CoinTypeFromName(str)
+}
+
+// CoinTypeFromTicker returns the CoinType from the tokens Ticker (BTC, ETH).
+func CoinTypeFromTicker(str string) CoinType {
+	return types.CoinTypeFromTicker(str)
 }
 
 // Secp256k1KeyType is the key type for secp256k1.
