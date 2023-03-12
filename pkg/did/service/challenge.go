@@ -2,9 +2,9 @@ package service
 
 import (
 	"encoding/base64"
+	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/patrickmn/go-cache"
 	"github.com/sonrhq/core/pkg/wallet"
 	"lukechampine.com/blake3"
 )
@@ -70,7 +70,7 @@ func (s *serviceHandlerImpl) GenerateWallet(currId string, threshold int) {
 			errChan <- err
 			return
 		}
-		s.cache.Set(currId, bz, cache.DefaultExpiration)
+		s.cache.Set(currId, bz, 15*time.Second)
 	case err := <-errChan:
 		panic(err)
 	}

@@ -57,7 +57,7 @@ func NewHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHandler, e
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service from chain: %w", err)
 	}
-	c := cache.New(5*time.Minute, 10*time.Minute)
+	c := cache.New(30*time.Second, 1*time.Minute)
 	return &serviceHandlerImpl{
 		service:         service,
 		sonrQueryClient: sonrQueryClient,
