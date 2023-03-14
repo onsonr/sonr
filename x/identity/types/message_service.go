@@ -119,9 +119,9 @@ func (msg *MsgDeactivateService) GetSignBytes() []byte {
 
 // ValidateBasic does a simple validation check that doesn't require access to any other information.
 func (msg *MsgDeactivateService) ValidateBasic() error {
-  _, err := sdk.AccAddressFromBech32(msg.Creator)
-  if err != nil {
-    return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-  }
-  return nil
+	_, err := sdk.AccAddressFromBech32(msg.Creator)
+	if err != nil {
+		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
+	}
+	return nil
 }

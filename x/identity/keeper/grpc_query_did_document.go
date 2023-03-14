@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"encoding/base64"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -57,8 +58,6 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	return &types.QueryGetDidResponse{DidDocument: val}, nil
 }
 
-
-
 func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest) (*types.QueryDidByKeyIDResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -95,7 +94,33 @@ func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKno
 	}
 	return &types.QueryDidByAlsoKnownAsResponse{DidDocument: val}, nil
 }
+func (k Keeper) DidByPubKey(goCtx context.Context, req *types.QueryDidByPubKeyRequest) (*types.QueryDidByPubKeyResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
 
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// If the DID Document is not found and the request requires creating a new account
+	if req.Create {
+		// Decode the base64 public key
+		pubKeyBytes, err := base64.StdEncoding.DecodeString(req.Pubkey)
+		if err != nil {
+			return nil, status.Error(codes.InvalidArgument, "invalid public key")
+		}
+
+		// Convert the decoded public key bytes to an AccAddress
+		accAddress := sdk.AccAddress(pubKeyBytes)
+
+		// Create a new account with the AccAddress
+		newAccount := k.accountKeeper.NewAccountWithAddress(ctx, accAddress)
+
+		// Set the new account in the store
+		k.accountKeeper.SetAccount(ctx, newAccount)
+		return nil, status.Error(codes.NotFound, "Document not found, created new account with supplied public key")
+	}
+	return nil, status.Error(codes.NotFound, "Document not found")
+}
 
 func (k Keeper) Service(c context.Context, req *types.QueryGetServiceRequest) (*types.QueryGetServiceResponse, error) {
 	if req == nil {

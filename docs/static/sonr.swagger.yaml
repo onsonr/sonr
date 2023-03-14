@@ -10,8 +10,7 @@ produces:
 paths:
   /sonr/core/identity/did:
     get:
-      summary: Get All DIDDocuments
-      description: "DidAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllDidRequest\" and returns a \"QueryAllDidResponse\".\n\n#### QueryAllDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n\n#### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      summary: "#### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
       operationId: Query_DidAll
       responses:
         "200":
@@ -68,8 +67,11 @@ paths:
           type: boolean
   /sonr/core/identity/did/{did}:
     get:
-      summary: Get a DIDDocument by DID
-      description: "Did is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetDidRequest\" and returns a \"QueryGetDidResponse\".\n\n#### QueryGetDidRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| did | TYPE_STRING | did is the unique identifier of the DIDDocument - it appears like (did:sonr:...) | \n\n\n#### QueryGetDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      summary: |-
+        #### QueryGetDidResponse
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
       operationId: Query_Did
       responses:
         "200":
@@ -88,8 +90,11 @@ paths:
           type: string
   /sonr/core/identity/did/aka/{akaId}:
     get:
-      summary: Get a DIDDocument from an Alias
-      description: "DidByAlsoKnownAs is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByAlsoKnownAsRequest\" and returns a \"QueryDidByAlsoKnownAsResponse\".\n\n#### QueryDidByAlsoKnownAsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| aka_id | TYPE_STRING | aka_id is the unique identifier of the DIDDocument - it appears like (\"example.snr\") | \n\n\n#### QueryDidByAlsoKnownAsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      summary: |-
+        #### QueryDidByAlsoKnownAsResponse
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
       operationId: Query_DidByAlsoKnownAs
       responses:
         "200":
@@ -108,8 +113,11 @@ paths:
           type: string
   /sonr/core/identity/did/key/{keyId}:
     get:
-      summary: Get a DIDDocument from a key id
-      description: "DidByKeyID is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryDidByKeyIDRequest\" and returns a \"QueryDidByKeyIDResponse\".\n\n#### QueryDidByKeyIDRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| key_id | TYPE_STRING | key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1) | \n\n\n#### QueryDidByKeyIDResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |"
+      summary: |-
+        #### QueryDidByKeyIDResponse
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
       operationId: Query_DidByKeyID
       responses:
         "200":
@@ -128,16 +136,7 @@ paths:
           type: string
   /sonr/core/identity/params:
     get:
-      summary: Parameters for the identity module.
-      description: |-
-        Params is a call with the method(s) GET within the "Query" service.
-        It takes in "QueryParamsRequest" and returns a "QueryParamsResponse".
-
-        #### QueryParamsRequest
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |
-
-
+      summary: |-
         #### QueryParamsResponse
         | Name | Type | Description |
         | ---- | ---- | ----------- |
@@ -154,8 +153,7 @@ paths:
             $ref: '#/definitions/rpcStatus'
   /sonr/core/identity/service:
     get:
-      summary: Get all Services
-      description: "ServiceAll is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryAllServiceRequest\" and returns a \"QueryAllServiceResponse\".\n\n#### QueryAllServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| pagination | TYPE_MESSAGE |  | \n\n\n#### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      summary: "#### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
       operationId: Query_ServiceAll
       responses:
         "200":
@@ -212,8 +210,11 @@ paths:
           type: boolean
   /sonr/core/identity/service/{origin}:
     get:
-      summary: Get a Service from Origin
-      description: "Service is a call with the method(s) GET within the \"Query\" service.\nIt takes in \"QueryGetServiceRequest\" and returns a \"QueryGetServiceResponse\".\n\n#### QueryGetServiceRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | origin is the hostname of the calling service - it appears like (\"test.com\") | \n\n\n#### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |"
+      summary: |-
+        #### QueryGetServiceResponse
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |
+        | service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |
       operationId: Query_Service
       responses:
         "200":
@@ -433,6 +434,30 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/v1RefreshSharesRequest'
+  /sonrhq/core/identity/did/pubkey/{pubkey}/{create}:
+    get:
+      summary: Queries a list of DidByPubKey items.
+      operationId: Query_DidByPubKey
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/identityQueryDidByPubKeyResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pubkey
+          description: Public key is a base64 encoded string of the public key
+          in: path
+          required: true
+          type: string
+        - name: create
+          description: Create account if it doesn't exist
+          in: path
+          required: true
+          type: boolean
 definitions:
   commonAccountInfo:
     type: object
@@ -601,6 +626,8 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  identityQueryDidByPubKeyResponse:
+    type: object
   identityQueryGetDidResponse:
     type: object
     properties:

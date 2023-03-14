@@ -39,6 +39,7 @@ func TestDomainRecordGet(t *testing.T) {
 		)
 	}
 }
+
 // TestDomainRecordRemove checks if a domain record can be removed from the store
 
 func TestDomainRecordRemove(t *testing.T) {

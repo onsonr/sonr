@@ -2,9 +2,6 @@ version: 1
 build:
   main: cmd/sonrd
   binary: sonrd
-  proto:
-    path: ""
-    third_party_paths: []
 accounts:
 - name: alice
   coins:
@@ -19,9 +16,6 @@ faucet:
   coins:
   - 50000000snr
   - 100000000stake
-client:
-  typescript:
-    path: ts-client
 genesis:
   app_state:
     staking:

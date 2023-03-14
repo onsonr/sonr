@@ -15,43 +15,43 @@ import (
 	"github.com/fxamacker/cbor/v2"
 )
 
-//Error represents an error in a WebAuthn relying party operation
+// Error represents an error in a WebAuthn relying party operation
 type Error struct {
 	err     string
 	wrapped error
 }
 
-//Error implements the error interface
+// Error implements the error interface
 func (e Error) Error() string {
 	return e.err
 }
 
-//Unwrap allows for error unwrapping
+// Unwrap allows for error unwrapping
 func (e Error) Unwrap() error {
 	return e.wrapped
 }
 
-//Wrap returns a new error which contains the provided error wrapped with this
-//error
+// Wrap returns a new error which contains the provided error wrapped with this
+// error
 func (e Error) Wrap(err error) Error {
 	n := e
 	n.wrapped = err
 	return n
 }
 
-//Is establishes equality for error types
+// Is establishes equality for error types
 func (e Error) Is(target error) bool {
 	return e.Error() == target.Error()
 }
 
-//NewError returns a new Error with a custom message
+// NewError returns a new Error with a custom message
 func NewError(fmStr string, els ...interface{}) Error {
 	return Error{
 		err: fmt.Sprintf(fmStr, els...),
 	}
 }
 
-//Categorical top-level errors
+// Categorical top-level errors
 var (
 	ErrDecodeAttestedCredentialData = Error{err: "error decoding attested credential data"}
 	ErrDecodeAuthenticatorData      = Error{err: "error decoding authenticator data"}
@@ -71,7 +71,7 @@ var (
 	ErrVerifySignature              = Error{err: "error verifying signature"}
 )
 
-//COSEKey represents a key decoded from COSE format.
+// COSEKey represents a key decoded from COSE format.
 type COSEKey struct {
 	Kty       int             `cbor:"1,keyasint,omitempty"`
 	Kid       []byte          `cbor:"2,keyasint,omitempty"`
@@ -84,10 +84,10 @@ type COSEKey struct {
 	D         []byte          `cbor:"-4,keyasint,omitempty"`
 }
 
-//COSEAlgorithmIdentifier is a number identifying a cryptographic algorithm
+// COSEAlgorithmIdentifier is a number identifying a cryptographic algorithm
 type COSEAlgorithmIdentifier int
 
-//enum values for COSEAlgorithmIdentifier type
+// enum values for COSEAlgorithmIdentifier type
 const (
 	AlgorithmRS1   COSEAlgorithmIdentifier = -65535
 	AlgorithmRS512 COSEAlgorithmIdentifier = -259
@@ -102,28 +102,28 @@ const (
 	AlgorithmES256 COSEAlgorithmIdentifier = -7
 )
 
-//COSEEllipticCurve is a number identifying an elliptic curve
+// COSEEllipticCurve is a number identifying an elliptic curve
 type COSEEllipticCurve int
 
-//enum values for COSEEllipticCurve type
+// enum values for COSEEllipticCurve type
 const (
 	CurveP256 COSEEllipticCurve = 1
 	CurveP384 COSEEllipticCurve = 2
 	CurveP521 COSEEllipticCurve = 3
 )
 
-//COSEKeyType is a number identifying a key type
+// COSEKeyType is a number identifying a key type
 type COSEKeyType int
 
-//enum values for COSEKeyType type
+// enum values for COSEKeyType type
 const (
 	KeyTypeOKP COSEKeyType = 1
 	KeyTypeEC2 COSEKeyType = 2
 	KeyTypeRSA COSEKeyType = 3
 )
 
-//VerifySignature verifies a signature using a provided COSEKey, message, and
-//signature
+// VerifySignature verifies a signature using a provided COSEKey, message, and
+// signature
 func VerifySignature(rawKey cbor.RawMessage, message, sig []byte) error {
 	coseKey := COSEKey{}
 	err := cbor.Unmarshal(rawKey, &coseKey)
@@ -195,7 +195,7 @@ func VerifySignature(rawKey cbor.RawMessage, message, sig []byte) error {
 	return ErrVerifySignature.Wrap(NewError("COSE algorithm ID %d not supported", coseKey.Alg))
 }
 
-//DecodePublicKey parses a crypto.PublicKey from a COSEKey
+// DecodePublicKey parses a crypto.PublicKey from a COSEKey
 func DecodePublicKey(coseKey *COSEKey) (crypto.PublicKey, error) {
 	var publicKey crypto.PublicKey
 

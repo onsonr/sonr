@@ -1,10 +1,12 @@
 package keeper
 
 import (
+	"encoding/base64"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/sonrhq/core/x/identity/types"
 )
 
@@ -78,6 +80,28 @@ func (k Keeper) GetDidDocumentByAKA(ctx sdk.Context, aka string) (types.DidDocum
 			if aka == s {
 				return val, true
 			}
+		}
+	}
+
+	return val, false
+}
+
+// GetDidDocumentByPubKey returns a DidDocument by searching for a matching public key
+func (k Keeper) GetDidDocumentByPubKey(ctx sdk.Context, pubKey string) (val types.DidDocument, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+	pubKey = strings.TrimSpace(pubKey)
+
+	for ; iterator.Valid(); iterator.Next() {
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		_, bz, err := bech32.DecodeAndConvert(val.Address())
+		if err != nil {
+			continue
+		}
+		if base64.RawStdEncoding.EncodeToString(bz) == pubKey {
+			return val, true
 		}
 	}
 

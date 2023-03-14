@@ -665,6 +665,97 @@ func (m *QueryAllServiceResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+// this line is used by starport scaffolding # 3
+type QueryDidByPubKeyRequest struct {
+	// Public key is a base64 encoded string of the public key
+	Pubkey string `protobuf:"bytes,1,opt,name=pubkey,proto3" json:"pubkey,omitempty"`
+	// Create account if it doesn't exist
+	Create bool `protobuf:"varint,2,opt,name=create,proto3" json:"create,omitempty"`
+}
+
+func (m *QueryDidByPubKeyRequest) Reset()         { *m = QueryDidByPubKeyRequest{} }
+func (m *QueryDidByPubKeyRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryDidByPubKeyRequest) ProtoMessage()    {}
+func (*QueryDidByPubKeyRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{14}
+}
+func (m *QueryDidByPubKeyRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDidByPubKeyRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDidByPubKeyRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDidByPubKeyRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDidByPubKeyRequest.Merge(m, src)
+}
+func (m *QueryDidByPubKeyRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDidByPubKeyRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDidByPubKeyRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDidByPubKeyRequest proto.InternalMessageInfo
+
+func (m *QueryDidByPubKeyRequest) GetPubkey() string {
+	if m != nil {
+		return m.Pubkey
+	}
+	return ""
+}
+
+func (m *QueryDidByPubKeyRequest) GetCreate() bool {
+	if m != nil {
+		return m.Create
+	}
+	return false
+}
+
+type QueryDidByPubKeyResponse struct {
+}
+
+func (m *QueryDidByPubKeyResponse) Reset()         { *m = QueryDidByPubKeyResponse{} }
+func (m *QueryDidByPubKeyResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryDidByPubKeyResponse) ProtoMessage()    {}
+func (*QueryDidByPubKeyResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{15}
+}
+func (m *QueryDidByPubKeyResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryDidByPubKeyResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryDidByPubKeyResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryDidByPubKeyResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryDidByPubKeyResponse.Merge(m, src)
+}
+func (m *QueryDidByPubKeyResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryDidByPubKeyResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryDidByPubKeyResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryDidByPubKeyResponse proto.InternalMessageInfo
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "sonrhq.core.identity.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "sonrhq.core.identity.QueryParamsResponse")
@@ -680,61 +771,68 @@ func init() {
 	proto.RegisterType((*QueryGetServiceResponse)(nil), "sonrhq.core.identity.QueryGetServiceResponse")
 	proto.RegisterType((*QueryAllServiceRequest)(nil), "sonrhq.core.identity.QueryAllServiceRequest")
 	proto.RegisterType((*QueryAllServiceResponse)(nil), "sonrhq.core.identity.QueryAllServiceResponse")
+	proto.RegisterType((*QueryDidByPubKeyRequest)(nil), "sonrhq.core.identity.QueryDidByPubKeyRequest")
+	proto.RegisterType((*QueryDidByPubKeyResponse)(nil), "sonrhq.core.identity.QueryDidByPubKeyResponse")
 }
 
 func init() { proto.RegisterFile("core/identity/query.proto", fileDescriptor_55ac06fdf68c11fd) }
 
 var fileDescriptor_55ac06fdf68c11fd = []byte{
-	// 772 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0x51, 0x4f, 0x13, 0x4b,
-	0x14, 0xc7, 0xbb, 0x70, 0x29, 0xf7, 0x0e, 0x2f, 0x64, 0x2e, 0x17, 0x2e, 0xa5, 0x2d, 0xba, 0x2a,
-	0xa0, 0xc1, 0x1d, 0x81, 0xf8, 0x62, 0x62, 0x4c, 0x49, 0x23, 0x69, 0x78, 0x81, 0xfa, 0x62, 0x8c,
-	0x89, 0x4c, 0x3b, 0x93, 0x65, 0xec, 0x76, 0xa7, 0x74, 0xb6, 0xe8, 0xa6, 0xa9, 0x89, 0x7e, 0x00,
-	0x63, 0xa2, 0x89, 0x1f, 0xc0, 0x27, 0xbe, 0x09, 0x8f, 0x24, 0xbe, 0xf8, 0x64, 0x0c, 0xf8, 0x35,
-	0x4c, 0xcc, 0xee, 0x9c, 0xd2, 0x2e, 0x6d, 0x97, 0x62, 0xfa, 0xb6, 0x4c, 0xcf, 0xff, 0xfc, 0x7f,
-	0x67, 0xcf, 0xec, 0x3f, 0xa0, 0xf9, 0xb2, 0xac, 0x73, 0x22, 0x18, 0x77, 0x3d, 0xe1, 0xf9, 0xe4,
-	0xa0, 0xc1, 0xeb, 0xbe, 0x55, 0xab, 0x4b, 0x4f, 0xe2, 0x19, 0x25, 0xdd, 0xfa, 0xfe, 0x81, 0x15,
-	0x54, 0x58, 0xed, 0x8a, 0xd4, 0x5c, 0x54, 0xc0, 0x04, 0xd3, 0xe5, 0xa9, 0x85, 0xe8, 0x0f, 0x36,
-	0x77, 0xb9, 0x12, 0x0a, 0x7e, 0xbc, 0x53, 0x96, 0xaa, 0x2a, 0x15, 0x29, 0x51, 0xc5, 0xb5, 0x09,
-	0x39, 0x5c, 0x2b, 0x71, 0x8f, 0xae, 0x91, 0x1a, 0xb5, 0x85, 0x4b, 0x3d, 0x21, 0x5d, 0xa8, 0x9d,
-	0xb1, 0xa5, 0x2d, 0xc3, 0x47, 0x12, 0x3c, 0xc1, 0x69, 0xda, 0x96, 0xd2, 0x76, 0x38, 0xa1, 0x35,
-	0x41, 0xa8, 0xeb, 0x4a, 0x2f, 0x94, 0x40, 0x7f, 0x73, 0x06, 0xe1, 0xdd, 0xa0, 0xeb, 0x0e, 0xad,
-	0xd3, 0xaa, 0x2a, 0xf2, 0x83, 0x06, 0x57, 0x9e, 0xb9, 0x8b, 0xfe, 0x8d, 0x9c, 0xaa, 0x9a, 0x74,
-	0x15, 0xc7, 0x0f, 0x50, 0xb2, 0x16, 0x9e, 0xfc, 0x6f, 0x5c, 0x33, 0x56, 0xa6, 0xd6, 0xd3, 0x56,
-	0xbf, 0x49, 0x2d, 0xad, 0xda, 0xfc, 0xeb, 0xf8, 0xfb, 0x62, 0xa2, 0x08, 0x0a, 0x73, 0x09, 0x8c,
-	0xb6, 0xb8, 0x97, 0x17, 0x0c, 0x8c, 0xf0, 0x34, 0x1a, 0x67, 0x82, 0x85, 0xed, 0xfe, 0x29, 0x06,
-	0x8f, 0xe6, 0x1e, 0x58, 0xb7, 0xeb, 0xc0, 0xba, 0x80, 0xa6, 0x98, 0x60, 0x79, 0x59, 0x6e, 0x54,
-	0xb9, 0xeb, 0x81, 0xff, 0xf5, 0xfe, 0xfe, 0xf9, 0x4e, 0x21, 0x40, 0x74, 0x6b, 0x4d, 0x82, 0x66,
-	0x43, 0x87, 0xbc, 0x60, 0x9b, 0xfe, 0x36, 0xf7, 0x0b, 0xf9, 0x36, 0xcd, 0x7f, 0x28, 0x59, 0xe1,
-	0xfe, 0x8b, 0x73, 0xa0, 0x89, 0x0a, 0xf7, 0x0b, 0xcc, 0x64, 0x68, 0xae, 0x47, 0x30, 0x7a, 0xac,
-	0xfb, 0x28, 0xdd, 0x71, 0xc9, 0x39, 0x4a, 0x6e, 0xbb, 0xf2, 0x95, 0x9b, 0x53, 0x5d, 0x70, 0xb4,
-	0x42, 0xbb, 0xe0, 0x68, 0x85, 0x16, 0x98, 0xf9, 0x12, 0x65, 0x06, 0xc8, 0x46, 0x8f, 0xf8, 0x1c,
-	0x76, 0x98, 0x73, 0x9c, 0xae, 0x1d, 0x3e, 0x46, 0xa8, 0x73, 0x15, 0xa1, 0xff, 0x92, 0xa5, 0xef,
-	0xad, 0x15, 0xdc, 0x5b, 0x4b, 0x7f, 0x1c, 0x70, 0x6f, 0xad, 0x1d, 0x6a, 0x73, 0xd0, 0x16, 0xbb,
-	0x94, 0xe6, 0x91, 0x01, 0xab, 0x6f, 0xb7, 0x1f, 0x34, 0xc0, 0xf8, 0x9f, 0x0e, 0x80, 0xb7, 0x22,
-	0xa8, 0x63, 0x21, 0xea, 0xf2, 0xa5, 0xa8, 0x9a, 0x23, 0xc2, 0x7a, 0x0f, 0xee, 0xd0, 0x16, 0xf7,
-	0x9e, 0xf0, 0xfa, 0xa1, 0x28, 0xb7, 0x27, 0xc2, 0xb3, 0x28, 0x29, 0xeb, 0xc2, 0x16, 0x2e, 0xac,
-	0x09, 0xfe, 0x32, 0x9f, 0xc2, 0x25, 0xea, 0x56, 0xc0, 0x80, 0x0f, 0xd1, 0xa4, 0xd2, 0x47, 0xf0,
-	0xf6, 0x32, 0xfd, 0x87, 0x03, 0x1d, 0x0c, 0xd6, 0xd6, 0x98, 0x7b, 0xc0, 0x92, 0x73, 0x9c, 0x0b,
-	0x2c, 0xa3, 0xda, 0xcc, 0x17, 0x03, 0xe0, 0xbb, 0x2d, 0x00, 0xfe, 0x11, 0xfa, 0x1b, 0x40, 0x14,
-	0xac, 0x66, 0x28, 0xfa, 0x73, 0xd1, 0xc8, 0x76, 0xb2, 0xfe, 0x6b, 0x12, 0x4d, 0x84, 0x94, 0xf8,
-	0xad, 0x81, 0x92, 0x3a, 0x84, 0xf0, 0x4a, 0x7f, 0x98, 0xde, 0xcc, 0x4b, 0xdd, 0x1e, 0xa2, 0x52,
-	0xbb, 0x9a, 0xe6, 0xbb, 0xaf, 0x3f, 0x3f, 0x8e, 0xa5, 0x71, 0x8a, 0x04, 0x12, 0x12, 0xcd, 0x6f,
-	0x9d, 0x77, 0x01, 0xc3, 0x78, 0x5e, 0xb0, 0x58, 0x80, 0x48, 0x16, 0xc6, 0x02, 0x44, 0xd3, 0xd0,
-	0xbc, 0x15, 0x02, 0x2c, 0xe2, 0x4c, 0x3f, 0x00, 0x26, 0x18, 0x69, 0x32, 0xc1, 0x5a, 0xf8, 0xb3,
-	0x81, 0x50, 0x27, 0xb4, 0xf0, 0x6a, 0x8c, 0x41, 0x4f, 0x18, 0xa6, 0xee, 0x0e, 0x59, 0x0d, 0x48,
-	0xab, 0x21, 0xd2, 0x12, 0xbe, 0x39, 0x08, 0xa9, 0xc2, 0x7d, 0xd2, 0xd4, 0xf1, 0xda, 0xc2, 0x47,
-	0x06, 0x9a, 0xbe, 0x98, 0x58, 0x78, 0xfd, 0x32, 0xc7, 0xde, 0x54, 0x4c, 0x6d, 0x5c, 0x49, 0x33,
-	0x2c, 0x2b, 0xad, 0x50, 0xd2, 0xd4, 0x69, 0xdb, 0xc2, 0x6f, 0x50, 0x32, 0x2f, 0x58, 0xce, 0x71,
-	0x62, 0x77, 0x19, 0xc9, 0xc4, 0xd8, 0x5d, 0x46, 0xe3, 0xcd, 0x5c, 0x0c, 0x61, 0xe6, 0xf1, 0xdc,
-	0x00, 0x18, 0xfc, 0xc9, 0x40, 0x93, 0xf0, 0xf1, 0xc4, 0xae, 0xb0, 0x27, 0x8b, 0x62, 0x57, 0xd8,
-	0x9b, 0x43, 0xf1, 0xaf, 0x05, 0xbe, 0x57, 0xd2, 0xd4, 0x79, 0xd6, 0xc2, 0xef, 0x0d, 0x84, 0xa0,
-	0x43, 0xf0, 0x6e, 0x56, 0xe3, 0x27, 0xbe, 0x02, 0x59, 0x6f, 0xc8, 0x98, 0x37, 0x42, 0xb2, 0x0c,
-	0x5e, 0x88, 0x21, 0xdb, 0xcc, 0x1d, 0x9f, 0x66, 0x8d, 0x93, 0xd3, 0xac, 0xf1, 0xe3, 0x34, 0x6b,
-	0x7c, 0x38, 0xcb, 0x26, 0x4e, 0xce, 0xb2, 0x89, 0x6f, 0x67, 0xd9, 0xc4, 0xb3, 0x65, 0x5b, 0x78,
-	0xfb, 0x8d, 0x92, 0x55, 0x96, 0x55, 0xa2, 0x7d, 0x75, 0x8b, 0xd7, 0x9d, 0x26, 0x9e, 0x5f, 0xe3,
-	0xaa, 0x94, 0x0c, 0xff, 0x29, 0xda, 0xf8, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x88, 0xc0, 0xb6, 0x43,
-	0xdd, 0x09, 0x00, 0x00,
+	// 851 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x96, 0x41, 0x6f, 0xe3, 0x44,
+	0x14, 0xc7, 0xe3, 0x2d, 0x9b, 0xdd, 0x9d, 0x5e, 0x56, 0x43, 0xd9, 0xb6, 0x6e, 0x92, 0xc2, 0x00,
+	0x6d, 0x41, 0xc5, 0x43, 0x53, 0xb8, 0x54, 0x42, 0x28, 0x55, 0x44, 0x15, 0xf5, 0xd2, 0x86, 0x0b,
+	0x42, 0x48, 0x74, 0x92, 0x19, 0xb9, 0x43, 0x1c, 0x4f, 0x6a, 0x3b, 0x05, 0x2b, 0x0a, 0x12, 0x7c,
+	0x00, 0x84, 0x04, 0x12, 0x1f, 0x80, 0x4b, 0xfb, 0x4d, 0x7a, 0xac, 0xc4, 0x85, 0x13, 0x42, 0x2d,
+	0x1f, 0x04, 0xd9, 0xf3, 0xd2, 0xd8, 0x75, 0xe2, 0xa6, 0xab, 0x9c, 0x6a, 0x8f, 0xdf, 0xff, 0xbd,
+	0xdf, 0xf3, 0x7b, 0xfe, 0xa7, 0x68, 0xb5, 0xad, 0x3c, 0x41, 0x25, 0x17, 0x6e, 0x20, 0x83, 0x90,
+	0x9e, 0xf5, 0x85, 0x17, 0x5a, 0x3d, 0x4f, 0x05, 0x0a, 0x2f, 0xf9, 0xca, 0xf5, 0x4e, 0xcf, 0xac,
+	0x28, 0xc2, 0x1a, 0x45, 0x98, 0xcb, 0x69, 0x01, 0x97, 0x5c, 0x87, 0x9b, 0x6b, 0xe9, 0x07, 0xb6,
+	0x70, 0x85, 0x2f, 0x7d, 0x78, 0xf8, 0x61, 0x5b, 0xf9, 0x5d, 0xe5, 0xd3, 0x16, 0xf3, 0x85, 0x2e,
+	0x42, 0xcf, 0x77, 0x5a, 0x22, 0x60, 0x3b, 0xb4, 0xc7, 0x6c, 0xe9, 0xb2, 0x40, 0x2a, 0x17, 0x62,
+	0x97, 0x6c, 0x65, 0xab, 0xf8, 0x92, 0x46, 0x57, 0x70, 0x5a, 0xb2, 0x95, 0xb2, 0x1d, 0x41, 0x59,
+	0x4f, 0x52, 0xe6, 0xba, 0x2a, 0x88, 0x25, 0x90, 0x9f, 0x2c, 0x21, 0x7c, 0x1c, 0x65, 0x3d, 0x62,
+	0x1e, 0xeb, 0xfa, 0x4d, 0x71, 0xd6, 0x17, 0x7e, 0x40, 0x8e, 0xd1, 0x9b, 0xa9, 0x53, 0xbf, 0xa7,
+	0x5c, 0x5f, 0xe0, 0x3d, 0x54, 0xec, 0xc5, 0x27, 0x2b, 0xc6, 0xdb, 0xc6, 0xd6, 0x62, 0xb5, 0x64,
+	0x4d, 0xea, 0xd4, 0xd2, 0xaa, 0xfd, 0x37, 0xae, 0xfe, 0x59, 0x2f, 0x34, 0x41, 0x41, 0x36, 0xa0,
+	0xd0, 0x81, 0x08, 0xea, 0x92, 0x43, 0x21, 0xfc, 0x12, 0x2d, 0x70, 0xc9, 0xe3, 0x74, 0x2f, 0x9a,
+	0xd1, 0x25, 0x39, 0x81, 0xd2, 0xa3, 0x38, 0x28, 0xdd, 0x40, 0x8b, 0x5c, 0xf2, 0xba, 0x6a, 0xf7,
+	0xbb, 0xc2, 0x0d, 0xa0, 0xfe, 0x3b, 0x93, 0xeb, 0xd7, 0xc7, 0x81, 0x00, 0x91, 0xd4, 0x12, 0x8a,
+	0x5e, 0xc5, 0x15, 0xea, 0x92, 0xef, 0x87, 0x87, 0x22, 0x6c, 0xd4, 0x47, 0x34, 0x6f, 0xa1, 0x62,
+	0x47, 0x84, 0xdf, 0xde, 0x01, 0x3d, 0xed, 0x88, 0xb0, 0xc1, 0x09, 0x47, 0xcb, 0x19, 0xc1, 0xfc,
+	0xb1, 0x3e, 0x45, 0xa5, 0x71, 0x95, 0x9a, 0xe3, 0xab, 0x43, 0x57, 0x7d, 0xef, 0xd6, 0xfc, 0x04,
+	0x1c, 0xeb, 0xb0, 0x04, 0x1c, 0xeb, 0xb0, 0x06, 0x27, 0xdf, 0xa1, 0xf2, 0x14, 0xd9, 0xfc, 0x11,
+	0xbf, 0x81, 0x19, 0xd6, 0x1c, 0x27, 0x31, 0xc3, 0x2f, 0x10, 0x1a, 0xaf, 0x22, 0xe4, 0xdf, 0xb0,
+	0xf4, 0xde, 0x5a, 0xd1, 0xde, 0x5a, 0xfa, 0xe3, 0x80, 0xbd, 0xb5, 0x8e, 0x98, 0x2d, 0x40, 0xdb,
+	0x4c, 0x28, 0xc9, 0xa5, 0x01, 0xa3, 0x1f, 0xa5, 0x9f, 0xd6, 0xc0, 0xc2, 0xeb, 0x36, 0x80, 0x0f,
+	0x52, 0xa8, 0x4f, 0x62, 0xd4, 0xcd, 0x07, 0x51, 0x35, 0x47, 0x8a, 0xf5, 0x63, 0xd8, 0xa1, 0x03,
+	0x11, 0x7c, 0x29, 0xbc, 0x73, 0xd9, 0x1e, 0x75, 0x84, 0x5f, 0xa1, 0xa2, 0xf2, 0xa4, 0x2d, 0x5d,
+	0x18, 0x13, 0xdc, 0x91, 0xaf, 0x60, 0x89, 0x92, 0x0a, 0x68, 0xf0, 0x33, 0xf4, 0xcc, 0xd7, 0x47,
+	0xf0, 0xf6, 0xca, 0x93, 0x9b, 0x03, 0x1d, 0x34, 0x36, 0xd2, 0x90, 0x13, 0x60, 0xa9, 0x39, 0xce,
+	0x3d, 0x96, 0x79, 0x4d, 0xe6, 0x4f, 0x03, 0xe0, 0x93, 0x25, 0x00, 0xfe, 0x73, 0xf4, 0x1c, 0x40,
+	0x7c, 0x18, 0xcd, 0x4c, 0xf4, 0x77, 0xa2, 0xf9, 0xcd, 0xa4, 0x91, 0xfc, 0x4c, 0x8f, 0xfa, 0xad,
+	0x43, 0x11, 0x26, 0x86, 0xd2, 0xeb, 0xb7, 0x3a, 0x22, 0x1c, 0x0d, 0x45, 0xdf, 0x45, 0xe7, 0x6d,
+	0x4f, 0xb0, 0x40, 0xc4, 0x75, 0x9f, 0x37, 0xe1, 0x8e, 0x98, 0x68, 0x25, 0x9b, 0x4a, 0x97, 0xac,
+	0x5e, 0xbc, 0x40, 0x4f, 0xe3, 0x87, 0xf8, 0x27, 0x03, 0x15, 0xb5, 0xd7, 0xe1, 0xad, 0xc9, 0x3d,
+	0x67, 0xad, 0xd5, 0xfc, 0x60, 0x86, 0x48, 0x5d, 0x89, 0x90, 0x9f, 0xff, 0xfa, 0xef, 0xb7, 0x27,
+	0x25, 0x6c, 0xd2, 0x48, 0x42, 0xd3, 0x3f, 0x13, 0xda, 0x56, 0x23, 0x86, 0x85, 0xba, 0xe4, 0xb9,
+	0x00, 0x29, 0xcb, 0xcd, 0x05, 0x48, 0x9b, 0x2e, 0x79, 0x3f, 0x06, 0x58, 0xc7, 0xe5, 0x49, 0x00,
+	0x5c, 0x72, 0x3a, 0xe0, 0x92, 0x0f, 0xf1, 0x1f, 0x06, 0x42, 0x63, 0x6f, 0xc4, 0xdb, 0x39, 0x05,
+	0x32, 0x9e, 0x6b, 0x7e, 0x34, 0x63, 0x34, 0x20, 0x6d, 0xc7, 0x48, 0x1b, 0xf8, 0xbd, 0x69, 0x48,
+	0x1d, 0x11, 0xd2, 0x81, 0x76, 0xf1, 0x21, 0xbe, 0x34, 0xd0, 0xcb, 0xfb, 0xc6, 0x88, 0xab, 0x0f,
+	0x55, 0xcc, 0x9a, 0xaf, 0xb9, 0xfb, 0x28, 0xcd, 0xac, 0xac, 0xac, 0xc3, 0xe8, 0x40, 0x9b, 0xfa,
+	0x10, 0x5f, 0x18, 0x68, 0x31, 0xb1, 0x6f, 0xf8, 0xc1, 0x17, 0x93, 0x5a, 0x71, 0xd3, 0x9a, 0x35,
+	0x1c, 0xe0, 0xf6, 0x62, 0xb8, 0x4f, 0x70, 0x95, 0x6a, 0xdd, 0x04, 0x3c, 0xfd, 0x91, 0xd0, 0x81,
+	0xfe, 0x3b, 0xa4, 0x03, 0xfd, 0x75, 0x0c, 0xf1, 0x8f, 0xa8, 0x58, 0x97, 0xbc, 0xe6, 0x38, 0xb9,
+	0x6b, 0x97, 0xfa, 0x95, 0xc8, 0x5d, 0xbb, 0xb4, 0xe1, 0x93, 0xf5, 0x18, 0x6d, 0x15, 0x2f, 0x4f,
+	0x79, 0x6f, 0xf8, 0x77, 0x03, 0x3d, 0x03, 0x3b, 0xc9, 0xdd, 0xb6, 0x8c, 0x3b, 0xe7, 0x6e, 0x5b,
+	0xd6, 0x99, 0xf3, 0x27, 0x08, 0x0e, 0x46, 0x07, 0xda, 0xe1, 0x87, 0xf8, 0x17, 0x03, 0x21, 0xc8,
+	0x10, 0xbd, 0x9b, 0xed, 0xfc, 0x8e, 0x1f, 0x41, 0x96, 0xb5, 0x5d, 0xf2, 0x6e, 0x4c, 0x56, 0xc6,
+	0x6b, 0x39, 0x64, 0xfb, 0xb5, 0xab, 0x9b, 0x8a, 0x71, 0x7d, 0x53, 0x31, 0xfe, 0xbd, 0xa9, 0x18,
+	0xbf, 0xde, 0x56, 0x0a, 0xd7, 0xb7, 0x95, 0xc2, 0xdf, 0xb7, 0x95, 0xc2, 0xd7, 0x9b, 0xb6, 0x0c,
+	0x4e, 0xfb, 0x2d, 0xab, 0xad, 0xba, 0xa9, 0xf9, 0xff, 0x30, 0x4e, 0x12, 0x84, 0x3d, 0xe1, 0xb7,
+	0x8a, 0xf1, 0xbf, 0x89, 0xbb, 0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0xe2, 0x9c, 0xca, 0xbf, 0xef,
+	0x0a, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -749,106 +847,38 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Parameters for the identity module.
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Get a DIDDocument by DID
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Did(ctx context.Context, in *QueryGetDidRequest, opts ...grpc.CallOption) (*QueryGetDidResponse, error)
-	// Get a DIDDocument from a key id
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidByKeyID(ctx context.Context, in *QueryDidByKeyIDRequest, opts ...grpc.CallOption) (*QueryDidByKeyIDResponse, error)
-	// Get a DIDDocument from an Alias
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidByAlsoKnownAs(ctx context.Context, in *QueryDidByAlsoKnownAsRequest, opts ...grpc.CallOption) (*QueryDidByAlsoKnownAsResponse, error)
-	// Get All DIDDocuments
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
+	// Queries a list of DidByPubKey items.
+	DidByPubKey(ctx context.Context, in *QueryDidByPubKeyRequest, opts ...grpc.CallOption) (*QueryDidByPubKeyResponse, error)
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error)
-	// Get a Service from Origin
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Service(ctx context.Context, in *QueryGetServiceRequest, opts ...grpc.CallOption) (*QueryGetServiceResponse, error)
-	// Get all Services
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
@@ -900,6 +930,15 @@ func (c *queryClient) DidByAlsoKnownAs(ctx context.Context, in *QueryDidByAlsoKn
 	return out, nil
 }
 
+func (c *queryClient) DidByPubKey(ctx context.Context, in *QueryDidByPubKeyRequest, opts ...grpc.CallOption) (*QueryDidByPubKeyResponse, error) {
+	out := new(QueryDidByPubKeyResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidByPubKey", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error) {
 	out := new(QueryAllDidResponse)
 	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidAll", in, out, opts...)
@@ -929,106 +968,38 @@ func (c *queryClient) ServiceAll(ctx context.Context, in *QueryAllServiceRequest
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Parameters for the identity module.
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Get a DIDDocument by DID
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Did(context.Context, *QueryGetDidRequest) (*QueryGetDidResponse, error)
-	// Get a DIDDocument from a key id
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidByKeyID(context.Context, *QueryDidByKeyIDRequest) (*QueryDidByKeyIDResponse, error)
-	// Get a DIDDocument from an Alias
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidByAlsoKnownAs(context.Context, *QueryDidByAlsoKnownAsRequest) (*QueryDidByAlsoKnownAsResponse, error)
-	// Get All DIDDocuments
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
+	// Queries a list of DidByPubKey items.
+	DidByPubKey(context.Context, *QueryDidByPubKeyRequest) (*QueryDidByPubKeyResponse, error)
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	DidAll(context.Context, *QueryAllDidRequest) (*QueryAllDidResponse, error)
-	// Get a Service from Origin
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
 	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 	Service(context.Context, *QueryGetServiceRequest) (*QueryGetServiceResponse, error)
-	// Get all Services
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-	//
-	// #### {{.RequestType.Name}}
-	// | Name | Type | Description |
-	// | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-	// | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-	//
 	// #### {{.ResponseType.Name}}
 	// | Name | Type | Description |
 	// | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
@@ -1051,6 +1022,9 @@ func (*UnimplementedQueryServer) DidByKeyID(ctx context.Context, req *QueryDidBy
 }
 func (*UnimplementedQueryServer) DidByAlsoKnownAs(ctx context.Context, req *QueryDidByAlsoKnownAsRequest) (*QueryDidByAlsoKnownAsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DidByAlsoKnownAs not implemented")
+}
+func (*UnimplementedQueryServer) DidByPubKey(ctx context.Context, req *QueryDidByPubKeyRequest) (*QueryDidByPubKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidByPubKey not implemented")
 }
 func (*UnimplementedQueryServer) DidAll(ctx context.Context, req *QueryAllDidRequest) (*QueryAllDidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DidAll not implemented")
@@ -1138,6 +1112,24 @@ func _Query_DidByAlsoKnownAs_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_DidByPubKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryDidByPubKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DidByPubKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/DidByPubKey",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DidByPubKey(ctx, req.(*QueryDidByPubKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_DidAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryAllDidRequest)
 	if err := dec(in); err != nil {
@@ -1211,6 +1203,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DidByAlsoKnownAs",
 			Handler:    _Query_DidByAlsoKnownAs_Handler,
+		},
+		{
+			MethodName: "DidByPubKey",
+			Handler:    _Query_DidByPubKey_Handler,
 		},
 		{
 			MethodName: "DidAll",
@@ -1705,6 +1701,69 @@ func (m *QueryAllServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryDidByPubKeyRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDidByPubKeyRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDidByPubKeyRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Create {
+		i--
+		if m.Create {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x10
+	}
+	if len(m.Pubkey) > 0 {
+		i -= len(m.Pubkey)
+		copy(dAtA[i:], m.Pubkey)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Pubkey)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryDidByPubKeyResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryDidByPubKeyResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryDidByPubKeyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1893,6 +1952,31 @@ func (m *QueryAllServiceResponse) Size() (n int) {
 		l = m.Pagination.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	return n
+}
+
+func (m *QueryDidByPubKeyRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Pubkey)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Create {
+		n += 2
+	}
+	return n
+}
+
+func (m *QueryDidByPubKeyResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	return n
 }
 
@@ -3086,6 +3170,158 @@ func (m *QueryAllServiceResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDidByPubKeyRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDidByPubKeyRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDidByPubKeyRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pubkey", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Pubkey = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Create", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Create = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryDidByPubKeyResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryDidByPubKeyResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryDidByPubKeyResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
