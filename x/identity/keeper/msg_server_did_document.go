@@ -23,8 +23,8 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 		ctx,
 		*msg.Document,
 	)
-	ctx.EventManager().EmitTypedEvents(
-		msg.Document,
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent("create-did-document", sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator), sdk.NewAttribute("address", msg.Document.Address())),
 	)
 
 	return &types.MsgCreateDidDocumentResponse{}, nil
@@ -47,8 +47,8 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 	k.SetDidDocument(ctx, *msg.Document)
-	ctx.EventManager().EmitTypedEvents(
-		msg.Document,
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent("update-did-document", sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator), sdk.NewAttribute("address", msg.Document.Address())),
 	)
 	return &types.MsgUpdateDidDocumentResponse{}, nil
 }
@@ -74,6 +74,8 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 		ctx,
 		msg.Did,
 	)
-
+	ctx.EventManager().EmitEvent(
+		sdk.NewEvent("delete-did-document", sdk.NewAttribute("document-did", msg.Did), sdk.NewAttribute("creator", msg.Creator)),
+	)
 	return &types.MsgDeleteDidDocumentResponse{}, nil
 }
