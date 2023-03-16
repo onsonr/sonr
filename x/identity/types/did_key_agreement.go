@@ -14,12 +14,5 @@ func (d *DidDocument) AddKeyAgreement(v *VerificationMethod) {
 		v.Controller = d.Id
 	}
 	d.VerificationMethod = append(d.VerificationMethod, v)
-	d.KeyAgreement = append(d.KeyAgreement, &VerificationRelationship{
-		Reference:          v.Id,
-		VerificationMethod: v,
-	})
-}
-
-func (d *DidDocument) GetKeyAgreements() []*VerificationRelationship {
-	return d.KeyAgreement
+	d.KeyAgreement = append(d.KeyAgreement, v.Id)
 }

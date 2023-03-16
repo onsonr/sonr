@@ -689,8 +689,7 @@ func New(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-
-	_, err := ante.NewAnteHandler(
+	defaultAnte, err := ante.NewAnteHandler(
 		ante.HandlerOptions{
 			AccountKeeper:   app.AccountKeeper,
 			BankKeeper:      app.BankKeeper,
@@ -699,11 +698,12 @@ func New(
 			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
 		},
 	)
+	anteHandler := NewCustomAnteHandler(defaultAnte, stakingKeeper, app.BankKeeper, app.AccountKeeper)
 	if err != nil {
 		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
 	}
 
-	// app.SetAnteHandler(anteHandler)
+	app.SetAnteHandler(anteHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)
@@ -830,8 +830,10 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register app's OpenAPI routes.
-	apiSvr.Router.Handle("/static/openapi.yaml", http.FileServer(http.FS(docs.Docs)))
-	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yaml"))
+	// Check for sonr.swagger.yaml in docs folder or use default.
+	// If found, register swagger UI and swagger.json.
+	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -883,4 +885,39 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 // SimulationManager implements the SimulationApp interface
 func (app *App) SimulationManager() *module.SimulationManager {
 	return app.sm
+}
+
+func NewCustomAnteHandler(anteHandler sdk.AnteHandler, stakingKeeper stakingkeeper.Keeper, bankkeeper bankkeeper.Keeper, authkeeper authkeeper.AccountKeeper) sdk.AnteHandler {
+	return func(ctx sdk.Context, tx sdk.Tx, sim bool) (newCtx sdk.Context, err error) {
+		// Call the original AnteHandler for standard processing
+		newCtx, err = anteHandler(ctx, tx, sim)
+		if err != nil {
+			return newCtx, err
+		}
+
+		// Check if the transaction is a specific type that allows gasless transactions
+		if shouldAllowGasless(tx) {
+			vacc := authkeeper.GetAccount(newCtx, newCtx.BlockHeader().ProposerAddress)
+			// Deduct fees from the feePayer account
+			err := ante.DeductFees(bankkeeper, ctx, vacc, sdk.NewCoins(sdk.NewCoin("stake", sdk.NewInt(1))))
+			if err != nil {
+				return newCtx, err
+			}
+		}
+
+		return newCtx, nil
+	}
+}
+
+func shouldAllowGasless(tx sdk.Tx) bool {
+	// Iterate through the messages in the transaction
+	for _, msg := range tx.GetMsgs() {
+		// Check if the message is of type MsgCreateDidDocument
+		if _, ok := msg.(*identitymoduletypes.MsgCreateDidDocument); ok {
+			return true
+		}
+	}
+
+	// Return false if no MsgCreateDidDocument message was found
+	return false
 }

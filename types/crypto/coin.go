@@ -258,3 +258,13 @@ func (c CoinType) DidMethod() string {
 	}
 	return strings.ToLower(c.Ticker())
 }
+
+func (c CoinType) FormatAddress(pk *PubKey) string {
+	if c.IsBitcoin() {
+		return BitcoinAddress(pk)
+	}
+	if c.IsEthereum() {
+		return EthereumAddress(pk)
+	}
+	return pk.Address().String()
+}

@@ -12,7 +12,6 @@ func CmdCreateDidDocument() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "create-did",
 		Short: "Create a new did_document",
-		Args:  cobra.ExactArgs(11),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			jsonDid := args[0]
@@ -23,7 +22,7 @@ func CmdCreateDidDocument() *cobra.Command {
 			}
 
 			msg := types.NewMsgCreateDidDocument(
-				clientCtx.GetFromAddress().String(),
+				clientCtx.FromAddress.String(),
 				types.NewBlankDocument(clientCtx.GetFromAddress().String()),
 			)
 			if err := msg.ValidateBasic(); err != nil {
@@ -42,7 +41,6 @@ func CmdUpdateDidDocument() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "update-did-document [did] [context] [controller] [verification-method] [authentication] [assertion-method] [capibility-invocation] [capability-delegation] [key-agreement] [service] [also-known-as]",
 		Short: "Update a did_document",
-		Args:  cobra.ExactArgs(11),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			indexDid := args[0]

@@ -42,10 +42,11 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg creator is the same as the current owner
-	if valFound.CheckAccAddress(msg.Creator) {
+	// Check if the msg creator is the same as the current owner
+	if !valFound.CheckAccAddress(msg.Creator) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
+
 	k.SetDidDocument(ctx, *msg.Document)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("update-did-document", sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator), sdk.NewAttribute("address", msg.Document.Address())),
@@ -65,8 +66,8 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
 
-	// Checks if the the msg creator is the same as the current owner
-	if valFound.CheckAccAddress(msg.Creator) {
+	// Check if the msg creator is the same as the current owner
+	if !valFound.CheckAccAddress(msg.Creator) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
 

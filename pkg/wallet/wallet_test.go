@@ -39,7 +39,9 @@ func TestCreateAccount(t *testing.T) {
 		for i, acc := range accs {
 			t.Logf("- [%d] %s", i, acc.Name())
 			t.Logf(" \t↪ Address: %s", acc.Address())
-			t.Logf(" \t↪ PubKey: %s", acc.PubKey().Base64())
+			t.Logf(" \t↪ Base64: %s", acc.PubKey().Base64())
+			t.Logf(" \t↪ Blake3: %s", acc.PubKey().Blake3())
+			t.Logf(" \t↪ Multibase: %s", acc.PubKey().Multibase())
 		}
 		t.Logf("")
 	}

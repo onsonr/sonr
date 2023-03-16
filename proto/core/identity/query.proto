@@ -181,7 +181,7 @@ message QueryGetDidRequest {
 message QueryGetDidResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByKeyIDRequest {
@@ -193,7 +193,7 @@ message QueryDidByKeyIDRequest {
 message QueryDidByKeyIDResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByAlsoKnownAsRequest {
@@ -205,7 +205,7 @@ message QueryDidByAlsoKnownAsRequest {
 message QueryDidByAlsoKnownAsResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDidRequest {
@@ -251,3 +251,18 @@ message QueryDidByPubKeyRequest {
 
 message QueryDidByPubKeyResponse {}
 
+// ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.
+message ResolvedDidDocument {
+  repeated string context = 1;
+  string id = 2;
+  repeated string controller = 3; //optional
+  repeated VerificationMethod verification_method = 4; // optional
+  repeated VerificationRelationship authentication = 5; // optional
+  repeated VerificationRelationship assertion_method = 6; // optional
+  repeated VerificationRelationship capability_invocation = 7; // optional
+  repeated VerificationRelationship capability_delegation = 8; // optional
+  repeated VerificationRelationship key_agreement = 9; // optional
+  repeated Service service = 10; // optional
+  repeated string also_known_as = 11; // optional
+  repeated KeyValuePair metadata = 12; // optional
+}

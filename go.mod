@@ -5,6 +5,7 @@ go 1.18
 require (
 	berty.tech/go-orbit-db v1.19.1
 	cosmossdk.io/math v1.0.0-beta.4
+	github.com/btcsuite/btcd v0.22.1
 	github.com/bufbuild/connect-go v1.0.0
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/cosmos/gogoproto v1.4.2
@@ -79,7 +80,6 @@ require (
 	github.com/bgentry/speakeasy v0.1.0 // indirect
 	github.com/blang/semver v3.5.1+incompatible // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
-	github.com/btcsuite/btcd v0.22.1 // indirect
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect

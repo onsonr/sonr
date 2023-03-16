@@ -56,6 +56,19 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: false,
 		},
 		{
+			desc: "duplicated serviceRecord",
+			genState: &types.GenesisState{
+				ServiceList: []types.Service{
+					{
+						Id: "0",
+					},
+					{
+						Id: "1",
+					},
+				},
+			},
+			valid: false,
+		}, {
 			desc: "duplicated DomainRecord",
 			genState: &types.GenesisState{
 				ServiceList: []types.Service{

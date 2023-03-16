@@ -499,32 +499,27 @@ definitions:
       authentication:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
+          type: string
         title: optional
       assertionMethod:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
+          type: string
         title: optional
       capabilityInvocation:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
+          type: string
         title: optional
       capabilityDelegation:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
+          type: string
         title: optional
       keyAgreement:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
+          type: string
         title: optional
       service:
         type: array
@@ -614,13 +609,13 @@ definitions:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityResolvedDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryDidByKeyIDResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityResolvedDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryDidByPubKeyResponse:
     type: object
@@ -628,7 +623,7 @@ definitions:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityResolvedDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryGetServiceResponse:
     type: object
@@ -646,6 +641,74 @@ definitions:
         $ref: '#/definitions/identityParams'
         description: params holds all the parameters of this module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  identityResolvedDidDocument:
+    type: object
+    properties:
+      context:
+        type: array
+        items:
+          type: string
+      id:
+        type: string
+      controller:
+        type: array
+        items:
+          type: string
+        title: optional
+      verificationMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationMethod'
+        title: optional
+      authentication:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      assertionMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      capabilityInvocation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      capabilityDelegation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      keyAgreement:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional
+      service:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityService'
+        title: optional
+      alsoKnownAs:
+        type: array
+        items:
+          type: string
+        title: optional
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityKeyValuePair'
+        title: optional
+    description: ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.
   identityService:
     type: object
     properties:

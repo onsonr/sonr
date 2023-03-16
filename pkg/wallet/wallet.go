@@ -187,6 +187,9 @@ func (w *wallet) Size() (int64, error) {
 
 // CreateAccount creates a new account for the given coin type
 func (w *wallet) CreateAccount(coin crypto.CoinType) (Account, error) {
+	if coin.IsSonr() && w.Count(coin) > 0 {
+		return nil, fmt.Errorf("wallet already contains an account for Sonr. This is the root account abstraction interface and should not be used for other accounts")
+	}
 	// Call Handler for keygen
 	confs, err := mpc.Keygen(crypto.PartyID(w.currentId), w.threshold, []crypto.PartyID{"default", "vault"})
 	if err != nil {

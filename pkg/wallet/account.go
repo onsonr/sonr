@@ -71,8 +71,7 @@ func NewWalletAccount(p string) (Account, error) {
 
 // Address returns the address of the account based on the coin type
 func (wa *walletAccount) Address() string {
-	addr, _ := wa.PubKey().AddrString(wa.CoinType())
-	return addr
+	return wa.CoinType().FormatAddress(wa.PubKey())
 }
 
 // CoinType returns the coin type of the account

@@ -54,8 +54,12 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-
-	return &types.QueryGetDidResponse{DidDocument: val}, nil
+	vrs, err := k.fetchVerificationRelationships(ctx, req.Did)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	rdoc := val.ResolveRelationships(vrs)
+	return &types.QueryGetDidResponse{DidDocument: *rdoc}, nil
 }
 
 func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest) (*types.QueryDidByKeyIDResponse, error) {
@@ -74,8 +78,12 @@ func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-
-	return &types.QueryDidByKeyIDResponse{DidDocument: val}, nil
+	vrs, err := k.fetchVerificationRelationships(ctx, did)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	rdoc := val.ResolveRelationships(vrs)
+	return &types.QueryDidByKeyIDResponse{DidDocument: *rdoc}, nil
 }
 
 func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKnownAsRequest) (*types.QueryDidByAlsoKnownAsResponse, error) {
@@ -89,10 +97,15 @@ func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKno
 		ctx,
 		req.AkaId,
 	)
+	vrs, err := k.fetchVerificationRelationships(ctx, val.Id)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	rdoc := val.ResolveRelationships(vrs)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	return &types.QueryDidByAlsoKnownAsResponse{DidDocument: val}, nil
+	return &types.QueryDidByAlsoKnownAsResponse{DidDocument: *rdoc}, nil
 }
 func (k Keeper) DidByPubKey(goCtx context.Context, req *types.QueryDidByPubKeyRequest) (*types.QueryDidByPubKeyResponse, error) {
 	if req == nil {
@@ -154,4 +167,18 @@ func (k Keeper) ServiceAll(goCtx context.Context, req *types.QueryAllServiceRequ
 	_ = ctx
 
 	return &types.QueryAllServiceResponse{}, nil
+}
+
+func (k Keeper) fetchVerificationRelationships(ctx sdk.Context, addrs ...string) ([]types.VerificationRelationship, error) {
+	vrs := make([]types.VerificationRelationship, 0, len(addrs))
+
+	for _, addr := range addrs {
+		if vr, found := k.GetVerificationRelationship(sdk.UnwrapSDKContext(ctx), addr); found {
+			vrs = append(vrs, vr)
+		} else {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+	}
+
+	return vrs, nil
 }

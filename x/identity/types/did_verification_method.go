@@ -45,7 +45,7 @@ func WithMetadataValues(kvs ...KeyValuePair) VerificationMethodOption {
 //
 
 // // VerificationMethod applies the given options and builds a verification method from this Key
-func NewVMFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMethodOption) (*VerificationMethod, error) {
+func NewVerificationMethodFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMethodOption) (*VerificationMethod, error) {
 	vm := &VerificationMethod{
 		Id:                 method.Format(pk.Multibase()),
 		Type:               pk.KeyType,
@@ -60,9 +60,9 @@ func NewVMFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMe
 	return vm, nil
 }
 
-// NewPrimaryAccountVM creates a verification method from the default wallet account
-func NewPrimaryAccountVM(pk *crypto.PubKey, options ...FormatOption) (*VerificationMethod, error) {
-	accAddress, err := pk.Bech32(crypto.SONRCoinType.AddrPrefix())
+// NewVerificationMethodFromSonrAcc creates a verification method from the default wallet account
+func NewVerificationMethodFromSonrAcc(pk *crypto.PubKey, options ...FormatOption) (*VerificationMethod, error) {
+	accAddress, err := bech32.ConvertAndEncode("snr", pk.Bytes())
 	if err != nil {
 		return nil, err
 	}
@@ -170,4 +170,15 @@ func (vm *VerificationMethod) HasMetadataValue(key string) bool {
 		}
 	}
 	return false
+}
+
+// ToVerificationRelationship returns a VerificationRelationship from the VerificationMethod
+func (vm *VerificationMethod) ToVerificationRelationship(controller string) VerificationRelationship {
+	if vm.Controller == "" {
+		vm.Controller = controller
+	}
+	return VerificationRelationship{
+		VerificationMethod: vm,
+		Reference:          vm.Id,
+	}
 }

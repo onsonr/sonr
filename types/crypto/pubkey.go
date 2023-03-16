@@ -2,15 +2,14 @@ package crypto
 
 import (
 	"bytes"
-	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
 	"hash"
 
+	"github.com/btcsuite/btcd/btcec"
+	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/cosmos/cosmos-sdk/types/bech32"
-	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
@@ -18,7 +17,7 @@ import (
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	tmcrypto "github.com/tendermint/tendermint/crypto"
-	"golang.org/x/crypto/ripemd160"
+	"lukechampine.com/blake3"
 )
 
 type (
@@ -44,24 +43,11 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 
 // Creating a new method called Address() that returns an Address type.
 func (pk *PubKey) Address() Address {
-	// Get base64 encoding of the key
-	b64 := pk.Base64()
-	// Get the sha256 hash of the key
-	hasher := sha256.New()
-	hasher.Write([]byte(b64))
-	// Get the ripemd160 hash of the sha256 hash
-	hasherRIPEMD160 := ripemd160.New()
-	hasherRIPEMD160.Write(hasher.Sum(nil))
-	// Return the ripemd160 hash
-	return tmcrypto.Address(hasherRIPEMD160.Sum(nil))
-}
-
-// AddrString returns the address of the key.
-func (pk *PubKey) AddrString(ct CoinType) (string, error) {
-	if ct.IsEthereum() {
-		return pk.Keccak256(), nil
+	sckp, err := pk.Secp256k1()
+	if err != nil {
+		return nil
 	}
-	return pk.Bech32(ct.AddrPrefix())
+	return sckp.Address()
 }
 
 // Base64 returns the base64 encoding of the key.
@@ -69,18 +55,20 @@ func (pk *PubKey) Base64() string {
 	return base64.RawStdEncoding.EncodeToString(pk.Bytes())
 }
 
-// Bech32 returns the bech32 encoding of the key. This is used for the Cosmos address.
-func (pk *PubKey) Bech32(pfix string) (string, error) {
-	return bech32.ConvertAndEncode(pfix, pk.Bytes())
+// Blake3 returns the blake3 hash of the key.
+func (pk *PubKey) Blake3() string {
+	hasher := blake3.New(32, nil)
+	hasher.Write(pk.Bytes())
+	return hex.EncodeToString(hasher.Sum(nil))
 }
 
-// Keccak256 returns the keccak256 hash of the key. This is used for the Ethereum address.
-func (pk *PubKey) Keccak256() string {
-	hash := ethcrypto.Keccak256(pk.Bytes()[1:])
-	addressBytes := hash[len(hash)-20:]
-	// Convert the address bytes to a hexadecimal string
-	address := hex.EncodeToString(addressBytes)
-	return "0x" + address
+// Btcec returns the btcec public key.
+func (pk *PubKey) Btcec() (*btcec.PublicKey, error) {
+	pubKey, err := btcec.ParsePubKey(pk.Bytes(), btcec.S256())
+	if err != nil {
+		return nil, errors.New("failed to parse public key")
+	}
+	return pubKey, nil
 }
 
 // Multibase returns the Base58 encoding the key.
@@ -119,6 +107,16 @@ func (pk *PubKey) Equals(other cryptotypes.PubKey) bool {
 // Raw returns the raw key without the type.
 func (pk *PubKey) Raw() []byte {
 	return pk.Key
+}
+
+// Returning the secp256k1 public key.
+func (pk *PubKey) Secp256k1() (*secp256k1.PubKey, error) {
+	if len(pk.Bytes()) != 33 {
+		return nil, errors.New("invalid public key length")
+	}
+
+	pubKey := &secp256k1.PubKey{Key: pk.Bytes()}
+	return pubKey, nil
 }
 
 // // Returning the type of the key.

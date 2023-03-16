@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 // NewBlankDocument creates a blank document to begin the WebAuthnProcess
@@ -16,33 +17,25 @@ func NewBlankDocument(idStr string) *DidDocument {
 		Context:              []string{DefaultParams().DidBaseContext, DefaultParams().DidMethodContext},
 		Controller:           []string{},
 		VerificationMethod:   make([]*VerificationMethod, 0),
-		Authentication:       make([]*VerificationRelationship, 0),
-		AssertionMethod:      make([]*VerificationRelationship, 0),
-		CapabilityInvocation: make([]*VerificationRelationship, 0),
-		CapabilityDelegation: make([]*VerificationRelationship, 0),
-		KeyAgreement:         make([]*VerificationRelationship, 0),
+		Authentication:       make([]string, 0),
+		AssertionMethod:      make([]string, 0),
+		CapabilityInvocation: make([]string, 0),
+		CapabilityDelegation: make([]string, 0),
+		KeyAgreement:         make([]string, 0),
 		Service:              make([]*Service, 0),
 		AlsoKnownAs:          make([]string, 0),
 	}
 }
 
-// BlankDocument creates a blank document to begin the WebAuthnProcess
-func NewDocumentFromAKA(akaStr string) *DidDocument {
-	return &DidDocument{
-		Id:                   fmt.Sprintf("did:tmp:%s", akaStr),
-		Context:              []string{DefaultParams().DidBaseContext, DefaultParams().DidMethodContext},
-		Controller:           []string{},
-		VerificationMethod:   make([]*VerificationMethod, 0),
-		Authentication:       make([]*VerificationRelationship, 0),
-		AssertionMethod:      make([]*VerificationRelationship, 0),
-		CapabilityInvocation: make([]*VerificationRelationship, 0),
-		CapabilityDelegation: make([]*VerificationRelationship, 0),
-		KeyAgreement:         make([]*VerificationRelationship, 0),
-		Service:              make([]*Service, 0),
-		AlsoKnownAs: []string{
-			akaStr,
-		},
+// NewDocument creates a new DID Document from a wallet public key
+func NewDocument(pk *crypto.PubKey, opts ...VerificationMethodOption) *DidDocument {
+	doc := NewBlankDocument("")
+	vm, err := NewVerificationMethodFromPubKey(pk, DIDMethod_DIDMethod_BLOCKCHAIN)
+	if err != nil {
+		panic(err)
 	}
+	doc.VerificationMethod = append(doc.VerificationMethod, vm)
+	return doc
 }
 
 // Address returns the address of the DID
@@ -82,16 +75,6 @@ func (d *DidDocument) GetVerificationMethodByFragment(fragment string) *Verifica
 	for _, vm := range d.VerificationMethod {
 		if vm.Id == fmt.Sprintf("%s#%s", d.Id, fragment) {
 			return vm
-		}
-	}
-	return nil
-}
-
-// GetVerificationMethodByBlockchainAccountID returns the VerificationMethod with the given blockchain account
-func (d *DidDocument) GetVerificationMethodByBlockchainAccountID(account string) *VerificationMethod {
-	for _, vr := range d.AssertionMethod {
-		if vr.VerificationMethod.BlockchainAccountId == account {
-			return vr.VerificationMethod
 		}
 	}
 	return nil

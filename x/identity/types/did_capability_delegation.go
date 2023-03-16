@@ -9,7 +9,7 @@ func (d *DidDocument) AddCapabilityDelegation(v *VerificationMethod) {
 		v.Controller = d.Id
 	}
 	d.VerificationMethod = append(d.VerificationMethod, v)
-	d.CapabilityDelegation = append(d.CapabilityDelegation, &VerificationRelationship{VerificationMethod: v, Reference: d.Id})
+	d.CapabilityDelegation = append(d.CapabilityDelegation, v.Id)
 }
 
 // AddCapabilityInvocation adds a VerificationMethod as CapabilityInvocation
@@ -19,5 +19,5 @@ func (d *DidDocument) AddCapabilityInvocation(v *VerificationMethod) {
 		v.Controller = d.Id
 	}
 	d.VerificationMethod = append(d.VerificationMethod, v)
-	d.CapabilityInvocation = append(d.CapabilityDelegation, &VerificationRelationship{VerificationMethod: v, Reference: d.Id})
+	d.CapabilityInvocation = append(d.CapabilityDelegation, v.Id)
 }

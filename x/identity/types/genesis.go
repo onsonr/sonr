@@ -43,13 +43,21 @@ func DefaultGenesis() *GenesisState {
 		DidDocumentList: []DidDocument{},
 		ServiceList:     DefaultServices(),
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		Params:        DefaultParams(),
+		Relationships: []VerificationRelationship{},
 	}
 }
 
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
+	relationshipMap := make(map[string]struct{})
+	for _, elem := range gs.Relationships {
+		if _, ok := relationshipMap[elem.Reference]; ok {
+			return fmt.Errorf("duplicated id for relationship")
+		}
+		relationshipMap[elem.Reference] = struct{}{}
+	}
 	// Check for duplicated index in didDocument
 	didDocumentIndexMap := make(map[string]struct{})
 

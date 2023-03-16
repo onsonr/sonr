@@ -14,29 +14,17 @@ func (d *DidDocument) AddAuthentication(v *VerificationMethod) {
 		v.Controller = d.Id
 	}
 	d.VerificationMethod = append(d.VerificationMethod, v)
-	d.Authentication = append(d.Authentication, &VerificationRelationship{
-		Reference:          d.Id,
-		VerificationMethod: v,
-	})
+	d.Authentication = append(d.Authentication, v.Id)
 }
 
 // SetAuthentication sets the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
 func (d *DidDocument) SetAuthentication(pub *crypto.PubKey, opts ...VerificationMethodOption) (*VerificationMethod, error) {
-	vm, err := NewVMFromPubKey(pub, DIDMethod_DIDMethod_KEY, opts...)
+	vm, err := NewVerificationMethodFromPubKey(pub, DIDMethod_DIDMethod_KEY, opts...)
 	if err != nil {
 		return nil, err
 	}
 	d.AddAuthentication(vm)
 	return vm, nil
-}
-
-// UpdateAuthentication updates the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
-func (d *DidDocument) UpdateAuthentication(vm *VerificationMethod) {
-	for _, a := range d.Authentication {
-		if a.VerificationMethod.Id == vm.Id {
-			a.VerificationMethod = vm
-		}
-	}
 }
 
 // AllowedWebauthnCredentials returns a list of CredentialDescriptors for Webauthn Credentials
