@@ -1,11 +1,17 @@
 package types
 
 import (
+	"encoding/base64"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"regexp"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/go-webauthn/webauthn/protocol"
+	types "github.com/sonrhq/core/types/crypto"
+	"lukechampine.com/blake3"
 )
 
 const (
@@ -246,4 +252,135 @@ func ConvertDidToAccAddress(did string) (sdk.AccAddress, error) {
 		return sdk.AccAddressFromBech32(parts[len(parts)-1])
 	}
 	return nil, errors.New("invalid did")
+}
+
+// blake3HashHex hashes the input string using the Blake3 algorithm and returns the
+// hash as a hex-encoded string.
+func blake3HashHex(input string) string {
+	outputSize := 32 // Output size in bytes (32 bytes = 256 bits)
+	key := []byte{}  // Empty key for keyless hashing
+
+	hasher := blake3.New(outputSize, key)
+	hasher.Write([]byte(input))
+	hashBytes := hasher.Sum(nil)
+	hashString := hex.EncodeToString(hashBytes)
+	return hashString
+}
+
+// blake3HashUrlBase64 hashes the input string using the Blake3 algorithm and returns the
+// hash as a base64-encoded string.
+func blake3HashUrlBase64(input string) (protocol.URLEncodedBase64, error) {
+	outputSize := 32 // Output size in bytes (32 bytes = 256 bits)
+	key := []byte{}  // Empty key for keyless hashing
+
+	hasher := blake3.New(outputSize, key)
+	hasher.Write([]byte(input))
+	hashBytes := hasher.Sum(nil)
+	hashString := base64.URLEncoding.EncodeToString(hashBytes)
+	return protocol.URLEncodedBase64(hashString), nil
+}
+
+// It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
+func parseCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
+	// Get Credential Creation Respons
+	ccr := protocol.CredentialCreationResponse{}
+	err := json.Unmarshal([]byte(bz), &ccr)
+	if err != nil {
+		return nil, err
+	}
+
+	// Parse the response
+	var pcc protocol.ParsedCredentialCreationData
+	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
+	pcc.Raw = ccr
+
+	// Parse the attestation object
+	for _, t := range ccr.Transports {
+		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
+	}
+
+	// Parse the attestation object
+	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
+	if err != nil {
+		return nil, err
+	}
+
+	pcc.Response = *parsedAttestationResponse
+	return &pcc, nil
+}
+
+// parseAssertionData takes a JSON string, converts it to a struct, and then converts that struct to a different struct
+func parseAssertionData(bz string) (*protocol.ParsedCredentialAssertionData, error) {
+	car := protocol.CredentialAssertionResponse{}
+	err := json.Unmarshal([]byte(bz), &car)
+	if err != nil {
+		return nil, err
+	}
+
+	if err != nil {
+		return nil, errors.New("Parse error for Assertion")
+	}
+
+	if car.ID == "" {
+		return nil, errors.New("CredentialAssertionResponse with ID missing")
+	}
+
+	_, err = base64.RawURLEncoding.DecodeString(car.ID)
+	if err != nil {
+		return nil, errors.New("CredentialAssertionResponse with ID not base64url encoded")
+	}
+	if car.Type != "public-key" {
+		return nil, errors.New("CredentialAssertionResponse with bad type")
+	}
+	var par protocol.ParsedCredentialAssertionData
+	par.ID, par.RawID, par.Type, par.ClientExtensionResults = car.ID, car.RawID, car.Type, car.ClientExtensionResults
+	par.Raw = car
+
+	par.Response.Signature = car.AssertionResponse.Signature
+	par.Response.UserHandle = car.AssertionResponse.UserHandle
+
+	// Step 5. Let JSONtext be the result of running UTF-8 decode on the value of cData.
+	// We don't call it cData but this is Step 5 in the spec.
+	err = json.Unmarshal(car.AssertionResponse.ClientDataJSON, &par.Response.CollectedClientData)
+	if err != nil {
+		return nil, err
+	}
+
+	err = par.Response.AuthenticatorData.Unmarshal(car.AssertionResponse.AuthenticatorData)
+	if err != nil {
+		return nil, errors.New("Error unmarshalling auth data")
+	}
+	return &par, nil
+}
+
+// makeCredentialFromCreationData creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
+// This is then used to create a VerificationMethod for the DID Document.
+func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
+	transportsStr := []string{}
+	for _, t := range c.Transports {
+		transportsStr = append(transportsStr, string(t))
+	}
+	return &types.WebauthnCredential{
+		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
+		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
+		AttestationType: c.Response.AttestationObject.Format,
+		Transport:       transportsStr,
+		Authenticator: &types.WebauthnAuthenticator{
+			Aaguid:    c.Response.AttestationObject.AuthData.AttData.AAGUID,
+			SignCount: c.Response.AttestationObject.AuthData.Counter,
+		},
+	}
+}
+
+// makeCredentialFromAssertionData creates a new WebauthnCredential from a ParsedCredentialAssertionData and contains all needed information about a WebAuthn credential for storage.
+// This is then used to create a VerificationMethod for the DID Document.
+func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *types.WebauthnCredential {
+	return &types.WebauthnCredential{
+		Id:        c.Response.AuthenticatorData.AttData.CredentialID,
+		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
+
+		Authenticator: &types.WebauthnAuthenticator{
+			SignCount: c.Response.AuthenticatorData.Counter,
+		},
+	}
 }

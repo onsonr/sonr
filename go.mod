@@ -5,6 +5,7 @@ go 1.18
 require (
 	berty.tech/go-orbit-db v1.19.1
 	cosmossdk.io/math v1.0.0-beta.4
+	github.com/bufbuild/connect-go v1.0.0
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/cosmos/ibc-go/v5 v5.2.0

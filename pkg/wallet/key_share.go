@@ -26,10 +26,10 @@ type KeyShare interface {
 	AccountName() string
 
 	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-	Encrypt(credential *crypto.WebauthnCredential, pin string) error
+	Encrypt(credential *crypto.WebauthnCredential) error
 
 	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-	Decrypt(credential *crypto.WebauthnCredential, pin string) error
+	Decrypt(credential *crypto.WebauthnCredential) error
 }
 
 type keyShare struct {
@@ -81,12 +81,12 @@ func (s *keyShare) CoinType() crypto.CoinType {
 }
 
 // Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential, pin string) error {
+func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential) error {
 	bz, err := s.cnfg.MarshalBinary()
 	if err != nil {
 		return err
 	}
-	encBz, err := credential.Encrypt(bz, pin)
+	encBz, err := credential.Encrypt(bz)
 	if err != nil {
 		return err
 	}
@@ -94,12 +94,12 @@ func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential, pin string) er
 }
 
 // Decrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (s *keyShare) Decrypt(credential *crypto.WebauthnCredential, pin string) error {
+func (s *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
 	bz, err := os.ReadFile(s.p)
 	if err != nil {
 		return err
 	}
-	decBz, err := credential.Decrypt(bz, pin)
+	decBz, err := credential.Decrypt(bz)
 	if err != nil {
 		return err
 	}

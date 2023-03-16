@@ -3,12 +3,12 @@
 package types
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	types "github.com/sonrhq/core/types/crypto"
 )
 
 func NewIPNSService(id string, endpoint string) *Service {
@@ -58,13 +58,7 @@ func (s *Service) GetUserEntity(id, displayName string) protocol.UserEntity {
 
 // IssueChallenge issues a challenge for the VerificationMethod to sign and return
 func (vm *Service) IssueChallenge() (protocol.URLEncodedBase64, error) {
-	// Marshal the service into JSON.
-	bz, err := vm.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	b64Ucan := base64.RawURLEncoding.EncodeToString(bz)
-	return protocol.URLEncodedBase64(b64Ucan), nil
+	return blake3HashUrlBase64(vm.Id)
 }
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
@@ -77,13 +71,38 @@ func (s *Service) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	}
 }
 
-// VerifyChallenge verifies the challenge signature
-func (vm *Service) VerifyChallenge(pcc *protocol.ParsedCredentialCreationData) error {
+// VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
+func (vm *Service) VerifyCreationChallenge(resp string) (*types.WebauthnCredential, error) {
+	pcc, err := parseCreationData(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	chal, err := vm.IssueChallenge()
+	if err != nil {
+		return nil, err
+	}
+
+	err = pcc.Verify(chal.String(), false, vm.Id, []string{vm.Origin})
+	if err != nil {
+		return nil, err
+	}
+	return makeCredentialFromCreationData(pcc), nil
+}
+
+// VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
+func (vm *Service) VeriifyAssertionChallenge(resp string, cred *types.WebauthnCredential) error {
+	pca, err := parseAssertionData(resp)
+	if err != nil {
+		return err
+	}
+
 	chal, err := vm.IssueChallenge()
 	if err != nil {
 		return err
 	}
-	err = pcc.Verify(chal.String(), false, vm.Id, []string{vm.Origin})
+
+	err = pca.Verify(chal.String(), vm.Id, []string{vm.Origin}, "", false, cred.PublicKey)
 	if err != nil {
 		return err
 	}

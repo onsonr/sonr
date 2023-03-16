@@ -210,11 +210,7 @@ paths:
           type: boolean
   /sonr/core/identity/service/{origin}:
     get:
-      summary: |-
-        #### QueryGetServiceResponse
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |
-        | service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client |
+      summary: "#### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client | \n| challenge | TYPE_STRING | Challenge is a random string that is used to authenticate the client |"
       operationId: Query_Service
       responses:
         "200":
@@ -640,6 +636,9 @@ definitions:
       service:
         $ref: '#/definitions/identityService'
         title: A Service is a JSON-LD object that contains relaying information to authenticate a client
+      challenge:
+        type: string
+        title: Challenge is a random string that is used to authenticate the client
   identityQueryParamsResponse:
     type: object
     properties:

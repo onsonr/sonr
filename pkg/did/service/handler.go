@@ -2,19 +2,15 @@ package service
 
 import (
 	"context"
-	"encoding/base64"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"time"
 
 	"github.com/patrickmn/go-cache"
 
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/pkg/client/chain"
-	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/wallet"
-	"github.com/sonrhq/core/types/common"
+	snrcrypto "github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/vault/v1"
 	"github.com/sonrhq/core/x/identity/types"
 )
@@ -30,13 +26,13 @@ type ServiceHandler interface {
 	BeginRegistration(req *v1.RegisterStartRequest) ([]byte, error)
 
 	// This is the method that will be called when the user clicks on the "Register" button.
-	FinishRegistration(req *v1.RegisterFinishRequest) (common.SNRPubKey, error)
+	FinishRegistration(req *v1.RegisterFinishRequest) (*snrcrypto.PubKey, error)
 
 	// This method is used to get the options for the assertion.
 	BeginLogin(req *v1.LoginStartRequest) ([]byte, error)
 
 	// This is the method that will be called when the user clicks the "Login" button on the login page.
-	FinishLogin(req *v1.LoginFinishRequest) (common.SNRPubKey, error)
+	FinishLogin(req *v1.LoginFinishRequest) (*snrcrypto.PubKey, error)
 }
 
 type serviceHandlerImpl struct {
@@ -50,7 +46,7 @@ type serviceHandlerImpl struct {
 	newWallets chan wallet.Wallet
 }
 
-func NewHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHandler, error) {
+func LoadHandler(origin string, apiEndpoint chain.APIEndpoint) (ServiceHandler, error) {
 	// Get the service from the chain.
 	sonrQueryClient := chain.NewClient(apiEndpoint)
 	service, err := sonrQueryClient.GetService(context.Background(), origin)
@@ -82,30 +78,11 @@ func (s *serviceHandlerImpl) BeginRegistration(req *v1.RegisterStartRequest) ([]
 	params := types.NewParams()
 
 	// Issue the challenge.
-	chal, err := s.IssueChallenge(req.Uuid)
+	resp, err := params.NewWebauthnCreationOptions(s.service, req.Uuid, req.DeviceLabel)
 	if err != nil {
 		return nil, fmt.Errorf("failed to issue challenge: %w", err)
 	}
-
-	// Build the credential creation options.
-	creationOptions := protocol.PublicKeyCredentialCreationOptions{
-		// Generated Challenge.
-		Challenge: chal,
-
-		// Service resulting properties.
-		RelyingParty: s.service.RelyingPartyEntity(),
-		User:         s.service.GetUserEntity(req.Uuid, req.DeviceLabel),
-
-		// Preconfigured parameters.
-		Parameters:             params.WebauthnRegistrationCredentialParameters(),
-		Timeout:                params.WebauthnTimeoutInteger(),
-		AuthenticatorSelection: params.WebauthnAuthenticatorSelection(),
-		Attestation:            params.WebauthnConveyancePreference(),
-	}
-
-	// Marshal the response into JSON.
-	response := protocol.CredentialCreation{Response: creationOptions}
-	jsonResponse, err := json.Marshal(response)
+	jsonResponse, err := json.Marshal(resp)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal response: %w", err)
 	}
@@ -114,22 +91,26 @@ func (s *serviceHandlerImpl) BeginRegistration(req *v1.RegisterStartRequest) ([]
 }
 
 // FinishRegistration is the method that will be called when the user clicks on the "Register" button.
-func (s *serviceHandlerImpl) FinishRegistration(req *v1.RegisterFinishRequest) (common.SNRPubKey, error) {
-	// Get the parameters from the chain.
-	pccd, err := parseCreationData(req.CredentialResponse)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse credential response: %w", err)
-	}
-
+func (s *serviceHandlerImpl) FinishRegistration(req *v1.RegisterFinishRequest) (*snrcrypto.PubKey, error) {
 	// Verify the challenge.
-	err = s.VerifyChallenge(pccd, req.Uuid)
+	cred, err := s.service.VerifyCreationChallenge(req.CredentialResponse)
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify challenge: %w", err)
 	}
+	exportedWall, ok := s.cache.Get(req.Uuid)
+	if !ok {
+		return nil, fmt.Errorf("failed to get wallet from cache")
+	}
 
-	cred := crypto.NewWebAuthnCredential(pccd)
-	pk := crypto.NewWebAuthnPubKey(cred.PublicKey)
-	return pk, nil
+	wall, err := wallet.Import(exportedWall.([]byte))
+	if err != nil {
+		return nil, fmt.Errorf("failed to import wallet: %w", err)
+	}
+	err = wall.SetAuthentication(cred)
+	if err != nil {
+		return nil, fmt.Errorf("failed to set authentication: %w", err)
+	}
+	return cred.PubKey(), nil
 }
 
 // BeginLogin is the method that will be called when the user clicks on the "Login" button.
@@ -138,79 +119,32 @@ func (s *serviceHandlerImpl) BeginLogin(req *v1.LoginStartRequest) ([]byte, erro
 }
 
 // FinishLogin is the method that will be called when the user clicks on the "Login" button.
-func (s *serviceHandlerImpl) FinishLogin(req *v1.LoginFinishRequest) (common.SNRPubKey, error) {
+func (s *serviceHandlerImpl) FinishLogin(req *v1.LoginFinishRequest) (*snrcrypto.PubKey, error) {
 	return nil, fmt.Errorf("not implemented")
 }
 
-// It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
-func parseCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
-	// Get Credential Creation Respons
-	ccr := protocol.CredentialCreationResponse{}
-	err := json.Unmarshal([]byte(bz), &ccr)
-	if err != nil {
-		return nil, err
+// GenerateWallet generates a new wallet
+func (s *serviceHandlerImpl) GenerateWallet(currId string, threshold int) {
+	wallChan := make(chan wallet.Wallet)
+	errChan := make(chan error)
+	go func() {
+		wall, err := wallet.NewWallet(currId, threshold)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		wallChan <- wall
+	}()
+
+	select {
+	case wall := <-wallChan:
+		bz, err := wall.Export()
+		if err != nil {
+			errChan <- err
+			return
+		}
+		s.cache.Set(currId, bz, 15*time.Second)
+	case err := <-errChan:
+		panic(err)
 	}
-
-	// Parse the response
-	var pcc protocol.ParsedCredentialCreationData
-	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
-	pcc.Raw = ccr
-
-	// Parse the attestation object
-	for _, t := range ccr.Transports {
-		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
-	}
-
-	// Parse the attestation object
-	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
-	if err != nil {
-		return nil, err
-	}
-
-	pcc.Response = *parsedAttestationResponse
-	return &pcc, nil
-}
-
-// parseAssertionData takes a JSON string, converts it to a struct, and then converts that struct to a different struct
-func parseAssertionData(bz string) (*protocol.ParsedCredentialAssertionData, error) {
-	car := protocol.CredentialAssertionResponse{}
-	err := json.Unmarshal([]byte(bz), &car)
-	if err != nil {
-		return nil, err
-	}
-
-	if err != nil {
-		return nil, errors.New("Parse error for Assertion")
-	}
-
-	if car.ID == "" {
-		return nil, errors.New("CredentialAssertionResponse with ID missing")
-	}
-
-	_, err = base64.RawURLEncoding.DecodeString(car.ID)
-	if err != nil {
-		return nil, errors.New("CredentialAssertionResponse with ID not base64url encoded")
-	}
-	if car.Type != "public-key" {
-		return nil, errors.New("CredentialAssertionResponse with bad type")
-	}
-	var par protocol.ParsedCredentialAssertionData
-	par.ID, par.RawID, par.Type, par.ClientExtensionResults = car.ID, car.RawID, car.Type, car.ClientExtensionResults
-	par.Raw = car
-
-	par.Response.Signature = car.AssertionResponse.Signature
-	par.Response.UserHandle = car.AssertionResponse.UserHandle
-
-	// Step 5. Let JSONtext be the result of running UTF-8 decode on the value of cData.
-	// We don't call it cData but this is Step 5 in the spec.
-	err = json.Unmarshal(car.AssertionResponse.ClientDataJSON, &par.Response.CollectedClientData)
-	if err != nil {
-		return nil, err
-	}
-
-	err = par.Response.AuthenticatorData.Unmarshal(car.AssertionResponse.AuthenticatorData)
-	if err != nil {
-		return nil, errors.New("Error unmarshalling auth data")
-	}
-	return &par, nil
 }

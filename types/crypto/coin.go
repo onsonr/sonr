@@ -78,7 +78,7 @@ func CoinTypeFromTicker(str string) CoinType {
 func (ct CoinType) AddrPrefix() string {
 	switch ct {
 	case CoinType_CoinType_BITCOIN:
-		return "btc"
+		return "bc"
 	case CoinType_CoinType_ETHEREUM:
 		return "0x"
 	case CoinType_CoinType_LITECOIN:

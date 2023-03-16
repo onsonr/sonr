@@ -40,22 +40,6 @@ func TestDomainRecordGet(t *testing.T) {
 	}
 }
 
-// TestDomainRecordRemove checks if a domain record can be removed from the store
-
-func TestDomainRecordRemove(t *testing.T) {
-	keeper, ctx := keepertest.IdentityKeeper(t)
-	items := createNDomainRecord(keeper, ctx, 10)
-	for _, item := range items {
-		keeper.RemoveDomainRecord(ctx,
-			item.Id,
-		)
-		_, found := keeper.GetService(ctx,
-			item.Id,
-		)
-		require.False(t, found)
-	}
-}
-
 func TestDomainRecordGetAll(t *testing.T) {
 	keeper, ctx := keepertest.IdentityKeeper(t)
 	items := createNDomainRecord(keeper, ctx, 10)

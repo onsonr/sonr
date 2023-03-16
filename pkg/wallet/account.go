@@ -71,15 +71,7 @@ func NewWalletAccount(p string) (Account, error) {
 
 // Address returns the address of the account based on the coin type
 func (wa *walletAccount) Address() string {
-	// if wa.CoinType().IsEthereum() {
-	// 	return wa.PubKey().ETHAddress()
-	// }
-	// addr, err := wa.PubKey().Bech32(wa.CoinType().AddrPrefix())
-	// if err != nil {
-	// 	return ""
-	// }
-	// return addr
-	addr, _ := wa.PubKey().Bech32(wa.CoinType().AddrPrefix())
+	addr, _ := wa.PubKey().AddrString(wa.CoinType())
 	return addr
 }
 

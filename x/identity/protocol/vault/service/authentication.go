@@ -21,7 +21,7 @@ type AuthenticationService struct {
 // Register registers a new keypair and returns the public key.
 func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.RegisterStartRequest) (*v1.RegisterStartResponse, error) {
 	// Get service handler
-	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.LoadHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -42,7 +42,7 @@ func (v *AuthenticationService) RegisterStart(ctx context.Context, req *v1.Regis
 // CreateAccount derives a new key from the private key and returns the public key.
 func (v *AuthenticationService) RegisterFinish(ctx context.Context, req *v1.RegisterFinishRequest) (*v1.RegisterFinishResponse, error) {
 	// Get service handler
-	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.LoadHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -57,7 +57,7 @@ func (v *AuthenticationService) RegisterFinish(ctx context.Context, req *v1.Regi
 
 // LoginStart returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginStart(ctx context.Context, req *v1.LoginStartRequest) (*v1.LoginStartResponse, error) {
-	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.LoadHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}
@@ -77,7 +77,7 @@ func (v *AuthenticationService) LoginStart(ctx context.Context, req *v1.LoginSta
 
 // LoginFinish returns a challenge to be signed by the user.
 func (v *AuthenticationService) LoginFinish(ctx context.Context, req *v1.LoginFinishRequest) (*v1.LoginFinishResponse, error) {
-	handler, err := service.NewHandler(req.Origin, chain.SonrPublicRpcOrigin)
+	handler, err := service.LoadHandler(req.Origin, chain.SonrPublicRpcOrigin)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get service handler: %w", err)
 	}

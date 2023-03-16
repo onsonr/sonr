@@ -36,13 +36,10 @@ var (
 // AppModuleBasic implements the AppModuleBasic interface that defines the independent methods a Cosmos SDK module needs to implement.
 type AppModuleBasic struct {
 	cdc codec.BinaryCodec
-
-	// IPFS Networking
-	ipfsNode common.IPFSNode
 }
 
-func NewAppModuleBasic(cdc codec.BinaryCodec, node common.IPFSNode) AppModuleBasic {
-	return AppModuleBasic{cdc: cdc, ipfsNode: node}
+func NewAppModuleBasic(cdc codec.BinaryCodec) AppModuleBasic {
+	return AppModuleBasic{cdc: cdc}
 }
 
 // Name returns the name of the module as a string
@@ -79,6 +76,7 @@ func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *r
 	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 	// auth.RegisterAuthIPFSService(clientCtx, mux, a.ipfsNode)
 	protocol.RegisterVaultIPFSService(clientCtx, mux, nil)
+
 }
 
 // GetTxCmd returns the root Tx command for the module. The subcommands of this root command are used by end-users to generate new transactions containing messages defined in the module
@@ -111,7 +109,7 @@ func NewAppModule(
 	bankKeeper types.BankKeeper,
 ) AppModule {
 	return AppModule{
-		AppModuleBasic: NewAppModuleBasic(cdc, initProtocol()),
+		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
@@ -170,7 +168,7 @@ func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Valid
 func initProtocol() common.IPFSNode {
 	node, err := node.NewIPFS(context.Background())
 	if err != nil {
-		// panic(err)
+		//panic(err)
 	}
 	return node
 }

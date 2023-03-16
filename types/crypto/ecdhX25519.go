@@ -11,7 +11,6 @@ import (
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/pem"
-	"errors"
 	fmt "fmt"
 	io "io"
 	"math/big"
@@ -19,138 +18,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"golang.org/x/crypto/hkdf"
 )
-
-func sharedSecret(privateKey *ecdsa.PrivateKey, publicKey webauthncose.EC2PublicKeyData) ([]byte, error) {
-	// Convert the X and Y coordinates of the public key to big.Int values
-	x := new(big.Int).SetBytes(publicKey.XCoord)
-	y := new(big.Int).SetBytes(publicKey.YCoord)
-
-	// Create an ECDSA public key from the X and Y coordinates and the curve identifier
-	curve := getCurve(publicKey.Algorithm)
-	if curve == nil {
-		return nil, fmt.Errorf("unsupported curve identifier: %d", publicKey.Algorithm)
-	}
-	publicKeyEcdsa := ecdsa.PublicKey{Curve: curve, X: x, Y: y}
-
-	// Calculate the shared secret using ECDH
-	x, _ = curve.ScalarMult(publicKeyEcdsa.X, publicKeyEcdsa.Y, privateKey.D.Bytes())
-	return x.Bytes(), nil
-}
-
-func getCurve(curveID int64) elliptic.Curve {
-	var curve elliptic.Curve
-	switch webauthncose.COSEAlgorithmIdentifier(curveID) {
-	case webauthncose.AlgES512: // IANA COSE code for ECDSA w/ SHA-512
-		curve = elliptic.P521()
-	case webauthncose.AlgES384: // IANA COSE code for ECDSA w/ SHA-384
-		curve = elliptic.P384()
-	case webauthncose.AlgES256: // IANA COSE code for ECDSA w/ SHA-256
-		curve = elliptic.P256()
-	default:
-		return nil
-	}
-	return curve
-}
-
-func encryptData(data []byte, credential *WebauthnCredential, pin string) ([]byte, error) {
-	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse public key: %w", err)
-	}
-	publicKey, ok := keyFace.(webauthncose.EC2PublicKeyData)
-	if !ok {
-		return nil, errors.New("public key is not an EC2 key")
-	}
-	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(credential, pin)
-	if err != nil {
-		return nil, fmt.Errorf("failed to derive private key: %w", err)
-	}
-	sharedSecret, err := sharedSecret(privateKey, publicKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to derive shared secret: %w", err)
-	}
-
-	// Use the shared secret as the encryption key
-	block, err := aes.NewCipher(sharedSecret)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
-	}
-
-	// Generate a random IV
-	iv := make([]byte, aes.BlockSize)
-	if _, err := rand.Read(iv); err != nil {
-		return nil, fmt.Errorf("failed to generate IV: %w", err)
-	}
-
-	// Encrypt the data using AES-GCM
-	ciphertext := make([]byte, len(data))
-	gcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
-	}
-	gcm.Seal(ciphertext[:0], iv, data, nil)
-
-	// Encrypt the AES-GCM key using ECIES
-	encryptedKey, err := eciesEncrypt(publicKey, sharedSecret)
-	if err != nil {
-		return nil, fmt.Errorf("failed to encrypt key: %w", err)
-	}
-
-	// Concatenate the IV and ciphertext into a single byte slice
-	result := make([]byte, len(iv)+len(ciphertext)+len(encryptedKey))
-	copy(result[:len(iv)], iv)
-	copy(result[len(iv):len(iv)+len(ciphertext)], ciphertext)
-	copy(result[len(iv)+len(ciphertext):], encryptedKey)
-
-	return result, nil
-}
-
-func decryptData(encryptedData []byte, credential *WebauthnCredential, pin string) ([]byte, error) {
-	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to parse public key: %w", err)
-	}
-	publicKey, ok := keyFace.(webauthncose.EC2PublicKeyData)
-	if !ok {
-		return nil, errors.New("public key is not an EC2 key")
-	}
-	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(credential, pin)
-	if err != nil {
-		return nil, fmt.Errorf("failed to derive private key: %w", err)
-	}
-
-	// Derive the shared secret using ECDH and the WebAuthn credential
-	sharedSecret, err := sharedSecret(privateKey, publicKey)
-	if err != nil {
-		return nil, fmt.Errorf("failed to derive shared secret: %w", err)
-	}
-
-	// Use the shared secret as the decryption key
-	block, err := aes.NewCipher(sharedSecret)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
-	}
-
-	// Split the IV and ciphertext from the encrypted data
-	iv := encryptedData[:aes.BlockSize]
-	ciphertext := encryptedData[aes.BlockSize:]
-
-	// Decrypt the ciphertext using AES-GCM
-	plaintext := make([]byte, len(ciphertext))
-	gcm, err := cipher.NewGCM(block)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
-	}
-	if _, err := gcm.Open(plaintext[:0], iv, ciphertext, nil); err != nil {
-		return nil, fmt.Errorf("failed to decrypt data: %w", err)
-	}
-
-	return plaintext, nil
-}
 
 func eciesEncrypt(publicKeyData webauthncose.EC2PublicKeyData, plaintext []byte) ([]byte, error) {
 	// Convert the X and Y coordinates of the public key to big.Int values
@@ -237,7 +104,7 @@ func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	return encKeyBytes, macKeyBytes
 }
 
-func derivePrivateKey(credential *WebauthnCredential, pin string) (*ecdsa.PrivateKey, error) {
+func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error) {
 	// Parse the public key from the credential
 	pubKeyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
 	if err != nil {
@@ -265,7 +132,7 @@ func derivePrivateKey(credential *WebauthnCredential, pin string) (*ecdsa.Privat
 	// Derive a 256-bit key using HKDF
 	keyBytes := make([]byte, 32)
 	info := []byte("webauthn-secret")
-	hkdf := hkdf.New(sha256.New, sharedSecret, []byte(pin), info)
+	hkdf := hkdf.New(sha256.New, sharedSecret, nil, info)
 	if _, err := hkdf.Read(keyBytes); err != nil {
 		return nil, fmt.Errorf("failed to derive key: %w", err)
 	}
@@ -279,4 +146,36 @@ func derivePrivateKey(credential *WebauthnCredential, pin string) (*ecdsa.Privat
 		},
 		D: new(big.Int).SetBytes(keyBytes),
 	}, nil
+}
+
+func sharedSecret(privateKey *ecdsa.PrivateKey, publicKey webauthncose.EC2PublicKeyData) ([]byte, error) {
+	// Convert the X and Y coordinates of the public key to big.Int values
+	x := new(big.Int).SetBytes(publicKey.XCoord)
+	y := new(big.Int).SetBytes(publicKey.YCoord)
+
+	// Create an ECDSA public key from the X and Y coordinates and the curve identifier
+	curve := getCurve(publicKey.Algorithm)
+	if curve == nil {
+		return nil, fmt.Errorf("unsupported curve identifier: %d", publicKey.Algorithm)
+	}
+	publicKeyEcdsa := ecdsa.PublicKey{Curve: curve, X: x, Y: y}
+
+	// Calculate the shared secret using ECDH
+	x, _ = curve.ScalarMult(publicKeyEcdsa.X, publicKeyEcdsa.Y, privateKey.D.Bytes())
+	return x.Bytes(), nil
+}
+
+func getCurve(curveID int64) elliptic.Curve {
+	var curve elliptic.Curve
+	switch webauthncose.COSEAlgorithmIdentifier(curveID) {
+	case webauthncose.AlgES512: // IANA COSE code for ECDSA w/ SHA-512
+		curve = elliptic.P521()
+	case webauthncose.AlgES384: // IANA COSE code for ECDSA w/ SHA-384
+		curve = elliptic.P384()
+	case webauthncose.AlgES256: // IANA COSE code for ECDSA w/ SHA-256
+		curve = elliptic.P256()
+	default:
+		return nil
+	}
+	return curve
 }

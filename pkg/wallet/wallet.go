@@ -51,7 +51,7 @@ type Wallet interface {
 	GetAccountByDID(did string) (Account, error)
 
 	// SetAuthentication sets the authentication method for the wallet
-	SetAuthentication(credential *crypto.WebauthnCredential, pin string) error
+	SetAuthentication(credential *crypto.WebauthnCredential) error
 
 	// SignWithDID signs the given message with the private key of the account with the given DID
 	SignWithDID(did string, msg []byte) ([]byte, error)
@@ -113,7 +113,7 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 }
 
 // SetAuthentication sets the authentication method for the wallet
-func (w *wallet) SetAuthentication(credential *crypto.WebauthnCredential, pin string) error {
+func (w *wallet) SetAuthentication(credential *crypto.WebauthnCredential) error {
 	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
 	if err != nil {
 		return err
@@ -126,9 +126,11 @@ func (w *wallet) SetAuthentication(credential *crypto.WebauthnCredential, pin st
 			return err
 		}
 		for _, k := range ks {
-			err := k.Encrypt(credential, pin)
-			if err != nil {
-				return err
+			if k.AccountName() != "vault" {
+				err := k.Encrypt(credential)
+				if err != nil {
+					return err
+				}
 			}
 		}
 	}

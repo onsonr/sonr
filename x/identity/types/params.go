@@ -1,6 +1,8 @@
 package types
 
 import (
+	fmt "fmt"
+
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 
@@ -45,29 +47,53 @@ func (p Params) Validate() error {
 	return nil
 }
 
-// WebauthnConveyancePreference returns the webauthn conveyance preference.
-func (p Params) WebauthnConveyancePreference() protocol.ConveyancePreference {
-	return protocol.ConveyancePreference(p.WebauthnAttestionPreference)
-}
-
-// WebauthnAuthenticatorSelection returns the authenticator selection for webauthn.
-func (p Params) WebauthnAuthenticatorSelection() protocol.AuthenticatorSelection {
-	return protocol.AuthenticatorSelection{
-		AuthenticatorAttachment: protocol.AuthenticatorAttachment(p.WebauthnAuthenticatorAttachment),
+// NewWebauthnCreationOptions returns the webauthn creation options.
+func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, deviceLabel string) (protocol.CredentialCreation, error) {
+	// Issue the challenge.
+	chal, err := s.IssueChallenge()
+	if err != nil {
+		return protocol.CredentialCreation{}, fmt.Errorf("failed to issue challenge: %w", err)
 	}
-}
 
-// We return ECDSA P-256 with SHA-256 as the default credential parameter.
-func (p Params) WebauthnRegistrationCredentialParameters() []protocol.CredentialParameter {
-	return []protocol.CredentialParameter{
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgES256,
+	// Build the credential creation options.
+	opts := protocol.PublicKeyCredentialCreationOptions{
+		// Generated Challenge.
+		Challenge: chal,
+
+		// Service resulting properties.
+		User: s.GetUserEntity(uuid, deviceLabel),
+
+		// Preconfigured parameters.
+		Parameters: []protocol.CredentialParameter{
+			{
+				Type:      protocol.PublicKeyCredentialType,
+				Algorithm: webauthncose.AlgES256,
+			},
 		},
+		Timeout: int(p.WebauthnTimeout),
+		AuthenticatorSelection: protocol.AuthenticatorSelection{
+			AuthenticatorAttachment: protocol.AuthenticatorAttachment(p.WebauthnAuthenticatorAttachment),
+		},
+		Attestation: protocol.ConveyancePreference(p.WebauthnAttestionPreference),
 	}
+	return protocol.CredentialCreation{Response: opts}, nil
 }
 
-// WebauthnTimeoutInteger returns the webauthn timeout as an integer.
-func (p Params) WebauthnTimeoutInteger() int {
-	return int(p.WebauthnTimeout)
+// NewWebauthnAssertionOptions returns the webauthn assertion options.
+func (p Params) NewWebauthnAssertionOptions(s *Service, uuid string, deviceLabel string) (protocol.CredentialAssertion, error) {
+	// Issue the challenge.
+	chal, err := s.IssueChallenge()
+	if err != nil {
+		return protocol.CredentialAssertion{}, fmt.Errorf("failed to issue challenge: %w", err)
+	}
+
+	// Build the credential assertion options.
+	opts := protocol.PublicKeyCredentialRequestOptions{
+		// Generated Challenge.
+		Challenge: chal,
+
+		// Preconfigured parameters.
+		Timeout: int(p.WebauthnTimeout),
+	}
+	return protocol.CredentialAssertion{Response: opts}, nil
 }

@@ -224,9 +224,10 @@ message QueryGetServiceRequest {
 }
 
 message QueryGetServiceResponse {
-
   // A Service is a JSON-LD object that contains relaying information to authenticate a client
   Service service = 1 [(gogoproto.nullable) = false];
+  // Challenge is a random string that is used to authenticate the client
+  string challenge = 2;
 }
 
 message QueryAllServiceRequest {

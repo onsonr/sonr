@@ -1,27 +1,18 @@
 package crypto
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"crypto/rand"
 	"encoding/base64"
 	"errors"
 	fmt "fmt"
-	"strconv"
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/go-webauthn/webauthn/webauthn"
 	"github.com/shengdoushi/base58"
-)
-
-// Extensions are discussed in §9. WebAuthn Extensions (https://www.w3.org/TR/webauthn/#extensions).
-
-// For a list of commonly supported extensions, see §10. Defined Extensions
-// (https://www.w3.org/TR/webauthn/#sctn-defined-extensions).
-
-type AuthenticationExtensionsClientOutputs map[string]interface{}
-
-const (
-	ExtensionAppID        = "appid"
-	ExtensionAppIDExclude = "appidExclude"
 )
 
 // VerifyCounter
@@ -84,63 +75,136 @@ func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 }
 
 // Did returns the DID for a WebauthnCredential
-func (c *WebauthnCredential) Did() string {
-	return fmt.Sprintf("did:key:%s#%s", base58.Encode(c.PublicKey, base58.BitcoinAlphabet), base58.Encode(c.Id, base58.BitcoinAlphabet))
+func (c *WebauthnCredential) DID(deviceLabel string) string {
+	return fmt.Sprintf("did:key:%s#%s", c.PubKey().Multibase(), base58.Encode([]byte(deviceLabel), base58.BitcoinAlphabet))
 }
 
 // PublicKeyMultibase returns the public key in multibase format
-func (c *WebauthnCredential) PublicKeyMultibase() string {
-	return "z" + base64.StdEncoding.EncodeToString(c.PublicKey)
-}
-
-// FromMetadata converts a map[string]string into a common WebauthnCredential
-func (c *WebauthnCredential) FromMetadata(m map[string]string) error {
-	if m["webauthn"] != ConvertBoolToString(true) {
-		return errors.New("not a webauthn credential")
-	}
-	signCount, err := strconv.ParseUint(m["authenticator.sign_count"], 10, 32)
-	if err != nil {
-		return err
-	}
-	c.Id, _ = base64.StdEncoding.DecodeString(m["credential_id"])
-	c.Authenticator.Aaguid, _ = base64.StdEncoding.DecodeString(m["authenticator.aaguid"])
-	c.Authenticator.CloneWarning = ConvertStringToBool(m["authenticator.clone_warning"])
-	c.Authenticator.SignCount = uint32(signCount)
-	c.Transport = strings.Split(m["transport"], ",")
-	c.AttestationType = m["attestation_type"]
-	return nil
-}
-
-// ToMetadata converts a common WebauthnCredential into a map[string]string
-func (c *WebauthnCredential) ToMetadata() map[string]string {
-	return map[string]string{
-		"credential_id":               base64.StdEncoding.EncodeToString(c.Id),
-		"authenticator.aaguid":        base64.StdEncoding.EncodeToString(c.Authenticator.Aaguid),
-		"authenticator.clone_warning": ConvertBoolToString(c.Authenticator.CloneWarning),
-		"authenticator.sign_count":    strconv.FormatUint(uint64(c.Authenticator.SignCount), 10),
-		"transport":                   strings.Join(c.Transport, ","),
-		"attestion_type":              c.AttestationType,
-		"webauthn":                    ConvertBoolToString(true),
-	}
-}
-
-// Validate verifies that this WebauthnCredential is identical to the go-webauthn package credential
-func (c *WebauthnCredential) Validate(pc *webauthn.Credential) error {
-	if len(c.PublicKey) != len(pc.PublicKey) {
-		return errors.New("Credential Public Keys do not match")
-	}
-	return nil
+func (c *WebauthnCredential) PubKey() *PubKey {
+	return NewPubKey(c.PublicKey, KeyType_KeyType_ED25519_VERIFICATION_KEY_2018)
 }
 
 // Encrypt encrypts a message using the public key of the WebauthnCredential
-func (c *WebauthnCredential) Encrypt(message []byte, pin string) ([]byte, error) {
-	return encryptData(message, c, pin)
+func (c *WebauthnCredential) Encrypt(data []byte) ([]byte, error) {
+	// Get the public key from the credential
+	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse public key: %w", err)
+	}
+	publicKey, ok := keyFace.(webauthncose.EC2PublicKeyData)
+	if !ok {
+		return nil, errors.New("public key is not an EC2 key")
+	}
+	// Derive a shared secret using ECDH
+	privateKey, err := derivePrivateKey(c)
+	if err != nil {
+		return nil, fmt.Errorf("failed to derive private key: %w", err)
+	}
+	sharedSecret, err := sharedSecret(privateKey, publicKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to derive shared secret: %w", err)
+	}
+	// Use the shared secret as the encryption key
+	block, err := aes.NewCipher(sharedSecret)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
+	}
+
+	// Generate a random IV
+	iv := make([]byte, aes.BlockSize)
+	if _, err := rand.Read(iv); err != nil {
+		return nil, fmt.Errorf("failed to generate IV: %w", err)
+	}
+
+	// Encrypt the data using AES-GCM
+	ciphertext := make([]byte, len(data))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
+	}
+	gcm.Seal(ciphertext[:0], iv, data, nil)
+
+	// Encrypt the AES-GCM key using ECIES
+	encryptedKey, err := eciesEncrypt(publicKey, sharedSecret)
+	if err != nil {
+		return nil, fmt.Errorf("failed to encrypt key: %w", err)
+	}
+
+	// Concatenate the IV and ciphertext into a single byte slice
+	result := make([]byte, len(iv)+len(ciphertext)+len(encryptedKey))
+	copy(result[:len(iv)], iv)
+	copy(result[len(iv):len(iv)+len(ciphertext)], ciphertext)
+	copy(result[len(iv)+len(ciphertext):], encryptedKey)
+
+	return result, nil
 }
 
 // Decrypt decrypts a message using the private key of the WebauthnCredential
-func (c *WebauthnCredential) Decrypt(message []byte, pin string) ([]byte, error) {
-	return decryptData(message, c, pin)
+func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
+	// Get the public key from the credential
+	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse public key: %w", err)
+	}
+	publicKey, ok := keyFace.(webauthncose.EC2PublicKeyData)
+	if !ok {
+		return nil, errors.New("public key is not an EC2 key")
+	}
+	// Derive a shared secret using ECDH
+	privateKey, err := derivePrivateKey(c)
+	if err != nil {
+		return nil, fmt.Errorf("failed to derive private key: %w", err)
+	}
+
+	// Derive the shared secret using ECDH and the WebAuthn credential
+	sharedSecret, err := sharedSecret(privateKey, publicKey)
+	if err != nil {
+		return nil, fmt.Errorf("failed to derive shared secret: %w", err)
+	}
+
+	// Use the shared secret as the decryption key
+	block, err := aes.NewCipher(sharedSecret)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create AES cipher: %w", err)
+	}
+
+	// Split the IV and ciphertext from the encrypted data
+	iv := data[:aes.BlockSize]
+	ciphertext := data[aes.BlockSize:]
+
+	// Decrypt the ciphertext using AES-GCM
+	plaintext := make([]byte, len(ciphertext))
+	gcm, err := cipher.NewGCM(block)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create GCM cipher: %w", err)
+	}
+	if _, err := gcm.Open(plaintext[:0], iv, ciphertext, nil); err != nil {
+		return nil, fmt.Errorf("failed to decrypt data: %w", err)
+	}
+	return plaintext, nil
 }
-func (c *WebauthnCredential) DID() string {
-	return c.Did()
+
+// CredentialFromDIDString converts a DID string into a WebauthnCredential
+func CredentialFromDIDString(did string) (*WebauthnCredential, string, error) {
+	parts := strings.Split(did, "#")
+	if len(parts) != 2 {
+		return nil, "", fmt.Errorf("invalid DID string format")
+	}
+
+	multibaseKey := parts[0][8:]
+	deviceLabelBytes, err := base58.Decode(parts[1], base58.BitcoinAlphabet)
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to decode device label: %v", err)
+	}
+	deviceLabel := string(deviceLabelBytes)
+
+	if !strings.HasPrefix(multibaseKey, "z") {
+		return nil, "", fmt.Errorf("invalid multibase prefix")
+	}
+
+	pubKeyBytes, err := base64.StdEncoding.DecodeString(multibaseKey[1:])
+	if err != nil {
+		return nil, "", fmt.Errorf("failed to decode public key: %v", err)
+	}
+	return &WebauthnCredential{PublicKey: pubKeyBytes}, deviceLabel, nil
 }

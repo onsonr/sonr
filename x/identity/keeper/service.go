@@ -35,16 +35,6 @@ func (k Keeper) GetService(
 	return val, true
 }
 
-// RemoveDomainRecord removes a DomainRecord from the store
-func (k Keeper) RemoveDomainRecord(
-	ctx sdk.Context,
-	origin string,
-) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
-	store.Delete(types.ServiceKey(
-		cleanServiceDomain(origin),
-	))
-}
 
 // GetAllServices returns all Services
 func (k Keeper) GetAllServices(ctx sdk.Context) (list []types.Service) {
