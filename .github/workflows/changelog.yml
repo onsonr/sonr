@@ -30,7 +30,7 @@ jobs:
       env:
         OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
       run: |
-        python .github/workflows/generate_changelog.py
+        python .github/scripts/generate_changelog.py
 
     - name: Update Release Body
       uses: ncipollo/release-action@v1

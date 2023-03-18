@@ -1,7 +1,8 @@
 {
-    "recommendations": [
-        "unifiedjs.vscode-mdx",
-            "arcanis.vscode-zipfs",
-    "dbaeumer.vscode-eslint"
-    ]
+  "recommendations": [
+    "unifiedjs.vscode-mdx",
+    "arcanis.vscode-zipfs",
+    "dbaeumer.vscode-eslint",
+    "aaron-bond.better-comments"
+  ]
 }

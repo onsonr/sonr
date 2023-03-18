@@ -6,7 +6,6 @@ require (
 	berty.tech/go-orbit-db v1.19.1
 	cosmossdk.io/math v1.0.0-beta.4
 	github.com/btcsuite/btcd v0.22.1
-	github.com/bufbuild/connect-go v1.0.0
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/cosmos/ibc-go/v5 v5.2.0
@@ -32,7 +31,6 @@ require (
 	github.com/multiformats/go-multiaddr v0.8.0
 	github.com/multiformats/go-multibase v0.1.1
 	github.com/multiformats/go-varint v0.0.7
-	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/spf13/cast v1.5.0
 	github.com/spf13/cobra v1.6.1

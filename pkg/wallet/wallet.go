@@ -1,19 +1,16 @@
 package wallet
 
 import (
-	"archive/zip"
-	"bytes"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 	"time"
 
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/types/common"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 type Wallet interface {
@@ -26,11 +23,20 @@ type Wallet interface {
 	// Size returns the disk size of the wallet
 	Size() (int64, error)
 
+	// Assign sets the authentication method for the wallet
+	Assign(credential *crypto.WebauthnCredential) (*types.DidDocument, []types.VerificationMethod, error)
+
+	// Unlock unlocks the wallet with the given webauthn credential
+	Unlock(credential *crypto.WebauthnCredential) error
+
+	// Lock locks the wallet
+	Lock() error
+
+	// IsLocked returns true if the wallet is locked
+	IsLocked() bool
+
 	// CreateAccount creates a new account for the given coin type
 	CreateAccount(coin crypto.CoinType) (Account, error)
-
-	// Export exports the wallet to the given path
-	Export() ([]byte, error)
 
 	// ListAllocatedCoins returns a list of coins that this currently has accounts for
 	ListCoins() ([]crypto.CoinType, error)
@@ -50,9 +56,6 @@ type Wallet interface {
 	// GetAccountByDID returns the account for the given DID and parses the coin type from the DID
 	GetAccountByDID(did string) (Account, error)
 
-	// SetAuthentication sets the authentication method for the wallet
-	SetAuthentication(credential *crypto.WebauthnCredential) error
-
 	// SignWithDID signs the given message with the private key of the account with the given DID
 	SignWithDID(did string, msg []byte) ([]byte, error)
 
@@ -68,6 +71,8 @@ type wallet struct {
 	info *common.WalletInfo
 
 	fileStore *FileStore
+	isLocked  bool
+	cred      *crypto.WebauthnCredential
 }
 
 func NewWallet(currentId string, threshold int) (Wallet, error) {
@@ -83,6 +88,7 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 	w := &wallet{
 		currentId: currentId,
 		threshold: threshold,
+		isLocked:  false,
 		fileStore: fs,
 		path:      path,
 	}
@@ -110,31 +116,6 @@ func NewWallet(currentId string, threshold int) (Wallet, error) {
 	}
 	w.info = info
 	return w, nil
-}
-
-// SetAuthentication sets the authentication method for the wallet
-func (w *wallet) SetAuthentication(credential *crypto.WebauthnCredential) error {
-	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
-	if err != nil {
-		return err
-	}
-
-	// Set the authentication method for all accounts
-	for _, acc := range accs {
-		ks, err := acc.ListKeyshares()
-		if err != nil {
-			return err
-		}
-		for _, k := range ks {
-			if k.AccountName() != "vault" {
-				err := k.Encrypt(credential)
-				if err != nil {
-					return err
-				}
-			}
-		}
-	}
-	return nil
 }
 
 // LoadWallet loads a wallet from the given path
@@ -185,6 +166,82 @@ func (w *wallet) Size() (int64, error) {
 	return info.Size(), nil
 }
 
+// Assign sets the authentication method for the wallet
+func (w *wallet) Assign(credential *crypto.WebauthnCredential) (*types.DidDocument, []types.VerificationMethod, error) {
+	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var accDids []types.VerificationMethod
+	doneChan := make(chan bool)
+	go func() {
+		for _, acc := range accs {
+			accDids = append(accDids, *acc.VerificationMethod(w.Controller()))
+		}
+		doneChan <- true
+	}()
+
+	// Set the authentication method for all accounts
+	for _, acc := range accs {
+		err := acc.Lock(credential)
+		if err != nil {
+			return nil, nil, err
+		}
+	}
+	<-doneChan
+
+	w.isLocked = true
+	w.cred = credential
+
+	did := types.NewSonrID(w.Controller())
+	doc := types.NewBlankDocument(did)
+	doc.ImportVerificationMethods("assertionmethod", accDids...)
+	_, err = doc.SetAuthentication(credential.PubKey())
+	if err != nil {
+		return nil, nil, err
+	}
+	return doc, accDids, nil
+}
+
+// Lock locks the wallet by encrypting all keyshares
+func (w *wallet) Lock() error {
+	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
+	if err != nil {
+		return err
+	}
+	for _, acc := range accs {
+		err := acc.Lock(w.cred)
+		if err != nil {
+			return err
+		}
+	}
+	w.isLocked = true
+	return nil
+}
+
+// Unlock unlocks the wallet by decrypting all keyshares
+func (w *wallet) Unlock(credential *crypto.WebauthnCredential) error {
+	accs, err := w.fileStore.ListAccountsForToken(crypto.SONRCoinType)
+	if err != nil {
+		return err
+	}
+
+	for _, acc := range accs {
+		err := acc.Unlock(credential)
+		if err != nil {
+			return err
+		}
+	}
+	w.isLocked = false
+	return nil
+}
+
+// IsLocked returns true if the wallet is locked
+func (w *wallet) IsLocked() bool {
+	return w.isLocked && w.cred != nil
+}
+
 // CreateAccount creates a new account for the given coin type
 func (w *wallet) CreateAccount(coin crypto.CoinType) (Account, error) {
 	if coin.IsSonr() && w.Count(coin) > 0 {
@@ -200,135 +257,6 @@ func (w *wallet) CreateAccount(coin crypto.CoinType) (Account, error) {
 		return nil, err
 	}
 	return acc, nil
-}
-
-// with the specified name. Returns the path to the resulting archive file.
-func (w *wallet) Export() ([]byte, error) {
-	// Get temporary directory path
-	tempDir, err := os.MkdirTemp("", "sonr-wallet")
-	if err != nil {
-		return nil, fmt.Errorf("failed to create temporary directory: %w", err)
-	}
-	defer os.RemoveAll(tempDir)
-	archiveName := filepath.Join(tempDir, "export.zip")
-	// Create the output file
-	outputFile, err := os.Create(archiveName)
-	if err != nil {
-		return nil, fmt.Errorf("failed to create output file: %w", err)
-	}
-	defer outputFile.Close()
-
-	// Create a new ZIP archive
-	zipWriter := zip.NewWriter(outputFile)
-	defer zipWriter.Close()
-
-	// Collect the file paths in a slice and sort them
-	var filePaths []string
-	err = filepath.Walk(w.path, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-		if !info.IsDir() {
-			filePaths = append(filePaths, path)
-		}
-		return nil
-	})
-	if err != nil {
-		return nil, fmt.Errorf("failed to collect file paths: %w", err)
-	}
-	sort.Strings(filePaths)
-
-	// Add each file to the ZIP archive
-	for _, filePath := range filePaths {
-		// Open the file
-		file, err := os.Open(filePath)
-		if err != nil {
-			return nil, fmt.Errorf("failed to open file %s: %w", filePath, err)
-		}
-		defer file.Close()
-
-		// Create a new file header for the file
-		fileInfo, err := file.Stat()
-		if err != nil {
-			return nil, fmt.Errorf("failed to get file info for %s: %w", filePath, err)
-		}
-		header, err := zip.FileInfoHeader(fileInfo)
-		if err != nil {
-			return nil, fmt.Errorf("failed to create file header for %s: %w", filePath, err)
-		}
-		header.Name, err = filepath.Rel(w.path, filePath)
-		if err != nil {
-			return nil, fmt.Errorf("failed to get relative path for %s: %w", filePath, err)
-		}
-
-		// Add the file to the ZIP archive
-		writer, err := zipWriter.CreateHeader(header)
-		if err != nil {
-			return nil, fmt.Errorf("failed to add file %s to ZIP archive: %w", filePath, err)
-		}
-		_, err = io.Copy(writer, file)
-		if err != nil {
-			return nil, fmt.Errorf("failed to write file %s to ZIP archive: %w", filePath, err)
-		}
-	}
-	return os.ReadFile(archiveName)
-}
-
-func Import(archiveData []byte) (Wallet, error) {
-	homeDir, err := os.UserHomeDir()
-	if err != nil {
-		return nil, err
-	}
-	path := filepath.Join(homeDir, ".sonr", "wallets", time.Now().Format("2006-01-02"))
-	fs, err := NewFileStore(path)
-	if err != nil {
-		return nil, err
-	}
-	w := &wallet{
-		fileStore: fs,
-		path:      path,
-	}
-
-	// Get temporary directory path
-	tempDir, err := os.MkdirTemp("", "sonr-wallet")
-	if err != nil {
-		return nil, fmt.Errorf("failed to create temporary directory: %w", err)
-	}
-	defer os.RemoveAll(tempDir)
-
-	// Create a new ZIP reader from the input data
-	zipReader, err := zip.NewReader(bytes.NewReader(archiveData), int64(len(archiveData)))
-	if err != nil {
-		return nil, fmt.Errorf("failed to create ZIP reader: %w", err)
-	}
-
-	// Extract each file from the ZIP archive
-	for _, file := range zipReader.File {
-		// Open the file from the archive
-		reader, err := file.Open()
-		if err != nil {
-			return nil, fmt.Errorf("failed to open file %s from ZIP archive: %w", file.Name, err)
-		}
-		defer reader.Close()
-
-		// Create the output file with the same path and mode as the original
-		outputPath := filepath.Join(w.path, file.Name)
-		outputDir := filepath.Dir(outputPath)
-		if err := os.MkdirAll(outputDir, 0755); err != nil {
-			return nil, fmt.Errorf("failed to create directory %s: %w", outputDir, err)
-		}
-		outputFile, err := os.OpenFile(outputPath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, file.Mode())
-		if err != nil {
-			return nil, fmt.Errorf("failed to create output file %s: %w", outputPath, err)
-		}
-		defer outputFile.Close()
-
-		// Copy the file contents from the archive to the output file
-		if _, err := io.Copy(outputFile, reader); err != nil {
-			return nil, fmt.Errorf("failed to write file %s: %w", outputPath, err)
-		}
-	}
-	return w, nil
 }
 
 // ListCoins returns a list of coins that this currently has accounts for
@@ -433,6 +361,9 @@ func (w *wallet) RenameAccount(coin crypto.CoinType, name, newName string) error
 
 // SignWithDID signs the given message with the account for the given DID
 func (w *wallet) SignWithDID(did string, msg []byte) ([]byte, error) {
+	if w.IsLocked() {
+		return nil, fmt.Errorf("wallet is locked")
+	}
 	acc, err := w.GetAccountByDID(did)
 	if err != nil {
 		return nil, err

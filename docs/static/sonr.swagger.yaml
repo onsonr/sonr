@@ -3,6 +3,11 @@ info:
   title: Sonr API
   description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
   version: version not set
+tags:
+  - name: Query
+  - name: Msg
+  - name: VaultAccounts
+  - name: VaultAuthentication
 consumes:
   - application/json
 produces:
@@ -10,7 +15,11 @@ produces:
 paths:
   /sonr/core/identity/did:
     get:
-      summary: "#### QueryAllDidResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| didDocument | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      summary: |-
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_DidAll
       responses:
         "200":
@@ -65,13 +74,15 @@ paths:
           in: query
           required: false
           type: boolean
+      tags:
+        - Query
   /sonr/core/identity/did/{did}:
     get:
       summary: |-
-        #### QueryGetDidResponse
+        #### {{.ResponseType.Name}}
         | Name | Type | Description |
-        | ---- | ---- | ----------- |
-        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_Did
       responses:
         "200":
@@ -88,13 +99,15 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
   /sonr/core/identity/did/aka/{akaId}:
     get:
       summary: |-
-        #### QueryDidByAlsoKnownAsResponse
+        #### {{.ResponseType.Name}}
         | Name | Type | Description |
-        | ---- | ---- | ----------- |
-        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_DidByAlsoKnownAs
       responses:
         "200":
@@ -111,13 +124,15 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
   /sonr/core/identity/did/key/{keyId}:
     get:
       summary: |-
-        #### QueryDidByKeyIDResponse
+        #### {{.ResponseType.Name}}
         | Name | Type | Description |
-        | ---- | ---- | ----------- |
-        | didDocument | TYPE_MESSAGE | A DIDDocument is a JSON-LD object that contains a set of public keys |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_DidByKeyID
       responses:
         "200":
@@ -134,13 +149,15 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
   /sonr/core/identity/params:
     get:
       summary: |-
-        #### QueryParamsResponse
+        #### {{.ResponseType.Name}}
         | Name | Type | Description |
-        | ---- | ---- | ----------- |
-        | params | TYPE_MESSAGE | params holds all the parameters of this module. |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_Params
       responses:
         "200":
@@ -151,9 +168,15 @@ paths:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
+      tags:
+        - Query
   /sonr/core/identity/service:
     get:
-      summary: "#### QueryAllServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| services | []TYPE_MESSAGE |  | \n| pagination | TYPE_MESSAGE |  |"
+      summary: |-
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_ServiceAll
       responses:
         "200":
@@ -208,9 +231,15 @@ paths:
           in: query
           required: false
           type: boolean
+      tags:
+        - Query
   /sonr/core/identity/service/{origin}:
     get:
-      summary: "#### QueryGetServiceResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| service | TYPE_MESSAGE | A Service is a JSON-LD object that contains relaying information to authenticate a client | \n| challenge | TYPE_STRING | Challenge is a random string that is used to authenticate the client |"
+      summary: |-
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: Query_Service
       responses:
         "200":
@@ -227,10 +256,25 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - Query
   /sonr/vault/accounts/{sonrId}:
     get:
       summary: List the accounts
-      description: "ListAccounts is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"ListAccountsRequest\" and returns a \"ListAccountsResponse\".\n\n#### ListAccountsRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n\n\n#### ListAccountsResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAccounts_ListAccounts
       responses:
         "200":
@@ -246,10 +290,25 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - VaultAccounts
   /sonr/vault/accounts/{sonrId}/{coinType}:
     get:
       summary: Get Account
-      description: "GetAccount is a call with the method(s) GET within the \"VaultAccounts\" service.\nIt takes in \"GetAccountRequest\" and returns a \"GetAccountResponse\".\n\n#### GetAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n\n#### GetAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAccounts_GetAccount
       responses:
         "200":
@@ -269,10 +328,25 @@ paths:
           in: path
           required: true
           type: string
+      tags:
+        - VaultAccounts
   /sonr/vault/accounts/{sonrId}/create:
     post:
       summary: Create a new account
-      description: "CreateAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"CreateAccountRequest\" and returns a \"CreateAccountResponse\".\n\n#### CreateAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| coin_type | TYPE_STRING |  | \n\n\n#### CreateAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| coin_type | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAccounts_CreateAccount
       responses:
         "200":
@@ -297,10 +371,25 @@ paths:
               coinType:
                 type: string
             description: CreateAccountRequest is the request to create an account.
+      tags:
+        - VaultAccounts
   /sonr/vault/accounts/{targetDid}/delete:
     post:
       summary: Delete Account
-      description: "DeleteAccount is a call with the method(s) POST within the \"VaultAccounts\" service.\nIt takes in \"DeleteAccountRequest\" and returns a \"DeleteAccountResponse\".\n\n#### DeleteAccountRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| sonr_id | TYPE_STRING |  | \n| target_did | TYPE_STRING |  | \n\n\n#### DeleteAccountResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL |  | \n| did_document | TYPE_MESSAGE |  | \n| accounts | []TYPE_MESSAGE |  |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAccounts_DeleteAccount
       responses:
         "200":
@@ -325,10 +414,25 @@ paths:
               sonrId:
                 type: string
             description: DeleteAccountRequest is the request to delete an account.
+      tags:
+        - VaultAccounts
   /sonr/vault/auth/login/finish:
     post:
       summary: Login Finish
-      description: "LoginFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginFinishRequest\" and returns a \"LoginFinishResponse\".\n\n#### LoginFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| account_address | TYPE_STRING | Address of the account to login to. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### LoginFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAuthentication_LoginFinish
       responses:
         "200":
@@ -346,10 +450,25 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/v1LoginFinishRequest'
+      tags:
+        - VaultAuthentication
   /sonr/vault/auth/login/start:
     post:
       summary: Login Start
-      description: "LoginStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"LoginStartRequest\" and returns a \"LoginStartResponse\".\n\n#### LoginStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| account_address | TYPE_STRING | The Sonr account address for the user. | \n\n\n#### LoginStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| success | TYPE_BOOL | Success is true if the account exists. | \n| account_address | TYPE_STRING | The account address for the user. | \n| credential_options | TYPE_STRING | Json encoded WebAuthn credential options for the user to sign with. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAuthentication_LoginStart
       responses:
         "200":
@@ -367,10 +486,25 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/v1LoginStartRequest'
+      tags:
+        - VaultAuthentication
   /sonr/vault/auth/register/finish:
     post:
       summary: Register Finish
-      description: "RegisterFinish is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterFinishRequest\" and returns a \"RegisterFinishResponse\".\n\n#### RegisterFinishRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| uuid | TYPE_STRING | The previously generated session id. | \n| credential_response | TYPE_STRING | The signed credential response from the user. | \n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n\n\n#### RegisterFinishResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES | The id of the account. | \n| address | TYPE_STRING | The address of the account. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. | \n| did_document | TYPE_MESSAGE | The DID Document for the wallet. | \n| account_info | TYPE_MESSAGE | The account info for the wallet. | \n| ucan_token_header | TYPE_BYTES | The UCAN token authorization header for subsequent requests. |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAuthentication_RegisterFinish
       responses:
         "200":
@@ -388,10 +522,25 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/v1RegisterFinishRequest'
+      tags:
+        - VaultAuthentication
   /sonr/vault/auth/register/start:
     post:
       summary: Register Start
-      description: "RegisterStart is a call with the method(s) POST within the \"VaultAuthentication\" service.\nIt takes in \"RegisterStartRequest\" and returns a \"RegisterStartResponse\".\n\n#### RegisterStartRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| origin | TYPE_STRING | The origin of the request. This is used to query the Blockchain for the Service DID. | \n| device_label | TYPE_STRING | The user defined label for the device. | \n| security_threshold | TYPE_INT32 | The security threshold for the wallet account. | \n| passcode | TYPE_STRING | The recovery passcode for the wallet account. | \n| uuid | TYPE_STRING | The Unique Identifier for the client device. Typically in a cookie. | \n\n\n#### RegisterStartResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| creation_options | TYPE_STRING | Credential options for the user to sign with WebAuthn. | \n| rp_id | TYPE_STRING | Relaying party id for the request. | \n| rp_name | TYPE_STRING | Relaying party name for the request. |"
+      description: |-
+        {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
+        It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
+
+        #### {{.RequestType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .RequestType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+
+
+        #### {{.ResponseType.Name}}
+        | Name | Type | Description |
+        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
+        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
       operationId: VaultAuthentication_RegisterStart
       responses:
         "200":
@@ -409,51 +558,8 @@ paths:
           required: true
           schema:
             $ref: '#/definitions/v1RegisterStartRequest'
-  /sonr/vault/storage/refresh:
-    post:
-      summary: Refresh Shares
-      description: "RefreshShares is a call with the method(s) POST within the \"VaultStorage\" service.\nIt takes in \"RefreshSharesRequest\" and returns a \"RefreshSharesResponse\".\n\n#### RefreshSharesRequest\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| credential_response | TYPE_STRING |  | \n| session_id | TYPE_STRING |  | \n\n\n#### RefreshSharesResponse\n| Name | Type | Description |\n| ---- | ---- | ----------- |\n| id | TYPE_BYTES |  | \n| address | TYPE_STRING |  | \n| did_document | TYPE_MESSAGE |  |"
-      operationId: VaultStorage_RefreshShares
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/v1RefreshSharesResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: body
-          description: RefreshSharesRequest is the request to refresh the keypair.
-          in: body
-          required: true
-          schema:
-            $ref: '#/definitions/v1RefreshSharesRequest'
-  /sonrhq/core/identity/did/pubkey/{pubkey}/{create}:
-    get:
-      summary: Queries a list of DidByPubKey items.
-      operationId: Query_DidByPubKey
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/identityQueryDidByPubKeyResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pubkey
-          description: Public key is a base64 encoded string of the public key
-          in: path
-          required: true
-          type: string
-        - name: create
-          description: Create account if it doesn't exist
-          in: path
-          required: true
-          type: boolean
+      tags:
+        - VaultAuthentication
 definitions:
   commonAccountInfo:
     type: object
@@ -483,61 +589,64 @@ definitions:
         type: array
         items:
           type: string
+        title: The JSON-LD context(s) used in the document
       id:
         type: string
+        title: The identifier for the DID subject
       controller:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the entity/entities controlling the DID subject
       verificationMethod:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityVerificationMethod'
-        title: optional
+        title: optional, the set of verification methods associated with the DID subject
       authentication:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of authentication methods associated with the DID subject
       assertionMethod:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of assertion methods associated with the DID subject
       capabilityInvocation:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of capability invocation methods associated with the DID subject
       capabilityDelegation:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of capability delegation methods associated with the DID subject
       keyAgreement:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of key agreement methods associated with the DID subject
       service:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityService'
-        title: optional
+        title: optional, the set of services associated with the DID subject
       alsoKnownAs:
         type: array
         items:
           type: string
-        title: optional
+        title: optional, the set of identifiers for other personas or identities related to the DID subject
       metadata:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityKeyValuePair'
-        title: optional
+        title: optional, additional metadata related to the DID document
+    description: DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
   identityKeyValuePair:
     type: object
     properties:
@@ -551,6 +660,21 @@ definitions:
     type: object
   identityMsgDeleteDidDocumentResponse:
     type: object
+  identityMsgDeletePublicKeyResponse:
+    type: object
+  identityMsgImportPublicKeyResponse:
+    type: object
+  identityMsgRegisterAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      did:
+        type: string
+        description: The DID of the user.
+      document:
+        $ref: '#/definitions/identityResolvedDidDocument'
+        description: The ResolvedDidDocument of the user.
   identityMsgRegisterServiceResponse:
     type: object
   identityMsgUpdateDidDocumentResponse:
@@ -617,8 +741,6 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityResolvedDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  identityQueryDidByPubKeyResponse:
-    type: object
   identityQueryGetDidResponse:
     type: object
     properties:
@@ -714,59 +836,76 @@ definitions:
     properties:
       id:
         type: string
+        title: The identifier for the service
       controller:
         type: string
+        title: The entity controlling the service
       type:
         type: string
+        title: The type of the service
       origin:
         type: string
+        title: The origin of the service (e.g., a URL or other endpoint)
       name:
         type: string
+        title: The name of the service
       serviceEndpoints:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityKeyValuePair'
-        title: optional
+        title: optional, the set of service endpoints associated with the service
       metadata:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityKeyValuePair'
-        title: optional
+        title: optional, additional metadata related to the Service
+    description: Service represents a service associated with the DID subject.
   identityVerificationMethod:
     type: object
     properties:
       id:
         type: string
+        title: The identifier for the verification method
       type:
         type: string
+        title: The type of the verification method
       controller:
         type: string
+        title: The entity controlling the verification method
       publicKeyJwk:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityKeyValuePair'
-        title: optional
+        title: optional, the public key in JSON Web Key (JWK) format
       publicKeyMultibase:
         type: string
-        title: optional
+        title: optional, the public key in multibase-encoded format
       blockchainAccountId:
         type: string
-        title: optional
+        title: optional, the blockchain account identifier associated with the verification method
       metadata:
         type: array
         items:
           type: object
           $ref: '#/definitions/identityKeyValuePair'
+        title: additional metadata related to the verification method
+    description: VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
   identityVerificationRelationship:
     type: object
     properties:
       verificationMethod:
         $ref: '#/definitions/identityVerificationMethod'
+        title: The verification method associated with the relationship
       reference:
         type: string
+        title: The reference identifier for the relationship
+      type:
+        type: string
+        title: The type of the verification relationship
+    description: VerificationRelationship represents a relationship between a verification method and a specific verification purpose (e.g., authentication, assertion, etc.).
   protobufAny:
     type: object
     properties:
@@ -906,25 +1045,6 @@ definitions:
         type: string
         description: Relaying party name for the request.
     description: LoginStartResponse is the response to a Login request.
-  v1RefreshSharesRequest:
-    type: object
-    properties:
-      credentialResponse:
-        type: string
-      sessionId:
-        type: string
-    description: RefreshSharesRequest is the request to refresh the keypair.
-  v1RefreshSharesResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: byte
-      address:
-        type: string
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-    description: RefreshSharesResponse is the response to a Refresh request.
   v1RegisterFinishRequest:
     type: object
     properties:

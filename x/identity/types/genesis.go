@@ -7,41 +7,40 @@ import (
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 
-// DefaultServices returns the default services
-func DefaultServices() []Service {
-	return []Service{
-		{
-			Id:     "did:web:sonr.io",
-			Type:   "LinkedDomains",
-			Origin: "https://sonr.io",
-			Name:   "Sonr Home",
-		},
-		{
-			Id:     "did:web:localhost",
-			Type:   "LinkedDomains",
-			Origin: "localhost",
-			Name:   "Localhost",
-		},
-		{
-			Id:     "did:web:mind.sonr.io",
-			Type:   "LinkedDomains",
-			Origin: "https://mind.sonr.io",
-			Name:   "Sonr Mind",
-		},
-		{
-			Id:     "did:web:auth.sonr.io",
-			Type:   "LinkedDomains",
-			Origin: "https://auth.sonr.io",
-			Name:   "Sonr Auth",
-		},
-	}
-}
-
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		DidDocumentList: []DidDocument{},
-		ServiceList:     DefaultServices(),
+		ServiceList: []Service{
+			{
+				Id:         "sonr.io",
+				Controller: "did:web:sonr.io",
+				Type:       "LinkedDomains",
+				Origin:     "sonr.io",
+				Name:       "Sonr Home",
+			},
+			{
+				Id:         "localhost",
+				Controller: "did:web:localhost",
+				Type:       "LinkedDomains",
+				Origin:     "localhost",
+				Name:       "Localhost",
+			},
+			{
+				Id:         "mind.sonr.io",
+				Controller: "did:web:mind.sonr.io",
+				Type:       "LinkedDomains",
+				Origin:     "mind.sonr.io",
+				Name:       "Sonr Mind",
+			},
+			{
+				Id:         "auth.sonr.io",
+				Controller: "did:web:auth.sonr.io",
+				Type:       "LinkedDomains",
+				Origin:     "auth.sonr.io",
+				Name:       "Sonr Auth",
+			},
+		},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params:        DefaultParams(),
 		Relationships: []VerificationRelationship{},
@@ -53,7 +52,8 @@ func DefaultGenesis() *GenesisState {
 func (gs GenesisState) Validate() error {
 	relationshipMap := make(map[string]struct{})
 	for _, elem := range gs.Relationships {
-		if _, ok := relationshipMap[elem.Reference]; ok {
+		index := string(RelationshipKey(elem.Reference))
+		if _, ok := relationshipMap[index]; ok {
 			return fmt.Errorf("duplicated id for relationship")
 		}
 		relationshipMap[elem.Reference] = struct{}{}
@@ -64,7 +64,7 @@ func (gs GenesisState) Validate() error {
 	for _, elem := range gs.DidDocumentList {
 		index := string(DidDocumentKey(elem.Id))
 		if _, ok := didDocumentIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for didDocument")
+			return fmt.Errorf("duplicated index for did")
 		}
 		didDocumentIndexMap[index] = struct{}{}
 	}
@@ -72,9 +72,9 @@ func (gs GenesisState) Validate() error {
 	ServiceIndexMap := make(map[string]struct{})
 
 	for _, elem := range gs.ServiceList {
-		index := string(ServiceKey(elem.Id))
+		index := string(ServiceKey(elem.Origin))
 		if _, ok := ServiceIndexMap[index]; ok {
-			return fmt.Errorf("duplicated index for DomainRecord")
+			return fmt.Errorf("duplicated index for Service")
 		}
 		ServiceIndexMap[index] = struct{}{}
 	}

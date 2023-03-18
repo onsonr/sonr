@@ -169,6 +169,11 @@ func ReadCmpConfig(path string) (*cmp.Config, error) {
 	return cmpConfig, nil
 }
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                Helper functions                                ||
+// ! ||--------------------------------------------------------------------------------||
+
+// getNextAccountDir returns the path to the next available account directory for the specified coin type.
 func getNextAccountDir(basePath string, coinType crypto.CoinType) (string, error) {
 	// Create the parent directories for the file path
 	err := os.MkdirAll(filepath.Join(basePath, getBip32Prefix(coinType)), os.ModePerm)

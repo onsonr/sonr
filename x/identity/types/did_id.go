@@ -43,9 +43,9 @@ func NewBlockchainID(addr string, name string) string {
 	return DIDMethod_DIDMethod_BLOCKCHAIN.Format(addr, WithFragment(name))
 }
 
-//
-// Helper Functions
-//
+///
+/// Helper functions
+///
 
 // findCoinTypeFromAddress returns the CoinType for the given address
 func findCoinTypeFromAddress(addr string) crypto.CoinType {

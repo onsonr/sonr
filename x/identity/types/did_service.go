@@ -3,6 +3,7 @@
 package types
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
 	"strings"
@@ -58,7 +59,8 @@ func (s *Service) GetUserEntity(id, displayName string) protocol.UserEntity {
 
 // IssueChallenge issues a challenge for the VerificationMethod to sign and return
 func (vm *Service) IssueChallenge() (protocol.URLEncodedBase64, error) {
-	return blake3HashUrlBase64(vm.Id)
+	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
+	return protocol.URLEncodedBase64(hashString), nil
 }
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.

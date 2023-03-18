@@ -267,19 +267,6 @@ func blake3HashHex(input string) string {
 	return hashString
 }
 
-// blake3HashUrlBase64 hashes the input string using the Blake3 algorithm and returns the
-// hash as a base64-encoded string.
-func blake3HashUrlBase64(input string) (protocol.URLEncodedBase64, error) {
-	outputSize := 32 // Output size in bytes (32 bytes = 256 bits)
-	key := []byte{}  // Empty key for keyless hashing
-
-	hasher := blake3.New(outputSize, key)
-	hasher.Write([]byte(input))
-	hashBytes := hasher.Sum(nil)
-	hashString := base64.URLEncoding.EncodeToString(hashBytes)
-	return protocol.URLEncodedBase64(hashString), nil
-}
-
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
 func parseCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
 	// Get Credential Creation Respons

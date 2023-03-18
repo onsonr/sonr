@@ -183,9 +183,9 @@ func PubKeyFromWebAuthn(cred *types.WebauthnCredential) (*PubKey, error) {
 	}
 
 	switch pub := pub.(type) {
-	case *webauthncose.EC2PublicKeyData:
+	case webauthncose.EC2PublicKeyData:
 		return NewSecp256k1PubKey(pub.XCoord), nil
-	case *webauthncose.OKPPublicKeyData:
+	case webauthncose.OKPPublicKeyData:
 		return NewEd25519PubKey(pub.XCoord), nil
 	default:
 		return nil, fmt.Errorf("unsupported public key type: %T", pub)

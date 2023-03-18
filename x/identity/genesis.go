@@ -16,6 +16,10 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.ServiceList {
 		k.SetService(ctx, elem)
 	}
+
+	for _, elem := range genState.Relationships {
+		k.SetRelationship(ctx, elem)
+	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -27,6 +31,7 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.DidDocumentList = k.GetAllDidDocument(ctx)
 	genesis.ServiceList = k.GetAllServices(ctx)
+	genesis.Relationships = k.GetAllRelationships(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

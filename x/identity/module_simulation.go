@@ -52,6 +52,18 @@ const (
 	// T-23 Determine the simulation weight value
 	defaultWeightMsgRegisterService int = 100
 
+	opWeightMsgRegisterAccount = "op_weight_msg_register_account"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgRegisterAccount int = 100
+
+	opWeightMsgImportPublicKey = "op_weight_msg_import_public_key"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgImportPublicKey int = 100
+
+	opWeightMsgDeletePublicKey = "op_weight_msg_delete_public_key"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeletePublicKey int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -149,6 +161,39 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgRegisterService,
 		identitysimulation.SimulateMsgRegisterService(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgRegisterAccount int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterAccount, &weightMsgRegisterAccount, nil,
+		func(_ *rand.Rand) {
+			weightMsgRegisterAccount = defaultWeightMsgRegisterAccount
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgRegisterAccount,
+		identitysimulation.SimulateMsgRegisterAccount(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgImportPublicKey int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgImportPublicKey, &weightMsgImportPublicKey, nil,
+		func(_ *rand.Rand) {
+			weightMsgImportPublicKey = defaultWeightMsgImportPublicKey
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgImportPublicKey,
+		identitysimulation.SimulateMsgImportPublicKey(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeletePublicKey int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePublicKey, &weightMsgDeletePublicKey, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeletePublicKey = defaultWeightMsgDeletePublicKey
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeletePublicKey,
+		identitysimulation.SimulateMsgDeletePublicKey(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

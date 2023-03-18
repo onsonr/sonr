@@ -30,6 +30,8 @@ type KeyShare interface {
 
 	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
 	Decrypt(credential *crypto.WebauthnCredential) error
+
+	IsEncrypted() bool
 }
 
 type keyShare struct {
@@ -53,9 +55,18 @@ func NewKeyshare(path string) (KeyShare, error) {
 	}, nil
 }
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                Filesystem & I/O                                ||
+// ! ||--------------------------------------------------------------------------------||
+
 // AccountName returns the account name based on the account directory name
 func (s *keyShare) AccountName() string {
 	return filepath.Dir(s.p)
+}
+
+// Name returns the name of the file.
+func (s *keyShare) Name() string {
+	return filepath.Base(s.p)
 }
 
 // Path returns the path to the file.
@@ -80,8 +91,15 @@ func (s *keyShare) CoinType() crypto.CoinType {
 	return crypto.TestCoinType
 }
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                    Webauthn                                    ||
+// ! ||--------------------------------------------------------------------------------||
+
 // Encrypt checks if the file at current path is encrypted and if not, encrypts it.
 func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential) error {
+	if s.Name() == "vault" {
+		return nil
+	}
 	bz, err := s.cnfg.MarshalBinary()
 	if err != nil {
 		return err
@@ -95,6 +113,9 @@ func (s *keyShare) Encrypt(credential *crypto.WebauthnCredential) error {
 
 // Decrypt checks if the file at current path is encrypted and if not, encrypts it.
 func (s *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
+	if s.Name() == "vault" {
+		return nil
+	}
 	bz, err := os.ReadFile(s.p)
 	if err != nil {
 		return err
@@ -113,6 +134,9 @@ func (s *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
 
 // IsEncrypted checks if the file at current path is encrypted.
 func (s *keyShare) IsEncrypted() bool {
+	if s.Name() == "vault" {
+		return false
+	}
 	bz, err := os.ReadFile(s.p)
 	if err != nil {
 		return false

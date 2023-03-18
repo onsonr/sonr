@@ -7,6 +7,9 @@ import (
 	"strconv"
 	"strings"
 
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/types"
@@ -25,6 +28,9 @@ type Account interface {
 	// DID returns the DID of the account
 	DID() string
 
+	// GetAuthInfo creates an AuthInfo for a transaction
+	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
+
 	// ListKeyshares returns a list of keyshares for the account
 	ListKeyshares() ([]KeyShare, error)
 
@@ -36,6 +42,9 @@ type Account interface {
 
 	// PartyIDs returns the party IDs of the account
 	PartyIDs() []crypto.PartyID
+
+	Nonce() uint64
+	IncrementNonce()
 
 	// PubKey returns secp256k1 public key
 	PubKey() *crypto.PubKey
@@ -54,11 +63,22 @@ type Account interface {
 
 	// Verifies a signature
 	Verify(bz []byte, sig []byte) (bool, error)
+
+	// Lock locks the account
+	Lock(c *crypto.WebauthnCredential) error
+
+	// Unlock unlocks the account
+	Unlock(c *crypto.WebauthnCredential) error
 }
 
 type walletAccount struct {
 	p string
+	n uint64
 }
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                     General                                    ||
+// ! ||--------------------------------------------------------------------------------||
 
 // NewWalletAccount loads an accound directory and returns a WalletAccount
 func NewWalletAccount(p string) (Account, error) {
@@ -68,6 +88,66 @@ func NewWalletAccount(p string) (Account, error) {
 	}
 	return &walletAccount{p: p}, nil
 }
+
+// PubKey returns secp256k1 public key
+func (wa *walletAccount) PubKey() *crypto.PubKey {
+	files, err := os.ReadDir(wa.p)
+	if err != nil {
+		return nil
+	}
+	ks, err := NewKeyshare(filepath.Join(wa.p, files[0].Name()))
+	if err != nil {
+		return nil
+	}
+	skPP, ok := ks.Config().PublicPoint().(*curve.Secp256k1Point)
+	if !ok {
+		return nil
+	}
+	bz, err := skPP.MarshalBinary()
+	if err != nil {
+		return nil
+	}
+	return crypto.NewSecp256k1PubKey(bz)
+}
+
+// Signs a message using the account
+func (wa *walletAccount) Sign(bz []byte) ([]byte, error) {
+	kss, err := wa.ListKeyshares()
+	if err != nil {
+		return nil, err
+	}
+	var configs []*cmp.Config
+	for _, ks := range kss {
+		configs = append(configs, ks.Config())
+	}
+	return mpc.SignCMP(configs, bz, wa.PartyIDs())
+}
+
+// Verifies a signature using first unlocked keyshare
+func (wa *walletAccount) Verify(bz []byte, sig []byte) (bool, error) {
+	kss, err := wa.ListKeyshares()
+	if err != nil {
+		return false, err
+	}
+
+	// Find first unlocked keyshare
+	var uks KeyShare
+	for _, ks := range kss {
+		if ks.IsEncrypted() {
+			continue
+		}
+		uks = ks
+		break
+	}
+	if uks == nil {
+		return false, fmt.Errorf("no unlocked keyshares")
+	}
+	return mpc.VerifyCMP(uks.Config(), bz, sig)
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  Sonr Specific                                 ||
+// ! ||--------------------------------------------------------------------------------||
 
 // Address returns the address of the account based on the coin type
 func (wa *walletAccount) Address() string {
@@ -92,6 +172,94 @@ func (wa *walletAccount) DID() string {
 	return fmt.Sprintf("did:%s:%s#%s", wa.CoinType().DidMethod(), wa.Address(), wa.Name())
 }
 
+// Type returns the type of the account
+func (wa *walletAccount) Type() string {
+	return fmt.Sprintf("%s/ecdsa-secp256k1", wa.CoinType().Name())
+}
+
+// VerificationMethod returns the verification method of the account
+func (wa *walletAccount) VerificationMethod(controller string) *types.VerificationMethod {
+	return &types.VerificationMethod{
+		Id:                  wa.DID(),
+		Type:                crypto.Secp256k1KeyType.FormatString(),
+		Controller:          controller,
+		PublicKeyMultibase:  wa.PubKey().Multibase(),
+		BlockchainAccountId: wa.Address(),
+	}
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                            Ethereum specific methods                           ||
+// ! ||--------------------------------------------------------------------------------||
+
+// Nonce returns the nonce of the account
+func (wa *walletAccount) Nonce() uint64 {
+	return wa.n
+}
+
+// IncrementNonce increments the nonce of the account
+func (wa *walletAccount) IncrementNonce() {
+	wa.n++
+}
+
+//
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                              Cosmos specific methods                           ||
+// ! ||--------------------------------------------------------------------------------||
+//
+
+// GetAuthInfo creates an AuthInfo instance for this account with the specified gas amount.
+func (wa *walletAccount) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
+	// Build signerInfo parameters
+	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
+	if err != nil {
+		return nil, err
+	}
+
+	// Create AuthInfo
+	authInfo := txtypes.AuthInfo{
+		SignerInfos: []*txtypes.SignerInfo{
+			{
+				PublicKey: anyPubKey,
+				ModeInfo: &txtypes.ModeInfo{
+					Sum: &txtypes.ModeInfo_Single_{
+						Single: &txtypes.ModeInfo_Single{
+							Mode: 1,
+						},
+					},
+				},
+				Sequence: 0,
+			},
+		},
+		Fee: &txtypes.Fee{
+			Amount:   gas,
+			GasLimit: uint64(300000),
+			Payer:    wa.Address(),
+		},
+	}
+	return &authInfo, nil
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                             Multi-Party Computation                            ||
+// ! ||--------------------------------------------------------------------------------||
+
+// PartyIDs returns the party IDs of the account
+func (wa *walletAccount) PartyIDs() []crypto.PartyID {
+	files, err := os.ReadDir(wa.p)
+	if err != nil {
+		return nil
+	}
+	var partyIDs []crypto.PartyID
+	for _, f := range files {
+		if !f.IsDir() && filepath.Ext(f.Name()) == ".key" {
+			id := strings.TrimRight(f.Name(), ".key")
+			partyIDs = append(partyIDs, crypto.PartyID(id))
+		}
+	}
+	return partyIDs
+}
+
 // ListKeyshares returns a list of keyshares for the account
 func (wa *walletAccount) ListKeyshares() ([]KeyShare, error) {
 	files, err := os.ReadDir(wa.p)
@@ -111,51 +279,18 @@ func (wa *walletAccount) ListKeyshares() ([]KeyShare, error) {
 	return keyshares, nil
 }
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                Filesystem & I/O                                ||
+// ! ||--------------------------------------------------------------------------------||
+
 // Name returns the name of the account
 func (wa *walletAccount) Name() string {
 	return filepath.Base(wa.p)
 }
 
-// PartyIDs returns the party IDs of the account
-func (wa *walletAccount) PartyIDs() []crypto.PartyID {
-	files, err := os.ReadDir(wa.p)
-	if err != nil {
-		return nil
-	}
-	var partyIDs []crypto.PartyID
-	for _, f := range files {
-		if !f.IsDir() && filepath.Ext(f.Name()) == ".key" {
-			id := strings.TrimRight(f.Name(), ".key")
-			partyIDs = append(partyIDs, crypto.PartyID(id))
-		}
-	}
-	return partyIDs
-}
-
 // Path returns the path of the account
 func (wa *walletAccount) Path() string {
 	return wa.p
-}
-
-// PubKey returns secp256k1 public key
-func (wa *walletAccount) PubKey() *crypto.PubKey {
-	files, err := os.ReadDir(wa.p)
-	if err != nil {
-		return nil
-	}
-	ks, err := NewKeyshare(filepath.Join(wa.p, files[0].Name()))
-	if err != nil {
-		return nil
-	}
-	skPP, ok := ks.Config().PublicPoint().(*curve.Secp256k1Point)
-	if !ok {
-		return nil
-	}
-	bz, err := skPP.MarshalBinary()
-	if err != nil {
-		return nil
-	}
-	return crypto.NewSecp256k1PubKey(bz)
 }
 
 // Rename renames the account
@@ -167,46 +302,42 @@ func (wa *walletAccount) Rename(name string) error {
 	return os.Rename(wa.p, newPath)
 }
 
-// Signs a message using the account
-func (wa *walletAccount) Sign(bz []byte) ([]byte, error) {
-	kss, err := wa.ListKeyshares()
+// Lock locks the account
+func (wa *walletAccount) Lock(c *crypto.WebauthnCredential) error {
+	ks, err := wa.ListKeyshares()
 	if err != nil {
-		return nil, err
+		return err
 	}
-	var configs []*cmp.Config
-	for _, ks := range kss {
-		configs = append(configs, ks.Config())
+
+	// Encrypt all keyshares for user
+	for _, k := range ks {
+		if err := k.Encrypt(c); err != nil {
+			return err
+		}
 	}
-	return mpc.SignCMP(configs, bz, wa.PartyIDs())
+	return nil
 }
 
-// Type returns the type of the account
-func (wa *walletAccount) Type() string {
-	return fmt.Sprintf("%s/ecdsa-secp256k1", wa.CoinType().Name())
-}
-
-// VerificationMethod returns the verification method of the account
-func (wa *walletAccount) VerificationMethod(controller string) *types.VerificationMethod {
-	return &types.VerificationMethod{
-		Id:                  wa.DID(),
-		Type:                crypto.Secp256k1KeyType.FormatString(),
-		Controller:          controller,
-		PublicKeyMultibase:  wa.PubKey().Multibase(),
-		BlockchainAccountId: wa.Address(),
-	}
-}
-
-// Verifies a signature
-func (wa *walletAccount) Verify(bz []byte, sig []byte) (bool, error) {
-	kss, err := wa.ListKeyshares()
+// Unlock unlocks the account
+func (wa *walletAccount) Unlock(c *crypto.WebauthnCredential) error {
+	ks, err := wa.ListKeyshares()
 	if err != nil {
-		return false, err
+		return err
 	}
-	return mpc.VerifyCMP(kss[0].Config(), bz, sig)
+
+	// Decrypt all keyshares for user
+	for _, k := range ks {
+		if err := k.Decrypt(c); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 //
-// Helper functions
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  Helper functions                              ||
+// ! ||--------------------------------------------------------------------------------||
 //
 
 // isDir checks if the path is a directory and contains at least one MPC shard file

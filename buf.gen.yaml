@@ -11,10 +11,8 @@ plugins:
     out: docs/static
     strategy: all
     opt:
-      - use_go_templates=true
       - logtostderr=true
       - allow_merge=true
-      - disable_service_tags=true
       - merge_file_name=sonr
       - output_format=yaml
   # - name: protoc-gen-graphql

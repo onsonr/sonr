@@ -38,12 +38,6 @@ func NewDocument(pk *crypto.PubKey, opts ...VerificationMethodOption) *DidDocume
 	return doc
 }
 
-// Address returns the address of the DID
-func (d *DidDocument) Address() string {
-	ptrs := strings.Split(d.Id, ":")
-	return fmt.Sprintf("%s%s", ptrs[len(ptrs)-2], ptrs[len(ptrs)-1])
-}
-
 // AccAddress returns the account address of the DID
 func (d *DidDocument) AccAddress() (sdk.AccAddress, error) {
 	return ConvertDidToAccAddress(d.Id)
@@ -83,4 +77,116 @@ func (d *DidDocument) GetVerificationMethodByFragment(fragment string) *Verifica
 // SetMetadata sets the metadata of the document
 func (vm *DidDocument) SetMetadata(data map[string]string) {
 	vm.Metadata = MapToKeyValueList(data)
+}
+
+// ImportVerificationMethods imports the given VerificationMethods into the document
+func (d *DidDocument) ImportVerificationMethods(category string, vms ...VerificationMethod) {
+	idList := []string{}
+	for _, vm := range vms {
+		if !d.Contains(vm.Id) {
+			d.VerificationMethod = append(d.VerificationMethod, &vm)
+			idList = append(idList, vm.Id)
+		}
+	}
+	switch strings.ToLower(category) {
+	case "authentication":
+		d.Authentication = append(d.Authentication, idList...)
+	case "assertionmethod":
+		d.AssertionMethod = append(d.AssertionMethod, idList...)
+	case "capabilityinvocation":
+		d.CapabilityInvocation = append(d.CapabilityInvocation, idList...)
+	case "capabilitydelegation":
+		d.CapabilityDelegation = append(d.CapabilityDelegation, idList...)
+	case "keyagreement":
+		d.KeyAgreement = append(d.KeyAgreement, idList...)
+	}
+}
+
+// Contains is a method which recursively checks if a given did is contained within the document
+func (d *DidDocument) Contains(did string) bool {
+	if d.Id == did {
+		return true
+	}
+	for _, vm := range d.VerificationMethod {
+		if vm.Id == did {
+			return true
+		}
+	}
+	for _, service := range d.Service {
+		if service.Id == did {
+			return true
+		}
+	}
+	return false
+}
+
+func (d *DidDocument) ToResolved() *ResolvedDidDocument {
+	resolved := &ResolvedDidDocument{
+		Id:                 d.Id,
+		Context:            d.Context,
+		Controller:         d.Controller,
+		AlsoKnownAs:        d.AlsoKnownAs,
+		VerificationMethod: d.VerificationMethod,
+		Service:            d.Service,
+		Metadata:           d.Metadata,
+	}
+
+	// Iterate through VerificationMethod and create a VerificationRelationship for each
+	vms := []VerificationRelationship{}
+	for _, vm := range d.VerificationMethod {
+		vms = append(vms, VerificationRelationship{
+			Reference: vm.Id,
+		})
+	}
+	return resolved.AddVerificationRelationship(vms)
+}
+
+// IsAuthentication checks if the given VerificationMethod is used for authentication
+func (d *DidDocument) IsAuthentication(vm *VerificationMethod) bool {
+	for _, auth := range d.Authentication {
+		if auth == vm.Id {
+			return true
+		}
+	}
+	return false
+}
+
+// IsAssertionMethod checks if the given VerificationMethod is used for assertion
+func (d *DidDocument) IsAssertionMethod(vm *VerificationMethod) bool {
+	for _, auth := range d.AssertionMethod {
+		if auth == vm.Id {
+			return true
+		}
+	}
+	return false
+}
+
+// IsCapabilityInvocation checks if the given VerificationMethod is used for capability invocation
+func (d *DidDocument) IsCapabilityInvocation(vm *VerificationMethod) bool {
+	for _, auth := range d.CapabilityInvocation {
+		if auth == vm.Id {
+			return true
+		}
+	}
+	return false
+}
+
+// IsCapabilityDelegation checks if the given VerificationMethod is used for capability delegation
+func (d *DidDocument) IsCapabilityDelegation(vm *VerificationMethod) bool {
+	for _, auth := range d.CapabilityDelegation {
+		if auth == vm.Id {
+			return true
+		}
+	}
+	return false
+}
+
+// IsKeyAgreement checks if the given VerificationMethod is used for key agreement
+func (d *DidDocument) IsKeyAgreement(vm *VerificationMethod) bool {
+	for _, auth := range d.KeyAgreement {
+		if auth == vm.Id {
+			return true
+		}
+	}
+	return false
 }

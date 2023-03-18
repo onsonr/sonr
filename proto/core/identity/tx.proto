@@ -1,63 +1,108 @@
 syntax = "proto3";
+
 package sonrhq.core.identity;
 
 import "core/identity/did.proto";
+
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateDidDocument(MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
-  rpc UpdateDidDocument(MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
-  rpc DeleteDidDocument(MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
-  rpc RegisterService(MsgRegisterService) returns (MsgRegisterServiceResponse);
-  rpc UpdateService(MsgUpdateService) returns (MsgUpdateServiceResponse);
-  rpc DeactivateService(MsgDeactivateService) returns (MsgDeactivateServiceResponse);
-  // this line is used by starport scaffolding # proto/tx/rpc
-}
+  rpc CreateDidDocument (MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
+  rpc UpdateDidDocument (MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
+  rpc DeleteDidDocument (MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
+  rpc RegisterService   (MsgRegisterService  ) returns (MsgRegisterServiceResponse  );
+  rpc UpdateService     (MsgUpdateService    ) returns (MsgUpdateServiceResponse    );
+  rpc DeactivateService (MsgDeactivateService) returns (MsgDeactivateServiceResponse);
 
+  // this line is used by starport scaffolding # proto/tx/rpc
+  rpc RegisterAccount (MsgRegisterAccount) returns (MsgRegisterAccountResponse);
+  rpc ImportPublicKey (MsgImportPublicKey) returns (MsgImportPublicKeyResponse);
+  rpc DeletePublicKey (MsgDeletePublicKey) returns (MsgDeletePublicKeyResponse);
+}
 message MsgCreateDidDocument {
-  string creator = 1;
+  string      creator  = 1;
   DidDocument document = 2;
 }
+
 message MsgCreateDidDocumentResponse {}
 
 message MsgUpdateDidDocument {
-  string creator = 1;
+  string      creator  = 1;
   DidDocument document = 2;
 }
+
 message MsgUpdateDidDocumentResponse {
   string creator = 1;
 }
 
 message MsgDeleteDidDocument {
   string creator = 1;
-  string did = 2;
+  string did     = 2;
 }
+
 message MsgDeleteDidDocumentResponse {}
 
 message MsgRegisterService {
   string creator = 1;
-  string index = 2;
-  string domain = 3;
+  string index   = 2;
+  string domain  = 3;
 }
+
 message MsgRegisterServiceResponse {}
 
 message MsgUpdateService {
   string creator = 1;
-  string index = 2;
-  string domain = 3;
+  string index   = 2;
+  string domain  = 3;
 }
-message MsgUpdateServiceResponse {}
 
+message MsgUpdateServiceResponse {}
 
 message MsgDeactivateService {
   string creator = 1;
-  string index = 2;
-  string domain = 3;
+  string index   = 2;
+  string domain  = 3;
 }
+
 message MsgDeactivateServiceResponse {}
 
-
 // this line is used by starport scaffolding # proto/tx/message
+message MsgRegisterAccount {
+  // The address of the user. This is used to query the Blockchain for the User DID to make sure the user does not already have an account.
+  string creator = 1;
+
+  // The previously generated session id.
+  string uuid = 2;
+
+  // The signed credential response from the user.
+  string credential_response = 3;
+
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 4;
+}
+
+message MsgRegisterAccountResponse {
+  bool success = 1;
+
+  // The DID of the user.
+  string did = 2;
+
+  // The ResolvedDidDocument of the user.
+  ResolvedDidDocument document = 3;
+}
+
+message MsgImportPublicKey {
+  string creator = 1;
+}
+
+message MsgImportPublicKeyResponse {}
+
+message MsgDeletePublicKey {
+  string creator = 1;
+}
+
+message MsgDeletePublicKeyResponse {}
+

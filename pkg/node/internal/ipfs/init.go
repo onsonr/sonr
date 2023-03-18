@@ -156,9 +156,9 @@ func getUnixfsNode(path string) (files.Node, error) {
 	return f, nil
 }
 
-//
-// Helper functions
-//
+///
+/// Helper functions
+///
 
 // fetchDocsAddress fetches the address of the document store for a given username
 func fetchDocsAddress(orb iface.OrbitDB, username string) (string, error) {

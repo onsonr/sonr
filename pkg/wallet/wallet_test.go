@@ -1,6 +1,7 @@
 package wallet
 
 import (
+	"crypto/ed25519"
 	"encoding/base64"
 	"fmt"
 	"testing"
@@ -45,6 +46,49 @@ func TestCreateAccount(t *testing.T) {
 		}
 		t.Logf("")
 	}
+}
+
+func TestLockUnlockWallet(t *testing.T) {
+	// Sample public key generated from ed25519.GenerateKey(rand.Reader)
+	var pub ed25519.PublicKey = []byte{0x7b, 0x88, 0x10, 0x24, 0xad, 0xc9, 0x82, 0xd3, 0x80, 0xb8, 0x77, 0x1e, 0x3b, 0x9b, 0xf8, 0xe4, 0xb3, 0x99, 0x8b, 0xc7, 0xd0, 0x58, 0x30, 0x66, 0x2, 0xce, 0x4d, 0xf, 0x2f, 0xe4, 0xb7, 0x81}
+	credential := crypto.WebauthnCredential{
+		Id:              []byte("some-probabilistically-unique-id"),
+		PublicKey:       pub,
+		AttestationType: "some-attestation-type",
+		Transport:       []string{"usb", "ble"},
+		Authenticator: &crypto.WebauthnAuthenticator{
+			Aaguid:       []byte("some-aaguid"),
+			CloneWarning: true,
+			SignCount:    123,
+		},
+	}
+
+	w, err := NewWallet("test", 1)
+	assert.NoError(t, err)
+
+	ethAcc, err := w.CreateAccount(crypto.ETHCoinType)
+	assert.NoError(t, err)
+
+	doc, _, err := w.Assign(&credential)
+	assert.NoError(t, err)
+	t.Logf("DID: %s", doc.String())
+
+	// Attempt to sign a message with the wallet before it's unlocked
+	_, err = ethAcc.Sign([]byte("some-message"))
+	assert.Error(t, err)
+
+	// Unlock the wallet
+	err = w.Unlock(&credential)
+	assert.NoError(t, err)
+
+	// Sign a message with the wallet after it's unlocked
+	sig, err := ethAcc.Sign([]byte("some-message"))
+	assert.NoError(t, err)
+
+	// Verify the signature
+	okay, err := ethAcc.Verify([]byte("some-message"), sig)
+	assert.NoError(t, err)
+	assert.True(t, okay)
 }
 
 func TestGetAccount(t *testing.T) {
@@ -121,30 +165,6 @@ func TestSignWithDIDs(t *testing.T) {
 		}
 		t.Logf("   Verify => %v", ok)
 		t.Logf("")
-	}
-}
-
-func TestExportImport(t *testing.T) {
-	w, err := LoadWallet()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Export
-	enc, err := w.Export()
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Import
-	w2, err := Import(enc)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Compare
-	if w2 == nil {
-		t.Fatal("wallet is nil")
 	}
 }
 

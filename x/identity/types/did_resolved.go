@@ -20,6 +20,34 @@ func (d *DidDocument) ResolveRelationships(vms []VerificationRelationship) *Reso
 	return resolved.AddVerificationRelationship(vms)
 }
 
+func (d *DidDocument) ResolveMethods(vms []VerificationMethod) *ResolvedDidDocument {
+	resolved := &ResolvedDidDocument{
+		Id:                   d.Id,
+		Context:              d.Context,
+		Controller:           d.Controller,
+		AlsoKnownAs:          d.AlsoKnownAs,
+		VerificationMethod:   d.VerificationMethod,
+		Authentication:       []*VerificationRelationship{},
+		AssertionMethod:      []*VerificationRelationship{},
+		CapabilityDelegation: []*VerificationRelationship{},
+		CapabilityInvocation: []*VerificationRelationship{},
+		KeyAgreement:         []*VerificationRelationship{},
+		Service:              []*Service{},
+		Metadata:             d.Metadata,
+	}
+
+	// Iterate through VerificationMethod and create a VerificationRelationship for each
+	vrs := []VerificationRelationship{}
+	for _, vm := range vms {
+		vr := VerificationRelationship{
+			Reference:          vm.Id,
+			VerificationMethod: &vm,
+		}
+		vrs = append(vrs, vr)
+	}
+	return resolved.AddVerificationRelationship(vrs)
+}
+
 func (r *ResolvedDidDocument) AddVerificationRelationship(vms []VerificationRelationship) *ResolvedDidDocument {
 	for _, vm := range vms {
 		switch {

@@ -116,27 +116,6 @@
       "group": "API Reference",
       "pages": [
         {
-          "group": "Accounts",
-          "pages": [
-            "api-reference/accounts/overview",
-            "api-reference/accounts/api/1",
-            "api-reference/accounts/api/2",
-            "api-reference/accounts/api/3"
-          ]
-        },
-        {
-          "group": "Bank",
-          "pages": [
-            "api-reference/bank/overview",
-            "api-reference/bank/api/1",
-            "api-reference/bank/api/2",
-            "api-reference/bank/api/3",
-            "api-reference/bank/api/4",
-            "api-reference/bank/api/5",
-            "api-reference/bank/api/6"
-          ]
-        },
-        {
           "group": "Identity",
           "pages": [
             "api-reference/identity/overview",
@@ -148,15 +127,6 @@
             "api-reference/identity/api/6",
             "api-reference/identity/api/7",
             "api-reference/identity/api/8"
-          ]
-        },
-        {
-          "group": "IPFS",
-          "pages": [
-            "api-reference/ipfs/overview",
-            "api-reference/ipfs/api/1",
-            "api-reference/ipfs/api/2",
-            "api-reference/ipfs/api/3"
           ]
         },
         {

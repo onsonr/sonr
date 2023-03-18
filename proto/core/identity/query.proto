@@ -95,10 +95,6 @@ service Query {
 
   }
 
-  // Queries a list of DidByPubKey items.
-  rpc DidByPubKey (QueryDidByPubKeyRequest) returns (QueryDidByPubKeyResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/did/pubkey/{pubkey}/{create}";
-  }
   // Get All DIDDocuments
 
   // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
@@ -136,7 +132,6 @@ service Query {
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc Service (QueryGetServiceRequest) returns (QueryGetServiceResponse) {
     option (google.api.http).get = "/sonr/core/identity/service/{origin}";
-
   }
 
   // Get all Services
@@ -237,32 +232,4 @@ message QueryAllServiceRequest {
 message QueryAllServiceResponse {
   repeated Service                                services   = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-
-// this line is used by starport scaffolding # 3
-message QueryDidByPubKeyRequest {
-    // Public key is a base64 encoded string of the public key
-    string pubkey = 1;
-
-    // Create account if it doesn't exist
-    bool create = 2;
-}
-
-message QueryDidByPubKeyResponse {}
-
-// ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.
-message ResolvedDidDocument {
-  repeated string context = 1;
-  string id = 2;
-  repeated string controller = 3; //optional
-  repeated VerificationMethod verification_method = 4; // optional
-  repeated VerificationRelationship authentication = 5; // optional
-  repeated VerificationRelationship assertion_method = 6; // optional
-  repeated VerificationRelationship capability_invocation = 7; // optional
-  repeated VerificationRelationship capability_delegation = 8; // optional
-  repeated VerificationRelationship key_agreement = 9; // optional
-  repeated Service service = 10; // optional
-  repeated string also_known_as = 11; // optional
-  repeated KeyValuePair metadata = 12; // optional
 }
