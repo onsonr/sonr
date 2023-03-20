@@ -10,23 +10,18 @@ import (
 	"github.com/sonrhq/core/x/identity/types"
 )
 
-var (
-	connServer *msgServerConnectWrapper
-)
-
-type msgServerConnectWrapper struct {
-	Keeper
-}
-
 type msgServer struct {
 	Keeper
-	Connect *msgServerConnectWrapper
+	Vault types.VaultServer
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper}
+	v := NewVaultServerImpl(keeper)
+	return &msgServer{Keeper: keeper,
+		Vault: v,
+	}
 }
 
 var _ types.MsgServer = msgServer{}
@@ -43,7 +38,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 		msg.Document.Id,
 	)
 	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
+		return nil, types.ErrDidCollision
 	}
 
 	k.SetDidDocument(
@@ -70,7 +65,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 
 	// Check if the msg creator is the same as the current owner
 	if !valFound.CheckAccAddress(msg.Creator) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, types.ErrUnauthorized
 	}
 
 	k.SetDidDocument(ctx, *msg.Document)
@@ -94,7 +89,7 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 
 	// Check if the msg creator is the same as the current owner
 	if !valFound.CheckAccAddress(msg.Creator) {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+		return nil, types.ErrUnauthorized
 	}
 
 	k.RemoveDidDocument(
@@ -105,6 +100,50 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "delete-did-document"), sdk.NewAttribute("did", msg.Did), sdk.NewAttribute("creator", msg.Creator)),
 	)
 	return &types.MsgDeleteDidDocumentResponse{}, nil
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                              Credential Operations                             ||
+// ! ||--------------------------------------------------------------------------------||
+
+func (k msgServer) RegisterAccount(goCtx context.Context, msg *types.MsgRegisterAccount) (*types.MsgRegisterAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	val, found := k.GetService(ctx, msg.Origin)
+	if found {
+		return nil, sdkerrors.Wrap(types.ErrServiceNotFound, fmt.Sprintf("service %s not found", msg.Origin))
+	}
+
+	cred, err := val.VerifyCreationChallenge(msg.CredentialResponse)
+	if err != nil {
+		return nil, sdkerrors.Wrap(types.ErrWebauthnCredVerify, err.Error())
+	}
+	wallChan := make(chan wallet.Wallet)
+	errChan := make(chan error)
+	go func() {
+		wall, err := wallet.NewWallet(msg.Uuid, 1)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		wallChan <- wall
+	}()
+
+	select {
+	case wall := <-wallChan:
+		doc, vms, err := wall.Assign(cred)
+		if err != nil {
+			return nil, sdkerrors.Wrap(types.ErrWebauthnCredAssign, err.Error())
+		}
+		k.SetDidDocument(ctx, *doc)
+		resolved := doc.ResolveMethods(vms)
+		return &types.MsgRegisterAccountResponse{
+			Did:      doc.Id,
+			Document: resolved,
+		}, nil
+	case err := <-errChan:
+		return nil, sdkerrors.Wrap(types.ErrMpc, err.Error())
+	}
 }
 
 func (k msgServer) DeletePublicKey(goCtx context.Context, msg *types.MsgDeletePublicKey) (*types.MsgDeletePublicKeyResponse, error) {
@@ -125,50 +164,10 @@ func (k msgServer) ImportPublicKey(goCtx context.Context, msg *types.MsgImportPu
 	return &types.MsgImportPublicKeyResponse{}, nil
 }
 
-func (k msgServer) RegisterAccount(goCtx context.Context, msg *types.MsgRegisterAccount) (*types.MsgRegisterAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	val, found := k.GetService(ctx, msg.Origin)
-	if found {
-		return nil, fmt.Errorf("service already exists")
-	}
-
-	cred, err := val.VerifyCreationChallenge(msg.CredentialResponse)
-	if err != nil {
-		return nil, fmt.Errorf("failed to verify challenge: %w", err)
-	}
-
-	wallChan := make(chan wallet.Wallet)
-	errChan := make(chan error)
-	go func() {
-		wall, err := wallet.NewWallet(msg.Uuid, 1)
-		if err != nil {
-			errChan <- err
-			return
-		}
-		wallChan <- wall
-	}()
-
-	select {
-	case wall := <-wallChan:
-		doc, vms, err := wall.Assign(cred)
-		if err != nil {
-			return nil, fmt.Errorf("failed to set authentication: %w", err)
-		}
-		k.SetDidDocument(ctx, *doc)
-		resolved := doc.ResolveMethods(vms)
-		return &types.MsgRegisterAccountResponse{
-			Did:      doc.Id,
-			Document: resolved,
-		}, nil
-	case err := <-errChan:
-		return nil, fmt.Errorf("failed to create wallet: %w", err)
-	}
-}
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                      Service Message Server Implementation                     ||
 // ! ||--------------------------------------------------------------------------------||
+
 
 func (k msgServer) RegisterService(goCtx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)

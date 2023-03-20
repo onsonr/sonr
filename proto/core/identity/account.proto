@@ -1,13 +1,36 @@
 syntax = "proto3";
+package sonrhq.core.identity;
 
-// Package Motor is used for defining a Motor node and its properties.
-package sonrhq.sonr.vault.v1;
-
+import "gogoproto/gogo.proto";
 import "core/identity/did.proto";
 import "google/api/annotations.proto";
-import "sonr/common/info.proto";
 
-option go_package = "github.com/sonrhq/core/types/vault/v1";
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+// Account represents a user's account on a blockchain or network. It contains the user's address, name, DID, and other information that is used to identify and manage the account.
+message Account {
+    //  This field represents the unique account address associated with the user. It is typically a hash or an encoded public key, depending on the underlying blockchain or network.
+    string address = 1;
+
+    // This field contains the human-readable name associated with the account. It is used for easier identification and management of the account by the user.
+    string name = 2;
+
+    // This field stores the Decentralized Identifier (DID) of the user, which is a unique, resolvable, and cryptographically verifiable identifier. DIDs are used to enable secure and decentralized identity management.
+    string did = 3;
+
+    // This field specifies the type of the cryptocurrency or token associated with the account. It is used to differentiate between various cryptocurrencies or tokens that the user may hold in their wallet.
+    string coin_type = 4;
+
+    // This field represents the identifier of the blockchain or network that the account is associated with. Chain IDs are used to distinguish between different blockchains or networks, such as Ethereum, Cosmos, or Filecoin.
+    string chain_id = 5;
+
+    // This field stores the base64 encoded public key of the account, which is used for cryptographic operations such as signing and verifying transactions. The public key is derived from the user's private key and is an essential part of the account's security.
+    string public_key = 6;
+
+    // This field stores the type of the public key. It is used to differentiate between various public key types, such as secp256k1, ed25519, and sr25519.
+    string type = 7;
+}
+
 
 // CreateAccountRequest is the request to create an account.
 message CreateAccountRequest {
@@ -19,8 +42,8 @@ message CreateAccountRequest {
 message CreateAccountResponse {
   bool success = 1;
   string coin_type = 2;
-  core.identity.DidDocument did_document = 3;
-  repeated sonr.common.AccountInfo accounts = 4;
+  DidDocument did_document = 3;
+  repeated Account accounts = 4;
 }
 
 // GetAccountRequest is the request to get an account.
@@ -33,7 +56,7 @@ message GetAccountRequest {
 message GetAccountResponse {
   bool success = 1;
   string coin_type = 2;
-  repeated sonr.common.AccountInfo accounts = 4;
+  repeated Account accounts = 4;
 }
 
 // ListAccountsRequest is the request to list the accounts.
@@ -44,7 +67,7 @@ message ListAccountsRequest {
 // ListAccountsResponse is the response to a ListAccounts request.
 message ListAccountsResponse {
   bool success = 1;
-  repeated sonr.common.AccountInfo accounts = 3;
+  repeated Account accounts = 3;
 }
 
 // DeleteAccountRequest is the request to delete an account.
@@ -56,8 +79,8 @@ message DeleteAccountRequest {
 // DeleteAccountResponse is the response to a DeleteAccount request.
 message DeleteAccountResponse {
   bool success = 1;
-  core.identity.DidDocument did_document = 2;
-  repeated sonr.common.AccountInfo accounts = 3;
+  DidDocument did_document = 2;
+  repeated Account accounts = 3;
 }
 
 // ==================================================================
@@ -65,7 +88,7 @@ message DeleteAccountResponse {
 // ==================================================================
 
 // Vault is the service used for managing a node's keypair.
-service VaultAccounts {
+service Vault {
   // Create a new account
   //
   // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.

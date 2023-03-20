@@ -82,6 +82,9 @@ message MsgRegisterAccount {
 
   // The origin of the request. This is used to query the Blockchain for the Service DID.
   string origin = 4;
+
+  // Base64 encoded shared encryption key.
+  string shared_encryption_key = 5;
 }
 
 message MsgRegisterAccountResponse {

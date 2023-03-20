@@ -22,88 +22,6 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Account is used for storing all credentials and their locations to be encrypted.
-type AccountInfo struct {
-	// Address is the associated Sonr address.
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	// Credentials is a list of all credentials associated with the account.
-	Network string `protobuf:"bytes,2,opt,name=network,proto3" json:"network,omitempty"`
-	// Label is the label of the account.
-	Label string `protobuf:"bytes,3,opt,name=label,proto3" json:"label,omitempty"`
-	// Index is the index of the account.
-	Index uint32 `protobuf:"varint,4,opt,name=index,proto3" json:"index,omitempty"`
-	// Balance is the balance of the account.
-	Balance int32 `protobuf:"varint,5,opt,name=balance,proto3" json:"balance,omitempty"`
-}
-
-func (m *AccountInfo) Reset()         { *m = AccountInfo{} }
-func (m *AccountInfo) String() string { return proto.CompactTextString(m) }
-func (*AccountInfo) ProtoMessage()    {}
-func (*AccountInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_117f1cca4f9b8f25, []int{0}
-}
-func (m *AccountInfo) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *AccountInfo) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_AccountInfo.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *AccountInfo) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AccountInfo.Merge(m, src)
-}
-func (m *AccountInfo) XXX_Size() int {
-	return m.Size()
-}
-func (m *AccountInfo) XXX_DiscardUnknown() {
-	xxx_messageInfo_AccountInfo.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_AccountInfo proto.InternalMessageInfo
-
-func (m *AccountInfo) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *AccountInfo) GetNetwork() string {
-	if m != nil {
-		return m.Network
-	}
-	return ""
-}
-
-func (m *AccountInfo) GetLabel() string {
-	if m != nil {
-		return m.Label
-	}
-	return ""
-}
-
-func (m *AccountInfo) GetIndex() uint32 {
-	if m != nil {
-		return m.Index
-	}
-	return 0
-}
-
-func (m *AccountInfo) GetBalance() int32 {
-	if m != nil {
-		return m.Balance
-	}
-	return 0
-}
-
 // Basic Info Sent to Peers to Establish Connections
 type PeerInfo struct {
 	Id        string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -116,7 +34,7 @@ func (m *PeerInfo) Reset()         { *m = PeerInfo{} }
 func (m *PeerInfo) String() string { return proto.CompactTextString(m) }
 func (*PeerInfo) ProtoMessage()    {}
 func (*PeerInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_117f1cca4f9b8f25, []int{1}
+	return fileDescriptor_117f1cca4f9b8f25, []int{0}
 }
 func (m *PeerInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -190,7 +108,7 @@ func (m *WalletInfo) Reset()         { *m = WalletInfo{} }
 func (m *WalletInfo) String() string { return proto.CompactTextString(m) }
 func (*WalletInfo) ProtoMessage()    {}
 func (*WalletInfo) Descriptor() ([]byte, []int) {
-	return fileDescriptor_117f1cca4f9b8f25, []int{2}
+	return fileDescriptor_117f1cca4f9b8f25, []int{1}
 }
 func (m *WalletInfo) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -255,7 +173,6 @@ func (m *WalletInfo) GetLastUpdated() int64 {
 }
 
 func init() {
-	proto.RegisterType((*AccountInfo)(nil), "sonrhq.sonr.common.AccountInfo")
 	proto.RegisterType((*PeerInfo)(nil), "sonrhq.sonr.common.PeerInfo")
 	proto.RegisterType((*WalletInfo)(nil), "sonrhq.sonr.common.WalletInfo")
 }
@@ -263,85 +180,27 @@ func init() {
 func init() { proto.RegisterFile("sonr/common/info.proto", fileDescriptor_117f1cca4f9b8f25) }
 
 var fileDescriptor_117f1cca4f9b8f25 = []byte{
-	// 379 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x92, 0xbd, 0x8e, 0xd4, 0x30,
-	0x14, 0x85, 0xc7, 0xc9, 0x66, 0x97, 0xdc, 0xe5, 0x4f, 0x16, 0x82, 0x14, 0x10, 0x85, 0xa1, 0x09,
-	0xcd, 0xa4, 0xa0, 0xa6, 0x58, 0xba, 0xed, 0x56, 0x91, 0x10, 0x12, 0x4d, 0xe4, 0xd8, 0x77, 0x26,
-	0x16, 0x8e, 0x1d, 0x1c, 0x87, 0x9f, 0x27, 0xa0, 0xe5, 0x6d, 0x78, 0x05, 0xca, 0x29, 0x29, 0xd1,
-	0xcc, 0x8b, 0x20, 0x27, 0x1e, 0x0d, 0x55, 0x72, 0xbe, 0x23, 0xf9, 0x1c, 0xfb, 0x5e, 0x78, 0x3a,
-	0x1a, 0x6d, 0x2b, 0x6e, 0xfa, 0xde, 0xe8, 0x4a, 0xea, 0xad, 0xd9, 0x0c, 0xd6, 0x38, 0x43, 0xa9,
-	0xe7, 0xdd, 0xe7, 0x8d, 0xff, 0x6c, 0x16, 0x7b, 0xfd, 0x83, 0xc0, 0xf5, 0x0d, 0xe7, 0x66, 0xd2,
-	0xee, 0x56, 0x6f, 0x0d, 0xcd, 0xe0, 0x8a, 0x09, 0x61, 0x71, 0x1c, 0x33, 0x52, 0x90, 0x32, 0xad,
-	0x4f, 0xd2, 0x3b, 0x1a, 0xdd, 0x57, 0x63, 0x3f, 0x65, 0xd1, 0xe2, 0x04, 0x49, 0x9f, 0x40, 0xa2,
-	0x58, 0x8b, 0x2a, 0x8b, 0x67, 0xbe, 0x08, 0x4f, 0xa5, 0x16, 0xf8, 0x2d, 0xbb, 0x28, 0x48, 0xf9,
-	0xa0, 0x5e, 0x84, 0x3f, 0xa5, 0x65, 0x8a, 0x69, 0x8e, 0x59, 0x52, 0x90, 0x32, 0xa9, 0x4f, 0x72,
-	0x8d, 0x70, 0xef, 0x0e, 0xd1, 0xce, 0x2d, 0x1e, 0x42, 0x24, 0x45, 0x28, 0x10, 0x49, 0x41, 0x29,
-	0x5c, 0x68, 0xd6, 0x63, 0x08, 0x9e, 0xff, 0xe9, 0x33, 0xb8, 0x1a, 0x10, 0x6d, 0x23, 0x45, 0xc8,
-	0xbd, 0xf4, 0xf2, 0x56, 0xd0, 0xe7, 0x90, 0xf6, 0x93, 0x72, 0xd2, 0x17, 0x9f, 0xc3, 0xd3, 0xfa,
-	0x0c, 0xd6, 0xbf, 0x08, 0xc0, 0x07, 0xa6, 0x14, 0x2e, 0xf7, 0xcd, 0x01, 0xb8, 0xd1, 0xce, 0x1a,
-	0xa5, 0xd0, 0x86, 0xc4, 0xff, 0x08, 0x7d, 0x0d, 0x8f, 0x85, 0x1c, 0xb9, 0xf9, 0x82, 0x16, 0x45,
-	0x33, 0x30, 0xd7, 0x8d, 0x59, 0x54, 0xc4, 0x65, 0x52, 0x3f, 0x3a, 0xf3, 0x3b, 0x8f, 0x7d, 0x2e,
-	0x53, 0x3b, 0x63, 0xa5, 0xeb, 0xfa, 0x50, 0xe9, 0x0c, 0xe8, 0x0b, 0x00, 0x6e, 0x91, 0x39, 0x14,
-	0x0d, 0x73, 0x73, 0xad, 0xb8, 0x4e, 0x03, 0xb9, 0x71, 0xf4, 0x25, 0xdc, 0x57, 0x6c, 0x74, 0xcd,
-	0x34, 0x08, 0x4f, 0xe6, 0xc7, 0x89, 0xeb, 0x6b, 0xcf, 0xde, 0x2f, 0xe8, 0xdd, 0xdb, 0xdf, 0x87,
-	0x9c, 0xec, 0x0f, 0x39, 0xf9, 0x7b, 0xc8, 0xc9, 0xcf, 0x63, 0xbe, 0xda, 0x1f, 0xf3, 0xd5, 0x9f,
-	0x63, 0xbe, 0xfa, 0xf8, 0x6a, 0x27, 0x5d, 0x37, 0xb5, 0x7e, 0xa6, 0xd5, 0x32, 0xe3, 0x8a, 0x1b,
-	0x8b, 0x95, 0xfb, 0x3e, 0xe0, 0x18, 0x16, 0xa1, 0xbd, 0x9c, 0x97, 0xe0, 0xcd, 0xbf, 0x00, 0x00,
-	0x00, 0xff, 0xff, 0x72, 0xa7, 0xf3, 0xa1, 0x1e, 0x02, 0x00, 0x00,
-}
-
-func (m *AccountInfo) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *AccountInfo) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *AccountInfo) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Balance != 0 {
-		i = encodeVarintInfo(dAtA, i, uint64(m.Balance))
-		i--
-		dAtA[i] = 0x28
-	}
-	if m.Index != 0 {
-		i = encodeVarintInfo(dAtA, i, uint64(m.Index))
-		i--
-		dAtA[i] = 0x20
-	}
-	if len(m.Label) > 0 {
-		i -= len(m.Label)
-		copy(dAtA[i:], m.Label)
-		i = encodeVarintInfo(dAtA, i, uint64(len(m.Label)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.Network) > 0 {
-		i -= len(m.Network)
-		copy(dAtA[i:], m.Network)
-		i = encodeVarintInfo(dAtA, i, uint64(len(m.Network)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintInfo(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
+	// 307 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0xd0, 0xbf, 0x4e, 0xeb, 0x30,
+	0x14, 0x06, 0xf0, 0x26, 0xfd, 0x73, 0x6f, 0x0f, 0x08, 0x90, 0x07, 0xc8, 0x00, 0x56, 0x29, 0x4b,
+	0x59, 0x9a, 0x81, 0x99, 0x01, 0xb6, 0x6e, 0x55, 0x25, 0x84, 0xc4, 0x12, 0xb9, 0xf1, 0x69, 0x63,
+	0xc9, 0xb1, 0x83, 0x73, 0x8a, 0xc4, 0x5b, 0xf0, 0x36, 0xbc, 0x02, 0x63, 0x47, 0x46, 0xd4, 0xbe,
+	0x08, 0xb2, 0x1b, 0x29, 0x4c, 0xb6, 0x7f, 0xc7, 0xd2, 0x77, 0xf4, 0xc1, 0x79, 0x6d, 0x8d, 0x4b,
+	0x73, 0x5b, 0x96, 0xd6, 0xa4, 0xca, 0xac, 0xec, 0xb4, 0x72, 0x96, 0x2c, 0x63, 0xde, 0x8b, 0xd7,
+	0xa9, 0x3f, 0xa6, 0x87, 0xf1, 0x18, 0xe1, 0xff, 0x1c, 0xd1, 0xcd, 0xcc, 0xca, 0xb2, 0x13, 0x88,
+	0x95, 0x4c, 0xa2, 0x51, 0x34, 0x19, 0x2e, 0x62, 0x25, 0x19, 0x83, 0x9e, 0x11, 0x25, 0x26, 0x71,
+	0x90, 0x70, 0x67, 0x17, 0xf0, 0xaf, 0x42, 0x74, 0x99, 0x92, 0x49, 0x37, 0xf0, 0xc0, 0x3f, 0x67,
+	0x92, 0x5d, 0xc2, 0xb0, 0xdc, 0x68, 0x52, 0x42, 0x4a, 0x97, 0xf4, 0xc2, 0xa8, 0x85, 0xf1, 0x67,
+	0x04, 0xf0, 0x2c, 0xb4, 0x46, 0x0a, 0x49, 0x1c, 0x20, 0xb7, 0x86, 0x9c, 0xd5, 0x1a, 0x5d, 0x93,
+	0xf8, 0x47, 0xd8, 0x2d, 0x9c, 0x49, 0x55, 0xe7, 0xf6, 0x0d, 0x1d, 0xca, 0xac, 0x12, 0x54, 0xd4,
+	0x49, 0x3c, 0xea, 0x4e, 0xfa, 0x8b, 0xd3, 0xd6, 0xe7, 0x9e, 0x7d, 0xae, 0xd0, 0x6b, 0xeb, 0x14,
+	0x15, 0x65, 0xb3, 0x52, 0x0b, 0xec, 0x0a, 0x20, 0x77, 0x28, 0x08, 0x65, 0x26, 0x28, 0xac, 0xd5,
+	0x5d, 0x0c, 0x1b, 0x79, 0x20, 0x76, 0x0d, 0xc7, 0x5a, 0xd4, 0x94, 0x6d, 0x2a, 0xe9, 0x25, 0xe9,
+	0x87, 0x0f, 0x47, 0xde, 0x9e, 0x0e, 0xf4, 0x78, 0xff, 0xb5, 0xe3, 0xd1, 0x76, 0xc7, 0xa3, 0x9f,
+	0x1d, 0x8f, 0x3e, 0xf6, 0xbc, 0xb3, 0xdd, 0xf3, 0xce, 0xf7, 0x9e, 0x77, 0x5e, 0x6e, 0xd6, 0x8a,
+	0x8a, 0xcd, 0xd2, 0x37, 0x99, 0x1e, 0x9a, 0x4d, 0x73, 0xeb, 0x30, 0xa5, 0xf7, 0x0a, 0xeb, 0xa6,
+	0xfe, 0xe5, 0x20, 0x54, 0x7f, 0xf7, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x40, 0x22, 0xf1, 0x39, 0x94,
+	0x01, 0x00, 0x00,
 }
 
 func (m *PeerInfo) Marshal() (dAtA []byte, err error) {
@@ -472,33 +331,6 @@ func encodeVarintInfo(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *AccountInfo) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovInfo(uint64(l))
-	}
-	l = len(m.Network)
-	if l > 0 {
-		n += 1 + l + sovInfo(uint64(l))
-	}
-	l = len(m.Label)
-	if l > 0 {
-		n += 1 + l + sovInfo(uint64(l))
-	}
-	if m.Index != 0 {
-		n += 1 + sovInfo(uint64(m.Index))
-	}
-	if m.Balance != 0 {
-		n += 1 + sovInfo(uint64(m.Balance))
-	}
-	return n
-}
-
 func (m *PeerInfo) Size() (n int) {
 	if m == nil {
 		return 0
@@ -559,190 +391,6 @@ func sovInfo(x uint64) (n int) {
 }
 func sozInfo(x uint64) (n int) {
 	return sovInfo(uint64((x << 1) ^ uint64((int64(x) >> 63))))
-}
-func (m *AccountInfo) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowInfo
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: AccountInfo: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AccountInfo: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowInfo
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthInfo
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthInfo
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowInfo
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthInfo
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthInfo
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Network = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowInfo
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthInfo
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthInfo
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Label = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
-			}
-			m.Index = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowInfo
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Index |= uint32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Balance", wireType)
-			}
-			m.Balance = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowInfo
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Balance |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipInfo(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthInfo
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
 }
 func (m *PeerInfo) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)

@@ -4,9 +4,9 @@ info:
   description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
   version: version not set
 tags:
+  - name: Vault
   - name: Query
   - name: Msg
-  - name: VaultAccounts
   - name: VaultAuthentication
 consumes:
   - application/json
@@ -275,12 +275,12 @@ paths:
         | Name | Type | Description |
         | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
         | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: VaultAccounts_ListAccounts
+      operationId: Vault_ListAccounts
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1ListAccountsResponse'
+            $ref: '#/definitions/identityListAccountsResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -291,7 +291,7 @@ paths:
           required: true
           type: string
       tags:
-        - VaultAccounts
+        - Vault
   /sonr/vault/accounts/{sonrId}/{coinType}:
     get:
       summary: Get Account
@@ -309,12 +309,12 @@ paths:
         | Name | Type | Description |
         | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
         | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: VaultAccounts_GetAccount
+      operationId: Vault_GetAccount
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1GetAccountResponse'
+            $ref: '#/definitions/identityGetAccountResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -329,7 +329,7 @@ paths:
           required: true
           type: string
       tags:
-        - VaultAccounts
+        - Vault
   /sonr/vault/accounts/{sonrId}/create:
     post:
       summary: Create a new account
@@ -347,12 +347,12 @@ paths:
         | Name | Type | Description |
         | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
         | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: VaultAccounts_CreateAccount
+      operationId: Vault_CreateAccount
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1CreateAccountResponse'
+            $ref: '#/definitions/identityCreateAccountResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -372,7 +372,7 @@ paths:
                 type: string
             description: CreateAccountRequest is the request to create an account.
       tags:
-        - VaultAccounts
+        - Vault
   /sonr/vault/accounts/{targetDid}/delete:
     post:
       summary: Delete Account
@@ -390,12 +390,12 @@ paths:
         | Name | Type | Description |
         | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
         | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: VaultAccounts_DeleteAccount
+      operationId: Vault_DeleteAccount
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/v1DeleteAccountResponse'
+            $ref: '#/definitions/identityDeleteAccountResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -415,7 +415,7 @@ paths:
                 type: string
             description: DeleteAccountRequest is the request to delete an account.
       tags:
-        - VaultAccounts
+        - Vault
   /sonr/vault/auth/login/finish:
     post:
       summary: Login Finish
@@ -561,27 +561,59 @@ paths:
       tags:
         - VaultAuthentication
 definitions:
-  commonAccountInfo:
+  identityAccount:
     type: object
     properties:
       address:
         type: string
-        description: Address is the associated Sonr address.
-      network:
+        description: This field represents the unique account address associated with the user. It is typically a hash or an encoded public key, depending on the underlying blockchain or network.
+      name:
         type: string
-        description: Credentials is a list of all credentials associated with the account.
-      label:
+        description: This field contains the human-readable name associated with the account. It is used for easier identification and management of the account by the user.
+      did:
         type: string
-        description: Label is the label of the account.
-      index:
-        type: integer
-        format: int64
-        description: Index is the index of the account.
-      balance:
-        type: integer
-        format: int32
-        description: Balance is the balance of the account.
-    description: Account is used for storing all credentials and their locations to be encrypted.
+        description: This field stores the Decentralized Identifier (DID) of the user, which is a unique, resolvable, and cryptographically verifiable identifier. DIDs are used to enable secure and decentralized identity management.
+      coinType:
+        type: string
+        description: This field specifies the type of the cryptocurrency or token associated with the account. It is used to differentiate between various cryptocurrencies or tokens that the user may hold in their wallet.
+      chainId:
+        type: string
+        description: This field represents the identifier of the blockchain or network that the account is associated with. Chain IDs are used to distinguish between different blockchains or networks, such as Ethereum, Cosmos, or Filecoin.
+      publicKey:
+        type: string
+        description: This field stores the base64 encoded public key of the account, which is used for cryptographic operations such as signing and verifying transactions. The public key is derived from the user's private key and is an essential part of the account's security.
+      type:
+        type: string
+        description: This field stores the type of the public key. It is used to differentiate between various public key types, such as secp256k1, ed25519, and sr25519.
+    description: Account represents a user's account on a blockchain or network. It contains the user's address, name, DID, and other information that is used to identify and manage the account.
+  identityCreateAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      coinType:
+        type: string
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityAccount'
+    description: CreateAccountResponse is the response to a CreateAccount request.
+  identityDeleteAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityAccount'
+    description: DeleteAccountResponse is the response to a DeleteAccount request.
   identityDidDocument:
     type: object
     properties:
@@ -647,6 +679,19 @@ definitions:
           $ref: '#/definitions/identityKeyValuePair'
         title: optional, additional metadata related to the DID document
     description: DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
+  identityGetAccountResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      coinType:
+        type: string
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityAccount'
+    description: GetAccountResponse is the response to a GetAccount request.
   identityKeyValuePair:
     type: object
     properties:
@@ -654,6 +699,17 @@ definitions:
         type: string
       value:
         type: string
+  identityListAccountsResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      accounts:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityAccount'
+    description: ListAccountsResponse is the response to a ListAccounts request.
   identityMsgCreateDidDocumentResponse:
     type: object
   identityMsgDeactivateServiceResponse:
@@ -925,58 +981,6 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/protobufAny'
-  v1CreateAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      coinType:
-        type: string
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/commonAccountInfo'
-    description: CreateAccountResponse is the response to a CreateAccount request.
-  v1DeleteAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/commonAccountInfo'
-    description: DeleteAccountResponse is the response to a DeleteAccount request.
-  v1GetAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      coinType:
-        type: string
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/commonAccountInfo'
-    description: GetAccountResponse is the response to a GetAccount request.
-  v1ListAccountsResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/commonAccountInfo'
-    description: ListAccountsResponse is the response to a ListAccounts request.
   v1LoginFinishRequest:
     type: object
     properties:
@@ -1008,9 +1012,6 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
-      accountInfo:
-        $ref: '#/definitions/commonAccountInfo'
-        description: The account info for the wallet.
       ucanTokenHeader:
         type: string
         format: byte
@@ -1077,9 +1078,6 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
-      accountInfo:
-        $ref: '#/definitions/commonAccountInfo'
-        description: The account info for the wallet.
       ucanTokenHeader:
         type: string
         format: byte

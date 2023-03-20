@@ -3,24 +3,6 @@ package sonrhq.sonr.common;
 
 option go_package = "github.com/sonrhq/core/types/common";
 
-// Account is used for storing all credentials and their locations to be encrypted.
-message AccountInfo {
-  // Address is the associated Sonr address.
-  string address = 1;
-
-  // Credentials is a list of all credentials associated with the account.
-  string network = 2;
-
-  // Label is the label of the account.
-  string label = 3;
-
-  // Index is the index of the account.
-  uint32 index = 4;
-
-  // Balance is the balance of the account.
-  int32 balance = 5;
-}
-
 // Basic Info Sent to Peers to Establish Connections
 message PeerInfo {
   string id = 1;       // User Sonr Account Decentralized ID

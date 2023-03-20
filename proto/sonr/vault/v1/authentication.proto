@@ -68,9 +68,6 @@ message RegisterFinishResponse {
   // The DID Document for the wallet.
   core.identity.DidDocument did_document = 5;
 
-  // The account info for the wallet.
-  sonr.common.AccountInfo account_info = 6;
-
   // The UCAN token authorization header for subsequent requests.
   bytes ucan_token_header = 7;
 }
@@ -130,9 +127,6 @@ message LoginFinishResponse {
 
   // The DID Document for the wallet.
   core.identity.DidDocument did_document = 5;
-
-  // The account info for the wallet.
-  sonr.common.AccountInfo account_info = 6;
 
   // The UCAN token authorization header for subsequent requests.
   bytes ucan_token_header = 7;
