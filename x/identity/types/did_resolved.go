@@ -2,6 +2,8 @@
 // I.e. Document allows for Reconstruction from Storage of DID Document and Wallet
 package types
 
+import "strings"
+
 func (d *DidDocument) ResolveRelationships(vms []VerificationRelationship) *ResolvedDidDocument {
 	resolved := &ResolvedDidDocument{
 		Id:                   d.Id,
@@ -73,4 +75,19 @@ func (r *ResolvedDidDocument) containsRelationship(relations []*VerificationRela
 		}
 	}
 	return false
+}
+
+// Method returns the DID method of the document
+func (d *ResolvedDidDocument) DIDMethod() string {
+	return strings.Split(d.Id, ":")[1]
+}
+
+// Identifier returns the DID identifier of the document
+func (d *ResolvedDidDocument) DIDIdentifier() string {
+	return strings.Split(d.Id, ":")[2]
+}
+
+// Fragment returns the DID fragment of the document
+func (d *ResolvedDidDocument) DIDFragment() string {
+	return strings.Split(d.Id, "#")[1]
 }

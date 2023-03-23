@@ -34,6 +34,16 @@ The `install.sh` script will install the following tools:
 - [Buf CLI](https://docs.buf.build/introduction)
 - [Mintlify](https://mintlify.com/docs/development)
 
+You need to set the following environment variables to run the blockchain:
+
+```sh
+CONNECT_SERVER_HOST=localhost
+CONNECT_SERVER_PORT=8083
+TLS_CERT_FILE=""
+TLS_KEY_FILE=""
+ENVIRONMENT=dev
+```
+
 ## Documentation
 
 Sonr utilizes Mintlify to generate documentation from the source code. To view the documentation, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).

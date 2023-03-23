@@ -27,35 +27,11 @@ const (
 
 // MpcClient is a client for the sonrhq.highway.v1.Mpc service.
 type MpcClient interface {
-	// Create a new account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	CreateAccount(context.Context, *connect_go.Request[v1.CreateAccountRequest]) (*connect_go.Response[v1.CreateAccountResponse], error)
-	// List the accounts
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	ListAccounts(context.Context, *connect_go.Request[v1.ListAccountsRequest]) (*connect_go.Response[v1.ListAccountsResponse], error)
-	// Get Account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	GetAccount(context.Context, *connect_go.Request[v1.GetAccountRequest]) (*connect_go.Response[v1.GetAccountResponse], error)
-	// Delete Account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	DeleteAccount(context.Context, *connect_go.Request[v1.DeleteAccountRequest]) (*connect_go.Response[v1.DeleteAccountResponse], error)
-	// Sign a message with an account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	SignMessage(context.Context, *connect_go.Request[v1.SignMessageRequest]) (*connect_go.Response[v1.SignMessageResponse], error)
-	// Verify a message with an account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	VerifyMessage(context.Context, *connect_go.Request[v1.VerifyMessageRequest]) (*connect_go.Response[v1.VerifyMessageResponse], error)
 }
 
@@ -144,35 +120,11 @@ func (c *mpcClient) VerifyMessage(ctx context.Context, req *connect_go.Request[v
 
 // MpcHandler is an implementation of the sonrhq.highway.v1.Mpc service.
 type MpcHandler interface {
-	// Create a new account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	CreateAccount(context.Context, *connect_go.Request[v1.CreateAccountRequest]) (*connect_go.Response[v1.CreateAccountResponse], error)
-	// List the accounts
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	ListAccounts(context.Context, *connect_go.Request[v1.ListAccountsRequest]) (*connect_go.Response[v1.ListAccountsResponse], error)
-	// Get Account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	GetAccount(context.Context, *connect_go.Request[v1.GetAccountRequest]) (*connect_go.Response[v1.GetAccountResponse], error)
-	// Delete Account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	DeleteAccount(context.Context, *connect_go.Request[v1.DeleteAccountRequest]) (*connect_go.Response[v1.DeleteAccountResponse], error)
-	// Sign a message with an account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	SignMessage(context.Context, *connect_go.Request[v1.SignMessageRequest]) (*connect_go.Response[v1.SignMessageResponse], error)
-	// Verify a message with an account
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	VerifyMessage(context.Context, *connect_go.Request[v1.VerifyMessageRequest]) (*connect_go.Response[v1.VerifyMessageResponse], error)
 }
 

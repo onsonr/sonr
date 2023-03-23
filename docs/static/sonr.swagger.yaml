@@ -729,7 +729,7 @@ definitions:
         type: string
         description: The account address for the user.
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityResolvedDidDocument'
         description: The DID Document for the wallet.
     description: LoginStartResponse is the response to a Login request.
   v1QueryServiceResponse:
@@ -744,9 +744,6 @@ definitions:
       rpName:
         type: string
         description: Relaying party name for the request.
-      service:
-        $ref: '#/definitions/identityService'
-        description: The DID Document for the wallet.
     description: RegisterFinishResponse is the response to a CreateAccount request.
   v1RefreshShareResponse:
     type: object

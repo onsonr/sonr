@@ -10,7 +10,6 @@ PROTO_DIR=${PROJECT_DIR}/proto
 buf generate proto
 
 # Vault/Auth
-rm -rf types/highway
 cp -r internal/gen/* ./types
 rm -rf internal/gen
 rm -rf types/core

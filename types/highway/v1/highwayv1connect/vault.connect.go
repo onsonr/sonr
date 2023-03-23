@@ -27,20 +27,8 @@ const (
 
 // VaultClient is a client for the sonrhq.highway.v1.Vault service.
 type VaultClient interface {
-	// Add Share to Vault
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Add(context.Context, *connect_go.Request[v1.AddShareRequest]) (*connect_go.Response[v1.AddShareResponse], error)
-	// Sync Client Shares
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Sync(context.Context, *connect_go.Request[v1.SyncShareRequest]) (*connect_go.Response[v1.SyncShareResponse], error)
-	// Refresh Shares
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Refresh(context.Context, *connect_go.Request[v1.RefreshShareRequest]) (*connect_go.Response[v1.RefreshShareResponse], error)
 }
 
@@ -96,20 +84,8 @@ func (c *vaultClient) Refresh(ctx context.Context, req *connect_go.Request[v1.Re
 
 // VaultHandler is an implementation of the sonrhq.highway.v1.Vault service.
 type VaultHandler interface {
-	// Add Share to Vault
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Add(context.Context, *connect_go.Request[v1.AddShareRequest]) (*connect_go.Response[v1.AddShareResponse], error)
-	// Sync Client Shares
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Sync(context.Context, *connect_go.Request[v1.SyncShareRequest]) (*connect_go.Response[v1.SyncShareResponse], error)
-	// Refresh Shares
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Refresh(context.Context, *connect_go.Request[v1.RefreshShareRequest]) (*connect_go.Response[v1.RefreshShareResponse], error)
 }
 

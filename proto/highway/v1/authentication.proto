@@ -4,7 +4,6 @@ syntax = "proto3";
 package sonrhq.highway.v1;
 
 import "core/identity/did.proto";
-import "google/api/annotations.proto";
 import "sonr/common/info.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/v1;highwayv1";
@@ -91,9 +90,6 @@ message QueryServiceResponse {
 
   // Relaying party name for the request.
   string rp_name = 3;
-
-  // The DID Document for the wallet.
-  core.identity.Service service = 4;
 }
 
 // LoginStartRequest is the request to login to an account.
@@ -111,7 +107,7 @@ message QueryDocumentResponse {
   string account_address = 2;
 
   // The DID Document for the wallet.
-  core.identity.DidDocument did_document = 3;
+  core.identity.ResolvedDidDocument did_document = 3;
 }
 
 // ==================================================================
@@ -120,25 +116,8 @@ message QueryDocumentResponse {
 
 // Vault is the service used for managing a node's keypair.
 service Authentication {
-  // Keygen is a call with the method(s) POST within the "Mpc" service.
-  // It takes in "KeygenRequest" and returns a "KeygenResponse".
   rpc Keygen(KeygenRequest) returns (KeygenResponse) {}
-
-  // Login Finish
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc Login(LoginRequest) returns (LoginResponse) {}
-
-  // Find DID
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc QueryDocument(QueryDocumentRequest) returns (QueryDocumentResponse) {}
-
-  // Find Service
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc QueryService(QueryServiceRequest) returns (QueryServiceResponse) {}
 }

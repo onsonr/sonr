@@ -27,23 +27,9 @@ const (
 
 // AuthenticationClient is a client for the sonrhq.highway.v1.Authentication service.
 type AuthenticationClient interface {
-	// Keygen is a call with the method(s) POST within the "Mpc" service.
-	// It takes in "KeygenRequest" and returns a "KeygenResponse".
 	Keygen(context.Context, *connect_go.Request[v1.KeygenRequest]) (*connect_go.Response[v1.KeygenResponse], error)
-	// Login Finish
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Login(context.Context, *connect_go.Request[v1.LoginRequest]) (*connect_go.Response[v1.LoginResponse], error)
-	// Find DID
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	QueryDocument(context.Context, *connect_go.Request[v1.QueryDocumentRequest]) (*connect_go.Response[v1.QueryDocumentResponse], error)
-	// Find Service
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	QueryService(context.Context, *connect_go.Request[v1.QueryServiceRequest]) (*connect_go.Response[v1.QueryServiceResponse], error)
 }
 
@@ -110,23 +96,9 @@ func (c *authenticationClient) QueryService(ctx context.Context, req *connect_go
 
 // AuthenticationHandler is an implementation of the sonrhq.highway.v1.Authentication service.
 type AuthenticationHandler interface {
-	// Keygen is a call with the method(s) POST within the "Mpc" service.
-	// It takes in "KeygenRequest" and returns a "KeygenResponse".
 	Keygen(context.Context, *connect_go.Request[v1.KeygenRequest]) (*connect_go.Response[v1.KeygenResponse], error)
-	// Login Finish
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	Login(context.Context, *connect_go.Request[v1.LoginRequest]) (*connect_go.Response[v1.LoginResponse], error)
-	// Find DID
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	QueryDocument(context.Context, *connect_go.Request[v1.QueryDocumentRequest]) (*connect_go.Response[v1.QueryDocumentResponse], error)
-	// Find Service
-	//
-	// {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-	// It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
 	QueryService(context.Context, *connect_go.Request[v1.QueryServiceRequest]) (*connect_go.Response[v1.QueryServiceResponse], error)
 }
 

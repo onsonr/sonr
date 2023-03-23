@@ -4,7 +4,6 @@ syntax = "proto3";
 package sonrhq.highway.v1;
 
 import "core/identity/did.proto";
-import "google/api/annotations.proto";
 import "sonr/common/info.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/v1;highwayv1";
@@ -91,21 +90,7 @@ message RefreshShareResponse {
 
 // Vault is the service used for managing a node's keypair.
 service Vault {
-  // Add Share to Vault
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc Add(AddShareRequest) returns (AddShareResponse) {}
-
-  // Sync Client Shares
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc Sync(SyncShareRequest) returns (SyncShareResponse) {}
-
-  // Refresh Shares
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc Refresh(RefreshShareRequest) returns (RefreshShareResponse) {}
 }

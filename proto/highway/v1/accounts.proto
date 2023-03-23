@@ -3,7 +3,6 @@ package sonrhq.highway.v1;
 
 import "gogoproto/gogo.proto";
 import "core/identity/did.proto";
-import "google/api/annotations.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/v1;highwayv1";
 
@@ -116,39 +115,10 @@ message VerifyMessageResponse {
 
 // Mpc is the service used for managing a node's keypair.
 service Mpc {
-  // Create a new account
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {}
-
-  // List the accounts
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {}
-
-  // Get Account
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
-
-  // Delete Account
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc DeleteAccount(DeleteAccountRequest) returns (DeleteAccountResponse) {}
-
-  // Sign a message with an account
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc SignMessage(SignMessageRequest) returns (SignMessageResponse) {}
-
-  // Verify a message with an account
-  //
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
   rpc VerifyMessage(VerifyMessageRequest) returns (VerifyMessageResponse) {}
 }

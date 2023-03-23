@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/sonrhq/core/app"
@@ -21,11 +22,20 @@ const (
 )
 
 func (e APIEndpoint) TcpAddress() string {
-	return fmt.Sprintf("tcp://%s", string(e))
+	//return //fmt.Sprintf("tcp://%s", string(e))
+	return string(e)
+}
+
+func currEndpoint() APIEndpoint {
+	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
+		return SonrLocalRpcOrigin
+	}
+	return SonrPublicRpcOrigin
 }
 
 // GetDID returns the DID document with the given id
-func GetDID(ctx context.Context, id string, endpoint APIEndpoint) (*identitytypes.ResolvedDidDocument, error) {
+func GetDID(ctx context.Context, id string) (*identitytypes.ResolvedDidDocument, error) {
+	endpoint := currEndpoint()
 	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -38,7 +48,8 @@ func GetDID(ctx context.Context, id string, endpoint APIEndpoint) (*identitytype
 }
 
 // GetAllDIDs returns all DID documents
-func GetAllDIDs(ctx context.Context, endpoint APIEndpoint) ([]*identitytypes.DidDocument, error) {
+func GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocument, error) {
+	endpoint := currEndpoint()
 	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -55,7 +66,8 @@ func GetAllDIDs(ctx context.Context, endpoint APIEndpoint) ([]*identitytypes.Did
 }
 
 // GetService returns the service with the given id
-func GetService(ctx context.Context, origin string, endpoint APIEndpoint) (*identitytypes.Service, error) {
+func GetService(ctx context.Context, origin string) (*identitytypes.Service, error) {
+	endpoint := currEndpoint()
 	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -68,7 +80,8 @@ func GetService(ctx context.Context, origin string, endpoint APIEndpoint) (*iden
 }
 
 // GetAllServices returns all services
-func GetAllServices(ctx context.Context, endpoint APIEndpoint) ([]*identitytypes.Service, error) {
+func GetAllServices(ctx context.Context) ([]*identitytypes.Service, error) {
+	endpoint := currEndpoint()
 	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -85,7 +98,8 @@ func GetAllServices(ctx context.Context, endpoint APIEndpoint) ([]*identitytypes
 }
 
 // BroadcastTx broadcasts a transaction to the sonr chain
-func BroadcastTx(ctx context.Context, tx []byte, endpoint APIEndpoint) (*ctypes.ResultBroadcastTx, error) {
+func BroadcastTx(ctx context.Context, tx []byte) (*ctypes.ResultBroadcastTx, error) {
+	endpoint := currEndpoint()
 	client, err := client.NewClientFromNode(endpoint.TcpAddress())
 	if err != nil {
 		return nil, err

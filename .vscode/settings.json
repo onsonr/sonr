@@ -80,9 +80,7 @@
     "types/crypto/coin.pb.go": true,
     "types/crypto/credential.pb.go": true,
     "types/crypto/pubkey.pb.go": true,
-    "types/highway/v1": true,
-    "types/crypto/ssi.pb.go": true,
-    "types/highway": true,
+    "types/highway": false,
     "x/identity/types/genesis.pb.go": true,
     "x/identity/types/query.pb.go": true,
     "x/identity/types/query.pb.gw.go": true,
@@ -97,8 +95,6 @@
     "types/crypto/coin.pb.go",
     "types/crypto/credential.pb.go",
     "types/crypto/pubkey.pb.go",
-    "types/highway/v1",
-    "types/crypto/ssi.pb.go",
     "types/highway",
     "x/identity/types/genesis.pb.go",
     "x/identity/types/query.pb.go",
@@ -109,5 +105,6 @@
   "[go]": {
     "editor.defaultFormatter": "golang.go",
     "editor.formatOnType": true
-  }
+  },
+  "explorerExclude.backup": {}
 }
