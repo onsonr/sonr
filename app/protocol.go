@@ -12,8 +12,6 @@ import (
 	"github.com/sonrhq/core/internal/resolver"
 	v1 "github.com/sonrhq/core/types/highway/v1"
 	highwayv1connect "github.com/sonrhq/core/types/highway/v1/highwayv1connect"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 )
 
 var _ highwayv1connect.AuthenticationHandler = (*Protocol)(nil)
@@ -50,7 +48,7 @@ func RegisterHighway(ctx client.Context) {
 func (p *Protocol) serveHTTP(mux *http.ServeMux) {
 	http.ListenAndServe(
 		getServerHost(),
-		h2c.NewHandler(mux, &http2.Server{}),
+		mux,
 	)
 }
 
