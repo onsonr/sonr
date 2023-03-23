@@ -245,7 +245,8 @@ type App struct {
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
-	mm *module.Manager
+	mm             *module.Manager
+	highwayEnabled bool
 
 	// sm is the simulation manager
 	sm           *module.SimulationManager
@@ -263,6 +264,7 @@ func New(
 	invCheckPeriod uint,
 	encodingConfig appparams.EncodingConfig,
 	appOpts servertypes.AppOptions,
+	highwayEnabled bool,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
 	appCodec := encodingConfig.Marshaler
@@ -301,6 +303,7 @@ func New(
 		keys:              keys,
 		tkeys:             tkeys,
 		memKeys:           memKeys,
+		highwayEnabled:    highwayEnabled,
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -832,8 +835,9 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// register app's OpenAPI routes.
 	// Check for sonr.swagger.yaml in docs folder or use default.
 	// If found, register swagger UI and swagger.json.
-	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
-	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
+	apiSvr.Router.Handle("/static/openapi.yaml", http.FileServer(http.FS(docs.Docs)))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yaml"))
+	RegisterHighway(clientCtx)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -914,11 +918,6 @@ func shouldAllowGasless(tx sdk.Tx) bool {
 	for _, msg := range tx.GetMsgs() {
 		// Check if the message is of type MsgCreateDidDocument
 		if _, ok := msg.(*identitymoduletypes.MsgCreateDidDocument); ok {
-			return true
-		}
-
-		// Check if the message is of type MsgRegisterAccount
-		if _, ok := msg.(*identitymoduletypes.MsgRegisterAccount); ok {
 			return true
 		}
 	}

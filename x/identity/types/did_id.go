@@ -38,11 +38,6 @@ func NewPeerID(addr string) string {
 	return DIDMethod_DIDMethod_PEER.Format(addr)
 }
 
-// NewBlockchainID creates a new DID URI for the given blockchain account address
-func NewBlockchainID(addr string, name string) string {
-	return DIDMethod_DIDMethod_BLOCKCHAIN.Format(addr, WithFragment(name))
-}
-
 ///
 /// Helper functions
 ///

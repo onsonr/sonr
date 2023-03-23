@@ -13,7 +13,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
-	common "github.com/sonrhq/core/types/common"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	tmcrypto "github.com/tendermint/tendermint/crypto"
@@ -22,8 +21,20 @@ import (
 
 type (
 	Address   = tmcrypto.Address
-	SNRPubKey = common.SNRPubKey
 )
+
+
+// `SNRPubKey` is a `PubKey` that has a `DID` and a `Multibase`
+// @property {string} DID - The DID of the SNR
+// @property {string} Multibase - The multibase encoding of the DID.
+type SNRPubKey interface {
+	cryptotypes.PubKey
+
+	Bech32(pfix string) (string, error)
+	Multibase() string
+	Raw() []byte
+}
+
 
 //
 // Constructors
@@ -119,7 +130,7 @@ func (pk *PubKey) Secp256k1() (*secp256k1.PubKey, error) {
 	return pubKey, nil
 }
 
-// // Returning the type of the key.
+// Returning the type of the key.
 func (pk *PubKey) Type() string {
 	return pk.KeyType
 }

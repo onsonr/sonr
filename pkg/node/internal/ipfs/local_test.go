@@ -6,13 +6,12 @@ import (
 	"testing"
 
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/types/common"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAddGet(t *testing.T) {
 	// Call Run method and check for panic (if any)
-	ctx, err := common.NewContext(context.Background())
+	ctx, err := config.NewContext(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -40,7 +39,7 @@ func TestNewAddGet(t *testing.T) {
 }
 
 func TestOrbitDB(t *testing.T) {
-	ctx, err := common.NewContext(context.Background())
+	ctx, err := config.NewContext(context.Background())
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -50,10 +49,15 @@ func TestOrbitDB(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	docsStore, err := node.LoadDocsStore("test")
+	// Add a file to the network
+	docsStore, err := node.LoadDocsStore("testDocStore")
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Logf("Store Name: %v", docsStore.DBName())
+	t.Logf("Store Identity: %v", docsStore.Identity().ID)
+	t.Logf("Store Address: %v", docsStore.Address().String())
+	t.Logf("Store Type: %v", docsStore.Type())
 
 	testData := map[string]interface{}{
 		"_id":  "0",
@@ -63,7 +67,27 @@ func TestOrbitDB(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("op: %v", op)
+	t.Logf("op: %v", op.GetOperation())
+
+	// Test KV Store
+	kvStore, err := node.LoadKeyValueStore("testKVStore")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("Store Name: %v", kvStore.DBName())
+	t.Logf("Store Identity: %v", kvStore.Identity().ID)
+	t.Logf("Store Address: %v", kvStore.Address().String())
+	t.Logf("Store Type: %v", kvStore.Type())
+
+
+	op, err = kvStore.Put(context.Background(), "test", []byte("test"))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	t.Logf("op: %v", op.GetOperation())
+
 
 	// Get the file from the network
 	rawVal, err := docsStore.Get(context.Background(), "0", nil)

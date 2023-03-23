@@ -6,6 +6,7 @@ syntax = "proto3";
 package sonrhq.core.identity;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
+
 // DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
 message DidDocument {
   repeated string context = 1; // The JSON-LD context(s) used in the document
@@ -51,27 +52,20 @@ message Service {
   repeated KeyValuePair metadata = 7; // optional, additional metadata related to the Service
 }
 
+// KeyValuePair represents a key-value pair.
 message KeyValuePair {
-  string key = 1;
-  string value = 2;
+  string key = 1; // The key
+  string value = 2; // The value
 }
 
 // DIDMethod is the DID method for each supported resolver.
 enum DIDMethod {
-  // DID method for the Sonr network
-  DIDMethod_BLOCKCHAIN = 0;
-
-  // DID method for the Ethereum network
-  DIDMethod_WEB = 1;
-
-  // DID method for the Cosmos network
-  DIDMethod_KEY = 2;
-
-  // DID method for the Filecoin network
-  DIDMethod_IPFS = 3;
-
-  // DID method for the Handshake network
-  DIDMethod_PEER = 4;
+  DIDMethod_UNSPECIFIED = 0; // DID method for unspecified networks
+  DIDMethod_SONR = 1; // DID method for the Sonr network
+  DIDMethod_WEB = 2; // DID method for the Ethereum network
+  DIDMethod_KEY = 3; // DID method for the Cosmos network
+  DIDMethod_IPFS = 4; // DID method for the Filecoin network
+  DIDMethod_PEER = 5; // DID method for the Handshake network
 }
 
 // ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.

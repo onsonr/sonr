@@ -41,6 +41,14 @@ import (
 	appparams "github.com/sonrhq/core/app/params"
 )
 
+const (
+	flagHighwayEnabled = "highway-enabled"
+)
+
+var (
+	highwayEnabled = false
+)
+
 // NewRootCmd creates a new root command for a Cosmos SDK application
 func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	encodingConfig := app.MakeEncodingConfig()
@@ -56,7 +64,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 
 	rootCmd := &cobra.Command{
 		Use:   app.Name + "d",
-		Short: "Stargate CosmosHub App",
+		Short: "The Internet Rebuilt for You.",
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -82,6 +90,8 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 		},
 	}
 
+	// Get highway enabled flag
+	rootCmd.PersistentFlags().BoolVar(&highwayEnabled, flagHighwayEnabled, false, "Enable highway protocol for this node")
 	initRootCmd(rootCmd, encodingConfig)
 	rootCmd.AddCommand(server.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
 	overwriteFlagDefaults(rootCmd, map[string]string{
@@ -295,6 +305,7 @@ func (a appCreator) newApp(
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encodingConfig,
 		appOpts,
+		highwayEnabled,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetMinRetainBlocks(cast.ToUint64(appOpts.Get(server.FlagMinRetainBlocks))),
@@ -334,6 +345,7 @@ func (a appCreator) appExport(
 		uint(1),
 		a.encodingConfig,
 		appOpts,
+		highwayEnabled,
 	)
 
 	if height != -1 {

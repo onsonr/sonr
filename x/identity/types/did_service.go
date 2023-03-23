@@ -12,11 +12,31 @@ import (
 	types "github.com/sonrhq/core/types/crypto"
 )
 
-func NewIPNSService(id string, endpoint string) *Service {
+const (
+	VaultServiceType            = "EncryptedVault"
+	LinkedDomainServiceType     = "LinkedDomains"
+	DIDCommMessagingServiceType = "DIDCommMessaging"
+)
+
+// NewIPFSStoreService creates a new IPFS Store Service record for the given address.
+// Addresses look like: /orbitdb/bafyreiepksmvjzvcbzsdqkf474hgfoqf3xj5t47olga5qnnhxggxssbcya/testKVStore
+// The address is split into the CID and the DBName, and the CID is used to create the DID. Which results in:
+// did:orbitdb:bafyreiepksmvjzvcbzsdqkf474hgfoqf3xj5t47olga5qnnhxggxssbcya
+// The origin is the dbname and the type is "EncryptedVault"
+func NewIPFSStoreService(address string, controllerDid string) *Service {
+	parts := strings.Split(address, "/")
+	if len(parts) < 4 {
+		return nil
+	}
+	host := parts[1]
+	cid := parts[2]
+	dbName := parts[3]
+	id := fmt.Sprintf("did:%s:%s", host, cid)
 	return &Service{
-		Id:     id,
-		Type:   "EncryptedVault",
-		Origin: endpoint,
+		Id:         id,
+		Type:       VaultServiceType,
+		Origin:     dbName,
+		Controller: controllerDid,
 	}
 }
 

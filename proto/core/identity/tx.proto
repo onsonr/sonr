@@ -16,11 +16,6 @@ service Msg {
   rpc RegisterService   (MsgRegisterService  ) returns (MsgRegisterServiceResponse  );
   rpc UpdateService     (MsgUpdateService    ) returns (MsgUpdateServiceResponse    );
   rpc DeactivateService (MsgDeactivateService) returns (MsgDeactivateServiceResponse);
-
-  // this line is used by starport scaffolding # proto/tx/rpc
-  rpc RegisterAccount (MsgRegisterAccount) returns (MsgRegisterAccountResponse);
-  rpc ImportPublicKey (MsgImportPublicKey) returns (MsgImportPublicKeyResponse);
-  rpc DeletePublicKey (MsgDeletePublicKey) returns (MsgDeletePublicKeyResponse);
 }
 message MsgCreateDidDocument {
   string      creator  = 1;
@@ -67,45 +62,5 @@ message MsgDeactivateService {
   string domain  = 3;
 }
 
-message MsgDeactivateServiceResponse {}
-
-// this line is used by starport scaffolding # proto/tx/message
-message MsgRegisterAccount {
-  // The address of the user. This is used to query the Blockchain for the User DID to make sure the user does not already have an account.
-  string creator = 1;
-
-  // The previously generated session id.
-  string uuid = 2;
-
-  // The signed credential response from the user.
-  string credential_response = 3;
-
-  // The origin of the request. This is used to query the Blockchain for the Service DID.
-  string origin = 4;
-
-  // Base64 encoded shared encryption key.
-  string shared_encryption_key = 5;
+message MsgDeactivateServiceResponse {
 }
-
-message MsgRegisterAccountResponse {
-  bool success = 1;
-
-  // The DID of the user.
-  string did = 2;
-
-  // The ResolvedDidDocument of the user.
-  ResolvedDidDocument document = 3;
-}
-
-message MsgImportPublicKey {
-  string creator = 1;
-}
-
-message MsgImportPublicKeyResponse {}
-
-message MsgDeletePublicKey {
-  string creator = 1;
-}
-
-message MsgDeletePublicKeyResponse {}
-

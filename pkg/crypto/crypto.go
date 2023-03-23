@@ -10,12 +10,11 @@ import (
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 
-	"github.com/sonrhq/core/types/common"
 	types "github.com/sonrhq/core/types/crypto"
 )
 
 // SNRPubKey is a type alias for common.SNRPubKey in pkg/common.
-type SNRPubKey = common.SNRPubKey
+type SNRPubKey = types.SNRPubKey
 
 // CoinType is a type alias for types.CoinType in pkg/crypto/internal/types.
 type CoinType = types.CoinType

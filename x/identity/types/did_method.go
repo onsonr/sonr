@@ -7,10 +7,6 @@ import (
 
 // Format returns a string representation of the DIDMethod that is on the DID spec
 func (m DIDMethod) Format(val string, options ...FormatOption) string {
-	if m == DIDMethod_DIDMethod_BLOCKCHAIN {
-		ct := findCoinTypeFromAddress(val)
-		return fmt.Sprintf("did:%s:%s", ct.DidMethod(), val)
-	}
 	r := fmt.Sprintf("did:%s:%s", m.PrettyString(), val)
 	for _, opt := range options {
 		r = opt(r)

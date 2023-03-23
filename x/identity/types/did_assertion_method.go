@@ -6,9 +6,9 @@ import "github.com/sonrhq/core/pkg/crypto"
 
 // AddBlockchainAccount creates a verification method from a new wallet account
 func (d *DidDocument) AddBlockchainAccount(accName string, ct crypto.CoinType, pk *crypto.PubKey, metadata ...*KeyValuePair) (*VerificationMethod, error) {
-	accAddress := ct.FormatAddress(pk)
+	accDid, accAddress := ct.FormatDID(pk)
 	vm := &VerificationMethod{
-		Id:                  NewBlockchainID(accAddress, accName),
+		Id:                  accDid,
 		Type:                crypto.Secp256k1KeyType.PrettyString(),
 		BlockchainAccountId: accAddress,
 		Controller:          d.Id,

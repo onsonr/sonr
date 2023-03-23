@@ -5,7 +5,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/client"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
@@ -17,8 +16,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/types/common"
-	identityprotocol "github.com/sonrhq/core/types/common"
 )
 
 // A P2PHost is a host.Host with a private key, a channel of mDNS peers, a channel of DHT peers, a
@@ -39,7 +36,7 @@ import (
 type hostImpl struct {
 	// Standard Node Implementation
 	host     host.Host
-	callback common.NodeCallback
+	callback config.NodeCallback
 
 	// Host and context
 	privKey      crypto.PrivKey
@@ -57,7 +54,7 @@ type hostImpl struct {
 }
 
 // Initialize Creates a Sonr libp2p Host with the given config
-func Initialize(config *config.Config) (common.PeerNode, error) {
+func Initialize(config *config.Config) (config.PeerNode, error) {
 	// Create Host and apply options
 	hn := defaultNode(config)
 	// Initialize Host
@@ -87,13 +84,8 @@ func Initialize(config *config.Config) (common.PeerNode, error) {
 }
 
 // Context returns the context of the Host
-func (n *hostImpl) Context() *identityprotocol.Context {
+func (n *hostImpl) Context() *config.Context {
 	return n.config.Context
-}
-
-// WrapClientContext wraps the protocol context with the client's context
-func (n *hostImpl) WrapClientContext(c client.Context) *identityprotocol.Context {
-	return n.config.Context.WrapClientContext(c)
 }
 
 // PeerID returns the ID of the Host

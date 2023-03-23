@@ -141,17 +141,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		identitysimulation.SimulateMsgUpdateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgDeleteDidDocument int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteDidDocument, &weightMsgDeleteDidDocument, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeleteDidDocument = defaultWeightMsgDeleteDidDocument
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteDidDocument,
-		identitysimulation.SimulateMsgDeleteDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	var weightMsgRegisterService int
 	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterService, &weightMsgRegisterService, nil,
 		func(_ *rand.Rand) {
@@ -161,39 +150,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgRegisterService,
 		identitysimulation.SimulateMsgRegisterService(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgRegisterAccount int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterAccount, &weightMsgRegisterAccount, nil,
-		func(_ *rand.Rand) {
-			weightMsgRegisterAccount = defaultWeightMsgRegisterAccount
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgRegisterAccount,
-		identitysimulation.SimulateMsgRegisterAccount(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgImportPublicKey int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgImportPublicKey, &weightMsgImportPublicKey, nil,
-		func(_ *rand.Rand) {
-			weightMsgImportPublicKey = defaultWeightMsgImportPublicKey
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgImportPublicKey,
-		identitysimulation.SimulateMsgImportPublicKey(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeletePublicKey int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeletePublicKey, &weightMsgDeletePublicKey, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeletePublicKey = defaultWeightMsgDeletePublicKey
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeletePublicKey,
-		identitysimulation.SimulateMsgDeletePublicKey(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

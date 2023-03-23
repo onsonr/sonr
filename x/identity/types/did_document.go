@@ -30,7 +30,7 @@ func NewBlankDocument(idStr string) *DidDocument {
 // NewDocument creates a new DID Document from a wallet public key
 func NewDocument(pk *crypto.PubKey, opts ...VerificationMethodOption) *DidDocument {
 	doc := NewBlankDocument("")
-	vm, err := NewVerificationMethodFromPubKey(pk, DIDMethod_DIDMethod_BLOCKCHAIN)
+	vm, err := NewVerificationMethodFromPubKey(pk, DIDMethod_DIDMethod_SONR)
 	if err != nil {
 		panic(err)
 	}
@@ -189,4 +189,19 @@ func (d *DidDocument) IsKeyAgreement(vm *VerificationMethod) bool {
 		}
 	}
 	return false
+}
+
+// Method returns the DID method of the document
+func (d *DidDocument) DIDMethod() string {
+	return strings.Split(d.Id, ":")[1]
+}
+
+// Identifier returns the DID identifier of the document
+func (d *DidDocument) DIDIdentifier() string {
+	return strings.Split(d.Id, ":")[2]
+}
+
+// Fragment returns the DID fragment of the document
+func (d *DidDocument) DIDFragment() string {
+	return strings.Split(d.Id, "#")[1]
 }

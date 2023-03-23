@@ -106,11 +106,21 @@ func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescrip
 	return stdCred.Descriptor(), nil
 }
 
-// IDFragmentSuffix returns the fragment of the ID of the VerificationMethod
-func (vm *VerificationMethod) IDFragmentSuffix() string {
-	ptrs := strings.Split(vm.Id, "#")
-	return ptrs[len(ptrs)-1]
+// Method returns the DID method of the document
+func (d *VerificationMethod) DIDMethod() string {
+	return strings.Split(d.Id, ":")[1]
 }
+
+// Identifier returns the DID identifier of the document
+func (d *VerificationMethod) DIDIdentifier() string {
+	return strings.Split(d.Id, ":")[2]
+}
+
+// Fragment returns the DID fragment of the document
+func (d *VerificationMethod) DIDFragment() string {
+	return strings.Split(d.Id, "#")[1]
+}
+
 
 // IsBlockchainAccount returns true if the VerificationMethod is a blockchain account
 func (vm *VerificationMethod) IsBlockchainAccount() bool {

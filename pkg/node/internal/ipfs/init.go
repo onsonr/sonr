@@ -3,6 +3,7 @@ package ipfs
 import (
 	"context"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"sync"
@@ -11,35 +12,51 @@ import (
 	"berty.tech/go-orbit-db/iface"
 	files "github.com/ipfs/go-ipfs-files"
 	icore "github.com/ipfs/interface-go-ipfs-core"
+	config "github.com/ipfs/kubo/config"
 	"github.com/ipfs/kubo/core"
 	"github.com/ipfs/kubo/core/coreapi"
-	klibp2p "github.com/ipfs/kubo/core/node/libp2p"
+	"github.com/ipfs/kubo/core/node/libp2p"
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
 	nodeconfig "github.com/sonrhq/core/pkg/node/config"
-	snrConfig "github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/types/common"
 )
 
 // Initialize creates a new local IPFS node
-func Initialize(c *snrConfig.Config) (common.IPFSNode, error) {
-	// Apply the options
+func Initialize(c *nodeconfig.Config) (nodeconfig.IPFSNode, error) {
+	ipfsDoneCh := make(chan nodeconfig.IPFSNode)
+	ipfsErrCh := make(chan error)
 	n := defaultNode(c)
-	err := n.initialize()
-	if err != nil {
+
+	go func() {
+		// Apply the options
+		err := n.initialize()
+		if err != nil {
+			ipfsErrCh <- err
+			return
+		}
+		// Connect to the bootstrap nodes
+		err = n.Connect(n.config.Context.BsMultiaddrs...)
+		if err != nil {
+			ipfsErrCh <- err
+			return
+		}
+		db, err := orbitdb.NewOrbitDB(n.ctx, n.CoreAPI(), &orbitdb.NewOrbitDBOptions{})
+		if err != nil {
+			ipfsErrCh <- err
+			return
+		}
+		n.orbitDb = db
+		ipfsDoneCh <- n
+	}()
+
+	select {
+	case <-c.Context.Ctx.Done():
+		return nil, c.Context.Ctx.Err()
+	case err := <-ipfsErrCh:
 		return nil, err
+	case <-ipfsDoneCh:
+		return n, nil
 	}
-	// Connect to the bootstrap nodes
-	err = n.Connect(n.config.Context.BsMultiaddrs...)
-	if err != nil {
-		return nil, err
-	}
-	db, err := orbitdb.NewOrbitDB(n.ctx, n.CoreAPI(), &orbitdb.NewOrbitDBOptions{})
-	if err != nil {
-		return nil, err
-	}
-	n.orbitDb = db
-	return n, nil
 }
 
 // Miscellanenous
@@ -53,7 +70,7 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(cnfg *snrConfig.Config) *localIpfs {
+func defaultNode(cnfg *nodeconfig.Config) *localIpfs {
 	return &localIpfs{
 		ctx:    cnfg.Context.Ctx,
 		config: cnfg,
@@ -62,6 +79,11 @@ func defaultNode(cnfg *snrConfig.Config) *localIpfs {
 
 // It's creating a new node and returning the coreAPI and the node itself.
 func (c *localIpfs) initialize() error {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		return err
+	}
+	c.repoPath = filepath.Join(userHomeDir, ".sonr", "adapters", "ipfs")
 	// Spawn a local peer using a temporary path, for testing purposes
 	var onceErr error
 	loadPluginsOnce.Do(func() {
@@ -71,7 +93,34 @@ func (c *localIpfs) initialize() error {
 		return onceErr
 	}
 
-	node, err := createNode(c.ctx, c.config.Context.RepoPath)
+	// Delete the repo if it already exists
+	err = os.RemoveAll(c.repoPath)
+	if err != nil {
+		return err
+	}
+
+	// Create a config with default options and a 2048 bit key
+	cfg, err := config.Init(io.Discard, 2048)
+	if err != nil {
+		return err
+	}
+
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-filestore
+	cfg.Experimental.FilestoreEnabled = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-urlstore
+	cfg.Experimental.UrlstoreEnabled = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#ipfs-p2p
+	cfg.Experimental.Libp2pStreamMounting = true
+	// https://github.com/ipfs/kubo/blob/master/docs/experimental-features.md#p2p-http-proxy
+	cfg.Experimental.P2pHttpProxy = true
+
+	// Create the repo with the config
+	err = fsrepo.Init(c.repoPath, cfg)
+	if err != nil {
+		return err
+	}
+
+	node, err := createNode(c.ctx, c.repoPath)
 	if err != nil {
 		return err
 	}
@@ -103,7 +152,6 @@ func setupPlugins(externalPluginsPath string) error {
 	if err := plugins.Inject(); err != nil {
 		return fmt.Errorf("error initializing plugins: %s", err)
 	}
-
 	return nil
 }
 
@@ -127,9 +175,8 @@ func createNode(ctx context.Context, repoPath string) (*core.IpfsNode, error) {
 	// Construct the node
 	nodeOptions := &core.BuildCfg{
 		Online:  true,
-		Routing: klibp2p.DHTServerOption, // This option sets the node to be a full DHT node (both fetching and storing DHT Records)
-		// Routing: libp2p.DHTClientOption, // This option sets the node to be a client DHT node (only fetching records)
-		Repo: repo,
+		Routing: libp2p.DHTOption,
+		Repo:    repo,
 		ExtraOpts: map[string]bool{
 			"pubsub": true,
 			"ipnsps": true,
@@ -185,4 +232,18 @@ func fetchKeyValueAddress(orb iface.OrbitDB, username string) (string, error) {
 		return "", err
 	}
 	return addr.String(), nil
+}
+
+// checkPathExists checks if a path exists
+func checkPathExists(path string) bool {
+	_, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+// checkPathNotExists checks if a path does not exist
+func checkPathNotExists(path string) bool {
+	return !checkPathExists(path)
 }

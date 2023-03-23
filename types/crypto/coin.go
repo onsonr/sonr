@@ -1,6 +1,11 @@
 package crypto
 
-import "strings"
+import (
+	fmt "fmt"
+	"strings"
+
+	"github.com/cosmos/cosmos-sdk/types/bech32"
+)
 
 // AllCoinTypes returns all the coin types.
 func AllCoinTypes() []CoinType {
@@ -259,6 +264,7 @@ func (c CoinType) DidMethod() string {
 	return strings.ToLower(c.Ticker())
 }
 
+// FormatAddress returns the address for the given public key for the spec of the coin type.
 func (c CoinType) FormatAddress(pk *PubKey) string {
 	if c.IsBitcoin() {
 		return BitcoinAddress(pk)
@@ -266,5 +272,18 @@ func (c CoinType) FormatAddress(pk *PubKey) string {
 	if c.IsEthereum() {
 		return EthereumAddress(pk)
 	}
+	if c.IsSonr() {
+		addr, _ :=bech32.ConvertAndEncode("snr", pk.Address().Bytes())
+		return addr
+	}
+	if c.IsCosmos() {
+		addr, _ := bech32.ConvertAndEncode("cosmos", pk.Address().Bytes())
+		return addr
+	}
 	return pk.Address().String()
+}
+
+// FormatDID returns the DID for the given public key for the spec of the coin type, along with the address.
+func (c CoinType) FormatDID(pk *PubKey) (string, string) {
+	return fmt.Sprintf("did:%s:%s", c.DidMethod(), c.FormatAddress(pk)), c.FormatAddress(pk)
 }

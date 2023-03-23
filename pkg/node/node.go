@@ -2,94 +2,99 @@ package node
 
 import (
 	"context"
+	"fmt"
 
+	"berty.tech/go-orbit-db/iface"
 	"github.com/sonrhq/core/pkg/node/config"
 	"github.com/sonrhq/core/pkg/node/internal/ipfs"
-	"github.com/sonrhq/core/types/common"
-	identityprotocol "github.com/sonrhq/core/types/common"
 )
 
+// IPFSKVStore is an alias for a iface.KeyValueStore.
+type IPFSKVStore = iface.KeyValueStore
+
+// IPFSEventLogStore is an alias for a iface.EventLogStore.
+type IPFSEventLogStore = iface.EventLogStore
+
+// IPFSDocsStore is an alias for a iface.DocumentStore.
+type IPFSDocsStore = iface.DocumentStore
+
 // Callback is an alias for a common.NodeCallback
-type Callback = common.NodeCallback
+type Callback = config.NodeCallback
 
 // IPFS is an alias for a common.IPFSNode.
-type IPFS = common.IPFSNode
+type IPFS = config.IPFSNode
 
 // P2P is an alias for a common.P2PNode.
-type P2P = common.PeerNode
+type P2P = config.PeerNode
 
-// Options is an alias for a config.Options.
-type Option = config.Option
+var (
+	local IPFS
+)
 
-// `Node` is an interface that has three methods: `Host`, `IPFS`, and `Type`.
-//
-// The `Host` method returns a `Motor` interface and an error. The `IPFS` method returns a `Highway`
-// interface and an error. The `Type` method returns a `Type` type.
-//
-// The `Motor` interface has two methods: `Start` and `Stop`. The `Start` method returns an error. The
-// `Stop` method returns an error.
-//
-// The `Highway` interface has two methods: `Start` and
-// @property Host - The motor that is hosting the node.
-// @property IPFS - The IPFS node that the motor is connected to.
-// @property {Type} Type - The type of node. This can be either a Motor or a Highway.
-type Node interface {
-	// Returning a Motor interface and an error.
-	Host() P2P
-	IPFS() IPFS
-}
-
-// It creates a new host, and then creates a new node with that host
-func New(ctx context.Context, opts ...Option) (Node, error) {
-	pctx, err := identityprotocol.NewContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	config := config.DefaultConfig(pctx)
-	err = config.Apply(opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	i, err := ipfs.Initialize(config)
-	if err != nil {
-		return nil, err
-	}
-	return &node{
-		ipfs:   i,
-		config: config,
-	}, nil
-}
-
-// NewIPFS creates a new IPFS node
-func NewIPFS(ctx context.Context, opts ...Option) (common.IPFSNode, error) {
+// StartLocalIPFS initializes a local IPFS node.
+func StartLocalIPFS() error {
 	// Start IPFS Node
-	pctx, err := identityprotocol.NewContext(ctx)
+	pctx, err := config.NewContext(context.Background())
 	if err != nil {
-		return nil, err
+		return err
 	}
 	config := config.DefaultConfig(pctx)
-	err = config.Apply(opts...)
+	err = config.Apply()
 	if err != nil {
-		return nil, err
+		return err
 	}
 	i, err := ipfs.Initialize(config)
 	if err != nil {
+		return err
+	}
+	local = i
+	return nil
+}
+
+// OpenKeyValueStore creates a new IPFSKVStore. This requires a valid Sonr Account Public Key.
+func OpenKeyValueStore(ctx context.Context, controllerAddr string) (IPFSKVStore, error) {
+	if local == nil {
+		err := StartLocalIPFS()
+		if err != nil {
+			return nil, fmt.Errorf("local IPFS node not initialized: %w", err)
+		}
+	}
+
+	kv, err := local.LoadKeyValueStore(controllerAddr)
+	if err != nil {
 		return nil, err
 	}
-	return i, nil
+	return kv, nil
 }
 
-type node struct {
-	host   common.PeerNode
-	ipfs   common.IPFSNode
-	config *config.Config
+// OpenEventLogStore creates a new IPFSEventLogStore. This requires a valid Sonr Account Public Key.
+func OpenEventLogStore(ctx context.Context, controllerAddr string) (IPFSEventLogStore, error) {
+	if local == nil {
+		err := StartLocalIPFS()
+		if err != nil {
+			return nil, fmt.Errorf("local IPFS node not initialized: %w", err)
+		}
+	}
+
+	el, err := local.LoadEventLogStore(controllerAddr)
+	if err != nil {
+		return nil, err
+	}
+	return el, nil
 }
 
-func (n *node) Host() P2P {
-	return n.host
-}
+// OpenDocumentStore creates a new IPFSDocsStore. This requires a valid Sonr Account Public Key.
+func OpenDocumentStore(ctx context.Context, controllerAddr string) (IPFSDocsStore, error) {
+	if local == nil {
+		err := StartLocalIPFS()
+		if err != nil {
+			return nil, fmt.Errorf("local IPFS node not initialized: %w", err)
+		}
+	}
 
-func (n *node) IPFS() IPFS {
-	return n.ipfs
+	ds, err := local.LoadDocsStore(controllerAddr)
+	if err != nil {
+		return nil, err
+	}
+	return ds, nil
 }

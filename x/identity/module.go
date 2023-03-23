@@ -15,8 +15,6 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/sonrhq/core/pkg/node"
-	"github.com/sonrhq/core/types/common"
 	"github.com/sonrhq/core/x/identity/client/cli"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
@@ -160,11 +158,3 @@ func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.Valid
 	return []abci.ValidatorUpdate{}
 }
 
-// initProtocol initializes the IPFS protocol
-func initProtocol() common.IPFSNode {
-	node, err := node.NewIPFS(context.Background())
-	if err != nil {
-		//panic(err)
-	}
-	return node
-}

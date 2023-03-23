@@ -10,8 +10,11 @@ PROTO_DIR=${PROJECT_DIR}/proto
 buf generate proto
 
 # Vault/Auth
-# rm -rf internal/gen/core
-# cp -r internal/gen/* .
+rm -rf types/highway
+cp -r internal/gen/* ./types
+rm -rf internal/gen
+rm -rf types/core
+rm -rf types/sonr
 
 # Blockchain
 cp -r github.com/sonrhq/core/* .

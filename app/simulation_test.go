@@ -67,6 +67,7 @@ func BenchmarkSimulation(b *testing.B) {
 		0,
 		encoding,
 		simapp.EmptyAppOptions{},
+		false,
 	)
 
 	// Run randomized simulations

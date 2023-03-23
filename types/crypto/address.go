@@ -45,6 +45,5 @@ func BitcoinAddress(pk *PubKey) string {
 
 	// Step 6: Encode the result using Base58
 	address := base58.Encode(fullPayload, base58.BitcoinAlphabet)
-
 	return address
 }

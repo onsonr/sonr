@@ -9,7 +9,6 @@ import (
 	"sync"
 
 	"berty.tech/go-orbit-db/iface"
-	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/google/uuid"
 	"github.com/ipfs/go-cid"
 	files "github.com/ipfs/go-ipfs-files"
@@ -21,7 +20,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/types/common"
 	types "github.com/sonrhq/core/types/common"
 )
 
@@ -44,6 +42,7 @@ type localIpfs struct {
 	node *core.IpfsNode
 
 	config *config.Config
+	repoPath string
 
 	ctx     context.Context
 	encKey  crypto.PrivKey
@@ -90,14 +89,10 @@ func (n *localIpfs) Connect(peers ...string) error {
 }
 
 // Context returns the context of the node
-func (n *localIpfs) Context() *common.Context {
+func (n *localIpfs) Context() *config.Context {
 	return n.config.Context
 }
 
-// WrapClientContext wraps the protocol context with the client's context
-func (n *localIpfs) WrapClientContext(c client.Context) *common.Context {
-	return n.config.Context.WrapClientContext(c)
-}
 
 // Add adds a file to the network
 func (n *localIpfs) Add(file []byte) (string, error) {
@@ -130,11 +125,6 @@ func (n *localIpfs) Add(file []byte) (string, error) {
 		fmt.Printf("Failed to cleanup Temporary IPFS directory: %s", err)
 	}
 	return cid.String(), nil
-}
-
-// AddEncrypted utilizes the NACL Secret box to encrypt data on behalf of a user
-func (n *localIpfs) Encrypt(file []byte, pubKey []byte) []byte {
-	return n.config.Context.EncryptMessage(file, pubKey)
 }
 
 // AddPath adds all files/folders in a given path to the network
@@ -191,10 +181,6 @@ func (n *localIpfs) Get(cidStr string) ([]byte, error) {
 	return file, nil
 }
 
-// GetDecrypted decrypts a file from a cid hash using the pubKey
-func (n *localIpfs) Decrypt(bz []byte, pubKey []byte) ([]byte, bool) {
-	return n.config.Context.DecryptMessage(bz, pubKey)
-}
 
 // GetPath returns a file from the network given its CID
 func (n *localIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
@@ -265,5 +251,9 @@ func (r *localIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, err
 	if err != nil {
 		return nil, err
 	}
+	return r.orbitDb.KeyValue(r.ctx, addr, nil)
+}
+// GetKeyValueStore creates or loads a key value database from given name
+func (r *localIpfs) GetKeyValueStoreFromAddress(addr string) (iface.KeyValueStore, error) {
 	return r.orbitDb.KeyValue(r.ctx, addr, nil)
 }

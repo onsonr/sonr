@@ -2,25 +2,20 @@ package keeper
 
 import (
 	"context"
-	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonrhq/core/pkg/wallet"
 	"github.com/sonrhq/core/x/identity/types"
 )
 
 type msgServer struct {
 	Keeper
-	Vault types.VaultServer
 }
 
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	v := NewVaultServerImpl(keeper)
 	return &msgServer{Keeper: keeper,
-		Vault: v,
 	}
 }
 
@@ -105,64 +100,6 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                              Credential Operations                             ||
 // ! ||--------------------------------------------------------------------------------||
-
-func (k msgServer) RegisterAccount(goCtx context.Context, msg *types.MsgRegisterAccount) (*types.MsgRegisterAccountResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	val, found := k.GetService(ctx, msg.Origin)
-	if found {
-		return nil, sdkerrors.Wrap(types.ErrServiceNotFound, fmt.Sprintf("service %s not found", msg.Origin))
-	}
-
-	cred, err := val.VerifyCreationChallenge(msg.CredentialResponse)
-	if err != nil {
-		return nil, sdkerrors.Wrap(types.ErrWebauthnCredVerify, err.Error())
-	}
-	wallChan := make(chan wallet.Wallet)
-	errChan := make(chan error)
-	go func() {
-		wall, err := wallet.NewWallet(msg.Uuid, 1)
-		if err != nil {
-			errChan <- err
-			return
-		}
-		wallChan <- wall
-	}()
-
-	select {
-	case wall := <-wallChan:
-		doc, vms, err := wall.Assign(cred)
-		if err != nil {
-			return nil, sdkerrors.Wrap(types.ErrWebauthnCredAssign, err.Error())
-		}
-		k.SetDidDocument(ctx, *doc)
-		resolved := doc.ResolveMethods(vms)
-		return &types.MsgRegisterAccountResponse{
-			Did:      doc.Id,
-			Document: resolved,
-		}, nil
-	case err := <-errChan:
-		return nil, sdkerrors.Wrap(types.ErrMpc, err.Error())
-	}
-}
-
-func (k msgServer) DeletePublicKey(goCtx context.Context, msg *types.MsgDeletePublicKey) (*types.MsgDeletePublicKeyResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// TODO: Handling the message
-	_ = ctx
-
-	return &types.MsgDeletePublicKeyResponse{}, nil
-}
-
-func (k msgServer) ImportPublicKey(goCtx context.Context, msg *types.MsgImportPublicKey) (*types.MsgImportPublicKeyResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// TODO: Handling the message
-	_ = ctx
-
-	return &types.MsgImportPublicKeyResponse{}, nil
-}
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                      Service Message Server Implementation                     ||

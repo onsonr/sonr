@@ -1,8 +1,6 @@
 package config
 
 import (
-	"github.com/sonrhq/core/types/common"
-
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 )
 
@@ -27,10 +25,10 @@ func (st StoreType) String() string {
 
 // Config is the configuration for the node
 type Config struct {
-	Context *common.Context
+	Context *Context
 
 	// Callback is the callback for the motor
-	Callback common.NodeCallback
+	Callback NodeCallback
 
 	// GroupIDs is the list of peer ids for the node
 	GroupIDs []party.ID
@@ -40,10 +38,10 @@ type Config struct {
 }
 
 // DefaultConfig returns the default configuration
-func DefaultConfig(ctx *common.Context) *Config {
+func DefaultConfig(ctx *Context) *Config {
 	return &Config{
 		SelfPartyID: party.ID("current"),
-		Callback:    common.DefaultCallback(),
+		Callback:    DefaultCallback(),
 		Context:     ctx,
 	}
 }
@@ -72,7 +70,7 @@ func WithGroupIds(partyIds ...party.ID) Option {
 }
 
 // WithNodeCallback sets the callback for the motor
-func WithNodeCallback(callback common.NodeCallback) Option {
+func WithNodeCallback(callback NodeCallback) Option {
 	return func(c *Config) error {
 		c.Callback = callback
 		return nil
@@ -88,15 +86,15 @@ func WithPartyId(partyId string) Option {
 }
 
 type node struct {
-	host   common.PeerNode
-	ipfs   common.IPFSNode
+	host   PeerNode
+	ipfs   IPFSNode
 	config *Config
 }
 
-func (n *node) Host() common.PeerNode {
+func (n *node) Host() PeerNode {
 	return n.host
 }
 
-func (n *node) IPFS() common.IPFSNode {
+func (n *node) IPFS() IPFSNode {
 	return n.ipfs
 }
