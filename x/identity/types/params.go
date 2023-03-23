@@ -49,7 +49,7 @@ func (p Params) Validate() error {
 
 // Returns the Global Orbit DB store name
 func (p Params) GetOrbitDbStoreName() string {
-	return p.DidMethodName + "-" + p.DidMethodVersion
+	return p.DidMethodName + "-" + p.DidMethodVersion + "/mpc"
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
