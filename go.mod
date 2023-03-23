@@ -1,6 +1,6 @@
 module github.com/sonrhq/core
 
-go 1.18
+go 1.19
 
 require (
 	berty.tech/go-orbit-db v1.19.1

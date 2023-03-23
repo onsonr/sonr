@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
+	"log"
 	"net/http"
+	"os"
 
 	"github.com/bufbuild/connect-go"
 	"github.com/cosmos/cosmos-sdk/client"
@@ -47,9 +49,17 @@ func RegisterHighway(ctx client.Context) {
 
 func (p *Protocol) serveHTTP(mux *http.ServeMux) {
 	http.ListenAndServe(
-		"localhost:8080",
+		getServerHost(),
 		h2c.NewHandler(mux, &http2.Server{}),
 	)
+}
+
+func getServerHost() string {
+	if host := os.Getenv("CONNECT_SERVER_ADDRESS"); host != "" {
+		log.Printf("using CONNECT_SERVER_ADDRESS: %s", host)
+		return host
+	}
+	return "localhost:8080"
 }
 
 // ! ||--------------------------------------------------------------------------------||
