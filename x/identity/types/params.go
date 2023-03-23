@@ -22,7 +22,7 @@ func NewParams() Params {
 		DidBaseContext:                  "https://www.w3.org/ns/did/v1",
 		DidMethodContext:                "https://docs.sonr.io/identity/1.0",
 		DidMethodName:                   "sonr",
-		DidMethodVersion:                "1.0",
+		DidMethodVersion:                "0.6.0",
 		DidNetwork:                      "devnet",
 		IpfsGateway:                     "https://sonr.space/ipfs",
 		IpfsApi:                         "https://api.sonr.space",
@@ -45,6 +45,11 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	return nil
+}
+
+// Returns the Global Orbit DB store name
+func (p Params) GetOrbitDbStoreName() string {
+	return p.DidMethodName + "-" + p.DidMethodVersion
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.

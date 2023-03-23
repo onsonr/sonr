@@ -93,12 +93,6 @@ func (c *localIpfs) initialize() error {
 		return onceErr
 	}
 
-	// Delete the repo if it already exists
-	err = os.RemoveAll(c.repoPath)
-	if err != nil {
-		return err
-	}
-
 	// Create a config with default options and a 2048 bit key
 	cfg, err := config.Init(io.Discard, 2048)
 	if err != nil {

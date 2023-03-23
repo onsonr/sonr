@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/sonrhq/core/pkg/node"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -13,12 +14,12 @@ import (
 // ! ||--------------------------------------------------------------------------------||
 
 // InsertRecord inserts a record into the IPFS store for the given controller
-func InsertRecord(controller string, key string, value interface{}) error {
-	ds, err := node.OpenKeyValueStore(context.Background(), controller)
-	defer ds.Close()
+func InsertRecord(key string, value interface{}) error {
+	err := setupOrbit()
 	if err != nil {
 		return err
 	}
+
 	var vBiz []byte
 	switch value.(type) {
 	case string:
@@ -32,18 +33,15 @@ func InsertRecord(controller string, key string, value interface{}) error {
 	default:
 		return fmt.Errorf("value must be a string or []byte")
 	}
-	store := makeIpfsStore(ds, controller)
 	return store.Put(key, vBiz)
 }
 
 // GetRecord gets a record from the IPFS store for the given controller
-func GetRecord(controller string, key string) ([]byte, error) {
-	ds, err := node.OpenKeyValueStore(context.Background(), controller)
-	defer ds.Close()
+func GetRecord(key string) ([]byte, error) {
+	err := setupOrbit()
 	if err != nil {
 		return nil, err
 	}
-	store := makeIpfsStore(ds, controller)
 	vBiz, err := store.Get(key)
 	if err != nil {
 		return nil, err
@@ -52,24 +50,20 @@ func GetRecord(controller string, key string) ([]byte, error) {
 }
 
 // DeleteRecord deletes a record from the IPFS store for the given controller
-func DeleteRecord(controller string, key string) error {
-	ds, err := node.OpenKeyValueStore(context.Background(), controller)
-	defer ds.Close()
+func DeleteRecord(key string) error {
+	err := setupOrbit()
 	if err != nil {
 		return err
 	}
-	store := makeIpfsStore(ds, controller)
 	return store.Delete(key)
 }
 
 // ListRecords lists all records in the IPFS store for the given controller
-func ListRecords(controller string) (map[string][]byte, error) {
-	ds, err := node.OpenKeyValueStore(context.Background(), controller)
-	defer ds.Close()
+func ListRecords() (map[string][]byte, error) {
+	err := setupOrbit()
 	if err != nil {
 		return nil, err
 	}
-	store := makeIpfsStore(ds, controller)
 	m := make(map[string][]byte)
 	for k, v := range store.All() {
 		m[k] = v
@@ -133,4 +127,24 @@ func (s *ipfsStore) Put(key string, value []byte) error {
 func (s *ipfsStore) Delete(key string) error {
 	_, err := s.IPFSKVStore.Delete(context.Background(), key)
 	return err
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                         Helper Methods for Module Setup                        ||
+// ! ||--------------------------------------------------------------------------------||
+var (
+	store *ipfsStore
+)
+
+func setupOrbit() error {
+	if store != nil {
+		return nil
+	}
+	params := types.DefaultParams()
+	kv, err := node.OpenKeyValueStore(context.Background(), params.GetOrbitDbStoreName())
+	if err != nil {
+		return err
+	}
+	store = makeIpfsStore(kv, params.GetOrbitDbStoreName())
+	return nil
 }
