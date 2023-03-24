@@ -38,7 +38,7 @@ func RegisterHighway(ctx client.Context) {
 func (p *Protocol) serveHTTP(mux *http.ServeMux) {
 	if hasTLSCert() {
 		http.ListenAndServeTLS(
-			fmt.Sprintf("%s:%s", getServerHost(), getServerPort()),
+			fmt.Sprintf(":%s", getServerPort()),
 			getTLSCert(),
 			getTLSKey(),
 			mux,
