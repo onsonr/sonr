@@ -6,24 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ipld/go-ipld-prime/schema"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
-)
-
-var ControllerTypeSystem = schema.MustTypeSystem(
-	schema.SpawnStruct("keyShare",
-		[]schema.StructField{
-			schema.SpawnStructField("bytes", "Bytes", false, false),
-			schema.SpawnStructField("name", "String", false, false),
-			schema.SpawnStructField("lastUsed", "Int", false, false),
-		},
-		schema.SpawnStructRepresentationMap(nil),
-	),
-	schema.SpawnBytes("Bytes"),
-	schema.SpawnString("String"),
-	schema.SpawnInt("Int"),
 )
 
 // KeyShare is a type that interacts with a cmp.Config file located on disk.

@@ -1,4 +1,4 @@
-package network
+package mpc
 
 import (
 	"sync"
@@ -25,7 +25,7 @@ type offlineNetwork struct {
 
 // It creates a new `OfflineNetwork` object, and initializes it with a list of parties, and a map of
 // channels
-func NewOfflineNetwork(parties ...party.ID) crypto.Network {
+func makeOfflineNetwork(parties ...party.ID) crypto.Network {
 	closed := make(chan *protocol.Message)
 	close(closed)
 	c := &offlineNetwork{

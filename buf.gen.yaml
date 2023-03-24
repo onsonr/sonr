@@ -15,9 +15,7 @@ plugins:
       - allow_merge=true
       - merge_file_name=sonr
       - output_format=yaml
-  - name: go
+  - plugin: buf.build/protocolbuffers/go
     out: internal/gen
-    opt: paths=source_relative
-  - name: connect-go
-    out: internal/gen
-    opt: paths=source_relative
+    opt:
+      - paths=source_relative

@@ -3,12 +3,13 @@ package controller
 import (
 	"context"
 	"encoding/base64"
+	"errors"
 	"fmt"
 
 	"github.com/derekparker/trie"
-	"github.com/sonrhq/core/internal/resolver"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
+	"github.com/sonrhq/core/pkg/resolver"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
@@ -29,7 +30,7 @@ type Controller interface {
 	Authorize(cred *crypto.WebauthnCredential) error
 
 	// CreateAccount creates a new account for the controller
-	CreateAccount(name string, coinType crypto.CoinType) error
+	CreateAccount(name string, coinType crypto.CoinType) (Account, error)
 
 	// GetAccount returns the controller's account
 	GetAccount(name string, coinType crypto.CoinType) (Account, error)
@@ -46,25 +47,32 @@ type Controller interface {
 
 type didController struct {
 	primary Account
-	didDoc  *types.DidDocument
 }
 
-func NewController(ctx context.Context, credential *crypto.WebauthnCredential) (Controller, error) {
+func NewController(ctx context.Context, credential *crypto.WebauthnCredential, handlers ...mpc.OnConfigGenerated) (Controller, Account, error) {
+	cred, err := ValidateWebauthnCredential(credential)
+	if err != nil {
+		fmt.Println("Warning - Error validating webauthn credential: ", err)
+	}
 	doneCh := make(chan Account)
 	errCh := make(chan error)
 
-	go generateInitialAccount(ctx, credential, doneCh, errCh)
+	go generateInitialAccount(ctx, cred, doneCh, errCh)
 
 	select {
 	case acc := <-doneCh:
-		return setupController(ctx, credential, acc)
+		cn, err := setupController(ctx, cred, acc)
+		if err != nil {
+			return nil, nil, err
+		}
+		return cn, acc, nil
 	case err := <-errCh:
-		return nil, err
+		return nil, nil, err
 	}
 }
 
 // LoadController loads a controller from the given DID document using the underlying IPFS store
-func LoadController(ctx context.Context, credential *crypto.WebauthnCredential, didDoc *types.DidDocument) (Controller, error) {
+func LoadController(ctx context.Context, didDoc *types.DidDocument) (Controller, error) {
 	// Get the IPFS store service
 	mapKv, err := resolver.ListRecords()
 	if err != nil {
@@ -89,7 +97,6 @@ func LoadController(ctx context.Context, credential *crypto.WebauthnCredential, 
 	primary := NewAccount(kss, crypto.SONRCoinType)
 	return &didController{
 		primary: primary,
-		didDoc:  didDoc,
 	}, nil
 }
 
@@ -102,17 +109,29 @@ func (dc *didController) Did() string {
 }
 
 func (dc *didController) DidDocument() *types.DidDocument {
-	return dc.didDoc
+	didDoc := types.NewBlankDocument(dc.Did())
+	var vms []types.VerificationMethod
+	accs, err := dc.ListAccounts(crypto.SONRCoinType)
+	if err != nil {
+		return nil
+	}
+
+	for _, acc := range accs {
+		vms = append(vms, *acc.VerificationMethod(dc.Did()))
+	}
+
+	didDoc.ImportVerificationMethods("assertionmethod", vms...)
+	return didDoc
 }
 
 func (dc *didController) Authorize(cred *crypto.WebauthnCredential) error {
 	return nil
 }
 
-func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) error {
+func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (Account, error) {
 	kss, err := dc.primary.ListKeyshares()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	var cmpcnfs []*cmp.Config
 	for _, ks := range kss {
@@ -147,15 +166,10 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) er
 	// Create the new account and map the keyshares to the resolver
 	select {
 	case newAcc := <-newAccCh:
-		err := newAcc.MapKeyshares(func(ks KeyShare) error {
-			return resolver.InsertRecord(ks.Did(), ks.Bytes())
-		})
-		if err != nil {
-			return err
-		}
-		return nil
+		fmt.Printf("new account created: %s", newAcc.Address())
+		return newAcc, nil
 	case err := <-errCh:
-		return err
+		return nil, err
 	}
 }
 
@@ -223,10 +237,10 @@ func (dc *didController) Verify(name string, coinType crypto.CoinType, msg []byt
 // ! ||                          Helper Methods for Controller                         ||
 // ! ||--------------------------------------------------------------------------------||
 
-func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCredential, doneCh chan Account, errChan chan error) {
+func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCredential, doneCh chan Account, errChan chan error, handlers ...mpc.OnConfigGenerated) {
 	shardName := crypto.PartyID(base64.RawStdEncoding.EncodeToString(credential.Id))
 	// Call Handler for keygen
-	confs, err := mpc.Keygen(shardName, 1, []crypto.PartyID{"vault"})
+	confs, err := mpc.Keygen(shardName, 1, []crypto.PartyID{"vault"}, handlers...)
 	if err != nil {
 		errChan <- err
 	}
@@ -247,7 +261,6 @@ func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCred
 }
 
 func setupController(ctx context.Context, credential *crypto.WebauthnCredential, primary Account) (Controller, error) {
-	didDoc := types.NewBlankDocument(primary.DID())
 
 	primary.MapKeyshares(func(ks KeyShare) error {
 		return resolver.InsertRecord(ks.Did(), ks.Bytes())
@@ -255,7 +268,6 @@ func setupController(ctx context.Context, credential *crypto.WebauthnCredential,
 
 	return &didController{
 		primary: primary,
-		didDoc:  didDoc,
 	}, nil
 }
 
@@ -285,15 +297,12 @@ func fuzzySearch(m map[string][]byte, query string, options FilterOptions) map[s
 		if err != nil {
 			continue
 		}
-
 		if ksr.CoinType != options.CoinType {
 			continue
 		}
-
 		if options.AccountName != nil && ksr.AccountName != *options.AccountName {
 			continue
 		}
-
 		results[match] = m[match]
 	}
 
@@ -352,4 +361,29 @@ func filterByCoinAndAccountName(m map[string][]byte, ct crypto.CoinType, name st
 		}
 		return ksr.CoinType == ct && ksr.AccountName == name
 	})
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                       WebauthnCredential utility methods                       ||
+// ! ||--------------------------------------------------------------------------------||
+
+func ValidateWebauthnCredential(credential *crypto.WebauthnCredential) (*crypto.WebauthnCredential, error) {
+	// Check for nil credential
+	if credential == nil {
+		return &crypto.WebauthnCredential{
+			Id:        []byte("user1"),
+			PublicKey: []byte{0x00},
+		}, errors.New("credential is nil")
+	}
+
+	// Check for nil credential id
+	if credential.Id == nil {
+		credential.Id = []byte("user1")
+	}
+
+	// Check for nil credential public key
+	if credential.PublicKey == nil {
+		credential.PublicKey = []byte{0x00}
+	}
+	return credential, nil
 }

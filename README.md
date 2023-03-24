@@ -37,11 +37,12 @@ The `install.sh` script will install the following tools:
 You need to set the following environment variables to run the blockchain:
 
 ```sh
-CONNECT_SERVER_HOST=localhost
-CONNECT_SERVER_PORT=8083
+CONNECT_SERVER_HOST="localhost"
+CONNECT_SERVER_PORT="8080"
 TLS_CERT_FILE=""
 TLS_KEY_FILE=""
-ENVIRONMENT=dev
+ENVIRONMENT="dev"
+HIGHWAY_MODE="fiber"
 ```
 
 ## Documentation

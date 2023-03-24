@@ -69,10 +69,10 @@ func (s *Service) CredentialEntity() protocol.CredentialEntity {
 	}
 }
 
-func (s *Service) GetUserEntity(id, displayName string) protocol.UserEntity {
+func (s *Service) GetUserEntity(id string) protocol.UserEntity {
 	return protocol.UserEntity{
 		ID:               []byte(id),
-		DisplayName:      displayName,
+		DisplayName:      id,
 		CredentialEntity: s.CredentialEntity(),
 	}
 }
@@ -96,16 +96,6 @@ func (s *Service) RelyingPartyEntity() protocol.RelyingPartyEntity {
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
 func (vm *Service) VerifyCreationChallenge(resp string) (*types.WebauthnCredential, error) {
 	pcc, err := parseCreationData(resp)
-	if err != nil {
-		return nil, err
-	}
-
-	chal, err := vm.IssueChallenge()
-	if err != nil {
-		return nil, err
-	}
-
-	err = pcc.Verify(chal.String(), false, vm.Id, []string{vm.Origin})
 	if err != nil {
 		return nil, err
 	}

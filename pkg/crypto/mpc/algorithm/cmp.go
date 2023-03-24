@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/utils"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -22,7 +21,7 @@ func CmpKeygen(id party.ID, ids party.IDSlice, n crypto.Network, threshold int, 
 		return nil, err
 	}
 
-	utils.HandleNetworkProtocol(id, h, n)
+	HandleNetworkProtocol(id, h, n)
 	r, err := h.Result()
 	if err != nil {
 		return nil, err
@@ -39,7 +38,7 @@ func CmpRefresh(c *cmp.Config, n crypto.Network, wg *sync.WaitGroup, pl *pool.Po
 		return nil, err
 	}
 
-	utils.HandleNetworkProtocol(c.ID, h, n)
+	HandleNetworkProtocol(c.ID, h, n)
 	r, err := h.Result()
 	if err != nil {
 		return nil, err
@@ -55,7 +54,7 @@ func CmpSign(c *cmp.Config, m []byte, signers party.IDSlice, n crypto.Network, w
 	if err != nil {
 		return nil, err
 	}
-	utils.HandleNetworkProtocol(c.ID, h, n)
+	HandleNetworkProtocol(c.ID, h, n)
 
 	r, err := h.Result()
 	if err != nil {

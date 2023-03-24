@@ -4,9 +4,7 @@ import (
 	"sync"
 
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/algorithm"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/network"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/utils"
+	"github.com/sonrhq/core/pkg/crypto/mpc/algorithm"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/pool"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -57,9 +55,9 @@ func WithPeers(peers ...string) KeygenOption {
 }
 
 // Keygen Generates a new ECDSA private key shared among all the given participants.
-func Keygen(current crypto.PartyID, threshold int, peers []crypto.PartyID) ([]*cmp.Config, error) {
-	group := utils.EnsureSelfIDInGroup(current, peers)
-	net := network.NewOfflineNetwork(group...)
+func Keygen(current crypto.PartyID, threshold int, peers []crypto.PartyID, handlers ...OnConfigGenerated) ([]*cmp.Config, error) {
+	group := algorithm.EnsureSelfIDInGroup(current, peers)
+	net := makeOfflineNetwork(group...)
 	var mtx sync.Mutex
 	var wg sync.WaitGroup
 	confs := make([]*cmp.Config, 0)
@@ -73,12 +71,25 @@ func Keygen(current crypto.PartyID, threshold int, peers []crypto.PartyID) ([]*c
 				return
 			}
 			mtx.Lock()
+			go manageHandlers(handlers, conf)
 			confs = append(confs, conf)
 			mtx.Unlock()
 		}(id)
 	}
 	wg.Wait()
 	return confs, nil
+}
+
+func manageHandlers(handlers []OnConfigGenerated, conf *cmp.Config) error {
+	for _, h := range handlers {
+		if h == nil {
+			continue
+		}
+		if err := h(conf); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 // KeygenOpts is the configuration of an account.

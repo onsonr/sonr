@@ -1,4 +1,4 @@
-package utils
+package algorithm
 
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -30,6 +30,9 @@ func HandleNetworkProtocol(id party.ID, h protocol.Handler, network crypto.Netwo
 
 // EnsureSelfIDInGroup ensures that the given self ID is in the given group.
 func EnsureSelfIDInGroup(selfID party.ID, group []party.ID) []party.ID {
+	if len(selfID) == 0 {
+		selfID = party.ID(peer.ID("user1"))
+	}
 	for _, id := range group {
 		if id == selfID {
 			return group

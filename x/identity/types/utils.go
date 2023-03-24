@@ -287,12 +287,12 @@ func parseCreationData(bz string) (*protocol.ParsedCredentialCreationData, error
 	}
 
 	// Parse the attestation object
-	parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
-	if err != nil {
-		return nil, err
-	}
+	// parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
+	// if err != nil {
+	// 	return nil, err
+	// }
 
-	pcc.Response = *parsedAttestationResponse
+	//pcc.Response = *parsedAttestationResponse
 	return &pcc, nil
 }
 

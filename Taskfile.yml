@@ -50,6 +50,20 @@ tasks:
     deps:
       - generate
 
+  serve:log:
+    desc: Serve the blockchain locally with verbose logging
+    aliases:
+      - "srv"
+    summary: |
+      Serve Blockchain Locally
+
+      This task will serve the blockchain locally. It will also reset the blockchain
+    cmds:
+      - ignite chain serve --reset-once --clear-cache --skip-proto --home {{.HOME}}/.sonr -v
+    interactive: true
+    deps:
+      - generate
+
   generate:
     aliases:
       - "gen"

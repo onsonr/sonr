@@ -16,27 +16,31 @@ import (
 type APIEndpoint string
 
 const (
+	SonrGrpcPort = ":9090"
+	SonrRpcPort  = ":26657"
+	SonrRpcPrefix = "tcp://"
 	// List of known origin api endpoints.
-	SonrLocalRpcOrigin  APIEndpoint = "localhost:9090"
-	SonrPublicRpcOrigin APIEndpoint = "142.93.116.204:9090"
+	SonrLocalRpcOrigin = "localhost"
+	SonrPublicRpcOrigin = "142.93.116.204:9090"
 )
 
-func (e APIEndpoint) TcpAddress() string {
-	//return //fmt.Sprintf("tcp://%s", string(e))
-	return string(e)
+func currGrpcEndpoint() string {
+	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
+		return  SonrLocalRpcOrigin + SonrGrpcPort
+	}
+	return SonrPublicRpcOrigin + SonrGrpcPort
 }
 
-func currEndpoint() APIEndpoint {
+func currRpcEndpoint() string {
 	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
-		return SonrLocalRpcOrigin
+		return SonrRpcPrefix + SonrLocalRpcOrigin + SonrRpcPort
 	}
-	return SonrPublicRpcOrigin
+	return SonrRpcPrefix + SonrPublicRpcOrigin + SonrRpcPort
 }
 
 // GetDID returns the DID document with the given id
 func GetDID(ctx context.Context, id string) (*identitytypes.ResolvedDidDocument, error) {
-	endpoint := currEndpoint()
-	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
+	conn, err := grpc.Dial(currGrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
 	}
@@ -49,8 +53,7 @@ func GetDID(ctx context.Context, id string) (*identitytypes.ResolvedDidDocument,
 
 // GetAllDIDs returns all DID documents
 func GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocument, error) {
-	endpoint := currEndpoint()
-	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
+	conn, err := grpc.Dial(currGrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
 	}
@@ -67,8 +70,7 @@ func GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocument, error) {
 
 // GetService returns the service with the given id
 func GetService(ctx context.Context, origin string) (*identitytypes.Service, error) {
-	endpoint := currEndpoint()
-	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
+	conn, err := grpc.Dial(currGrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
 	}
@@ -81,8 +83,7 @@ func GetService(ctx context.Context, origin string) (*identitytypes.Service, err
 
 // GetAllServices returns all services
 func GetAllServices(ctx context.Context) ([]*identitytypes.Service, error) {
-	endpoint := currEndpoint()
-	conn, err := grpc.Dial(endpoint.TcpAddress(), grpc.WithInsecure())
+	conn, err := grpc.Dial(currGrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
 	}
@@ -99,8 +100,8 @@ func GetAllServices(ctx context.Context) ([]*identitytypes.Service, error) {
 
 // BroadcastTx broadcasts a transaction to the sonr chain
 func BroadcastTx(ctx context.Context, tx []byte) (*ctypes.ResultBroadcastTx, error) {
-	endpoint := currEndpoint()
-	client, err := client.NewClientFromNode(endpoint.TcpAddress())
+	// endpoint := currEndpoint()
+	client, err := client.NewClientFromNode(currRpcEndpoint())
 	if err != nil {
 		return nil, err
 	}

@@ -45,9 +45,6 @@ func ParseKeyShareDid(name string) (*KeyShareParseResult, error) {
 	// Parse the keyshare name
 	accountName := parts[0]
 	keyShareName := parts[1]
-
-
-
 	return &KeyShareParseResult{
 		CoinType:     ct,
 		AccountAddress:  accountAddress,

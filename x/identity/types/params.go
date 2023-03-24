@@ -53,7 +53,7 @@ func (p Params) GetOrbitDbStoreName() string {
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, deviceLabel string) (protocol.CredentialCreation, error) {
+func (p Params) NewWebauthnCreationOptions(s *Service, uuid string) (protocol.CredentialCreation, error) {
 	// Issue the challenge.
 	chal, err := s.IssueChallenge()
 	if err != nil {
@@ -66,7 +66,7 @@ func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, deviceLabel 
 		Challenge: chal,
 
 		// Service resulting properties.
-		User: s.GetUserEntity(uuid, deviceLabel),
+		User: s.GetUserEntity(uuid),
 
 		// Preconfigured parameters.
 		Parameters: []protocol.CredentialParameter{
@@ -74,6 +74,12 @@ func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, deviceLabel 
 				Type:      protocol.PublicKeyCredentialType,
 				Algorithm: webauthncose.AlgES256,
 			},
+		},
+		RelyingParty: protocol.RelyingPartyEntity{
+			CredentialEntity: protocol.CredentialEntity{
+				Name: s.Name,
+			},
+			ID:   s.Origin,
 		},
 		Timeout: int(p.WebauthnTimeout),
 		AuthenticatorSelection: protocol.AuthenticatorSelection{

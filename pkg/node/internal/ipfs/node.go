@@ -238,7 +238,7 @@ func (r *localIpfs) LoadDocsStore(username string) (iface.DocumentStore, error) 
 
 // GetEventLogStore creates or loads an event log database from given name
 func (r *localIpfs) LoadEventLogStore(username string) (iface.EventLogStore, error) {
-	addr, err := fetchEventLogAddress(r.orbitDb, username)
+	addr, err := fetchEventLogAddress( r.orbitDb, username)
 	if err != nil {
 		return nil, err
 	}
@@ -255,5 +255,5 @@ func (r *localIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, err
 }
 // GetKeyValueStore creates or loads a key value database from given name
 func (r *localIpfs) GetKeyValueStoreFromAddress(addr string) (iface.KeyValueStore, error) {
-	return r.orbitDb.KeyValue(r.ctx, addr, nil)
+	return r.orbitDb.KeyValue(context.Background(), addr, nil)
 }

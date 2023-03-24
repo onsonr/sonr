@@ -685,6 +685,9 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
+      transactionHash:
+        type: string
+        description: Transaction hash for the account creation.
     description: KeygenResponse is the response to a Keygen request.
   v1ListAccountsResponse:
     type: object
@@ -744,6 +747,9 @@ definitions:
       rpName:
         type: string
         description: Relaying party name for the request.
+      credentialOptions:
+        type: string
+        description: Credential Options for the request.
     description: RegisterFinishResponse is the response to a CreateAccount request.
   v1RefreshShareResponse:
     type: object

@@ -42,6 +42,9 @@ message KeygenResponse {
 
   // The DID Document for the wallet.
   core.identity.DidDocument did_document = 5;
+
+  // Transaction hash for the account creation.
+  string transaction_hash = 6;
 }
 
 // LoginFinishRequest is the request to login to an account.
@@ -90,6 +93,9 @@ message QueryServiceResponse {
 
   // Relaying party name for the request.
   string rp_name = 3;
+
+  // Credential Options for the request.
+  string credential_options = 4;
 }
 
 // LoginStartRequest is the request to login to an account.

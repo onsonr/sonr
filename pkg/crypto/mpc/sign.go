@@ -4,8 +4,7 @@ import (
 	"sync"
 
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/algorithm"
-	"github.com/sonrhq/core/pkg/crypto/mpc/internal/network"
+	"github.com/sonrhq/core/pkg/crypto/mpc/algorithm"
 
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
@@ -34,7 +33,7 @@ func SignCMP(configs []*cmp.Config, m []byte) ([]byte, error) {
     for i, c := range configs {
         peers[i] = c.ID
     }
-    net := network.NewOfflineNetwork(peers...)
+    net := makeOfflineNetwork(peers...)
     doneChan := make(chan *crypto.MPCECDSASignature, 1)
     var wg sync.WaitGroup
     for _, c := range configs {
