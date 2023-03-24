@@ -41,7 +41,7 @@ func (p *Protocol) serveHTTP(mux *http.ServeMux) {
 			fmt.Sprintf("%s:%s", getServerHost(), getServerPort()),
 			getTLSCert(),
 			getTLSKey(),
-			h2c.NewHandler(mux, &http2.Server{}),
+			mux,
 		)
 	} else {
 		http.ListenAndServe(
