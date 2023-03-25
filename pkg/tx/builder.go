@@ -5,7 +5,7 @@ import (
 	"math/big"
 
 	"cosmossdk.io/math"
-	"github.com/sonrhq/core/pkg/controller"
+	"github.com/sonrhq/core/internal/controller"
 	"github.com/sonrhq/core/pkg/tx/cosmos"
 	"github.com/sonrhq/core/pkg/tx/eth"
 	"github.com/sonrhq/core/pkg/crypto"
