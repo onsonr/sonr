@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sonrhq/core/pkg/controller"
+	"github.com/sonrhq/core/internal/controller"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/pkg/resolver"

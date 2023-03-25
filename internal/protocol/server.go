@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/sonrhq/core/pkg/controller"
+	"github.com/sonrhq/core/internal/controller"
 	"github.com/sonrhq/core/pkg/resolver"
 	v1 "github.com/sonrhq/core/types/highway/v1"
 	"github.com/sonrhq/core/x/identity/types"
