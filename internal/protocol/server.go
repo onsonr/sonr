@@ -95,6 +95,10 @@ func QueryDocument(c *fiber.Ctx) error {
 
 func QueryService(c *fiber.Ctx) error {
 	origin := c.Params("origin", "localhost")
+	if len(origin) == 0 {
+		origin = "localhost"
+	}
+
 	// Get the origin from the request.
 	service, err := resolver.GetService(context.Background(), origin)
 	if err != nil {
