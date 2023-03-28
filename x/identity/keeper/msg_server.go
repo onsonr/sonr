@@ -28,7 +28,7 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreateDidDocument) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	// Check if the value already exists
-	_, isFound := k.GetDidDocument(
+	_, isFound := k.GetPrimaryIdentity(
 		ctx,
 		msg.Document.Id,
 	)
@@ -36,7 +36,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 		return nil, types.ErrDidCollision
 	}
 
-	k.SetDidDocument(
+	k.SetPrimaryIdentity(
 		ctx,
 		*msg.Document,
 	)
@@ -50,7 +50,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetDidDocument(
+	valFound, isFound := k.GetPrimaryIdentity(
 		ctx,
 		msg.Document.Id,
 	)
@@ -63,7 +63,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, types.ErrUnauthorized
 	}
 
-	k.SetDidDocument(ctx, *msg.Document)
+	k.SetPrimaryIdentity(ctx, *msg.Document)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "update-did-document"), sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator)),
 	)
@@ -74,7 +74,7 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value exists
-	valFound, isFound := k.GetDidDocument(
+	valFound, isFound := k.GetPrimaryIdentity(
 		ctx,
 		msg.Did,
 	)
@@ -87,7 +87,7 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 		return nil, types.ErrUnauthorized
 	}
 
-	k.RemoveDidDocument(
+	k.RemovePrimaryIdentity(
 		ctx,
 		msg.Did,
 	)
@@ -110,7 +110,7 @@ func (k msgServer) RegisterService(goCtx context.Context, msg *types.MsgRegister
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// Check if the value already exists
-	_, isFound := k.GetDidDocument(
+	_, isFound := k.GetService(
 		ctx,
 		msg.Creator,
 	)

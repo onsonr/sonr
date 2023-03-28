@@ -10,7 +10,7 @@ require (
 	github.com/cosmos/ibc-go/v5 v5.2.0
 	github.com/ethereum/go-ethereum v1.10.17
 	github.com/fxamacker/cbor/v2 v2.4.0
-	github.com/go-webauthn/webauthn v0.6.0
+	github.com/go-webauthn/webauthn v0.8.2
 	github.com/gogo/protobuf v1.3.3
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/golang/protobuf v1.5.3
@@ -42,7 +42,7 @@ require (
 	github.com/tendermint/tendermint v0.34.24
 	github.com/tendermint/tm-db v0.6.7
 	github.com/ucan-wg/go-ucan v0.0.0-20220326223643-c90281f7a4ac
-	golang.org/x/crypto v0.5.0
+	golang.org/x/crypto v0.6.0
 	google.golang.org/genproto v0.0.0-20230223222841-637eb2293923
 	google.golang.org/grpc v1.53.0
 	lukechampine.com/blake3 v1.1.7
@@ -51,10 +51,10 @@ require (
 require (
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/derekparker/trie v0.0.0-20221221181808-1424fce0c981
+	github.com/getsentry/sentry-go v0.19.0
 	github.com/goccy/go-json v0.9.11
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gofiber/helmet/v2 v2.2.24
-	golang.org/x/net v0.7.0
 )
 
 require (
@@ -146,12 +146,12 @@ require (
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
-	github.com/go-webauthn/revoke v0.1.6 // indirect
+	github.com/go-webauthn/revoke v0.1.9 // indirect
 	github.com/goccy/go-yaml v1.9.4 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/godbus/dbus/v5 v5.1.0 // indirect
 	github.com/gogo/gateway v1.1.0 // indirect
-	github.com/golang-jwt/jwt/v4 v4.4.3 // indirect
+	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/glog v1.0.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -387,6 +387,7 @@ require (
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
 	golang.org/x/exp v0.0.0-20230129154200-a960b3787bd2 // indirect
 	golang.org/x/mod v0.7.0 // indirect
+	golang.org/x/net v0.7.0 // indirect
 	golang.org/x/oauth2 v0.5.0 // indirect
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/sys v0.5.0 // indirect

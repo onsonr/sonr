@@ -46,9 +46,6 @@ func NewEmptyECDSASecp256k1Signature() MPCECDSASignature {
 // This is then used to create a VerificationMethod for the DID Document.
 func NewWebAuthnCredential(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
 	transportsStr := []string{}
-	for _, t := range c.Transports {
-		transportsStr = append(transportsStr, string(t))
-	}
 	return &types.WebauthnCredential{
 		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,

@@ -10,7 +10,8 @@ const DefaultIndex uint64 = 1
 // DefaultGenesis returns the default genesis state
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
-		DidDocumentList: []DidDocument{},
+		PrimaryIdentities: []DidDocument{},
+		BlockchainIdentities: []DidDocument{},
 		ServiceList: []Service{
 			{
 				Id:         "sonr.io",
@@ -50,6 +51,7 @@ func DefaultGenesis() *GenesisState {
 // Validate performs basic genesis state validation returning an error upon any
 // failure.
 func (gs GenesisState) Validate() error {
+	// Check for duplicated index in relationships
 	relationshipMap := make(map[string]struct{})
 	for _, elem := range gs.Relationships {
 		index := string(RelationshipKey(elem.Reference))
@@ -58,19 +60,19 @@ func (gs GenesisState) Validate() error {
 		}
 		relationshipMap[elem.Reference] = struct{}{}
 	}
-	// Check for duplicated index in didDocument
-	didDocumentIndexMap := make(map[string]struct{})
 
-	for _, elem := range gs.DidDocumentList {
+	// Check for duplicated index in primary identities
+	didDocumentIndexMap := make(map[string]struct{})
+	for _, elem := range gs.PrimaryIdentities {
 		index := string(DidDocumentKey(elem.Id))
 		if _, ok := didDocumentIndexMap[index]; ok {
 			return fmt.Errorf("duplicated index for did")
 		}
 		didDocumentIndexMap[index] = struct{}{}
 	}
-	// Check for duplicated index in DomainRecord
-	ServiceIndexMap := make(map[string]struct{})
 
+	// Check for duplicated index in services
+	ServiceIndexMap := make(map[string]struct{})
 	for _, elem := range gs.ServiceList {
 		index := string(ServiceKey(elem.Origin))
 		if _, ok := ServiceIndexMap[index]; ok {

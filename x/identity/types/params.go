@@ -22,7 +22,7 @@ func NewParams() Params {
 		DidBaseContext:                  "https://www.w3.org/ns/did/v1",
 		DidMethodContext:                "https://docs.sonr.io/identity/1.0",
 		DidMethodName:                   "sonr",
-		DidMethodVersion:                "0.6.0",
+		DidMethodVersion:                "0.6.3",
 		DidNetwork:                      "devnet",
 		IpfsGateway:                     "https://sonr.space/ipfs",
 		IpfsApi:                         "https://api.sonr.space",
@@ -47,23 +47,14 @@ func (p Params) Validate() error {
 	return nil
 }
 
-// Returns the Global Orbit DB store name
-func (p Params) GetOrbitDbStoreName() string {
-	return p.DidMethodName + "-" + p.DidMethodVersion + "/mpc"
-}
-
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *Service, uuid string) (protocol.CredentialCreation, error) {
-	// Issue the challenge.
-	chal, err := s.IssueChallenge()
-	if err != nil {
-		return protocol.CredentialCreation{}, fmt.Errorf("failed to issue challenge: %w", err)
-	}
+func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, challenge protocol.URLEncodedBase64) (protocol.CredentialCreation, error) {
+
 
 	// Build the credential creation options.
 	opts := protocol.PublicKeyCredentialCreationOptions{
 		// Generated Challenge.
-		Challenge: chal,
+		Challenge: challenge,
 
 		// Service resulting properties.
 		User: s.GetUserEntity(uuid),

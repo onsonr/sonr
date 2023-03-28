@@ -25,8 +25,6 @@ func (st StoreType) String() string {
 
 // Config is the configuration for the node
 type Config struct {
-	Context *Context
-
 	// Callback is the callback for the motor
 	Callback NodeCallback
 
@@ -38,11 +36,10 @@ type Config struct {
 }
 
 // DefaultConfig returns the default configuration
-func DefaultConfig(ctx *Context) *Config {
+func DefaultConfig() *Config {
 	return &Config{
 		SelfPartyID: party.ID("current"),
 		Callback:    DefaultCallback(),
-		Context:     ctx,
 	}
 }
 

@@ -18,6 +18,7 @@ import (
 	"github.com/ipfs/kubo/core/node/libp2p"
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
+	"github.com/sonrhq/core/internal/local"
 	nodeconfig "github.com/sonrhq/core/pkg/node/config"
 )
 
@@ -26,7 +27,7 @@ func Initialize(c *nodeconfig.Config) (nodeconfig.IPFSNode, error) {
 	ipfsDoneCh := make(chan nodeconfig.IPFSNode)
 	ipfsErrCh := make(chan error)
 	n := defaultNode(c)
-
+	snrctx := local.NewContext()
 	go func() {
 		// Apply the options
 		err := n.initialize()
@@ -35,7 +36,7 @@ func Initialize(c *nodeconfig.Config) (nodeconfig.IPFSNode, error) {
 			return
 		}
 		// Connect to the bootstrap nodes
-		err = n.Connect(n.config.Context.BsMultiaddrs...)
+		err = n.Connect(snrctx.BsMultiaddrs...)
 		if err != nil {
 			ipfsErrCh <- err
 			return
@@ -50,8 +51,6 @@ func Initialize(c *nodeconfig.Config) (nodeconfig.IPFSNode, error) {
 	}()
 
 	select {
-	case <-c.Context.Ctx.Done():
-		return nil, c.Context.Ctx.Err()
 	case err := <-ipfsErrCh:
 		return nil, err
 	case <-ipfsDoneCh:
@@ -72,18 +71,16 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 // defaultNode creates a new node with default options
 func defaultNode(cnfg *nodeconfig.Config) *localIpfs {
 	return &localIpfs{
-		ctx:    cnfg.Context.Ctx,
+		ctx:   context.Background(),
 		config: cnfg,
 	}
 }
 
 // It's creating a new node and returning the coreAPI and the node itself.
 func (c *localIpfs) initialize() error {
-	userHomeDir, err := os.UserHomeDir()
-	if err != nil {
-		return err
-	}
-	c.repoPath = filepath.Join(userHomeDir, ".sonr", "adapters", "ipfs")
+	snrctx := local.NewContext()
+	c.repoPath = snrctx.IPFSRepoPath
+
 	// Spawn a local peer using a temporary path, for testing purposes
 	var onceErr error
 	loadPluginsOnce.Do(func() {
@@ -127,7 +124,7 @@ func (c *localIpfs) initialize() error {
 }
 
 // It loads plugins from the `externalPluginsPath` directory and injects them into the application
-func setupPlugins(externalPluginsPath string) error {
+func setupPlugins( externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
 	plugins, err := loader.NewPluginLoader(filepath.Join(externalPluginsPath, "plugins"))
 	if err != nil {

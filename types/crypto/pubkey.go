@@ -48,6 +48,7 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 	return pk
 }
 
+
 //
 // CryptoTypes Implementation of PubKey interface
 //

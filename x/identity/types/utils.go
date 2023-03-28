@@ -10,6 +10,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/go-webauthn/webauthn/webauthn"
 	types "github.com/sonrhq/core/types/crypto"
 	"lukechampine.com/blake3"
 )
@@ -270,30 +271,56 @@ func blake3HashHex(input string) string {
 // It takes a JSON string, converts it to a struct, and then converts that struct to a different struct
 func parseCreationData(bz string) (*protocol.ParsedCredentialCreationData, error) {
 	// Get Credential Creation Respons
-	ccr := protocol.CredentialCreationResponse{}
+	var ccr protocol.CredentialCreationResponse
 	err := json.Unmarshal([]byte(bz), &ccr)
 	if err != nil {
 		return nil, err
 	}
-
-	// Parse the response
-	var pcc protocol.ParsedCredentialCreationData
-	pcc.ID, pcc.RawID, pcc.Type, pcc.ClientExtensionResults = ccr.ID, ccr.RawID, ccr.Type, ccr.ClientExtensionResults
-	pcc.Raw = ccr
-
-	// Parse the attestation object
-	for _, t := range ccr.Transports {
-		pcc.Transports = append(pcc.Transports, protocol.AuthenticatorTransport(t))
+	if ccr.ID == "" {
+		return nil, protocol.ErrBadRequest.WithDetails("Parse error for Registration").WithInfo("Missing ID")
 	}
 
-	// Parse the attestation object
-	// parsedAttestationResponse, err := ccr.AttestationResponse.Parse()
-	// if err != nil {
-	// 	return nil, err
-	// }
+	testB64, err := base64.RawURLEncoding.DecodeString(ccr.ID)
+	if err != nil || !(len(testB64) > 0) {
+		return nil, protocol.ErrBadRequest.WithDetails("Parse error for Registration").WithInfo("ID not base64.RawURLEncoded")
+	}
 
-	//pcc.Response = *parsedAttestationResponse
-	return &pcc, nil
+	if ccr.PublicKeyCredential.Credential.Type == "" {
+		return nil, protocol.ErrBadRequest.WithDetails("Parse error for Registration").WithInfo("Missing type")
+	}
+
+	if ccr.PublicKeyCredential.Credential.Type != "public-key" {
+		return nil, protocol.ErrBadRequest.WithDetails("Parse error for Registration").WithInfo("Type not public-key")
+	}
+
+	response, err := ccr.AttestationResponse.Parse()
+	if err != nil {
+		return nil, protocol.ErrParsingData.WithDetails("Error parsing attestation response")
+	}
+
+	// TODO: Remove this as it's a backwards compatibility layer.
+	if len(response.Transports) == 0 && len(ccr.Transports) != 0 {
+		for _, t := range ccr.Transports {
+			response.Transports = append(response.Transports, protocol.AuthenticatorTransport(t))
+		}
+	}
+
+	var attachment protocol.AuthenticatorAttachment
+
+	switch ccr.AuthenticatorAttachment {
+	case "platform":
+		attachment = protocol.Platform
+	case "cross-platform":
+		attachment = protocol.CrossPlatform
+	}
+
+	return &protocol.ParsedCredentialCreationData{
+		ParsedPublicKeyCredential: protocol.ParsedPublicKeyCredential{
+			ParsedCredential: protocol.ParsedCredential{ID: ccr.ID, Type: ccr.Type}, RawID: ccr.RawID, ClientExtensionResults: ccr.ClientExtensionResults, AuthenticatorAttachment: attachment,
+		},
+		Response: *response,
+		Raw:      ccr,
+	}, nil
 }
 
 // parseAssertionData takes a JSON string, converts it to a struct, and then converts that struct to a different struct
@@ -343,19 +370,28 @@ func parseAssertionData(bz string) (*protocol.ParsedCredentialAssertionData, err
 // makeCredentialFromCreationData creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
 func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
-	transportsStr := []string{}
-	for _, t := range c.Transports {
-		transportsStr = append(transportsStr, string(t))
-	}
-	return &types.WebauthnCredential{
-		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
+	newCredential := &webauthn.Credential{
+		ID:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
 		AttestationType: c.Response.AttestationObject.Format,
-		Transport:       transportsStr,
-		Authenticator: &types.WebauthnAuthenticator{
-			Aaguid:    c.Response.AttestationObject.AuthData.AttData.AAGUID,
-			SignCount: c.Response.AttestationObject.AuthData.Counter,
+		Transport:       c.Response.Transports,
+		Flags: webauthn.CredentialFlags{
+			UserPresent:    c.Response.AttestationObject.AuthData.Flags.HasUserPresent(),
+			UserVerified:   c.Response.AttestationObject.AuthData.Flags.HasUserVerified(),
+			BackupEligible: c.Response.AttestationObject.AuthData.Flags.HasBackupEligible(),
+			BackupState:    c.Response.AttestationObject.AuthData.Flags.HasBackupState(),
 		},
+		Authenticator: webauthn.Authenticator{
+			AAGUID:     c.Response.AttestationObject.AuthData.AttData.AAGUID,
+			SignCount:  c.Response.AttestationObject.AuthData.Counter,
+			Attachment: c.AuthenticatorAttachment,
+		},
+	}
+
+	return &types.WebauthnCredential{
+		Id:              newCredential.ID,
+		PublicKey:       newCredential.PublicKey,
+		AttestationType: newCredential.AttestationType,
 	}
 }
 

@@ -60,8 +60,8 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 // ! ||--------------------------------------------------------------------------------||
 
 // SetDidDocument set a specific didDocument in the store from its index
-func (k Keeper) SetDidDocument(ctx sdk.Context, didDocument types.DidDocument) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+func (k Keeper) SetPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	b := k.cdc.MustMarshal(&didDocument)
 	store.Set(types.DidDocumentKey(
 		didDocument.Id,
@@ -69,12 +69,12 @@ func (k Keeper) SetDidDocument(ctx sdk.Context, didDocument types.DidDocument) {
 }
 
 // GetDidDocument returns a didDocument from its index
-func (k Keeper) GetDidDocument(
+func (k Keeper) GetPrimaryIdentity(
 	ctx sdk.Context,
 	did string,
 
 ) (val types.DidDocument, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 
 	b := store.Get(types.DidDocumentKey(
 		did,
@@ -88,20 +88,20 @@ func (k Keeper) GetDidDocument(
 }
 
 // RemoveDidDocument removes a didDocument from the store
-func (k Keeper) RemoveDidDocument(
+func (k Keeper) RemovePrimaryIdentity(
 	ctx sdk.Context,
 	did string,
 
 ) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	store.Delete(types.DidDocumentKey(
 		did,
 	))
 }
 
 // GetAllDidDocument returns all didDocument
-func (k Keeper) GetAllDidDocument(ctx sdk.Context) (list []types.DidDocument) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+func (k Keeper) GetAllPrimaryIdentities(ctx sdk.Context) (list []types.DidDocument) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
@@ -115,35 +115,68 @@ func (k Keeper) GetAllDidDocument(ctx sdk.Context) (list []types.DidDocument) {
 	return
 }
 
-func (k Keeper) GetDidDocumentByAKA(ctx sdk.Context, aka string) (types.DidDocument, bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.DidDocumentKeyPrefix))
+// SetDidDocument set a specific didDocument in the store from its index
+func (k Keeper) SetBlockchainIdentity(ctx sdk.Context, didDocument types.DidDocument) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BlockchainIdentityPrefix))
+	b := k.cdc.MustMarshal(&didDocument)
+	store.Set(types.DidDocumentKey(
+		didDocument.Id,
+	), b)
+}
+
+// GetDidDocument returns a didDocument from its index
+func (k Keeper) GetBlockchainIdentity(
+	ctx sdk.Context,
+	did string,
+
+) (val types.DidDocument, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BlockchainIdentityPrefix))
+
+	b := store.Get(types.DidDocumentKey(
+		did,
+	))
+	if b == nil {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// RemoveDidDocument removes a didDocument from the store
+func (k Keeper) RemoveBlockchainIdentity(
+	ctx sdk.Context,
+	did string,
+
+) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BlockchainIdentityPrefix))
+	store.Delete(types.DidDocumentKey(
+		did,
+	))
+}
+
+// GetAllDidDocument returns all didDocument
+func (k Keeper) GetAllBlockchainIdentities(ctx sdk.Context) (list []types.DidDocument) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BlockchainIdentityPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()
-	aka = strings.TrimSpace(aka)
 
-	var val types.DidDocument
 	for ; iterator.Valid(); iterator.Next() {
+		var val types.DidDocument
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		for _, s := range val.AlsoKnownAs {
-			if aka == s {
-				return val, true
-			}
-		}
+		list = append(list, val)
 	}
 
-	return val, false
+	return
 }
+
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Relationships Keeper Functions                         ||
 // ! ||--------------------------------------------------------------------------------||
 
-// HasRelationship checks if the element exists in the store
-func (k Keeper) HasRelationship(ctx sdk.Context, reference string) bool {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RelationshipKeyPrefix))
-	return store.Has(types.RelationshipKey(reference))
-}
+
 
 // Set Resolved Document sets all the relationships in the document
 func (k Keeper) SetResolvedDocument(ctx sdk.Context, doc types.ResolvedDidDocument) {
@@ -171,6 +204,12 @@ func (k Keeper) SetResolvedDocument(ctx sdk.Context, doc types.ResolvedDidDocume
 	for _, v := range doc.KeyAgreement {
 		k.SetRelationship(ctx, *v)
 	}
+}
+
+// HasRelationship checks if the element exists in the store
+func (k Keeper) HasRelationship(ctx sdk.Context, reference string) bool {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.RelationshipKeyPrefix))
+	return store.Has(types.RelationshipKey(reference))
 }
 
 // SetRelationship set a specific Service in the store from its index
@@ -209,6 +248,21 @@ func (k Keeper) GetAllRelationships(ctx sdk.Context) (list []types.VerificationR
 	return
 }
 
+
+func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]types.VerificationRelationship, error) {
+	vrs := make([]types.VerificationRelationship, 0, len(addrs))
+
+	for _, addr := range addrs {
+		if vr, found := k.GetRelationship(sdk.UnwrapSDKContext(ctx), addr); found {
+			vrs = append(vrs, vr)
+		} else {
+			return nil, status.Error(codes.NotFound, "not found")
+		}
+	}
+
+	return vrs, nil
+}
+
 func (k Keeper) ResolveDidDocument(ctx sdk.Context, doc types.DidDocument) (types.ResolvedDidDocument, error) {
 	resolvedDidDocument := doc.ToResolved()
 
@@ -225,19 +279,7 @@ func (k Keeper) ResolveDidDocument(ctx sdk.Context, doc types.DidDocument) (type
 	return *resolvedDidDocument, nil
 }
 
-func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]types.VerificationRelationship, error) {
-	vrs := make([]types.VerificationRelationship, 0, len(addrs))
 
-	for _, addr := range addrs {
-		if vr, found := k.GetRelationship(sdk.UnwrapSDKContext(ctx), addr); found {
-			vrs = append(vrs, vr)
-		} else {
-			return nil, status.Error(codes.NotFound, "not found")
-		}
-	}
-
-	return vrs, nil
-}
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Service Record Keeper Functions                        ||

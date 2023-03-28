@@ -8,8 +8,9 @@ import (
 var _ binary.ByteOrder
 
 const (
-	// DidDocumentKeyPrefix is the prefix to retrieve all DidDocument
-	DidDocumentKeyPrefix = "DidDocument/value/"
+	// PrimaryIdentityPrefix is the prefix to retrieve all DidDocument
+	PrimaryIdentityPrefix = "DidDocument/primary/value/"
+	BlockchainIdentityPrefix = "DidDocument/blockchain/value/"
 )
 
 // DidDocumentKey returns the store key to retrieve a DidDocument from the index fields

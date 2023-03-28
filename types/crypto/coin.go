@@ -91,7 +91,7 @@ func (ct CoinType) AddrPrefix() string {
 	case CoinType_CoinType_DOGE:
 		return "doge"
 	case CoinType_CoinType_SONR:
-		return "snr"
+		return "idx"
 	case CoinType_CoinType_COSMOS:
 		return "cosmos"
 	case CoinType_CoinType_FILECOIN:
@@ -273,7 +273,7 @@ func (c CoinType) FormatAddress(pk *PubKey) string {
 		return EthereumAddress(pk)
 	}
 	if c.IsSonr() {
-		addr, _ :=bech32.ConvertAndEncode("snr", pk.Address().Bytes())
+		addr, _ :=bech32.ConvertAndEncode("idx", pk.Address().Bytes())
 		return addr
 	}
 	if c.IsCosmos() {

@@ -41,7 +41,7 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 				Id: fmt.Sprintf("%s#Key", id),
 			},
 		}
-		keeper.SetDidDocument(ctx, items[i])
+		keeper.SetPrimaryIdentity(ctx, items[i])
 	}
 	return items
 }
@@ -74,7 +74,7 @@ func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.D
 		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
 
-		keeper.SetDidDocument(ctx, items[i])
+		keeper.SetPrimaryIdentity(ctx, items[i])
 	}
 	return items
 }
@@ -84,7 +84,7 @@ func (suite *KeeperTestSuite) TestDidDocumentGet() {
 	ctx := suite.ctx
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetDidDocument(ctx,
+		rst, found := keeper.GetPrimaryIdentity(ctx,
 			item.Id,
 		)
 		suite.Assert().True(found)
@@ -100,10 +100,10 @@ func (suite *KeeperTestSuite) TestDidDocumentRemove() {
 	ctx := suite.ctx
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
-		keeper.RemoveDidDocument(ctx,
+		keeper.RemovePrimaryIdentity(ctx,
 			item.Id,
 		)
-		_, found := keeper.GetDidDocument(ctx,
+		_, found := keeper.GetPrimaryIdentity(ctx,
 			item.Id,
 		)
 		suite.Assert().False(found)
@@ -116,25 +116,6 @@ func (suite *KeeperTestSuite) TestDidDocumentGetAll() {
 	items := createNDidDocument(keeper, ctx, 10)
 	suite.Assert().ElementsMatch(
 		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllDidDocument(ctx)),
+		nullify.Fill(keeper.GetAllPrimaryIdentities(ctx)),
 	)
-}
-
-func (suite *KeeperTestSuite) TestGetDidDocumentByAKA() {
-	keeper := suite.keeper
-	ctx := suite.ctx
-	items := createDidDocumentsWithPrefix(keeper, ctx, "AKA", 10)
-	for _, item := range items {
-		rst, found := keeper.GetDidDocumentByAKA(ctx,
-			item.AlsoKnownAs[0],
-		)
-		suite.Assert().True(found)
-		suite.Assert().Equal(
-			nullify.Fill(&item),
-			nullify.Fill(&rst),
-		)
-		keeper.RemoveDidDocument(ctx,
-			item.Id,
-		)
-	}
 }

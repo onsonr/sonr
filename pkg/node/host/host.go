@@ -15,6 +15,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/pkg/node/config"
 )
 
@@ -68,7 +69,8 @@ func Initialize(config *config.Config) (config.PeerNode, error) {
 	}
 
 	// Connect to Bootstrap Nodes
-	for _, pistr := range hn.config.Context.BsMultiaddrs {
+	snrctx := local.NewContext()
+	for _, pistr := range snrctx.BsMultiaddrs {
 		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {
@@ -83,10 +85,6 @@ func Initialize(config *config.Config) (config.PeerNode, error) {
 	return hn, nil
 }
 
-// Context returns the context of the Host
-func (n *hostImpl) Context() *config.Context {
-	return n.config.Context
-}
 
 // PeerID returns the ID of the Host
 func (n *hostImpl) PeerID() peer.ID {

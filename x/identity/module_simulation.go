@@ -76,7 +76,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	identityGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		DidDocumentList: []types.DidDocument{
+		PrimaryIdentities: []types.DidDocument{
 			{
 				Controller: []string{types.ConvertAccAddressToDid(sample.AccAddress())},
 				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),

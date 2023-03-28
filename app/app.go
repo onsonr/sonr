@@ -116,7 +116,7 @@ import (
 )
 
 const (
-	AccountAddressPrefix = "snr"
+	AccountAddressPrefix = "idx"
 	Name                 = "sonr"
 )
 

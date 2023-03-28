@@ -1,6 +1,7 @@
 package resolver
 
 import (
+	"encoding/base64"
 	"fmt"
 	"strings"
 
@@ -14,8 +15,41 @@ type KeyShareParseResult struct {
 	KeyShareName string
 }
 
-// parseKeyShareDid parses a keyshare DID into its components.
-func parseKeyShareDid(name string) (*KeyShareParseResult, error) {
+// Parse a DID into a WebauthnCredential struct
+func ParseCredentialDID(did string) (*crypto.WebauthnCredential, error) {
+	didParts := strings.SplitN(did, ":", 3)
+	if len(didParts) != 3 {
+		return nil, fmt.Errorf("invalid did: %s", did)
+	}
+	if didParts[0] != "did" {
+		return nil, fmt.Errorf("invalid did: %s", did)
+	}
+	if didParts[1] != "key" {
+		return nil, fmt.Errorf("invalid did: %s", did)
+	}
+	pubKey, err := base64.RawURLEncoding.DecodeString(didParts[2])
+	if err != nil {
+		return nil, err
+	}
+
+	idParts := strings.Split(did, "#")
+	if len(idParts) != 2 {
+		return nil, fmt.Errorf("invalid did: %s", did)
+	}
+
+	idBytes, err := base64.RawURLEncoding.DecodeString(idParts[1])
+	if err != nil {
+		return nil, err
+	}
+
+	return &crypto.WebauthnCredential{
+		PublicKey: pubKey,
+		Id:        idBytes,
+	}, nil
+}
+
+// ParseKeyShareDID parses a keyshare DID into its components.
+func ParseKeyShareDID(name string) (*KeyShareParseResult, error) {
 	// Parse the DID
 	parts := strings.Split(name, ":")
 	if len(parts) != 3 {
@@ -55,8 +89,8 @@ func parseKeyShareDid(name string) (*KeyShareParseResult, error) {
 	}, nil
 }
 
-// parseAccountDid parses an account DID into its components.
-func parseAccountDid(name string) (*KeyShareParseResult, error) {
+// ParseAccountDID parses an account DID into its components.
+func ParseAccountDID(name string) (*KeyShareParseResult, error) {
 	// Parse the DID
 	parts := strings.Split(name, ":")
 	if len(parts) != 3 {

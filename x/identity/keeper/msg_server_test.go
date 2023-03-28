@@ -31,7 +31,7 @@ func TestDidDocumentMsgServerCreate(t *testing.T) {
 			Document: types.NewBlankDocument(creator),
 		}
 		_, _ = srv.CreateDidDocument(wctx, expected)
-		rst, found := k.GetDidDocument(ctx,
+		rst, found := k.GetPrimaryIdentity(ctx,
 			expected.Document.Id,
 		)
 		accAddr, err := rst.AccAddress()
@@ -85,7 +85,7 @@ func TestDidDocumentMsgServerUpdate(t *testing.T) {
 				require.Error(t, err, tc.err)
 			} else {
 				//require.NoError(t, err)
-				rst, found := k.GetDidDocument(ctx,
+				rst, found := k.GetPrimaryIdentity(ctx,
 					expected.Document.Id,
 				)
 				require.True(t, found)
@@ -140,7 +140,7 @@ func TestDidDocumentMsgServerDelete(t *testing.T) {
 				require.Error(t, err, tc.err)
 			} else {
 				require.Error(t, err)
-				_, found := k.GetDidDocument(ctx,
+				_, found := k.GetPrimaryIdentity(ctx,
 					tc.request.Did,
 				)
 				require.False(t, found)

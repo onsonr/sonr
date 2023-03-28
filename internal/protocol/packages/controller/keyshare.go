@@ -13,17 +13,23 @@ import (
 
 // KeyShare is a type that interacts with a cmp.Config file located on disk.
 type KeyShare interface {
-	// Base64 returns the base64 of the keyshare file - the marshalled cmp.Config
-	Base64() string
+	// AccountName returns the account name based on the keyshare file name
+	AccountName() string
 
 	// Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
 	Bytes() []byte
+
+	// CoinType returns the coin type based on the keyshare file name
+	CoinType() crypto.CoinType
 
 	// Config returns the cmp.Config.
 	Config() *cmp.Config
 
 	// Did returns the cid of the keyshare
 	Did() string
+
+	// KeyShareName returns the keyshare name based on the keyshare file name
+	KeyShareName() string
 
 	// PartyID returns the party id based on the keyshare file name
 	PartyID() crypto.PartyID
@@ -121,15 +127,27 @@ func LoadKeySharePubKeyFromConfigBytes(bytes []byte) (*crypto.PubKey, error) {
 	return crypto.NewSecp256k1PubKey(bz), nil
 }
 
-// Base64 returns the base64 of the keyshare file - the marshalled cmp.Config
-func (ks *keyShare) Base64() string {
-	return base64.StdEncoding.EncodeToString(ks.bytes)
+// AccountName returns the account name based on the keyshare file name
+func (ks *keyShare) AccountName() string {
+	res, err := ParseKeyShareDid(ks.name)
+	if err != nil {
+		return ""
+	}
+	return res.AccountName
 }
-
 
 // Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
 func (ks *keyShare) Bytes() []byte {
 	return ks.bytes
+}
+
+// CoinType returns the coin type based on the keyshare file name
+func (ks *keyShare) CoinType() crypto.CoinType {
+	res, err := ParseKeyShareDid(ks.name)
+	if err != nil {
+		return crypto.SONRCoinType
+	}
+	return res.CoinType
 }
 
 // Config returns the cmp.Config.
@@ -149,8 +167,12 @@ func (ks *keyShare) Did() string {
 }
 
 // Keyshare name format is /{purpose}/{coin_type}/{account_name}/{keyshare_name}
-func (ks *keyShare) KeyID() string {
-	return ks.name
+func (ks *keyShare) KeyShareName() string {
+	res, err := ParseKeyShareDid(ks.name)
+	if err != nil {
+		return ""
+	}
+	return res.KeyShareName
 }
 
 // PartyID returns the party id based on the keyshare file name
@@ -209,8 +231,5 @@ func (ks *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
 
 // A Keyshare is encrypted if its name contains an apostrophe at the end.
 func (ks *keyShare) IsEncrypted() bool {
-	if ks.name == "vault" {
 		return false
-	}
-	return strings.HasSuffix(ks.name, "'")
 }

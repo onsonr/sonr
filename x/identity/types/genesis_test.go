@@ -21,12 +21,28 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-				DidDocumentList: []types.DidDocument{
+				PrimaryIdentities: []types.DidDocument{
 					{
 						Id: "0",
 					},
 					{
 						Id: "1",
+					},
+				},
+				BlockchainIdentities: []types.DidDocument{
+					{
+						Id: "0",
+					},
+					{
+						Id: "1",
+					},
+				},
+				Relationships: []types.VerificationRelationship{
+					{
+						Reference: "0",
+					},
+					{
+						Reference: "1",
 					},
 				},
 				ServiceList: []types.Service{

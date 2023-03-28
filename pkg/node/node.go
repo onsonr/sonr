@@ -6,7 +6,7 @@ import (
 
 	"berty.tech/go-orbit-db/iface"
 	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/pkg/node/internal/ipfs"
+	"github.com/sonrhq/core/pkg/node/ipfs"
 )
 
 // IPFSKVStore is an alias for a iface.KeyValueStore.
@@ -33,13 +33,9 @@ var (
 
 // StartLocalIPFS initializes a local IPFS node.
 func StartLocalIPFS() error {
-	// Start IPFS Node
-	pctx, err := config.NewContext(context.Background())
-	if err != nil {
-		return err
-	}
-	config := config.DefaultConfig(pctx)
-	err = config.Apply()
+
+	config := config.DefaultConfig()
+	err := config.Apply()
 	if err != nil {
 		return err
 	}

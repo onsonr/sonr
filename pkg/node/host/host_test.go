@@ -1,7 +1,6 @@
 package host
 
 import (
-	"context"
 	"testing"
 
 	ps "github.com/libp2p/go-libp2p-pubsub"
@@ -9,11 +8,8 @@ import (
 )
 
 func TestNewP2PHost(t *testing.T) {
-	ctx, err := config.NewContext(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	config := config.DefaultConfig(ctx)
+
+	config := config.DefaultConfig()
 	h1, err := Initialize(config)
 	if err != nil {
 		t.Fatal(err)
@@ -29,11 +25,8 @@ func TestNewP2PHost(t *testing.T) {
 }
 
 func TestPubsub(t *testing.T) {
-	ctx, err := config.NewContext(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	config := config.DefaultConfig(ctx)
+
+	config := config.DefaultConfig()
 	h1, err := Initialize(config)
 	if err != nil {
 		t.Fatal(err)

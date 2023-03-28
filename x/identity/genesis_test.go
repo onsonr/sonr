@@ -14,7 +14,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		DidDocumentList: []types.DidDocument{
+		PrimaryIdentities: []types.DidDocument{
 			{
 				Id: "0",
 			},
@@ -41,7 +41,7 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
-	require.ElementsMatch(t, genesisState.DidDocumentList, got.DidDocumentList)
+	require.ElementsMatch(t, genesisState.PrimaryIdentities, got.PrimaryIdentities)
 	require.ElementsMatch(t, genesisState.ServiceList, got.ServiceList)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

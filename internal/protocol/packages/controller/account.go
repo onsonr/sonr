@@ -6,9 +6,11 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/getsentry/sentry-go"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
+	v1 "github.com/sonrhq/core/types/highway/v1"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
@@ -22,7 +24,10 @@ type Account interface {
 	CoinType() crypto.CoinType
 
 	// DID returns the DID of the account
-	DID() string
+	Did() string
+
+	// Get the controller's DID document
+	DidDocument(controller string) *types.DidDocument
 
 	// GetAuthInfo creates an AuthInfo for a transaction
 	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
@@ -51,11 +56,14 @@ type Account interface {
 	// Signs a message
 	Sign(bz []byte) ([]byte, error)
 
+	// ToProto returns the proto representation of the account
+	ToProto() (*v1.Account)
+
+	// ToStore returns the store representation of the account
+	ToStore() (string, []string)
+
 	// Type returns the type of the account
 	Type() string
-
-	// VerificationMethod returns the verification method for the account
-	VerificationMethod(controller string) *types.VerificationMethod
 
 	// Verifies a signature
 	Verify(bz []byte, sig []byte) (bool, error)
@@ -83,6 +91,7 @@ func NewAccount(kss []KeyShare, ct crypto.CoinType) Account {
 	return &account{kss: kss, n: 0, p: "", ct: ct}
 }
 
+
 // PubKey returns secp256k1 public key
 func (wa *account) PubKey() *crypto.PubKey {
 	tks, err := getFirstDecryptedKeyshare(wa.kss)
@@ -103,6 +112,27 @@ func (wa *account) Sign(bz []byte) ([]byte, error) {
 		configs = append(configs, ks.Config())
 	}
 	return mpc.SignCMP(configs, bz)
+}
+
+// ToProto returns the proto representation of the account
+func (wa *account) ToProto() (*v1.Account) {
+	return &v1.Account{
+		Name: wa.Name(),
+		Address: wa.Address(),
+		CoinType: wa.CoinType().Name(),
+		ChainId: "sonr-testnet-0",
+		PublicKey: wa.PubKey().Base64(),
+		Type: wa.Type(),
+	}
+}
+
+func (wa *account) ToStore() (string, []string) {
+	selfDid := wa.Did()
+	ksDids := make([]string, 0)
+	for _, ks := range wa.kss {
+		ksDids = append(ksDids, ks.Did())
+	}
+	return selfDid, ksDids
 }
 
 // Verifies a signature using first unlocked keyshare
@@ -142,8 +172,19 @@ func (a *account) CoinType() crypto.CoinType {
 }
 
 // DID returns the DID of the account
-func (wa *account) DID() string {
-	return fmt.Sprintf("did:%s:%s", wa.CoinType().DidMethod(), wa.Address())
+func (wa *account) Did() string {
+	tks, err := getFirstDecryptedKeyshare(wa.kss)
+	if err != nil {
+		sentry.CaptureException(err)
+		return ""
+	}
+	return fmt.Sprintf("did:%s:%s", tks.CoinType().DidMethod(), wa.Address())
+}
+
+// DidDocument returns the DID document of the account
+func (wa *account) DidDocument(controller string) *types.DidDocument {
+	doc := types.NewBlockchainIdentity(controller, wa.CoinType(), wa.PubKey())
+	return doc
 }
 
 // Type returns the type of the account
@@ -154,7 +195,7 @@ func (wa *account) Type() string {
 // VerificationMethod returns the verification method of the account
 func (wa *account) VerificationMethod(controller string) *types.VerificationMethod {
 	return &types.VerificationMethod{
-		Id:                  wa.DID(),
+		Id:                  wa.Did(),
 		Type:                crypto.Secp256k1KeyType.FormatString(),
 		Controller:          controller,
 		PublicKeyMultibase:  wa.PubKey().Multibase(),
@@ -187,6 +228,7 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 	// Build signerInfo parameters
 	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
 	if err != nil {
+		sentry.CaptureException(err)
 		return nil, err
 	}
 
@@ -237,6 +279,7 @@ func (wa *account) MapKeyshares(f func(KeyShare) error) error {
 	for _, ks := range wa.kss {
 		err := f(ks)
 		if err != nil {
+			sentry.CaptureException(err)
 			return err
 		}
 	}
@@ -251,10 +294,12 @@ func (wa *account) MapKeyshares(f func(KeyShare) error) error {
 func (wa *account) Name() string {
 	ks, err := getFirstDecryptedKeyshare(wa.kss)
 	if err != nil {
+		sentry.CaptureException(err)
 		return ""
 	}
 	kspr, err := ParseKeyShareDid(ks.Did())
 	if err != nil {
+		sentry.CaptureException(err)
 		return ""
 	}
 	return kspr.AccountName
@@ -264,12 +309,14 @@ func (wa *account) Name() string {
 func (wa *account) Lock(c *crypto.WebauthnCredential, rootDir string) error {
 	ks, err := wa.ListKeyshares()
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
 	// Encrypt all keyshares for user
 	for _, k := range ks {
 		if err := k.Encrypt(c); err != nil {
+			sentry.CaptureException(err)
 			return err
 		}
 	}
@@ -280,12 +327,14 @@ func (wa *account) Lock(c *crypto.WebauthnCredential, rootDir string) error {
 func (wa *account) Unlock(c *crypto.WebauthnCredential, rootDir string) error {
 	ks, err := wa.ListKeyshares()
 	if err != nil {
+		sentry.CaptureException(err)
 		return err
 	}
 
 	// Decrypt all keyshares for user
 	for _, k := range ks {
 		if err := k.Decrypt(c); err != nil {
+			sentry.CaptureException(err)
 			return err
 		}
 	}
@@ -303,5 +352,7 @@ func getFirstDecryptedKeyshare(kss []KeyShare) (KeyShare, error) {
 			return ks, nil
 		}
 	}
-	return nil, fmt.Errorf("no decrypted keyshares found")
+	err := fmt.Errorf("no decrypted keyshares found")
+	sentry.CaptureException(err)
+	return nil, err
 }

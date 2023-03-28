@@ -10,12 +10,7 @@ import (
 )
 
 func TestNewAddGet(t *testing.T) {
-	// Call Run method and check for panic (if any)
-	ctx, err := config.NewContext(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	cnfg := config.DefaultConfig(ctx)
+	cnfg := config.DefaultConfig()
 	node, err := Initialize(cnfg)
 	if err != nil {
 		t.Fatal(err)
@@ -39,11 +34,7 @@ func TestNewAddGet(t *testing.T) {
 }
 
 func TestOrbitDB(t *testing.T) {
-	ctx, err := config.NewContext(context.Background())
-	if err != nil {
-		t.Fatal(err)
-	}
-	cnfg := config.DefaultConfig(ctx)
+	cnfg := config.DefaultConfig()
 	node, err := Initialize(cnfg)
 	if err != nil {
 		t.Fatal(err)

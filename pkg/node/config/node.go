@@ -18,9 +18,6 @@ import (
 // @property {string} MultiAddrs - The multiaddr of the node
 // @property {error} Close - Close the node
 type Node interface {
-	// Context returns protocol.Context
-	Context() *Context
-
 	// PeerID returns the peer ID of the node
 	PeerID() peer.ID
 

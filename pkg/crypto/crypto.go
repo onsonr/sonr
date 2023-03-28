@@ -9,6 +9,8 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
+	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 
 	types "github.com/sonrhq/core/types/crypto"
 )
@@ -103,6 +105,20 @@ const RSAKeyType = types.KeyType_KeyType_RSA_VERIFICATION_KEY_2018
 
 // WebAuthnKeyType is the key type for WebAuthn.
 const WebAuthnKeyType = types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018
+
+// NewPubKeyFromCmpConfig takes a `cmp.Config` and returns a `PubKey`
+func NewPubKeyFromCmpConfig(config *cmp.Config) (*PubKey, error) {
+	skPP, ok := config.PublicPoint().(*curve.Secp256k1Point)
+	if !ok {
+		return nil, errors.New("invalid public point")
+	}
+	bz, err := skPP.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return types.NewPubKey(bz, Secp256k1KeyType), nil
+}
+
 
 // NewSecp256k1PubKey takes a byte array of raw public key bytes and returns a PubKey.
 func NewSecp256k1PubKey(bz []byte) *PubKey {

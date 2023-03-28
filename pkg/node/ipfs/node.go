@@ -88,10 +88,6 @@ func (n *localIpfs) Connect(peers ...string) error {
 	return nil
 }
 
-// Context returns the context of the node
-func (n *localIpfs) Context() *config.Context {
-	return n.config.Context
-}
 
 
 // Add adds a file to the network

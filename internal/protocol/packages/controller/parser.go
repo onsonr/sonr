@@ -8,6 +8,7 @@ import (
 )
 
 type KeyShareParseResult struct {
+	DID 		  string
 	CoinType     crypto.CoinType
 	AccountAddress  string
 	AccountName  string
@@ -47,6 +48,7 @@ func ParseKeyShareDid(name string) (*KeyShareParseResult, error) {
 	keyShareName := parts[1]
 	return &KeyShareParseResult{
 		CoinType:     ct,
+		DID: name,
 		AccountAddress:  accountAddress,
 		AccountName:  accountName,
 		KeyShareName: keyShareName,

@@ -75,8 +75,8 @@ func (c *WebauthnCredential) ToStdCredential() *webauthn.Credential {
 }
 
 // Did returns the DID for a WebauthnCredential
-func (c *WebauthnCredential) DID(deviceLabel string) string {
-	return fmt.Sprintf("did:key:%s#%s", c.PubKey().Multibase(), base58.Encode([]byte(deviceLabel), base58.BitcoinAlphabet))
+func (c *WebauthnCredential) DID() string {
+	return fmt.Sprintf("did:key:%s#%s", c.PubKey().Multibase(), base58.Encode([]byte(c.Id), base58.BitcoinAlphabet))
 }
 
 // PublicKeyMultibase returns the public key in multibase format
@@ -185,26 +185,25 @@ func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 }
 
 // CredentialFromDIDString converts a DID string into a WebauthnCredential
-func CredentialFromDIDString(did string) (*WebauthnCredential, string, error) {
+func CredentialFromDIDString(did string) (*WebauthnCredential, error) {
 	parts := strings.Split(did, "#")
 	if len(parts) != 2 {
-		return nil, "", fmt.Errorf("invalid DID string format")
+		return nil, fmt.Errorf("invalid DID string format")
 	}
 
 	multibaseKey := parts[0][8:]
-	deviceLabelBytes, err := base58.Decode(parts[1], base58.BitcoinAlphabet)
+	credIdBz, err := base58.Decode(parts[1], base58.BitcoinAlphabet)
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to decode device label: %v", err)
+		return nil, fmt.Errorf("failed to decode device label: %v", err)
 	}
-	deviceLabel := string(deviceLabelBytes)
 
 	if !strings.HasPrefix(multibaseKey, "z") {
-		return nil, "", fmt.Errorf("invalid multibase prefix")
+		return nil, fmt.Errorf("invalid multibase prefix")
 	}
 
 	pubKeyBytes, err := base64.StdEncoding.DecodeString(multibaseKey[1:])
 	if err != nil {
-		return nil, "", fmt.Errorf("failed to decode public key: %v", err)
+		return nil, fmt.Errorf("failed to decode public key: %v", err)
 	}
-	return &WebauthnCredential{PublicKey: pubKeyBytes}, deviceLabel, nil
+	return &WebauthnCredential{PublicKey: pubKeyBytes, Id: credIdBz}, nil
 }

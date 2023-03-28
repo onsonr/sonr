@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
-	"github.com/sonrhq/core/internal/controller"
+"github.com/sonrhq/core/internal/protocol/packages/controller"
 )
 
 // EthereumTransaction represents the Ethereum transaction data
