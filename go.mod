@@ -51,7 +51,6 @@ require (
 require (
 	github.com/cosmos/gogoproto v1.4.2
 	github.com/derekparker/trie v0.0.0-20221221181808-1424fce0c981
-	github.com/getsentry/sentry-go v0.19.0
 	github.com/goccy/go-json v0.9.11
 	github.com/gofiber/fiber/v2 v2.42.0
 	github.com/gofiber/helmet/v2 v2.2.24
@@ -137,6 +136,7 @@ require (
 	github.com/francoispqt/gojay v1.2.13 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
+	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-git/gcfg v1.5.0 // indirect
 	github.com/go-git/go-billy/v5 v5.3.1 // indirect
 	github.com/go-git/go-git/v5 v5.4.2 // indirect
@@ -145,6 +145,7 @@ require (
 	github.com/go-logfmt/logfmt v0.5.1 // indirect
 	github.com/go-logr/logr v1.2.3 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-playground/validator/v10 v10.11.1 // indirect
 	github.com/go-task/slim-sprig v0.0.0-20210107165309-348f09dbbbc0 // indirect
 	github.com/go-webauthn/revoke v0.1.9 // indirect
 	github.com/goccy/go-yaml v1.9.4 // indirect

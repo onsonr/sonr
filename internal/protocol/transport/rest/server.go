@@ -2,12 +2,10 @@ package rest
 
 import (
 	"context"
-	"errors"
 	"regexp"
 
 	"time"
 
-	"github.com/getsentry/sentry-go"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/session"
 	"github.com/sonrhq/core/internal/protocol/packages/resolver"
@@ -81,13 +79,12 @@ func (htt *HttpTransport) Challenge(c *fiber.Ctx) error {
 	}
 	// Check if service is still nil - return internal server error
 	if service == nil {
-		sentry.CaptureException(errors.New("Service not found"))
 		return c.Status(500).SendString("Service not found")
 	}
 
 	chal, err := service.IssueChallenge()
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return c.Status(500).SendString(err.Error())
 	}
 
@@ -95,12 +92,12 @@ func (htt *HttpTransport) Challenge(c *fiber.Ctx) error {
 	store.Set(challengeUuidStoreKey(origin, uuid), chal)
 	ops, err := params.NewWebauthnCreationOptions(service, req.Uuid, chal)
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return c.Status(500).SendString(err.Error())
 	}
 	bz, err := json.MarshalIndent(ops, "", "  ")
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return c.Status(500).SendString(err.Error())
 	}
 	res := &v1.ChallengeResponse{

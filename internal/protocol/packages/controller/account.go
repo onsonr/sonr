@@ -6,7 +6,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/getsentry/sentry-go"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
@@ -175,7 +174,7 @@ func (a *account) CoinType() crypto.CoinType {
 func (wa *account) Did() string {
 	tks, err := getFirstDecryptedKeyshare(wa.kss)
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return ""
 	}
 	return fmt.Sprintf("did:%s:%s", tks.CoinType().DidMethod(), wa.Address())
@@ -228,7 +227,7 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 	// Build signerInfo parameters
 	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return nil, err
 	}
 
@@ -279,7 +278,7 @@ func (wa *account) MapKeyshares(f func(KeyShare) error) error {
 	for _, ks := range wa.kss {
 		err := f(ks)
 		if err != nil {
-			sentry.CaptureException(err)
+
 			return err
 		}
 	}
@@ -294,12 +293,12 @@ func (wa *account) MapKeyshares(f func(KeyShare) error) error {
 func (wa *account) Name() string {
 	ks, err := getFirstDecryptedKeyshare(wa.kss)
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return ""
 	}
 	kspr, err := ParseKeyShareDid(ks.Did())
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return ""
 	}
 	return kspr.AccountName
@@ -309,14 +308,14 @@ func (wa *account) Name() string {
 func (wa *account) Lock(c *crypto.WebauthnCredential, rootDir string) error {
 	ks, err := wa.ListKeyshares()
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return err
 	}
 
 	// Encrypt all keyshares for user
 	for _, k := range ks {
 		if err := k.Encrypt(c); err != nil {
-			sentry.CaptureException(err)
+
 			return err
 		}
 	}
@@ -327,14 +326,14 @@ func (wa *account) Lock(c *crypto.WebauthnCredential, rootDir string) error {
 func (wa *account) Unlock(c *crypto.WebauthnCredential, rootDir string) error {
 	ks, err := wa.ListKeyshares()
 	if err != nil {
-		sentry.CaptureException(err)
+
 		return err
 	}
 
 	// Decrypt all keyshares for user
 	for _, k := range ks {
 		if err := k.Decrypt(c); err != nil {
-			sentry.CaptureException(err)
+
 			return err
 		}
 	}
@@ -353,6 +352,6 @@ func getFirstDecryptedKeyshare(kss []KeyShare) (KeyShare, error) {
 		}
 	}
 	err := fmt.Errorf("no decrypted keyshares found")
-	sentry.CaptureException(err)
+
 	return nil, err
 }
