@@ -2,6 +2,7 @@ package protocol
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/gofiber/fiber/v2"
@@ -28,8 +29,14 @@ func serveFiber(app *fiber.App) {
 			)
 		} else {
 			app.Listen(
-				fmt.Sprintf("%s:%s", snrctx.GrpcEndpoint(), snrctx.HighwayPort()),
+				fmt.Sprintf("%s:%s", currPublicHostIP(), snrctx.HighwayPort()),
 			)
 		}
 	}
+}
+func currPublicHostIP() string {
+	if ip := os.Getenv("PUBLC_HOST_IP"); ip != "" {
+		return ip
+	}
+	return "localhost"
 }
