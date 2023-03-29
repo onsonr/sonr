@@ -23,8 +23,7 @@ func (htt *HttpTransport) Keygen(c *fiber.Ctx) error {
 
 	// Get the origin from the request.
 	// uuid := req.Uuid
-	origin := regexp.MustCompile(`[^a-zA-Z]+`).ReplaceAllString(req.Origin, "")
-	service, _ := resolver.GetService(context.Background(), origin)
+	service, _ := resolver.GetService(context.Background(), req.Origin)
 	if service == nil {
 		// Try to get the service from the localhost
 		service, _ = resolver.GetService(context.Background(), "localhost")
@@ -116,10 +115,6 @@ func (htt *HttpTransport) QueryDocument(c *fiber.Ctx) error {
 
 func (htt *HttpTransport) QueryService(c *fiber.Ctx) error {
 	origin := c.Params("origin", "localhost")
-
-	// Regex remove non-alphabet characters.
-	origin = regexp.MustCompile(`[^a-zA-Z]+`).ReplaceAllString(origin, "")
-
 	// Get the origin from the request.
 	service, err := resolver.GetService(context.Background(), origin)
 	if err != nil {
