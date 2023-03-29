@@ -8,7 +8,6 @@ import (
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/protocol/transport/rest"
 )
-
 func RegisterHighway(ctx client.Context) {
 	app := rest.NewHttpTransport(ctx)
 	go serveFiber(app.App)
@@ -23,8 +22,14 @@ func serveFiber(app *fiber.App) {
 			snrctx.TlsKeyPath,
 		)
 	} else {
-		app.Listen(
-			fmt.Sprintf(":%s", snrctx.HighwayPort()),
-		)
+		if snrctx.IsDev() {
+			app.Listen(
+				fmt.Sprintf(":%s", snrctx.HighwayPort()),
+			)
+		} else {
+			app.Listen(
+				fmt.Sprintf("%s:%s", snrctx.GrpcEndpoint(), snrctx.HighwayPort()),
+			)
+		}
 	}
 }
