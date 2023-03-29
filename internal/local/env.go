@@ -9,32 +9,22 @@ const (
 	SonrGrpcPort = ":9090"
 	SonrRpcPort  = ":26657"
 
-	// Prefix for the rpc endpoint.
-	SonrRpcPrefix = "tcp://"
-
 	// CurrentChainID is the current chain ID.
 	CurrentChainID = "sonrdevnet-1"
 )
 
-func currPublicHostIP() string {
-	if ip := os.Getenv("PUBLC_HOST_IP"); ip != "" {
-		return ip
-	}
-	return "localhost"
-}
-
 func currGrpcEndpoint() string {
 	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
-		return  currPublicHostIP() + SonrGrpcPort
+		return SonrGrpcPort
 	}
-	return currPublicHostIP() + SonrGrpcPort
+	return SonrGrpcPort
 }
 
 func currRpcEndpoint() string {
 	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
-		return currPublicHostIP() + SonrRpcPort
+		return SonrRpcPort
 	}
-	return currPublicHostIP() + SonrRpcPort
+	return SonrRpcPort
 }
 
 func getServerPort() string {
