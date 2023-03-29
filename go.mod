@@ -53,7 +53,6 @@ require (
 	github.com/derekparker/trie v0.0.0-20221221181808-1424fce0c981
 	github.com/goccy/go-json v0.9.11
 	github.com/gofiber/fiber/v2 v2.42.0
-	github.com/gofiber/helmet/v2 v2.2.24
 )
 
 require (

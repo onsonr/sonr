@@ -227,7 +227,6 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 	// Build signerInfo parameters
 	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
 	if err != nil {
-
 		return nil, err
 	}
 

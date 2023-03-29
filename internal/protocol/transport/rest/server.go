@@ -14,9 +14,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/goccy/go-json"
-	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/timeout"
-	"github.com/gofiber/helmet/v2"
 )
 
 type HttpTransport struct {
@@ -37,8 +35,8 @@ func NewHttpTransport(ctx client.Context) *HttpTransport {
 	}
 
 	// Middleware
-	rest.Use(cors.New())
-	rest.Use(helmet.New())
+	// rest.Use(cors.New())
+	// rest.Use(helmet.New())
 
 	// Status Methods
 	rest.Get("/health", func(c *fiber.Ctx) error {

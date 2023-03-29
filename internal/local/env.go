@@ -32,9 +32,9 @@ func currGrpcEndpoint() string {
 
 func currRpcEndpoint() string {
 	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
-		return SonrRpcPrefix + currPublicHostIP() + SonrRpcPort
+		return currPublicHostIP() + SonrRpcPort
 	}
-	return SonrRpcPrefix + currPublicHostIP() + SonrRpcPort
+	return currPublicHostIP() + SonrRpcPort
 }
 
 func getServerPort() string {

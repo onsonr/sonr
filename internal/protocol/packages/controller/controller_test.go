@@ -117,14 +117,16 @@ func TestControllerCreateBroadcastTx(t *testing.T) {
 	}
 
 	msg := types.NewMsgCreateDidDocument(cn.Address(), didDoc)
-	txBz, err := cosmos.SignAnyTransactions(prim, msg)
+	txBz, err := cosmos.SignAnyTransactions(prim, "/sonrhq.core.identity.MsgCreateDidDocument", msg)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	res, err := resolver.BroadcastTx(context.TODO(), txBz)
+	res, err := resolver.BroadcastTx(txBz)
 	if err != nil {
 		t.Fatal(err)
 	}
-	t.Logf("TX Hash: %v", res.Hash)
+	t.Logf("TX Hash: %v\n", res.TxResponse.TxHash)
+	t.Logf("TX Log: %v\n", res.TxResponse.Logs.String())
+
 }

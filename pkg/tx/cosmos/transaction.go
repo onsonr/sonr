@@ -16,7 +16,7 @@ import (
 // SignTransaction signs a Cosmos transaction for Token Transfer
 func SignTransaction(wa controller.Account, to string, amount sdk.Int, denom string) ([]byte, error) {
 	// Build the transaction body
-	txBody, err := buildTxBody(&banktypes.MsgSend{
+	txBody, err := buildTxBody("/cosmos.bank.v1beta1.MsgSend", &banktypes.MsgSend{
 		FromAddress: wa.Address(),
 		ToAddress:   to,
 		Amount:      sdk.NewCoins(sdk.NewCoin(denom, amount)),
@@ -41,9 +41,9 @@ func SignTransaction(wa controller.Account, to string, amount sdk.Int, denom str
 }
 
 // SignAnyTransactions signs a Cosmos transaction for a list of arbitrary messages
-func SignAnyTransactions(wa controller.Account, msgs ...sdk.Msg) ([]byte, error) {
+func SignAnyTransactions(wa controller.Account, typeUrl string, msgs ...sdk.Msg) ([]byte, error) {
 	// Build the transaction body
-	txBody, err := buildTxBody(msgs...)
+	txBody, err := buildTxBody(typeUrl, msgs...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,17 +70,12 @@ func SignAnyTransactions(wa controller.Account, msgs ...sdk.Msg) ([]byte, error)
 //
 
 // buildTxBody builds a transaction from the given inputs.
-func buildTxBody(msgs ...sdk.Msg) (*txtypes.TxBody, error) {
+func buildTxBody(typeUrl string, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 	// Create Any for each message
-	anyMsgs := make([]*codectypes.Any, len(msgs))
-	for i, m := range msgs {
-		msg, err := codectypes.NewAnyWithValue(m)
-		if err != nil {
-			return nil, err
-		}
-		anyMsgs[i] = msg
+	anyMsgs := make([]*codectypes.Any, 0)
+	for _, m := range msgs {
+		anyMsgs = append(anyMsgs, codectypes.UnsafePackAny(m))
 	}
-
 	// Create TXRaw and Marshal
 	txBody := txtypes.TxBody{
 		Messages: anyMsgs,
@@ -103,10 +98,9 @@ func createRawTxBytes(body []byte, sig []byte, wa controller.Account) ([]byte, e
 	}
 
 	// Create Raw TX
-	txRaw := &txtypes.TxRaw{
+	txRaw := &txtypes.SignDoc{
 		BodyBytes:     body,
 		AuthInfoBytes: authInfoBytes,
-		Signatures:    [][]byte{sig},
 	}
 
 	// Marshal the txRaw
@@ -119,16 +113,20 @@ func signTxBodyBytes(wa controller.Account, txBody *txtypes.TxBody) ([]byte, []b
 	if err != nil {
 		return nil, nil, err
 	}
+	authInf, err := wa.GetAuthInfo(sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(0))))
+	if err != nil {
+		return nil, nil, err
+	}
 
 	// Build signerInfo parameters
-	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
+	aiBz, err := authInf.Marshal()
 	if err != nil {
 		return nil, nil, err
 	}
 	// Create SignDoc
-	signDoc := &txtypes.SignDocDirectAux{
+	signDoc := &txtypes.SignDoc{
 		BodyBytes: txBodyBz,
-		PublicKey: anyPubKey,
+		AuthInfoBytes: aiBz,
 	}
 	bodyBz, err := codec.ProtoMarshalJSON(signDoc, nil)
 	if err != nil {
