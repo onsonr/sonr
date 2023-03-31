@@ -1,0 +1,62 @@
+---
+api: GET /cosmos/base/tendermint/v1beta1/node_info
+title: "Fetch Node Info"
+description: "GetNodeInfo queries the current node info"
+---
+
+<br />
+_**🏗️ Under Construction**_
+
+<ResponseExample>
+
+```json Response (200)
+{
+  "default_node_info": {
+    "protocol_version": {
+      "p2p": "string",
+      "block": "string",
+      "app": "string"
+    },
+    "default_node_id": "string",
+    "listen_addr": "string",
+    "network": "string",
+    "version": "string",
+    "channels": "string",
+    "moniker": "string",
+    "other": {
+      "tx_index": "string",
+      "rpc_address": "string"
+    }
+  },
+  "application_version": {
+    "name": "string",
+    "app_name": "string",
+    "version": "string",
+    "git_commit": "string",
+    "build_tags": "string",
+    "go_version": "string",
+    "build_deps": [
+      {
+        "path": "string",
+        "version": "string",
+        "sum": "string"
+      }
+    ],
+    "cosmos_sdk_version": "string"
+  }
+}
+```
+
+```json Error
+{
+  "code": 0,
+  "message": "string",
+  "details": [
+    {
+      "@type": "string"
+    }
+  ]
+}
+```
+
+</ResponseExample>
