@@ -116,11 +116,7 @@ func (k Keeper) Service(c context.Context, req *types.QueryGetServiceRequest) (*
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	chal, err := val.IssueChallenge()
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	return &types.QueryGetServiceResponse{Service: val, Challenge: chal.String()}, nil
+	return &types.QueryGetServiceResponse{Service: val}, nil
 }
 
 func (k Keeper) ServiceAll(goCtx context.Context, req *types.QueryAllServiceRequest) (*types.QueryAllServiceResponse, error) {

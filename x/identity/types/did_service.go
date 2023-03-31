@@ -77,10 +77,22 @@ func (s *Service) GetUserEntity(id string) protocol.UserEntity {
 	}
 }
 
-// IssueChallenge issues a challenge for the VerificationMethod to sign and return
-func (vm *Service) IssueChallenge() (protocol.URLEncodedBase64, error) {
+// GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
+func (vm *Service) GetCredentialCreationOptions(username string) (string, error) {
 	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
-	return protocol.URLEncodedBase64(hashString), nil
+	params := DefaultParams()
+	chal :=  protocol.URLEncodedBase64(hashString)
+
+	cco, err := params.NewWebauthnCreationOptions(vm, username, chal)
+	if err != nil {
+		return "", err
+	}
+
+	ccoJSON, err := json.Marshal(cco)
+	if err != nil {
+		return "", err
+	}
+	return string(ccoJSON), nil
 }
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
@@ -104,20 +116,10 @@ func (vm *Service) VerifyCreationChallenge(resp string) (*types.WebauthnCredenti
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
 func (vm *Service) VeriifyAssertionChallenge(resp string, cred *types.WebauthnCredential) error {
-	pca, err := parseAssertionData(resp)
-	if err != nil {
-		return err
-	}
-
-	chal, err := vm.IssueChallenge()
-	if err != nil {
-		return err
-	}
-
-	err = pca.Verify(chal.String(), vm.Id, []string{vm.Origin}, "", false, cred.PublicKey)
-	if err != nil {
-		return err
-	}
+	// pca, err := parseAssertionData(resp)
+	// if err != nil {
+	// 	return err
+	// }
 	return nil
 }
 

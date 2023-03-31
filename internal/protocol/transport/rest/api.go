@@ -115,6 +115,7 @@ func (htt *HttpTransport) QueryDocument(c *fiber.Ctx) error {
 
 func (htt *HttpTransport) QueryService(c *fiber.Ctx) error {
 	origin := c.Params("origin", "localhost")
+	username := c.Params("username", "admin")
 	// Get the origin from the request.
 	service, err := resolver.GetService(context.Background(), origin)
 	if err != nil {
@@ -122,13 +123,12 @@ func (htt *HttpTransport) QueryService(c *fiber.Ctx) error {
 		return c.Status(404).SendString(err.Error())
 	}
 
-	challenge, err := service.IssueChallenge()
+	challenge, err := service.GetCredentialCreationOptions(username)
 	if err != nil {
-
 		return c.Status(500).SendString(err.Error())
 	}
 	resp := &v1.QueryServiceResponse{
-		Challenge: string(challenge),
+		CredentialOptions: challenge,
 		RpName:    "Sonr",
 		RpId:      service.Origin,
 	}

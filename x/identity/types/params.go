@@ -1,8 +1,6 @@
 package types
 
 import (
-	fmt "fmt"
-
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 
@@ -81,21 +79,21 @@ func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, challenge pr
 	return protocol.CredentialCreation{Response: opts}, nil
 }
 
-// NewWebauthnAssertionOptions returns the webauthn assertion options.
-func (p Params) NewWebauthnAssertionOptions(s *Service, uuid string, deviceLabel string) (protocol.CredentialAssertion, error) {
-	// Issue the challenge.
-	chal, err := s.IssueChallenge()
-	if err != nil {
-		return protocol.CredentialAssertion{}, fmt.Errorf("failed to issue challenge: %w", err)
-	}
+// // NewWebauthnAssertionOptions returns the webauthn assertion options.
+// func (p Params) NewWebauthnAssertionOptions(s *Service, uuid string, deviceLabel protocol.URLEncodedBase64) (protocol.CredentialAssertion, error) {
+// 	// Issue the challenge.
+// 	chal, err := s.IssueChallenge()
+// 	if err != nil {
+// 		return protocol.CredentialAssertion{}, fmt.Errorf("failed to issue challenge: %w", err)
+// 	}
 
-	// Build the credential assertion options.
-	opts := protocol.PublicKeyCredentialRequestOptions{
-		// Generated Challenge.
-		Challenge: chal,
+// 	// Build the credential assertion options.
+// 	opts := protocol.PublicKeyCredentialRequestOptions{
+// 		// Generated Challenge.
+// 		Challenge: deviceLabel,
 
-		// Preconfigured parameters.
-		Timeout: int(p.WebauthnTimeout),
-	}
-	return protocol.CredentialAssertion{Response: opts}, nil
-}
+// 		// Preconfigured parameters.
+// 		Timeout: int(p.WebauthnTimeout),
+// 	}
+// 	return protocol.CredentialAssertion{Response: opts}, nil
+// }
