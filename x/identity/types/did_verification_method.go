@@ -11,6 +11,91 @@ import (
 	"github.com/sonrhq/core/pkg/crypto"
 )
 
+type DIDParseResult struct {
+	AccountName string
+	Address     string
+	CoinType    crypto.CoinType
+}
+
+// NewSonrID creates a new DID URI for the given Sonr Account address
+func NewSonrID(addr string) string {
+	return fmt.Sprintf("did:sonr:%s", addr)
+}
+
+// NewWebID creates a new DID URI for the given Sonr Account address
+func NewWebID(addr string) string {
+	return DIDMethod_DIDMethod_WEB.Format(addr)
+}
+
+// NewKeyID creates a new DID URI for the given Sonr Account address
+func NewKeyID(addr string, keyName string) string {
+	return DIDMethod_DIDMethod_KEY.Format(addr, WithFragment(keyName))
+}
+
+// NewIpfsID creates a new DID URI for the given Content ID
+func NewIpfsID(addr string) string {
+	return DIDMethod_DIDMethod_IPFS.Format(addr)
+}
+
+// NewPeerID creates a new DID URI for the given Peer ID
+func NewPeerID(addr string) string {
+	return DIDMethod_DIDMethod_PEER.Format(addr)
+}
+
+// Format returns a string representation of the DIDMethod that is on the DID spec
+func (m DIDMethod) Format(val string, options ...FormatOption) string {
+	r := fmt.Sprintf("did:%s:%s", m.PrettyString(), val)
+	for _, opt := range options {
+		r = opt(r)
+	}
+	return r
+}
+
+// PrettyString returns a string representation of the DIDMethod that is on the DID spec
+func (m DIDMethod) PrettyString() string {
+	prts := strings.Split(m.String(), "_")
+	return strings.ToLower(prts[len(prts)-1])
+}
+
+// FormatOption is a function that can be used to format a DIDMethod
+type FormatOption func(string) string
+
+// WithFragment returns a FormatOption that will append a fragment to the DID
+func WithFragment(frag string) FormatOption {
+	return func(did string) string {
+		return fmt.Sprintf("%s#%s", did, frag)
+	}
+}
+
+// WithPath returns a FormatOption that will append a path to the DID
+func WithPath(path string) FormatOption {
+	return func(did string) string {
+		return fmt.Sprintf("%s/%s", did, path)
+	}
+}
+
+// WithQuery returns a FormatOption that will append a query to the DID
+func WithQuery(query string) FormatOption {
+	return func(did string) string {
+		return fmt.Sprintf("%s?%s", did, query)
+	}
+}
+
+///
+/// Helper functions
+///
+
+// findCoinTypeFromAddress returns the CoinType for the given address
+func findCoinTypeFromAddress(addr string) crypto.CoinType {
+	for _, ct := range crypto.AllCoinTypes() {
+		if strings.Contains(addr, ct.AddrPrefix()) {
+			return ct
+		}
+	}
+	return crypto.TestCoinType
+}
+
+
 // VerificationMethodOption is used to define options that modify the creation of the verification method
 type VerificationMethodOption func(vm *VerificationMethod, method DIDMethod) error
 

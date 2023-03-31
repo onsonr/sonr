@@ -5,7 +5,7 @@ package sonrhq.highway.v1;
 
 import "core/identity/did.proto";
 import "sonr/common/info.proto";
-import "highway/v1/accounts.proto";
+import "highway/v1/mpc.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/v1;highwayv1";
 
