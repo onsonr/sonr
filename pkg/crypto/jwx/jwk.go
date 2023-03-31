@@ -8,9 +8,7 @@ import (
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 
-/*
-	JWK returns the key described by the VerificationMethod as JSON Web Key.
-*/
+// JWK returns the key described by the VerificationMethod as JSON Web Key.
 func (x *jwxImpl) CreateEncJWK() (jwk.Key, error) {
 	if x.key == nil {
 		return nil, errors.New("error while creating jwk: public key not provided")
@@ -29,9 +27,7 @@ func (x *jwxImpl) CreateEncJWK() (jwk.Key, error) {
 	return jwk, nil
 }
 
-/*
-	JWK returns the key described by the VerificationMethod as JSON Web Key.
-*/
+// JWK returns the key described by the VerificationMethod as JSON Web Key.
 func (x *jwxImpl) CreateSignJWK() (jwk.Key, error) {
 	if x.key == nil {
 		return nil, errors.New("error while creating jwk: public key not provided")
@@ -57,7 +53,8 @@ func (x *jwxImpl) CreateSignJWK() (jwk.Key, error) {
 	return jwk, nil
 }
 
-func (x *jwxImpl) MarshallJSON() ([]byte, error) {
+// Converting the JWK to a byte array.
+func (x *jwxImpl) Marshal() ([]byte, error) {
 	keyAsJSON, err := json.Marshal(x.jwk)
 	if err != nil {
 		return nil, err
@@ -66,7 +63,8 @@ func (x *jwxImpl) MarshallJSON() ([]byte, error) {
 	return keyAsJSON, nil
 }
 
-func (x *jwxImpl) UnmarshallJSON(key []byte) (*map[string]interface{}, error) {
+// Unmarshalling the key into a map.
+func (x *jwxImpl) Unmarshal(key []byte) (*map[string]interface{}, error) {
 	keyAsMap := map[string]interface{}{}
 	json.Unmarshal(key, &keyAsMap)
 

@@ -1,26 +1,9 @@
 package jwx
 
 import (
-	"encoding/json"
-
 	"github.com/lestrrat-go/jwx/v2/jwa"
-	"github.com/lestrrat-go/jwx/v2/jwe"
 	"github.com/lestrrat-go/jwx/v2/jwk"
-	"github.com/lestrrat-go/jwx/v2/jws"
 )
-
-type JWX interface {
-	json.Marshaler
-	json.Unmarshaler
-
-	CreateEncJWK() (*jwk.Key, error)
-	CreateSignJWK() (*jwk.Key, error)
-	CreateJWS() ([]byte, error)
-	VerifyJWS(payload []byte, opts ...jws.VerifyOption) ([]byte, error)
-	EncryptJWE(payload []byte, options ...jwe.EncryptOption) ([]byte, error)
-	DecryptJWE(payload []byte, opts ...jwe.DecryptOption) ([]byte, error)
-	Sign([]byte, ...jws.SignOption) ([]byte, error)
-}
 
 type KeyType = string
 
@@ -37,6 +20,8 @@ type jwxImpl struct {
 	sigAlg  jwa.SignatureAlgorithm
 }
 
+// It creates a new JWE object, using the given key, and sets the default key and content encryption
+// algorithms to ECDH-ES and AES-CBC-HMAC-SHA256, respectively
 func New(key interface{}) *jwxImpl {
 	return &jwxImpl{
 		jwk:     nil,

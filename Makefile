@@ -1,23 +1,21 @@
-SHELL=/bin/bash
+#!/usr/bin/make -f
 
-# Set this -->[/Users/xxxx/Sonr/]<-- to Folder of Sonr Repos
-ROOT_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
-SCRIPTS_DIR=$(ROOT_DIR)/scripts
 PACKAGES_NOSIMULATION=$(shell go list ./... | grep -v '/simulation')
 PACKAGES_SIMTEST=$(shell go list ./... | grep '/simulation')
 export VERSION := $(shell echo $(shell git describe --always --match "v*") | sed 's/^v//')
 export TMVERSION := $(shell go list -m github.com/tendermint/tendermint | sed 's:.* ::')
 export COMMIT := $(shell git log -1 --format='%H')
-LEDGER_ENABLED ?= false
+LEDGER_ENABLED ?= true
 BINDIR ?= $(GOPATH)/bin
 BUILDDIR ?= $(CURDIR)/build
+APP = ./
 MOCKS_DIR = $(CURDIR)/tests/mocks
 HTTPS_GIT := https://github.com/sonr-io/sonr.git
 DOCKER := $(shell which docker)
-PROJECT_NAME = $(shell git remote get-url origin | xargs basename -s .git)
+PROJECT_NAME = sonr
 # RocksDB is a native dependency, so we don't assume the library is installed.
 # Instead, it must be explicitly enabled and we warn when it is not.
-ENABLE_ROCKSDB ?= true
+ENABLE_ROCKSDB ?= false
 
 # process build tags
 build_tags = netgo
@@ -48,6 +46,10 @@ ifeq (secp,$(findstring secp,$(COSMOS_BUILD_OPTIONS)))
   build_tags += libsecp256k1_sdk
 endif
 
+ifeq (legacy,$(findstring legacy,$(COSMOS_BUILD_OPTIONS)))
+  build_tags += app_v1
+endif
+
 whitespace :=
 whitespace += $(whitespace)
 comma := ,
@@ -59,6 +61,7 @@ ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sonr \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
+		  -X "github.com/cosmos/cosmos-sdk/version.BuildTags=$(build_tags_comma_sep)" \
 			-X github.com/tendermint/tendermint/version.TMCoreSemVer=$(TMVERSION)
 
 ifeq ($(ENABLE_ROCKSDB),true)
@@ -106,43 +109,12 @@ ifeq (debug,$(findstring debug,$(COSMOS_BUILD_OPTIONS)))
   BUILD_FLAGS += -gcflags "all=-N -l"
 endif
 
-all: Makefile
-	@echo ''
-	@sed -n 's/^##//p ' $<
+all: tools build lint test vulncheck
 
-## Makefile
-## > The following Makefile is used for various actions for the Sonr project.
-##
-## bind        :   Binds Android, iOS and Web for Plugin Path
-bind: bind.ios bind.mac bind.android bind.web
 
-## └─ android       - Android AAR
-bind.android:
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -a
-
-## └─ ios           - iOS Framework
-bind.ios:
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
-
-## └─ mac           - Mac Framework
-bind.mac:
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -m
-
-## └─ web           - WASM Framework
-bind.web:
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
-
-## └─ tar           - Build All & Tar Compress
-bind.tar:
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -a
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -i
-	TAR_COMPRESS=true && sh $(SCRIPTS_DIR)/bind.sh -w
-
-## build       :   Builds macos and ubuntu releases for Sonr
-# build:
-# 	env GOOS=linux GOARCH=amd64 go build -o ./build/sonr-linux-amd64 ./cmd/sonrd/main.go
-# 	env GOOS=linux GOARCH=arm64 go build -o ./build/sonr-linux-arm64 ./cmd/sonrd/main.go
-# 	env GOOS=darwin GOARCH=amd64 go build -o ./build/sonr-darwin-amd64 ./cmd/sonrd/main.go
+###############################################################################
+###                                  Build                                  ###
+###############################################################################
 
 BUILD_TARGETS := build install
 
@@ -163,13 +135,24 @@ $(BUILDDIR)/:
 cosmovisor:
 	$(MAKE) -C tools/cosmovisor cosmovisor
 
-.PHONY: build build-linux-amd64 build-linux-arm64 cosmovisor
+rosetta:
+	$(MAKE) -C tools/rosetta rosetta
+
+confix:
+	$(MAKE) -C tools/confix confix
+
+.PHONY: build build-linux-amd64 build-linux-arm64 cosmovisor rosetta confix
 
 
 mocks: $(MOCKS_DIR)
 	@go install github.com/golang/mock/mockgen@v1.6.0
 	sh ./scripts/mockgen.sh
 .PHONY: mocks
+
+
+vulncheck: $(BUILDDIR)/
+	GOBIN=$(BUILDDIR) go install golang.org/x/vuln/cmd/govulncheck@latest
+	$(BUILDDIR)/govulncheck ./...
 
 $(MOCKS_DIR):
 	mkdir -p $(MOCKS_DIR)
@@ -183,24 +166,211 @@ clean:
 
 .PHONY: distclean clean
 
+###############################################################################
+###                          Tools & Dependencies                           ###
+###############################################################################
 
-
-## proto       :   Compiles Go Proto Files and pushes to Buf.Build
-proto: proto.go proto.buf
-
-## └─ go            - Generate to x/*/types and thirdparty/types/*
-proto.go:
-	ignite generate proto-go --yes
+go.sum: go.mod
+	echo "Ensure dependencies have not been modified ..." >&2
+	go mod verify
 	go mod tidy
-	@echo "✅ Generated Go Proto Files"
 
-## └─ buf           - Build and push to buf.build/sonr-io/blockchain
-proto.buf:
-	cd $(ROOT_DIR)/proto && buf mod update && buf build
-	@echo "✅ Pushed Protos to Buf.Build"
+###############################################################################
+###                              Documentation                              ###
+###############################################################################
 
-## └─ publish       - Compiles protos, buf.build publish, Zips protos in build
-proto.publish:
-	cd $(ROOT_DIR)/proto && buf mod update && buf build
-	@echo "✅ Pushed Protos to Buf.Build"
-	cp -r proto/ build/proto/
+update-swagger-docs: statik
+	$(BINDIR)/statik -src=client/docs/swagger-ui -dest=client/docs -f -m
+	@if [ -n "$(git status --porcelain)" ]; then \
+        echo "\033[91mSwagger docs are out of sync!!!\033[0m";\
+        exit 1;\
+    else \
+        echo "\033[92mSwagger docs are in sync\033[0m";\
+    fi
+.PHONY: update-swagger-docs
+
+godocs:
+	@echo "--> Wait a few seconds and visit http://localhost:6060/pkg/github.com/cosmos/cosmos-sdk/types"
+	godoc -http=:6060
+
+build-docs:
+	@cd docs && DOCS_DOMAIN=docs.cosmos.network sh ./build-all.sh
+
+.PHONY: build-docs
+
+###############################################################################
+###                           Tests & Simulation                            ###
+###############################################################################
+
+test: test-unit
+test-e2e:
+	$(MAKE) -C tests test-e2e
+test-e2e-cov:
+	$(MAKE) -C tests test-e2e-cov
+test-integration:
+	$(MAKE) -C tests test-integration
+test-integration-cov:
+	$(MAKE) -C tests test-integration-cov
+test-all: test-unit test-e2e test-integration test-ledger-mock test-race
+
+TEST_PACKAGES=./...
+TEST_TARGETS := test-unit test-unit-amino test-unit-proto test-ledger-mock test-race test-ledger test-race
+
+# Test runs-specific rules. To add a new test target, just add
+# a new rule, customise ARGS or TEST_PACKAGES ad libitum, and
+# append the new rule to the TEST_TARGETS list.
+test-unit: test_tags += cgo ledger test_ledger_mock norace
+test-unit-amino: test_tags += ledger test_ledger_mock test_amino norace
+test-ledger: test_tags += cgo ledger norace
+test-ledger-mock: test_tags += ledger test_ledger_mock norace
+test-race: test_tags += cgo ledger test_ledger_mock
+test-race: ARGS=-race
+test-race: TEST_PACKAGES=$(PACKAGES_NOSIMULATION)
+$(TEST_TARGETS): run-tests
+
+# check-* compiles and collects tests without running them
+# note: go test -c doesn't support multiple packages yet (https://github.com/golang/go/issues/15513)
+CHECK_TEST_TARGETS := check-test-unit check-test-unit-amino
+check-test-unit: test_tags += cgo ledger test_ledger_mock norace
+check-test-unit-amino: test_tags += ledger test_ledger_mock test_amino norace
+$(CHECK_TEST_TARGETS): EXTRA_ARGS=-run=none
+$(CHECK_TEST_TARGETS): run-tests
+
+ARGS += -tags "$(test_tags)"
+SUB_MODULES = $(shell find . -type f -name 'go.mod' -print0 | xargs -0 -n1 dirname | sort)
+CURRENT_DIR = $(shell pwd)
+run-tests:
+ifneq (,$(shell which tparse 2>/dev/null))
+	@echo "Starting unit tests"; \
+	finalec=0; \
+	for module in $(SUB_MODULES); do \
+		cd ${CURRENT_DIR}/$$module; \
+		echo "Running unit tests for module $$module"; \
+		go test -mod=readonly -json $(ARGS) $(TEST_PACKAGES) ./... | tparse; \
+		ec=$$?; \
+		if [ "$$ec" -ne '0' ]; then finalec=$$ec; fi; \
+	done; \
+	exit $$finalec
+else
+	@echo "Starting unit tests"; \
+	finalec=0; \
+	for module in $(SUB_MODULES); do \
+		cd ${CURRENT_DIR}/$$module; \
+		echo "Running unit tests for module $$module"; \
+		go test -mod=readonly $(ARGS) $(TEST_PACKAGES) ./... ; \
+		ec=$$?; \
+		if [ "$$ec" -ne '0' ]; then finalec=$$ec; fi; \
+	done; \
+	exit $$finalec
+endif
+
+.PHONY: run-tests test test-all $(TEST_TARGETS)
+
+test-sim-nondeterminism:
+	@echo "Running non-determinism test..."
+	@go test -mod=readonly -run TestAppStateDeterminism -Enabled=true \
+		-NumBlocks=100 -BlockSize=200 -Commit=true -Period=0 -v -timeout 24h
+
+test-sim-custom-genesis-fast:
+	@echo "Running custom genesis simulation..."
+	@echo "By default, ${HOME}/.gaiad/config/genesis.json will be used."
+	@go test -mod=readonly -run TestFullAppSimulation -Genesis=${HOME}/.gaiad/config/genesis.json \
+		-Enabled=true -NumBlocks=100 -BlockSize=200 -Commit=true -Seed=99 -Period=5 -v -timeout 24h
+
+test-sim-import-export: runsim
+	@echo "Running application import/export simulation. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppImportExport
+
+test-sim-after-import: runsim
+	@echo "Running application simulation-after-import. This may take several minutes..."
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 5 TestAppSimulationAfterImport
+
+test-sim-custom-genesis-multi-seed: runsim
+	@echo "Running multi-seed custom genesis simulation..."
+	@echo "By default, ${HOME}/.gaiad/config/genesis.json will be used."
+	@$(BINDIR)/runsim -Genesis=${HOME}/.gaiad/config/genesis.json -SimAppPkg=. -ExitOnFail 400 5 TestFullAppSimulation
+
+test-sim-multi-seed-long: runsim
+	@echo "Running long multi-seed application simulation. This may take awhile!"
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 500 50 TestFullAppSimulation
+
+test-sim-multi-seed-short: runsim
+	@echo "Running short multi-seed application simulation. This may take awhile!"
+	@$(BINDIR)/runsim -Jobs=4 -SimAppPkg=. -ExitOnFail 50 10 TestFullAppSimulation
+
+test-sim-benchmark-invariants:
+	@echo "Running simulation invariant benchmarks..."
+	@go test -mod=readonly -benchmem -bench=BenchmarkInvariants -run=^$ \
+	-Enabled=true -NumBlocks=1000 -BlockSize=200 \
+	-Period=1 -Commit=true -Seed=57 -v -timeout 24h
+
+.PHONY: \
+test-sim-nondeterminism \
+test-sim-custom-genesis-fast \
+test-sim-import-export \
+test-sim-after-import \
+test-sim-custom-genesis-multi-seed \
+test-sim-multi-seed-short \
+test-sim-multi-seed-long \
+test-sim-benchmark-invariants
+
+SIM_NUM_BLOCKS ?= 500
+SIM_BLOCK_SIZE ?= 200
+SIM_COMMIT ?= true
+
+test-sim-benchmark:
+	@echo "Running application benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(APP) -bench ^BenchmarkFullAppSimulation$$  \
+		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h
+
+test-sim-profile:
+	@echo "Running application benchmark for numBlocks=$(SIM_NUM_BLOCKS), blockSize=$(SIM_BLOCK_SIZE). This may take awhile!"
+	@go test -mod=readonly -benchmem -run=^$$ $(APP) -bench ^BenchmarkFullAppSimulation$$ \
+		-Enabled=true -NumBlocks=$(SIM_NUM_BLOCKS) -BlockSize=$(SIM_BLOCK_SIZE) -Commit=$(SIM_COMMIT) -timeout 24h -cpuprofile cpu.out -memprofile mem.out
+
+.PHONY: test-sim-profile test-sim-benchmark
+
+test-rosetta:
+	docker build -t rosetta-ci:latest -f contrib/rosetta/rosetta-ci/Dockerfile .
+	docker-compose -f contrib/rosetta/docker-compose.yaml up --abort-on-container-exit --exit-code-from test_rosetta --build
+.PHONY: test-rosetta
+
+benchmark:
+	@go test -mod=readonly -bench=. $(PACKAGES_NOSIMULATION)
+.PHONY: benchmark
+
+###############################################################################
+###                                Linting                                  ###
+###############################################################################
+
+golangci_lint_cmd=golangci-lint
+golangci_version=v1.50.1
+
+lint:
+	@echo "--> Running linter"
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	@$(golangci_lint_cmd) run --timeout=10m
+
+lint-fix:
+	@echo "--> Running linter"
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	@$(golangci_lint_cmd) run --fix --out-format=tab --issues-exit-code=0
+
+.PHONY: lint lint-fix
+
+format:
+	@go install github.com/golangci/golangci-lint/cmd/golangci-lint@$(golangci_version)
+	$(golangci_lint_cmd) run --fix
+.PHONY: format
+
+###############################################################################
+###                                rosetta                                  ###
+###############################################################################
+# builds rosetta test data dir
+rosetta-data:
+	-docker container rm data_dir_build
+	docker build -t rosetta-ci:latest -f contrib/rosetta/rosetta-ci/Dockerfile .
+	docker run --name data_dir_build -t rosetta-ci:latest sh /rosetta/data.sh
+	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/rosetta-ci/data.tar.gz"
+	docker container rm data_dir_build
+.PHONY: rosetta-data

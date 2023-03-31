@@ -1,0 +1,129 @@
+---
+title: "Install Motor Flutter"
+sidebarTitle: "Flutter Plugin"
+description: "Configure your Flutter project for the Motor SDK"
+---
+
+The Motor SDK is a set of developer tools for building decentralized applications on the Sonr network. It currently supports Flutter (iOS, Android, MacOS) with plans to support Javascript, React Native, and Web in the future.
+
+Motor Flutter is a Flutter library designed to help developers utilize Sonr in their apps. You can find the package at [motor.build](https://motor.build).
+
+## Using Motor SDK
+
+The Motor Flutter SDK uses the [GetX](https://pub.dev/packages/get) package to
+manage state. This means that you must wrap the `MotorFlutter` service into
+the `Get.putAsync` method. For more information on this, please refer to their
+[documentation](https://pub.dev/packages/get#getxservice).
+
+<CodeGroup>
+
+```sh Install with Flutter CLI
+flutter pub add motor_flutter
+```
+
+```ruby ios/Podfile
+platform :ios, '13.0'         # 1. Add this to the top of the file
+use_frameworks!               # 2. Remove this line
+```
+
+```ruby macos/Podfile
+platform :osx, '10.11'        # 1. Add this to the top of the file
+use_frameworks!               # 2. Remove this line
+```
+
+```dart main.dart
+import 'package:motor_flutter/motor_flutter.dart';
+
+// Modify the main method to be Future<void>
+Future<void> main() async {
+  // Init method sets up State Management with GetX and ensures that Widgets are
+  // rendered before the Motor Node is ready.
+  await MotorFlutter.init();
+
+  // Start your App like normal
+  runApp(const MyApp());
+}
+```
+
+</CodeGroup>
+
+## Start the Motor Node
+
+Spawning a new Motor instance is the first step in using the SDK. This is where you'll configure your app's connection to the Sonr network.
+
+<Note>
+  There should exist only one instance of `Motor` throughout the lifetime of
+  your application.
+</Note>
+
+```go
+import (
+    "github.com/sonr-io/sonr/pkg/motor"
+    "github.com/sonr-io/sonr/third_party/types/common"
+)
+
+func main() {
+    mtr, err := EmptyMotor(&mt.InitializeRequest{
+		    DeviceId: "unique_device_id", // this field must be unique to the device
+	  }, common.DefaultCallback())
+}
+```
+
+Before you can use the motor methods, you must finish initialization by either creating an account or logging in. To create an account you must have the following information.
+
+| Parameter  | Description                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `deviceId` | A unique manufacturer identifier used to recognize the device a Motor is running on                                    |
+| `password` | A user defined secure password to be used in the instance of account recovery                                          |
+| `dsc`      | Device Specific Credential. A 32-byte AES key used to represent the device. Keep this stored in the device's keychain. |
+
+```go
+mtr, err := EmptyMotor(&mt.InitializeRequest{
+    DeviceId: "unique_device_id", // this field must be unique to the device
+}, common.DefaultCallback())
+if err != nil {
+  panic(err)
+}
+
+createResponse, err := mtr.CreateAccount(mt.CreateAccountRequest{
+		Password:  "password123",
+		AesDscKey: aesKey,
+})
+
+// store the pre-shared key somewhere
+store(createResponse.AesPskKey)
+```
+
+Logging in uses a combination of the below.
+
+| Parameter  | Description                                                                                                            |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `did`      | The DID generated during account creation                                                                              |
+| `dscKey`   | Device Specific Credential. A 32-byte AES key used to represent the device. Keep this stored in the device's keychain. |
+| `pskKey`   | Pre-shared key. A 32-byte AES key. This key is meant to be shared between all devices                                  |
+| `password` | The password used during account creation                                                                              |
+
+To login you must provide the PSK and one of either the password or DSC.
+
+```go
+mtr, err := EmptyMotor(&mt.InitializeRequest{
+    DeviceId: "unique_device_id",
+}, common.DefaultCallback())
+if err != nil {
+  panic(err)
+}
+
+loginResponse, err := mtr.Login(mt.LoginRequest{
+    Did:       "<address of the account to be logged in>",
+    Password:  "password123",
+    AesPskKey: pskKey,
+})
+
+// -- OR --
+
+loginResponse, err := mtr.Login(mt.LoginRequest{
+    Did:       "<address of the account to be logged in>",
+    AesDscKey: dscKey,
+    AesPskKey: pskKey,
+})
+```

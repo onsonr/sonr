@@ -1,168 +1,116 @@
-<p align="center">
-  <a href="" rel="noopener">
- <img width=600px src="./docs/static/cover.jpg" alt="Project logo"></a>
-</p>
 
-<h1 align="center"><bold>Sonr</bold></h1>
 
-<div align="center">
+<div style="text-align: center;">
 
-[![CodeFactor](https://www.codefactor.io/repository/github/sonr-io/sonr/badge)](https://www.codefactor.io/repository/github/sonr-io/sonr)
-  [![Status](https://img.shields.io/badge/status-active-success.svg)](https://sonr.io)
-  [![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
-  [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
-  [![GitHub Issues](https://img.shields.io/github/issues/sonr-io/sonr.svg)](https://github.com/sonr-io/sonr/issues)
-  [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/sonr-io/sonr.svg)](https://github.com/sonr-io/sonr/pulls)
-  [![License](https://img.shields.io/badge/license-GPLv3-blue.svg)](/LICENSE)
+[![Sonr Logo Banner](docs/static/images/gh-banner.png)](https://snr.la/h)
+
+[![License](https://img.shields.io/github/license/sonrhq/core)](https://github.com/sonr-io/sonr)
+[![buddy pipeline](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589/badge.svg?token=79d953e83c8db20019b1af51215b13e9eb2fc52ce5c20cbc881a46ae4437bd4c "buddy pipeline")](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
+
 
 </div>
 
----
-
-<p align="center"> Build <strong>privacy-preserving</strong>, <strong>user-centric applications</strong>, on a robust, rapid-scaling platform designed for interoperability, and total digital autonomy.
+<p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
     <br>
 </p>
 
-## 📝 Table of Contents
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [Contributing](./docs/guides/CONTRIBUTING.md)
-- [Authors](#authors)
-- [Acknowledgments](#acknowledgement)
 
-## 🧐 About <a name = "about"></a>
-Sonr aims to be the most immersive and powerful DWeb experience for both Users and Developers alike. We believe the best way to onboard the next billion users is to create a cohesive end-to-end platform that’s composable and interoperable with all existing protocols.
+## Getting Started
 
-For a more in-depth technical look into the Sonr ecosystem please refer to the [Architecture Decision Records](./docs/architecture/GUIDE.md).
+You can setup your macOS or Linux machine to be ready for local development with these steps:
 
-
-## 🏁 Getting Started <a name = "getting_started"></a>
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#-deployment-) for notes on how to deploy the project on a live system.
-
-### Prerequisites
-What things you need to install the software and how to install them.
-- [Go](https://golang.org/doc/install) - v1.18.*
-- [Ignite CLI](https://github.com/ignite/cli) - v0.24.1
-- [Cosmos SDK](https://cosmos.network/docs/getting-started/installation.html) - v0.45.5
-- [Protocol Buffers](https://grpc.io)
-
-### Installing
-A step by step series of examples that tell you how to get a development env running.
-
-Installing Protocol Buffers
-
-```bash
-brew install protobuf
+```sh
+git clone https://github.com/sonr-io/sonr.git       # Clone the repository
+sh scripts/install.sh                               # Install dependencies
+task                                                # Display the available commands
 ```
 
-Installing Ignite
+The `install.sh` script will install the following tools:
 
-```bash
-curl https://get.ignite.com/cli! | bash
+- [Ignite CLI](https://github.com/ignite/cli)
+- [Taskfile](https://taskfile.dev)
+- [Buf CLI](https://docs.buf.build/introduction)
+- [Mintlify](https://mintlify.com/docs/development)
+
+You need to set the following environment variables to run the blockchain:
+
+```sh
+CONNECT_SERVER_HOST="localhost"
+CONNECT_SERVER_PORT="8080"
+TLS_CERT_FILE=""
+TLS_KEY_FILE=""
+ENVIRONMENT="dev"
+HIGHWAY_MODE="fiber"
 ```
 
-Installing Gomobile - for building the Motor library
+## Documentation
 
-```bash
-go install golang.org/x/mobile/cmd/gomobile@latest
-gomobile init
+Sonr utilizes Mintlify to generate documentation from the source code. To view the documentation, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
+
+<details>
+<summary><strong>Architecture Diagram</strong></summary>
+
+![Architecture](./docs/static/images/diagrams/architecture-light.svg)
+
+</details>
+
+<details>
+<summary><strong>Repository Structure Map</strong></summary>
+
+![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
+
+</details>
+
+## Usage
+
+`task serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
+
+<details>
+<summary><strong>Command Reference</strong></summary>
+
+```sh
+* docs:                 Serve the docs locally
+* chain:build:          Build the blockchain                  (aliases: build)
+* chain:generate:       Generate the protobuf files           (aliases: gen)
+* chain:serve:          Serve the blockchain locally          (aliases: serve)
+* motor:android:        Bind the Motor Android Framework      (aliases: android)
+* motor:ios:            Bind the Motor iOS Framework          (aliases: ios)
+* motor:web:            Build the Motor WASM Framework        (aliases: wasm)
+* web:dev:              Run the web app in dev mode           (aliases: web)
+```
+</details>
+<details>
+<summary><strong>Publish New Release</strong></summary>
+
+To release a new version of your blockchain, create and push a new tag with `v` prefix. A new draft release with the configured targets will be created.
+
+```sh
+git tag v0.1
+git push origin v0.1
 ```
 
-## 🔧 Running the tests <a name = "tests"></a>
-Explain how to run the automated tests for this system.
+After a draft release is created, make your final changes from the release page and publish it.
 
-### Setup Test Environment
+</details>
 
-Create file named **.env** in project root and set the following variables:
+### Installation
+To install the latest version of your blockchain node's binary, execute the following command on your machine:
+
+```sh
+curl https://get.ignite.com/sonrhq/core! | sudo bash
 ```
-BLOCKCHAIN_REST=
-BLOCKCHAIN_FAUCET=
-BLOCKCHAIN_RPC=
-IPFS_ADDRESS=
-IPFS_API_ADDRESS=
-VAULT_API_ADDRESS=
-VAULT_ENDPOINT=
-```
+Production endpoints are available at the following URLs:
 
-Refer to **.env.example** for typical values to use. If not set, default values will be used in place.
+- REST API:    [api.sonr.network](https://api.sonr.network)
+- Tendermint:  [rpc.sonr.network](https://rpc.sonr.network)
+- gRPC Server: [grpc.sonr.network](https://grpc.sonr.network)
 
-### Motor Node Tests
+## Community
 
+For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dcrd).
 
-Run a test for a specific method
-```bash
-cd pkg/motor
-go test -run CreateAccount
-```
+For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonr-io/sonr).
 
-Run a specfic test inside a test suite
-```bash
-cd pkg/motor
-go test -run MotorTestSuite -testify.m LoginWithKeys
-```
-
-Run a test suite
-```bash
-cd pkg/motor
-go test -run MotorTestSuite
-```
-
-Run <b>ALL</b> motor tests
-```bash
-cd pkg/motor
-go test
-```
-
-### Blockchain Tests
-
-Get the chain running
-```bash
-ignite chain serve
-```
-
-Test it with `grpc_cli`
-```bash
-grpc_cli ls 137.184.190.146:9090 sonrio.sonr.bucket.Query
-```
-Outputs:
-```
-Params
-WhereIs
-WhereIsByCreator
-WhereIsAll
-```
-
-Running simulation tests
-```bash
-ignite chain simulate
-```
-
-## 🎈 Usage <a name="usage"></a>
-This repo serves as a **pseudo-monorepo** for the Sonr platform. You can find details on the organization of this project in [structure](./docs/guides/STRUCTURE.md).
-- [Working the Makefile](./docs/guides/USAGE.md#working-the-makefile)
-- [Submitting a Proposal](https://github.com/sonr-io/sonr/discussions/521)
-- [Deploying Nodes](./docs/guides/DEPLOYMENT.md)
-
-## ⛏️ Built Using <a name = "built_using"></a>
-List of the main frameworks and tools used to build this project.
-- [Libp2p](https://github.com/libp2p/libp2p) - Networking layer
-- [Cosmos](https://github.com/cosmos-sdk/cosmos) - Blockchain Framework
-- [IPFS](https://github.com/ipfs/ipfs) - Storage Module
-- [HNS](https://handshake.org/) - Decentralized DNS
-
-## ✍️ Authors <a name = "authors"></a>
-See also the list of [contributors](https://github.com/sonr-io/sonr/contributors) who participated in this project.
-- [Prad Nukala](https://github.com/prnk28)
-- [Nick Tindle](https://github.com/ntindle)
-- [Josh Long](https://github.com/joshLong145)
-- [Brayden Cloud](https://github.com/mcjcloud)
-- [Ian Perez](https://github.com/brokecollegekidwithaclothingobsession)
-
-## 🎉 Acknowledgements <a name = "acknowledgement"></a>
-Partners, collaborators, compliance, or just pure appreciation!
-- [W3C](https://www.w3.org/)
-- [Protocol Labs](https://protocol.ai/)
-- [Ignite](https://ignite.com/)
+For feature requests, bugs, or technical questions, [submit feedback here](https://roadmap.sonr.io). For general inquiries or inclusion in our upcoming feature betas, reach out on [Twitter](https://snr.la/tw).
