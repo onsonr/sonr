@@ -44,11 +44,11 @@ message KeygenRequest {
   // The signed credential response from the user.
   string credential_response = 4;
 
-  // The security threshold for the wallet account.
-  int32 security_threshold = 5;
+  // Public Key base64 cbor from Credential.
+  string public_key = 5;
 
-  // Initial accounts is coin types as strings array.
-  repeated string initial_accounts = 6;
+  // The security threshold for the wallet account.
+  int32 security_threshold = 6;
 }
 
 // KeygenResponse is the response to a Keygen request.

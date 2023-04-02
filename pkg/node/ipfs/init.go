@@ -69,15 +69,15 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 //
 
 // defaultNode creates a new node with default options
-func defaultNode(cnfg *nodeconfig.Config) *localIpfs {
-	return &localIpfs{
+func defaultNode(cnfg *nodeconfig.Config) *LocalIpfs {
+	return &LocalIpfs{
 		ctx:   context.Background(),
 		config: cnfg,
 	}
 }
 
 // It's creating a new node and returning the coreAPI and the node itself.
-func (c *localIpfs) initialize() error {
+func (c *LocalIpfs) initialize() error {
 	snrctx := local.NewContext()
 	c.repoPath = snrctx.IPFSRepoPath
 

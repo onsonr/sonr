@@ -1,7 +1,6 @@
-package controller
+package models
 
 import (
-	"encoding/base64"
 	"fmt"
 	"strings"
 	"time"
@@ -25,11 +24,11 @@ type KeyShare interface {
 	// Config returns the cmp.Config.
 	Config() *cmp.Config
 
+	// DeriveBip44 returns a new keyshare with the same key but a new coin type
+	DeriveBip44(ct crypto.CoinType, idx int, name string) (KeyShare, error)
+
 	// Did returns the cid of the keyshare
 	Did() string
-
-	// KeyShareName returns the keyshare name based on the keyshare file name
-	KeyShareName() string
 
 	// PartyID returns the party id based on the keyshare file name
 	PartyID() crypto.PartyID
@@ -37,14 +36,14 @@ type KeyShare interface {
 	// PubKey returns the public key of the keyshare
 	PubKey() *crypto.PubKey
 
-	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-	Encrypt(credential *crypto.WebauthnCredential) error
-
-	// Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-	Decrypt(credential *crypto.WebauthnCredential) error
-
 	// IsEncrypted checks if the file at current path is encrypted.
 	IsEncrypted() bool
+
+	// Encrypt encrypts the keyshare file.
+	Encrypt(credential Credential) error
+
+	// Decrypt decrypts the keyshare file.
+	Decrypt(credential Credential) error
 }
 
 // keyShare is a type that interacts with a cmp.Config file located on disk.
@@ -52,11 +51,6 @@ type keyShare struct {
 	bytes    []byte
 	name     string
 	lastUsed uint32
-}
-
-type Foobar struct {
-	Foo string
-	Bar string
 }
 
 // Keyshare name format is a DID did:{coin_type}:{account_address}#ks-{account_name}-{keyshare_name}
@@ -77,40 +71,8 @@ func NewKeyshare(id string, bytes []byte, coinType crypto.CoinType, accName stri
 	return ks, nil
 }
 
-// LoadKeyshareFromStore loads a keyshare from a store. The value can be a base64 encoded string or a []byte.
-func LoadKeyshareFromStore(key string, value interface{}) (KeyShare, error) {
-	var v []byte
-	switch value := value.(type) {
-	case []byte:
-		v = value
-	case string:
-		bz, err := base64.StdEncoding.DecodeString(value)
-		if err != nil {
-			return nil, err
-		}
-		v = bz
-	default:
-		return nil, fmt.Errorf("invalid value type")
-	}
-	ksr, err := ParseKeyShareDid(key)
-	if err != nil {
-		return nil, err
-	}
-	conf := cmp.EmptyConfig(curve.Secp256k1{})
-	err = conf.UnmarshalBinary(v)
-	if err != nil {
-		return nil, err
-	}
-
-	return &keyShare{
-		bytes:    v,
-		name:     ksr.KeyShareName,
-		lastUsed: uint32(time.Now().Unix()),
-	}, nil
-}
-
-// LoadKeySharePubKeyFromConfigBytes loads KeyShare from a cmp.Config buffer.
-func LoadKeySharePubKeyFromConfigBytes(bytes []byte) (*crypto.PubKey, error) {
+// GetPubKeyFromCmpConfigBytes loads KeyShare from a cmp.Config buffer.
+func GetPubKeyFromCmpConfigBytes(bytes []byte) (*crypto.PubKey, error) {
 	conf := cmp.EmptyConfig(curve.Secp256k1{})
 	err := conf.UnmarshalBinary(bytes)
 	if err != nil {
@@ -129,7 +91,7 @@ func LoadKeySharePubKeyFromConfigBytes(bytes []byte) (*crypto.PubKey, error) {
 
 // AccountName returns the account name based on the keyshare file name
 func (ks *keyShare) AccountName() string {
-	res, err := ParseKeyShareDid(ks.name)
+	res, err := ParseKeyShareDID(ks.name)
 	if err != nil {
 		return ""
 	}
@@ -143,7 +105,7 @@ func (ks *keyShare) Bytes() []byte {
 
 // CoinType returns the coin type based on the keyshare file name
 func (ks *keyShare) CoinType() crypto.CoinType {
-	res, err := ParseKeyShareDid(ks.name)
+	res, err := ParseKeyShareDID(ks.name)
 	if err != nil {
 		return crypto.SONRCoinType
 	}
@@ -161,23 +123,28 @@ func (ks *keyShare) Config() *cmp.Config {
 	return cnfg
 }
 
+// DeriveBip44 returns a derived keyshare from the current keyshare.
+func (ks *keyShare) DeriveBip44(ct crypto.CoinType, idx int, name string) (KeyShare, error) {
+	cnfg, err := ks.Config().DeriveBIP32(uint32(ct.BipPath()))
+	if err != nil {
+		return nil, err
+	}
+
+	bz, err := cnfg.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return NewKeyshare(ks.name, bz, ct, name)
+}
+
 // Did returns the cid of the keyshare
 func (ks *keyShare) Did() string {
 	return ks.name
 }
 
-// Keyshare name format is /{purpose}/{coin_type}/{account_name}/{keyshare_name}
-func (ks *keyShare) KeyShareName() string {
-	res, err := ParseKeyShareDid(ks.name)
-	if err != nil {
-		return ""
-	}
-	return res.KeyShareName
-}
-
 // PartyID returns the party id based on the keyshare file name
 func (ks *keyShare) PartyID() crypto.PartyID {
-	res, err := ParseKeyShareDid(ks.name)
+	res, err := ParseKeyShareDID(ks.name)
 	if err != nil {
 		panic(err)
 	}
@@ -198,8 +165,8 @@ func (ks *keyShare) PubKey() *crypto.PubKey {
 }
 
 // Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (ks *keyShare) Encrypt(credential *crypto.WebauthnCredential) error {
-	if ks.name == "vault" {
+func (ks *keyShare) Encrypt(credential Credential) error {
+	if ks.IsEncrypted() {
 		return nil
 	}
 	enc, err := credential.Encrypt(ks.bytes)
@@ -208,12 +175,11 @@ func (ks *keyShare) Encrypt(credential *crypto.WebauthnCredential) error {
 	}
 	ks.lastUsed = uint32(time.Now().Unix())
 	ks.bytes = enc
-	ks.name += "'" // encrypted keyshares have an apostrophe at the end
 	return nil
 }
 
 // Decrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (ks *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
+func (ks *keyShare) Decrypt(credential Credential) error {
 	if !ks.IsEncrypted() {
 		return nil
 	}
@@ -224,12 +190,22 @@ func (ks *keyShare) Decrypt(credential *crypto.WebauthnCredential) error {
 	}
 	ks.lastUsed = uint32(time.Now().Unix())
 	ks.bytes = dec
-	ks.name = strings.TrimSuffix(ks.name, "'") // remove the apostrophe
 	return nil
 }
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                           Helper Methods for KeyShare                          ||
+// ! ||--------------------------------------------------------------------------------||
 
 // A Keyshare is encrypted if its name contains an apostrophe at the end.
 func (ks *keyShare) IsEncrypted() bool {
+	if ks.IsVault() {
 		return false
+	}
+	return strings.HasSuffix(ks.name, "'")
 }
+
+func (ks *keyShare) IsVault() bool {
+	return strings.Contains(ks.name, "vault")
+}
+

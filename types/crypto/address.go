@@ -2,7 +2,10 @@ package crypto
 
 import (
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/base64"
 	"encoding/hex"
+	"strings"
 
 	ethcrypto "github.com/ethereum/go-ethereum/crypto"
 	"github.com/shengdoushi/base58"
@@ -46,4 +49,26 @@ func BitcoinAddress(pk *PubKey) string {
 	// Step 6: Encode the result using Base58
 	address := base58.Encode(fullPayload, base58.BitcoinAlphabet)
 	return address
+}
+
+func Base64UrlToBytes(base64Url string) ([]byte, error) {
+	base64String := strings.ReplaceAll(strings.ReplaceAll(base64Url, "-", "+"), "_", "/")
+	missingPadding := len(base64String) % 4
+	if missingPadding > 0 {
+		base64String += strings.Repeat("=", 4-missingPadding)
+	}
+	return base64.StdEncoding.DecodeString(base64String)
+}
+
+func ParseCredentialPublicKey(pubStr string) (interface{}, error) {
+	derEncodedPublicKey, err := Base64UrlToBytes(pubStr)
+	if err != nil {
+		return nil, err
+	}
+
+	publicKey, err := x509.ParsePKIXPublicKey(derEncodedPublicKey)
+	if err != nil {
+		return nil, err
+	}
+	return publicKey, nil
 }

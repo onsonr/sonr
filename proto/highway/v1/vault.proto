@@ -83,6 +83,30 @@ message RefreshShareResponse {
   string rp_name = 5;
 }
 
+message ReadMailRequest {
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 1;
+
+  // The Sonr account address for the user.
+  string account_address = 2;
+}
+
+message SendMailRequest {
+  string origin = 1;
+  string from_address = 2;
+  string to_address = 3;
+  string message = 4;
+}
+
+message ReadMailResponse {
+  bool success = 1;
+  map<string, string> messages = 2;
+}
+
+message SendMailResponse {
+  bool success = 1;
+}
+
 
 // ==================================================================
 // GRPC/REST SERVICE
@@ -93,4 +117,6 @@ service Vault {
   rpc Add(AddShareRequest) returns (AddShareResponse) {}
   rpc Sync(SyncShareRequest) returns (SyncShareResponse) {}
   rpc Refresh(RefreshShareRequest) returns (RefreshShareResponse) {}
+  rpc ReadMail(ReadMailRequest) returns (ReadMailResponse) {}
+  rpc SendMail(SendMailRequest) returns (SendMailResponse) {}
 }

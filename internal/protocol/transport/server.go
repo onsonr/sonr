@@ -46,7 +46,16 @@ func NewHttpTransport(ctx client.Context) *HttpTransport {
 	// Auth Methods
 	rest.Post("/highway/auth/keygen", timeout.New(rest.Keygen, time.Second*10))
 	rest.Post("/highway/auth/login", timeout.New(rest.Login, time.Second*10))
-	rest.Post("/highway/vault/add", timeout.New(rest.AddShare, time.Second*5))
-	rest.Post("/highway/vault/sync", timeout.New(rest.SyncShare, time.Second*5))
+
+	// MPC Methods
+	rest.Post("/highway/accounts/create", timeout.New(rest.CreateAccount, time.Second*5))
+	rest.Post("/highway/accounts/get", timeout.New(rest.GetAccount, time.Second*5))
+	rest.Post("/highway/accounts/list", timeout.New(rest.ListAccounts, time.Second*5))
+	rest.Post("/highway/accounts/sign", timeout.New(rest.SignMessage, time.Second*5))
+	rest.Post("/highway/accounts/verify", timeout.New(rest.VerifyMessage, time.Second*5))
+
+	// Inbox Methods
+	rest.Post("/highway/inbox/send", timeout.New(rest.SendMail, time.Second*5))
+	rest.Post("/highway/inbox/read", timeout.New(rest.ReadMail, time.Second*5))
 	return rest
 }

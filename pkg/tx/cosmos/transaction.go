@@ -10,11 +10,11 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/sonrhq/core/internal/protocol/packages/controller"
+	"github.com/sonrhq/core/internal/models"
 )
 
 // SignTransaction signs a Cosmos transaction for Token Transfer
-func SignTransaction(wa controller.Account, to string, amount sdk.Int, denom string) ([]byte, error) {
+func SignTransaction(wa models.Account, to string, amount sdk.Int, denom string) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody("/cosmos.bank.v1beta1.MsgSend", &banktypes.MsgSend{
 		FromAddress: wa.Address(),
@@ -41,7 +41,7 @@ func SignTransaction(wa controller.Account, to string, amount sdk.Int, denom str
 }
 
 // SignAnyTransactions signs a Cosmos transaction for a list of arbitrary messages
-func SignAnyTransactions(wa controller.Account, typeUrl string, msgs ...sdk.Msg) ([]byte, error) {
+func SignAnyTransactions(wa models.Account, typeUrl string, msgs ...sdk.Msg) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody(typeUrl, msgs...)
 	if err != nil {
@@ -84,7 +84,7 @@ func buildTxBody(typeUrl string, msgs ...sdk.Msg) (*txtypes.TxBody, error) {
 }
 
 // createRawTxBytes is a helper function to create a raw raw transaction and Marshal it to bytes
-func createRawTxBytes(body []byte, sig []byte, wa controller.Account) ([]byte, error) {
+func createRawTxBytes(body []byte, sig []byte, wa models.Account) ([]byte, error) {
 	// Get AuthInfo
 	authInfo, err := wa.GetAuthInfo(sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(2))))
 	if err != nil {
@@ -107,7 +107,7 @@ func createRawTxBytes(body []byte, sig []byte, wa controller.Account) ([]byte, e
 	return txRaw.Marshal()
 }
 
-func signTxBodyBytes(wa controller.Account, txBody *txtypes.TxBody) ([]byte, []byte, error) {
+func signTxBodyBytes(wa models.Account, txBody *txtypes.TxBody) ([]byte, []byte, error) {
 	// Serialize the transaction body.
 	txBodyBz, err := txBody.Marshal()
 	if err != nil {

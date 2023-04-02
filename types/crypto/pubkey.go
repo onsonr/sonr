@@ -24,17 +24,6 @@ type (
 )
 
 
-// `SNRPubKey` is a `PubKey` that has a `DID` and a `Multibase`
-// @property {string} DID - The DID of the SNR
-// @property {string} Multibase - The multibase encoding of the DID.
-type SNRPubKey interface {
-	cryptotypes.PubKey
-
-	Bech32(pfix string) (string, error)
-	Multibase() string
-	Raw() []byte
-}
-
 
 //
 // Constructors

@@ -28,7 +28,7 @@ func AllCoinTypes() []CoinType {
 func CoinTypeFromAddrPrefix(str string) CoinType {
 	coins := AllCoinTypes()
 	for _, coin := range coins {
-		if coin.AddrPrefix() == str {
+		if strings.Contains(str, coin.AddrPrefix()) {
 			return coin
 		}
 	}

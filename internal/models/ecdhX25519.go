@@ -1,4 +1,4 @@
-package crypto
+package models
 
 import (
 	"crypto/aes"
@@ -16,6 +16,7 @@ import (
 	"math/big"
 
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/sonrhq/core/pkg/crypto"
 	"golang.org/x/crypto/hkdf"
 )
 
@@ -104,7 +105,7 @@ func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	return encKeyBytes, macKeyBytes
 }
 
-func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error) {
+func derivePrivateKey(credential *crypto.WebauthnCredential) (*ecdsa.PrivateKey, error) {
 	// Parse the public key from the credential
 	pubKeyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
 	if err != nil {

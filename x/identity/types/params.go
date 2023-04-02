@@ -47,8 +47,6 @@ func (p Params) Validate() error {
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
 func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, challenge protocol.URLEncodedBase64) (protocol.CredentialCreation, error) {
-
-
 	// Build the credential creation options.
 	opts := protocol.PublicKeyCredentialCreationOptions{
 		// Generated Challenge.

@@ -1,4 +1,4 @@
-package resolver
+package models
 
 import (
 	"encoding/base64"
@@ -107,4 +107,10 @@ func ParseAccountDID(name string) (*KeyShareParseResult, error) {
 		CoinType:     ct,
 		AccountAddress:  accountAddress,
 	}, nil
+}
+
+// FormatBlockchainAddressAsDID formats a blockchain address as a DID.
+func FormatBlockchainAddressAsDID(addr string) (string) {
+	ct := crypto.CoinTypeFromAddrPrefix(addr)
+	return fmt.Sprintf("did:%s:%s", ct.DidMethod(), addr)
 }

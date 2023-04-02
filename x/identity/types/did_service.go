@@ -56,7 +56,7 @@ func (d *DidDocument) RemoveServiceByID(id string) bool {
 
 func (d *DidDocument) GetVaultService() *Service {
 	for _, s := range d.Service {
-		if s.Type == "EncryptedVault" && s.CID() != "" {
+		if s.Type == "EncryptedVault"{
 			return s
 		}
 	}
@@ -116,51 +116,13 @@ func (vm *Service) VerifyCreationChallenge(resp string) (*types.WebauthnCredenti
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
 func (vm *Service) VeriifyAssertionChallenge(resp string, cred *types.WebauthnCredential) error {
-	// pca, err := parseAssertionData(resp)
-	// if err != nil {
-	// 	return err
-	// }
+	pca, err := parseAssertionData(resp)
+	if err != nil {
+		return err
+	}
+	if pca == nil {
+		return fmt.Errorf("no assertion data")
+	}
 	return nil
 }
 
-// ResolveEndpointURL finds the endpoint with the given type and unmarshalls it as single URL.
-// It returns the endpoint ID and URL, or an error if anything went wrong;
-// - holder document can't be resolved,
-// - service with given type doesn't exist,
-// - multiple services match,
-// - serviceEndpoint isn't a string.
-func (d *DidDocument) ResolveEndpointURL(serviceType string) (endpointID string, endpointURL string, err error) {
-	var services []*Service
-	for _, service := range d.Service {
-		if service.Type == serviceType {
-			services = append(services, service)
-		}
-	}
-	if len(services) == 0 {
-		return "", "", fmt.Errorf("service not found (did=%s, type=%s)", d.Id, serviceType)
-	}
-	if len(services) > 1 {
-		return "", "", fmt.Errorf("multiple services found (did=%s, type=%s)", d.Id, serviceType)
-	}
-	err = services[0].UnmarshalServiceEndpoint(&endpointURL)
-	if err != nil {
-		return "", "", fmt.Errorf("unable to unmarshal single URL from service (id=%s): %w", services[0].Id, err)
-	}
-	return services[0].Id, endpointURL, nil
-}
-
-// Unmarshal unmarshalls the service endpoint into a domain-specific type.
-func (s Service) UnmarshalServiceEndpoint(target interface{}) error {
-	if asJSON, err := json.Marshal(s.Origin); err != nil {
-		return err
-	} else {
-		return json.Unmarshal(asJSON, target)
-	}
-}
-
-func (s *Service) CID() string {
-	if strings.Contains(s.Origin, "ipfs") {
-		return strings.TrimPrefix(s.Origin, "https://ipfs.sonr.network")
-	}
-	return ""
-}

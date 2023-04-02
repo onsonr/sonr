@@ -5,10 +5,10 @@ import (
 	"math/big"
 
 	"cosmossdk.io/math"
-"github.com/sonrhq/core/internal/protocol/packages/controller"
+	"github.com/sonrhq/core/internal/models"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/tx/cosmos"
 	"github.com/sonrhq/core/pkg/tx/eth"
-	"github.com/sonrhq/core/pkg/crypto"
 )
 
 type SonrTxBuilder interface {
@@ -17,11 +17,11 @@ type SonrTxBuilder interface {
 
 type sonrTxBuilder struct {
 	chainID string
-	acc     controller.Account
+	acc     models.Account
 	ct      crypto.CoinType
 }
 
-func NewSonrTxBuilder(chainID string, acc controller.Account) SonrTxBuilder {
+func NewSonrTxBuilder(chainID string, acc models.Account) SonrTxBuilder {
 	return &sonrTxBuilder{
 		chainID: chainID,
 		acc:     acc,

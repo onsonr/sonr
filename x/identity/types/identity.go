@@ -40,7 +40,6 @@ func NewPrimaryIdentity(did string, pubKey *crypto.PubKey, cred *VerificationMet
 	doc := NewBlankDocument(did)
 	doc.AssertionMethod = append(doc.AssertionMethod, vm.Id)
 	doc.VerificationMethod = append(doc.VerificationMethod, vm)
-
 	if cred != nil {
 		doc.VerificationMethod = append(doc.VerificationMethod, cred)
 		doc.Authentication = append(doc.Authentication, cred.Id)

@@ -60,7 +60,7 @@ type IPFSNode interface {
 	GetPath(hash string) (map[string]files.Node, error)
 
 	// It's returning a DocumentStore for the given username.
-	LoadDocsStore(username string) (iface.DocumentStore, error)
+	LoadDocsStore(username string, opts *iface.CreateDocumentDBOptions) (iface.DocumentStore, error)
 
 	// It's returning a DocumentStore for the given username.
 	LoadEventLogStore(username string) (iface.EventLogStore, error)

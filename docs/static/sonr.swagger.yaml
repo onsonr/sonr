@@ -770,6 +770,15 @@ definitions:
         type: string
         description: Credential Options for the request.
     description: RegisterFinishResponse is the response to a CreateAccount request.
+  v1ReadMailResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      messages:
+        type: object
+        additionalProperties:
+          type: string
   v1RefreshShareResponse:
     type: object
     properties:
@@ -789,6 +798,11 @@ definitions:
         type: string
         description: Relaying party name for the request.
     description: LoginStartResponse is the response to a Login request.
+  v1SendMailResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
   v1SignMessageResponse:
     type: object
     properties:

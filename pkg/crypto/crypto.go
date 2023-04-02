@@ -15,9 +15,6 @@ import (
 	types "github.com/sonrhq/core/types/crypto"
 )
 
-// SNRPubKey is a type alias for common.SNRPubKey in pkg/common.
-type SNRPubKey = types.SNRPubKey
-
 // CoinType is a type alias for types.CoinType in pkg/crypto/internal/types.
 type CoinType = types.CoinType
 
@@ -178,15 +175,6 @@ func PubKeyFromBytes(bz []byte) (*PubKey, error) {
 	return types.NewPubKey(bz[n:], kt), nil
 }
 
-// PubKeyFromCommon takes a common.SNRPubKey and returns a PubKey
-func PubKeyFromCommon(pk SNRPubKey) (*PubKey, error) {
-	t, err := types.KeyTypeFromPrettyString(pk.Type())
-	if err != nil {
-		return nil, fmt.Errorf("error retreiving key type from PubKey interface: %w", err)
-	}
-	return types.NewPubKey(pk.Raw(), t), nil
-}
-
 // PubKeyFromWebAuthn takes a webauthncose.Key and returns a PubKey
 func PubKeyFromWebAuthn(cred *types.WebauthnCredential) (*PubKey, error) {
 	if cred == nil {
@@ -204,5 +192,58 @@ func PubKeyFromWebAuthn(cred *types.WebauthnCredential) (*PubKey, error) {
 		return NewEd25519PubKey(pub.XCoord), nil
 	default:
 		return nil, fmt.Errorf("unsupported public key type: %T", pub)
+	}
+}
+
+func DeriveBIP44(config *cmp.Config, coinType types.CoinType, account, change, addressIndex uint32) (*cmp.Config, error) {
+    purpose := uint32(44)
+
+    // m / purpose'
+    configPurpose, err := config.DeriveBIP32(purpose | 0x80000000)
+    if err != nil {
+        return nil, err
+    }
+
+    // m / purpose' / coin_type'
+    configCoinType, err := configPurpose.DeriveBIP32(uint32(coinType.BipPath()) | 0x80000000)
+    if err != nil {
+        return nil, err
+    }
+
+    // m / purpose' / coin_type' / account'
+    configAccount, err := configCoinType.DeriveBIP32(account | 0x80000000)
+    if err != nil {
+        return nil, err
+    }
+
+    // m / purpose' / coin_type' / account' / change
+    configChange, err := configAccount.DeriveBIP32(change)
+    if err != nil {
+        return nil, err
+    }
+
+    // m / purpose' / coin_type' / account' / change / address_index
+    configAddress, err := configChange.DeriveBIP32(addressIndex)
+    if err != nil {
+        return nil, err
+    }
+
+    return configAddress, nil
+}
+
+const hardenedOffset uint32 = 0x80000000
+
+func formatBip44Path(coinType types.CoinType, idx int) []uint32 {
+	purpose := uint32(44)
+	coinTypeNum := uint32(coinType.BipPath())
+	account := uint32(0)
+	change := uint32(0)
+	addressIndex := uint32(idx)
+	return []uint32{
+		purpose + hardenedOffset,
+		coinTypeNum + hardenedOffset,
+		account + hardenedOffset,
+		change,
+		addressIndex,
 	}
 }

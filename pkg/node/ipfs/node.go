@@ -23,12 +23,12 @@ import (
 	types "github.com/sonrhq/core/types/common"
 )
 
-// `localIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
+// `LocalIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a
 // `NodeCallback` and a `Context` and a `[]string` and a `Peer_Type` and a `string`.
-// @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the localIpfs
+// @property  - `icore.CoreAPI` is the interface that the node will use to communicate with the LocalIpfs
 // daemon.
-// @property node - The localIpfs node
-// @property {string} repoPath - The path to the localIpfs repository.
+// @property node - The LocalIpfs node
+// @property {string} repoPath - The path to the LocalIpfs repository.
 // @property walletShare - This is the wallet share object that is used to share the wallet with other
 // nodes.
 // @property callback - This is a callback function that will be called when the node is ready.
@@ -37,7 +37,7 @@ import (
 // @property peerType - The type of peer, which can be either a bootstrap node or a normal node.
 // @property {string} rendezvous - The rendezvous string is a unique identifier for the swarm. It is
 // used to find other peers in the swarm.
-type localIpfs struct {
+type LocalIpfs struct {
 	api  icore.CoreAPI
 	node *core.IpfsNode
 
@@ -49,12 +49,12 @@ type localIpfs struct {
 	orbitDb iface.OrbitDB
 }
 
-func (n *localIpfs) CoreAPI() icore.CoreAPI {
+func (n *LocalIpfs) CoreAPI() icore.CoreAPI {
 	return n.api
 }
 
 // Connect connects to a peer with a given multiaddress
-func (n *localIpfs) Connect(peers ...string) error {
+func (n *LocalIpfs) Connect(peers ...string) error {
 	var wg sync.WaitGroup
 	peerInfos := make(map[peer.ID]*peer.AddrInfo, len(peers))
 	for _, addrStr := range peers {
@@ -91,7 +91,7 @@ func (n *localIpfs) Connect(peers ...string) error {
 
 
 // Add adds a file to the network
-func (n *localIpfs) Add(file []byte) (string, error) {
+func (n *LocalIpfs) Add(file []byte) (string, error) {
 	filename := uuid.New().String()
 	// Generate a temporary directory
 	inputBasePath, err := os.MkdirTemp("", filename)
@@ -124,7 +124,7 @@ func (n *localIpfs) Add(file []byte) (string, error) {
 }
 
 // AddPath adds all files/folders in a given path to the network
-func (n *localIpfs) AddPath(path string) (string, error) {
+func (n *LocalIpfs) AddPath(path string) (string, error) {
 	// Get File Node
 	fileNode, err := getUnixfsNode(path)
 	if err != nil {
@@ -140,7 +140,7 @@ func (n *localIpfs) AddPath(path string) (string, error) {
 }
 
 // Get returns a file from the network given its CID
-func (n *localIpfs) Get(cidStr string) ([]byte, error) {
+func (n *LocalIpfs) Get(cidStr string) ([]byte, error) {
 	filename := uuid.New().String()
 	cid, err := cid.Parse(cidStr)
 	if err != nil {
@@ -179,7 +179,7 @@ func (n *localIpfs) Get(cidStr string) ([]byte, error) {
 
 
 // GetPath returns a file from the network given its CID
-func (n *localIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
+func (n *LocalIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
 	cid, err := cid.Parse(cidStr)
 	if err != nil {
 		return nil, err
@@ -201,17 +201,17 @@ func (n *localIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
 }
 
 // PeerID returns the node's PeerID
-func (n *localIpfs) PeerID() peer.ID {
+func (n *LocalIpfs) PeerID() peer.ID {
 	return n.node.Identity
 }
 
 // MultiAddr returns the node's multiaddress as a string
-func (n *localIpfs) MultiAddrs() string {
+func (n *LocalIpfs) MultiAddrs() string {
 	return fmt.Sprintf("/ip4/127.0.0.1/udp/4010/p2p/%s", n.node.Identity.String())
 }
 
 // Peer returns the node's peer info
-func (n *localIpfs) Peer() *types.PeerInfo {
+func (n *LocalIpfs) Peer() *types.PeerInfo {
 	return &types.PeerInfo{
 		PeerId:    n.PeerID().String(),
 		Multiaddr: n.MultiAddrs(),
@@ -219,12 +219,12 @@ func (n *localIpfs) Peer() *types.PeerInfo {
 }
 
 // Close closes the node
-func (n *localIpfs) Close() error {
+func (n *LocalIpfs) Close() error {
 	return n.node.Close()
 }
 
 // GetDocsStore creates or loads a document database from given name
-func (r *localIpfs) LoadDocsStore(username string) (iface.DocumentStore, error) {
+func (r *LocalIpfs) LoadDocsStore(username string, docsOpts *iface.CreateDocumentDBOptions) (iface.DocumentStore, error) {
 	addr, err := fetchDocsAddress(r.orbitDb, username)
 	if err != nil {
 		return nil, err
@@ -233,7 +233,7 @@ func (r *localIpfs) LoadDocsStore(username string) (iface.DocumentStore, error) 
 }
 
 // GetEventLogStore creates or loads an event log database from given name
-func (r *localIpfs) LoadEventLogStore(username string) (iface.EventLogStore, error) {
+func (r *LocalIpfs) LoadEventLogStore(username string) (iface.EventLogStore, error) {
 	addr, err := fetchEventLogAddress( r.orbitDb, username)
 	if err != nil {
 		return nil, err
@@ -242,14 +242,10 @@ func (r *localIpfs) LoadEventLogStore(username string) (iface.EventLogStore, err
 }
 
 // GetKeyValueStore creates or loads a key value database from given name
-func (r *localIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, error) {
+func (r *LocalIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, error) {
 	addr, err := fetchKeyValueAddress(r.orbitDb, username)
 	if err != nil {
 		return nil, err
 	}
 	return r.orbitDb.KeyValue(r.ctx, addr, nil)
-}
-// GetKeyValueStore creates or loads a key value database from given name
-func (r *localIpfs) GetKeyValueStoreFromAddress(addr string) (iface.KeyValueStore, error) {
-	return r.orbitDb.KeyValue(context.Background(), addr, nil)
 }

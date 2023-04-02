@@ -41,7 +41,7 @@ func TestOrbitDB(t *testing.T) {
 	}
 
 	// Add a file to the network
-	docsStore, err := node.LoadDocsStore("testDocStore")
+	docsStore, err := node.LoadDocsStore("testDocStore", nil)
 	if err != nil {
 		t.Fatal(err)
 	}

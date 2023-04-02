@@ -80,7 +80,7 @@ func OpenEventLogStore(ctx context.Context, controllerAddr string) (IPFSEventLog
 }
 
 // OpenDocumentStore creates a new IPFSDocsStore. This requires a valid Sonr Account Public Key.
-func OpenDocumentStore(ctx context.Context, controllerAddr string) (IPFSDocsStore, error) {
+func OpenDocumentStore(ctx context.Context, controllerAddr string, opts *iface.CreateDocumentDBOptions) (IPFSDocsStore, error) {
 	if local == nil {
 		err := StartLocalIPFS()
 		if err != nil {
@@ -88,7 +88,7 @@ func OpenDocumentStore(ctx context.Context, controllerAddr string) (IPFSDocsStor
 		}
 	}
 
-	ds, err := local.LoadDocsStore(controllerAddr)
+	ds, err := local.LoadDocsStore(controllerAddr, opts)
 	if err != nil {
 		return nil, err
 	}

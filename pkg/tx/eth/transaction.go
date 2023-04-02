@@ -7,7 +7,7 @@ import (
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/rlp"
-"github.com/sonrhq/core/internal/protocol/packages/controller"
+	"github.com/sonrhq/core/internal/models"
 )
 
 // EthereumTransaction represents the Ethereum transaction data
@@ -21,7 +21,7 @@ type EthereumTransaction struct {
 }
 
 // SignEthereumTransaction signs an Ethereum transaction using the wallet account abstraction
-func SignEthereumTransaction(wa controller.Account, to string, amount *big.Int) ([]byte, error) {
+func SignEthereumTransaction(wa models.Account, to string, amount *big.Int) ([]byte, error) {
 	// Set default gas limit and gas price
 	defaultGasLimit := uint64(21000)
 	defaultGasPrice := big.NewInt(20000000000) // 20 Gwei

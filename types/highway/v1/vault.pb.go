@@ -431,6 +431,224 @@ func (m *RefreshShareResponse) GetRpName() string {
 	return ""
 }
 
+type ReadMailRequest struct {
+	// The origin of the request. This is used to query the Blockchain for the Service DID.
+	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	// The Sonr account address for the user.
+	AccountAddress string `protobuf:"bytes,2,opt,name=account_address,json=accountAddress,proto3" json:"account_address,omitempty"`
+}
+
+func (m *ReadMailRequest) Reset()         { *m = ReadMailRequest{} }
+func (m *ReadMailRequest) String() string { return proto.CompactTextString(m) }
+func (*ReadMailRequest) ProtoMessage()    {}
+func (*ReadMailRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4761d9884e4d1728, []int{6}
+}
+func (m *ReadMailRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ReadMailRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ReadMailRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ReadMailRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReadMailRequest.Merge(m, src)
+}
+func (m *ReadMailRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ReadMailRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReadMailRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReadMailRequest proto.InternalMessageInfo
+
+func (m *ReadMailRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *ReadMailRequest) GetAccountAddress() string {
+	if m != nil {
+		return m.AccountAddress
+	}
+	return ""
+}
+
+type SendMailRequest struct {
+	Origin      string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	FromAddress string `protobuf:"bytes,2,opt,name=from_address,json=fromAddress,proto3" json:"from_address,omitempty"`
+	ToAddress   string `protobuf:"bytes,3,opt,name=to_address,json=toAddress,proto3" json:"to_address,omitempty"`
+	Message     string `protobuf:"bytes,4,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (m *SendMailRequest) Reset()         { *m = SendMailRequest{} }
+func (m *SendMailRequest) String() string { return proto.CompactTextString(m) }
+func (*SendMailRequest) ProtoMessage()    {}
+func (*SendMailRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4761d9884e4d1728, []int{7}
+}
+func (m *SendMailRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SendMailRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SendMailRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SendMailRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendMailRequest.Merge(m, src)
+}
+func (m *SendMailRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *SendMailRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendMailRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendMailRequest proto.InternalMessageInfo
+
+func (m *SendMailRequest) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *SendMailRequest) GetFromAddress() string {
+	if m != nil {
+		return m.FromAddress
+	}
+	return ""
+}
+
+func (m *SendMailRequest) GetToAddress() string {
+	if m != nil {
+		return m.ToAddress
+	}
+	return ""
+}
+
+func (m *SendMailRequest) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+type ReadMailResponse struct {
+	Success  bool              `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Messages map[string]string `protobuf:"bytes,2,rep,name=messages,proto3" json:"messages,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+}
+
+func (m *ReadMailResponse) Reset()         { *m = ReadMailResponse{} }
+func (m *ReadMailResponse) String() string { return proto.CompactTextString(m) }
+func (*ReadMailResponse) ProtoMessage()    {}
+func (*ReadMailResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4761d9884e4d1728, []int{8}
+}
+func (m *ReadMailResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ReadMailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ReadMailResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ReadMailResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ReadMailResponse.Merge(m, src)
+}
+func (m *ReadMailResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ReadMailResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ReadMailResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ReadMailResponse proto.InternalMessageInfo
+
+func (m *ReadMailResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *ReadMailResponse) GetMessages() map[string]string {
+	if m != nil {
+		return m.Messages
+	}
+	return nil
+}
+
+type SendMailResponse struct {
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+}
+
+func (m *SendMailResponse) Reset()         { *m = SendMailResponse{} }
+func (m *SendMailResponse) String() string { return proto.CompactTextString(m) }
+func (*SendMailResponse) ProtoMessage()    {}
+func (*SendMailResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_4761d9884e4d1728, []int{9}
+}
+func (m *SendMailResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SendMailResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SendMailResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SendMailResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SendMailResponse.Merge(m, src)
+}
+func (m *SendMailResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *SendMailResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SendMailResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SendMailResponse proto.InternalMessageInfo
+
+func (m *SendMailResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
 func init() {
 	proto.RegisterType((*AddShareRequest)(nil), "sonrhq.highway.v1.AddShareRequest")
 	proto.RegisterType((*AddShareResponse)(nil), "sonrhq.highway.v1.AddShareResponse")
@@ -438,43 +656,58 @@ func init() {
 	proto.RegisterType((*SyncShareResponse)(nil), "sonrhq.highway.v1.SyncShareResponse")
 	proto.RegisterType((*RefreshShareRequest)(nil), "sonrhq.highway.v1.RefreshShareRequest")
 	proto.RegisterType((*RefreshShareResponse)(nil), "sonrhq.highway.v1.RefreshShareResponse")
+	proto.RegisterType((*ReadMailRequest)(nil), "sonrhq.highway.v1.ReadMailRequest")
+	proto.RegisterType((*SendMailRequest)(nil), "sonrhq.highway.v1.SendMailRequest")
+	proto.RegisterType((*ReadMailResponse)(nil), "sonrhq.highway.v1.ReadMailResponse")
+	proto.RegisterMapType((map[string]string)(nil), "sonrhq.highway.v1.ReadMailResponse.MessagesEntry")
+	proto.RegisterType((*SendMailResponse)(nil), "sonrhq.highway.v1.SendMailResponse")
 }
 
 func init() { proto.RegisterFile("highway/v1/vault.proto", fileDescriptor_4761d9884e4d1728) }
 
 var fileDescriptor_4761d9884e4d1728 = []byte{
-	// 489 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcf, 0x6e, 0xd3, 0x4e,
-	0x10, 0x8e, 0xf3, 0xa7, 0xe9, 0x6f, 0x0e, 0xbf, 0x26, 0x9b, 0x2a, 0xb5, 0x7c, 0xb0, 0x90, 0x41,
-	0x94, 0x0b, 0x5e, 0x05, 0x8e, 0x48, 0x48, 0xe1, 0x86, 0x90, 0x00, 0x25, 0xa2, 0x07, 0x84, 0x64,
-	0xb9, 0xde, 0x6d, 0xbc, 0x22, 0xde, 0x75, 0x77, 0xd7, 0x46, 0x7e, 0x04, 0x24, 0x0e, 0x3c, 0x0d,
-	0xcf, 0xc0, 0xb1, 0x47, 0x8e, 0x28, 0x79, 0x11, 0x64, 0x7b, 0x13, 0x87, 0x12, 0xb5, 0xe5, 0xc0,
-	0xcd, 0x33, 0xf3, 0xf9, 0x9b, 0x6f, 0xbe, 0x19, 0x2d, 0x8c, 0x63, 0xb6, 0x88, 0x3f, 0x85, 0x05,
-	0xce, 0x27, 0x38, 0x0f, 0xb3, 0xa5, 0xf6, 0x53, 0x29, 0xb4, 0x40, 0x43, 0x25, 0xb8, 0x8c, 0x2f,
-	0x7d, 0x53, 0xf6, 0xf3, 0x89, 0x73, 0x12, 0x09, 0x49, 0x31, 0x23, 0x94, 0x6b, 0xa6, 0x0b, 0x4c,
-	0x18, 0xa9, 0xb1, 0xce, 0xb8, 0xc4, 0xe2, 0x48, 0x24, 0x89, 0xe0, 0x98, 0xf1, 0x0b, 0x51, 0xe7,
-	0xbd, 0x04, 0x8e, 0xa6, 0x84, 0xcc, 0xe3, 0x50, 0xd2, 0x19, 0xbd, 0xcc, 0xa8, 0xd2, 0x68, 0x0c,
-	0x07, 0x42, 0xb2, 0x05, 0xe3, 0xb6, 0x75, 0xcf, 0x7a, 0xf4, 0xdf, 0xcc, 0x44, 0xc8, 0x81, 0xc3,
-	0x4c, 0x51, 0xc9, 0xc3, 0x84, 0xda, 0xed, 0xaa, 0xb2, 0x8d, 0xd1, 0x00, 0x3a, 0x1f, 0x69, 0x61,
-	0x77, 0xaa, 0x74, 0xf9, 0x89, 0x8e, 0xa1, 0x97, 0x87, 0xcb, 0x8c, 0xda, 0xdd, 0x2a, 0x57, 0x07,
-	0xde, 0x73, 0x18, 0x34, 0xed, 0x54, 0x2a, 0xb8, 0xa2, 0xc8, 0x86, 0xbe, 0xca, 0xa2, 0x88, 0x2a,
-	0x55, 0x35, 0x3c, 0x9c, 0x6d, 0xc2, 0x0d, 0x6b, 0x7b, 0xcb, 0xea, 0x7d, 0xb6, 0x60, 0x30, 0x2f,
-	0x78, 0xf4, 0x0f, 0x04, 0x63, 0x18, 0x45, 0x92, 0x56, 0xce, 0x85, 0xcb, 0x40, 0x1a, 0x75, 0x46,
-	0x3e, 0x6a, 0x4a, 0x1b, 0xdd, 0xde, 0x3b, 0x18, 0xee, 0x48, 0xf9, 0xfb, 0x61, 0x1a, 0x8b, 0x3a,
-	0xbb, 0x16, 0x9d, 0xc1, 0x68, 0x46, 0x2f, 0x24, 0x55, 0xf1, 0x9d, 0x86, 0x3c, 0x85, 0xa3, 0x30,
-	0x8a, 0x44, 0xc6, 0x75, 0x10, 0x12, 0x22, 0xcb, 0xc6, 0x75, 0x8b, 0xff, 0x4d, 0x7a, 0x5a, 0x67,
-	0xbd, 0x6f, 0x16, 0x1c, 0xff, 0x4e, 0x7c, 0xab, 0xe4, 0xbb, 0x72, 0xa3, 0xc7, 0xb0, 0x63, 0x50,
-	0x20, 0x52, 0xcd, 0x04, 0x57, 0x66, 0xac, 0x61, 0x53, 0x79, 0x53, 0x17, 0xd0, 0x08, 0x7a, 0x32,
-	0x0d, 0x18, 0x31, 0xe6, 0x76, 0x65, 0xfa, 0x92, 0xa0, 0x13, 0xe8, 0xcb, 0x34, 0xa8, 0x96, 0xd5,
-	0xab, 0x27, 0x94, 0xe9, 0xeb, 0x30, 0xa1, 0x4f, 0xbe, 0xb4, 0xa1, 0x77, 0x56, 0x9e, 0x3d, 0x7a,
-	0x0b, 0x9d, 0x29, 0x21, 0xc8, 0xf3, 0xff, 0x38, 0x7c, 0xff, 0xda, 0x11, 0x3b, 0xf7, 0x6f, 0xc4,
-	0x98, 0x0d, 0xb6, 0xd0, 0x1c, 0xba, 0xe5, 0x0e, 0xd1, 0x3e, 0xf8, 0xf5, 0x3b, 0x73, 0x1e, 0xdc,
-	0x0c, 0xda, 0x92, 0x7e, 0x80, 0xbe, 0x31, 0x1a, 0x3d, 0xdc, 0xf3, 0xcb, 0x9e, 0xed, 0x3a, 0xa7,
-	0xb7, 0xe2, 0x36, 0xec, 0x2f, 0x5e, 0x7d, 0x5f, 0xb9, 0xd6, 0xd5, 0xca, 0xb5, 0x7e, 0xae, 0x5c,
-	0xeb, 0xeb, 0xda, 0x6d, 0x5d, 0xad, 0xdd, 0xd6, 0x8f, 0xb5, 0xdb, 0x7a, 0x3f, 0x59, 0x30, 0x1d,
-	0x67, 0xe7, 0x7e, 0x24, 0x12, 0x5c, 0xd3, 0xe1, 0xea, 0x39, 0xd0, 0x45, 0x4a, 0x15, 0x6e, 0x1e,
-	0x91, 0x67, 0xe6, 0x33, 0x9f, 0x9c, 0x1f, 0x54, 0xaf, 0xc0, 0xd3, 0x5f, 0x01, 0x00, 0x00, 0xff,
-	0xff, 0x2d, 0x49, 0xac, 0x4e, 0x63, 0x04, 0x00, 0x00,
+	// 641 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x55, 0xcf, 0x6e, 0xd3, 0x4e,
+	0x10, 0x8e, 0x93, 0xa6, 0x49, 0xa7, 0xbf, 0x1f, 0x49, 0xb7, 0x55, 0x1b, 0x59, 0x22, 0x02, 0x83,
+	0x68, 0x0f, 0x60, 0x2b, 0xe5, 0x82, 0xa8, 0x84, 0x54, 0x24, 0x0e, 0x08, 0x15, 0x90, 0xa3, 0xf6,
+	0x80, 0x90, 0xa2, 0xad, 0x77, 0x9b, 0x58, 0xc4, 0xbb, 0xee, 0xee, 0x3a, 0x28, 0x0f, 0xc0, 0x81,
+	0x1b, 0x4f, 0x83, 0x10, 0x4f, 0xc0, 0xb1, 0x47, 0x8e, 0xa8, 0x7d, 0x11, 0x64, 0x7b, 0x1d, 0xa7,
+	0xae, 0xd5, 0x14, 0x09, 0x6e, 0x9e, 0x3f, 0xfe, 0xf6, 0x9b, 0x6f, 0x66, 0x67, 0x61, 0x73, 0xe4,
+	0x0f, 0x47, 0x1f, 0xf1, 0xd4, 0x99, 0xf4, 0x9c, 0x09, 0x8e, 0xc6, 0xca, 0x0e, 0x05, 0x57, 0x1c,
+	0xad, 0x49, 0xce, 0xc4, 0xe8, 0xd4, 0xd6, 0x61, 0x7b, 0xd2, 0x33, 0xb7, 0x3c, 0x2e, 0xa8, 0xe3,
+	0x13, 0xca, 0x94, 0xaf, 0xa6, 0x0e, 0xf1, 0x49, 0x9a, 0x6b, 0x6e, 0xc6, 0xb9, 0x8e, 0xc7, 0x83,
+	0x80, 0x33, 0xc7, 0x67, 0x27, 0x3c, 0xf5, 0x5b, 0x01, 0xb4, 0xf6, 0x09, 0xe9, 0x8f, 0xb0, 0xa0,
+	0x2e, 0x3d, 0x8d, 0xa8, 0x54, 0x68, 0x13, 0x96, 0xb9, 0xf0, 0x87, 0x3e, 0xeb, 0x18, 0x77, 0x8c,
+	0x9d, 0x15, 0x57, 0x5b, 0xc8, 0x84, 0x66, 0x24, 0xa9, 0x60, 0x38, 0xa0, 0x9d, 0x6a, 0x12, 0x99,
+	0xd9, 0xa8, 0x0d, 0xb5, 0x0f, 0x74, 0xda, 0xa9, 0x25, 0xee, 0xf8, 0x13, 0x6d, 0x40, 0x7d, 0x82,
+	0xc7, 0x11, 0xed, 0x2c, 0x25, 0xbe, 0xd4, 0xb0, 0x9e, 0x41, 0x3b, 0x3f, 0x4e, 0x86, 0x9c, 0x49,
+	0x8a, 0x3a, 0xd0, 0x90, 0x91, 0xe7, 0x51, 0x29, 0x93, 0x03, 0x9b, 0x6e, 0x66, 0x66, 0xa8, 0xd5,
+	0x19, 0xaa, 0xf5, 0xd9, 0x80, 0x76, 0x7f, 0xca, 0xbc, 0x7f, 0x40, 0xd8, 0x81, 0x75, 0x4f, 0xd0,
+	0x44, 0x39, 0x3c, 0x1e, 0x08, 0xcd, 0x4e, 0xd3, 0x47, 0x79, 0x28, 0xe3, 0x6d, 0x1d, 0xc2, 0xda,
+	0x1c, 0x95, 0x3f, 0x2f, 0x26, 0x97, 0xa8, 0x36, 0x2f, 0xd1, 0x11, 0xac, 0xbb, 0xf4, 0x44, 0x50,
+	0x39, 0xba, 0x51, 0x91, 0xdb, 0xd0, 0xc2, 0x9e, 0xc7, 0x23, 0xa6, 0x06, 0x98, 0x10, 0x11, 0x1f,
+	0x9c, 0x1e, 0x71, 0x4b, 0xbb, 0xf7, 0x53, 0xaf, 0xf5, 0xd5, 0x80, 0x8d, 0xcb, 0xc0, 0x0b, 0x29,
+	0xdf, 0x14, 0x1b, 0x3d, 0x82, 0x39, 0x81, 0x06, 0x3c, 0x54, 0x3e, 0x67, 0x52, 0x97, 0xb5, 0x96,
+	0x47, 0xde, 0xa4, 0x01, 0xb4, 0x0e, 0x75, 0x11, 0x0e, 0x7c, 0xa2, 0xc5, 0x5d, 0x12, 0xe1, 0x4b,
+	0x82, 0xb6, 0xa0, 0x21, 0xc2, 0x41, 0xd2, 0xac, 0x7a, 0x5a, 0xa1, 0x08, 0x5f, 0xe3, 0x80, 0x5a,
+	0x2e, 0xb4, 0x5c, 0x8a, 0xc9, 0x01, 0xf6, 0xc7, 0x7f, 0x4d, 0x8c, 0x4f, 0x06, 0xb4, 0xfa, 0x94,
+	0xdd, 0x08, 0xf4, 0x2e, 0xfc, 0x77, 0x22, 0x78, 0x50, 0x40, 0x5c, 0x8d, 0x7d, 0x59, 0xfd, 0xb7,
+	0x01, 0x14, 0x9f, 0x25, 0xa4, 0x75, 0xaf, 0x28, 0x9e, 0x85, 0x3b, 0xd0, 0x08, 0xa8, 0x94, 0x78,
+	0x98, 0x8d, 0x53, 0x66, 0x5a, 0xdf, 0x0c, 0x68, 0xe7, 0xc5, 0x2d, 0x6c, 0xc8, 0x01, 0x34, 0xf5,
+	0x9f, 0x31, 0x8d, 0xda, 0xce, 0xea, 0x6e, 0xcf, 0xbe, 0xb2, 0x04, 0xec, 0x22, 0xa0, 0x7d, 0xa0,
+	0xff, 0x79, 0xc1, 0x94, 0x98, 0xba, 0x33, 0x08, 0x73, 0x0f, 0xfe, 0xbf, 0x14, 0xca, 0x66, 0xd4,
+	0x28, 0x99, 0xd1, 0xea, 0xdc, 0x8c, 0x3e, 0xad, 0x3e, 0x31, 0xac, 0x87, 0xd0, 0xce, 0x15, 0x5c,
+	0xc4, 0x7c, 0xf7, 0x7b, 0x0d, 0xea, 0x47, 0xf1, 0xee, 0x42, 0x6f, 0xa1, 0xb6, 0x4f, 0x08, 0xb2,
+	0x4a, 0x88, 0x17, 0x36, 0x91, 0x79, 0xef, 0xda, 0x1c, 0x7d, 0x0d, 0x2b, 0xa8, 0x0f, 0x4b, 0xf1,
+	0x45, 0x44, 0x65, 0xe9, 0xc5, 0x65, 0x61, 0xde, 0xbf, 0x3e, 0x69, 0x06, 0xfa, 0x1e, 0x1a, 0xfa,
+	0xb6, 0xa0, 0x07, 0xa5, 0x1a, 0x5f, 0xb9, 0xa2, 0xe6, 0xf6, 0xc2, 0xbc, 0x19, 0xfa, 0x21, 0x34,
+	0xb3, 0x2e, 0x95, 0x2a, 0x51, 0x18, 0xf8, 0x52, 0x25, 0x8a, 0x6d, 0x4e, 0x61, 0xb3, 0x9e, 0x94,
+	0xc2, 0x16, 0x46, 0xbe, 0x14, 0xb6, 0xd8, 0x54, 0xab, 0xf2, 0xfc, 0xd5, 0x8f, 0xf3, 0xae, 0x71,
+	0x76, 0xde, 0x35, 0x7e, 0x9d, 0x77, 0x8d, 0x2f, 0x17, 0xdd, 0xca, 0xd9, 0x45, 0xb7, 0xf2, 0xf3,
+	0xa2, 0x5b, 0x79, 0xd7, 0x1b, 0xfa, 0x6a, 0x14, 0x1d, 0xdb, 0x1e, 0x0f, 0x9c, 0x14, 0xca, 0x49,
+	0x5e, 0x20, 0x35, 0x0d, 0xa9, 0x74, 0xf2, 0x77, 0x6b, 0x4f, 0x7f, 0x4e, 0x7a, 0xc7, 0xcb, 0xc9,
+	0xc3, 0xf3, 0xf8, 0x77, 0x00, 0x00, 0x00, 0xff, 0xff, 0xde, 0x3e, 0xf8, 0x68, 0xd6, 0x06, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -492,6 +725,8 @@ type VaultClient interface {
 	Add(ctx context.Context, in *AddShareRequest, opts ...grpc.CallOption) (*AddShareResponse, error)
 	Sync(ctx context.Context, in *SyncShareRequest, opts ...grpc.CallOption) (*SyncShareResponse, error)
 	Refresh(ctx context.Context, in *RefreshShareRequest, opts ...grpc.CallOption) (*RefreshShareResponse, error)
+	ReadMail(ctx context.Context, in *ReadMailRequest, opts ...grpc.CallOption) (*ReadMailResponse, error)
+	SendMail(ctx context.Context, in *SendMailRequest, opts ...grpc.CallOption) (*SendMailResponse, error)
 }
 
 type vaultClient struct {
@@ -529,11 +764,31 @@ func (c *vaultClient) Refresh(ctx context.Context, in *RefreshShareRequest, opts
 	return out, nil
 }
 
+func (c *vaultClient) ReadMail(ctx context.Context, in *ReadMailRequest, opts ...grpc.CallOption) (*ReadMailResponse, error) {
+	out := new(ReadMailResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.v1.Vault/ReadMail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *vaultClient) SendMail(ctx context.Context, in *SendMailRequest, opts ...grpc.CallOption) (*SendMailResponse, error) {
+	out := new(SendMailResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.highway.v1.Vault/SendMail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // VaultServer is the server API for Vault service.
 type VaultServer interface {
 	Add(context.Context, *AddShareRequest) (*AddShareResponse, error)
 	Sync(context.Context, *SyncShareRequest) (*SyncShareResponse, error)
 	Refresh(context.Context, *RefreshShareRequest) (*RefreshShareResponse, error)
+	ReadMail(context.Context, *ReadMailRequest) (*ReadMailResponse, error)
+	SendMail(context.Context, *SendMailRequest) (*SendMailResponse, error)
 }
 
 // UnimplementedVaultServer can be embedded to have forward compatible implementations.
@@ -548,6 +803,12 @@ func (*UnimplementedVaultServer) Sync(ctx context.Context, req *SyncShareRequest
 }
 func (*UnimplementedVaultServer) Refresh(ctx context.Context, req *RefreshShareRequest) (*RefreshShareResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Refresh not implemented")
+}
+func (*UnimplementedVaultServer) ReadMail(ctx context.Context, req *ReadMailRequest) (*ReadMailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ReadMail not implemented")
+}
+func (*UnimplementedVaultServer) SendMail(ctx context.Context, req *SendMailRequest) (*SendMailResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SendMail not implemented")
 }
 
 func RegisterVaultServer(s grpc1.Server, srv VaultServer) {
@@ -608,6 +869,42 @@ func _Vault_Refresh_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Vault_ReadMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ReadMailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).ReadMail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.v1.Vault/ReadMail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).ReadMail(ctx, req.(*ReadMailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Vault_SendMail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SendMailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(VaultServer).SendMail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.highway.v1.Vault/SendMail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(VaultServer).SendMail(ctx, req.(*SendMailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Vault_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "sonrhq.highway.v1.Vault",
 	HandlerType: (*VaultServer)(nil),
@@ -623,6 +920,14 @@ var _Vault_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Refresh",
 			Handler:    _Vault_Refresh_Handler,
+		},
+		{
+			MethodName: "ReadMail",
+			Handler:    _Vault_ReadMail_Handler,
+		},
+		{
+			MethodName: "SendMail",
+			Handler:    _Vault_SendMail_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -916,6 +1221,179 @@ func (m *RefreshShareResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *ReadMailRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ReadMailRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ReadMailRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.AccountAddress) > 0 {
+		i -= len(m.AccountAddress)
+		copy(dAtA[i:], m.AccountAddress)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.AccountAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SendMailRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SendMailRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendMailRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.ToAddress) > 0 {
+		i -= len(m.ToAddress)
+		copy(dAtA[i:], m.ToAddress)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.ToAddress)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.FromAddress) > 0 {
+		i -= len(m.FromAddress)
+		copy(dAtA[i:], m.FromAddress)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.FromAddress)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintVault(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ReadMailResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ReadMailResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ReadMailResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Messages) > 0 {
+		for k := range m.Messages {
+			v := m.Messages[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarintVault(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintVault(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintVault(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SendMailResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SendMailResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SendMailResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintVault(dAtA []byte, offset int, v uint64) int {
 	offset -= sovVault(v)
 	base := offset
@@ -1054,6 +1532,80 @@ func (m *RefreshShareResponse) Size() (n int) {
 	l = len(m.RpName)
 	if l > 0 {
 		n += 1 + l + sovVault(uint64(l))
+	}
+	return n
+}
+
+func (m *ReadMailRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	l = len(m.AccountAddress)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	return n
+}
+
+func (m *SendMailRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	l = len(m.FromAddress)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	l = len(m.ToAddress)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovVault(uint64(l))
+	}
+	return n
+}
+
+func (m *ReadMailResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
+	}
+	if len(m.Messages) > 0 {
+		for k, v := range m.Messages {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovVault(uint64(len(k))) + 1 + len(v) + sovVault(uint64(len(v)))
+			n += mapEntrySize + 1 + sovVault(uint64(mapEntrySize))
+		}
+	}
+	return n
+}
+
+func (m *SendMailResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
 	}
 	return n
 }
@@ -1947,6 +2499,565 @@ func (m *RefreshShareResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.RpName = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipVault(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthVault
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ReadMailRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowVault
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ReadMailRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ReadMailRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipVault(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthVault
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SendMailRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowVault
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SendMailRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SendMailRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field FromAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.FromAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ToAddress", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ToAddress = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipVault(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthVault
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ReadMailResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowVault
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ReadMailResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ReadMailResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Messages", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthVault
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthVault
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Messages == nil {
+				m.Messages = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowVault
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowVault
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthVault
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthVault
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowVault
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLengthVault
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthVault
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipVault(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthVault
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Messages[mapkey] = mapvalue
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipVault(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthVault
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SendMailResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowVault
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SendMailResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SendMailResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowVault
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipVault(dAtA[iNdEx:])
