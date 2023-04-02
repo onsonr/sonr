@@ -29,11 +29,8 @@ type Controller interface {
 	// Createmodels.Account creates a new models.Account for the controller
 	CreateAccount(name string, coinType crypto.CoinType) (models.Account, error)
 
-	// GetAccount returns an account by Address
-	GetAccount(address string) (models.Account, error)
-
-	// GetAccountByDid returns an account by DID
-	GetAccountByDid(did string) (models.Account, error)
+	// GetAccount returns an account by Address or DID
+	GetAccount(id string) (models.Account, error)
 
 	// Listmodels.Accounts returns the controller's models.Accounts
 	ListAccounts() ([]models.Account, error)
@@ -57,10 +54,13 @@ type didController struct {
 	blockchain []models.Account
 
 	currCredential *crypto.WebauthnCredential
+	disableIPFS    bool
 }
 
 func NewController(options ...Option) (Controller, error) {
-	opts := &Options{}
+	opts := &Options{
+		DisableIPFS: false,
+	}
 	for _, option := range options {
 		option(opts)
 	}
@@ -73,25 +73,25 @@ func NewController(options ...Option) (Controller, error) {
 	case acc := <-doneCh:
 		cn, err := setupController(context.Background(), acc, opts)
 		if err != nil {
-			return nil,  err
+			return nil, err
 		}
-		return cn,  nil
+		return cn, nil
 	case err := <-errCh:
-		return nil,  err
+		return nil, err
 	}
 }
 
 func LoadController(doc *types.DidDocument) (Controller, error) {
 	acc, err := vault.GetAccount(doc.Id)
 	if err != nil {
-		return nil,  err
+		return nil, err
 	}
 	blockAccDids := doc.ListBlockchainIdentities()
 	var blockAccs []models.Account
 	for _, did := range blockAccDids {
 		acc, err := vault.GetAccount(did)
 		if err != nil {
-			return nil,  err
+			return nil, err
 		}
 		blockAccs = append(blockAccs, acc)
 	}
@@ -100,7 +100,7 @@ func LoadController(doc *types.DidDocument) (Controller, error) {
 		primaryDoc: doc,
 		blockchain: blockAccs,
 	}
-	return cn,  nil
+	return cn, nil
 }
 
 func (dc *didController) Address() string {
@@ -143,9 +143,11 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (m
 	}
 
 	// Add account to the vault
-	err = vault.InsertAccount(newAcc)
-	if err != nil {
-		return nil, err
+	if !dc.disableIPFS {
+		err = vault.InsertAccount(newAcc)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// Add the new models.Account to the controller
@@ -156,8 +158,8 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (m
 
 // Getmodels.Account returns the controller's models.Account from the Address
 func (dc *didController) GetAccount(address string) (models.Account, error) {
-	if dc.primary.Address() == address {
-		return dc.primary, nil
+	if strings.Contains(address, "did:") {
+		return dc.GetAccountByDid(address)
 	}
 	for _, acc := range dc.blockchain {
 		if acc.Address() == address {
@@ -182,13 +184,6 @@ func (dc *didController) GetAccountByDid(did string) (models.Account, error) {
 
 // Sign signs a message with the controller's selected models.Account
 func (dc *didController) Sign(address string, msg []byte) ([]byte, error) {
-	if strings.Contains(address, "did:") {
-		acc, err := dc.GetAccountByDid(address)
-		if err != nil {
-			return nil, err
-		}
-		return acc.Sign(msg)
-	}
 	acc, err := dc.GetAccount(address)
 	if err != nil {
 		return nil, err
@@ -198,13 +193,6 @@ func (dc *didController) Sign(address string, msg []byte) ([]byte, error) {
 
 // Verify verifies a signature with the controller's selected models.Account
 func (dc *didController) Verify(address string, msg []byte, sig []byte) (bool, error) {
-		if strings.Contains(address, "did:") {
-		acc, err := dc.GetAccountByDid(address)
-		if err != nil {
-			return false, err
-		}
-		return acc.Verify(msg, sig)
-	}
 	acc, err := dc.GetAccount(address)
 	if err != nil {
 
@@ -212,7 +200,6 @@ func (dc *didController) Verify(address string, msg []byte, sig []byte) (bool, e
 	}
 	return acc.Verify(msg, sig)
 }
-
 
 // SendMail sends a mail from the controller's selected models.Account
 func (dc *didController) SendMail(address string, to string, body string) error {

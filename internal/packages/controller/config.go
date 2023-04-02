@@ -22,6 +22,9 @@ type Options struct {
 
 	// Credential to authorize the controller
 	WebauthnCredential *crypto.WebauthnCredential
+
+	// Disable IPFS
+	DisableIPFS bool
 }
 
 type Option func(*Options)
@@ -35,6 +38,12 @@ func WithConfigHandlers(handlers ...mpc.OnConfigGenerated) Option {
 func WithWebauthnCredential(cred *crypto.WebauthnCredential) Option {
 	return func(o *Options) {
 		o.WebauthnCredential = cred
+	}
+}
+
+func WithIPFSDisabled() Option {
+	return func(o *Options) {
+		o.DisableIPFS = true
 	}
 }
 
@@ -73,9 +82,11 @@ func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCred
 }
 
 func setupController(ctx context.Context, primary models.Account, opts *Options) (Controller, error) {
-	err := vault.InsertAccount(primary)
-	if err != nil {
-		return nil, err
+	if !opts.DisableIPFS {
+		err := vault.InsertAccount(primary)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	var doc *types.DidDocument
@@ -85,9 +96,11 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 			return nil, err
 		}
 		doc = types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), cred.ToVerificationMethod())
-		err = vault.StoreCredential(cred)
-		if err != nil {
-			return nil, err
+		if !opts.DisableIPFS {
+			err = vault.StoreCredential(cred)
+			if err != nil {
+				return nil, err
+			}
 		}
 	} else {
 		doc = types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), nil)
@@ -97,6 +110,7 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 		primary:    primary,
 		blockchain: []models.Account{},
 		primaryDoc: doc,
+		disableIPFS: opts.DisableIPFS,
 	}
 	return cont, nil
 }

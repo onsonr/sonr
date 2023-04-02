@@ -69,8 +69,7 @@ func Initialize(config *config.Config) (config.PeerNode, error) {
 	}
 
 	// Connect to Bootstrap Nodes
-	snrctx := local.NewContext()
-	for _, pistr := range snrctx.BsMultiaddrs {
+	for _, pistr := range local.Context().BsMultiaddrs {
 		if err := hn.Connect(pistr); err != nil {
 			continue
 		} else {

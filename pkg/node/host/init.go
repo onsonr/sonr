@@ -76,11 +76,10 @@ func initializeHost(hn *hostImpl) error {
 
 // setupRoutingDiscovery is a Helper Method to initialize the DHT Discovery
 func setupRoutingDiscovery(hn *hostImpl) error {
-	snrctx := local.NewContext()
 	// Set Routing Discovery, Find Peers
 	var err error
 	routingDiscovery := dsc.NewRoutingDiscovery(hn.IpfsDHT)
-	routingDiscovery.Advertise(hn.ctx, snrctx.Rendevouz)
+	routingDiscovery.Advertise(hn.ctx, local.Context().Rendevouz)
 
 	// Create Pub Sub
 	hn.PubSub, err = ps.NewGossipSub(hn.ctx, hn.host, ps.WithDiscovery(routingDiscovery))
@@ -89,7 +88,7 @@ func setupRoutingDiscovery(hn *hostImpl) error {
 	}
 
 	// Handle DHT Peers
-	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, snrctx.Rendevouz)
+	hn.dhtPeerChan, err = routingDiscovery.FindPeers(hn.ctx, local.Context().Rendevouz)
 	if err != nil {
 		return err
 	}

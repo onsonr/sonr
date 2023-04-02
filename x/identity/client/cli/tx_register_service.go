@@ -26,6 +26,7 @@ func CmdRegisterService() *cobra.Command {
 
 			msg := types.NewMsgRegisterService(
 				clientCtx.GetFromAddress().String(),
+				types.NewIPFSStoreService("", ""),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

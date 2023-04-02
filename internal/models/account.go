@@ -235,7 +235,11 @@ func (wa *account) Type() string {
 // GetAuthInfo creates an AuthInfo instance for this account with the specified gas amount.
 func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 	// Build signerInfo parameters
-	anyPubKey, err := codectypes.NewAnyWithValue(wa.PubKey())
+	seckpPubKey, err := wa.PubKey().Secp256k1()
+	if err != nil {
+		return nil, err
+	}
+	anyPubKey, err := codectypes.NewAnyWithValue(seckpPubKey)
 	if err != nil {
 		return nil, err
 	}
@@ -258,7 +262,6 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 		Fee: &txtypes.Fee{
 			Amount:   gas,
 			GasLimit: uint64(300000),
-			Payer:    wa.Address(),
 		},
 	}
 	return &authInfo, nil

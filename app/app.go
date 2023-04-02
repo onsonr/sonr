@@ -693,21 +693,21 @@ func New(
 	// initialize BaseApp
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
-	defaultAnte, err := ante.NewAnteHandler(
-		ante.HandlerOptions{
-			AccountKeeper:   app.AccountKeeper,
-			BankKeeper:      app.BankKeeper,
-			SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
-			FeegrantKeeper:  app.FeeGrantKeeper,
-			SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
-		},
-	)
-	anteHandler := NewCustomAnteHandler(defaultAnte, stakingKeeper, app.BankKeeper, app.AccountKeeper)
-	if err != nil {
-		panic(fmt.Errorf("failed to create AnteHandler: %s", err))
-	}
+	// defaultAnte, err := ante.NewAnteHandler(
+	// 	ante.HandlerOptions{
+	// 		AccountKeeper:   app.AccountKeeper,
+	// 		BankKeeper:      app.BankKeeper,
+	// 		SignModeHandler: encodingConfig.TxConfig.SignModeHandler(),
+	// 		FeegrantKeeper:  app.FeeGrantKeeper,
+	// 		SigGasConsumer:  ante.DefaultSigVerificationGasConsumer,
+	// 	},
+	// )
+	// anteHandler := NewCustomAnteHandler(defaultAnte, stakingKeeper, app.BankKeeper, app.AccountKeeper)
+	// if err != nil {
+	// 	panic(fmt.Errorf("failed to create AnteHandler: %s", err))
+	// }
 
-	app.SetAnteHandler(anteHandler)
+	// app.SetAnteHandler(anteHandler)
 	app.SetInitChainer(app.InitChainer)
 	app.SetBeginBlocker(app.BeginBlocker)
 	app.SetEndBlocker(app.EndBlocker)

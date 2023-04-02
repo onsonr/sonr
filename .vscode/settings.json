@@ -106,5 +106,8 @@
     "editor.defaultFormatter": "golang.go",
     "editor.formatOnType": true
   },
-  "explorerExclude.backup": {}
+  "explorerExclude.backup": {},
+  "go.autocompleteUnimportedPackages": true,
+  "go.formatTool": "default",
+  "go.lintTool": "golint"
 }

@@ -13,9 +13,11 @@ const (
 
 var _ sdk.Msg = &MsgRegisterService{}
 
-func NewMsgRegisterService(creator string) *MsgRegisterService {
+func NewMsgRegisterService(creator string, service *Service) *MsgRegisterService {
 	return &MsgRegisterService{
 		Creator: creator,
+		Index:  service.Id,
+		Domain: service.Origin,
 	}
 }
 

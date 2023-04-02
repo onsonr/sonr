@@ -27,7 +27,7 @@ func Initialize(c *nodeconfig.Config) (nodeconfig.IPFSNode, error) {
 	ipfsDoneCh := make(chan nodeconfig.IPFSNode)
 	ipfsErrCh := make(chan error)
 	n := defaultNode(c)
-	snrctx := local.NewContext()
+	snrctx := local.Context()
 	go func() {
 		// Apply the options
 		err := n.initialize()
@@ -78,7 +78,7 @@ func defaultNode(cnfg *nodeconfig.Config) *LocalIpfs {
 
 // It's creating a new node and returning the coreAPI and the node itself.
 func (c *LocalIpfs) initialize() error {
-	snrctx := local.NewContext()
+	snrctx := local.Context()
 	c.repoPath = snrctx.IPFSRepoPath
 
 	// Spawn a local peer using a temporary path, for testing purposes

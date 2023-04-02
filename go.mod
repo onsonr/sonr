@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	berty.tech/go-orbit-db v1.19.1
-	cosmossdk.io/math v1.0.0-beta.4
+	cosmossdk.io/math v1.0.0-beta.4 // indirect
 	github.com/btcsuite/btcd v0.22.1
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/cosmos/ibc-go/v5 v5.2.0

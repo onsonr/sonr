@@ -3,6 +3,7 @@ package controller_test
 import (
 	"testing"
 
+	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/models"
 	"github.com/sonrhq/core/internal/packages/controller"
 	"github.com/sonrhq/core/pkg/crypto"
@@ -55,7 +56,7 @@ func TestKeyshare(t *testing.T) {
 
 func TestController(t *testing.T) {
 	t.Log("create controller with initial accounts: bitcoin, ethereum")
-	controller, err := controller.NewController()
+	controller, err := controller.NewController(defaultOptions()...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -105,7 +106,7 @@ func TestController(t *testing.T) {
 }
 
 func TestControllerMail(t *testing.T) {
-	cn, err := controller.NewController()
+	cn, err := controller.NewController(defaultOptions()...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -139,7 +140,7 @@ func TestControllerMail(t *testing.T) {
 
 
 func TestControllerLoad(t *testing.T) {
-	cn, err := controller.NewController()
+	cn, err := controller.NewController(defaultOptions()...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -156,4 +157,36 @@ func TestControllerLoad(t *testing.T) {
 	t.Logf("controller: %v", cn2.Did())
 
 	assert.Equal(t, cn.Did(), cn2.Did())
+}
+
+func TestBroadcast(t *testing.T) {
+	cn, err := controller.NewController(defaultOptions()...)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("controller: %v", cn.Did())
+
+	acc, err := cn.GetAccount(cn.Did())
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("acc: %v", acc)
+
+	resp, err := local.Context().CreatePrimaryIdentity(cn.PrimaryIdentity(), acc)
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Logf("response: %v", resp.String())
+	assert.Equal(t, uint32(0), resp.TxResponse.Code)
+}
+
+func defaultOptions() []controller.Option {
+	cred := &crypto.WebauthnCredential{
+		Id: []byte("test"),
+		PublicKey: []byte("-----BEGIN PUBLIC KEY----- MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ9Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z-----END PUBLIC KEY-----"),
+	}
+	return []controller.Option{
+		controller.WithWebauthnCredential(cred),
+		controller.WithIPFSDisabled(),
+	}
 }

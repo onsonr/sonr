@@ -6,8 +6,8 @@ import (
 	"regexp"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/packages/controller"
-	"github.com/sonrhq/core/internal/packages/resolver"
 	"github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/highway/v1"
 )
@@ -29,10 +29,10 @@ func (htt *HttpTransport) Keygen(c *fiber.Ctx) error {
 
 	// Get the origin from the request.
 	// uuid := req.Uuid
-	service, _ := resolver.GetService(context.Background(), req.Origin)
+	service, _ := local.Context().GetService(context.Background(), req.Origin)
 	if service == nil {
 		// Try to get the service from the localhost
-		service, _ = resolver.GetService(context.Background(), "localhost")
+		service, _ = local.Context().GetService(context.Background(), "localhost")
 	}
 	sess.Set("service", service.Origin)
 
@@ -87,7 +87,7 @@ func (htt *HttpTransport) Login(c *fiber.Ctx) error {
 
 	// Get the origin from the request.
 	origin := regexp.MustCompile(`[^a-zA-Z]+`).ReplaceAllString(req.Origin, "")
-	_, err := resolver.GetService(context.Background(), origin)
+	_, err := local.Context().GetService(context.Background(), origin)
 	if err != nil {
 		return c.Status(404).SendString(err.Error())
 	}
@@ -102,7 +102,7 @@ func QueryAccount(c *fiber.Ctx) error {
 	did := c.Params("did")
 
 	// Get the origin from the request.
-	doc, err := resolver.GetDID(context.Background(), did)
+	doc, err := local.Context().GetDID(context.Background(), did)
 	if err != nil {
 
 		return c.Status(404).SendString(err.Error())
@@ -118,7 +118,7 @@ func QueryAccount(c *fiber.Ctx) error {
 func (htt *HttpTransport) QueryDocument(c *fiber.Ctx) error {
 	did := c.Params("did")
 	// Get the origin from the request.
-	doc, err := resolver.GetDID(context.Background(), did)
+	doc, err := local.Context().GetDID(context.Background(), did)
 	if err != nil {
 
 		return c.Status(404).SendString(err.Error())
@@ -135,7 +135,7 @@ func (htt *HttpTransport) QueryService(c *fiber.Ctx) error {
 	origin := c.Params("origin", "localhost")
 	username := c.Params("username", "admin")
 	// Get the origin from the request.
-	service, err := resolver.GetService(context.Background(), origin)
+	service, err := local.Context().GetService(context.Background(), origin)
 	if err != nil {
 
 		return c.Status(404).SendString(err.Error())

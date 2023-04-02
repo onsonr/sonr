@@ -1,14 +1,15 @@
 package local
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/sonrhq/core/x/identity/types"
 )
 
-// Context is a struct that holds the current context of the application.
-type Context struct {
+// LocalContext is a struct that holds the current context of the application.
+type LocalContext struct {
 	grpcApiEndpoint        string
 	rpcApiEndpoint         string
 	highwayServerPort      string
@@ -25,9 +26,10 @@ type Context struct {
 	BsMultiaddrs           []string
 }
 
-func NewContext() Context {
+// Context returns the current context of the Sonr blockchain application.
+func Context() LocalContext {
 	params := types.DefaultParams()
-	return Context{
+	return LocalContext{
 		grpcApiEndpoint:        currGrpcEndpoint(),
 		rpcApiEndpoint:         currRpcEndpoint(),
 		highwayServerPort:      getServerPort(),
@@ -45,34 +47,75 @@ func NewContext() Context {
 	}
 }
 
-func (c Context) IsDev() bool {
+// ChainID returns the chain id of the current context
+func (c LocalContext) ChainID() string {
+	val := os.Getenv("SONR_CHAIN_ID")
+	if val == "" {
+		return "sonr"
+	}
+	return val
+}
+
+// FaucetEndpoint returns the faucet endpoint of the current context
+func (c LocalContext) FaucetEndpoint() string {
+	if c.IsDev() {
+		return "http://localhost:4500"
+	}
+	return "https://faucet.sonr.ws"
+}
+
+// IsDev returns true if the current context is a development context
+func (c LocalContext) IsDev() bool {
 	return os.Getenv("ENVIRONMENT") == "dev"
 }
 
-func (c Context) IsProd() bool {
+// IsProd returns true if the current context is a production context
+func (c LocalContext) IsProd() bool {
 	return !c.IsDev()
 }
 
-func (c Context) HasTlsCert() bool {
+// HasTlsCert returns true if the current context has a TLS certificate
+func (c LocalContext) HasTlsCert() bool {
 	return c.TlsCertPath != "" && c.TlsKeyPath != "" && c.IsProd()
 }
 
-func (c Context) IsHighwayFiber() bool {
+// IsHighwayFiber returns true if the current context is a highway fiber context
+func (c LocalContext) IsHighwayFiber() bool {
 	return c.HighwayMode == "fiber"
 }
 
-func (c Context) IsHighwayConnect() bool {
+// IsHighwayConnect returns true if the current context is a highway connect context
+func (c LocalContext) IsHighwayConnect() bool {
 	return c.HighwayMode == "connect"
 }
 
-func (c Context) GrpcEndpoint() string {
+// GrpcEndpoint returns the grpc endpoint of the current context
+func (c LocalContext) GrpcEndpoint() string {
 	return c.grpcApiEndpoint
 }
 
-func (c Context) RpcEndpoint() string {
+// RpcEndpoint returns the rpc endpoint of the current context
+func (c LocalContext) RpcEndpoint() string {
 	return c.rpcApiEndpoint
 }
 
-func (c Context) HighwayPort() string {
+// HighwayPort returns the highway port of the current context
+func (c LocalContext) HighwayPort() string {
 	return c.highwayServerPort
+}
+
+// FiberListenAddress returns the fiber listen address of the current context
+func (c LocalContext) FiberListenAddress() string {
+	if c.IsDev() {
+		return fmt.Sprintf(":%s", c.HighwayPort())
+	}else{
+		return fmt.Sprintf("%s:%s", currPublicHostIP(), c.HighwayPort())
+	}
+}
+
+func currPublicHostIP() string {
+	if ip := os.Getenv("PUBLC_HOST_IP"); ip != "" {
+		return ip
+	}
+	return "localhost"
 }

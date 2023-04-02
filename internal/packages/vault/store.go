@@ -43,7 +43,7 @@ func setupVault() error {
 		return nil
 	}
 	ctx := context.Background()
-	snrctx := local.NewContext()
+	snrctx := local.Context()
 	kv, err := node.OpenKeyValueStore(ctx, snrctx.GlobalKvKsStore)
 	if err != nil {
 		return err
