@@ -2,7 +2,7 @@ package rest
 
 import "fmt"
 
-func challengeUuidStoreKey(origin, uuid string)	string {
+func challengeUuidStoreKey(origin, uuid string) string {
 	return fmt.Sprintf("challenge/%s:%s", origin, uuid)
 }
 

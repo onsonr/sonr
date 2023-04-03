@@ -86,16 +86,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 		},
-		ServiceList: []types.Service{
-			{
-				// Creator: sample.AccAddress(),
-				Id: "0",
-			},
-			{
-				// Creator: sample.AccAddress(),
-				Id: "1",
-			},
-		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&identityGenesis)
@@ -139,17 +129,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgUpdateDidDocument,
 		identitysimulation.SimulateMsgUpdateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgRegisterService int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterService, &weightMsgRegisterService, nil,
-		func(_ *rand.Rand) {
-			weightMsgRegisterService = defaultWeightMsgRegisterService
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgRegisterService,
-		identitysimulation.SimulateMsgRegisterService(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

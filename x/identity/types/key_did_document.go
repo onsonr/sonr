@@ -9,7 +9,7 @@ var _ binary.ByteOrder
 
 const (
 	// PrimaryIdentityPrefix is the prefix to retrieve all DidDocument
-	PrimaryIdentityPrefix = "DidDocument/primary/value/"
+	PrimaryIdentityPrefix    = "DidDocument/primary/value/"
 	BlockchainIdentityPrefix = "DidDocument/blockchain/value/"
 )
 

@@ -45,14 +45,6 @@ func TestGenesisState_Validate(t *testing.T) {
 						Reference: "1",
 					},
 				},
-				ServiceList: []types.Service{
-					{
-						Id: "0",
-					},
-					{
-						Id: "1",
-					},
-				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,

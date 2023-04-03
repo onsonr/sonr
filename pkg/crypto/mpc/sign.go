@@ -29,26 +29,26 @@ func SerializeECDSASecp256k1Signature(sig *crypto.MPCECDSASignature) ([]byte, er
 
 // SignCMP signs a message with the given private key using the CMP protocol.
 func SignCMP(configs []*cmp.Config, m []byte) ([]byte, error) {
-    peers := make([]crypto.PartyID, len(configs))
-    for i, c := range configs {
-        peers[i] = c.ID
-    }
-    net := makeOfflineNetwork(peers...)
-    doneChan := make(chan *crypto.MPCECDSASignature, 1)
-    var wg sync.WaitGroup
-    for _, c := range configs {
-        wg.Add(1)
-        go func(conf *cmp.Config) {
-            pl := crypto.NewMPCPool(0)
-            defer pl.TearDown()
-            sig, err := algorithm.CmpSign(conf, m, net.Ls(), net, &wg, pl)
-            if err != nil {
-                return
-            }
-            doneChan <- sig
-        }(c)
-    }
-    wg.Wait()
-    sig := <-doneChan
-    return SerializeECDSASecp256k1Signature(sig)
+	peers := make([]crypto.PartyID, len(configs))
+	for i, c := range configs {
+		peers[i] = c.ID
+	}
+	net := makeOfflineNetwork(peers...)
+	doneChan := make(chan *crypto.MPCECDSASignature, 1)
+	var wg sync.WaitGroup
+	for _, c := range configs {
+		wg.Add(1)
+		go func(conf *cmp.Config) {
+			pl := crypto.NewMPCPool(0)
+			defer pl.TearDown()
+			sig, err := algorithm.CmpSign(conf, m, net.Ls(), net, &wg, pl)
+			if err != nil {
+				return
+			}
+			doneChan <- sig
+		}(c)
+	}
+	wg.Wait()
+	sig := <-doneChan
+	return SerializeECDSASecp256k1Signature(sig)
 }

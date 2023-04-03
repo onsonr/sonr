@@ -7,6 +7,7 @@ import (
 	rest "github.com/sonrhq/core/internal/protocol/transport"
 	"github.com/sonrhq/core/pkg/node"
 )
+
 func RegisterHighway(ctx client.Context) {
 	app := rest.NewHttpTransport(ctx)
 	node.StartLocalIPFS()

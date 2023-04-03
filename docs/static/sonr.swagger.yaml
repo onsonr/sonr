@@ -6,6 +6,8 @@ info:
 tags:
   - name: Query
   - name: Msg
+  - name: Query
+  - name: Msg
   - name: Mpc
   - name: Authentication
   - name: Vault
@@ -164,26 +166,21 @@ paths:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/identityQueryParamsResponse'
+            $ref: '#/definitions/coreidentityQueryParamsResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
       tags:
         - Query
-  /sonr/core/identity/service:
+  /sonr/core/service/record:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: Query_ServiceAll
+      operationId: Query_ServiceRecordAll
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/identityQueryAllServiceResponse'
+            $ref: '#/definitions/serviceQueryAllServiceRecordResponse'
         default:
           description: An unexpected error response.
           schema:
@@ -234,32 +231,104 @@ paths:
           type: boolean
       tags:
         - Query
-  /sonr/core/identity/service/{origin}:
+  /sonr/core/service/record/{id}:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-      operationId: Query_Service
+      summary: Queries a list of ServiceRecord items.
+      operationId: Query_ServiceRecord
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/identityQueryGetServiceResponse'
+            $ref: '#/definitions/serviceQueryGetServiceRecordResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
       parameters:
-        - name: origin
-          description: origin is the hostname of the calling service - it appears like ("test.com")
+        - name: id
           in: path
           required: true
           type: string
       tags:
         - Query
+  /sonrhq/core/service/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: Query_Params
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/coreserviceQueryParamsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Query
 definitions:
+  coreidentityKeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+        title: The key
+      value:
+        type: string
+        title: The value
+    description: KeyValuePair represents a key-value pair.
+  coreidentityParams:
+    type: object
+    properties:
+      didBaseContext:
+        type: string
+      didMethodContext:
+        type: string
+      didMethodName:
+        type: string
+      didMethodVersion:
+        type: string
+      didNetwork:
+        type: string
+      ipfsGateway:
+        type: string
+      ipfsApi:
+        type: string
+      webauthnAttestionPreference:
+        type: string
+      webauthnAuthenticatorAttachment:
+        type: string
+      webauthnTimeout:
+        type: integer
+        format: int32
+    description: Params defines the parameters for the module.
+  coreidentityQueryParamsResponse:
+    type: object
+    properties:
+      params:
+        $ref: '#/definitions/coreidentityParams'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  coreserviceKeyValuePair:
+    type: object
+    properties:
+      key:
+        type: string
+        title: The key
+      value:
+        type: string
+        title: The value
+    description: KeyValuePair represents a key-value pair.
+  coreserviceParams:
+    type: object
+    description: Params defines the parameters for the module.
+  coreserviceQueryParamsResponse:
+    type: object
+    properties:
+      params:
+        $ref: '#/definitions/coreserviceParams'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   identityDidDocument:
     type: object
     properties:
@@ -307,12 +376,6 @@ definitions:
         items:
           type: string
         title: optional, the set of key agreement methods associated with the DID subject
-      service:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityService'
-        title: optional, the set of services associated with the DID subject
       alsoKnownAs:
         type: array
         items:
@@ -322,59 +385,18 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityKeyValuePair'
+          $ref: '#/definitions/coreidentityKeyValuePair'
         title: optional, additional metadata related to the DID document
     description: DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-  identityKeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-        title: The key
-      value:
-        type: string
-        title: The value
-    description: KeyValuePair represents a key-value pair.
   identityMsgCreateDidDocumentResponse:
     type: object
-  identityMsgDeactivateServiceResponse:
-    type: object
   identityMsgDeleteDidDocumentResponse:
-    type: object
-  identityMsgRegisterServiceResponse:
     type: object
   identityMsgUpdateDidDocumentResponse:
     type: object
     properties:
       creator:
         type: string
-  identityMsgUpdateServiceResponse:
-    type: object
-  identityParams:
-    type: object
-    properties:
-      didBaseContext:
-        type: string
-      didMethodContext:
-        type: string
-      didMethodName:
-        type: string
-      didMethodVersion:
-        type: string
-      didNetwork:
-        type: string
-      ipfsGateway:
-        type: string
-      ipfsApi:
-        type: string
-      webauthnAttestionPreference:
-        type: string
-      webauthnAuthenticatorAttachment:
-        type: string
-      webauthnTimeout:
-        type: integer
-        format: int32
-    description: Params defines the parameters for the module.
   identityQueryAllDidResponse:
     type: object
     properties:
@@ -383,16 +405,6 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/identityDidDocument'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
-  identityQueryAllServiceResponse:
-    type: object
-    properties:
-      services:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityService'
       pagination:
         $ref: '#/definitions/v1beta1PageResponse'
   identityQueryDidByAlsoKnownAsResponse:
@@ -413,22 +425,6 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityResolvedDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  identityQueryGetServiceResponse:
-    type: object
-    properties:
-      service:
-        $ref: '#/definitions/identityService'
-        title: A Service is a JSON-LD object that contains relaying information to authenticate a client
-      challenge:
-        type: string
-        title: Challenge is a random string that is used to authenticate the client
-  identityQueryParamsResponse:
-    type: object
-    properties:
-      params:
-        $ref: '#/definitions/identityParams'
-        description: params holds all the parameters of this module.
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   identityResolvedDidDocument:
     type: object
     properties:
@@ -479,12 +475,6 @@ definitions:
           type: object
           $ref: '#/definitions/identityVerificationRelationship'
         title: optional
-      service:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityService'
-        title: optional
       alsoKnownAs:
         type: array
         items:
@@ -494,40 +484,9 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityKeyValuePair'
+          $ref: '#/definitions/coreidentityKeyValuePair'
         title: optional
     description: ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.
-  identityService:
-    type: object
-    properties:
-      id:
-        type: string
-        title: The identifier for the service
-      controller:
-        type: string
-        title: The entity controlling the service
-      type:
-        type: string
-        title: The type of the service
-      origin:
-        type: string
-        title: The origin of the service (e.g., a URL or other endpoint)
-      name:
-        type: string
-        title: The name of the service
-      serviceEndpoints:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityKeyValuePair'
-        title: optional, the set of service endpoints associated with the service
-      metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityKeyValuePair'
-        title: optional, additional metadata related to the Service
-    description: Service represents a service associated with the DID subject.
   identityVerificationMethod:
     type: object
     properties:
@@ -544,7 +503,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityKeyValuePair'
+          $ref: '#/definitions/coreidentityKeyValuePair'
         title: optional, the public key in JSON Web Key (JWK) format
       publicKeyMultibase:
         type: string
@@ -556,7 +515,7 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityKeyValuePair'
+          $ref: '#/definitions/coreidentityKeyValuePair'
         title: additional metadata related to the verification method
     description: VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
   identityVerificationRelationship:
@@ -591,6 +550,56 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/protobufAny'
+  serviceMsgCreateServiceRecordResponse:
+    type: object
+  serviceMsgDeleteServiceRecordResponse:
+    type: object
+  serviceMsgUpdateServiceRecordResponse:
+    type: object
+  serviceQueryAllServiceRecordResponse:
+    type: object
+    properties:
+      serviceRecord:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/serviceServiceRecord'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  serviceQueryGetServiceRecordResponse:
+    type: object
+    properties:
+      serviceRecord:
+        $ref: '#/definitions/serviceServiceRecord'
+  serviceServiceRecord:
+    type: object
+    properties:
+      id:
+        type: string
+      controller:
+        type: string
+        title: The entity controlling the service
+      type:
+        type: string
+        title: The type of the service
+      origin:
+        type: string
+        title: The origin of the service (e.g., a URL or other endpoint)
+      name:
+        type: string
+        title: The name of the service
+      serviceEndpoints:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/coreserviceKeyValuePair'
+        title: optional, the set of service endpoints associated with the service
+      metadata:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/coreserviceKeyValuePair'
+        title: optional, additional metadata related to the Service
   v1Account:
     type: object
     properties:

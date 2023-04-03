@@ -71,7 +71,7 @@ type TopicMessageHandler func(topic string, msg icore.PubSubMessage) error
 // defaultNode creates a new node with default options
 func defaultNode(cnfg *nodeconfig.Config) *LocalIpfs {
 	return &LocalIpfs{
-		ctx:   context.Background(),
+		ctx:    context.Background(),
 		config: cnfg,
 	}
 }
@@ -124,7 +124,7 @@ func (c *LocalIpfs) initialize() error {
 }
 
 // It loads plugins from the `externalPluginsPath` directory and injects them into the application
-func setupPlugins( externalPluginsPath string) error {
+func setupPlugins(externalPluginsPath string) error {
 	// Load any external plugins if available on externalPluginsPath
 	plugins, err := loader.NewPluginLoader(filepath.Join(externalPluginsPath, "plugins"))
 	if err != nil {

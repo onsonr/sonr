@@ -20,10 +20,8 @@ import (
 )
 
 type (
-	Address   = tmcrypto.Address
+	Address = tmcrypto.Address
 )
-
-
 
 //
 // Constructors
@@ -36,7 +34,6 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 	pk.KeyType = kt.PrettyString()
 	return pk
 }
-
 
 //
 // CryptoTypes Implementation of PubKey interface

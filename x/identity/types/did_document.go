@@ -22,7 +22,6 @@ func NewBlankDocument(idStr string) *DidDocument {
 		CapabilityInvocation: make([]string, 0),
 		CapabilityDelegation: make([]string, 0),
 		KeyAgreement:         make([]string, 0),
-		Service:              make([]*Service, 0),
 		AlsoKnownAs:          make([]string, 0),
 	}
 }
@@ -112,11 +111,6 @@ func (d *DidDocument) Contains(did string) bool {
 			return true
 		}
 	}
-	for _, service := range d.Service {
-		if service.Id == did {
-			return true
-		}
-	}
 	return false
 }
 
@@ -127,7 +121,6 @@ func (d *DidDocument) ToResolved() *ResolvedDidDocument {
 		Controller:         d.Controller,
 		AlsoKnownAs:        d.AlsoKnownAs,
 		VerificationMethod: d.VerificationMethod,
-		Service:            d.Service,
 		Metadata:           d.Metadata,
 	}
 

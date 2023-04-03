@@ -41,7 +41,7 @@ type LocalIpfs struct {
 	api  icore.CoreAPI
 	node *core.IpfsNode
 
-	config *config.Config
+	config   *config.Config
 	repoPath string
 
 	ctx     context.Context
@@ -87,8 +87,6 @@ func (n *LocalIpfs) Connect(peers ...string) error {
 	wg.Wait()
 	return nil
 }
-
-
 
 // Add adds a file to the network
 func (n *LocalIpfs) Add(file []byte) (string, error) {
@@ -177,7 +175,6 @@ func (n *LocalIpfs) Get(cidStr string) ([]byte, error) {
 	return file, nil
 }
 
-
 // GetPath returns a file from the network given its CID
 func (n *LocalIpfs) GetPath(cidStr string) (map[string]files.Node, error) {
 	cid, err := cid.Parse(cidStr)
@@ -234,7 +231,7 @@ func (r *LocalIpfs) LoadDocsStore(username string, docsOpts *iface.CreateDocumen
 
 // GetEventLogStore creates or loads an event log database from given name
 func (r *LocalIpfs) LoadEventLogStore(username string) (iface.EventLogStore, error) {
-	addr, err := fetchEventLogAddress( r.orbitDb, username)
+	addr, err := fetchEventLogAddress(r.orbitDb, username)
 	if err != nil {
 		return nil, err
 	}

@@ -2,7 +2,7 @@ package rest
 
 import (
 	"github.com/goccy/go-json"
-	"github.com/sonrhq/core/internal/packages/controller"
+	"github.com/sonrhq/core/x/identity/controller"
 	"github.com/sonrhq/core/x/identity/types"
 )
 

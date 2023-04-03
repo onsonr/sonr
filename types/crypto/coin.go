@@ -273,7 +273,7 @@ func (c CoinType) FormatAddress(pk *PubKey) string {
 		return EthereumAddress(pk)
 	}
 	if c.IsSonr() {
-		addr, _ :=bech32.ConvertAndEncode("idx", pk.Address().Bytes())
+		addr, _ := bech32.ConvertAndEncode("idx", pk.Address().Bytes())
 		return addr
 	}
 	if c.IsCosmos() {

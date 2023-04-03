@@ -26,7 +26,7 @@ type PrimaryIdentity interface {
 	LinkAdditionalAuthenticationMethod(additionalAuthenticationMethod *VerificationMethod)
 
 	// AllowedWebauthnCredentials returns a list of CredentialDescriptors for Webauthn Credentials
-	 AllowedWebauthnCredentials() []protocol.CredentialDescriptor
+	AllowedWebauthnCredentials() []protocol.CredentialDescriptor
 }
 
 // NewPrimaryIdentity creates a new DID Document for a primary identity with the given controller and coin type. Returns nil if the controller isnt a sonr account.

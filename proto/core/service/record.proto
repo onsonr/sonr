@@ -1,0 +1,20 @@
+syntax = "proto3";
+package sonrhq.core.service;
+
+option go_package = "github.com/sonrhq/core/x/service/types";
+
+message ServiceRecord {
+  string id = 1;
+  string controller = 2; // The entity controlling the service
+  string type = 3; // The type of the service
+  string origin = 4; // The origin of the service (e.g., a URL or other endpoint)
+  string name = 5; // The name of the service
+  repeated KeyValuePair service_endpoints = 6; // optional, the set of service endpoints associated with the service
+  repeated KeyValuePair metadata = 7; // optional, additional metadata related to the Service
+}
+
+// KeyValuePair represents a key-value pair.
+message KeyValuePair {
+  string key = 1; // The key
+  string value = 2; // The value
+}

@@ -15,10 +15,7 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.BlockchainIdentities {
 		k.SetBlockchainIdentity(ctx, elem)
 	}
-	// Set all the DomainRecord
-	for _, elem := range genState.ServiceList {
-		k.SetService(ctx, elem)
-	}
+
 
 	for _, elem := range genState.Relationships {
 		k.SetRelationship(ctx, elem)
@@ -34,7 +31,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PrimaryIdentities = k.GetAllPrimaryIdentities(ctx)
 	genesis.BlockchainIdentities = k.GetAllBlockchainIdentities(ctx)
-	genesis.ServiceList = k.GetAllServices(ctx)
 	genesis.Relationships = k.GetAllRelationships(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 

@@ -12,8 +12,7 @@ message GenesisState {
   Params params = 1 [(gogoproto.nullable) = false];
   repeated DidDocument primaryIdentities = 2 [(gogoproto.nullable) = false];
   repeated DidDocument blockchainIdentities = 3 [(gogoproto.nullable) = false];
-  repeated Service serviceList = 4 [(gogoproto.nullable) = false];
-  repeated VerificationRelationship relationships = 5 [(gogoproto.nullable) = false];
+  repeated VerificationRelationship relationships = 4 [(gogoproto.nullable) = false];
   // this line is used by starport scaffolding # genesis/proto/state
 }
 

@@ -109,6 +109,10 @@ import (
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
 
+	servicemodule "github.com/sonrhq/core/x/service"
+	servicemodulekeeper "github.com/sonrhq/core/x/service/keeper"
+	servicemoduletypes "github.com/sonrhq/core/x/service/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/sonrhq/core/app/params"
@@ -168,6 +172,7 @@ var (
 		ica.AppModuleBasic{},
 		vesting.AppModuleBasic{},
 		identitymodule.AppModuleBasic{},
+		servicemodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -243,6 +248,8 @@ type App struct {
 	ScopedICAHostKeeper  capabilitykeeper.ScopedKeeper
 
 	IdentityKeeper identitymodulekeeper.Keeper
+
+	ServiceKeeper servicemodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -290,6 +297,7 @@ func New(
 		ibctransfertypes.StoreKey, icahosttypes.StoreKey, capabilitytypes.StoreKey, group.StoreKey,
 		icacontrollertypes.StoreKey,
 		identitymoduletypes.StoreKey,
+		servicemoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -520,6 +528,17 @@ func New(
 	)
 	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
 
+	app.ServiceKeeper = *servicemodulekeeper.NewKeeper(
+		appCodec,
+		keys[servicemoduletypes.StoreKey],
+		keys[servicemoduletypes.MemStoreKey],
+		app.GetSubspace(servicemoduletypes.ModuleName),
+
+		app.GroupKeeper,
+		app.IdentityKeeper,
+	)
+	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Sealing prevents other modules from creating scoped sub-keepers
@@ -566,6 +585,7 @@ func New(
 		transferModule,
 		icaModule,
 		identityModule,
+		serviceModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -596,6 +616,7 @@ func New(
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
+		servicemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -621,6 +642,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
+		servicemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -651,6 +673,7 @@ func New(
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
+		servicemoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -681,6 +704,7 @@ func New(
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
 		identityModule,
+		serviceModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -836,8 +860,8 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// register app's OpenAPI routes.
 	// Check for sonr.swagger.yaml in docs folder or use default.
 	// If found, register swagger UI and swagger.json.
-	apiSvr.Router.Handle("/static/openapi.yaml", http.FileServer(http.FS(docs.Docs)))
-	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yaml"))
+	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
 	protocol.RegisterHighway(clientCtx)
 }
 
@@ -882,6 +906,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icacontrollertypes.SubModuleName)
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(identitymoduletypes.ModuleName)
+	paramsKeeper.Subspace(servicemoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

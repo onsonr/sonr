@@ -84,7 +84,6 @@ func Initialize(config *config.Config) (config.PeerNode, error) {
 	return hn, nil
 }
 
-
 // PeerID returns the ID of the Host
 func (n *hostImpl) PeerID() peer.ID {
 	return n.host.ID()

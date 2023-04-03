@@ -15,8 +15,8 @@ import (
 
 type HttpTransport struct {
 	*fiber.App
-	SessionStore *session.Store
-	ClientContext   client.Context
+	SessionStore  *session.Store
+	ClientContext client.Context
 }
 
 func NewHttpTransport(ctx client.Context) *HttpTransport {
@@ -27,7 +27,7 @@ func NewHttpTransport(ctx client.Context) *HttpTransport {
 			JSONDecoder: json.Unmarshal,
 		}),
 		ClientContext: ctx,
-		SessionStore: session.New(),
+		SessionStore:  session.New(),
 	}
 
 	// Middleware

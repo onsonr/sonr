@@ -14,7 +14,6 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateDidDocument{}, "identity/CreateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgUpdateDidDocument{}, "identity/UpdateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgDeleteDidDocument{}, "identity/DeleteDidDocument", nil)
-	cdc.RegisterConcrete(&MsgRegisterService{}, "identity/RegisterService", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -24,22 +23,19 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgUpdateDidDocument{},
 		&MsgDeleteDidDocument{},
 	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterService{},
-	)
 	// this line is used by starport scaffolding # 3
 
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 
-   registry.RegisterInterface(
-        "sonrhq.sonr.crypto.PubKey",
-        (*cryptotypes.PubKey)(nil), // Fix this line
-    )
+	registry.RegisterInterface(
+		"sonrhq.sonr.crypto.PubKey",
+		(*cryptotypes.PubKey)(nil), // Fix this line
+	)
 
 	// Register the concrete implementation(s) of the custom PubKey
 	registry.RegisterImplementations(
-  (*cryptotypes.PubKey)(nil), // Fix this line
-		&crypto.PubKey{}, // Replace with the concrete implementation of your custom PubKey
+		(*cryptotypes.PubKey)(nil), // Fix this line
+		&crypto.PubKey{},           // Replace with the concrete implementation of your custom PubKey
 	)
 
 	cryptocodec.RegisterInterfaces(registry)

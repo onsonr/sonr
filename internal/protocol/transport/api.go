@@ -7,7 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/packages/controller"
+	"github.com/sonrhq/core/x/identity/controller"
 	"github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/highway/v1"
 )
@@ -137,7 +137,6 @@ func (htt *HttpTransport) QueryService(c *fiber.Ctx) error {
 	// Get the origin from the request.
 	service, err := local.Context().GetService(context.Background(), origin)
 	if err != nil {
-
 		return c.Status(404).SendString(err.Error())
 	}
 
@@ -223,7 +222,7 @@ func (htt *HttpTransport) ListAccounts(c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 	res := &v1.ListAccountsResponse{
-		Success:  true,
+		Success: true,
 	}
 	for _, acc := range accs {
 		res.Accounts = append(res.Accounts, acc.ToProto())
@@ -262,7 +261,7 @@ func (htt *HttpTransport) GetAccount(c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 	res := &v1.GetAccountResponse{
-		Success: true,
+		Success:  true,
 		CoinType: acc.CoinType().Name(),
 		Accounts: []*v1.Account{
 			acc.ToProto(),
@@ -306,10 +305,10 @@ func (htt *HttpTransport) SignMessage(c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 	res := &v1.SignMessageResponse{
-		Success: true,
+		Success:   true,
 		Signature: base64.RawStdEncoding.EncodeToString(sig),
-		Message: req.Message,
-		Did: req.Did,
+		Message:   req.Message,
+		Did:       req.Did,
 	}
 	return c.JSON(res)
 }
@@ -355,7 +354,7 @@ func (htt *HttpTransport) VerifyMessage(c *fiber.Ctx) error {
 	}
 	res := &v1.VerifyMessageResponse{
 		Success: ok,
-		Did: req.Did,
+		Did:     req.Did,
 	}
 	return c.JSON(res)
 }
@@ -433,7 +432,7 @@ func (htt *HttpTransport) ReadMail(c *fiber.Ctx) error {
 		fromBodyMap[msg.Sender] = msg.Content
 	}
 	res := &v1.ReadMailResponse{
-		Success: true,
+		Success:  true,
 		Messages: fromBodyMap,
 	}
 	return c.JSON(res)

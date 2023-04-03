@@ -2,9 +2,6 @@ package types
 
 import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
-
-	"github.com/go-webauthn/webauthn/protocol"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
@@ -45,53 +42,3 @@ func (p Params) Validate() error {
 	return nil
 }
 
-// NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *Service, uuid string, challenge protocol.URLEncodedBase64) (protocol.CredentialCreation, error) {
-	// Build the credential creation options.
-	opts := protocol.PublicKeyCredentialCreationOptions{
-		// Generated Challenge.
-		Challenge: challenge,
-
-		// Service resulting properties.
-		User: s.GetUserEntity(uuid),
-
-		// Preconfigured parameters.
-		Parameters: []protocol.CredentialParameter{
-			{
-				Type:      protocol.PublicKeyCredentialType,
-				Algorithm: webauthncose.AlgES256,
-			},
-		},
-		RelyingParty: protocol.RelyingPartyEntity{
-			CredentialEntity: protocol.CredentialEntity{
-				Name: s.Name,
-			},
-			ID:   s.Origin,
-		},
-		Timeout: int(p.WebauthnTimeout),
-		AuthenticatorSelection: protocol.AuthenticatorSelection{
-			AuthenticatorAttachment: protocol.AuthenticatorAttachment(p.WebauthnAuthenticatorAttachment),
-		},
-		Attestation: protocol.ConveyancePreference(p.WebauthnAttestionPreference),
-	}
-	return protocol.CredentialCreation{Response: opts}, nil
-}
-
-// // NewWebauthnAssertionOptions returns the webauthn assertion options.
-// func (p Params) NewWebauthnAssertionOptions(s *Service, uuid string, deviceLabel protocol.URLEncodedBase64) (protocol.CredentialAssertion, error) {
-// 	// Issue the challenge.
-// 	chal, err := s.IssueChallenge()
-// 	if err != nil {
-// 		return protocol.CredentialAssertion{}, fmt.Errorf("failed to issue challenge: %w", err)
-// 	}
-
-// 	// Build the credential assertion options.
-// 	opts := protocol.PublicKeyCredentialRequestOptions{
-// 		// Generated Challenge.
-// 		Challenge: deviceLabel,
-
-// 		// Preconfigured parameters.
-// 		Timeout: int(p.WebauthnTimeout),
-// 	}
-// 	return protocol.CredentialAssertion{Response: opts}, nil
-// }

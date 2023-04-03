@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package sonrhq.core.service;
+
+import "core/service/record.proto";
+
+option go_package = "github.com/sonrhq/core/x/service/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateServiceRecord (MsgCreateServiceRecord) returns (MsgCreateServiceRecordResponse);
+  rpc UpdateServiceRecord (MsgUpdateServiceRecord) returns (MsgUpdateServiceRecordResponse);
+  rpc DeleteServiceRecord (MsgDeleteServiceRecord) returns (MsgDeleteServiceRecordResponse);
+}
+message MsgCreateServiceRecord {
+  string controller = 1;
+  string id   = 2;
+}
+
+message MsgCreateServiceRecordResponse {}
+
+message MsgUpdateServiceRecord {
+  string controller = 1;
+  string id   = 2;
+}
+
+message MsgUpdateServiceRecordResponse {}
+
+message MsgDeleteServiceRecord {
+  string controller = 1;
+  string id   = 2;
+}
+
+message MsgDeleteServiceRecordResponse {}
+

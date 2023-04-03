@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package sonrhq.core.service;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "core/service/genesis.proto";
+import "core/service/record.proto";
+
+option go_package = "github.com/sonrhq/core/x/service/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sonrhq/core/service/params";
+
+  }
+
+  // Queries a list of ServiceRecord items.
+  rpc ServiceRecord    (QueryGetServiceRecordRequest) returns (QueryGetServiceRecordResponse) {
+    option (google.api.http).get = "/sonr/core/service/record/{id}";
+
+  }
+  rpc ServiceRecordAll (QueryAllServiceRecordRequest) returns (QueryAllServiceRecordResponse) {
+    option (google.api.http).get = "/sonr/core/service/record";
+
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetServiceRecordRequest {
+  string id = 1;
+}
+
+message QueryGetServiceRecordResponse {
+  ServiceRecord serviceRecord = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllServiceRecordRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllServiceRecordResponse {
+  repeated ServiceRecord                          serviceRecord = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+}
+

@@ -13,7 +13,6 @@ const (
 	CurrentChainID = "sonrdevnet-1"
 )
 
-
 // Default configuration
 var (
 	// defaultBootstrapMultiaddrs is the default list of bootstrap nodes
@@ -22,11 +21,11 @@ var (
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
 		// "/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
-		 "/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
 
 		// IPFS Cluster Pinning nodes
-		 "/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
-		 "/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
+		"/ip4/138.201.67.219/tcp/4001/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
+		"/ip4/138.201.67.219/udp/4001/quic/p2p/QmUd6zHcbkbcs7SMxwLs48qZVX3vpcM8errYS7xEczwRMA",
 		"/ip4/138.201.67.220/tcp/4001/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
 		"/ip4/138.201.67.220/udp/4001/quic/p2p/QmNSYxZAiJHeLdkBg38roksAR9So7Y5eojks1yjEcUtZ7i",
 		// "/ip4/138.201.68.74/tcp/4001/p2p/QmdnXwLrC8p1ueiq2Qya8joNvk3TVVDAut7PrikmZwubtR",
@@ -44,14 +43,14 @@ var (
 )
 
 func currGrpcEndpoint() string {
-	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
+	if env := os.Getenv("ENVIRONMENT"); env != "prod" {
 		return SonrGrpcPort
 	}
 	return SonrGrpcPort
 }
 
 func currRpcEndpoint() string {
-	if env := os.Getenv("ENVIRONMENT") ; env != "prod" {
+	if env := os.Getenv("ENVIRONMENT"); env != "prod" {
 		return SonrRpcPort
 	}
 	return SonrRpcPort

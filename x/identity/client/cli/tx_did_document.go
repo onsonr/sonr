@@ -43,20 +43,6 @@ func CmdUpdateDidDocument() *cobra.Command {
 		Short: "Update a did_document",
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
-			indexDid := args[0]
-
-			// Get value arguments
-			argContext := args[1]
-			argController := args[2]
-			argVerificationMethod := args[3]
-			argAuthentication := args[4]
-			argAssertionMethod := args[5]
-			argCapibilityInvocation := args[6]
-			argCapabilityDelegation := args[7]
-			argKeyAgreement := args[8]
-			argService := args[9]
-			argAlsoKnownAs := args[10]
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -64,17 +50,7 @@ func CmdUpdateDidDocument() *cobra.Command {
 
 			msg := types.NewMsgUpdateDidDocument(
 				clientCtx.GetFromAddress().String(),
-				indexDid,
-				argContext,
-				argController,
-				argVerificationMethod,
-				argAuthentication,
-				argAssertionMethod,
-				argCapibilityInvocation,
-				argCapabilityDelegation,
-				argKeyAgreement,
-				argService,
-				argAlsoKnownAs,
+				nil,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

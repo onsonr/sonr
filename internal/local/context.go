@@ -24,7 +24,7 @@ type LocalContext struct {
 	IPFSRepoPath           string
 	Rendevouz              string
 	BsMultiaddrs           []string
-	isProd          bool
+	isProd                 bool
 }
 
 // Option is a function that configures the local context
@@ -130,8 +130,7 @@ func (c LocalContext) HighwayPort() string {
 func (c LocalContext) FiberListenAddress() string {
 	if c.IsDev() {
 		return fmt.Sprintf(":%s", c.HighwayPort())
-	}else{
+	} else {
 		return fmt.Sprintf("%s:%s", currPublicHostIP(), c.HighwayPort())
 	}
 }
-

@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
@@ -54,6 +53,18 @@ func NewKeeper(
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
+
+
+// GetParams get all parameters as types.Params
+func (k Keeper) GetParams(ctx sdk.Context) types.Params {
+	return types.NewParams()
+}
+
+// SetParams set the params
+func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
+	k.paramstore.SetParamSet(ctx, &params)
+}
+
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                          DIDDocument Keeper Functions                          ||
@@ -124,6 +135,13 @@ func (k Keeper) SetBlockchainIdentity(ctx sdk.Context, didDocument types.DidDocu
 	), b)
 }
 
+// SetDidDocument set a specific didDocument in the store from its index
+func (k Keeper) SetBlockchainIdentities(ctx sdk.Context, docs ...*types.DidDocument) {
+	for _, doc := range docs {
+		k.SetBlockchainIdentity(ctx, *doc)
+	}
+}
+
 // GetDidDocument returns a didDocument from its index
 func (k Keeper) GetBlockchainIdentity(
 	ctx sdk.Context,
@@ -171,12 +189,9 @@ func (k Keeper) GetAllBlockchainIdentities(ctx sdk.Context) (list []types.DidDoc
 	return
 }
 
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Relationships Keeper Functions                         ||
 // ! ||--------------------------------------------------------------------------------||
-
-
 
 // Set Resolved Document sets all the relationships in the document
 func (k Keeper) SetResolvedDocument(ctx sdk.Context, doc types.ResolvedDidDocument) {
@@ -248,7 +263,6 @@ func (k Keeper) GetAllRelationships(ctx sdk.Context) (list []types.VerificationR
 	return
 }
 
-
 func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]types.VerificationRelationship, error) {
 	vrs := make([]types.VerificationRelationship, 0, len(addrs))
 
@@ -277,64 +291,4 @@ func (k Keeper) ResolveDidDocument(ctx sdk.Context, doc types.DidDocument) (type
 
 	resolvedDidDocument.AddVerificationRelationship(vrs)
 	return *resolvedDidDocument, nil
-}
-
-
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                         Service Record Keeper Functions                        ||
-// ! ||--------------------------------------------------------------------------------||
-
-// SetService set a specific Service in the store from its index
-func (k Keeper) SetService(ctx sdk.Context, Service types.Service) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
-	b := k.cdc.MustMarshal(&Service)
-	store.Set(types.ServiceKey(
-		cleanServiceDomain(Service.Origin),
-	), b)
-}
-
-// GetDomainRecord returns a DomainRecord from its index
-func (k Keeper) GetService(
-	ctx sdk.Context,
-	origin string,
-) (val types.Service, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
-
-	b := store.Get(types.ServiceKey(
-		cleanServiceDomain(origin),
-	))
-	if b == nil {
-		return val, false
-	}
-
-	k.cdc.MustUnmarshal(b, &val)
-	return val, true
-}
-
-// GetAllServices returns all Services
-func (k Keeper) GetAllServices(ctx sdk.Context) (list []types.Service) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceKeyPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-
-	defer iterator.Close()
-
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.Service
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val)
-	}
-	return
-}
-
-// cleanServiceDomain removes the url scheme and path from a service origin
-func cleanServiceDomain(origin string) string {
-	// Remove url scheme
-	r := strings.NewReplacer("https://", "", "http://", "")
-	origin = r.Replace(origin)
-
-	if strings.Contains(origin, "/") {
-		return strings.Split(origin, "/")[0]
-	}
-	return origin
 }

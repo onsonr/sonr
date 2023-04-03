@@ -71,14 +71,12 @@ func TestOrbitDB(t *testing.T) {
 	t.Logf("Store Address: %v", kvStore.Address().String())
 	t.Logf("Store Type: %v", kvStore.Type())
 
-
 	op, err = kvStore.Put(context.Background(), "test", []byte("test"))
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	t.Logf("op: %v", op.GetOperation())
-
 
 	// Get the file from the network
 	rawVal, err := docsStore.Get(context.Background(), "0", nil)

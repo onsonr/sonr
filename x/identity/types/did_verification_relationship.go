@@ -81,7 +81,6 @@ func (d *DidDocument) ResolveRelationships(vms []VerificationRelationship) *Reso
 		CapabilityDelegation: []*VerificationRelationship{},
 		CapabilityInvocation: []*VerificationRelationship{},
 		KeyAgreement:         []*VerificationRelationship{},
-		Service:              []*Service{},
 		Metadata:             d.Metadata,
 	}
 	return resolved.AddVerificationRelationship(vms)
@@ -99,7 +98,6 @@ func (d *DidDocument) ResolveMethods(vms []VerificationMethod) *ResolvedDidDocum
 		CapabilityDelegation: []*VerificationRelationship{},
 		CapabilityInvocation: []*VerificationRelationship{},
 		KeyAgreement:         []*VerificationRelationship{},
-		Service:              []*Service{},
 		Metadata:             d.Metadata,
 	}
 

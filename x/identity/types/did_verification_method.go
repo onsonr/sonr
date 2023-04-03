@@ -95,7 +95,6 @@ func findCoinTypeFromAddress(addr string) crypto.CoinType {
 	return crypto.TestCoinType
 }
 
-
 // VerificationMethodOption is used to define options that modify the creation of the verification method
 type VerificationMethodOption func(vm *VerificationMethod, method DIDMethod) error
 
@@ -205,7 +204,6 @@ func (d *VerificationMethod) DIDIdentifier() string {
 func (d *VerificationMethod) DIDFragment() string {
 	return strings.Split(d.Id, "#")[1]
 }
-
 
 // IsBlockchainAccount returns true if the VerificationMethod is a blockchain account
 func (vm *VerificationMethod) IsBlockchainAccount() bool {

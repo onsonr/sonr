@@ -28,14 +28,6 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 			fmt.Sprintf("FirstAka%d", i),
 			fmt.Sprintf("SecondAka%d", i),
 		}
-		items[i].Service = []*types.Service{
-			{
-				Id: fmt.Sprintf("%s#FirstSvc", id),
-			},
-			{
-				Id: fmt.Sprintf("%s#SecondSvc", id),
-			},
-		}
 		items[i].VerificationMethod = []*types.VerificationMethod{
 			{
 				Id: fmt.Sprintf("%s#Key", id),
@@ -118,4 +110,12 @@ func (suite *KeeperTestSuite) TestDidDocumentGetAll() {
 		nullify.Fill(items),
 		nullify.Fill(keeper.GetAllPrimaryIdentities(ctx)),
 	)
+}
+
+func (suite *KeeperTestSuite) TestGetParams() {
+	keeper := suite.keeper
+	ctx := suite.ctx
+	params := types.DefaultParams()
+	keeper.SetParams(ctx, params)
+	suite.Assert().EqualValues(params, keeper.GetParams(ctx))
 }

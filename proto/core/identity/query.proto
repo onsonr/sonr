@@ -114,46 +114,6 @@ service Query {
     option (google.api.http).get = "/sonr/core/identity/did";
 
   }
-
-  // Get a Service from Origin
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-  rpc Service (QueryGetServiceRequest) returns (QueryGetServiceResponse) {
-    option (google.api.http).get = "/sonr/core/identity/service/{origin}";
-  }
-
-  // Get all Services
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-  rpc ServiceAll (QueryAllServiceRequest) returns (QueryAllServiceResponse) {
-    option (google.api.http).get = "/sonr/core/identity/service";
-
-  }
-
   // this line is used by starport scaffolding # 2
 
 }
@@ -210,26 +170,4 @@ message QueryAllDidRequest {
 message QueryAllDidResponse {
   repeated DidDocument                            didDocument = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination  = 2;
-}
-
-message QueryGetServiceRequest {
-
-  // origin is the hostname of the calling service - it appears like ("test.com")
-  string origin = 1;
-}
-
-message QueryGetServiceResponse {
-  // A Service is a JSON-LD object that contains relaying information to authenticate a client
-  Service service = 1 [(gogoproto.nullable) = false];
-  // Challenge is a random string that is used to authenticate the client
-  string challenge = 2;
-}
-
-message QueryAllServiceRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QueryAllServiceResponse {
-  repeated Service                                services   = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

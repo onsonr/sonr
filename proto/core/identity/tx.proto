@@ -13,20 +13,19 @@ service Msg {
   rpc CreateDidDocument (MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
   rpc UpdateDidDocument (MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
   rpc DeleteDidDocument (MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
-  rpc RegisterService   (MsgRegisterService  ) returns (MsgRegisterServiceResponse  );
-  rpc UpdateService     (MsgUpdateService    ) returns (MsgUpdateServiceResponse    );
-  rpc DeactivateService (MsgDeactivateService) returns (MsgDeactivateServiceResponse);
 }
 message MsgCreateDidDocument {
   string      creator  = 1;
-  DidDocument document = 2;
+  DidDocument primary = 2;
+  repeated DidDocument blockchains = 3;
 }
 
 message MsgCreateDidDocumentResponse {}
 
 message MsgUpdateDidDocument {
   string      creator  = 1;
-  DidDocument document = 2;
+  DidDocument primary = 2;
+  repeated DidDocument blockchains = 3;
 }
 
 message MsgUpdateDidDocumentResponse {
@@ -39,28 +38,3 @@ message MsgDeleteDidDocument {
 }
 
 message MsgDeleteDidDocumentResponse {}
-
-message MsgRegisterService {
-  string creator = 1;
-  string index   = 2;
-  string domain  = 3;
-}
-
-message MsgRegisterServiceResponse {}
-
-message MsgUpdateService {
-  string creator = 1;
-  string index   = 2;
-  string domain  = 3;
-}
-
-message MsgUpdateServiceResponse {}
-
-message MsgDeactivateService {
-  string creator = 1;
-  string index   = 2;
-  string domain  = 3;
-}
-
-message MsgDeactivateServiceResponse {
-}

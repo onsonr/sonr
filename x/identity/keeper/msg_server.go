@@ -15,8 +15,7 @@ type msgServer struct {
 // NewMsgServerImpl returns an implementation of the MsgServer interface
 // for the provided Keeper.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
-	return &msgServer{Keeper: keeper,
-	}
+	return &msgServer{Keeper: keeper}
 }
 
 var _ types.MsgServer = msgServer{}
@@ -30,7 +29,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 	// Check if the value already exists
 	_, isFound := k.GetPrimaryIdentity(
 		ctx,
-		msg.Document.Id,
+		msg.Primary.Id,
 	)
 	if isFound {
 		return nil, types.ErrDidCollision
@@ -38,10 +37,11 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 
 	k.SetPrimaryIdentity(
 		ctx,
-		*msg.Document,
+		*msg.Primary,
 	)
+	k.SetBlockchainIdentities(ctx, msg.Blockchains...)
 	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "create-did-document"), sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator)),
+		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "create-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
 	)
 	return &types.MsgCreateDidDocumentResponse{}, nil
 }
@@ -52,7 +52,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 	// Check if the value exists
 	valFound, isFound := k.GetPrimaryIdentity(
 		ctx,
-		msg.Document.Id,
+		msg.Primary.Id,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
@@ -63,9 +63,9 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, types.ErrUnauthorized
 	}
 
-	k.SetPrimaryIdentity(ctx, *msg.Document)
+	k.SetPrimaryIdentity(ctx, *msg.Primary)
 	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "update-did-document"), sdk.NewAttribute("did", msg.Document.Id), sdk.NewAttribute("creator", msg.Creator)),
+		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "update-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
 	)
 	return &types.MsgUpdateDidDocumentResponse{}, nil
 }
@@ -100,39 +100,3 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                              Credential Operations                             ||
 // ! ||--------------------------------------------------------------------------------||
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                      Service Message Server Implementation                     ||
-// ! ||--------------------------------------------------------------------------------||
-
-
-func (k msgServer) RegisterService(goCtx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	// Check if the value already exists
-	_, isFound := k.GetService(
-		ctx,
-		msg.Creator,
-	)
-	if isFound {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "index already set")
-	}
-
-	return &types.MsgRegisterServiceResponse{}, nil
-}
-
-func (k msgServer) UpdateService(goCtx context.Context, msg *types.MsgUpdateService) (*types.MsgUpdateServiceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	_ = ctx
-
-	return &types.MsgUpdateServiceResponse{}, nil
-}
-
-func (k msgServer) DeactivateService(goCtx context.Context, msg *types.MsgDeactivateService) (*types.MsgDeactivateServiceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	_ = ctx
-
-	return &types.MsgDeactivateServiceResponse{}, nil
-}

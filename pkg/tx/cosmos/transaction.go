@@ -10,7 +10,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/sonrhq/core/internal/models"
+	"github.com/sonrhq/core/x/identity/models"
 )
 
 // SignTransaction signs a Cosmos transaction for Token Transfer
@@ -127,7 +127,7 @@ func signTxBodyBytes(wa models.Account, txBody *txtypes.TxBody, authInf *txtypes
 	signDoc := &txtypes.SignDoc{
 		BodyBytes:     txBodyBz,
 		AuthInfoBytes: aiBz,
-		ChainId: "core",
+		ChainId:       "core",
 		AccountNumber: 0,
 	}
 	bodyBz, err := codec.ProtoMarshalJSON(signDoc, nil)

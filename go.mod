@@ -4,7 +4,7 @@ go 1.19
 
 require (
 	berty.tech/go-orbit-db v1.19.1
-	cosmossdk.io/math v1.0.0-beta.4 // indirect
+	cosmossdk.io/math v1.0.0-beta.4
 	github.com/btcsuite/btcd v0.22.1
 	github.com/cosmos/cosmos-sdk v0.46.7
 	github.com/cosmos/ibc-go/v5 v5.2.0
@@ -53,6 +53,7 @@ require (
 	github.com/goccy/go-json v0.9.11
 	github.com/gofiber/fiber/v2 v2.43.0
 	github.com/gofiber/helmet/v2 v2.2.25
+	gopkg.in/yaml.v2 v2.4.0
 )
 
 require (
@@ -401,7 +402,6 @@ require (
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/square/go-jose.v2 v2.5.1 // indirect
 	gopkg.in/warnings.v0 v0.1.2 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 	sigs.k8s.io/yaml v1.3.0 // indirect

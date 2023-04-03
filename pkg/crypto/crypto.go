@@ -116,7 +116,6 @@ func NewPubKeyFromCmpConfig(config *cmp.Config) (*PubKey, error) {
 	return types.NewPubKey(bz, Secp256k1KeyType), nil
 }
 
-
 // NewSecp256k1PubKey takes a byte array of raw public key bytes and returns a PubKey.
 func NewSecp256k1PubKey(bz []byte) *PubKey {
 	return types.NewPubKey(bz, Secp256k1KeyType)
@@ -196,39 +195,39 @@ func PubKeyFromWebAuthn(cred *types.WebauthnCredential) (*PubKey, error) {
 }
 
 func DeriveBIP44(config *cmp.Config, coinType types.CoinType, account, change, addressIndex uint32) (*cmp.Config, error) {
-    purpose := uint32(44)
+	purpose := uint32(44)
 
-    // m / purpose'
-    configPurpose, err := config.DeriveBIP32(purpose | 0x80000000)
-    if err != nil {
-        return nil, err
-    }
+	// m / purpose'
+	configPurpose, err := config.DeriveBIP32(purpose | 0x80000000)
+	if err != nil {
+		return nil, err
+	}
 
-    // m / purpose' / coin_type'
-    configCoinType, err := configPurpose.DeriveBIP32(uint32(coinType.BipPath()) | 0x80000000)
-    if err != nil {
-        return nil, err
-    }
+	// m / purpose' / coin_type'
+	configCoinType, err := configPurpose.DeriveBIP32(uint32(coinType.BipPath()) | 0x80000000)
+	if err != nil {
+		return nil, err
+	}
 
-    // m / purpose' / coin_type' / account'
-    configAccount, err := configCoinType.DeriveBIP32(account | 0x80000000)
-    if err != nil {
-        return nil, err
-    }
+	// m / purpose' / coin_type' / account'
+	configAccount, err := configCoinType.DeriveBIP32(account | 0x80000000)
+	if err != nil {
+		return nil, err
+	}
 
-    // m / purpose' / coin_type' / account' / change
-    configChange, err := configAccount.DeriveBIP32(change)
-    if err != nil {
-        return nil, err
-    }
+	// m / purpose' / coin_type' / account' / change
+	configChange, err := configAccount.DeriveBIP32(change)
+	if err != nil {
+		return nil, err
+	}
 
-    // m / purpose' / coin_type' / account' / change / address_index
-    configAddress, err := configChange.DeriveBIP32(addressIndex)
-    if err != nil {
-        return nil, err
-    }
+	// m / purpose' / coin_type' / account' / change / address_index
+	configAddress, err := configChange.DeriveBIP32(addressIndex)
+	if err != nil {
+		return nil, err
+	}
 
-    return configAddress, nil
+	return configAddress, nil
 }
 
 const hardenedOffset uint32 = 0x80000000
