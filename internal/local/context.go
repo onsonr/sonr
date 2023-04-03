@@ -24,12 +24,23 @@ type LocalContext struct {
 	IPFSRepoPath           string
 	Rendevouz              string
 	BsMultiaddrs           []string
+	isProd          bool
+}
+
+// Option is a function that configures the local context
+type Option func(LocalContext)
+
+// SetProd sets the current context to production
+func SetProd() Option {
+	return func(c LocalContext) {
+		c.isProd = true
+	}
 }
 
 // Context returns the current context of the Sonr blockchain application.
-func Context() LocalContext {
+func Context(opts ...Option) LocalContext {
 	params := types.DefaultParams()
-	return LocalContext{
+	c := LocalContext{
 		grpcApiEndpoint:        currGrpcEndpoint(),
 		rpcApiEndpoint:         currRpcEndpoint(),
 		highwayServerPort:      getServerPort(),
@@ -45,6 +56,11 @@ func Context() LocalContext {
 		Rendevouz:              defaultRendezvousString,
 		BsMultiaddrs:           defaultBootstrapMultiaddrs,
 	}
+
+	for _, opt := range opts {
+		opt(c)
+	}
+	return c
 }
 
 // ChainID returns the chain id of the current context
@@ -66,11 +82,17 @@ func (c LocalContext) FaucetEndpoint() string {
 
 // IsDev returns true if the current context is a development context
 func (c LocalContext) IsDev() bool {
+	if c.isProd {
+		return false
+	}
 	return os.Getenv("ENVIRONMENT") == "dev"
 }
 
 // IsProd returns true if the current context is a production context
 func (c LocalContext) IsProd() bool {
+	if c.isProd {
+		return true
+	}
 	return !c.IsDev()
 }
 
@@ -113,9 +135,3 @@ func (c LocalContext) FiberListenAddress() string {
 	}
 }
 
-func currPublicHostIP() string {
-	if ip := os.Getenv("PUBLC_HOST_IP"); ip != "" {
-		return ip
-	}
-	return "localhost"
-}

@@ -85,3 +85,10 @@ func getHomeDir() string {
 	}
 	return homeDir
 }
+
+func currPublicHostIP() string {
+	if ip := os.Getenv("PUBLC_HOST_IP"); ip != "" {
+		return ip
+	}
+	return "localhost"
+}
