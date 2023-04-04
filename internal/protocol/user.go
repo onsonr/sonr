@@ -1,4 +1,4 @@
-package rest
+package protocol
 
 import (
 	"github.com/goccy/go-json"

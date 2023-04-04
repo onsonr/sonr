@@ -4,12 +4,11 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
-	rest "github.com/sonrhq/core/internal/protocol/transport"
 	"github.com/sonrhq/core/pkg/node"
 )
 
 func RegisterHighway(ctx client.Context) {
-	app := rest.NewHttpTransport(ctx)
+	app := initHttpTransport(ctx)
 	node.StartLocalIPFS()
 	go serveFiber(app.App)
 }

@@ -1,4 +1,4 @@
-package rest
+package protocol
 
 import (
 	"time"
@@ -19,7 +19,7 @@ type HttpTransport struct {
 	ClientContext client.Context
 }
 
-func NewHttpTransport(ctx client.Context) *HttpTransport {
+func initHttpTransport(ctx client.Context) *HttpTransport {
 	// HttPTransport
 	rest := &HttpTransport{
 		App: fiber.New(fiber.Config{
