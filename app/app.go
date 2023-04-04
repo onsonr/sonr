@@ -104,7 +104,6 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/sonrhq/core/internal/protocol"
 	identitymodule "github.com/sonrhq/core/x/identity"
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
@@ -862,7 +861,6 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// If found, register swagger UI and swagger.json.
 	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
 	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
-	protocol.RegisterHighway(clientCtx)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.

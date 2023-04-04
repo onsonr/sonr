@@ -69,7 +69,7 @@ func (k Keeper) SetServiceRecord(ctx sdk.Context, serviceRecord types.ServiceRec
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceRecordKeyPrefix))
 	b := k.cdc.MustMarshal(&serviceRecord)
 	store.Set(types.ServiceRecordKey(
-		serviceRecord.Id,
+		cleanServiceDomain(serviceRecord.Origin),
 	), b)
 }
 
