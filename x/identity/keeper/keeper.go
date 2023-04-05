@@ -79,6 +79,29 @@ func (k Keeper) SetPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocumen
 	), b)
 }
 
+func (k Keeper) GetAllAlsoKnownAs(ctx sdk.Context) (list []string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.DidDocument
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val.AlsoKnownAs...)
+	}
+	return
+}
+
+// HasAlsoKnownAs checks if the store already has the also known as
+func (k Keeper) HasAlsoKnownAs(ctx sdk.Context, aka string) bool {
+	akaArr := k.GetAllAlsoKnownAs(ctx)
+	for _, v := range akaArr {
+		if v == aka {
+			return true
+		}
+	}
+	return false
+}
+
 // GetDidDocument returns a didDocument from its index
 func (k Keeper) GetPrimaryIdentity(
 	ctx sdk.Context,
@@ -185,41 +208,12 @@ func (k Keeper) GetAllBlockchainIdentities(ctx sdk.Context) (list []types.DidDoc
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
 		list = append(list, val)
 	}
-
 	return
 }
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Relationships Keeper Functions                         ||
 // ! ||--------------------------------------------------------------------------------||
-
-// Set Resolved Document sets all the relationships in the document
-func (k Keeper) SetResolvedDocument(ctx sdk.Context, doc types.ResolvedDidDocument) {
-	// Set AssertionMethod
-	for _, v := range doc.AssertionMethod {
-		k.SetRelationship(ctx, *v)
-	}
-
-	// Set Authentication
-	for _, v := range doc.Authentication {
-		k.SetRelationship(ctx, *v)
-	}
-
-	// Set CapabilityDelegation
-	for _, v := range doc.CapabilityDelegation {
-		k.SetRelationship(ctx, *v)
-	}
-
-	// Set CapabilityInvocation
-	for _, v := range doc.CapabilityInvocation {
-		k.SetRelationship(ctx, *v)
-	}
-
-	// Set KeyAgreement
-	for _, v := range doc.KeyAgreement {
-		k.SetRelationship(ctx, *v)
-	}
-}
 
 // HasRelationship checks if the element exists in the store
 func (k Keeper) HasRelationship(ctx sdk.Context, reference string) bool {
@@ -275,20 +269,4 @@ func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]ty
 	}
 
 	return vrs, nil
-}
-
-func (k Keeper) ResolveDidDocument(ctx sdk.Context, doc types.DidDocument) (types.ResolvedDidDocument, error) {
-	resolvedDidDocument := doc.ToResolved()
-
-	vrs := []types.VerificationRelationship{}
-	for _, relationship := range doc.VerificationMethod {
-		vr, ok := k.GetRelationship(ctx, relationship.Id)
-		if !ok {
-			return types.ResolvedDidDocument{}, status.Error(codes.NotFound, fmt.Sprintf("verification relationship %s not found", relationship.Id))
-		}
-		vrs = append(vrs, vr)
-	}
-
-	resolvedDidDocument.AddVerificationRelationship(vrs)
-	return *resolvedDidDocument, nil
 }

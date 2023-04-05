@@ -3,13 +3,12 @@ package protocol
 import (
 	"context"
 	"encoding/base64"
-	"regexp"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/x/identity/controller"
 	"github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/highway/v1"
+	"github.com/sonrhq/core/x/identity/controller"
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -48,7 +47,7 @@ func (htt *HttpTransport) Keygen(c *fiber.Ctx) error {
 	}
 
 	// Create a new controller with the credential.
-	cont, err := controller.NewController(controller.WithWebauthnCredential(cred))
+	cont, err := controller.NewController(controller.WithWebauthnCredential(cred), controller.WithBroadcastTx(), controller.WithUsername(req.Username))
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
@@ -71,6 +70,7 @@ func (htt *HttpTransport) Keygen(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
+	sess.Set("address", cont.PrimaryIdentity().Id)
 	sess.Set("user", usrBytes)
 	err = sess.Save()
 	if err != nil {
@@ -84,14 +84,30 @@ func (htt *HttpTransport) Login(c *fiber.Ctx) error {
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(400).SendString(err.Error())
 	}
-
-	// Get the origin from the request.
-	origin := regexp.MustCompile(`[^a-zA-Z]+`).ReplaceAllString(req.Origin, "")
-	_, err := local.Context().GetService(context.Background(), origin)
+	sess, err := htt.SessionStore.Get(c)
 	if err != nil {
-		return c.Status(404).SendString(err.Error())
+		return c.Status(500).SendString(err.Error())
 	}
-	return nil
+	doc, err := local.Context().GetDID(c.Context(), req.AccountAddress)
+	if err != nil {
+		return err
+	}
+	cont, err := controller.LoadController(doc)
+	if err != nil {
+		return err
+	}
+	usr := NewUser(cont)
+	usrBytes, err := usr.Marshal()
+	if err != nil {
+		return c.Status(500).SendString(err.Error())
+	}
+	sess.Set("address", cont.PrimaryIdentity().Id)
+	sess.Set("user", usrBytes)
+	err = sess.Save()
+	if err != nil {
+		return c.Status(500).SendString(err.Error())
+	}
+	return c.JSON(`{"success":"true"}`)
 }
 
 // ! ||--------------------------------------------------------------------------------||

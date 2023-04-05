@@ -411,82 +411,20 @@ definitions:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityResolvedDidDocument'
+        $ref: '#/definitions/identityDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryDidByKeyIDResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityResolvedDidDocument'
+        $ref: '#/definitions/identityDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryGetDidResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityResolvedDidDocument'
+        $ref: '#/definitions/identityDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  identityResolvedDidDocument:
-    type: object
-    properties:
-      context:
-        type: array
-        items:
-          type: string
-      id:
-        type: string
-      controller:
-        type: array
-        items:
-          type: string
-        title: optional
-      verificationMethod:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationMethod'
-        title: optional
-      authentication:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
-        title: optional
-      assertionMethod:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
-        title: optional
-      capabilityInvocation:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
-        title: optional
-      capabilityDelegation:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
-        title: optional
-      keyAgreement:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityVerificationRelationship'
-        title: optional
-      alsoKnownAs:
-        type: array
-        items:
-          type: string
-        title: optional
-      metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/coreidentityKeyValuePair'
-        title: optional
-    description: ResolvedDidDocument is a JSON-LD object that contains a set of public keys and verification methods that are used to authenticate the DID subject.
   identityVerificationMethod:
     type: object
     properties:
@@ -518,19 +456,6 @@ definitions:
           $ref: '#/definitions/coreidentityKeyValuePair'
         title: additional metadata related to the verification method
     description: VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
-  identityVerificationRelationship:
-    type: object
-    properties:
-      verificationMethod:
-        $ref: '#/definitions/identityVerificationMethod'
-        title: The verification method associated with the relationship
-      reference:
-        type: string
-        title: The reference identifier for the relationship
-      type:
-        type: string
-        title: The type of the verification relationship
-    description: VerificationRelationship represents a relationship between a verification method and a specific verification purpose (e.g., authentication, assertion, etc.).
   protobufAny:
     type: object
     properties:
@@ -760,7 +685,7 @@ definitions:
         type: string
         description: The account address for the user.
       didDocument:
-        $ref: '#/definitions/identityResolvedDidDocument'
+        $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
     description: LoginStartResponse is the response to a Login request.
   v1QueryServiceResponse:

@@ -114,26 +114,6 @@ func (d *DidDocument) Contains(did string) bool {
 	return false
 }
 
-func (d *DidDocument) ToResolved() *ResolvedDidDocument {
-	resolved := &ResolvedDidDocument{
-		Id:                 d.Id,
-		Context:            d.Context,
-		Controller:         d.Controller,
-		AlsoKnownAs:        d.AlsoKnownAs,
-		VerificationMethod: d.VerificationMethod,
-		Metadata:           d.Metadata,
-	}
-
-	// Iterate through VerificationMethod and create a VerificationRelationship for each
-	vms := []VerificationRelationship{}
-	for _, vm := range d.VerificationMethod {
-		vms = append(vms, VerificationRelationship{
-			Reference: vm.Id,
-		})
-	}
-	return resolved.AddVerificationRelationship(vms)
-}
-
 // IsAuthentication checks if the given VerificationMethod is used for authentication
 func (d *DidDocument) IsAuthentication(vm *VerificationMethod) bool {
 	for _, auth := range d.Authentication {

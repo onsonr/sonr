@@ -136,7 +136,7 @@ message QueryGetDidRequest {
 message QueryGetDidResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByKeyIDRequest {
@@ -148,7 +148,7 @@ message QueryDidByKeyIDRequest {
 message QueryDidByKeyIDResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByAlsoKnownAsRequest {
@@ -160,7 +160,7 @@ message QueryDidByAlsoKnownAsRequest {
 message QueryDidByAlsoKnownAsResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  ResolvedDidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDidRequest {

@@ -1,4 +1,4 @@
-package models
+package types
 
 import (
 	"crypto/aes"
@@ -11,9 +11,10 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/x/identity/types"
+
 )
 
 type Credential interface {
@@ -23,8 +24,11 @@ type Credential interface {
 	// Get the credential's DID
 	Did() string
 
+	// Descriptor returns the credential's descriptor
+	Descriptor() protocol.CredentialDescriptor
+
 	// Convert the credential to a DID VerificationMethod
-	ToVerificationMethod() *types.VerificationMethod
+	ToVerificationMethod() *VerificationMethod
 
 	// Encrypt is used to encrypt a message for the credential
 	Encrypt(msg []byte) ([]byte, error)
@@ -49,7 +53,7 @@ func NewCredential(cred *crypto.WebauthnCredential, controller string) Credentia
 }
 
 func LoadJSONCredential(bz []byte) (Credential, error) {
-	vm := &types.VerificationMethod{}
+	vm := &VerificationMethod{}
 	err := json.Unmarshal(bz, vm)
 	if err != nil {
 		return nil, err
@@ -57,7 +61,7 @@ func LoadJSONCredential(bz []byte) (Credential, error) {
 	return LoadCredential(vm)
 }
 
-func LoadCredential(vm *types.VerificationMethod) (Credential, error) {
+func LoadCredential(vm *VerificationMethod) (Credential, error) {
 	// Extract the public key from PublicKeyMultibase
 	pubKey, err := base64.RawURLEncoding.DecodeString(vm.PublicKeyMultibase)
 	if err != nil {
@@ -94,6 +98,16 @@ func (c *didCredential) Controller() string {
 	return c.UserDid
 }
 
+// Descriptor returns the credential's descriptor
+func (c *didCredential) Descriptor() protocol.CredentialDescriptor {
+	return protocol.CredentialDescriptor{
+		CredentialID: c.Credential.Id,
+		Type:         protocol.PublicKeyCredentialType,
+		Transport:   []protocol.AuthenticatorTransport{protocol.Internal},
+		AttestationType: "direct",
+	}
+}
+
 // MarshalJSON is used to marshal the credential to JSON
 func (c *didCredential) Marshal() ([]byte, error) {
 	vm := c.ToVerificationMethod()
@@ -105,11 +119,11 @@ func (c *didCredential) Marshal() ([]byte, error) {
 }
 
 // ToVerificationMethod converts the credential to a DID VerificationMethod
-func (c *didCredential) ToVerificationMethod() *types.VerificationMethod {
+func (c *didCredential) ToVerificationMethod() *VerificationMethod {
 	did := fmt.Sprintf("did:key:%s#%s", base64.RawURLEncoding.EncodeToString(c.Credential.PublicKey), base64.RawURLEncoding.EncodeToString(c.Credential.Id))
 	pubMb := base64.RawURLEncoding.EncodeToString(c.Credential.PublicKey)
 	vmType := crypto.Ed25519KeyType.FormatString()
-	return &types.VerificationMethod{
+	return &VerificationMethod{
 		Id:                 did,
 		Type:               vmType,
 		PublicKeyMultibase: pubMb,
@@ -223,10 +237,10 @@ func (c *didCredential) Decrypt(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func authenticatorToMetadata(authenticator *crypto.WebauthnAuthenticator) []*types.KeyValuePair {
+func authenticatorToMetadata(authenticator *crypto.WebauthnAuthenticator) []*KeyValuePair {
 	authenticatorMap := make(map[string]string)
 	if authenticator == nil {
-		return types.MapToKeyValueList(authenticatorMap)
+		return MapToKeyValueList(authenticatorMap)
 	}
 	aaguid := base64.StdEncoding.EncodeToString(authenticator.Aaguid)
 	authenticatorMap["aaguid"] = aaguid
@@ -234,11 +248,11 @@ func authenticatorToMetadata(authenticator *crypto.WebauthnAuthenticator) []*typ
 	authenticatorMap["sign_count"] = signCount
 	cloneWarning := strconv.FormatBool(authenticator.CloneWarning)
 	authenticatorMap["clone_warning"] = cloneWarning
-	return types.MapToKeyValueList(authenticatorMap)
+	return MapToKeyValueList(authenticatorMap)
 }
 
-func authenticatorFromMetadata(metadata []*types.KeyValuePair) (*crypto.WebauthnAuthenticator, error) {
-	authenticatorMap := types.KeyValueListToMap(metadata)
+func authenticatorFromMetadata(metadata []*KeyValuePair) (*crypto.WebauthnAuthenticator, error) {
+	authenticatorMap := KeyValueListToMap(metadata)
 	aaguid, err := base64.StdEncoding.DecodeString(authenticatorMap["aaguid"])
 	if err != nil {
 		return nil, err

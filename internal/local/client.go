@@ -24,7 +24,7 @@ type BroadcastTxResponse = txtypes.BroadcastTxResponse
 // ! ||--------------------------------------------------------------------------------||
 
 // GetDID returns the DID document with the given id
-func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.ResolvedDidDocument, error) {
+func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.DidDocument, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 

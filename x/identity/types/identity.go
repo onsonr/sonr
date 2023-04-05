@@ -69,8 +69,11 @@ func (d *DidDocument) LinkAdditionalAuthenticationMethod(vm *VerificationMethod)
 // AllowedWebauthnCredentials returns a list of CredentialDescriptors for Webauthn Credentials
 func (d *DidDocument) AllowedWebauthnCredentials() []protocol.CredentialDescriptor {
 	allowList := make([]protocol.CredentialDescriptor, 0)
-	creds := d.WebAuthnCredentials()
-	for _, cred := range creds {
+	for _, vm := range d.VerificationMethod {
+		cred, err := vm.ExtractCredential()
+		if err != nil {
+			continue
+		}
 		allowList = append(allowList, cred.Descriptor())
 	}
 	return allowList

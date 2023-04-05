@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	types "github.com/sonrhq/core/types/crypto"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 const (
@@ -72,6 +73,21 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string) (string, 
 	}
 	return string(ccoJSON), nil
 }
+
+
+// GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
+func (vm *ServiceRecord) GetCredentialAssertionOptions(didDoc *identitytypes.DidDocument) (string, error) {
+	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
+	params := DefaultParams()
+	chal := protocol.URLEncodedBase64(hashString)
+	cco, err := params.NewWebauthnAssertionOptions(vm, chal, didDoc.AllowedWebauthnCredentials())
+	ccoJSON, err := json.Marshal(cco)
+	if err != nil {
+		return "", err
+	}
+	return string(ccoJSON), nil
+}
+
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {

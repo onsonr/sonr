@@ -5,11 +5,12 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/models"
 	"github.com/sonrhq/core/x/identity/types"
-	"github.com/sonrhq/core/internal/vault"
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -25,9 +26,21 @@ type Options struct {
 
 	// Disable IPFS
 	DisableIPFS bool
+
+	// Broadcast the transaction
+	BroadcastTx bool
+
+	// Username for the controller
+	Username string
 }
 
 type Option func(*Options)
+
+func WithUsername(username string) Option {
+	return func(o *Options) {
+		o.Username = username
+	}
+}
 
 func WithConfigHandlers(handlers ...mpc.OnConfigGenerated) Option {
 	return func(o *Options) {
@@ -44,6 +57,12 @@ func WithWebauthnCredential(cred *crypto.WebauthnCredential) Option {
 func WithIPFSDisabled() Option {
 	return func(o *Options) {
 		o.DisableIPFS = true
+	}
+}
+
+func WithBroadcastTx() Option {
+	return func(o *Options) {
+		o.BroadcastTx = true
 	}
 }
 
@@ -89,9 +108,9 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 		}
 	}
 
-	var doc *types.DidDocument
+	doc := types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), nil)
 	if opts.WebauthnCredential != nil {
-		cred, err := models.ValidateWebauthnCredential(opts.WebauthnCredential, primary.Did())
+		cred, err := types.ValidateWebauthnCredential(opts.WebauthnCredential, primary.Did())
 		if err != nil {
 			return nil, err
 		}
@@ -102,8 +121,21 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 				return nil, err
 			}
 		}
-	} else {
-		doc = types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), nil)
+	}
+
+
+	if opts.Username != "" {
+		doc.AlsoKnownAs = []string{opts.Username}
+	}
+
+	if opts.BroadcastTx {
+		resp, err := local.Context().CreatePrimaryIdentity(doc, primary)
+		if err != nil {
+			return nil, err
+		}
+		if resp.TxResponse.Code != 0 {
+			return nil, fmt.Errorf("failed to broadcast transaction: %s", resp.TxResponse.TxHash)
+		}
 	}
 
 	cont := &didController{

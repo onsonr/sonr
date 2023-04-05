@@ -11,6 +11,7 @@ const (
 	// PrimaryIdentityPrefix is the prefix to retrieve all DidDocument
 	PrimaryIdentityPrefix    = "DidDocument/primary/value/"
 	BlockchainIdentityPrefix = "DidDocument/blockchain/value/"
+	AlsoKnownAsPrefix = "DidDocument/aka/value/"
 )
 
 // DidDocumentKey returns the store key to retrieve a DidDocument from the index fields

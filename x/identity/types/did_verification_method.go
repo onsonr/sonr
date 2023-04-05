@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/pkg/crypto"
 )
@@ -177,17 +176,9 @@ func (v *VerificationMethod) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-// CredentialDiscriptor is a descriptor for a credential for VerificationMethod which contains WebAuthnCredential
-func (vm *VerificationMethod) CredentialDescriptor() (protocol.CredentialDescriptor, error) {
-	if vm.Type != crypto.WebAuthnKeyType.PrettyString() {
-		return protocol.CredentialDescriptor{}, fmt.Errorf("verification method is not of type WebAuthn")
-	}
-	cred, err := vm.WebAuthnCredential()
-	if err != nil {
-		return protocol.CredentialDescriptor{}, err
-	}
-	stdCred := cred.ToStdCredential()
-	return stdCred.Descriptor(), nil
+// ExtractCredential extracts the credential from the verification method and returns the interface
+func (vm *VerificationMethod) ExtractCredential() (Credential, error) {
+	return LoadCredential(vm)
 }
 
 // Method returns the DID method of the document

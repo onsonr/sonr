@@ -59,12 +59,7 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	vrs, err := k.GetRelationshipsFromList(ctx, req.Did)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	rdoc := val.ResolveRelationships(vrs)
-	return &types.QueryGetDidResponse{DidDocument: *rdoc}, nil
+	return &types.QueryGetDidResponse{DidDocument: *&val}, nil
 }
 
 func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest) (*types.QueryDidByKeyIDResponse, error) {
@@ -83,12 +78,7 @@ func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest)
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
-	vrs, err := k.GetRelationshipsFromList(ctx, did)
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-	rdoc := val.ResolveRelationships(vrs)
-	return &types.QueryDidByKeyIDResponse{DidDocument: *rdoc}, nil
+	return &types.QueryDidByKeyIDResponse{DidDocument: *&val}, nil
 }
 
 func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKnownAsRequest) (*types.QueryDidByAlsoKnownAsResponse, error) {

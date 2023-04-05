@@ -141,7 +141,7 @@ message QueryDocumentResponse {
   string account_address = 2;
 
   // The DID Document for the wallet.
-  core.identity.ResolvedDidDocument did_document = 3;
+  core.identity.DidDocument did_document = 3;
 }
 
 // ==================================================================

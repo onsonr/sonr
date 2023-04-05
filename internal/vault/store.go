@@ -7,6 +7,7 @@ import (
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/pkg/node"
 	"github.com/sonrhq/core/x/identity/models"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 var (
@@ -139,7 +140,7 @@ func DeleteAccount(accDid string) error {
 	return nil
 }
 
-func FetchCredential(keyDid string) (models.Credential, error) {
+func FetchCredential(keyDid string) (types.Credential, error) {
 	err := setupVault()
 	if err != nil {
 		return nil, err
@@ -149,10 +150,10 @@ func FetchCredential(keyDid string) (models.Credential, error) {
 	if err != nil {
 		return nil, err
 	}
-	return models.LoadJSONCredential(vBiz)
+	return types.LoadJSONCredential(vBiz)
 }
 
-func StoreCredential(cred models.Credential) error {
+func StoreCredential(cred types.Credential) error {
 	err := setupVault()
 	if err != nil {
 		return err

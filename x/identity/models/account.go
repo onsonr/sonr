@@ -63,10 +63,10 @@ type Account interface {
 	Verify(bz []byte, sig []byte) (bool, error)
 
 	// Lock locks the account
-	Lock(c Credential) error
+	Lock(c types.Credential) error
 
 	// Unlock unlocks the account
-	Unlock(c Credential) error
+	Unlock(c types.Credential) error
 }
 
 type account struct {
@@ -267,7 +267,7 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 }
 
 // Lock encrypts all user-facing keyshares
-func (wa *account) Lock(c Credential) error {
+func (wa *account) Lock(c types.Credential) error {
 	for _, ks := range wa.kss {
 		if err := ks.Encrypt(c); err != nil {
 			return err
@@ -277,7 +277,7 @@ func (wa *account) Lock(c Credential) error {
 }
 
 // Unlock decrypts all user-facing keyshares
-func (wa *account) Unlock(c Credential) error {
+func (wa *account) Unlock(c types.Credential) error {
 	for _, ks := range wa.kss {
 		if err := ks.Decrypt(c); err != nil {
 			return err

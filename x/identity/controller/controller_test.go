@@ -3,7 +3,6 @@ package controller_test
 import (
 	"testing"
 
-	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/controller"
@@ -159,24 +158,13 @@ func TestControllerLoad(t *testing.T) {
 }
 
 func TestBroadcast(t *testing.T) {
-	cn, err := controller.NewController(defaultOptions()...)
+	opts := defaultOptions()
+	opts = append(opts, controller.WithBroadcastTx())
+	cn, err := controller.NewController(opts...)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("controller: %v", cn.Did())
-
-	acc, err := cn.GetAccount(cn.Did())
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("acc: %v", acc)
-
-	resp, err := local.Context().CreatePrimaryIdentity(cn.PrimaryIdentity(), acc)
-	if err != nil {
-		t.Fatal(err)
-	}
-	t.Logf("response: %v", resp.String())
-	assert.Equal(t, uint32(0), resp.TxResponse.Code)
 }
 
 func defaultOptions() []controller.Option {

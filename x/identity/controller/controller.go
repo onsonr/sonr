@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/x/identity/models"
 	"github.com/sonrhq/core/x/identity/types"
-	"github.com/sonrhq/core/internal/vault"
 )
 
 var PrimaryAccountaddress string = "primary"
@@ -60,6 +60,7 @@ type didController struct {
 func NewController(options ...Option) (Controller, error) {
 	opts := &Options{
 		DisableIPFS: false,
+		BroadcastTx: false,
 	}
 	for _, option := range options {
 		option(opts)
