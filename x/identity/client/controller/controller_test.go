@@ -5,8 +5,8 @@ import (
 
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
-	"github.com/sonrhq/core/x/identity/controller"
-	"github.com/sonrhq/core/x/identity/models"
+	"github.com/sonrhq/core/x/identity/client/controller"
+	"github.com/sonrhq/core/x/identity/types/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/tendermint/tendermint/libs/rand"
 )

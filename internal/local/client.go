@@ -11,8 +11,8 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
 	"github.com/sonrhq/core/pkg/tx/cosmos"
-	"github.com/sonrhq/core/x/identity/models"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types/models"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 	"google.golang.org/grpc"
 )
@@ -22,6 +22,19 @@ type BroadcastTxResponse = txtypes.BroadcastTxResponse
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                              x/identity RPC client                             ||
 // ! ||--------------------------------------------------------------------------------||
+
+// CheckAlias checks if the alias is available and returns the existing DID if it's not
+func (c LocalContext) CheckAlias(ctx context.Context, alias string) (bool, *identitytypes.DidDocument, error) {
+	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
+	if err != nil {
+		return false, nil, errors.New("failed to connect to grpc server: " + err.Error())
+	}
+	resp, err := identitytypes.NewQueryClient(conn).AliasAvailable(ctx, &identitytypes.QueryAliasAvailableRequest{Alias: alias})
+	if err != nil {
+		return false, nil, err
+	}
+	return resp.Available, resp.ExistingDocument, nil
+}
 
 // GetDID returns the DID document with the given id
 func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.DidDocument, error) {
@@ -99,11 +112,9 @@ func (c LocalContext) CreatePrimaryIdentity(doc *identitytypes.DidDocument, acc 
 	return Context().BroadcastTx(bz)
 }
 
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
-
 
 // BroadcastTx broadcasts a transaction on the Sonr blockchain network
 func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, error) {

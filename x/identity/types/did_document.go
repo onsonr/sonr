@@ -164,6 +164,16 @@ func (d *DidDocument) IsKeyAgreement(vm *VerificationMethod) bool {
 	return false
 }
 
+// MatchesAddress checks if the given VerificationMethod matches the given address
+func (d *DidDocument) MatchesAddress(addr string) bool {
+	for _, vm := range d.VerificationMethod {
+		if vm.BlockchainAccountId == addr {
+			return true
+		}
+	}
+	return false
+}
+
 // Method returns the DID method of the document
 func (d *DidDocument) DIDMethod() string {
 	return strings.Split(d.Id, ":")[1]

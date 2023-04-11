@@ -16,7 +16,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 		k.SetBlockchainIdentity(ctx, elem)
 	}
 
-
 	for _, elem := range genState.Relationships {
 		k.SetRelationship(ctx, elem)
 	}

@@ -48,7 +48,7 @@ func TestShowServiceRecord(t *testing.T) {
 		fmt.Sprintf("--%s=json", tmcli.OutputFlag),
 	}
 	for _, tc := range []struct {
-		desc    string
+		desc string
 		idId string
 
 		args []string
@@ -56,14 +56,14 @@ func TestShowServiceRecord(t *testing.T) {
 		obj  types.ServiceRecord
 	}{
 		{
-			desc:    "found",
+			desc: "found",
 			idId: objs[0].Id,
 
 			args: common,
 			obj:  objs[0],
 		},
 		{
-			desc:    "not found",
+			desc: "not found",
 			idId: strconv.Itoa(100000),
 
 			args: common,

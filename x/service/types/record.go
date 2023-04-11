@@ -41,7 +41,6 @@ func NewIPFSStoreService(address string, controllerDid string) *ServiceRecord {
 	}
 }
 
-
 func (s *ServiceRecord) CredentialEntity() protocol.CredentialEntity {
 	return protocol.CredentialEntity{
 		Name: s.Name,
@@ -74,7 +73,6 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string) (string, 
 	return string(ccoJSON), nil
 }
 
-
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
 func (vm *ServiceRecord) GetCredentialAssertionOptions(didDoc *identitytypes.DidDocument) (string, error) {
 	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
@@ -87,7 +85,6 @@ func (vm *ServiceRecord) GetCredentialAssertionOptions(didDoc *identitytypes.Did
 	}
 	return string(ccoJSON), nil
 }
-
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {

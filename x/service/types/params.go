@@ -77,11 +77,11 @@ func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol
 	// Build the credential assertion options.
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
-		Challenge: challenge,
+		Challenge:      challenge,
 		RelyingPartyID: s.Origin,
 
 		// Preconfigured parameters.
-		Timeout: int(60000),
+		Timeout:            int(60000),
 		AllowedCredentials: allowedCredentials,
 	}
 	return protocol.CredentialAssertion{Response: opts}, nil

@@ -41,4 +41,3 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 func (p Params) Validate() error {
 	return nil
 }
-

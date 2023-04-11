@@ -63,7 +63,6 @@ func TestServiceRecordGetAll(t *testing.T) {
 	)
 }
 
-
 func TestGetParams(t *testing.T) {
 	k, ctx := testkeeper.ServiceKeeper(t)
 	params := types.DefaultParams()

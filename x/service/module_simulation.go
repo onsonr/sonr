@@ -50,11 +50,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		ServiceRecordList: []types.ServiceRecord{
 			{
 				Controller: sample.AccAddress(),
-				Id:   "0",
+				Id:         "0",
 			},
 			{
 				Controller: sample.AccAddress(),
-				Id:   "1",
+				Id:         "1",
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState

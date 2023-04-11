@@ -24,7 +24,7 @@ type (
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
 
-		groupKeeper types.GroupKeeper
+		groupKeeper    types.GroupKeeper
 		identityKeeper types.IdentityKeeper
 	}
 )
@@ -49,7 +49,7 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		groupKeeper: groupKeeper,
+		groupKeeper:    groupKeeper,
 		identityKeeper: identityKeeper,
 	}
 }
@@ -58,11 +58,9 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Service Record Keeper Functions                        ||
 // ! ||--------------------------------------------------------------------------------||
-
 
 // SetServiceRecord set a specific serviceRecord in the store from its Id
 func (k Keeper) SetServiceRecord(ctx sdk.Context, serviceRecord types.ServiceRecord) {
@@ -138,7 +136,6 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
-
 
 // cleanServiceDomain removes the url scheme and path from a service origin
 func cleanServiceDomain(origin string) string {

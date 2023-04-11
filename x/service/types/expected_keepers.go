@@ -7,7 +7,6 @@ import (
 )
 
 type GroupKeeper interface {
-
 }
 
 // AccountKeeper defines the expected account keeper used for simulations (noalias)
@@ -26,4 +25,3 @@ type BankKeeper interface {
 type IdentityKeeper interface {
 	GetPrimaryIdentity(ctx sdk.Context, did string) (identitytypes.DidDocument, bool)
 }
-

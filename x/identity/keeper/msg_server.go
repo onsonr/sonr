@@ -27,18 +27,18 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreateDidDocument) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	// Check if the value already exists
-	_, isFound := k.GetPrimaryIdentity(
-		ctx,
-		msg.Primary.Id,
-	)
-	if isFound {
-		return nil, types.ErrDidCollision
+	err := k.ValidateNewPrimaryDidDocument(ctx, msg.Primary)
+	if err != nil {
+		return nil, err
 	}
 
+	// Set the value
 	k.SetPrimaryIdentity(
 		ctx,
 		*msg.Primary,
 	)
+
+	// Set the blockchain identities
 	k.SetBlockchainIdentities(ctx, msg.Blockchains...)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "create-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
@@ -96,7 +96,3 @@ func (k msgServer) DeleteDidDocument(goCtx context.Context, msg *types.MsgDelete
 	)
 	return &types.MsgDeleteDidDocumentResponse{}, nil
 }
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                              Credential Operations                             ||
-// ! ||--------------------------------------------------------------------------------||

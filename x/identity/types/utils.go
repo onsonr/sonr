@@ -252,7 +252,6 @@ func KeyValueListToMap(kvs []*KeyValuePair) map[string]string {
 	return m
 }
 
-
 // WARNING: This method is used only for module simulation tests. Do not implement this method across different types in the
 // package. ConvertAccAddressToDid converts an AccAddress to a DID
 func ConvertAccAddressToDid(address interface{}) string {

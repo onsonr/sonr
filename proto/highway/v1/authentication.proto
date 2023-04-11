@@ -62,17 +62,14 @@ message KeygenResponse {
   // The DID of the account.
   string did = 3;
 
-  // The keyshares for the account. The keyshares are encoded as base64 strings.
-  map<string, string> keyshares = 4;
+  // The DID Document for the wallet.
+  core.identity.DidDocument primary = 4;
 
   // The DID Document for the wallet.
-  core.identity.DidDocument primary = 5;
-
-  // The DID Document for the wallet.
-  repeated Account accounts = 6;
+  repeated Account accounts = 5;
 
   // Transaction hash for the account creation.
-  string transaction_hash = 7;
+  string transaction_hash = 6;
 }
 
 // LoginFinishRequest is the request to login to an account.
@@ -80,11 +77,14 @@ message LoginRequest {
   // Address of the account to login to.
   string account_address = 1;
 
+  // The Username of the account to login to.
+  string username = 2;
+
   // The signed credential response from the user.
-  string credential_response = 2;
+  string credential_response = 3;
 
   // The origin of the request. This is used to query the Blockchain for the Service DID.
-  string origin = 3;
+  string origin = 4;
 }
 
 // LoginFinishResponse is the response to a Login request.
@@ -103,6 +103,27 @@ message LoginResponse {
 
   // The DID Document for the wallet.
   core.identity.DidDocument did_document = 5;
+}
+
+// QueryAliasRequest is the request to query an alias.
+message QueryAliasRequest {
+  // The alias to query.
+  string alias = 1;
+}
+
+// QueryAliasResponse is the response to a QueryAlias request.
+message QueryAliasResponse {
+  // Success is true if the alias exists.
+  bool available = 1;
+
+  // The address of the account.
+  string address = 2;
+
+  // The DID of the account.
+  string did = 3;
+
+  // The DID Document for the wallet.
+  core.identity.DidDocument did_document = 4;
 }
 
 // RegisterFinishRequest is the request to CreateAccount a new key from the private key.
@@ -125,6 +146,32 @@ message QueryServiceResponse {
   // Credential Options for the request.
   string credential_options = 4;
 }
+
+
+// RegisterFinishRequest is the request to CreateAccount a new key from the private key.
+message QueryServiceAssertionRequest {
+  // The origin of the request. This is used to query the Blockchain for the Service DID.
+  string origin = 1;
+
+  // The Alias of the account to login to.
+  string alias = 2;
+}
+
+// RegisterFinishResponse is the response to a CreateAccount request.
+message QueryServiceAssertionResponse {
+  // The Origin of the request.
+  string origin = 1;
+
+  // The Alias of the account to login to.
+  string alias = 2;
+
+  // The address of the account.
+  string address = 3;
+
+  // The Assertion options for the request.
+  string assertion_options = 4;
+}
+
 
 // LoginStartRequest is the request to login to an account.
 message QueryDocumentRequest {
@@ -155,4 +202,5 @@ service Authentication {
   rpc Login(LoginRequest) returns (LoginResponse) {}
   rpc QueryDocument(QueryDocumentRequest) returns (QueryDocumentResponse) {}
   rpc QueryService(QueryServiceRequest) returns (QueryServiceResponse) {}
+  rpc QueryServiceAssertion(QueryServiceAssertionRequest) returns (QueryServiceAssertionResponse) {}
 }

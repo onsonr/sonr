@@ -16,6 +16,27 @@ consumes:
 produces:
   - application/json
 paths:
+  /sonr/core/identity/alias/{alias}:
+    get:
+      summary: Queries a list of AliasAvailable items.
+      operationId: Query_AliasAvailable
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/identityQueryAliasAvailableResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: alias
+          description: alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sonr/core/identity/did:
     get:
       summary: |-
@@ -397,6 +418,13 @@ definitions:
     properties:
       creator:
         type: string
+  identityQueryAliasAvailableResponse:
+    type: object
+    properties:
+      available:
+        type: boolean
+      existingDocument:
+        $ref: '#/definitions/identityDidDocument'
   identityQueryAllDidResponse:
     type: object
     properties:
@@ -624,11 +652,6 @@ definitions:
       did:
         type: string
         description: The DID of the account.
-      keyshares:
-        type: object
-        additionalProperties:
-          type: string
-        description: The keyshares for the account. The keyshares are encoded as base64 strings.
       primary:
         $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
@@ -688,6 +711,22 @@ definitions:
         $ref: '#/definitions/identityDidDocument'
         description: The DID Document for the wallet.
     description: LoginStartResponse is the response to a Login request.
+  v1QueryServiceAssertionResponse:
+    type: object
+    properties:
+      origin:
+        type: string
+        description: The Origin of the request.
+      alias:
+        type: string
+        description: The Alias of the account to login to.
+      address:
+        type: string
+        description: The address of the account.
+      assertionOptions:
+        type: string
+        description: The Assertion options for the request.
+    description: RegisterFinishResponse is the response to a CreateAccount request.
   v1QueryServiceResponse:
     type: object
     properties:

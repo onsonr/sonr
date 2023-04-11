@@ -20,7 +20,7 @@ func NewMsgCreateServiceRecord(
 ) *MsgCreateServiceRecord {
 	return &MsgCreateServiceRecord{
 		Controller: Controller,
-		Id:   index,
+		Id:         index,
 	}
 }
 
@@ -62,7 +62,7 @@ func NewMsgUpdateServiceRecord(
 ) *MsgUpdateServiceRecord {
 	return &MsgUpdateServiceRecord{
 		Controller: Controller,
-		Id:   index,
+		Id:         index,
 	}
 }
 
@@ -104,7 +104,7 @@ func NewMsgDeleteServiceRecord(
 ) *MsgDeleteServiceRecord {
 	return &MsgDeleteServiceRecord{
 		Controller: Controller,
-		Id:   index,
+		Id:         index,
 	}
 }
 func (msg *MsgDeleteServiceRecord) Route() string {

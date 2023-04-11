@@ -21,7 +21,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-
 func (k msgServer) CreateServiceRecord(goCtx context.Context, msg *types.MsgCreateServiceRecord) (*types.MsgCreateServiceRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
@@ -36,7 +35,7 @@ func (k msgServer) CreateServiceRecord(goCtx context.Context, msg *types.MsgCrea
 
 	var serviceRecord = types.ServiceRecord{
 		Controller: msg.Controller,
-		Id:   msg.Id,
+		Id:         msg.Id,
 	}
 
 	k.SetServiceRecord(
@@ -65,7 +64,7 @@ func (k msgServer) UpdateServiceRecord(goCtx context.Context, msg *types.MsgUpda
 
 	var serviceRecord = types.ServiceRecord{
 		Controller: msg.Controller,
-		Id:   msg.Id,
+		Id:         msg.Id,
 	}
 
 	k.SetServiceRecord(ctx, serviceRecord)

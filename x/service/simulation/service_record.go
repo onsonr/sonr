@@ -28,7 +28,7 @@ func SimulateMsgCreateServiceRecord(
 		i := r.Int()
 		msg := &types.MsgCreateServiceRecord{
 			Controller: simAccount.Address.String(),
-			Id:   strconv.Itoa(i),
+			Id:         strconv.Itoa(i),
 		}
 
 		_, found := k.GetServiceRecord(ctx, msg.Id)

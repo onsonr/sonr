@@ -14,7 +14,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/sonrhq/core/pkg/crypto"
-
 )
 
 type Credential interface {
@@ -101,9 +100,9 @@ func (c *didCredential) Controller() string {
 // Descriptor returns the credential's descriptor
 func (c *didCredential) Descriptor() protocol.CredentialDescriptor {
 	return protocol.CredentialDescriptor{
-		CredentialID: c.Credential.Id,
-		Type:         protocol.PublicKeyCredentialType,
-		Transport:   []protocol.AuthenticatorTransport{protocol.Internal},
+		CredentialID:    c.Credential.Id,
+		Type:            protocol.PublicKeyCredentialType,
+		Transport:       []protocol.AuthenticatorTransport{protocol.Internal},
 		AttestationType: "direct",
 	}
 }

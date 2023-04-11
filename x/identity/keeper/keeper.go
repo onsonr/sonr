@@ -54,7 +54,6 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-
 // GetParams get all parameters as types.Params
 func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 	return types.NewParams()
@@ -64,7 +63,6 @@ func (k Keeper) GetParams(ctx sdk.Context) types.Params {
 func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 	k.paramstore.SetParamSet(ctx, &params)
 }
-
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                          DIDDocument Keeper Functions                          ||
@@ -79,27 +77,16 @@ func (k Keeper) SetPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocumen
 	), b)
 }
 
-func (k Keeper) GetAllAlsoKnownAs(ctx sdk.Context) (list []string) {
+func (k Keeper) GetAllAlsoKnownAs(ctx sdk.Context) (list map[string][]string) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 	for ; iterator.Valid(); iterator.Next() {
 		var val types.DidDocument
 		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list = append(list, val.AlsoKnownAs...)
+		list[val.Id] = val.AlsoKnownAs
 	}
 	return
-}
-
-// HasAlsoKnownAs checks if the store already has the also known as
-func (k Keeper) HasAlsoKnownAs(ctx sdk.Context, aka string) bool {
-	akaArr := k.GetAllAlsoKnownAs(ctx)
-	for _, v := range akaArr {
-		if v == aka {
-			return true
-		}
-	}
-	return false
 }
 
 // GetDidDocument returns a didDocument from its index
@@ -119,6 +106,26 @@ func (k Keeper) GetPrimaryIdentity(
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// GetPrimaryIdentityByAddress iterates over all didDocuments and returns the first one that matches the address
+func (k Keeper) GetPrimaryIdentityByAddress(
+	ctx sdk.Context,
+	addr string,
+) (val types.DidDocument, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var doc types.DidDocument
+		k.cdc.MustUnmarshal(iterator.Value(), &doc)
+		if doc.MatchesAddress(addr) {
+			val = doc
+			found = true
+		}
+	}
+	return val, found
 }
 
 // RemoveDidDocument removes a didDocument from the store
@@ -182,6 +189,26 @@ func (k Keeper) GetBlockchainIdentity(
 
 	k.cdc.MustUnmarshal(b, &val)
 	return val, true
+}
+
+// GetBlockchainIdentityByAddress iterates over all didDocuments and returns the first one that matches the address
+func (k Keeper) GetBlockchainIdentityByAddress(
+	ctx sdk.Context,
+	addr string,
+) (val types.DidDocument, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.BlockchainIdentityPrefix))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var doc types.DidDocument
+		k.cdc.MustUnmarshal(iterator.Value(), &doc)
+		if doc.MatchesAddress(addr) {
+			val = doc
+			found = true
+		}
+	}
+	return val, found
 }
 
 // RemoveDidDocument removes a didDocument from the store
@@ -269,4 +296,21 @@ func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]ty
 	}
 
 	return vrs, nil
+}
+
+
+func (k Keeper) ValidateNewPrimaryDidDocument(ctx sdk.Context, doc *types.DidDocument) error {
+	_, ok := k.GetPrimaryIdentity(ctx, doc.Id)
+	if ok {
+		return status.Error(codes.AlreadyExists, "did already exists")
+	}
+
+	// Check Alias uniqueness
+	aliasMap := k.GetAllAlsoKnownAs(ctx)
+	for _, didAlias := range aliasMap {
+		if found := containsAny(doc.AlsoKnownAs, didAlias); found {
+			return status.Error(codes.AlreadyExists, "alias already exists")
+		}
+	}
+	return nil
 }

@@ -10,7 +10,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 
-	"github.com/sonrhq/core/x/identity/models"
+	"github.com/sonrhq/core/x/identity/types/models"
 )
 
 // SignTransaction signs a Cosmos transaction for Token Transfer

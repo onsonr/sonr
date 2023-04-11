@@ -25,7 +25,6 @@ service Query {
   // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 
-
   // #### {{.ResponseType.Name}}
   // | Name | Type | Description |
   // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
@@ -44,7 +43,6 @@ service Query {
   // | Name | Type | Description |
   // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
 
   // #### {{.ResponseType.Name}}
   // | Name | Type | Description |
@@ -65,7 +63,6 @@ service Query {
   // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 
-
   // #### {{.ResponseType.Name}}
   // | Name | Type | Description |
   // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
@@ -84,7 +81,6 @@ service Query {
   // | Name | Type | Description |
   // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
 
   // #### {{.ResponseType.Name}}
   // | Name | Type | Description |
@@ -105,7 +101,6 @@ service Query {
   // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
   // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
 
-
   // #### {{.ResponseType.Name}}
   // | Name | Type | Description |
   // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
@@ -114,8 +109,14 @@ service Query {
     option (google.api.http).get = "/sonr/core/identity/did";
 
   }
+
   // this line is used by starport scaffolding # 2
 
+  // Queries a list of AliasAvailable items.
+  rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
+    option (google.api.http).get = "/sonr/core/identity/alias/{alias}";
+
+  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -171,3 +172,14 @@ message QueryAllDidResponse {
   repeated DidDocument                            didDocument = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination  = 2;
 }
+
+message QueryAliasAvailableRequest {
+    // alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
+    string alias = 1;
+}
+
+message QueryAliasAvailableResponse {
+    bool available = 1;
+    DidDocument existing_document = 2 [(gogoproto.nullable) = true];
+}
+

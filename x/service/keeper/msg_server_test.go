@@ -1,6 +1,5 @@
 package keeper_test
 
-
 import (
 	"strconv"
 	"testing"

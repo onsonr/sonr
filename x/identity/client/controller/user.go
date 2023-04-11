@@ -1,8 +1,7 @@
-package protocol
+package controller
 
 import (
 	"github.com/goccy/go-json"
-	"github.com/sonrhq/core/x/identity/controller"
 	"github.com/sonrhq/core/x/identity/types"
 )
 
@@ -20,7 +19,7 @@ type User struct {
 	PrimaryIdentity *types.DidDocument `json:"primaryIdentity"`
 }
 
-func NewUser(c controller.Controller) *User {
+func NewUser(c Controller) *User {
 	accDids := make([]string, 0)
 	accs, err := c.ListAccounts()
 	if err != nil {

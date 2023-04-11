@@ -30,7 +30,7 @@
   ],
   "topbarCtaButton": {
     "type": "github",
-    "url": "https://github.com/sonrhq/core"
+    "url": "https://github.com/sonr-io/sonr"
   },
   "anchors": [
     {
@@ -39,9 +39,9 @@
       "url": "https://snr.la/dev-chat"
     },
     {
-      "name": "Block Explorer",
+      "name": "Changelog",
       "icon": "magnifying-glass-dollar",
-      "url": "https://sonrscan.io"
+      "url": "https://changelog.sonr.io"
     },
     {
       "name": "Ecosystem",

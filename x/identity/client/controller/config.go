@@ -6,11 +6,11 @@ import (
 	"fmt"
 
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
-	"github.com/sonrhq/core/x/identity/models"
+	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types/models"
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -102,7 +102,7 @@ func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCred
 
 func setupController(ctx context.Context, primary models.Account, opts *Options) (Controller, error) {
 	if !opts.DisableIPFS {
-		err := vault.InsertAccount(primary)
+		err := keeper.InsertAccount(primary)
 		if err != nil {
 			return nil, err
 		}
@@ -116,26 +116,19 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 		}
 		doc = types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), cred.ToVerificationMethod())
 		if !opts.DisableIPFS {
-			err = vault.StoreCredential(cred)
+			err = keeper.StoreCredential(cred)
 			if err != nil {
 				return nil, err
 			}
 		}
 	}
 
-
 	if opts.Username != "" {
 		doc.AlsoKnownAs = []string{opts.Username}
 	}
 
 	if opts.BroadcastTx {
-		resp, err := local.Context().CreatePrimaryIdentity(doc, primary)
-		if err != nil {
-			return nil, err
-		}
-		if resp.TxResponse.Code != 0 {
-			return nil, fmt.Errorf("failed to broadcast transaction: %s", resp.TxResponse.TxHash)
-		}
+		go local.Context().CreatePrimaryIdentity(doc, primary)
 	}
 
 	cont := &didController{

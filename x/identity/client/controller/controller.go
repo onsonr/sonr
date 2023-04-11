@@ -5,10 +5,12 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonrhq/core/internal/vault"
+	// "github.com/sonrhq/core/internal/vault"
+	// "github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/x/identity/models"
+	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/x/identity/types/models"
 )
 
 var PrimaryAccountaddress string = "primary"
@@ -83,14 +85,14 @@ func NewController(options ...Option) (Controller, error) {
 }
 
 func LoadController(doc *types.DidDocument) (Controller, error) {
-	acc, err := vault.GetAccount(doc.Id)
+	acc, err := keeper.GetAccount(doc.Id)
 	if err != nil {
 		return nil, err
 	}
 	blockAccDids := doc.ListBlockchainIdentities()
 	var blockAccs []models.Account
 	for _, did := range blockAccDids {
-		acc, err := vault.GetAccount(did)
+		acc, err := keeper.GetAccount(did)
 		if err != nil {
 			return nil, err
 		}
@@ -145,7 +147,7 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (m
 
 	// Add account to the vault
 	if !dc.disableIPFS {
-		err = vault.InsertAccount(newAcc)
+		err = keeper.InsertAccount(newAcc)
 		if err != nil {
 			return nil, err
 		}
@@ -212,7 +214,7 @@ func (dc *didController) SendMail(address string, to string, body string) error 
 	if err != nil {
 		return err
 	}
-	err = vault.WriteInbox(to, msg)
+	err = keeper.WriteInbox(to, msg)
 	if err != nil {
 		return err
 	}
@@ -225,5 +227,5 @@ func (dc *didController) ReadMail(address string) ([]*models.InboxMessage, error
 	if err != nil {
 		return nil, err
 	}
-	return vault.ReadInbox(acc.Address())
+	return keeper.ReadInbox(acc.Address())
 }

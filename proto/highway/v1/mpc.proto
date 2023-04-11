@@ -34,6 +34,7 @@ message Account {
 message CreateAccountRequest {
   string name = 1;
   string coin_type = 2;
+  string chain_id = 3;
 }
 
 // CreateAccountResponse is the response to a CreateAccount request.
