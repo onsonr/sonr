@@ -5,9 +5,9 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/internal/crypto/mpc"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"

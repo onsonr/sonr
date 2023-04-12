@@ -2,7 +2,7 @@ package types
 
 import (
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 )
 
 // ! ||--------------------------------------------------------------------------------||

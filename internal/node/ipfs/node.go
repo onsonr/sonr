@@ -19,7 +19,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
-	"github.com/sonrhq/core/pkg/node/config"
+	"github.com/sonrhq/core/internal/node/config"
 	types "github.com/sonrhq/core/types/common"
 )
 

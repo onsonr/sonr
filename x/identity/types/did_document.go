@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 )
 
 // NewBlankDocument creates a blank document to begin the WebAuthnProcess

@@ -3,7 +3,7 @@ package controller_test
 import (
 	"testing"
 
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/pkg/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/client/controller"
 	"github.com/sonrhq/core/x/identity/types/models"

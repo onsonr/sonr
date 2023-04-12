@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/pkg/node"
+	"github.com/sonrhq/core/internal/node"
 	"github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/highway/v1"
 	"github.com/sonrhq/core/x/identity/client/controller"

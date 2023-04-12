@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"berty.tech/go-orbit-db/iface"
-	"github.com/sonrhq/core/pkg/node/config"
-	"github.com/sonrhq/core/pkg/node/ipfs"
+	"github.com/sonrhq/core/internal/node/config"
+	"github.com/sonrhq/core/internal/node/ipfs"
 )
 
 // IPFSKVStore is an alias for a iface.KeyValueStore.

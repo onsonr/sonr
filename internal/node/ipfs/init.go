@@ -19,7 +19,7 @@ import (
 	"github.com/ipfs/kubo/plugin/loader"
 	"github.com/ipfs/kubo/repo/fsrepo"
 	"github.com/sonrhq/core/internal/local"
-	nodeconfig "github.com/sonrhq/core/pkg/node/config"
+	nodeconfig "github.com/sonrhq/core/internal/node/config"
 )
 
 // Initialize creates a new local IPFS node

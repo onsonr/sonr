@@ -10,7 +10,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
-	"github.com/sonrhq/core/pkg/tx/cosmos"
+	"github.com/sonrhq/core/internal/tx/cosmos"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"
 	servicetypes "github.com/sonrhq/core/x/service/types"
