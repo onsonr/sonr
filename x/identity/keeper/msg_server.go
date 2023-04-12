@@ -33,7 +33,7 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 	}
 
 	// Set the value
-	k.SetPrimaryIdentity(
+	k.CreatePrimaryIdentity(
 		ctx,
 		*msg.Primary,
 	)
@@ -63,7 +63,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, types.ErrUnauthorized
 	}
 
-	k.SetPrimaryIdentity(ctx, *msg.Primary)
+	k.CreatePrimaryIdentity(ctx, *msg.Primary)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "update-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
 	)

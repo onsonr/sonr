@@ -171,7 +171,6 @@ func StoreCredential(cred types.Credential) error {
 	return nil
 }
 
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Inbox handler for W2W messages                         ||
 // ! ||--------------------------------------------------------------------------------||
@@ -189,26 +188,34 @@ func (v *vaultImpl) CreateInbox(accDid string) error {
 	return nil
 }
 
-// LoadInbox loads the inbox for the account
-func (v *vaultImpl) LoadInbox(accDid string) (*models.Inbox, error) {
-	inboxRaw, err := v.InTable.Get(v.ctx, accDid, &iface.DocumentStoreGetOptions{
-		CaseInsensitive: true,
-		PartialMatches:  false,
-	})
+// HasInbox checks if the account has an inbox
+func (v *vaultImpl) HasInbox(accDid string) (bool, error) {
+	inboxRaw, err := v.InTable.Get(v.ctx, accDid, &iface.DocumentStoreGetOptions{})
 	if err != nil {
-		err = v.CreateInbox(accDid)
-		if err != nil {
-			return nil, err
-		}
-		return v.LoadInbox(accDid)
+		return false, err
 	}
 	if len(inboxRaw) == 0 {
-		err = v.CreateInbox(accDid)
+		return false, nil
+	}
+	return true, nil
+}
+
+// LoadInbox loads the inbox for the account
+func (v *vaultImpl) LoadInbox(accDid string) (*models.Inbox, error) {
+	// Check if the inbox exists
+	hasInbox, err := v.HasInbox(accDid)
+	if err != nil {
+		return nil, err
+	}
+	if !hasInbox {
+		err := v.CreateInbox(accDid)
 		if err != nil {
 			return nil, err
 		}
-		return v.LoadInbox(accDid)
 	}
+
+	// Load the inbox
+	inboxRaw, err := v.InTable.Get(v.ctx, accDid, &iface.DocumentStoreGetOptions{})
 	inboxMap, ok := inboxRaw[0].(map[string]interface{})
 	if !ok {
 		return nil, errors.New("invalid inbox")
@@ -248,7 +255,6 @@ func WriteInbox(toDid string, msg *models.InboxMessage) error {
 	}
 	return nil
 }
-
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Helper Methods for Module Setup                        ||

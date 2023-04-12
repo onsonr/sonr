@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/pkg/crypto/mpc"
-	"github.com/sonrhq/core/x/identity/client/controller"
+	"github.com/sonrhq/core/internal/crypto/mpc"
+	"github.com/sonrhq/core/x/identity/controller"
 	"github.com/sonrhq/core/x/identity/types/models"
 	"github.com/stretchr/testify/assert"
 	"github.com/tendermint/tendermint/libs/rand"
@@ -55,7 +55,7 @@ func TestKeyshare(t *testing.T) {
 
 func TestController(t *testing.T) {
 	t.Log("create controller with initial accounts: bitcoin, ethereum")
-	controller, err := controller.NewController(defaultOptions()...)
+	controller, err := controller.NewController(defaultOfflineOptions()...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -138,7 +138,7 @@ func TestControllerMail(t *testing.T) {
 }
 
 func TestControllerLoad(t *testing.T) {
-	cn, err := controller.NewController(defaultOptions()...)
+	cn, err := controller.NewController(defaultOfflineOptions()...)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -158,13 +158,24 @@ func TestControllerLoad(t *testing.T) {
 }
 
 func TestBroadcast(t *testing.T) {
-	opts := defaultOptions()
+	opts := defaultOfflineOptions()
 	opts = append(opts, controller.WithBroadcastTx())
 	cn, err := controller.NewController(opts...)
 	if err != nil {
 		t.Fatal(err)
 	}
 	t.Logf("controller: %v", cn.Did())
+}
+
+func defaultOfflineOptions() []controller.Option {
+	cred := &crypto.WebauthnCredential{
+		Id:        []byte("test"),
+		PublicKey: []byte("-----BEGIN PUBLIC KEY----- MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ9Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z-----END PUBLIC KEY-----"),
+	}
+	return []controller.Option{
+		controller.WithWebauthnCredential(cred),
+		controller.WithIPFSDisabled(),
+	}
 }
 
 func defaultOptions() []controller.Option {
@@ -174,6 +185,5 @@ func defaultOptions() []controller.Option {
 	}
 	return []controller.Option{
 		controller.WithWebauthnCredential(cred),
-		controller.WithIPFSDisabled(),
 	}
 }

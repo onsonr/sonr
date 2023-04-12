@@ -10,7 +10,7 @@ import (
 	"github.com/sonrhq/core/internal/node"
 	"github.com/sonrhq/core/types/crypto"
 	v1 "github.com/sonrhq/core/types/highway/v1"
-	"github.com/sonrhq/core/x/identity/client/controller"
+	"github.com/sonrhq/core/x/identity/controller"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
@@ -179,7 +179,13 @@ func (htt *HttpTransport) QueryAlias(c *fiber.Ctx) error {
 	alias := c.Params("alias")
 	available, doc, err := local.Context().CheckAlias(context.Background(), alias)
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(404).SendString(err.Error())
+	}
+	if doc == nil {
+		resp := &v1.QueryAliasResponse{
+			Available: true,
+		}
+		return c.JSON(resp)
 	}
 	resp := &v1.QueryAliasResponse{
 		DidDocument: doc,

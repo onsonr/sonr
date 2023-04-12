@@ -69,12 +69,19 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 // ! ||--------------------------------------------------------------------------------||
 
 // SetDidDocument set a specific didDocument in the store from its index
-func (k Keeper) SetPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument) {
+func (k Keeper) CreatePrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	b := k.cdc.MustMarshal(&didDocument)
 	store.Set(types.DidDocumentKey(
 		didDocument.Id,
 	), b)
+	addr, err := didDocument.AccAddress()
+	if err != nil {
+		fmt.Println("Error getting address from didDocument")
+		return
+	}
+	acc := k.accountKeeper.NewAccountWithAddress(ctx, addr)
+	k.accountKeeper.SetAccount(ctx, acc)
 }
 
 func (k Keeper) GetAllAlsoKnownAs(ctx sdk.Context) (list map[string][]string) {
