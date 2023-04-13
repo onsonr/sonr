@@ -117,18 +117,17 @@ func (k Keeper) AliasAvailable(goCtx context.Context, req *types.QueryAliasAvail
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	alMap := k.GetAllAlsoKnownAs(ctx)
-
-	for did, al := range alMap {
-		if contains(al, req.Alias) {
-			doc, found := k.GetPrimaryIdentity(ctx, did)
-			if !found {
-				return nil, status.Error(codes.NotFound, "not found")
-			}
-			return &types.QueryAliasAvailableResponse{Available: false, ExistingDocument: &doc}, nil
-		}
+	err := k.CheckAlias(ctx, req.Alias)
+	if err != nil {
+		return &types.QueryAliasAvailableResponse{Available: true}, nil
 	}
-	return &types.QueryAliasAvailableResponse{Available: true}, nil
+
+	doc, found := k.GetPrimaryIdentityByAlias(ctx, req.Alias)
+	if !found {
+		return &types.QueryAliasAvailableResponse{Available: true}, nil
+	}
+
+	return &types.QueryAliasAvailableResponse{Available: false, ExistingDocument: &doc}, nil
 }
 
 func contains(s []string, e string) bool {

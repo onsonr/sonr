@@ -33,7 +33,7 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 				Id: fmt.Sprintf("%s#Key", id),
 			},
 		}
-		keeper.CreatePrimaryIdentity(ctx, items[i])
+		keeper.SetPrimaryIdentity(ctx, items[i])
 	}
 	return items
 }
@@ -66,7 +66,7 @@ func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.D
 		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
 
-		keeper.CreatePrimaryIdentity(ctx, items[i])
+		keeper.SetPrimaryIdentity(ctx, items[i])
 	}
 	return items
 }

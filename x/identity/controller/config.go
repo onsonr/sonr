@@ -128,7 +128,7 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 	}
 
 	if opts.BroadcastTx {
-		go local.Context().CreatePrimaryIdentity(doc, primary)
+		go local.Context().CreatePrimaryIdentity(doc, primary, opts.Username)
 	}
 
 	cont := &didController{

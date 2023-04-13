@@ -13,8 +13,9 @@ const (
 
 var _ sdk.Msg = &MsgCreateDidDocument{}
 
-func NewMsgCreateDidDocument(creator string, didDoc *DidDocument, blockDocs ...*DidDocument) *MsgCreateDidDocument {
+func NewMsgCreateDidDocument(creator string, alias string, didDoc *DidDocument, blockDocs ...*DidDocument) *MsgCreateDidDocument {
 	return &MsgCreateDidDocument{
+		Alias:       alias,
 		Creator:     creator,
 		Primary:     didDoc,
 		Blockchains: blockDocs,

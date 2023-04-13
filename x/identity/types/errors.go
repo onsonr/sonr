@@ -22,4 +22,5 @@ var (
 	ErrDidNotFound           = sdkerrors.Register(ModuleName, 2101, "did not found")
 	ErrServiceCollision      = sdkerrors.Register(ModuleName, 3100, "service already exists")
 	ErrServiceNotFound       = sdkerrors.Register(ModuleName, 3101, "service not found")
+	ErrAliasCollision        = sdkerrors.Register(ModuleName, 4100, "alias already exists")
 )

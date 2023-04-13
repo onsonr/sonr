@@ -103,8 +103,8 @@ func (c LocalContext) GetAllServices(ctx context.Context) ([]*servicetypes.Servi
 }
 
 // CreatePrimaryIdentity sends a transaction to create a new DID document with the provided account
-func (c LocalContext) CreatePrimaryIdentity(doc *identitytypes.DidDocument, acc models.Account) (*BroadcastTxResponse, error) {
-	msg := identitytypes.NewMsgCreateDidDocument(acc.Address(), doc)
+func (c LocalContext) CreatePrimaryIdentity(doc *identitytypes.DidDocument, acc models.Account, alias string) (*BroadcastTxResponse, error) {
+	msg := identitytypes.NewMsgCreateDidDocument(acc.Address(), alias, doc)
 	bz, err := cosmos.SignAnyTransactions(acc, msg)
 	if err != nil {
 		return nil, err

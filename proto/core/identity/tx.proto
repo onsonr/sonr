@@ -18,6 +18,7 @@ message MsgCreateDidDocument {
   string      creator  = 1;
   DidDocument primary = 2;
   repeated DidDocument blockchains = 3;
+  string alias = 4;
 }
 
 message MsgCreateDidDocumentResponse {}

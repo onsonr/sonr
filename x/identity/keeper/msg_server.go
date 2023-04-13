@@ -33,10 +33,18 @@ func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreate
 	}
 
 	// Set the value
-	k.CreatePrimaryIdentity(
+	k.SetPrimaryIdentity(
 		ctx,
 		*msg.Primary,
 	)
+
+	// Check for Alias
+	if msg.Alias != "" {
+		if err := k.CheckAlias(ctx, msg.Alias); err != nil {
+			return nil, sdkerrors.Wrap(types.ErrAliasCollision, err.Error())
+		}
+		k.SetAliasForPrimaryIdentity(ctx, *msg.Primary, msg.Alias)
+	}
 
 	// Set the blockchain identities
 	k.SetBlockchainIdentities(ctx, msg.Blockchains...)
@@ -63,7 +71,7 @@ func (k msgServer) UpdateDidDocument(goCtx context.Context, msg *types.MsgUpdate
 		return nil, types.ErrUnauthorized
 	}
 
-	k.CreatePrimaryIdentity(ctx, *msg.Primary)
+	k.SetPrimaryIdentity(ctx, *msg.Primary)
 	ctx.EventManager().EmitEvent(
 		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "update-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
 	)

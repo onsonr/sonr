@@ -23,6 +23,7 @@ func CmdCreateDidDocument() *cobra.Command {
 
 			msg := types.NewMsgCreateDidDocument(
 				clientCtx.FromAddress.String(),
+				"",
 				types.NewBlankDocument(clientCtx.GetFromAddress().String()),
 			)
 			if err := msg.ValidateBasic(); err != nil {

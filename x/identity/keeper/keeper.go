@@ -68,8 +68,17 @@ func (k Keeper) SetParams(ctx sdk.Context, params types.Params) {
 // ! ||                          DIDDocument Keeper Functions                          ||
 // ! ||--------------------------------------------------------------------------------||
 
+// CheckAlias checks if an alias is already used
+func (k Keeper) CheckAlias(ctx sdk.Context, alias string) error {
+	_, found := k.GetPrimaryIdentityByAlias(ctx, alias)
+	if found {
+		return status.Error(codes.AlreadyExists, "Alias already exists")
+	}
+	return nil
+}
+
 // SetDidDocument set a specific didDocument in the store from its index
-func (k Keeper) CreatePrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument) {
+func (k Keeper) SetPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 	b := k.cdc.MustMarshal(&didDocument)
 	store.Set(types.DidDocumentKey(
@@ -84,28 +93,43 @@ func (k Keeper) CreatePrimaryIdentity(ctx sdk.Context, didDocument types.DidDocu
 	k.accountKeeper.SetAccount(ctx, acc)
 }
 
-func (k Keeper) GetAllAlsoKnownAs(ctx sdk.Context) (list map[string][]string) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
-	iterator := sdk.KVStorePrefixIterator(store, []byte{})
-	defer iterator.Close()
-	for ; iterator.Valid(); iterator.Next() {
-		var val types.DidDocument
-		k.cdc.MustUnmarshal(iterator.Value(), &val)
-		list[val.Id] = val.AlsoKnownAs
-	}
-	return
+// SetAliasForDidDocument set a specific didDocument in the store from its index
+func (k Keeper) SetAliasForPrimaryIdentity(ctx sdk.Context, didDocument types.DidDocument, alias string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AlsoKnownAsPrefix))
+	b := k.cdc.MustMarshal(&didDocument)
+	store.Set(types.DidDocumentKey(
+		alias,
+	), b)
 }
+
 
 // GetDidDocument returns a didDocument from its index
 func (k Keeper) GetPrimaryIdentity(
 	ctx sdk.Context,
 	did string,
-
 ) (val types.DidDocument, found bool) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.PrimaryIdentityPrefix))
 
 	b := store.Get(types.DidDocumentKey(
 		did,
+	))
+	if b == nil {
+		return val, false
+	}
+
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// GetPrimaryIdentityByAlias returns a didDocument from its index
+func (k Keeper) GetPrimaryIdentityByAlias(
+	ctx sdk.Context,
+	alias string,
+) (val types.DidDocument, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AlsoKnownAsPrefix))
+
+	b := store.Get(types.DidDocumentKey(
+		alias,
 	))
 	if b == nil {
 		return val, false
@@ -312,12 +336,5 @@ func (k Keeper) ValidateNewPrimaryDidDocument(ctx sdk.Context, doc *types.DidDoc
 		return status.Error(codes.AlreadyExists, "did already exists")
 	}
 
-	// Check Alias uniqueness
-	aliasMap := k.GetAllAlsoKnownAs(ctx)
-	for _, didAlias := range aliasMap {
-		if found := containsAny(doc.AlsoKnownAs, didAlias); found {
-			return status.Error(codes.AlreadyExists, "alias already exists")
-		}
-	}
 	return nil
 }

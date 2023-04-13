@@ -10,7 +10,7 @@ import (
 func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) {
 	// Set all the didDocument
 	for _, elem := range genState.PrimaryIdentities {
-		k.CreatePrimaryIdentity(ctx, elem)
+		k.SetPrimaryIdentity(ctx, elem)
 	}
 	for _, elem := range genState.BlockchainIdentities {
 		k.SetBlockchainIdentity(ctx, elem)
