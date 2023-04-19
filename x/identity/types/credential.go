@@ -13,6 +13,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/internal/crypto"
 )
 
@@ -25,6 +26,9 @@ type Credential interface {
 
 	// Descriptor returns the credential's descriptor
 	Descriptor() protocol.CredentialDescriptor
+
+	// GetWebauthnCredential returns the webauthn credential instance
+	GetWebauthnCredential() *crypto.WebauthnCredential
 
 	// Convert the credential to a DID VerificationMethod
 	ToVerificationMethod() *VerificationMethod
@@ -40,14 +44,14 @@ type Credential interface {
 }
 
 type didCredential struct {
-	Credential *crypto.WebauthnCredential `json:"credential,omitempty"`
-	UserDid    string                     `json:"controller,omitempty"`
+	*crypto.WebauthnCredential `json:"credential,omitempty"`
+	UserDid                    string `json:"controller,omitempty"`
 }
 
 func NewCredential(cred *crypto.WebauthnCredential, controller string) Credential {
 	return &didCredential{
-		Credential: cred,
-		UserDid:    controller,
+		WebauthnCredential: cred,
+		UserDid:            controller,
 	}
 }
 
@@ -61,35 +65,41 @@ func LoadJSONCredential(bz []byte) (Credential, error) {
 }
 
 func LoadCredential(vm *VerificationMethod) (Credential, error) {
+	id := strings.Split(vm.Id, ":")
+	// Decode the credential id
+	credId, err := base64.RawURLEncoding.DecodeString(id[len(id)-1])
+	if err != nil {
+		return nil, fmt.Errorf("failed to decode credential id: %v", err)
+	}
 	// Extract the public key from PublicKeyMultibase
-	pubKey, err := base64.RawURLEncoding.DecodeString(vm.PublicKeyMultibase)
+	pubKey, err := base58.Decode(vm.PublicKeyMultibase, base58.BitcoinAlphabet)
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode public key: %v", err)
 	}
 
-	// Extract the credential ID from the verification method ID
-	id := strings.Split(vm.Id, "#")[1]
-	credID, err := base64.RawURLEncoding.DecodeString(id)
-	if err != nil {
-		return nil, fmt.Errorf("failed to decode credential ID: %v", err)
-	}
-
 	// Convert metadata to map and build the WebauthnAuthenticator
 	authenticator := &crypto.WebauthnAuthenticator{}
-	auth, err := authenticatorFromMetadata(vm.GetMetadata())
+	auth, _, err := webauthnFromMetadata(vm.GetMetadata())
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		authenticator = auth
 	}
 
-	// Build the credential
-	cred := &crypto.WebauthnCredential{
-		Id:            credID,
-		PublicKey:     pubKey,
-		Authenticator: authenticator,
+	attestionType := ""
+	for _, entry := range vm.GetMetadata() {
+		if entry.Key == "attestion_type" {
+			attestionType = entry.Value
+		}
 	}
 
+	// Build the credential
+	cred := &crypto.WebauthnCredential{
+		Id:              credId,
+		PublicKey:       pubKey,
+		Authenticator:   authenticator,
+		AttestationType: attestionType,
+	}
 	return NewCredential(cred, vm.Controller), nil
 }
 
@@ -100,11 +110,14 @@ func (c *didCredential) Controller() string {
 // Descriptor returns the credential's descriptor
 func (c *didCredential) Descriptor() protocol.CredentialDescriptor {
 	return protocol.CredentialDescriptor{
-		CredentialID:    c.Credential.Id,
+		CredentialID:    c.WebauthnCredential.Id,
 		Type:            protocol.PublicKeyCredentialType,
-		Transport:       []protocol.AuthenticatorTransport{protocol.Internal},
-		AttestationType: "direct",
+		AttestationType: c.WebauthnCredential.AttestationType,
 	}
+}
+
+func (c *didCredential) GetWebauthnCredential() *crypto.WebauthnCredential {
+	return c.WebauthnCredential
 }
 
 // MarshalJSON is used to marshal the credential to JSON
@@ -119,15 +132,14 @@ func (c *didCredential) Marshal() ([]byte, error) {
 
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *didCredential) ToVerificationMethod() *VerificationMethod {
-	did := fmt.Sprintf("did:key:%s#%s", base64.RawURLEncoding.EncodeToString(c.Credential.PublicKey), base64.RawURLEncoding.EncodeToString(c.Credential.Id))
-	pubMb := base64.RawURLEncoding.EncodeToString(c.Credential.PublicKey)
-	vmType := crypto.Ed25519KeyType.FormatString()
+	did := fmt.Sprintf("did:key:%s", base64.RawURLEncoding.EncodeToString(c.WebauthnCredential.Id))
+	pubMb := base58.Encode(c.WebauthnCredential.PublicKey, base58.BitcoinAlphabet)
 	return &VerificationMethod{
 		Id:                 did,
-		Type:               vmType,
+		Type:               "webauthn/alg-es256",
 		PublicKeyMultibase: pubMb,
 		Controller:         c.UserDid,
-		Metadata:           authenticatorToMetadata(c.Credential.Authenticator),
+		Metadata:           webauthnToMetadata(c.WebauthnCredential.Authenticator, c.Descriptor()),
 	}
 }
 
@@ -139,7 +151,7 @@ func (c *didCredential) Did() string {
 // Encrypt is used to encrypt a message for the credential
 func (c *didCredential) Encrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(c.Credential.PublicKey)
+	keyFace, err := webauthncose.ParsePublicKey(c.WebauthnCredential.PublicKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse public key: %w", err)
 	}
@@ -148,7 +160,7 @@ func (c *didCredential) Encrypt(data []byte) ([]byte, error) {
 		return nil, errors.New("public key is not an EC2 key")
 	}
 	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(c.Credential)
+	privateKey, err := derivePrivateKey(c.WebauthnCredential)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive private key: %w", err)
 	}
@@ -194,7 +206,7 @@ func (c *didCredential) Encrypt(data []byte) ([]byte, error) {
 // Decrypt is used to decrypt a message for the credential
 func (c *didCredential) Decrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(c.Credential.PublicKey)
+	keyFace, err := webauthncose.ParsePublicKey(c.WebauthnCredential.PublicKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse public key: %w", err)
 	}
@@ -203,7 +215,7 @@ func (c *didCredential) Decrypt(data []byte) ([]byte, error) {
 		return nil, errors.New("public key is not an EC2 key")
 	}
 	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(c.Credential)
+	privateKey, err := derivePrivateKey(c.WebauthnCredential)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive private key: %w", err)
 	}
@@ -236,8 +248,10 @@ func (c *didCredential) Decrypt(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func authenticatorToMetadata(authenticator *crypto.WebauthnAuthenticator) []*KeyValuePair {
+func webauthnToMetadata(authenticator *crypto.WebauthnAuthenticator, desc protocol.CredentialDescriptor) []*KeyValuePair {
 	authenticatorMap := make(map[string]string)
+	authenticatorMap["attestion_type"] = desc.AttestationType
+
 	if authenticator == nil {
 		return MapToKeyValueList(authenticatorMap)
 	}
@@ -250,26 +264,31 @@ func authenticatorToMetadata(authenticator *crypto.WebauthnAuthenticator) []*Key
 	return MapToKeyValueList(authenticatorMap)
 }
 
-func authenticatorFromMetadata(metadata []*KeyValuePair) (*crypto.WebauthnAuthenticator, error) {
+func webauthnFromMetadata(metadata []*KeyValuePair) (*crypto.WebauthnAuthenticator, protocol.CredentialDescriptor, error) {
 	authenticatorMap := KeyValueListToMap(metadata)
+	desc := protocol.CredentialDescriptor{
+		AttestationType: authenticatorMap["attestion_type"],
+	}
+
 	aaguid, err := base64.StdEncoding.DecodeString(authenticatorMap["aaguid"])
 	if err != nil {
-		return nil, err
+		return nil, desc, err
 	}
 	signCount, err := strconv.ParseUint(authenticatorMap["sign_count"], 10, 32)
 	if err != nil {
-		return nil, err
+		return nil, desc, err
 	}
 	cloneWarning, err := strconv.ParseBool(authenticatorMap["clone_warning"])
 	if err != nil {
-		return nil, err
+		return nil, desc, err
 	}
 	authenticator := &crypto.WebauthnAuthenticator{
 		Aaguid:       aaguid,
 		SignCount:    uint32(signCount),
 		CloneWarning: cloneWarning,
 	}
-	return authenticator, nil
+
+	return authenticator, desc, nil
 }
 
 func ValidateWebauthnCredential(credential *crypto.WebauthnCredential, controller string) (Credential, error) {

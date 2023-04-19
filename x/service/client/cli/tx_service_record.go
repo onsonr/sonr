@@ -14,11 +14,6 @@ func CmdCreateServiceRecord() *cobra.Command {
 		Short: "Create a new ServiceRecord",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex := args[0]
-
-			// Get value arguments
-
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -26,7 +21,7 @@ func CmdCreateServiceRecord() *cobra.Command {
 
 			msg := types.NewMsgCreateServiceRecord(
 				clientCtx.GetFromAddress().String(),
-				indexIndex,
+				types.ServiceRecord{},
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -46,9 +41,6 @@ func CmdUpdateServiceRecord() *cobra.Command {
 		Short: "Update a ServiceRecord",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			// Get indexes
-			indexIndex := args[0]
-
 			// Get value arguments
 
 			clientCtx, err := client.GetClientTxContext(cmd)
@@ -58,7 +50,7 @@ func CmdUpdateServiceRecord() *cobra.Command {
 
 			msg := types.NewMsgUpdateServiceRecord(
 				clientCtx.GetFromAddress().String(),
-				indexIndex,
+				types.ServiceRecord{},
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

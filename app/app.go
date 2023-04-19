@@ -104,6 +104,7 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
+	"github.com/sonrhq/core/internal/protocol"
 	identitymodule "github.com/sonrhq/core/x/identity"
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
@@ -111,6 +112,10 @@ import (
 	servicemodule "github.com/sonrhq/core/x/service"
 	servicemodulekeeper "github.com/sonrhq/core/x/service/keeper"
 	servicemoduletypes "github.com/sonrhq/core/x/service/types"
+
+	domainmodule "github.com/sonrhq/core/x/domain"
+	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
+	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -172,6 +177,7 @@ var (
 		vesting.AppModuleBasic{},
 		identitymodule.AppModuleBasic{},
 		servicemodule.AppModuleBasic{},
+		domainmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -249,6 +255,8 @@ type App struct {
 	IdentityKeeper identitymodulekeeper.Keeper
 
 	ServiceKeeper servicemodulekeeper.Keeper
+
+	DomainKeeper domainmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -297,6 +305,7 @@ func New(
 		icacontrollertypes.StoreKey,
 		identitymoduletypes.StoreKey,
 		servicemoduletypes.StoreKey,
+		domainmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -538,6 +547,14 @@ func New(
 	)
 	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper)
 
+	app.DomainKeeper = *domainmodulekeeper.NewKeeper(
+		appCodec,
+		keys[domainmoduletypes.StoreKey],
+		keys[domainmoduletypes.MemStoreKey],
+		app.GetSubspace(domainmoduletypes.ModuleName),
+	)
+	domainModule := domainmodule.NewAppModule(appCodec, app.DomainKeeper, app.AccountKeeper, app.BankKeeper)
+
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
 	// Sealing prevents other modules from creating scoped sub-keepers
@@ -585,6 +602,7 @@ func New(
 		icaModule,
 		identityModule,
 		serviceModule,
+		domainModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -616,6 +634,7 @@ func New(
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
+		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -642,6 +661,7 @@ func New(
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
+		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -673,6 +693,7 @@ func New(
 		vestingtypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
+		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -704,6 +725,7 @@ func New(
 		transferModule,
 		identityModule,
 		serviceModule,
+		domainModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -861,6 +883,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// If found, register swagger UI and swagger.json.
 	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
 	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
+	protocol.RegisterHighway(clientCtx)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -905,6 +928,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(identitymoduletypes.ModuleName)
 	paramsKeeper.Subspace(servicemoduletypes.ModuleName)
+	paramsKeeper.Subspace(domainmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

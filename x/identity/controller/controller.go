@@ -25,6 +25,9 @@ type Controller interface {
 	// PrimaryIdentity returns the controller's DID document
 	PrimaryIdentity() *types.DidDocument
 
+	// PrimaryTxHash returns the controller's primary identity transaction hash
+	PrimaryTxHash() string
+
 	// BlockchainIdentities returns the controller's blockchain identities
 	BlockchainIdentities() []*types.DidDocument
 
@@ -57,13 +60,12 @@ type didController struct {
 
 	currCredential *crypto.WebauthnCredential
 	disableIPFS    bool
+	aka            string
+	txHash         string
 }
 
 func NewController(options ...Option) (Controller, error) {
-	opts := &Options{
-		DisableIPFS: false,
-		BroadcastTx: false,
-	}
+	opts := defaultOptions()
 	for _, option := range options {
 		option(opts)
 	}
@@ -156,6 +158,7 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (m
 	// Add the new models.Account to the controller
 	dc.blockchain = append(dc.blockchain, newAcc)
 	dc.primaryDoc.AddBlockchainIdentity(newAcc.DidDocument())
+	dc.UpdatePrimaryIdentity(newAcc.DidDocument())
 	return newAcc, nil
 }
 
@@ -228,4 +231,9 @@ func (dc *didController) ReadMail(address string) ([]*models.InboxMessage, error
 		return nil, err
 	}
 	return keeper.ReadInbox(acc.Address())
+}
+
+// PrimaryTxHash returns the transaction hash of the primary models.Account
+func (dc *didController) PrimaryTxHash() string {
+	return dc.txHash
 }

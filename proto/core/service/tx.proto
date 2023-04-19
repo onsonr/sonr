@@ -14,14 +14,14 @@ service Msg {
 }
 message MsgCreateServiceRecord {
   string controller = 1;
-  string id   = 2;
+  ServiceRecord record   = 2;
 }
 
 message MsgCreateServiceRecordResponse {}
 
 message MsgUpdateServiceRecord {
   string controller = 1;
-  string id   = 2;
+  ServiceRecord record   = 2;
 }
 
 message MsgUpdateServiceRecordResponse {}

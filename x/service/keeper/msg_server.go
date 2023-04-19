@@ -27,20 +27,14 @@ func (k msgServer) CreateServiceRecord(goCtx context.Context, msg *types.MsgCrea
 	// Check if the value already exists
 	_, isFound := k.GetServiceRecord(
 		ctx,
-		msg.Id,
+		msg.Record.Id,
 	)
 	if isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Id already set")
 	}
-
-	var serviceRecord = types.ServiceRecord{
-		Controller: msg.Controller,
-		Id:         msg.Id,
-	}
-
 	k.SetServiceRecord(
 		ctx,
-		serviceRecord,
+		*msg.Record,
 	)
 	return &types.MsgCreateServiceRecordResponse{}, nil
 }
@@ -51,7 +45,7 @@ func (k msgServer) UpdateServiceRecord(goCtx context.Context, msg *types.MsgUpda
 	// Check if the value exists
 	valFound, isFound := k.GetServiceRecord(
 		ctx,
-		msg.Id,
+		msg.Record.Id,
 	)
 	if !isFound {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "Id not set")
@@ -61,14 +55,7 @@ func (k msgServer) UpdateServiceRecord(goCtx context.Context, msg *types.MsgUpda
 	if msg.Controller != valFound.Controller {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
 	}
-
-	var serviceRecord = types.ServiceRecord{
-		Controller: msg.Controller,
-		Id:         msg.Id,
-	}
-
-	k.SetServiceRecord(ctx, serviceRecord)
-
+	k.SetServiceRecord(ctx, *msg.Record)
 	return &types.MsgUpdateServiceRecordResponse{}, nil
 }
 

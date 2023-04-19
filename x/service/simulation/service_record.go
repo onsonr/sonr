@@ -25,13 +25,18 @@ func SimulateMsgCreateServiceRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		i := r.Int()
+		rec := types.ServiceRecord{
+			Id:         strconv.Itoa(r.Intn(100)),
+			Controller: simAccount.Address.String(),
+			Origin: "origin",
+
+		}
 		msg := &types.MsgCreateServiceRecord{
 			Controller: simAccount.Address.String(),
-			Id:         strconv.Itoa(i),
+			Record:     &rec,
 		}
 
-		_, found := k.GetServiceRecord(ctx, msg.Id)
+		_, found := k.GetServiceRecord(ctx, msg.Record.Id)
 		if found {
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ServiceRecord already exist"), nil, nil
 		}
@@ -80,7 +85,7 @@ func SimulateMsgUpdateServiceRecord(
 		}
 		msg.Controller = simAccount.Address.String()
 
-		msg.Id = serviceRecord.Id
+		msg.Record.Id = serviceRecord.Id
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -126,7 +131,7 @@ func SimulateMsgDeleteServiceRecord(
 		}
 		msg.Controller = simAccount.Address.String()
 
-		msg.Id = serviceRecord.Id
+		msg.Record.Id = serviceRecord.Id
 
 		txCtx := simulation.OperationInput{
 			R:               r,

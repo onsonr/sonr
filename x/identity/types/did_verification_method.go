@@ -1,11 +1,12 @@
 package types
 
 import (
-	"encoding/json"
+	"encoding/base64"
 	fmt "fmt"
 	"strings"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/internal/crypto"
 )
@@ -127,7 +128,7 @@ func WithMetadataValues(kvs ...KeyValuePair) VerificationMethodOption {
 // VerificationMethod Creation Functions
 //
 
-// // VerificationMethod applies the given options and builds a verification method from this Key
+// VerificationMethod applies the given options and builds a verification method from this Key
 func NewVerificationMethodFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMethodOption) (*VerificationMethod, error) {
 	vm := &VerificationMethod{
 		Id:                 method.Format(pk.Multibase()),
@@ -162,23 +163,6 @@ func NewVerificationMethodFromSonrAcc(pk *crypto.PubKey, options ...FormatOption
 // PubKey returns the public key of the verification method
 func (v *VerificationMethod) PubKey() (*crypto.PubKey, error) {
 	return crypto.PubKeyFromDID(v.Id)
-}
-
-// UnmarshalJSON implements the json.Unmarshaler interface for the VerificationMethod type.
-func (v *VerificationMethod) UnmarshalJSON(bytes []byte) error {
-	type Alias VerificationMethod
-	tmp := Alias{}
-	err := json.Unmarshal(bytes, &tmp)
-	if err != nil {
-		return err
-	}
-	*v = (VerificationMethod)(tmp)
-	return nil
-}
-
-// ExtractCredential extracts the credential from the verification method and returns the interface
-func (vm *VerificationMethod) ExtractCredential() (Credential, error) {
-	return LoadCredential(vm)
 }
 
 // Method returns the DID method of the document
@@ -265,4 +249,15 @@ func (vm *VerificationMethod) ToVerificationRelationship(controller string) Veri
 		VerificationMethod: vm,
 		Reference:          vm.Id,
 	}
+}
+
+func (d *VerificationMethod) WebauthnCredentialID() protocol.URLEncodedBase64 {
+	ptrs := strings.Split(d.Id, ":")
+	id := ptrs[len(ptrs)-1]
+	// Decode the credential id
+	credId, err := base64.RawURLEncoding.DecodeString(id)
+	if err != nil {
+		return nil
+	}
+	return protocol.URLEncodedBase64(credId)
 }

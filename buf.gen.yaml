@@ -11,7 +11,6 @@ plugins:
     out: docs/static
     strategy: all
     opt:
-      - logtostderr=true
       - allow_merge=true
       - merge_file_name=sonr
       - output_format=yaml

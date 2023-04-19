@@ -16,95 +16,30 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 service Query {
 
   // Parameters for the identity module.
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sonr/core/identity/params";
 
   }
 
   // Get a DIDDocument by DID
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc Did (QueryGetDidRequest) returns (QueryGetDidResponse) {
     option (google.api.http).get = "/sonr/core/identity/did/{did}";
 
   }
 
   // Get a DIDDocument from a key id
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc DidByKeyID (QueryDidByKeyIDRequest) returns (QueryDidByKeyIDResponse) {
     option (google.api.http).get = "/sonr/core/identity/did/key/{key_id}";
 
   }
 
   // Get a DIDDocument from an Alias
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
     option (google.api.http).get = "/sonr/core/identity/did/aka/{aka_id}";
 
   }
 
   // Get All DIDDocuments
-
-  // {{.MethodDescriptorProto.Name}} is a call with the method(s) {{$first := true}}{{range .Bindings}}{{if $first}}{{$first = false}}{{else}}, {{end}}{{.HTTPMethod}}{{end}} within the "{{.Service.Name}}" service.
-  // It takes in "{{.RequestType.Name}}" and returns a "{{.ResponseType.Name}}".
-
-  // #### {{.RequestType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .RequestType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
-
-  // #### {{.ResponseType.Name}}
-  // | Name | Type | Description |
-  // | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-  // | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
   rpc DidAll (QueryAllDidRequest) returns (QueryAllDidResponse) {
     option (google.api.http).get = "/sonr/core/identity/did";
 
@@ -115,6 +50,12 @@ service Query {
   // Queries a list of AliasAvailable items.
   rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
     option (google.api.http).get = "/sonr/core/identity/alias/{alias}";
+
+  }
+
+  // Queries a list of DidByOwner items.
+  rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
+    option (google.api.http).get = "/sonrhq/core/identity/did/owner/{owner}";
 
   }
 }
@@ -174,12 +115,21 @@ message QueryAllDidResponse {
 }
 
 message QueryAliasAvailableRequest {
-    // alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
-    string alias = 1;
+
+  // alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
+  string alias = 1;
 }
 
 message QueryAliasAvailableResponse {
-    bool available = 1;
-    DidDocument existing_document = 2 [(gogoproto.nullable) = true];
+  bool        available         = 1;
+  DidDocument existing_document = 2 [(gogoproto.nullable) = true];
+}
+
+message QueryDidByOwnerRequest {
+  string owner = 1;
+}
+
+message QueryDidByOwnerResponse {
+  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 

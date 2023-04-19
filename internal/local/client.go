@@ -10,9 +10,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
-	"github.com/sonrhq/core/internal/tx/cosmos"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
-	"github.com/sonrhq/core/x/identity/types/models"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 	"google.golang.org/grpc"
 )
@@ -50,6 +48,30 @@ func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.Did
 	return &resp.DidDocument, nil
 }
 
+// GetDIDByAlias returns the DID document with the given alias
+func (c LocalContext) GetDIDByAlias(ctx context.Context, alias string) (*identitytypes.DidDocument, error) {
+	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.New("failed to connect to grpc server: " + err.Error())
+	}
+	resp, err := identitytypes.NewQueryClient(conn).DidByAlsoKnownAs(ctx, &identitytypes.QueryDidByAlsoKnownAsRequest{AkaId: alias})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.DidDocument, nil
+}
+// GetDIDByAlias returns the DID document with the given alias
+func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identitytypes.DidDocument, error) {
+	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.New("failed to connect to grpc server: " + err.Error())
+	}
+	resp, err := identitytypes.NewQueryClient(conn).DidByOwner(ctx, &identitytypes.QueryDidByOwnerRequest{Owner: owner})
+	if err != nil {
+		return nil, err
+	}
+	return &resp.DidDocument, nil
+}
 // GetAllDIDs returns all DID documents
 func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocument, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
@@ -102,16 +124,6 @@ func (c LocalContext) GetAllServices(ctx context.Context) ([]*servicetypes.Servi
 	return list, nil
 }
 
-// CreatePrimaryIdentity sends a transaction to create a new DID document with the provided account
-func (c LocalContext) CreatePrimaryIdentity(doc *identitytypes.DidDocument, acc models.Account, alias string) (*BroadcastTxResponse, error) {
-	msg := identitytypes.NewMsgCreateDidDocument(acc.Address(), alias, doc)
-	bz, err := cosmos.SignAnyTransactions(acc, msg)
-	if err != nil {
-		return nil, err
-	}
-	return Context().BroadcastTx(bz)
-}
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
@@ -136,7 +148,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 	grpcRes, err := txClient.BroadcastTx(
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
-			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_ASYNC,
 			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)

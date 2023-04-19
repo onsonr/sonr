@@ -15,12 +15,11 @@ var _ sdk.Msg = &MsgCreateServiceRecord{}
 
 func NewMsgCreateServiceRecord(
 	Controller string,
-	index string,
-
+	record ServiceRecord,
 ) *MsgCreateServiceRecord {
 	return &MsgCreateServiceRecord{
 		Controller: Controller,
-		Id:         index,
+		Record:         &record,
 	}
 }
 
@@ -57,12 +56,12 @@ var _ sdk.Msg = &MsgUpdateServiceRecord{}
 
 func NewMsgUpdateServiceRecord(
 	Controller string,
-	index string,
+record ServiceRecord,
 
 ) *MsgUpdateServiceRecord {
 	return &MsgUpdateServiceRecord{
 		Controller: Controller,
-		Id:         index,
+		Record:         &record,
 	}
 }
 

@@ -75,7 +75,7 @@
     "app.iml": true,
     "Contents.json": true,
     "**/node_modules": true,
-    "types/common/info.pb.go": true,
+    "types/common": true,
     "types/crypto/vc.pb.go": true,
     "types/crypto/coin.pb.go": true,
     "types/crypto/credential.pb.go": true,

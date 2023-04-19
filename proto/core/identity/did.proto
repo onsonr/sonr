@@ -20,6 +20,7 @@ message DidDocument {
   repeated string key_agreement = 9; // optional, the set of key agreement methods associated with the DID subject
   repeated string also_known_as = 10; // optional, the set of identifiers for other personas or identities related to the DID subject
   repeated KeyValuePair metadata = 11; // optional, additional metadata related to the DID document
+  string owner = 12; // The idx address of the owner of the DID document
 }
 
 // VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.

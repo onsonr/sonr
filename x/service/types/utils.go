@@ -371,7 +371,7 @@ func parseAssertionData(bz string) (*protocol.ParsedCredentialAssertionData, err
 // This is then used to create a VerificationMethod for the DID Document.
 func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
 	newCredential := &webauthn.Credential{
-		ID:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
+		ID:              c.RawID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
 		AttestationType: c.Response.AttestationObject.Format,
 		Transport:       c.Response.Transports,
@@ -399,9 +399,8 @@ func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *t
 // This is then used to create a VerificationMethod for the DID Document.
 func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *types.WebauthnCredential {
 	return &types.WebauthnCredential{
-		Id:        c.Response.AuthenticatorData.AttData.CredentialID,
+		Id:        c.RawID,
 		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
-
 		Authenticator: &types.WebauthnAuthenticator{
 			SignCount: c.Response.AuthenticatorData.Counter,
 		},

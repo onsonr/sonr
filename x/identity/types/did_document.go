@@ -3,6 +3,7 @@
 package types
 
 import (
+	"errors"
 	fmt "fmt"
 	"strings"
 
@@ -61,6 +62,27 @@ func (d *DidDocument) CheckAccAddress(t interface{}) bool {
 	default:
 		return false
 	}
+}
+
+// GetAuthenticationMethod returns a VerificationMethod if the did exists in the authentication array
+func (d *DidDocument) GetAuthenticationMethod(did string) (*VerificationMethod, error) {
+	hasAuthId := false
+	for _, id := range d.Authentication {
+		if id == did {
+			hasAuthId = true
+		}
+	}
+
+	if !hasAuthId {
+		return nil, errors.New("The did doesnt exist in the authentication method")
+	}
+
+	for _, vm := range d.VerificationMethod {
+		if vm.Id == did {
+			return vm, nil
+		}
+	}
+	return nil, errors.New("Could not find VerificationMethod for DID")
 }
 
 // GetVerificationMethodByFragment returns the VerificationMethod with the given fragment
@@ -187,4 +209,12 @@ func (d *DidDocument) DIDIdentifier() string {
 // Fragment returns the DID fragment of the document
 func (d *DidDocument) DIDFragment() string {
 	return strings.Split(d.Id, "#")[1]
+}
+
+// Username is the first item in the AKA array
+func (d *DidDocument) FindUsername() string {
+	if len(d.AlsoKnownAs) > 0 {
+		return d.AlsoKnownAs[0]
+	}
+	return "tmp"
 }

@@ -7,7 +7,6 @@ import (
 
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/crypto/mpc"
-	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"
@@ -32,6 +31,18 @@ type Options struct {
 
 	// Username for the controller
 	Username string
+
+	errChan chan error
+}
+
+func defaultOptions() *Options {
+	return &Options{
+		OnConfigGenerated: []mpc.OnConfigGenerated{},
+		DisableIPFS:       false,
+		BroadcastTx:       false,
+		Username:          "",
+		errChan:           make(chan error),
+	}
 }
 
 type Option func(*Options)
@@ -127,15 +138,22 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 		doc.AlsoKnownAs = []string{opts.Username}
 	}
 
-	if opts.BroadcastTx {
-		go local.Context().CreatePrimaryIdentity(doc, primary, opts.Username)
-	}
-
 	cont := &didController{
 		primary:     primary,
 		blockchain:  []models.Account{},
 		primaryDoc:  doc,
 		disableIPFS: opts.DisableIPFS,
+		txHash:      "",
+		aka:         doc.AlsoKnownAs[0],
+	}
+
+	if opts.BroadcastTx {
+		resp, err := cont.CreatePrimaryIdentity(doc, primary, opts.Username)
+		if err != nil {
+			return nil, err
+		}
+		cont.txHash = resp.TxResponse.TxHash
 	}
 	return cont, nil
 }
+

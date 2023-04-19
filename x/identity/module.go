@@ -17,7 +17,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/sonrhq/core/x/identity/client/cli"
 	"github.com/sonrhq/core/x/identity/keeper"
-	"github.com/sonrhq/core/x/identity/protocol"
 	"github.com/sonrhq/core/x/identity/types"
 	abci "github.com/tendermint/tendermint/abci/types"
 )
@@ -72,7 +71,7 @@ func (AppModuleBasic) ValidateGenesis(cdc codec.JSONCodec, config client.TxEncod
 // RegisterGRPCGatewayRoutes registers the gRPC Gateway routes for the module
 func (AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
-	protocol.RegisterHighway(clientCtx)
+
 }
 
 // GetTxCmd returns the root Tx command for the module. The subcommands of this root command are used by end-users to generate new transactions containing messages defined in the module

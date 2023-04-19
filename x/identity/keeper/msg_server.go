@@ -27,29 +27,24 @@ var _ types.MsgServer = msgServer{}
 func (k msgServer) CreateDidDocument(goCtx context.Context, msg *types.MsgCreateDidDocument) (*types.MsgCreateDidDocumentResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	// Check if the value already exists
-	err := k.ValidateNewPrimaryDidDocument(ctx, msg.Primary)
-	if err != nil {
-		return nil, err
+	_, ok := k.GetPrimaryIdentity(ctx, msg.Primary.Id)
+	if ok {
+		return nil,  sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
 	}
-
+	_, found := k.GetPrimaryIdentityByAlias(ctx, msg.Primary.AlsoKnownAs[0])
+	if found {
+		return nil,  sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "index not set")
+	}
 	// Set the value
 	k.SetPrimaryIdentity(
 		ctx,
 		*msg.Primary,
 	)
 
-	// Check for Alias
-	if msg.Alias != "" {
-		if err := k.CheckAlias(ctx, msg.Alias); err != nil {
-			return nil, sdkerrors.Wrap(types.ErrAliasCollision, err.Error())
-		}
-		k.SetAliasForPrimaryIdentity(ctx, *msg.Primary, msg.Alias)
-	}
-
 	// Set the blockchain identities
 	k.SetBlockchainIdentities(ctx, msg.Blockchains...)
 	ctx.EventManager().EmitEvent(
-		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "create-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator)),
+		sdk.NewEvent("NewTx", sdk.NewAttribute("tx-name", "create-did-document"), sdk.NewAttribute("did", msg.Primary.Id), sdk.NewAttribute("creator", msg.Creator), sdk.NewAttribute("alias", msg.Alias)),
 	)
 	return &types.MsgCreateDidDocumentResponse{}, nil
 }

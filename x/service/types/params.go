@@ -41,7 +41,7 @@ func (p Params) String() string {
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, uuid string, challenge protocol.URLEncodedBase64) (protocol.CredentialCreation, error) {
+func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, uuid string, challenge protocol.URLEncodedBase64, isMobile bool) (protocol.CredentialCreation, error) {
 	// Build the credential creation options.
 	opts := protocol.PublicKeyCredentialCreationOptions{
 		// Generated Challenge.
@@ -63,26 +63,47 @@ func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, uuid string, challe
 			},
 			ID: s.Origin,
 		},
-		Timeout: int(60000),
-		AuthenticatorSelection: protocol.AuthenticatorSelection{
-			AuthenticatorAttachment: protocol.AuthenticatorAttachment("platform"),
-		},
-		Attestation: protocol.ConveyancePreference("direct"),
+		Timeout:                int(60000),
+		AuthenticatorSelection: getUserAuthenticationSelectionForDevice(isMobile),
+		Attestation:            protocol.PreferDirectAttestation,
 	}
 	return protocol.CredentialCreation{Response: opts}, nil
 }
 
 // NewWebauthnAssertionOptions returns the webauthn assertion options.
-func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol.URLEncodedBase64, allowedCredentials []protocol.CredentialDescriptor) (protocol.CredentialAssertion, error) {
+func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol.URLEncodedBase64, allowedCredentials []protocol.CredentialDescriptor, isMobile bool) (protocol.CredentialAssertion, error) {
 	// Build the credential assertion options.
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
-		Challenge:      challenge,
-		RelyingPartyID: s.Origin,
+		Challenge:        challenge,
+		RelyingPartyID:   s.Origin,
+		UserVerification: getUserVerificationForDevice(isMobile),
 
 		// Preconfigured parameters.
 		Timeout:            int(60000),
 		AllowedCredentials: allowedCredentials,
 	}
 	return protocol.CredentialAssertion{Response: opts}, nil
+}
+
+func getUserAuthenticationSelectionForDevice(isMobile bool) protocol.AuthenticatorSelection {
+	if isMobile {
+		return protocol.AuthenticatorSelection{
+			ResidentKey:             protocol.ResidentKeyRequirementRequired,
+			UserVerification:        protocol.VerificationPreferred,
+			AuthenticatorAttachment: protocol.Platform,
+		}
+	}
+	return protocol.AuthenticatorSelection{
+		ResidentKey:             protocol.ResidentKeyRequirementPreferred,
+		UserVerification:        protocol.VerificationRequired,
+		AuthenticatorAttachment: protocol.CrossPlatform,
+	}
+}
+
+func getUserVerificationForDevice(isMobile bool) protocol.UserVerificationRequirement {
+	if isMobile {
+		return protocol.VerificationPreferred
+	}
+	return protocol.VerificationRequired
 }

@@ -134,3 +134,7 @@ func (c LocalContext) FiberListenAddress() string {
 		return fmt.Sprintf("%s:%s", currPublicHostIP(), c.HighwayPort())
 	}
 }
+
+func (c LocalContext) SigningKey() []byte {
+	return []byte("secret")
+}

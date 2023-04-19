@@ -1,16 +1,14 @@
 swagger: "2.0"
 info:
-  title: Sonr API
-  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
+  title: core/domain/domain.proto
   version: version not set
 tags:
   - name: Query
   - name: Msg
   - name: Query
   - name: Msg
-  - name: Mpc
-  - name: Authentication
-  - name: Vault
+  - name: Query
+  - name: Msg
 consumes:
   - application/json
 produces:
@@ -39,11 +37,7 @@ paths:
         - Query
   /sonr/core/identity/did:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+      summary: Get All DIDDocuments
       operationId: Query_DidAll
       responses:
         "200":
@@ -102,11 +96,7 @@ paths:
         - Query
   /sonr/core/identity/did/{did}:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+      summary: Get a DIDDocument by DID
       operationId: Query_Did
       responses:
         "200":
@@ -127,11 +117,7 @@ paths:
         - Query
   /sonr/core/identity/did/aka/{akaId}:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+      summary: Get a DIDDocument from an Alias
       operationId: Query_DidByAlsoKnownAs
       responses:
         "200":
@@ -152,11 +138,7 @@ paths:
         - Query
   /sonr/core/identity/did/key/{keyId}:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+      summary: Get a DIDDocument from a key id
       operationId: Query_DidByKeyID
       responses:
         "200":
@@ -177,11 +159,7 @@ paths:
         - Query
   /sonr/core/identity/params:
     get:
-      summary: |-
-        #### {{.ResponseType.Name}}
-        | Name | Type | Description |
-        | ---- | ---- | ----------- |{{range .ResponseType.Fields}}
-        | {{.Name}} | {{if eq .Label.String "LABEL_REPEATED"}}[]{{end}}{{.Type}} | {{fieldcomments .Message .}} | {{end}}
+      summary: Parameters for the identity module.
       operationId: Query_Params
       responses:
         "200":
@@ -272,6 +250,197 @@ paths:
           type: string
       tags:
         - Query
+  /sonrhq/core/domain/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: Query_Params
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/coredomainQueryParamsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Query
+  /sonrhq/core/domain/sld_record:
+    get:
+      operationId: Query_SLDRecordAll
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/domainQueryAllSLDRecordResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: |-
+            offset is a numeric offset that can be used when key is unavailable.
+            It is less efficient than using key. Only one of offset or key should
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: |-
+            limit is the total number of results to be returned in the result page.
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.countTotal
+          description: |-
+            count_total is set to true  to indicate that the result set should include
+            a count of the total number of items available for pagination in UIs.
+            count_total is only respected when offset is used. It is ignored when key
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: |-
+            reverse is set to true if results are to be returned in the descending order.
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonrhq/core/domain/sld_record/{index}:
+    get:
+      summary: Queries a list of SLDRecord items.
+      operationId: Query_SLDRecord
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/domainQueryGetSLDRecordResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrhq/core/domain/tld_record:
+    get:
+      operationId: Query_TLDRecordAll
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/domainQueryAllTLDRecordResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: |-
+            offset is a numeric offset that can be used when key is unavailable.
+            It is less efficient than using key. Only one of offset or key should
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: |-
+            limit is the total number of results to be returned in the result page.
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.countTotal
+          description: |-
+            count_total is set to true  to indicate that the result set should include
+            a count of the total number of items available for pagination in UIs.
+            count_total is only respected when offset is used. It is ignored when key
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: |-
+            reverse is set to true if results are to be returned in the descending order.
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonrhq/core/domain/tld_record/{index}:
+    get:
+      summary: Queries a list of TLDRecord items.
+      operationId: Query_TLDRecord
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/domainQueryGetTLDRecordResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: index
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrhq/core/identity/did/owner/{owner}:
+    get:
+      summary: Queries a list of DidByOwner items.
+      operationId: Query_DidByOwner
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/identityQueryDidByOwnerResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: owner
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
   /sonrhq/core/service/params:
     get:
       summary: Parameters queries the parameters of the module.
@@ -288,6 +457,19 @@ paths:
       tags:
         - Query
 definitions:
+  coredomainParams:
+    type: object
+    properties:
+      dnsResolverIp:
+        type: string
+    description: Params defines the parameters for the module.
+  coredomainQueryParamsResponse:
+    type: object
+    properties:
+      params:
+        $ref: '#/definitions/coredomainParams'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   coreidentityKeyValuePair:
     type: object
     properties:
@@ -350,6 +532,62 @@ definitions:
         $ref: '#/definitions/coreserviceParams'
         description: params holds all the parameters of this module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
+  domainMsgCreateSLDRecordResponse:
+    type: object
+  domainMsgCreateTLDRecordResponse:
+    type: object
+  domainMsgDeleteSLDRecordResponse:
+    type: object
+  domainMsgDeleteTLDRecordResponse:
+    type: object
+  domainMsgUpdateSLDRecordResponse:
+    type: object
+  domainMsgUpdateTLDRecordResponse:
+    type: object
+  domainQueryAllSLDRecordResponse:
+    type: object
+    properties:
+      sLDRecord:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/domainSLDRecord'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  domainQueryAllTLDRecordResponse:
+    type: object
+    properties:
+      tLDRecord:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/domainTLDRecord'
+      pagination:
+        $ref: '#/definitions/v1beta1PageResponse'
+  domainQueryGetSLDRecordResponse:
+    type: object
+    properties:
+      sLDRecord:
+        $ref: '#/definitions/domainSLDRecord'
+  domainQueryGetTLDRecordResponse:
+    type: object
+    properties:
+      tLDRecord:
+        $ref: '#/definitions/domainTLDRecord'
+  domainSLDRecord:
+    type: object
+    properties:
+      index:
+        type: string
+      creator:
+        type: string
+  domainTLDRecord:
+    type: object
+    properties:
+      index:
+        type: string
+      creator:
+        type: string
   identityDidDocument:
     type: object
     properties:
@@ -408,6 +646,9 @@ definitions:
           type: object
           $ref: '#/definitions/coreidentityKeyValuePair'
         title: optional, additional metadata related to the DID document
+      owner:
+        type: string
+        title: The idx address of the owner of the DID document
     description: DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
   identityMsgCreateDidDocumentResponse:
     type: object
@@ -447,6 +688,11 @@ definitions:
       didDocument:
         $ref: '#/definitions/identityDidDocument'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
+  identityQueryDidByOwnerResponse:
+    type: object
+    properties:
+      didDocument:
+        $ref: '#/definitions/identityDidDocument'
   identityQueryGetDidResponse:
     type: object
     properties:
@@ -553,262 +799,6 @@ definitions:
           type: object
           $ref: '#/definitions/coreserviceKeyValuePair'
         title: optional, additional metadata related to the Service
-  v1Account:
-    type: object
-    properties:
-      address:
-        type: string
-        description: This field represents the unique account address associated with the user. It is typically a hash or an encoded public key, depending on the underlying blockchain or network.
-      name:
-        type: string
-        description: This field contains the human-readable name associated with the account. It is used for easier identification and management of the account by the user.
-      did:
-        type: string
-        description: This field stores the Decentralized Identifier (DID) of the user, which is a unique, resolvable, and cryptographically verifiable identifier. DIDs are used to enable secure and decentralized identity management.
-      coinType:
-        type: string
-        description: This field specifies the type of the cryptocurrency or token associated with the account. It is used to differentiate between various cryptocurrencies or tokens that the user may hold in their wallet.
-      chainId:
-        type: string
-        description: This field represents the identifier of the blockchain or network that the account is associated with. Chain IDs are used to distinguish between different blockchains or networks, such as Ethereum, Cosmos, or Filecoin.
-      publicKey:
-        type: string
-        description: This field stores the base64 encoded public key of the account, which is used for cryptographic operations such as signing and verifying transactions. The public key is derived from the user's private key and is an essential part of the account's security.
-      type:
-        type: string
-        description: This field stores the type of the public key. It is used to differentiate between various public key types, such as secp256k1, ed25519, and sr25519.
-    description: Account represents a user's account on a blockchain or network. It contains the user's address, name, DID, and other information that is used to identify and manage the account.
-  v1AddShareResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      key:
-        type: string
-    description: AddShareResponse is the response to a AddShare request.
-  v1ChallengeResponse:
-    type: object
-    properties:
-      rpId:
-        type: string
-        description: Relaying party id for the request.
-      rpName:
-        type: string
-        description: Relaying party name for the request.
-      credentialOptions:
-        type: string
-        description: Credential Options for the request.
-    description: ChallengeResponse is the response to a Challenge request.
-  v1CreateAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      coinType:
-        type: string
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Account'
-    description: CreateAccountResponse is the response to a CreateAccount request.
-  v1DeleteAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Account'
-    description: DeleteAccountResponse is the response to a DeleteAccount request.
-  v1GetAccountResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      coinType:
-        type: string
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Account'
-    description: GetAccountResponse is the response to a GetAccount request.
-  v1KeygenResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-        description: Success is true if the account was created.
-      address:
-        type: string
-        description: The address of the account.
-      did:
-        type: string
-        description: The DID of the account.
-      primary:
-        $ref: '#/definitions/identityDidDocument'
-        description: The DID Document for the wallet.
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Account'
-        description: The DID Document for the wallet.
-      transactionHash:
-        type: string
-        description: Transaction hash for the account creation.
-    description: KeygenResponse is the response to a Keygen request.
-  v1ListAccountsResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      accounts:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/v1Account'
-    description: ListAccountsResponse is the response to a ListAccounts request.
-  v1LoginResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-        description: Success is true if the account was created.
-      address:
-        type: string
-        description: The address of the account.
-      did:
-        type: string
-        description: The DID of the account.
-      keyshares:
-        type: object
-        additionalProperties:
-          type: string
-          format: byte
-        description: The keyshares for the account.
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-        description: The DID Document for the wallet.
-    description: LoginFinishResponse is the response to a Login request.
-  v1QueryDocumentResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-        description: Success is true if the account exists.
-      accountAddress:
-        type: string
-        description: The account address for the user.
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
-        description: The DID Document for the wallet.
-    description: LoginStartResponse is the response to a Login request.
-  v1QueryServiceAssertionResponse:
-    type: object
-    properties:
-      origin:
-        type: string
-        description: The Origin of the request.
-      alias:
-        type: string
-        description: The Alias of the account to login to.
-      address:
-        type: string
-        description: The address of the account.
-      assertionOptions:
-        type: string
-        description: The Assertion options for the request.
-    description: RegisterFinishResponse is the response to a CreateAccount request.
-  v1QueryServiceResponse:
-    type: object
-    properties:
-      challenge:
-        type: string
-        description: The address of the account.
-      rpId:
-        type: string
-        description: Relaying party id for the request.
-      rpName:
-        type: string
-        description: Relaying party name for the request.
-      credentialOptions:
-        type: string
-        description: Credential Options for the request.
-    description: RegisterFinishResponse is the response to a CreateAccount request.
-  v1ReadMailResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      messages:
-        type: object
-        additionalProperties:
-          type: string
-  v1RefreshShareResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-        description: Success is true if the account exists.
-      accountAddress:
-        type: string
-        description: The account address for the user.
-      credentialOptions:
-        type: string
-        description: Json encoded WebAuthn credential options for the user to sign with.
-      rpId:
-        type: string
-        description: Relaying party id for the request.
-      rpName:
-        type: string
-        description: Relaying party name for the request.
-    description: LoginStartResponse is the response to a Login request.
-  v1SendMailResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-  v1SignMessageResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      did:
-        type: string
-      signature:
-        type: string
-      message:
-        type: string
-    description: SignMessageResponse is the response to a SignWithAccount request.
-  v1SyncShareResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-        description: Success is true if the account exists.
-      key:
-        type: string
-        description: The key for the item.
-      value:
-        type: string
-        description: The value for the item.
-    description: RegisterFinishResponse is the response to a CreateAccount request.
-  v1VerifyMessageResponse:
-    type: object
-    properties:
-      success:
-        type: boolean
-      did:
-        type: string
-    description: VerifyWithAccountResponse is the response to a VerifyWithAccount request.
   v1beta1PageRequest:
     type: object
     properties:

@@ -2,6 +2,9 @@ version: 1
 build:
   main: cmd/sonrd
   binary: sonrd
+  proto:
+    path: ""
+    third_party_paths: []
 accounts:
 - name: alice
   coins:
