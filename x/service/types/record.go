@@ -10,8 +10,7 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	types "github.com/sonrhq/core/types/crypto"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
+	idtypes "github.com/sonrhq/core/x/identity/types"
 )
 
 const (
@@ -57,11 +56,8 @@ func (s *ServiceRecord) GetUserEntity(id string) protocol.UserEntity {
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialCreationOptions(username string, isMobile bool) (string, error) {
-	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
+func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, isMobile bool) (string, error) {
 	params := DefaultParams()
-	chal := protocol.URLEncodedBase64(hashString)
-
 	cco, err := params.NewWebauthnCreationOptions(vm, username, chal, isMobile)
 	if err != nil {
 		return "", err
@@ -75,15 +71,12 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string, isMobile 
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialAssertionOptions(didDoc *identitytypes.DidDocument, isMobile bool) (string, error) {
+func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, isMobile bool) (string, error) {
 	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
 	params := DefaultParams()
 	chal := protocol.URLEncodedBase64(hashString)
-	creds, err := didDoc.AllowedWebauthnCredentials()
-	if err != nil {
-		return "", fmt.Errorf("Error getting allowed credentials: %s", err)
-	}
-	cco, err := params.NewWebauthnAssertionOptions(vm, chal, creds, isMobile)
+
+	cco, err := params.NewWebauthnAssertionOptions(vm, chal, allowedCredentials, isMobile)
 	if err != nil {
 		return "", err
 	}
@@ -105,7 +98,7 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 }
 
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyCreationChallenge(resp string) (*types.WebauthnCredential, error) {
+func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal protocol.URLEncodedBase64) (*WebauthnCredential, error) {
 	pcc, err := parseCreationData(resp)
 	if err != nil {
 		return nil, err
@@ -114,7 +107,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string) (*types.WebauthnCr
 }
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*types.WebauthnCredential) error {
+func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes.VerificationMethod) error {
 	pca, err := parseAssertionData(resp)
 	if err != nil {
 		return err
@@ -124,8 +117,12 @@ func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*types.W
 	}
 	cred := makeCredentialFromAssertionData(pca)
 	for _, c := range creds {
-		if bytes.EqualFold(cred.Id, c.Id) {
-			if bytes.Equal(cred.PublicKey, c.PublicKey) {
+		if strings.EqualFold(c.Id, string(cred.Id)) {
+			bz, err := c.PublicKey()
+			if err != nil {
+				return err
+			}
+			if bytes.Equal(bz, cred.PublicKey) {
 				return nil
 			}
 		}

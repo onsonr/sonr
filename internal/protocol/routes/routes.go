@@ -22,6 +22,8 @@ func SetupRoutes(c *config.ProtocolConfig) {
 	c.Get("/id/:did", timeout.New(handler.GetDID, time.Second*5))
 	c.Get("/id/alias/:alias", timeout.New(handler.GetDIDByAlias, time.Second*5))
 	c.Get("/id/owner/:owner", timeout.New(handler.GetDIDByOwner, time.Second*5))
+	c.Get("/id/unclaimed", timeout.New(handler.ListAllUnclaimed, time.Second*5))
+	c.Get("/id/unclaimed/oldest", timeout.New(handler.GetOldestUnclaimed, time.Second*5))
 
 	// Service Methods
 	c.Get("/service", timeout.New(handler.ListServices, time.Second*10))
@@ -39,11 +41,11 @@ func SetupRoutes(c *config.ProtocolConfig) {
 	// MPC Methods
 	c.Get("/accounts", timeout.New(handler.ListAccounts, time.Second*5))
 	c.Get("/accounts/:address", timeout.New(handler.GetAccount, time.Second*5))
-	c.Post("/accounts/create/:coin_type/:name", timeout.New(handler.CreateAccount, time.Second*5))
+	c.Get("/accounts/create/:coin_type/:name", timeout.New(handler.CreateAccount, time.Second*5))
 	c.Post("/accounts/:address/sign", timeout.New(handler.SignWithAccount, time.Second*5))
 	c.Post("/accounts/:address/verify", timeout.New(handler.VerifyWithAccount, time.Second*5))
 
-	// Inbox Methods
-	c.Get("/inbox/:address/read", timeout.New(handler.ReadInboxMessages, time.Second*5))
-	c.Post("/inbox/:address/send/:to", timeout.New(handler.SendInboxMessage, time.Second*5))
+	// Mailbox Methods
+	c.Get("/mailbox/:address/read", timeout.New(handler.ReadInboxMessages, time.Second*5))
+	c.Post("/mailbox/:address/send/:to", timeout.New(handler.SendInboxMessage, time.Second*5))
 }

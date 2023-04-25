@@ -1,9 +1,7 @@
 package crypto
 
 import (
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/libp2p/go-libp2p/core/peer"
-	types "github.com/sonrhq/core/types/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -40,20 +38,4 @@ func NewMPCPool(size int) *MPCPool {
 // NewEmptyECDSASecp256k1Signature creates a new empty MPCECDSASignature.
 func NewEmptyECDSASecp256k1Signature() MPCECDSASignature {
 	return ecdsa.EmptySignature(MPCSecp256k1Curve{})
-}
-
-// NewWebAuthnCredential creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
-// This is then used to create a VerificationMethod for the DID Document.
-func NewWebAuthnCredential(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
-	transportsStr := []string{}
-	return &types.WebauthnCredential{
-		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
-		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
-		AttestationType: c.Response.AttestationObject.Format,
-		Transport:       transportsStr,
-		Authenticator: &types.WebauthnAuthenticator{
-			Aaguid:    c.Response.AttestationObject.AuthData.AttData.AAGUID,
-			SignCount: c.Response.AttestationObject.AuthData.Counter,
-		},
-	}
 }

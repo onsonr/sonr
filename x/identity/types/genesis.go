@@ -12,6 +12,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		PrimaryIdentities:    []DidDocument{},
 		BlockchainIdentities: []DidDocument{},
+		ClaimableWalletList:  []ClaimableWallet{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params:        DefaultParams(),
 		Relationships: []VerificationRelationship{},
@@ -39,6 +40,19 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicated index for did")
 		}
 		didDocumentIndexMap[index] = struct{}{}
+	}
+
+	// Check for duplicated ID in claimableWallet
+	claimableWalletIdMap := make(map[uint64]bool)
+	claimableWalletCount := gs.GetClaimableWalletCount()
+	for _, elem := range gs.ClaimableWalletList {
+		if _, ok := claimableWalletIdMap[elem.Id]; ok {
+			return fmt.Errorf("duplicated id for claimableWallet")
+		}
+		if elem.Id >= claimableWalletCount {
+			return fmt.Errorf("claimableWallet id should be lower or equal than the last id")
+		}
+		claimableWalletIdMap[elem.Id] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

@@ -28,8 +28,7 @@ func SimulateMsgCreateServiceRecord(
 		rec := types.ServiceRecord{
 			Id:         strconv.Itoa(r.Intn(100)),
 			Controller: simAccount.Address.String(),
-			Origin: "origin",
-
+			Origin:     "origin",
 		}
 		msg := &types.MsgCreateServiceRecord{
 			Controller: simAccount.Address.String(),

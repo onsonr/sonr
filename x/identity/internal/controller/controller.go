@@ -8,18 +8,24 @@ import (
 	// "github.com/sonrhq/core/internal/vault"
 	// "github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/x/identity/internal/vault"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
 var PrimaryAccountaddress string = "primary"
 
 type Controller interface {
-	// Address returns the controller's address
+	// The `Address()` function is a method of the `didController` struct that returns the address of the
+	// primary account associated with the controller. It takes a pointer to the `didController` struct as
+	// its receiver and returns a string representing the address of the primary account.
 	Address() string
 
-	// Get the controller's DID
+	// The `Did()` function is a method of the `didController` struct that returns the DID (Decentralized
+	// Identifier) associated with the controller's primary account. It takes a pointer to the
+	// `didController` struct as its receiver and returns a string representing the DID.
 	Did() string
 
 	// PrimaryIdentity returns the controller's DID document
@@ -58,10 +64,11 @@ type didController struct {
 	primaryDoc *types.DidDocument
 	blockchain []models.Account
 
-	currCredential *crypto.WebauthnCredential
+	currCredential *servicetypes.WebauthnCredential
 	disableIPFS    bool
 	aka            string
 	txHash         string
+	broadcastChan  chan *local.BroadcastTxResponse
 }
 
 func NewController(options ...Option) (Controller, error) {
@@ -86,15 +93,17 @@ func NewController(options ...Option) (Controller, error) {
 	}
 }
 
+// The function loads a controller with a primary account and a list of blockchain accounts from a
+// given DID document.
 func LoadController(doc *types.DidDocument) (Controller, error) {
-	acc, err := keeper.GetAccount(doc.Id)
+	acc, err := vault.GetAccount(doc.Id)
 	if err != nil {
 		return nil, err
 	}
 	blockAccDids := doc.ListBlockchainIdentities()
 	var blockAccs []models.Account
 	for _, did := range blockAccDids {
-		acc, err := keeper.GetAccount(did)
+		acc, err := vault.GetAccount(did)
 		if err != nil {
 			return nil, err
 		}
@@ -108,18 +117,32 @@ func LoadController(doc *types.DidDocument) (Controller, error) {
 	return cn, nil
 }
 
+// The `Address()` function is a method of the `didController` struct that returns the address of the
+// primary account associated with the controller. It takes a pointer to the `didController` struct as
+// its receiver and returns a string representing the address of the primary account.
 func (dc *didController) Address() string {
 	return dc.primary.Address()
 }
 
+// The `Did()` function is a method of the `didController` struct that returns the DID (Decentralized
+// Identifier) associated with the controller's primary account. It takes a pointer to the
+// `didController` struct as its receiver and returns a string representing the DID.
 func (dc *didController) Did() string {
 	return dc.primaryDoc.Id
 }
 
+// The `PrimaryIdentity()` function is a method of the `didController` struct that returns the DID
+// document associated with the controller's primary account. It takes a pointer to the `didController`
+// struct as its receiver and returns a pointer to a `types.DidDocument` representing the primary
+// account's DID document.
 func (dc *didController) PrimaryIdentity() *types.DidDocument {
 	return dc.primaryDoc
 }
 
+// The `BlockchainIdentities()` function is a method of the `didController` struct that returns an
+// array of `*types.DidDocument` representing the DID documents of all the blockchain identities
+// associated with the controller. It takes a pointer to the `didController` struct as its receiver and
+// returns an array of pointers to `types.DidDocument`.
 func (dc *didController) BlockchainIdentities() []*types.DidDocument {
 	var docs []*types.DidDocument
 	for _, acc := range dc.blockchain {
@@ -128,6 +151,10 @@ func (dc *didController) BlockchainIdentities() []*types.DidDocument {
 	return docs
 }
 
+// Returns a list of all the accounts associated with the controller. It
+// returns an array of `models.Account` and an error. The method first checks if the primary account
+// exists and then appends it to the list of blockchain accounts associated with the controller.
+// Finally, it returns the list of accounts.
 func (dc *didController) ListAccounts() ([]models.Account, error) {
 	if dc.primary == nil {
 		return nil, fmt.Errorf("no Primary Account found")
@@ -149,7 +176,7 @@ func (dc *didController) CreateAccount(name string, coinType crypto.CoinType) (m
 
 	// Add account to the vault
 	if !dc.disableIPFS {
-		err = keeper.InsertAccount(newAcc)
+		err = vault.InsertAccount(newAcc)
 		if err != nil {
 			return nil, err
 		}
@@ -217,7 +244,7 @@ func (dc *didController) SendMail(address string, to string, body string) error 
 	if err != nil {
 		return err
 	}
-	err = keeper.WriteInbox(to, msg)
+	err = vault.WriteInbox(to, msg)
 	if err != nil {
 		return err
 	}
@@ -230,7 +257,7 @@ func (dc *didController) ReadMail(address string) ([]*models.InboxMessage, error
 	if err != nil {
 		return nil, err
 	}
-	return keeper.ReadInbox(acc.Address())
+	return vault.ReadInbox(acc.Address())
 }
 
 // PrimaryTxHash returns the transaction hash of the primary models.Account

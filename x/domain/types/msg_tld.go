@@ -18,7 +18,7 @@ func NewMsgCreateTLDRecord(
 	tldRecord *TLDRecord,
 ) *MsgCreateTLDRecord {
 	return &MsgCreateTLDRecord{
-		Creator: creator,
+		Creator:   creator,
 		TldRecord: tldRecord,
 	}
 }
@@ -59,7 +59,7 @@ func NewMsgUpdateTLDRecord(
 	tldRecord *TLDRecord,
 ) *MsgUpdateTLDRecord {
 	return &MsgUpdateTLDRecord{
-		Creator: creator,
+		Creator:   creator,
 		TldRecord: tldRecord,
 	}
 }
@@ -102,7 +102,7 @@ func NewMsgDeleteTLDRecord(
 ) *MsgDeleteTLDRecord {
 	return &MsgDeleteTLDRecord{
 		Creator: creator,
-		Name: index,
+		Name:    index,
 	}
 }
 func (msg *MsgDeleteTLDRecord) Route() string {

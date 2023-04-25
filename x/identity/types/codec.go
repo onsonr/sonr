@@ -14,6 +14,9 @@ func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateDidDocument{}, "identity/CreateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgUpdateDidDocument{}, "identity/UpdateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgDeleteDidDocument{}, "identity/DeleteDidDocument", nil)
+	cdc.RegisterConcrete(&MsgCreateClaimableWallet{}, "identity/CreateClaimableWallet", nil)
+	cdc.RegisterConcrete(&MsgUpdateClaimableWallet{}, "identity/UpdateClaimableWallet", nil)
+	cdc.RegisterConcrete(&MsgDeleteClaimableWallet{}, "identity/DeleteClaimableWallet", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -22,6 +25,11 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 		&MsgCreateDidDocument{},
 		&MsgUpdateDidDocument{},
 		&MsgDeleteDidDocument{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateClaimableWallet{},
+		&MsgUpdateClaimableWallet{},
+		&MsgDeleteClaimableWallet{},
 	)
 	// this line is used by starport scaffolding # 3
 

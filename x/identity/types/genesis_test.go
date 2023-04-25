@@ -45,9 +45,49 @@ func TestGenesisState_Validate(t *testing.T) {
 						Reference: "1",
 					},
 				},
+				ClaimableWalletList: []types.ClaimableWallet{
+					{
+						Id: 0,
+					},
+					{
+						Id: 1,
+					},
+				},
+				ClaimableWalletCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
+		},
+		{
+			desc:     "duplicated walletInfo",
+			genState: &types.GenesisState{},
+			valid:    false,
+		},
+		{
+			desc: "duplicated claimableWallet",
+			genState: &types.GenesisState{
+				ClaimableWalletList: []types.ClaimableWallet{
+					{
+						Id: 0,
+					},
+					{
+						Id: 0,
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "invalid claimableWallet count",
+			genState: &types.GenesisState{
+				ClaimableWalletList: []types.ClaimableWallet{
+					{
+						Id: 1,
+					},
+				},
+				ClaimableWalletCount: 0,
+			},
+			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	} {

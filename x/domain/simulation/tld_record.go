@@ -26,11 +26,11 @@ func SimulateMsgCreateTLDRecord(
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
 		rec := types.TLDRecord{
-		Creator: simAccount.Address.String(),
-		Index: strconv.Itoa(r.Intn(100)),
+			Creator: simAccount.Address.String(),
+			Index:   strconv.Itoa(r.Intn(100)),
 		}
 		msg := &types.MsgCreateTLDRecord{
-			Creator: simAccount.Address.String(),
+			Creator:   simAccount.Address.String(),
 			TldRecord: &rec,
 		}
 

@@ -881,8 +881,8 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// register app's OpenAPI routes.
 	// Check for sonr.swagger.yaml in docs folder or use default.
 	// If found, register swagger UI and swagger.json.
-	apiSvr.Router.Handle("/static/sonr.swagger.yaml", http.FileServer(http.FS(docs.Docs)))
-	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/sonr.swagger.yaml"))
+	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
+	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
 	protocol.RegisterHighway(clientCtx)
 }
 

@@ -38,9 +38,14 @@ func NewDocument(pk *crypto.PubKey, opts ...VerificationMethodOption) *DidDocume
 	return doc
 }
 
-// AccAddress returns the account address of the DID
+// AccAddress returns the SONR address of the DID
 func (d *DidDocument) AccAddress() (sdk.AccAddress, error) {
-	return ConvertDidToAccAddress(d.Id)
+	for _, vm := range d.VerificationMethod {
+		if strings.Contains(vm.Id, "did:sonr") {
+			return sdk.AccAddressFromBech32(vm.BlockchainAccountId)
+		}
+	}
+	return nil, errors.New("No SONR address found")
 }
 
 // CheckAccAddress checks if the provided sdk.AccAddress or string matches the DID ID
@@ -93,11 +98,6 @@ func (d *DidDocument) GetVerificationMethodByFragment(fragment string) *Verifica
 		}
 	}
 	return nil
-}
-
-// SetMetadata sets the metadata of the document
-func (vm *DidDocument) SetMetadata(data map[string]string) {
-	vm.Metadata = MapToKeyValueList(data)
 }
 
 // ImportVerificationMethods imports the given VerificationMethods into the document
@@ -217,4 +217,35 @@ func (d *DidDocument) FindUsername() string {
 		return d.AlsoKnownAs[0]
 	}
 	return "tmp"
+}
+
+// FindPrimaryAddress is the first item in the assertion method without the did: prefix
+func (d *DidDocument) FindPrimaryAddress() string {
+	if len(d.AssertionMethod) > 0 {
+		ptrs := strings.Split(d.AssertionMethod[0], ":")
+		return ptrs[len(ptrs)-1]
+	}
+	return ""
+}
+
+// ListAuthenticationMethods returns a list of all authentication methods
+func (d *DidDocument) ListAuthenticationMethods() []*VerificationMethod {
+	vms := []*VerificationMethod{}
+	for _, vm := range d.VerificationMethod {
+		if d.IsAuthentication(vm) {
+			vms = append(vms, vm)
+		}
+	}
+	return vms
+}
+
+// ListAssertionMethods returns a list of all assertion methods
+func (d *DidDocument) ListAssertionMethods() []*VerificationMethod {
+	vms := []*VerificationMethod{}
+	for _, vm := range d.VerificationMethod {
+		if d.IsAssertionMethod(vm) {
+			vms = append(vms, vm)
+		}
+	}
+	return vms
 }

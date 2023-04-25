@@ -6,16 +6,13 @@ import (
 	"time"
 
 	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/x/identity/types"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
 // KeyShare is a type that interacts with a cmp.Config file located on disk.
 type KeyShare interface {
-	// AccountName returns the account name based on the keyshare file name
-	AccountName() string
-
 	// Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
 	Bytes() []byte
 
@@ -41,10 +38,10 @@ type KeyShare interface {
 	IsEncrypted() bool
 
 	// Encrypt encrypts the keyshare file.
-	Encrypt(credential types.Credential) error
+	Encrypt(credential servicetypes.Credential) error
 
 	// Decrypt decrypts the keyshare file.
-	Decrypt(credential types.Credential) error
+	Decrypt(credential servicetypes.Credential) error
 }
 
 // keyShare is a type that interacts with a cmp.Config file located on disk.
@@ -56,7 +53,7 @@ type keyShare struct {
 
 // Keyshare name format is a DID did:{coin_type}:{account_address}#ks-{account_name}-{keyshare_name}
 // did:{coin_type}:{account_address}#ks-{account_name}-{keyshare_name}
-func NewKeyshare(id string, bytes []byte, coinType crypto.CoinType, accName string) (KeyShare, error) {
+func NewKeyshare(id string, bytes []byte, coinType crypto.CoinType) (KeyShare, error) {
 	conf := cmp.EmptyConfig(curve.Secp256k1{})
 	err := conf.UnmarshalBinary(bytes)
 	if err != nil {
@@ -68,7 +65,7 @@ func NewKeyshare(id string, bytes []byte, coinType crypto.CoinType, accName stri
 		lastUsed: uint32(time.Now().Unix()),
 	}
 	addr := coinType.FormatAddress(ks.PubKey())
-	ks.name = fmt.Sprintf("did:%s:%s#ks-%s-%s", coinType.DidMethod(), addr, accName, string(conf.ID))
+	ks.name = fmt.Sprintf("did:%s:%s#ks-%s", coinType.DidMethod(), addr, string(conf.ID))
 	return ks, nil
 }
 
@@ -88,15 +85,6 @@ func GetPubKeyFromCmpConfigBytes(bytes []byte) (*crypto.PubKey, error) {
 		return nil, err
 	}
 	return crypto.NewSecp256k1PubKey(bz), nil
-}
-
-// AccountName returns the account name based on the keyshare file name
-func (ks *keyShare) AccountName() string {
-	res, err := ParseKeyShareDID(ks.name)
-	if err != nil {
-		return ""
-	}
-	return res.AccountName
 }
 
 // Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
@@ -135,7 +123,7 @@ func (ks *keyShare) DeriveBip44(ct crypto.CoinType, idx int, name string) (KeySh
 	if err != nil {
 		return nil, err
 	}
-	return NewKeyshare(ks.name, bz, ct, name)
+	return NewKeyshare(ks.name, bz, ct)
 }
 
 // Did returns the cid of the keyshare
@@ -166,7 +154,7 @@ func (ks *keyShare) PubKey() *crypto.PubKey {
 }
 
 // Encrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (ks *keyShare) Encrypt(credential types.Credential) error {
+func (ks *keyShare) Encrypt(credential servicetypes.Credential) error {
 	if ks.IsEncrypted() {
 		return nil
 	}
@@ -180,7 +168,7 @@ func (ks *keyShare) Encrypt(credential types.Credential) error {
 }
 
 // Decrypt checks if the file at current path is encrypted and if not, encrypts it.
-func (ks *keyShare) Decrypt(credential types.Credential) error {
+func (ks *keyShare) Decrypt(credential servicetypes.Credential) error {
 	if !ks.IsEncrypted() {
 		return nil
 	}

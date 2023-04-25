@@ -10,7 +10,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/x/identity/controller"
+	"github.com/sonrhq/core/x/identity"
 	"github.com/sonrhq/core/x/identity/types"
 )
 
@@ -29,10 +29,10 @@ type User struct {
 	Accounts []*v1.AccountInfo `json:"accounts"`
 
 	// Controller
-	controller.Controller
+	identity.Controller
 }
 
-func NewUser(c controller.Controller, username string) *User {
+func NewUser(c identity.Controller, username string) *User {
 	return &User{
 		Did:        c.Did(),
 		Username:   username,
@@ -82,13 +82,13 @@ func FetchUser(c *fiber.Ctx) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	cont, err := controller.LoadController(primary)
+	cont, err := identity.LoadController(primary)
 	if err != nil {
 		return nil, err
 	}
 	return &User{
-		Did:      did,
-		Username: username,
+		Did:        did,
+		Username:   username,
 		Controller: cont,
 	}, nil
 }

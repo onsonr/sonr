@@ -1,4 +1,4 @@
-package cosmos
+package models
 
 import (
 	// Import necessary packages
@@ -9,12 +9,10 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-
-	"github.com/sonrhq/core/x/identity/types/models"
 )
 
 // SignTransaction signs a Cosmos transaction for Token Transfer
-func SignTransaction(wa models.Account, to string, amount sdk.Int, denom string) ([]byte, error) {
+func SignTransaction(wa Account, to string, amount sdk.Int, denom string) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody(&banktypes.MsgSend{
 		FromAddress: wa.Address(),
@@ -47,7 +45,7 @@ func SignTransaction(wa models.Account, to string, amount sdk.Int, denom string)
 }
 
 // SignAnyTransactions signs a Cosmos transaction for a list of arbitrary messages
-func SignAnyTransactions(wa models.Account, msgs ...sdk.Msg) ([]byte, error) {
+func SignAnyTransactions(wa Account, msgs ...sdk.Msg) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody(msgs...)
 	if err != nil {
@@ -112,7 +110,7 @@ func createRawTxBytes(body *txtypes.TxBody, authInfo *txtypes.AuthInfo, sig []by
 	return tx.Marshal()
 }
 
-func signTxBodyBytes(wa models.Account, txBody *txtypes.TxBody, authInf *txtypes.AuthInfo) ([]byte, []byte, error) {
+func signTxBodyBytes(wa Account, txBody *txtypes.TxBody, authInf *txtypes.AuthInfo) ([]byte, []byte, error) {
 	// Serialize the transaction body.
 	txBodyBz, err := txBody.Marshal()
 	if err != nil {

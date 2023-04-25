@@ -7,6 +7,7 @@ import (
 	"fmt"
 
 	// "github.com/sonrhq/core/app"
+
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
@@ -60,6 +61,7 @@ func (c LocalContext) GetDIDByAlias(ctx context.Context, alias string) (*identit
 	}
 	return &resp.DidDocument, nil
 }
+
 // GetDIDByAlias returns the DID document with the given alias
 func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identitytypes.DidDocument, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
@@ -72,6 +74,7 @@ func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identit
 	}
 	return &resp.DidDocument, nil
 }
+
 // GetAllDIDs returns all DID documents
 func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocument, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
@@ -89,6 +92,35 @@ func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.DidDocum
 		list[i] = &d
 	}
 	return list, nil
+}
+
+// GetUnclaimedWallets returns all unclaimed wallets
+func (c LocalContext) GetUnclaimedWallets(ctx context.Context) ([]identitytypes.ClaimableWallet, error) {
+	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.New("failed to connect to grpc server: " + err.Error())
+	}
+	resp, err := identitytypes.NewQueryClient(conn).ClaimableWalletAll(ctx, &identitytypes.QueryAllClaimableWalletRequest{})
+	if err != nil {
+		return nil, err
+	}
+	return resp.ClaimableWallet, nil
+}
+
+// OldestUnclaimedWallet returns the oldest unclaimed wallet
+func (c LocalContext) OldestUnclaimedWallet(ctx context.Context) (*identitytypes.ClaimableWallet, error) {
+	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
+	if err != nil {
+		return nil, errors.New("failed to connect to grpc server: " + err.Error())
+	}
+	resp, err := identitytypes.NewQueryClient(conn).ClaimableWalletAll(ctx, &identitytypes.QueryAllClaimableWalletRequest{})
+	if err != nil {
+		return nil, err
+	}
+	if len(resp.ClaimableWallet) == 0 {
+		return nil, errors.New("no unclaimed wallets")
+	}
+	return &resp.ClaimableWallet[0], nil
 }
 
 // GetService returns the service with the given id
@@ -148,7 +180,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 	grpcRes, err := txClient.BroadcastTx(
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
-			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_ASYNC,
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_BLOCK,
 			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)

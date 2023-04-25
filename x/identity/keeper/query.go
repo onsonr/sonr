@@ -6,6 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/sonrhq/core/x/identity/types"
 	"google.golang.org/grpc/codes"
@@ -112,7 +113,6 @@ func (k Keeper) DidByOwner(c context.Context, req *types.QueryDidByOwnerRequest)
 	return &types.QueryDidByOwnerResponse{DidDocument: val}, nil
 }
 
-
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                               Module Params Query                              ||
 // ! ||--------------------------------------------------------------------------------||
@@ -164,4 +164,51 @@ func containsAny(s1 []string, s2 []string) bool {
 		}
 	}
 	return false
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  Wallet Claims                                 ||
+// ! ||--------------------------------------------------------------------------------||
+
+
+func (k Keeper) ClaimableWalletAll(goCtx context.Context, req *types.QueryAllClaimableWalletRequest) (*types.QueryAllClaimableWalletResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var claimableWallets []types.ClaimableWallet
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := ctx.KVStore(k.storeKey)
+	claimableWalletStore := prefix.NewStore(store, types.KeyPrefix(types.ClaimableWalletKey))
+
+	pageRes, err := query.Paginate(claimableWalletStore, req.Pagination, func(key []byte, value []byte) error {
+		var claimableWallet types.ClaimableWallet
+		if err := k.cdc.Unmarshal(value, &claimableWallet); err != nil {
+			return err
+		}
+
+		claimableWallets = append(claimableWallets, claimableWallet)
+		return nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryAllClaimableWalletResponse{ClaimableWallet: claimableWallets, Pagination: pageRes}, nil
+}
+
+func (k Keeper) ClaimableWallet(goCtx context.Context, req *types.QueryGetClaimableWalletRequest) (*types.QueryGetClaimableWalletResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	claimableWallet, found := k.GetClaimableWallet(ctx, req.Id)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryGetClaimableWalletResponse{ClaimableWallet: claimableWallet}, nil
 }

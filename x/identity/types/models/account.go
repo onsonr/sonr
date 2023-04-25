@@ -10,8 +10,10 @@ import (
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/crypto/mpc"
+	"github.com/sonrhq/core/internal/local"
 	v1 "github.com/sonrhq/core/types/common"
 	"github.com/sonrhq/core/x/identity/types"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
@@ -44,14 +46,14 @@ type Account interface {
 	// MapKeyShare maps a function to all the keyshares of the account
 	MapKeyShare(f func(ks KeyShare) KeyShare)
 
-	// Name returns the name of the account
-	Name() string
-
 	// PubKey returns secp256k1 public key
 	PubKey() *crypto.PubKey
 
 	// Signs a message
 	Sign(bz []byte) ([]byte, error)
+
+	// SendSonrTx sends a transaction to the Sonr blockchain if this account is the primary account
+	SendSonrTx(msg sdk.Msg) (*local.BroadcastTxResponse, error)
 
 	// ToProto returns the proto representation of the account
 	ToProto() *v1.AccountInfo
@@ -63,10 +65,10 @@ type Account interface {
 	Verify(bz []byte, sig []byte) (bool, error)
 
 	// Lock locks the account
-	Lock(c types.Credential) error
+	Lock(c servicetypes.Credential) error
 
 	// Unlock unlocks the account
-	Unlock(c types.Credential) error
+	Unlock(c servicetypes.Credential) error
 }
 
 type account struct {
@@ -158,16 +160,6 @@ func (wa *account) PubKey() *crypto.PubKey {
 	return wa.kss[0].PubKey()
 }
 
-// Name returns the name of the account
-func (wa *account) Name() string {
-	kspr, err := ParseAccountDID(wa.Did())
-	if err != nil {
-
-		return ""
-	}
-	return kspr.AccountName
-}
-
 // Signs a message using the account
 func (wa *account) Sign(bz []byte) ([]byte, error) {
 	var configs []*cmp.Config
@@ -175,6 +167,18 @@ func (wa *account) Sign(bz []byte) ([]byte, error) {
 		configs = append(configs, ks.Config())
 	}
 	return mpc.SignCMP(configs, bz)
+}
+
+// SendSonrTx sends a transaction to the Sonr blockchain if this account is the primary account
+func (wa *account) SendSonrTx(msg sdk.Msg) (*local.BroadcastTxResponse, error) {
+	if !wa.ct.IsSonr() {
+		return nil, fmt.Errorf("account is not a Sonr account")
+	}
+	bz, err := SignAnyTransactions(wa, msg)
+	if err != nil {
+		return nil, err
+	}
+	return local.Context().BroadcastTx(bz)
 }
 
 // ToProto returns the proto representation of the account
@@ -267,7 +271,7 @@ func (wa *account) GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error) {
 }
 
 // Lock encrypts all user-facing keyshares
-func (wa *account) Lock(c types.Credential) error {
+func (wa *account) Lock(c servicetypes.Credential) error {
 	for _, ks := range wa.kss {
 		if err := ks.Encrypt(c); err != nil {
 			return err
@@ -277,7 +281,7 @@ func (wa *account) Lock(c types.Credential) error {
 }
 
 // Unlock decrypts all user-facing keyshares
-func (wa *account) Unlock(c types.Credential) error {
+func (wa *account) Unlock(c servicetypes.Credential) error {
 	for _, ks := range wa.kss {
 		if err := ks.Decrypt(c); err != nil {
 			return err

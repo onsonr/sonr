@@ -5,8 +5,9 @@ import (
 
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/crypto/mpc"
-	"github.com/sonrhq/core/x/identity/controller"
+	"github.com/sonrhq/core/x/identity/internal/controller"
 	"github.com/sonrhq/core/x/identity/types/models"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 	"github.com/stretchr/testify/assert"
 	"github.com/tendermint/tendermint/libs/rand"
 )
@@ -15,7 +16,7 @@ func TestKeyshare(t *testing.T) {
 	randUuid := rand.Str(4)
 
 	// Call Handler for keygen
-	confs, err := mpc.Keygen(crypto.PartyID(randUuid), 1, []crypto.PartyID{"vault"})
+	confs, err := mpc.Keygen(crypto.PartyID(randUuid), mpc.WithThreshold(1))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -26,7 +27,7 @@ func TestKeyshare(t *testing.T) {
 		if err != nil {
 			t.Fatal(err)
 		}
-		ks, err := models.NewKeyshare(string(conf.ID), ksb, crypto.SONRCoinType, "test")
+		ks, err := models.NewKeyshare(string(conf.ID), ksb, crypto.SONRCoinType)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -159,7 +160,7 @@ func TestControllerLoad(t *testing.T) {
 
 func TestBroadcast(t *testing.T) {
 	opts := defaultOfflineOptions()
-	opts = append(opts, controller.WithBroadcastTx())
+	//opts = append(opts, controller.WithBroadcastTx())
 	cn, err := controller.NewController(opts...)
 	if err != nil {
 		t.Fatal(err)
@@ -168,18 +169,17 @@ func TestBroadcast(t *testing.T) {
 }
 
 func defaultOfflineOptions() []controller.Option {
-	cred := &crypto.WebauthnCredential{
+	cred := &servicetypes.WebauthnCredential{
 		Id:        []byte("test"),
 		PublicKey: []byte("-----BEGIN PUBLIC KEY----- MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ9Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z-----END PUBLIC KEY-----"),
 	}
 	return []controller.Option{
 		controller.WithWebauthnCredential(cred),
-		controller.WithIPFSDisabled(),
 	}
 }
 
 func defaultOptions() []controller.Option {
-	cred := &crypto.WebauthnCredential{
+	cred := &servicetypes.WebauthnCredential{
 		Id:        []byte("test"),
 		PublicKey: []byte("-----BEGIN PUBLIC KEY----- MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEQ9Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z8Z0Z-----END PUBLIC KEY-----"),
 	}

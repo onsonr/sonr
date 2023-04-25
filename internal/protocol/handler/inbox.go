@@ -31,8 +31,8 @@ func SendInboxMessage(c *fiber.Ctx) error {
 	}
 	return c.JSON(fiber.Map{
 		"success": true,
-		"to": c.Params("to"),
-		"from": c.Params("from"),
+		"to":      c.Params("to"),
+		"from":    c.Params("from"),
 		"message": c.Query("message"),
 	})
 }

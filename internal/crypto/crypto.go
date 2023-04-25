@@ -1,14 +1,15 @@
 package crypto
 
 import (
+	"encoding/base64"
 	"errors"
 	"fmt"
 
 	"strings"
 
-	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
+	"github.com/shengdoushi/base58"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 
@@ -23,12 +24,6 @@ type KeyType = types.KeyType
 
 // PubKey is a type alias for types.PubKey in pkg/crypto/internal/types.
 type PubKey = types.PubKey
-
-// WebauthnCredential is a type alias for types.WebauthnCredential in pkg/crypto/internal/types.
-type WebauthnCredential = types.WebauthnCredential
-
-// WebauthnAuthenticator is a type alias for types.WebauthnAuthenticator in pkg/crypto/internal/types.
-type WebauthnAuthenticator = types.WebauthnAuthenticator
 
 // BTCCoinType is the CoinType for Bitcoin.
 const BTCCoinType = types.CoinType_CoinType_BITCOIN
@@ -116,6 +111,26 @@ func NewPubKeyFromCmpConfig(config *cmp.Config) (*PubKey, error) {
 	return types.NewPubKey(bz, Secp256k1KeyType), nil
 }
 
+// Base58Encode takes a byte array and returns a base68 encoded string.
+func Base58Encode(bz []byte) string {
+	return base58.Encode(bz, base58.BitcoinAlphabet)
+}
+
+// Base58Decode takes a base68 encoded string and returns a byte array.
+func Base58Decode(str string) ([]byte, error) {
+	return base58.Decode(str, base58.BitcoinAlphabet)
+}
+
+// Base64Encode takes a byte array and returns a base64 encoded string.
+func Base64Encode(bz []byte) string {
+	return base64.RawURLEncoding.EncodeToString(bz)
+}
+
+// Base64Decode takes a base64 encoded string and returns a byte array.
+func Base64Decode(str string) ([]byte, error) {
+	return base64.RawURLEncoding.DecodeString(str)
+}
+
 // NewSecp256k1PubKey takes a byte array of raw public key bytes and returns a PubKey.
 func NewSecp256k1PubKey(bz []byte) *PubKey {
 	return types.NewPubKey(bz, Secp256k1KeyType)
@@ -172,26 +187,6 @@ func PubKeyFromBytes(bz []byte) (*PubKey, error) {
 		return nil, err
 	}
 	return types.NewPubKey(bz[n:], kt), nil
-}
-
-// PubKeyFromWebAuthn takes a webauthncose.Key and returns a PubKey
-func PubKeyFromWebAuthn(cred *types.WebauthnCredential) (*PubKey, error) {
-	if cred == nil {
-		return nil, errors.New("credential is nil")
-	}
-	pub, err := webauthncose.ParsePublicKey(cred.PublicKey)
-	if err != nil {
-		return nil, err
-	}
-
-	switch pub := pub.(type) {
-	case webauthncose.EC2PublicKeyData:
-		return NewSecp256k1PubKey(pub.XCoord), nil
-	case webauthncose.OKPPublicKeyData:
-		return NewEd25519PubKey(pub.XCoord), nil
-	default:
-		return nil, fmt.Errorf("unsupported public key type: %T", pub)
-	}
 }
 
 func DeriveBIP44(config *cmp.Config, coinType types.CoinType, account, change, addressIndex uint32) (*cmp.Config, error) {

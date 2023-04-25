@@ -17,7 +17,7 @@ type QueryOptions struct {
 	address   string
 	assertion string
 	attestion string
-	isMobile bool
+	isMobile  bool
 }
 
 func ParseQuery(c *fiber.Ctx) *QueryOptions {
@@ -36,7 +36,7 @@ func ParseQuery(c *fiber.Ctx) *QueryOptions {
 		address:   address,
 		assertion: assertion,
 		attestion: attestion,
-		isMobile: isMobile,
+		isMobile:  isMobile,
 	}
 }
 

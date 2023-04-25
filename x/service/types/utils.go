@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	types "github.com/sonrhq/core/types/crypto"
+	idtypes "github.com/sonrhq/core/x/identity/types"
 	"lukechampine.com/blake3"
 )
 
@@ -369,9 +369,9 @@ func parseAssertionData(bz string) (*protocol.ParsedCredentialAssertionData, err
 
 // makeCredentialFromCreationData creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *types.WebauthnCredential {
+func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *WebauthnCredential {
 	newCredential := &webauthn.Credential{
-		ID:              c.RawID,
+		ID:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
 		AttestationType: c.Response.AttestationObject.Format,
 		Transport:       c.Response.Transports,
@@ -387,22 +387,24 @@ func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *t
 			Attachment: c.AuthenticatorAttachment,
 		},
 	}
-
-	return &types.WebauthnCredential{
-		Id:              newCredential.ID,
-		PublicKey:       newCredential.PublicKey,
-		AttestationType: newCredential.AttestationType,
-	}
+	return ConvertStdCredential(newCredential)
 }
 
 // makeCredentialFromAssertionData creates a new WebauthnCredential from a ParsedCredentialAssertionData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *types.WebauthnCredential {
-	return &types.WebauthnCredential{
+func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *WebauthnCredential {
+	return &WebauthnCredential{
 		Id:        c.RawID,
 		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
-		Authenticator: &types.WebauthnAuthenticator{
+		Authenticator: &WebauthnAuthenticator{
 			SignCount: c.Response.AuthenticatorData.Counter,
 		},
+	}
+}
+
+func NewIDKeyValue(key string, value string) *idtypes.KeyValuePair {
+	return &idtypes.KeyValuePair{
+		Key:   key,
+		Value: value,
 	}
 }

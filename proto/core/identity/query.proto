@@ -7,6 +7,7 @@ import "core/identity/genesis.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
+import "core/identity/claims.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -56,6 +57,16 @@ service Query {
   // Queries a list of DidByOwner items.
   rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
     option (google.api.http).get = "/sonrhq/core/identity/did/owner/{owner}";
+
+  }
+
+  // Queries a list of ClaimableWallet items.
+  rpc ClaimableWallet    (QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
+    option (google.api.http).get = "/sonrhq/core/identity/claimable_wallet/{id}";
+
+  }
+  rpc ClaimableWalletAll (QueryAllClaimableWalletRequest) returns (QueryAllClaimableWalletResponse) {
+    option (google.api.http).get = "/sonrhq/core/identity/claimable_wallet";
 
   }
 }
@@ -131,5 +142,22 @@ message QueryDidByOwnerRequest {
 
 message QueryDidByOwnerResponse {
   DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetClaimableWalletRequest {
+  uint64 id = 1;
+}
+
+message QueryGetClaimableWalletResponse {
+  ClaimableWallet ClaimableWallet = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllClaimableWalletRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllClaimableWalletResponse {
+  repeated ClaimableWallet                        ClaimableWallet = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
 }
 

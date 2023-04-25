@@ -59,7 +59,7 @@ tasks:
 
       This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - ignite chain serve --skip-proto --home {{.HOME}}/.sonr -v
+      - ignite chain serve --skip-proto --home {{.HOME}}/.sonr -v --reset-once
     interactive: true
     deps:
       - generate

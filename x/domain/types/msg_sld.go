@@ -18,7 +18,7 @@ func NewMsgCreateSLDRecord(
 	sldRecord *SLDRecord,
 ) *MsgCreateSLDRecord {
 	return &MsgCreateSLDRecord{
-		Creator: creator,
+		Creator:   creator,
 		SldRecord: sldRecord,
 	}
 }
@@ -60,8 +60,8 @@ func NewMsgUpdateSLDRecord(
 
 ) *MsgUpdateSLDRecord {
 	return &MsgUpdateSLDRecord{
-		Creator: creator,
-		SldRecord:  sldRecord,
+		Creator:   creator,
+		SldRecord: sldRecord,
 	}
 }
 
@@ -103,7 +103,7 @@ func NewMsgDeleteSLDRecord(
 ) *MsgDeleteSLDRecord {
 	return &MsgDeleteSLDRecord{
 		Creator: creator,
-		Name:   index,
+		Name:    index,
 	}
 }
 func (msg *MsgDeleteSLDRecord) Route() string {

@@ -1,9 +1,0 @@
-syntax = "proto3";
-package sonrhq.sonr.crypto;
-
-option go_package = "github.com/sonrhq/core/types/crypto";
-
-message PubKey {
-  bytes key = 1;
-  string key_type = 2;
-}

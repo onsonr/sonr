@@ -41,37 +41,30 @@ func (p Params) String() string {
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, uuid string, challenge protocol.URLEncodedBase64, isMobile bool) (protocol.CredentialCreation, error) {
-	// Build the credential creation options.
-	opts := protocol.PublicKeyCredentialCreationOptions{
-		// Generated Challenge.
-		Challenge: challenge,
-
-		// Service resulting properties.
-		User: s.GetUserEntity(uuid),
-
-		// Preconfigured parameters.
-		Parameters: []protocol.CredentialParameter{
-			{
-				Type:      protocol.PublicKeyCredentialType,
-				Algorithm: webauthncose.AlgES256,
-			},
+func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, challenge protocol.URLEncodedBase64, isMobile bool) (protocol.CredentialCreation, error) {
+	entityUser := protocol.UserEntity{
+		ID:          alias,
+		DisplayName: alias,
+		CredentialEntity: protocol.CredentialEntity{
+			Name: alias,
 		},
-		RelyingParty: protocol.RelyingPartyEntity{
-			CredentialEntity: protocol.CredentialEntity{
-				Name: s.Name,
-			},
-			ID: s.Origin,
-		},
-		Timeout:                int(60000),
-		AuthenticatorSelection: getUserAuthenticationSelectionForDevice(isMobile),
-		Attestation:            protocol.PreferDirectAttestation,
 	}
-	return protocol.CredentialCreation{Response: opts}, nil
+	return protocol.CredentialCreation{
+		Response: protocol.PublicKeyCredentialCreationOptions{
+			Challenge:              challenge,
+			Timeout:                int(60000),
+			User:                   entityUser,
+			Parameters:             defaultRegistrationCredentialParameters(),
+			RelyingParty:           s.RelyingPartyEntity(),
+			AuthenticatorSelection: getUserAuthenticationSelectionForDevice(isMobile),
+			Attestation:            protocol.PreferDirectAttestation,
+		},
+	}, nil
 }
 
 // NewWebauthnAssertionOptions returns the webauthn assertion options.
 func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol.URLEncodedBase64, allowedCredentials []protocol.CredentialDescriptor, isMobile bool) (protocol.CredentialAssertion, error) {
+
 	// Build the credential assertion options.
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
@@ -106,4 +99,49 @@ func getUserVerificationForDevice(isMobile bool) protocol.UserVerificationRequir
 		return protocol.VerificationPreferred
 	}
 	return protocol.VerificationRequired
+}
+
+func defaultRegistrationCredentialParameters() []protocol.CredentialParameter {
+	return []protocol.CredentialParameter{
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgES256,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgES384,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgES512,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgRS256,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgRS384,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgRS512,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgPS256,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgPS384,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgPS512,
+		},
+		{
+			Type:      protocol.PublicKeyCredentialType,
+			Algorithm: webauthncose.AlgEdDSA,
+		},
+	}
 }

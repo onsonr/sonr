@@ -6,6 +6,11 @@ import "sonr/crypto/ssi.proto";
 
 option go_package = "github.com/sonrhq/core/types/crypto";
 
+message PubKey {
+  bytes key = 1;
+  string key_type = 2;
+}
+
 // Proof represents a credential/presentation proof as defined by the Linked Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).
 message Proof {
   // Type defines the specific proof type used. For example, an Ed25519Signature2018 type indicates that the proof includes a digital signature produced by an ed25519 cryptographic key.

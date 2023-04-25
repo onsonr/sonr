@@ -1,6 +1,7 @@
 package keeper
 
 import (
+	"encoding/binary"
 	"fmt"
 	"strings"
 
@@ -314,4 +315,105 @@ func (k Keeper) GetRelationshipsFromList(ctx sdk.Context, addrs ...string) ([]ty
 	}
 
 	return vrs, nil
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  Wallet Claims                                 ||
+// ! ||--------------------------------------------------------------------------------||
+
+// GetClaimableWalletCount get the total number of claimableWallet
+func (k Keeper) GetClaimableWalletCount(ctx sdk.Context) uint64 {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	byteKey := types.KeyPrefix(types.ClaimableWalletCountKey)
+	bz := store.Get(byteKey)
+
+	// Count doesn't exist: no element
+	if bz == nil {
+		return 0
+	}
+
+	// Parse bytes
+	return binary.BigEndian.Uint64(bz)
+}
+
+// SetClaimableWalletCount set the total number of claimableWallet
+func (k Keeper) SetClaimableWalletCount(ctx sdk.Context, count uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), []byte{})
+	byteKey := types.KeyPrefix(types.ClaimableWalletCountKey)
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, count)
+	store.Set(byteKey, bz)
+}
+
+// AppendClaimableWallet appends a claimableWallet in the store with a new id and update the count
+func (k Keeper) AppendClaimableWallet(
+	ctx sdk.Context,
+	claimableWallet types.ClaimableWallet,
+) uint64 {
+	// Create the claimableWallet
+	count := k.GetClaimableWalletCount(ctx)
+
+	// Set the ID of the appended value
+	claimableWallet.Id = count
+
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ClaimableWalletKey))
+	appendedValue := k.cdc.MustMarshal(&claimableWallet)
+	store.Set(GetClaimableWalletIDBytes(claimableWallet.Id), appendedValue)
+
+	// Update claimableWallet count
+	k.SetClaimableWalletCount(ctx, count+1)
+
+	return count
+}
+
+// SetClaimableWallet set a specific claimableWallet in the store
+func (k Keeper) SetClaimableWallet(ctx sdk.Context, claimableWallet types.ClaimableWallet) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ClaimableWalletKey))
+	b := k.cdc.MustMarshal(&claimableWallet)
+	store.Set(GetClaimableWalletIDBytes(claimableWallet.Id), b)
+}
+
+// GetClaimableWallet returns a claimableWallet from its id
+func (k Keeper) GetClaimableWallet(ctx sdk.Context, id uint64) (val types.ClaimableWallet, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ClaimableWalletKey))
+	b := store.Get(GetClaimableWalletIDBytes(id))
+	if b == nil {
+		return val, false
+	}
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// RemoveClaimableWallet removes a claimableWallet from the store
+func (k Keeper) RemoveClaimableWallet(ctx sdk.Context, id uint64) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ClaimableWalletKey))
+	store.Delete(GetClaimableWalletIDBytes(id))
+}
+
+// GetAllClaimableWallet returns all claimableWallet
+func (k Keeper) GetAllClaimableWallet(ctx sdk.Context) (list []types.ClaimableWallet) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ClaimableWalletKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.ClaimableWallet
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+// GetClaimableWalletIDBytes returns the byte representation of the ID
+func GetClaimableWalletIDBytes(id uint64) []byte {
+	bz := make([]byte, 8)
+	binary.BigEndian.PutUint64(bz, id)
+	return bz
+}
+
+// GetClaimableWalletIDFromBytes returns ID in uint64 format from a byte array
+func GetClaimableWalletIDFromBytes(bz []byte) uint64 {
+	return binary.BigEndian.Uint64(bz)
 }

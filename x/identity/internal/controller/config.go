@@ -7,9 +7,11 @@ import (
 
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/crypto/mpc"
-	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/x/identity/internal/vault"
 	"github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -21,7 +23,7 @@ type Options struct {
 	OnConfigGenerated []mpc.OnConfigGenerated
 
 	// Credential to authorize the controller
-	WebauthnCredential *crypto.WebauthnCredential
+	WebauthnCredential *servicetypes.WebauthnCredential
 
 	// Disable IPFS
 	DisableIPFS bool
@@ -33,6 +35,7 @@ type Options struct {
 	Username string
 
 	errChan chan error
+	broadcastChan chan *local.BroadcastTxResponse
 }
 
 func defaultOptions() *Options {
@@ -42,6 +45,7 @@ func defaultOptions() *Options {
 		BroadcastTx:       false,
 		Username:          "",
 		errChan:           make(chan error),
+		broadcastChan: make(chan *local.BroadcastTxResponse),
 	}
 }
 
@@ -59,7 +63,7 @@ func WithConfigHandlers(handlers ...mpc.OnConfigGenerated) Option {
 	}
 }
 
-func WithWebauthnCredential(cred *crypto.WebauthnCredential) Option {
+func WithWebauthnCredential(cred *servicetypes.WebauthnCredential) Option {
 	return func(o *Options) {
 		o.WebauthnCredential = cred
 	}
@@ -71,9 +75,10 @@ func WithIPFSDisabled() Option {
 	}
 }
 
-func WithBroadcastTx() Option {
+func WithBroadcastTx(brdcastChan chan *local.BroadcastTxResponse) Option {
 	return func(o *Options) {
 		o.BroadcastTx = true
+		o.broadcastChan = brdcastChan
 	}
 }
 
@@ -81,10 +86,10 @@ func WithBroadcastTx() Option {
 // ! ||                          Helper Methods for Controller                         ||
 // ! ||--------------------------------------------------------------------------------||
 
-func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCredential, doneCh chan models.Account, errChan chan error, opts *Options) {
+func generateInitialAccount(ctx context.Context, credential *servicetypes.WebauthnCredential, doneCh chan models.Account, errChan chan error, opts *Options) {
 	shardName := crypto.PartyID(base64.RawStdEncoding.EncodeToString(credential.Id))
 	// Call Handler for keygen
-	confs, err := mpc.Keygen(shardName, 1, []crypto.PartyID{"vault"}, opts.OnConfigGenerated...)
+	confs, err := mpc.Keygen(shardName, mpc.WithHandlers(opts.OnConfigGenerated...))
 	if err != nil {
 		errChan <- err
 	}
@@ -102,7 +107,7 @@ func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCred
 			errChan <- err
 		}
 		ksDid := fmt.Sprintf("%s#%s", rootDid, conf.ID)
-		ks, err := models.NewKeyshare(ksDid, ksb, crypto.SONRCoinType, "Primary")
+		ks, err := models.NewKeyshare(ksDid, ksb, crypto.SONRCoinType)
 		if err != nil {
 			errChan <- err
 		}
@@ -113,7 +118,7 @@ func generateInitialAccount(ctx context.Context, credential *crypto.WebauthnCred
 
 func setupController(ctx context.Context, primary models.Account, opts *Options) (Controller, error) {
 	if !opts.DisableIPFS {
-		err := keeper.InsertAccount(primary)
+		err := vault.InsertAccount(primary)
 		if err != nil {
 			return nil, err
 		}
@@ -121,13 +126,13 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 
 	doc := types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), nil)
 	if opts.WebauthnCredential != nil {
-		cred, err := types.ValidateWebauthnCredential(opts.WebauthnCredential, primary.Did())
+		cred, err := servicetypes.ValidateWebauthnCredential(opts.WebauthnCredential, primary.Did())
 		if err != nil {
 			return nil, err
 		}
 		doc = types.NewPrimaryIdentity(primary.Did(), primary.PubKey(), cred.ToVerificationMethod())
 		if !opts.DisableIPFS {
-			err = keeper.StoreCredential(cred)
+			err = vault.StoreCredential(cred)
 			if err != nil {
 				return nil, err
 			}
@@ -144,16 +149,7 @@ func setupController(ctx context.Context, primary models.Account, opts *Options)
 		primaryDoc:  doc,
 		disableIPFS: opts.DisableIPFS,
 		txHash:      "",
-		aka:         doc.AlsoKnownAs[0],
-	}
-
-	if opts.BroadcastTx {
-		resp, err := cont.CreatePrimaryIdentity(doc, primary, opts.Username)
-		if err != nil {
-			return nil, err
-		}
-		cont.txHash = resp.TxResponse.TxHash
+		aka:         doc.FindUsername(),
 	}
 	return cont, nil
 }
-

@@ -3,6 +3,7 @@ syntax = "proto3";
 package sonrhq.core.identity;
 
 import "core/identity/did.proto";
+import "core/identity/claims.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -10,22 +11,26 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateDidDocument (MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
-  rpc UpdateDidDocument (MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
-  rpc DeleteDidDocument (MsgDeleteDidDocument) returns (MsgDeleteDidDocumentResponse);
+  rpc CreateDidDocument     (MsgCreateDidDocument    ) returns (MsgCreateDidDocumentResponse    );
+  rpc UpdateDidDocument     (MsgUpdateDidDocument    ) returns (MsgUpdateDidDocumentResponse    );
+  rpc DeleteDidDocument     (MsgDeleteDidDocument    ) returns (MsgDeleteDidDocumentResponse    );
+  rpc CreateClaimableWallet (MsgCreateClaimableWallet) returns (MsgCreateClaimableWalletResponse);
+  rpc UpdateClaimableWallet (MsgUpdateClaimableWallet) returns (MsgUpdateClaimableWalletResponse);
+  rpc DeleteClaimableWallet (MsgDeleteClaimableWallet) returns (MsgDeleteClaimableWalletResponse);
 }
 message MsgCreateDidDocument {
-  string      creator  = 1;
-  DidDocument primary = 2;
+           string      creator     = 1;
+           DidDocument primary     = 2;
   repeated DidDocument blockchains = 3;
-  string alias = 4;
+           string      alias       = 4;
+           uint32      wallet_id = 5;
 }
 
 message MsgCreateDidDocumentResponse {}
 
 message MsgUpdateDidDocument {
-  string      creator  = 1;
-  DidDocument primary = 2;
+           string      creator     = 1;
+           DidDocument primary     = 2;
   repeated DidDocument blockchains = 3;
 }
 
@@ -39,3 +44,28 @@ message MsgDeleteDidDocument {
 }
 
 message MsgDeleteDidDocumentResponse {}
+
+message MsgCreateClaimableWallet {
+  string creator = 1;
+  ClaimableWallet claimable_wallet = 2;
+}
+
+message MsgCreateClaimableWalletResponse {
+  uint64 id = 1;
+  int32 reward = 2;
+}
+
+message MsgUpdateClaimableWallet {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgUpdateClaimableWalletResponse {}
+
+message MsgDeleteClaimableWallet {
+  string creator = 1;
+  uint64 id      = 2;
+}
+
+message MsgDeleteClaimableWalletResponse {}
+

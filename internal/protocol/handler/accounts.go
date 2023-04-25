@@ -21,8 +21,7 @@ func GetAccount(c *fiber.Ctx) error {
 		"success":   true,
 		"account":   acc.ToProto(),
 		"coin_type": acc.CoinType().Ticker(),
-		"name":      acc.Name(),
-		"address":       c.Params("address"),
+		"address":   c.Params("address"),
 	})
 }
 
@@ -54,8 +53,7 @@ func CreateAccount(c *fiber.Ctx) error {
 		"success":   true,
 		"account":   acc.ToProto(),
 		"coin_type": acc.CoinType().Ticker(),
-		"name":      acc.Name(),
-		"address":       acc.Address(),
+		"address":   acc.Address(),
 	})
 }
 
@@ -76,7 +74,7 @@ func SignWithAccount(c *fiber.Ctx) error {
 		"success":   true,
 		"signature": base64.RawStdEncoding.EncodeToString(sig),
 		"message":   c.Query("message"),
-		"address":       c.Params("address"),
+		"address":   c.Params("address"),
 	})
 }
 
@@ -102,7 +100,7 @@ func VerifyWithAccount(c *fiber.Ctx) error {
 		"verified":  ok,
 		"message":   c.Query("message"),
 		"signature": c.Query("signature"),
-		"address":       c.Params("address"),
+		"address":   c.Params("address"),
 	})
 }
 

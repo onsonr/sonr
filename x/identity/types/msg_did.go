@@ -13,12 +13,13 @@ const (
 
 var _ sdk.Msg = &MsgCreateDidDocument{}
 
-func NewMsgCreateDidDocument(creator string, alias string, didDoc *DidDocument, blockDocs ...*DidDocument) *MsgCreateDidDocument {
+func NewMsgCreateDidDocument(creator string, wallet_id uint32, alias string, didDoc *DidDocument, blockDocs ...*DidDocument) *MsgCreateDidDocument {
 	return &MsgCreateDidDocument{
 		Alias:       alias,
 		Creator:     creator,
 		Primary:     didDoc,
 		Blockchains: blockDocs,
+		WalletId:    wallet_id,
 	}
 }
 

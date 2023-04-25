@@ -1,37 +1,21 @@
-package keeper
+package vault
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
 	"strings"
 
 	"berty.tech/go-orbit-db/iface"
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/node"
-	"github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/identity/types/models"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
 var (
 	v *vaultImpl
 )
-
-type Vault interface {
-	// InsertAccount inserts the account and its keyshares into the IPFS store
-	InsertAccount(acc models.Account) error
-
-	// GetAccount gets the account and its keyshares from the IPFS store
-	GetAccount(accDid string) (models.Account, error)
-
-	// DeleteAccount deletes the account and its keyshares from the IPFS store
-	DeleteAccount(accDid string) error
-
-	// ReadInbox reads the inbox from the IPFS store
-	ReadInbox(accDid string) ([]*models.InboxMessage, error)
-
-	// WriteInbox writes the inbox to the IPFS store
-	WriteInbox(toDid string, msg *models.InboxMessage) error
-}
 
 type vaultImpl struct {
 	KsTable node.IPFSKVStore
@@ -63,6 +47,7 @@ func setupVault() error {
 	return nil
 }
 
+// The function inserts an account and its associated key shares into a vault.
 func InsertAccount(acc models.Account) error {
 	err := setupVault()
 	if err != nil {
@@ -74,7 +59,7 @@ func InsertAccount(acc models.Account) error {
 		return err
 	}
 	acc.MapKeyShare(func(ks models.KeyShare) models.KeyShare {
-		_, err = v.KsTable.Put(v.ctx, keysharePrefix(ks.Did()), ks.Bytes())
+		err := InsertKeyshare(ks)
 		if err != nil {
 			return nil
 		}
@@ -83,6 +68,21 @@ func InsertAccount(acc models.Account) error {
 	return nil
 }
 
+// The function inserts a keyshare into a table and returns an error if there is one.
+func InsertKeyshare(ks models.KeyShare) error {
+	err := setupVault()
+	if err != nil {
+		return err
+	}
+	_, err = v.KsTable.Put(v.ctx, keysharePrefix(ks.Did()), ks.Bytes())
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// The function retrieves an account from a key store table using the account's DID and returns it as a
+// model.
 func GetAccount(accDid string) (models.Account, error) {
 	err := setupVault()
 	if err != nil {
@@ -93,7 +93,7 @@ func GetAccount(accDid string) (models.Account, error) {
 		return nil, err
 	}
 
-	vBiz, err := v.KsTable.Get(context.Background(), accountPrefix(accDid))
+	vBiz, err := v.KsTable.Get(v.ctx, accountPrefix(accDid))
 	if err != nil {
 		return nil, err
 	}
@@ -101,11 +101,7 @@ func GetAccount(accDid string) (models.Account, error) {
 	ksAccListVal := strings.Split(string(vBiz), ",")
 	var ksList []models.KeyShare
 	for _, ksDid := range ksAccListVal {
-		vBiz, err := v.KsTable.Get(context.Background(), keysharePrefix(ksDid))
-		if err != nil {
-			return nil, err
-		}
-		ks, err := models.NewKeyshare(ksDid, vBiz, ksr.CoinType, ksr.AccountName)
+		ks, err := GetKeyshare(ksDid)
 		if err != nil {
 			return nil, err
 		}
@@ -115,47 +111,73 @@ func GetAccount(accDid string) (models.Account, error) {
 	return acc, nil
 }
 
+// The function retrieves a keyshare from a vault based on a given key DID.
+func GetKeyshare(keyDid string) (models.KeyShare, error) {
+	err := setupVault()
+	if err != nil {
+		return nil, err
+	}
+	ksr, err := models.ParseKeyShareDID(keyDid)
+	if err != nil {
+		return nil, err
+	}
+	vBiz, err := v.KsTable.Get(v.ctx, keysharePrefix(keyDid))
+	if err != nil {
+		return nil, err
+	}
+	ks, err := models.NewKeyshare(keyDid, vBiz, ksr.CoinType)
+	if err != nil {
+		return nil, err
+	}
+	return ks, nil
+}
+
 func DeleteAccount(accDid string) error {
 	err := setupVault()
 	if err != nil {
 		return err
 	}
 	// Delete the keyshares
-	vBiz, err := v.KsTable.Get(context.Background(), accountPrefix(accDid))
+	vBiz, err := v.KsTable.Get(v.ctx, accountPrefix(accDid))
 	if err != nil {
 		return err
 	}
 
 	ksAccListVal := strings.Split(string(vBiz), ",")
 	for _, ksDid := range ksAccListVal {
-		_, err = v.KsTable.Delete(context.Background(), keysharePrefix(ksDid))
+		_, err = v.KsTable.Delete(v.ctx, keysharePrefix(ksDid))
 		if err != nil {
 			return err
 		}
 	}
 
 	// Delete the account
-	_, err = v.KsTable.Delete(context.Background(), accountPrefix(accDid))
+	_, err = v.KsTable.Delete(v.ctx, accountPrefix(accDid))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func FetchCredential(keyDid string) (types.Credential, error) {
+func FetchCredential(keyDid string) (servicetypes.Credential, error) {
 	err := setupVault()
 	if err != nil {
 		return nil, err
 	}
 	// Delete the keyshares
-	vBiz, err := v.KsTable.Get(context.Background(), webauthnPrefix(keyDid))
+	vBiz, err := v.KsTable.Get(v.ctx, webauthnPrefix(keyDid))
 	if err != nil {
 		return nil, err
 	}
-	return types.LoadJSONCredential(vBiz)
+	cred := servicetypes.DidCredential{}
+	err = json.Unmarshal(vBiz, &cred)
+	if err != nil {
+		return nil, err
+	}
+	return servicetypes.LoadCredential(&cred)
 }
 
-func StoreCredential(cred types.Credential) error {
+func StoreCredential(cred servicetypes.Credential) error {
 	err := setupVault()
 	if err != nil {
 		return err

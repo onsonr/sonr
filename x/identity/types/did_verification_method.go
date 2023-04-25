@@ -201,10 +201,6 @@ func (vm *VerificationMethod) PublicKey() ([]byte, error) {
 	}
 }
 
-func (vm *VerificationMethod) SetMetadata(data map[string]string) {
-	vm.Metadata = MapToKeyValueList(data)
-}
-
 // SetMetadataValue sets the metadata value for the given key
 func (vm *VerificationMethod) SetMetadataValue(key, value string) {
 	for i, kv := range vm.Metadata {

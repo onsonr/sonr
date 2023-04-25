@@ -29,6 +29,7 @@ func GetDIDByAlias(c *fiber.Ctx) error {
 		"did":       doc.Id,
 		"document":  doc,
 		"alias":     c.Params("alias"),
+		"address":  doc.FindPrimaryAddress(),
 	})
 }
 
@@ -38,10 +39,10 @@ func GetDIDByOwner(c *fiber.Ctx) error {
 		return c.Status(404).SendString(err.Error())
 	}
 	return c.JSON(fiber.Map{
-		"did":       doc.Id,
-		"document":  doc,
-		"owner":     c.Params("owner"),
-		"alias": doc.FindUsername(),
+		"did":      doc.Id,
+		"document": doc,
+		"owner":    c.Params("owner"),
+		"alias":    doc.FindUsername(),
 	})
 }
 
@@ -53,5 +54,27 @@ func ListDIDs(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"documents": docs,
 		"count":     len(docs),
+	})
+}
+
+func GetOldestUnclaimed(c *fiber.Ctx) error {
+	uw, err := local.Context().OldestUnclaimedWallet(c.Context())
+	if err != nil {
+		return c.Status(404).SendString(err.Error())
+	}
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data": uw,
+	})
+}
+
+func ListAllUnclaimed(c *fiber.Ctx) error {
+	uw, err := local.Context().GetUnclaimedWallets(c.Context())
+	if err != nil {
+		return c.Status(404).SendString(err.Error())
+	}
+	return c.JSON(fiber.Map{
+		"success": true,
+		"data": uw,
 	})
 }

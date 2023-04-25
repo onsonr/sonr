@@ -19,6 +19,13 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.Relationships {
 		k.SetRelationship(ctx, elem)
 	}
+	// Set all the claimableWallet
+	for _, elem := range genState.ClaimableWalletList {
+		k.SetClaimableWallet(ctx, elem)
+	}
+
+	// Set claimableWallet count
+	k.SetClaimableWalletCount(ctx, genState.ClaimableWalletCount)
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -31,6 +38,8 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.PrimaryIdentities = k.GetAllPrimaryIdentities(ctx)
 	genesis.BlockchainIdentities = k.GetAllBlockchainIdentities(ctx)
 	genesis.Relationships = k.GetAllRelationships(ctx)
+	genesis.ClaimableWalletList = k.GetAllClaimableWallet(ctx)
+	genesis.ClaimableWalletCount = k.GetClaimableWalletCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

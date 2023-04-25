@@ -1,10 +1,7 @@
 package crypto
 
 import (
-	"encoding/base64"
-	"errors"
 	fmt "fmt"
-	"strconv"
 	"strings"
 )
 
@@ -42,21 +39,6 @@ func (kt ServiceType) FormatString() string {
 		}
 	}
 	return result
-}
-
-func ConvertBoolToString(v bool) string {
-	if v {
-		return "TRUE"
-	} else {
-		return "FALSE"
-	}
-}
-
-func ConvertStringToBool(v string) bool {
-	if v == "TRUE" {
-		return true
-	}
-	return false
 }
 
 // -- We represent those as raw public key bytes prefixed with public key
@@ -140,35 +122,4 @@ func (kt KeyType) IsBlockchainKey() bool {
 // IsWebAuthnKey returns true if the key is a webauthn key
 func (kt KeyType) IsWebAuthnKey() bool {
 	return kt == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018
-}
-
-// FromMetadata converts a map[string]string into a common WebauthnCredential
-func (c *WebauthnCredential) FromMetadata(m map[string]string) error {
-	if m["webauthn"] != ConvertBoolToString(true) {
-		return errors.New("not a webauthn credential")
-	}
-	signCount, err := strconv.ParseUint(m["authenticator.sign_count"], 10, 32)
-	if err != nil {
-		return err
-	}
-	c.Id, _ = base64.StdEncoding.DecodeString(m["credential_id"])
-	c.Authenticator.Aaguid, _ = base64.StdEncoding.DecodeString(m["authenticator.aaguid"])
-	c.Authenticator.CloneWarning = ConvertStringToBool(m["authenticator.clone_warning"])
-	c.Authenticator.SignCount = uint32(signCount)
-	c.Transport = strings.Split(m["transport"], ",")
-	c.AttestationType = m["attestation_type"]
-	return nil
-}
-
-// ToMetadata converts a common WebauthnCredential into a map[string]string
-func (c *WebauthnCredential) ToMetadata() map[string]string {
-	return map[string]string{
-		"credential_id":               base64.StdEncoding.EncodeToString(c.Id),
-		"authenticator.aaguid":        base64.StdEncoding.EncodeToString(c.Authenticator.Aaguid),
-		"authenticator.clone_warning": ConvertBoolToString(c.Authenticator.CloneWarning),
-		"authenticator.sign_count":    strconv.FormatUint(uint64(c.Authenticator.SignCount), 10),
-		"transport":                   strings.Join(c.Transport, ","),
-		"attestion_type":              c.AttestationType,
-		"webauthn":                    ConvertBoolToString(true),
-	}
 }

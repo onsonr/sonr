@@ -30,7 +30,7 @@ func SimulateMsgCreateSLDRecord(
 			Index:   strconv.Itoa(r.Intn(100)),
 		}
 		msg := &types.MsgCreateSLDRecord{
-			Creator: simAccount.Address.String(),
+			Creator:   simAccount.Address.String(),
 			SldRecord: &sld,
 		}
 
