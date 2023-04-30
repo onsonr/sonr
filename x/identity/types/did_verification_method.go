@@ -1,7 +1,6 @@
 package types
 
 import (
-	"encoding/base64"
 	fmt "fmt"
 	"strings"
 
@@ -114,16 +113,6 @@ func WithFragmentSuffix(v string) VerificationMethodOption {
 	}
 }
 
-// WithMetadataValues sets the metadata value of a verificationMethod
-func WithMetadataValues(kvs ...KeyValuePair) VerificationMethodOption {
-	return func(vm *VerificationMethod, method DIDMethod) error {
-		for _, kv := range kvs {
-			vm.SetMetadataValue(kv.Key, kv.Value)
-		}
-		return nil
-	}
-}
-
 //
 // VerificationMethod Creation Functions
 //
@@ -134,7 +123,7 @@ func NewVerificationMethodFromPubKey(pk *crypto.PubKey, method DIDMethod, opts .
 		Id:                 method.Format(pk.Multibase()),
 		Type:               pk.KeyType,
 		PublicKeyMultibase: pk.Multibase(),
-		Metadata:           make([]*KeyValuePair, 0),
+		Metadata:           "",
 	}
 	for _, opt := range opts {
 		if err := opt(vm, method); err != nil {
@@ -155,7 +144,7 @@ func NewVerificationMethodFromSonrAcc(pk *crypto.PubKey, options ...FormatOption
 		Type:                crypto.Secp256k1KeyType.PrettyString(),
 		BlockchainAccountId: accAddress,
 		PublicKeyMultibase:  pk.Multibase(),
-		Metadata:            make([]*KeyValuePair, 0),
+		Metadata:            "",
 	}
 	return vm, nil
 }
@@ -201,41 +190,6 @@ func (vm *VerificationMethod) PublicKey() ([]byte, error) {
 	}
 }
 
-// SetMetadataValue sets the metadata value for the given key
-func (vm *VerificationMethod) SetMetadataValue(key, value string) {
-	for i, kv := range vm.Metadata {
-		if kv.Key == key {
-			vm.Metadata[i].Value = value
-			return
-		}
-	}
-	vm.Metadata = append(vm.Metadata, &KeyValuePair{Key: key, Value: value})
-}
-
-// GetMetadata returns the metadata value for the given key
-func (vm *VerificationMethod) GetMetadataValue(key string) (string, bool) {
-	ok := vm.HasMetadataValue(key)
-	if !ok {
-		return "", false
-	}
-	for _, kv := range vm.Metadata {
-		if kv.Key == key {
-			return kv.Value, true
-		}
-	}
-	return "", false
-}
-
-// HasMetadata returns true if the VerificationMethod has the given metadata key
-func (vm *VerificationMethod) HasMetadataValue(key string) bool {
-	for _, kv := range vm.Metadata {
-		if kv.Key == key {
-			return true
-		}
-	}
-	return false
-}
-
 // ToVerificationRelationship returns a VerificationRelationship from the VerificationMethod
 func (vm *VerificationMethod) ToVerificationRelationship(controller string) VerificationRelationship {
 	if vm.Controller == "" {
@@ -251,7 +205,7 @@ func (d *VerificationMethod) WebauthnCredentialID() protocol.URLEncodedBase64 {
 	ptrs := strings.Split(d.Id, ":")
 	id := ptrs[len(ptrs)-1]
 	// Decode the credential id
-	credId, err := base64.RawURLEncoding.DecodeString(id)
+	credId, err := crypto.Base64Decode(id)
 	if err != nil {
 		return nil
 	}

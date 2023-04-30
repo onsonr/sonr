@@ -6,31 +6,89 @@ build:
     path: ""
     third_party_paths: []
 accounts:
-- name: alice
+- name: rome
   coins:
-  - 2000000000snr
-  - 200000000stake
-- name: bob
+  - 2000000snr
+  - 200000000usnr
+- name: ashburn
   coins:
-  - 1000000000snr
-  - 100000000stake
+  - 2000000snr
+  - 200000000usnr
+- name: ibiza
+  coins:
+  - 2000000snr
+  - 200000000usnr
+- name: brooklyn
+  coins:
+  - 2000000snr
+  - 200000000usnr
+- name: austin
+  coins:
+  - 2000000snr
+  - 200000000usnr
+- name: miami
+  coins:
+  - 2000000snr
+  - 200000000usnr
+- name: niagra
+  coins:
+  - 100000snr
+  - 100000000usnr
 faucet:
-  name: bob
+  name: niagra
   coins:
-  - 50000000snr
-  - 100000000stake
+  - 50000snr
+  - 100000000usnr
 genesis:
   app_state:
+    mint:
+      minter:
+        inflation: '0.050000'
+        annual_provisions: '0.000000'
+      params:
+        mint_denom: usnr
+        inflation_rate_change: '0.025000'
+        inflation_max: '0.075000'
+        inflation_min: '0.025000'
+        goal_bonded: '0.550000'
     staking:
       params:
-        bond_denom: stake
+        max_validators: 64
+        bond_denom: usnr
 validators:
-- name: alice
-  bonded: 100000000stake
+- name: rome
+  bonded: 100000000usnr
   app:
     pruning: nothing
   config:
-    moniker: florence
+    moniker: rome
+  client:
+    output: json
+  home: ~/.sonr
+- name: ashburn
+  bonded: 100000000usnr
+  app:
+    pruning: nothing
+  config:
+    moniker: ashburn
+  client:
+    output: json
+  home: ~/.sonr
+- name: ibiza
+  bonded: 100000000usnr
+  app:
+    pruning: nothing
+  config:
+    moniker: ibiza
+  client:
+    output: json
+  home: ~/.sonr
+- name: brooklyn
+  bonded: 100000000usnr
+  app:
+    pruning: nothing
+  config:
+    moniker: brooklyn
   client:
     output: json
   home: ~/.sonr

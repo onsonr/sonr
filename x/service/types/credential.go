@@ -41,7 +41,7 @@ type Credential interface {
 }
 
 type DidCredential struct {
-	*WebauthnCredential `json:"credential,omitempty"`
+	WebauthnCredential 	   *WebauthnCredential `json:"credential,omitempty"`
 	Controller             string `json:"controller,omitempty"`
 }
 
@@ -52,13 +52,9 @@ func NewCredential(cred *WebauthnCredential, controller string) Credential {
 	}
 }
 
-func LoadCredential(didCred *DidCredential) (Credential, error) {
-	if didCred.WebauthnCredential == nil {
-		return nil, errors.New("invalid credential")
-	}
-
+func LoadCredential(didCred *WebauthnCredential) (Credential, error) {
 	return &DidCredential{
-		WebauthnCredential: didCred.WebauthnCredential,
+		WebauthnCredential: didCred,
 		Controller:            didCred.Controller,
 	}, nil
 }
@@ -89,7 +85,7 @@ func (c *DidCredential) Marshal() ([]byte, error) {
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *DidCredential) ToVerificationMethod() *idtypes.VerificationMethod {
 	return &idtypes.VerificationMethod{
-		Id:                 fmt.Sprintf("did:key:%s", crypto.Base58Encode(c.WebauthnCredential.Id)),
+		Id:                 fmt.Sprintf("did:key:%s", crypto.Base64Encode(c.WebauthnCredential.Id)),
 		Type:               "webauthn/alg-es256",
 		PublicKeyMultibase: crypto.Base58Encode(c.WebauthnCredential.PublicKey),
 		Controller:         c.Controller,

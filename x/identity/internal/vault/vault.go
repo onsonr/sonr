@@ -169,7 +169,8 @@ func FetchCredential(keyDid string) (servicetypes.Credential, error) {
 	if err != nil {
 		return nil, err
 	}
-	cred := servicetypes.DidCredential{}
+
+	cred := servicetypes.WebauthnCredential{}
 	err = json.Unmarshal(vBiz, &cred)
 	if err != nil {
 		return nil, err

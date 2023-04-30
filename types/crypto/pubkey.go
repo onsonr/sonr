@@ -10,6 +10,8 @@ import (
 	"github.com/btcsuite/btcd/btcec"
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+
+	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
@@ -115,6 +117,15 @@ func (pk *PubKey) Secp256k1() (*secp256k1.PubKey, error) {
 
 	pubKey := &secp256k1.PubKey{Key: pk.Bytes()}
 	return pubKey, nil
+}
+
+// Secp256k1AnyProto returns the pubkey for cosmos transactions
+func (pk *PubKey) Secp256k1AnyProto() (*codectypes.Any, error) {
+	scpk, err := pk.Secp256k1()
+	if err != nil {
+		return nil, err
+	}
+	return codectypes.NewAnyWithValue(scpk)
 }
 
 // Returning the type of the key.

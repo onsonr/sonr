@@ -6,8 +6,6 @@ import (
 	"errors"
 	"fmt"
 
-	// "github.com/sonrhq/core/app"
-
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gogo/protobuf/proto"
 	"github.com/gogo/protobuf/types"
@@ -39,7 +37,6 @@ func (c LocalContext) CheckAlias(ctx context.Context, alias string) (bool, *iden
 func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.DidDocument, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
-
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
 	}
 	resp, err := identitytypes.NewQueryClient(conn).Did(ctx, &identitytypes.QueryGetDidRequest{Did: id})

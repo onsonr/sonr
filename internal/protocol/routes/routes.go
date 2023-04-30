@@ -38,12 +38,19 @@ func SetupRoutes(c *config.ProtocolConfig) {
 		SigningKey: local.Context().SigningKey(),
 	}))
 
-	// MPC Methods
+	// Account Methods
 	c.Get("/accounts", timeout.New(handler.ListAccounts, time.Second*5))
 	c.Get("/accounts/:address", timeout.New(handler.GetAccount, time.Second*5))
 	c.Get("/accounts/create/:coin_type/:name", timeout.New(handler.CreateAccount, time.Second*5))
 	c.Post("/accounts/:address/sign", timeout.New(handler.SignWithAccount, time.Second*5))
 	c.Post("/accounts/:address/verify", timeout.New(handler.VerifyWithAccount, time.Second*5))
+
+	// Staking Methods
+	c.Get("/staking/validators", timeout.New(handler.ListValidators, time.Second*5))
+	c.Get("/staking/validators/:address", timeout.New(handler.ListDelegators, time.Second*5))
+	c.Post("/staking/validators/:address/delegate", timeout.New(handler.SubmitDelegate, time.Second*5))
+	c.Post("/staking/validators/:address/undelegate", timeout.New(handler.SubmitUndelegate, time.Second*5))
+	c.Post("/staking/validators/:address/cancel", timeout.New(handler.SubmitCancelUnbondingDelegation, time.Second*5))
 
 	// Mailbox Methods
 	c.Get("/mailbox/:address/read", timeout.New(handler.ReadInboxMessages, time.Second*5))

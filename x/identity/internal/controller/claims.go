@@ -92,6 +92,7 @@ func (wc *walletClaims) Assign(cred *srvtypes.WebauthnCredential, alias string) 
 		return nil, err
 	}
 
+	cred.Controller = acc.Did()
 	doc.AlsoKnownAs = []string{alias}
 
 	cn := &didController{

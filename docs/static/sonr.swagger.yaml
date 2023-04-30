@@ -549,16 +549,6 @@ definitions:
         $ref: '#/definitions/coredomainParams'
         description: params holds all the parameters of this module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  coreidentityKeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-        title: The key
-      value:
-        type: string
-        title: The value
-    description: KeyValuePair represents a key-value pair.
   coreidentityParams:
     type: object
     properties:
@@ -594,16 +584,6 @@ definitions:
         $ref: '#/definitions/coreidentityParams'
         description: params holds all the parameters of this module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  coreserviceKeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-        title: The key
-      value:
-        type: string
-        title: The value
-    description: KeyValuePair represents a key-value pair.
   coreserviceParams:
     type: object
     description: Params defines the parameters for the module.
@@ -742,10 +722,7 @@ definitions:
           type: string
         title: optional, the set of identifiers for other personas or identities related to the DID subject
       metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/coreidentityKeyValuePair'
+        type: string
         title: optional, additional metadata related to the DID document
       owner:
         type: string
@@ -841,10 +818,7 @@ definitions:
         type: string
         title: The entity controlling the verification method
       publicKeyJwk:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/coreidentityKeyValuePair'
+        type: string
         title: optional, the public key in JSON Web Key (JWK) format
       publicKeyMultibase:
         type: string
@@ -853,10 +827,7 @@ definitions:
         type: string
         title: optional, the blockchain account identifier associated with the verification method
       metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/coreidentityKeyValuePair'
+        type: string
         title: additional metadata related to the verification method
     description: VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
   protobufAny:
@@ -919,14 +890,10 @@ definitions:
       serviceEndpoints:
         type: array
         items:
-          type: object
-          $ref: '#/definitions/coreserviceKeyValuePair'
+          type: string
         title: optional, the set of service endpoints associated with the service
       metadata:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/coreserviceKeyValuePair'
+        type: string
         title: optional, additional metadata related to the Service
   v1beta1PageRequest:
     type: object

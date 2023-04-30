@@ -94,9 +94,13 @@ func FetchCredentials(doc *types.DidDocument) ([]servicetypes.Credential, error)
 
 // FetchWebauthnCredentialDescriptors fetches all webauthn credential descriptors from a DidDocument
 func FetchWebauthnCredentialDescriptors(doc *types.DidDocument) ([]protocol.CredentialDescriptor, error) {
-	creds, err := FetchCredentials(doc)
-	if err != nil {
-		return nil, err
+	var creds []servicetypes.Credential
+	for _, vm := range doc.ListAuthenticationMethods() {
+		c, err := vault.FetchCredential(vm.Id)
+		if err != nil {
+			return nil, err
+		}
+		creds = append(creds, c)
 	}
 	var descriptors []protocol.CredentialDescriptor
 	for _, cred := range creds {

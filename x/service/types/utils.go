@@ -11,7 +11,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/webauthn"
-	idtypes "github.com/sonrhq/core/x/identity/types"
 	"lukechampine.com/blake3"
 )
 

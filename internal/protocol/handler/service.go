@@ -3,6 +3,9 @@ package handler
 import (
 	"fmt"
 
+
+	"github.com/go-webauthn/webauthn/protocol"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/protocol/middleware"
@@ -113,21 +116,28 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 
 func GetServiceAssertion(c *fiber.Ctx) error {
 	q := middleware.ParseQuery(c)
-	doc, err := q.GetDID()
-	if err != nil {
-		return c.Status(500).SendString(err.Error())
-	}
 	service, err := q.GetService()
 	if err != nil {
 		return c.Status(404).SendString(err.Error())
 	}
-	creds, err := identity.FetchWebauthnCredentialDescriptors(doc)
+
+	doc, err := q.GetDID()
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(405).SendString(err.Error())
 	}
+
+	vms := doc.ListCredentialVerificationMethods()
+	var creds []protocol.CredentialDescriptor
+	for _, vm := range vms {
+		creds = append(creds, protocol.CredentialDescriptor{
+			Type:         protocol.PublicKeyCredentialType,
+			CredentialID: vm.WebauthnCredentialID(),
+		})
+	}
+
 	challenge, err := service.GetCredentialAssertionOptions(creds, q.IsMobile())
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(407).SendString(err.Error())
 	}
 	return c.JSON(fiber.Map{
 		"did":               doc.Id,

@@ -19,7 +19,7 @@ message DidDocument {
   repeated string capability_delegation = 8; // optional, the set of capability delegation methods associated with the DID subject
   repeated string key_agreement = 9; // optional, the set of key agreement methods associated with the DID subject
   repeated string also_known_as = 10; // optional, the set of identifiers for other personas or identities related to the DID subject
-  repeated KeyValuePair metadata = 11; // optional, additional metadata related to the DID document
+  string metadata = 11; // optional, additional metadata related to the DID document
   string owner = 12; // The idx address of the owner of the DID document
 }
 
@@ -28,10 +28,10 @@ message VerificationMethod {
   string id = 1; // The identifier for the verification method
   string type = 2; // The type of the verification method
   string controller = 3; // The entity controlling the verification method
-  repeated KeyValuePair public_key_jwk = 4; // optional, the public key in JSON Web Key (JWK) format
+  string public_key_jwk = 4; // optional, the public key in JSON Web Key (JWK) format
   string public_key_multibase = 5; // optional, the public key in multibase-encoded format
   string blockchain_account_id = 6; // optional, the blockchain account identifier associated with the verification method
-  repeated KeyValuePair metadata = 7; // additional metadata related to the verification method
+  string metadata = 7; // additional metadata related to the verification method
 }
 
 // VerificationRelationship represents a relationship between a verification method and a specific verification purpose (e.g., authentication, assertion, etc.).
@@ -39,12 +39,6 @@ message VerificationRelationship {
   VerificationMethod verification_method = 1; // The verification method associated with the relationship
   string reference = 2; // The reference identifier for the relationship
   string type = 3; // The type of the verification relationship
-}
-
-// KeyValuePair represents a key-value pair.
-message KeyValuePair {
-  string key = 1; // The key
-  string value = 2; // The value
 }
 
 // DIDMethod is the DID method for each supported resolver.

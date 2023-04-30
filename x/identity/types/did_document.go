@@ -221,11 +221,8 @@ func (d *DidDocument) FindUsername() string {
 
 // FindPrimaryAddress is the first item in the assertion method without the did: prefix
 func (d *DidDocument) FindPrimaryAddress() string {
-	if len(d.AssertionMethod) > 0 {
-		ptrs := strings.Split(d.AssertionMethod[0], ":")
-		return ptrs[len(ptrs)-1]
-	}
-	return ""
+	ptrs := strings.Split(d.Id, ":")
+	return ptrs[len(ptrs)-1]
 }
 
 // ListAuthenticationMethods returns a list of all authentication methods

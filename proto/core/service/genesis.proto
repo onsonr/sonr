@@ -17,5 +17,4 @@ message GenesisState {
 // Params defines the parameters for the module.
 message Params {
   option (gogoproto.goproto_stringer) = false;
-
 }
