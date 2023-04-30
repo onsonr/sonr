@@ -400,10 +400,3 @@ func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) 
 		},
 	}
 }
-
-func NewIDKeyValue(key string, value string) *idtypes.KeyValuePair {
-	return &idtypes.KeyValuePair{
-		Key:   key,
-		Value: value,
-	}
-}
