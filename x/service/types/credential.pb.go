@@ -109,7 +109,6 @@ func (m *WebauthnCredential) GetAuthenticator() *WebauthnAuthenticator {
 	return nil
 }
 
-
 func (m *WebauthnCredential) GetController() string {
 	if m != nil {
 		return m.Controller
