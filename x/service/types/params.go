@@ -69,7 +69,7 @@ func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
 		Challenge:        challenge,
-		RelyingPartyID:   s.Origin,
+		RelyingPartyID:   s.Id,
 		UserVerification: getUserVerificationForDevice(isMobile),
 
 		// Preconfigured parameters.

@@ -68,8 +68,9 @@ func (c *WebauthnCredential) CredentialDescriptor() protocol.CredentialDescripto
 	for _, t := range c.Transport {
 		transport = append(transport, protocol.AuthenticatorTransport(t))
 	}
+
 	return protocol.CredentialDescriptor{
-		CredentialID:    c.Id,
+		CredentialID:    protocol.URLEncodedBase64(c.Id),
 		Type:            protocol.PublicKeyCredentialType,
 		Transport:       transport,
 		AttestationType: c.AttestationType,
@@ -83,9 +84,9 @@ func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
 	vm := &idtypes.VerificationMethod{
-		Id:                 fmt.Sprintf("did:key:%s", crypto.Base64Encode(c.Id)),
+		Id:                 fmt.Sprintf("did:key:%s", protocol.URLEncodedBase64(c.Id).String()),
 		Type:               "webauthn/alg-es256",
-		PublicKeyMultibase: crypto.Base58Encode(c.PublicKey),
+		PublicKeyMultibase: crypto.Base64Encode(c.PublicKey),
 		Controller:         c.Controller,
 	}
 	jsonCred, err := json.Marshal(c)
