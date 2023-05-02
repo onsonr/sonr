@@ -3,13 +3,13 @@ package handler
 import (
 	"fmt"
 
-
 	"github.com/go-webauthn/webauthn/protocol"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/protocol/middleware"
 	"github.com/sonrhq/core/x/identity"
+	"github.com/sonrhq/core/x/service/types"
 )
 
 func GetService(c *fiber.Ctx) error {
@@ -86,7 +86,7 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 	claims := identity.LoadClaimableWallet(ucw)
 	chal, err := claims.IssueChallenge()
 	if err != nil {
-		return c.Status(500).SendString(fmt.Sprintf("Failed to issue challenge: %s", err.Error()))
+		return c.Status(416).SendString(fmt.Sprintf("Failed to issue challenge: %s", err.Error()))
 	}
 
 	// Checking if the credential response is valid.
@@ -97,12 +97,12 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 
 	cont, err := claims.Assign(cred, q.Alias())
 	if err != nil {
-		return c.Status(500).SendString(fmt.Sprintf("Failed to assign credential: %s", err.Error()))
+		return c.Status(413).SendString(fmt.Sprintf("Failed to assign credential: %s", err.Error()))
 	}
 	usr := middleware.NewUser(cont, q.Alias())
 	jwt, err := usr.JWT()
 	if err != nil {
-		return c.Status(500).SendString(fmt.Sprintf("Failed to create JWT: %s", err.Error()))
+		return c.Status(412).SendString(fmt.Sprintf("Failed to create JWT: %s", err.Error()))
 	}
 	return c.JSON(fiber.Map{
 		"success": true,
@@ -129,12 +129,12 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 	vms := doc.ListCredentialVerificationMethods()
 	var creds []protocol.CredentialDescriptor
 	for _, vm := range vms {
-		creds = append(creds, protocol.CredentialDescriptor{
-			Type:         protocol.PublicKeyCredentialType,
-			CredentialID: vm.WebauthnCredentialID(),
-		})
+		cred, err := types.LoadCredentialFromVerificationMethod(vm)
+		if err != nil {
+			return c.Status(406).SendString(err.Error())
+		}
+		creds = append(creds, cred.CredentialDescriptor())
 	}
-
 	challenge, err := service.GetCredentialAssertionOptions(creds, q.IsMobile())
 	if err != nil {
 		return c.Status(407).SendString(err.Error())

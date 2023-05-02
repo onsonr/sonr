@@ -40,11 +40,11 @@ func (d *DidDocument) ListBlockchainIdentities() []string {
 }
 
 // LinkAdditionalAuthenticationMethod sets the AuthenticationMethod of the DID Document to a PubKey and configured with the given options
-func (d *DidDocument) LinkAdditionalAuthenticationMethod(vm *VerificationMethod) (*VerificationMethod, error) {
+func (d *DidDocument) LinkAdditionalAuthenticationMethod(vm *VerificationMethod) (*VerificationMethod) {
 	d.VerificationMethod = append(d.VerificationMethod, vm)
 	d.Authentication = append(d.Authentication, vm.Id)
 	d.Controller = append(d.Controller, vm.Id)
-	return vm, nil
+	return vm
 }
 
 // AllowedWebauthnCredentials returns a list of CredentialDescriptors for Webauthn Credentials

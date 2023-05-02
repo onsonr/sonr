@@ -104,7 +104,7 @@ func FetchWebauthnCredentialDescriptors(doc *types.DidDocument) ([]protocol.Cred
 	}
 	var descriptors []protocol.CredentialDescriptor
 	for _, cred := range creds {
-		descriptors = append(descriptors, cred.Descriptor())
+		descriptors = append(descriptors, cred.CredentialDescriptor())
 	}
 	return descriptors, nil
 }

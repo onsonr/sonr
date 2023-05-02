@@ -15,14 +15,11 @@ import (
 )
 
 type Credential interface {
-	// Controller returns the credential's controller
-	GetController() string
-
 	// Get the credential's DID
 	Did() string
 
 	// Descriptor returns the credential's descriptor
-	Descriptor() protocol.CredentialDescriptor
+	CredentialDescriptor() protocol.CredentialDescriptor
 
 	// GetWebauthnCredential returns the webauthn credential instance
 	GetWebauthnCredential() *WebauthnCredential
@@ -36,71 +33,70 @@ type Credential interface {
 	// Decrypt is used to decrypt a message for the credential
 	Decrypt(msg []byte) ([]byte, error)
 
-	// Marshal is used to marshal the credential to JSON
-	Marshal() ([]byte, error)
+	// Serialize the credential to JSON
+	Serialize() ([]byte, error)
 }
 
-type DidCredential struct {
-	WebauthnCredential 	   *WebauthnCredential `json:"credential,omitempty"`
-	Controller             string `json:"controller,omitempty"`
-}
-
-func NewCredential(cred *WebauthnCredential, controller string) Credential {
-	return &DidCredential{
-		WebauthnCredential: cred,
-		Controller:            controller,
-	}
+func NewCredential(cred *WebauthnCredential) Credential {
+	return cred
 }
 
 func LoadCredential(didCred *WebauthnCredential) (Credential, error) {
-	return &DidCredential{
-		WebauthnCredential: didCred,
-		Controller:            didCred.Controller,
-	}, nil
+	return didCred, nil
 }
 
-func (c *DidCredential) GetController() string {
-	return c.Controller
-}
-
-// Descriptor returns the credential's descriptor
-func (c *DidCredential) Descriptor() protocol.CredentialDescriptor {
-	return c.WebauthnCredential.ToStdCredential().Descriptor()
-}
-
-func (c *DidCredential) GetWebauthnCredential() *WebauthnCredential {
-	return c.WebauthnCredential
-}
-
-// MarshalJSON is used to marshal the credential to JSON
-func (c *DidCredential) Marshal() ([]byte, error) {
-	vm := c.WebauthnCredential
-	bz, err := json.Marshal(vm)
+func LoadCredentialFromVerificationMethod(vm *idtypes.VerificationMethod) (Credential, error) {
+	if vm.Metadata == "" {
+		return nil, errors.New("no credential metadata")
+	}
+	cred := &WebauthnCredential{}
+	err := json.Unmarshal([]byte(vm.Metadata), cred)
 	if err != nil {
 		return nil, err
 	}
-	return bz, nil
+	return cred, nil
+}
+
+// Serialize the credential to JSON
+func (c *WebauthnCredential) Serialize() ([]byte, error) {
+	return json.Marshal(c)
+}
+
+// Descriptor returns the credential's descriptor
+func (c *WebauthnCredential) CredentialDescriptor() protocol.CredentialDescriptor {
+	return c.ToStdCredential().Descriptor()
+}
+
+func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
+	return c
 }
 
 // ToVerificationMethod converts the credential to a DID VerificationMethod
-func (c *DidCredential) ToVerificationMethod() *idtypes.VerificationMethod {
-	return &idtypes.VerificationMethod{
-		Id:                 fmt.Sprintf("did:key:%s", crypto.Base64Encode(c.WebauthnCredential.Id)),
+func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
+	vm := &idtypes.VerificationMethod{
+		Id:                 fmt.Sprintf("did:key:%s", crypto.Base64Encode(c.Id)),
 		Type:               "webauthn/alg-es256",
-		PublicKeyMultibase: crypto.Base58Encode(c.WebauthnCredential.PublicKey),
+		PublicKeyMultibase: crypto.Base58Encode(c.PublicKey),
 		Controller:         c.Controller,
 	}
+	stdCred := c.ToStdCredential()
+	jsonCred, err := json.Marshal(stdCred)
+	if err != nil {
+		return vm
+	}
+	vm.Metadata = string(jsonCred)
+	return vm
 }
 
 // Did returns the credential's DID
-func (c *DidCredential) Did() string {
+func (c *WebauthnCredential) Did() string {
 	return c.ToVerificationMethod().Id
 }
 
 // Encrypt is used to encrypt a message for the credential
-func (c *DidCredential) Encrypt(data []byte) ([]byte, error) {
+func (c *WebauthnCredential) Encrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(c.WebauthnCredential.PublicKey)
+	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse public key: %w", err)
 	}
@@ -109,7 +105,7 @@ func (c *DidCredential) Encrypt(data []byte) ([]byte, error) {
 		return nil, errors.New("public key is not an EC2 key")
 	}
 	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(c.WebauthnCredential)
+	privateKey, err := derivePrivateKey(c)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive private key: %w", err)
 	}
@@ -153,9 +149,9 @@ func (c *DidCredential) Encrypt(data []byte) ([]byte, error) {
 }
 
 // Decrypt is used to decrypt a message for the credential
-func (c *DidCredential) Decrypt(data []byte) ([]byte, error) {
+func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
-	keyFace, err := webauthncose.ParsePublicKey(c.WebauthnCredential.PublicKey)
+	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse public key: %w", err)
 	}
@@ -164,7 +160,7 @@ func (c *DidCredential) Decrypt(data []byte) ([]byte, error) {
 		return nil, errors.New("public key is not an EC2 key")
 	}
 	// Derive a shared secret using ECDH
-	privateKey, err := derivePrivateKey(c.WebauthnCredential)
+	privateKey, err := derivePrivateKey(c)
 	if err != nil {
 		return nil, fmt.Errorf("failed to derive private key: %w", err)
 	}
@@ -197,8 +193,6 @@ func (c *DidCredential) Decrypt(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-
-
 func ValidateWebauthnCredential(credential *WebauthnCredential, controller string) (Credential, error) {
 	// Check for nil credential
 	if credential == nil {
@@ -209,5 +203,5 @@ func ValidateWebauthnCredential(credential *WebauthnCredential, controller strin
 	if credential.Id == nil {
 		return nil, errors.New("credential id is nil")
 	}
-	return NewCredential(credential, controller), nil
+	return NewCredential(credential), nil
 }

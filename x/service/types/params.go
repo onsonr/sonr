@@ -70,7 +70,7 @@ func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol
 		// Generated Challenge.
 		Challenge:        challenge,
 		RelyingPartyID:   s.Origin,
-		UserVerification: getUserVerificationForDevice(isMobile),
+		UserVerification: protocol.VerificationPreferred,
 
 		// Preconfigured parameters.
 		Timeout:            int(60000),
@@ -89,7 +89,7 @@ func getUserAuthenticationSelectionForDevice(isMobile bool) protocol.Authenticat
 	}
 	return protocol.AuthenticatorSelection{
 		ResidentKey:             protocol.ResidentKeyRequirementPreferred,
-		UserVerification:        protocol.VerificationRequired,
+		UserVerification:        protocol.VerificationPreferred,
 		AuthenticatorAttachment: protocol.CrossPlatform,
 	}
 }

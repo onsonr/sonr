@@ -183,7 +183,7 @@ func StoreCredential(cred servicetypes.Credential) error {
 	if err != nil {
 		return err
 	}
-	bz, err := cred.Marshal()
+	bz, err := cred.Serialize()
 	if err != nil {
 		return err
 	}
