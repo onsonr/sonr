@@ -41,9 +41,9 @@ func (p Params) String() string {
 }
 
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, challenge protocol.URLEncodedBase64, isMobile bool) (protocol.CredentialCreation, error) {
+func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, challenge protocol.URLEncodedBase64, address string, isMobile bool) (protocol.CredentialCreation, error) {
 	entityUser := protocol.UserEntity{
-		ID:          alias,
+		ID:          address,
 		DisplayName: alias,
 		CredentialEntity: protocol.CredentialEntity{
 			Name: alias,
@@ -70,7 +70,7 @@ func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol
 		// Generated Challenge.
 		Challenge:        challenge,
 		RelyingPartyID:   s.Origin,
-		UserVerification: protocol.VerificationPreferred,
+		UserVerification: getUserVerificationForDevice(isMobile),
 
 		// Preconfigured parameters.
 		Timeout:            int(60000),
@@ -88,8 +88,8 @@ func getUserAuthenticationSelectionForDevice(isMobile bool) protocol.Authenticat
 		}
 	}
 	return protocol.AuthenticatorSelection{
-		ResidentKey:             protocol.ResidentKeyRequirementPreferred,
-		UserVerification:        protocol.VerificationPreferred,
+		ResidentKey:             protocol.ResidentKeyRequirementRequired,
+		UserVerification:        protocol.VerificationRequired,
 		AuthenticatorAttachment: protocol.CrossPlatform,
 	}
 }

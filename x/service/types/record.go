@@ -56,9 +56,9 @@ func (s *ServiceRecord) GetUserEntity(id string) protocol.UserEntity {
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, isMobile bool) (string, error) {
+func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, addr string, isMobile bool) (string, error) {
 	params := DefaultParams()
-	cco, err := params.NewWebauthnCreationOptions(vm, username, chal, isMobile)
+	cco, err := params.NewWebauthnCreationOptions(vm, username, chal, addr, isMobile)
 	if err != nil {
 		return "", err
 	}
@@ -99,7 +99,13 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
 func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal protocol.URLEncodedBase64) (*WebauthnCredential, error) {
-	pcc, err := parseCreationData(resp)
+	// Get Credential Creation Respons
+	var ccr protocol.CredentialCreationResponse
+	err := json.Unmarshal([]byte(resp), &ccr)
+	if err != nil {
+		return nil, err
+	}
+	pcc, err := ccr.Parse()
 	if err != nil {
 		return nil, err
 	}
@@ -108,12 +114,14 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal protocol.URLE
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
 func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes.VerificationMethod) error {
-	pca, err := parseAssertionData(resp)
+	var ccr protocol.CredentialAssertionResponse
+	err := json.Unmarshal([]byte(resp), &ccr)
 	if err != nil {
 		return err
 	}
-	if pca == nil {
-		return fmt.Errorf("no assertion data")
+	pca, err := ccr.Parse()
+	if err != nil {
+		return err
 	}
 	cred := makeCredentialFromAssertionData(pca)
 	for _, c := range creds {

@@ -53,7 +53,7 @@ func GetServiceAttestion(c *fiber.Ctx) error {
 		return c.Status(500).SendString(err.Error())
 	}
 
-	challenge, err := service.GetCredentialCreationOptions(q.Alias(), chal, q.IsMobile())
+	challenge, err := service.GetCredentialCreationOptions(q.Alias(), chal, wc.Address(), q.IsMobile())
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}

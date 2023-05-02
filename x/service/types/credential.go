@@ -64,7 +64,16 @@ func (c *WebauthnCredential) Serialize() ([]byte, error) {
 
 // Descriptor returns the credential's descriptor
 func (c *WebauthnCredential) CredentialDescriptor() protocol.CredentialDescriptor {
-	return c.ToStdCredential().Descriptor()
+	transport := make([]protocol.AuthenticatorTransport, 0)
+	for _, t := range c.Transport {
+		transport = append(transport, protocol.AuthenticatorTransport(t))
+	}
+	return protocol.CredentialDescriptor{
+		CredentialID:    c.Id,
+		Type:            protocol.PublicKeyCredentialType,
+		Transport:       transport,
+		AttestationType: c.AttestationType,
+	}
 }
 
 func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
@@ -79,8 +88,7 @@ func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod 
 		PublicKeyMultibase: crypto.Base58Encode(c.PublicKey),
 		Controller:         c.Controller,
 	}
-	stdCred := c.ToStdCredential()
-	jsonCred, err := json.Marshal(stdCred)
+	jsonCred, err := json.Marshal(c)
 	if err != nil {
 		return vm
 	}

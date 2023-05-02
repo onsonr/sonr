@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/internal/crypto"
@@ -15,6 +16,7 @@ type WalletClaims interface {
 	GetClaimableWallet() *types.ClaimableWallet
 	IssueChallenge() (protocol.URLEncodedBase64, error)
 	Assign(cred *srvtypes.WebauthnCredential, alias string) (Controller, error)
+	Address() string
 }
 
 type walletClaims struct {
@@ -50,6 +52,13 @@ func LoadClaimableWallet(cw *types.ClaimableWallet) WalletClaims {
 		Claims:  cw,
 		Creator: cw.Creator,
 	}
+}
+
+// The function returns the address of the claimable wallet.
+func (wc *walletClaims) Address() string {
+	ptrs := strings.Split(wc.Claims.Keyshares[0], "did:sonr:")
+	addr := strings.Split(ptrs[1], "#")[0]
+	return addr
 }
 
 // The `GetClaimableWallet()` function is a method of the `walletClaims` struct that returns a pointer
