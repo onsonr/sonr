@@ -176,5 +176,6 @@ func VerifyServiceAssertion(c *fiber.Ctx) error {
 		"did":     cont.Did(),
 		"jwt":     jwt,
 		"address": cont.Address(),
+		"did_document": doc,
 	})
 }
