@@ -56,25 +56,13 @@ func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, chall
 			User:         entityUser,
 			Parameters:   defaultRegistrationCredentialParameters(),
 			RelyingParty: s.RelyingPartyEntity(),
-			AuthenticatorSelection: getUserAuthenticationSelectionForDevice(isMobile),
+			AuthenticatorSelection: protocol.AuthenticatorSelection{
+				ResidentKey:             protocol.ResidentKeyRequirementRequired,
+				AuthenticatorAttachment: protocol.Platform,
+			},
 			Attestation: protocol.PreferDirectAttestation,
 		},
 	}, nil
-}
-
-func getUserAuthenticationSelectionForDevice(isMobile bool) protocol.AuthenticatorSelection {
-	if isMobile {
-		return protocol.AuthenticatorSelection{
-			ResidentKey:             protocol.ResidentKeyRequirementRequired,
-			UserVerification:        protocol.VerificationPreferred,
-			AuthenticatorAttachment: protocol.Platform,
-		}
-	}
-	return protocol.AuthenticatorSelection{
-		ResidentKey:             protocol.ResidentKeyRequirementRequired,
-		UserVerification:        protocol.VerificationRequired,
-		AuthenticatorAttachment: protocol.CrossPlatform,
-	}
 }
 
 // NewWebauthnAssertionOptions returns the webauthn assertion options.
