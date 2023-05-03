@@ -35,7 +35,7 @@ type Account interface {
 	Did() string
 
 	// Get the controller's DID document
-	DidDocument() *types.DidDocument
+	DidDocument(opts ...DIDOption) *types.DidDocument
 
 	// GetAuthInfo creates an AuthInfo for a transaction
 	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
@@ -219,8 +219,11 @@ func (wa *account) Did() string {
 }
 
 // DidDocument returns the DID document of the account
-func (wa *account) DidDocument() *types.DidDocument {
+func (wa *account) DidDocument(opts ...DIDOption) *types.DidDocument {
 	doc := types.NewBlockchainIdentity(wa.cont, wa.CoinType(), wa.PubKey())
+	for _, opt := range opts {
+		opt(doc)
+	}
 	return doc
 }
 

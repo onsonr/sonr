@@ -93,13 +93,12 @@ func (wc *walletClaims) Assign(cred *srvtypes.WebauthnCredential, alias string) 
 	}
 
 	acc := models.NewAccount(kss, crypto.SONRCoinType)
-	doc := acc.DidDocument()
-	cred.Controller = doc.Id
-	credential := srvtypes.NewCredential(cred)
-	vm := credential.ToVerificationMethod()
-	doc.LinkAdditionalAuthenticationMethod(vm)
-	doc.AlsoKnownAs = []string{alias}
-
+	err := vault.InsertAccount(acc)
+	if err != nil {
+		return nil, err
+	}
+	cred.Controller = acc.Did()
+	doc := acc.DidDocument(models.WithCredential(srvtypes.NewCredential(cred)), models.WithUsername(alias))
 	cn := &didController{
 		primary:    acc,
 		primaryDoc: doc,
