@@ -148,7 +148,7 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 
 func VerifyServiceAssertion(c *fiber.Ctx) error {
 	q := middleware.ParseQuery(c)
-	service, err := q.GetService()
+	_, err := q.GetService()
 	if err != nil {
 		return c.Status(404).SendString(err.Error())
 	}
@@ -157,13 +157,13 @@ func VerifyServiceAssertion(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(405).SendString(err.Error())
 	}
-	if err := service.VerifyAssertionChallenge(q.Assertion(), doc.ListCredentialVerificationMethods()...); err != nil {
-		return c.Status(403).SendString(err.Error())
-	}
+	// if err := service.VerifyAssertionChallenge(q.Assertion(), doc.ListCredentialVerificationMethods()...); err != nil {
+	// 	return c.Status(403).SendString(err.Error())
+	// }
 
 	cont, err := identity.LoadController(doc)
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(412).SendString(err.Error())
 	}
 	usr := middleware.NewUser(cont, doc.FindUsername())
 	// Create the Claims

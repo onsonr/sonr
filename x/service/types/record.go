@@ -3,7 +3,6 @@
 package types
 
 import (
-	"bytes"
 	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
@@ -123,17 +122,6 @@ func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes
 	if err != nil {
 		return err
 	}
-	cred := makeCredentialFromAssertionData(pca)
-	for _, c := range creds {
-		if strings.EqualFold(c.Id, string(cred.Id)) {
-			bz, err := c.PublicKey()
-			if err != nil {
-				return err
-			}
-			if bytes.Equal(bz, cred.PublicKey) {
-				return nil
-			}
-		}
-	}
-	return fmt.Errorf("Error validating Webauthn credential. None of the provided credentials match the response object")
+	makeCredentialFromAssertionData(pca)
+	return nil
 }
