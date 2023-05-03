@@ -51,13 +51,16 @@ func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, chall
 	}
 	return protocol.CredentialCreation{
 		Response: protocol.PublicKeyCredentialCreationOptions{
-			Challenge:              challenge,
-			Timeout:                int(60000),
-			User:                   entityUser,
-			Parameters:             defaultRegistrationCredentialParameters(),
-			RelyingParty:           s.RelyingPartyEntity(),
-			AuthenticatorSelection: getUserAuthenticationSelectionForDevice(isMobile),
-			Attestation:            protocol.PreferDirectAttestation,
+			Challenge:    challenge,
+			Timeout:      int(60000),
+			User:         entityUser,
+			Parameters:   defaultRegistrationCredentialParameters(),
+			RelyingParty: s.RelyingPartyEntity(),
+			AuthenticatorSelection: protocol.AuthenticatorSelection{
+				ResidentKey:             protocol.ResidentKeyRequirementRequired,
+				AuthenticatorAttachment: protocol.Platform,
+			},
+			Attestation: protocol.PreferDirectAttestation,
 		},
 	}, nil
 }
@@ -69,36 +72,12 @@ func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
 		Challenge:        challenge,
-		RelyingPartyID:   s.Id,
-		UserVerification: getUserVerificationForDevice(isMobile),
-
+		UserVerification: protocol.VerificationPreferred,
 		// Preconfigured parameters.
 		Timeout:            int(60000),
 		AllowedCredentials: allowedCredentials,
 	}
 	return protocol.CredentialAssertion{Response: opts}, nil
-}
-
-func getUserAuthenticationSelectionForDevice(isMobile bool) protocol.AuthenticatorSelection {
-	if isMobile {
-		return protocol.AuthenticatorSelection{
-			ResidentKey:             protocol.ResidentKeyRequirementRequired,
-			UserVerification:        protocol.VerificationPreferred,
-			AuthenticatorAttachment: protocol.Platform,
-		}
-	}
-	return protocol.AuthenticatorSelection{
-		ResidentKey:             protocol.ResidentKeyRequirementRequired,
-		UserVerification:        protocol.VerificationRequired,
-		AuthenticatorAttachment: protocol.CrossPlatform,
-	}
-}
-
-func getUserVerificationForDevice(isMobile bool) protocol.UserVerificationRequirement {
-	if isMobile {
-		return protocol.VerificationPreferred
-	}
-	return protocol.VerificationRequired
 }
 
 func defaultRegistrationCredentialParameters() []protocol.CredentialParameter {
@@ -109,39 +88,7 @@ func defaultRegistrationCredentialParameters() []protocol.CredentialParameter {
 		},
 		{
 			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgES384,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgES512,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
 			Algorithm: webauthncose.AlgRS256,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgRS384,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgRS512,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgPS256,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgPS384,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgPS512,
-		},
-		{
-			Type:      protocol.PublicKeyCredentialType,
-			Algorithm: webauthncose.AlgEdDSA,
 		},
 	}
 }

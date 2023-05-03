@@ -147,21 +147,17 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 }
 
 func VerifyServiceAssertion(c *fiber.Ctx) error {
-	origin := c.Params("origin", "localhost")
-	did := c.Query("did")
-	assertion := c.Query("assertion")
-
-	doc, err := local.Context().GetDID(c.Context(), did)
+	q := middleware.ParseQuery(c)
+	service, err := q.GetService()
 	if err != nil {
 		return c.Status(404).SendString(err.Error())
 	}
 
-	service, err := local.Context().GetService(c.Context(), origin)
+	doc, err := q.GetDID()
 	if err != nil {
-		return err
+		return c.Status(405).SendString(err.Error())
 	}
-
-	if err := service.VerifyAssertionChallenge(assertion, doc.ListCredentialVerificationMethods()...); err != nil {
+	if err := service.VerifyAssertionChallenge(q.Assertion(), doc.ListCredentialVerificationMethods()...); err != nil {
 		return c.Status(403).SendString(err.Error())
 	}
 
