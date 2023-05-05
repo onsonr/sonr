@@ -91,7 +91,7 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	return protocol.RelyingPartyEntity{
 		ID:   s.Origin,
 		CredentialEntity: protocol.CredentialEntity{
-			Name: s.Name,
+			Name: s.Origin,
 		},
 	}
 }
