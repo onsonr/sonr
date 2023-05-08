@@ -3,7 +3,6 @@
 package types
 
 import (
-	"encoding/base64"
 	"encoding/json"
 	fmt "fmt"
 	"strings"
@@ -70,11 +69,8 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal prot
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, isMobile bool) (string, error) {
-	hashString := base64.URLEncoding.EncodeToString([]byte(vm.Id))
+func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, chal protocol.URLEncodedBase64, isMobile bool) (string, error) {
 	params := DefaultParams()
-	chal := protocol.URLEncodedBase64(hashString)
-
 	cco, err := params.NewWebauthnAssertionOptions(vm, chal, allowedCredentials, isMobile)
 	if err != nil {
 		return "", err
@@ -97,7 +93,7 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 }
 
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal protocol.URLEncodedBase64) (*WebauthnCredential, error) {
+func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*WebauthnCredential, error) {
 	// Get Credential Creation Respons
 	var ccr protocol.CredentialCreationResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
@@ -107,6 +103,11 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal protocol.URLE
 	pcc, err := ccr.Parse()
 	if err != nil {
 		return nil, err
+	}
+
+	err = pcc.Verify(chal, false, vm.RelyingPartyEntity().ID, []string{vm.Origin})
+	if err != nil {
+		return makeCredentialFromCreationData(pcc), nil
 	}
 	return makeCredentialFromCreationData(pcc), nil
 }

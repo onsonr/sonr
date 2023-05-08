@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"crypto/rand"
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -11,6 +12,10 @@ import (
 	"github.com/sonrhq/core/x/identity"
 	"github.com/sonrhq/core/x/service/types"
 )
+
+// ChallengeLength - Length of bytes to generate for a challenge.¡¡
+const ChallengeLength = 32
+
 
 func GetService(c *fiber.Ctx) error {
 	q := middleware.ParseQuery(c)
@@ -39,29 +44,45 @@ func GetServiceAttestion(c *fiber.Ctx) error {
 	q := middleware.ParseQuery(c)
 	service, err := q.GetService()
 	if err != nil {
-		return c.Status(404).SendString(err.Error())
+		return c.Status(404).JSON(fiber.Map{
+			"error": err.Error(),
+			"origin": q.Origin(),
+			"alias": q.Alias(),
+		})
 	}
 
 	ucw, err := local.Context().OldestUnclaimedWallet(c.Context())
 	if err != nil {
-		return c.Status(404).SendString(err.Error())
+		return c.Status(404).JSON(fiber.Map{
+			"error": err.Error(),
+			"origin": q.Origin(),
+			"alias": q.Alias(),
+		})
 	}
 
 	wc := identity.LoadClaimableWallet(ucw)
 	chal, err := wc.IssueChallenge()
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+			"origin": q.Origin(),
+			"alias": q.Alias(),
+		})
 	}
-
-	challenge, err := service.GetCredentialCreationOptions(q.Alias(), chal, wc.Address(), q.IsMobile())
+	opts, err := service.GetCredentialCreationOptions(q.Alias(), chal, wc.Address(), q.IsMobile())
 	if err != nil {
-		return c.Status(500).SendString(err.Error())
+		return c.Status(500).JSON(fiber.Map{
+			"error": err.Error(),
+			"origin": q.Origin(),
+			"alias": q.Alias(),
+		})
 	}
 	return c.JSON(fiber.Map{
 		"alias":             q.Alias(),
-		"attestion_options": challenge,
+		"attestion_options": opts,
 		"origin":            q.Origin(),
 		"challenge":         string(chal),
+		"ucw_id":            int(ucw.Id),
 	})
 
 }
@@ -77,20 +98,13 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.ErrNotFound.Code)
 	}
-
-	ucw, err := local.Context().OldestUnclaimedWallet(c.Context())
+	claims, err := q.GetWalletClaims()
 	if err != nil {
-		return c.Status(404).SendString(fmt.Sprintf("Failed to find unclaimed wallet: %s", err.Error()))
-	}
-
-	claims := identity.LoadClaimableWallet(ucw)
-	chal, err := claims.IssueChallenge()
-	if err != nil {
-		return c.Status(416).SendString(fmt.Sprintf("Failed to issue challenge: %s", err.Error()))
+		return c.Status(400).SendString(err.Error())
 	}
 
 	// Checking if the credential response is valid.
-	cred, err := service.VerifyCreationChallenge(q.Attestion(), chal)
+	cred, err := service.VerifyCreationChallenge(q.Attestion(), q.Challenge())
 	if err != nil {
 		return c.Status(403).SendString(fmt.Sprintf("Failed to verify attestion: %s", err.Error()))
 	}
@@ -126,6 +140,11 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 		return c.Status(405).SendString(err.Error())
 	}
 
+	chal, err := CreateChallenge()
+	if err != nil {
+		return c.Status(406).SendString(err.Error())
+	}
+
 	vms := doc.ListCredentialVerificationMethods()
 	var creds []protocol.CredentialDescriptor
 	for _, vm := range vms {
@@ -135,7 +154,7 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 		}
 		creds = append(creds, cred.CredentialDescriptor())
 	}
-	challenge, err := service.GetCredentialAssertionOptions(creds, q.IsMobile())
+	challenge, err := service.GetCredentialAssertionOptions(creds, chal, q.IsMobile())
 	if err != nil {
 		return c.Status(407).SendString(err.Error())
 	}
@@ -148,6 +167,9 @@ func GetServiceAssertion(c *fiber.Ctx) error {
 
 func VerifyServiceAssertion(c *fiber.Ctx) error {
 	q := middleware.ParseQuery(c)
+	if !q.HasAssertion() {
+		return c.Status(400).SendString("Missing assertion.")
+	}
 	_, err := q.GetService()
 	if err != nil {
 		return c.Status(404).SendString(err.Error())
@@ -178,4 +200,16 @@ func VerifyServiceAssertion(c *fiber.Ctx) error {
 		"address": cont.Address(),
 		"did_document": doc,
 	})
+}
+
+// CreateChallenge creates a new challenge that should be signed and returned by the authenticator. The spec recommends
+// using at least 16 bytes with 100 bits of entropy. We use 32 bytes.
+func CreateChallenge() (challenge protocol.URLEncodedBase64, err error) {
+	challenge = make([]byte, ChallengeLength)
+
+	if _, err = rand.Read(challenge); err != nil {
+		return nil, err
+	}
+
+	return challenge, nil
 }

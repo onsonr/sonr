@@ -67,13 +67,11 @@ func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, chall
 
 // NewWebauthnAssertionOptions returns the webauthn assertion options.
 func (p Params) NewWebauthnAssertionOptions(s *ServiceRecord, challenge protocol.URLEncodedBase64, allowedCredentials []protocol.CredentialDescriptor, isMobile bool) (protocol.CredentialAssertion, error) {
-
 	// Build the credential assertion options.
 	opts := protocol.PublicKeyCredentialRequestOptions{
 		// Generated Challenge.
 		Challenge:        challenge,
-		UserVerification: protocol.VerificationPreferred,
-		RelyingPartyID:   string(s.Origin),
+		UserVerification: protocol.VerificationRequired,
 
 		// Preconfigured parameters.
 		Timeout:            int(60000),

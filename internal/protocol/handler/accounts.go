@@ -6,6 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/protocol/middleware"
+	"github.com/sonrhq/core/types/common"
 )
 
 func GetAccount(c *fiber.Ctx) error {
@@ -34,11 +35,25 @@ func ListAccounts(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).SendString(err.Error())
 	}
+
+	// Initialize an empty map where the key is the coin type and the value is a slice of associated accounts
+	accMap := make(map[string][]*common.AccountInfo)
+
+	for _, acc := range accs {
+		// If the coin type is not yet in the map, initialize an empty slice for it
+		if _, ok := accMap[acc.CoinType]; !ok {
+			accMap[acc.CoinType] = make([]*common.AccountInfo, 0)
+		}
+		// Append the account to the slice associated with its coin type
+		accMap[acc.CoinType] = append(accMap[acc.CoinType], acc)
+	}
+
 	return c.JSON(fiber.Map{
 		"success":  true,
-		"accounts": accs,
+		"accounts": accMap,
 	})
 }
+
 
 func CreateAccount(c *fiber.Ctx) error {
 	usr, err := middleware.FetchUser(c)

@@ -6,6 +6,7 @@ import (
 	fmt "fmt"
 	"strings"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/internal/crypto"
@@ -30,7 +31,6 @@ func PubKeyFromWebAuthn(cred *WebauthnCredential) (*crypto.PubKey, error) {
 		return nil, fmt.Errorf("unsupported public key type: %T", pub)
 	}
 }
-
 
 // Did returns the DID for a WebauthnCredential
 func (c *WebauthnCredential) DID() string {
@@ -64,4 +64,17 @@ func CredentialFromDIDString(did string) (*WebauthnCredential, error) {
 		return nil, fmt.Errorf("failed to decode public key: %v", err)
 	}
 	return &WebauthnCredential{PublicKey: pubKeyBytes, Id: credIdBz}, nil
+}
+
+// PublicKeyCredentialRequestOptions is a struct that contains the options for a PublicKeyCredentialRequest
+// This is a modified version of the struct from the webauthn package to allow for the Attestation field
+type PublicKeyCredentialRequestOptions struct {
+	Challenge          protocol.URLEncodedBase64            `json:"challenge"`
+	Timeout            int                                  `json:"timeout,omitempty"`
+	RelyingPartyID     string                               `json:"rpId,omitempty"`
+	AllowedCredentials []protocol.CredentialDescriptor      `json:"allowCredentials,omitempty"`
+	UserVerification   protocol.UserVerificationRequirement `json:"userVerification,omitempty"`
+	Extensions         protocol.AuthenticationExtensions    `json:"extensions,omitempty"`
+	Attestion          string                               `json:"attestation,omitempty"`
+	AttestionFormats   []string                             `json:"attestationFormats,omitempty"`
 }

@@ -3,7 +3,7 @@ package controller
 import (
 	"fmt"
 	"strings"
-
+	"crypto/rand"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/x/identity/internal/vault"
@@ -11,6 +11,9 @@ import (
 	"github.com/sonrhq/core/x/identity/types/models"
 	srvtypes "github.com/sonrhq/core/x/service/types"
 )
+
+// ChallengeLength - Length of bytes to generate for a challenge.¡¡
+const ChallengeLength = 32
 
 type WalletClaims interface {
 	GetClaimableWallet() *types.ClaimableWallet
@@ -75,7 +78,7 @@ func (wc *walletClaims) IssueChallenge() (protocol.URLEncodedBase64, error) {
 	if wc.Claims.PublicKey == "" {
 		return nil, fmt.Errorf("public key is empty")
 	}
-	return protocol.URLEncodedBase64(wc.Claims.PublicKey), nil
+	return CreateChallenge()
 }
 
 // This function assigns a WebAuthn credential to a claimable wallet by creating a new DID document and
@@ -109,4 +112,16 @@ func (wc *walletClaims) Assign(cred *srvtypes.WebauthnCredential, alias string) 
 	}
 	cn.CreatePrimaryIdentity(doc, acc, alias, uint32(wc.Claims.Id))
 	return cn, nil
+}
+
+// CreateChallenge creates a new challenge that should be signed and returned by the authenticator. The spec recommends
+// using at least 16 bytes with 100 bits of entropy. We use 32 bytes.
+func CreateChallenge() (challenge protocol.URLEncodedBase64, err error) {
+	challenge = make([]byte, ChallengeLength)
+
+	if _, err = rand.Read(challenge); err != nil {
+		return nil, err
+	}
+
+	return challenge, nil
 }
