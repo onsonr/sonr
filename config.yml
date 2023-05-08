@@ -9,11 +9,11 @@ accounts:
 - name: rome
   coins:
   - 0snr
-  - 200000000usnr
+  - 10000000000000000000000000usnr
 - name: niagra
   coins:
   - 100000snr
-  - 100000000usnr
+  - 10000000000000000000000000usnr
 faucet:
   name: niagra
   coins:
@@ -37,7 +37,7 @@ genesis:
         bond_denom: usnr
 validators:
 - name: rome
-  bonded: 100000000usnr
+  bonded: 1000000000usnr
   app:
     pruning: nothing
   config:
