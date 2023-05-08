@@ -8,7 +8,7 @@ build:
 accounts:
 - name: rome
   coins:
-  - 2000000snr
+  - 0snr
   - 200000000usnr
 - name: niagra
   coins:
