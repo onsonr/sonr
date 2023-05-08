@@ -10,26 +10,6 @@ accounts:
   coins:
   - 2000000snr
   - 200000000usnr
-- name: ashburn
-  coins:
-  - 2000000snr
-  - 200000000usnr
-- name: ibiza
-  coins:
-  - 2000000snr
-  - 200000000usnr
-- name: brooklyn
-  coins:
-  - 2000000snr
-  - 200000000usnr
-- name: austin
-  coins:
-  - 2000000snr
-  - 200000000usnr
-- name: miami
-  coins:
-  - 2000000snr
-  - 200000000usnr
 - name: niagra
   coins:
   - 100000snr
@@ -62,33 +42,6 @@ validators:
     pruning: nothing
   config:
     moniker: rome
-  client:
-    output: json
-  home: ~/.sonr
-- name: ashburn
-  bonded: 100000000usnr
-  app:
-    pruning: nothing
-  config:
-    moniker: ashburn
-  client:
-    output: json
-  home: ~/.sonr
-- name: ibiza
-  bonded: 100000000usnr
-  app:
-    pruning: nothing
-  config:
-    moniker: ibiza
-  client:
-    output: json
-  home: ~/.sonr
-- name: brooklyn
-  bonded: 100000000usnr
-  app:
-    pruning: nothing
-  config:
-    moniker: brooklyn
   client:
     output: json
   home: ~/.sonr
