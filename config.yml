@@ -23,25 +23,25 @@ genesis:
   app_state:
     mint:
       minter:
-        inflation: '0.050000'
-        annual_provisions: '0.000000'
+        annual_provisions: "0.000000"
+        inflation: "0.050000"
       params:
+        goal_bonded: "0.550000"
+        inflation_max: "0.075000"
+        inflation_min: "0.025000"
+        inflation_rate_change: "0.025000"
         mint_denom: usnr
-        inflation_rate_change: '0.025000'
-        inflation_max: '0.075000'
-        inflation_min: '0.025000'
-        goal_bonded: '0.550000'
     staking:
       params:
-        max_validators: 64
         bond_denom: usnr
+        max_validators: 64
 validators:
 - name: rome
   bonded: 1000000000usnr
   app:
     pruning: nothing
   config:
-    moniker: rome
+    moniker: sonr-testnet-0
   client:
     output: json
   home: ~/.sonr
