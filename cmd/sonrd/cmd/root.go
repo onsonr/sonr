@@ -94,6 +94,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	rootCmd.PersistentFlags().BoolVar(&highwayEnabled, flagHighwayEnabled, false, "Enable highway protocol for this node")
 	initRootCmd(rootCmd, encodingConfig)
 	rootCmd.AddCommand(server.RosettaCommand(encodingConfig.InterfaceRegistry, encodingConfig.Marshaler))
+
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
@@ -128,6 +129,7 @@ func initRootCmd(
 		),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
+		NewTestnetCmd(app.ModuleBasics, banktypes.GenesisBalancesIterator{}),
 		tmcli.NewCompletionCmd(rootCmd, true),
 		debug.Cmd(),
 		config.Cmd(),
