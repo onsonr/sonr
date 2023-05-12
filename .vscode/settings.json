@@ -96,7 +96,9 @@
     "docs/api-reference": true,
     "testutil": true,
     "scripts": true,
-    "proto/buf.lock": true
+    "proto/buf.lock": true,
+    "go.sum": true,
+    "frontend/apps/web/tailwind.config.js": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
