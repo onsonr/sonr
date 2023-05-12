@@ -1,4 +1,4 @@
-# Turborepo starter
+# Sonr Frontend Packages
 
 This is an official starter Turborepo.
 

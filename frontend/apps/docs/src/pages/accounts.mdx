@@ -1,0 +1,282 @@
+export const description =
+  'On this page, we’ll dive into the different group endpoints you can use to manage groups programmatically.'
+
+# Accounts
+
+Groups are where communities live in Protocol — they are a collection of contacts you're talking to all at once. On this page, we'll dive into the different group endpoints you can use to manage groups programmatically. We'll look at how to query, create, update, and delete groups. {{ className: 'lead' }}
+
+### Properties
+
+<Properties>
+  <Property name="address" type="string">
+    The unique account address associated with the user on its specific blockchain.
+  </Property>
+  <Property name="name" type="string">
+    The user defined human-readable name associated with the account.
+  </Property>
+  <Property name="did" type="string">
+    The unique, resolvable, and cryptographically verifiable identifier. The method is by the type of Blockchain for the account.
+  </Property>
+  <Property name="coin_type" type="string">
+    The BIIP44 coin type associated with the account.
+  </Property>
+  <Property name="chain_id" type="string">
+    The chain identifier associated with the account.
+  </Property>
+  <Property name="public_key" type="string">
+    The base58 encoded public key associated with the account.
+  </Property>
+  <Property name="type" type="string">
+    Used to differentiate between various public key types, such as `secp256k1`, `ed25519`, and `sr25519`.
+  </Property>
+</Properties>
+
+---
+
+## List all accounts {{ tag: 'GET', label: '/v1/groups' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a paginated list of all your groups. By default, a maximum of ten groups are shown per page.
+
+    ### Optional attributes
+
+    <Properties>
+      <Property name="key" type="string">
+        A value returned in `PageResponse.next_key` to begin querying the next page most efficiently. Only one of offset or key should be set.
+      </Property>
+      <Property name="offset" type="integer">
+        Offset is a numeric offset that can be used when key is unavailable. It is less efficient than using key. Only one of offset or key should be set.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/accounts">
+
+    ```bash {{ title: 'cURL' }}
+    curl -G https://highway.build/accounts \
+      -H "Authorization: Bearer {jwt}"
+    ```
+
+    ```js
+    import ApiClient from '@sonrhq/ts-client'
+
+    const client = new ApiClient(origin)
+    await client.accounts.list()
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response 200' }}
+    {
+      "success": true,
+      "accounts": [
+        {
+          "address": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+          "did": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+          "coin_type": "CoinType_SONR",
+          "public_key": "A369J+Syr2wOZKuwlQ5QPSS7+t8X0M26+MoCeBsi1DYq",
+          "type": "Sonr/ecdsa-secp256k1"
+        },
+      ]
+    }
+    ```
+
+  </Col>
+</Row>
+---
+
+## Get Account {{ tag: 'GET', label: '/accounts/:address' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a group by providing the group id. Refer to [the list](#the-group-model) at the top of this page to see which properties are included with group objects.
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/accounts/:address">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://highway.build/accounts/idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9 \
+      -H "Authorization: Bearer {jwt}"
+    ```
+
+    ```js
+    import ApiClient from '@sonrhq/ts-client'
+
+    const client = new ApiClient(origin)
+    await client.accounts.get('idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9')
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "success": true,
+      "accounts": {
+          "address": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+          "did": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+          "coin_type": "CoinType_SONR",
+          "public_key": "A369J+Syr2wOZKuwlQ5QPSS7+t8X0M26+MoCeBsi1DYq",
+          "type": "Sonr/ecdsa-secp256k1"
+      },
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Create account {{ tag: 'GET', label: '/accounts/create/:coin_type/:name' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to create a new account. Refer to [the list](#the-group-model) at the top of this page to see which properties are included with group objects.
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/accounts/create/:coin_type/:name">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://highway.build/accounts/create/bitcoin/account2 \
+      -H "Authorization: Bearer {jwt}"
+    ```
+
+    ```js
+    import ApiClient from '@sonrhq/ts-client'
+
+    const client = new ApiClient(origin)
+    await client.accounts.create({name: 'account 2', coin_type: 'bitcoin'})
+    ```
+
+
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "success": true,
+      "accounts": {
+          "address": "14J8ZooEkYR1TguviJomPvYd5JGVpzN3Um",
+          "did": "did:btcr:14J8ZooEkYR1TguviJomPvYd5JGVpzN3Um",
+          "coin_type": "CoinType_BTC",
+          "type": "Sonr/ecdsa-secp256k1"
+      },
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+
+## Sign a Message {{ tag: 'POST', label: '/accounts/:address/sign' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to perform an update on a group. Examples of updates are changing the name, description, and avatar or adding and removing contacts from the group.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="message" type="string">
+        The new name for the group.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="POST" label="/accounts/:address/sign">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X POST https://highway.build/accounts/idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9/sign \
+      -H "Authorization: Bearer {token}" \
+      -d message="The finest in New York."
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+    await client.accounts.sign('idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9', {
+        message: 'The finest in New York.',
+    })
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "success": true,
+      "account_address": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+      "message": "The finest in New York.",
+      "signature": "MEUCI_Qdf5ZQZsa312c",
+    }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Verify a Message {{ tag: 'POST', label: '/accounts/:address/verify' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to verify a message signed by an account.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="message" type="string">
+        The original message.
+      </Property>
+      <Property name="signature" type="string">
+        The signature of the message.
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="POST" label="/accounts/:address/verify">
+
+    ```bash {{ title: 'cURL' }}
+    curl -X POST https://highway.build/accounts/idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9/verify \
+      -H "Authorization: Bearer {token}" \
+      -d message="The finest in New York." \
+      -d signature="MEUCI_Qdf5ZQZsa312c"
+    ```
+
+    ```js
+    import ApiClient from '@example/protocol-api'
+
+    const client = new ApiClient(token)
+    await client.accounts.sign('idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9', {
+        message: 'The finest in New York.',
+    })
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+    {
+      "verified": true,
+      "account_address": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+    }
+    ```
+
+  </Col>
+</Row>

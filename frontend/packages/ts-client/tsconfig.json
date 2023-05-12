@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "outDir": "./lib",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strictPropertyInitialization": false,
+    "strict": false,
+    "skipLibCheck": true,
+    "declaration": true
+  },
+  "include": ["./src/**/*.ts", "./src/**/*.tsx"],
+  "exclude": ["node_modules"]
+}

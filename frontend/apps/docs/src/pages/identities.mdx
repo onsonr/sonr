@@ -1,0 +1,266 @@
+export const description =
+  "Welcome to our DID Document guide! We know DID documents can be complex, but we're here to help. On this page, we'll walk you through the key concepts and components of DID documents in a simple, friendly, and approachable manner. Let's explore and learn together!"
+
+# Identities
+
+User identities on Sonr are powered by decentralized identifiers (DIDs). DIDs are a new type of identifier that is designed to be globally unique and persistent. They are also self-sovereign, meaning that they are controlled by the user and not a centralized authority.
+
+DID documents are a core part of Sonr's decentralized identity system. They provide a way to manage and verify your identity in a secure and decentralized manner. In this guide, we'll explore the different components of a DID document and how to work with them programmatically. {{ className: 'lead' }}
+
+## The DID Document Model
+
+The DID document model contains all the essential information about an identity, such as its public keys, authentication methods, and service endpoints. It provides a means to prove control over the decentralized identifier (DID) associated with the document.
+
+### Properties
+
+<Properties>
+  <Property name="context" type="repeated string">
+    The JSON-LD context(s) used in the document.
+  </Property>
+  <Property name="id" type="string">
+    The identifier for the DID subject.
+  </Property>
+  <Property name="controller" type="repeated string">
+    The entity/entities controlling the DID subject (optional).
+  </Property>
+  <Property name="verification_method" type="repeated VerificationMethod">
+    The set of verification methods associated with the DID subject (optional).
+  </Property>
+  <Property name="authentication" type="repeated string">
+    The set of authentication methods associated with the DID subject
+    (optional).
+  </Property>
+  <Property name="assertion_method" type="repeated string">
+    The set of assertion methods associated with the DID subject (optional).
+  </Property>
+  <Property name="capability_invocation" type="repeated string">
+    The set of capability invocation methods associated with the DID subject
+    (optional).
+  </Property>
+  <Property name="capability_delegation" type="repeated string">
+    The set of capability delegation methods associated with the DID subject
+    (optional).
+  </Property>
+  <Property name="key_agreement" type="repeated string">
+    The set of key agreement methods associated with the DID subject (optional).
+  </Property>
+  <Property name="service" type="repeated Service">
+    The set of services associated with the DID subject (optional).
+  </Property>
+  <Property name="also_known_as" type="repeated string">
+    The set of identifiers for other personas or identities related to the DID
+    subject (optional).
+  </Property>
+  <Property name="metadata" type="repeated KeyValuePair">
+    Additional metadata related to the DID document (optional).
+  </Property>
+</Properties>
+
+---
+
+## List Identities {{ tag: 'GET', label: '/did' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a paginated list of all DID Documents. By default, a maximum of ten DID Documents are shown per page.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/id">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/id
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new SonrClient(origin)
+
+await client.did.list()
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+	"count": 1,
+	"documents": [{
+		"did": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+		"document": {
+			"context": ["https://www.w3.org/ns/did/v1", "https://docs.sonr.io/identity/1.0"],
+			"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+			"verification_method": [{
+				"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+				"type": "secp256k1",
+				"blockchain_account_id": "idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"
+			}, {
+				"id": "did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw",
+				"type": "Ed25519VerificationKey2018",
+				"controller": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+				"public_key_multibase": "pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk"
+			}],
+			"authentication": ["did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw"],
+			"assertion_method": ["did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"],
+			"also_known_as": ["tester"]
+		}
+	}]
+}
+```
+
+</Col>
+</Row>
+---
+
+## Get Identity {{ tag: 'GET', label: '/id/:did' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a DID Document by its identifier.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/id/:did">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/id/did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new ApiClient(token)
+
+await client.did.get(did:sonr:idx1abc123)
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+	"did": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+	"document": {
+		"context": ["https://www.w3.org/ns/did/v1", "https://docs.sonr.io/identity/1.0"],
+		"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+		"verification_method": [{
+			"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+			"type": "secp256k1",
+			"blockchain_account_id": "idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"
+		}, {
+			"id": "did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw",
+			"type": "Ed25519VerificationKey2018",
+			"controller": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+			"public_key_multibase": "pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk"
+		}],
+		"authentication": ["did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw"],
+		"assertion_method": ["did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"],
+		"also_known_as": ["tester"]
+	}
+}
+```
+
+</Col>
+</Row>
+---
+
+## Get Identity by Alias {{ tag: 'GET', label: '/id/alias/:alias' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a DID Document by its associated alias.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/id/alias/:alias">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/id/alias/tester
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new ApiClient(token)
+
+await client.did.get(example.snr)
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+	"did": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+	"document": {
+		"context": ["https://www.w3.org/ns/did/v1", "https://docs.sonr.io/identity/1.0"],
+		"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+		"verification_method": [{
+			"id": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+			"type": "secp256k1",
+			"blockchain_account_id": "idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"
+		}, {
+			"id": "did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw",
+			"type": "Ed25519VerificationKey2018",
+			"controller": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+			"public_key_multibase": "pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk"
+		}],
+		"authentication": ["did:key:pQECAyYgASFYIH9kXUXwrUV6hjA-VrGQbiepUYG4OncD_edj21ZJnMYeIlggWsBBaUtzmU2yowHR7VRIgUVy37MZVQvXpuW9jgYeZyk#3H0xKvGiCP0df5mK1NDbfQLmgQCGV3W3Uzhh6a1_4Fw"],
+		"assertion_method": ["did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh"],
+		"also_known_as": ["tester"]
+	}
+}
+```
+
+</Col>
+</Row>
+---
+
+## Get Identity by Owner {{ tag: 'GET', label: '/id/owner/:owner' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a DID Document by the owner listed on the Blockchain.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/id/owner/:owner">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/id/owner/idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new ApiClient(token)
+
+await client.did.get(idx1abc123)
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+  "id": "did:sonr:abc123",
+  "publicKey": [
+    {
+      "id": "did:sonr:abc123#key-1",
+      "type": "Ed25519VerificationKey2018",
+      "publicKeyBase58": "..."
+    }
+  ],
+  "alsoKnownAs": ["example.snr"]
+  // ...
+}
+```
+
+</Col>
+</Row>
+---

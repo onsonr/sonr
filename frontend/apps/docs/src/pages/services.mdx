@@ -1,0 +1,299 @@
+export const description =
+'On this page, we’ll dive into the different service endpoints you can use to configure your applications.'
+
+# Services
+Services are essential components in the Sonr peer-to-peer identity and asset management system. They store information about various services provided by developer applications. On this page, we'll dive into the different Service Record endpoints you can use to manage Service Records programmatically. We'll look at how to query, create, update, and delete Service Records. {{ className: 'lead' }}
+
+## The Service Record
+The Service Record model contains all the information about the services provided by developer applications, including the controller, type, origin, and associated endpoints.
+
+### Properties
+
+<Properties>
+  <Property name="id" type="string">
+    Unique identifier for the service record.
+  </Property>
+  <Property name="controller" type="string">
+    The entity controlling the service.
+  </Property>
+  <Property name="type" type="string">
+    The type of the service.
+  </Property>
+  <Property name="origin" type="string">
+    The origin of the service, such as a URL or other endpoint.
+  </Property>
+  <Property name="name" type="string">
+    The name of the service.
+  </Property>
+  <Property name="service_endpoints" type="repeated KeyValuePair">
+    The set of service endpoints associated with the service (optional).
+  </Property>
+  <Property name="metadata" type="repeated KeyValuePair">
+    Additional metadata related to the Service (optional).
+  </Property>
+</Properties>
+
+---
+
+
+## List Services {{ tag: 'GET', label: '/service' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a paginated list of all DID Documents. By default, a maximum of ten DID Documents are shown per page.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/service">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/service
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new SonrClient(origin)
+
+await client.service.list()
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+	"services": [{
+		"id": "localhost",
+		"controller": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+		"type": "LinkedDomains",
+		"origin": "localhost",
+		"name": "Test"
+	}, {
+		"id": "sonr.id",
+		"controller": "did:sonr:idx1swlq72exr74zd7ghsp55965cg6pwsveplq68vh",
+		"type": "LinkedDomains",
+		"origin": "sonr.id",
+		"name": "Sonr ID"
+	}],
+	"success": true
+}
+```
+
+</Col>
+</Row>
+---
+
+## Find Service {{ tag: 'GET', label: '/service/:origin' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to retrieve a DID Document by the owner listed on the Blockchain.
+
+  </Col>
+  <Col sticky>
+
+<CodeGroup title="Request" tag="GET" label="/id/owner/:owner">
+
+```bash {{ title: 'cURL' }}
+curl -G https://highway.build/service/localhost
+```
+
+```js
+import ApiClient from '@sonrhq/ts-client'
+
+const client = new ApiClient(origin)
+await client.service.get(localhost)
+```
+
+</CodeGroup>
+
+```json {{ title: 'Response 200' }}
+{
+	"service": {
+		"id": "localhost",
+		"controller": "did:web:localhost",
+		"type": "LinkedDomains",
+		"origin": "localhost",
+		"name": "Localhost"
+	},
+	"success": true
+}
+```
+</Col>
+</Row>
+---
+
+## Start User Registration {{ tag: 'GET', label: '/service/:origin/register/start' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to create a new User Sonr Identity by using the Service Record on chain as the Relaying party. Refer to [the list](#the-service-record) at the top of this page to see which properties are used to create the Relaying party object.
+
+    ### Required attributes
+
+    <Properties>
+      <Property name="alias" type="string">
+        The doman alias for the new user account
+      </Property>
+    </Properties>
+
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="GET" label="/service/:origin/register/start">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://highway.build/service/localhost/register/start \
+      -d alias=test.snr
+    ```
+
+    ```js
+    import ApiClient from '@sonrhq/ts-client'
+
+    const client = new SonrClient(origin)
+    const identity = await client.service.register('example.snr')
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response 200' }}
+      {
+        "alias": "admin",
+        "attestion_options": {
+          "publicKey": {
+            "rp": {
+              "name": "Localhost",
+              "id": "localhost"
+            },
+            "user": {
+              "name": "Localhost",
+              "displayName": "admin",
+              "id": "YWRtaW4="
+            },
+            "challenge": "Ykc5allXeG9iM04w",
+            "pubKeyCredParams": [{
+              "type": "public-key",
+              "alg": -7
+            }],
+            "timeout": 60000,
+            "authenticatorSelection": {
+              "authenticatorAttachment": "cross-platform",
+              "residentKey": "preferred",
+              "userVerification": "required"
+            },
+            "attestation": "direct"
+          }
+        },
+        "origin": "localhost"
+      }
+    ```
+
+  </Col>
+</Row>
+
+---
+
+## Finish User Registration {{ tag: 'POST', label: '/service/:origin/register/start' }}
+
+<Row>
+  <Col>
+
+    This endpoint allows you to perform an update on an attachment. Currently, the only supported type of update is changing the filename.
+
+  ### Required attributes
+
+    <Properties>
+      <Property name="alias" type="string">
+        The domain alias for the new user account
+      </Property>
+      <Property name="attestion" type="string">
+        The attestion response from the browser `navigator.credentials.create()`
+      </Property>
+    </Properties>
+
+    ---
+    ### Response attributes
+
+    <Properties>
+      <Property name="accounts" type="repeated Account">
+        The newly created account.
+      </Property>
+      <Property name="jwt" type="string">
+        The User JWT access token for authorizing the current user session. This is used for the [Accounts](/accounts), [Mailbox](/mailbox), and [Transactions](/transactions) endpoints.
+      </Property>
+    </Properties>
+  </Col>
+  <Col sticky>
+
+    <CodeGroup title="Request" tag="POST" label="/service/:origin/register/start">
+
+    ```bash {{ title: 'cURL' }}
+    curl https://highway.build/service/localhost/register/finish \
+      -H 'Attestion: {attestion}' \
+      -d alias=test.snr
+    ```
+
+
+    ```js
+    import ApiClient from '@sonrhq/ts-client'
+
+    const client = new SonrClient(origin)
+    const identity = await client.service.register('example.snr')
+    ```
+
+    </CodeGroup>
+
+    ```json {{ title: 'Response' }}
+        {
+      "accounts": [{
+        "address": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+        "did": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+        "coin_type": "CoinType_SONR",
+        "public_key": "A369J+Syr2wOZKuwlQ5QPSS7+t8X0M26+MoCeBsi1DYq",
+        "type": "Sonr/ecdsa-secp256k1"
+      }],
+      "did": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+      "jwt": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkaWQiOiJkaWQ6c29ucjppZHgxd3c2MnVocDB5NjlhOWNnend3aHBnZzJlYXdkYXhycGtweGo2djkiLCJ1c2VybmFtZSI6InRlc3RlciJ9.A9YbAvl-qw_KvTIHYiu5vCHKl91azJyeb-R6ku7vd30",
+      "primary": {
+        "context": [
+          "https://www.w3.org/ns/did/v1",
+          "https://docs.sonr.io/identity/1.0"
+        ],
+        "id": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+        "verification_method": [{
+            "id": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+            "type": "secp256k1",
+            "blockchain_account_id": "idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9"
+          },
+          {
+            "id": "did:key:OWQk-MTBBl58ggZtf71PzsBXQFY",
+            "type": "webauthn/alg-es256",
+            "controller": "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9",
+            "public_key_multibase": "2DLtZ9GymDo1ptTt2yQH8YDw3njAoa9tV554FjDGAbWAJzhMWLWkEkJUN1GT4F8LwXrMf3HeovqX3d8z4MU4p1o7aHsUfUGG88bM1bwL3F",
+            "metadata": [{
+              "key": "attestion_type",
+              "value": "none"
+            }]
+          }
+        ],
+        "authentication": [
+          "did:key:OWQk-MTBBl58ggZtf71PzsBXQFY"
+        ],
+        "assertion_method": [
+          "did:sonr:idx1ww62uhp0y69a9cgzwwhpgg2eawdaxrpkpxj6v9"
+        ],
+        "also_known_as": [
+          "tester"
+        ]
+      },
+      "success": true,
+      "tx_hash": "5E02A1CF3BA4756CFBAB90F35F1F699949DC7A824F40B9F023C9E8A45D3B6B70"
+    }
+    ```
+
+  </Col>
+</Row>
