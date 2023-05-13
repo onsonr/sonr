@@ -22,7 +22,7 @@ export default function WalletPage({ data }) {
         <>
             <CommandMenu open={cmdIsOpen} setOpen={setCmdIsOpen} />
             <div className="hidden flex-col md:flex">
-                <div className="border-b py-1.5 dark:border-gray-700/40 dark:bg-black/60 md:mx-[8%] lg:mx-[20%]">
+                <div className="border-b py-1.5 dark:border-gray-700/40 dark:bg-black/10 md:mx-[8%] lg:mx-[20%]">
                     <div className="flex h-16 items-center px-4">
                         <div className="mr-[2%]">
                             <Logo />
