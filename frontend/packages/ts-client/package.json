@@ -1,22 +1,22 @@
 {
   "name": "@sonrhq/ts-client",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "Typescript client for the Sonr API",
   "author": "team@sonr.network",
   "publish": true,
   "license": "Apache-2.0",
-    "main": "lib/index.js",
-    "types": "lib/index.d.ts",
-    "scripts": {
-      "build": "tsc"
-    },
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "pub": "npm version patch --force && npm publish"
+  },
   "licenses": [
     {
       "type": "Apache-2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0"
     }
   ],
-
   "publishConfig": {
     "access": "public"
   },
