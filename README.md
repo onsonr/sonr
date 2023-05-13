@@ -71,14 +71,14 @@ Sonr utilizes Mintlify to generate documentation from the source code. To view t
 <summary><strong>Command Reference</strong></summary>
 
 ```sh
-* docs:                 Serve the docs locally
+* docs                  Serve the docs locally
 * chain:build:          Build the blockchain                  (aliases: build)
 * chain:generate:       Generate the protobuf files           (aliases: gen)
 * chain:serve:          Serve the blockchain locally          (aliases: serve)
 * motor:android:        Bind the Motor Android Framework      (aliases: android)
 * motor:ios:            Bind the Motor iOS Framework          (aliases: ios)
 * motor:web:            Build the Motor WASM Framework        (aliases: wasm)
-* web:dev:              Run the web app in dev mode           (aliases: web)
+* web                   Run the web app in dev mode           (aliases: web)
 ```
 </details>
 <details>
