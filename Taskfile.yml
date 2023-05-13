@@ -18,13 +18,24 @@ tasks:
       - task --list
   docs:
     desc: Serve the docs locally
-    dir: docs
+    dir: frontend
     summary: |
       Serve Docs Locally
 
       This task will serve the docs locally
     cmds:
-      - mintlify dev
+      - turbo dev --filter=docs
+    interactive: true
+
+  web:
+    desc: Serve the web app locally
+    dir: frontend
+    summary: |
+      Serve Web App Locally
+
+      This task will serve the web app locally
+    cmds:
+      - turbo dev --filter=web
     interactive: true
 
   install:
@@ -126,15 +137,3 @@ tasks:
       This task will sync the blockchain
     cmds:
       - sh .github/scripts/unresolved.sh sonrhq core 26
-
-  web:dev:
-    aliases:
-      - "web"
-    desc: Run the web app in dev mode
-    summary: |
-      Run Web App in Dev Mode
-
-      This task will run the web app in dev mode. It will also install the dependencies
-    dir: web
-    cmds:
-      - yarn dev
