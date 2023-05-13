@@ -199,19 +199,19 @@ export const navigation = [
   {
     title: 'Advanced',
     links: [
-      { title: 'Token Economics', href: '/token' },
-      { title: 'Join the Testnet', href: '/join-network' },
-      { title: 'Frequent Questions', href: '/faq' },
+      { title: 'Token Economics', href: '/advanced/token' },
+      { title: 'Join the Testnet', href: '/advanced/join-network' },
+      { title: 'Frequent Questions', href: '/advanced/faq' },
     ],
   },
   {
     title: 'API Reference',
     links: [
-      { title: 'Identities', href: '/identities' },
-      { title: 'Services', href: '/services' },
-      { title: 'Accounts', href: '/accounts' },
-  //    { title: 'Mailbox', href: '/mailbox' },
-  //    { title: 'Transactions', href: '/transactions' },
+      { title: 'Identities', href: '/reference/identities' },
+      { title: 'Services', href: '/reference/services' },
+      { title: 'Accounts', href: '/reference/accounts' },
+  //    { title: 'Mailbox', href: '/reference/mailbox' },
+  //    { title: 'Transactions', href: '/reference/transactions' },
     ],
   },
 ]
