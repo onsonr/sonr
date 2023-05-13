@@ -100,9 +100,9 @@ curl https://get.ignite.com/sonrhq/core! | sudo bash
 ```
 Production endpoints are available at the following URLs:
 
-- REST API:    [api.sonr.network](https://api.sonr.network)
-- Tendermint:  [rpc.sonr.network](https://rpc.sonr.network)
-- gRPC Server: [grpc.sonr.network](https://grpc.sonr.network)
+- REST API:    [api.sonr.ws](https://api.sonr.ws)
+- Tendermint:  [rpc.sonr.ws](https://rpc.sonr.ws)
+- gRPC Server: [grpc.sonr.ws](https://grpc.sonr.ws)
 
 ## Community
 
