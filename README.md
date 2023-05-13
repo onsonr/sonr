@@ -106,7 +106,7 @@ Production endpoints are available at the following URLs:
 
 ## Community
 
-For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dcrd).
+For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dev-chat).
 
 For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonrhq/core).
 

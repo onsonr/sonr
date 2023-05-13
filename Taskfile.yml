@@ -18,7 +18,6 @@ tasks:
       - task --list
   docs:
     desc: Serve the docs locally
-    dir: frontend
     summary: |
       Serve Docs Locally
 
@@ -29,7 +28,6 @@ tasks:
 
   web:
     desc: Serve the web app locally
-    dir: frontend
     summary: |
       Serve Web App Locally
 
