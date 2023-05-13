@@ -2,7 +2,7 @@
 
 <div style="text-align: center;">
 
-[![Sonr Logo Banner](docs/static/images/gh-banner.png)](https://snr.la/h)
+[![Sonr Logo Banner](.github/images/banner.png)](https://snr.la/h)
 
 [![License](https://img.shields.io/github/license/sonrhq/core)](https://github.com/sonrhq/core)
 [![buddy pipeline](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589/badge.svg?token=79d953e83c8db20019b1af51215b13e9eb2fc52ce5c20cbc881a46ae4437bd4c "buddy pipeline")](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589)
