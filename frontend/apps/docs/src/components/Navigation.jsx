@@ -197,7 +197,15 @@ export const navigation = [
     ],
   },
   {
-    title: 'Reference',
+    title: 'Advanced',
+    links: [
+      { title: 'Token Economics', href: '/token' },
+      { title: 'Join the Testnet', href: '/join-network' },
+      { title: 'Frequent Questions', href: '/faq' },
+    ],
+  },
+  {
+    title: 'API Reference',
     links: [
       { title: 'Identities', href: '/identities' },
       { title: 'Services', href: '/services' },
