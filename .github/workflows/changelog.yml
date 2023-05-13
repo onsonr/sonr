@@ -24,6 +24,8 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install requests
+        pip install openai
+        pip install PyGithub
 
     - name: Generate Changelog
       id: generate_changelog
