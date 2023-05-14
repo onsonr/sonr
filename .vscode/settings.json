@@ -63,6 +63,9 @@
     "!**/.git/hooks": true,
     ".dart_tool": true,
     "**/.classpath": true,
+    "**/.next": true,
+    "**/.turbo": true,
+    "./**/.vscode": true,
     "**/.factorypath": true,
     "**/.flutter-plugins": true,
     "**/.flutter-plugins-dependencies": true,
@@ -75,6 +78,7 @@
     "app.iml": true,
     "Contents.json": true,
     "**/.trunk/*out/": true,
+    "frontend/**/client/lib": true,
     "**/.trunk/*actions/": true,
     "**/.trunk/*logs/": true,
     "**/.trunk/*plugins/": true,
@@ -157,5 +161,16 @@
     "titleBar.inactiveBackground": "#1857a499",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#1857a4"
+  "peacock.color": "#1857a4",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment",
+        "settings": {
+          "fontStyle": "italic"
+        }
+      }
+    ],
+    "comments": ""
+  }
 }

@@ -26,6 +26,16 @@ tasks:
       - turbo dev --filter=docs
     interactive: true
 
+  explorer:
+    desc: Serve the explorer app locally
+    summary: |
+      Serve Explorer App Locally
+
+      This task will serve the explorer app locally
+    cmds:
+      - turbo dev --filter=explorer
+    interactive: true
+
   web:
     desc: Serve the web app locally
     summary: |

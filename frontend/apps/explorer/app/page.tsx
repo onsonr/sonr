@@ -2,7 +2,7 @@ import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
 import { buttonVariants } from "@/components/ui/button"
-import { DidSearchBox } from "@/components/search-box"
+import { ComboboxDemo } from "@/components/search-box"
 
 export default function IndexPage() {
   return (
@@ -11,7 +11,7 @@ export default function IndexPage() {
         Sonr Explorer
       </h1>
       <div className="flex gap-4">
-        <DidSearchBox />
+        <ComboboxDemo />
       </div>
     </section>
   )

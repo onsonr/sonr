@@ -1,13 +1,13 @@
 import { DidDocument } from "./did";
 
-type User = {
+interface User {
     did: string;
     didDocument: DidDocument;
     username: string;
     address: string;
 }
 
-type Account = {
+interface Account {
     // This field represents the unique account address associated with the user. It is typically a hash or an encoded public key, depending on the underlying blockchain or network.
     address: string;
 
@@ -28,7 +28,9 @@ type Account = {
 
     // This field stores the type of the public key. It is used to differentiate between various public key types, such as secp256k1, ed25519, and sr25519.
     type: string;
-};
+}
+
+
 
 export async function derivePrivateKeyFromWebAuthnCredentialAndPin(
     pin: string

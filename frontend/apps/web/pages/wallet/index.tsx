@@ -37,8 +37,8 @@ export default function WalletPage({ data }) {
                 <div className="flex-1 space-y-4 self-center p-8 pt-24">
                     <div className="flex items-center justify-between space-y-2">
                         <div className="p-1">
-                            <h2 className="text-4xl font-bold tracking-tight opacity-80">Welcome, {sonr.user?.username}</h2>
-                            <p className="ml-1 mt-1 font-mono text-sm text-slate-600 dark:text-slate-400">{sonr.user?.did}</p>
+                            <h2 className="text-4xl font-bold tracking-tight opacity-80">Welcome, {sonr.didDocument?.alsoKnownAs[0]}</h2>
+                            <p className="ml-1 mt-1 font-mono text-sm text-slate-600 dark:text-slate-400">{sonr.didDocument?.id}</p>
                         </div>
                         <div className="flex items-center space-x-2">
                             <AccountSwitcher sonr={sonr} />
