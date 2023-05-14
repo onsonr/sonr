@@ -81,6 +81,9 @@ export default class Services {
      * @returns a Promise that resolves to a `RegistrationResponse` object.
      */
     async finishRegistration(alias: string, credential_response: string, challenge: string, ucwId: string): Promise<RegistrationResponse> {
+        if (!credential_response || credential_response.length === 0) {
+            throw new Error("credential_response is required");
+        }
         const [aData, aError] = await trytm(getAxios(false).post(`/service/${this.origin}/register/finish`, null, {
             params: {
                 attestion: credential_response,
@@ -130,6 +133,9 @@ export default class Services {
      * @returns a Promise that resolves to a `LoginResponse` object.
      */
     async finishLogin(alias: string, assertion_response: string): Promise<LoginResponse> {
+        if (!assertion_response || assertion_response.length === 0) {
+            throw new Error("assertion_response is required");
+        }
         const [aData, aError] = await trytm(getAxios(false).post(`/service/${this.origin}/login/finish`, null, {
             params: {
                 alias: alias,

@@ -1,6 +1,6 @@
 {
   "name": "@sonrhq/client",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Typescript client for the Sonr API",
   "author": "team@sonr.network",
   "publish": true,

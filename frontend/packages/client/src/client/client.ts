@@ -108,7 +108,10 @@ export default class SonrClient {
         // Setup address
         this._address = bData.address;
         this._primaryDoc = bData.primary;
-        this._initJwt(bData.jwt);
+        this._jwt = bData.jwt;
+        this.accounts = new Accounts(this._jwt);
+        this.mailbox = new Mailbox(this._jwt);
+        this.staking = new Staking(this._jwt);
         return bData;
     }
 
@@ -136,19 +139,10 @@ export default class SonrClient {
         this._address = bData.address;
         this._primaryDoc = cData.did_document;
         onLoginComplete(cData.did_document.id, cData.did_document, cData.jwt);
-        this._initJwt(cData.jwt);
+        this._jwt = cData.jwt;
+        this.accounts = new Accounts(this._jwt);
+        this.mailbox = new Mailbox(this._jwt);
+        this.staking = new Staking(this._jwt);
         return cData;
-    }
-
-
-    /* The `_initJwt(jwt: string)` function initializes the `jwt` property of the `ApiClient` class
-    with the provided `jwt` string. It also creates new instances of the `Accounts` and `Mailbox`
-    classes with the `jwt` string as a parameter, which allows the `ApiClient` to interact with the
-    Sonr Blockchain using the provided `jwt` token for authentication. */
-    _initJwt(jwt: string) {
-        this._jwt = jwt;
-        this.accounts = new Accounts(jwt);
-        this.mailbox = new Mailbox(jwt);
-        this.staking = new Staking(jwt);
     }
 }
