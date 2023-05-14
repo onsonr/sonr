@@ -2,7 +2,7 @@ package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/sonrhq/core/internal/protocol/middleware"
+	"github.com/sonrhq/core/internal/gateway/middleware"
 )
 
 func ReadInboxMessages(c *fiber.Ctx) error {

@@ -14,7 +14,7 @@ const TabsList = React.forwardRef<
   <TabsPrimitive.List
     ref={ref}
     className={cn(
-      "inline-flex items-center justify-center rounded-3xl bg-slate-100 px-0.5 py-1.5 dark:bg-black/30 dark:drop-shadow-lg dark:border dark:border-gray-700/50",
+      "inline-flex items-center justify-center rounded-3xl bg-slate-100 px-0.5 py-1.5 dark:border dark:border-gray-700/50 dark:bg-black/30 dark:drop-shadow-lg",
       className
     )}
     {...props}
@@ -28,7 +28,7 @@ const TabsTrigger = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <TabsPrimitive.Trigger
     className={cn(
-      "dark:data-[state=active]:bg-slate-800/80 dark:data-[state=active]:ring-2 ring-sonr/50 inline-flex min-w-[100px] items-center justify-center rounded-2xl px-3 py-1.5 text-sm font-medium text-slate-700  transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-xs data-[state=active]:rounded-3xl dark:text-slate-200 dark:data-[state=active]:text-slate-100 mx-1",
+      "ring-sonr/50 data-[state=active]:shadow-xs mx-1 inline-flex min-w-[100px] items-center justify-center rounded-2xl px-3 py-1.5 text-sm font-medium text-slate-700  transition-all disabled:pointer-events-none disabled:opacity-50 data-[state=active]:rounded-3xl data-[state=active]:bg-white data-[state=active]:text-slate-900 dark:text-slate-200 dark:data-[state=active]:bg-slate-800/80 dark:data-[state=active]:text-slate-100 dark:data-[state=active]:ring-2",
       className
     )}
     {...props}

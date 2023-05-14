@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/timeout"
 	"github.com/gofiber/helmet/v2"
 	jwtware "github.com/gofiber/jwt/v3"
+	"github.com/sonrhq/core/internal/gateway/config"
+	"github.com/sonrhq/core/internal/gateway/handler"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/protocol/config"
-	"github.com/sonrhq/core/internal/protocol/handler"
 )
 
 func SetupRoutes(c *config.ProtocolConfig) {

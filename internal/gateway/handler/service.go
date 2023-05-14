@@ -9,8 +9,8 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/internal/gateway/middleware"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/protocol/middleware"
 	"github.com/sonrhq/core/x/identity"
 	"github.com/sonrhq/core/x/service/types"
 )

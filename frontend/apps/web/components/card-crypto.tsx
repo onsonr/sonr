@@ -108,6 +108,12 @@ export function CryptoCardLarge({ address, name, type, className }: CryptoCardPr
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const calculateIconSize = () => {
+        if (windowWidth < 640) return 16;
+        if (windowWidth < 768) return 20;
+        return 22;
+    };
+
     return (
         <div className={cn("bg-clip border-muted-foreground w-full rounded-3xl border sm:w-fit", className)}>
             <div
@@ -121,17 +127,26 @@ export function CryptoCardLarge({ address, name, type, className }: CryptoCardPr
             >
                 <div className="h-[500px] items-center p-8 px-6">
                     <div className="grid grid-cols-4 items-stretch justify-between gap-2 md:gap-8 lg:gap-32">
-                        <div className="col-start-1 ml-auto mt-1 pr-8 text-base font-extrabold text-white/40 sm:text-xl md:text-2xl lg:text-3xl">
+                        <div className={cn("col-start-1 ml-auto mt-1 pr-8 text-base font-extrabold text-white/40",
+                            { 'sm:text-xl': windowWidth >= 640 },
+                            { 'md:text-2xl': windowWidth >= 768 },
+                            { 'lg:text-3xl': windowWidth >= 1024 })}>
                             {type}
                         </div>
-                        <div className="text-white/85 col-start-1 font-mono text-xs font-light sm:text-sm md:text-base lg:text-xl">
+                        <div className={cn("text-white/85 col-start-1 font-mono text-xs font-light",
+                            { 'sm:text-sm': windowWidth >= 640 },
+                            { 'md:text-base': windowWidth >= 768 },
+                            { 'lg:text-xl': windowWidth >= 1024 })}>
                             {address}
                         </div>
-                        <div className="col-start-1 mt-12 text-xs text-white/60 sm:text-base md:text-xl lg:text-2xl">
+                        <div className={cn("col-start-1 mt-12 text-xs text-white/60",
+                            { 'sm:text-base': windowWidth >= 640 },
+                            { 'md:text-xl': windowWidth >= 768 },
+                            { 'lg:text-2xl': windowWidth >= 1024 })}>
                             {name}
                         </div>
                         <div className="col-start-4 ml-4 mt-8">
-                            {getIcon(type, windowWidth < 640 ? 16 : windowWidth < 768 ? 20 : 22)}
+                            {getIcon(type, calculateIconSize())}
                         </div>
                     </div>
                 </div>

@@ -3,8 +3,8 @@ package handler
 import (
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sonrhq/core/internal/gateway/middleware"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/protocol/middleware"
 	"github.com/sonrhq/core/internal/tx/cosmos"
 
 	"google.golang.org/grpc"
