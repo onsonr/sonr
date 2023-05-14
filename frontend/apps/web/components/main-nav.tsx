@@ -20,7 +20,7 @@ export function DashboardNav({
         Wallet
       </Link>
       <Link
-        href="/search"
+        href="/profile"
         className="hover:text-primary text-sm font-medium transition-colors"
       >
         Explorer

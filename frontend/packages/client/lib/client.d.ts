@@ -70,5 +70,4 @@ export default class SonrClient {
      * @returns The `login` function returns a Promise that resolves to a `LoginResponse` object.
      */
     login({ alias, onCredentialSet, onLoginComplete }: SonrLoginProps): Promise<LoginResponse>;
-    _initJwt(jwt: string): void;
 }

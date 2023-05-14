@@ -8,55 +8,32 @@ A Bucket is represented by a document on chain called a `WhereIs`. This document
 ### WhereIs definition
 
 As stated within the `overview`, a `WhereIs` document is the on chain reference to a Bucket. Which hold it's `DID`, `Creator` and `BucketItems`.
+Sure, here's how the given content can be refactored:
 
-```protobuf
-message WhereIs {
-  // DID of the created bucket.
-  string did = 1;
-
-  // Creator of the new bucket
-  string creator = 2;
-
-  // Label of the new bucket.
-  string label = 3;
-
-  // Visibility of the new bucket.
-  BucketVisibility visibility = 4;
-
-  // Role of the creator of the new bucket.
-  BucketRole role = 5;
-
-  // IsActive flag of the new bucket.
-  bool is_active = 6;
-
-  // Content of the new bucket map of DIDs to CIDs.
-  repeated BucketItem content = 7;
-
-  // Timestamp of the new bucket.
-  int64 timestamp = 9;
+```json
+{
+  "did": "<string>",        // DID of the created bucket.
+  "creator": "<string>",    // Creator of the new bucket
+  "label": "<string>",      // Label of the new bucket.
+  "visibility": "<enum>",   // Visibility of the new bucket.
+  "role": "<enum>",         // Role of the creator of the new bucket.
+  "is_active": "<boolean>", // IsActive flag of the new bucket.
+  "content": "<array>",     // Content of the new bucket map of DIDs to CIDs.
+  "timestamp": "<integer>"  // Timestamp of the new bucket.
 }
 ```
 
 ### Bucket Items
 
-a `BucketItem` is a reference to either an [Document](/docs/intro/modules/documents.md), or another bucket itself.
+A `BucketItem` is a JSON object that refers to either a Document, or another bucket itself.
 
-```protobuf
-message BucketItem {
-  // Name of the bucket item.
-  string name = 1;
-
-  // DID of the item. If applicable // optional
-  string uri = 2;
-
-  // Timestamp of the last update. // optional
-  int64 timestamp = 3;
-
-  // Type of the resource
-  ResourceIdentifier type = 4;
-
-  // References the schema and item within the bucket is associated with. Bucket items do not need to use the same schema reference // optional
-  string schema_did = 5;
+```json
+{
+  "name": "<string>",       // Name of the bucket item.
+  "uri": "<string>",        // DID of the item. If applicable // optional
+  "timestamp": "<integer>", // Timestamp of the last update. // optional
+  "type": "<enum>",         // Type of the resource
+  "schema_did": "<string>"  // References the schema and item within the bucket is associated with. Bucket items do not need to use the same schema reference // optional
 }
 ```
 
@@ -72,22 +49,19 @@ message BucketItem {
 }
 ```
 
-# Accessing Bucket Content
+## Accessing Bucket Content
 
-When querying bucket item which is an object, the following will be returned in a familiar form based on the given platform / motor-sdk version:
+When querying a bucket item which is an object, the following will be returned in a familiar form based on the given platform / motor-sdk version:
 
-```protobuf
-message BucketContent {
-  // Raw content serialized to bytes
-  bytes item = 1;
-  // Content id a CID, DID, or unspecified
-  string id = 2;
-  sonrhq.sonr.bucket.ResourceIdentifier content_type = 3;
+```json
+{
+  "item": "<bytes>",   // Raw content serialized to bytes
+  "id": "<string>",    // Content id a CID, DID, or unspecified
+  "content_type": "<enum>" // sonrhq.sonr.bucket.ResourceIdentifier
 }
 ```
 
 Where `item` is a `Base64` encoded string of the `Document` queried for. When content is resolved it should be decoded before attempting to convert it to JSON.
-**Example**
 
 ### Querying by schema
 

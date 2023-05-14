@@ -76,6 +76,9 @@ class Services {
      * @returns a Promise that resolves to a `RegistrationResponse` object.
      */
     async finishRegistration(alias, credential_response, challenge, ucwId) {
+        if (!credential_response || credential_response.length === 0) {
+            throw new Error("credential_response is required");
+        }
         const [aData, aError] = await (0, try_1.trytm)((0, utils_1.getAxios)(false).post(`/service/${this.origin}/register/finish`, null, {
             params: {
                 attestion: credential_response,
@@ -123,6 +126,9 @@ class Services {
      * @returns a Promise that resolves to a `LoginResponse` object.
      */
     async finishLogin(alias, assertion_response) {
+        if (!assertion_response || assertion_response.length === 0) {
+            throw new Error("assertion_response is required");
+        }
         const [aData, aError] = await (0, try_1.trytm)((0, utils_1.getAxios)(false).post(`/service/${this.origin}/login/finish`, null, {
             params: {
                 alias: alias,
