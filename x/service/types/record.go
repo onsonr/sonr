@@ -85,9 +85,9 @@ func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []prot
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	return protocol.RelyingPartyEntity{
-		ID:   s.Origin,
+		ID:   s.Id,
 		CredentialEntity: protocol.CredentialEntity{
-			Name: s.Origin,
+			Name: s.Name,
 		},
 	}
 }

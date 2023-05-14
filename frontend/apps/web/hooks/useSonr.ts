@@ -3,11 +3,11 @@
 import * as React from 'react';
 import { useUser } from './useUser';
 
-import { SonrClient } from '@sonrhq/ts-client';
+import { SonrClient } from '../../../packages/client/lib';
 
-import { DidDocument, QueryAliasResponse } from '@sonrhq/ts-client/lib/types';
-import { User } from '@sonrhq/ts-client/lib/types/user';
-import { SonrLoginProps, SonrRegisterProps } from '@sonrhq/ts-client/lib/types/props';
+import { DidDocument, QueryAliasResponse } from '../../../packages/client/lib/types';
+import { User } from '../../../packages/client/lib/types/user';
+import { SonrLoginProps, SonrRegisterProps } from '../../../packages/client/lib/types/props';
 
 
 

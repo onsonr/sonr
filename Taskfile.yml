@@ -59,7 +59,7 @@ tasks:
     deps:
       - generate
 
-  serve:log:
+  chain:
     desc: Serve the blockchain locally with verbose logging
     aliases:
       - "srv"

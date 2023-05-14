@@ -7,8 +7,8 @@ import { DashboardNav } from "@/components/main-nav"
 import { useSonr } from "@/hooks/useSonr"
 import { DIDProfile } from "@/components/explorer/did-profile"
 import { useEffect, useState } from "react"
-import { DidDocument } from "@sonrhq/ts-client/lib/types"
-import { SonrClient } from "@sonrhq/ts-client"
+import { DidDocument } from "../../../../packages/client/lib/types"
+import { SonrClient } from "../../../../packages/client/lib"
 import useSWR, { SWRConfig, preload } from 'swr'
 
 

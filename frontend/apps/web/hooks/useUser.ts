@@ -1,4 +1,4 @@
-import { User } from '@sonrhq/ts-client/lib/types/user';
+import { User } from '../../../packages/client/lib/types/user';
 import * as React from 'react';
 
 type UseUser = [

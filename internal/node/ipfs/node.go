@@ -19,6 +19,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
+	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/node/config"
 	types "github.com/sonrhq/core/types/common"
 )
@@ -226,7 +227,7 @@ func (r *LocalIpfs) LoadDocsStore(username string, docsOpts *iface.CreateDocumen
 	if err != nil {
 		return nil, err
 	}
-	return r.orbitDb.Docs(r.ctx, addr, nil)
+	return r.orbitDb.Docs(r.ctx, addr, defaultDBOpts())
 }
 
 // GetEventLogStore creates or loads an event log database from given name
@@ -235,7 +236,7 @@ func (r *LocalIpfs) LoadEventLogStore(username string) (iface.EventLogStore, err
 	if err != nil {
 		return nil, err
 	}
-	return r.orbitDb.Log(r.ctx, addr, nil)
+	return r.orbitDb.Log(r.ctx, addr, defaultDBOpts())
 }
 
 // GetKeyValueStore creates or loads a key value database from given name
@@ -244,5 +245,23 @@ func (r *LocalIpfs) LoadKeyValueStore(username string) (iface.KeyValueStore, err
 	if err != nil {
 		return nil, err
 	}
-	return r.orbitDb.KeyValue(r.ctx, addr, nil)
+	return r.orbitDb.KeyValue(r.ctx, addr, defaultDBOpts())
+}
+
+// defaultDBOpts returns the default options for creating a database
+func defaultDBOpts() *iface.CreateDBOptions {
+	// Check if the orbitdb directory exists
+	overwrite := true
+	create := false
+	orbP := local.Context().OrbitDBPath
+	if _, err := os.Stat(orbP); os.IsNotExist(err) {
+		create = true
+	}
+
+	// Create the orbitdb directory if it doesn't exist
+	return &iface.CreateDBOptions{
+		Directory: &orbP,
+		Overwrite: &overwrite,
+		Create:    &create,
+	}
 }

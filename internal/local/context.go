@@ -22,6 +22,7 @@ type LocalContext struct {
 	HomeDir                string
 	NodeHome               string
 	IPFSRepoPath           string
+	OrbitDBPath            string
 	Rendevouz              string
 	BsMultiaddrs           []string
 	isProd                 bool
@@ -53,6 +54,7 @@ func Context(opts ...Option) LocalContext {
 		HomeDir:                filepath.Join(getHomeDir()),
 		NodeHome:               filepath.Join(getHomeDir(), ".sonr"),
 		IPFSRepoPath:           filepath.Join(getHomeDir(), ".sonr", "adapters", "ipfs"),
+		OrbitDBPath:            filepath.Join(getHomeDir(), ".sonr", "adapters", "orbitdb"),
 		Rendevouz:              defaultRendezvousString,
 		BsMultiaddrs:           defaultBootstrapMultiaddrs,
 	}

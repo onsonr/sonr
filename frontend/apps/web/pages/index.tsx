@@ -4,7 +4,7 @@ import Head from "next/head"
 import { ClaimAccount } from "@/components/landing/claim-account"
 import va from '@vercel/analytics';
 import React, { useEffect } from "react"
-import { DidDocument } from "@sonrhq/ts-client/lib/types"
+import { DidDocument } from "../../../packages/client/lib/types"
 import { Organization } from "@/types/org"
 import { WelcomeAccount } from "@/components/landing/welcome-account"
 import { Hero, HeroTitle, HeroSubtitle } from "@/components/landing/sections/hero"

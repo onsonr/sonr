@@ -18,7 +18,7 @@ import { useSonr } from "@/hooks/useSonr"
 
 import { Separator } from "@/components/ui/separator"
 import Link from "next/link"
-import { DidDocument } from "@sonrhq/ts-client/lib/types"
+import { DidDocument } from "../../../../packages/client/lib/types"
 import { Organization } from '@/types/org';
 import va from "@vercel/analytics"
 

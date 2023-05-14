@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 import React from "react"
-import { DidDocument } from "@sonrhq/ts-client/lib/types"
+import { DidDocument } from "../../../../packages/client/lib/types"
 
 
 interface DidDocumentProps {

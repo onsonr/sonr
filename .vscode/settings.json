@@ -80,6 +80,7 @@
     "**/.trunk/*plugins/": true,
     "**/node_modules": true,
     "types/common": true,
+    "frontend/apps/web/tailwind.config.js": true,
     "types/common/info.pb.go": true,
     "types/crypto/vc.pb.go": true,
     "types/crypto/coin.pb.go": true,
@@ -98,7 +99,14 @@
     "scripts": true,
     "proto/buf.lock": true,
     "go.sum": true,
-    "frontend/apps/web/tailwind.config.js": true
+    "core.code-workspace": true,
+    "package-lock.json": true,
+    "turbo.json": false,
+    ".eslintrc.js": true,
+    "buf.work.yaml": true,
+    "Dockerfile": true,
+    "Makefile": true,
+    "package.json": false
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -129,5 +137,25 @@
   "explorerExclude.backup": {},
   "go.autocompleteUnimportedPackages": true,
   "go.formatTool": "default",
-  "go.lintTool": "golint"
+  "go.lintTool": "golint",
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#1f6fd0",
+    "activityBar.background": "#1f6fd0",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#ee90bb",
+    "activityBarBadge.foreground": "#15202b",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#1f6fd0",
+    "statusBar.background": "#1857a4",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#1f6fd0",
+    "statusBarItem.remoteBackground": "#1857a4",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#1857a4",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#1857a499",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#1857a4"
 }

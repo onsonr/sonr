@@ -50,7 +50,6 @@ require (
 
 require (
 	github.com/Focinfi/go-dns-resolver v1.0.1
-	github.com/cosmos/gogoproto v1.4.2
 	github.com/gofiber/fiber/v2 v2.44.0
 	github.com/gofiber/helmet/v2 v2.2.25
 	github.com/gofiber/jwt/v3 v3.3.7

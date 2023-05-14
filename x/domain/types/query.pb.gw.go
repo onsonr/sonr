@@ -497,15 +497,15 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "params"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TLDRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "domain", "tld_record", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_TLDRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "domain", "tld_record", "index"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_TLDRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "tld_record"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_TLDRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "tld_record"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SLDRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "domain", "sld_record", "index"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SLDRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "domain", "sld_record", "index"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SLDRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "sld_record"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SLDRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "domain", "sld_record"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

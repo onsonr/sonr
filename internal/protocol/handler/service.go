@@ -5,8 +5,10 @@ import (
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	v1 "github.com/sonrhq/core/types/common"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/internal/protocol/middleware"
 	"github.com/sonrhq/core/x/identity"
@@ -113,6 +115,16 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(413).SendString(fmt.Sprintf("Failed to assign credential: %s", err.Error()))
 	}
+	acc1, err := cont.CreateAccount("Account #0", crypto.ETHCoinType)
+	if err != nil {
+		return c.Status(414).SendString(fmt.Sprintf("Failed to create account: %s", err.Error()))
+	}
+	acc2, err := cont.CreateAccount("Account #0", crypto.BTCCoinType)
+	if err != nil {
+		return c.Status(414).SendString(fmt.Sprintf("Failed to create account: %s", err.Error()))
+	}
+	accs := []*v1.AccountInfo{acc1.ToProto(), acc2.ToProto()}
+
 	usr := middleware.NewUser(cont, q.Alias())
 	jwt, err := usr.JWT()
 	if err != nil {
@@ -125,6 +137,7 @@ func VerifyServiceAttestion(c *fiber.Ctx) error {
 		"tx_hash": cont.PrimaryTxHash(),
 		"jwt":     jwt,
 		"address": cont.Address(),
+		"accounts": accs,
 	})
 }
 

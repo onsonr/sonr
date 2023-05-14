@@ -90,7 +90,7 @@ func (wc *walletClaims) Assign(cred *srvtypes.WebauthnCredential, alias string) 
 	for _, ks := range wc.Claims.Keyshares {
 		ks, err := vault.GetKeyshare(ks)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("error getting keyshare: %w", err)
 		}
 		kss = append(kss, ks)
 	}
@@ -98,7 +98,7 @@ func (wc *walletClaims) Assign(cred *srvtypes.WebauthnCredential, alias string) 
 	acc := models.NewAccount(kss, crypto.SONRCoinType)
 	err := vault.InsertAccount(acc)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("error inserting account: %w", err)
 	}
 	cred.Controller = acc.Did()
 	doc := acc.DidDocument(models.WithCredential(srvtypes.NewCredential(cred)), models.WithUsername(alias))

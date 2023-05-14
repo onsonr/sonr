@@ -5,7 +5,7 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "pub": "cd frontend/packages/ts-client && npm run pub"
+    "pub": "cd frontend/packages/client && npm run pub"
 
   },
   "devDependencies": {

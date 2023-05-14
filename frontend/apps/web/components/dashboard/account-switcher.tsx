@@ -40,7 +40,7 @@ import {
 } from "@/components/ui/select"
 
 import { Sonr } from "@/hooks/useSonr"
-import { Account } from "@sonrhq/ts-client/lib/types/user"
+import { Account } from "../../../../packages/client/lib/types/user"
 import va from "@vercel/analytics"
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<typeof PopoverTrigger>

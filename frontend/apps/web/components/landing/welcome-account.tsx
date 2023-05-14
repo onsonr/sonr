@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/card"
 
 import { CryptoCard } from "@/components/card-crypto"
-import { DidDocument } from "@sonrhq/ts-client/lib/types"
+import { DidDocument } from "../../../../packages/client/lib/types"
 import { Organization } from "@/types/org"
 
 export interface WelcomeAccountProps {
