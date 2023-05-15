@@ -4,7 +4,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/internal/crypto/mpc"
 	"github.com/sonrhq/core/x/identity/internal/controller"
-	"github.com/sonrhq/core/x/identity/internal/vault"
+	"github.com/sonrhq/core/internal/vault"
 	"github.com/sonrhq/core/x/identity/types"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 )
