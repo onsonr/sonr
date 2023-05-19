@@ -25,28 +25,28 @@ func TestServiceRecordQuerySingle(t *testing.T) {
 	msgs := createNServiceRecord(keeper, ctx, 2)
 	for _, tc := range []struct {
 		desc     string
-		request  *types.QueryGetServiceRecordRequest
-		response *types.QueryGetServiceRecordResponse
+		request  *types.QueryServiceRecordRequest
+		response *types.QueryServiceRecordResponse
 		err      error
 	}{
 		{
 			desc: "First",
-			request: &types.QueryGetServiceRecordRequest{
-				Id: msgs[0].Id,
+			request: &types.QueryServiceRecordRequest{
+				Origin: msgs[0].Id,
 			},
-			response: &types.QueryGetServiceRecordResponse{ServiceRecord: msgs[0]},
+			response: &types.QueryServiceRecordResponse{ServiceRecord: msgs[0]},
 		},
 		{
 			desc: "Second",
-			request: &types.QueryGetServiceRecordRequest{
-				Id: msgs[1].Id,
+			request: &types.QueryServiceRecordRequest{
+				Origin: msgs[1].Id,
 			},
-			response: &types.QueryGetServiceRecordResponse{ServiceRecord: msgs[1]},
+			response: &types.QueryServiceRecordResponse{ServiceRecord: msgs[1]},
 		},
 		{
 			desc: "KeyNotFound",
-			request: &types.QueryGetServiceRecordRequest{
-				Id: strconv.Itoa(100000),
+			request: &types.QueryServiceRecordRequest{
+				Origin: strconv.Itoa(100000),
 			},
 			err: status.Error(codes.NotFound, "not found"),
 		},
@@ -75,8 +75,8 @@ func TestServiceRecordQueryPaginated(t *testing.T) {
 	wctx := sdk.WrapSDKContext(ctx)
 	msgs := createNServiceRecord(keeper, ctx, 5)
 
-	request := func(next []byte, offset, limit uint64, total bool) *types.QueryAllServiceRecordRequest {
-		return &types.QueryAllServiceRecordRequest{
+	request := func(next []byte, offset, limit uint64, total bool) *types.ListServiceRecordsRequest {
+		return &types.ListServiceRecordsRequest{
 			Pagination: &query.PageRequest{
 				Key:        next,
 				Offset:     offset,
@@ -88,7 +88,7 @@ func TestServiceRecordQueryPaginated(t *testing.T) {
 	t.Run("ByOffset", func(t *testing.T) {
 		step := 2
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.ServiceRecordAll(wctx, request(nil, uint64(i), uint64(step), false))
+			resp, err := keeper.ListServiceRecords(wctx, request(nil, uint64(i), uint64(step), false))
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.ServiceRecord), step)
 			require.Subset(t,
@@ -101,7 +101,7 @@ func TestServiceRecordQueryPaginated(t *testing.T) {
 		step := 2
 		var next []byte
 		for i := 0; i < len(msgs); i += step {
-			resp, err := keeper.ServiceRecordAll(wctx, request(next, 0, uint64(step), false))
+			resp, err := keeper.ListServiceRecords(wctx, request(next, 0, uint64(step), false))
 			require.NoError(t, err)
 			require.LessOrEqual(t, len(resp.ServiceRecord), step)
 			require.Subset(t,
@@ -112,7 +112,7 @@ func TestServiceRecordQueryPaginated(t *testing.T) {
 		}
 	})
 	t.Run("Total", func(t *testing.T) {
-		resp, err := keeper.ServiceRecordAll(wctx, request(nil, 0, 0, true))
+		resp, err := keeper.ListServiceRecords(wctx, request(nil, 0, 0, true))
 		require.NoError(t, err)
 		require.Equal(t, len(msgs), int(resp.Pagination.Total))
 		require.ElementsMatch(t,
@@ -121,7 +121,7 @@ func TestServiceRecordQueryPaginated(t *testing.T) {
 		)
 	})
 	t.Run("InvalidRequest", func(t *testing.T) {
-		_, err := keeper.ServiceRecordAll(wctx, nil)
+		_, err := keeper.ListServiceRecords(wctx, nil)
 		require.ErrorIs(t, err, status.Error(codes.InvalidArgument, "invalid request"))
 	})
 }

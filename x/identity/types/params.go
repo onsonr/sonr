@@ -14,16 +14,20 @@ func ParamKeyTable() paramtypes.KeyTable {
 // NewParams creates a new Params instance
 func NewParams() Params {
 	return Params{
-		DidBaseContext:                  "https://www.w3.org/ns/did/v1",
-		DidMethodContext:                "https://docs.sonr.io/identity/1.0",
-		DidMethodName:                   "sonr",
-		DidMethodVersion:                "0.6.7",
-		DidNetwork:                      "devnet",
-		IpfsGateway:                     "https://sonr.space/ipfs",
-		IpfsApi:                         "https://api.sonr.space",
-		WebauthnAttestionPreference:     "direct",
-		WebauthnAuthenticatorAttachment: "platform",
-		WebauthnTimeout:                 60000,
+		DidBaseContext:          "https://www.w3.org/ns/did/v1",
+		AcccountDiscoveryReward: 1,
+		AccountDidMethodName:    "sonr",
+		AccountDidMethodContext: "https://docs.sonr.io/identity/1.0",
+		SupportedDidMethods: []string{
+			"sonr",
+			"btcr",
+			"ethr",
+			"web",
+			"key",
+			"sov",
+			"webauthn",
+		},
+		MaximumIdentityAliases: 2,
 	}
 }
 
@@ -40,4 +44,13 @@ func (p *Params) ParamSetPairs() paramtypes.ParamSetPairs {
 // Validate validates the set of params
 func (p Params) Validate() error {
 	return nil
+}
+
+func (p Params) IsSupportedDidMethod(method string) bool {
+	for _, m := range p.SupportedDidMethods {
+		if m == method {
+			return true
+		}
+	}
+	return false
 }

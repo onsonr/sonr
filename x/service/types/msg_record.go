@@ -6,32 +6,32 @@ import (
 )
 
 const (
-	TypeMsgCreateServiceRecord = "create_service_record"
-	TypeMsgUpdateServiceRecord = "update_service_record"
-	TypeMsgDeleteServiceRecord = "delete_service_record"
+	TypeMsgRegisterServiceRecord = "register_service_record"
+	TypeMsgUpdateServiceRecord   = "update_service_record"
+	TypeMsgBurnServiceRecord     = "burn_service_record"
 )
 
-var _ sdk.Msg = &MsgCreateServiceRecord{}
+var _ sdk.Msg = &MsgRegisterServiceRecord{}
 
-func NewMsgCreateServiceRecord(
+func NewMsgRegisterServiceRecord(
 	Controller string,
 	record ServiceRecord,
-) *MsgCreateServiceRecord {
-	return &MsgCreateServiceRecord{
+) *MsgRegisterServiceRecord {
+	return &MsgRegisterServiceRecord{
 		Controller: Controller,
 		Record:     &record,
 	}
 }
 
-func (msg *MsgCreateServiceRecord) Route() string {
+func (msg *MsgRegisterServiceRecord) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgCreateServiceRecord) Type() string {
-	return TypeMsgCreateServiceRecord
+func (msg *MsgRegisterServiceRecord) Type() string {
+	return TypeMsgRegisterServiceRecord
 }
 
-func (msg *MsgCreateServiceRecord) GetSigners() []sdk.AccAddress {
+func (msg *MsgRegisterServiceRecord) GetSigners() []sdk.AccAddress {
 	Controller, err := sdk.AccAddressFromBech32(msg.Controller)
 	if err != nil {
 		panic(err)
@@ -39,12 +39,12 @@ func (msg *MsgCreateServiceRecord) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{Controller}
 }
 
-func (msg *MsgCreateServiceRecord) GetSignBytes() []byte {
+func (msg *MsgRegisterServiceRecord) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgCreateServiceRecord) ValidateBasic() error {
+func (msg *MsgRegisterServiceRecord) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Controller)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid Controller address (%s)", err)
@@ -94,27 +94,27 @@ func (msg *MsgUpdateServiceRecord) ValidateBasic() error {
 	return nil
 }
 
-var _ sdk.Msg = &MsgDeleteServiceRecord{}
+var _ sdk.Msg = &MsgBurnServiceRecord{}
 
-func NewMsgDeleteServiceRecord(
+func NewMsgBurnServiceRecord(
 	Controller string,
 	index string,
 
-) *MsgDeleteServiceRecord {
-	return &MsgDeleteServiceRecord{
+) *MsgBurnServiceRecord {
+	return &MsgBurnServiceRecord{
 		Controller: Controller,
 		Id:         index,
 	}
 }
-func (msg *MsgDeleteServiceRecord) Route() string {
+func (msg *MsgBurnServiceRecord) Route() string {
 	return RouterKey
 }
 
-func (msg *MsgDeleteServiceRecord) Type() string {
-	return TypeMsgDeleteServiceRecord
+func (msg *MsgBurnServiceRecord) Type() string {
+	return TypeMsgBurnServiceRecord
 }
 
-func (msg *MsgDeleteServiceRecord) GetSigners() []sdk.AccAddress {
+func (msg *MsgBurnServiceRecord) GetSigners() []sdk.AccAddress {
 	Controller, err := sdk.AccAddressFromBech32(msg.Controller)
 	if err != nil {
 		panic(err)
@@ -122,12 +122,12 @@ func (msg *MsgDeleteServiceRecord) GetSigners() []sdk.AccAddress {
 	return []sdk.AccAddress{Controller}
 }
 
-func (msg *MsgDeleteServiceRecord) GetSignBytes() []byte {
+func (msg *MsgBurnServiceRecord) GetSignBytes() []byte {
 	bz := ModuleCdc.MustMarshalJSON(msg)
 	return sdk.MustSortJSON(bz)
 }
 
-func (msg *MsgDeleteServiceRecord) ValidateBasic() error {
+func (msg *MsgBurnServiceRecord) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Controller)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid Controller address (%s)", err)

@@ -12,23 +12,36 @@ option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Query defines the gRPC querier service.
 service Query {
-
   // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonrhq/core/service/params";
+    option (google.api.http).get = "/sonr/params/service";
+  }
 
+  rpc ListServiceRecords (ListServiceRecordsRequest) returns (ListServiceRecordsResponse) {
+    option (google.api.http).get = "/sonr/service";
   }
 
   // Queries a list of ServiceRecord items.
-  rpc ServiceRecord    (QueryGetServiceRecordRequest) returns (QueryGetServiceRecordResponse) {
-    option (google.api.http).get = "/sonr/core/service/record/{id}";
-
+  rpc ServiceRecord (QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
+    option (google.api.http).get = "/sonr/service/{origin}";
   }
-  rpc ServiceRecordAll (QueryAllServiceRecordRequest) returns (QueryAllServiceRecordResponse) {
-    option (google.api.http).get = "/sonr/core/service/record";
 
+  // Queries a list of ServiceRelationships items.
+  rpc ServiceRelationship (QueryGetServiceRelationshipRequest) returns (QueryGetServiceRelationshipResponse) {
+    option (google.api.http).get = "/sonr/service/{origin}/relationships";
+  }
+
+  // Queries a list of GetServiceAttestion items.
+  rpc ServiceAttestion (QueryGetServiceAttestionRequest) returns (QueryGetServiceAttestionResponse) {
+    option (google.api.http).get = "/sonr/service/{origin}/register/start";
+  }
+
+  // Queries a list of GetServiceAssertion items.
+  rpc ServiceAssertion (QueryGetServiceAssertionRequest) returns (QueryGetServiceAssertionResponse) {
+    option (google.api.http).get = "/sonr/service/{origin}/login/start";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
@@ -39,20 +52,55 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetServiceRecordRequest {
-  string id = 1;
+message QueryServiceRecordRequest {
+  string origin = 1;
 }
 
-message QueryGetServiceRecordResponse {
+message QueryServiceRecordResponse {
   ServiceRecord serviceRecord = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryAllServiceRecordRequest {
+message ListServiceRecordsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message QueryAllServiceRecordResponse {
+message ListServiceRecordsResponse {
   repeated ServiceRecord                          serviceRecord = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+}
+
+message QueryGetServiceRelationshipRequest {
+  string origin = 1;
+}
+
+message QueryGetServiceRelationshipResponse {
+  ServiceRelationship ServiceRelationships = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetServiceAttestionRequest {
+  string origin = 1;
+  string alias = 2; //optional
+  bool is_mobile = 3; //optional
+}
+
+message QueryGetServiceAttestionResponse {
+  string alias = 1;
+  string attestion_options = 2;
+  string origin = 3;
+  string challenge = 4;
+  uint64 ucw_id = 5;
+}
+
+message QueryGetServiceAssertionRequest {
+  string origin = 1;
+  string did = 2; //optional
+  bool is_mobile = 3; //optional
+}
+
+message QueryGetServiceAssertionResponse {
+  string did = 1;
+  string assertion_options = 2;
+  string origin = 3;
+  string challenge = 4;
 }
 

@@ -44,4 +44,3 @@ validators:
     moniker: sonr-testnet-0
   client:
     output: json
-  home: ~/.sonr

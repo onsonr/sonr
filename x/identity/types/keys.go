@@ -22,3 +22,12 @@ const (
 	ClaimableWalletKey      = "ClaimableWallet/value/"
 	ClaimableWalletCountKey = "ClaimableWallet/count/"
 )
+
+var DidMethodKeyMap = map[string]string{
+	"sonr":     SonrIdentityPrefix,
+	"ethr":     EthereumIdentityPrefix,
+	"btcr":     BitcoinIdentityPrefix,
+	"webauthn": AuthenticationKeyPrefix,
+	"key":      KeyAgreementKeyPrefix,
+	"sov":      CapabilityDelegationKeyPrefix,
+}

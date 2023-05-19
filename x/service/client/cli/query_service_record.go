@@ -23,11 +23,11 @@ func CmdListServiceRecord() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllServiceRecordRequest{
+			params := &types.ListServiceRecordsRequest{
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.ServiceRecordAll(context.Background(), params)
+			res, err := queryClient.ListServiceRecords(context.Background(), params)
 			if err != nil {
 				return err
 			}
@@ -54,8 +54,8 @@ func CmdShowServiceRecord() *cobra.Command {
 
 			argId := args[0]
 
-			params := &types.QueryGetServiceRecordRequest{
-				Id: argId,
+			params := &types.QueryServiceRecordRequest{
+				Origin: argId,
 			}
 
 			res, err := queryClient.ServiceRecord(context.Background(), params)

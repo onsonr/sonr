@@ -61,6 +61,7 @@ func DefaultGenesis() *GenesisState {
 				Name:       "Sonr Network",
 			},
 		},
+		ServiceRelationshipsList: []ServiceRelationship{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -78,6 +79,14 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicated index for serviceRecord")
 		}
 		serviceRecordIndexMap[index] = struct{}{}
+	}
+	// Check for duplicated ID in serviceRelationships
+	serviceRelationshipsIdMap := make(map[string]bool)
+	for _, elem := range gs.ServiceRelationshipsList {
+		if _, ok := serviceRelationshipsIdMap[elem.Did]; ok {
+			return fmt.Errorf("duplicated id for serviceRelationships")
+		}
+		serviceRelationshipsIdMap[elem.Did] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

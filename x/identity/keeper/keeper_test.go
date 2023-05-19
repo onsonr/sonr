@@ -17,12 +17,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func RemoveIndex(s []types.DidDocument, index int) []types.DidDocument {
+func RemoveIndex(s []types.Identity, index int) []types.Identity {
 	return append(s[:index], s[index+1:]...)
 }
 
-func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.DidDocument {
-	items := make([]types.DidDocument, n)
+func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.Identity {
+	items := make([]types.Identity, n)
 	for i := range items {
 		id := fmt.Sprintf("did:snr:%s%d", prefix, i)
 		items[i].Id = id
@@ -30,12 +30,8 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 			fmt.Sprintf("FirstAka%d", i),
 			fmt.Sprintf("SecondAka%d", i),
 		}
-		items[i].VerificationMethod = []*types.VerificationMethod{
-			{
-				Id: fmt.Sprintf("%s#Key", id),
-			},
-		}
-		keeper.SetPrimaryIdentity(ctx, items[i])
+
+		keeper.SetDidDocument(ctx, items[i])
 	}
 	return items
 }
@@ -46,7 +42,7 @@ type KeeperTestSuite struct {
 	ctx       sdk.Context
 	wCtx      context.Context
 	keeper    *keeper.Keeper
-	docs      []types.DidDocument
+	docs      []types.Identity
 	msgServer types.MsgServer
 }
 
@@ -62,13 +58,13 @@ func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DidDocument {
-	items := make([]types.DidDocument, n)
+func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Identity {
+	items := make([]types.Identity, n)
 	for i := range items {
 		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
 
-		keeper.SetPrimaryIdentity(ctx, items[i])
+		keeper.SetDidDocument(ctx, items[i])
 	}
 	return items
 }
@@ -78,7 +74,7 @@ func (suite *KeeperTestSuite) TestDidDocumentGet() {
 	ctx := suite.ctx
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetPrimaryIdentity(ctx,
+		rst, found := keeper.GetDidDocument(ctx,
 			item.Id,
 		)
 		suite.Assert().True(found)
@@ -86,21 +82,6 @@ func (suite *KeeperTestSuite) TestDidDocumentGet() {
 			nullify.Fill(&item),
 			nullify.Fill(&rst),
 		)
-	}
-}
-
-func (suite *KeeperTestSuite) TestDidDocumentRemove() {
-	keeper := suite.keeper
-	ctx := suite.ctx
-	items := createNDidDocument(keeper, ctx, 10)
-	for _, item := range items {
-		keeper.RemovePrimaryIdentity(ctx,
-			item.Id,
-		)
-		_, found := keeper.GetPrimaryIdentity(ctx,
-			item.Id,
-		)
-		suite.Assert().False(found)
 	}
 }
 

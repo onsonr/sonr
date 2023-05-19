@@ -11,18 +11,18 @@ import (
 func TestMsgCreateServiceRecord_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgCreateServiceRecord
+		msg  MsgRegisterServiceRecord
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgCreateServiceRecord{
+			msg: MsgRegisterServiceRecord{
 				Controller: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgCreateServiceRecord{
+			msg: MsgRegisterServiceRecord{
 				Controller: sample.AccAddress(),
 			},
 		},
@@ -70,21 +70,21 @@ func TestMsgUpdateServiceRecord_ValidateBasic(t *testing.T) {
 	}
 }
 
-func TestMsgDeleteServiceRecord_ValidateBasic(t *testing.T) {
+func TestMsgBurnServiceRecord_ValidateBasic(t *testing.T) {
 	tests := []struct {
 		name string
-		msg  MsgDeleteServiceRecord
+		msg  MsgBurnServiceRecord
 		err  error
 	}{
 		{
 			name: "invalid address",
-			msg: MsgDeleteServiceRecord{
+			msg: MsgBurnServiceRecord{
 				Controller: "invalid_address",
 			},
 			err: sdkerrors.ErrInvalidAddress,
 		}, {
 			name: "valid address",
-			msg: MsgDeleteServiceRecord{
+			msg: MsgBurnServiceRecord{
 				Controller: sample.AccAddress(),
 			},
 		},

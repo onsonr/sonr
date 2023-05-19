@@ -35,46 +35,9 @@ const (
 	opWeightMsgDeleteDidDocument = "op_weight_msg_did_document"
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteDidDocument int = 100
-
-	opWeightMsgCreateDomainRecord = "op_weight_msg_domain_registry"
+	opWeightMsgRegisterIdentity           = "op_weight_msg_register_identity"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateDomainRecord int = 100
-
-	opWeightMsgUpdateDomainRecord = "op_weight_msg_domain_registry"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateDomainRecord int = 100
-
-	opWeightMsgDeleteDomainRecord = "op_weight_msg_domain_registry"
-	// T-22 Determine the simulation weight value
-	defaultWeightMsgDeleteDomainRecord int = 100
-
-	opWeightMsgRegisterService = "op_weight_msg_register_service"
-	// T-23 Determine the simulation weight value
-	defaultWeightMsgRegisterService int = 100
-
-	opWeightMsgRegisterAccount = "op_weight_msg_register_account"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgRegisterAccount int = 100
-
-	opWeightMsgImportPublicKey = "op_weight_msg_import_public_key"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgImportPublicKey int = 100
-
-	opWeightMsgDeletePublicKey = "op_weight_msg_delete_public_key"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeletePublicKey int = 100
-
-	opWeightMsgCreateClaimableWallet = "op_weight_msg_claimable_wallet"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateClaimableWallet int = 100
-
-	opWeightMsgUpdateClaimableWallet = "op_weight_msg_claimable_wallet"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateClaimableWallet int = 100
-
-	opWeightMsgDeleteClaimableWallet = "op_weight_msg_claimable_wallet"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeleteClaimableWallet int = 100
+	defaultWeightMsgRegisterIdentity int = 100
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
@@ -87,15 +50,12 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	identityGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-
-		PrimaryIdentities: []types.DidDocument{
+		DidDocuments: []types.Identity{
 			{
-				Controller: []string{types.ConvertAccAddressToDid(sample.AccAddress())},
-				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id: types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 			{
-				Controller: []string{types.ConvertAccAddressToDid(sample.AccAddress())},
-				Id:         types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id: types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 		},
 		ClaimableWalletList: []types.ClaimableWallet{
@@ -152,38 +112,15 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		weightMsgUpdateDidDocument,
 		identitysimulation.SimulateMsgUpdateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
-
-	var weightMsgCreateClaimableWallet int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateClaimableWallet, &weightMsgCreateClaimableWallet, nil,
+	var weightMsgRegisterIdentity int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterIdentity, &weightMsgRegisterIdentity, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateClaimableWallet = defaultWeightMsgCreateClaimableWallet
+			weightMsgRegisterIdentity = defaultWeightMsgRegisterIdentity
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateClaimableWallet,
-		identitysimulation.SimulateMsgCreateClaimableWallet(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgUpdateClaimableWallet int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateClaimableWallet, &weightMsgUpdateClaimableWallet, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdateClaimableWallet = defaultWeightMsgUpdateClaimableWallet
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateClaimableWallet,
-		identitysimulation.SimulateMsgUpdateClaimableWallet(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeleteClaimableWallet int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteClaimableWallet, &weightMsgDeleteClaimableWallet, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeleteClaimableWallet = defaultWeightMsgDeleteClaimableWallet
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteClaimableWallet,
-		identitysimulation.SimulateMsgDeleteClaimableWallet(am.accountKeeper, am.bankKeeper, am.keeper),
+		weightMsgRegisterIdentity,
+		identitysimulation.SimulateMsgRegisterIdentity(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

@@ -10,13 +10,29 @@ import (
 	crypto "github.com/sonrhq/core/internal/crypto"
 )
 
+const (
+	AuthenticationRelationshipName       = "Authentication"
+	AssertionRelationshipName            = "AssertionMethod"
+	KeyAgreementRelationshipName         = "KeyAgreement"
+	CapabilityInvocationRelationshipName = "CapabilityInvocation"
+	CapabilityDelegationRelationshipName = "CapabilityDelegation"
+)
+
+var (
+	VerificationRelationshipNames = []string{
+		AuthenticationRelationshipName,
+		AssertionRelationshipName,
+		KeyAgreementRelationshipName,
+		CapabilityInvocationRelationshipName,
+		CapabilityDelegationRelationshipName,
+	}
+)
+
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgCreateDidDocument{}, "identity/CreateDidDocument", nil)
 	cdc.RegisterConcrete(&MsgUpdateDidDocument{}, "identity/UpdateDidDocument", nil)
-	cdc.RegisterConcrete(&MsgDeleteDidDocument{}, "identity/DeleteDidDocument", nil)
-	cdc.RegisterConcrete(&MsgCreateClaimableWallet{}, "identity/CreateClaimableWallet", nil)
-	cdc.RegisterConcrete(&MsgUpdateClaimableWallet{}, "identity/UpdateClaimableWallet", nil)
-	cdc.RegisterConcrete(&MsgDeleteClaimableWallet{}, "identity/DeleteClaimableWallet", nil)
+
+	cdc.RegisterConcrete(&MsgRegisterIdentity{}, "identity/RegisterIdentity", nil)
 	// this line is used by starport scaffolding # 2
 }
 
@@ -24,12 +40,9 @@ func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgCreateDidDocument{},
 		&MsgUpdateDidDocument{},
-		&MsgDeleteDidDocument{},
 	)
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgCreateClaimableWallet{},
-		&MsgUpdateClaimableWallet{},
-		&MsgDeleteClaimableWallet{},
+		&MsgRegisterIdentity{},
 	)
 	// this line is used by starport scaffolding # 3
 

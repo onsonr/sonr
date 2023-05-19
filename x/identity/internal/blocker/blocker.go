@@ -6,10 +6,9 @@ import (
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/crypto/mpc"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/x/identity/internal/controller"
-	"github.com/sonrhq/core/internal/vault"
+	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
-	"github.com/sonrhq/core/x/identity/types/models"
+	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 type Blocker interface {
@@ -21,15 +20,17 @@ type blocker struct {
 	jobsQueue *Queue
 	results   []*types.ClaimableWallet
 	errCh     chan error
-	doneCh    chan controller.WalletClaims
+	doneCh    chan *types.ClaimableWallet
+	vaultKeeper types.VaultKeeper
 }
 
-func NewBlocker() Blocker {
+func NewBlocker(k types.VaultKeeper) Blocker {
 	s := &blocker{
 		jobsQueue: NewQueue("WalletClaims"),
 		results:   make([]*types.ClaimableWallet, 0),
 		errCh:     make(chan error),
-		doneCh:    make(chan controller.WalletClaims),
+		doneCh:    make(chan *types.ClaimableWallet),
+		vaultKeeper: k,
 	}
 	wk := NewWorker(s.jobsQueue)
 	go s.run(wk)
@@ -76,28 +77,28 @@ func (s *blocker) buildClaimableWallet() error {
 		return err
 	}
 
-	var kss []models.KeyShare
+	var kss []vaulttypes.KeyShare
 	for _, conf := range confs {
 		ksb, err := conf.MarshalBinary()
 		if err != nil {
 			s.errCh <- err
 			return err
 		}
-		ks, err := models.NewKeyshare(string(conf.ID), ksb, crypto.SONRCoinType)
+		ks, err := vaulttypes.NewKeyshare(string(conf.ID), ksb, crypto.SONRCoinType)
 		if err != nil {
 			s.errCh <- err
 			return err
 		}
 
-		err = vault.InsertKeyshare(ks)
+		err = s.vaultKeeper.InsertKeyshare(ks)
 		if err != nil {
 			s.errCh <- err
-			return  err
+			return err
 		}
 		kss = append(kss, ks)
 	}
 	vaddr, _ := local.ValidatorAddress()
-	cw, err := controller.NewWalletClaims(vaddr, kss)
+	cw, err := keeper.NewWalletClaims(vaddr, kss)
 	if err != nil {
 		s.errCh <- err
 		return err
@@ -110,7 +111,7 @@ func (s *blocker) handleProcess() {
 	for {
 		select {
 		case cw := <-s.doneCh:
-			s.results = append(s.results, cw.GetClaimableWallet())
+			s.results = append(s.results, cw)
 		case err := <-s.errCh:
 			fmt.Println(err)
 		}

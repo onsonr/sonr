@@ -19,7 +19,7 @@ func CmdCreateServiceRecord() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgCreateServiceRecord(
+			msg := types.NewMsgRegisterServiceRecord(
 				clientCtx.GetFromAddress().String(),
 				types.ServiceRecord{},
 			)
@@ -77,7 +77,7 @@ func CmdDeleteServiceRecord() *cobra.Command {
 				return err
 			}
 
-			msg := types.NewMsgDeleteServiceRecord(
+			msg := types.NewMsgBurnServiceRecord(
 				clientCtx.GetFromAddress().String(),
 				indexIndex,
 			)

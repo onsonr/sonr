@@ -92,7 +92,7 @@ func currPublicHostIP() string {
 	return "localhost"
 }
 
-func ValidatorAddress() (string, bool){
+func ValidatorAddress() (string, bool) {
 	if address := os.Getenv("SONR_VALIDATOR_ADDRESS"); address != "" {
 		return address, true
 	}

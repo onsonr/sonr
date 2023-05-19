@@ -18,55 +18,43 @@ service Query {
 
   // Parameters for the identity module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonr/core/identity/params";
+    option (google.api.http).get = "/sonr/params/identity";
 
   }
 
   // Get a DIDDocument by DID
   rpc Did (QueryGetDidRequest) returns (QueryGetDidResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/{did}";
-
-  }
-
-  // Get a DIDDocument from a key id
-  rpc DidByKeyID (QueryDidByKeyIDRequest) returns (QueryDidByKeyIDResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/key/{key_id}";
+    option (google.api.http).get = "/sonr/id/{did}";
 
   }
 
   // Get a DIDDocument from an Alias
   rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did/aka/{aka_id}";
+    option (google.api.http).get = "/sonr/id/alias/{aka_id}";
 
   }
-
-  // Get All DIDDocuments
-  rpc DidAll (QueryAllDidRequest) returns (QueryAllDidResponse) {
-    option (google.api.http).get = "/sonr/core/identity/did";
-
-  }
-
-  // this line is used by starport scaffolding # 2
 
   // Queries a list of AliasAvailable items.
   rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
-    option (google.api.http).get = "/sonr/core/identity/alias/{alias}";
+    option (google.api.http).get = "/sonr/id/alias/{alias}/check";
 
   }
 
   // Queries a list of DidByOwner items.
   rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/did/owner/{owner}";
+    option (google.api.http).get = "/sonr/id/owner/{owner}";
+
+  }
+
+  // Get All DIDDocuments
+  rpc DidAll (QueryAllDidRequest) returns (QueryAllDidResponse) {
+    option (google.api.http).get = "/sonr/id";
 
   }
 
   // Queries a list of ClaimableWallet items.
-  rpc ClaimableWallet    (QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/claimable_wallet/{id}";
-
-  }
-  rpc ClaimableWalletAll (QueryAllClaimableWalletRequest) returns (QueryAllClaimableWalletResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/claimable_wallet";
+  rpc ClaimableWallet(QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
+    option (google.api.http).get = "/sonr/id/claims/{id}";
 
   }
 }
@@ -89,19 +77,7 @@ message QueryGetDidRequest {
 message QueryGetDidResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryDidByKeyIDRequest {
-
-  // key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1)
-  string key_id = 1;
-}
-
-message QueryDidByKeyIDResponse {
-
-  // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  Identity didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByAlsoKnownAsRequest {
@@ -113,7 +89,7 @@ message QueryDidByAlsoKnownAsRequest {
 message QueryDidByAlsoKnownAsResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  Identity didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDidRequest {
@@ -121,7 +97,7 @@ message QueryAllDidRequest {
 }
 
 message QueryAllDidResponse {
-  repeated DidDocument                            didDocument = 1 [(gogoproto.nullable) = false];
+  repeated Identity                            didDocument = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination  = 2;
 }
 
@@ -133,7 +109,7 @@ message QueryAliasAvailableRequest {
 
 message QueryAliasAvailableResponse {
   bool        available         = 1;
-  DidDocument existing_document = 2 [(gogoproto.nullable) = true];
+  Identity existing_document = 2 [(gogoproto.nullable) = true];
 }
 
 message QueryDidByOwnerRequest {
@@ -141,7 +117,7 @@ message QueryDidByOwnerRequest {
 }
 
 message QueryDidByOwnerResponse {
-  DidDocument didDocument = 1 [(gogoproto.nullable) = false];
+  Identity didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetClaimableWalletRequest {
@@ -151,13 +127,3 @@ message QueryGetClaimableWalletRequest {
 message QueryGetClaimableWalletResponse {
   ClaimableWallet ClaimableWallet = 1 [(gogoproto.nullable) = false];
 }
-
-message QueryAllClaimableWalletRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QueryAllClaimableWalletResponse {
-  repeated ClaimableWallet                        ClaimableWallet = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
-}
-

@@ -1,6 +1,6 @@
 swagger: "2.0"
 info:
-  title: core/domain/domain.proto
+  title: core/identity/claims.proto
   version: version not set
 tags:
   - name: Query
@@ -8,34 +8,12 @@ tags:
   - name: Query
   - name: Msg
   - name: Query
-  - name: Msg
 consumes:
   - application/json
 produces:
   - application/json
 paths:
-  /sonr/core/identity/alias/{alias}:
-    get:
-      summary: Queries a list of AliasAvailable items.
-      operationId: Query_AliasAvailable
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/identityQueryAliasAvailableResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: alias
-          description: alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr/core/identity/did:
+  /sonr/id:
     get:
       summary: Get All DIDDocuments
       operationId: Query_DidAll
@@ -94,7 +72,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /sonr/core/identity/did/{did}:
+  /sonr/id/{did}:
     get:
       summary: Get a DIDDocument by DID
       operationId: Query_Did
@@ -115,7 +93,7 @@ paths:
           type: string
       tags:
         - Query
-  /sonr/core/identity/did/aka/{akaId}:
+  /sonr/id/alias/{akaId}:
     get:
       summary: Get a DIDDocument from an Alias
       operationId: Query_DidByAlsoKnownAs
@@ -136,350 +114,28 @@ paths:
           type: string
       tags:
         - Query
-  /sonr/core/identity/did/key/{keyId}:
+  /sonr/id/alias/{alias}/check:
     get:
-      summary: Get a DIDDocument from a key id
-      operationId: Query_DidByKeyID
+      summary: Queries a list of AliasAvailable items.
+      operationId: Query_AliasAvailable
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/identityQueryDidByKeyIDResponse'
+            $ref: '#/definitions/identityQueryAliasAvailableResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
       parameters:
-        - name: keyId
-          description: key_id is the unique identifier of the DIDDocument - it appears like (did:sonr:...#key-1)
+        - name: alias
+          description: alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
           in: path
           required: true
           type: string
       tags:
         - Query
-  /sonr/core/identity/params:
-    get:
-      summary: Parameters for the identity module.
-      operationId: Query_Params
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/coreidentityQueryParamsResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      tags:
-        - Query
-  /sonr/core/service/record:
-    get:
-      operationId: Query_ServiceRecordAll
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/serviceQueryAllServiceRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: |-
-            offset is a numeric offset that can be used when key is unavailable.
-            It is less efficient than using key. Only one of offset or key should
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: |-
-            limit is the total number of results to be returned in the result page.
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.countTotal
-          description: |-
-            count_total is set to true  to indicate that the result set should include
-            a count of the total number of items available for pagination in UIs.
-            count_total is only respected when offset is used. It is ignored when key
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: |-
-            reverse is set to true if results are to be returned in the descending order.
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonr/core/service/record/{id}:
-    get:
-      summary: Queries a list of ServiceRecord items.
-      operationId: Query_ServiceRecord
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/serviceQueryGetServiceRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: id
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonrhq/core/domain/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: Query_Params
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/coredomainQueryParamsResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      tags:
-        - Query
-  /sonrhq/core/domain/sld_record:
-    get:
-      operationId: Query_SLDRecordAll
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/domainQueryAllSLDRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: |-
-            offset is a numeric offset that can be used when key is unavailable.
-            It is less efficient than using key. Only one of offset or key should
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: |-
-            limit is the total number of results to be returned in the result page.
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.countTotal
-          description: |-
-            count_total is set to true  to indicate that the result set should include
-            a count of the total number of items available for pagination in UIs.
-            count_total is only respected when offset is used. It is ignored when key
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: |-
-            reverse is set to true if results are to be returned in the descending order.
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/domain/sld_record/{index}:
-    get:
-      summary: Queries a list of SLDRecord items.
-      operationId: Query_SLDRecord
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/domainQueryGetSLDRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: index
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonrhq/core/domain/tld_record:
-    get:
-      operationId: Query_TLDRecordAll
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/domainQueryAllTLDRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: |-
-            offset is a numeric offset that can be used when key is unavailable.
-            It is less efficient than using key. Only one of offset or key should
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: |-
-            limit is the total number of results to be returned in the result page.
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.countTotal
-          description: |-
-            count_total is set to true  to indicate that the result set should include
-            a count of the total number of items available for pagination in UIs.
-            count_total is only respected when offset is used. It is ignored when key
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: |-
-            reverse is set to true if results are to be returned in the descending order.
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/domain/tld_record/{index}:
-    get:
-      summary: Queries a list of TLDRecord items.
-      operationId: Query_TLDRecord
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/domainQueryGetTLDRecordResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: index
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonrhq/core/identity/claimable_wallet:
-    get:
-      operationId: Query_ClaimableWalletAll
-      responses:
-        "200":
-          description: A successful response.
-          schema:
-            $ref: '#/definitions/identityQueryAllClaimableWalletResponse'
-        default:
-          description: An unexpected error response.
-          schema:
-            $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: |-
-            offset is a numeric offset that can be used when key is unavailable.
-            It is less efficient than using key. Only one of offset or key should
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: |-
-            limit is the total number of results to be returned in the result page.
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.countTotal
-          description: |-
-            count_total is set to true  to indicate that the result set should include
-            a count of the total number of items available for pagination in UIs.
-            count_total is only respected when offset is used. It is ignored when key
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: |-
-            reverse is set to true if results are to be returned in the descending order.
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/identity/claimable_wallet/{id}:
+  /sonr/id/claims/{id}:
     get:
       summary: Queries a list of ClaimableWallet items.
       operationId: Query_ClaimableWallet
@@ -500,7 +156,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /sonrhq/core/identity/did/owner/{owner}:
+  /sonr/id/owner/{owner}:
     get:
       summary: Queries a list of DidByOwner items.
       operationId: Query_DidByOwner
@@ -520,7 +176,22 @@ paths:
           type: string
       tags:
         - Query
-  /sonrhq/core/service/params:
+  /sonr/params/identity:
+    get:
+      summary: Parameters for the identity module.
+      operationId: Query_Params
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/coreidentityQueryParamsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Query
+  /sonr/params/service:
     get:
       summary: Parameters queries the parameters of the module.
       operationId: Query_Params
@@ -535,47 +206,199 @@ paths:
             $ref: '#/definitions/rpcStatus'
       tags:
         - Query
+  /sonr/service:
+    get:
+      operationId: Query_ListServiceRecords
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceListServiceRecordsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: pagination.key
+          description: |-
+            key is a value returned in PageResponse.next_key to begin
+            querying the next page most efficiently. Only one of offset or key
+            should be set.
+          in: query
+          required: false
+          type: string
+          format: byte
+        - name: pagination.offset
+          description: |-
+            offset is a numeric offset that can be used when key is unavailable.
+            It is less efficient than using key. Only one of offset or key should
+            be set.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.limit
+          description: |-
+            limit is the total number of results to be returned in the result page.
+            If left empty it will default to a value to be set by each app.
+          in: query
+          required: false
+          type: string
+          format: uint64
+        - name: pagination.countTotal
+          description: |-
+            count_total is set to true  to indicate that the result set should include
+            a count of the total number of items available for pagination in UIs.
+            count_total is only respected when offset is used. It is ignored when key
+            is set.
+          in: query
+          required: false
+          type: boolean
+        - name: pagination.reverse
+          description: |-
+            reverse is set to true if results are to be returned in the descending order.
+
+            Since: cosmos-sdk 0.43
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr/service/{origin}:
+    get:
+      summary: Queries a list of ServiceRecord items.
+      operationId: Query_ServiceRecord
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceQueryServiceRecordResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonr/service/{origin}/login/start:
+    get:
+      summary: Queries a list of GetServiceAssertion items.
+      operationId: Query_ServiceAssertion
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceQueryGetServiceAssertionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+        - name: did
+          description: optional
+          in: query
+          required: false
+          type: string
+        - name: isMobile
+          description: optional
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr/service/{origin}/register/start:
+    get:
+      summary: Queries a list of GetServiceAttestion items.
+      operationId: Query_ServiceAttestion
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceQueryGetServiceAttestionResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+        - name: alias
+          description: optional
+          in: query
+          required: false
+          type: string
+        - name: isMobile
+          description: optional
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr/service/{origin}/relationships:
+    get:
+      summary: Queries a list of ServiceRelationships items.
+      operationId: Query_ServiceRelationship
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceQueryGetServiceRelationshipResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonrhq/core/vault/params:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: Query_Params
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/corevaultQueryParamsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - Query
 definitions:
-  coredomainParams:
-    type: object
-    properties:
-      dnsResolverIp:
-        type: string
-    description: Params defines the parameters for the module.
-  coredomainQueryParamsResponse:
-    type: object
-    properties:
-      params:
-        $ref: '#/definitions/coredomainParams'
-        description: params holds all the parameters of this module.
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   coreidentityParams:
     type: object
     properties:
+      accountDidMethodName:
+        type: string
+      accountDidMethodContext:
+        type: string
+      acccountDiscoveryReward:
+        type: string
+        format: int64
       didBaseContext:
         type: string
-      didMethodContext:
-        type: string
-      didMethodName:
-        type: string
-      didMethodVersion:
-        type: string
-      didNetwork:
-        type: string
-      ipfsGateway:
-        type: string
-      ipfsApi:
-        type: string
-      webauthnAttestionPreference:
-        type: string
-      webauthnAuthenticatorAttachment:
-        type: string
-      webauthnTimeout:
+      maximumIdentityAliases:
         type: integer
         format: int32
-      maxValidatorAccountsPer1000:
-        type: integer
-        format: int32
+      supportedDidMethods:
+        type: array
+        items:
+          type: string
     description: Params defines the parameters for the module.
   coreidentityQueryParamsResponse:
     type: object
@@ -594,62 +417,16 @@ definitions:
         $ref: '#/definitions/coreserviceParams'
         description: params holds all the parameters of this module.
     description: QueryParamsResponse is response type for the Query/Params RPC method.
-  domainMsgCreateSLDRecordResponse:
+  corevaultParams:
     type: object
-  domainMsgCreateTLDRecordResponse:
-    type: object
-  domainMsgDeleteSLDRecordResponse:
-    type: object
-  domainMsgDeleteTLDRecordResponse:
-    type: object
-  domainMsgUpdateSLDRecordResponse:
-    type: object
-  domainMsgUpdateTLDRecordResponse:
-    type: object
-  domainQueryAllSLDRecordResponse:
+    description: Params defines the parameters for the module.
+  corevaultQueryParamsResponse:
     type: object
     properties:
-      sLDRecord:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/domainSLDRecord'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
-  domainQueryAllTLDRecordResponse:
-    type: object
-    properties:
-      tLDRecord:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/domainTLDRecord'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
-  domainQueryGetSLDRecordResponse:
-    type: object
-    properties:
-      sLDRecord:
-        $ref: '#/definitions/domainSLDRecord'
-  domainQueryGetTLDRecordResponse:
-    type: object
-    properties:
-      tLDRecord:
-        $ref: '#/definitions/domainTLDRecord'
-  domainSLDRecord:
-    type: object
-    properties:
-      index:
-        type: string
-      creator:
-        type: string
-  domainTLDRecord:
-    type: object
-    properties:
-      index:
-        type: string
-      creator:
-        type: string
+      params:
+        $ref: '#/definitions/corevaultParams'
+        description: params holds all the parameters of this module.
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   identityClaimableWallet:
     type: object
     properties:
@@ -669,7 +446,7 @@ definitions:
         format: int32
       claimed:
         type: boolean
-  identityDidDocument:
+  identityDIDDocument:
     type: object
     properties:
       context:
@@ -685,12 +462,57 @@ definitions:
         items:
           type: string
         title: optional, the entity/entities controlling the DID subject
-      verificationMethod:
+      authentication:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityVerificationMethod'
-        title: optional, the set of verification methods associated with the DID subject
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional, the set of authentication methods associated with the DID subject
+      assertionMethod:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional, the set of assertion methods associated with the DID subject
+      capabilityInvocation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional, the set of capability invocation methods associated with the DID subject
+      capabilityDelegation:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional, the set of capability delegation methods associated with the DID subject
+      keyAgreement:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/identityVerificationRelationship'
+        title: optional, the set of key agreement methods associated with the DID subject
+      alsoKnownAs:
+        type: array
+        items:
+          type: string
+        title: optional, the set of identifiers for other personas or identities related to the DID subject
+      metadata:
+        type: string
+        title: optional, additional metadata related to the DID document
+    description: DIDDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
+  identityIdentity:
+    type: object
+    properties:
+      id:
+        type: string
+        title: The identifier for the DID subject
+      owner:
+        type: string
+        title: optional, the entity/entities controlling the DID subject
+      primaryAlias:
+        type: string
+        title: optional, the primary alias for the DID subject
       authentication:
         type: array
         items:
@@ -724,27 +546,16 @@ definitions:
       metadata:
         type: string
         title: optional, additional metadata related to the DID document
-      owner:
-        type: string
-        title: The idx address of the owner of the DID document
-    description: DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-  identityMsgCreateClaimableWalletResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: uint64
-      reward:
-        type: integer
-        format: int32
+    description: Identity represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
   identityMsgCreateDidDocumentResponse:
     type: object
-  identityMsgDeleteClaimableWalletResponse:
+  identityMsgRegisterIdentityResponse:
     type: object
-  identityMsgDeleteDidDocumentResponse:
-    type: object
-  identityMsgUpdateClaimableWalletResponse:
-    type: object
+    properties:
+      success:
+        type: boolean
+      didDocument:
+        $ref: '#/definitions/identityDIDDocument'
   identityMsgUpdateDidDocumentResponse:
     type: object
     properties:
@@ -756,17 +567,7 @@ definitions:
       available:
         type: boolean
       existingDocument:
-        $ref: '#/definitions/identityDidDocument'
-  identityQueryAllClaimableWalletResponse:
-    type: object
-    properties:
-      ClaimableWallet:
-        type: array
-        items:
-          type: object
-          $ref: '#/definitions/identityClaimableWallet'
-      pagination:
-        $ref: '#/definitions/v1beta1PageResponse'
+        $ref: '#/definitions/identityIdentity'
   identityQueryAllDidResponse:
     type: object
     properties:
@@ -774,26 +575,20 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityDidDocument'
+          $ref: '#/definitions/identityIdentity'
       pagination:
         $ref: '#/definitions/v1beta1PageResponse'
   identityQueryDidByAlsoKnownAsResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  identityQueryDidByKeyIDResponse:
-    type: object
-    properties:
-      didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityIdentity'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryDidByOwnerResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityIdentity'
   identityQueryGetClaimableWalletResponse:
     type: object
     properties:
@@ -803,7 +598,7 @@ definitions:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityDidDocument'
+        $ref: '#/definitions/identityIdentity'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityVerificationMethod:
     type: object
@@ -830,6 +625,22 @@ definitions:
         type: string
         title: additional metadata related to the verification method
     description: VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
+  identityVerificationRelationship:
+    type: object
+    properties:
+      verificationMethod:
+        $ref: '#/definitions/identityVerificationMethod'
+        title: The verification method associated with the relationship
+      reference:
+        type: string
+        title: The reference identifier for the relationship
+      type:
+        type: string
+        title: The type of the verification relationship
+      owner:
+        type: string
+        title: The idx address of the owner of the verification relationship
+    description: VerificationRelationship represents a relationship between a verification method and a specific verification purpose (e.g., authentication, assertion, etc.).
   protobufAny:
     type: object
     properties:
@@ -849,13 +660,7 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/protobufAny'
-  serviceMsgCreateServiceRecordResponse:
-    type: object
-  serviceMsgDeleteServiceRecordResponse:
-    type: object
-  serviceMsgUpdateServiceRecordResponse:
-    type: object
-  serviceQueryAllServiceRecordResponse:
+  serviceListServiceRecordsResponse:
     type: object
     properties:
       serviceRecord:
@@ -865,7 +670,66 @@ definitions:
           $ref: '#/definitions/serviceServiceRecord'
       pagination:
         $ref: '#/definitions/v1beta1PageResponse'
-  serviceQueryGetServiceRecordResponse:
+  serviceMsgAuthenticateUserEntityResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      did:
+        type: string
+      identity:
+        $ref: '#/definitions/identityIdentity'
+  serviceMsgBurnServiceRecordResponse:
+    type: object
+  serviceMsgRegisterServiceRecordResponse:
+    type: object
+    properties:
+      ok:
+        type: boolean
+      groupAddress:
+        type: string
+  serviceMsgRegisterUserEntityResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      did:
+        type: string
+      identity:
+        $ref: '#/definitions/identityIdentity'
+  serviceMsgUpdateServiceRecordResponse:
+    type: object
+  serviceQueryGetServiceAssertionResponse:
+    type: object
+    properties:
+      did:
+        type: string
+      assertionOptions:
+        type: string
+      origin:
+        type: string
+      challenge:
+        type: string
+  serviceQueryGetServiceAttestionResponse:
+    type: object
+    properties:
+      alias:
+        type: string
+      attestionOptions:
+        type: string
+      origin:
+        type: string
+      challenge:
+        type: string
+      ucwId:
+        type: string
+        format: uint64
+  serviceQueryGetServiceRelationshipResponse:
+    type: object
+    properties:
+      ServiceRelationships:
+        $ref: '#/definitions/serviceServiceRelationship'
+  serviceQueryServiceRecordResponse:
     type: object
     properties:
       serviceRecord:
@@ -895,6 +759,24 @@ definitions:
       metadata:
         type: string
         title: optional, additional metadata related to the Service
+  serviceServiceRelationship:
+    type: object
+    properties:
+      reference:
+        type: string
+        title: Reference is the reference to the service record
+      did:
+        type: string
+        title: Did is the user's DID
+      count:
+        type: integer
+        format: int64
+        title: Count is the number of times the user has interacted with the service
+    description: |-
+      ServiceRelationship is a relationship between a service and a User entity. This relation
+      is used to track the number of times a user has interacted with a service, utilizing a
+      verifiable random function (VRF) to generate a random number that is used to determine
+      whether or not a user has access to a service.
   v1beta1PageRequest:
     type: object
     properties:

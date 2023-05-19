@@ -9,9 +9,11 @@ var _ binary.ByteOrder
 
 const (
 	// PrimaryIdentityPrefix is the prefix to retrieve all DidDocument
-	PrimaryIdentityPrefix    = "DidDocument/primary/value/"
-	BlockchainIdentityPrefix = "DidDocument/blockchain/value/"
-	AlsoKnownAsPrefix        = "DidDocument/aka/value/"
+	PrimaryIdentityPrefix  = "DidDocument/primary/value/"
+	AlsoKnownAsPrefix      = "DidDocument/aka/value/"
+	SonrIdentityPrefix     = "Identity/sonr/value/"
+	EthereumIdentityPrefix = "Identity/ethereum/value/"
+	BitcoinIdentityPrefix  = "Identity/bitcoin/value/"
 )
 
 // DidDocumentKey returns the store key to retrieve a DidDocument from the index fields

@@ -36,6 +36,26 @@ const (
 	// TODO: Determine the simulation weight value
 	defaultWeightMsgDeleteServiceRecord int = 100
 
+	opWeightMsgCreateServiceRelationships = "op_weight_msg_service_relationships"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateServiceRelationships int = 100
+
+	opWeightMsgUpdateServiceRelationships = "op_weight_msg_service_relationships"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateServiceRelationships int = 100
+
+	opWeightMsgDeleteServiceRelationships = "op_weight_msg_service_relationships"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteServiceRelationships int = 100
+
+	opWeightMsgRegisterUserEntity = "op_weight_msg_register_user_entity"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgRegisterUserEntity int = 100
+
+	opWeightMsgAuthenticateUserEntity = "op_weight_msg_authenticate_user_entity"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgAuthenticateUserEntity int = 100
+
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
@@ -69,7 +89,6 @@ func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedP
 
 // RandomizedParams creates randomized  param changes for the simulator
 func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-
 	return []simtypes.ParamChange{}
 }
 
@@ -111,6 +130,27 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 	operations = append(operations, simulation.NewWeightedOperation(
 		weightMsgDeleteServiceRecord,
 		servicesimulation.SimulateMsgDeleteServiceRecord(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+	var weightMsgRegisterUserEntity int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterUserEntity, &weightMsgRegisterUserEntity, nil,
+		func(_ *rand.Rand) {
+			weightMsgRegisterUserEntity = defaultWeightMsgRegisterUserEntity
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgRegisterUserEntity,
+		servicesimulation.SimulateMsgRegisterUserEntity(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgAuthenticateUserEntity int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgAuthenticateUserEntity, &weightMsgAuthenticateUserEntity, nil,
+		func(_ *rand.Rand) {
+			weightMsgAuthenticateUserEntity = defaultWeightMsgAuthenticateUserEntity
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgAuthenticateUserEntity,
+		servicesimulation.SimulateMsgAuthenticateUserEntity(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation

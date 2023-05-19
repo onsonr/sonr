@@ -1,12 +1,4 @@
 {
-  "cSpell.words": [
-    "codespace",
-    "IPFS",
-    "multibase",
-    "Roadmap",
-    "tendermint",
-    "webauthn"
-  ],
   "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${message}",
   "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
   "gitlens.views.commitDetails.files.layout": "tree",
@@ -96,11 +88,7 @@
     "x/identity/types/did.pb.go": true,
     "frontend/.npmrc": true,
     "frontend/.gitignore": true,
-    ".gitignore": true,
     "LICENSE": true,
-    "docs/api-reference": true,
-    "testutil": true,
-    "scripts": true,
     "proto/buf.lock": true,
     "go.sum": true,
     "core.code-workspace": true,
@@ -110,58 +98,19 @@
     "buf.work.yaml": true,
     "Dockerfile": true,
     "Makefile": true,
-    "package.json": false
+    "package.json": false,
+    ".devcontainer": true,
+    "testutil": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
-  "hide-files.files": [
-    "types/common/info.pb.go",
-    "types/crypto/vc.pb.go",
-    "types/crypto/coin.pb.go",
-    "types/crypto/credential.pb.go",
-    "types/crypto/pubkey.pb.go",
-    "x/identity/types/query.pb.go",
-    "x/identity/types/query.pb.gw.go",
-    "x/identity/types/tx.pb.go",
-    "x/identity/types/did.pb.go",
-    "frontend/.npmrc",
-    "frontend/.gitignore",
-    ".gitignore",
-    "LICENSE",
-    "docs/api-reference",
-    "testutil",
-    "scripts",
-    "proto/buf.lock",
-    "go.sum"
-  ],
   "[go]": {
     "editor.defaultFormatter": "golang.go",
     "editor.formatOnType": true
   },
-  "explorerExclude.backup": {},
   "go.autocompleteUnimportedPackages": true,
   "go.formatTool": "default",
   "go.lintTool": "golint",
-  "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#1f6fd0",
-    "activityBar.background": "#1f6fd0",
-    "activityBar.foreground": "#e7e7e7",
-    "activityBar.inactiveForeground": "#e7e7e799",
-    "activityBarBadge.background": "#ee90bb",
-    "activityBarBadge.foreground": "#15202b",
-    "commandCenter.border": "#e7e7e799",
-    "sash.hoverBorder": "#1f6fd0",
-    "statusBar.background": "#1857a4",
-    "statusBar.foreground": "#e7e7e7",
-    "statusBarItem.hoverBackground": "#1f6fd0",
-    "statusBarItem.remoteBackground": "#1857a4",
-    "statusBarItem.remoteForeground": "#e7e7e7",
-    "titleBar.activeBackground": "#1857a4",
-    "titleBar.activeForeground": "#e7e7e7",
-    "titleBar.inactiveBackground": "#1857a499",
-    "titleBar.inactiveForeground": "#e7e7e799"
-  },
-  "peacock.color": "#1857a4",
   "editor.tokenColorCustomizations": {
     "textMateRules": [
       {
@@ -171,6 +120,5 @@
         }
       }
     ],
-    "comments": ""
   }
 }

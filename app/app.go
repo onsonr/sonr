@@ -104,8 +104,8 @@ import (
 	tmos "github.com/tendermint/tendermint/libs/os"
 	dbm "github.com/tendermint/tm-db"
 
-	"github.com/sonrhq/core/internal/gateway"
 	identitymodule "github.com/sonrhq/core/x/identity"
+	"github.com/sonrhq/core/x/identity/client/gateway"
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
 
@@ -113,9 +113,9 @@ import (
 	servicemodulekeeper "github.com/sonrhq/core/x/service/keeper"
 	servicemoduletypes "github.com/sonrhq/core/x/service/types"
 
-	domainmodule "github.com/sonrhq/core/x/domain"
-	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
-	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
+	vaultmodule "github.com/sonrhq/core/x/vault"
+	vaultmodulekeeper "github.com/sonrhq/core/x/vault/keeper"
+	vaultmoduletypes "github.com/sonrhq/core/x/vault/types"
 
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
@@ -177,7 +177,7 @@ var (
 		vesting.AppModuleBasic{},
 		identitymodule.AppModuleBasic{},
 		servicemodule.AppModuleBasic{},
-		domainmodule.AppModuleBasic{},
+		vaultmodule.AppModuleBasic{},
 		// this line is used by starport scaffolding # stargate/app/moduleBasic
 	)
 
@@ -256,7 +256,7 @@ type App struct {
 
 	ServiceKeeper servicemodulekeeper.Keeper
 
-	DomainKeeper domainmodulekeeper.Keeper
+	VaultKeeper vaultmodulekeeper.Keeper
 	// this line is used by starport scaffolding # stargate/app/keeperDeclaration
 
 	// mm is the module manager
@@ -286,6 +286,7 @@ func New(
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
+
 	bApp := baseapp.NewBaseApp(
 		Name,
 		logger,
@@ -305,7 +306,7 @@ func New(
 		icacontrollertypes.StoreKey,
 		identitymoduletypes.StoreKey,
 		servicemoduletypes.StoreKey,
-		domainmoduletypes.StoreKey,
+		vaultmoduletypes.StoreKey,
 		// this line is used by starport scaffolding # stargate/app/storeKey
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -523,6 +524,13 @@ func New(
 		app.MsgServiceRouter(),
 		govConfig,
 	)
+	app.VaultKeeper = *vaultmodulekeeper.NewKeeper(
+		appCodec,
+		keys[vaultmoduletypes.StoreKey],
+		keys[vaultmoduletypes.MemStoreKey],
+		app.GetSubspace(vaultmoduletypes.ModuleName),
+	)
+	vaultModule := vaultmodule.NewAppModule(appCodec, app.VaultKeeper, app.AccountKeeper, app.BankKeeper)
 
 	app.IdentityKeeper = *identitymodulekeeper.NewKeeper(
 		appCodec,
@@ -533,8 +541,9 @@ func New(
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.GroupKeeper,
+		app.VaultKeeper,
 	)
-	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
+	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper, app.VaultKeeper)
 
 	app.ServiceKeeper = *servicemodulekeeper.NewKeeper(
 		appCodec,
@@ -546,14 +555,6 @@ func New(
 		app.IdentityKeeper,
 	)
 	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper)
-
-	app.DomainKeeper = *domainmodulekeeper.NewKeeper(
-		appCodec,
-		keys[domainmoduletypes.StoreKey],
-		keys[domainmoduletypes.MemStoreKey],
-		app.GetSubspace(domainmoduletypes.ModuleName),
-	)
-	domainModule := domainmodule.NewAppModule(appCodec, app.DomainKeeper, app.AccountKeeper, app.BankKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -600,9 +601,9 @@ func New(
 		params.NewAppModule(app.ParamsKeeper),
 		transferModule,
 		icaModule,
+		vaultModule,
 		identityModule,
 		serviceModule,
-		domainModule,
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 
@@ -632,9 +633,9 @@ func New(
 		group.ModuleName,
 		paramstypes.ModuleName,
 		vestingtypes.ModuleName,
+		vaultmoduletypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
-		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/beginBlockers
 	)
 
@@ -659,9 +660,9 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		vaultmoduletypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
-		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/endBlockers
 	)
 
@@ -691,9 +692,9 @@ func New(
 		paramstypes.ModuleName,
 		upgradetypes.ModuleName,
 		vestingtypes.ModuleName,
+		vaultmoduletypes.ModuleName,
 		identitymoduletypes.ModuleName,
 		servicemoduletypes.ModuleName,
-		domainmoduletypes.ModuleName,
 		// this line is used by starport scaffolding # stargate/app/initGenesis
 	)
 
@@ -723,9 +724,10 @@ func New(
 		evidence.NewAppModule(app.EvidenceKeeper),
 		ibc.NewAppModule(app.IBCKeeper),
 		transferModule,
+		vaultModule,
 		identityModule,
 		serviceModule,
-		domainModule,
+
 		// this line is used by starport scaffolding # stargate/app/appModule
 	)
 	app.sm.RegisterStoreDecoders()
@@ -883,7 +885,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// If found, register swagger UI and swagger.json.
 	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
 	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
-	gateway.RegisterHighway(clientCtx)
+	gateway.RegisterGateway(clientCtx)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -928,7 +930,7 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(icahosttypes.SubModuleName)
 	paramsKeeper.Subspace(identitymoduletypes.ModuleName)
 	paramsKeeper.Subspace(servicemoduletypes.ModuleName)
-	paramsKeeper.Subspace(domainmoduletypes.ModuleName)
+	paramsKeeper.Subspace(vaultmoduletypes.ModuleName)
 	// this line is used by starport scaffolding # stargate/app/paramSubspace
 
 	return paramsKeeper

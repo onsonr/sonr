@@ -117,7 +117,7 @@ func (o *KeygenOpts) getOfflineNetwork() crypto.Network {
 	return c
 }
 
-func (o *KeygenOpts) handleRoutineErr(err error)  {
+func (o *KeygenOpts) handleRoutineErr(err error) {
 	if err == nil {
 		return
 	}

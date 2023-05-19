@@ -43279,553 +43279,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /sonrhq/core/domain/params:
-    get:
-      summary: Parameters queries the parameters of the module.
-      operationId: SonrhqCoreDomainParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-                properties:
-                  dns_resolver_ip:
-                    type: string
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /sonrhq/core/domain/sld_record:
-    get:
-      operationId: SonrhqCoreDomainSLDRecordAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              sLDRecord:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    index:
-                      type: string
-                    creator:
-                      type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/domain/sld_record/{index}:
-    get:
-      summary: Queries a list of SLDRecord items.
-      operationId: SonrhqCoreDomainSLDRecord
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              sLDRecord:
-                type: object
-                properties:
-                  index:
-                    type: string
-                  creator:
-                    type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: index
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonrhq/core/domain/tld_record:
-    get:
-      operationId: SonrhqCoreDomainTLDRecordAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              tLDRecord:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    index:
-                      type: string
-                    creator:
-                      type: string
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/domain/tld_record/{index}:
-    get:
-      summary: Queries a list of TLDRecord items.
-      operationId: SonrhqCoreDomainTLDRecord
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              tLDRecord:
-                type: object
-                properties:
-                  index:
-                    type: string
-                  creator:
-                    type: string
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: index
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr/core/identity/alias/{alias}:
-    get:
-      summary: Queries a list of AliasAvailable items.
-      operationId: SonrhqCoreIdentityAliasAvailable
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              available:
-                type: boolean
-              existing_document:
-                type: object
-                properties:
-                  context:
-                    type: array
-                    items:
-                      type: string
-                    title: The JSON-LD context(s) used in the document
-                  id:
-                    type: string
-                    title: The identifier for the DID subject
-                  controller:
-                    type: array
-                    items:
-                      type: string
-                    title: optional, the entity/entities controlling the DID subject
-                  verification_method:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          title: The identifier for the verification method
-                        type:
-                          type: string
-                          title: The type of the verification method
-                        controller:
-                          type: string
-                          title: The entity controlling the verification method
-                        public_key_jwk:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            optional, the public key in JSON Web Key (JWK)
-                            format
-                        public_key_multibase:
-                          type: string
-                          title: optional, the public key in multibase-encoded format
-                        blockchain_account_id:
-                          type: string
-                          title: >-
-                            optional, the blockchain account identifier
-                            associated with the verification method
-                        metadata:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            additional metadata related to the verification
-                            method
-                      description: >-
-                        VerificationMethod represents a verification method that
-                        can be used to authenticate the DID subject or perform
-                        other cryptographic operations.
-                    title: >-
-                      optional, the set of verification methods associated with
-                      the DID subject
-                  authentication:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of authentication methods associated
-                      with the DID subject
-                  assertion_method:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of assertion methods associated with the
-                      DID subject
-                  capability_invocation:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of capability invocation methods
-                      associated with the DID subject
-                  capability_delegation:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of capability delegation methods
-                      associated with the DID subject
-                  key_agreement:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of key agreement methods associated with
-                      the DID subject
-                  also_known_as:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of identifiers for other personas or
-                      identities related to the DID subject
-                  metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, additional metadata related to the DID document
-                  owner:
-                    type: string
-                    title: The idx address of the owner of the DID document
-                description: >-
-                  DidDocument represents a Decentralized Identifier (DID)
-                  document that contains information about the DID subject, such
-                  as public keys, verification methods, and services.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: alias
-          description: >-
-            alias is the unique identifier of the DIDDocument - it appears like
-            ("example.snr")
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr/core/identity/did:
+  /sonr/id:
     get:
       summary: Get All DIDDocuments
       operationId: SonrhqCoreIdentityDidAll
@@ -43840,82 +43294,17 @@ paths:
                 items:
                   type: object
                   properties:
-                    context:
-                      type: array
-                      items:
-                        type: string
-                      title: The JSON-LD context(s) used in the document
                     id:
                       type: string
                       title: The identifier for the DID subject
-                    controller:
-                      type: array
-                      items:
-                        type: string
+                    owner:
+                      type: string
                       title: >-
                         optional, the entity/entities controlling the DID
                         subject
-                    verification_method:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          id:
-                            type: string
-                            title: The identifier for the verification method
-                          type:
-                            type: string
-                            title: The type of the verification method
-                          controller:
-                            type: string
-                            title: The entity controlling the verification method
-                          public_key_jwk:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                key:
-                                  type: string
-                                  title: The key
-                                value:
-                                  type: string
-                                  title: The value
-                              description: KeyValuePair represents a key-value pair.
-                            title: >-
-                              optional, the public key in JSON Web Key (JWK)
-                              format
-                          public_key_multibase:
-                            type: string
-                            title: >-
-                              optional, the public key in multibase-encoded
-                              format
-                          blockchain_account_id:
-                            type: string
-                            title: >-
-                              optional, the blockchain account identifier
-                              associated with the verification method
-                          metadata:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                key:
-                                  type: string
-                                  title: The key
-                                value:
-                                  type: string
-                                  title: The value
-                              description: KeyValuePair represents a key-value pair.
-                            title: >-
-                              additional metadata related to the verification
-                              method
-                        description: >-
-                          VerificationMethod represents a verification method
-                          that can be used to authenticate the DID subject or
-                          perform other cryptographic operations.
-                      title: >-
-                        optional, the set of verification methods associated
-                        with the DID subject
+                    primary_alias:
+                      type: string
+                      title: optional, the primary alias for the DID subject
                     authentication:
                       type: array
                       items:
@@ -43959,25 +43348,12 @@ paths:
                         optional, the set of identifiers for other personas or
                         identities related to the DID subject
                     metadata:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                            title: The key
-                          value:
-                            type: string
-                            title: The value
-                        description: KeyValuePair represents a key-value pair.
+                      type: string
                       title: >-
                         optional, additional metadata related to the DID
                         document
-                    owner:
-                      type: string
-                      title: The idx address of the owner of the DID document
                   description: >-
-                    DidDocument represents a Decentralized Identifier (DID)
+                    Identity represents a Decentralized Identifier (DID)
                     document that contains information about the DID subject,
                     such as public keys, verification methods, and services.
               pagination:
@@ -44085,7 +43461,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /sonr/core/identity/did/aka/{aka_id}:
+  /sonr/id/alias/{aka_id}:
     get:
       summary: Get a DIDDocument from an Alias
       operationId: SonrhqCoreIdentityDidByAlsoKnownAs
@@ -44096,80 +43472,20 @@ paths:
             type: object
             properties:
               didDocument:
+                title: >-
+                  A DIDDocument is a JSON-LD object that contains a set of
+                  public keys
                 type: object
                 properties:
-                  context:
-                    type: array
-                    items:
-                      type: string
-                    title: The JSON-LD context(s) used in the document
                   id:
                     type: string
                     title: The identifier for the DID subject
-                  controller:
-                    type: array
-                    items:
-                      type: string
+                  owner:
+                    type: string
                     title: optional, the entity/entities controlling the DID subject
-                  verification_method:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          title: The identifier for the verification method
-                        type:
-                          type: string
-                          title: The type of the verification method
-                        controller:
-                          type: string
-                          title: The entity controlling the verification method
-                        public_key_jwk:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            optional, the public key in JSON Web Key (JWK)
-                            format
-                        public_key_multibase:
-                          type: string
-                          title: optional, the public key in multibase-encoded format
-                        blockchain_account_id:
-                          type: string
-                          title: >-
-                            optional, the blockchain account identifier
-                            associated with the verification method
-                        metadata:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            additional metadata related to the verification
-                            method
-                      description: >-
-                        VerificationMethod represents a verification method that
-                        can be used to authenticate the DID subject or perform
-                        other cryptographic operations.
-                    title: >-
-                      optional, the set of verification methods associated with
-                      the DID subject
+                  primary_alias:
+                    type: string
+                    title: optional, the primary alias for the DID subject
                   authentication:
                     type: array
                     items:
@@ -44213,28 +43529,12 @@ paths:
                       optional, the set of identifiers for other personas or
                       identities related to the DID subject
                   metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, additional metadata related to the DID document
-                  owner:
                     type: string
-                    title: The idx address of the owner of the DID document
+                    title: optional, additional metadata related to the DID document
                 description: >-
-                  DidDocument represents a Decentralized Identifier (DID)
-                  document that contains information about the DID subject, such
-                  as public keys, verification methods, and services.
-                title: >-
-                  A DIDDocument is a JSON-LD object that contains a set of
-                  public keys
+                  Identity represents a Decentralized Identifier (DID) document
+                  that contains information about the DID subject, such as
+                  public keys, verification methods, and services.
         default:
           description: An unexpected error response.
           schema:
@@ -44263,91 +43563,30 @@ paths:
           type: string
       tags:
         - Query
-  /sonr/core/identity/did/key/{key_id}:
+  /sonr/id/alias/{alias}/check:
     get:
-      summary: Get a DIDDocument from a key id
-      operationId: SonrhqCoreIdentityDidByKeyID
+      summary: Queries a list of AliasAvailable items.
+      operationId: SonrhqCoreIdentityAliasAvailable
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              didDocument:
+              available:
+                type: boolean
+              existing_document:
                 type: object
                 properties:
-                  context:
-                    type: array
-                    items:
-                      type: string
-                    title: The JSON-LD context(s) used in the document
                   id:
                     type: string
                     title: The identifier for the DID subject
-                  controller:
-                    type: array
-                    items:
-                      type: string
+                  owner:
+                    type: string
                     title: optional, the entity/entities controlling the DID subject
-                  verification_method:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          title: The identifier for the verification method
-                        type:
-                          type: string
-                          title: The type of the verification method
-                        controller:
-                          type: string
-                          title: The entity controlling the verification method
-                        public_key_jwk:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            optional, the public key in JSON Web Key (JWK)
-                            format
-                        public_key_multibase:
-                          type: string
-                          title: optional, the public key in multibase-encoded format
-                        blockchain_account_id:
-                          type: string
-                          title: >-
-                            optional, the blockchain account identifier
-                            associated with the verification method
-                        metadata:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            additional metadata related to the verification
-                            method
-                      description: >-
-                        VerificationMethod represents a verification method that
-                        can be used to authenticate the DID subject or perform
-                        other cryptographic operations.
-                    title: >-
-                      optional, the set of verification methods associated with
-                      the DID subject
+                  primary_alias:
+                    type: string
+                    title: optional, the primary alias for the DID subject
                   authentication:
                     type: array
                     items:
@@ -44391,28 +43630,12 @@ paths:
                       optional, the set of identifiers for other personas or
                       identities related to the DID subject
                   metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, additional metadata related to the DID document
-                  owner:
                     type: string
-                    title: The idx address of the owner of the DID document
+                    title: optional, additional metadata related to the DID document
                 description: >-
-                  DidDocument represents a Decentralized Identifier (DID)
-                  document that contains information about the DID subject, such
-                  as public keys, verification methods, and services.
-                title: >-
-                  A DIDDocument is a JSON-LD object that contains a set of
-                  public keys
+                  Identity represents a Decentralized Identifier (DID) document
+                  that contains information about the DID subject, such as
+                  public keys, verification methods, and services.
         default:
           description: An unexpected error response.
           schema:
@@ -44432,390 +43655,16 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: key_id
+        - name: alias
           description: >-
-            key_id is the unique identifier of the DIDDocument - it appears like
-            (did:sonr:...#key-1)
+            alias is the unique identifier of the DIDDocument - it appears like
+            ("example.snr")
           in: path
           required: true
           type: string
       tags:
         - Query
-  /sonr/core/identity/did/{did}:
-    get:
-      summary: Get a DIDDocument by DID
-      operationId: SonrhqCoreIdentityDid
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              didDocument:
-                type: object
-                properties:
-                  context:
-                    type: array
-                    items:
-                      type: string
-                    title: The JSON-LD context(s) used in the document
-                  id:
-                    type: string
-                    title: The identifier for the DID subject
-                  controller:
-                    type: array
-                    items:
-                      type: string
-                    title: optional, the entity/entities controlling the DID subject
-                  verification_method:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          title: The identifier for the verification method
-                        type:
-                          type: string
-                          title: The type of the verification method
-                        controller:
-                          type: string
-                          title: The entity controlling the verification method
-                        public_key_jwk:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            optional, the public key in JSON Web Key (JWK)
-                            format
-                        public_key_multibase:
-                          type: string
-                          title: optional, the public key in multibase-encoded format
-                        blockchain_account_id:
-                          type: string
-                          title: >-
-                            optional, the blockchain account identifier
-                            associated with the verification method
-                        metadata:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            additional metadata related to the verification
-                            method
-                      description: >-
-                        VerificationMethod represents a verification method that
-                        can be used to authenticate the DID subject or perform
-                        other cryptographic operations.
-                    title: >-
-                      optional, the set of verification methods associated with
-                      the DID subject
-                  authentication:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of authentication methods associated
-                      with the DID subject
-                  assertion_method:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of assertion methods associated with the
-                      DID subject
-                  capability_invocation:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of capability invocation methods
-                      associated with the DID subject
-                  capability_delegation:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of capability delegation methods
-                      associated with the DID subject
-                  key_agreement:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of key agreement methods associated with
-                      the DID subject
-                  also_known_as:
-                    type: array
-                    items:
-                      type: string
-                    title: >-
-                      optional, the set of identifiers for other personas or
-                      identities related to the DID subject
-                  metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, additional metadata related to the DID document
-                  owner:
-                    type: string
-                    title: The idx address of the owner of the DID document
-                description: >-
-                  DidDocument represents a Decentralized Identifier (DID)
-                  document that contains information about the DID subject, such
-                  as public keys, verification methods, and services.
-                title: >-
-                  A DIDDocument is a JSON-LD object that contains a set of
-                  public keys
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: did
-          description: >-
-            did is the unique identifier of the DIDDocument - it appears like
-            (did:sonr:...)
-          in: path
-          required: true
-          type: string
-      tags:
-        - Query
-  /sonr/core/identity/params:
-    get:
-      summary: Parameters for the identity module.
-      operationId: SonrhqCoreIdentityParams
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-                properties:
-                  did_base_context:
-                    type: string
-                  did_method_context:
-                    type: string
-                  did_method_name:
-                    type: string
-                  did_method_version:
-                    type: string
-                  did_network:
-                    type: string
-                  ipfs_gateway:
-                    type: string
-                  ipfs_api:
-                    type: string
-                  webauthn_attestion_preference:
-                    type: string
-                  webauthn_authenticator_attachment:
-                    type: string
-                  webauthn_timeout:
-                    type: integer
-                    format: int32
-                  max_validator_accounts_per_1000:
-                    type: integer
-                    format: int32
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      tags:
-        - Query
-  /sonrhq/core/identity/claimable_wallet:
-    get:
-      operationId: SonrhqCoreIdentityClaimableWalletAll
-      responses:
-        '200':
-          description: A successful response.
-          schema:
-            type: object
-            properties:
-              ClaimableWallet:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      format: uint64
-                    creator:
-                      type: string
-                    public_key:
-                      type: string
-                    keyshares:
-                      type: array
-                      items:
-                        type: string
-                    count:
-                      type: integer
-                      format: int32
-                    claimed:
-                      type: boolean
-              pagination:
-                type: object
-                properties:
-                  next_key:
-                    type: string
-                    format: byte
-                    description: |-
-                      next_key is the key to be passed to PageRequest.key to
-                      query the next page most efficiently. It will be empty if
-                      there are no more results.
-                  total:
-                    type: string
-                    format: uint64
-                    title: >-
-                      total is total number of results available if
-                      PageRequest.count_total
-
-                      was set, its value is undefined otherwise
-                description: >-
-                  PageResponse is to be embedded in gRPC response messages where
-                  the
-
-                  corresponding request message has used PageRequest.
-
-                   message SomeResponse {
-                           repeated Bar results = 1;
-                           PageResponse page = 2;
-                   }
-        default:
-          description: An unexpected error response.
-          schema:
-            type: object
-            properties:
-              code:
-                type: integer
-                format: int32
-              message:
-                type: string
-              details:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    '@type':
-                      type: string
-                  additionalProperties: {}
-      parameters:
-        - name: pagination.key
-          description: |-
-            key is a value returned in PageResponse.next_key to begin
-            querying the next page most efficiently. Only one of offset or key
-            should be set.
-          in: query
-          required: false
-          type: string
-          format: byte
-        - name: pagination.offset
-          description: >-
-            offset is a numeric offset that can be used when key is unavailable.
-
-            It is less efficient than using key. Only one of offset or key
-            should
-
-            be set.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.limit
-          description: >-
-            limit is the total number of results to be returned in the result
-            page.
-
-            If left empty it will default to a value to be set by each app.
-          in: query
-          required: false
-          type: string
-          format: uint64
-        - name: pagination.count_total
-          description: >-
-            count_total is set to true  to indicate that the result set should
-            include
-
-            a count of the total number of items available for pagination in
-            UIs.
-
-            count_total is only respected when offset is used. It is ignored
-            when key
-
-            is set.
-          in: query
-          required: false
-          type: boolean
-        - name: pagination.reverse
-          description: >-
-            reverse is set to true if results are to be returned in the
-            descending order.
-
-
-            Since: cosmos-sdk 0.43
-          in: query
-          required: false
-          type: boolean
-      tags:
-        - Query
-  /sonrhq/core/identity/claimable_wallet/{id}:
+  /sonr/id/claims/{id}:
     get:
       summary: Queries a list of ClaimableWallet items.
       operationId: SonrhqCoreIdentityClaimableWallet
@@ -44870,7 +43719,7 @@ paths:
           format: uint64
       tags:
         - Query
-  /sonrhq/core/identity/did/owner/{owner}:
+  /sonr/id/owner/{owner}:
     get:
       summary: Queries a list of DidByOwner items.
       operationId: SonrhqCoreIdentityDidByOwner
@@ -44883,78 +43732,15 @@ paths:
               didDocument:
                 type: object
                 properties:
-                  context:
-                    type: array
-                    items:
-                      type: string
-                    title: The JSON-LD context(s) used in the document
                   id:
                     type: string
                     title: The identifier for the DID subject
-                  controller:
-                    type: array
-                    items:
-                      type: string
+                  owner:
+                    type: string
                     title: optional, the entity/entities controlling the DID subject
-                  verification_method:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                          title: The identifier for the verification method
-                        type:
-                          type: string
-                          title: The type of the verification method
-                        controller:
-                          type: string
-                          title: The entity controlling the verification method
-                        public_key_jwk:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            optional, the public key in JSON Web Key (JWK)
-                            format
-                        public_key_multibase:
-                          type: string
-                          title: optional, the public key in multibase-encoded format
-                        blockchain_account_id:
-                          type: string
-                          title: >-
-                            optional, the blockchain account identifier
-                            associated with the verification method
-                        metadata:
-                          type: array
-                          items:
-                            type: object
-                            properties:
-                              key:
-                                type: string
-                                title: The key
-                              value:
-                                type: string
-                                title: The value
-                            description: KeyValuePair represents a key-value pair.
-                          title: >-
-                            additional metadata related to the verification
-                            method
-                      description: >-
-                        VerificationMethod represents a verification method that
-                        can be used to authenticate the DID subject or perform
-                        other cryptographic operations.
-                    title: >-
-                      optional, the set of verification methods associated with
-                      the DID subject
+                  primary_alias:
+                    type: string
+                    title: optional, the primary alias for the DID subject
                   authentication:
                     type: array
                     items:
@@ -44998,25 +43784,12 @@ paths:
                       optional, the set of identifiers for other personas or
                       identities related to the DID subject
                   metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, additional metadata related to the DID document
-                  owner:
                     type: string
-                    title: The idx address of the owner of the DID document
+                    title: optional, additional metadata related to the DID document
                 description: >-
-                  DidDocument represents a Decentralized Identifier (DID)
-                  document that contains information about the DID subject, such
-                  as public keys, verification methods, and services.
+                  Identity represents a Decentralized Identifier (DID) document
+                  that contains information about the DID subject, such as
+                  public keys, verification methods, and services.
         default:
           description: An unexpected error response.
           schema:
@@ -45042,9 +43815,200 @@ paths:
           type: string
       tags:
         - Query
-  /sonr/core/service/record:
+  /sonr/id/{did}:
     get:
-      operationId: SonrhqCoreServiceServiceRecordAll
+      summary: Get a DIDDocument by DID
+      operationId: SonrhqCoreIdentityDid
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              didDocument:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    title: The identifier for the DID subject
+                  owner:
+                    type: string
+                    title: optional, the entity/entities controlling the DID subject
+                  primary_alias:
+                    type: string
+                    title: optional, the primary alias for the DID subject
+                  authentication:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of authentication methods associated
+                      with the DID subject
+                  assertion_method:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of assertion methods associated with the
+                      DID subject
+                  capability_invocation:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of capability invocation methods
+                      associated with the DID subject
+                  capability_delegation:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of capability delegation methods
+                      associated with the DID subject
+                  key_agreement:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of key agreement methods associated with
+                      the DID subject
+                  also_known_as:
+                    type: array
+                    items:
+                      type: string
+                    title: >-
+                      optional, the set of identifiers for other personas or
+                      identities related to the DID subject
+                  metadata:
+                    type: string
+                    title: optional, additional metadata related to the DID document
+                description: >-
+                  Identity represents a Decentralized Identifier (DID) document
+                  that contains information about the DID subject, such as
+                  public keys, verification methods, and services.
+                title: >-
+                  A DIDDocument is a JSON-LD object that contains a set of
+                  public keys
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: did
+          description: >-
+            did is the unique identifier of the DIDDocument - it appears like
+            (did:sonr:...)
+          in: path
+          required: true
+          type: string
+      tags:
+        - Query
+  /sonr/params/identity:
+    get:
+      summary: Parameters for the identity module.
+      operationId: SonrhqCoreIdentityParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+                properties:
+                  account_did_method_name:
+                    type: string
+                  account_did_method_context:
+                    type: string
+                  acccount_discovery_reward:
+                    type: string
+                    format: int64
+                  did_base_context:
+                    type: string
+                  maximum_identity_aliases:
+                    type: integer
+                    format: int32
+                  supported_did_methods:
+                    type: array
+                    items:
+                      type: string
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr/params/service:
+    get:
+      summary: Parameters queries the parameters of the module.
+      operationId: SonrhqCoreServiceParams
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              params:
+                description: params holds all the parameters of this module.
+                type: object
+            description: >-
+              QueryParamsResponse is response type for the Query/Params RPC
+              method.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      tags:
+        - Query
+  /sonr/service:
+    get:
+      operationId: SonrhqCoreServiceListServiceRecords
       responses:
         '200':
           description: A successful response.
@@ -45075,30 +44039,12 @@ paths:
                     service_endpoints:
                       type: array
                       items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                            title: The key
-                          value:
-                            type: string
-                            title: The value
-                        description: KeyValuePair represents a key-value pair.
+                        type: string
                       title: >-
                         optional, the set of service endpoints associated with
                         the service
                     metadata:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          key:
-                            type: string
-                            title: The key
-                          value:
-                            type: string
-                            title: The value
-                        description: KeyValuePair represents a key-value pair.
+                      type: string
                       title: optional, additional metadata related to the Service
               pagination:
                 type: object
@@ -45205,7 +44151,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /sonr/core/service/record/{id}:
+  /sonr/service/{origin}:
     get:
       summary: Queries a list of ServiceRecord items.
       operationId: SonrhqCoreServiceServiceRecord
@@ -45235,30 +44181,12 @@ paths:
                   service_endpoints:
                     type: array
                     items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
+                      type: string
                     title: >-
                       optional, the set of service endpoints associated with the
                       service
                   metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
+                    type: string
                     title: optional, additional metadata related to the Service
         default:
           description: An unexpected error response.
@@ -45279,28 +44207,30 @@ paths:
                       type: string
                   additionalProperties: {}
       parameters:
-        - name: id
+        - name: origin
           in: path
           required: true
           type: string
       tags:
         - Query
-  /sonrhq/core/service/params:
+  /sonr/service/{origin}/login/start:
     get:
-      summary: Parameters queries the parameters of the module.
-      operationId: SonrhqCoreServiceParams
+      summary: Queries a list of GetServiceAssertion items.
+      operationId: SonrhqCoreServiceServiceAssertion
       responses:
         '200':
           description: A successful response.
           schema:
             type: object
             properties:
-              params:
-                description: params holds all the parameters of this module.
-                type: object
-            description: >-
-              QueryParamsResponse is response type for the Query/Params RPC
-              method.
+              did:
+                type: string
+              assertion_options:
+                type: string
+              origin:
+                type: string
+              challenge:
+                type: string
         default:
           description: An unexpected error response.
           schema:
@@ -45319,6 +44249,138 @@ paths:
                     '@type':
                       type: string
                   additionalProperties: {}
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+        - name: did
+          description: optional
+          in: query
+          required: false
+          type: string
+        - name: is_mobile
+          description: optional
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr/service/{origin}/register/start:
+    get:
+      summary: Queries a list of GetServiceAttestion items.
+      operationId: SonrhqCoreServiceServiceAttestion
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              alias:
+                type: string
+              attestion_options:
+                type: string
+              origin:
+                type: string
+              challenge:
+                type: string
+              ucw_id:
+                type: string
+                format: uint64
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+        - name: alias
+          description: optional
+          in: query
+          required: false
+          type: string
+        - name: is_mobile
+          description: optional
+          in: query
+          required: false
+          type: boolean
+      tags:
+        - Query
+  /sonr/service/{origin}/relationships:
+    get:
+      summary: Queries a list of ServiceRelationships items.
+      operationId: SonrhqCoreServiceServiceRelationship
+      responses:
+        '200':
+          description: A successful response.
+          schema:
+            type: object
+            properties:
+              ServiceRelationships:
+                type: object
+                properties:
+                  reference:
+                    type: string
+                    title: Reference is the reference to the service record
+                  did:
+                    type: string
+                    title: Did is the user's DID
+                  count:
+                    type: integer
+                    format: int64
+                    title: >-
+                      Count is the number of times the user has interacted with
+                      the service
+                description: >-
+                  ServiceRelationship is a relationship between a service and a
+                  User entity. This relation
+
+                  is used to track the number of times a user has interacted
+                  with a service, utilizing a
+
+                  verifiable random function (VRF) to generate a random number
+                  that is used to determine
+
+                  whether or not a user has access to a service.
+        default:
+          description: An unexpected error response.
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                format: int32
+              message:
+                type: string
+              details:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    '@type':
+                      type: string
+                  additionalProperties: {}
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
       tags:
         - Query
 definitions:
@@ -72759,144 +71821,6 @@ definitions:
     description: |-
       Version defines the versioning scheme used to negotiate the IBC verison in
       the connection handshake.
-  sonrhq.core.domain.MsgCreateSLDRecordResponse:
-    type: object
-  sonrhq.core.domain.MsgCreateTLDRecordResponse:
-    type: object
-  sonrhq.core.domain.MsgDeleteSLDRecordResponse:
-    type: object
-  sonrhq.core.domain.MsgDeleteTLDRecordResponse:
-    type: object
-  sonrhq.core.domain.MsgUpdateSLDRecordResponse:
-    type: object
-  sonrhq.core.domain.MsgUpdateTLDRecordResponse:
-    type: object
-  sonrhq.core.domain.Params:
-    type: object
-    properties:
-      dns_resolver_ip:
-        type: string
-    description: Params defines the parameters for the module.
-  sonrhq.core.domain.QueryAllSLDRecordResponse:
-    type: object
-    properties:
-      sLDRecord:
-        type: array
-        items:
-          type: object
-          properties:
-            index:
-              type: string
-            creator:
-              type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  sonrhq.core.domain.QueryAllTLDRecordResponse:
-    type: object
-    properties:
-      tLDRecord:
-        type: array
-        items:
-          type: object
-          properties:
-            index:
-              type: string
-            creator:
-              type: string
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
-  sonrhq.core.domain.QueryGetSLDRecordResponse:
-    type: object
-    properties:
-      sLDRecord:
-        type: object
-        properties:
-          index:
-            type: string
-          creator:
-            type: string
-  sonrhq.core.domain.QueryGetTLDRecordResponse:
-    type: object
-    properties:
-      tLDRecord:
-        type: object
-        properties:
-          index:
-            type: string
-          creator:
-            type: string
-  sonrhq.core.domain.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-        properties:
-          dns_resolver_ip:
-            type: string
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
-  sonrhq.core.domain.SLDRecord:
-    type: object
-    properties:
-      index:
-        type: string
-      creator:
-        type: string
-  sonrhq.core.domain.TLDRecord:
-    type: object
-    properties:
-      index:
-        type: string
-      creator:
-        type: string
   sonrhq.core.identity.ClaimableWallet:
     type: object
     properties:
@@ -72916,7 +71840,7 @@ definitions:
         format: int32
       claimed:
         type: boolean
-  sonrhq.core.identity.DidDocument:
+  sonrhq.core.identity.DIDDocument:
     type: object
     properties:
       context:
@@ -72932,61 +71856,290 @@ definitions:
         items:
           type: string
         title: optional, the entity/entities controlling the DID subject
-      verification_method:
+      authentication:
         type: array
         items:
           type: object
           properties:
-            id:
+            verification_method:
+              title: The verification method associated with the relationship
+              type: object
+              properties:
+                id:
+                  type: string
+                  title: The identifier for the verification method
+                type:
+                  type: string
+                  title: The type of the verification method
+                controller:
+                  type: string
+                  title: The entity controlling the verification method
+                public_key_jwk:
+                  type: string
+                  title: optional, the public key in JSON Web Key (JWK) format
+                public_key_multibase:
+                  type: string
+                  title: optional, the public key in multibase-encoded format
+                blockchain_account_id:
+                  type: string
+                  title: >-
+                    optional, the blockchain account identifier associated with
+                    the verification method
+                metadata:
+                  type: string
+                  title: additional metadata related to the verification method
+              description: >-
+                VerificationMethod represents a verification method that can be
+                used to authenticate the DID subject or perform other
+                cryptographic operations.
+            reference:
               type: string
-              title: The identifier for the verification method
+              title: The reference identifier for the relationship
             type:
               type: string
-              title: The type of the verification method
-            controller:
+              title: The type of the verification relationship
+            owner:
               type: string
-              title: The entity controlling the verification method
-            public_key_jwk:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    title: The key
-                  value:
-                    type: string
-                    title: The value
-                description: KeyValuePair represents a key-value pair.
-              title: optional, the public key in JSON Web Key (JWK) format
-            public_key_multibase:
-              type: string
-              title: optional, the public key in multibase-encoded format
-            blockchain_account_id:
-              type: string
-              title: >-
-                optional, the blockchain account identifier associated with the
-                verification method
-            metadata:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    title: The key
-                  value:
-                    type: string
-                    title: The value
-                description: KeyValuePair represents a key-value pair.
-              title: additional metadata related to the verification method
+              title: The idx address of the owner of the verification relationship
           description: >-
-            VerificationMethod represents a verification method that can be used
-            to authenticate the DID subject or perform other cryptographic
-            operations.
+            VerificationRelationship represents a relationship between a
+            verification method and a specific verification purpose (e.g.,
+            authentication, assertion, etc.).
         title: >-
-          optional, the set of verification methods associated with the DID
+          optional, the set of authentication methods associated with the DID
           subject
+      assertion_method:
+        type: array
+        items:
+          type: object
+          properties:
+            verification_method:
+              title: The verification method associated with the relationship
+              type: object
+              properties:
+                id:
+                  type: string
+                  title: The identifier for the verification method
+                type:
+                  type: string
+                  title: The type of the verification method
+                controller:
+                  type: string
+                  title: The entity controlling the verification method
+                public_key_jwk:
+                  type: string
+                  title: optional, the public key in JSON Web Key (JWK) format
+                public_key_multibase:
+                  type: string
+                  title: optional, the public key in multibase-encoded format
+                blockchain_account_id:
+                  type: string
+                  title: >-
+                    optional, the blockchain account identifier associated with
+                    the verification method
+                metadata:
+                  type: string
+                  title: additional metadata related to the verification method
+              description: >-
+                VerificationMethod represents a verification method that can be
+                used to authenticate the DID subject or perform other
+                cryptographic operations.
+            reference:
+              type: string
+              title: The reference identifier for the relationship
+            type:
+              type: string
+              title: The type of the verification relationship
+            owner:
+              type: string
+              title: The idx address of the owner of the verification relationship
+          description: >-
+            VerificationRelationship represents a relationship between a
+            verification method and a specific verification purpose (e.g.,
+            authentication, assertion, etc.).
+        title: optional, the set of assertion methods associated with the DID subject
+      capability_invocation:
+        type: array
+        items:
+          type: object
+          properties:
+            verification_method:
+              title: The verification method associated with the relationship
+              type: object
+              properties:
+                id:
+                  type: string
+                  title: The identifier for the verification method
+                type:
+                  type: string
+                  title: The type of the verification method
+                controller:
+                  type: string
+                  title: The entity controlling the verification method
+                public_key_jwk:
+                  type: string
+                  title: optional, the public key in JSON Web Key (JWK) format
+                public_key_multibase:
+                  type: string
+                  title: optional, the public key in multibase-encoded format
+                blockchain_account_id:
+                  type: string
+                  title: >-
+                    optional, the blockchain account identifier associated with
+                    the verification method
+                metadata:
+                  type: string
+                  title: additional metadata related to the verification method
+              description: >-
+                VerificationMethod represents a verification method that can be
+                used to authenticate the DID subject or perform other
+                cryptographic operations.
+            reference:
+              type: string
+              title: The reference identifier for the relationship
+            type:
+              type: string
+              title: The type of the verification relationship
+            owner:
+              type: string
+              title: The idx address of the owner of the verification relationship
+          description: >-
+            VerificationRelationship represents a relationship between a
+            verification method and a specific verification purpose (e.g.,
+            authentication, assertion, etc.).
+        title: >-
+          optional, the set of capability invocation methods associated with the
+          DID subject
+      capability_delegation:
+        type: array
+        items:
+          type: object
+          properties:
+            verification_method:
+              title: The verification method associated with the relationship
+              type: object
+              properties:
+                id:
+                  type: string
+                  title: The identifier for the verification method
+                type:
+                  type: string
+                  title: The type of the verification method
+                controller:
+                  type: string
+                  title: The entity controlling the verification method
+                public_key_jwk:
+                  type: string
+                  title: optional, the public key in JSON Web Key (JWK) format
+                public_key_multibase:
+                  type: string
+                  title: optional, the public key in multibase-encoded format
+                blockchain_account_id:
+                  type: string
+                  title: >-
+                    optional, the blockchain account identifier associated with
+                    the verification method
+                metadata:
+                  type: string
+                  title: additional metadata related to the verification method
+              description: >-
+                VerificationMethod represents a verification method that can be
+                used to authenticate the DID subject or perform other
+                cryptographic operations.
+            reference:
+              type: string
+              title: The reference identifier for the relationship
+            type:
+              type: string
+              title: The type of the verification relationship
+            owner:
+              type: string
+              title: The idx address of the owner of the verification relationship
+          description: >-
+            VerificationRelationship represents a relationship between a
+            verification method and a specific verification purpose (e.g.,
+            authentication, assertion, etc.).
+        title: >-
+          optional, the set of capability delegation methods associated with the
+          DID subject
+      key_agreement:
+        type: array
+        items:
+          type: object
+          properties:
+            verification_method:
+              title: The verification method associated with the relationship
+              type: object
+              properties:
+                id:
+                  type: string
+                  title: The identifier for the verification method
+                type:
+                  type: string
+                  title: The type of the verification method
+                controller:
+                  type: string
+                  title: The entity controlling the verification method
+                public_key_jwk:
+                  type: string
+                  title: optional, the public key in JSON Web Key (JWK) format
+                public_key_multibase:
+                  type: string
+                  title: optional, the public key in multibase-encoded format
+                blockchain_account_id:
+                  type: string
+                  title: >-
+                    optional, the blockchain account identifier associated with
+                    the verification method
+                metadata:
+                  type: string
+                  title: additional metadata related to the verification method
+              description: >-
+                VerificationMethod represents a verification method that can be
+                used to authenticate the DID subject or perform other
+                cryptographic operations.
+            reference:
+              type: string
+              title: The reference identifier for the relationship
+            type:
+              type: string
+              title: The type of the verification relationship
+            owner:
+              type: string
+              title: The idx address of the owner of the verification relationship
+          description: >-
+            VerificationRelationship represents a relationship between a
+            verification method and a specific verification purpose (e.g.,
+            authentication, assertion, etc.).
+        title: >-
+          optional, the set of key agreement methods associated with the DID
+          subject
+      also_known_as:
+        type: array
+        items:
+          type: string
+        title: >-
+          optional, the set of identifiers for other personas or identities
+          related to the DID subject
+      metadata:
+        type: string
+        title: optional, additional metadata related to the DID document
+    description: >-
+      DIDDocument represents a Decentralized Identifier (DID) document that
+      contains information about the DID subject, such as public keys,
+      verification methods, and services.
+  sonrhq.core.identity.Identity:
+    type: object
+    properties:
+      id:
+        type: string
+        title: The identifier for the DID subject
+      owner:
+        type: string
+        title: optional, the entity/entities controlling the DID subject
+      primary_alias:
+        type: string
+        title: optional, the primary alias for the DID subject
       authentication:
         type: array
         items:
@@ -73028,91 +72181,20 @@ definitions:
           optional, the set of identifiers for other personas or identities
           related to the DID subject
       metadata:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-              title: The key
-            value:
-              type: string
-              title: The value
-          description: KeyValuePair represents a key-value pair.
-        title: optional, additional metadata related to the DID document
-      owner:
         type: string
-        title: The idx address of the owner of the DID document
+        title: optional, additional metadata related to the DID document
     description: >-
-      DidDocument represents a Decentralized Identifier (DID) document that
+      Identity represents a Decentralized Identifier (DID) document that
       contains information about the DID subject, such as public keys,
       verification methods, and services.
-  sonrhq.core.identity.KeyValuePair:
-    type: object
-    properties:
-      key:
-        type: string
-        title: The key
-      value:
-        type: string
-        title: The value
-    description: KeyValuePair represents a key-value pair.
-  sonrhq.core.identity.MsgCreateClaimableWalletResponse:
-    type: object
-    properties:
-      id:
-        type: string
-        format: uint64
-      reward:
-        type: integer
-        format: int32
   sonrhq.core.identity.MsgCreateDidDocumentResponse:
     type: object
-  sonrhq.core.identity.MsgDeleteClaimableWalletResponse:
-    type: object
-  sonrhq.core.identity.MsgDeleteDidDocumentResponse:
-    type: object
-  sonrhq.core.identity.MsgUpdateClaimableWalletResponse:
-    type: object
-  sonrhq.core.identity.MsgUpdateDidDocumentResponse:
+  sonrhq.core.identity.MsgRegisterIdentityResponse:
     type: object
     properties:
-      creator:
-        type: string
-  sonrhq.core.identity.Params:
-    type: object
-    properties:
-      did_base_context:
-        type: string
-      did_method_context:
-        type: string
-      did_method_name:
-        type: string
-      did_method_version:
-        type: string
-      did_network:
-        type: string
-      ipfs_gateway:
-        type: string
-      ipfs_api:
-        type: string
-      webauthn_attestion_preference:
-        type: string
-      webauthn_authenticator_attachment:
-        type: string
-      webauthn_timeout:
-        type: integer
-        format: int32
-      max_validator_accounts_per_1000:
-        type: integer
-        format: int32
-    description: Params defines the parameters for the module.
-  sonrhq.core.identity.QueryAliasAvailableResponse:
-    type: object
-    properties:
-      available:
+      success:
         type: boolean
-      existing_document:
+      did_document:
         type: object
         properties:
           context:
@@ -73128,61 +72210,332 @@ definitions:
             items:
               type: string
             title: optional, the entity/entities controlling the DID subject
-          verification_method:
+          authentication:
             type: array
             items:
               type: object
               properties:
-                id:
+                verification_method:
+                  title: The verification method associated with the relationship
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      title: The identifier for the verification method
+                    type:
+                      type: string
+                      title: The type of the verification method
+                    controller:
+                      type: string
+                      title: The entity controlling the verification method
+                    public_key_jwk:
+                      type: string
+                      title: optional, the public key in JSON Web Key (JWK) format
+                    public_key_multibase:
+                      type: string
+                      title: optional, the public key in multibase-encoded format
+                    blockchain_account_id:
+                      type: string
+                      title: >-
+                        optional, the blockchain account identifier associated
+                        with the verification method
+                    metadata:
+                      type: string
+                      title: additional metadata related to the verification method
+                  description: >-
+                    VerificationMethod represents a verification method that can
+                    be used to authenticate the DID subject or perform other
+                    cryptographic operations.
+                reference:
                   type: string
-                  title: The identifier for the verification method
+                  title: The reference identifier for the relationship
                 type:
                   type: string
-                  title: The type of the verification method
-                controller:
-                  type: string
-                  title: The entity controlling the verification method
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: optional, the public key in JSON Web Key (JWK) format
-                public_key_multibase:
-                  type: string
-                  title: optional, the public key in multibase-encoded format
-                blockchain_account_id:
+                  title: The type of the verification relationship
+                owner:
                   type: string
                   title: >-
-                    optional, the blockchain account identifier associated with
-                    the verification method
-                metadata:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: additional metadata related to the verification method
+                    The idx address of the owner of the verification
+                    relationship
               description: >-
-                VerificationMethod represents a verification method that can be
-                used to authenticate the DID subject or perform other
-                cryptographic operations.
+                VerificationRelationship represents a relationship between a
+                verification method and a specific verification purpose (e.g.,
+                authentication, assertion, etc.).
             title: >-
-              optional, the set of verification methods associated with the DID
+              optional, the set of authentication methods associated with the
+              DID subject
+          assertion_method:
+            type: array
+            items:
+              type: object
+              properties:
+                verification_method:
+                  title: The verification method associated with the relationship
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      title: The identifier for the verification method
+                    type:
+                      type: string
+                      title: The type of the verification method
+                    controller:
+                      type: string
+                      title: The entity controlling the verification method
+                    public_key_jwk:
+                      type: string
+                      title: optional, the public key in JSON Web Key (JWK) format
+                    public_key_multibase:
+                      type: string
+                      title: optional, the public key in multibase-encoded format
+                    blockchain_account_id:
+                      type: string
+                      title: >-
+                        optional, the blockchain account identifier associated
+                        with the verification method
+                    metadata:
+                      type: string
+                      title: additional metadata related to the verification method
+                  description: >-
+                    VerificationMethod represents a verification method that can
+                    be used to authenticate the DID subject or perform other
+                    cryptographic operations.
+                reference:
+                  type: string
+                  title: The reference identifier for the relationship
+                type:
+                  type: string
+                  title: The type of the verification relationship
+                owner:
+                  type: string
+                  title: >-
+                    The idx address of the owner of the verification
+                    relationship
+              description: >-
+                VerificationRelationship represents a relationship between a
+                verification method and a specific verification purpose (e.g.,
+                authentication, assertion, etc.).
+            title: >-
+              optional, the set of assertion methods associated with the DID
               subject
+          capability_invocation:
+            type: array
+            items:
+              type: object
+              properties:
+                verification_method:
+                  title: The verification method associated with the relationship
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      title: The identifier for the verification method
+                    type:
+                      type: string
+                      title: The type of the verification method
+                    controller:
+                      type: string
+                      title: The entity controlling the verification method
+                    public_key_jwk:
+                      type: string
+                      title: optional, the public key in JSON Web Key (JWK) format
+                    public_key_multibase:
+                      type: string
+                      title: optional, the public key in multibase-encoded format
+                    blockchain_account_id:
+                      type: string
+                      title: >-
+                        optional, the blockchain account identifier associated
+                        with the verification method
+                    metadata:
+                      type: string
+                      title: additional metadata related to the verification method
+                  description: >-
+                    VerificationMethod represents a verification method that can
+                    be used to authenticate the DID subject or perform other
+                    cryptographic operations.
+                reference:
+                  type: string
+                  title: The reference identifier for the relationship
+                type:
+                  type: string
+                  title: The type of the verification relationship
+                owner:
+                  type: string
+                  title: >-
+                    The idx address of the owner of the verification
+                    relationship
+              description: >-
+                VerificationRelationship represents a relationship between a
+                verification method and a specific verification purpose (e.g.,
+                authentication, assertion, etc.).
+            title: >-
+              optional, the set of capability invocation methods associated with
+              the DID subject
+          capability_delegation:
+            type: array
+            items:
+              type: object
+              properties:
+                verification_method:
+                  title: The verification method associated with the relationship
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      title: The identifier for the verification method
+                    type:
+                      type: string
+                      title: The type of the verification method
+                    controller:
+                      type: string
+                      title: The entity controlling the verification method
+                    public_key_jwk:
+                      type: string
+                      title: optional, the public key in JSON Web Key (JWK) format
+                    public_key_multibase:
+                      type: string
+                      title: optional, the public key in multibase-encoded format
+                    blockchain_account_id:
+                      type: string
+                      title: >-
+                        optional, the blockchain account identifier associated
+                        with the verification method
+                    metadata:
+                      type: string
+                      title: additional metadata related to the verification method
+                  description: >-
+                    VerificationMethod represents a verification method that can
+                    be used to authenticate the DID subject or perform other
+                    cryptographic operations.
+                reference:
+                  type: string
+                  title: The reference identifier for the relationship
+                type:
+                  type: string
+                  title: The type of the verification relationship
+                owner:
+                  type: string
+                  title: >-
+                    The idx address of the owner of the verification
+                    relationship
+              description: >-
+                VerificationRelationship represents a relationship between a
+                verification method and a specific verification purpose (e.g.,
+                authentication, assertion, etc.).
+            title: >-
+              optional, the set of capability delegation methods associated with
+              the DID subject
+          key_agreement:
+            type: array
+            items:
+              type: object
+              properties:
+                verification_method:
+                  title: The verification method associated with the relationship
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      title: The identifier for the verification method
+                    type:
+                      type: string
+                      title: The type of the verification method
+                    controller:
+                      type: string
+                      title: The entity controlling the verification method
+                    public_key_jwk:
+                      type: string
+                      title: optional, the public key in JSON Web Key (JWK) format
+                    public_key_multibase:
+                      type: string
+                      title: optional, the public key in multibase-encoded format
+                    blockchain_account_id:
+                      type: string
+                      title: >-
+                        optional, the blockchain account identifier associated
+                        with the verification method
+                    metadata:
+                      type: string
+                      title: additional metadata related to the verification method
+                  description: >-
+                    VerificationMethod represents a verification method that can
+                    be used to authenticate the DID subject or perform other
+                    cryptographic operations.
+                reference:
+                  type: string
+                  title: The reference identifier for the relationship
+                type:
+                  type: string
+                  title: The type of the verification relationship
+                owner:
+                  type: string
+                  title: >-
+                    The idx address of the owner of the verification
+                    relationship
+              description: >-
+                VerificationRelationship represents a relationship between a
+                verification method and a specific verification purpose (e.g.,
+                authentication, assertion, etc.).
+            title: >-
+              optional, the set of key agreement methods associated with the DID
+              subject
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of identifiers for other personas or identities
+              related to the DID subject
+          metadata:
+            type: string
+            title: optional, additional metadata related to the DID document
+        description: >-
+          DIDDocument represents a Decentralized Identifier (DID) document that
+          contains information about the DID subject, such as public keys,
+          verification methods, and services.
+  sonrhq.core.identity.MsgUpdateDidDocumentResponse:
+    type: object
+    properties:
+      creator:
+        type: string
+  sonrhq.core.identity.Params:
+    type: object
+    properties:
+      account_did_method_name:
+        type: string
+      account_did_method_context:
+        type: string
+      acccount_discovery_reward:
+        type: string
+        format: int64
+      did_base_context:
+        type: string
+      maximum_identity_aliases:
+        type: integer
+        format: int32
+      supported_did_methods:
+        type: array
+        items:
+          type: string
+    description: Params defines the parameters for the module.
+  sonrhq.core.identity.QueryAliasAvailableResponse:
+    type: object
+    properties:
+      available:
+        type: boolean
+      existing_document:
+        type: object
+        properties:
+          id:
+            type: string
+            title: The identifier for the DID subject
+          owner:
+            type: string
+            title: optional, the entity/entities controlling the DID subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
           authentication:
             type: array
             items:
@@ -73226,75 +72579,12 @@ definitions:
               optional, the set of identifiers for other personas or identities
               related to the DID subject
           metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
-            title: optional, additional metadata related to the DID document
-          owner:
             type: string
-            title: The idx address of the owner of the DID document
+            title: optional, additional metadata related to the DID document
         description: >-
-          DidDocument represents a Decentralized Identifier (DID) document that
+          Identity represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
-  sonrhq.core.identity.QueryAllClaimableWalletResponse:
-    type: object
-    properties:
-      ClaimableWallet:
-        type: array
-        items:
-          type: object
-          properties:
-            id:
-              type: string
-              format: uint64
-            creator:
-              type: string
-            public_key:
-              type: string
-            keyshares:
-              type: array
-              items:
-                type: string
-            count:
-              type: integer
-              format: int32
-            claimed:
-              type: boolean
-      pagination:
-        type: object
-        properties:
-          next_key:
-            type: string
-            format: byte
-            description: |-
-              next_key is the key to be passed to PageRequest.key to
-              query the next page most efficiently. It will be empty if
-              there are no more results.
-          total:
-            type: string
-            format: uint64
-            title: >-
-              total is total number of results available if
-              PageRequest.count_total
-
-              was set, its value is undefined otherwise
-        description: |-
-          PageResponse is to be embedded in gRPC response messages where the
-          corresponding request message has used PageRequest.
-
-           message SomeResponse {
-                   repeated Bar results = 1;
-                   PageResponse page = 2;
-           }
   sonrhq.core.identity.QueryAllDidResponse:
     type: object
     properties:
@@ -73303,74 +72593,15 @@ definitions:
         items:
           type: object
           properties:
-            context:
-              type: array
-              items:
-                type: string
-              title: The JSON-LD context(s) used in the document
             id:
               type: string
               title: The identifier for the DID subject
-            controller:
-              type: array
-              items:
-                type: string
+            owner:
+              type: string
               title: optional, the entity/entities controlling the DID subject
-            verification_method:
-              type: array
-              items:
-                type: object
-                properties:
-                  id:
-                    type: string
-                    title: The identifier for the verification method
-                  type:
-                    type: string
-                    title: The type of the verification method
-                  controller:
-                    type: string
-                    title: The entity controlling the verification method
-                  public_key_jwk:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: optional, the public key in JSON Web Key (JWK) format
-                  public_key_multibase:
-                    type: string
-                    title: optional, the public key in multibase-encoded format
-                  blockchain_account_id:
-                    type: string
-                    title: >-
-                      optional, the blockchain account identifier associated
-                      with the verification method
-                  metadata:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                          title: The key
-                        value:
-                          type: string
-                          title: The value
-                      description: KeyValuePair represents a key-value pair.
-                    title: additional metadata related to the verification method
-                description: >-
-                  VerificationMethod represents a verification method that can
-                  be used to authenticate the DID subject or perform other
-                  cryptographic operations.
-              title: >-
-                optional, the set of verification methods associated with the
-                DID subject
+            primary_alias:
+              type: string
+              title: optional, the primary alias for the DID subject
             authentication:
               type: array
               items:
@@ -73414,25 +72645,12 @@ definitions:
                 optional, the set of identifiers for other personas or
                 identities related to the DID subject
             metadata:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    title: The key
-                  value:
-                    type: string
-                    title: The value
-                description: KeyValuePair represents a key-value pair.
-              title: optional, additional metadata related to the DID document
-            owner:
               type: string
-              title: The idx address of the owner of the DID document
+              title: optional, additional metadata related to the DID document
           description: >-
-            DidDocument represents a Decentralized Identifier (DID) document
-            that contains information about the DID subject, such as public
-            keys, verification methods, and services.
+            Identity represents a Decentralized Identifier (DID) document that
+            contains information about the DID subject, such as public keys,
+            verification methods, and services.
       pagination:
         type: object
         properties:
@@ -73463,76 +72681,18 @@ definitions:
     type: object
     properties:
       didDocument:
+        title: A DIDDocument is a JSON-LD object that contains a set of public keys
         type: object
         properties:
-          context:
-            type: array
-            items:
-              type: string
-            title: The JSON-LD context(s) used in the document
           id:
             type: string
             title: The identifier for the DID subject
-          controller:
-            type: array
-            items:
-              type: string
+          owner:
+            type: string
             title: optional, the entity/entities controlling the DID subject
-          verification_method:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  title: The identifier for the verification method
-                type:
-                  type: string
-                  title: The type of the verification method
-                controller:
-                  type: string
-                  title: The entity controlling the verification method
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: optional, the public key in JSON Web Key (JWK) format
-                public_key_multibase:
-                  type: string
-                  title: optional, the public key in multibase-encoded format
-                blockchain_account_id:
-                  type: string
-                  title: >-
-                    optional, the blockchain account identifier associated with
-                    the verification method
-                metadata:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: additional metadata related to the verification method
-              description: >-
-                VerificationMethod represents a verification method that can be
-                used to authenticate the DID subject or perform other
-                cryptographic operations.
-            title: >-
-              optional, the set of verification methods associated with the DID
-              subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
           authentication:
             type: array
             items:
@@ -73576,237 +72736,27 @@ definitions:
               optional, the set of identifiers for other personas or identities
               related to the DID subject
           metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
-            title: optional, additional metadata related to the DID document
-          owner:
             type: string
-            title: The idx address of the owner of the DID document
+            title: optional, additional metadata related to the DID document
         description: >-
-          DidDocument represents a Decentralized Identifier (DID) document that
+          Identity represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
-  sonrhq.core.identity.QueryDidByKeyIDResponse:
-    type: object
-    properties:
-      didDocument:
-        type: object
-        properties:
-          context:
-            type: array
-            items:
-              type: string
-            title: The JSON-LD context(s) used in the document
-          id:
-            type: string
-            title: The identifier for the DID subject
-          controller:
-            type: array
-            items:
-              type: string
-            title: optional, the entity/entities controlling the DID subject
-          verification_method:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  title: The identifier for the verification method
-                type:
-                  type: string
-                  title: The type of the verification method
-                controller:
-                  type: string
-                  title: The entity controlling the verification method
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: optional, the public key in JSON Web Key (JWK) format
-                public_key_multibase:
-                  type: string
-                  title: optional, the public key in multibase-encoded format
-                blockchain_account_id:
-                  type: string
-                  title: >-
-                    optional, the blockchain account identifier associated with
-                    the verification method
-                metadata:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: additional metadata related to the verification method
-              description: >-
-                VerificationMethod represents a verification method that can be
-                used to authenticate the DID subject or perform other
-                cryptographic operations.
-            title: >-
-              optional, the set of verification methods associated with the DID
-              subject
-          authentication:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of authentication methods associated with the
-              DID subject
-          assertion_method:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of assertion methods associated with the DID
-              subject
-          capability_invocation:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of capability invocation methods associated with
-              the DID subject
-          capability_delegation:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of capability delegation methods associated with
-              the DID subject
-          key_agreement:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of key agreement methods associated with the DID
-              subject
-          also_known_as:
-            type: array
-            items:
-              type: string
-            title: >-
-              optional, the set of identifiers for other personas or identities
-              related to the DID subject
-          metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
-            title: optional, additional metadata related to the DID document
-          owner:
-            type: string
-            title: The idx address of the owner of the DID document
-        description: >-
-          DidDocument represents a Decentralized Identifier (DID) document that
-          contains information about the DID subject, such as public keys,
-          verification methods, and services.
-        title: A DIDDocument is a JSON-LD object that contains a set of public keys
   sonrhq.core.identity.QueryDidByOwnerResponse:
     type: object
     properties:
       didDocument:
         type: object
         properties:
-          context:
-            type: array
-            items:
-              type: string
-            title: The JSON-LD context(s) used in the document
           id:
             type: string
             title: The identifier for the DID subject
-          controller:
-            type: array
-            items:
-              type: string
+          owner:
+            type: string
             title: optional, the entity/entities controlling the DID subject
-          verification_method:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  title: The identifier for the verification method
-                type:
-                  type: string
-                  title: The type of the verification method
-                controller:
-                  type: string
-                  title: The entity controlling the verification method
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: optional, the public key in JSON Web Key (JWK) format
-                public_key_multibase:
-                  type: string
-                  title: optional, the public key in multibase-encoded format
-                blockchain_account_id:
-                  type: string
-                  title: >-
-                    optional, the blockchain account identifier associated with
-                    the verification method
-                metadata:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: additional metadata related to the verification method
-              description: >-
-                VerificationMethod represents a verification method that can be
-                used to authenticate the DID subject or perform other
-                cryptographic operations.
-            title: >-
-              optional, the set of verification methods associated with the DID
-              subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
           authentication:
             type: array
             items:
@@ -73850,23 +72800,10 @@ definitions:
               optional, the set of identifiers for other personas or identities
               related to the DID subject
           metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
-            title: optional, additional metadata related to the DID document
-          owner:
             type: string
-            title: The idx address of the owner of the DID document
+            title: optional, additional metadata related to the DID document
         description: >-
-          DidDocument represents a Decentralized Identifier (DID) document that
+          Identity represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
   sonrhq.core.identity.QueryGetClaimableWalletResponse:
@@ -73897,74 +72834,15 @@ definitions:
       didDocument:
         type: object
         properties:
-          context:
-            type: array
-            items:
-              type: string
-            title: The JSON-LD context(s) used in the document
           id:
             type: string
             title: The identifier for the DID subject
-          controller:
-            type: array
-            items:
-              type: string
+          owner:
+            type: string
             title: optional, the entity/entities controlling the DID subject
-          verification_method:
-            type: array
-            items:
-              type: object
-              properties:
-                id:
-                  type: string
-                  title: The identifier for the verification method
-                type:
-                  type: string
-                  title: The type of the verification method
-                controller:
-                  type: string
-                  title: The entity controlling the verification method
-                public_key_jwk:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: optional, the public key in JSON Web Key (JWK) format
-                public_key_multibase:
-                  type: string
-                  title: optional, the public key in multibase-encoded format
-                blockchain_account_id:
-                  type: string
-                  title: >-
-                    optional, the blockchain account identifier associated with
-                    the verification method
-                metadata:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      key:
-                        type: string
-                        title: The key
-                      value:
-                        type: string
-                        title: The value
-                    description: KeyValuePair represents a key-value pair.
-                  title: additional metadata related to the verification method
-              description: >-
-                VerificationMethod represents a verification method that can be
-                used to authenticate the DID subject or perform other
-                cryptographic operations.
-            title: >-
-              optional, the set of verification methods associated with the DID
-              subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
           authentication:
             type: array
             items:
@@ -74008,23 +72886,10 @@ definitions:
               optional, the set of identifiers for other personas or identities
               related to the DID subject
           metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
-            title: optional, additional metadata related to the DID document
-          owner:
             type: string
-            title: The idx address of the owner of the DID document
+            title: optional, additional metadata related to the DID document
         description: >-
-          DidDocument represents a Decentralized Identifier (DID) document that
+          Identity represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
@@ -74035,30 +72900,22 @@ definitions:
         description: params holds all the parameters of this module.
         type: object
         properties:
+          account_did_method_name:
+            type: string
+          account_did_method_context:
+            type: string
+          acccount_discovery_reward:
+            type: string
+            format: int64
           did_base_context:
             type: string
-          did_method_context:
-            type: string
-          did_method_name:
-            type: string
-          did_method_version:
-            type: string
-          did_network:
-            type: string
-          ipfs_gateway:
-            type: string
-          ipfs_api:
-            type: string
-          webauthn_attestion_preference:
-            type: string
-          webauthn_authenticator_attachment:
-            type: string
-          webauthn_timeout:
+          maximum_identity_aliases:
             type: integer
             format: int32
-          max_validator_accounts_per_1000:
-            type: integer
-            format: int32
+          supported_did_methods:
+            type: array
+            items:
+              type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrhq.core.identity.VerificationMethod:
     type: object
@@ -74073,17 +72930,7 @@ definitions:
         type: string
         title: The entity controlling the verification method
       public_key_jwk:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-              title: The key
-            value:
-              type: string
-              title: The value
-          description: KeyValuePair represents a key-value pair.
+        type: string
         title: optional, the public key in JSON Web Key (JWK) format
       public_key_multibase:
         type: string
@@ -74094,41 +72941,59 @@ definitions:
           optional, the blockchain account identifier associated with the
           verification method
       metadata:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-              title: The key
-            value:
-              type: string
-              title: The value
-          description: KeyValuePair represents a key-value pair.
+        type: string
         title: additional metadata related to the verification method
     description: >-
       VerificationMethod represents a verification method that can be used to
       authenticate the DID subject or perform other cryptographic operations.
-  sonrhq.core.service.KeyValuePair:
+  sonrhq.core.identity.VerificationRelationship:
     type: object
     properties:
-      key:
+      verification_method:
+        title: The verification method associated with the relationship
+        type: object
+        properties:
+          id:
+            type: string
+            title: The identifier for the verification method
+          type:
+            type: string
+            title: The type of the verification method
+          controller:
+            type: string
+            title: The entity controlling the verification method
+          public_key_jwk:
+            type: string
+            title: optional, the public key in JSON Web Key (JWK) format
+          public_key_multibase:
+            type: string
+            title: optional, the public key in multibase-encoded format
+          blockchain_account_id:
+            type: string
+            title: >-
+              optional, the blockchain account identifier associated with the
+              verification method
+          metadata:
+            type: string
+            title: additional metadata related to the verification method
+        description: >-
+          VerificationMethod represents a verification method that can be used
+          to authenticate the DID subject or perform other cryptographic
+          operations.
+      reference:
         type: string
-        title: The key
-      value:
+        title: The reference identifier for the relationship
+      type:
         type: string
-        title: The value
-    description: KeyValuePair represents a key-value pair.
-  sonrhq.core.service.MsgCreateServiceRecordResponse:
-    type: object
-  sonrhq.core.service.MsgDeleteServiceRecordResponse:
-    type: object
-  sonrhq.core.service.MsgUpdateServiceRecordResponse:
-    type: object
-  sonrhq.core.service.Params:
-    type: object
-    description: Params defines the parameters for the module.
-  sonrhq.core.service.QueryAllServiceRecordResponse:
+        title: The type of the verification relationship
+      owner:
+        type: string
+        title: The idx address of the owner of the verification relationship
+    description: >-
+      VerificationRelationship represents a relationship between a verification
+      method and a specific verification purpose (e.g., authentication,
+      assertion, etc.).
+  sonrhq.core.service.ListServiceRecordsResponse:
     type: object
     properties:
       serviceRecord:
@@ -74153,30 +73018,12 @@ definitions:
             service_endpoints:
               type: array
               items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    title: The key
-                  value:
-                    type: string
-                    title: The value
-                description: KeyValuePair represents a key-value pair.
+                type: string
               title: >-
                 optional, the set of service endpoints associated with the
                 service
             metadata:
-              type: array
-              items:
-                type: object
-                properties:
-                  key:
-                    type: string
-                    title: The key
-                  value:
-                    type: string
-                    title: The value
-                description: KeyValuePair represents a key-value pair.
+              type: string
               title: optional, additional metadata related to the Service
       pagination:
         type: object
@@ -74204,7 +73051,218 @@ definitions:
                    repeated Bar results = 1;
                    PageResponse page = 2;
            }
-  sonrhq.core.service.QueryGetServiceRecordResponse:
+  sonrhq.core.service.MsgAuthenticateUserEntityResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      did:
+        type: string
+      identity:
+        type: object
+        properties:
+          id:
+            type: string
+            title: The identifier for the DID subject
+          owner:
+            type: string
+            title: optional, the entity/entities controlling the DID subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
+          authentication:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of authentication methods associated with the
+              DID subject
+          assertion_method:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of assertion methods associated with the DID
+              subject
+          capability_invocation:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of capability invocation methods associated with
+              the DID subject
+          capability_delegation:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of capability delegation methods associated with
+              the DID subject
+          key_agreement:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of key agreement methods associated with the DID
+              subject
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of identifiers for other personas or identities
+              related to the DID subject
+          metadata:
+            type: string
+            title: optional, additional metadata related to the DID document
+        description: >-
+          Identity represents a Decentralized Identifier (DID) document that
+          contains information about the DID subject, such as public keys,
+          verification methods, and services.
+  sonrhq.core.service.MsgBurnServiceRecordResponse:
+    type: object
+  sonrhq.core.service.MsgRegisterServiceRecordResponse:
+    type: object
+    properties:
+      ok:
+        type: boolean
+      group_address:
+        type: string
+  sonrhq.core.service.MsgRegisterUserEntityResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+      did:
+        type: string
+      identity:
+        type: object
+        properties:
+          id:
+            type: string
+            title: The identifier for the DID subject
+          owner:
+            type: string
+            title: optional, the entity/entities controlling the DID subject
+          primary_alias:
+            type: string
+            title: optional, the primary alias for the DID subject
+          authentication:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of authentication methods associated with the
+              DID subject
+          assertion_method:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of assertion methods associated with the DID
+              subject
+          capability_invocation:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of capability invocation methods associated with
+              the DID subject
+          capability_delegation:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of capability delegation methods associated with
+              the DID subject
+          key_agreement:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of key agreement methods associated with the DID
+              subject
+          also_known_as:
+            type: array
+            items:
+              type: string
+            title: >-
+              optional, the set of identifiers for other personas or identities
+              related to the DID subject
+          metadata:
+            type: string
+            title: optional, additional metadata related to the DID document
+        description: >-
+          Identity represents a Decentralized Identifier (DID) document that
+          contains information about the DID subject, such as public keys,
+          verification methods, and services.
+  sonrhq.core.service.MsgUpdateServiceRecordResponse:
+    type: object
+  sonrhq.core.service.Params:
+    type: object
+    description: Params defines the parameters for the module.
+  sonrhq.core.service.QueryGetServiceAssertionResponse:
+    type: object
+    properties:
+      did:
+        type: string
+      assertion_options:
+        type: string
+      origin:
+        type: string
+      challenge:
+        type: string
+  sonrhq.core.service.QueryGetServiceAttestionResponse:
+    type: object
+    properties:
+      alias:
+        type: string
+      attestion_options:
+        type: string
+      origin:
+        type: string
+      challenge:
+        type: string
+      ucw_id:
+        type: string
+        format: uint64
+  sonrhq.core.service.QueryGetServiceRelationshipResponse:
+    type: object
+    properties:
+      ServiceRelationships:
+        type: object
+        properties:
+          reference:
+            type: string
+            title: Reference is the reference to the service record
+          did:
+            type: string
+            title: Did is the user's DID
+          count:
+            type: integer
+            format: int64
+            title: >-
+              Count is the number of times the user has interacted with the
+              service
+        description: >-
+          ServiceRelationship is a relationship between a service and a User
+          entity. This relation
+
+          is used to track the number of times a user has interacted with a
+          service, utilizing a
+
+          verifiable random function (VRF) to generate a random number that is
+          used to determine
+
+          whether or not a user has access to a service.
+  sonrhq.core.service.QueryParamsResponse:
+    type: object
+    properties:
+      params:
+        description: params holds all the parameters of this module.
+        type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
+  sonrhq.core.service.QueryServiceRecordResponse:
     type: object
     properties:
       serviceRecord:
@@ -74227,36 +73285,11 @@ definitions:
           service_endpoints:
             type: array
             items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
+              type: string
             title: optional, the set of service endpoints associated with the service
           metadata:
-            type: array
-            items:
-              type: object
-              properties:
-                key:
-                  type: string
-                  title: The key
-                value:
-                  type: string
-                  title: The value
-              description: KeyValuePair represents a key-value pair.
+            type: string
             title: optional, additional metadata related to the Service
-  sonrhq.core.service.QueryParamsResponse:
-    type: object
-    properties:
-      params:
-        description: params holds all the parameters of this module.
-        type: object
-    description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrhq.core.service.ServiceRecord:
     type: object
     properties:
@@ -74277,26 +73310,32 @@ definitions:
       service_endpoints:
         type: array
         items:
-          type: object
-          properties:
-            key:
-              type: string
-              title: The key
-            value:
-              type: string
-              title: The value
-          description: KeyValuePair represents a key-value pair.
+          type: string
         title: optional, the set of service endpoints associated with the service
       metadata:
-        type: array
-        items:
-          type: object
-          properties:
-            key:
-              type: string
-              title: The key
-            value:
-              type: string
-              title: The value
-          description: KeyValuePair represents a key-value pair.
+        type: string
         title: optional, additional metadata related to the Service
+  sonrhq.core.service.ServiceRelationship:
+    type: object
+    properties:
+      reference:
+        type: string
+        title: Reference is the reference to the service record
+      did:
+        type: string
+        title: Did is the user's DID
+      count:
+        type: integer
+        format: int64
+        title: Count is the number of times the user has interacted with the service
+    description: >-
+      ServiceRelationship is a relationship between a service and a User entity.
+      This relation
+
+      is used to track the number of times a user has interacted with a service,
+      utilizing a
+
+      verifiable random function (VRF) to generate a random number that is used
+      to determine
+
+      whether or not a user has access to a service.

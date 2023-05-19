@@ -24,7 +24,7 @@ func DefaultNew() *JWT {
 }
 
 // Creating a new token with the claims of the document.
-func (j *JWT) Generate(doc *did.DidDocument) (string, error) {
+func (j *JWT) Generate(doc *did.Identity) (string, error) {
 	if doc == nil {
 		return "", errors.New("highway/jwt Document cannot be nil")
 	}

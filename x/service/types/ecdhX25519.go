@@ -19,6 +19,10 @@ import (
 	"golang.org/x/crypto/hkdf"
 )
 
+// This function takes a public key and plaintext as input. It first converts the public key from webauthncose.EC2PublicKeyData format
+// to ecdsa.PublicKey format. It then generates an ephemeral key pair, derives a shared secret, and derives encryption and MAC keys
+// from the shared secret. The plaintext is then encrypted with AES-256-GCM and a MAC tag is computed. The function finally encodes the
+// ephemeral public key and concatenates the public key, IV, ciphertext, and MAC tag into a single byte slice.
 func eciesEncrypt(publicKeyData webauthncose.EC2PublicKeyData, plaintext []byte) ([]byte, error) {
 	// Convert the X and Y coordinates of the public key to big.Int values
 	x := new(big.Int).SetBytes(publicKeyData.XCoord)
@@ -87,6 +91,8 @@ func eciesEncrypt(publicKeyData webauthncose.EC2PublicKeyData, plaintext []byte)
 	return result, nil
 }
 
+//This function derives encryption and MAC keys from the shared secret using the HKDF
+// (HMAC-based Extract-and-Expand Key Derivation Function) function.
 func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	// Use HKDF to derive the encryption key and MAC key from the shared secret
 	info := []byte("encryption key")
@@ -104,6 +110,9 @@ func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	return encKeyBytes, macKeyBytes
 }
 
+// This function derives a private key from a WebAuthn credential. It parses the public key from the credential, generates an ephemeral
+// private key, derives a shared secret using ECDH (Elliptic Curve Diffie-Hellman), and then derives a 256-bit key from the shared secret
+// using HKDF. The derived key is then used to create a new private key.
 func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error) {
 	// Parse the public key from the credential
 	pubKeyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
@@ -133,7 +142,7 @@ func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error)
 	keyBytes := make([]byte, 32)
 	info := []byte("webauthn-secret")
 	hkdf := hkdf.New(sha256.New, sharedSecret, nil, info)
-	if _, err := hkdf.Read(keyBytes); err != nil {
+	if _, err := io.ReadFull(hkdf, keyBytes); err != nil {
 		return nil, fmt.Errorf("failed to derive key: %w", err)
 	}
 
@@ -148,6 +157,7 @@ func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error)
 	}, nil
 }
 
+// This function calculates the shared secret between a private key and a public key using ECDH.
 func sharedSecret(privateKey *ecdsa.PrivateKey, publicKey webauthncose.EC2PublicKeyData) ([]byte, error) {
 	// Convert the X and Y coordinates of the public key to big.Int values
 	x := new(big.Int).SetBytes(publicKey.XCoord)
@@ -165,6 +175,7 @@ func sharedSecret(privateKey *ecdsa.PrivateKey, publicKey webauthncose.EC2Public
 	return x.Bytes(), nil
 }
 
+// This function determines the elliptic curve to be used based on the COSE algorithm identifier in the public key data.
 func getCurve(curveID int64) elliptic.Curve {
 	var curve elliptic.Curve
 	switch webauthncose.COSEAlgorithmIdentifier(curveID) {

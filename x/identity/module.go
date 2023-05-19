@@ -16,8 +16,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/sonrhq/core/x/identity/client/cli"
 	"github.com/sonrhq/core/x/identity/internal/blocker"
+	"github.com/sonrhq/core/x/identity/client/cli"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
 	abci "github.com/tendermint/tendermint/abci/types"
@@ -98,6 +98,7 @@ type AppModule struct {
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
 	idBlocker     blocker.Blocker
+	vaultKeeper  types.VaultKeeper
 }
 
 func NewAppModule(
@@ -105,13 +106,16 @@ func NewAppModule(
 	keeper keeper.Keeper,
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
+	vaultKeeper types.VaultKeeper,
 ) AppModule {
+	blocker := blocker.NewBlocker(vaultKeeper)
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
-		idBlocker:      blocker.NewBlocker(),
+		idBlocker:      blocker,
+		vaultKeeper:  vaultKeeper,
 	}
 }
 

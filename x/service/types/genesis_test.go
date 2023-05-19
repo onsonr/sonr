@@ -30,6 +30,14 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: "1",
 					},
 				},
+				ServiceRelationshipsList: []types.ServiceRelationship{
+					{
+						Did: "0",
+					},
+					{
+						Did: "1",
+					},
+				},
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -43,6 +51,20 @@ func TestGenesisState_Validate(t *testing.T) {
 					},
 					{
 						Id: "0",
+					},
+				},
+			},
+			valid: false,
+		},
+		{
+			desc: "duplicated serviceRelationships",
+			genState: &types.GenesisState{
+				ServiceRelationshipsList: []types.ServiceRelationship{
+					{
+						Did: "0",
+					},
+					{
+						Did: "0",
 					},
 				},
 			},

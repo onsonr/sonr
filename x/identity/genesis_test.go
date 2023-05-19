@@ -14,7 +14,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		PrimaryIdentities: []types.DidDocument{
+		DidDocuments: []types.Identity{
 			{
 				Id: "0",
 			},
@@ -42,7 +42,7 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
-	require.ElementsMatch(t, genesisState.PrimaryIdentities, got.PrimaryIdentities)
+	require.ElementsMatch(t, genesisState.DidDocuments, got.DidDocuments)
 	require.ElementsMatch(t, genesisState.ClaimableWalletList, got.ClaimableWalletList)
 	require.Equal(t, genesisState.ClaimableWalletCount, got.ClaimableWalletCount)
 	// this line is used by starport scaffolding # genesis/test/assert

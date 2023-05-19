@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 type GroupKeeper interface {
@@ -50,4 +51,14 @@ type BankKeeper interface {
 	SendCoinsFromModuleToModule(ctx sdk.Context, senderModule, recipientModule string, amt sdk.Coins) error
 	SendCoinsFromAccountToModule(ctx sdk.Context, senderAddr sdk.AccAddress, recipientModule string, amt sdk.Coins) error
 	// Methods imported from bank should be defined here
+}
+
+// VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
+type VaultKeeper interface {
+	// Methods imported from vault should be defined here
+	GetAccount(accDid string) (vaulttypes.Account, error)
+	GetKeyshare(keyDid string) (vaulttypes.KeyShare, error)
+	DeleteAccount(accDid string) error
+	InsertAccount(acc vaulttypes.Account) error
+	InsertKeyshare(ks vaulttypes.KeyShare) error
 }

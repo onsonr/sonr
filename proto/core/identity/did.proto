@@ -7,20 +7,32 @@ package sonrhq.core.identity;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
 
-// DidDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-message DidDocument {
+// Identity represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
+message Identity {
+  string id = 1; // The identifier for the DID subject
+  string owner = 2; //optional, the entity/entities controlling the DID subject
+  string primary_alias = 3; // optional, the primary alias for the DID subject
+  repeated string authentication = 4; // optional, the set of authentication methods associated with the DID subject
+  repeated string assertion_method = 5; // optional, the set of assertion methods associated with the DID subject
+  repeated string capability_invocation = 6; // optional, the set of capability invocation methods associated with the DID subject
+  repeated string capability_delegation = 7; // optional, the set of capability delegation methods associated with the DID subject
+  repeated string key_agreement = 8; // optional, the set of key agreement methods associated with the DID subject
+  repeated string also_known_as = 9; // optional, the set of identifiers for other personas or identities related to the DID subject
+  string metadata = 10; // optional, additional metadata related to the DID document
+}
+
+// DIDDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
+message DIDDocument {
   repeated string context = 1; // The JSON-LD context(s) used in the document
   string id = 2; // The identifier for the DID subject
   repeated string controller = 3; //optional, the entity/entities controlling the DID subject
-  repeated VerificationMethod verification_method = 4; // optional, the set of verification methods associated with the DID subject
-  repeated string authentication = 5; // optional, the set of authentication methods associated with the DID subject
-  repeated string assertion_method = 6; // optional, the set of assertion methods associated with the DID subject
-  repeated string capability_invocation = 7; // optional, the set of capability invocation methods associated with the DID subject
-  repeated string capability_delegation = 8; // optional, the set of capability delegation methods associated with the DID subject
-  repeated string key_agreement = 9; // optional, the set of key agreement methods associated with the DID subject
+  repeated VerificationRelationship authentication = 5; // optional, the set of authentication methods associated with the DID subject
+  repeated VerificationRelationship assertion_method = 6; // optional, the set of assertion methods associated with the DID subject
+  repeated VerificationRelationship capability_invocation = 7; // optional, the set of capability invocation methods associated with the DID subject
+  repeated VerificationRelationship capability_delegation = 8; // optional, the set of capability delegation methods associated with the DID subject
+  repeated VerificationRelationship key_agreement = 9; // optional, the set of key agreement methods associated with the DID subject
   repeated string also_known_as = 10; // optional, the set of identifiers for other personas or identities related to the DID subject
   string metadata = 11; // optional, additional metadata related to the DID document
-  string owner = 12; // The idx address of the owner of the DID document
 }
 
 // VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
@@ -39,14 +51,5 @@ message VerificationRelationship {
   VerificationMethod verification_method = 1; // The verification method associated with the relationship
   string reference = 2; // The reference identifier for the relationship
   string type = 3; // The type of the verification relationship
-}
-
-// DIDMethod is the DID method for each supported resolver.
-enum DIDMethod {
-  DIDMethod_UNSPECIFIED = 0; // DID method for unspecified networks
-  DIDMethod_SONR = 1; // DID method for the Sonr network
-  DIDMethod_WEB = 2; // DID method for the Ethereum network
-  DIDMethod_KEY = 3; // DID method for the Cosmos network
-  DIDMethod_IPFS = 4; // DID method for the Filecoin network
-  DIDMethod_PEER = 5; // DID method for the Handshake network
+  string owner = 4; // The idx address of the owner of the verification relationship
 }

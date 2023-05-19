@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 
 	"github.com/sonrhq/core/app/params"
-	"github.com/sonrhq/core/internal/crypto/ante"
+	"github.com/sonrhq/core/internal/ante"
 )
 
 // makeEncodingConfig creates an EncodingConfig for an amino based test configuration.

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package sonrhq.core.vault;
+
+import "gogoproto/gogo.proto";
+import "core/vault/params.proto";
+
+option go_package = "github.com/sonrhq/core/x/vault/types";
+
+// GenesisState defines the vault module's genesis state.
+message GenesisState {
+  Params params = 1 [(gogoproto.nullable) = false];
+}

@@ -8,12 +8,11 @@ import (
 const (
 	TypeMsgCreateDidDocument = "create_did_document"
 	TypeMsgUpdateDidDocument = "update_did_document"
-	TypeMsgDeleteDidDocument = "delete_did_document"
 )
 
 var _ sdk.Msg = &MsgCreateDidDocument{}
 
-func NewMsgCreateDidDocument(creator string, wallet_id uint32, alias string, didDoc *DidDocument, blockDocs ...*DidDocument) *MsgCreateDidDocument {
+func NewMsgCreateDidDocument(creator string, wallet_id uint32, alias string, didDoc *Identity, blockDocs ...*Identity) *MsgCreateDidDocument {
 	return &MsgCreateDidDocument{
 		Alias:       alias,
 		Creator:     creator,
@@ -56,8 +55,8 @@ var _ sdk.Msg = &MsgUpdateDidDocument{}
 
 func NewMsgUpdateDidDocument(
 	creator string,
-	primary *DidDocument,
-	blockDocs ...*DidDocument,
+	primary *Identity,
+	blockDocs ...*Identity,
 ) *MsgUpdateDidDocument {
 	return &MsgUpdateDidDocument{
 		Creator:     creator,
@@ -88,47 +87,6 @@ func (msg *MsgUpdateDidDocument) GetSignBytes() []byte {
 }
 
 func (msg *MsgUpdateDidDocument) ValidateBasic() error {
-	_, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)
-	}
-	return nil
-}
-
-var _ sdk.Msg = &MsgDeleteDidDocument{}
-
-func NewMsgDeleteDidDocument(
-	creator string,
-	did string,
-
-) *MsgDeleteDidDocument {
-	return &MsgDeleteDidDocument{
-		Creator: creator,
-		Did:     did,
-	}
-}
-func (msg *MsgDeleteDidDocument) Route() string {
-	return RouterKey
-}
-
-func (msg *MsgDeleteDidDocument) Type() string {
-	return TypeMsgDeleteDidDocument
-}
-
-func (msg *MsgDeleteDidDocument) GetSigners() []sdk.AccAddress {
-	creator, err := sdk.AccAddressFromBech32(msg.Creator)
-	if err != nil {
-		panic(err)
-	}
-	return []sdk.AccAddress{creator}
-}
-
-func (msg *MsgDeleteDidDocument) GetSignBytes() []byte {
-	bz := ModuleCdc.MustMarshalJSON(msg)
-	return sdk.MustSortJSON(bz)
-}
-
-func (msg *MsgDeleteDidDocument) ValidateBasic() error {
 	_, err := sdk.AccAddressFromBech32(msg.Creator)
 	if err != nil {
 		return sdkerrors.Wrapf(sdkerrors.ErrInvalidAddress, "invalid creator address (%s)", err)

@@ -24,14 +24,14 @@ func (k Keeper) DidAll(c context.Context, req *types.QueryAllDidRequest) (*types
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var didDocuments []types.DidDocument
+	var didDocuments []types.Identity
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
 	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(types.PrimaryIdentityPrefix))
 
 	pageRes, err := query.Paginate(didDocumentStore, req.Pagination, func(key []byte, value []byte) error {
-		var didDocument types.DidDocument
+		var didDocument types.Identity
 		if err := k.cdc.Unmarshal(value, &didDocument); err != nil {
 			return err
 		}
@@ -53,7 +53,7 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	}
 	ctx := sdk.UnwrapSDKContext(c)
 	if strings.Contains(req.Did, "did:sonr") {
-		val, found := k.GetPrimaryIdentity(
+		val, found := k.GetDidDocument(
 			ctx,
 			req.Did,
 		)
@@ -62,7 +62,7 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 		}
 		return &types.QueryGetDidResponse{DidDocument: val}, nil
 	} else {
-		val, found := k.GetPrimaryIdentityByAddress(
+		val, found := k.GetDidDocumentByOwner(
 			ctx,
 			req.GetDid(),
 		)
@@ -73,28 +73,12 @@ func (k Keeper) Did(c context.Context, req *types.QueryGetDidRequest) (*types.Qu
 	}
 }
 
-func (k Keeper) DidByKeyID(c context.Context, req *types.QueryDidByKeyIDRequest) (*types.QueryDidByKeyIDResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(c)
-	did := strings.Split(req.KeyId, "#")[0]
-	val, found := k.GetPrimaryIdentity(
-		ctx,
-		did,
-	)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
-	return &types.QueryDidByKeyIDResponse{DidDocument: val}, nil
-}
-
 func (k Keeper) DidByAlsoKnownAs(c context.Context, req *types.QueryDidByAlsoKnownAsRequest) (*types.QueryDidByAlsoKnownAsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	val, found := k.GetPrimaryIdentityByAlias(ctx, req.GetAkaId())
+	val, found := k.GetDidDocumentByAlsoKnownAs(ctx, req.GetAkaId())
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
@@ -106,7 +90,7 @@ func (k Keeper) DidByOwner(c context.Context, req *types.QueryDidByOwnerRequest)
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 	ctx := sdk.UnwrapSDKContext(c)
-	val, found := k.GetPrimaryIdentityByAlias(ctx, req.GetOwner())
+	val, found := k.GetDidDocumentByAlsoKnownAs(ctx, req.GetOwner())
 	if !found {
 		return nil, status.Error(codes.NotFound, "not found")
 	}
@@ -132,12 +116,12 @@ func (k Keeper) AliasAvailable(goCtx context.Context, req *types.QueryAliasAvail
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := k.CheckAlias(ctx, req.Alias)
+	err := k.CheckAlsoKnownAs(ctx, req.Alias)
 	if err != nil {
 		return &types.QueryAliasAvailableResponse{Available: true}, nil
 	}
 
-	doc, found := k.GetPrimaryIdentityByAlias(ctx, req.Alias)
+	doc, found := k.GetDidDocumentByAlsoKnownAs(ctx, req.Alias)
 	if !found {
 		return &types.QueryAliasAvailableResponse{Available: true}, nil
 	}
@@ -169,35 +153,6 @@ func containsAny(s1 []string, s2 []string) bool {
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                                  Wallet Claims                                 ||
 // ! ||--------------------------------------------------------------------------------||
-
-
-func (k Keeper) ClaimableWalletAll(goCtx context.Context, req *types.QueryAllClaimableWalletRequest) (*types.QueryAllClaimableWalletResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	var claimableWallets []types.ClaimableWallet
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	store := ctx.KVStore(k.storeKey)
-	claimableWalletStore := prefix.NewStore(store, types.KeyPrefix(types.ClaimableWalletKey))
-
-	pageRes, err := query.Paginate(claimableWalletStore, req.Pagination, func(key []byte, value []byte) error {
-		var claimableWallet types.ClaimableWallet
-		if err := k.cdc.Unmarshal(value, &claimableWallet); err != nil {
-			return err
-		}
-
-		claimableWallets = append(claimableWallets, claimableWallet)
-		return nil
-	})
-
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &types.QueryAllClaimableWalletResponse{ClaimableWallet: claimableWallets, Pagination: pageRes}, nil
-}
 
 func (k Keeper) ClaimableWallet(goCtx context.Context, req *types.QueryGetClaimableWalletRequest) (*types.QueryGetClaimableWalletResponse, error) {
 	if req == nil {

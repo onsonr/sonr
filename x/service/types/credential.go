@@ -3,6 +3,7 @@ package types
 import (
 	"crypto/aes"
 	"crypto/cipher"
+	"crypto/ed25519"
 	"crypto/rand"
 	"encoding/json"
 	"errors"
@@ -12,6 +13,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/sonrhq/core/internal/crypto"
 	idtypes "github.com/sonrhq/core/x/identity/types"
+	"github.com/yoseplee/vrf"
 )
 
 type Credential interface {
@@ -213,4 +215,22 @@ func ValidateWebauthnCredential(credential *WebauthnCredential, controller strin
 		return nil, errors.New("credential id is nil")
 	}
 	return NewCredential(credential), nil
+}
+
+func computeVRF(secretKey ed25519.PrivateKey, message []byte) ([]byte, []byte, error) {
+	publicKey, _ := secretKey.Public().(ed25519.PublicKey)
+
+	// generate proof and hash using the Prove function
+	proof, hash, err := vrf.Prove(publicKey, secretKey, message)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to generate VRF proof: %v", err)
+	}
+
+	// verify the proof using the Verify function
+	ok, err := vrf.Verify(publicKey, proof, message)
+	if err != nil || !ok {
+		return nil, nil, fmt.Errorf("failed to verify VRF proof: %v", err)
+	}
+
+	return proof, hash, nil
 }

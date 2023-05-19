@@ -13,25 +13,19 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 // GenesisState defines the identity module's genesis state.
 message GenesisState {
            Params                   params               = 1 [(gogoproto.nullable) = false];
-  repeated DidDocument              primaryIdentities    = 2 [(gogoproto.nullable) = false];
-  repeated DidDocument              blockchainIdentities = 3 [(gogoproto.nullable) = false];
-  repeated VerificationRelationship relationships        = 4 [(gogoproto.nullable) = false];
-  repeated ClaimableWallet          claimableWalletList  = 5 [(gogoproto.nullable) = false];
-           uint64                   claimableWalletCount = 6;
+  repeated Identity                 did_documents    = 2 [(gogoproto.nullable) = false];
+  repeated VerificationRelationship relationships        = 3 [(gogoproto.nullable) = false];
+  repeated ClaimableWallet          claimable_wallet_list  = 4 [(gogoproto.nullable) = false];
+           uint64                   claimable_wallet_count = 5;
 }
 
 // Params defines the parameters for the module.
 message Params {
-  string did_base_context                  =  1;
-  string did_method_context                =  2;
-  string did_method_name                   =  3;
-  string did_method_version                =  4;
-  string did_network                       =  5;
-  string ipfs_gateway                      =  6;
-  string ipfs_api                          =  7;
-  string webauthn_attestion_preference     =  8;
-  string webauthn_authenticator_attachment =  9;
-  int32  webauthn_timeout                  = 10;
-  int32 max_validator_accounts_per_1000    = 11;
+  string account_did_method_name           = 1;
+  string account_did_method_context        = 2;
+  int64 acccount_discovery_reward          = 3;
+  string did_base_context                  =  4;
+  int32 maximum_identity_aliases          = 5;
+  repeated string supported_did_methods    = 6;
 }
 

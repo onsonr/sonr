@@ -11,61 +11,44 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc CreateDidDocument     (MsgCreateDidDocument    ) returns (MsgCreateDidDocumentResponse    );
-  rpc UpdateDidDocument     (MsgUpdateDidDocument    ) returns (MsgUpdateDidDocumentResponse    );
-  rpc DeleteDidDocument     (MsgDeleteDidDocument    ) returns (MsgDeleteDidDocumentResponse    );
-  rpc CreateClaimableWallet (MsgCreateClaimableWallet) returns (MsgCreateClaimableWalletResponse);
-  rpc UpdateClaimableWallet (MsgUpdateClaimableWallet) returns (MsgUpdateClaimableWalletResponse);
-  rpc DeleteClaimableWallet (MsgDeleteClaimableWallet) returns (MsgDeleteClaimableWalletResponse);
+  rpc CreateDidDocument (MsgCreateDidDocument) returns (MsgCreateDidDocumentResponse);
+  rpc UpdateDidDocument (MsgUpdateDidDocument) returns (MsgUpdateDidDocumentResponse);
+  rpc RegisterIdentity  (MsgRegisterIdentity ) returns (MsgRegisterIdentityResponse );
 }
 message MsgCreateDidDocument {
            string      creator     = 1;
-           DidDocument primary     = 2;
-  repeated DidDocument blockchains = 3;
+           Identity primary     = 2;
+  repeated Identity blockchains = 3;
            string      alias       = 4;
-           uint32      wallet_id = 5;
+           uint32      wallet_id   = 5;
 }
 
 message MsgCreateDidDocumentResponse {}
 
 message MsgUpdateDidDocument {
            string      creator     = 1;
-           DidDocument primary     = 2;
-  repeated DidDocument blockchains = 3;
+           Identity primary     = 2;
+  repeated Identity blockchains = 3;
 }
 
 message MsgUpdateDidDocumentResponse {
   string creator = 1;
 }
 
-message MsgDeleteDidDocument {
+message MsgRegisterIdentity {
   string creator = 1;
-  string did     = 2;
+  Identity identity = 2;
+  string alias = 3;
+  uint32 wallet_id = 4;
+  repeated VerificationRelationship authentication = 5;
+  repeated VerificationRelationship assertion = 6;
+  repeated VerificationRelationship key_agreement = 7;
+  repeated VerificationRelationship capability_invocation = 8;
+  repeated VerificationRelationship capability_delegation = 9;
 }
 
-message MsgDeleteDidDocumentResponse {}
-
-message MsgCreateClaimableWallet {
-  string creator = 1;
-  ClaimableWallet claimable_wallet = 2;
+message MsgRegisterIdentityResponse {
+  bool success = 1;
+  DIDDocument did_document = 2;
 }
-
-message MsgCreateClaimableWalletResponse {
-  uint64 id = 1;
-  int32 reward = 2;
-}
-
-message MsgUpdateClaimableWallet {
-  string creator = 1;
-  uint64 id      = 2;
-}
-
-message MsgUpdateClaimableWalletResponse {}
-
-message MsgDeleteClaimableWallet {
-  string creator = 1;
-  uint64 id      = 2;
-}
-
-message MsgDeleteClaimableWalletResponse {}
 

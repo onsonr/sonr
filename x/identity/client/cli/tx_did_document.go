@@ -15,7 +15,7 @@ func CmdCreateDidDocument() *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
 			// Get indexes
 			jsonDid := args[0]
-			types.NewBlankDocument(jsonDid)
+			types.NewSonrIdentity(jsonDid)
 			clientCtx, err := client.GetClientTxContext(cmd)
 			if err != nil {
 				return err
@@ -25,7 +25,7 @@ func CmdCreateDidDocument() *cobra.Command {
 				clientCtx.FromAddress.String(),
 				0,
 				"",
-				types.NewBlankDocument(clientCtx.GetFromAddress().String()),
+				types.NewSonrIdentity(clientCtx.GetFromAddress().String()),
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err
@@ -53,35 +53,6 @@ func CmdUpdateDidDocument() *cobra.Command {
 			msg := types.NewMsgUpdateDidDocument(
 				clientCtx.GetFromAddress().String(),
 				nil,
-			)
-			if err := msg.ValidateBasic(); err != nil {
-				return err
-			}
-			return tx.GenerateOrBroadcastTxCLI(clientCtx, cmd.Flags(), msg)
-		},
-	}
-
-	flags.AddTxFlagsToCmd(cmd)
-
-	return cmd
-}
-
-func CmdDeleteDidDocument() *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "delete-did-document [did]",
-		Short: "Delete a did_document",
-		Args:  cobra.ExactArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			indexDid := args[0]
-
-			clientCtx, err := client.GetClientTxContext(cmd)
-			if err != nil {
-				return err
-			}
-
-			msg := types.NewMsgDeleteDidDocument(
-				clientCtx.GetFromAddress().String(),
-				indexDid,
 			)
 			if err := msg.ValidateBasic(); err != nil {
 				return err

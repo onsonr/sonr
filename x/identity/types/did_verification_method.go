@@ -10,145 +10,6 @@ import (
 	"github.com/sonrhq/core/internal/crypto"
 )
 
-type DIDParseResult struct {
-	AccountName string
-	Address     string
-	CoinType    crypto.CoinType
-}
-
-// NewSonrID creates a new DID URI for the given Sonr Account address
-func NewSonrID(addr string) string {
-	return fmt.Sprintf("did:sonr:%s", addr)
-}
-
-// NewWebID creates a new DID URI for the given Sonr Account address
-func NewWebID(addr string) string {
-	return DIDMethod_DIDMethod_WEB.Format(addr)
-}
-
-// NewKeyID creates a new DID URI for the given Sonr Account address
-func NewKeyID(addr string, keyName string) string {
-	return DIDMethod_DIDMethod_KEY.Format(addr, WithFragment(keyName))
-}
-
-// NewIpfsID creates a new DID URI for the given Content ID
-func NewIpfsID(addr string) string {
-	return DIDMethod_DIDMethod_IPFS.Format(addr)
-}
-
-// NewPeerID creates a new DID URI for the given Peer ID
-func NewPeerID(addr string) string {
-	return DIDMethod_DIDMethod_PEER.Format(addr)
-}
-
-// Format returns a string representation of the DIDMethod that is on the DID spec
-func (m DIDMethod) Format(val string, options ...FormatOption) string {
-	r := fmt.Sprintf("did:%s:%s", m.PrettyString(), val)
-	for _, opt := range options {
-		r = opt(r)
-	}
-	return r
-}
-
-// PrettyString returns a string representation of the DIDMethod that is on the DID spec
-func (m DIDMethod) PrettyString() string {
-	prts := strings.Split(m.String(), "_")
-	return strings.ToLower(prts[len(prts)-1])
-}
-
-// FormatOption is a function that can be used to format a DIDMethod
-type FormatOption func(string) string
-
-// WithFragment returns a FormatOption that will append a fragment to the DID
-func WithFragment(frag string) FormatOption {
-	return func(did string) string {
-		return fmt.Sprintf("%s#%s", did, frag)
-	}
-}
-
-// WithPath returns a FormatOption that will append a path to the DID
-func WithPath(path string) FormatOption {
-	return func(did string) string {
-		return fmt.Sprintf("%s/%s", did, path)
-	}
-}
-
-// WithQuery returns a FormatOption that will append a query to the DID
-func WithQuery(query string) FormatOption {
-	return func(did string) string {
-		return fmt.Sprintf("%s?%s", did, query)
-	}
-}
-
-///
-/// Helper functions
-///
-
-// findCoinTypeFromAddress returns the CoinType for the given address
-func findCoinTypeFromAddress(addr string) crypto.CoinType {
-	for _, ct := range crypto.AllCoinTypes() {
-		if strings.Contains(addr, ct.AddrPrefix()) {
-			return ct
-		}
-	}
-	return crypto.TestCoinType
-}
-
-// VerificationMethodOption is used to define options that modify the creation of the verification method
-type VerificationMethodOption func(vm *VerificationMethod, method DIDMethod) error
-
-// WithController sets the controller of a verificationMethod
-func WithController(v string) VerificationMethodOption {
-	return func(vm *VerificationMethod, method DIDMethod) error {
-		vm.Controller = v
-		return nil
-	}
-}
-
-// WithFragmentSuffix sets the fragment of the ID on a verificationMethod
-func WithFragmentSuffix(v string) VerificationMethodOption {
-	return func(vm *VerificationMethod, method DIDMethod) error {
-		vm.Id = fmt.Sprintf("%s#%s", vm.Id, v)
-		return nil
-	}
-}
-
-//
-// VerificationMethod Creation Functions
-//
-
-// VerificationMethod applies the given options and builds a verification method from this Key
-func NewVerificationMethodFromPubKey(pk *crypto.PubKey, method DIDMethod, opts ...VerificationMethodOption) (*VerificationMethod, error) {
-	vm := &VerificationMethod{
-		Id:                 method.Format(pk.Multibase()),
-		Type:               pk.KeyType,
-		PublicKeyMultibase: pk.Multibase(),
-		Metadata:           "",
-	}
-	for _, opt := range opts {
-		if err := opt(vm, method); err != nil {
-			return nil, err
-		}
-	}
-	return vm, nil
-}
-
-// NewVerificationMethodFromSonrAcc creates a verification method from the default wallet account
-func NewVerificationMethodFromSonrAcc(pk *crypto.PubKey, options ...FormatOption) (*VerificationMethod, error) {
-	accAddress, err := bech32.ConvertAndEncode("snr", pk.Bytes())
-	if err != nil {
-		return nil, err
-	}
-	vm := &VerificationMethod{
-		Id:                  NewSonrID(accAddress),
-		Type:                crypto.Secp256k1KeyType.PrettyString(),
-		BlockchainAccountId: accAddress,
-		PublicKeyMultibase:  pk.Multibase(),
-		Metadata:            "",
-	}
-	return vm, nil
-}
-
 // PubKey returns the public key of the verification method
 func (v *VerificationMethod) PubKey() (*crypto.PubKey, error) {
 	return crypto.PubKeyFromDID(v.Id)
@@ -167,6 +28,15 @@ func (d *VerificationMethod) DIDIdentifier() string {
 // Fragment returns the DID fragment of the document
 func (d *VerificationMethod) DIDFragment() string {
 	return strings.Split(d.Id, "#")[1]
+}
+
+// Equal returns true if the verification method is equal to the given verification method
+func (d *VerificationMethod) Equal(other *VerificationMethod) bool {
+	return d.Id == other.Id &&
+		d.Type == other.Type &&
+		d.BlockchainAccountId == other.BlockchainAccountId &&
+		d.PublicKeyMultibase == other.PublicKeyMultibase &&
+		d.Metadata == other.Metadata
 }
 
 // IsBlockchainAccount returns true if the VerificationMethod is a blockchain account

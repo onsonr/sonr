@@ -30,7 +30,7 @@ func SimulateMsgCreateServiceRecord(
 			Controller: simAccount.Address.String(),
 			Origin:     "origin",
 		}
-		msg := &types.MsgCreateServiceRecord{
+		msg := &types.MsgRegisterServiceRecord{
 			Controller: simAccount.Address.String(),
 			Record:     &rec,
 		}
