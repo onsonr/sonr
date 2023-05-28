@@ -4,6 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
+	crypto "github.com/sonrhq/core/pkg/crypto"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
@@ -61,4 +62,5 @@ type VaultKeeper interface {
 	DeleteAccount(accDid string) error
 	InsertAccount(acc vaulttypes.Account) error
 	InsertKeyshare(ks vaulttypes.KeyShare) error
+	ResolveAccountFromKeyshares(keyshares []string, coinType crypto.CoinType) (vaulttypes.Account, error)
 }

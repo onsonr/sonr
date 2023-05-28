@@ -9,7 +9,7 @@ const TypeMsgRegisterIdentity = "register_identity"
 
 var _ sdk.Msg = &MsgRegisterIdentity{}
 
-func NewMsgRegisterIdentity(creator string, wallet_id uint32, alias string, identity *Identity, relationships ...*VerificationRelationship) *MsgRegisterIdentity {
+func NewMsgRegisterIdentity(creator string, wallet_id uint32, alias string, identity *Identification, relationships ...*VerificationRelationship) *MsgRegisterIdentity {
 	msg := &MsgRegisterIdentity{
 		Creator:              creator,
 		WalletId:             wallet_id,

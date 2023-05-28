@@ -16,7 +16,7 @@ const DIDProfile = ({ did }: DidDocumentProps) => {
         if (did === undefined || did === null) {
             return "anonomous"
         }
-        return did.also_known_as ? did.also_known_as[0] : "anonymous"
+        return did.alsoKnownAs ? did.alsoKnownAs[0] : "anonymous"
     }
     return (
         <Card className="max-w-xl">

@@ -64,10 +64,8 @@ tasks:
 
       This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - ignite chain serve --skip-proto --home {{.HOME}}/.sonr
+      - ignite chain serve --home {{.HOME}}/.sonr
     interactive: true
-    deps:
-      - generate
 
   chain:
     desc: Serve the blockchain locally with verbose logging
@@ -78,10 +76,8 @@ tasks:
 
       This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - ignite chain serve --skip-proto --home {{.HOME}}/.sonr -v --reset-once
+      - ignite chain serve --home {{.HOME}}/.sonr -v --reset-once
     interactive: true
-    deps:
-      - generate
 
   generate:
     aliases:

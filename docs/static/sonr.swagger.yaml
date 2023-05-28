@@ -501,7 +501,7 @@ definitions:
         type: string
         title: optional, additional metadata related to the DID document
     description: DIDDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-  identityIdentity:
+  identityIdentification:
     type: object
     properties:
       id:
@@ -546,9 +546,7 @@ definitions:
       metadata:
         type: string
         title: optional, additional metadata related to the DID document
-    description: Identity represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-  identityMsgCreateDidDocumentResponse:
-    type: object
+    description: Identification represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
   identityMsgRegisterIdentityResponse:
     type: object
     properties:
@@ -556,18 +554,13 @@ definitions:
         type: boolean
       didDocument:
         $ref: '#/definitions/identityDIDDocument'
-  identityMsgUpdateDidDocumentResponse:
-    type: object
-    properties:
-      creator:
-        type: string
   identityQueryAliasAvailableResponse:
     type: object
     properties:
       available:
         type: boolean
       existingDocument:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityIdentification'
   identityQueryAllDidResponse:
     type: object
     properties:
@@ -575,20 +568,20 @@ definitions:
         type: array
         items:
           type: object
-          $ref: '#/definitions/identityIdentity'
+          $ref: '#/definitions/identityIdentification'
       pagination:
         $ref: '#/definitions/v1beta1PageResponse'
   identityQueryDidByAlsoKnownAsResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityIdentification'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityQueryDidByOwnerResponse:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityIdentification'
   identityQueryGetClaimableWalletResponse:
     type: object
     properties:
@@ -598,7 +591,7 @@ definitions:
     type: object
     properties:
       didDocument:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityIdentification'
         title: A DIDDocument is a JSON-LD object that contains a set of public keys
   identityVerificationMethod:
     type: object
@@ -678,7 +671,7 @@ definitions:
       did:
         type: string
       identity:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityDIDDocument'
   serviceMsgBurnServiceRecordResponse:
     type: object
   serviceMsgRegisterServiceRecordResponse:
@@ -696,7 +689,7 @@ definitions:
       did:
         type: string
       identity:
-        $ref: '#/definitions/identityIdentity'
+        $ref: '#/definitions/identityDIDDocument'
   serviceMsgUpdateServiceRecordResponse:
     type: object
   serviceQueryGetServiceAssertionResponse:

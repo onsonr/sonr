@@ -51,7 +51,7 @@ message MsgRegisterUserEntity {
 message MsgRegisterUserEntityResponse {
   bool success = 1;
   string did = 2;
-  core.identity.Identity identity = 3;
+  core.identity.DIDDocument identity = 3;
 }
 
 message MsgAuthenticateUserEntity {
@@ -62,6 +62,6 @@ message MsgAuthenticateUserEntity {
 message MsgAuthenticateUserEntityResponse {
   bool success = 1;
   string did = 2;
-  core.identity.Identity identity = 3;
+  core.identity.DIDDocument identity = 3;
 }
 

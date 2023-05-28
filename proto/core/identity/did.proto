@@ -1,25 +1,8 @@
 syntax = "proto3";
 
-// Sonr API
-//
-// Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
 package sonrhq.core.identity;
 
 option go_package = "github.com/sonrhq/core/x/identity/types";
-
-// Identity represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
-message Identity {
-  string id = 1; // The identifier for the DID subject
-  string owner = 2; //optional, the entity/entities controlling the DID subject
-  string primary_alias = 3; // optional, the primary alias for the DID subject
-  repeated string authentication = 4; // optional, the set of authentication methods associated with the DID subject
-  repeated string assertion_method = 5; // optional, the set of assertion methods associated with the DID subject
-  repeated string capability_invocation = 6; // optional, the set of capability invocation methods associated with the DID subject
-  repeated string capability_delegation = 7; // optional, the set of capability delegation methods associated with the DID subject
-  repeated string key_agreement = 8; // optional, the set of key agreement methods associated with the DID subject
-  repeated string also_known_as = 9; // optional, the set of identifiers for other personas or identities related to the DID subject
-  string metadata = 10; // optional, additional metadata related to the DID document
-}
 
 // DIDDocument represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
 message DIDDocument {
@@ -33,6 +16,21 @@ message DIDDocument {
   repeated VerificationRelationship key_agreement = 9; // optional, the set of key agreement methods associated with the DID subject
   repeated string also_known_as = 10; // optional, the set of identifiers for other personas or identities related to the DID subject
   string metadata = 11; // optional, additional metadata related to the DID document
+}
+
+
+// Identification represents a Decentralized Identifier (DID) document that contains information about the DID subject, such as public keys, verification methods, and services.
+message Identification {
+  string id = 1; // The identifier for the DID subject
+  string owner = 2; //optional, the entity/entities controlling the DID subject
+  string primary_alias = 3; // optional, the primary alias for the DID subject
+  repeated string authentication = 4; // optional, the set of authentication methods associated with the DID subject
+  repeated string assertion_method = 5; // optional, the set of assertion methods associated with the DID subject
+  repeated string capability_invocation = 6; // optional, the set of capability invocation methods associated with the DID subject
+  repeated string capability_delegation = 7; // optional, the set of capability delegation methods associated with the DID subject
+  repeated string key_agreement = 8; // optional, the set of key agreement methods associated with the DID subject
+  repeated string also_known_as = 9; // optional, the set of identifiers for other personas or identities related to the DID subject
+  string metadata = 10; // optional, additional metadata related to the DID document
 }
 
 // VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.

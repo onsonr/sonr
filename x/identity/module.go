@@ -115,7 +115,7 @@ func NewAppModule(
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
 		idBlocker:      blocker,
-		vaultKeeper:  vaultKeeper,
+		vaultKeeper:    vaultKeeper,
 	}
 }
 

@@ -111,15 +111,21 @@ func (k msgServer) RegisterUserEntity(goCtx context.Context, msg *types.MsgRegis
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Attestation or challenge invalid")
 	}
+
+	// Assign identity to user entity
 	id, err := k.identityKeeper.AssignIdentity(ctx, ucw, cred, msg.DesiredAlias)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
+
+	// Set service relationship
 	k.SetServiceRelationship(ctx, types.ServiceRelationship{
 		Reference: service.Id,
 		Did: id.Id,
 		Count: 0,
 	})
+
+	// Return response
 	return &types.MsgRegisterUserEntityResponse{
 		Identity: id,
 		Success:  true,

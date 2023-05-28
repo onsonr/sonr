@@ -13,7 +13,7 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 // GenesisState defines the identity module's genesis state.
 message GenesisState {
            Params                   params               = 1 [(gogoproto.nullable) = false];
-  repeated Identity                 did_documents    = 2 [(gogoproto.nullable) = false];
+  repeated Identification           did_documents    = 2 [(gogoproto.nullable) = false];
   repeated VerificationRelationship relationships        = 3 [(gogoproto.nullable) = false];
   repeated ClaimableWallet          claimable_wallet_list  = 4 [(gogoproto.nullable) = false];
            uint64                   claimable_wallet_count = 5;

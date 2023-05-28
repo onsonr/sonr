@@ -25,25 +25,21 @@ service Query {
   // Get a DIDDocument by DID
   rpc Did (QueryGetDidRequest) returns (QueryGetDidResponse) {
     option (google.api.http).get = "/sonr/id/{did}";
-
-  }
-
-  // Get a DIDDocument from an Alias
-  rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/id/alias/{aka_id}";
-
-  }
-
-  // Queries a list of AliasAvailable items.
-  rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
-    option (google.api.http).get = "/sonr/id/alias/{alias}/check";
-
   }
 
   // Queries a list of DidByOwner items.
   rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
     option (google.api.http).get = "/sonr/id/owner/{owner}";
+  }
 
+  // Get a DIDDocument from an Alias
+  rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
+    option (google.api.http).get = "/sonr/id/alias/{aka_id}";
+  }
+
+  // Queries a list of AliasAvailable items.
+  rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
+    option (google.api.http).get = "/sonr/id/alias/{alias}/check";
   }
 
   // Get All DIDDocuments
@@ -63,33 +59,28 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetDidRequest {
-
   // did is the unique identifier of the DIDDocument - it appears like (did:sonr:...)
   string did = 1;
 }
 
 message QueryGetDidResponse {
-
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  Identity didDocument = 1 [(gogoproto.nullable) = false];
+  Identification didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByAlsoKnownAsRequest {
-
   // aka_id is the unique identifier of the DIDDocument - it appears like ("example.snr")
   string aka_id = 1;
 }
 
 message QueryDidByAlsoKnownAsResponse {
-
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  Identity didDocument = 1 [(gogoproto.nullable) = false];
+  Identification didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDidRequest {
@@ -97,19 +88,18 @@ message QueryAllDidRequest {
 }
 
 message QueryAllDidResponse {
-  repeated Identity                            didDocument = 1 [(gogoproto.nullable) = false];
+  repeated Identification                            didDocument = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination  = 2;
 }
 
 message QueryAliasAvailableRequest {
-
   // alias is the unique identifier of the DIDDocument - it appears like ("example.snr")
   string alias = 1;
 }
 
 message QueryAliasAvailableResponse {
   bool        available         = 1;
-  Identity existing_document = 2 [(gogoproto.nullable) = true];
+  Identification existing_document = 2 [(gogoproto.nullable) = true];
 }
 
 message QueryDidByOwnerRequest {
@@ -117,7 +107,7 @@ message QueryDidByOwnerRequest {
 }
 
 message QueryDidByOwnerResponse {
-  Identity didDocument = 1 [(gogoproto.nullable) = false];
+  Identification didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryGetClaimableWalletRequest {

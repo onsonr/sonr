@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 import { KeyboardIllustration } from "../illustrations/keyboard";
 import { Button } from "@/components/ui/button";

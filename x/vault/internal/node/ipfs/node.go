@@ -20,7 +20,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/internal/local"
-	types "github.com/sonrhq/core/types/common"
+	types "github.com/sonrhq/core/x/vault/types"
 	"github.com/sonrhq/core/x/vault/internal/node/config"
 )
 

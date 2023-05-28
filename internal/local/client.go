@@ -21,7 +21,7 @@ type BroadcastTxResponse = txtypes.BroadcastTxResponse
 // ! ||--------------------------------------------------------------------------------||
 
 // CheckAlias checks if the alias is available and returns the existing DID if it's not
-func (c LocalContext) CheckAlias(ctx context.Context, alias string) (bool, *identitytypes.Identity, error) {
+func (c LocalContext) CheckAlias(ctx context.Context, alias string) (bool, *identitytypes.Identification, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return false, nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -34,7 +34,7 @@ func (c LocalContext) CheckAlias(ctx context.Context, alias string) (bool, *iden
 }
 
 // GetDID returns the DID document with the given id
-func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.Identity, error) {
+func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.Identification, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -47,7 +47,7 @@ func (c LocalContext) GetDID(ctx context.Context, id string) (*identitytypes.Ide
 }
 
 // GetDIDByAlias returns the DID document with the given alias
-func (c LocalContext) GetDIDByAlias(ctx context.Context, alias string) (*identitytypes.Identity, error) {
+func (c LocalContext) GetDIDByAlias(ctx context.Context, alias string) (*identitytypes.Identification, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -60,7 +60,7 @@ func (c LocalContext) GetDIDByAlias(ctx context.Context, alias string) (*identit
 }
 
 // GetDIDByAlias returns the DID document with the given alias
-func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identitytypes.Identity, error) {
+func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identitytypes.Identification, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 		return nil, errors.New("failed to connect to grpc server: " + err.Error())
@@ -73,7 +73,7 @@ func (c LocalContext) GetDIDByOwner(ctx context.Context, owner string) (*identit
 }
 
 // GetAllDIDs returns all DID documents
-func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.Identity, error) {
+func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.Identification, error) {
 	conn, err := grpc.Dial(c.GrpcEndpoint(), grpc.WithInsecure())
 	if err != nil {
 
@@ -84,7 +84,7 @@ func (c LocalContext) GetAllDIDs(ctx context.Context) ([]*identitytypes.Identity
 
 		return nil, err
 	}
-	list := make([]*identitytypes.Identity, len(resp.DidDocument))
+	list := make([]*identitytypes.Identification, len(resp.DidDocument))
 	for i, d := range resp.DidDocument {
 		list[i] = &d
 	}

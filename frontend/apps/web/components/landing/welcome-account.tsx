@@ -25,16 +25,16 @@ export function WelcomeAccount({ did, org, existing = false }: WelcomeAccountPro
         <Card className="max-w-2xl">
             <CardHeader className="justify-center align-middle">
                 <div className="lg:ml-6">
-                    <CryptoCard address={did.id} type="Sonr" name={did.also_known_as ? did.also_known_as[0] : ""} />
+                    <CryptoCard address={did.id} type="Sonr" name={did.alsoKnownAs ? did.alsoKnownAs[0] : ""} />
                 </div>
 
             </CardHeader>
             <CardContent className="grid gap-4">
                 {
                     existing ? (
-                        <CardTitle className="text-2xl">Hey there! {did.also_known_as ? did.also_known_as[0] : ""}</CardTitle>
+                        <CardTitle className="text-2xl">Hey there! {did.alsoKnownAs ? did.alsoKnownAs[0] : ""}</CardTitle>
                     ) : (
-                            <CardTitle className="text-2xl">Welcome, {did.also_known_as ? did.also_known_as[0] : ""}</CardTitle>
+                            <CardTitle className="text-2xl">Welcome, {did.alsoKnownAs ? did.alsoKnownAs[0] : ""}</CardTitle>
                     )
                 }
 

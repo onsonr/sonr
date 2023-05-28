@@ -3,9 +3,9 @@ package blocker
 import (
 	"fmt"
 
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/internal/crypto/mpc"
 	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/mpc"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"

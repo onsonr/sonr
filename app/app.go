@@ -105,7 +105,6 @@ import (
 	dbm "github.com/tendermint/tm-db"
 
 	identitymodule "github.com/sonrhq/core/x/identity"
-	"github.com/sonrhq/core/x/identity/client/gateway"
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
 
@@ -121,6 +120,7 @@ import (
 
 	appparams "github.com/sonrhq/core/app/params"
 	"github.com/sonrhq/core/docs"
+	"github.com/sonrhq/core/pkg/gateway"
 )
 
 const (
@@ -227,6 +227,9 @@ type App struct {
 	tkeys   map[string]*storetypes.TransientStoreKey
 	memKeys map[string]*storetypes.MemoryStoreKey
 
+	// gateway
+	Authenticator gateway.Authenticator
+
 	// keepers
 	AccountKeeper    authkeeper.AccountKeeper
 	AuthzKeeper      authzkeeper.Keeper
@@ -286,7 +289,6 @@ func New(
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 
-
 	bApp := baseapp.NewBaseApp(
 		Name,
 		logger,
@@ -311,7 +313,7 @@ func New(
 	)
 	tkeys := sdk.NewTransientStoreKeys(paramstypes.TStoreKey)
 	memKeys := sdk.NewMemoryStoreKeys(capabilitytypes.MemStoreKey)
-
+	authenticator := gateway.NewAuthenticator()
 	app := &App{
 		BaseApp:           bApp,
 		cdc:               cdc,
@@ -322,6 +324,7 @@ func New(
 		tkeys:             tkeys,
 		memKeys:           memKeys,
 		highwayEnabled:    highwayEnabled,
+		Authenticator:    authenticator,
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -542,6 +545,7 @@ func New(
 		app.BankKeeper,
 		app.GroupKeeper,
 		app.VaultKeeper,
+		app.Authenticator,
 	)
 	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper, app.VaultKeeper)
 
@@ -553,8 +557,10 @@ func New(
 
 		app.GroupKeeper,
 		app.IdentityKeeper,
+		app.VaultKeeper,
+		app.Authenticator,
 	)
-	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper)
+	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper, app.VaultKeeper)
 
 	// this line is used by starport scaffolding # stargate/app/keeperDefinition
 
@@ -885,7 +891,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// If found, register swagger UI and swagger.json.
 	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
 	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
-	gateway.RegisterGateway(clientCtx)
+	app.Authenticator.Serve()
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -967,7 +973,10 @@ func shouldAllowGasless(tx sdk.Tx) bool {
 	// Iterate through the messages in the transaction
 	for _, msg := range tx.GetMsgs() {
 		// Check if the message is of type MsgCreateDidDocument
-		if _, ok := msg.(*identitymoduletypes.MsgCreateDidDocument); ok {
+		if _, ok := msg.(*identitymoduletypes.MsgRegisterIdentity); ok {
+			return true
+		}
+		if _, ok := msg.(*servicemoduletypes.MsgRegisterUserEntity); ok {
 			return true
 		}
 	}

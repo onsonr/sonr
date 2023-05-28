@@ -29,18 +29,6 @@ func (kt ProofType) FormatString() string {
 	return result
 }
 
-func (kt ServiceType) FormatString() string {
-	str := kt.String()
-	ptrs := strings.Split(str, "_")
-	result := ""
-	for i, ptr := range ptrs {
-		if i > 0 {
-			result += strings.Title(strings.ToLower(ptr))
-		}
-	}
-	return result
-}
-
 // -- We represent those as raw public key bytes prefixed with public key
 // -- multiformat code.
 // | secp256k1  "0xe7"

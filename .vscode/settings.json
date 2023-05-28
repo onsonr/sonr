@@ -76,7 +76,6 @@
     "**/.trunk/*plugins/": true,
     "**/node_modules": true,
     "types/common": true,
-    "frontend/apps/web/tailwind.config.js": true,
     "types/common/info.pb.go": true,
     "types/crypto/vc.pb.go": true,
     "types/crypto/coin.pb.go": true,
@@ -119,6 +118,7 @@
           "fontStyle": "italic"
         }
       }
-    ],
-  }
+    ]
+  },
+  "explorer.excludeGitIgnore": true
 }

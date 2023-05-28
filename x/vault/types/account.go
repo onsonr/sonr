@@ -8,9 +8,8 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/google/uuid"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/internal/crypto/mpc"
-	v1 "github.com/sonrhq/core/types/common"
+	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/mpc"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
@@ -34,7 +33,6 @@ type Account interface {
 	// GetAuthInfo creates an AuthInfo for a transaction
 	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
 
-
 	// ListKeyShares returns the list of keyshares of the account as a list of string dids
 	ListKeyShares() []string
 
@@ -48,7 +46,7 @@ type Account interface {
 	Sign(bz []byte) ([]byte, error)
 
 	// ToProto returns the proto representation of the account
-	ToProto() *v1.AccountInfo
+	ToProto() *AccountInfo
 
 	// Type returns the type of the account
 	Type() string
@@ -156,8 +154,8 @@ func (wa *account) Sign(bz []byte) ([]byte, error) {
 }
 
 // ToProto returns the proto representation of the account
-func (wa *account) ToProto() *v1.AccountInfo {
-	return &v1.AccountInfo{
+func (wa *account) ToProto() *AccountInfo {
+	return &AccountInfo{
 		Address:   wa.Address(),
 		CoinType:  wa.CoinType().String(),
 		Did:       wa.Did(),

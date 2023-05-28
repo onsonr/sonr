@@ -17,12 +17,12 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-func RemoveIndex(s []types.Identity, index int) []types.Identity {
+func RemoveIndex(s []types.Identification, index int) []types.Identification {
 	return append(s[:index], s[index+1:]...)
 }
 
-func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.Identity {
-	items := make([]types.Identity, n)
+func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.Identification {
+	items := make([]types.Identification, n)
 	for i := range items {
 		id := fmt.Sprintf("did:snr:%s%d", prefix, i)
 		items[i].Id = id
@@ -31,7 +31,7 @@ func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix
 			fmt.Sprintf("SecondAka%d", i),
 		}
 
-		keeper.SetDidDocument(ctx, items[i])
+		keeper.SetIdentity(ctx, items[i])
 	}
 	return items
 }
@@ -42,7 +42,7 @@ type KeeperTestSuite struct {
 	ctx       sdk.Context
 	wCtx      context.Context
 	keeper    *keeper.Keeper
-	docs      []types.Identity
+	docs      []types.Identification
 	msgServer types.MsgServer
 }
 
@@ -58,13 +58,13 @@ func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Identity {
-	items := make([]types.Identity, n)
+func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Identification {
+	items := make([]types.Identification, n)
 	for i := range items {
 		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
 
-		keeper.SetDidDocument(ctx, items[i])
+		keeper.SetIdentity(ctx, items[i])
 	}
 	return items
 }
@@ -74,7 +74,7 @@ func (suite *KeeperTestSuite) TestDidDocumentGet() {
 	ctx := suite.ctx
 	items := createNDidDocument(keeper, ctx, 10)
 	for _, item := range items {
-		rst, found := keeper.GetDidDocument(ctx,
+		rst, found := keeper.GetIdentity(ctx,
 			item.Id,
 		)
 		suite.Assert().True(found)
@@ -91,7 +91,7 @@ func (suite *KeeperTestSuite) TestDidDocumentGetAll() {
 	items := createNDidDocument(keeper, ctx, 10)
 	suite.Assert().ElementsMatch(
 		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllPrimaryIdentities(ctx)),
+		nullify.Fill(keeper.GetAllIdentities(ctx)),
 	)
 }
 

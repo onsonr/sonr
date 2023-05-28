@@ -648,17 +648,17 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sonr", "params", "service"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"sonr", "params", "service"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ListServiceRecords_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"sonr", "service"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ListServiceRecords_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"sonr", "service"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ServiceRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sonr", "service", "origin"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ServiceRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"sonr", "service", "origin"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ServiceRelationship_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"sonr", "service", "origin", "relationships"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ServiceRelationship_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"sonr", "service", "origin", "relationships"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ServiceAttestion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"sonr", "service", "origin", "register", "start"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ServiceAttestion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"sonr", "service", "origin", "register", "start"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ServiceAssertion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"sonr", "service", "origin", "login", "start"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ServiceAssertion_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4}, []string{"sonr", "service", "origin", "login", "start"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (
