@@ -40,4 +40,4 @@ jobs:
         draft: false
         prerelease: false
         body: ${{ steps.generate_changelog.outputs.changelog }}
-        GITHUB_TOKEN: ${{ secrets.CR_GH_PAT }}
+        token: ${{ secrets.CR_GH_PAT }}
