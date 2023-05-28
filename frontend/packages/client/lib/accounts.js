@@ -22,7 +22,7 @@ class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.get(`/accounts`);
+            const response = await api.get(`/sonr/accounts`);
             console.log(response.data);
             return response.data;
         }
@@ -46,7 +46,7 @@ class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.get(`/accounts/${address}`);
+            const response = await api.get(`/sonr/accounts/${address}`);
             console.log(response.data);
             return response.data.account;
         }
@@ -70,7 +70,7 @@ class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.get(`/accounts/create/${coin_type}/${name}`);
+            const response = await api.get(`/sonr/accounts/create/${coin_type}/${name}`);
             console.log(response.data);
             return response.data.new_account;
         }
@@ -96,7 +96,7 @@ class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.post(`/accounts/${address}/sign`, { message: message });
+            const response = await api.post(`/sonr/accounts/${address}/sign`, { message: message });
             console.log(response.data);
             return response.data.signature;
         }
@@ -123,7 +123,7 @@ class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.post(`/accounts/${address}/verify`, { message: message, signature: signature });
+            const response = await api.post(`/sonr/accounts/${address}/verify`, { message: message, signature: signature });
             console.log(response.data);
             return response.data.verified;
         }

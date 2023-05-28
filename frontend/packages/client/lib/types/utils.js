@@ -211,10 +211,7 @@ function arrayBufferDecode(value) {
 }
 exports.arrayBufferDecode = arrayBufferDecode;
 function baseUrl() {
-    if (process.env.NODE_ENV === "development") {
-        return "http://0.0.0.0:8080";
-    }
-    return "https://highway.build";
+    return "https://api.sonr.ws";
 }
 exports.baseUrl = baseUrl;
 function getAxios(authenticated) {

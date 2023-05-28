@@ -231,10 +231,7 @@ export function arrayBufferDecode(value: string): ArrayBuffer {
 }
 
 export function baseUrl() {
-    if (process.env.NODE_ENV === "development") {
-        return "http://0.0.0.0:8080";
-    }
-    return "https://highway.build";
+    return "https://api.sonr.ws";
 }
 
 

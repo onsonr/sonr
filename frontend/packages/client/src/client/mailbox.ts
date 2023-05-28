@@ -23,7 +23,7 @@ export default class Mailbox {
         })
 
         try {
-            const response = await api.get<MailboxMessage[]>(`/mailbox/${address}/read`);
+            const response = await api.get<MailboxMessage[]>(`/sonr/mailbox/${address}/read`);
             return response.data;
         } catch (error) {
             console.error(`Error fetching mailbox messages: ${error}`);
@@ -46,7 +46,7 @@ export default class Mailbox {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const resp = await api.post<SendMessageResponse>(`/mailbox/${to}/send`, { message: message });
+            const resp = await api.post<SendMessageResponse>(`/sonr/mailbox/${to}/send`, { message: message });
             return resp.data;
         } catch (error) {
             console.error(`Error sending message: ${error}`);

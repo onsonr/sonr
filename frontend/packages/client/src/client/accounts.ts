@@ -23,7 +23,7 @@ export default class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const response = await api.get<ListAccountsResult>(`/accounts`);
+            const response = await api.get<ListAccountsResult>(`/sonr/accounts`);
             console.log(response.data);
             return response.data;
         } catch (error) {
@@ -47,7 +47,7 @@ export default class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const response = await api.get<GetAccountResponse>(`/accounts/${address}`);
+            const response = await api.get<GetAccountResponse>(`/sonr/accounts/${address}`);
             console.log(response.data);
             return response.data.account;
         } catch (error) {
@@ -70,7 +70,7 @@ export default class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const response = await api.get<CreateAccountResponse>(`/accounts/create/${coin_type}/${name}`);
+            const response = await api.get<CreateAccountResponse>(`/sonr/accounts/create/${coin_type}/${name}`);
             console.log(response.data);
             return response.data.new_account;
         } catch (error) {
@@ -96,7 +96,7 @@ export default class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const response = await api.post(`/accounts/${address}/sign`, { message: message });
+            const response = await api.post(`/sonr/accounts/${address}/sign`, { message: message });
             console.log(response.data);
             return response.data.signature;
         } catch (error) {
@@ -123,7 +123,7 @@ export default class Accounts {
             headers: { 'Authorization': `Bearer ${this.token}` },
         })
         try {
-            const response = await api.post(`/accounts/${address}/verify`, { message: message, signature: signature });
+            const response = await api.post(`/sonr/accounts/${address}/verify`, { message: message, signature: signature });
             console.log(response.data);
             return response.data.verified;
         } catch (error) {

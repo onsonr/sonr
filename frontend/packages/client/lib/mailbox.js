@@ -22,7 +22,7 @@ class Mailbox {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const response = await api.get(`/mailbox/${address}/read`);
+            const response = await api.get(`/sonr/mailbox/${address}/read`);
             return response.data;
         }
         catch (error) {
@@ -45,7 +45,7 @@ class Mailbox {
             headers: { 'Authorization': `Bearer ${this.token}` },
         });
         try {
-            const resp = await api.post(`/mailbox/${to}/send`, { message: message });
+            const resp = await api.post(`/sonr/mailbox/${to}/send`, { message: message });
             return resp.data;
         }
         catch (error) {

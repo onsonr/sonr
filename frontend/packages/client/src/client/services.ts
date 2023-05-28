@@ -20,7 +20,7 @@ export default class Services {
      */
     async list(): Promise<ServiceRecord[]> {
         try {
-            const response = await getAxios(false).get(`/service`);
+            const response = await getAxios(false).get(`/sonr/service`);
             return response.data.services;
         } catch (error) {
             console.error(`Error fetching DID: ${error}`);
@@ -36,7 +36,7 @@ export default class Services {
      */
     async get(name: string): Promise<ServiceRecord> {
         try {
-            const response = await getAxios(false).get(`/service/${name}`);
+            const response = await getAxios(false).get(`/sonr/service/${name}`);
             console.log(response.data);
             return response.data.service;
         } catch (error) {
@@ -55,7 +55,7 @@ export default class Services {
      * `QueryAttestionResponse` object.
      */
     async startRegistration(alias: string): Promise<QueryAttestionResponse> {
-        const [aData, aError] = await trytm(getAxios(false).get<QueryAttestionResponse>(`/service/${this.origin}/register/start`, {
+        const [aData, aError] = await trytm(getAxios(false).get<QueryAttestionResponse>(`/sonr/service/${this.origin}/register/start`, {
             params: {
                 alias: alias,
             },
@@ -84,7 +84,7 @@ export default class Services {
         if (!credential_response || credential_response.length === 0) {
             throw new Error("credential_response is required");
         }
-        const [aData, aError] = await trytm(getAxios(false).post(`/service/${this.origin}/register/finish`, null, {
+        const [aData, aError] = await trytm(getAxios(false).post(`/sonr/service/${this.origin}/register/finish`, null, {
             params: {
                 attestion: credential_response,
                 alias: alias,
@@ -108,7 +108,7 @@ export default class Services {
      * @returns a Promise that resolves to a QueryAssertionResponse object.
      */
     async startLogin(alias: string): Promise<QueryAssertionResponse> {
-        const [aData, aError] = await trytm(getAxios(false).get<QueryAssertionResponse>(`/service/${this.origin}/login/start`, {
+        const [aData, aError] = await trytm(getAxios(false).get<QueryAssertionResponse>(`/sonr/service/${this.origin}/login/start`, {
             params: {
                 alias: alias,
             },
@@ -136,7 +136,7 @@ export default class Services {
         if (!assertion_response || assertion_response.length === 0) {
             throw new Error("assertion_response is required");
         }
-        const [aData, aError] = await trytm(getAxios(false).post(`/service/${this.origin}/login/finish`, null, {
+        const [aData, aError] = await trytm(getAxios(false).post(`/sonr/service/${this.origin}/login/finish`, null, {
             params: {
                 alias: alias,
                 assertion: assertion_response,

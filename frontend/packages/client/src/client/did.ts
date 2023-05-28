@@ -13,7 +13,7 @@ export default class DID {
      */
     async list(): Promise<DidDocument[]> {
         try {
-            const response = await getAxios(false).get<ListDocumentsResponse>(`/id`);
+            const response = await getAxios(false).get<ListDocumentsResponse>(`/sonr/id`);
             return response.data.documents;
         } catch (error) {
             console.error(`Error fetching DID: ${error}`);
@@ -29,7 +29,7 @@ export default class DID {
      */
     async get(did: string): Promise<DidDocument> {
         try {
-            const response = await getAxios(false).get<DidDocument>(`/id/${did}`);
+            const response = await getAxios(false).get<DidDocument>(`/sonr/id/${did}`);
             console.log(response.data);
             return response.data;
         } catch (error) {
@@ -50,7 +50,7 @@ export default class DID {
      */
     async getByAlias(alias: string): Promise<QueryAliasResponse> {
         try {
-            const response = await getAxios(false).get<QueryAliasResponse>(`/id/alias/${alias}`);
+            const response = await getAxios(false).get<QueryAliasResponse>(`/sonr/id/alias/${alias}/check`);
             console.log(response.data);
             return response.data;
         } catch (error) {
@@ -72,7 +72,7 @@ export default class DID {
      */
     async getByOwner(address: string): Promise<DidDocument> {
         try {
-            const response = await getAxios(false).get<QueryDocumentResponse>(`/id/owner/${address}`);
+            const response = await getAxios(false).get<QueryDocumentResponse>(`/sonr/id/owner/${address}`);
             console.log(response.data);
             return response.data.did_document;
         } catch (error) {

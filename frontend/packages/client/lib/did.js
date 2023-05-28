@@ -11,7 +11,7 @@ class DID {
      */
     async list() {
         try {
-            const response = await (0, utils_1.getAxios)(false).get(`/id`);
+            const response = await (0, utils_1.getAxios)(false).get(`/sonr/id`);
             return response.data.documents;
         }
         catch (error) {
@@ -27,7 +27,7 @@ class DID {
      */
     async get(did) {
         try {
-            const response = await (0, utils_1.getAxios)(false).get(`/id/${did}`);
+            const response = await (0, utils_1.getAxios)(false).get(`/sonr/id/${did}`);
             console.log(response.data);
             return response.data;
         }
@@ -48,7 +48,7 @@ class DID {
      */
     async getByAlias(alias) {
         try {
-            const response = await (0, utils_1.getAxios)(false).get(`/id/alias/${alias}`);
+            const response = await (0, utils_1.getAxios)(false).get(`/sonr/id/alias/${alias}/check`);
             console.log(response.data);
             return response.data;
         }
@@ -70,7 +70,7 @@ class DID {
      */
     async getByOwner(address) {
         try {
-            const response = await (0, utils_1.getAxios)(false).get(`/id/owner/${address}`);
+            const response = await (0, utils_1.getAxios)(false).get(`/sonr/id/owner/${address}`);
             console.log(response.data);
             return response.data.did_document;
         }
