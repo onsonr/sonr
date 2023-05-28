@@ -13,7 +13,7 @@ jobs:
         with:
           token: ${{ secrets.CR_GH_PAT }}
           repository: ${{ github.repository }}
-          retain_days: "30"
-          keep_minimum_runs: "3"
+          retain_days: "7"
+          keep_minimum_runs: "1"
           delete_workflow_by_state_pattern: "All"
           delete_run_by_conclusion_pattern: "All"
