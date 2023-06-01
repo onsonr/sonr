@@ -21,7 +21,7 @@ type (
 		storeKey   storetypes.StoreKey
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
-		vaultI *vaultImpl
+		vaultI     *vaultImpl
 	}
 )
 
@@ -54,11 +54,10 @@ func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
 
-
 // The function inserts an account and its associated key shares into a vault.
 func (k Keeper) InsertAccount(acc types.Account) error {
 	ksAccListVal := strings.Join(acc.ListKeyShares(), ",")
-	_, err := k.vaultI.KsTable.Put(k.vaultI.ctx, accountPrefix(acc.Did()), []byte(ksAccListVal))
+	_, err := k.vaultI.KsTable.Put(k.vaultI.ctx, types.AccountPrefix(acc.Did()), []byte(ksAccListVal))
 	if err != nil {
 		return err
 	}
@@ -74,7 +73,7 @@ func (k Keeper) InsertAccount(acc types.Account) error {
 
 // The function inserts a keyshare into a table and returns an error if there is one.
 func (k Keeper) InsertKeyshare(ks types.KeyShare) error {
-	_, err := k.vaultI.KsTable.Put(k.vaultI.ctx, keysharePrefix(ks.Did()), ks.Bytes())
+	_, err := k.vaultI.KsTable.Put(k.vaultI.ctx, types.KeysharePrefix(ks.Did()), ks.Bytes())
 	if err != nil {
 		return err
 	}
@@ -89,7 +88,7 @@ func (k Keeper) GetAccount(accDid string) (types.Account, error) {
 		return nil, err
 	}
 
-	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, accountPrefix(accDid))
+	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, types.AccountPrefix(accDid))
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +113,7 @@ func (k Keeper) GetKeyshare(keyDid string) (types.KeyShare, error) {
 	if err != nil {
 		return nil, err
 	}
-	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, keysharePrefix(keyDid))
+	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, types.KeysharePrefix(keyDid))
 	if err != nil {
 		return nil, err
 	}
@@ -128,21 +127,21 @@ func (k Keeper) GetKeyshare(keyDid string) (types.KeyShare, error) {
 // DeleteAccount deletes an account from the vault.
 func (k Keeper) DeleteAccount(accDid string) error {
 	// Delete the keyshares
-	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, accountPrefix(accDid))
+	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, types.AccountPrefix(accDid))
 	if err != nil {
 		return err
 	}
 
 	ksAccListVal := strings.Split(string(vBiz), ",")
 	for _, ksDid := range ksAccListVal {
-		_, err = k.vaultI.KsTable.Delete(k.vaultI.ctx, keysharePrefix(ksDid))
+		_, err = k.vaultI.KsTable.Delete(k.vaultI.ctx, types.KeysharePrefix(ksDid))
 		if err != nil {
 			return err
 		}
 	}
 
 	// Delete the account
-	_, err = k.vaultI.KsTable.Delete(k.vaultI.ctx, accountPrefix(accDid))
+	_, err = k.vaultI.KsTable.Delete(k.vaultI.ctx, types.AccountPrefix(accDid))
 	if err != nil {
 		return err
 	}
@@ -152,7 +151,7 @@ func (k Keeper) DeleteAccount(accDid string) error {
 // FetchCredential retrieves a credential from the vault.
 func (k Keeper) FetchCredential(keyDid string) (servicetypes.Credential, error) {
 	// Delete the keyshares
-	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, webauthnPrefix(keyDid))
+	vBiz, err := k.vaultI.KsTable.Get(k.vaultI.ctx, types.WebauthnPrefix(keyDid))
 	if err != nil {
 		return nil, err
 	}
@@ -171,16 +170,15 @@ func (k Keeper) StoreCredential(cred servicetypes.Credential) error {
 	if err != nil {
 		return err
 	}
-	_, err = k.vaultI.KsTable.Put(k.vaultI.ctx, webauthnPrefix(cred.Did()), bz)
+	_, err = k.vaultI.KsTable.Put(k.vaultI.ctx, types.WebauthnPrefix(cred.Did()), bz)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-
 // ReadInbox reads the inbox for the account
-func (k Keeper) ReadInbox(accDid string) ([]*types.InboxMessage, error) {
+func (k Keeper) ReadInbox(accDid string) ([]*types.WalletMail, error) {
 	inbox, err := k.vaultI.LoadInbox(accDid)
 	if err != nil {
 		return nil, err
@@ -189,7 +187,7 @@ func (k Keeper) ReadInbox(accDid string) ([]*types.InboxMessage, error) {
 }
 
 // WriteInbox writes a message to the inbox for the account
-func (k Keeper) WriteInbox(toDid string, msg *types.InboxMessage) error {
+func (k Keeper) WriteInbox(toDid string, msg *types.WalletMail) error {
 	// Get the inbox
 	inbox, err := k.vaultI.LoadInbox(toDid)
 	if err != nil {

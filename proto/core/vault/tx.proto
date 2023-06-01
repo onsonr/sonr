@@ -1,7 +1,11 @@
 syntax = "proto3";
+
 package sonrhq.core.vault;
+
+import "core/vault/claims.proto";
 
 option go_package = "github.com/sonrhq/core/x/vault/types";
 
 // Msg defines the Msg service.
-service Msg {}
+service Msg {
+}

@@ -7,7 +7,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/group"
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonrhq/core/types/crypto"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
@@ -45,16 +44,10 @@ type BankKeeper interface {
 
 // IdentityKeeper defines the expected interface needed to retrieve account balances.
 type IdentityKeeper interface {
+	AssignIdentity(credential *identitytypes.VerificationMethod, account vaulttypes.Account, alias string) (*identitytypes.DIDDocument, error)
 	CheckAlsoKnownAs(ctx sdk.Context, alias string) error
-	AssignIdentity(ctx sdk.Context, ucw identitytypes.ClaimableWallet, cred *WebauthnCredential, alias string) (*identitytypes.DIDDocument, error)
-	GetAuthentication(ctx sdk.Context, reference string) (identitytypes.VerificationRelationship, bool)
-	GetAssertion(ctx sdk.Context, reference string) (identitytypes.VerificationRelationship, bool)
-	GetCapabilityInvocation(ctx sdk.Context, reference string) (invocation identitytypes.VerificationRelationship, found bool)
-	GetCapabilityDelegation(ctx sdk.Context, reference string) (delegation identitytypes.VerificationRelationship, found bool)
-	GetClaimableWallet(ctx sdk.Context, id uint64) (val identitytypes.ClaimableWallet, found bool)
-	GetKeyAgreement(ctx sdk.Context, reference string) (agreement identitytypes.VerificationRelationship, found bool)
-
-	NextUnclaimedWallet(ctx sdk.Context) (*identitytypes.ClaimableWallet, protocol.URLEncodedBase64, error)
+	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.Identification, found bool)
+	ResolveIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, err error)
 	RegisterIdentity(goCtx context.Context, msg *identitytypes.MsgRegisterIdentity) (*identitytypes.MsgRegisterIdentityResponse, error)
 	ResolveIdentity(ctx sdk.Context, did string) (identitytypes.DIDDocument, error)
 
@@ -68,10 +61,12 @@ type IdentityKeeper interface {
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
 	// Methods imported from vault should be defined here
+	AssignVault(ctx sdk.Context, ucw uint64) (vaulttypes.Account, error)
+	GetClaimableWallet(ctx sdk.Context, id uint64) (val vaulttypes.ClaimableWallet, found bool)
+	NextUnclaimedWallet(ctx sdk.Context) (*vaulttypes.ClaimableWallet, protocol.URLEncodedBase64, error)
 	GetAccount(accDid string) (vaulttypes.Account, error)
 	GetKeyshare(keyDid string) (vaulttypes.KeyShare, error)
 	DeleteAccount(accDid string) error
 	InsertAccount(acc vaulttypes.Account) error
 	InsertKeyshare(ks vaulttypes.KeyShare) error
-	ResolveAccountFromKeyshares(keyshares []string, coinType crypto.CoinType) (vaulttypes.Account, error)
 }

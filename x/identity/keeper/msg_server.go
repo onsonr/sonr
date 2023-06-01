@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
@@ -27,35 +28,21 @@ var _ types.MsgServer = msgServer{}
 // RegisterIdentity registers a new identity with the provided Identity and Verification Relationships. Fails if not at least one Authentication relationship is provided.
 func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterIdentity) (*types.MsgRegisterIdentityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	if len(msg.Authentication) == 0 {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "at least one authentication relationship must be provided")
-	}
 
-	// Check if the value already exists
-	if ok := k.HasIdentity(ctx, msg.Identity.Id); ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "identity already registered")
-	}
-	if msg.Creator != msg.Identity.Owner {
+	if !strings.Contains(msg.DidDocument.Id, msg.Creator) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "identity owner does not match creator")
 	}
 
-	// Remove the unclaimed wallet
-	ucw, found := k.GetClaimableWallet(ctx, uint64(msg.WalletId))
-	if !found {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "unclaimed wallet index not set")
-	}
-	ucw.Claimed = true
-	k.RemoveClaimableWallet(ctx, uint64(msg.WalletId))
-
 	// Set the identity
-	err := k.SetIdentity(ctx, *msg.Identity)
+	identity := msg.DidDocument.ToIdentification()
+	err := k.SetIdentity(ctx, *identity)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to set identity, sequence cannot proceed.")
 	}
 
 	// Iteratively set authentication relations
-	for _, auth := range msg.Authentication {
-		auth.Owner = msg.Identity.Owner
+	for _, auth := range msg.DidDocument.Authentication {
+		auth.Owner = msg.Creator
 		auth.Reference = auth.VerificationMethod.Id
 		auth.Type = "Authentication"
 		k.SetAuthentication(ctx, *auth)
@@ -65,8 +52,8 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 	}
 
 	// Iteratively set assertion relations
-	for _, assertion := range msg.Assertion {
-		assertion.Owner = msg.Identity.Owner
+	for _, assertion := range msg.DidDocument.AssertionMethod {
+		assertion.Owner = msg.Creator
 		assertion.Reference = assertion.VerificationMethod.Id
 		assertion.Type = "AssertionMethod"
 		k.SetAssertion(ctx, *assertion)
@@ -76,8 +63,8 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 	}
 
 	// Iteratively set capability delegation relations
-	for _, capability := range msg.CapabilityDelegation {
-		capability.Owner = msg.Identity.Owner
+	for _, capability := range msg.DidDocument.CapabilityDelegation {
+		capability.Owner = msg.Creator
 		capability.Reference = capability.VerificationMethod.Id
 		capability.Type = "CapabilityDelegation"
 		k.SetCapabilityDelegation(ctx, *capability)
@@ -87,8 +74,8 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 	}
 
 	// Iteratively set capability invocation relations
-	for _, capability := range msg.CapabilityInvocation {
-		capability.Owner = msg.Identity.Owner
+	for _, capability := range msg.DidDocument.CapabilityInvocation {
+		capability.Owner = msg.Creator
 		capability.Reference = capability.VerificationMethod.Id
 		capability.Type = "CapabilityInvocation"
 		k.SetCapabilityInvocation(ctx, *capability)
@@ -98,29 +85,22 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 	}
 
 	// Iteratively set key agreement relations
-	for _, keyAgreement := range msg.KeyAgreement {
-		keyAgreement.Owner = msg.Identity.Owner
+	for _, keyAgreement := range msg.DidDocument.KeyAgreement {
+		keyAgreement.Owner = msg.Creator
 		k.SetKeyAgreement(ctx, *keyAgreement)
 		if err != nil {
 			k.Logger(ctx).Error("failed to set key agreement", "error", err)
 		}
 	}
 
-	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
-	if err != nil {
-		k.Logger(ctx).Error("failed to send coins", "error", err)
-	}
+	// err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "x/identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
+	// if err != nil {
+	// 	k.Logger(ctx).Error("failed to send coins", "error", err)
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to send coins")
+	// }
 
 	return &types.MsgRegisterIdentityResponse{
-		Success: true,
-		DidDocument: &types.DIDDocument{
-			Context:              []string{types.DefaultParams().DidBaseContext, types.DefaultParams().AccountDidMethodContext},
-			Id:                   msg.Identity.Id,
-			Authentication:       msg.Authentication,
-			AssertionMethod:      msg.Assertion,
-			CapabilityDelegation: msg.CapabilityDelegation,
-			CapabilityInvocation: msg.CapabilityInvocation,
-			Metadata:             msg.Identity.Metadata,
-		},
+		Success:     true,
+		DidDocument: msg.DidDocument,
 	}, nil
 }

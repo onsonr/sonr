@@ -27,19 +27,19 @@ func BlankIdentity() *Identification {
 func NewIdentityFromVaultAccount(va vaulttypes.Account, controller string) (*Identification, *VerificationRelationship, bool) {
 	vm := NewVerificationMethodFromVaultAccount(va, controller)
 	wi := NewWalletIdentity(controller, vm.BlockchainAccountId, va.CoinType())
-	wi.AddAuthenticationMethod(vm)
-	vr, ok := wi.AddCapabilityDelegation(vm)
+	wi.LinkAuthenticationMethod(vm)
+	vr, ok := wi.LinkCapabilityDelegation(vm)
 	return wi, vr, ok
 }
 
-
 // NewSonrIdentity returns a new Identity with the given owner address and constructs
 // the DID from the owner address
-func NewSonrIdentity(ownerAddress string) *Identification {
+func NewSonrIdentity(ownerAddress string, primaryAlias string) *Identification {
 	did := fmt.Sprintf("did:sonr:%s", ownerAddress)
 	identity := BlankIdentity()
 	identity.Id = did
 	identity.Owner = ownerAddress
+	identity.SetPrimaryAlias(primaryAlias)
 	return identity
 }
 
@@ -53,63 +53,10 @@ func NewWalletIdentity(ownerAddress, walletAddress string, coinType crypto.CoinT
 	return identity
 }
 
-// AddAuthenticationMethod adds a VerificationMethod to the Authentication list of the DID Document and returns the VerificationRelationship
-// Returns nil if the VerificationMethod is already in the Authentication list
-func (id *Identification) AddAuthenticationMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
-	for _, auth := range id.Authentication {
-		if auth == vm.Id {
-			return nil, false
-		}
-	}
-	id.Authentication = append(id.Authentication, vm.Id)
-	vr := &VerificationRelationship{
-		Reference:          vm.Id,
-		Type:               "Authentication",
-		VerificationMethod: vm,
-		Owner:              id.Owner,
-	}
-	return vr, true
-}
-
-// AddAssertionMethod adds a VerificationMethod to the AssertionMethod list of the DID Document and returns the VerificationRelationship
-// Returns nil if the VerificationMethod is already in the AssertionMethod list
-func (id *Identification) AddAssertionMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
-	for _, auth := range id.AssertionMethod {
-		if auth == vm.Id {
-			return nil, false
-		}
-	}
-	id.AssertionMethod = append(id.AssertionMethod, vm.Id)
-	vr := &VerificationRelationship{
-		Reference:          vm.Id,
-		Type:               "AssertionMethod",
-		VerificationMethod: vm,
-		Owner:              id.Owner,
-	}
-	return vr, true
-}
-
-// AddCapabilityDelegation adds a VerificationMethod to the CapabilityDelegation list of the DID Document and returns the VerificationRelationship
-// Returns nil if the VerificationMethod is already in the CapabilityDelegation list
-func (id *Identification) AddCapabilityDelegation(vm *VerificationMethod) (*VerificationRelationship, bool) {
-	for _, auth := range id.CapabilityDelegation {
-		if auth == vm.Id {
-			return nil, false
-		}
-	}
-	id.CapabilityDelegation = append(id.CapabilityDelegation, vm.Id)
-	vr := &VerificationRelationship{
-		Reference:          vm.Id,
-		Type:               "CapabilityDelegation",
-		VerificationMethod: vm,
-		Owner:              id.Owner,
-	}
-	return vr, true
-}
-
-// AddCapabilityInvocation adds a VerificationMethod to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
+// LinkAccountFromVault adds a VerificationMethod to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
 // Returns nil if the VerificationMethod is already in the CapabilityInvocation list
-func (id *Identification) AddCapabilityInvocation(vm *VerificationMethod) (*VerificationRelationship, bool) {
+func (id *Identification) LinkAccountFromVault(account vaulttypes.Account) (*VerificationRelationship, bool) {
+	vm := NewVerificationMethodFromVaultAccount(account, id.Owner)
 	for _, auth := range id.CapabilityInvocation {
 		if auth == vm.Id {
 			return nil, false
@@ -118,16 +65,90 @@ func (id *Identification) AddCapabilityInvocation(vm *VerificationMethod) (*Veri
 	id.CapabilityInvocation = append(id.CapabilityInvocation, vm.Id)
 	vr := &VerificationRelationship{
 		Reference:          vm.Id,
-		Type:               "CapabilityInvocation",
+		Type:               CapabilityInvocationRelationshipName,
 		VerificationMethod: vm,
 		Owner:              id.Owner,
 	}
 	return vr, true
 }
 
-// AddKeyAgreement adds a VerificationMethod to the KeyAgreement list of the DID Document and returns the VerificationRelationship
+// LinkAuthenticationMethod adds a VerificationMethod to the Authentication list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the Authentication list
+func (id *Identification) LinkAuthenticationMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, auth := range id.Authentication {
+		if auth == vm.Id {
+			return nil, false
+		}
+	}
+	id.Authentication = append(id.Authentication, vm.Id)
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               AuthenticationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Owner,
+	}
+	return vr, true
+}
+
+// LinkAssertionMethod adds a VerificationMethod to the AssertionMethod list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the AssertionMethod list
+func (id *Identification) LinkAssertionMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, auth := range id.AssertionMethod {
+		if auth == vm.Id {
+			return nil, false
+		}
+	}
+	id.AssertionMethod = append(id.AssertionMethod, vm.Id)
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               AssertionRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Owner,
+	}
+	return vr, true
+}
+
+// LinkCapabilityDelegation adds a VerificationMethod to the CapabilityDelegation list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the CapabilityDelegation list
+func (id *Identification) LinkCapabilityDelegation(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, auth := range id.CapabilityDelegation {
+		if auth == vm.Id {
+			return nil, false
+		}
+	}
+	id.CapabilityDelegation = append(id.CapabilityDelegation, vm.Id)
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:              CapabilityDelegationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Owner,
+	}
+	return vr, true
+}
+
+
+
+// LinkCapabilityInvocation adds a VerificationMethod to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the CapabilityInvocation list
+func (id *Identification) LinkCapabilityInvocation(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, auth := range id.CapabilityInvocation {
+		if auth == vm.Id {
+			return nil, false
+		}
+	}
+	id.CapabilityInvocation = append(id.CapabilityInvocation, vm.Id)
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:              CapabilityInvocationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Owner,
+	}
+	return vr, true
+}
+
+// LinkKeyAgreement adds a VerificationMethod to the KeyAgreement list of the DID Document and returns the VerificationRelationship
 // Returns nil if the VerificationMethod is already in the KeyAgreement list
-func (id *Identification) AddKeyAgreement(vm *VerificationMethod) (*VerificationRelationship, bool) {
+func (id *Identification) LinkKeyAgreement(vm *VerificationMethod) (*VerificationRelationship, bool) {
 	for _, auth := range id.KeyAgreement {
 		if auth == vm.Id {
 			return nil, false
@@ -136,7 +157,7 @@ func (id *Identification) AddKeyAgreement(vm *VerificationMethod) (*Verification
 	id.KeyAgreement = append(id.KeyAgreement, vm.Id)
 	vr := &VerificationRelationship{
 		Reference:          vm.Id,
-		Type:               "KeyAgreement",
+		Type:               KeyAgreementRelationshipName,
 		VerificationMethod: vm,
 		Owner:              id.Owner,
 	}

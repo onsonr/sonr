@@ -189,6 +189,7 @@ func PubKeyFromBytes(bz []byte) (*PubKey, error) {
 	return types.NewPubKey(bz[n:], kt), nil
 }
 
+// This function derives a BIP44 configuration for a specific coin type, account, change, and address index.
 func DeriveBIP44(config *cmp.Config, coinType types.CoinType, account, change, addressIndex uint32) (*cmp.Config, error) {
 	purpose := uint32(44)
 

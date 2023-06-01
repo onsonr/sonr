@@ -324,7 +324,7 @@ func New(
 		tkeys:             tkeys,
 		memKeys:           memKeys,
 		highwayEnabled:    highwayEnabled,
-		Authenticator:    authenticator,
+		Authenticator:     authenticator,
 	}
 
 	app.ParamsKeeper = initParamsKeeper(
@@ -558,7 +558,6 @@ func New(
 		app.GroupKeeper,
 		app.IdentityKeeper,
 		app.VaultKeeper,
-		app.Authenticator,
 	)
 	serviceModule := servicemodule.NewAppModule(appCodec, app.ServiceKeeper, app.AccountKeeper, app.BankKeeper, app.IdentityKeeper, app.VaultKeeper)
 
@@ -891,7 +890,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 	// If found, register swagger UI and swagger.json.
 	apiSvr.Router.Handle("/static/openapi.yml", http.FileServer(http.FS(docs.Docs)))
 	apiSvr.Router.HandleFunc("/", openapiconsole.Handler(Name, "/static/openapi.yml"))
-	app.Authenticator.Serve()
+	app.Authenticator.Serve(apiSvr.Router)
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.

@@ -4,14 +4,12 @@ import (
 	"encoding/binary"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/gofiber/fiber/v2/middleware/timeout"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -30,7 +28,7 @@ type (
 		accountKeeper types.AccountKeeper
 		bankKeeper    types.BankKeeper
 		groupKeeper   types.GroupKeeper
-		vaultKeeper  types.VaultKeeper
+		vaultKeeper   types.VaultKeeper
 		authenticator gateway.Authenticator
 	}
 )
@@ -55,11 +53,9 @@ func NewKeeper(
 		memKey:        memKey,
 		paramstore:    ps,
 		accountKeeper: accountKeeper, bankKeeper: bankKeeper, groupKeeper: groupKeeper,
-		vaultKeeper: vaultKeeper,
+		vaultKeeper:   vaultKeeper,
 		authenticator: authenticator,
 	}
-	k.authenticator.Router().Get("/accounts/create/:coin_type/:name", timeout.New(k.GatewayCreateAccount, time.Second*5))
-	k.authenticator.Router().Post("/accounts/:address/sign", timeout.New(k.GatewaySignWithAccount, time.Second*5))
 	return k
 }
 
@@ -95,7 +91,7 @@ func (k Keeper) GetIdentityByPrimaryAlias(
 	ctx sdk.Context,
 	alias string,
 ) (val types.Identification, found bool) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AlsoKnownAsPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(fmt.Sprintf("Identification/%s/value/", "sonr")))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 	defer iterator.Close()
 
@@ -161,6 +157,15 @@ func (k Keeper) ResolveIdentity(ctx sdk.Context, did string) (val types.DIDDocum
 	return val, nil
 }
 
+// ResolveIdentityByPrimaryAlias resolves a DID to a DIDDocument and returns it based off its primary alias Identification
+func (k Keeper) ResolveIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val types.DIDDocument, err error) {
+	identity, found := k.GetIdentityByPrimaryAlias(ctx, alias)
+	if !found {
+		return val, status.Error(codes.NotFound, "Account Identity not found")
+	}
+	return k.ResolveIdentity(ctx, identity.Id)
+}
+
 // SetIdentity checks the validity of the identity and set it in the store based off its did method
 func (k Keeper) SetIdentity(ctx sdk.Context, identity types.Identification) error {
 	ptrs := strings.Split(identity.Id, ":")
@@ -209,10 +214,9 @@ func (k Keeper) GetIdentity(ctx sdk.Context, did string) (val types.Identificati
 	return val, true
 }
 
-
 // GetAllDidDocument returns all didDocument
 func (k Keeper) GetAllIdentities(ctx sdk.Context) (list []types.Identification) {
-	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.AlsoKnownAsPrefix))
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(fmt.Sprintf("Identification/%s/value/", "sonr")))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

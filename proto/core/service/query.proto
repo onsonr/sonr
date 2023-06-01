@@ -7,38 +7,65 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/service/genesis.proto";
 import "core/service/record.proto";
-
+import "core/identity/did.proto";
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
+  // Returns the `x/service` module parameters.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonr/params/service";
+    option (google.api.http).get = "/core/params/service";
   }
 
+  // Lists all known ServiceRecord items.
   rpc ListServiceRecords (ListServiceRecordsRequest) returns (ListServiceRecordsResponse) {
-    option (google.api.http).get = "/sonr/service";
+    option (google.api.http).get = "/core/service";
   }
 
-  // Queries a list of ServiceRecord items.
+  // Returns the ServiceRecord for the matching origin.
   rpc ServiceRecord (QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
-    option (google.api.http).get = "/sonr/service/{origin}";
+    option (google.api.http).get = "/core/service/{origin}";
   }
 
-  // Queries a list of ServiceRelationships items.
+  // Returns a list of ServiceRelationships for a given ServiceRecord matched by
+  // origin.
   rpc ServiceRelationship (QueryGetServiceRelationshipRequest) returns (QueryGetServiceRelationshipResponse) {
-    option (google.api.http).get = "/sonr/service/{origin}/relationships";
+    option (google.api.http).get = "/core/service/{origin}/relationships";
   }
 
-  // Queries a list of GetServiceAttestion items.
-  rpc ServiceAttestion (QueryGetServiceAttestionRequest) returns (QueryGetServiceAttestionResponse) {
-    option (google.api.http).get = "/sonr/service/{origin}/register/start";
+  // !
+  // ||--------------------------------------------------------------------------------||
+  // ! ||                                 Gateway Methods || !
+  // ||--------------------------------------------------------------------------------||
+
+  // Gets the `CredentialCreationOptions` for a user to begin Sonr registration.
+  rpc ServiceAttestation(GetServiceAttestationRequest)
+      returns (GetServiceAttestationResponse) {
+    option (google.api.http).get =
+        "/highway/service/{origin}/register/start/{alias}";
   }
 
-  // Queries a list of GetServiceAssertion items.
-  rpc ServiceAssertion (QueryGetServiceAssertionRequest) returns (QueryGetServiceAssertionResponse) {
-    option (google.api.http).get = "/sonr/service/{origin}/login/start";
+  // Gets the `CredentialRequestOptions` for a user to begin Sonr login.
+  rpc ServiceAssertion (GetServiceAssertionRequest) returns (GetServiceAssertionResponse) {
+    option (google.api.http).get =
+        "/highway/service/{origin}/login/start/{alias}";
+  }
+
+  // Verifies the `CredentialAssertion` for a user and claims a wallet address.
+  rpc RegisterUser(RegisterUserRequest) returns (RegisterUserResponse) {
+    option (google.api.http) = {
+      post : "/highway/service/{origin}/register/finish/{alias}"
+      body : "*"
+    };
+  }
+
+  // Verifies the `CredentialAssertion` for a user and fetches User entity.
+  rpc AuthenticateUser(AuthenticateUserRequest)
+      returns (AuthenticateUserResponse) {
+    option (google.api.http) = {
+      post : "/highway/service/{origin}/login/finish/{alias}"
+      body : "*"
+    };
   }
 }
 
@@ -77,13 +104,13 @@ message QueryGetServiceRelationshipResponse {
   ServiceRelationship ServiceRelationships = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetServiceAttestionRequest {
+message GetServiceAttestationRequest {
   string origin = 1;
-  string alias = 2; //optional
+  string alias = 2;
   bool is_mobile = 3; //optional
 }
 
-message QueryGetServiceAttestionResponse {
+message GetServiceAttestationResponse {
   string alias = 1;
   string attestion_options = 2;
   string origin = 3;
@@ -91,16 +118,44 @@ message QueryGetServiceAttestionResponse {
   uint64 ucw_id = 5;
 }
 
-message QueryGetServiceAssertionRequest {
+message GetServiceAssertionRequest {
   string origin = 1;
-  string did = 2; //optional
+  string alias = 2;
   bool is_mobile = 3; //optional
 }
 
-message QueryGetServiceAssertionResponse {
+message GetServiceAssertionResponse {
   string did = 1;
   string assertion_options = 2;
   string origin = 3;
   string challenge = 4;
 }
 
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message RegisterUserRequest {
+  string origin = 1;
+  string alias = 2;
+  uint64 ucw_id = 3;
+  string attestation = 4;
+  string challenge = 5;
+}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message RegisterUserResponse {
+  string did = 1;
+  core.identity.DIDDocument identity = 2;
+}
+
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message AuthenticateUserRequest {
+  string origin = 1;
+  string alias = 2;
+  string assertion = 3;
+  string challenge = 4;
+}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message AuthenticateUserResponse {
+  string did = 1;
+  core.identity.DIDDocument identity = 2;
+}

@@ -111,3 +111,12 @@ func (d *DIDDocument) AddCapabilityInvocationForAccount(account vaulttypes.Accou
 	d.CapabilityInvocation = append(d.CapabilityInvocation, &vr)
 	return &vr
 }
+
+// ListAuthenticationVerificationMethods returns all the VerificationMethods for the AuthenticationRelationships
+func (d *DIDDocument) ListAuthenticationVerificationMethods() []*VerificationMethod {
+	vms := make([]*VerificationMethod, 0)
+	for _, relationship := range d.Authentication {
+		vms = append(vms, relationship.VerificationMethod)
+	}
+	return vms
+}

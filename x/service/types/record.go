@@ -58,6 +58,16 @@ func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []prot
 	return string(ccoJSON), nil
 }
 
+// NewServiceRelationship creates a new service relationship for an Identification authenticated by
+// a ServiceRecord
+func (s *ServiceRecord) NewServiceRelationship(id string) *ServiceRelationship {
+	return &ServiceRelationship{
+		Reference: s.Id,
+		Did: 	 id,
+		Count:  0,
+	}
+}
+
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	return protocol.RelyingPartyEntity{
@@ -81,7 +91,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Web
 
 	err = pcc.Verify(chal, false, vm.RelyingPartyEntity().ID, []string{vm.Origin})
 	if err != nil {
-		return makeCredentialFromCreationData(pcc), nil
+		return makeCredentialFromCreationData(pcc), err
 	}
 	return makeCredentialFromCreationData(pcc), nil
 }

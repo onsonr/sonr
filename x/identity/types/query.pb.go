@@ -10,6 +10,7 @@ import (
 	_ "github.com/gogo/protobuf/gogoproto"
 	grpc1 "github.com/gogo/protobuf/grpc"
 	proto "github.com/gogo/protobuf/proto"
+	types "github.com/sonrhq/core/x/vault/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -204,8 +205,8 @@ func (m *QueryGetDidResponse) GetDidDocument() Identification {
 }
 
 type QueryDidByAlsoKnownAsRequest struct {
-	// aka_id is the unique identifier of the DIDDocument - it appears like ("example.snr")
-	AkaId string `protobuf:"bytes,1,opt,name=aka_id,json=akaId,proto3" json:"aka_id,omitempty"`
+	// aka_aliasid is the unique identifier of the DIDDocument - it appears like ("example.snr")
+	Alias string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
 }
 
 func (m *QueryDidByAlsoKnownAsRequest) Reset()         { *m = QueryDidByAlsoKnownAsRequest{} }
@@ -241,9 +242,9 @@ func (m *QueryDidByAlsoKnownAsRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryDidByAlsoKnownAsRequest proto.InternalMessageInfo
 
-func (m *QueryDidByAlsoKnownAsRequest) GetAkaId() string {
+func (m *QueryDidByAlsoKnownAsRequest) GetAlias() string {
 	if m != nil {
-		return m.AkaId
+		return m.Alias
 	}
 	return ""
 }
@@ -574,22 +575,26 @@ func (m *QueryDidByOwnerResponse) GetDidDocument() Identification {
 	return Identification{}
 }
 
-type QueryGetClaimableWalletRequest struct {
-	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+// CreateWalletRequest is the request type for the Gateway/CreateWallet RPC
+// method.
+type CreateWalletRequest struct {
+	Alias    string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+	CoinType string `protobuf:"bytes,2,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
+	Name     string `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
 }
 
-func (m *QueryGetClaimableWalletRequest) Reset()         { *m = QueryGetClaimableWalletRequest{} }
-func (m *QueryGetClaimableWalletRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryGetClaimableWalletRequest) ProtoMessage()    {}
-func (*QueryGetClaimableWalletRequest) Descriptor() ([]byte, []int) {
+func (m *CreateWalletRequest) Reset()         { *m = CreateWalletRequest{} }
+func (m *CreateWalletRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateWalletRequest) ProtoMessage()    {}
+func (*CreateWalletRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_55ac06fdf68c11fd, []int{12}
 }
-func (m *QueryGetClaimableWalletRequest) XXX_Unmarshal(b []byte) error {
+func (m *CreateWalletRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetClaimableWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetClaimableWalletRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateWalletRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -599,41 +604,59 @@ func (m *QueryGetClaimableWalletRequest) XXX_Marshal(b []byte, deterministic boo
 		return b[:n], nil
 	}
 }
-func (m *QueryGetClaimableWalletRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetClaimableWalletRequest.Merge(m, src)
+func (m *CreateWalletRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateWalletRequest.Merge(m, src)
 }
-func (m *QueryGetClaimableWalletRequest) XXX_Size() int {
+func (m *CreateWalletRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetClaimableWalletRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetClaimableWalletRequest.DiscardUnknown(m)
+func (m *CreateWalletRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateWalletRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetClaimableWalletRequest proto.InternalMessageInfo
+var xxx_messageInfo_CreateWalletRequest proto.InternalMessageInfo
 
-func (m *QueryGetClaimableWalletRequest) GetId() uint64 {
+func (m *CreateWalletRequest) GetAlias() string {
 	if m != nil {
-		return m.Id
+		return m.Alias
 	}
-	return 0
+	return ""
 }
 
-type QueryGetClaimableWalletResponse struct {
-	ClaimableWallet ClaimableWallet `protobuf:"bytes,1,opt,name=ClaimableWallet,proto3" json:"ClaimableWallet"`
+func (m *CreateWalletRequest) GetCoinType() string {
+	if m != nil {
+		return m.CoinType
+	}
+	return ""
 }
 
-func (m *QueryGetClaimableWalletResponse) Reset()         { *m = QueryGetClaimableWalletResponse{} }
-func (m *QueryGetClaimableWalletResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryGetClaimableWalletResponse) ProtoMessage()    {}
-func (*QueryGetClaimableWalletResponse) Descriptor() ([]byte, []int) {
+func (m *CreateWalletRequest) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+// CreateWalletResponse is the response type for the Gateway/CreateWallet RPC
+// method.
+type CreateWalletResponse struct {
+	Address     string             `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	Owner       *DIDDocument       `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+	AccountInfo *types.AccountInfo `protobuf:"bytes,3,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+}
+
+func (m *CreateWalletResponse) Reset()         { *m = CreateWalletResponse{} }
+func (m *CreateWalletResponse) String() string { return proto.CompactTextString(m) }
+func (*CreateWalletResponse) ProtoMessage()    {}
+func (*CreateWalletResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_55ac06fdf68c11fd, []int{13}
 }
-func (m *QueryGetClaimableWalletResponse) XXX_Unmarshal(b []byte) error {
+func (m *CreateWalletResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryGetClaimableWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryGetClaimableWalletResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateWalletResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -643,23 +666,506 @@ func (m *QueryGetClaimableWalletResponse) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *QueryGetClaimableWalletResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryGetClaimableWalletResponse.Merge(m, src)
+func (m *CreateWalletResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateWalletResponse.Merge(m, src)
 }
-func (m *QueryGetClaimableWalletResponse) XXX_Size() int {
+func (m *CreateWalletResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryGetClaimableWalletResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryGetClaimableWalletResponse.DiscardUnknown(m)
+func (m *CreateWalletResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateWalletResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryGetClaimableWalletResponse proto.InternalMessageInfo
+var xxx_messageInfo_CreateWalletResponse proto.InternalMessageInfo
 
-func (m *QueryGetClaimableWalletResponse) GetClaimableWallet() ClaimableWallet {
+func (m *CreateWalletResponse) GetAddress() string {
 	if m != nil {
-		return m.ClaimableWallet
+		return m.Address
 	}
-	return ClaimableWallet{}
+	return ""
+}
+
+func (m *CreateWalletResponse) GetOwner() *DIDDocument {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
+}
+
+func (m *CreateWalletResponse) GetAccountInfo() *types.AccountInfo {
+	if m != nil {
+		return m.AccountInfo
+	}
+	return nil
+}
+
+// SignWalletRequest is the request type for the Gateway/SignWallet RPC method.
+type SignWalletRequest struct {
+	Alias   string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Message []byte `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (m *SignWalletRequest) Reset()         { *m = SignWalletRequest{} }
+func (m *SignWalletRequest) String() string { return proto.CompactTextString(m) }
+func (*SignWalletRequest) ProtoMessage()    {}
+func (*SignWalletRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{14}
+}
+func (m *SignWalletRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SignWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SignWalletRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SignWalletRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignWalletRequest.Merge(m, src)
+}
+func (m *SignWalletRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *SignWalletRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignWalletRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SignWalletRequest proto.InternalMessageInfo
+
+func (m *SignWalletRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
+func (m *SignWalletRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *SignWalletRequest) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+// SignWalletResponse is the response type for the Gateway/SignWallet RPC
+// method.
+type SignWalletResponse struct {
+	Signature   []byte             `protobuf:"bytes,1,opt,name=signature,proto3" json:"signature,omitempty"`
+	Message     []byte             `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	AccountInfo *types.AccountInfo `protobuf:"bytes,3,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+	Owner       *DIDDocument       `protobuf:"bytes,4,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *SignWalletResponse) Reset()         { *m = SignWalletResponse{} }
+func (m *SignWalletResponse) String() string { return proto.CompactTextString(m) }
+func (*SignWalletResponse) ProtoMessage()    {}
+func (*SignWalletResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{15}
+}
+func (m *SignWalletResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *SignWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_SignWalletResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *SignWalletResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignWalletResponse.Merge(m, src)
+}
+func (m *SignWalletResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *SignWalletResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignWalletResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SignWalletResponse proto.InternalMessageInfo
+
+func (m *SignWalletResponse) GetSignature() []byte {
+	if m != nil {
+		return m.Signature
+	}
+	return nil
+}
+
+func (m *SignWalletResponse) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+func (m *SignWalletResponse) GetAccountInfo() *types.AccountInfo {
+	if m != nil {
+		return m.AccountInfo
+	}
+	return nil
+}
+
+func (m *SignWalletResponse) GetOwner() *DIDDocument {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
+}
+
+// VerifyWalletRequest is the request type for the Gateway/VerifyWallet RPC
+// method.
+type VerifyWalletRequest struct {
+	Alias     string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+	Address   string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	Message   []byte `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
+	Signature []byte `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`
+}
+
+func (m *VerifyWalletRequest) Reset()         { *m = VerifyWalletRequest{} }
+func (m *VerifyWalletRequest) String() string { return proto.CompactTextString(m) }
+func (*VerifyWalletRequest) ProtoMessage()    {}
+func (*VerifyWalletRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{16}
+}
+func (m *VerifyWalletRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VerifyWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VerifyWalletRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VerifyWalletRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifyWalletRequest.Merge(m, src)
+}
+func (m *VerifyWalletRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *VerifyWalletRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifyWalletRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VerifyWalletRequest proto.InternalMessageInfo
+
+func (m *VerifyWalletRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
+func (m *VerifyWalletRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *VerifyWalletRequest) GetMessage() []byte {
+	if m != nil {
+		return m.Message
+	}
+	return nil
+}
+
+func (m *VerifyWalletRequest) GetSignature() []byte {
+	if m != nil {
+		return m.Signature
+	}
+	return nil
+}
+
+// VerifyWalletResponse is the response type for the Gateway/VerifyWallet RPC
+// method.
+type VerifyWalletResponse struct {
+	Verified    bool               `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
+	AccountInfo *types.AccountInfo `protobuf:"bytes,2,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+	Owner       *DIDDocument       `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *VerifyWalletResponse) Reset()         { *m = VerifyWalletResponse{} }
+func (m *VerifyWalletResponse) String() string { return proto.CompactTextString(m) }
+func (*VerifyWalletResponse) ProtoMessage()    {}
+func (*VerifyWalletResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{17}
+}
+func (m *VerifyWalletResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VerifyWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VerifyWalletResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VerifyWalletResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifyWalletResponse.Merge(m, src)
+}
+func (m *VerifyWalletResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *VerifyWalletResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifyWalletResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VerifyWalletResponse proto.InternalMessageInfo
+
+func (m *VerifyWalletResponse) GetVerified() bool {
+	if m != nil {
+		return m.Verified
+	}
+	return false
+}
+
+func (m *VerifyWalletResponse) GetAccountInfo() *types.AccountInfo {
+	if m != nil {
+		return m.AccountInfo
+	}
+	return nil
+}
+
+func (m *VerifyWalletResponse) GetOwner() *DIDDocument {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
+}
+
+// GetWalletRequest is the request type for the Gateway/GetWallet RPC method.
+type GetWalletRequest struct {
+	Alias   string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *GetWalletRequest) Reset()         { *m = GetWalletRequest{} }
+func (m *GetWalletRequest) String() string { return proto.CompactTextString(m) }
+func (*GetWalletRequest) ProtoMessage()    {}
+func (*GetWalletRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{18}
+}
+func (m *GetWalletRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetWalletRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetWalletRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetWalletRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWalletRequest.Merge(m, src)
+}
+func (m *GetWalletRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetWalletRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWalletRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWalletRequest proto.InternalMessageInfo
+
+func (m *GetWalletRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
+func (m *GetWalletRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+// GetWalletResponse is the response type for the Gateway/GetWallet RPC method.
+type GetWalletResponse struct {
+	AccountInfo *types.AccountInfo `protobuf:"bytes,1,opt,name=account_info,json=accountInfo,proto3" json:"account_info,omitempty"`
+	Owner       *DIDDocument       `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *GetWalletResponse) Reset()         { *m = GetWalletResponse{} }
+func (m *GetWalletResponse) String() string { return proto.CompactTextString(m) }
+func (*GetWalletResponse) ProtoMessage()    {}
+func (*GetWalletResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{19}
+}
+func (m *GetWalletResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GetWalletResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GetWalletResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GetWalletResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetWalletResponse.Merge(m, src)
+}
+func (m *GetWalletResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *GetWalletResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetWalletResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GetWalletResponse proto.InternalMessageInfo
+
+func (m *GetWalletResponse) GetAccountInfo() *types.AccountInfo {
+	if m != nil {
+		return m.AccountInfo
+	}
+	return nil
+}
+
+func (m *GetWalletResponse) GetOwner() *DIDDocument {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
+}
+
+// ListWalletsRequest is the request type for the Gateway/ListWallets RPC
+// method.
+type ListWalletsRequest struct {
+	Alias string `protobuf:"bytes,1,opt,name=alias,proto3" json:"alias,omitempty"`
+}
+
+func (m *ListWalletsRequest) Reset()         { *m = ListWalletsRequest{} }
+func (m *ListWalletsRequest) String() string { return proto.CompactTextString(m) }
+func (*ListWalletsRequest) ProtoMessage()    {}
+func (*ListWalletsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{20}
+}
+func (m *ListWalletsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListWalletsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListWalletsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListWalletsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListWalletsRequest.Merge(m, src)
+}
+func (m *ListWalletsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListWalletsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListWalletsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListWalletsRequest proto.InternalMessageInfo
+
+func (m *ListWalletsRequest) GetAlias() string {
+	if m != nil {
+		return m.Alias
+	}
+	return ""
+}
+
+// ListWalletsResponse is the response type for the Gateway/ListWallets RPC
+// method.
+type ListWalletsResponse struct {
+	AccountInfos []*types.AccountInfo `protobuf:"bytes,1,rep,name=account_infos,json=accountInfos,proto3" json:"account_infos,omitempty"`
+	Owner        *DIDDocument         `protobuf:"bytes,2,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *ListWalletsResponse) Reset()         { *m = ListWalletsResponse{} }
+func (m *ListWalletsResponse) String() string { return proto.CompactTextString(m) }
+func (*ListWalletsResponse) ProtoMessage()    {}
+func (*ListWalletsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{21}
+}
+func (m *ListWalletsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListWalletsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListWalletsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListWalletsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListWalletsResponse.Merge(m, src)
+}
+func (m *ListWalletsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListWalletsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListWalletsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListWalletsResponse proto.InternalMessageInfo
+
+func (m *ListWalletsResponse) GetAccountInfos() []*types.AccountInfo {
+	if m != nil {
+		return m.AccountInfos
+	}
+	return nil
+}
+
+func (m *ListWalletsResponse) GetOwner() *DIDDocument {
+	if m != nil {
+		return m.Owner
+	}
+	return nil
 }
 
 func init() {
@@ -675,67 +1181,99 @@ func init() {
 	proto.RegisterType((*QueryAliasAvailableResponse)(nil), "sonrhq.core.identity.QueryAliasAvailableResponse")
 	proto.RegisterType((*QueryDidByOwnerRequest)(nil), "sonrhq.core.identity.QueryDidByOwnerRequest")
 	proto.RegisterType((*QueryDidByOwnerResponse)(nil), "sonrhq.core.identity.QueryDidByOwnerResponse")
-	proto.RegisterType((*QueryGetClaimableWalletRequest)(nil), "sonrhq.core.identity.QueryGetClaimableWalletRequest")
-	proto.RegisterType((*QueryGetClaimableWalletResponse)(nil), "sonrhq.core.identity.QueryGetClaimableWalletResponse")
+	proto.RegisterType((*CreateWalletRequest)(nil), "sonrhq.core.identity.CreateWalletRequest")
+	proto.RegisterType((*CreateWalletResponse)(nil), "sonrhq.core.identity.CreateWalletResponse")
+	proto.RegisterType((*SignWalletRequest)(nil), "sonrhq.core.identity.SignWalletRequest")
+	proto.RegisterType((*SignWalletResponse)(nil), "sonrhq.core.identity.SignWalletResponse")
+	proto.RegisterType((*VerifyWalletRequest)(nil), "sonrhq.core.identity.VerifyWalletRequest")
+	proto.RegisterType((*VerifyWalletResponse)(nil), "sonrhq.core.identity.VerifyWalletResponse")
+	proto.RegisterType((*GetWalletRequest)(nil), "sonrhq.core.identity.GetWalletRequest")
+	proto.RegisterType((*GetWalletResponse)(nil), "sonrhq.core.identity.GetWalletResponse")
+	proto.RegisterType((*ListWalletsRequest)(nil), "sonrhq.core.identity.ListWalletsRequest")
+	proto.RegisterType((*ListWalletsResponse)(nil), "sonrhq.core.identity.ListWalletsResponse")
 }
 
 func init() { proto.RegisterFile("core/identity/query.proto", fileDescriptor_55ac06fdf68c11fd) }
 
 var fileDescriptor_55ac06fdf68c11fd = []byte{
-	// 839 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x56, 0x41, 0x4f, 0x13, 0x4d,
-	0x18, 0xee, 0x16, 0xe8, 0x07, 0x43, 0xc2, 0xd7, 0x6f, 0xbe, 0xd2, 0xc2, 0x52, 0x16, 0xb3, 0x41,
-	0x40, 0xa3, 0x3b, 0x50, 0xe4, 0xe2, 0xad, 0xd8, 0x48, 0x88, 0x26, 0x42, 0x13, 0x43, 0x62, 0x4c,
-	0xc8, 0x74, 0x67, 0x5c, 0x26, 0x6c, 0x77, 0x4a, 0x77, 0x0b, 0x34, 0xb5, 0x17, 0x6f, 0xde, 0x4c,
-	0xf4, 0xa6, 0x3f, 0xc1, 0x1f, 0xc2, 0x91, 0xe8, 0xc5, 0x93, 0x31, 0xe0, 0x0f, 0x31, 0x3b, 0x3b,
-	0xdb, 0x76, 0xdb, 0x52, 0x68, 0x0c, 0xa7, 0x9d, 0x9d, 0x79, 0x9f, 0x79, 0x9e, 0xf7, 0x9d, 0x77,
-	0x9e, 0x0c, 0x98, 0x35, 0x79, 0x95, 0x22, 0x46, 0xa8, 0xe3, 0x31, 0xaf, 0x8e, 0x8e, 0x6a, 0xb4,
-	0x5a, 0x37, 0x2a, 0x55, 0xee, 0x71, 0x98, 0x72, 0xb9, 0x53, 0x3d, 0x38, 0x32, 0xfc, 0x08, 0x23,
-	0x8c, 0x50, 0x33, 0x51, 0x00, 0x61, 0x24, 0x08, 0x57, 0xe7, 0xa2, 0x0b, 0x16, 0x75, 0xa8, 0xcb,
-	0x5c, 0xb9, 0x78, 0xdf, 0xe4, 0x6e, 0x99, 0xbb, 0xa8, 0x84, 0x5d, 0x1a, 0x90, 0xa0, 0xe3, 0xb5,
-	0x12, 0xf5, 0xf0, 0x1a, 0xaa, 0x60, 0x8b, 0x39, 0xd8, 0x63, 0xdc, 0x91, 0xb1, 0x29, 0x8b, 0x5b,
-	0x5c, 0x0c, 0x91, 0x3f, 0x92, 0xb3, 0x59, 0x8b, 0x73, 0xcb, 0xa6, 0x08, 0x57, 0x18, 0xc2, 0x8e,
-	0xc3, 0x3d, 0x01, 0x09, 0xf7, 0x57, 0xa3, 0xe4, 0xa6, 0x8d, 0x59, 0x59, 0xae, 0xe9, 0x29, 0x00,
-	0x77, 0x7d, 0xc6, 0x1d, 0x5c, 0xc5, 0x65, 0xb7, 0x48, 0x8f, 0x6a, 0xd4, 0xf5, 0xf4, 0x5d, 0xf0,
-	0x7f, 0x64, 0xd6, 0xad, 0x70, 0xc7, 0xa5, 0xf0, 0x31, 0x48, 0x54, 0xc4, 0xcc, 0x8c, 0x72, 0x47,
-	0x59, 0x99, 0xcc, 0x65, 0x8d, 0x7e, 0x55, 0x30, 0x02, 0xd4, 0xe6, 0xe8, 0xd9, 0xcf, 0x85, 0x58,
-	0x51, 0x22, 0xf4, 0x25, 0x49, 0xb4, 0x45, 0xbd, 0x02, 0x23, 0x92, 0x08, 0x26, 0xc1, 0x08, 0x61,
-	0x44, 0x6c, 0x37, 0x51, 0xf4, 0x87, 0xba, 0x29, 0xa9, 0xc3, 0x38, 0x49, 0xfd, 0x1c, 0x4c, 0x12,
-	0x46, 0x0a, 0xdc, 0xac, 0x95, 0xa9, 0xe3, 0x49, 0xfe, 0xc5, 0xfe, 0xfc, 0xdb, 0x62, 0xf0, 0x86,
-	0x99, 0xa2, 0x0a, 0x52, 0x47, 0x27, 0x5c, 0xdf, 0x00, 0x59, 0x41, 0x52, 0x60, 0x64, 0xb3, 0x9e,
-	0xb7, 0x5d, 0xfe, 0xcc, 0xe1, 0x27, 0x4e, 0x3e, 0xcc, 0x1f, 0x4e, 0x83, 0x04, 0x3e, 0xc4, 0xfb,
-	0x2d, 0x65, 0x63, 0xf8, 0x10, 0x6f, 0x13, 0xbd, 0x0c, 0xe6, 0xaf, 0x80, 0xdd, 0x8a, 0xca, 0xd7,
-	0xb2, 0x64, 0x79, 0xdb, 0xee, 0x28, 0xd9, 0x53, 0x00, 0xda, 0x5d, 0x21, 0x29, 0x96, 0x8c, 0xa0,
-	0x85, 0x0c, 0xbf, 0x85, 0x8c, 0xa0, 0x4f, 0x65, 0x0b, 0x19, 0x3b, 0xd8, 0xa2, 0x12, 0x5b, 0xec,
-	0x40, 0xea, 0x5f, 0x15, 0x59, 0xe9, 0x70, 0xfb, 0xab, 0x72, 0x18, 0xf9, 0x8b, 0x1c, 0xe0, 0x56,
-	0x44, 0x6d, 0x5c, 0xa8, 0x5d, 0xbe, 0x56, 0x6d, 0x20, 0x25, 0x22, 0x37, 0x07, 0x54, 0xa9, 0x96,
-	0x61, 0x37, 0x7f, 0x8c, 0x99, 0x8d, 0x4b, 0x76, 0x98, 0x18, 0x4c, 0x81, 0x31, 0xec, 0x2f, 0xb4,
-	0xce, 0xcb, 0xff, 0xd1, 0x3f, 0x29, 0x60, 0xae, 0x2f, 0x48, 0xa6, 0x9a, 0x05, 0x13, 0x38, 0x9c,
-	0x14, 0xc8, 0xf1, 0x62, 0x7b, 0x02, 0xee, 0x81, 0xff, 0xe8, 0x29, 0x73, 0x3d, 0xe6, 0x58, 0xfb,
-	0x24, 0x2c, 0x47, 0x7c, 0xc8, 0x23, 0x55, 0x8a, 0xc9, 0x70, 0x93, 0xd6, 0xb9, 0x1a, 0x20, 0xdd,
-	0x6e, 0xa3, 0x17, 0x27, 0x0e, 0xad, 0x76, 0xa4, 0xc1, 0xfd, 0xff, 0x30, 0x0d, 0xf1, 0xa3, 0x5b,
-	0x20, 0xd3, 0x13, 0x7f, 0x2b, 0x0d, 0xb7, 0x0a, 0xb4, 0xf0, 0xee, 0x3d, 0xf1, 0x4d, 0xc2, 0x2f,
-	0xc3, 0x1e, 0xb6, 0x6d, 0xea, 0x85, 0x02, 0xa7, 0x40, 0x5c, 0x5e, 0x8a, 0xd1, 0x62, 0x9c, 0x11,
-	0xfd, 0x14, 0x2c, 0x5c, 0x89, 0x90, 0x12, 0x5f, 0x82, 0x7f, 0xbb, 0x96, 0xa4, 0xcc, 0xbb, 0xfd,
-	0x65, 0x76, 0x05, 0x4b, 0x9d, 0xdd, 0x7b, 0xe4, 0xbe, 0xfd, 0x03, 0xc6, 0x04, 0x35, 0x7c, 0x0b,
-	0x12, 0x81, 0xe3, 0xc0, 0x95, 0xfe, 0x3b, 0xf6, 0x1a, 0x9c, 0x7a, 0xef, 0x06, 0x91, 0x81, 0x7e,
-	0x7d, 0xfe, 0xdd, 0xf7, 0xdf, 0x1f, 0xe3, 0x19, 0x38, 0x8d, 0x7c, 0x08, 0x0a, 0xec, 0xac, 0xe5,
-	0xa6, 0xb0, 0x0a, 0x46, 0x0a, 0x8c, 0x0c, 0xa4, 0x8e, 0x58, 0xde, 0x40, 0xea, 0xa8, 0xe9, 0xe9,
-	0x69, 0x41, 0x9d, 0x84, 0x53, 0x01, 0x35, 0x23, 0xa8, 0x41, 0x18, 0x69, 0xc2, 0xf7, 0x0a, 0x00,
-	0xed, 0x66, 0x80, 0x0f, 0x06, 0xec, 0xd8, 0xd3, 0x63, 0xea, 0xc3, 0x1b, 0x46, 0x4b, 0x0d, 0x9a,
-	0xd0, 0x30, 0x03, 0xd3, 0x2d, 0x0d, 0xa2, 0x29, 0x51, 0x43, 0x7c, 0x9a, 0xf0, 0x8b, 0x02, 0x92,
-	0xdd, 0x7e, 0x08, 0x73, 0xd7, 0x71, 0xf4, 0x7a, 0xae, 0xba, 0x3e, 0x14, 0x46, 0xaa, 0x5b, 0x10,
-	0xea, 0x66, 0x61, 0xa6, 0xa5, 0x4e, 0xdc, 0x7c, 0xd4, 0x08, 0xec, 0xbb, 0x09, 0x3f, 0x2b, 0x60,
-	0x2a, 0x7a, 0xfb, 0xe1, 0xea, 0x00, 0xa2, 0xbe, 0xee, 0xa2, 0xae, 0x0d, 0x81, 0x90, 0xc2, 0x16,
-	0x85, 0x30, 0x0d, 0x66, 0x7b, 0x84, 0xf9, 0x9f, 0x26, 0x32, 0x0f, 0xa8, 0x79, 0x08, 0x39, 0x48,
-	0x14, 0x18, 0xc9, 0xdb, 0xf6, 0xc0, 0xfe, 0x89, 0xf8, 0xff, 0xc0, 0xfe, 0x89, 0x5a, 0xb9, 0x9e,
-	0x14, 0x22, 0x00, 0x1c, 0x0f, 0x45, 0xf8, 0xa7, 0xd5, 0x7d, 0x93, 0xe0, 0xa3, 0xc1, 0x0d, 0xd9,
-	0xdf, 0x09, 0xd4, 0x8d, 0x21, 0x51, 0x52, 0x52, 0x56, 0x48, 0x4a, 0xc3, 0x54, 0xab, 0x2e, 0xc1,
-	0x73, 0x04, 0x35, 0x18, 0x69, 0x6e, 0xe6, 0xcf, 0x2e, 0x34, 0xe5, 0xfc, 0x42, 0x53, 0x7e, 0x5d,
-	0x68, 0xca, 0x87, 0x4b, 0x2d, 0x76, 0x7e, 0xa9, 0xc5, 0x7e, 0x5c, 0x6a, 0xb1, 0x57, 0xcb, 0x16,
-	0xf3, 0x0e, 0x6a, 0x25, 0xc3, 0xe4, 0x65, 0x14, 0x10, 0x23, 0xf1, 0xaa, 0x39, 0x6d, 0xbf, 0x6b,
-	0xbc, 0x7a, 0x85, 0xba, 0xa5, 0x84, 0x78, 0xd7, 0xac, 0xff, 0x09, 0x00, 0x00, 0xff, 0xff, 0x85,
-	0xeb, 0x14, 0x7c, 0xbc, 0x09, 0x00, 0x00,
+	// 1224 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x58, 0xcf, 0x6f, 0xe3, 0x44,
+	0x14, 0xae, 0xd3, 0x6e, 0xb7, 0x79, 0x0d, 0x55, 0x3a, 0xcd, 0xb6, 0x25, 0x6d, 0x03, 0x98, 0xa5,
+	0x2d, 0xd5, 0xae, 0x4d, 0xbb, 0xac, 0x56, 0xea, 0x89, 0x74, 0x03, 0x55, 0xc5, 0x4a, 0xec, 0x06,
+	0xc4, 0x4a, 0x08, 0x54, 0x4d, 0xec, 0xa9, 0x33, 0xc2, 0xf1, 0xa4, 0xf1, 0xa4, 0xdd, 0x28, 0xe4,
+	0xc2, 0x05, 0x21, 0x0e, 0x20, 0x2d, 0xe2, 0x82, 0xb4, 0x57, 0x2e, 0x88, 0xbf, 0xa3, 0xc7, 0x95,
+	0xb8, 0x70, 0x42, 0xa8, 0xe5, 0x0f, 0x41, 0x1e, 0x8f, 0x63, 0xbb, 0x71, 0x7e, 0x51, 0xca, 0x29,
+	0x9e, 0xc9, 0x7b, 0xf3, 0x7d, 0xef, 0xf3, 0xcb, 0xbc, 0x4f, 0x81, 0x57, 0x0d, 0xd6, 0x20, 0x3a,
+	0x35, 0x89, 0xc3, 0x29, 0x6f, 0xe9, 0xc7, 0x4d, 0xd2, 0x68, 0x69, 0xf5, 0x06, 0xe3, 0x0c, 0xe5,
+	0x5c, 0xe6, 0x34, 0xaa, 0xc7, 0x9a, 0x17, 0xa1, 0x05, 0x11, 0xf9, 0xa5, 0x78, 0x82, 0x49, 0x4d,
+	0x3f, 0x3c, 0xbf, 0x12, 0xff, 0xc2, 0x22, 0x0e, 0x71, 0xa9, 0x2b, 0xbf, 0xdc, 0x32, 0x98, 0x5b,
+	0x63, 0xae, 0x5e, 0xc1, 0x2e, 0xf1, 0x41, 0xf4, 0x93, 0xed, 0x0a, 0xe1, 0x78, 0x5b, 0xaf, 0x63,
+	0x8b, 0x3a, 0x98, 0x53, 0xe6, 0xc8, 0xd8, 0x9c, 0xc5, 0x2c, 0x26, 0x1e, 0x75, 0xef, 0x49, 0xee,
+	0xae, 0x5a, 0x8c, 0x59, 0x36, 0xd1, 0x71, 0x9d, 0xea, 0xd8, 0x71, 0x18, 0x17, 0x29, 0xc1, 0xf9,
+	0xb7, 0x04, 0xf8, 0x09, 0x6e, 0xda, 0x5c, 0xa7, 0xce, 0x91, 0x4c, 0x52, 0x73, 0x80, 0x9e, 0x78,
+	0x60, 0x8f, 0x71, 0x03, 0xd7, 0xdc, 0x32, 0x39, 0x6e, 0x12, 0x97, 0xab, 0x4f, 0x60, 0x21, 0xb6,
+	0xeb, 0xd6, 0x99, 0xe3, 0x12, 0xb4, 0x0b, 0xd3, 0x75, 0xb1, 0xb3, 0xac, 0xbc, 0xae, 0x6c, 0xce,
+	0xee, 0xac, 0x6a, 0x49, 0x02, 0x68, 0x7e, 0xd6, 0xde, 0xd4, 0xd9, 0x9f, 0xaf, 0x4d, 0x94, 0x65,
+	0x86, 0xba, 0x2e, 0x81, 0xf6, 0x09, 0x2f, 0x51, 0x53, 0x02, 0xa1, 0x2c, 0x4c, 0x9a, 0xd4, 0x14,
+	0xc7, 0xa5, 0xcb, 0xde, 0xa3, 0x6a, 0x48, 0xe8, 0x20, 0x4e, 0x42, 0x3f, 0x82, 0x59, 0x93, 0x9a,
+	0x25, 0x66, 0x34, 0x6b, 0xc4, 0xe1, 0x12, 0xff, 0x76, 0x32, 0xfe, 0x81, 0x78, 0x38, 0xa2, 0x86,
+	0x10, 0x40, 0xf2, 0x88, 0xa6, 0xab, 0xef, 0xc2, 0xaa, 0x00, 0x29, 0x51, 0x73, 0xaf, 0x55, 0xb4,
+	0x5d, 0xf6, 0xa1, 0xc3, 0x4e, 0x9d, 0x62, 0x50, 0x3f, 0xca, 0xc1, 0x0d, 0x6c, 0x53, 0xec, 0x4a,
+	0x62, 0xfe, 0x42, 0xad, 0xc1, 0x5a, 0x9f, 0xac, 0x6b, 0x21, 0xf9, 0xb9, 0x54, 0xac, 0x68, 0xdb,
+	0x11, 0xc5, 0x3e, 0x00, 0x08, 0xfb, 0x41, 0x42, 0xac, 0x6b, 0x7e, 0xf3, 0x68, 0x5e, 0xf3, 0x68,
+	0x7e, 0x87, 0xca, 0xe6, 0xd1, 0x1e, 0x63, 0x8b, 0xc8, 0xdc, 0x72, 0x24, 0x53, 0xfd, 0x55, 0x91,
+	0x42, 0x07, 0xc7, 0xf7, 0xab, 0x61, 0xf2, 0x0a, 0x35, 0xa0, 0xfd, 0x18, 0xdb, 0x94, 0x60, 0xbb,
+	0x31, 0x94, 0xad, 0x4f, 0x25, 0x46, 0x77, 0x07, 0xf2, 0x92, 0x2d, 0xc5, 0x6e, 0xf1, 0x04, 0x53,
+	0x1b, 0x57, 0x6c, 0x32, 0xf8, 0x7d, 0xfd, 0xa8, 0xc0, 0x4a, 0x62, 0x92, 0x2c, 0x75, 0x15, 0xd2,
+	0x38, 0xd8, 0x14, 0x99, 0x33, 0xe5, 0x70, 0x03, 0x3d, 0x85, 0x79, 0xf2, 0x8c, 0xba, 0x9c, 0x3a,
+	0xd6, 0xa1, 0x19, 0xc8, 0x91, 0x1a, 0xf3, 0x95, 0x2a, 0xe5, 0x6c, 0x70, 0x48, 0xf7, 0xbd, 0x6a,
+	0xb0, 0x18, 0xb6, 0xd1, 0x47, 0xa7, 0x0e, 0x69, 0x44, 0xca, 0x60, 0xde, 0x3a, 0x28, 0x43, 0x2c,
+	0x54, 0x0b, 0x96, 0x7a, 0xe2, 0xaf, 0xa9, 0xe1, 0x16, 0x1e, 0x36, 0x08, 0xe6, 0xe4, 0x29, 0xb6,
+	0x6d, 0xc2, 0x07, 0x8a, 0x8b, 0x56, 0x20, 0x6d, 0x30, 0xea, 0x1c, 0xf2, 0x56, 0x9d, 0x08, 0x59,
+	0xd2, 0xe5, 0x19, 0x6f, 0xe3, 0x93, 0x56, 0x9d, 0x20, 0x04, 0x53, 0x0e, 0xae, 0x91, 0xe5, 0x49,
+	0xb1, 0x2f, 0x9e, 0xbd, 0x86, 0xcb, 0xc5, 0x8f, 0x97, 0x45, 0x2c, 0xc3, 0x4d, 0x6c, 0x9a, 0x0d,
+	0xe2, 0x06, 0x08, 0xc1, 0x12, 0x3d, 0x08, 0xf4, 0xf0, 0x65, 0x7f, 0x23, 0xb9, 0xb0, 0xd2, 0x41,
+	0x29, 0x28, 0x41, 0x4a, 0x86, 0x8a, 0x90, 0xc1, 0x86, 0xc1, 0x9a, 0x0e, 0x3f, 0xf4, 0xee, 0x3a,
+	0xc1, 0x63, 0x76, 0xa7, 0x10, 0xcb, 0x17, 0x57, 0xa1, 0x56, 0xf4, 0xc3, 0x0e, 0x9c, 0x23, 0x56,
+	0x9e, 0xc5, 0xe1, 0x42, 0xfd, 0x02, 0xe6, 0x3f, 0xa6, 0x96, 0x33, 0x8a, 0x14, 0x91, 0x02, 0x52,
+	0xf1, 0x02, 0x96, 0xe1, 0x66, 0x8d, 0xb8, 0x2e, 0xb6, 0x7c, 0x29, 0x32, 0xe5, 0x60, 0xa9, 0x9e,
+	0x29, 0x80, 0xa2, 0xe7, 0x87, 0x2d, 0xe9, 0x52, 0xcb, 0xc1, 0xbc, 0xd9, 0xf0, 0x5b, 0x32, 0x53,
+	0x0e, 0x37, 0xa2, 0xc7, 0xa5, 0x62, 0xc7, 0xfd, 0x07, 0x05, 0x87, 0x62, 0x4f, 0x8d, 0x27, 0xb6,
+	0xda, 0x81, 0x85, 0x4f, 0x49, 0x83, 0x1e, 0xb5, 0xae, 0x49, 0xab, 0xb8, 0x28, 0x53, 0x97, 0x44,
+	0x51, 0x7f, 0x53, 0x20, 0x17, 0xc7, 0x97, 0x5a, 0xe6, 0x61, 0xe6, 0xc4, 0xdb, 0xa7, 0xc4, 0x94,
+	0xbf, 0xee, 0xee, 0xba, 0x47, 0xaf, 0xd4, 0x15, 0xf4, 0x9a, 0x1c, 0x53, 0xaf, 0x3d, 0xc8, 0xee,
+	0x13, 0x7e, 0x25, 0xb1, 0xd4, 0xef, 0x15, 0x98, 0x8f, 0x1c, 0x22, 0x2b, 0xbe, 0x5c, 0x95, 0x72,
+	0x85, 0xaa, 0xc6, 0xfc, 0xc9, 0xa9, 0x5b, 0x80, 0x1e, 0x51, 0x57, 0x32, 0x1a, 0x32, 0x48, 0x9f,
+	0x2b, 0xb0, 0x10, 0x0b, 0x96, 0xfc, 0x1f, 0xc2, 0x2b, 0x51, 0xfe, 0xae, 0x9c, 0x3e, 0xc3, 0x0a,
+	0xc8, 0x44, 0x0a, 0xf8, 0xf7, 0x97, 0xc6, 0xce, 0x8b, 0x39, 0xb8, 0x21, 0x2e, 0x5a, 0xf4, 0x15,
+	0x4c, 0xfb, 0x1e, 0x06, 0x6d, 0x26, 0x67, 0xf7, 0x5a, 0xa6, 0xfc, 0xdb, 0x23, 0x44, 0xfa, 0x65,
+	0xaa, 0x6b, 0x5f, 0xff, 0xfe, 0xf7, 0xf3, 0xd4, 0x12, 0xba, 0xa5, 0x0b, 0x4f, 0xe6, 0x1b, 0xa4,
+	0xae, 0x2f, 0x44, 0x0c, 0xa6, 0x4b, 0xd4, 0x2c, 0xda, 0xf6, 0x40, 0xf4, 0x98, 0x2b, 0x18, 0x88,
+	0x1e, 0x1f, 0xf0, 0x6a, 0x56, 0xa0, 0x03, 0x9a, 0xd1, 0xa5, 0x1d, 0x45, 0x27, 0x90, 0xf6, 0x01,
+	0xf7, 0xb8, 0x71, 0x3d, 0x98, 0x39, 0x81, 0x39, 0x87, 0x32, 0x01, 0xa6, 0x5e, 0xe1, 0x46, 0x88,
+	0xfb, 0x3e, 0xaf, 0xfe, 0x5f, 0xb8, 0x84, 0x57, 0x51, 0x03, 0x26, 0x4b, 0xd4, 0x1c, 0x88, 0x18,
+	0x73, 0xa9, 0x03, 0x11, 0xe3, 0x3e, 0x55, 0x5d, 0x14, 0x88, 0x59, 0x34, 0xd7, 0x45, 0x6c, 0x9b,
+	0xd4, 0xec, 0xa0, 0x6f, 0x15, 0x80, 0x70, 0x80, 0xa3, 0x3b, 0x03, 0x4e, 0xec, 0xf1, 0x05, 0xf9,
+	0xbb, 0x23, 0x46, 0x4b, 0x0e, 0x05, 0xc1, 0x61, 0x19, 0x2d, 0x76, 0x39, 0x88, 0x06, 0xd7, 0xdb,
+	0xe2, 0xa3, 0x83, 0x7e, 0x56, 0x20, 0x7b, 0xd9, 0xc3, 0xa2, 0x9d, 0x61, 0x18, 0xbd, 0x36, 0x39,
+	0x7f, 0x6f, 0xac, 0x9c, 0xbe, 0xec, 0xc4, 0xa5, 0xa0, 0xb7, 0xc5, 0x87, 0x60, 0x37, 0x17, 0x37,
+	0x6c, 0xe8, 0x9d, 0x81, 0x6f, 0x3c, 0xc1, 0x10, 0xe6, 0xb7, 0xc7, 0xc8, 0x90, 0xbc, 0x6e, 0x0b,
+	0x5e, 0x05, 0xb4, 0x9a, 0xcc, 0x4b, 0x37, 0xaa, 0xc4, 0xf8, 0x12, 0xfd, 0xa2, 0x40, 0x26, 0xea,
+	0x62, 0x50, 0x9f, 0xde, 0x48, 0x30, 0x52, 0xf9, 0xad, 0x51, 0x42, 0x25, 0x9b, 0xf7, 0x04, 0x9b,
+	0x5d, 0xf5, 0xbe, 0x5e, 0xa5, 0x56, 0xf5, 0x14, 0xb7, 0x44, 0x2b, 0x49, 0x2a, 0xa7, 0xfe, 0xbd,
+	0xa9, 0x1b, 0x22, 0x53, 0x6f, 0x77, 0x8d, 0x58, 0x47, 0x6f, 0x7b, 0x5e, 0xab, 0xb3, 0xab, 0x6c,
+	0xa1, 0x9f, 0x14, 0x80, 0xd0, 0x61, 0xa0, 0x8d, 0x64, 0xf0, 0x1e, 0x8f, 0x93, 0xdf, 0x1c, 0x1e,
+	0x28, 0x39, 0xde, 0x17, 0x1c, 0x75, 0x75, 0x6b, 0x10, 0xc7, 0xb6, 0x1c, 0x59, 0x1d, 0xdd, 0x1b,
+	0xd9, 0x1e, 0xb1, 0x17, 0x0a, 0x64, 0xa2, 0x03, 0xbb, 0x9f, 0x84, 0x09, 0xa6, 0xa2, 0x9f, 0x84,
+	0x49, 0xf3, 0x5f, 0x7d, 0x20, 0xe8, 0x6d, 0xab, 0x77, 0x46, 0xa3, 0x27, 0xbc, 0x41, 0xcb, 0x23,
+	0xf8, 0x9d, 0x02, 0xe9, 0xee, 0x70, 0x45, 0xeb, 0xc9, 0x90, 0x97, 0x47, 0x78, 0x7e, 0x63, 0x68,
+	0x9c, 0xe4, 0x75, 0x57, 0xf0, 0xda, 0x40, 0x6f, 0x8d, 0xc4, 0x0b, 0x7d, 0xa3, 0xc0, 0x6c, 0x64,
+	0x58, 0xf6, 0xbb, 0xb6, 0x7a, 0x87, 0x6f, 0xbf, 0x6b, 0x2b, 0x61, 0xf2, 0xaa, 0x6f, 0x0a, 0x4e,
+	0x6b, 0x68, 0x65, 0x00, 0xa7, 0xbd, 0xe2, 0xd9, 0x79, 0x41, 0x79, 0x79, 0x5e, 0x50, 0xfe, 0x3a,
+	0x2f, 0x28, 0x3f, 0x5c, 0x14, 0x26, 0x5e, 0x5e, 0x14, 0x26, 0xfe, 0xb8, 0x28, 0x4c, 0x7c, 0xb6,
+	0x61, 0x51, 0x5e, 0x6d, 0x56, 0x34, 0x83, 0xd5, 0x74, 0x1f, 0xd3, 0xff, 0x11, 0x3d, 0x0b, 0xff,
+	0xed, 0xf0, 0xda, 0xd3, 0xad, 0x4c, 0x8b, 0x7f, 0x1d, 0xee, 0xfd, 0x13, 0x00, 0x00, 0xff, 0xff,
+	0x41, 0x8e, 0x35, 0x56, 0x55, 0x11, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -750,20 +1288,33 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Parameters for the identity module.
+	// Returns parameters for the `x/identity` module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Get a DIDDocument by DID
-	Did(ctx context.Context, in *QueryGetDidRequest, opts ...grpc.CallOption) (*QueryGetDidResponse, error)
-	// Queries a list of DidByOwner items.
-	DidByOwner(ctx context.Context, in *QueryDidByOwnerRequest, opts ...grpc.CallOption) (*QueryDidByOwnerResponse, error)
-	// Get a DIDDocument from an Alias
-	DidByAlsoKnownAs(ctx context.Context, in *QueryDidByAlsoKnownAsRequest, opts ...grpc.CallOption) (*QueryDidByAlsoKnownAsResponse, error)
-	// Queries a list of AliasAvailable items.
-	AliasAvailable(ctx context.Context, in *QueryAliasAvailableRequest, opts ...grpc.CallOption) (*QueryAliasAvailableResponse, error)
-	// Get All DIDDocuments
+	// Get All Sonr Identifications `did:sonr:...`
 	DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error)
-	// Queries a list of ClaimableWallet items.
-	ClaimableWallet(ctx context.Context, in *QueryGetClaimableWalletRequest, opts ...grpc.CallOption) (*QueryGetClaimableWalletResponse, error)
+	// Get All Wallet Identifications for Bitcoin `did:btcr:...`
+	DidAllBtc(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error)
+	// Get All Wallet Identifications for Ethereum `did:ethr:...`
+	DidAllEth(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error)
+	// Returns Identification based on a DID
+	Did(ctx context.Context, in *QueryGetDidRequest, opts ...grpc.CallOption) (*QueryGetDidResponse, error)
+	// Returns Identification based on an owner
+	DidByOwner(ctx context.Context, in *QueryDidByOwnerRequest, opts ...grpc.CallOption) (*QueryDidByOwnerResponse, error)
+	// Returns Identification based on an alias *only Sonr Identities
+	DidByAlsoKnownAs(ctx context.Context, in *QueryDidByAlsoKnownAsRequest, opts ...grpc.CallOption) (*QueryDidByAlsoKnownAsResponse, error)
+	// Checks if a given alias is available to register *only Sonr Identities
+	AliasAvailable(ctx context.Context, in *QueryAliasAvailableRequest, opts ...grpc.CallOption) (*QueryAliasAvailableResponse, error)
+	// CreateWallet creates a new wallet with a specified name and token type for
+	// a given Identity.
+	CreateWallet(ctx context.Context, in *CreateWalletRequest, opts ...grpc.CallOption) (*CreateWalletResponse, error)
+	// SignWallet signs a message with a given wallet.
+	SignWallet(ctx context.Context, in *SignWalletRequest, opts ...grpc.CallOption) (*SignWalletResponse, error)
+	// VerifyWallet verifies a message with a given wallet.
+	VerifyWallet(ctx context.Context, in *VerifyWalletRequest, opts ...grpc.CallOption) (*VerifyWalletResponse, error)
+	// GetWallet returns a wallet for a given address.
+	GetWallet(ctx context.Context, in *GetWalletRequest, opts ...grpc.CallOption) (*GetWalletResponse, error)
+	// ListWallets returns all wallets for a given Identity.
+	ListWallets(ctx context.Context, in *ListWalletsRequest, opts ...grpc.CallOption) (*ListWalletsResponse, error)
 }
 
 type queryClient struct {
@@ -777,6 +1328,33 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/Params", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error) {
+	out := new(QueryAllDidResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) DidAllBtc(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error) {
+	out := new(QueryAllDidResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidAllBtc", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) DidAllEth(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error) {
+	out := new(QueryAllDidResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidAllEth", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -819,18 +1397,45 @@ func (c *queryClient) AliasAvailable(ctx context.Context, in *QueryAliasAvailabl
 	return out, nil
 }
 
-func (c *queryClient) DidAll(ctx context.Context, in *QueryAllDidRequest, opts ...grpc.CallOption) (*QueryAllDidResponse, error) {
-	out := new(QueryAllDidResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/DidAll", in, out, opts...)
+func (c *queryClient) CreateWallet(ctx context.Context, in *CreateWalletRequest, opts ...grpc.CallOption) (*CreateWalletResponse, error) {
+	out := new(CreateWalletResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/CreateWallet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) ClaimableWallet(ctx context.Context, in *QueryGetClaimableWalletRequest, opts ...grpc.CallOption) (*QueryGetClaimableWalletResponse, error) {
-	out := new(QueryGetClaimableWalletResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/ClaimableWallet", in, out, opts...)
+func (c *queryClient) SignWallet(ctx context.Context, in *SignWalletRequest, opts ...grpc.CallOption) (*SignWalletResponse, error) {
+	out := new(SignWalletResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/SignWallet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) VerifyWallet(ctx context.Context, in *VerifyWalletRequest, opts ...grpc.CallOption) (*VerifyWalletResponse, error) {
+	out := new(VerifyWalletResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/VerifyWallet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) GetWallet(ctx context.Context, in *GetWalletRequest, opts ...grpc.CallOption) (*GetWalletResponse, error) {
+	out := new(GetWalletResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/GetWallet", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListWallets(ctx context.Context, in *ListWalletsRequest, opts ...grpc.CallOption) (*ListWalletsResponse, error) {
+	out := new(ListWalletsResponse)
+	err := c.cc.Invoke(ctx, "/sonrhq.core.identity.Query/ListWallets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -839,20 +1444,33 @@ func (c *queryClient) ClaimableWallet(ctx context.Context, in *QueryGetClaimable
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Parameters for the identity module.
+	// Returns parameters for the `x/identity` module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Get a DIDDocument by DID
-	Did(context.Context, *QueryGetDidRequest) (*QueryGetDidResponse, error)
-	// Queries a list of DidByOwner items.
-	DidByOwner(context.Context, *QueryDidByOwnerRequest) (*QueryDidByOwnerResponse, error)
-	// Get a DIDDocument from an Alias
-	DidByAlsoKnownAs(context.Context, *QueryDidByAlsoKnownAsRequest) (*QueryDidByAlsoKnownAsResponse, error)
-	// Queries a list of AliasAvailable items.
-	AliasAvailable(context.Context, *QueryAliasAvailableRequest) (*QueryAliasAvailableResponse, error)
-	// Get All DIDDocuments
+	// Get All Sonr Identifications `did:sonr:...`
 	DidAll(context.Context, *QueryAllDidRequest) (*QueryAllDidResponse, error)
-	// Queries a list of ClaimableWallet items.
-	ClaimableWallet(context.Context, *QueryGetClaimableWalletRequest) (*QueryGetClaimableWalletResponse, error)
+	// Get All Wallet Identifications for Bitcoin `did:btcr:...`
+	DidAllBtc(context.Context, *QueryAllDidRequest) (*QueryAllDidResponse, error)
+	// Get All Wallet Identifications for Ethereum `did:ethr:...`
+	DidAllEth(context.Context, *QueryAllDidRequest) (*QueryAllDidResponse, error)
+	// Returns Identification based on a DID
+	Did(context.Context, *QueryGetDidRequest) (*QueryGetDidResponse, error)
+	// Returns Identification based on an owner
+	DidByOwner(context.Context, *QueryDidByOwnerRequest) (*QueryDidByOwnerResponse, error)
+	// Returns Identification based on an alias *only Sonr Identities
+	DidByAlsoKnownAs(context.Context, *QueryDidByAlsoKnownAsRequest) (*QueryDidByAlsoKnownAsResponse, error)
+	// Checks if a given alias is available to register *only Sonr Identities
+	AliasAvailable(context.Context, *QueryAliasAvailableRequest) (*QueryAliasAvailableResponse, error)
+	// CreateWallet creates a new wallet with a specified name and token type for
+	// a given Identity.
+	CreateWallet(context.Context, *CreateWalletRequest) (*CreateWalletResponse, error)
+	// SignWallet signs a message with a given wallet.
+	SignWallet(context.Context, *SignWalletRequest) (*SignWalletResponse, error)
+	// VerifyWallet verifies a message with a given wallet.
+	VerifyWallet(context.Context, *VerifyWalletRequest) (*VerifyWalletResponse, error)
+	// GetWallet returns a wallet for a given address.
+	GetWallet(context.Context, *GetWalletRequest) (*GetWalletResponse, error)
+	// ListWallets returns all wallets for a given Identity.
+	ListWallets(context.Context, *ListWalletsRequest) (*ListWalletsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -861,6 +1479,15 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) DidAll(ctx context.Context, req *QueryAllDidRequest) (*QueryAllDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidAll not implemented")
+}
+func (*UnimplementedQueryServer) DidAllBtc(ctx context.Context, req *QueryAllDidRequest) (*QueryAllDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidAllBtc not implemented")
+}
+func (*UnimplementedQueryServer) DidAllEth(ctx context.Context, req *QueryAllDidRequest) (*QueryAllDidResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DidAllEth not implemented")
 }
 func (*UnimplementedQueryServer) Did(ctx context.Context, req *QueryGetDidRequest) (*QueryGetDidResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Did not implemented")
@@ -874,11 +1501,20 @@ func (*UnimplementedQueryServer) DidByAlsoKnownAs(ctx context.Context, req *Quer
 func (*UnimplementedQueryServer) AliasAvailable(ctx context.Context, req *QueryAliasAvailableRequest) (*QueryAliasAvailableResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AliasAvailable not implemented")
 }
-func (*UnimplementedQueryServer) DidAll(ctx context.Context, req *QueryAllDidRequest) (*QueryAllDidResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DidAll not implemented")
+func (*UnimplementedQueryServer) CreateWallet(ctx context.Context, req *CreateWalletRequest) (*CreateWalletResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateWallet not implemented")
 }
-func (*UnimplementedQueryServer) ClaimableWallet(ctx context.Context, req *QueryGetClaimableWalletRequest) (*QueryGetClaimableWalletResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ClaimableWallet not implemented")
+func (*UnimplementedQueryServer) SignWallet(ctx context.Context, req *SignWalletRequest) (*SignWalletResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SignWallet not implemented")
+}
+func (*UnimplementedQueryServer) VerifyWallet(ctx context.Context, req *VerifyWalletRequest) (*VerifyWalletResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifyWallet not implemented")
+}
+func (*UnimplementedQueryServer) GetWallet(ctx context.Context, req *GetWalletRequest) (*GetWalletResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWallet not implemented")
+}
+func (*UnimplementedQueryServer) ListWallets(ctx context.Context, req *ListWalletsRequest) (*ListWalletsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListWallets not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -899,6 +1535,60 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DidAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DidAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/DidAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DidAll(ctx, req.(*QueryAllDidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DidAllBtc_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DidAllBtc(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/DidAllBtc",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DidAllBtc(ctx, req.(*QueryAllDidRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_DidAllEth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllDidRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).DidAllEth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/DidAllEth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).DidAllEth(ctx, req.(*QueryAllDidRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -975,38 +1665,92 @@ func _Query_AliasAvailable_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_DidAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAllDidRequest)
+func _Query_CreateWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateWalletRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).DidAll(ctx, in)
+		return srv.(QueryServer).CreateWallet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.identity.Query/DidAll",
+		FullMethod: "/sonrhq.core.identity.Query/CreateWallet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).DidAll(ctx, req.(*QueryAllDidRequest))
+		return srv.(QueryServer).CreateWallet(ctx, req.(*CreateWalletRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ClaimableWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryGetClaimableWalletRequest)
+func _Query_SignWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SignWalletRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ClaimableWallet(ctx, in)
+		return srv.(QueryServer).SignWallet(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.identity.Query/ClaimableWallet",
+		FullMethod: "/sonrhq.core.identity.Query/SignWallet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ClaimableWallet(ctx, req.(*QueryGetClaimableWalletRequest))
+		return srv.(QueryServer).SignWallet(ctx, req.(*SignWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_VerifyWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(VerifyWalletRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).VerifyWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/VerifyWallet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).VerifyWallet(ctx, req.(*VerifyWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_GetWallet_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWalletRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).GetWallet(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/GetWallet",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).GetWallet(ctx, req.(*GetWalletRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListWallets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListWalletsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListWallets(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/sonrhq.core.identity.Query/ListWallets",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListWallets(ctx, req.(*ListWalletsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1018,6 +1762,18 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "DidAll",
+			Handler:    _Query_DidAll_Handler,
+		},
+		{
+			MethodName: "DidAllBtc",
+			Handler:    _Query_DidAllBtc_Handler,
+		},
+		{
+			MethodName: "DidAllEth",
+			Handler:    _Query_DidAllEth_Handler,
 		},
 		{
 			MethodName: "Did",
@@ -1036,12 +1792,24 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_AliasAvailable_Handler,
 		},
 		{
-			MethodName: "DidAll",
-			Handler:    _Query_DidAll_Handler,
+			MethodName: "CreateWallet",
+			Handler:    _Query_CreateWallet_Handler,
 		},
 		{
-			MethodName: "ClaimableWallet",
-			Handler:    _Query_ClaimableWallet_Handler,
+			MethodName: "SignWallet",
+			Handler:    _Query_SignWallet_Handler,
+		},
+		{
+			MethodName: "VerifyWallet",
+			Handler:    _Query_VerifyWallet_Handler,
+		},
+		{
+			MethodName: "GetWallet",
+			Handler:    _Query_GetWallet_Handler,
+		},
+		{
+			MethodName: "ListWallets",
+			Handler:    _Query_ListWallets_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1187,10 +1955,10 @@ func (m *QueryDidByAlsoKnownAsRequest) MarshalToSizedBuffer(dAtA []byte) (int, e
 	_ = i
 	var l int
 	_ = l
-	if len(m.AkaId) > 0 {
-		i -= len(m.AkaId)
-		copy(dAtA[i:], m.AkaId)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.AkaId)))
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -1452,7 +2220,7 @@ func (m *QueryDidByOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetClaimableWalletRequest) Marshal() (dAtA []byte, err error) {
+func (m *CreateWalletRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1462,25 +2230,308 @@ func (m *QueryGetClaimableWalletRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetClaimableWalletRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateWalletRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetClaimableWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CreateWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.Id != 0 {
-		i = encodeVarintQuery(dAtA, i, uint64(m.Id))
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Name)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CoinType) > 0 {
+		i -= len(m.CoinType)
+		copy(dAtA[i:], m.CoinType)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.CoinType)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *CreateWalletResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *CreateWalletResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *CreateWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.AccountInfo != nil {
+		{
+			size, err := m.AccountInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.Owner != nil {
+		{
+			size, err := m.Owner.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SignWalletRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SignWalletRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SignWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *SignWalletResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *SignWalletResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *SignWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Owner != nil {
+		{
+			size, err := m.Owner.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.AccountInfo != nil {
+		{
+			size, err := m.AccountInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *VerifyWalletRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VerifyWalletRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VerifyWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Signature) > 0 {
+		i -= len(m.Signature)
+		copy(dAtA[i:], m.Signature)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Signature)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *VerifyWalletResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *VerifyWalletResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *VerifyWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Owner != nil {
+		{
+			size, err := m.Owner.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x1a
+	}
+	if m.AccountInfo != nil {
+		{
+			size, err := m.AccountInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Verified {
+		i--
+		if m.Verified {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
 		i--
 		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryGetClaimableWalletResponse) Marshal() (dAtA []byte, err error) {
+func (m *GetWalletRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1490,26 +2541,156 @@ func (m *QueryGetClaimableWalletResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryGetClaimableWalletResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetWalletRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryGetClaimableWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	{
-		size, err := m.ClaimableWallet.MarshalToSizedBuffer(dAtA[:i])
-		if err != nil {
-			return 0, err
-		}
-		i -= size
-		i = encodeVarintQuery(dAtA, i, uint64(size))
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
 	}
-	i--
-	dAtA[i] = 0xa
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetWalletResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetWalletResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Owner != nil {
+		{
+			size, err := m.Owner.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.AccountInfo != nil {
+		{
+			size, err := m.AccountInfo.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListWalletsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListWalletsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListWalletsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Alias) > 0 {
+		i -= len(m.Alias)
+		copy(dAtA[i:], m.Alias)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Alias)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListWalletsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListWalletsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListWalletsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Owner != nil {
+		{
+			size, err := m.Owner.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccountInfos) > 0 {
+		for iNdEx := len(m.AccountInfos) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.AccountInfos[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1574,7 +2755,7 @@ func (m *QueryDidByAlsoKnownAsRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.AkaId)
+	l = len(m.Alias)
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
@@ -1677,26 +2858,202 @@ func (m *QueryDidByOwnerResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryGetClaimableWalletRequest) Size() (n int) {
+func (m *CreateWalletRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovQuery(uint64(m.Id))
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.CoinType)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
 
-func (m *QueryGetClaimableWalletResponse) Size() (n int) {
+func (m *CreateWalletResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = m.ClaimableWallet.Size()
-	n += 1 + l + sovQuery(uint64(l))
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Owner != nil {
+		l = m.Owner.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.AccountInfo != nil {
+		l = m.AccountInfo.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *SignWalletRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *SignWalletResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Signature)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.AccountInfo != nil {
+		l = m.AccountInfo.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Owner != nil {
+		l = m.Owner.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *VerifyWalletRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Signature)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *VerifyWalletResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Verified {
+		n += 2
+	}
+	if m.AccountInfo != nil {
+		l = m.AccountInfo.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Owner != nil {
+		l = m.Owner.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *GetWalletRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *GetWalletResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.AccountInfo != nil {
+		l = m.AccountInfo.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Owner != nil {
+		l = m.Owner.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ListWalletsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Alias)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ListWalletsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.AccountInfos) > 0 {
+		for _, e := range m.AccountInfos {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Owner != nil {
+		l = m.Owner.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -2035,7 +3392,7 @@ func (m *QueryDidByAlsoKnownAsRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AkaId", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2063,7 +3420,7 @@ func (m *QueryDidByAlsoKnownAsRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AkaId = string(dAtA[iNdEx:postIndex])
+			m.Alias = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2728,7 +4085,7 @@ func (m *QueryDidByOwnerResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetClaimableWalletRequest) Unmarshal(dAtA []byte) error {
+func (m *CreateWalletRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2751,17 +4108,17 @@ func (m *QueryGetClaimableWalletRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetClaimableWalletRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateWalletRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetClaimableWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
 			}
-			m.Id = 0
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -2771,11 +4128,88 @@ func (m *QueryGetClaimableWalletRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CoinType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -2797,7 +4231,7 @@ func (m *QueryGetClaimableWalletRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryGetClaimableWalletResponse) Unmarshal(dAtA []byte) error {
+func (m *CreateWalletResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2820,15 +4254,47 @@ func (m *QueryGetClaimableWalletResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryGetClaimableWalletResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateWalletResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryGetClaimableWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ClaimableWallet", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2855,7 +4321,1146 @@ func (m *QueryGetClaimableWalletResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if err := m.ClaimableWallet.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+			if m.Owner == nil {
+				m.Owner = &DIDDocument{}
+			}
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountInfo == nil {
+				m.AccountInfo = &types.AccountInfo{}
+			}
+			if err := m.AccountInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SignWalletRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SignWalletRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SignWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *SignWalletResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: SignWalletResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: SignWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signature = append(m.Signature[:0], dAtA[iNdEx:postIndex]...)
+			if m.Signature == nil {
+				m.Signature = []byte{}
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountInfo == nil {
+				m.AccountInfo = &types.AccountInfo{}
+			}
+			if err := m.AccountInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Owner == nil {
+				m.Owner = &DIDDocument{}
+			}
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *VerifyWalletRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VerifyWalletRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VerifyWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = append(m.Message[:0], dAtA[iNdEx:postIndex]...)
+			if m.Message == nil {
+				m.Message = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Signature = append(m.Signature[:0], dAtA[iNdEx:postIndex]...)
+			if m.Signature == nil {
+				m.Signature = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *VerifyWalletResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: VerifyWalletResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: VerifyWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Verified", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Verified = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountInfo == nil {
+				m.AccountInfo = &types.AccountInfo{}
+			}
+			if err := m.AccountInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Owner == nil {
+				m.Owner = &DIDDocument{}
+			}
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetWalletRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetWalletRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetWalletRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetWalletResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetWalletResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetWalletResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfo", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.AccountInfo == nil {
+				m.AccountInfo = &types.AccountInfo{}
+			}
+			if err := m.AccountInfo.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Owner == nil {
+				m.Owner = &DIDDocument{}
+			}
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListWalletsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListWalletsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListWalletsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Alias = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListWalletsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListWalletsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListWalletsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccountInfos", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccountInfos = append(m.AccountInfos, &types.AccountInfo{})
+			if err := m.AccountInfos[len(m.AccountInfos)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Owner == nil {
+				m.Owner = &DIDDocument{}
+			}
+			if err := m.Owner.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

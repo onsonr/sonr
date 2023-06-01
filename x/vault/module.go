@@ -18,7 +18,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/sonrhq/core/x/vault/client/cli"
-	"github.com/sonrhq/core/x/vault/internal/node"
+	"github.com/sonrhq/core/x/vault/internal/blocker"
+	"github.com/sonrhq/core/x/vault/internal/sfs"
 	"github.com/sonrhq/core/x/vault/keeper"
 	"github.com/sonrhq/core/x/vault/types"
 )
@@ -96,6 +97,7 @@ type AppModule struct {
 	keeper        keeper.Keeper
 	accountKeeper types.AccountKeeper
 	bankKeeper    types.BankKeeper
+	blocker 	 blocker.Blocker
 }
 
 func NewAppModule(
@@ -104,12 +106,16 @@ func NewAppModule(
 	accountKeeper types.AccountKeeper,
 	bankKeeper types.BankKeeper,
 ) AppModule {
-	node.StartLocalIPFS()
+	err := sfs.Init()
+	if err != nil {
+		panic(err)
+	}
 	return AppModule{
 		AppModuleBasic: NewAppModuleBasic(cdc),
 		keeper:         keeper,
 		accountKeeper:  accountKeeper,
 		bankKeeper:     bankKeeper,
+		blocker:		blocker.NewBlocker(),
 	}
 }
 
@@ -153,10 +159,21 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 // ConsensusVersion is a sequence number for state-breaking change of the module. It should be incremented on each consensus-breaking change introduced by the module. To avoid wrong/empty versions, the initial version should be set to 1
 func (AppModule) ConsensusVersion() uint64 { return 1 }
 
+
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {}
+func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {
+	am.blocker.Next()
+}
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
-func (am AppModule) EndBlock(_ sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.ValidatorUpdate {
+	// The function creates a new instance of a blocker with a jobs queue, results array, error channel,
+	// and done channel.
+	cw := am.blocker.Pop()
+	if cw != nil {
+		ctx.Logger().Info("(x/vault) minted claimable wallet", "publicKey", cw.PublicKey)
+		am.keeper.AppendClaimableWallet(ctx, *cw)
+		am.bankKeeper.MintCoins(ctx, "identity", sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(5))))
+	}
 	return []abci.ValidatorUpdate{}
 }

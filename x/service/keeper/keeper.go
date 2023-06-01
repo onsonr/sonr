@@ -28,7 +28,7 @@ type (
 		groupKeeper    types.GroupKeeper
 		identityKeeper types.IdentityKeeper
 		vaultKeeper    types.VaultKeeper
-		authenticator gateway.Authenticator
+		authenticator  gateway.Authenticator
 	}
 )
 
@@ -41,7 +41,6 @@ func NewKeeper(
 	groupKeeper types.GroupKeeper,
 	identityKeeper types.IdentityKeeper,
 	vaultKeeper types.VaultKeeper,
-	authenticator gateway.Authenticator,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -56,10 +55,8 @@ func NewKeeper(
 
 		groupKeeper:    groupKeeper,
 		identityKeeper: identityKeeper,
-		vaultKeeper:   vaultKeeper,
-		authenticator: authenticator,
+		vaultKeeper:    vaultKeeper,
 	}
-
 	return k
 }
 

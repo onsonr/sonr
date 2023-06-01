@@ -23,7 +23,6 @@ const (
 
 	ClaimableWalletKey      = "ClaimableWallet/value/"
 	ClaimableWalletCountKey = "ClaimableWallet/count/"
-	AlsoKnownAsPrefix       = "AlsoKnownAs/value/"
 )
 
 const (
@@ -34,7 +33,6 @@ const (
 	CapabilityInvocationKeyPrefix = "Relationship/capability-invocation/value/"
 	KeyAgreementKeyPrefix         = "Relationship/key-agreement/value/"
 )
-
 
 func KeyPrefix(p string) []byte {
 	return []byte(p)

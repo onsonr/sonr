@@ -56,13 +56,6 @@ func currRpcEndpoint() string {
 	return SonrRpcPort
 }
 
-func getServerPort() string {
-	if port := os.Getenv("PUBLC_HIGHWAY_PORT"); port != "" {
-		return port
-	}
-	return "8080"
-}
-
 func getTLSCert() string {
 	if cert := os.Getenv("TLS_CERT_FILE"); cert != "" {
 		return cert

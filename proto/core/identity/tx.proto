@@ -3,7 +3,6 @@ syntax = "proto3";
 package sonrhq.core.identity;
 
 import "core/identity/did.proto";
-import "core/identity/claims.proto";
 
 // this line is used by starport scaffolding # proto/tx/import
 
@@ -16,14 +15,8 @@ service Msg {
 
 message MsgRegisterIdentity {
   string creator = 1;
-  Identification identity = 2;
-  string alias = 3;
-  uint32 wallet_id = 4;
-  repeated VerificationRelationship authentication = 5;
-  repeated VerificationRelationship assertion = 6;
-  repeated VerificationRelationship key_agreement = 7;
-  repeated VerificationRelationship capability_invocation = 8;
-  repeated VerificationRelationship capability_delegation = 9;
+  DIDDocument did_document = 2;
+  uint64 wallet_id = 3;
 }
 
 message MsgRegisterIdentityResponse {

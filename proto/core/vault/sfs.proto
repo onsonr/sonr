@@ -1,0 +1,23 @@
+syntax = "proto3";
+package sonrhq.core.vault;
+
+option go_package = "github.com/sonrhq/core/x/vault/types";
+
+// WalletMail is a message that can be sent to a WalletMailbox
+message WalletMail {
+  string id = 1;
+  string from = 2;
+  string to = 3;
+  string subject = 4;
+  string body = 5;
+  bytes signature = 6;
+  int64 timestamp = 7;
+}
+
+// WalletMailbox is a mailbox for an account address that is controlled by a
+// Sonr Identity
+message WalletMailbox {
+  string owner = 1;
+  string address = 2;
+  repeated WalletMail inbox = 3;
+}

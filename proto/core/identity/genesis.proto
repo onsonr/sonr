@@ -4,7 +4,6 @@ package sonrhq.core.identity;
 
 import "gogoproto/gogo.proto";
 import "core/identity/did.proto";
-import "core/identity/claims.proto";
 
 // this line is used by starport scaffolding # genesis/proto/import
 
@@ -15,8 +14,6 @@ message GenesisState {
            Params                   params               = 1 [(gogoproto.nullable) = false];
   repeated Identification           did_documents    = 2 [(gogoproto.nullable) = false];
   repeated VerificationRelationship relationships        = 3 [(gogoproto.nullable) = false];
-  repeated ClaimableWallet          claimable_wallet_list  = 4 [(gogoproto.nullable) = false];
-           uint64                   claimable_wallet_count = 5;
 }
 
 // Params defines the parameters for the module.

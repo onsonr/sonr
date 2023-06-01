@@ -1,106 +1,82 @@
 package gateway
 
 import (
-	"encoding/json"
+	"fmt"
+	"net/http"
 
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
-	"github.com/gofiber/helmet/v2"
-	"github.com/kataras/go-sessions/v3"
-	"github.com/sonrhq/core/internal/local"
-	"github.com/valyala/fasthttp"
+	"github.com/gorilla/mux"
 )
+
+type RouteHandler func(w http.ResponseWriter, r *http.Request)
 
 // Authenticator represents the interface for session-based authentication.
 type Authenticator interface {
-	// Router returns the underlying fiber app.
-	Router() *fiber.App
-
 	// StartSession starts a new session for a user. It returns the session ID.
-	StartSession(ctx *fasthttp.RequestCtx, values ...SessionValue) (string, error)
-
-	// EndSession ends the specified session. It returns an error if the session does not exist.
-	EndSession(ctx *fasthttp.RequestCtx, sessionID string) error
-
-	// IsValidSessionID checks if the specified session ID is valid (i.e., it corresponds to an active session).
-	IsValidSessionID(ctx *fasthttp.RequestCtx, sessionID string) bool
-
-	// GetSession retrieves the session information for a session ID. It returns an error if the session does not exist.
-	GetSession(ctx *fasthttp.RequestCtx, sessionID string) (*Session, error)
+	StartSession(w http.ResponseWriter, r *http.Request, values ...SessionValue) (string, error)
+	EndSession(w http.ResponseWriter, r *http.Request, sessionID string) error
+	IsValidSessionID(r *http.Request, sessionID string) bool
+	GetSession(r *http.Request, sessionID string) (*Session, error)
 
 	// Serve serves the fiber app.
-	Serve()
+	Serve(router *mux.Router)
 }
 
 // NewAuthenticator returns a new Authenticator instance. It also initializes the underlying fiber app.
 // this is used to have authenticated routes.
 func NewAuthenticator() Authenticator {
-	auth := &authenticator{
-		app: fiber.New(fiber.Config{
-			JSONEncoder: json.Marshal,
-			JSONDecoder: json.Unmarshal,
-		}),
+	return &authenticator{
+		getRoutes:  make(map[string]RouteHandler),
+		postRoutes: make(map[string]RouteHandler),
 	}
-	auth.app.Use(cors.New())
-	auth.app.Use(helmet.New())
-	return auth
 }
 
 // authenticator implements the Authenticator interface.
 type authenticator struct {
-	app *fiber.App
+	getRoutes  map[string]RouteHandler
+	postRoutes map[string]RouteHandler
 }
 
-// StartSession starts a new session for a user. It returns the session ID.
-func (a *authenticator) StartSession(ctx *fasthttp.RequestCtx, values ...SessionValue) (string, error) {
-	sess := sessions.StartFasthttp(ctx)
-	session := defaultSession()
-	for _, value := range values {
-		value(session)
-	}
-	session.Save(sess)
-	sessionID := sess.ID()
-	return sessionID, nil
+// Change parameter type
+func (a *authenticator) StartSession(w http.ResponseWriter, r *http.Request, values ...SessionValue) (string, error) {
+	// Use gorilla/sessions package
+	return "", fmt.Errorf("not implemented")
 }
 
-// EndSession ends the specified session. It returns an error if the session does not exist.
-func (a *authenticator) EndSession(ctx *fasthttp.RequestCtx, sessionID string) error {
-	sess := sessions.StartFasthttp(ctx)
-	sess.Destroy()
-	return nil
+func (a *authenticator) EndSession(w http.ResponseWriter, r *http.Request, sessionID string) error {
+	// Use gorilla/sessions package
+	return fmt.Errorf("not implemented")
 }
 
-// IsValidSessionID checks if the specified session ID is valid (i.e., it corresponds to an active session).
-func (a *authenticator) IsValidSessionID(ctx *fasthttp.RequestCtx, sessionID string) bool {
-	sess := sessions.StartFasthttp(ctx)
-	return sess.ID() == sessionID
+func (a *authenticator) IsValidSessionID(r *http.Request, sessionID string) bool {
+	// Use gorilla/sessions package
+	return false
 }
 
-// GetSession retrieves the session information for a session ID. It returns an error if the session does not exist.
-func (a *authenticator) GetSession(ctx *fasthttp.RequestCtx, sessionID string) (*Session, error) {
-	sess := sessions.StartFasthttp(ctx)
-	return LoadSession(sess), nil
-}
-
-// Router returns the underlying fiber app.
-func (a *authenticator) Router() *fiber.App {
-	return a.app
+func (a *authenticator) GetSession(r *http.Request, sessionID string) (*Session, error) {
+	// Use gorilla/sessions package
+	return nil, fmt.Errorf("not implemented")
 }
 
 // Serve serves the fiber app.
-func (a *authenticator) Serve() {
-	go serveFiber(a.app)
+func (a *authenticator) Serve(rtr *mux.Router) {
+	for path, handler := range a.getRoutes {
+		rtr.HandleFunc(path, handler).Methods("GET")
+	}
+	for path, handler := range a.postRoutes {
+		rtr.HandleFunc(path, handler).Methods("POST")
+	}
 }
 
-// helper function to serve the fiber app.
-func serveFiber(app *fiber.App) {
-	if local.Context().HasTlsCert() {
-		app.ListenTLS(
-			local.Context().FiberListenAddress(),
-			local.Context().TlsCertPath,
-			local.Context().TlsKeyPath,
-		)
-	} else {
-		app.Listen(local.Context().FiberListenAddress())
+func (a *authenticator) GET(path string, handler RouteHandler) {
+	if a.getRoutes == nil {
+		a.getRoutes = make(map[string]RouteHandler)
 	}
+	a.getRoutes[path] = handler
+}
+
+func (a *authenticator) POST(path string, handler RouteHandler) {
+	if a.postRoutes == nil {
+		a.postRoutes = make(map[string]RouteHandler)
+	}
+	a.postRoutes[path] = handler
 }

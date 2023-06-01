@@ -1,31 +1,24 @@
 package local
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
-
-	"github.com/sonrhq/core/x/identity/types"
 )
 
 // LocalContext is a struct that holds the current context of the application.
 type LocalContext struct {
-	grpcApiEndpoint        string
-	rpcApiEndpoint         string
-	highwayServerPort      string
-	TlsCertPath            string
-	TlsKeyPath             string
-	GlobalKvKsStore        string
-	GlobalInboxDocsStore   string
-	GlobalInboxEventsStore string
-	HighwayMode            string
-	HomeDir                string
-	NodeHome               string
-	IPFSRepoPath           string
-	OrbitDBPath            string
-	Rendevouz              string
-	BsMultiaddrs           []string
-	isProd                 bool
+	grpcApiEndpoint string
+	rpcApiEndpoint  string
+
+	TlsCertPath  string
+	TlsKeyPath   string
+	HomeDir      string
+	NodeHome     string
+	IPFSRepoPath string
+	OrbitDBPath  string
+	Rendevouz    string
+	BsMultiaddrs []string
+	isProd       bool
 }
 
 // Option is a function that configures the local context
@@ -40,23 +33,17 @@ func SetProd() Option {
 
 // Context returns the current context of the Sonr blockchain application.
 func Context(opts ...Option) LocalContext {
-	params := types.DefaultParams()
 	c := LocalContext{
-		grpcApiEndpoint:        currGrpcEndpoint(),
-		rpcApiEndpoint:         currRpcEndpoint(),
-		highwayServerPort:      getServerPort(),
-		TlsCertPath:            getTLSCert(),
-		TlsKeyPath:             getTLSKey(),
-		GlobalKvKsStore:        params.AccountDidMethodName + "/keyvalue#ks",
-		GlobalInboxDocsStore:   params.AccountDidMethodName + "/docsstore#inbox",
-		GlobalInboxEventsStore: params.AccountDidMethodName + "/eventlog#inbox",
-		HighwayMode:            "fiber",
-		HomeDir:                filepath.Join(getHomeDir()),
-		NodeHome:               filepath.Join(getHomeDir(), ".sonr"),
-		IPFSRepoPath:           filepath.Join(getHomeDir(), ".sonr", "adapters", "ipfs"),
-		OrbitDBPath:            filepath.Join(getHomeDir(), ".sonr", "adapters", "orbitdb"),
-		Rendevouz:              defaultRendezvousString,
-		BsMultiaddrs:           defaultBootstrapMultiaddrs,
+		grpcApiEndpoint: currGrpcEndpoint(),
+		rpcApiEndpoint:  currRpcEndpoint(),
+		TlsCertPath:     getTLSCert(),
+		TlsKeyPath:      getTLSKey(),
+		HomeDir:         filepath.Join(getHomeDir()),
+		NodeHome:        filepath.Join(getHomeDir(), ".sonr"),
+		IPFSRepoPath:    filepath.Join(getHomeDir(), ".sonr", "adapters", "ipfs"),
+		OrbitDBPath:     filepath.Join(getHomeDir(), ".sonr", "adapters", "orbitdb"),
+		Rendevouz:       defaultRendezvousString,
+		BsMultiaddrs:    defaultBootstrapMultiaddrs,
 	}
 
 	for _, opt := range opts {
@@ -103,16 +90,6 @@ func (c LocalContext) HasTlsCert() bool {
 	return c.TlsCertPath != "" && c.TlsKeyPath != "" && c.IsProd()
 }
 
-// IsHighwayFiber returns true if the current context is a highway fiber context
-func (c LocalContext) IsHighwayFiber() bool {
-	return c.HighwayMode == "fiber"
-}
-
-// IsHighwayConnect returns true if the current context is a highway connect context
-func (c LocalContext) IsHighwayConnect() bool {
-	return c.HighwayMode == "connect"
-}
-
 // GrpcEndpoint returns the grpc endpoint of the current context
 func (c LocalContext) GrpcEndpoint() string {
 	return c.grpcApiEndpoint
@@ -121,22 +98,4 @@ func (c LocalContext) GrpcEndpoint() string {
 // RpcEndpoint returns the rpc endpoint of the current context
 func (c LocalContext) RpcEndpoint() string {
 	return c.rpcApiEndpoint
-}
-
-// HighwayPort returns the highway port of the current context
-func (c LocalContext) HighwayPort() string {
-	return c.highwayServerPort
-}
-
-// FiberListenAddress returns the fiber listen address of the current context
-func (c LocalContext) FiberListenAddress() string {
-	if c.IsDev() {
-		return fmt.Sprintf(":%s", c.HighwayPort())
-	} else {
-		return fmt.Sprintf("%s:%s", currPublicHostIP(), c.HighwayPort())
-	}
-}
-
-func (c LocalContext) SigningKey() []byte {
-	return []byte("secret")
 }

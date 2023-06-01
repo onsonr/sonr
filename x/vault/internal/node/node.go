@@ -33,7 +33,6 @@ var (
 
 // StartLocalIPFS initializes a local IPFS node.
 func StartLocalIPFS() error {
-
 	config := config.DefaultConfig()
 	err := config.Apply()
 	if err != nil {

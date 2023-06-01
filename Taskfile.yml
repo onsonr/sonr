@@ -89,7 +89,8 @@ tasks:
 
       This task will generate the protobuf files
     cmds:
-      - sh generate.sh
+      - ignite generate proto-go -y
+      - ignite generate openapi -y
 
   docker:build:
     desc: Build the docker image

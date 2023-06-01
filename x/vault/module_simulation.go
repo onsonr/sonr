@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateClaimableWallet = "op_weight_msg_claimable_wallet"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateClaimableWallet int = 100
+
+	opWeightMsgUpdateClaimableWallet = "op_weight_msg_claimable_wallet"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateClaimableWallet int = 100
+
+	opWeightMsgDeleteClaimableWallet = "op_weight_msg_claimable_wallet"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteClaimableWallet int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -35,6 +47,17 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	vaultGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
+		ClaimableWalletList: []types.ClaimableWallet{
+			{
+				Id:      0,
+				Creator: sample.AccAddress(),
+			},
+			{
+				Id:      1,
+				Creator: sample.AccAddress(),
+			},
+		},
+		ClaimableWalletCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&vaultGenesis)

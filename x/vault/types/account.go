@@ -1,16 +1,20 @@
 package types
 
 import (
+	"crypto/sha1"
 	"fmt"
+	"time"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/google/uuid"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/internal/mpc"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"golang.org/x/crypto/pbkdf2"
+	"lukechampine.com/blake3"
 )
 
 // Account is an interface for an account in the wallet
@@ -22,13 +26,16 @@ type Account interface {
 	CoinType() crypto.CoinType
 
 	// CreateInboxMail creates a new inbox mail
-	CreateInboxMessage(to string, body string) (*InboxMessage, error)
+	CreateWalletMail(to string, body string) (*WalletMail, error)
 
 	// DeriveAccount returns a new account with the same keyshares but a new coin type
 	DeriveAccount(ct crypto.CoinType, idx int, name string) (Account, error)
 
 	// DID returns the DID of the account
 	Did() string
+
+	// GenerateSecretKey generates a secret phrase from a fragment and the account owner's DID
+	GenerateSecretKey(fragment string) ([]byte, error)
 
 	// GetAuthInfo creates an AuthInfo for a transaction
 	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
@@ -44,6 +51,9 @@ type Account interface {
 
 	// Signs a message
 	Sign(bz []byte) ([]byte, error)
+
+	// Signs a cosmos transaction
+	SignCosmosTx(msgs ...sdk.Msg) ([]byte, error)
 
 	// ToProto returns the proto representation of the account
 	ToProto() *AccountInfo
@@ -83,15 +93,14 @@ func (a *account) CoinType() crypto.CoinType {
 	return a.ct
 }
 
-// CreateInboxMessage creates a new inbox mail
-func (a *account) CreateInboxMessage(to string, body string) (*InboxMessage, error) {
-	msg := &InboxMessage{
-		Id:       uuid.New().String(),
-		Type:     "inbox",
-		Content:  body,
-		Sender:   a.Address(),
-		Receiver: to,
-		CoinType: a.CoinType().Name(),
+// CreateWalletMail creates a new inbox mail
+func (a *account) CreateWalletMail(to string, body string) (*WalletMail, error) {
+	msg := &WalletMail{
+		Id:        uuid.New().String(),
+		Body:      body,
+		From:      a.Address(),
+		To:        to,
+		Timestamp: time.Now().Unix(),
 	}
 	return msg, nil
 }
@@ -123,6 +132,18 @@ func (a *account) DeriveAccount(ct crypto.CoinType, idx int, name string) (Accou
 	}
 }
 
+// GenerateSecretKey generates a new secret phrase of 32 bytes
+func (a *account) GenerateSecretKey(fragment string) ([]byte, error) {
+	sig, err := a.Sign([]byte(fragment))
+	if err != nil {
+		return nil, err
+	}
+	hash := blake3.Sum256(sig)
+	pwd := pbkdf2.Key(hash[:], []byte(a.Address()), 10, 128, sha1.New)
+	hashDerivKey := blake3.Sum256(pwd)
+	return hashDerivKey[:], nil
+}
+
 // ListKeyShares returns the list of keyshares of the account as a list of string dids
 func (a *account) ListKeyShares() []string {
 	var ks []string
@@ -151,6 +172,14 @@ func (wa *account) Sign(bz []byte) ([]byte, error) {
 		configs = append(configs, ks.Config())
 	}
 	return mpc.SignCMP(configs, bz)
+}
+
+// Signs a cosmos transaction
+func (wa *account) SignCosmosTx(msgs ...sdk.Msg) ([]byte, error) {
+	if !wa.CoinType().IsCosmos() && !wa.CoinType().IsSonr() {
+		return nil, fmt.Errorf("coin type %s not supported for cosmos tx signing", wa.CoinType())
+	}
+	return SignAnyTransactions(wa, msgs...)
 }
 
 // ToProto returns the proto representation of the account

@@ -1,26 +1,107 @@
 syntax = "proto3";
+
 package sonrhq.core.vault;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "core/vault/params.proto";
+import "core/vault/genesis.proto";
+import "core/vault/sfs.proto";
+import "core/vault/claims.proto";
 
 option go_package = "github.com/sonrhq/core/x/vault/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Parameters queries the parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonrhq/core/vault/params";
+
+  // Returns parameters for the `x/vault` module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/core/vault/params";
+
+  }
+
+  // !
+  // ||--------------------------------------------------------------------------------||
+  // ! ||                                 Gateway Methods || !
+  // ||--------------------------------------------------------------------------------||
+
+  // Sends an encrypted message to a given wallet address
+  rpc SendWalletMail (SendWalletMailRequest) returns (SendWalletMailResponse) {
+    option (google.api.http) = {
+      post: "/highway/vault/mailbox/{creator}/send/{to}"
+      body: "*"
+    };
+
+  }
+
+  // Reads messages for a given wallet address
+  rpc ReadWalletMail (ReadWalletMailRequest) returns (ReadWalletMailResponse) {
+    option (google.api.http) = {
+      post: "/highway/vault/mailbox/{creator}/read"
+      body: "*"
+    };
+
+  }
+
+  // Queries a list of ClaimableWallet items.
+  rpc ClaimableWallet    (QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
+    option (google.api.http).get = "/core/vault/claims/{id}";
+
+  }
+  rpc ClaimableWalletAll (QueryAllClaimableWalletRequest) returns (QueryAllClaimableWalletResponse) {
+    option (google.api.http).get = "/core/vault/claims";
+
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
+
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
+
+// !
+// ||--------------------------------------------------------------------------------||
+// ! ||                              Gateway API Responses || !
+// ||--------------------------------------------------------------------------------||
+message SendWalletMailRequest {
+  string     creator = 1;
+  WalletMail mail    = 2;
+  string     to      = 3;
+}
+
+message SendWalletMailResponse {
+  bool  success   = 1;
+  int64 timestamp = 2;
+  bytes signature = 3;
+}
+
+message ReadWalletMailRequest {
+  string creator = 1;
+}
+
+message ReadWalletMailResponse {
+  map <string,WalletMailbox> mailboxes = 1;
+}
+
+message QueryGetClaimableWalletRequest {
+  uint64 id = 1;
+}
+
+message QueryGetClaimableWalletResponse {
+  ClaimableWallet ClaimableWallet = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllClaimableWalletRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllClaimableWalletResponse {
+  repeated ClaimableWallet                        ClaimableWallet = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+}
+

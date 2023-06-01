@@ -7,7 +7,7 @@ import "core/identity/genesis.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "core/identity/claims.proto";
+import "core/vault/info.proto";
 
 // this line is used by starport scaffolding # 1
 
@@ -15,43 +15,89 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Query defines the gRPC querier service.
 service Query {
-
-  // Parameters for the identity module.
+  // Returns parameters for the `x/identity` module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/sonr/params/identity";
-
+    option (google.api.http).get = "/core/params/identity";
   }
 
-  // Get a DIDDocument by DID
+  // Get All Sonr Identifications `did:sonr:...`
+  rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
+    option (google.api.http).get = "/core/id";
+  }
+
+  // Get All Wallet Identifications for Bitcoin `did:btcr:...`
+  rpc DidAllBtc(QueryAllDidRequest) returns (QueryAllDidResponse) {
+    option (google.api.http).get = "/core/id/btc";
+  }
+
+  // Get All Wallet Identifications for Ethereum `did:ethr:...`
+  rpc DidAllEth(QueryAllDidRequest) returns (QueryAllDidResponse) {
+    option (google.api.http).get = "/core/id/eth";
+  }
+
+  // Returns Identification based on a DID
   rpc Did (QueryGetDidRequest) returns (QueryGetDidResponse) {
-    option (google.api.http).get = "/sonr/id/{did}";
+    option (google.api.http).get = "/core/id/{did}";
   }
 
-  // Queries a list of DidByOwner items.
+  // Returns Identification based on an owner
   rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
-    option (google.api.http).get = "/sonr/id/owner/{owner}";
+    option (google.api.http).get = "/core/id/owner/{owner}";
   }
 
-  // Get a DIDDocument from an Alias
+  // Returns Identification based on an alias *only Sonr Identities
   rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
-    option (google.api.http).get = "/sonr/id/alias/{aka_id}";
+    option (google.api.http).get = "/core/id/alias/{alias}";
   }
 
-  // Queries a list of AliasAvailable items.
+  // Checks if a given alias is available to register *only Sonr Identities
   rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
-    option (google.api.http).get = "/sonr/id/alias/{alias}/check";
+    option (google.api.http).get = "/core/id/alias/{alias}/check";
   }
 
-  // Get All DIDDocuments
-  rpc DidAll (QueryAllDidRequest) returns (QueryAllDidResponse) {
-    option (google.api.http).get = "/sonr/id";
+  // !
+  // ||--------------------------------------------------------------------------------||
+  // ! ||                                 Gateway Methods || !
+  // ||--------------------------------------------------------------------------------||
 
+
+  // CreateWallet creates a new wallet with a specified name and token type for
+  // a given Identity.
+  rpc CreateWallet(CreateWalletRequest) returns (CreateWalletResponse) {
+    option (google.api.http) = {
+      post : "/highway/id/{alias}/wallets/create/{coin_type}/{name}"
+      body : "*"
+    };
   }
 
-  // Queries a list of ClaimableWallet items.
-  rpc ClaimableWallet(QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
-    option (google.api.http).get = "/sonr/id/claims/{id}";
+  // SignWallet signs a message with a given wallet.
+  rpc SignWallet(SignWalletRequest) returns (SignWalletResponse) {
+    option (google.api.http) = {
+      post : "/highway/id/{alias}/wallets/{address}/sign"
+      body : "*"
+    };
+  }
 
+  // VerifyWallet verifies a message with a given wallet.
+  rpc VerifyWallet(VerifyWalletRequest) returns (VerifyWalletResponse) {
+    option (google.api.http) = {
+      post : "/highway/id/{alias}/wallets/{address}/verify"
+      body : "*"
+    };
+  }
+
+  // GetWallet returns a wallet for a given address.
+  rpc GetWallet(GetWalletRequest) returns (GetWalletResponse) {
+    option (google.api.http) = {
+      get : "/highway/id/{alias}/wallets/{address}"
+    };
+  }
+
+  // ListWallets returns all wallets for a given Identity.
+  rpc ListWallets(ListWalletsRequest) returns (ListWalletsResponse) {
+    option (google.api.http) = {
+      get : "/highway/id/{alias}/wallets"
+    };
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -74,8 +120,8 @@ message QueryGetDidResponse {
 }
 
 message QueryDidByAlsoKnownAsRequest {
-  // aka_id is the unique identifier of the DIDDocument - it appears like ("example.snr")
-  string aka_id = 1;
+  // aka_aliasid is the unique identifier of the DIDDocument - it appears like ("example.snr")
+  string alias = 1;
 }
 
 message QueryDidByAlsoKnownAsResponse {
@@ -110,10 +156,79 @@ message QueryDidByOwnerResponse {
   Identification didDocument = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryGetClaimableWalletRequest {
-  uint64 id = 1;
+// !
+// ||--------------------------------------------------------------------------------||
+// ! ||                          Gateway API Request/Response || !
+// ||--------------------------------------------------------------------------------||
+
+// CreateWalletRequest is the request type for the Gateway/CreateWallet RPC
+// method.
+message CreateWalletRequest {
+  string alias = 1;
+  string coin_type = 2;
+  string name = 3;
 }
 
-message QueryGetClaimableWalletResponse {
-  ClaimableWallet ClaimableWallet = 1 [(gogoproto.nullable) = false];
+// CreateWalletResponse is the response type for the Gateway/CreateWallet RPC
+// method.
+message CreateWalletResponse {
+  string address = 1;
+  DIDDocument owner = 2;
+  core.vault.AccountInfo account_info = 3;
+}
+
+// SignWalletRequest is the request type for the Gateway/SignWallet RPC method.
+message SignWalletRequest {
+  string alias = 1;
+  string address = 2;
+  bytes message = 3;
+}
+
+// SignWalletResponse is the response type for the Gateway/SignWallet RPC
+// method.
+message SignWalletResponse {
+  bytes signature = 1;
+  bytes message = 2;
+  core.vault.AccountInfo account_info = 3;
+  DIDDocument owner = 4;
+}
+
+// VerifyWalletRequest is the request type for the Gateway/VerifyWallet RPC
+// method.
+message VerifyWalletRequest {
+  string alias = 1;
+  string address = 2;
+  bytes message = 3;
+  bytes signature = 4;
+}
+
+// VerifyWalletResponse is the response type for the Gateway/VerifyWallet RPC
+// method.
+message VerifyWalletResponse {
+  bool verified = 1;
+  core.vault.AccountInfo account_info = 2;
+  DIDDocument owner = 3;
+}
+
+// GetWalletRequest is the request type for the Gateway/GetWallet RPC method.
+message GetWalletRequest {
+  string alias = 1;
+  string address = 2;
+}
+
+// GetWalletResponse is the response type for the Gateway/GetWallet RPC method.
+message GetWalletResponse {
+  core.vault.AccountInfo account_info = 1;
+  DIDDocument owner = 2;
+}
+
+// ListWalletsRequest is the request type for the Gateway/ListWallets RPC
+// method.
+message ListWalletsRequest { string alias = 1; }
+
+// ListWalletsResponse is the response type for the Gateway/ListWallets RPC
+// method.
+message ListWalletsResponse {
+  repeated core.vault.AccountInfo account_infos = 1;
+  DIDDocument owner = 2;
 }

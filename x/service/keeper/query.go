@@ -75,7 +75,7 @@ func (k Keeper) ServiceRelationship(goCtx context.Context, req *types.QueryGetSe
 }
 
 // ServiceAttestion returns the attestion options for a given service record and desired Identity alias
-func (k Keeper) ServiceAttestion(goCtx context.Context, req *types.QueryGetServiceAttestionRequest) (*types.QueryGetServiceAttestionResponse, error) {
+func (k Keeper) ServiceAttestation(goCtx context.Context, req *types.GetServiceAttestationRequest) (*types.GetServiceAttestationResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -96,7 +96,7 @@ func (k Keeper) ServiceAttestion(goCtx context.Context, req *types.QueryGetServi
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Desired alias already taken")
 	}
 
-	ucw, chal, err := k.identityKeeper.NextUnclaimedWallet(ctx)
+	ucw, chal, err := k.vaultKeeper.NextUnclaimedWallet(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +106,7 @@ func (k Keeper) ServiceAttestion(goCtx context.Context, req *types.QueryGetServi
 		return nil, err
 	}
 
-	return &types.QueryGetServiceAttestionResponse{
+	return &types.GetServiceAttestationResponse{
 		AttestionOptions: attestionOpts,
 		Challenge:        chal.String(),
 		Origin:           req.Origin,
@@ -115,22 +115,23 @@ func (k Keeper) ServiceAttestion(goCtx context.Context, req *types.QueryGetServi
 	}, nil
 }
 
-func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.QueryGetServiceAssertionRequest) (*types.QueryGetServiceAssertionResponse, error) {
+func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.GetServiceAssertionRequest) (*types.GetServiceAssertionResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	if req.GetDid() == "" {
-		return nil, status.Error(codes.InvalidArgument, "did cannot be empty")
+	id, ok := k.identityKeeper.GetIdentityByPrimaryAlias(ctx, req.GetAlias())
+	if !ok {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "alias not found")
 	}
 	rec, ok := k.GetServiceRecord(ctx, req.Origin)
 	if !ok {
 		return nil, types.ErrServiceRecordNotFound
 	}
 
-	didDoc, err := k.identityKeeper.ResolveIdentity(ctx, req.GetDid())
+	didDoc, err := k.identityKeeper.ResolveIdentity(ctx, id.GetId())
 	if err != nil {
 		return nil, err
 	}
@@ -150,10 +151,10 @@ func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.QueryGetServi
 	if err != nil {
 		return nil, err
 	}
-	return &types.QueryGetServiceAssertionResponse{
+	return &types.GetServiceAssertionResponse{
 		AssertionOptions: assertionOpts,
 		Challenge:        chal.String(),
 		Origin:           req.Origin,
-		Did:              req.Did,
+		Did:              id.GetId(),
 	}, nil
 }

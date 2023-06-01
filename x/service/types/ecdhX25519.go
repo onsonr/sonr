@@ -91,7 +91,7 @@ func eciesEncrypt(publicKeyData webauthncose.EC2PublicKeyData, plaintext []byte)
 	return result, nil
 }
 
-//This function derives encryption and MAC keys from the shared secret using the HKDF
+// This function derives encryption and MAC keys from the shared secret using the HKDF
 // (HMAC-based Extract-and-Expand Key Derivation Function) function.
 func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	// Use HKDF to derive the encryption key and MAC key from the shared secret

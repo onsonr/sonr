@@ -20,8 +20,8 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	ma "github.com/multiformats/go-multiaddr"
 	"github.com/sonrhq/core/internal/local"
-	types "github.com/sonrhq/core/x/vault/types"
 	"github.com/sonrhq/core/x/vault/internal/node/config"
+	types "github.com/sonrhq/core/x/vault/types"
 )
 
 // `LocalIpfs` is a struct that contains a `CoreAPI` and a `IpfsNode` and a `WalletShare` and a

@@ -5,6 +5,7 @@ info:
 tags:
   - name: Query
   - name: Msg
+  - name: Gateway
   - name: Query
   - name: Msg
   - name: Query
@@ -284,6 +285,26 @@ paths:
           type: string
       tags:
         - Query
+  /sonr/service/{origin}/login/finish:
+    post:
+      summary: Queries a list of GetServiceAssertion items.
+      operationId: Gateway_AuthenticateUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceAuthenticateUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+      tags:
+        - Gateway
   /sonr/service/{origin}/login/start:
     get:
       summary: Queries a list of GetServiceAssertion items.
@@ -314,6 +335,26 @@ paths:
           type: boolean
       tags:
         - Query
+  /sonr/service/{origin}/register/finish:
+    post:
+      summary: Queries a list of GetServiceAttestion items.
+      operationId: Gateway_RegisterUser
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/serviceRegisterUserResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: origin
+          in: path
+          required: true
+          type: string
+      tags:
+        - Gateway
   /sonr/service/{origin}/register/start:
     get:
       summary: Queries a list of GetServiceAttestion items.
@@ -653,6 +694,9 @@ definitions:
         items:
           type: object
           $ref: '#/definitions/protobufAny'
+  serviceAuthenticateUserResponse:
+    type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   serviceListServiceRecordsResponse:
     type: object
     properties:
@@ -727,6 +771,9 @@ definitions:
     properties:
       serviceRecord:
         $ref: '#/definitions/serviceServiceRecord'
+  serviceRegisterUserResponse:
+    type: object
+    description: QueryParamsResponse is response type for the Query/Params RPC method.
   serviceServiceRecord:
     type: object
     properties:

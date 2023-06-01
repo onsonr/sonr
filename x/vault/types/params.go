@@ -14,7 +14,12 @@ func ParamKeyTable() paramtypes.KeyTable {
 
 // NewParams creates a new Params instance
 func NewParams() Params {
-	return Params{}
+	return Params{
+		KeyshareSeedFragment: "sonr/keyvalue#ks",
+		InboxSeedFragment:    "sonr/docsstore#inbox",
+		ChannelSeedFragment:  "sonr/eventlog#inbox",
+		InboxOtmDelay:        2000000,
+	}
 }
 
 // DefaultParams returns a default set of parameters

@@ -100,12 +100,6 @@ func (k msgServer) RegisterUserEntity(goCtx context.Context, msg *types.MsgRegis
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Desired alias already taken")
 	}
 
-	ucw, ok := k.identityKeeper.GetClaimableWallet(ctx, msg.UcwId)
-	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "Wallet Claims not found")
-	}
-
-
 	// Verify both attestion and challenge are valid
 	cred, err := service.VerifyCreationChallenge(msg.Attestation, msg.Challenge)
 	if err != nil {
@@ -113,23 +107,25 @@ func (k msgServer) RegisterUserEntity(goCtx context.Context, msg *types.MsgRegis
 	}
 
 	// Assign identity to user entity
-	id, err := k.identityKeeper.AssignIdentity(ctx, ucw, cred, msg.DesiredAlias)
+	acc, err := k.vaultKeeper.AssignVault(ctx, msg.UcwId)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
+	}
+
+	// Create DID Document
+	did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), acc, msg.DesiredAlias)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
 
 	// Set service relationship
-	k.SetServiceRelationship(ctx, types.ServiceRelationship{
-		Reference: service.Id,
-		Did: id.Id,
-		Count: 0,
-	})
+	k.SetServiceRelationship(ctx, *service.NewServiceRelationship(acc.Did()))
 
 	// Return response
 	return &types.MsgRegisterUserEntityResponse{
-		Identity: id,
+		Identity: did,
 		Success:  true,
-		Did:      id.Id,
+		Did:      did.Id,
 	}, nil
 }
 

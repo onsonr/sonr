@@ -23,4 +23,7 @@ var (
 	ErrServiceCollision      = sdkerrors.Register(ModuleName, 3100, "service already exists")
 	ErrServiceNotFound       = sdkerrors.Register(ModuleName, 3101, "service not found")
 	ErrAliasCollision        = sdkerrors.Register(ModuleName, 4100, "alias already exists")
+	ErrAliasNotFound         = sdkerrors.Register(ModuleName, 4101, "alias not found")
+	ErrWalletAccountCreation = sdkerrors.Register(ModuleName, 5100, "wallet account creation error")
+	ErrWalletAccountNotFound = sdkerrors.Register(ModuleName, 5101, "wallet account not found")
 )

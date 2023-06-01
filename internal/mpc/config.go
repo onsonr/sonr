@@ -1,8 +1,8 @@
 package mpc
 
 import (
-	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/internal/mpc/algorithm"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"

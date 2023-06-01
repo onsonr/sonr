@@ -5,11 +5,9 @@ import (
 	"errors"
 
 	"berty.tech/go-orbit-db/iface"
-	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/x/vault/internal/node"
 	"github.com/sonrhq/core/x/vault/types"
 )
-
 
 type vaultImpl struct {
 	KsTable node.IPFSKVStore
@@ -20,12 +18,14 @@ type vaultImpl struct {
 
 func setupVault(k *Keeper) error {
 	ctx := context.Background()
-	snrctx := local.Context()
-	kv, err := node.OpenKeyValueStore(ctx, snrctx.GlobalKvKsStore)
+	params := types.NewParams()
+
+	kv, err := node.OpenKeyValueStore(ctx, params.KeyshareSeedFragment)
 	if err != nil {
 		return err
 	}
-	docs, err := node.OpenDocumentStore(ctx, snrctx.GlobalInboxDocsStore, nil)
+
+	docs, err := node.OpenDocumentStore(ctx, params.InboxSeedFragment, nil)
 	if err != nil {
 		return err
 	}
@@ -37,7 +37,6 @@ func setupVault(k *Keeper) error {
 	k.vaultI = vi
 	return nil
 }
-
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                         Inbox handler for W2W messages                         ||
@@ -93,21 +92,4 @@ func (v *vaultImpl) LoadInbox(accDid string) (*types.Inbox, error) {
 		return nil, err
 	}
 	return inbox, nil
-}
-
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                         Helper Methods for Module Setup                        ||
-// ! ||--------------------------------------------------------------------------------||
-
-func keysharePrefix(v string) string {
-	return "ks/" + v
-}
-
-func accountPrefix(v string) string {
-	return "acc/" + v
-}
-
-func webauthnPrefix(v string) string {
-	return "webauthn/" + v
 }

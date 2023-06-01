@@ -58,17 +58,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Id: types.ConvertAccAddressToDid(sample.AccAddress()),
 			},
 		},
-		ClaimableWalletList: []types.ClaimableWallet{
-			{
-				Id:      0,
-				Creator: sample.AccAddress(),
-			},
-			{
-				Id:      1,
-				Creator: sample.AccAddress(),
-			},
-		},
-		ClaimableWalletCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&identityGenesis)
