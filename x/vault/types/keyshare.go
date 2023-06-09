@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )

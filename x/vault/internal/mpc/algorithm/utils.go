@@ -2,7 +2,7 @@ package algorithm
 
 import (
 	"github.com/libp2p/go-libp2p-core/peer"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
 	"github.com/taurusgroup/multi-party-sig/pkg/protocol"
 )

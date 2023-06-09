@@ -14,7 +14,7 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sonrhq/core/pkg/gateway"
+	"github.com/sonrhq/core/internal/gateway"
 	"github.com/sonrhq/core/x/service/types"
 )
 

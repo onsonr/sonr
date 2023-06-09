@@ -4,7 +4,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"

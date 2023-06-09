@@ -44,29 +44,19 @@ type BankKeeper interface {
 
 // IdentityKeeper defines the expected interface needed to retrieve account balances.
 type IdentityKeeper interface {
-	AssignIdentity(credential *identitytypes.VerificationMethod, account vaulttypes.Account, alias string) (*identitytypes.DIDDocument, error)
+	AssignIdentity(credential *identitytypes.VerificationMethod, primary vaulttypes.Account, alias string, accounts ...vaulttypes.Account) (*identitytypes.DIDDocument, error)
 	CheckAlsoKnownAs(ctx sdk.Context, alias string) error
 	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.Identification, found bool)
 	ResolveIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, err error)
-	RegisterIdentity(goCtx context.Context, msg *identitytypes.MsgRegisterIdentity) (*identitytypes.MsgRegisterIdentityResponse, error)
 	ResolveIdentity(ctx sdk.Context, did string) (identitytypes.DIDDocument, error)
-
-	SetAuthentication(ctx sdk.Context, authentication identitytypes.VerificationRelationship)
-	SetAssertion(ctx sdk.Context, assertion identitytypes.VerificationRelationship)
-	SetCapabilityDelegation(ctx sdk.Context, delegation identitytypes.VerificationRelationship)
-	SetCapabilityInvocation(ctx sdk.Context, invocation identitytypes.VerificationRelationship)
-	SetKeyAgreement(ctx sdk.Context, agreement identitytypes.VerificationRelationship)
 }
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
 	// Methods imported from vault should be defined here
-	AssignVault(ctx sdk.Context, ucw uint64) (vaulttypes.Account, error)
+	AssignVault(ctx sdk.Context, ucw uint64, credential *WebauthnCredential) ([]vaulttypes.Account, error)
 	GetClaimableWallet(ctx sdk.Context, id uint64) (val vaulttypes.ClaimableWallet, found bool)
 	NextUnclaimedWallet(ctx sdk.Context) (*vaulttypes.ClaimableWallet, protocol.URLEncodedBase64, error)
 	GetAccount(accDid string) (vaulttypes.Account, error)
-	GetKeyshare(keyDid string) (vaulttypes.KeyShare, error)
-	DeleteAccount(accDid string) error
-	InsertAccount(acc vaulttypes.Account) error
-	InsertKeyshare(ks vaulttypes.KeyShare) error
+	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
 }

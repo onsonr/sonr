@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 

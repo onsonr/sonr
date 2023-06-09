@@ -1,0 +1,73 @@
+# Project information.
+project_name: core
+release:
+  github:
+    owner: sonrhq
+    name: core
+
+# The prebuild section.
+before:
+  hooks:
+    - go mod download
+    - go mod verify
+    - go mod tidy
+    - go generate ./...
+    - sh scripts/generate.sh
+
+# The builds section.
+builds:
+  - id: "core"
+    main: ./cmd/sonrd
+    binary: sonrd
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+    goarm:
+      - "6"
+    flags:
+      - -tags=netgo
+      - -ldflags=-w -s -extldflags "-static"
+    env:
+      - CGO_ENABLED=0
+
+# The archives section.
+archives:
+  - id: "archive"
+    builds:
+      - core
+    format: tar.gz
+    files:
+      - LICENSE*
+      - README.md
+      - scripts/*
+
+# The checksum section.
+checksum:
+  name_template: 'checksums.txt'
+
+# The nfpm section.
+nfpms:
+  - vendor: Sonr Inc.
+    homepage: https://sonr.io
+    maintainer: Prad Nukala <prad@sonr.io>
+    description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
+    license: Your License
+    formats:
+      - deb
+      - rpm
+    contents:
+      - src: "./**/*.md"
+        dst: "/usr/local/doc/core/"
+      - src: "./**/*.txt"
+        dst: "/usr/local/doc/core/"
+
+# The snapcraft section.
+snapcrafts:
+-
+  name_template: '{{ .ProjectName }}_{{ .Version }}'
+  publish: true
+  summary: Sonr is a cosmos based blockchain.
+  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
+  name: sonr

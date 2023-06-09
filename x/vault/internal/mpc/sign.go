@@ -3,8 +3,8 @@ package mpc
 import (
 	"sync"
 
-	"github.com/sonrhq/core/internal/mpc/algorithm"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/x/vault/internal/mpc/algorithm"
 
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )

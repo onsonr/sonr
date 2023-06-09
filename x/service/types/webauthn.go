@@ -9,7 +9,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/shengdoushi/base58"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 

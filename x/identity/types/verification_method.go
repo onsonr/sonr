@@ -7,7 +7,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 

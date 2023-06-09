@@ -9,7 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 	"github.com/sonrhq/core/x/vault/internal/sfs"
 	"github.com/sonrhq/core/x/vault/types"
 )
@@ -133,6 +134,7 @@ func (k Keeper) NextUnclaimedWallet(ctx sdk.Context) (*types.ClaimableWallet, pr
 		return nil
 	})
 	if err != nil {
+		k.Logger(ctx).Error("failed to get unclaimed wallets", "error", err)
 		return nil, nil, err
 	}
 
@@ -148,18 +150,35 @@ func (k Keeper) NextUnclaimedWallet(ctx sdk.Context) (*types.ClaimableWallet, pr
 
 // AssignIdentity verifies that a credential is valid and assigns an Unclaimed Wallet to the credential's owner. This creates the initial
 // DID document for the user, containing authentication and capability delegation relationships.
-func (k Keeper) AssignVault(ctx sdk.Context, ucwId uint64) (types.Account, error) {
+func (k Keeper) AssignVault(ctx sdk.Context, ucwId uint64, cred *servicetypes.WebauthnCredential) ([]types.Account, error) {
 	// Get the keyshares for the claimable wallet
+	accs := make([]types.Account, 0)
 	ucw, found := k.GetClaimableWallet(ctx, ucwId)
 	if !found {
+		k.Logger(ctx).Error("unclaimed wallet not found", "id", ucwId)
 		return nil, fmt.Errorf("unclaimed wallet with ID %d not found", ucwId)
 	}
-	acc, err := sfs.ClaimAccount(ucw.Keyshares, crypto.SONRCoinType)
+	acc, err := sfs.ClaimAccount(ucw.Keyshares, crypto.SONRCoinType, cred)
 	if err != nil {
+		k.Logger(ctx).Error("failed to resolve account from keyshares", "error", err)
 		return nil, fmt.Errorf("error resolving account from keyshares: %w", err)
 	}
 	k.RemoveClaimableWallet(ctx, ucwId)
-	return acc, nil
+	accs = append(accs, acc)
+	// Create btc, eth default accounts
+	btcAcc, err := acc.DeriveAccount(crypto.BTCCoinType, 0, "BTC#1")
+	if err != nil {
+		k.Logger(ctx).Error("(Gateway/service) - error deriving BTC account", err)
+		return nil, err
+	}
+	accs = append(accs, btcAcc)
+	ethAcc, err := acc.DeriveAccount(crypto.ETHCoinType, 0, "ETH#1")
+	if err != nil {
+		k.Logger(ctx).Error("(Gateway/service) - error deriving ETH account", err)
+		return nil, err
+	}
+	accs = append(accs, ethAcc)
+	return accs, nil
 }
 
 // ! ||--------------------------------------------------------------------------------||

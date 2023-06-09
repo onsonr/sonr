@@ -58,3 +58,32 @@ func LoadInbox( accDid string) (*types.Inbox, error) {
 	}
 	return inbox, nil
 }
+
+// ReadInbox reads the inbox for the account
+func ReadInbox(accDid string) ([]*types.WalletMail, error) {
+	inbox, err := LoadInbox(accDid)
+	if err != nil {
+		return nil, err
+	}
+	return inbox.Messages, nil
+}
+
+// WriteInbox writes the inbox to the database
+func WriteInbox(toDid string, msg *types.WalletMail) error {
+	// Get the inbox
+	inbox, err := LoadInbox(toDid)
+	if err != nil {
+		return err
+	}
+	// Add the message to the inbox
+	inboxMap, err := inbox.AddMessageToMap(msg)
+	if err != nil {
+		return err
+	}
+	// Update the inbox
+	_, err = mailTable.Put(ctx, inboxMap)
+	if err != nil {
+		return err
+	}
+	return nil
+}

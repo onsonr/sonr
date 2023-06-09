@@ -1,19 +1,15 @@
 package types
 
 import (
-	"crypto/sha1"
 	"fmt"
-	"time"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/google/uuid"
 	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
-	"github.com/sonrhq/core/internal/mpc"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/x/vault/internal/mpc"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
-	"golang.org/x/crypto/pbkdf2"
 	"lukechampine.com/blake3"
 )
 
@@ -24,9 +20,6 @@ type Account interface {
 
 	// CoinType returns the coin type of the account
 	CoinType() crypto.CoinType
-
-	// CreateInboxMail creates a new inbox mail
-	CreateWalletMail(to string, body string) (*WalletMail, error)
 
 	// DeriveAccount returns a new account with the same keyshares but a new coin type
 	DeriveAccount(ct crypto.CoinType, idx int, name string) (Account, error)
@@ -93,18 +86,6 @@ func (a *account) CoinType() crypto.CoinType {
 	return a.ct
 }
 
-// CreateWalletMail creates a new inbox mail
-func (a *account) CreateWalletMail(to string, body string) (*WalletMail, error) {
-	msg := &WalletMail{
-		Id:        uuid.New().String(),
-		Body:      body,
-		From:      a.Address(),
-		To:        to,
-		Timestamp: time.Now().Unix(),
-	}
-	return msg, nil
-}
-
 // DeriveAccount returns a new account with the same keyshares but a new coin type
 func (a *account) DeriveAccount(ct crypto.CoinType, idx int, name string) (Account, error) {
 	newAccCh := make(chan Account)
@@ -138,9 +119,7 @@ func (a *account) GenerateSecretKey(fragment string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	hash := blake3.Sum256(sig)
-	pwd := pbkdf2.Key(hash[:], []byte(a.Address()), 10, 128, sha1.New)
-	hashDerivKey := blake3.Sum256(pwd)
+	hashDerivKey := blake3.Sum256(sig)
 	return hashDerivKey[:], nil
 }
 

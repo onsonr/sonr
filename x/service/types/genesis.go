@@ -40,13 +40,6 @@ func DefaultGenesis() *GenesisState {
 				Name:       "Sonr WS",
 			},
 			{
-				Id:         "sonr.wtf",
-				Controller: "did:web:sonr.wtf",
-				Type:       "LinkedDomains",
-				Origin:     "sonr.wtf",
-				Name:       "Sonr.wtf",
-			},
-			{
 				Id:         "sonrhq.com",
 				Controller: "did:web:sonrhq.com",
 				Type:       "LinkedDomains",

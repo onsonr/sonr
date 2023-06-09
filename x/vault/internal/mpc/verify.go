@@ -3,7 +3,7 @@ package mpc
 import (
 	"errors"
 
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 

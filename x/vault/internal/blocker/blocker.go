@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/mpc"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/x/vault/internal/mpc"
 	"github.com/sonrhq/core/x/vault/internal/sfs"
 	"github.com/sonrhq/core/x/vault/types"
 )
@@ -16,13 +16,7 @@ type Blocker interface {
 	Next()
 }
 
-type blocker struct {
-	jobsQueue *Queue
-	results   []*types.ClaimableWallet
-	errCh     chan error
-	doneCh    chan *types.ClaimableWallet
-	ctx       context.Context
-}
+
 
 func NewBlocker() Blocker {
 	c := context.Background()
@@ -49,6 +43,9 @@ func (s *blocker) Pop() *types.ClaimableWallet {
 }
 
 func (s *blocker) Next() {
+	if s.results != nil && len(s.results) > 0 {
+		return
+	}
 	if s.jobsQueue.PendingJobs() < 10 {
 		job := Job{
 			Name:   "Build Claimable Wallet",
@@ -57,6 +54,14 @@ func (s *blocker) Next() {
 		s.jobsQueue.AddJob(job)
 	}
 	return
+}
+
+type blocker struct {
+	jobsQueue *Queue
+	results   []*types.ClaimableWallet
+	errCh     chan error
+	doneCh    chan *types.ClaimableWallet
+	ctx       context.Context
 }
 
 func (s *blocker) run(w *Worker) {

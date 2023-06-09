@@ -47220,6 +47220,10 @@ paths:
                   DIDDocument represents a Decentralized Identifier (DID)
                   document that contains information about the DID subject, such
                   as public keys, verification methods, and services.
+              alias:
+                type: string
+              jwt:
+                type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -47676,6 +47680,10 @@ paths:
                   DIDDocument represents a Decentralized Identifier (DID)
                   document that contains information about the DID subject, such
                   as public keys, verification methods, and services.
+              alias:
+                type: string
+              jwt:
+                type: string
             description: >-
               QueryParamsResponse is response type for the Query/Params RPC
               method.
@@ -78900,6 +78908,10 @@ definitions:
           DIDDocument represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
+      alias:
+        type: string
+      jwt:
+        type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrhq.core.service.GetServiceAssertionResponse:
     type: object
@@ -79981,6 +79993,10 @@ definitions:
           DIDDocument represents a Decentralized Identifier (DID) document that
           contains information about the DID subject, such as public keys,
           verification methods, and services.
+      alias:
+        type: string
+      jwt:
+        type: string
     description: QueryParamsResponse is response type for the Query/Params RPC method.
   sonrhq.core.service.ServiceRecord:
     type: object

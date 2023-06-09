@@ -37,7 +37,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 	grpcRes, err := txClient.BroadcastTx(
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
-			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_ASYNC,
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
 			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)

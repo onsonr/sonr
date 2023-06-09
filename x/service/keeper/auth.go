@@ -5,7 +5,11 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/x/identity"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/service/types"
+	"github.com/sonrhq/core/x/vault"
 )
 
 // This function is a method of the `Keeper` struct and is used to register a new user identity. It takes a context and a `RegisterUserRequest` as input and returns a `RegisterUserResponse` and an error. The function first retrieves the service record associated with the request
@@ -25,26 +29,42 @@ func (k Keeper) RegisterUser(goCtx context.Context, req *types.RegisterUserReque
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "alias already taken")
 	}
 
-	cred, err := service.VerifyCreationChallenge(req.Attestation, req.Challenge)
-	if err != nil && cred == nil {
+	credential, err := service.VerifyCreationChallenge(req.Attestation, req.Challenge)
+	if err != nil && credential == nil {
 		k.Logger(ctx).Debug("(Gateway/service) - error verifying challenge")
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "challenge verification failed")
 	}
 
 	// Assign identity to user entity
-	acc, err := k.vaultKeeper.AssignVault(ctx, req.UcwId)
+	account, err := k.vaultKeeper.AssignVault(ctx, req.UcwId, credential)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
-
+	snr := account[0]
+	eth := account[1]
+	btc := account[2]
 	// Create DID Document
-	did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), acc, req.Alias)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
-	}
+	didDoc := identity.NewDIDDocument(credential.ToVerificationMethod(), snr, req.Alias, eth, btc)
+
+	// Start a go routine to create the identity
+	go func(acc vault.Account, didDoc *identitytypes.DIDDocument) {
+		// Sign and broadcast identity registration message
+		bz, err := snr.SignCosmosTx(identitytypes.NewMsgRegisterIdentity(snr.Address(), didDoc))
+		if err != nil {
+			k.Logger(ctx).Error("(Gateway/service) - error signing identity registration message", err)
+			return
+		}
+		_, err = local.Context().BroadcastTx(bz)
+		if err != nil {
+			k.Logger(ctx).Error("(Gateway/service) - error broadcasting identity registration message", err)
+			return
+		}
+	}(snr, didDoc)
 	return &types.RegisterUserResponse{
-		Did:      did.Id,
-		Identity: did,
+		Did:      didDoc.Id,
+		Identity: didDoc,
+		Alias:    req.Alias,
+		Jwt:      "",
 	}, nil
 }
 
@@ -67,7 +87,9 @@ func (k Keeper) AuthenticateUser(goCtx context.Context, req *types.AuthenticateU
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "challenge verification failed")
 	}
 	return &types.AuthenticateUserResponse{
-		Did: did.Id,
+		Did:      did.Id,
 		Identity: &did,
+		Alias:    req.Alias,
+		Jwt:      "",
 	}, nil
 }

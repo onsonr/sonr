@@ -107,19 +107,19 @@ func (k msgServer) RegisterUserEntity(goCtx context.Context, msg *types.MsgRegis
 	}
 
 	// Assign identity to user entity
-	acc, err := k.vaultKeeper.AssignVault(ctx, msg.UcwId)
+	accs, err := k.vaultKeeper.AssignVault(ctx, msg.UcwId, cred)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
 
 	// Create DID Document
-	did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), acc, msg.DesiredAlias)
+	did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), accs[0], msg.DesiredAlias, accs...)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
 
 	// Set service relationship
-	k.SetServiceRelationship(ctx, *service.NewServiceRelationship(acc.Did()))
+	k.SetServiceRelationship(ctx, *service.NewServiceRelationship(accs[0].Did()))
 
 	// Return response
 	return &types.MsgRegisterUserEntityResponse{

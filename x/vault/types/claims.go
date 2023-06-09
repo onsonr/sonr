@@ -1,6 +1,7 @@
 package types
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -12,6 +13,9 @@ func (cw *ClaimableWallet) Address() string {
 
 // The function creates a new wallet claim with a given creator and key shares.
 func NewWalletClaims(creator string, kss []KeyShare) (*ClaimableWallet, error) {
+	if len(kss) == 0 {
+		return nil, fmt.Errorf("no key shares provided")
+	}
 	pub := kss[0].PubKey()
 	keyIds := make([]string, 0)
 	for _, ks := range kss {

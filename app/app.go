@@ -120,7 +120,7 @@ import (
 
 	appparams "github.com/sonrhq/core/app/params"
 	"github.com/sonrhq/core/docs"
-	"github.com/sonrhq/core/pkg/gateway"
+	"github.com/sonrhq/core/internal/gateway"
 )
 
 const (

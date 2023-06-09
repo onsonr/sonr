@@ -57,8 +57,6 @@ type BankKeeper interface {
 type VaultKeeper interface {
 	// Methods imported from vault should be defined here
 	GetAccount(accDid string) (vaulttypes.Account, error)
-	GetKeyshare(keyDid string) (vaulttypes.KeyShare, error)
-	DeleteAccount(accDid string) error
+	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
 	InsertAccount(acc vaulttypes.Account) error
-	InsertKeyshare(ks vaulttypes.KeyShare) error
 }

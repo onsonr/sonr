@@ -144,6 +144,8 @@ message RegisterUserRequest {
 message RegisterUserResponse {
   string did = 1;
   core.identity.DIDDocument identity = 2;
+  string alias = 3;
+  string jwt = 4;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -158,4 +160,6 @@ message AuthenticateUserRequest {
 message AuthenticateUserResponse {
   string did = 1;
   core.identity.DIDDocument identity = 2;
+  string alias = 3;
+  string jwt = 4;
 }

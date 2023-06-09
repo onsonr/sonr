@@ -4,8 +4,9 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/core/x/vault"
 )
 
 func (k Keeper) CreateWallet(goCtx context.Context, req *types.CreateWalletRequest) (*types.CreateWalletResponse, error) {
@@ -36,15 +37,23 @@ func (k Keeper) ListWallets(goCtx context.Context, req *types.ListWalletsRequest
 	if !ok {
 		return nil, types.ErrAliasNotFound
 	}
+	accs := make([]*vault.AccountInfo, 0)
+	for _, id := range id.CapabilityDelegation {
+		acc, err := k.vaultKeeper.GetAccountInfo(id)
+		if err != nil {
+			return nil, err
+		}
+		accs = append(accs, acc)
+	}
 
-	didDoc, accs, err := k.ListAccountsForIdentity(ctx, id.Id)
+	didDoc, err := k.ResolveIdentity(ctx, id.Id)
 	if err != nil {
 		return nil, err
 	}
 
 	return &types.ListWalletsResponse{
 		AccountInfos: accs,
-		Owner:        didDoc,
+		Owner:        &didDoc,
 	}, nil
 }
 

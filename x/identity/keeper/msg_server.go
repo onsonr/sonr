@@ -93,7 +93,7 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 		}
 	}
 
-	// err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "x/identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
+	// err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
 	// if err != nil {
 	// 	k.Logger(ctx).Error("failed to send coins", "error", err)
 	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to send coins")
