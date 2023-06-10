@@ -374,3 +374,21 @@ rosetta-data:
 	docker cp data_dir_build:/tmp/data.tar.gz "$(CURDIR)/contrib/rosetta/rosetta-ci/data.tar.gz"
 	docker container rm data_dir_build
 .PHONY: rosetta-data
+
+
+# GoReleaser target
+.PHONY: goreleaser
+goreleaser:
+ifeq (,$(GORELEASER))
+	$(error "No goreleaser in PATH. Consider installing from https://goreleaser.com/install")
+endif
+	$(GORELEASER) release --rm-dist
+
+
+# Docker target
+.PHONY: docker
+docker:
+ifeq (,$(DOCKER))
+	$(error "No docker in PATH. Consider installing from https://docs.docker.com/get-docker")
+endif
+	$(DOCKER) build -t $(PROJECT_NAME) .

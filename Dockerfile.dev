@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
 
 ARG GO_VERSION="1.19"
-ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
+ARG RUNNER_IMAGE="alpine:3.16"
+
 
 # --------------------------------------------------------
 # Builder
@@ -33,6 +34,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 #     wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt -O /tmp/checksums.txt && \
 #     sha256sum /lib/libwasmvm_muslc.a | grep $(cat /tmp/checksums.txt | grep $(uname -m) | cut -d ' ' -f 1)
 
+
 # Copy the remaining files
 COPY . .
 
@@ -56,8 +58,10 @@ FROM ${RUNNER_IMAGE}
 COPY --from=builder /sonr/build/sonrd /bin/sonrd
 
 ENV HOME /sonr
+
 WORKDIR $HOME
 
+COPY scripts/* /sonr
 # rest server
 EXPOSE 1317
 # tendermint p2p
@@ -66,4 +70,3 @@ EXPOSE 26656
 EXPOSE 26657
 # grpc
 EXPOSE 9090
-ENTRYPOINT ["sonrd"]

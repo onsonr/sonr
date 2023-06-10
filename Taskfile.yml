@@ -55,18 +55,6 @@ tasks:
     cmds:
       - ignite chain build
 
-  serve:
-    desc: Serve the blockchain locally
-    aliases:
-      - "srv"
-    summary: |
-      Serve Blockchain Locally
-
-      This task will serve the blockchain locally. It will also reset the blockchain
-    cmds:
-      - ignite chain serve --home {{.HOME}}/.sonr
-    interactive: true
-
   chain:
     desc: Serve the blockchain locally with verbose logging
     aliases:
@@ -76,7 +64,7 @@ tasks:
 
       This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - ignite chain serve --home {{.HOME}}/.sonr -v --reset-once
+      - docker compose up --abort-on-container-exit --build
     interactive: true
 
   generate:

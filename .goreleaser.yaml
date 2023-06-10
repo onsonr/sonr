@@ -71,3 +71,21 @@ snapcrafts:
   summary: Sonr is a cosmos based blockchain.
   description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
   name: sonr
+  
+dockers:
+  -
+    ids:
+    - core
+    image_templates:
+    - "sonrhq/sonrd:latest"
+    - "sonrhq/sonrd:{{ .Version }}"
+    - "ghcr.io/sonrhq/sonrd:latest"
+    - "ghcr.io/sonrhq/sonrd:{{ .Version }}"
+    - "registry.digitalocean.com/sonrhq/sonrd:latest"
+    - "registry.digitalocean.com/sonrhq/sonrd:{{ .Version }}"
+
+    build_flag_templates:
+    - "--pull"
+    - "--label=org.opencontainers.image.created={{.Date}}"
+    - "--label=org.opencontainers.image.title={{.ProjectName}}"
+    - "--label=org.opencontainers.image.version={{.Version}}"
