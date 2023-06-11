@@ -1,5 +1,5 @@
 # Project information.
-project_name: core
+project_name: sonrd
 release:
   github:
     owner: sonrhq
@@ -16,7 +16,7 @@ before:
 
 # The builds section.
 builds:
-  - id: "core"
+  - id: "sonrd"
     main: ./cmd/sonrd
     binary: sonrd
     goos:
@@ -24,11 +24,8 @@ builds:
       - darwin
     goarch:
       - amd64
-    goarm:
-      - "6"
     flags:
-      - -tags=netgo
-      - -ldflags=-w -s -extldflags "-static"
+      - -ldflags=-w -s -extldflags "-static" -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger"
     env:
       - CGO_ENABLED=0
 
@@ -36,12 +33,13 @@ builds:
 archives:
   - id: "archive"
     builds:
-      - core
+      - sonrd
     format: tar.gz
     files:
       - LICENSE*
       - README.md
       - scripts/*
+    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
 
 # The checksum section.
 checksum:
@@ -71,21 +69,24 @@ snapcrafts:
   summary: Sonr is a cosmos based blockchain.
   description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
   name: sonr
-  
-dockers:
-  -
-    ids:
-    - core
-    image_templates:
-    - "sonrhq/sonrd:latest"
-    - "sonrhq/sonrd:{{ .Version }}"
-    - "ghcr.io/sonrhq/sonrd:latest"
-    - "ghcr.io/sonrhq/sonrd:{{ .Version }}"
-    - "registry.digitalocean.com/sonrhq/sonrd:latest"
-    - "registry.digitalocean.com/sonrhq/sonrd:{{ .Version }}"
-
-    build_flag_templates:
-    - "--pull"
-    - "--label=org.opencontainers.image.created={{.Date}}"
-    - "--label=org.opencontainers.image.title={{.ProjectName}}"
-    - "--label=org.opencontainers.image.version={{.Version}}"
+kos:
+-
+  id: sonrd
+  build: sonrd
+  main: ./cmd/sonrd
+  working_dir: .
+  base_image: alpine
+  labels:
+    org.opencontainers.image.created: '{{ .Date }}'
+    org.opencontainers.image.title: '{{ .ProjectName }}'
+    org.opencontainers.image.version: '{{ .Tag }}'
+    org.opencontainers.image.source: 'https://github.com/sonrhq/core'
+  repository: ghcr.io/sonrhq/sonrd
+  platforms:
+  - linux/amd64
+  - linux/arm64
+  tags:
+  - latest
+  - '{{ .Tag }}'
+  sbom: none
+  bare: true
