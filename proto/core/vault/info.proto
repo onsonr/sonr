@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrhq.core.vault;
+package core.vault;
 
 option go_package = "github.com/sonrhq/core/x/vault/types";
 

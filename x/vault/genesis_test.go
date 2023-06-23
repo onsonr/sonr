@@ -16,10 +16,10 @@ func TestGenesis(t *testing.T) {
 
 		ClaimableWalletList: []types.ClaimableWallet{
 			{
-				Id: 0,
+				Index: 0,
 			},
 			{
-				Id: 1,
+				Index: 1,
 			},
 		},
 		ClaimableWalletCount: 2,

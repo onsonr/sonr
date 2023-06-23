@@ -21,7 +21,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
-				DidDocuments: []types.Identification{
+				DidDocuments: []types.DIDDocument{
 					{
 						Id: "0",
 					},
@@ -29,14 +29,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: "1",
 					},
 				},
-				Relationships: []types.VerificationRelationship{
-					{
-						Reference: "0",
-					},
-					{
-						Reference: "1",
-					},
-				},
+
 
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
@@ -57,7 +50,7 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "invalid claimableWallet count",
 			genState: &types.GenesisState{
-				
+
 			},
 			valid: false,
 		},

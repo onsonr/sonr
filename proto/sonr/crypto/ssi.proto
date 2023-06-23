@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrhq.sonr.crypto;
+package sonr.crypto;
 
 option go_package = "github.com/sonrhq/core/types/crypto";
 

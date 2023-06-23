@@ -6,12 +6,10 @@ import (
 	"strconv"
 	"testing"
 
-	keepertest "github.com/sonrhq/core/testutil/keeper"
 	testutil "github.com/sonrhq/core/testutil/keeper"
 	"github.com/sonrhq/core/testutil/nullify"
 	"github.com/sonrhq/core/x/identity/keeper"
 	"github.com/sonrhq/core/x/identity/types"
-	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -21,8 +19,8 @@ func RemoveIndex(s []types.Identification, index int) []types.Identification {
 	return append(s[:index], s[index+1:]...)
 }
 
-func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.Identification {
-	items := make([]types.Identification, n)
+func createDidDocumentsWithPrefix(keeper *keeper.Keeper, ctx sdk.Context, prefix string, n int) []types.DIDDocument {
+	items := make([]types.DIDDocument, n)
 	for i := range items {
 		id := fmt.Sprintf("did:snr:%s%d", prefix, i)
 		items[i].Id = id
@@ -58,8 +56,8 @@ func TestKeeperTestSuite(t *testing.T) {
 	suite.Run(t, new(KeeperTestSuite))
 }
 
-func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.Identification {
-	items := make([]types.Identification, n)
+func createNDidDocument(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.DIDDocument {
+	items := make([]types.DIDDocument, n)
 	for i := range items {
 		items[i].Id = strconv.Itoa(i)
 		items[i].AlsoKnownAs = []string{strconv.Itoa(i)}
@@ -101,55 +99,4 @@ func (suite *KeeperTestSuite) TestGetParams() {
 	params := types.DefaultParams()
 	keeper.SetParams(ctx, params)
 	suite.Assert().EqualValues(params, keeper.GetParams(ctx))
-}
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  Wallet Claims                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
-func createNClaimableWallet(keeper *keeper.Keeper, ctx sdk.Context, n int) []types.ClaimableWallet {
-	items := make([]types.ClaimableWallet, n)
-	for i := range items {
-		items[i].Id = keeper.AppendClaimableWallet(ctx, items[i])
-	}
-	return items
-}
-
-func TestClaimableWalletGet(t *testing.T) {
-	keeper, ctx := keepertest.IdentityKeeper(t)
-	items := createNClaimableWallet(keeper, ctx, 10)
-	for _, item := range items {
-		got, found := keeper.GetClaimableWallet(ctx, item.Id)
-		require.True(t, found)
-		require.Equal(t,
-			nullify.Fill(&item),
-			nullify.Fill(&got),
-		)
-	}
-}
-
-func TestClaimableWalletRemove(t *testing.T) {
-	keeper, ctx := keepertest.IdentityKeeper(t)
-	items := createNClaimableWallet(keeper, ctx, 10)
-	for _, item := range items {
-		keeper.RemoveClaimableWallet(ctx, item.Id)
-		_, found := keeper.GetClaimableWallet(ctx, item.Id)
-		require.False(t, found)
-	}
-}
-
-func TestClaimableWalletGetAll(t *testing.T) {
-	keeper, ctx := keepertest.IdentityKeeper(t)
-	items := createNClaimableWallet(keeper, ctx, 10)
-	require.ElementsMatch(t,
-		nullify.Fill(items),
-		nullify.Fill(keeper.GetAllClaimableWallet(ctx)),
-	)
-}
-
-func TestClaimableWalletCount(t *testing.T) {
-	keeper, ctx := keepertest.IdentityKeeper(t)
-	items := createNClaimableWallet(keeper, ctx, 10)
-	count := uint64(len(items))
-	require.Equal(t, count, keeper.GetClaimableWalletCount(ctx))
 }

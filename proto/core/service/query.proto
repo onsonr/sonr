@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.service;
+package core.service;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -8,6 +8,10 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/service/genesis.proto";
 import "core/service/record.proto";
 import "core/identity/did.proto";
+import "core/vault/sfs.proto";
+import "core/service/credential.proto";
+import "core/service/org.proto";
+
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Query defines the gRPC querier service.
@@ -15,6 +19,12 @@ service Query {
   // Returns the `x/service` module parameters.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/service";
+  }
+
+  // Lists all known ServiceRecord items.
+  rpc ListServiceOrganizations(ListServiceOrganizationsRequest)
+      returns (ListServiceOrganizationsResponse) {
+    option (google.api.http).get = "/core/org";
   }
 
   // Lists all known ServiceRecord items.
@@ -96,6 +106,16 @@ message ListServiceRecordsResponse {
            cosmos.base.query.v1beta1.PageResponse pagination    = 2;
 }
 
+message ListServiceOrganizationsRequest {
+           cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message ListServiceOrganizationsResponse {
+           repeated ServiceOrganization serviceRecord = 1
+               [ (gogoproto.nullable) = false ];
+           cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
 message QueryGetServiceRelationshipRequest {
   string origin = 1;
 }
@@ -145,7 +165,8 @@ message RegisterUserResponse {
   string did = 1;
   core.identity.DIDDocument identity = 2;
   string alias = 3;
-  string jwt = 4;
+  WebauthnCredential webauthn_credential = 4;
+  core.vault.VaultKeyshare vault_keyshare = 5;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -161,5 +182,6 @@ message AuthenticateUserResponse {
   string did = 1;
   core.identity.DIDDocument identity = 2;
   string alias = 3;
-  string jwt = 4;
+  WebauthnCredential webauthn_credential = 4;
+  core.vault.VaultKeyshare vault_keyshare = 5;
 }

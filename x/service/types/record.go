@@ -4,6 +4,8 @@ package types
 
 import (
 	"encoding/json"
+	"net/url"
+	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
 	idtypes "github.com/sonrhq/core/x/identity/types"
@@ -89,7 +91,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Web
 		return nil, err
 	}
 
-	err = pcc.Verify(chal, false, vm.RelyingPartyEntity().ID, []string{vm.Origin})
+	err = pcc.Verify(chal, false, vm.RelyingPartyEntity().ID, vm.Origins)
 	if err != nil {
 		return makeCredentialFromCreationData(pcc), err
 	}
@@ -97,16 +99,37 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Web
 }
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes.VerificationMethod) error {
+func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes.VerificationMethod) (*WebauthnCredential, error) {
 	var ccr protocol.CredentialAssertionResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	pca, err := ccr.Parse()
 	if err != nil {
-		return err
+		return nil, err
 	}
-	makeCredentialFromAssertionData(pca)
-	return nil
+	cred := makeCredentialFromAssertionData(pca)
+	return cred, nil
+}
+
+// GetBaseOrigin returns the origin url without a subdomain
+func (vm *ServiceRecord) GetBaseOrigin() string {
+    for _, origin := range vm.Origins {
+        u, err := url.Parse(origin)
+        if err != nil {
+            continue // skip invalid URLs
+        }
+
+        hostparts := strings.Split(u.Hostname(), ".")
+        if len(hostparts) > 2 {
+            // Remove subdomain
+            baseHost := strings.Join(hostparts[len(hostparts)-2:], ".")
+            u.Host = baseHost
+        }
+
+        return u.String()
+    }
+
+    return "" // return empty string if no valid URLs
 }

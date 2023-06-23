@@ -49,11 +49,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		Params: types.DefaultParams(),
 		ClaimableWalletList: []types.ClaimableWallet{
 			{
-				Id:      0,
+				Index:      0,
 				Creator: sample.AccAddress(),
 			},
 			{
-				Id:      1,
+				Index:      1,
 				Creator: sample.AccAddress(),
 			},
 		},

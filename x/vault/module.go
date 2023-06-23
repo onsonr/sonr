@@ -171,7 +171,7 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	// and done channel.
 	cw := am.blocker.Pop()
 	if cw != nil {
-		ctx.Logger().Info("(x/vault) minted claimable wallet", "publicKey", cw.PublicKey)
+		ctx.Logger().Info("(x/vault) minted claimable wallet", "publicKey", cw.Did)
 		am.keeper.AppendClaimableWallet(ctx, *cw)
 		am.bankKeeper.MintCoins(ctx, "identity", sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(5))))
 	}

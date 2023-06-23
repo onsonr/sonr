@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"strings"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -43,6 +44,35 @@ func (k Keeper) ListServiceRecords(goCtx context.Context, req *types.ListService
 	return &types.ListServiceRecordsResponse{ServiceRecord: serviceRecords, Pagination: pageRes}, nil
 }
 
+func (k Keeper) ListServiceOrganizations(goCtx context.Context, req *types.ListServiceOrganizationsRequest) (*types.ListServiceOrganizationsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var serviceRecords []types.ServiceRecord
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := ctx.KVStore(k.storeKey)
+	serviceRecordStore := prefix.NewStore(store, types.KeyPrefix(types.ServiceRecordKeyPrefix))
+
+	pageRes, err := query.Paginate(serviceRecordStore, req.Pagination, func(key []byte, value []byte) error {
+		var serviceRecord types.ServiceRecord
+		if err := k.cdc.Unmarshal(value, &serviceRecord); err != nil {
+			return err
+		}
+
+		serviceRecords = append(serviceRecords, serviceRecord)
+		return nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.ListServiceOrganizationsResponse{Pagination: pageRes}, nil
+}
+
+
 func (k Keeper) ServiceRecord(goCtx context.Context, req *types.QueryServiceRecordRequest) (*types.QueryServiceRecordResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -60,6 +90,9 @@ func (k Keeper) ServiceRecord(goCtx context.Context, req *types.QueryServiceReco
 	return &types.QueryServiceRecordResponse{ServiceRecord: val}, nil
 }
 
+
+// This function is a gRPC query handler that retrieves the service relationships for a given origin URL. It takes in a context and a request object of type `types.QueryGetServiceRelationshipRequest`, and returns a response object of type `types.QueryGetServiceRelationshipResponse`
+// containing the service relationships for the requested origin URL. If the requested origin URL is not found, it returns an error.
 func (k Keeper) ServiceRelationship(goCtx context.Context, req *types.QueryGetServiceRelationshipRequest) (*types.QueryGetServiceRelationshipResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -85,7 +118,7 @@ func (k Keeper) ServiceAttestation(goCtx context.Context, req *types.GetServiceA
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	rec, ok := k.GetServiceRecord(ctx, req.Origin)
+	rec, ok := k.GetServiceRecord(ctx, cleanOriginUrl(req.Origin))
 	if !ok {
 		return nil, types.ErrServiceRecordNotFound
 	}
@@ -110,7 +143,7 @@ func (k Keeper) ServiceAttestation(goCtx context.Context, req *types.GetServiceA
 		AttestionOptions: attestionOpts,
 		Challenge:        chal.String(),
 		Origin:           req.Origin,
-		UcwId:            ucw.Id,
+		UcwId:            ucw.Index,
 		Alias:            req.Alias,
 	}, nil
 }
@@ -126,14 +159,14 @@ func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.GetServiceAss
 	if !ok {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "alias not found")
 	}
-	rec, ok := k.GetServiceRecord(ctx, req.Origin)
+	rec, ok := k.GetServiceRecord(ctx, cleanOriginUrl(req.Origin))
 	if !ok {
 		return nil, types.ErrServiceRecordNotFound
 	}
 
-	didDoc, err := k.identityKeeper.ResolveIdentity(ctx, id.GetId())
-	if err != nil {
-		return nil, err
+	didDoc, ok := k.identityKeeper.GetIdentity(ctx, id.GetId())
+	if !ok {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "did doc not found")
 	}
 	vms := make([]protocol.CredentialDescriptor, 0)
 	for _, vm := range didDoc.Authentication {
@@ -157,4 +190,11 @@ func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.GetServiceAss
 		Origin:           req.Origin,
 		Did:              id.GetId(),
 	}, nil
+}
+
+// Removes www. and https:// from the origin url
+func cleanOriginUrl(url string) string {
+	url = strings.Replace(url, "www.", "", 1)
+	url = strings.Replace(url, "https://", "", 1)
+	return url
 }

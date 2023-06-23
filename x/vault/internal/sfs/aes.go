@@ -5,7 +5,10 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 
+	"github.com/sonrhq/core/x/vault/internal/mpc"
 	"github.com/sonrhq/core/x/vault/types"
+	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
+	"lukechampine.com/blake3"
 )
 
 // The function encrypts data using the AES encryption algorithm with a given key.
@@ -51,55 +54,18 @@ func decryptAES(key, data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-// The function inserts a keyshare into a table and returns an error if there is one.
-func insertAESKeyshare(ks types.KeyShare, secret_key []byte) {
-	dat := ks.Bytes()
-	datCh := make(chan []byte)
-	errCh := make(chan error)
-	go func() {
-		encDat, err := encryptAES(secret_key, dat)
-		if err != nil {
-			errCh <- err
-			return
-		}
-		datCh <- encDat
-	}()
-	encDat := <-datCh
-	err := <-errCh
-	_, err = ksTable.Put(ctx, types.KeysharePrefix(ks.Did()), encDat)
+func generateEncryptionKey(shortId string, kss ...types.KeyShare) ([]byte, error) {
+	sig, err := mpc.SignCMP(convertToCmpConfigs(kss...), []byte(shortId))
 	if err != nil {
-		return
+		return nil, err
 	}
-	return
+	hashDerivKey := blake3.Sum256(sig)
+	return hashDerivKey[:], nil
 }
 
-// The function retrieves a keyshare from a table using the keyshare's DID and returns it as a
-// model.
-func getAESKeyshare(ksDid string, secret_key []byte) (types.KeyShare, error) {
-	ksr, err := types.ParseKeyShareDID(ksDid)
-	if err != nil {
-		return nil, err
+func convertToCmpConfigs(kss ...types.KeyShare) (val []*cmp.Config) {
+	for _, ks := range kss {
+		val = append(val, ks.CMPConfig())
 	}
-	vBizch := make(chan []byte)
-	errCh := make(chan error)
-	go func() {
-		vEnc, err := ksTable.Get(ctx, types.KeysharePrefix(ksDid))
-		if err != nil {
-			errCh <- err
-			return
-		}
-		vBiz, err := decryptAES(secret_key, vEnc)
-		if err != nil {
-			errCh <- err
-			return
-		}
-		vBizch <- vBiz
-	}()
-	vBiz := <-vBizch
-	err = <-errCh
-	ks, err := types.NewKeyshare(ksDid, vBiz, ksr.CoinType)
-	if err != nil {
-		return nil, err
-	}
-	return ks, nil
+	return val
 }

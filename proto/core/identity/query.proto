@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.identity;
+package core.identity;
 
 import "core/identity/did.proto";
 import "core/identity/genesis.proto";
@@ -20,32 +20,32 @@ service Query {
     option (google.api.http).get = "/core/params/identity";
   }
 
-  // Get All Sonr Identifications `did:sonr:...`
+  // Get All Sonr DIDDocuments `did:sonr:...`
   rpc DidAll(QueryAllDidRequest) returns (QueryAllDidResponse) {
     option (google.api.http).get = "/core/id";
   }
 
-  // Get All Wallet Identifications for Bitcoin `did:btcr:...`
+  // Get All Wallet DIDDocuments for Bitcoin `did:btcr:...`
   rpc DidAllBtc(QueryAllDidRequest) returns (QueryAllDidResponse) {
     option (google.api.http).get = "/core/id/btc";
   }
 
-  // Get All Wallet Identifications for Ethereum `did:ethr:...`
+  // Get All Wallet DIDDocuments for Ethereum `did:ethr:...`
   rpc DidAllEth(QueryAllDidRequest) returns (QueryAllDidResponse) {
     option (google.api.http).get = "/core/id/eth";
   }
 
-  // Returns Identification based on a DID
+  // Returns DIDDocument based on a DID
   rpc Did (QueryGetDidRequest) returns (QueryGetDidResponse) {
     option (google.api.http).get = "/core/id/{did}";
   }
 
-  // Returns Identification based on an owner
+  // Returns DIDDocument based on an owner
   rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
     option (google.api.http).get = "/core/id/owner/{owner}";
   }
 
-  // Returns Identification based on an alias *only Sonr Identities
+  // Returns DIDDocument based on an alias *only Sonr Identities
   rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
     option (google.api.http).get = "/core/id/alias/{alias}";
   }
@@ -115,7 +115,7 @@ message QueryGetDidRequest {
 
 message QueryGetDidResponse {
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  Identification didDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryDidByAlsoKnownAsRequest {
@@ -125,7 +125,7 @@ message QueryDidByAlsoKnownAsRequest {
 
 message QueryDidByAlsoKnownAsResponse {
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  Identification didDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 message QueryAllDidRequest {
@@ -133,7 +133,7 @@ message QueryAllDidRequest {
 }
 
 message QueryAllDidResponse {
-  repeated Identification                            didDocument = 1 [(gogoproto.nullable) = false];
+  repeated DIDDocument                            didDocument = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination  = 2;
 }
 
@@ -144,7 +144,7 @@ message QueryAliasAvailableRequest {
 
 message QueryAliasAvailableResponse {
   bool        available         = 1;
-  Identification existing_document = 2 [(gogoproto.nullable) = true];
+  DIDDocument existing_document = 2 [(gogoproto.nullable) = true];
 }
 
 message QueryDidByOwnerRequest {
@@ -152,7 +152,7 @@ message QueryDidByOwnerRequest {
 }
 
 message QueryDidByOwnerResponse {
-  Identification didDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
 }
 
 // !

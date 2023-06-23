@@ -14,7 +14,7 @@ func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
 
-		DidDocuments: []types.Identification{
+		DidDocuments: []types.DIDDocument{
 			{
 				Id: "0",
 			},

@@ -6,7 +6,6 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	_ "github.com/ipld/go-ipld-prime/codec/dagcbor"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/x/vault/internal/mpc"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
@@ -33,6 +32,9 @@ type Account interface {
 	// GetAuthInfo creates an AuthInfo for a transaction
 	GetAuthInfo(gas sdk.Coins) (*txtypes.AuthInfo, error)
 
+	// GetAccountInfo returns the proto representation of the account
+	GetAccountInfo() *AccountInfo
+
 	// ListKeyShares returns the list of keyshares of the account as a list of string dids
 	ListKeyShares() []string
 
@@ -47,9 +49,6 @@ type Account interface {
 
 	// Signs a cosmos transaction
 	SignCosmosTx(msgs ...sdk.Msg) ([]byte, error)
-
-	// ToProto returns the proto representation of the account
-	ToProto() *AccountInfo
 
 	// Type returns the type of the account
 	Type() string
@@ -72,7 +71,7 @@ type account struct {
 // ! ||--------------------------------------------------------------------------------||
 
 // NewAccount creates a new account
-func NewAccount(kss []KeyShare, ct crypto.CoinType) Account {
+func NewAccount(ct crypto.CoinType, kss ...KeyShare) Account {
 	return &account{kss: kss, n: 0, p: "", ct: ct}
 }
 
@@ -94,14 +93,14 @@ func (a *account) DeriveAccount(ct crypto.CoinType, idx int, name string) (Accou
 	go func() {
 		var newKss []KeyShare
 		for _, oldks := range a.kss {
-			ks, err := oldks.DeriveBip44(ct, idx, name)
+			ks, err := oldks.DeriveBip44(ct.BipPath(), idx, name)
 			if err != nil {
 				errCh <- err
 				return
 			}
 			newKss = append(newKss, ks)
 		}
-		newAccCh <- NewAccount(newKss, ct)
+		newAccCh <- NewAccount(ct, newKss...)
 	}()
 
 	// Create the new models.Account and map the keyshares to the resolver
@@ -148,7 +147,7 @@ func (wa *account) PubKey() *crypto.PubKey {
 func (wa *account) Sign(bz []byte) ([]byte, error) {
 	var configs []*cmp.Config
 	for _, ks := range wa.kss {
-		configs = append(configs, ks.Config())
+		configs = append(configs, ks.CMPConfig())
 	}
 	return mpc.SignCMP(configs, bz)
 }
@@ -161,8 +160,8 @@ func (wa *account) SignCosmosTx(msgs ...sdk.Msg) ([]byte, error) {
 	return SignAnyTransactions(wa, msgs...)
 }
 
-// ToProto returns the proto representation of the account
-func (wa *account) ToProto() *AccountInfo {
+// GetAccountInfo returns the proto representation of the account
+func (wa *account) GetAccountInfo() *AccountInfo {
 	return &AccountInfo{
 		Address:   wa.Address(),
 		CoinType:  wa.CoinType().String(),
@@ -186,7 +185,7 @@ func (wa *account) Verify(bz []byte, sig []byte) (bool, error) {
 	if uks == nil {
 		return false, fmt.Errorf("no unlocked keyshares")
 	}
-	return mpc.VerifyCMP(uks.Config(), bz, sig)
+	return mpc.VerifyCMP(uks.CMPConfig(), bz, sig)
 }
 
 // ! ||--------------------------------------------------------------------------------||

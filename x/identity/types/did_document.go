@@ -3,73 +3,27 @@ package types
 import (
 	"strings"
 
-	"github.com/sonrhq/core/types/crypto"
+	crypto "github.com/sonrhq/core/internal/crypto"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 // NewDIDDocument creates a new DIDDocument from an Identification and optional VerificationRelationships
-func NewDIDDocument(identification *Identification, relationships ...*VerificationRelationship) *DIDDocument {
+func NewDIDDocument(primaryAccount vaulttypes.Account, authentication *VerificationMethod, alias string) *DIDDocument {
 	params := DefaultParams()
 	didDoc := &DIDDocument{
-		Id:                   identification.Id,
+		Id:                   primaryAccount.Did(),
 		Context:              []string{params.AccountDidMethodContext, params.DidBaseContext},
 		Authentication:       make([]*VerificationRelationship, 0),
 		AssertionMethod:      make([]*VerificationRelationship, 0),
 		CapabilityInvocation: make([]*VerificationRelationship, 0),
 		CapabilityDelegation: make([]*VerificationRelationship, 0),
-		Controller:           []string{identification.Owner},
-		AlsoKnownAs:          []string{identification.PrimaryAlias},
+		Controller:           []string{authentication.Id},
+		AlsoKnownAs:          []string{alias},
 		Metadata:             "",
 	}
-
-	for _, relationship := range relationships {
-		switch relationship.Type {
-		case AuthenticationRelationshipName:
-			didDoc.Authentication = append(didDoc.Authentication, relationship)
-		case AssertionRelationshipName:
-			didDoc.AssertionMethod = append(didDoc.AssertionMethod, relationship)
-		case CapabilityInvocationRelationshipName:
-			didDoc.CapabilityInvocation = append(didDoc.CapabilityInvocation, relationship)
-		case CapabilityDelegationRelationshipName:
-			didDoc.CapabilityDelegation = append(didDoc.CapabilityDelegation, relationship)
-		case KeyAgreementRelationshipName:
-			didDoc.KeyAgreement = append(didDoc.KeyAgreement, relationship)
-		default:
-			continue
-		}
-	}
+	didDoc.LinkAuthenticationMethod(authentication)
+	didDoc.LinkCapabilityInvocationFromVaultAccount(primaryAccount)
 	return didDoc
-}
-
-// ToIdentification converts all the VerificationRelationships in the DIDDocument to an Identification string arrays for ID
-func (d *DIDDocument) ToIdentification() *Identification {
-	id := &Identification{
-		Id:                   d.Id,
-		Owner:                d.Controller[0],
-		PrimaryAlias:         d.AlsoKnownAs[0],
-		Authentication:       make([]string, 0),
-		AssertionMethod:      make([]string, 0),
-		CapabilityInvocation: make([]string, 0),
-		CapabilityDelegation: make([]string, 0),
-		KeyAgreement:         make([]string, 0),
-	}
-
-	for _, relationship := range d.Authentication {
-		id.Authentication = append(id.Authentication, relationship.Reference)
-	}
-	for _, relationship := range d.AssertionMethod {
-		id.AssertionMethod = append(id.AssertionMethod, relationship.Reference)
-	}
-	for _, relationship := range d.CapabilityInvocation {
-		id.CapabilityInvocation = append(id.CapabilityInvocation, relationship.Reference)
-	}
-	for _, relationship := range d.CapabilityDelegation {
-		id.CapabilityDelegation = append(id.CapabilityDelegation, relationship.Reference)
-	}
-	for _, relationship := range d.KeyAgreement {
-		id.KeyAgreement = append(id.KeyAgreement, relationship.Reference)
-	}
-	return id
 }
 
 // SearchRelationshipsByCoinType returns all verification relationships of a given the query options
@@ -104,14 +58,6 @@ func (d *DIDDocument) SearchRelationshipsByCoinType(coinType crypto.CoinType) []
 	return relationships
 }
 
-// AddCapabilityInvocationForAccount adds a new VerificationRelationship to the DIDDocument
-func (d *DIDDocument) AddCapabilityInvocationForAccount(account vaulttypes.Account) *VerificationRelationship {
-	vm := NewVerificationMethodFromVaultAccount(account, d.Id)
-	vr := NewCapabilityInvocationRelationship(vm)
-	d.CapabilityInvocation = append(d.CapabilityInvocation, &vr)
-	return &vr
-}
-
 // ListAuthenticationVerificationMethods returns all the VerificationMethods for the AuthenticationRelationships
 func (d *DIDDocument) ListAuthenticationVerificationMethods() []*VerificationMethod {
 	vms := make([]*VerificationMethod, 0)
@@ -119,4 +65,127 @@ func (d *DIDDocument) ListAuthenticationVerificationMethods() []*VerificationMet
 		vms = append(vms, relationship.VerificationMethod)
 	}
 	return vms
+}
+
+// Address returns the address of the DIDDocument
+func (d *DIDDocument) Address() string {
+	return strings.Split(d.Id, ":")[2]
+}
+
+// LinkAuthenticationMethod adds a VerificationMethod to the Authentication list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the Authentication list
+func (id *DIDDocument) LinkAuthenticationMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, auth := range id.Authentication {
+		if auth.Reference == vm.Id {
+			return nil, false
+		}
+	}
+	vm.Controller = id.Id
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               AuthenticationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.Authentication = append(id.Authentication, vr)
+	return vr, true
+}
+
+// LinkAssertionMethod adds a VerificationMethod to the AssertionMethod list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the AssertionMethod list
+func (id *DIDDocument) LinkAssertionMethod(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, assertionMethod := range id.AssertionMethod {
+		if assertionMethod.Reference == vm.Id {
+			return nil, false
+		}
+	}
+
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               AssertionRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.AssertionMethod = append(id.AssertionMethod, vr)
+	return vr, true
+}
+
+// LinkCapabilityDelegation adds a VerificationMethod to the CapabilityDelegation list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the CapabilityDelegation list
+func (id *DIDDocument) LinkCapabilityDelegation(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, capabilityDelegation := range id.CapabilityDelegation {
+		if capabilityDelegation.Reference == vm.Id {
+			return nil, false
+		}
+	}
+
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               CapabilityDelegationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.CapabilityDelegation = append(id.CapabilityDelegation, vr)
+	return vr, true
+}
+
+// LinkCapabilityInvocation adds a VerificationMethod to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the CapabilityInvocation list
+func (id *DIDDocument) LinkCapabilityInvocation(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, capabilityInvocation := range id.CapabilityInvocation {
+		if capabilityInvocation.Reference == vm.Id {
+			return nil, false
+		}
+	}
+
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               CapabilityInvocationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.CapabilityInvocation = append(id.CapabilityInvocation, vr)
+	return vr, true
+}
+
+// LinkCapabilityInvocationFromVaultAccount adds a Vault Account to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
+func (id *DIDDocument) LinkCapabilityInvocationFromVaultAccount(accounts ...vaulttypes.Account) ([]*VerificationRelationship, bool) {
+	vrs := make([]*VerificationRelationship, 0)
+	for _, account := range accounts {
+	vm := &VerificationMethod{
+		Id:                  account.Did(),
+		Type:                crypto.Ed25519KeyType.FormatString(),
+		Controller:          id.Id,
+		PublicKeyMultibase:  account.PubKey().Multibase(),
+		BlockchainAccountId: account.Address(),
+	}
+	vr := &VerificationRelationship{
+		Reference:          account.Did(),
+		Type:               CapabilityInvocationRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.CapabilityInvocation = append(id.CapabilityInvocation, vr)
+	vrs = append(vrs, vr)
+}
+	return vrs, true
+}
+
+// LinkKeyAgreement adds a VerificationMethod to the KeyAgreement list of the DID Document and returns the VerificationRelationship
+// Returns nil if the VerificationMethod is already in the KeyAgreement list
+func (id *DIDDocument) LinkKeyAgreement(vm *VerificationMethod) (*VerificationRelationship, bool) {
+	for _, keyAgreement := range id.KeyAgreement {
+		if keyAgreement.Reference == vm.Id {
+			return nil, false
+		}
+	}
+
+	vr := &VerificationRelationship{
+		Reference:          vm.Id,
+		Type:               KeyAgreementRelationshipName,
+		VerificationMethod: vm,
+		Owner:              id.Id,
+	}
+	id.KeyAgreement = append(id.KeyAgreement, vr)
+	return vr, true
 }

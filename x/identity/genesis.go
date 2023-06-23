@@ -12,9 +12,6 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.DidDocuments {
 		k.SetIdentity(ctx, elem)
 	}
-	for _, elem := range genState.Relationships {
-		k.SetAuthentication(ctx, elem)
-	}
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetParams(ctx, genState.Params)
 }
@@ -25,7 +22,6 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 	genesis.Params = k.GetParams(ctx)
 
 	genesis.DidDocuments = k.GetAllIdentities(ctx)
-	genesis.Relationships = k.GetAllAuthentication(ctx)
 
 	// this line is used by starport scaffolding # genesis/module/export
 

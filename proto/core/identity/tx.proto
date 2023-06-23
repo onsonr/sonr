@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.identity;
+package core.identity;
 
 import "core/identity/did.proto";
 

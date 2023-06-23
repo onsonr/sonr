@@ -25,7 +25,7 @@ func ParseKeyShareDID(name string) (*KeyShareParseResult, error) {
 	ct := crypto.CoinTypeFromDidMethod(parts[1])
 
 	// Split the account address and keyshare name
-	parts = strings.Split(parts[2], "#ks-")
+	parts = strings.Split(parts[2], "#")
 	if len(parts) != 2 {
 		return nil, fmt.Errorf("invalid keyshare DID: %s", name)
 	}

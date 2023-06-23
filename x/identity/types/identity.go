@@ -67,7 +67,7 @@ func (id *Identification) LinkAccountFromVault(account vaulttypes.Account) (*Ver
 		Reference:          vm.Id,
 		Type:               CapabilityInvocationRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }
@@ -85,7 +85,7 @@ func (id *Identification) LinkAuthenticationMethod(vm *VerificationMethod) (*Ver
 		Reference:          vm.Id,
 		Type:               AuthenticationRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }
@@ -103,7 +103,7 @@ func (id *Identification) LinkAssertionMethod(vm *VerificationMethod) (*Verifica
 		Reference:          vm.Id,
 		Type:               AssertionRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }
@@ -121,7 +121,7 @@ func (id *Identification) LinkCapabilityDelegation(vm *VerificationMethod) (*Ver
 		Reference:          vm.Id,
 		Type:              CapabilityDelegationRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }
@@ -141,7 +141,7 @@ func (id *Identification) LinkCapabilityInvocation(vm *VerificationMethod) (*Ver
 		Reference:          vm.Id,
 		Type:              CapabilityInvocationRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }
@@ -159,7 +159,7 @@ func (id *Identification) LinkKeyAgreement(vm *VerificationMethod) (*Verificatio
 		Reference:          vm.Id,
 		Type:               KeyAgreementRelationshipName,
 		VerificationMethod: vm,
-		Owner:              id.Owner,
+		Owner:              id.Id,
 	}
 	return vr, true
 }

@@ -7,10 +7,11 @@ import (
 	context "context"
 	fmt "fmt"
 	query "github.com/cosmos/cosmos-sdk/types/query"
-	_ "github.com/gogo/protobuf/gogoproto"
-	grpc1 "github.com/gogo/protobuf/grpc"
-	proto "github.com/gogo/protobuf/proto"
+	_ "github.com/cosmos/gogoproto/gogoproto"
+	grpc1 "github.com/cosmos/gogoproto/grpc"
+	proto "github.com/cosmos/gogoproto/proto"
 	types "github.com/sonrhq/core/x/identity/types"
+	types1 "github.com/sonrhq/core/x/vault/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -298,6 +299,102 @@ func (m *ListServiceRecordsResponse) GetPagination() *query.PageResponse {
 	return nil
 }
 
+type ListServiceOrganizationsRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *ListServiceOrganizationsRequest) Reset()         { *m = ListServiceOrganizationsRequest{} }
+func (m *ListServiceOrganizationsRequest) String() string { return proto.CompactTextString(m) }
+func (*ListServiceOrganizationsRequest) ProtoMessage()    {}
+func (*ListServiceOrganizationsRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5cf4b2348245f9e3, []int{6}
+}
+func (m *ListServiceOrganizationsRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListServiceOrganizationsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListServiceOrganizationsRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListServiceOrganizationsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceOrganizationsRequest.Merge(m, src)
+}
+func (m *ListServiceOrganizationsRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListServiceOrganizationsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceOrganizationsRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListServiceOrganizationsRequest proto.InternalMessageInfo
+
+func (m *ListServiceOrganizationsRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type ListServiceOrganizationsResponse struct {
+	ServiceRecord []ServiceOrganization `protobuf:"bytes,1,rep,name=serviceRecord,proto3" json:"serviceRecord"`
+	Pagination    *query.PageResponse   `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *ListServiceOrganizationsResponse) Reset()         { *m = ListServiceOrganizationsResponse{} }
+func (m *ListServiceOrganizationsResponse) String() string { return proto.CompactTextString(m) }
+func (*ListServiceOrganizationsResponse) ProtoMessage()    {}
+func (*ListServiceOrganizationsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_5cf4b2348245f9e3, []int{7}
+}
+func (m *ListServiceOrganizationsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ListServiceOrganizationsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ListServiceOrganizationsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ListServiceOrganizationsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceOrganizationsResponse.Merge(m, src)
+}
+func (m *ListServiceOrganizationsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ListServiceOrganizationsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceOrganizationsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ListServiceOrganizationsResponse proto.InternalMessageInfo
+
+func (m *ListServiceOrganizationsResponse) GetServiceRecord() []ServiceOrganization {
+	if m != nil {
+		return m.ServiceRecord
+	}
+	return nil
+}
+
+func (m *ListServiceOrganizationsResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 type QueryGetServiceRelationshipRequest struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 }
@@ -306,7 +403,7 @@ func (m *QueryGetServiceRelationshipRequest) Reset()         { *m = QueryGetServ
 func (m *QueryGetServiceRelationshipRequest) String() string { return proto.CompactTextString(m) }
 func (*QueryGetServiceRelationshipRequest) ProtoMessage()    {}
 func (*QueryGetServiceRelationshipRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{6}
+	return fileDescriptor_5cf4b2348245f9e3, []int{8}
 }
 func (m *QueryGetServiceRelationshipRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -350,7 +447,7 @@ func (m *QueryGetServiceRelationshipResponse) Reset()         { *m = QueryGetSer
 func (m *QueryGetServiceRelationshipResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryGetServiceRelationshipResponse) ProtoMessage()    {}
 func (*QueryGetServiceRelationshipResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{7}
+	return fileDescriptor_5cf4b2348245f9e3, []int{9}
 }
 func (m *QueryGetServiceRelationshipResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -396,7 +493,7 @@ func (m *GetServiceAttestationRequest) Reset()         { *m = GetServiceAttestat
 func (m *GetServiceAttestationRequest) String() string { return proto.CompactTextString(m) }
 func (*GetServiceAttestationRequest) ProtoMessage()    {}
 func (*GetServiceAttestationRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{8}
+	return fileDescriptor_5cf4b2348245f9e3, []int{10}
 }
 func (m *GetServiceAttestationRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -458,7 +555,7 @@ func (m *GetServiceAttestationResponse) Reset()         { *m = GetServiceAttesta
 func (m *GetServiceAttestationResponse) String() string { return proto.CompactTextString(m) }
 func (*GetServiceAttestationResponse) ProtoMessage()    {}
 func (*GetServiceAttestationResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{9}
+	return fileDescriptor_5cf4b2348245f9e3, []int{11}
 }
 func (m *GetServiceAttestationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -532,7 +629,7 @@ func (m *GetServiceAssertionRequest) Reset()         { *m = GetServiceAssertionR
 func (m *GetServiceAssertionRequest) String() string { return proto.CompactTextString(m) }
 func (*GetServiceAssertionRequest) ProtoMessage()    {}
 func (*GetServiceAssertionRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{10}
+	return fileDescriptor_5cf4b2348245f9e3, []int{12}
 }
 func (m *GetServiceAssertionRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -593,7 +690,7 @@ func (m *GetServiceAssertionResponse) Reset()         { *m = GetServiceAssertion
 func (m *GetServiceAssertionResponse) String() string { return proto.CompactTextString(m) }
 func (*GetServiceAssertionResponse) ProtoMessage()    {}
 func (*GetServiceAssertionResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{11}
+	return fileDescriptor_5cf4b2348245f9e3, []int{13}
 }
 func (m *GetServiceAssertionResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -663,7 +760,7 @@ func (m *RegisterUserRequest) Reset()         { *m = RegisterUserRequest{} }
 func (m *RegisterUserRequest) String() string { return proto.CompactTextString(m) }
 func (*RegisterUserRequest) ProtoMessage()    {}
 func (*RegisterUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{12}
+	return fileDescriptor_5cf4b2348245f9e3, []int{14}
 }
 func (m *RegisterUserRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -729,17 +826,18 @@ func (m *RegisterUserRequest) GetChallenge() string {
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 type RegisterUserResponse struct {
-	Did      string             `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Identity *types.DIDDocument `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
-	Alias    string             `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
-	Jwt      string             `protobuf:"bytes,4,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Did                string                `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Identity           *types.DIDDocument    `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
+	Alias              string                `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	WebauthnCredential *WebauthnCredential   `protobuf:"bytes,4,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	VaultKeyshare      *types1.VaultKeyshare `protobuf:"bytes,5,opt,name=vault_keyshare,json=vaultKeyshare,proto3" json:"vault_keyshare,omitempty"`
 }
 
 func (m *RegisterUserResponse) Reset()         { *m = RegisterUserResponse{} }
 func (m *RegisterUserResponse) String() string { return proto.CompactTextString(m) }
 func (*RegisterUserResponse) ProtoMessage()    {}
 func (*RegisterUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{13}
+	return fileDescriptor_5cf4b2348245f9e3, []int{15}
 }
 func (m *RegisterUserResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -789,11 +887,18 @@ func (m *RegisterUserResponse) GetAlias() string {
 	return ""
 }
 
-func (m *RegisterUserResponse) GetJwt() string {
+func (m *RegisterUserResponse) GetWebauthnCredential() *WebauthnCredential {
 	if m != nil {
-		return m.Jwt
+		return m.WebauthnCredential
 	}
-	return ""
+	return nil
+}
+
+func (m *RegisterUserResponse) GetVaultKeyshare() *types1.VaultKeyshare {
+	if m != nil {
+		return m.VaultKeyshare
+	}
+	return nil
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -808,7 +913,7 @@ func (m *AuthenticateUserRequest) Reset()         { *m = AuthenticateUserRequest
 func (m *AuthenticateUserRequest) String() string { return proto.CompactTextString(m) }
 func (*AuthenticateUserRequest) ProtoMessage()    {}
 func (*AuthenticateUserRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{14}
+	return fileDescriptor_5cf4b2348245f9e3, []int{16}
 }
 func (m *AuthenticateUserRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -867,17 +972,18 @@ func (m *AuthenticateUserRequest) GetChallenge() string {
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 type AuthenticateUserResponse struct {
-	Did      string             `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Identity *types.DIDDocument `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
-	Alias    string             `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
-	Jwt      string             `protobuf:"bytes,4,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Did                string                `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Identity           *types.DIDDocument    `protobuf:"bytes,2,opt,name=identity,proto3" json:"identity,omitempty"`
+	Alias              string                `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	WebauthnCredential *WebauthnCredential   `protobuf:"bytes,4,opt,name=webauthn_credential,json=webauthnCredential,proto3" json:"webauthn_credential,omitempty"`
+	VaultKeyshare      *types1.VaultKeyshare `protobuf:"bytes,5,opt,name=vault_keyshare,json=vaultKeyshare,proto3" json:"vault_keyshare,omitempty"`
 }
 
 func (m *AuthenticateUserResponse) Reset()         { *m = AuthenticateUserResponse{} }
 func (m *AuthenticateUserResponse) String() string { return proto.CompactTextString(m) }
 func (*AuthenticateUserResponse) ProtoMessage()    {}
 func (*AuthenticateUserResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_5cf4b2348245f9e3, []int{15}
+	return fileDescriptor_5cf4b2348245f9e3, []int{17}
 }
 func (m *AuthenticateUserResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -927,100 +1033,119 @@ func (m *AuthenticateUserResponse) GetAlias() string {
 	return ""
 }
 
-func (m *AuthenticateUserResponse) GetJwt() string {
+func (m *AuthenticateUserResponse) GetWebauthnCredential() *WebauthnCredential {
 	if m != nil {
-		return m.Jwt
+		return m.WebauthnCredential
 	}
-	return ""
+	return nil
+}
+
+func (m *AuthenticateUserResponse) GetVaultKeyshare() *types1.VaultKeyshare {
+	if m != nil {
+		return m.VaultKeyshare
+	}
+	return nil
 }
 
 func init() {
-	proto.RegisterType((*QueryParamsRequest)(nil), "sonrhq.core.service.QueryParamsRequest")
-	proto.RegisterType((*QueryParamsResponse)(nil), "sonrhq.core.service.QueryParamsResponse")
-	proto.RegisterType((*QueryServiceRecordRequest)(nil), "sonrhq.core.service.QueryServiceRecordRequest")
-	proto.RegisterType((*QueryServiceRecordResponse)(nil), "sonrhq.core.service.QueryServiceRecordResponse")
-	proto.RegisterType((*ListServiceRecordsRequest)(nil), "sonrhq.core.service.ListServiceRecordsRequest")
-	proto.RegisterType((*ListServiceRecordsResponse)(nil), "sonrhq.core.service.ListServiceRecordsResponse")
-	proto.RegisterType((*QueryGetServiceRelationshipRequest)(nil), "sonrhq.core.service.QueryGetServiceRelationshipRequest")
-	proto.RegisterType((*QueryGetServiceRelationshipResponse)(nil), "sonrhq.core.service.QueryGetServiceRelationshipResponse")
-	proto.RegisterType((*GetServiceAttestationRequest)(nil), "sonrhq.core.service.GetServiceAttestationRequest")
-	proto.RegisterType((*GetServiceAttestationResponse)(nil), "sonrhq.core.service.GetServiceAttestationResponse")
-	proto.RegisterType((*GetServiceAssertionRequest)(nil), "sonrhq.core.service.GetServiceAssertionRequest")
-	proto.RegisterType((*GetServiceAssertionResponse)(nil), "sonrhq.core.service.GetServiceAssertionResponse")
-	proto.RegisterType((*RegisterUserRequest)(nil), "sonrhq.core.service.RegisterUserRequest")
-	proto.RegisterType((*RegisterUserResponse)(nil), "sonrhq.core.service.RegisterUserResponse")
-	proto.RegisterType((*AuthenticateUserRequest)(nil), "sonrhq.core.service.AuthenticateUserRequest")
-	proto.RegisterType((*AuthenticateUserResponse)(nil), "sonrhq.core.service.AuthenticateUserResponse")
+	proto.RegisterType((*QueryParamsRequest)(nil), "core.service.QueryParamsRequest")
+	proto.RegisterType((*QueryParamsResponse)(nil), "core.service.QueryParamsResponse")
+	proto.RegisterType((*QueryServiceRecordRequest)(nil), "core.service.QueryServiceRecordRequest")
+	proto.RegisterType((*QueryServiceRecordResponse)(nil), "core.service.QueryServiceRecordResponse")
+	proto.RegisterType((*ListServiceRecordsRequest)(nil), "core.service.ListServiceRecordsRequest")
+	proto.RegisterType((*ListServiceRecordsResponse)(nil), "core.service.ListServiceRecordsResponse")
+	proto.RegisterType((*ListServiceOrganizationsRequest)(nil), "core.service.ListServiceOrganizationsRequest")
+	proto.RegisterType((*ListServiceOrganizationsResponse)(nil), "core.service.ListServiceOrganizationsResponse")
+	proto.RegisterType((*QueryGetServiceRelationshipRequest)(nil), "core.service.QueryGetServiceRelationshipRequest")
+	proto.RegisterType((*QueryGetServiceRelationshipResponse)(nil), "core.service.QueryGetServiceRelationshipResponse")
+	proto.RegisterType((*GetServiceAttestationRequest)(nil), "core.service.GetServiceAttestationRequest")
+	proto.RegisterType((*GetServiceAttestationResponse)(nil), "core.service.GetServiceAttestationResponse")
+	proto.RegisterType((*GetServiceAssertionRequest)(nil), "core.service.GetServiceAssertionRequest")
+	proto.RegisterType((*GetServiceAssertionResponse)(nil), "core.service.GetServiceAssertionResponse")
+	proto.RegisterType((*RegisterUserRequest)(nil), "core.service.RegisterUserRequest")
+	proto.RegisterType((*RegisterUserResponse)(nil), "core.service.RegisterUserResponse")
+	proto.RegisterType((*AuthenticateUserRequest)(nil), "core.service.AuthenticateUserRequest")
+	proto.RegisterType((*AuthenticateUserResponse)(nil), "core.service.AuthenticateUserResponse")
 }
 
 func init() { proto.RegisterFile("core/service/query.proto", fileDescriptor_5cf4b2348245f9e3) }
 
 var fileDescriptor_5cf4b2348245f9e3 = []byte{
-	// 1023 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x97, 0xcf, 0x6f, 0x1b, 0x45,
-	0x14, 0xc7, 0x33, 0x75, 0x6c, 0xc5, 0xaf, 0x44, 0x98, 0x89, 0x9b, 0x3a, 0x1b, 0x63, 0xc2, 0x82,
-	0x52, 0x53, 0xda, 0x9d, 0x26, 0x11, 0xd0, 0xa2, 0x22, 0xd1, 0x2a, 0xa2, 0xaa, 0xc4, 0x8f, 0xb0,
-	0x88, 0x0b, 0x97, 0x68, 0xbd, 0x1e, 0xd6, 0x83, 0xec, 0x1d, 0x67, 0x67, 0xdc, 0x60, 0x55, 0xbd,
-	0xc0, 0x09, 0x09, 0x89, 0x8a, 0x8a, 0x0b, 0x37, 0xae, 0x08, 0x89, 0x53, 0xf9, 0x1b, 0x7a, 0xac,
-	0xc4, 0x85, 0x13, 0x42, 0x09, 0x7f, 0x08, 0xf2, 0xec, 0xac, 0x77, 0xd7, 0xde, 0xb5, 0xdd, 0x56,
-	0xa8, 0x37, 0xef, 0xbc, 0x5f, 0x9f, 0xf7, 0x9d, 0x9d, 0x79, 0x6b, 0xa8, 0xb9, 0x3c, 0xa0, 0x44,
-	0xd0, 0xe0, 0x0e, 0x73, 0x29, 0x39, 0x1a, 0xd0, 0x60, 0x68, 0xf5, 0x03, 0x2e, 0x39, 0x5e, 0x13,
-	0xdc, 0x0f, 0x3a, 0x47, 0xd6, 0xc8, 0xc1, 0xd2, 0x0e, 0x46, 0xd5, 0xe3, 0x1e, 0x57, 0x76, 0x32,
-	0xfa, 0x15, 0xba, 0x1a, 0x75, 0x8f, 0x73, 0xaf, 0x4b, 0x89, 0xd3, 0x67, 0xc4, 0xf1, 0x7d, 0x2e,
-	0x1d, 0xc9, 0xb8, 0x2f, 0xb4, 0xf5, 0xa2, 0xcb, 0x45, 0x8f, 0x0b, 0xd2, 0x72, 0x84, 0xae, 0x40,
-	0xee, 0xec, 0xb4, 0xa8, 0x74, 0x76, 0x48, 0xdf, 0xf1, 0x98, 0xaf, 0x9c, 0xb5, 0xaf, 0x91, 0xc2,
-	0xf1, 0xa8, 0x4f, 0x05, 0x8b, 0xf2, 0x6c, 0xa4, 0x6c, 0x01, 0x75, 0x79, 0xd0, 0xd6, 0xa6, 0xf3,
-	0xca, 0xc4, 0xda, 0xd4, 0x97, 0x4c, 0x0e, 0x49, 0x9b, 0x69, 0x83, 0x59, 0x05, 0xfc, 0xe9, 0xa8,
-	0xe2, 0x81, 0x13, 0x38, 0x3d, 0x61, 0xd3, 0xa3, 0x01, 0x15, 0xd2, 0x3c, 0x80, 0xb5, 0xd4, 0xaa,
-	0xe8, 0x73, 0x5f, 0x50, 0x7c, 0x0d, 0x4a, 0x7d, 0xb5, 0x52, 0x43, 0x5b, 0xa8, 0x79, 0x76, 0x77,
-	0xd3, 0xca, 0x90, 0xc0, 0x0a, 0x83, 0x6e, 0x2e, 0x3f, 0xfa, 0xfb, 0x95, 0x25, 0x5b, 0x07, 0x98,
-	0x7b, 0xb0, 0xa1, 0x32, 0x7e, 0x16, 0x3a, 0xd9, 0x0a, 0x4e, 0x97, 0xc3, 0xeb, 0x50, 0xe2, 0x01,
-	0xf3, 0x98, 0xaf, 0xf2, 0x96, 0x6d, 0xfd, 0x64, 0x76, 0xc1, 0xc8, 0x0a, 0xd2, 0x34, 0x1f, 0xc3,
-	0xaa, 0x48, 0x1a, 0x34, 0x94, 0x99, 0x09, 0x95, 0x4a, 0xa1, 0xd9, 0xd2, 0xe1, 0xa6, 0x0b, 0x1b,
-	0x1f, 0x32, 0x21, 0x53, 0x9e, 0x91, 0x22, 0xf8, 0x03, 0x80, 0x78, 0x2f, 0x74, 0xa5, 0x6d, 0x2b,
-	0xdc, 0x38, 0x6b, 0xb4, 0x71, 0x56, 0xf8, 0x6a, 0xe8, 0x8d, 0xb3, 0x0e, 0x1c, 0x8f, 0xea, 0x58,
-	0x3b, 0x11, 0x69, 0x3e, 0x44, 0x60, 0x64, 0x55, 0xc9, 0xef, 0xa9, 0xf0, 0x0c, 0x3d, 0xe1, 0x5b,
-	0x29, 0xec, 0x33, 0x0a, 0xfb, 0xc2, 0x5c, 0xec, 0x10, 0x26, 0xc5, 0x7d, 0x1d, 0x4c, 0xb5, 0x15,
-	0xb7, 0x68, 0x8c, 0xde, 0x0d, 0xdf, 0xe2, 0x0e, 0xeb, 0xcf, 0xdb, 0xc8, 0xef, 0x10, 0xbc, 0x36,
-	0x33, 0x5c, 0xb7, 0xdf, 0x82, 0x6a, 0x86, 0x39, 0x7a, 0xdd, 0x9a, 0xb3, 0x55, 0x88, 0x03, 0xb4,
-	0x16, 0x99, 0xb9, 0x4c, 0x06, 0xf5, 0x98, 0xe2, 0x86, 0x94, 0x54, 0x84, 0xa7, 0x71, 0x4e, 0x0f,
-	0xb8, 0x0a, 0x45, 0xa7, 0xcb, 0x1c, 0xa1, 0x54, 0x2c, 0xdb, 0xe1, 0x03, 0xde, 0x84, 0x32, 0x13,
-	0x87, 0x3d, 0xde, 0x62, 0x5d, 0x5a, 0x2b, 0x6c, 0xa1, 0xe6, 0x8a, 0xbd, 0xc2, 0xc4, 0x47, 0xea,
-	0xd9, 0xfc, 0x1d, 0xc1, 0xcb, 0x39, 0xb5, 0x74, 0xc3, 0xe3, 0xa4, 0x28, 0x99, 0xf4, 0x4d, 0x78,
-	0xc9, 0x51, 0xce, 0x8c, 0xfb, 0x87, 0xbc, 0xaf, 0xd8, 0x75, 0xd9, 0xca, 0xd8, 0xf0, 0x49, 0xb8,
-	0x9e, 0xe0, 0x2d, 0xa4, 0x78, 0xeb, 0x50, 0x76, 0x3b, 0x4e, 0xb7, 0x4b, 0x7d, 0x8f, 0xd6, 0x96,
-	0x95, 0x29, 0x5e, 0xc0, 0xe7, 0xa0, 0x34, 0x70, 0x8f, 0x0f, 0x59, 0xbb, 0x56, 0xdc, 0x42, 0xcd,
-	0x65, 0xbb, 0x38, 0x70, 0x8f, 0x6f, 0xb7, 0x4d, 0x0f, 0x8c, 0x04, 0xb0, 0x10, 0x34, 0xf8, 0x9f,
-	0xa4, 0xf9, 0x11, 0xc1, 0x66, 0x66, 0x25, 0x2d, 0x4c, 0x05, 0x0a, 0x6d, 0xd6, 0xd6, 0x75, 0x46,
-	0x3f, 0x95, 0x28, 0x91, 0xdb, 0x94, 0x28, 0x91, 0xe1, 0x99, 0x44, 0x31, 0x7f, 0x46, 0xb0, 0x66,
-	0x53, 0x8f, 0x09, 0x49, 0x83, 0xcf, 0x05, 0x0d, 0x9e, 0xae, 0xef, 0x58, 0xda, 0x42, 0x42, 0x5a,
-	0xbc, 0x05, 0x67, 0x9d, 0xf8, 0x0d, 0xd0, 0xc5, 0x93, 0x4b, 0x69, 0xb8, 0xe2, 0x24, 0xdc, 0x0f,
-	0x08, 0xaa, 0x69, 0xb8, 0x5c, 0xa9, 0xde, 0x83, 0x95, 0xe8, 0xaa, 0xd7, 0x67, 0xfe, 0xd5, 0xd4,
-	0xd1, 0x89, 0x8c, 0xd6, 0xfe, 0xed, 0xfd, 0x7d, 0xee, 0x0e, 0x7a, 0xd4, 0x97, 0xf6, 0x38, 0x24,
-	0x6e, 0xab, 0x90, 0x6c, 0xab, 0x02, 0x85, 0xaf, 0x8e, 0xa5, 0xe6, 0x1e, 0xfd, 0x34, 0xbf, 0x45,
-	0x70, 0xfe, 0xc6, 0x40, 0x76, 0x46, 0x61, 0xae, 0x23, 0xe9, 0xd3, 0x4b, 0x56, 0x87, 0xf2, 0x78,
-	0x0b, 0x75, 0xd5, 0x78, 0x61, 0xce, 0xa6, 0x3d, 0x40, 0x50, 0x9b, 0xa6, 0x78, 0xce, 0xda, 0xec,
-	0xfe, 0x04, 0x50, 0x54, 0x37, 0x1e, 0x1e, 0x42, 0x29, 0x9c, 0x88, 0xf8, 0x42, 0xe6, 0xfd, 0x35,
-	0x3d, 0x7e, 0x8d, 0xe6, 0x7c, 0xc7, 0xb0, 0x3f, 0xb3, 0xfe, 0xcd, 0x9f, 0xff, 0x3e, 0x38, 0xb3,
-	0x8e, 0xab, 0x44, 0x0d, 0xf8, 0x70, 0xd8, 0x46, 0x9f, 0x00, 0xf8, 0x7b, 0x04, 0x78, 0x7a, 0xd8,
-	0x60, 0x2b, 0x33, 0x7d, 0xee, 0xec, 0x33, 0xc8, 0xc2, 0xfe, 0x9a, 0xea, 0x9c, 0xa2, 0x7a, 0x11,
-	0xaf, 0x92, 0xe4, 0x17, 0x09, 0xbe, 0x8f, 0x60, 0x35, 0x15, 0x91, 0x43, 0x92, 0xfb, 0xa1, 0x90,
-	0x43, 0x92, 0xff, 0x8d, 0x60, 0x36, 0x14, 0x49, 0x0d, 0xaf, 0xa7, 0x48, 0xc8, 0xdd, 0xf0, 0x6d,
-	0xbc, 0x87, 0xff, 0x40, 0xb0, 0x96, 0x31, 0x25, 0xf0, 0x3b, 0xf9, 0x85, 0x66, 0x4e, 0x40, 0xe3,
-	0xea, 0x93, 0x07, 0x6a, 0xd4, 0x4b, 0x0a, 0x75, 0x1b, 0xbf, 0x9e, 0x8d, 0x4a, 0x82, 0xe4, 0x14,
-	0xc3, 0x0f, 0x11, 0xe0, 0xe9, 0xb9, 0x82, 0x77, 0x32, 0xcb, 0xcf, 0x9a, 0x77, 0xc6, 0xee, 0x93,
-	0x84, 0x68, 0xd6, 0xab, 0x8a, 0x75, 0x17, 0x5f, 0x21, 0x1d, 0xe6, 0x75, 0x8e, 0x9d, 0x61, 0x16,
-	0x6e, 0x78, 0x55, 0x11, 0x21, 0x9d, 0x40, 0x92, 0xbb, 0xea, 0xa0, 0xdc, 0xc3, 0xbf, 0x21, 0xa8,
-	0x4c, 0x5e, 0xfa, 0x98, 0xcc, 0x43, 0x98, 0x18, 0x44, 0xc6, 0x95, 0xc5, 0x03, 0x34, 0xf1, 0x5b,
-	0x8a, 0x98, 0xe0, 0xcb, 0xf9, 0xc4, 0x5d, 0xee, 0x31, 0x7f, 0x02, 0xf7, 0x17, 0x04, 0x2f, 0x24,
-	0x2f, 0x5d, 0x9c, 0x7d, 0x34, 0x33, 0x86, 0x86, 0xf1, 0xc6, 0x02, 0x9e, 0x1a, 0xee, 0xba, 0x82,
-	0x7b, 0xdb, 0xdc, 0x59, 0x40, 0xce, 0x2f, 0x99, 0xcf, 0x44, 0x27, 0x02, 0x7c, 0x17, 0x5d, 0xc4,
-	0xbf, 0x22, 0xa8, 0x4c, 0x5e, 0x80, 0xf8, 0x52, 0x66, 0xf5, 0x9c, 0xdb, 0xda, 0xb8, 0xbc, 0xa0,
-	0xb7, 0xe6, 0xbd, 0xa6, 0x78, 0xf7, 0x4c, 0x6b, 0x9e, 0x98, 0x53, 0xb0, 0x37, 0xdf, 0x7f, 0x74,
-	0xd2, 0x40, 0x8f, 0x4f, 0x1a, 0xe8, 0x9f, 0x93, 0x06, 0xba, 0x7f, 0xda, 0x58, 0x7a, 0x7c, 0xda,
-	0x58, 0xfa, 0xeb, 0xb4, 0xb1, 0xf4, 0xc5, 0xb6, 0xc7, 0x64, 0x67, 0xd0, 0xb2, 0x5c, 0xde, 0x23,
-	0x21, 0x4d, 0x78, 0x10, 0xbe, 0x1e, 0x27, 0x97, 0xc3, 0x3e, 0x15, 0xad, 0x92, 0xfa, 0xe3, 0xb2,
-	0xf7, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x27, 0x8f, 0x30, 0x99, 0x99, 0x0d, 0x00, 0x00,
+	// 1169 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe4, 0x97, 0xc1, 0x6f, 0x1b, 0xc5,
+	0x17, 0xc7, 0x33, 0x71, 0x13, 0xc5, 0x2f, 0xcd, 0xef, 0x97, 0x4e, 0xdc, 0xd4, 0xd9, 0xa4, 0xae,
+	0xb3, 0x40, 0x1a, 0x52, 0xba, 0xdb, 0x38, 0xa2, 0x02, 0xd4, 0x43, 0x5b, 0x22, 0xa2, 0x08, 0xaa,
+	0xb6, 0x8b, 0x00, 0x09, 0x0e, 0xd1, 0x78, 0x3d, 0x5d, 0x8f, 0xea, 0xec, 0x38, 0x3b, 0xeb, 0x84,
+	0x50, 0x95, 0x43, 0x38, 0x82, 0x04, 0xa2, 0x37, 0x84, 0xb8, 0xc2, 0x09, 0x0e, 0xdc, 0xf8, 0x0b,
+	0x7a, 0xac, 0xc4, 0x85, 0x13, 0x42, 0x09, 0x7f, 0x08, 0xf2, 0xcc, 0xd8, 0xde, 0xb1, 0x77, 0xe3,
+	0x10, 0xe8, 0x89, 0x4b, 0xe4, 0x9d, 0xf7, 0x9d, 0xf7, 0x3e, 0xef, 0xed, 0xcc, 0xbe, 0x17, 0x28,
+	0xfa, 0x3c, 0xa2, 0xae, 0xa0, 0xd1, 0x2e, 0xf3, 0xa9, 0xbb, 0xd3, 0xa2, 0xd1, 0xbe, 0xd3, 0x8c,
+	0x78, 0xcc, 0xf1, 0xd9, 0xb6, 0xc5, 0xd1, 0x16, 0xab, 0x10, 0xf0, 0x80, 0x4b, 0x83, 0xdb, 0xfe,
+	0xa5, 0x34, 0xd6, 0x42, 0xc0, 0x79, 0xd0, 0xa0, 0x2e, 0x69, 0x32, 0x97, 0x84, 0x21, 0x8f, 0x49,
+	0xcc, 0x78, 0x28, 0xb4, 0x75, 0xc5, 0xe7, 0x62, 0x9b, 0x0b, 0xb7, 0x4a, 0x84, 0x76, 0xed, 0xee,
+	0xae, 0x56, 0x69, 0x4c, 0x56, 0xdd, 0x26, 0x09, 0x58, 0x28, 0xc5, 0x5a, 0x6b, 0x19, 0x1c, 0x01,
+	0x0d, 0xa9, 0x60, 0x1d, 0x3f, 0x73, 0x86, 0x2d, 0xa2, 0x3e, 0x8f, 0x6a, 0xda, 0x74, 0x41, 0x9a,
+	0x58, 0x8d, 0x86, 0x31, 0x8b, 0xf7, 0xdd, 0x1a, 0xeb, 0x18, 0x0a, 0xd2, 0xb0, 0x4b, 0x5a, 0x8d,
+	0xd8, 0x15, 0x0f, 0x3a, 0x9e, 0x2e, 0x1a, 0x9e, 0xfc, 0x88, 0xca, 0x8d, 0xa4, 0xa1, 0xcd, 0xb3,
+	0x86, 0x99, 0x47, 0x81, 0x5a, 0xb7, 0x0b, 0x80, 0xef, 0xb7, 0xf1, 0xef, 0x91, 0x88, 0x6c, 0x0b,
+	0x8f, 0xee, 0xb4, 0xa8, 0x88, 0xed, 0x4d, 0x98, 0x31, 0x56, 0x45, 0x93, 0x87, 0x82, 0xe2, 0x0a,
+	0x8c, 0x37, 0xe5, 0x4a, 0x11, 0x95, 0xd1, 0xf2, 0x64, 0xa5, 0xe0, 0x24, 0x0b, 0xe9, 0x28, 0xf5,
+	0xed, 0x33, 0x4f, 0x7f, 0xbf, 0x34, 0xe2, 0x69, 0xa5, 0xbd, 0x06, 0x73, 0xd2, 0xd5, 0xbb, 0x4a,
+	0xe4, 0xc9, 0x14, 0x75, 0x1c, 0x3c, 0x0b, 0xe3, 0x3c, 0x62, 0x01, 0x0b, 0xa5, 0xc3, 0xbc, 0xa7,
+	0x9f, 0x6c, 0x0a, 0x56, 0xda, 0x26, 0x8d, 0xb1, 0x01, 0x53, 0x22, 0x69, 0xd0, 0x34, 0xf3, 0x26,
+	0x8d, 0xb1, 0x57, 0x43, 0x99, 0xfb, 0x6c, 0x1f, 0xe6, 0xde, 0x61, 0x22, 0x36, 0x94, 0x9d, 0x1a,
+	0xe0, 0xb7, 0x00, 0x7a, 0xaf, 0x52, 0x87, 0x58, 0x72, 0xd4, 0x7b, 0x77, 0xda, 0xef, 0xdd, 0x51,
+	0x47, 0x4a, 0xbf, 0x77, 0xe7, 0x1e, 0x09, 0xa8, 0xde, 0xeb, 0x25, 0x76, 0xda, 0x3f, 0x22, 0xb0,
+	0xd2, 0xa2, 0x64, 0x27, 0x93, 0x3b, 0x4d, 0x32, 0x78, 0xc3, 0xe0, 0x1d, 0x95, 0xbc, 0x97, 0x87,
+	0xf2, 0x2a, 0x0a, 0x03, 0x98, 0xc1, 0xa5, 0x04, 0xef, 0xdd, 0x28, 0x20, 0x21, 0xfb, 0x44, 0x9d,
+	0xfe, 0x7f, 0xbb, 0x36, 0xbf, 0x20, 0x28, 0x67, 0xc7, 0xd2, 0x15, 0xba, 0x93, 0x5e, 0xa1, 0xc5,
+	0xd4, 0x0a, 0x25, 0x5d, 0x3c, 0xe7, 0x3a, 0xdd, 0x00, 0x5b, 0x1e, 0xd2, 0x0d, 0xda, 0x7b, 0xb7,
+	0x0d, 0xc5, 0x5e, 0x67, 0xcd, 0x61, 0x47, 0xfc, 0x00, 0xc1, 0x0b, 0xc7, 0x6e, 0xd7, 0xd9, 0x7f,
+	0x04, 0x85, 0x14, 0x73, 0xe7, 0x06, 0x2e, 0x66, 0x1c, 0x93, 0x9e, 0x52, 0x17, 0x21, 0xd5, 0x89,
+	0xcd, 0x60, 0xa1, 0x17, 0xfe, 0x56, 0x1c, 0x53, 0xa1, 0x3e, 0x73, 0x43, 0xe0, 0x71, 0x01, 0xc6,
+	0x48, 0x83, 0x11, 0x21, 0xcb, 0x97, 0xf7, 0xd4, 0x03, 0x9e, 0x87, 0x3c, 0x13, 0x5b, 0xdb, 0xbc,
+	0xca, 0x1a, 0xb4, 0x98, 0x2b, 0xa3, 0xe5, 0x09, 0x6f, 0x82, 0x89, 0x3b, 0xf2, 0xd9, 0xfe, 0x09,
+	0xc1, 0xc5, 0x8c, 0x58, 0x3a, 0xd3, 0xae, 0x53, 0x94, 0x74, 0x7a, 0x05, 0xce, 0x11, 0x29, 0x66,
+	0x3c, 0xdc, 0xe2, 0x4d, 0xc9, 0xae, 0xc3, 0x4e, 0x77, 0x0d, 0x77, 0xd5, 0x7a, 0x82, 0x37, 0x67,
+	0xf0, 0x2e, 0x40, 0xde, 0xaf, 0x93, 0x46, 0x83, 0x86, 0x01, 0x2d, 0x9e, 0x91, 0xa6, 0xde, 0x02,
+	0x3e, 0x0f, 0xe3, 0x2d, 0x7f, 0x6f, 0x8b, 0xd5, 0x8a, 0x63, 0x65, 0xb4, 0x7c, 0xc6, 0x1b, 0x6b,
+	0xf9, 0x7b, 0x9b, 0x35, 0x3b, 0x00, 0x2b, 0x01, 0x2c, 0x04, 0x8d, 0x9e, 0x53, 0x69, 0xbe, 0x46,
+	0x30, 0x9f, 0x1a, 0x49, 0x17, 0x66, 0x1a, 0x72, 0x35, 0x56, 0xd3, 0x71, 0xda, 0x3f, 0x65, 0x51,
+	0x3a, 0xb2, 0x81, 0xa2, 0x74, 0x0c, 0xff, 0xa8, 0x28, 0xf6, 0x37, 0x08, 0x66, 0x3c, 0x1a, 0x30,
+	0x11, 0xd3, 0xe8, 0x3d, 0x41, 0xa3, 0xd3, 0xe5, 0xdd, 0x2b, 0x6d, 0x2e, 0x51, 0x5a, 0x5c, 0x86,
+	0x49, 0xd2, 0x3b, 0x01, 0x3a, 0x78, 0x72, 0xc9, 0x84, 0x1b, 0xeb, 0x87, 0xfb, 0x7c, 0x14, 0x0a,
+	0x26, 0x5c, 0x66, 0xa9, 0xae, 0xc3, 0x44, 0xa7, 0x87, 0xea, 0xcb, 0x6e, 0xa9, 0x3b, 0xd3, 0x59,
+	0x75, 0xd6, 0x37, 0xd7, 0xd7, 0xb9, 0xdf, 0xda, 0xa6, 0x61, 0xec, 0x75, 0xb5, 0xbd, 0x7c, 0x72,
+	0xc9, 0x7c, 0xee, 0xc3, 0xcc, 0x1e, 0xad, 0x92, 0x56, 0x5c, 0x0f, 0xb7, 0x7a, 0x3d, 0x56, 0x26,
+	0x30, 0x59, 0x29, 0x9b, 0x97, 0xf1, 0x03, 0x2d, 0x7c, 0xb3, 0xab, 0xf3, 0xf0, 0xde, 0xc0, 0x1a,
+	0xbe, 0x09, 0xff, 0x93, 0xbd, 0x7c, 0xeb, 0x21, 0xdd, 0x17, 0x75, 0x12, 0xa9, 0x74, 0x27, 0x2b,
+	0x73, 0xca, 0x9b, 0xb4, 0x39, 0xef, 0xb7, 0xff, 0xbe, 0xad, 0x05, 0xde, 0xd4, 0x6e, 0xf2, 0xd1,
+	0xfe, 0x0c, 0xc1, 0x85, 0x5b, 0xad, 0xb8, 0xde, 0x76, 0xe8, 0x93, 0x98, 0x9e, 0xfe, 0x75, 0x2d,
+	0x40, 0xbe, 0x7b, 0x7c, 0x74, 0xe2, 0xbd, 0x85, 0x21, 0x07, 0xe6, 0xcb, 0x51, 0x28, 0x0e, 0x52,
+	0xfc, 0x87, 0xdf, 0x4b, 0xe5, 0x67, 0x80, 0x31, 0xf9, 0x89, 0xc7, 0x0f, 0x61, 0x5c, 0x0d, 0x47,
+	0xb8, 0x8f, 0x65, 0x70, 0xf6, 0xb2, 0x16, 0x8f, 0x51, 0xa8, 0x6a, 0xda, 0x0b, 0x07, 0xbf, 0xfe,
+	0xf9, 0x64, 0x74, 0x16, 0x17, 0x5c, 0x39, 0xd5, 0xa9, 0x49, 0xab, 0x33, 0xdc, 0xe1, 0x2f, 0x10,
+	0x14, 0xb3, 0x9a, 0x2a, 0xbe, 0x6a, 0x7a, 0x1f, 0xd2, 0xe8, 0x2d, 0xe7, 0xa4, 0x72, 0x4d, 0x76,
+	0x4e, 0x92, 0x4d, 0xe2, 0xbc, 0x22, 0xe3, 0x51, 0x80, 0x3f, 0x05, 0x3c, 0x38, 0xfe, 0xe0, 0xcb,
+	0x99, 0x8e, 0xcd, 0x31, 0xcc, 0x5a, 0x1e, 0x2e, 0xd4, 0xb1, 0xcf, 0xcb, 0xd8, 0xff, 0xc7, 0x53,
+	0x6e, 0x72, 0xd6, 0xc5, 0x07, 0x08, 0xa6, 0x8c, 0x1d, 0xfd, 0xb1, 0x33, 0xc7, 0xd3, 0xfe, 0xd8,
+	0xd9, 0x23, 0xa9, 0x5d, 0x92, 0xb1, 0x8b, 0x78, 0xd6, 0x88, 0xed, 0x3e, 0x52, 0xb7, 0xed, 0x31,
+	0xfe, 0x01, 0xc1, 0x4c, 0x4a, 0x07, 0xc6, 0xd7, 0x52, 0x22, 0x1c, 0x3b, 0x4f, 0x58, 0xab, 0x7f,
+	0x63, 0x87, 0x86, 0x7b, 0x45, 0xc2, 0x2d, 0xe1, 0x17, 0xd3, 0xe1, 0xdc, 0x28, 0x39, 0x13, 0xe0,
+	0xef, 0x11, 0xe0, 0xc1, 0x2e, 0x8d, 0x57, 0xcc, 0xb8, 0xc7, 0x8d, 0x0d, 0xd6, 0x95, 0x13, 0x69,
+	0x35, 0xdd, 0x6b, 0x92, 0xae, 0x82, 0xaf, 0xb9, 0x75, 0x16, 0xd4, 0xf7, 0xc8, 0x7e, 0x1a, 0xa0,
+	0xfa, 0xd4, 0xbb, 0x22, 0x26, 0x51, 0xec, 0x3e, 0x92, 0x77, 0xfe, 0x31, 0xfe, 0x0e, 0xc1, 0x74,
+	0x7f, 0xd3, 0xc4, 0xcb, 0x99, 0xb1, 0xfb, 0x3a, 0xb8, 0xf5, 0xf2, 0x09, 0x94, 0x9a, 0xf1, 0x55,
+	0xc9, 0xe8, 0xe2, 0xab, 0xd9, 0x8c, 0x0d, 0x1e, 0xb0, 0xb0, 0x0f, 0xf0, 0x09, 0x82, 0xb3, 0xc9,
+	0x36, 0x85, 0xfb, 0xee, 0x76, 0x4a, 0x7f, 0xb5, 0xec, 0xe3, 0x24, 0x1a, 0xe7, 0x86, 0xc4, 0xb9,
+	0xfe, 0x06, 0x5a, 0xb1, 0x57, 0x4f, 0x50, 0xb5, 0x07, 0x2c, 0x64, 0xa2, 0xde, 0xa5, 0xfa, 0x16,
+	0xc1, 0x74, 0xff, 0x87, 0x1a, 0xbf, 0x64, 0x86, 0xcd, 0x68, 0x27, 0xd6, 0xd2, 0x30, 0x99, 0x26,
+	0x7c, 0x5d, 0x12, 0xae, 0xb5, 0x09, 0x9d, 0x61, 0x35, 0x33, 0xf1, 0x6e, 0xdf, 0x7c, 0x7a, 0x58,
+	0x42, 0xcf, 0x0e, 0x4b, 0xe8, 0x8f, 0xc3, 0x12, 0xfa, 0xea, 0xa8, 0x34, 0xf2, 0xec, 0xa8, 0x34,
+	0xf2, 0xdb, 0x51, 0x69, 0xe4, 0xc3, 0xa5, 0x80, 0xc5, 0xf5, 0x56, 0xd5, 0xf1, 0xf9, 0xb6, 0x2b,
+	0x78, 0x18, 0xd5, 0x77, 0xd4, 0x81, 0xfe, 0xb8, 0xeb, 0x39, 0xde, 0x6f, 0x52, 0x51, 0x1d, 0x97,
+	0xff, 0xda, 0xae, 0xfd, 0x15, 0x00, 0x00, 0xff, 0xff, 0xa6, 0x8a, 0x16, 0xe7, 0x01, 0x10, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1037,6 +1162,8 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Returns the `x/service` module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Lists all known ServiceRecord items.
+	ListServiceOrganizations(ctx context.Context, in *ListServiceOrganizationsRequest, opts ...grpc.CallOption) (*ListServiceOrganizationsResponse, error)
 	// Lists all known ServiceRecord items.
 	ListServiceRecords(ctx context.Context, in *ListServiceRecordsRequest, opts ...grpc.CallOption) (*ListServiceRecordsResponse, error)
 	// Returns the ServiceRecord for the matching origin.
@@ -1064,7 +1191,16 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/Params", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/Params", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ListServiceOrganizations(ctx context.Context, in *ListServiceOrganizationsRequest, opts ...grpc.CallOption) (*ListServiceOrganizationsResponse, error) {
+	out := new(ListServiceOrganizationsResponse)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ListServiceOrganizations", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1073,7 +1209,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 
 func (c *queryClient) ListServiceRecords(ctx context.Context, in *ListServiceRecordsRequest, opts ...grpc.CallOption) (*ListServiceRecordsResponse, error) {
 	out := new(ListServiceRecordsResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/ListServiceRecords", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ListServiceRecords", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1082,7 +1218,7 @@ func (c *queryClient) ListServiceRecords(ctx context.Context, in *ListServiceRec
 
 func (c *queryClient) ServiceRecord(ctx context.Context, in *QueryServiceRecordRequest, opts ...grpc.CallOption) (*QueryServiceRecordResponse, error) {
 	out := new(QueryServiceRecordResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/ServiceRecord", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ServiceRecord", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1091,7 +1227,7 @@ func (c *queryClient) ServiceRecord(ctx context.Context, in *QueryServiceRecordR
 
 func (c *queryClient) ServiceRelationship(ctx context.Context, in *QueryGetServiceRelationshipRequest, opts ...grpc.CallOption) (*QueryGetServiceRelationshipResponse, error) {
 	out := new(QueryGetServiceRelationshipResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/ServiceRelationship", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ServiceRelationship", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1100,7 +1236,7 @@ func (c *queryClient) ServiceRelationship(ctx context.Context, in *QueryGetServi
 
 func (c *queryClient) ServiceAttestation(ctx context.Context, in *GetServiceAttestationRequest, opts ...grpc.CallOption) (*GetServiceAttestationResponse, error) {
 	out := new(GetServiceAttestationResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/ServiceAttestation", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ServiceAttestation", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1109,7 +1245,7 @@ func (c *queryClient) ServiceAttestation(ctx context.Context, in *GetServiceAtte
 
 func (c *queryClient) ServiceAssertion(ctx context.Context, in *GetServiceAssertionRequest, opts ...grpc.CallOption) (*GetServiceAssertionResponse, error) {
 	out := new(GetServiceAssertionResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/ServiceAssertion", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/ServiceAssertion", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1118,7 +1254,7 @@ func (c *queryClient) ServiceAssertion(ctx context.Context, in *GetServiceAssert
 
 func (c *queryClient) RegisterUser(ctx context.Context, in *RegisterUserRequest, opts ...grpc.CallOption) (*RegisterUserResponse, error) {
 	out := new(RegisterUserResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/RegisterUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/RegisterUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1127,7 +1263,7 @@ func (c *queryClient) RegisterUser(ctx context.Context, in *RegisterUserRequest,
 
 func (c *queryClient) AuthenticateUser(ctx context.Context, in *AuthenticateUserRequest, opts ...grpc.CallOption) (*AuthenticateUserResponse, error) {
 	out := new(AuthenticateUserResponse)
-	err := c.cc.Invoke(ctx, "/sonrhq.core.service.Query/AuthenticateUser", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/core.service.Query/AuthenticateUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1138,6 +1274,8 @@ func (c *queryClient) AuthenticateUser(ctx context.Context, in *AuthenticateUser
 type QueryServer interface {
 	// Returns the `x/service` module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Lists all known ServiceRecord items.
+	ListServiceOrganizations(context.Context, *ListServiceOrganizationsRequest) (*ListServiceOrganizationsResponse, error)
 	// Lists all known ServiceRecord items.
 	ListServiceRecords(context.Context, *ListServiceRecordsRequest) (*ListServiceRecordsResponse, error)
 	// Returns the ServiceRecord for the matching origin.
@@ -1161,6 +1299,9 @@ type UnimplementedQueryServer struct {
 
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedQueryServer) ListServiceOrganizations(ctx context.Context, req *ListServiceOrganizationsRequest) (*ListServiceOrganizationsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListServiceOrganizations not implemented")
 }
 func (*UnimplementedQueryServer) ListServiceRecords(ctx context.Context, req *ListServiceRecordsRequest) (*ListServiceRecordsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListServiceRecords not implemented")
@@ -1198,10 +1339,28 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/Params",
+		FullMethod: "/core.service.Query/Params",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ListServiceOrganizations_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListServiceOrganizationsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ListServiceOrganizations(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.service.Query/ListServiceOrganizations",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ListServiceOrganizations(ctx, req.(*ListServiceOrganizationsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1216,7 +1375,7 @@ func _Query_ListServiceRecords_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/ListServiceRecords",
+		FullMethod: "/core.service.Query/ListServiceRecords",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ListServiceRecords(ctx, req.(*ListServiceRecordsRequest))
@@ -1234,7 +1393,7 @@ func _Query_ServiceRecord_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/ServiceRecord",
+		FullMethod: "/core.service.Query/ServiceRecord",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ServiceRecord(ctx, req.(*QueryServiceRecordRequest))
@@ -1252,7 +1411,7 @@ func _Query_ServiceRelationship_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/ServiceRelationship",
+		FullMethod: "/core.service.Query/ServiceRelationship",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ServiceRelationship(ctx, req.(*QueryGetServiceRelationshipRequest))
@@ -1270,7 +1429,7 @@ func _Query_ServiceAttestation_Handler(srv interface{}, ctx context.Context, dec
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/ServiceAttestation",
+		FullMethod: "/core.service.Query/ServiceAttestation",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ServiceAttestation(ctx, req.(*GetServiceAttestationRequest))
@@ -1288,7 +1447,7 @@ func _Query_ServiceAssertion_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/ServiceAssertion",
+		FullMethod: "/core.service.Query/ServiceAssertion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).ServiceAssertion(ctx, req.(*GetServiceAssertionRequest))
@@ -1306,7 +1465,7 @@ func _Query_RegisterUser_Handler(srv interface{}, ctx context.Context, dec func(
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/RegisterUser",
+		FullMethod: "/core.service.Query/RegisterUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).RegisterUser(ctx, req.(*RegisterUserRequest))
@@ -1324,7 +1483,7 @@ func _Query_AuthenticateUser_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonrhq.core.service.Query/AuthenticateUser",
+		FullMethod: "/core.service.Query/AuthenticateUser",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).AuthenticateUser(ctx, req.(*AuthenticateUserRequest))
@@ -1333,12 +1492,16 @@ func _Query_AuthenticateUser_Handler(srv interface{}, ctx context.Context, dec f
 }
 
 var _Query_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.core.service.Query",
+	ServiceName: "core.service.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "ListServiceOrganizations",
+			Handler:    _Query_ListServiceOrganizations_Handler,
 		},
 		{
 			MethodName: "ListServiceRecords",
@@ -1543,6 +1706,90 @@ func (m *ListServiceRecordsResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *ListServiceRecordsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ServiceRecord) > 0 {
+		for iNdEx := len(m.ServiceRecord) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ServiceRecord[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListServiceOrganizationsRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListServiceOrganizationsRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListServiceOrganizationsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ListServiceOrganizationsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ListServiceOrganizationsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ListServiceOrganizationsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1916,10 +2163,27 @@ func (m *RegisterUserResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Jwt) > 0 {
-		i -= len(m.Jwt)
-		copy(dAtA[i:], m.Jwt)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Jwt)))
+	if m.VaultKeyshare != nil {
+		{
+			size, err := m.VaultKeyshare.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.WebauthnCredential != nil {
+		{
+			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x22
 	}
@@ -2023,10 +2287,27 @@ func (m *AuthenticateUserResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	_ = i
 	var l int
 	_ = l
-	if len(m.Jwt) > 0 {
-		i -= len(m.Jwt)
-		copy(dAtA[i:], m.Jwt)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Jwt)))
+	if m.VaultKeyshare != nil {
+		{
+			size, err := m.VaultKeyshare.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.WebauthnCredential != nil {
+		{
+			size, err := m.WebauthnCredential.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x22
 	}
@@ -2128,6 +2409,38 @@ func (m *ListServiceRecordsRequest) Size() (n int) {
 }
 
 func (m *ListServiceRecordsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ServiceRecord) > 0 {
+		for _, e := range m.ServiceRecord {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ListServiceOrganizationsRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *ListServiceOrganizationsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2309,8 +2622,12 @@ func (m *RegisterUserResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.Jwt)
-	if l > 0 {
+	if m.WebauthnCredential != nil {
+		l = m.WebauthnCredential.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.VaultKeyshare != nil {
+		l = m.VaultKeyshare.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -2359,8 +2676,12 @@ func (m *AuthenticateUserResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.Jwt)
-	if l > 0 {
+	if m.WebauthnCredential != nil {
+		l = m.WebauthnCredential.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.VaultKeyshare != nil {
+		l = m.VaultKeyshare.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -2815,6 +3136,212 @@ func (m *ListServiceRecordsResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.ServiceRecord = append(m.ServiceRecord, ServiceRecord{})
+			if err := m.ServiceRecord[len(m.ServiceRecord)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListServiceOrganizationsRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListServiceOrganizationsRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListServiceOrganizationsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ListServiceOrganizationsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ListServiceOrganizationsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ListServiceOrganizationsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ServiceRecord", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ServiceRecord = append(m.ServiceRecord, ServiceOrganization{})
 			if err := m.ServiceRecord[len(m.ServiceRecord)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
@@ -4012,9 +4539,9 @@ func (m *RegisterUserResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -4024,23 +4551,63 @@ func (m *RegisterUserResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Jwt = string(dAtA[iNdEx:postIndex])
+			if m.WebauthnCredential == nil {
+				m.WebauthnCredential = &WebauthnCredential{}
+			}
+			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultKeyshare", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.VaultKeyshare == nil {
+				m.VaultKeyshare = &types1.VaultKeyshare{}
+			}
+			if err := m.VaultKeyshare.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -4372,9 +4939,9 @@ func (m *AuthenticateUserResponse) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field WebauthnCredential", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -4384,23 +4951,63 @@ func (m *AuthenticateUserResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Jwt = string(dAtA[iNdEx:postIndex])
+			if m.WebauthnCredential == nil {
+				m.WebauthnCredential = &WebauthnCredential{}
+			}
+			if err := m.WebauthnCredential.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field VaultKeyshare", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.VaultKeyshare == nil {
+				m.VaultKeyshare = &types1.VaultKeyshare{}
+			}
+			if err := m.VaultKeyshare.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

@@ -67,7 +67,7 @@ func CoinTypeFromAddrPrefix(str string) CoinType {
 }
 
 // CoinTypeFromBipPath returns the CoinType from the BIP Path (0, 60).
-func CoinTypeFromBipPath(i int32) CoinType {
+func CoinTypeFromBipPath(i uint32) CoinType {
 	return types.CoinTypeFromBipPath(i)
 }
 

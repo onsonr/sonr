@@ -2,11 +2,12 @@ package sfs
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/pkg/node"
 	servicetypes "github.com/sonrhq/core/x/service/types"
-	"github.com/sonrhq/core/x/vault/internal/node"
 	"github.com/sonrhq/core/x/vault/types"
 )
 
@@ -40,40 +41,34 @@ func Init() error {
 }
 
 // Resolve account takes a list of key shares and a coin type and returns an account.
-func ClaimAccount(ksDidList []string, coinType crypto.CoinType, cred *servicetypes.WebauthnCredential) (types.Account, error) {
-	kss := make([]types.KeyShare, 0)
-	for _, ks := range ksDidList {
-		ks, err := GetKeyshare(ks)
-		if err != nil {
-			return nil, err
-		}
-		kss = append(kss, ks)
+func ClaimAccount(ucwDid string, coinType crypto.CoinType, cred *servicetypes.WebauthnCredential) (types.Account, *types.VaultKeyshare, error) {
+	// Configure unclaimed wallet dids
+	ks1Did := fmt.Sprintf("%s#ucw-1", ucwDid)
+	ks2Did := fmt.Sprintf("%s#ucw-2", ucwDid)
+
+	// Fetch first keyshare
+	ks1, err := GetKeyshare(ks1Did)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	acc := types.NewAccount(kss, coinType)
-	err := InsertSonrAccount(acc, cred)
+	// Fetch second keyshare
+	ks2, err := GetKeyshare(ks2Did)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return acc, nil
-}
 
-// The function inserts a Sonr account with a webauthn credential.
-func InsertSonrAccount(acc types.Account, cred *servicetypes.WebauthnCredential) error {
-	ksAccListVal := strings.Join(acc.ListKeyShares(), ",")
-	_, err := ksTable.Put(ctx, types.AccountPrefix(acc.Did()), []byte(ksAccListVal))
-	if err != nil {
-		return err
-	}
-	// _, err = acc.GenerateSecretKey(string(cred.PublicKey))
-	// if err != nil {
-	// 	return err
-	// }
-	acc.MapKeyShare(func(ks types.KeyShare) types.KeyShare {
-		go InsertKeyshare(ks)
-		return ks
-	})
-	return nil
+	// Rename keyshares
+	vaultKs := ks1.Rename(types.SetClaimed("vault"))
+	authKs := ks2.Rename(types.SetClaimed(cred.ShortID()))
+
+	// Insert keyshares
+	go InsertKeyshare(vaultKs)
+	go InsertEncryptedKeyshare(authKs, cred)
+
+	// Return account interface
+	acc := types.NewAccount(coinType, vaultKs, authKs)
+	return acc, authKs.ToProto(), nil
 }
 
 // The function inserts an account and its associated key shares into a vault.
@@ -83,15 +78,8 @@ func InsertAccount(acc types.Account) {
 	if err != nil {
 		return
 	}
-	if acc.CoinType().IsSonr() {
-
-	}
-	secKey, err := acc.GenerateSecretKey(types.DefaultParams().KeyshareSeedFragment)
-	if err != nil {
-		return
-	}
 	acc.MapKeyShare(func(ks types.KeyShare) types.KeyShare {
-		go insertAESKeyshare(ks, secKey)
+		go InsertKeyshare(ks)
 		return ks
 	})
 	return
@@ -102,6 +90,34 @@ func InsertKeyshare(ks types.KeyShare) {
 	_, err := ksTable.Put(ctx, types.KeysharePrefix(ks.Did()), ks.Bytes())
 	if err != nil {
 		return
+	}
+	return
+}
+
+// The function inserts a keyshare into a table and returns an error if there is one.
+func InsertEncryptedKeyshare(ks types.KeyShare, cred *servicetypes.WebauthnCredential) {
+	dat := ks.Bytes()
+	datCh := make(chan []byte)
+	errCh := make(chan error)
+	go func() {
+		encDat, err := cred.Encrypt(dat)
+		if err != nil {
+			errCh <- err
+			return
+		}
+		datCh <- encDat
+	}()
+	encDat := <-datCh
+	err := <-errCh
+	_, err = ksTable.Put(ctx, types.KeysharePrefix(ks.Did()), encDat)
+	if err != nil {
+		return
+	}
+
+	// Check that the encrypted keyshare can be retrieved
+	_, err = GetEncryptedKeyshare(ks.Did(), cred)
+	if err != nil {
+		panic(err)
 	}
 	return
 }
@@ -128,21 +144,51 @@ func GetAccount(accDid string) (types.Account, error) {
 		}
 		ksList = append(ksList, ks)
 	}
-	acc := types.NewAccount(ksList, ksr.CoinType)
+	acc := types.NewAccount(ksr.CoinType, ksList...)
 	return acc, nil
 }
 
 // The function retrieves a keyshare from a vault based on a given key DID.
-func GetKeyshare(keyDid string) (types.KeyShare, error) {
-	ksr, err := types.ParseKeyShareDID(keyDid)
+func GetKeyshare(ksDid string) (types.KeyShare, error) {
+	ksr, err := types.ParseKeyShareDID(ksDid)
 	if err != nil {
 		return nil, err
 	}
-	vBiz, err := ksTable.Get(ctx, types.KeysharePrefix(keyDid))
+	vBiz, err := ksTable.Get(ctx, types.KeysharePrefix(ksDid))
 	if err != nil {
 		return nil, err
 	}
-	ks, err := types.NewKeyshare(keyDid, vBiz, ksr.CoinType)
+	ks, err := types.NewKeyshare(vBiz, ksr.CoinType)
+	if err != nil {
+		return nil, err
+	}
+	return ks, nil
+}
+
+// The function retrieves a keyshare from a vault based on a given key DID.
+func GetEncryptedKeyshare(ksDid string, cred *servicetypes.WebauthnCredential) (types.KeyShare, error) {
+ksr, err := types.ParseKeyShareDID(ksDid)
+	if err != nil {
+		return nil, err
+	}
+	vBizch := make(chan []byte)
+	errCh := make(chan error)
+	go func() {
+		vEnc, err := ksTable.Get(ctx, types.KeysharePrefix(ksDid))
+		if err != nil {
+			errCh <- err
+			return
+		}
+		vBiz, err := cred.Decrypt(vEnc)
+		if err != nil {
+			errCh <- err
+			return
+		}
+		vBizch <- vBiz
+	}()
+	vBiz := <-vBizch
+	err = <-errCh
+	ks, err := types.NewKeyshare(vBiz, ksr.CoinType)
 	if err != nil {
 		return nil, err
 	}

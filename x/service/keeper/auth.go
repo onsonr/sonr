@@ -6,10 +6,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/x/identity"
+
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/service/types"
-	"github.com/sonrhq/core/x/vault"
 )
 
 // This function is a method of the `Keeper` struct and is used to register a new user identity. It takes a context and a `RegisterUserRequest` as input and returns a `RegisterUserResponse` and an error. The function first retrieves the service record associated with the request
@@ -36,37 +35,34 @@ func (k Keeper) RegisterUser(goCtx context.Context, req *types.RegisterUserReque
 	}
 
 	// Assign identity to user entity
-	account, err := k.vaultKeeper.AssignVault(ctx, req.UcwId, credential)
+	account, ks, err := k.vaultKeeper.AssignVault(ctx, req.UcwId, credential)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
 	snr := account[0]
 	eth := account[1]
 	btc := account[2]
-	// Create DID Document
-	didDoc := identity.NewDIDDocument(credential.ToVerificationMethod(), snr, req.Alias, eth, btc)
 
-	// Start a go routine to create the identity
-	go func(acc vault.Account, didDoc *identitytypes.DIDDocument) {
-		// Sign and broadcast identity registration message
-		bz, err := snr.SignCosmosTx(identitytypes.NewMsgRegisterIdentity(snr.Address(), didDoc))
-		if err != nil {
-			k.Logger(ctx).Error("(Gateway/service) - error signing identity registration message", err)
-			return
-		}
-		_, err = local.Context().BroadcastTx(bz)
-		if err != nil {
-			k.Logger(ctx).Error("(Gateway/service) - error broadcasting identity registration message", err)
-			return
-		}
-	}(snr, didDoc)
+	// Create DID Document and broadcast tx
+	credential.Controller = snr.Did()
+	authVm := credential.ToVerificationMethod()
+	didDoc := identitytypes.NewDIDDocument(snr, authVm, req.Alias)
+	didDoc.LinkCapabilityInvocationFromVaultAccount(eth, btc)
+	bz, err := snr.SignCosmosTx(identitytypes.NewMsgRegisterIdentity(snr.Address(), didDoc))
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "tx could not be signed")
+	}
+	go k.BroadcastTx(ctx, bz)
+
 	return &types.RegisterUserResponse{
 		Did:      didDoc.Id,
 		Identity: didDoc,
 		Alias:    req.Alias,
-		Jwt:      "",
+		WebauthnCredential: credential,
+		VaultKeyshare: 	 ks,
 	}, nil
 }
+
 
 // The `AuthenticateUser` function is a method of the `Keeper` struct and is used to authenticate a user. It takes a context and an `AuthenticateUserRequest` as input and returns an `AuthenticateUserResponse` and an error. However, in the given code, the function is not implemented
 // and returns an error message indicating that it is not implemented.
@@ -77,19 +73,33 @@ func (k Keeper) AuthenticateUser(goCtx context.Context, req *types.AuthenticateU
 		k.Logger(ctx).Error("(Gateway/service) - error getting service record")
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "service record not found")
 	}
-	did, err := k.identityKeeper.ResolveIdentityByPrimaryAlias(ctx, req.Alias)
-	if err != nil {
+	did, ok := k.identityKeeper.GetIdentityByPrimaryAlias(ctx, req.Alias)
+	if !ok {
 		k.Logger(ctx).Error("(Gateway/service) - error getting identity")
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "identity not found")
 	}
-	err = service.VerifyAssertionChallenge(req.Assertion, did.ListAuthenticationVerificationMethods()...)
+	cred, err := service.VerifyAssertionChallenge(req.Assertion, did.ListAuthenticationVerificationMethods()...)
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "challenge verification failed")
+	}
+
+	acc, err := k.vaultKeeper.UnlockVault(ctx, &did, cred)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "challenge verification failed")
 	}
 	return &types.AuthenticateUserResponse{
-		Did:      did.Id,
+		Did:      acc.Did(),
 		Identity: &did,
 		Alias:    req.Alias,
-		Jwt:      "",
 	}, nil
+}
+
+// BroadcastTx is a method of the `Keeper` struct and is used to broadcast a transaction to the blockchain. It takes a context, a `vaulttypes.Account` and a `sdk.Msg` as input and returns nothing. The function first unwraps the context and then signs the message using the `SignCosmosTx`
+func (k Keeper) BroadcastTx(ctx sdk.Context, bz []byte) error {
+	txr, err := local.Context().BroadcastTx(bz)
+	if err != nil {
+		return err
+	}
+	k.Logger(ctx).Info("(Gateway/service) - tx broadcasted", txr.TxResponse.TxHash)
+	return nil
 }

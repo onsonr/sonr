@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.vault;
+package core.vault;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
@@ -28,19 +28,17 @@ service Query {
   // Sends an encrypted message to a given wallet address
   rpc SendWalletMail (SendWalletMailRequest) returns (SendWalletMailResponse) {
     option (google.api.http) = {
-      post: "/highway/vault/mailbox/{creator}/send/{to}"
-      body: "*"
+      post : "/highway/vault/mailbox/{creator}/send/{to}"
+      body : "*"
     };
-
   }
 
   // Reads messages for a given wallet address
   rpc ReadWalletMail (ReadWalletMailRequest) returns (ReadWalletMailResponse) {
     option (google.api.http) = {
-      post: "/highway/vault/mailbox/{creator}/read"
-      body: "*"
+      post : "/highway/vault/mailbox/{creator}/read"
+      body : "*"
     };
-
   }
 
   // Queries a list of ClaimableWallet items.

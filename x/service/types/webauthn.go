@@ -10,7 +10,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	"github.com/shengdoushi/base58"
 	"github.com/sonrhq/core/internal/crypto"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 // PubKeyFromWebAuthn takes a webauthncose.Key and returns a PubKey
@@ -78,11 +77,4 @@ type PublicKeyCredentialRequestOptions struct {
 	Extensions         protocol.AuthenticationExtensions    `json:"extensions,omitempty"`
 	Attestion          string                               `json:"attestation,omitempty"`
 	AttestionFormats   []string                             `json:"attestationFormats,omitempty"`
-}
-
-// SetController sets the controller for the WebauthnCredential and returns the VerificationMethod
-func (c *WebauthnCredential) SetController(controller string) identitytypes.VerificationRelationship {
-	c.Controller = controller
-	vm := c.ToVerificationMethod()
-	return identitytypes.NewAuthenticationRelationship(vm)
 }

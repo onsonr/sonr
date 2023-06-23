@@ -14,7 +14,7 @@ import (
 	dsc "github.com/libp2p/go-libp2p/p2p/discovery/routing"
 	cmgr "github.com/libp2p/go-libp2p/p2p/net/connmgr"
 	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/x/vault/internal/node/config"
+	"github.com/sonrhq/core/pkg/node/config"
 )
 
 //

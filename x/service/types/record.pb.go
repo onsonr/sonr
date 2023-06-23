@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -34,7 +34,8 @@ const (
 	// Authenticated user with service-side access to writing to ipfs
 	Permissions_SR_WRITE Permissions = 2
 	// Authenticated user with service-side access to updating user DID documents
-	Permissions_SR_UPDATE Permissions = 3
+	// and creating new ones
+	Permissions_SR_CREATE Permissions = 3
 	// Authenticated user with service-side access to receiving notifications
 	Permissions_SR_NOTIFY Permissions = 4
 )
@@ -43,7 +44,7 @@ var Permissions_name = map[int32]string{
 	0: "SR_BASE",
 	1: "SR_SIGN",
 	2: "SR_WRITE",
-	3: "SR_UPDATE",
+	3: "SR_CREATE",
 	4: "SR_NOTIFY",
 }
 
@@ -51,7 +52,7 @@ var Permissions_value = map[string]int32{
 	"SR_BASE":   0,
 	"SR_SIGN":   1,
 	"SR_WRITE":  2,
-	"SR_UPDATE": 3,
+	"SR_CREATE": 3,
 	"SR_NOTIFY": 4,
 }
 
@@ -64,13 +65,12 @@ func (Permissions) EnumDescriptor() ([]byte, []int) {
 }
 
 type ServiceRecord struct {
-	Id               string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Controller       string   `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
-	Type             string   `protobuf:"bytes,3,opt,name=type,proto3" json:"type,omitempty"`
-	Origin           string   `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
-	Name             string   `protobuf:"bytes,5,opt,name=name,proto3" json:"name,omitempty"`
-	ServiceEndpoints []string `protobuf:"bytes,6,rep,name=service_endpoints,json=serviceEndpoints,proto3" json:"service_endpoints,omitempty"`
-	Metadata         string   `protobuf:"bytes,7,opt,name=metadata,proto3" json:"metadata,omitempty"`
+	Id          string      `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Controller  string      `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	Origins     []string    `protobuf:"bytes,3,rep,name=origins,proto3" json:"origins,omitempty"`
+	Name        string      `protobuf:"bytes,4,opt,name=name,proto3" json:"name,omitempty"`
+	Description string      `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Permissions Permissions `protobuf:"varint,6,opt,name=permissions,proto3,enum=core.service.Permissions" json:"permissions,omitempty"`
 }
 
 func (m *ServiceRecord) Reset()         { *m = ServiceRecord{} }
@@ -120,18 +120,11 @@ func (m *ServiceRecord) GetController() string {
 	return ""
 }
 
-func (m *ServiceRecord) GetType() string {
+func (m *ServiceRecord) GetOrigins() []string {
 	if m != nil {
-		return m.Type
+		return m.Origins
 	}
-	return ""
-}
-
-func (m *ServiceRecord) GetOrigin() string {
-	if m != nil {
-		return m.Origin
-	}
-	return ""
+	return nil
 }
 
 func (m *ServiceRecord) GetName() string {
@@ -141,18 +134,18 @@ func (m *ServiceRecord) GetName() string {
 	return ""
 }
 
-func (m *ServiceRecord) GetServiceEndpoints() []string {
+func (m *ServiceRecord) GetDescription() string {
 	if m != nil {
-		return m.ServiceEndpoints
-	}
-	return nil
-}
-
-func (m *ServiceRecord) GetMetadata() string {
-	if m != nil {
-		return m.Metadata
+		return m.Description
 	}
 	return ""
+}
+
+func (m *ServiceRecord) GetPermissions() Permissions {
+	if m != nil {
+		return m.Permissions
+	}
+	return Permissions_SR_BASE
 }
 
 // ServiceRelationship is a relationship between a service and a User entity. This relation
@@ -223,39 +216,38 @@ func (m *ServiceRelationship) GetCount() uint32 {
 }
 
 func init() {
-	proto.RegisterEnum("sonrhq.core.service.Permissions", Permissions_name, Permissions_value)
-	proto.RegisterType((*ServiceRecord)(nil), "sonrhq.core.service.ServiceRecord")
-	proto.RegisterType((*ServiceRelationship)(nil), "sonrhq.core.service.ServiceRelationship")
+	proto.RegisterEnum("core.service.Permissions", Permissions_name, Permissions_value)
+	proto.RegisterType((*ServiceRecord)(nil), "core.service.ServiceRecord")
+	proto.RegisterType((*ServiceRelationship)(nil), "core.service.ServiceRelationship")
 }
 
 func init() { proto.RegisterFile("core/service/record.proto", fileDescriptor_17bfe358aaf56022) }
 
 var fileDescriptor_17bfe358aaf56022 = []byte{
-	// 371 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x51, 0xcd, 0x8e, 0xd3, 0x30,
-	0x18, 0xcc, 0x4f, 0xff, 0xf2, 0x95, 0xa2, 0xe0, 0x22, 0x14, 0x10, 0x8a, 0xaa, 0x1e, 0x50, 0x05,
-	0x52, 0x72, 0xe0, 0x05, 0x68, 0x45, 0x40, 0xbd, 0x94, 0xca, 0x29, 0x42, 0xc0, 0x21, 0x4a, 0x13,
-	0xd3, 0x5a, 0x6a, 0xec, 0xe0, 0xb8, 0xab, 0xdd, 0xb7, 0xd8, 0xc7, 0xea, 0xb1, 0xc7, 0x3d, 0xae,
-	0xda, 0x17, 0x59, 0xc5, 0xf1, 0x76, 0xf7, 0x36, 0x33, 0xdf, 0x68, 0xe4, 0xf1, 0xc0, 0xdb, 0x8c,
-	0x0b, 0x12, 0x56, 0x44, 0x5c, 0xd1, 0x8c, 0x84, 0x82, 0x64, 0x5c, 0xe4, 0x41, 0x29, 0xb8, 0xe4,
-	0x68, 0x58, 0x71, 0x26, 0xb6, 0xff, 0x83, 0xda, 0x11, 0x68, 0xc7, 0xf8, 0x60, 0xc2, 0x20, 0x6e,
-	0x30, 0x56, 0x66, 0xf4, 0x12, 0x2c, 0x9a, 0x7b, 0xe6, 0xc8, 0x9c, 0x38, 0xd8, 0xa2, 0x39, 0xf2,
-	0x01, 0x32, 0xce, 0xa4, 0xe0, 0xbb, 0x1d, 0x11, 0x9e, 0xa5, 0xf4, 0x67, 0x0a, 0x42, 0xd0, 0x92,
-	0x37, 0x25, 0xf1, 0x6c, 0x75, 0x51, 0x18, 0xbd, 0x81, 0x0e, 0x17, 0x74, 0x43, 0x99, 0xd7, 0x52,
-	0xaa, 0x66, 0xb5, 0x97, 0xa5, 0x05, 0xf1, 0xda, 0x8d, 0xb7, 0xc6, 0xe8, 0x13, 0xbc, 0xd2, 0x8f,
-	0x49, 0x08, 0xcb, 0x4b, 0x4e, 0x99, 0xac, 0xbc, 0xce, 0xc8, 0x9e, 0x38, 0xd8, 0xd5, 0x87, 0xe8,
-	0x51, 0x47, 0xef, 0xa0, 0x57, 0x10, 0x99, 0xe6, 0xa9, 0x4c, 0xbd, 0xae, 0x0a, 0xb9, 0xf0, 0xf1,
-	0x5f, 0x18, 0x5e, 0x9a, 0xec, 0x52, 0x49, 0x39, 0xab, 0xb6, 0xb4, 0x44, 0xef, 0xc1, 0x11, 0xe4,
-	0x1f, 0x11, 0x84, 0x65, 0x44, 0xd7, 0x7a, 0x12, 0x90, 0x0b, 0x76, 0x4e, 0x73, 0x5d, 0xab, 0x86,
-	0xe8, 0x35, 0xb4, 0x33, 0xbe, 0x67, 0x52, 0x15, 0x1a, 0xe0, 0x86, 0x7c, 0x8c, 0xa1, 0xbf, 0x24,
-	0xa2, 0xa0, 0x55, 0x55, 0xe7, 0xa2, 0x3e, 0x74, 0x63, 0x9c, 0xcc, 0xa6, 0x71, 0xe4, 0x1a, 0x9a,
-	0xc4, 0xf3, 0xef, 0x0b, 0xd7, 0x44, 0x2f, 0xa0, 0x17, 0xe3, 0xe4, 0x17, 0x9e, 0xaf, 0x22, 0xd7,
-	0x42, 0x03, 0x70, 0x62, 0x9c, 0xfc, 0x5c, 0x7e, 0x9d, 0xae, 0x22, 0xd7, 0xd6, 0x74, 0xf1, 0x63,
-	0x35, 0xff, 0xf6, 0xdb, 0x6d, 0xcd, 0xbe, 0x1c, 0x4e, 0xbe, 0x79, 0x3c, 0xf9, 0xe6, 0xfd, 0xc9,
-	0x37, 0x6f, 0xcf, 0xbe, 0x71, 0x3c, 0xfb, 0xc6, 0xdd, 0xd9, 0x37, 0xfe, 0x7c, 0xd8, 0x50, 0xb9,
-	0xdd, 0xaf, 0x83, 0x8c, 0x17, 0x61, 0x33, 0x5b, 0xa8, 0x86, 0xbd, 0xbe, 0x4c, 0x5b, 0xff, 0x73,
-	0xb5, 0xee, 0xa8, 0x69, 0x3f, 0x3f, 0x04, 0x00, 0x00, 0xff, 0xff, 0x6a, 0xfc, 0x36, 0xe6, 0xf7,
-	0x01, 0x00, 0x00,
+	// 362 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x51, 0xcb, 0xae, 0xd2, 0x40,
+	0x18, 0xee, 0xb4, 0x5c, 0xec, 0x5f, 0x20, 0xcd, 0xe8, 0x62, 0x48, 0x4c, 0xd3, 0xb0, 0x30, 0x8d,
+	0x8b, 0x36, 0xd1, 0xa5, 0x1b, 0xc1, 0x54, 0xc3, 0x06, 0xcd, 0x94, 0xc4, 0xa8, 0x0b, 0x02, 0xd3,
+	0x11, 0x26, 0x81, 0x99, 0x3a, 0x53, 0x8c, 0xbe, 0x85, 0x8f, 0xe5, 0xe2, 0x2c, 0x58, 0x9e, 0xe5,
+	0x09, 0xbc, 0xc8, 0x09, 0xa5, 0x07, 0xba, 0xfb, 0x6e, 0x73, 0xf9, 0xf2, 0xc1, 0x90, 0x29, 0xcd,
+	0x13, 0xc3, 0xf5, 0x6f, 0xc1, 0x78, 0xa2, 0x39, 0x53, 0x3a, 0x8f, 0x0b, 0xad, 0x4a, 0x85, 0x7b,
+	0x67, 0x2b, 0xae, 0xad, 0xd1, 0x1d, 0x82, 0x7e, 0x76, 0xc1, 0xb4, 0x4a, 0xe1, 0x01, 0xd8, 0x22,
+	0x27, 0x28, 0x44, 0x91, 0x4b, 0x6d, 0x91, 0xe3, 0x00, 0x80, 0x29, 0x59, 0x6a, 0xb5, 0xdd, 0x72,
+	0x4d, 0xec, 0x4a, 0x6f, 0x28, 0x98, 0x40, 0x57, 0x69, 0xb1, 0x16, 0xd2, 0x10, 0x27, 0x74, 0x22,
+	0x97, 0x3e, 0x51, 0x8c, 0xa1, 0x25, 0x97, 0x3b, 0x4e, 0x5a, 0xd5, 0x99, 0x0a, 0xe3, 0x10, 0xbc,
+	0x9c, 0x1b, 0xa6, 0x45, 0x51, 0x0a, 0x25, 0x49, 0xbb, 0xb2, 0x9a, 0x12, 0x7e, 0x07, 0x5e, 0xc1,
+	0xf5, 0x4e, 0x18, 0x23, 0x94, 0x34, 0xa4, 0x13, 0xa2, 0x68, 0xf0, 0x66, 0x18, 0x37, 0x7f, 0x1d,
+	0x7f, 0xb9, 0x05, 0x68, 0x33, 0x3d, 0xfa, 0x01, 0xcf, 0xaf, 0x6d, 0xb6, 0xcb, 0xf3, 0x7d, 0x66,
+	0x23, 0x0a, 0xfc, 0x12, 0x5c, 0xcd, 0x7f, 0x72, 0xcd, 0x25, 0xe3, 0x75, 0xb5, 0x9b, 0x80, 0x7d,
+	0x70, 0x72, 0x91, 0xd7, 0xd5, 0xce, 0x10, 0xbf, 0x80, 0x36, 0x53, 0x7b, 0x59, 0x12, 0x27, 0x44,
+	0x51, 0x9f, 0x5e, 0xc8, 0xeb, 0x0c, 0xbc, 0xc6, 0xc3, 0xd8, 0x83, 0x6e, 0x46, 0x17, 0x93, 0x71,
+	0x96, 0xfa, 0x56, 0x4d, 0xb2, 0xe9, 0xa7, 0x99, 0x8f, 0x70, 0x0f, 0x9e, 0x65, 0x74, 0xf1, 0x95,
+	0x4e, 0xe7, 0xa9, 0x6f, 0xe3, 0x3e, 0xb8, 0x19, 0x5d, 0x7c, 0xa0, 0xe9, 0x78, 0x9e, 0xfa, 0x4e,
+	0x4d, 0x67, 0x9f, 0xe7, 0xd3, 0x8f, 0xdf, 0xfc, 0xd6, 0xe4, 0xfd, 0xff, 0x63, 0x80, 0x0e, 0xc7,
+	0x00, 0x3d, 0x1c, 0x03, 0xf4, 0xef, 0x14, 0x58, 0x87, 0x53, 0x60, 0xdd, 0x9f, 0x02, 0xeb, 0xfb,
+	0xab, 0xb5, 0x28, 0x37, 0xfb, 0x55, 0xcc, 0xd4, 0x2e, 0x31, 0x4a, 0xea, 0xcd, 0xaf, 0xa4, 0x5a,
+	0xf5, 0xcf, 0x75, 0xd7, 0xf2, 0x6f, 0xc1, 0xcd, 0xaa, 0x53, 0xed, 0xfa, 0xf6, 0x31, 0x00, 0x00,
+	0xff, 0xff, 0x0d, 0x66, 0x10, 0xf5, 0xf4, 0x01, 0x00, 0x00,
 }
 
 func (m *ServiceRecord) Marshal() (dAtA []byte, err error) {
@@ -278,42 +270,33 @@ func (m *ServiceRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Metadata) > 0 {
-		i -= len(m.Metadata)
-		copy(dAtA[i:], m.Metadata)
-		i = encodeVarintRecord(dAtA, i, uint64(len(m.Metadata)))
+	if m.Permissions != 0 {
+		i = encodeVarintRecord(dAtA, i, uint64(m.Permissions))
 		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x30
 	}
-	if len(m.ServiceEndpoints) > 0 {
-		for iNdEx := len(m.ServiceEndpoints) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.ServiceEndpoints[iNdEx])
-			copy(dAtA[i:], m.ServiceEndpoints[iNdEx])
-			i = encodeVarintRecord(dAtA, i, uint64(len(m.ServiceEndpoints[iNdEx])))
-			i--
-			dAtA[i] = 0x32
-		}
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintRecord(dAtA, i, uint64(len(m.Description)))
+		i--
+		dAtA[i] = 0x2a
 	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
 		copy(dAtA[i:], m.Name)
 		i = encodeVarintRecord(dAtA, i, uint64(len(m.Name)))
 		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.Origin) > 0 {
-		i -= len(m.Origin)
-		copy(dAtA[i:], m.Origin)
-		i = encodeVarintRecord(dAtA, i, uint64(len(m.Origin)))
-		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.Type) > 0 {
-		i -= len(m.Type)
-		copy(dAtA[i:], m.Type)
-		i = encodeVarintRecord(dAtA, i, uint64(len(m.Type)))
-		i--
-		dAtA[i] = 0x1a
+	if len(m.Origins) > 0 {
+		for iNdEx := len(m.Origins) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Origins[iNdEx])
+			copy(dAtA[i:], m.Origins[iNdEx])
+			i = encodeVarintRecord(dAtA, i, uint64(len(m.Origins[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
 	if len(m.Controller) > 0 {
 		i -= len(m.Controller)
@@ -399,27 +382,22 @@ func (m *ServiceRecord) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovRecord(uint64(l))
 	}
-	l = len(m.Type)
-	if l > 0 {
-		n += 1 + l + sovRecord(uint64(l))
-	}
-	l = len(m.Origin)
-	if l > 0 {
-		n += 1 + l + sovRecord(uint64(l))
+	if len(m.Origins) > 0 {
+		for _, s := range m.Origins {
+			l = len(s)
+			n += 1 + l + sovRecord(uint64(l))
+		}
 	}
 	l = len(m.Name)
 	if l > 0 {
 		n += 1 + l + sovRecord(uint64(l))
 	}
-	if len(m.ServiceEndpoints) > 0 {
-		for _, s := range m.ServiceEndpoints {
-			l = len(s)
-			n += 1 + l + sovRecord(uint64(l))
-		}
-	}
-	l = len(m.Metadata)
+	l = len(m.Description)
 	if l > 0 {
 		n += 1 + l + sovRecord(uint64(l))
+	}
+	if m.Permissions != 0 {
+		n += 1 + sovRecord(uint64(m.Permissions))
 	}
 	return n
 }
@@ -545,7 +523,7 @@ func (m *ServiceRecord) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Type", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Origins", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -573,41 +551,9 @@ func (m *ServiceRecord) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Type = string(dAtA[iNdEx:postIndex])
+			m.Origins = append(m.Origins, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRecord
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRecord
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Origin = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
@@ -639,11 +585,43 @@ func (m *ServiceRecord) Unmarshal(dAtA []byte) error {
 			}
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowRecord
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthRecord
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthRecord
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ServiceEndpoints", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
 			}
-			var stringLen uint64
+			m.Permissions = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowRecord
@@ -653,56 +631,11 @@ func (m *ServiceRecord) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.Permissions |= Permissions(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRecord
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ServiceEndpoints = append(m.ServiceEndpoints, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowRecord
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthRecord
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthRecord
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Metadata = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipRecord(dAtA[iNdEx:])

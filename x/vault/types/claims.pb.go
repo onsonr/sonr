@@ -5,7 +5,7 @@ package types
 
 import (
 	fmt "fmt"
-	proto "github.com/gogo/protobuf/proto"
+	proto "github.com/cosmos/gogoproto/proto"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -23,11 +23,9 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type ClaimableWallet struct {
-	Id        uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Creator   string   `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
-	PublicKey string   `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	Keyshares []string `protobuf:"bytes,4,rep,name=keyshares,proto3" json:"keyshares,omitempty"`
-	Count     int32    `protobuf:"varint,5,opt,name=count,proto3" json:"count,omitempty"`
+	Index   uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+	Creator string `protobuf:"bytes,2,opt,name=creator,proto3" json:"creator,omitempty"`
+	Did     string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
 }
 
 func (m *ClaimableWallet) Reset()         { *m = ClaimableWallet{} }
@@ -63,9 +61,9 @@ func (m *ClaimableWallet) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ClaimableWallet proto.InternalMessageInfo
 
-func (m *ClaimableWallet) GetId() uint64 {
+func (m *ClaimableWallet) GetIndex() uint64 {
 	if m != nil {
-		return m.Id
+		return m.Index
 	}
 	return 0
 }
@@ -77,50 +75,33 @@ func (m *ClaimableWallet) GetCreator() string {
 	return ""
 }
 
-func (m *ClaimableWallet) GetPublicKey() string {
+func (m *ClaimableWallet) GetDid() string {
 	if m != nil {
-		return m.PublicKey
+		return m.Did
 	}
 	return ""
 }
 
-func (m *ClaimableWallet) GetKeyshares() []string {
-	if m != nil {
-		return m.Keyshares
-	}
-	return nil
-}
-
-func (m *ClaimableWallet) GetCount() int32 {
-	if m != nil {
-		return m.Count
-	}
-	return 0
-}
-
 func init() {
-	proto.RegisterType((*ClaimableWallet)(nil), "sonrhq.core.vault.ClaimableWallet")
+	proto.RegisterType((*ClaimableWallet)(nil), "core.vault.ClaimableWallet")
 }
 
 func init() { proto.RegisterFile("core/vault/claims.proto", fileDescriptor_0012f1381f622404) }
 
 var fileDescriptor_0012f1381f622404 = []byte{
-	// 236 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x3c, 0x8f, 0x31, 0x4f, 0x84, 0x30,
-	0x18, 0x86, 0x29, 0x77, 0x68, 0xf8, 0x06, 0x8d, 0x8d, 0x89, 0x1d, 0xb4, 0x21, 0xc6, 0x81, 0x09,
-	0x06, 0x77, 0x07, 0x1d, 0xdd, 0x58, 0x4c, 0x5c, 0x4c, 0xe9, 0x7d, 0x91, 0xe6, 0x7a, 0x57, 0x6c,
-	0x8b, 0x91, 0x3f, 0x61, 0xfc, 0x59, 0x8e, 0x8c, 0x8e, 0x06, 0xfe, 0x88, 0xa1, 0xa8, 0xe3, 0xfb,
-	0x3c, 0xef, 0xf2, 0xc0, 0x99, 0x34, 0x16, 0xcb, 0x57, 0xd1, 0x69, 0x5f, 0x4a, 0x2d, 0xd4, 0xce,
-	0x15, 0xad, 0x35, 0xde, 0xd0, 0x13, 0x67, 0xf6, 0xb6, 0x79, 0x29, 0x66, 0x5f, 0x04, 0x7f, 0xf9,
-	0x4e, 0xe0, 0xf8, 0x6e, 0xfe, 0x88, 0x5a, 0xe3, 0x83, 0xd0, 0x1a, 0x3d, 0x3d, 0x82, 0x58, 0x6d,
-	0x18, 0xc9, 0x48, 0xbe, 0xae, 0x62, 0xb5, 0xa1, 0x0c, 0x0e, 0xa5, 0x45, 0xe1, 0x8d, 0x65, 0x71,
-	0x46, 0xf2, 0xb4, 0xfa, 0x9b, 0xf4, 0x02, 0xa0, 0xed, 0x6a, 0xad, 0xe4, 0xd3, 0x16, 0x7b, 0xb6,
-	0x0a, 0x32, 0x5d, 0xc8, 0x3d, 0xf6, 0xf4, 0x1c, 0xd2, 0x2d, 0xf6, 0xae, 0x11, 0x16, 0x1d, 0x5b,
-	0x67, 0xab, 0xd9, 0xfe, 0x03, 0x7a, 0x0a, 0x89, 0x34, 0xdd, 0xde, 0xb3, 0x24, 0x23, 0x79, 0x52,
-	0x2d, 0xe3, 0xf6, 0xe6, 0x73, 0xe4, 0x64, 0x18, 0x39, 0xf9, 0x1e, 0x39, 0xf9, 0x98, 0x78, 0x34,
-	0x4c, 0x3c, 0xfa, 0x9a, 0x78, 0xf4, 0x78, 0xf5, 0xac, 0x7c, 0xd3, 0xd5, 0x85, 0x34, 0xbb, 0x72,
-	0x09, 0x29, 0x43, 0xe8, 0xdb, 0x6f, 0xaa, 0xef, 0x5b, 0x74, 0xf5, 0x41, 0x48, 0xbd, 0xfe, 0x09,
-	0x00, 0x00, 0xff, 0xff, 0xd8, 0x3a, 0x8e, 0x20, 0x05, 0x01, 0x00, 0x00,
+	// 186 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x4f, 0xce, 0x2f, 0x4a,
+	0xd5, 0x2f, 0x4b, 0x2c, 0xcd, 0x29, 0xd1, 0x4f, 0xce, 0x49, 0xcc, 0xcc, 0x2d, 0xd6, 0x2b, 0x28,
+	0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x02, 0x49, 0xe8, 0x81, 0x25, 0x94, 0x82, 0xb9, 0xf8, 0x9d, 0x41,
+	0x72, 0x89, 0x49, 0x39, 0xa9, 0xe1, 0x89, 0x39, 0x39, 0xa9, 0x25, 0x42, 0x22, 0x5c, 0xac, 0x99,
+	0x79, 0x29, 0xa9, 0x15, 0x12, 0x8c, 0x0a, 0x8c, 0x1a, 0x2c, 0x41, 0x10, 0x8e, 0x90, 0x04, 0x17,
+	0x7b, 0x72, 0x51, 0x6a, 0x62, 0x49, 0x7e, 0x91, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x67, 0x10, 0x8c,
+	0x2b, 0x24, 0xc0, 0xc5, 0x9c, 0x92, 0x99, 0x22, 0xc1, 0x0c, 0x16, 0x05, 0x31, 0x9d, 0xec, 0x4e,
+	0x3c, 0x92, 0x63, 0xbc, 0xf0, 0x48, 0x8e, 0xf1, 0xc1, 0x23, 0x39, 0xc6, 0x09, 0x8f, 0xe5, 0x18,
+	0x2e, 0x3c, 0x96, 0x63, 0xb8, 0xf1, 0x58, 0x8e, 0x21, 0x4a, 0x25, 0x3d, 0xb3, 0x24, 0xa3, 0x34,
+	0x49, 0x2f, 0x39, 0x3f, 0x57, 0xbf, 0x38, 0x3f, 0xaf, 0x28, 0xa3, 0x50, 0x1f, 0xec, 0xca, 0x0a,
+	0xa8, 0x3b, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xee, 0x34, 0x06, 0x04, 0x00, 0x00,
+	0xff, 0xff, 0xa6, 0x7b, 0xbd, 0x83, 0xc2, 0x00, 0x00, 0x00,
 }
 
 func (m *ClaimableWallet) Marshal() (dAtA []byte, err error) {
@@ -143,24 +124,10 @@ func (m *ClaimableWallet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Count != 0 {
-		i = encodeVarintClaims(dAtA, i, uint64(m.Count))
-		i--
-		dAtA[i] = 0x28
-	}
-	if len(m.Keyshares) > 0 {
-		for iNdEx := len(m.Keyshares) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Keyshares[iNdEx])
-			copy(dAtA[i:], m.Keyshares[iNdEx])
-			i = encodeVarintClaims(dAtA, i, uint64(len(m.Keyshares[iNdEx])))
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	if len(m.PublicKey) > 0 {
-		i -= len(m.PublicKey)
-		copy(dAtA[i:], m.PublicKey)
-		i = encodeVarintClaims(dAtA, i, uint64(len(m.PublicKey)))
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintClaims(dAtA, i, uint64(len(m.Did)))
 		i--
 		dAtA[i] = 0x1a
 	}
@@ -171,8 +138,8 @@ func (m *ClaimableWallet) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.Id != 0 {
-		i = encodeVarintClaims(dAtA, i, uint64(m.Id))
+	if m.Index != 0 {
+		i = encodeVarintClaims(dAtA, i, uint64(m.Index))
 		i--
 		dAtA[i] = 0x8
 	}
@@ -196,25 +163,16 @@ func (m *ClaimableWallet) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Id != 0 {
-		n += 1 + sovClaims(uint64(m.Id))
+	if m.Index != 0 {
+		n += 1 + sovClaims(uint64(m.Index))
 	}
 	l = len(m.Creator)
 	if l > 0 {
 		n += 1 + l + sovClaims(uint64(l))
 	}
-	l = len(m.PublicKey)
+	l = len(m.Did)
 	if l > 0 {
 		n += 1 + l + sovClaims(uint64(l))
-	}
-	if len(m.Keyshares) > 0 {
-		for _, s := range m.Keyshares {
-			l = len(s)
-			n += 1 + l + sovClaims(uint64(l))
-		}
-	}
-	if m.Count != 0 {
-		n += 1 + sovClaims(uint64(m.Count))
 	}
 	return n
 }
@@ -256,9 +214,9 @@ func (m *ClaimableWallet) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
 			}
-			m.Id = 0
+			m.Index = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowClaims
@@ -268,7 +226,7 @@ func (m *ClaimableWallet) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.Id |= uint64(b&0x7F) << shift
+				m.Index |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
@@ -307,7 +265,7 @@ func (m *ClaimableWallet) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -335,59 +293,8 @@ func (m *ClaimableWallet) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.PublicKey = string(dAtA[iNdEx:postIndex])
+			m.Did = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Keyshares", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowClaims
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthClaims
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthClaims
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Keyshares = append(m.Keyshares, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
-			}
-			m.Count = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowClaims
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Count |= int32(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipClaims(dAtA[iNdEx:])

@@ -5,32 +5,31 @@ import (
 )
 
 // NewAuthenticationRelationship creates a new authentication relationship from the given verification method.
-func NewAuthenticationRelationship(method *VerificationMethod) VerificationRelationship {
-	owner, _ := GetOwnerFromDID(method.Id)
+func NewAuthenticationRelationship(method *VerificationMethod, owner string) VerificationRelationship {
+
 	return VerificationRelationship{VerificationMethod: method, Reference: method.Id, Owner: owner, Type: AuthenticationRelationshipName}
 }
 
 // NewAssertionRelationship creates a new assertion relationship from the given verification method.
-func NewAssertionRelationship(method *VerificationMethod) VerificationRelationship {
-	owner, _ := GetOwnerFromDID(method.Id)
+func NewAssertionRelationship(method *VerificationMethod, owner string) VerificationRelationship {
+
 	return VerificationRelationship{VerificationMethod: method, Reference: method.Id, Owner: owner, Type: AssertionRelationshipName}
 }
 
 // NewKeyAgreementRelationship creates a new key agreement relationship from the given verification method.
-func NewKeyAgreementRelationship(method *VerificationMethod) VerificationRelationship {
-	owner, _ := GetOwnerFromDID(method.Id)
+func NewKeyAgreementRelationship(method *VerificationMethod, owner string) VerificationRelationship {
+
 	return VerificationRelationship{VerificationMethod: method, Reference: method.Id, Owner: owner, Type: KeyAgreementRelationshipName}
 }
 
 // NewCapabilityDelegationRelationship creates a new capability delegation relationship from the given verification method.
-func NewCapabilityDelegationRelationship(method *VerificationMethod) VerificationRelationship {
-	owner, _ := GetOwnerFromDID(method.Id)
+func NewCapabilityDelegationRelationship(method *VerificationMethod, owner string) VerificationRelationship {
+
 	return VerificationRelationship{VerificationMethod: method, Reference: method.Id, Owner: owner, Type: CapabilityDelegationRelationshipName}
 }
 
 // NewCapabilityInvocationRelationship creates a new capability invocation relationship from the given verification method.
-func NewCapabilityInvocationRelationship(method *VerificationMethod) VerificationRelationship {
-	owner, _ := GetOwnerFromDID(method.Id)
+func NewCapabilityInvocationRelationship(method *VerificationMethod, owner string) VerificationRelationship {
 	return VerificationRelationship{VerificationMethod: method, Reference: method.Id, Owner: owner, Type: CapabilityInvocationRelationshipName}
 }
 

@@ -1,7 +1,8 @@
 syntax = "proto3";
 
-package sonrhq.core.service;
+package core.service;
 
+import "core/service/org.proto";
 import "core/service/record.proto";
 import "core/identity/did.proto";
 
@@ -15,6 +16,21 @@ service Msg {
   rpc RegisterUserEntity     (MsgRegisterUserEntity    ) returns (MsgRegisterUserEntityResponse    );
   rpc AuthenticateUserEntity (MsgAuthenticateUserEntity) returns (MsgAuthenticateUserEntityResponse);
 }
+
+message MsgRegisterServiceOrganization {
+  string controller = 1;
+  string admin = 2;
+  string name = 3;
+  string description = 4;
+}
+
+message MsgRegisterServiceOrganizationResponse {
+  bool ok = 1;
+  uint64 group_id = 2;
+  string group_address = 3;
+  ServiceOrganization organization = 4;
+}
+
 message MsgRegisterServiceRecord {
   string        controller = 1;
   ServiceRecord record     = 2;

@@ -48,6 +48,7 @@ require (
 )
 
 require (
+	github.com/cosmos/gogoproto v1.4.10
 	github.com/gorilla/mux v1.8.0
 	github.com/kataras/go-sessions/v3 v3.3.1
 	github.com/yoseplee/vrf v0.0.0-20210814110709-d1caf509310b
@@ -342,7 +343,7 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	go.uber.org/zap v1.24.0 // indirect
 	go4.org v0.0.0-20200411211856-f5505b9728dd // indirect
-	golang.org/x/exp v0.0.0-20230129154200-a960b3787bd2 // indirect
+	golang.org/x/exp v0.0.0-20230131160201-f062dba9d201 // indirect
 	golang.org/x/mod v0.8.0 // indirect
 	golang.org/x/net v0.10.0 // indirect
 	golang.org/x/oauth2 v0.8.0 // indirect

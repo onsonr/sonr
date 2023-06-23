@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrhq.sonr.crypto;
+package sonr.crypto;
 
 // this line is used by starport scaffolding # proto/tx/import
 

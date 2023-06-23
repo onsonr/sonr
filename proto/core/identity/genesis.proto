@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.identity;
+package core.identity;
 
 import "gogoproto/gogo.proto";
 import "core/identity/did.proto";
@@ -12,8 +12,8 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 // GenesisState defines the identity module's genesis state.
 message GenesisState {
            Params                   params               = 1 [(gogoproto.nullable) = false];
-  repeated Identification           did_documents    = 2 [(gogoproto.nullable) = false];
-  repeated VerificationRelationship relationships        = 3 [(gogoproto.nullable) = false];
+           repeated DIDDocument did_documents = 2
+               [ (gogoproto.nullable) = false ];
 }
 
 // Params defines the parameters for the module.

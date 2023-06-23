@@ -44,19 +44,18 @@ type BankKeeper interface {
 
 // IdentityKeeper defines the expected interface needed to retrieve account balances.
 type IdentityKeeper interface {
-	AssignIdentity(credential *identitytypes.VerificationMethod, primary vaulttypes.Account, alias string, accounts ...vaulttypes.Account) (*identitytypes.DIDDocument, error)
 	CheckAlsoKnownAs(ctx sdk.Context, alias string) error
-	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.Identification, found bool)
-	ResolveIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, err error)
-	ResolveIdentity(ctx sdk.Context, did string) (identitytypes.DIDDocument, error)
+	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, found bool)
+	GetIdentity(ctx sdk.Context, did string) (val identitytypes.DIDDocument, found bool)
 }
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
 	// Methods imported from vault should be defined here
-	AssignVault(ctx sdk.Context, ucw uint64, credential *WebauthnCredential) ([]vaulttypes.Account, error)
+	AssignVault(ctx sdk.Context, ucw uint64, credential *WebauthnCredential) ([]vaulttypes.Account, *vaulttypes.VaultKeyshare, error)
 	GetClaimableWallet(ctx sdk.Context, id uint64) (val vaulttypes.ClaimableWallet, found bool)
 	NextUnclaimedWallet(ctx sdk.Context) (*vaulttypes.ClaimableWallet, protocol.URLEncodedBase64, error)
 	GetAccount(accDid string) (vaulttypes.Account, error)
 	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
+	UnlockVault(ctx sdk.Context, didDocument *identitytypes.DIDDocument, credential *WebauthnCredential) (vaulttypes.Account, error)
 }

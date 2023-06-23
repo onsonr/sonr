@@ -24,10 +24,10 @@ func TestGenesisState_Validate(t *testing.T) {
 
 				ClaimableWalletList: []types.ClaimableWallet{
 					{
-						Id: 0,
+						Index: 0,
 					},
 					{
-						Id: 1,
+						Index: 1,
 					},
 				},
 				ClaimableWalletCount: 2,
@@ -40,10 +40,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				ClaimableWalletList: []types.ClaimableWallet{
 					{
-						Id: 0,
+						Index: 0,
 					},
 					{
-						Id: 0,
+						Index: 0,
 					},
 				},
 			},
@@ -54,7 +54,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				ClaimableWalletList: []types.ClaimableWallet{
 					{
-						Id: 1,
+						Index: 1,
 					},
 				},
 				ClaimableWalletCount: 0,

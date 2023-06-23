@@ -59,4 +59,5 @@ type VaultKeeper interface {
 	GetAccount(accDid string) (vaulttypes.Account, error)
 	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
 	InsertAccount(acc vaulttypes.Account) error
+	RemoveClaimableWallet(ctx sdk.Context, id uint64)
 }

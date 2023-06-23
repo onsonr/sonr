@@ -36,7 +36,7 @@ func CoinTypeFromAddrPrefix(str string) CoinType {
 }
 
 // CoinTypeFromBipPath returns the CoinType from the index.
-func CoinTypeFromBipPath(i int32) CoinType {
+func CoinTypeFromBipPath(i uint32) CoinType {
 	coins := AllCoinTypes()
 	for _, coin := range coins {
 		if coin.BipPath() == i {
@@ -110,7 +110,7 @@ func (ct CoinType) AddrPrefix() string {
 }
 
 // BipPath returns the index for the given coin type.
-func (ct CoinType) BipPath() int32 {
+func (ct CoinType) BipPath() uint32 {
 	switch ct {
 	case CoinType_CoinType_BITCOIN:
 		return 0

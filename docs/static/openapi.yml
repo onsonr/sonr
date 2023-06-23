@@ -44279,7 +44279,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /highway/id/{alias}/wallets:
+  /core/id/{alias}/wallets:
     get:
       summary: ListWallets returns all wallets for a given Identity.
       operationId: SonrhqCoreIdentityListWallets
@@ -44723,7 +44723,7 @@ paths:
           type: string
       tags:
         - Query
-  /highway/id/{alias}/wallets/create/{coin_type}/{name}:
+  /core/id/{alias}/wallets/create/{coin_type}/{name}:
     post:
       summary: >-
         CreateWallet creates a new wallet with a specified name and token type
@@ -45187,7 +45187,7 @@ paths:
               method.
       tags:
         - Query
-  /highway/id/{alias}/wallets/{address}:
+  /core/id/{alias}/wallets/{address}:
     get:
       summary: GetWallet returns a wallet for a given address.
       operationId: SonrhqCoreIdentityGetWallet
@@ -45629,7 +45629,7 @@ paths:
           type: string
       tags:
         - Query
-  /highway/id/{alias}/wallets/{address}/sign:
+  /core/id/{alias}/wallets/{address}/sign:
     post:
       summary: SignWallet signs a message with a given wallet.
       operationId: SonrhqCoreIdentitySignWallet
@@ -46091,7 +46091,7 @@ paths:
               RPC method.
       tags:
         - Query
-  /highway/id/{alias}/wallets/{address}/verify:
+  /core/id/{alias}/wallets/{address}/verify:
     post:
       summary: VerifyWallet verifies a message with a given wallet.
       operationId: SonrhqCoreIdentityVerifyWallet
@@ -46863,7 +46863,7 @@ paths:
           type: string
       tags:
         - Query
-  /highway/service/{origin}/login/finish/{alias}:
+  /core/service/{origin}/login/finish/{alias}:
     post:
       summary: Verifies the `CredentialAssertion` for a user and fetches User entity.
       operationId: SonrhqCoreServiceAuthenticateUser
@@ -47269,7 +47269,7 @@ paths:
               method.
       tags:
         - Query
-  /highway/service/{origin}/login/start/{alias}:
+  /core/service/{origin}/login/start/{alias}:
     get:
       summary: Gets the `CredentialRequestOptions` for a user to begin Sonr login.
       operationId: SonrhqCoreServiceServiceAssertion
@@ -47321,7 +47321,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /highway/service/{origin}/register/finish/{alias}:
+  /core/service/{origin}/register/finish/{alias}:
     post:
       summary: >-
         Verifies the `CredentialAssertion` for a user and claims a wallet
@@ -47732,7 +47732,7 @@ paths:
               method.
       tags:
         - Query
-  /highway/service/{origin}/register/start/{alias}:
+  /core/service/{origin}/register/start/{alias}:
     get:
       summary: >-
         Gets the `CredentialCreationOptions` for a user to begin Sonr
@@ -48021,7 +48021,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /highway/vault/mailbox/{creator}/read:
+  /core/vault/mailbox/{creator}/read:
     post:
       summary: Reads messages for a given wallet address
       operationId: SonrhqCoreVaultReadWalletMail
@@ -48099,7 +48099,7 @@ paths:
             type: object
       tags:
         - Query
-  /highway/vault/mailbox/{creator}/send/{to}:
+  /core/vault/mailbox/{creator}/send/{to}:
     post:
       summary: Sends an encrypted message to a given wallet address
       operationId: SonrhqCoreVaultSendWalletMail

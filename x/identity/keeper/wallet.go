@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonrhq/core/internal/crypto"
@@ -39,16 +40,16 @@ func (k Keeper) ListWallets(goCtx context.Context, req *types.ListWalletsRequest
 	}
 	accs := make([]*vault.AccountInfo, 0)
 	for _, id := range id.CapabilityDelegation {
-		acc, err := k.vaultKeeper.GetAccountInfo(id)
+		acc, err := k.vaultKeeper.GetAccountInfo(id.Reference)
 		if err != nil {
 			return nil, err
 		}
 		accs = append(accs, acc)
 	}
 
-	didDoc, err := k.ResolveIdentity(ctx, id.Id)
-	if err != nil {
-		return nil, err
+	didDoc, ok := k.GetIdentity(ctx, id.Id)
+	if !ok {
+		return nil, fmt.Errorf("Error resolving identity %s", id.Id)
 	}
 
 	return &types.ListWalletsResponse{

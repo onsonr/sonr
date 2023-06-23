@@ -73,7 +73,7 @@ func (k Keeper) SetServiceRecord(ctx sdk.Context, serviceRecord types.ServiceRec
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceRecordKeyPrefix))
 	b := k.cdc.MustMarshal(&serviceRecord)
 	store.Set(types.ServiceRecordKey(
-		cleanServiceDomain(serviceRecord.Origin),
+		cleanServiceDomain(serviceRecord.GetBaseOrigin()),
 	), b)
 }
 
@@ -185,6 +185,49 @@ func (k Keeper) RemoveServiceRelationship(ctx sdk.Context, id string) {
 // GetAllServiceRelationships returns all serviceRelationships
 func (k Keeper) GetAllServiceRelationships(ctx sdk.Context) (list []types.ServiceRelationship) {
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceRelationshipsKey))
+	iterator := sdk.KVStorePrefixIterator(store, []byte{})
+
+	defer iterator.Close()
+
+	for ; iterator.Valid(); iterator.Next() {
+		var val types.ServiceRelationship
+		k.cdc.MustUnmarshal(iterator.Value(), &val)
+		list = append(list, val)
+	}
+
+	return
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                              Service Organizations                             ||
+// ! ||--------------------------------------------------------------------------------||
+// SetServiceRelationships set a specific serviceRelationships in the store
+func (k Keeper) SetServiceOrganization(ctx sdk.Context, serviceRelationships types.ServiceOrganization) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceOrganizationKey))
+	b := k.cdc.MustMarshal(&serviceRelationships)
+	store.Set(types.KeyPrefix(serviceRelationships.Id), b)
+}
+
+// GetServiceRelationships returns a serviceRelationships from its id
+func (k Keeper) GetServiceOrganization(ctx sdk.Context, id string) (val types.ServiceRelationship, found bool) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceOrganizationKey))
+	b := store.Get(types.KeyPrefix(id))
+	if b == nil {
+		return val, false
+	}
+	k.cdc.MustUnmarshal(b, &val)
+	return val, true
+}
+
+// RemoveServiceRelationships removes a serviceRelationships from the store
+func (k Keeper) RemoveServiceOrganization(ctx sdk.Context, id string) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceOrganizationKey))
+	store.Delete(types.KeyPrefix(id))
+}
+
+// GetAllServiceRelationships returns all serviceRelationships
+func (k Keeper) GetAllServiceOrganizations(ctx sdk.Context) (list []types.ServiceRelationship) {
+	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ServiceOrganizationKey))
 	iterator := sdk.KVStorePrefixIterator(store, []byte{})
 
 	defer iterator.Close()

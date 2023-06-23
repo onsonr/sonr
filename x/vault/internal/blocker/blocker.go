@@ -16,8 +16,6 @@ type Blocker interface {
 	Next()
 }
 
-
-
 func NewBlocker() Blocker {
 	c := context.Background()
 	s := &blocker{
@@ -77,30 +75,33 @@ func (s *blocker) run(w *Worker) {
 
 func (s *blocker) buildClaimableWallet() error {
 	// Call Handler for keygen
-	confs, err := mpc.Keygen(crypto.PartyID("current"))
+	confs, err := mpc.Keygen(crypto.PartyID("ucw-1"), mpc.WithPeers("ucw-2"))
 	if err != nil {
 		s.errCh <- err
 		return err
 	}
 
-	var kss []types.KeyShare
-	for _, conf := range confs {
+	did := ""
+	for i, conf := range confs {
 		ksb, err := conf.MarshalBinary()
 		if err != nil {
 			s.errCh <- err
 			return err
 		}
-		ks, err := types.NewKeyshare(string(conf.ID), ksb, crypto.SONRCoinType)
+		ks, err := types.NewKeyshare(ksb, crypto.SONRCoinType, types.SetUnclaimed(i+1))
 		if err != nil {
 			s.errCh <- err
 			return err
 		}
 
 		go sfs.InsertKeyshare(ks)
-		kss = append(kss, ks)
+		if did == "" {
+			ksdid, _ := crypto.SONRCoinType.FormatDID(ks.PubKey())
+			did = ksdid
+		}
 	}
 	vaddr, _ := local.ValidatorAddress()
-	cw, err := types.NewWalletClaims(vaddr, kss)
+	cw, err := types.NewWalletClaims(vaddr, did)
 	if err != nil {
 		s.errCh <- err
 		return err

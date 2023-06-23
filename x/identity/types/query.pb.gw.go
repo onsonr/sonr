@@ -1397,31 +1397,31 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "params", "identity"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "params", "identity"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"core", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"core", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidAllBtc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "btc"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidAllBtc_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "btc"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidAllEth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "eth"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidAllEth_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "eth"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Did_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "did"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Did_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "did"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidByOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "owner"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidByOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "owner"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "alias"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "alias"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AliasAvailable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"core", "id", "alias", "check"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_AliasAvailable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"core", "id", "alias", "check"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_CreateWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"highway", "id", "alias", "wallets", "create", "coin_type", "name"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_CreateWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 2, 4, 1, 0, 4, 1, 5, 5, 1, 0, 4, 1, 5, 6}, []string{"highway", "id", "alias", "wallets", "create", "coin_type", "name"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_SignWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"highway", "id", "alias", "wallets", "address", "sign"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_SignWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"highway", "id", "alias", "wallets", "address", "sign"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_VerifyWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"highway", "id", "alias", "wallets", "address", "verify"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_VerifyWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4, 2, 5}, []string{"highway", "id", "alias", "wallets", "address", "verify"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_GetWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"highway", "id", "alias", "wallets", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_GetWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"highway", "id", "alias", "wallets", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ListWallets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"highway", "id", "alias", "wallets"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ListWallets_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"highway", "id", "alias", "wallets"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

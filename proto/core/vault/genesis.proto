@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.core.vault;
+package core.vault;
 
 import "gogoproto/gogo.proto";
 import "core/vault/claims.proto";

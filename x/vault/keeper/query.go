@@ -2,17 +2,17 @@ package keeper
 
 import (
 	"context"
+	"crypto/rand"
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/x/vault/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 )
-
-var _ types.QueryServer = Keeper{}
 
 // This is a function in the `keeper` package that sends an inbox message to a specified recipient. It takes in a context and a `SendWalletMailRequest` object as input, and returns a `SendWalletMailResponse` object and an error (if any) as output. The function writes the message
 // to the recipient's inbox using the `WriteInbox` function of the `Keeper` struct, and returns a success response with a message ID.
@@ -88,3 +88,25 @@ func (k Keeper) ClaimableWallet(goCtx context.Context, req *types.QueryGetClaima
 
 	return &types.QueryGetClaimableWalletResponse{ClaimableWallet: claimableWallet}, nil
 }
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                            Helper Utility Functions                            ||
+// ! ||--------------------------------------------------------------------------------||
+
+
+var _ types.QueryServer = Keeper{}
+
+// ChallengeLength - Length of bytes to generate for a challenge.¡¡
+const ChallengeLength = 32
+
+// createChallenge creates a new challenge that should be signed and returned by the authenticator. The spec recommends
+// using at least 16 bytes with 100 bits of entropy. We use 32 bytes.
+func createChallenge() (challenge protocol.URLEncodedBase64, err error) {
+	challenge = make([]byte, ChallengeLength)
+
+	if _, err = rand.Read(challenge); err != nil {
+		return nil, err
+	}
+	return challenge, nil
+}
+

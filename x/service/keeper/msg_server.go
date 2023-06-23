@@ -21,8 +21,35 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
+func (k msgServer) RegisterServiceOrganization(goCtx context.Context, msg *types.MsgRegisterServiceOrganization) (*types.MsgRegisterServiceOrganizationResponse, error) {
+	_ = sdk.UnwrapSDKContext(goCtx)
+	// newGroupMsg := group.MsgCreateGroup{
+	// 	Admin: msg.Controller,
+	// 	Members: []group.MemberRequest{
+
+	// 	},
+	// 	Metadata: msg.Record.Id,
+	// }
+	// res, err := k.groupKeeper.CreateGroup(goCtx, &newGroupMsg)
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	return &types.MsgRegisterServiceOrganizationResponse{}, nil
+}
 func (k msgServer) RegisterServiceRecord(goCtx context.Context, msg *types.MsgRegisterServiceRecord) (*types.MsgRegisterServiceRecordResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
+	// newGroupMsg := group.MsgCreateGroup{
+	// 	Admin: msg.Controller,
+	// 	Members: []group.MemberRequest{
+
+	// 	},
+	// 	Metadata: msg.Record.Id,
+	// }
+	// res, err := k.groupKeeper.CreateGroup(goCtx, &newGroupMsg)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	// Check if the value already exists
 	_, isFound := k.GetServiceRecord(
@@ -107,25 +134,25 @@ func (k msgServer) RegisterUserEntity(goCtx context.Context, msg *types.MsgRegis
 	}
 
 	// Assign identity to user entity
-	accs, err := k.vaultKeeper.AssignVault(ctx, msg.UcwId, cred)
+	accs, _, err := k.vaultKeeper.AssignVault(ctx, msg.UcwId, cred)
 	if err != nil {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
 	}
 
 	// Create DID Document
-	did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), accs[0], msg.DesiredAlias, accs...)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
-	}
+	// did, err := k.identityKeeper.AssignIdentity(cred.ToVerificationMethod(), accs[0], msg.DesiredAlias, accs...)
+	// if err != nil {
+	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Identity could not be assigned")
+	// }
 
 	// Set service relationship
 	k.SetServiceRelationship(ctx, *service.NewServiceRelationship(accs[0].Did()))
 
 	// Return response
 	return &types.MsgRegisterUserEntityResponse{
-		Identity: did,
+		//.Identity: did,
 		Success:  true,
-		Did:      did.Id,
+		// Did:      did.Id,
 	}, nil
 }
 

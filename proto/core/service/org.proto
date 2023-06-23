@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package core.service;
+
+option go_package = "github.com/sonrhq/core/x/service/types";
+
+message ServiceOrganization {
+  string id = 1;
+  string admin = 2; // The entity controlling the service
+  repeated string service_records = 3; // The origins that can access the service
+  string name = 4; // The name of the service
+  string description = 5; // The description of the service
+  repeated string tlds = 6; // The tlds that can access the service
+}

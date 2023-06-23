@@ -24,14 +24,14 @@ func (k Keeper) DidAll(c context.Context, req *types.QueryAllDidRequest) (*types
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var didDocuments []types.Identification
+	var didDocuments []types.DIDDocument
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
-	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(fmt.Sprintf("Identification/%s/value/", "sonr")))
+	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(types.IdentityKeyPrefix))
 
 	pageRes, err := query.Paginate(didDocumentStore, req.Pagination, func(key []byte, value []byte) error {
-		var didDocument types.Identification
+		var didDocument types.DIDDocument
 		if err := k.cdc.Unmarshal(value, &didDocument); err != nil {
 			return err
 		}
@@ -51,14 +51,14 @@ func (k Keeper) DidAllBtc(c context.Context, req *types.QueryAllDidRequest) (*ty
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var didDocuments []types.Identification
+	var didDocuments []types.DIDDocument
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
 	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(fmt.Sprintf("Identification/%s/value/", "btcr")))
 
 	pageRes, err := query.Paginate(didDocumentStore, req.Pagination, func(key []byte, value []byte) error {
-		var didDocument types.Identification
+		var didDocument types.DIDDocument
 		if err := k.cdc.Unmarshal(value, &didDocument); err != nil {
 			return err
 		}
@@ -78,14 +78,14 @@ func (k Keeper) DidAllEth(c context.Context, req *types.QueryAllDidRequest) (*ty
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
-	var didDocuments []types.Identification
+	var didDocuments []types.DIDDocument
 	ctx := sdk.UnwrapSDKContext(c)
 
 	store := ctx.KVStore(k.storeKey)
 	didDocumentStore := prefix.NewStore(store, types.KeyPrefix(fmt.Sprintf("Identification/%s/value/", "ethr")))
 
 	pageRes, err := query.Paginate(didDocumentStore, req.Pagination, func(key []byte, value []byte) error {
-		var didDocument types.Identification
+		var didDocument types.DIDDocument
 		if err := k.cdc.Unmarshal(value, &didDocument); err != nil {
 			return err
 		}
@@ -167,18 +167,11 @@ func (k Keeper) AliasAvailable(goCtx context.Context, req *types.QueryAliasAvail
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
-
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := k.CheckAlsoKnownAs(ctx, req.Alias)
-	if err != nil {
-		return &types.QueryAliasAvailableResponse{Available: true}, nil
-	}
-
 	doc, found := k.GetIdentityByPrimaryAlias(ctx, req.Alias)
 	if !found {
 		return &types.QueryAliasAvailableResponse{Available: true}, nil
 	}
-
 	return &types.QueryAliasAvailableResponse{Available: false, ExistingDocument: &doc}, nil
 }
 

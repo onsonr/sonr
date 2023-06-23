@@ -8,7 +8,9 @@ deps:
   - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
   ignore:
-    - core/identity
+    - sonrhq/core/identity
+    - core/identity/
+    - core/vault/
     - common
     - protocol/auth/v1
     - protocol/mailbox/v1

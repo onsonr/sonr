@@ -1,16 +1,15 @@
 syntax = "proto3";
-package sonrhq.core.service;
+package core.service;
 
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 message ServiceRecord {
   string id = 1;
   string controller = 2; // The entity controlling the service
-  string type = 3; // The type of the service
-  string origin = 4; // The origin of the service (e.g., a URL or other endpoint)
-  string name = 5; // The name of the service
-  repeated string service_endpoints = 6; // optional, the set of service endpoints associated with the service
-  string metadata = 7; // optional, additional metadata related to the Service
+  repeated string origins = 3;
+  string name = 4;        // The name of the service
+  string description = 5; // The description of the service
+  Permissions permissions = 6;
 }
 
 // ServiceRelationship is a relationship between a service and a User entity. This relation
@@ -41,7 +40,8 @@ enum Permissions {
   SR_WRITE = 2;
 
   // Authenticated user with service-side access to updating user DID documents
-  SR_UPDATE = 3;
+  // and creating new ones
+  SR_CREATE = 3;
 
   // Authenticated user with service-side access to receiving notifications
   SR_NOTIFY = 4;
