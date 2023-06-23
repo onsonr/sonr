@@ -12,7 +12,6 @@ before:
     - go mod verify
     - go mod tidy
     - go generate ./...
-    - sh scripts/generate.sh
 
 # The builds section.
 builds:
