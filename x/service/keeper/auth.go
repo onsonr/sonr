@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonrhq/core/internal/local"
 
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/service/types"
@@ -48,12 +47,8 @@ func (k Keeper) RegisterUser(goCtx context.Context, req *types.RegisterUserReque
 	authVm := credential.ToVerificationMethod()
 	didDoc := identitytypes.NewDIDDocument(snr, authVm, req.Alias)
 	didDoc.LinkCapabilityInvocationFromVaultAccount(eth, btc)
-	bz, err := snr.SignCosmosTx(identitytypes.NewMsgRegisterIdentity(snr.Address(), didDoc))
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "tx could not be signed")
-	}
-	go k.BroadcastTx(ctx, bz)
-
+	txMsg := identitytypes.NewMsgRegisterIdentity(snr.Address(), didDoc)
+	go k.identityKeeper.SignAndBroadcastCosmosTx(snr, txMsg)
 	return &types.RegisterUserResponse{
 		Did:      didDoc.Id,
 		Identity: didDoc,
@@ -92,14 +87,4 @@ func (k Keeper) AuthenticateUser(goCtx context.Context, req *types.AuthenticateU
 		Identity: &did,
 		Alias:    req.Alias,
 	}, nil
-}
-
-// BroadcastTx is a method of the `Keeper` struct and is used to broadcast a transaction to the blockchain. It takes a context, a `vaulttypes.Account` and a `sdk.Msg` as input and returns nothing. The function first unwraps the context and then signs the message using the `SignCosmosTx`
-func (k Keeper) BroadcastTx(ctx sdk.Context, bz []byte) error {
-	txr, err := local.Context().BroadcastTx(bz)
-	if err != nil {
-		return err
-	}
-	k.Logger(ctx).Info("(Gateway/service) - tx broadcasted", txr.TxResponse.TxHash)
-	return nil
 }

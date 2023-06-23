@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/internal/local"
 	identity "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/core/x/vault"
 )
@@ -103,4 +104,23 @@ func (k Keeper) VerifyWithIdentity(ctx sdk.Context, primaryDid string, accDid st
 	// Sign the message
 	ok, err = account.Verify(message, sig)
 	return &didDoc, ok, account.GetAccountInfo(), err
+}
+
+// SignAndBroadcastCosmosTx is a method of the `Keeper` struct and is used to broadcast a transaction to the blockchain. It takes a context, a `vaulttypes.Account` and a `sdk.Msg` as input and returns nothing. The function first unwraps the context and then signs the message using the `SignCosmosTx`
+func (k Keeper) SignAndBroadcastCosmosTx(account vault.Account, msgs ...sdk.Msg) {
+	sigBzChan := make(chan []byte)
+	errChan := make(chan error)
+	go func() {
+		sig, err := account.SignCosmosTx(msgs...)
+		if err != nil {
+			errChan <- err
+		}
+		sigBzChan <- sig
+	}()
+	sigBz := <-sigBzChan
+	_, err := local.Context().BroadcastTx(sigBz)
+	if err != nil {
+		return
+	}
+	return
 }
