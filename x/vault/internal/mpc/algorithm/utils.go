@@ -41,30 +41,30 @@ func EnsureSelfIDInGroup(selfID party.ID, group []party.ID) []party.ID {
 	return append(group, selfID)
 }
 
-// It converts a peer.ID to a party.ID
-func PeerIdToPartyId(id crypto.PeerID) crypto.PartyID {
-	return party.ID(id)
-}
+// // It converts a peer.ID to a party.ID
+// func PeerIdToPartyId(id crypto.PeerID) crypto.PartyID {
+// 	return party.ID(id)
+// }
 
-// It converts a party ID to a peer ID
-func PartyIdToPeerId(id crypto.PartyID) crypto.PeerID {
-	return peer.ID(id)
-}
+// // It converts a party ID to a peer ID
+// func PartyIdToPeerId(id crypto.PartyID) crypto.PeerID {
+// 	return peer.ID(id)
+// }
 
-// It converts a list of peer IDs to a list of party IDs
-func PeerIdListToPartyIdList(ids []crypto.PeerID) []crypto.PartyID {
-	partyIds := make([]party.ID, len(ids))
-	for i, id := range ids {
-		partyIds[i] = PeerIdToPartyId(id)
-	}
-	return partyIds
-}
+// // It converts a list of peer IDs to a list of party IDs
+// func PeerIdListToPartyIdList(ids []crypto.PeerID) []crypto.PartyID {
+// 	partyIds := make([]party.ID, len(ids))
+// 	for i, id := range ids {
+// 		partyIds[i] = PeerIdToPartyId(id)
+// 	}
+// 	return partyIds
+// }
 
-// It converts a list of party IDs to a list of peer IDs
-func PartyIdListToPeerIdList(ids []crypto.PartyID) []crypto.PeerID {
-	peerIds := make([]crypto.PeerID, len(ids))
-	for i, id := range ids {
-		peerIds[i] = PartyIdToPeerId(id)
-	}
-	return peerIds
-}
+// // It converts a list of party IDs to a list of peer IDs
+// func PartyIdListToPeerIdList(ids []crypto.PartyID) []crypto.PeerID {
+// 	peerIds := make([]crypto.PeerID, len(ids))
+// 	for i, id := range ids {
+// 		peerIds[i] = PartyIdToPeerId(id)
+// 	}
+// 	return peerIds
+// }

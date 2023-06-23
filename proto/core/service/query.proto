@@ -5,44 +5,29 @@ package core.service;
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "core/service/genesis.proto";
+import "core/service/params.proto";
 import "core/service/record.proto";
-import "core/identity/did.proto";
-import "core/vault/sfs.proto";
 import "core/service/credential.proto";
-import "core/service/org.proto";
+import "core/identity/did.proto";
+import "core/vault/vault.proto";
 
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Query defines the gRPC querier service.
 service Query {
-  // Returns the `x/service` module parameters.
+
+  // Parameters queries the parameters of the module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/service";
   }
 
-  // Lists all known ServiceRecord items.
-  rpc ListServiceOrganizations(ListServiceOrganizationsRequest)
-      returns (ListServiceOrganizationsResponse) {
-    option (google.api.http).get = "/core/org";
-  }
-
-  // Lists all known ServiceRecord items.
-  rpc ListServiceRecords (ListServiceRecordsRequest) returns (ListServiceRecordsResponse) {
-    option (google.api.http).get = "/core/service";
-  }
-
-  // Returns the ServiceRecord for the matching origin.
-  rpc ServiceRecord (QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
+  // Queries a list of ServiceRecord items.
+  rpc ServiceRecord    (QueryGetServiceRecordRequest) returns (QueryGetServiceRecordResponse) {
     option (google.api.http).get = "/core/service/{origin}";
   }
-
-  // Returns a list of ServiceRelationships for a given ServiceRecord matched by
-  // origin.
-  rpc ServiceRelationship (QueryGetServiceRelationshipRequest) returns (QueryGetServiceRelationshipResponse) {
-    option (google.api.http).get = "/core/service/{origin}/relationships";
+  rpc ServiceRecordAll (QueryAllServiceRecordRequest) returns (QueryAllServiceRecordResponse) {
+    option (google.api.http).get = "/core/service";
   }
-
   // !
   // ||--------------------------------------------------------------------------------||
   // ! ||                                 Gateway Methods || !
@@ -56,7 +41,8 @@ service Query {
   }
 
   // Gets the `CredentialRequestOptions` for a user to begin Sonr login.
-  rpc ServiceAssertion (GetServiceAssertionRequest) returns (GetServiceAssertionResponse) {
+  rpc ServiceAssertion(GetServiceAssertionRequest)
+      returns (GetServiceAssertionResponse) {
     option (google.api.http).get =
         "/highway/service/{origin}/login/start/{alias}";
   }
@@ -78,7 +64,6 @@ service Query {
     };
   }
 }
-
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
@@ -89,99 +74,81 @@ message QueryParamsResponse {
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
-message QueryServiceRecordRequest {
+message QueryGetServiceRecordRequest {
   string origin = 1;
 }
 
-message QueryServiceRecordResponse {
-  ServiceRecord serviceRecord = 1 [(gogoproto.nullable) = false];
+message QueryGetServiceRecordResponse {
+  ServiceRecord ServiceRecord = 1 [(gogoproto.nullable) = false];
 }
 
-message ListServiceRecordsRequest {
+message QueryAllServiceRecordRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
-message ListServiceRecordsResponse {
-  repeated ServiceRecord                          serviceRecord = 1 [(gogoproto.nullable) = false];
+message QueryAllServiceRecordResponse {
+  repeated ServiceRecord                          ServiceRecord = 1 [(gogoproto.nullable) = false];
            cosmos.base.query.v1beta1.PageResponse pagination    = 2;
 }
 
-message ListServiceOrganizationsRequest {
-           cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message ListServiceOrganizationsResponse {
-           repeated ServiceOrganization serviceRecord = 1
-               [ (gogoproto.nullable) = false ];
-           cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-message QueryGetServiceRelationshipRequest {
-  string origin = 1;
-}
-
-message QueryGetServiceRelationshipResponse {
-  ServiceRelationship ServiceRelationships = 1 [(gogoproto.nullable) = false];
-}
-
 message GetServiceAttestationRequest {
-  string origin = 1;
-  string alias = 2;
-  bool is_mobile = 3; //optional
+           string origin = 1;
+           string alias = 2;
+           bool is_mobile = 3; // optional
 }
 
 message GetServiceAttestationResponse {
-  string alias = 1;
-  string attestion_options = 2;
-  string origin = 3;
-  string challenge = 4;
-  uint64 ucw_id = 5;
+           string alias = 1;
+           string attestion_options = 2;
+           string origin = 3;
+           string challenge = 4;
+           uint64 ucw_id = 5;
 }
 
 message GetServiceAssertionRequest {
-  string origin = 1;
-  string alias = 2;
-  bool is_mobile = 3; //optional
+           string origin = 1;
+           string alias = 2;
+           bool is_mobile = 3; // optional
 }
 
 message GetServiceAssertionResponse {
-  string did = 1;
-  string assertion_options = 2;
-  string origin = 3;
-  string challenge = 4;
+           string did = 1;
+           string assertion_options = 2;
+           string origin = 3;
+           string challenge = 4;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message RegisterUserRequest {
-  string origin = 1;
-  string alias = 2;
-  uint64 ucw_id = 3;
-  string attestation = 4;
-  string challenge = 5;
+           string origin = 1;
+           string alias = 2;
+           uint64 ucw_id = 3;
+           string attestation = 4;
+           string challenge = 5;
 }
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message RegisterUserResponse {
-  string did = 1;
-  core.identity.DIDDocument identity = 2;
-  string alias = 3;
-  WebauthnCredential webauthn_credential = 4;
-  core.vault.VaultKeyshare vault_keyshare = 5;
+           string did = 1;
+           core.identity.DIDDocument identity = 2;
+           string alias = 3;
+           WebauthnCredential webauthn_credential = 4;
+           core.vault.VaultKeyshare vault_keyshare = 5;
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message AuthenticateUserRequest {
-  string origin = 1;
-  string alias = 2;
-  string assertion = 3;
-  string challenge = 4;
+           string origin = 1;
+           string alias = 2;
+           string assertion = 3;
+           string challenge = 4;
 }
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message AuthenticateUserResponse {
-  string did = 1;
-  core.identity.DIDDocument identity = 2;
-  string alias = 3;
-  WebauthnCredential webauthn_credential = 4;
-  core.vault.VaultKeyshare vault_keyshare = 5;
+           string did = 1;
+           core.identity.DIDDocument identity = 2;
+           string alias = 3;
+           WebauthnCredential webauthn_credential = 4;
+           core.vault.VaultKeyshare vault_keyshare = 5;
 }

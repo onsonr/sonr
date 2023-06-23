@@ -19,7 +19,6 @@ func KeyPrefix(p string) []byte {
 }
 
 const (
-	ServiceRelationshipsKey      = "ServiceRelationships/value/"
-	ServiceRelationshipsCountKey = "ServiceRelationships/count/"
-	ServiceOrganizationKey       = "ServiceOrganization/value/"
+	ServiceRecordKey      = "ServiceRecord/value/"
+	ServiceRecordCountKey = "ServiceRecord/count/"
 )

@@ -8,7 +8,7 @@ import (
 )
 
 func TestGenesisState_Validate(t *testing.T) {
-	for _, tc := range []struct {
+	tests := []struct {
 		desc     string
 		genState *types.GenesisState
 		valid    bool
@@ -30,14 +30,7 @@ func TestGenesisState_Validate(t *testing.T) {
 						Id: "1",
 					},
 				},
-				ServiceRelationshipsList: []types.ServiceRelationship{
-					{
-						Did: "0",
-					},
-					{
-						Did: "1",
-					},
-				},
+				ServiceRecordCount: 2,
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -57,21 +50,20 @@ func TestGenesisState_Validate(t *testing.T) {
 			valid: false,
 		},
 		{
-			desc: "duplicated serviceRelationships",
+			desc: "invalid serviceRecord count",
 			genState: &types.GenesisState{
-				ServiceRelationshipsList: []types.ServiceRelationship{
+				ServiceRecordList: []types.ServiceRecord{
 					{
-						Did: "0",
-					},
-					{
-						Did: "0",
+						Id: "1",
 					},
 				},
+				ServiceRecordCount: 0,
 			},
 			valid: false,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
-	} {
+	}
+	for _, tc := range tests {
 		t.Run(tc.desc, func(t *testing.T) {
 			err := tc.genState.Validate()
 			if tc.valid {

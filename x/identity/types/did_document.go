@@ -152,22 +152,22 @@ func (id *DIDDocument) LinkCapabilityInvocation(vm *VerificationMethod) (*Verifi
 func (id *DIDDocument) LinkCapabilityInvocationFromVaultAccount(accounts ...vaulttypes.Account) ([]*VerificationRelationship, bool) {
 	vrs := make([]*VerificationRelationship, 0)
 	for _, account := range accounts {
-	vm := &VerificationMethod{
-		Id:                  account.Did(),
-		Type:                crypto.Ed25519KeyType.FormatString(),
-		Controller:          id.Id,
-		PublicKeyMultibase:  account.PubKey().Multibase(),
-		BlockchainAccountId: account.Address(),
+		vm := &VerificationMethod{
+			Id:                  account.Did(),
+			Type:                crypto.Ed25519KeyType.FormatString(),
+			Controller:          id.Id,
+			PublicKeyMultibase:  account.PubKey().Multibase(),
+			BlockchainAccountId: account.Address(),
+		}
+		vr := &VerificationRelationship{
+			Reference:          account.Did(),
+			Type:               CapabilityInvocationRelationshipName,
+			VerificationMethod: vm,
+			Owner:              id.Id,
+		}
+		id.CapabilityInvocation = append(id.CapabilityInvocation, vr)
+		vrs = append(vrs, vr)
 	}
-	vr := &VerificationRelationship{
-		Reference:          account.Did(),
-		Type:               CapabilityInvocationRelationshipName,
-		VerificationMethod: vm,
-		Owner:              id.Id,
-	}
-	id.CapabilityInvocation = append(id.CapabilityInvocation, vr)
-	vrs = append(vrs, vr)
-}
 	return vrs, true
 }
 

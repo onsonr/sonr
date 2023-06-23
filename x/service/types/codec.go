@@ -8,27 +8,17 @@ import (
 )
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
-	cdc.RegisterConcrete(&MsgRegisterServiceRecord{}, "service/RegisterServiceRecord", nil)
+	cdc.RegisterConcrete(&MsgCreateServiceRecord{}, "service/CreateServiceRecord", nil)
 	cdc.RegisterConcrete(&MsgUpdateServiceRecord{}, "service/UpdateServiceRecord", nil)
-	cdc.RegisterConcrete(&MsgBurnServiceRecord{}, "service/BurnServiceRecord", nil)
-
-	cdc.RegisterConcrete(&MsgRegisterUserEntity{}, "service/RegisterUserEntity", nil)
-	cdc.RegisterConcrete(&MsgAuthenticateUserEntity{}, "service/AuthenticateUserEntity", nil)
+	cdc.RegisterConcrete(&MsgDeleteServiceRecord{}, "service/DeleteServiceRecord", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterServiceRecord{},
+		&MsgCreateServiceRecord{},
 		&MsgUpdateServiceRecord{},
-		&MsgBurnServiceRecord{},
-	)
-
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgRegisterUserEntity{},
-	)
-	registry.RegisterImplementations((*sdk.Msg)(nil),
-		&MsgAuthenticateUserEntity{},
+		&MsgDeleteServiceRecord{},
 	)
 	// this line is used by starport scaffolding # 3
 

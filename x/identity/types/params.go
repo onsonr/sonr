@@ -2,12 +2,13 @@ package types
 
 import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
+	"gopkg.in/yaml.v2"
 )
 
 var _ paramtypes.ParamSet = (*Params)(nil)
 
 const (
-	WEBAUTHN_DID_METHOD = "authn"
+	WEBAUTHN_DID_METHOD = "webauthn"
 	SONR_DID_METHOD     = "sonr"
 	BTC_DID_METHOD      = "btcr"
 	ETH_DID_METHOD      = "ethr"
@@ -56,11 +57,8 @@ func (p Params) Validate() error {
 	return nil
 }
 
-func (p Params) IsSupportedDidMethod(method string) bool {
-	for _, m := range p.SupportedDidMethods {
-		if m == method {
-			return true
-		}
-	}
-	return false
+// String implements the Stringer interface.
+func (p Params) String() string {
+	out, _ := yaml.Marshal(p)
+	return string(out)
 }

@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"strconv"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -15,7 +14,10 @@ func CmdListClaimableWallet() *cobra.Command {
 		Use:   "list-claimable-wallet",
 		Short: "list all claimable_wallet",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -28,7 +30,7 @@ func CmdListClaimableWallet() *cobra.Command {
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.ClaimableWalletAll(context.Background(), params)
+			res, err := queryClient.ClaimableWalletAll(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
@@ -49,7 +51,10 @@ func CmdShowClaimableWallet() *cobra.Command {
 		Short: "shows a claimable_wallet",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
@@ -62,7 +67,7 @@ func CmdShowClaimableWallet() *cobra.Command {
 				Id: id,
 			}
 
-			res, err := queryClient.ClaimableWallet(context.Background(), params)
+			res, err := queryClient.ClaimableWallet(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

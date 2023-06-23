@@ -16,7 +16,7 @@ import (
 
 var _ types.QueryServer = Keeper{}
 
-func (k Keeper) ListServiceRecords(goCtx context.Context, req *types.ListServiceRecordsRequest) (*types.ListServiceRecordsResponse, error) {
+func (k Keeper) ServiceRecordAll(goCtx context.Context, req *types.QueryAllServiceRecordRequest) (*types.QueryAllServiceRecordResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
@@ -25,7 +25,7 @@ func (k Keeper) ListServiceRecords(goCtx context.Context, req *types.ListService
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	store := ctx.KVStore(k.storeKey)
-	serviceRecordStore := prefix.NewStore(store, types.KeyPrefix(types.ServiceRecordKeyPrefix))
+	serviceRecordStore := prefix.NewStore(store, types.KeyPrefix(types.ServiceRecordKey))
 
 	pageRes, err := query.Paginate(serviceRecordStore, req.Pagination, func(key []byte, value []byte) error {
 		var serviceRecord types.ServiceRecord
@@ -41,71 +41,33 @@ func (k Keeper) ListServiceRecords(goCtx context.Context, req *types.ListService
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
-	return &types.ListServiceRecordsResponse{ServiceRecord: serviceRecords, Pagination: pageRes}, nil
+	return &types.QueryAllServiceRecordResponse{ServiceRecord: serviceRecords, Pagination: pageRes}, nil
 }
 
-func (k Keeper) ListServiceOrganizations(goCtx context.Context, req *types.ListServiceOrganizationsRequest) (*types.ListServiceOrganizationsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	var serviceRecords []types.ServiceRecord
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	store := ctx.KVStore(k.storeKey)
-	serviceRecordStore := prefix.NewStore(store, types.KeyPrefix(types.ServiceRecordKeyPrefix))
-
-	pageRes, err := query.Paginate(serviceRecordStore, req.Pagination, func(key []byte, value []byte) error {
-		var serviceRecord types.ServiceRecord
-		if err := k.cdc.Unmarshal(value, &serviceRecord); err != nil {
-			return err
-		}
-
-		serviceRecords = append(serviceRecords, serviceRecord)
-		return nil
-	})
-
-	if err != nil {
-		return nil, status.Error(codes.Internal, err.Error())
-	}
-
-	return &types.ListServiceOrganizationsResponse{Pagination: pageRes}, nil
-}
-
-
-func (k Keeper) ServiceRecord(goCtx context.Context, req *types.QueryServiceRecordRequest) (*types.QueryServiceRecordResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	val, found := k.GetServiceRecord(
-		ctx,
-		req.Origin,
-	)
-	if !found {
-		return nil, status.Error(codes.NotFound, "not found")
-	}
-
-	return &types.QueryServiceRecordResponse{ServiceRecord: val}, nil
-}
-
-
-// This function is a gRPC query handler that retrieves the service relationships for a given origin URL. It takes in a context and a request object of type `types.QueryGetServiceRelationshipRequest`, and returns a response object of type `types.QueryGetServiceRelationshipResponse`
-// containing the service relationships for the requested origin URL. If the requested origin URL is not found, it returns an error.
-func (k Keeper) ServiceRelationship(goCtx context.Context, req *types.QueryGetServiceRelationshipRequest) (*types.QueryGetServiceRelationshipResponse, error) {
+func (k Keeper) ServiceRecord(goCtx context.Context, req *types.QueryGetServiceRecordRequest) (*types.QueryGetServiceRecordResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
 	}
 
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	serviceRelationships, found := k.GetServiceRelationship(ctx, req.Origin)
+	serviceRecord, found := k.GetServiceRecord(ctx, req.Origin)
 	if !found {
 		return nil, sdkerrors.ErrKeyNotFound
 	}
 
-	return &types.QueryGetServiceRelationshipResponse{ServiceRelationships: serviceRelationships}, nil
+	return &types.QueryGetServiceRecordResponse{ServiceRecord: serviceRecord}, nil
 }
+
+
+func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
+}
+
 
 // ServiceAttestion returns the attestion options for a given service record and desired Identity alias
 func (k Keeper) ServiceAttestation(goCtx context.Context, req *types.GetServiceAttestationRequest) (*types.GetServiceAttestationResponse, error) {
@@ -164,7 +126,7 @@ func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.GetServiceAss
 		return nil, types.ErrServiceRecordNotFound
 	}
 
-	didDoc, ok := k.identityKeeper.GetIdentity(ctx, id.GetId())
+	didDoc, ok := k.identityKeeper.GetDIDDocument(ctx, id.GetId())
 	if !ok {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "did doc not found")
 	}

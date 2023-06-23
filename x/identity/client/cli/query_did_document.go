@@ -1,20 +1,22 @@
 package cli
 
 import (
-	"context"
-
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/sonrhq/core/x/identity/types"
 	"github.com/spf13/cobra"
+
+	"github.com/sonrhq/core/x/identity/types"
 )
 
-func CmdListDidDocument() *cobra.Command {
+func CmdListDIDDocument() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list-did",
-		Short: "list all did_document",
+		Use:   "list-did-document",
+		Short: "list all DIDDocument",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			pageReq, err := client.ReadPageRequest(cmd.Flags())
 			if err != nil {
@@ -23,14 +25,15 @@ func CmdListDidDocument() *cobra.Command {
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			params := &types.QueryAllDidRequest{
+			params := &types.QueryAllDIDDocumentRequest{
 				Pagination: pageReq,
 			}
 
-			res, err := queryClient.DidAll(context.Background(), params)
+			res, err := queryClient.DIDDocumentAll(cmd.Context(), params)
 			if err != nil {
 				return err
 			}
+
 			return clientCtx.PrintProto(res)
 		},
 	}
@@ -41,23 +44,26 @@ func CmdListDidDocument() *cobra.Command {
 	return cmd
 }
 
-func CmdShowDidDocument() *cobra.Command {
+func CmdShowDIDDocument() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "show-did [did]",
-		Short: "shows a did_document",
+		Use:   "show-did-document [index]",
+		Short: "shows a DIDDocument",
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) (err error) {
-			clientCtx := client.GetClientContextFromCmd(cmd)
+			clientCtx, err := client.GetClientQueryContext(cmd)
+			if err != nil {
+				return err
+			}
 
 			queryClient := types.NewQueryClient(clientCtx)
 
-			argDid := args[0]
+			argIndex := args[0]
 
-			params := &types.QueryGetDidRequest{
-				Did: argDid,
+			params := &types.QueryGetDIDDocumentRequest{
+				Did: argIndex,
 			}
 
-			res, err := queryClient.Did(context.Background(), params)
+			res, err := queryClient.DIDDocument(cmd.Context(), params)
 			if err != nil {
 				return err
 			}

@@ -47,7 +47,7 @@ func (k Keeper) ListWallets(goCtx context.Context, req *types.ListWalletsRequest
 		accs = append(accs, acc)
 	}
 
-	didDoc, ok := k.GetIdentity(ctx, id.Id)
+	didDoc, ok := k.GetDIDDocument(ctx, id.Id)
 	if !ok {
 		return nil, fmt.Errorf("Error resolving identity %s", id.Id)
 	}

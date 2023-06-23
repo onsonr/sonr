@@ -46,7 +46,7 @@ type BankKeeper interface {
 type IdentityKeeper interface {
 	CheckAlsoKnownAs(ctx sdk.Context, alias string) error
 	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, found bool)
-	GetIdentity(ctx sdk.Context, did string) (val identitytypes.DIDDocument, found bool)
+	GetDIDDocument(ctx sdk.Context, did string) (val identitytypes.DIDDocument, found bool)
 }
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults

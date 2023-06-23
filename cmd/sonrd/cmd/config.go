@@ -8,7 +8,7 @@ import (
 
 func initSDKConfig() {
 	// Set prefixes
-	accountPubKeyPrefix := app.AccountAddressPrefix
+	accountPubKeyPrefix := app.AccountAddressPrefix + "pub"
 	validatorAddressPrefix := app.AccountAddressPrefix + "valoper"
 	validatorPubKeyPrefix := app.AccountAddressPrefix + "valoperpub"
 	consNodeAddressPrefix := app.AccountAddressPrefix + "valcons"

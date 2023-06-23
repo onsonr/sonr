@@ -4,7 +4,6 @@ import (
 	"math/rand"
 
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
@@ -18,31 +17,28 @@ import (
 var (
 	_ = sample.AccAddress
 	_ = identitysimulation.FindAccount
-	_ = simappparams.StakePerAccount
 	_ = simulation.MsgEntryKind
 	_ = baseapp.Paramspace
+	_ = rand.Rand{}
 )
 
 const (
-	opWeightMsgCreateDidDocument = "op_weight_msg_did_document"
+	opWeightMsgCreateDIDDocument = "op_weight_msg_did_document"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgCreateDidDocument int = 100
+	defaultWeightMsgCreateDIDDocument int = 100
 
-	opWeightMsgUpdateDidDocument = "op_weight_msg_did_document"
+	opWeightMsgUpdateDIDDocument = "op_weight_msg_did_document"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgUpdateDidDocument int = 100
+	defaultWeightMsgUpdateDIDDocument int = 100
 
-	opWeightMsgDeleteDidDocument = "op_weight_msg_did_document"
+	opWeightMsgDeleteDIDDocument = "op_weight_msg_did_document"
 	// TODO: Determine the simulation weight value
-	defaultWeightMsgDeleteDidDocument int = 100
-	opWeightMsgRegisterIdentity           = "op_weight_msg_register_identity"
-	// TODO: Determine the simulation weight value
-	defaultWeightMsgRegisterIdentity int = 100
+	defaultWeightMsgDeleteDIDDocument int = 100
 
 	// this line is used by starport scaffolding # simapp/module/const
 )
 
-// GenerateGenesisState creates a randomized GenState of the module
+// GenerateGenesisState creates a randomized GenState of the module.
 func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	accs := make([]string, len(simState.Accounts))
 	for i, acc := range simState.Accounts {
@@ -50,12 +46,13 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	identityGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		DidDocuments: []types.DIDDocument{
+		PortId: types.PortID,
+		DIDDocumentList: []types.DIDDocument{
 			{
-				Id: types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id: sample.AccAddress(),
 			},
 			{
-				Id: types.ConvertAccAddressToDid(sample.AccAddress()),
+				Id: sample.AccAddress(),
 			},
 		},
 		// this line is used by starport scaffolding # simapp/module/genesisState
@@ -63,56 +60,83 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&identityGenesis)
 }
 
-// ProposalContents doesn't return any content functions for governance proposals
+// RegisterStoreDecoder registers a decoder.
+func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
+
+// ProposalContents doesn't return any content functions for governance proposals.
 func (AppModule) ProposalContents(_ module.SimulationState) []simtypes.WeightedProposalContent {
 	return nil
 }
-
-// RandomizedParams creates randomized  param changes for the simulator
-func (am AppModule) RandomizedParams(_ *rand.Rand) []simtypes.ParamChange {
-	return []simtypes.ParamChange{}
-}
-
-// RegisterStoreDecoder registers a decoder
-func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
 
-	var weightMsgCreateDidDocument int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateDidDocument, &weightMsgCreateDidDocument, nil,
+	var weightMsgCreateDIDDocument int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateDIDDocument, &weightMsgCreateDIDDocument, nil,
 		func(_ *rand.Rand) {
-			weightMsgCreateDidDocument = defaultWeightMsgCreateDidDocument
+			weightMsgCreateDIDDocument = defaultWeightMsgCreateDIDDocument
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateDidDocument,
+		weightMsgCreateDIDDocument,
 		identitysimulation.SimulateMsgCreateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgUpdateDidDocument int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDidDocument, &weightMsgUpdateDidDocument, nil,
+	var weightMsgUpdateDIDDocument int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateDIDDocument, &weightMsgUpdateDIDDocument, nil,
 		func(_ *rand.Rand) {
-			weightMsgUpdateDidDocument = defaultWeightMsgUpdateDidDocument
+			weightMsgUpdateDIDDocument = defaultWeightMsgUpdateDIDDocument
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateDidDocument,
+		weightMsgUpdateDIDDocument,
 		identitysimulation.SimulateMsgUpdateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
-	var weightMsgRegisterIdentity int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgRegisterIdentity, &weightMsgRegisterIdentity, nil,
+
+	var weightMsgDeleteDIDDocument int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteDIDDocument, &weightMsgDeleteDIDDocument, nil,
 		func(_ *rand.Rand) {
-			weightMsgRegisterIdentity = defaultWeightMsgRegisterIdentity
+			weightMsgDeleteDIDDocument = defaultWeightMsgDeleteDIDDocument
 		},
 	)
 	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgRegisterIdentity,
+		weightMsgDeleteDIDDocument,
 		identitysimulation.SimulateMsgRegisterIdentity(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
+}
+
+// ProposalMsgs returns msgs used for governance proposals for simulations.
+func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.WeightedProposalMsg {
+	return []simtypes.WeightedProposalMsg{
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgCreateDIDDocument,
+			defaultWeightMsgCreateDIDDocument,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				identitysimulation.SimulateMsgCreateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgUpdateDIDDocument,
+			defaultWeightMsgUpdateDIDDocument,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				identitysimulation.SimulateMsgUpdateDidDocument(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		simulation.NewWeightedProposalMsg(
+			opWeightMsgDeleteDIDDocument,
+			defaultWeightMsgDeleteDIDDocument,
+			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
+				identitysimulation.SimulateMsgRegisterIdentity(am.accountKeeper, am.bankKeeper, am.keeper)
+				return nil
+			},
+		),
+		// this line is used by starport scaffolding # simapp/module/OpMsg
+	}
 }

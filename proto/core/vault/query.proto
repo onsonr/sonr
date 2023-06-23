@@ -6,7 +6,7 @@ import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/vault/genesis.proto";
-import "core/vault/sfs.proto";
+import "core/vault/vault.proto";
 import "core/vault/claims.proto";
 
 option go_package = "github.com/sonrhq/core/x/vault/types";
@@ -16,7 +16,7 @@ service Query {
 
   // Returns parameters for the `x/vault` module.
   rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/core/vault/params";
+    option (google.api.http).get = "/core/params/vault";
 
   }
 
@@ -43,11 +43,11 @@ service Query {
 
   // Queries a list of ClaimableWallet items.
   rpc ClaimableWallet    (QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
-    option (google.api.http).get = "/core/vault/claims/{id}";
+    option (google.api.http).get = "/sonrhq/core/vault/claimable_wallet/{id}";
 
   }
   rpc ClaimableWalletAll (QueryAllClaimableWalletRequest) returns (QueryAllClaimableWalletResponse) {
-    option (google.api.http).get = "/core/vault/claims";
+    option (google.api.http).get = "/sonrhq/core/vault/claimable_wallet";
 
   }
 }
@@ -60,7 +60,6 @@ message QueryParamsResponse {
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
-
 
 // !
 // ||--------------------------------------------------------------------------------||

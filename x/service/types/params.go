@@ -40,6 +40,7 @@ func (p Params) String() string {
 	return string(out)
 }
 
+
 // NewWebauthnCreationOptions returns the webauthn creation options.
 func (p Params) NewWebauthnCreationOptions(s *ServiceRecord, alias string, challenge protocol.URLEncodedBase64, address string, isMobile bool) (protocol.CredentialCreation, error) {
 	// entityUser is the user entity for which the credential is being created.

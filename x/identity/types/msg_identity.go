@@ -11,7 +11,7 @@ var _ sdk.Msg = &MsgRegisterIdentity{}
 
 func NewMsgRegisterIdentity(creator string, doc *DIDDocument) *MsgRegisterIdentity {
 	msg := &MsgRegisterIdentity{
-		Creator:  creator,
+		Creator:     creator,
 		DidDocument: doc,
 	}
 	return msg

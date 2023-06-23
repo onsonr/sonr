@@ -18,8 +18,8 @@ message GenesisState {
 message Params {
   option (gogoproto.goproto_stringer) = false;
   string keyshare_seed_fragment = 1;
-  string inbox_seed_fragment    = 2;
-  string channel_seed_fragment  = 3;
-  int32  inbox_otm_delay        = 4;
+  string inbox_seed_fragment = 2;
+  string channel_seed_fragment = 3;
+  int32 inbox_otm_delay = 4;
 }
 

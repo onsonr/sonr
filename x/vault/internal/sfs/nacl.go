@@ -51,7 +51,6 @@ func (k *mbKey) Type() string {
 	return "mailbox"
 }
 
-
 func (k *mbKey) NormalizePrivateKey() []byte {
 	return k.priv[:]
 }

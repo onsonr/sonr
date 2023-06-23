@@ -12,10 +12,11 @@ message ServiceRecord {
   Permissions permissions = 6;
 }
 
-// ServiceRelationship is a relationship between a service and a User entity. This relation
-// is used to track the number of times a user has interacted with a service, utilizing a
-// verifiable random function (VRF) to generate a random number that is used to determine
-// whether or not a user has access to a service.
+// ServiceRelationship is a relationship between a service and a User entity.
+// This relation is used to track the number of times a user has interacted with
+// a service, utilizing a verifiable random function (VRF) to generate a random
+// number that is used to determine whether or not a user has access to a
+// service.
 message ServiceRelationship {
   // Reference is the reference to the service record
   string reference = 1;
@@ -27,10 +28,11 @@ message ServiceRelationship {
   uint32 count = 3;
 }
 
-// Permissions are a bitfield of permissions that a user has for a given service in order
-// to perform certain actions.
+// Permissions are a bitfield of permissions that a user has for a given service
+// in order to perform certain actions.
 enum Permissions {
-  // Authenticated user with basic public info and read access to public resources
+  // Authenticated user with basic public info and read access to public
+  // resources
   SR_BASE = 0;
 
   // Authenticated user with service-side access to signing privelages

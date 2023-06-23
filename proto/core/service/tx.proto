@@ -2,82 +2,35 @@ syntax = "proto3";
 
 package core.service;
 
-import "core/service/org.proto";
 import "core/service/record.proto";
-import "core/identity/did.proto";
 
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc RegisterServiceRecord  (MsgRegisterServiceRecord ) returns (MsgRegisterServiceRecordResponse );
-  rpc UpdateServiceRecord    (MsgUpdateServiceRecord   ) returns (MsgUpdateServiceRecordResponse   );
-  rpc BurnServiceRecord      (MsgBurnServiceRecord     ) returns (MsgBurnServiceRecordResponse     );
-  rpc RegisterUserEntity     (MsgRegisterUserEntity    ) returns (MsgRegisterUserEntityResponse    );
-  rpc AuthenticateUserEntity (MsgAuthenticateUserEntity) returns (MsgAuthenticateUserEntityResponse);
+  rpc CreateServiceRecord (MsgCreateServiceRecord) returns (MsgCreateServiceRecordResponse);
+  rpc UpdateServiceRecord (MsgUpdateServiceRecord) returns (MsgUpdateServiceRecordResponse);
+  rpc DeleteServiceRecord (MsgDeleteServiceRecord) returns (MsgDeleteServiceRecordResponse);
+}
+message MsgCreateServiceRecord {
+  string creator = 1;
 }
 
-message MsgRegisterServiceOrganization {
-  string controller = 1;
-  string admin = 2;
-  string name = 3;
-  string description = 4;
-}
-
-message MsgRegisterServiceOrganizationResponse {
-  bool ok = 1;
-  uint64 group_id = 2;
-  string group_address = 3;
-  ServiceOrganization organization = 4;
-}
-
-message MsgRegisterServiceRecord {
-  string        controller = 1;
-  ServiceRecord record     = 2;
-}
-
-message MsgRegisterServiceRecordResponse {
-  bool   ok           = 1;
-  string group_address = 2;
+message MsgCreateServiceRecordResponse {
+  uint64 id = 1;
 }
 
 message MsgUpdateServiceRecord {
-  string        controller = 1;
-  ServiceRecord record     = 2;
+  string creator = 1;
+  uint64 id      = 2;
 }
 
 message MsgUpdateServiceRecordResponse {}
 
-message MsgBurnServiceRecord {
-  string controller = 1;
-  string id         = 2;
-}
-
-message MsgBurnServiceRecordResponse {}
-
-message MsgRegisterUserEntity {
+message MsgDeleteServiceRecord {
   string creator = 1;
-  string desired_alias = 2;
-  string service_origin = 3;
-  uint64 ucw_id = 4;
-  string attestation = 5;
-  string challenge = 6;
+  uint64 id      = 2;
 }
 
-message MsgRegisterUserEntityResponse {
-  bool success = 1;
-  string did = 2;
-  core.identity.DIDDocument identity = 3;
-}
-
-message MsgAuthenticateUserEntity {
-  string creator = 1;
-  string did = 2;
-}
-
-message MsgAuthenticateUserEntityResponse {
-  bool success = 1;
-  string did = 2;
-  core.identity.DIDDocument identity = 3;
-}
+message MsgDeleteServiceRecordResponse {}
 

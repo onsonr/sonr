@@ -14,13 +14,15 @@ import (
 	"google.golang.org/grpc/status"
 )
 
+var _ types.QueryServer = Keeper{}
+
 // This is a function in the `keeper` package that sends an inbox message to a specified recipient. It takes in a context and a `SendWalletMailRequest` object as input, and returns a `SendWalletMailResponse` object and an error (if any) as output. The function writes the message
 // to the recipient's inbox using the `WriteInbox` function of the `Keeper` struct, and returns a success response with a message ID.
 func (k Keeper) SendWalletMail(goCtx context.Context, req *types.SendWalletMailRequest) (*types.SendWalletMailResponse, error) {
-	err := k.WriteInbox(req.To, req.GetMail())
-	if err != nil {
-		return nil, types.ErrInboxWrite
-	}
+	// err := k.WriteInbox(req.To, req.GetMail())
+	// if err != nil {
+	// 	return nil, types.ErrInboxWrite
+	// }
 	return &types.SendWalletMailResponse{
 		Success: true,
 	}, nil
@@ -30,22 +32,12 @@ func (k Keeper) SendWalletMail(goCtx context.Context, req *types.SendWalletMailR
 // `ReadWalletMailsRequest` object as input, and returns a `ReadWalletMailsResponse` object and an error (if any) as output. The function reads the messages from the recipient's inbox using the `ReadInbox` function of the `Keeper` struct, and returns a response with all the
 // messages in the inbox.
 func (k Keeper) ReadWalletMail(goCtx context.Context, req *types.ReadWalletMailRequest) (*types.ReadWalletMailResponse, error) {
-	_, err := k.ReadInbox(req.Creator)
-	if err != nil {
-		return nil, types.ErrInboxRead
-	}
+	// _, err := k.ReadInbox(req.Creator)
+	// if err != nil {
+	// 	return nil, types.ErrInboxRead
+	// }
 	return &types.ReadWalletMailResponse{}, nil
 }
-
-func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
-}
-
 
 func (k Keeper) ClaimableWalletAll(goCtx context.Context, req *types.QueryAllClaimableWalletRequest) (*types.QueryAllClaimableWalletResponse, error) {
 	if req == nil {
@@ -93,7 +85,6 @@ func (k Keeper) ClaimableWallet(goCtx context.Context, req *types.QueryGetClaima
 // ! ||                            Helper Utility Functions                            ||
 // ! ||--------------------------------------------------------------------------------||
 
-
 var _ types.QueryServer = Keeper{}
 
 // ChallengeLength - Length of bytes to generate for a challenge.¡¡
@@ -110,3 +101,11 @@ func createChallenge() (challenge protocol.URLEncodedBase64, err error) {
 	return challenge, nil
 }
 
+func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
+}

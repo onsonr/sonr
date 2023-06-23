@@ -22,12 +22,13 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Permissions are a bitfield of permissions that a user has for a given service in order
-// to perform certain actions.
+// Permissions are a bitfield of permissions that a user has for a given service
+// in order to perform certain actions.
 type Permissions int32
 
 const (
-	// Authenticated user with basic public info and read access to public resources
+	// Authenticated user with basic public info and read access to public
+	// resources
 	Permissions_SR_BASE Permissions = 0
 	// Authenticated user with service-side access to signing privelages
 	Permissions_SR_SIGN Permissions = 1
@@ -148,10 +149,11 @@ func (m *ServiceRecord) GetPermissions() Permissions {
 	return Permissions_SR_BASE
 }
 
-// ServiceRelationship is a relationship between a service and a User entity. This relation
-// is used to track the number of times a user has interacted with a service, utilizing a
-// verifiable random function (VRF) to generate a random number that is used to determine
-// whether or not a user has access to a service.
+// ServiceRelationship is a relationship between a service and a User entity.
+// This relation is used to track the number of times a user has interacted with
+// a service, utilizing a verifiable random function (VRF) to generate a random
+// number that is used to determine whether or not a user has access to a
+// service.
 type ServiceRelationship struct {
 	// Reference is the reference to the service record
 	Reference string `protobuf:"bytes,1,opt,name=reference,proto3" json:"reference,omitempty"`

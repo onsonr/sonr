@@ -6,6 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+
 	"github.com/sonrhq/core/x/identity/types"
 )
 
@@ -21,10 +22,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 
 var _ types.MsgServer = msgServer{}
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                    DIDDocument Message Server Implementation                   ||
-// ! ||--------------------------------------------------------------------------------||
-
 // RegisterIdentity registers a new identity with the provided Identity and Verification Relationships. Fails if not at least one Authentication relationship is provided.
 func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterIdentity) (*types.MsgRegisterIdentityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -34,18 +31,15 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 	}
 
 	// Set the identity
-	err := k.SetIdentity(ctx, *msg.DidDocument)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to set identity, sequence cannot proceed.")
-	}
+	k.SetDIDDocument(ctx, *msg.DidDocument)
 	k.Logger(ctx).Info("(x/identity) Account registered", "did", msg.DidDocument.Id, "owner", msg.Creator)
 	k.vaultKeeper.RemoveClaimableWallet(ctx, msg.GetWalletId())
 
-	// err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
-	// if err != nil {
-	// 	k.Logger(ctx).Error("failed to send coins", "error", err)
-	// 	return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to send coins")
-	// }
+	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
+	if err != nil {
+		k.Logger(ctx).Error("failed to send coins", "error", err)
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to send coins")
+	}
 
 	return &types.MsgRegisterIdentityResponse{
 		Success:     true,

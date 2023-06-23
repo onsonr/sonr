@@ -16,44 +16,6 @@ tasks:
       - echo "⭐️ TASKFILE (sonrhq/core) ⭐️"
       - echo ""
       - task --list
-  docs:
-    desc: Serve the docs locally
-    summary: |
-      Serve Docs Locally
-
-      This task will serve the docs locally
-    cmds:
-      - turbo dev --filter=docs
-    interactive: true
-
-  explorer:
-    desc: Serve the explorer app locally
-    summary: |
-      Serve Explorer App Locally
-
-      This task will serve the explorer app locally
-    cmds:
-      - turbo dev --filter=explorer
-    interactive: true
-
-  web:
-    desc: Serve the web app locally
-    summary: |
-      Serve Web App Locally
-
-      This task will serve the web app locally
-    cmds:
-      - turbo dev --filter=web
-    interactive: true
-
-  install:
-    desc: Build and Install the binary
-    summary: |
-      Build and Install Binary
-
-      This task will build and install the binary
-    cmds:
-      - ignite chain build
 
   chain:
     desc: Serve the blockchain locally with verbose logging
@@ -64,7 +26,7 @@ tasks:
 
       This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - docker compose up --abort-on-container-exit --build
+      - ignite chain serve --clear-cache --reset-once -v
     interactive: true
 
   generate:
@@ -77,7 +39,7 @@ tasks:
 
       This task will generate the protobuf files
     cmds:
-      - sh generate.sh
+      - ignite generate proto-go
 
   docker:build:
     desc: Build the docker image
@@ -103,29 +65,3 @@ tasks:
       - docker push ghcr.io/sonrhq/sonrd:{{.VERSION}}
     deps:
       - docker:build
-
-  motor:bind:
-    desc: Bind All Motor Frameworks
-    dir: scripts
-    dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-    aliases:
-      - "bind"
-    env:
-      TAR_COMPRESS: true
-    summary: |
-      Bind Motor Mobile Frameworks
-
-      This task will bind the Motor Android, iOS, Wasm Framework
-    cmds:
-      - sh bind.sh -i
-      - sh bind.sh -a
-      - sh bind.sh -w
-
-  sync:
-    desc: Sync the blockchain
-    summary: |
-      Sync Blockchain
-
-      This task will sync the blockchain
-    cmds:
-      - sh .github/scripts/unresolved.sh sonrhq core 26

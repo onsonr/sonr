@@ -4,9 +4,11 @@ import (
 	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/sonrhq/core/internal/crypto"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	servicetypes "github.com/sonrhq/core/x/service/types"
+
 	"github.com/sonrhq/core/x/vault/internal/sfs"
 	"github.com/sonrhq/core/x/vault/types"
 )

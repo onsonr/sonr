@@ -2,19 +2,15 @@ package simulation
 
 import (
 	"math/rand"
-	"strconv"
 
+	simappparams "cosmossdk.io/simapp/params"
 	"github.com/cosmos/cosmos-sdk/baseapp"
-	simappparams "github.com/cosmos/cosmos-sdk/simapp/params"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
 	"github.com/sonrhq/core/x/service/keeper"
 	"github.com/sonrhq/core/x/service/types"
 )
-
-// Prevent strconv unused error
-var _ = strconv.IntSize
 
 func SimulateMsgCreateServiceRecord(
 	ak types.AccountKeeper,
@@ -25,19 +21,8 @@ func SimulateMsgCreateServiceRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		simAccount, _ := simtypes.RandomAcc(r, accs)
 
-		rec := types.ServiceRecord{
-			Id:         strconv.Itoa(r.Intn(100)),
-			Controller: simAccount.Address.String(),
-
-		}
-		msg := &types.MsgRegisterServiceRecord{
-			Controller: simAccount.Address.String(),
-			Record:     &rec,
-		}
-
-		_, found := k.GetServiceRecord(ctx, msg.Record.Id)
-		if found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "ServiceRecord already exist"), nil, nil
+		msg := &types.MsgCreateServiceRecord{
+			Creator: simAccount.Address.String(),
 		}
 
 		txCtx := simulation.OperationInput{
@@ -67,7 +52,6 @@ func SimulateMsgUpdateServiceRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount       = simtypes.Account{}
-			serviceRecord    = types.ServiceRecord{}
 			msg              = &types.MsgUpdateServiceRecord{}
 			allServiceRecord = k.GetAllServiceRecord(ctx)
 			found            = false
@@ -75,16 +59,13 @@ func SimulateMsgUpdateServiceRecord(
 		for _, obj := range allServiceRecord {
 			simAccount, found = FindAccount(accs, obj.Controller)
 			if found {
-				serviceRecord = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "serviceRecord Controller not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "serviceRecord creator not found"), nil, nil
 		}
-		msg.Controller = simAccount.Address.String()
-
-		msg.Record.Id = serviceRecord.Id
+		msg.Creator = simAccount.Address.String()
 
 		txCtx := simulation.OperationInput{
 			R:               r,
@@ -113,7 +94,6 @@ func SimulateMsgDeleteServiceRecord(
 	) (simtypes.OperationMsg, []simtypes.FutureOperation, error) {
 		var (
 			simAccount       = simtypes.Account{}
-			serviceRecord    = types.ServiceRecord{}
 			msg              = &types.MsgUpdateServiceRecord{}
 			allServiceRecord = k.GetAllServiceRecord(ctx)
 			found            = false
@@ -121,16 +101,14 @@ func SimulateMsgDeleteServiceRecord(
 		for _, obj := range allServiceRecord {
 			simAccount, found = FindAccount(accs, obj.Controller)
 			if found {
-				serviceRecord = obj
 				break
 			}
 		}
 		if !found {
-			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "serviceRecord Controller not found"), nil, nil
+			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "serviceRecord creator not found"), nil, nil
 		}
-		msg.Controller = simAccount.Address.String()
+		msg.Creator = simAccount.Address.String()
 
-		msg.Record.Id = serviceRecord.Id
 
 		txCtx := simulation.OperationInput{
 			R:               r,

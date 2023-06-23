@@ -11,18 +11,18 @@ import (
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 
+	tmcrypto "github.com/cometbft/cometbft/libs/bytes"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
-	tmcrypto "github.com/tendermint/tendermint/crypto"
 	"lukechampine.com/blake3"
 )
 
 type (
-	Address = tmcrypto.Address
+	Address = tmcrypto.HexBytes
 )
 
 //

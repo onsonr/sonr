@@ -33,9 +33,9 @@ func HasInbox(accDid string) (bool, error) {
 }
 
 // LoadInbox loads the inbox for the account
-func LoadInbox( accDid string) (*types.Inbox, error) {
+func LoadInbox(accDid string) (*types.Inbox, error) {
 	// Check if the inbox exists
-	hasInbox, err := HasInbox( accDid)
+	hasInbox, err := HasInbox(accDid)
 	if err != nil {
 		return nil, err
 	}

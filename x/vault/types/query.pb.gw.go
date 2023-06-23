@@ -569,15 +569,15 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "vault", "params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "params", "vault"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_SendWalletMail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"highway", "vault", "mailbox", "creator", "send", "to"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_SendWalletMail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4, 1, 0, 4, 1, 5, 5}, []string{"highway", "vault", "mailbox", "creator", "send", "to"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ReadWalletMail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"highway", "vault", "mailbox", "creator", "read"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ReadWalletMail_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3, 2, 4}, []string{"highway", "vault", "mailbox", "creator", "read"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ClaimableWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"core", "vault", "claims", "id"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ClaimableWallet_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "vault", "claimable_wallet", "id"}, "", runtime.AssumeColonVerbOpt(true)))
 
-	pattern_Query_ClaimableWalletAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "vault", "claims"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_ClaimableWalletAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "vault", "claimable_wallet"}, "", runtime.AssumeColonVerbOpt(true)))
 )
 
 var (

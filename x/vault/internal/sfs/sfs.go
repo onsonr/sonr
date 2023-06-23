@@ -167,7 +167,7 @@ func GetKeyshare(ksDid string) (types.KeyShare, error) {
 
 // The function retrieves a keyshare from a vault based on a given key DID.
 func GetEncryptedKeyshare(ksDid string, cred *servicetypes.WebauthnCredential) (types.KeyShare, error) {
-ksr, err := types.ParseKeyShareDID(ksDid)
+	ksr, err := types.ParseKeyShareDID(ksDid)
 	if err != nil {
 		return nil, err
 	}

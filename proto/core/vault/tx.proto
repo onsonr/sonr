@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package core.vault;
 
-import "core/vault/claims.proto";
 
 option go_package = "github.com/sonrhq/core/x/vault/types";
 

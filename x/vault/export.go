@@ -10,5 +10,3 @@ type AccountInfo = types.AccountInfo
 
 // KeyShare is an alias for types.KeyShare which is a struct which contains information about a key share
 type KeyShare = types.KeyShare
-
-

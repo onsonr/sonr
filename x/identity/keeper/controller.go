@@ -12,9 +12,9 @@ import (
 // CreateAccountForIdentity creates a new account for the given identity
 func (k Keeper) CreateAccountForIdentity(ctx sdk.Context, did string, accName string, coinType crypto.CoinType) (*identity.DIDDocument, *vault.AccountInfo, error) {
 	// Reoslve the identity
-	didDoc, ok := k.GetIdentity(ctx, did)
+	didDoc, ok := k.GetDIDDocument(ctx, did)
 	if !ok {
-		k.Logger(ctx).Error("Error resolving identity", "identity_did", did,)
+		k.Logger(ctx).Error("Error resolving identity", "identity_did", did)
 		return nil, nil, fmt.Errorf("Error resolving identity %s", did)
 	}
 	vrs := didDoc.SearchRelationshipsByCoinType(coinType)
@@ -40,14 +40,14 @@ func (k Keeper) CreateAccountForIdentity(ctx sdk.Context, did string, accName st
 
 	// Update the identity with the new account
 	didDoc.LinkCapabilityInvocationFromVaultAccount(newAcc)
-	k.SetIdentity(ctx, *&didDoc)
+	k.SetDIDDocument(ctx, *&didDoc)
 	return &didDoc, newAcc.GetAccountInfo(), nil
 }
 
 // ListAccountsForIdentity lists all accounts for the given identity by resolving all capability invocations
 func (k Keeper) ListAccountsForIdentity(ctx sdk.Context, did string) (*identity.DIDDocument, []*vault.AccountInfo, error) {
 	// Reoslve the identity
-	didDoc, ok := k.GetIdentity(ctx, did)
+	didDoc, ok := k.GetDIDDocument(ctx, did)
 	if !ok {
 		k.Logger(ctx).Error("Error resolving identity", "identity_did", did)
 		return nil, nil, fmt.Errorf("Error resolving identity %s", did)
@@ -68,7 +68,7 @@ func (k Keeper) ListAccountsForIdentity(ctx sdk.Context, did string) (*identity.
 // SignWithIdentity signs the given message with the given identity and an account did
 func (k Keeper) SignWithIdentity(ctx sdk.Context, primaryDid string, accDid string, message []byte) (*identity.DIDDocument, []byte, error) {
 	// Resolve the identity
-	didDoc, ok := k.GetIdentity(ctx, primaryDid)
+	didDoc, ok := k.GetDIDDocument(ctx, primaryDid)
 	if !ok {
 		k.Logger(ctx).Error("Error resolving identity", "identity_did", primaryDid)
 		return nil, nil, fmt.Errorf("Error resolving identity %s", primaryDid)
@@ -88,7 +88,7 @@ func (k Keeper) SignWithIdentity(ctx sdk.Context, primaryDid string, accDid stri
 // VerifyWithIdentity signs the given message with the given identity and an account did
 func (k Keeper) VerifyWithIdentity(ctx sdk.Context, primaryDid string, accDid string, message []byte, sig []byte) (*identity.DIDDocument, bool, *vault.AccountInfo, error) {
 	// Resolve the identity
-	didDoc, ok := k.GetIdentity(ctx, primaryDid)
+	didDoc, ok := k.GetDIDDocument(ctx, primaryDid)
 	if !ok {
 		k.Logger(ctx).Error("Error resolving identity", "identity_did", primaryDid)
 		return nil, false, nil, fmt.Errorf("Error resolving identity %s", primaryDid)

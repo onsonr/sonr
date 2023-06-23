@@ -8,6 +8,13 @@ import (
 
 // x/identity module sentinel errors
 var (
+	ErrSample               = sdkerrors.Register(ModuleName, 1001, "sample error")
+	ErrInvalidPacketTimeout = sdkerrors.Register(ModuleName, 1500, "invalid packet timeout")
+	ErrInvalidVersion       = sdkerrors.Register(ModuleName, 1501, "invalid version")
+)
+
+// x/identity module sentinel errors
+var (
 	ErrMpc                   = sdkerrors.Register(ModuleName, 1100, "internal mpc error")
 	ErrMpcTimeout            = sdkerrors.Register(ModuleName, 1101, "mpc timeout")
 	ErrMpcNotReady           = sdkerrors.Register(ModuleName, 1102, "mpc not ready")

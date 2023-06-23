@@ -1,4 +1,3 @@
-// It converts a `WebauthnCredential` to a `webauthn.Credential`
 package crypto
 
 import (

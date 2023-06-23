@@ -4,13 +4,12 @@ package core.identity;
 
 import "core/identity/did.proto";
 
-// this line is used by starport scaffolding # proto/tx/import
-
 option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc RegisterIdentity  (MsgRegisterIdentity ) returns (MsgRegisterIdentityResponse );
+  rpc RegisterIdentity(MsgRegisterIdentity)
+      returns (MsgRegisterIdentityResponse);
 }
 
 message MsgRegisterIdentity {
@@ -23,4 +22,3 @@ message MsgRegisterIdentityResponse {
   bool success = 1;
   DIDDocument did_document = 2;
 }
-

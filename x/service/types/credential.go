@@ -148,7 +148,6 @@ func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-
 func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
 	return c
 }
@@ -156,7 +155,7 @@ func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
 	vm := &idtypes.VerificationMethod{
-		Id:                 fmt.Sprintf("did:%s:%s", idtypes.WEBAUTHN_DID_METHOD, protocol.URLEncodedBase64(c.Id).String()),
+		Id:                 fmt.Sprintf("did:%s:%s", "webauthn", protocol.URLEncodedBase64(c.Id).String()),
 		Type:               "webauthn/alg-es256",
 		PublicKeyMultibase: crypto.Base64Encode(c.PublicKey),
 		Controller:         c.Controller,

@@ -22,14 +22,7 @@ func TestGenesis(t *testing.T) {
 				Id: "1",
 			},
 		},
-		ServiceRelationshipsList: []types.ServiceRelationship{
-			{
-				Did: "0",
-			},
-			{
-				Did: "1",
-			},
-		},
+		ServiceRecordCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -42,6 +35,6 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(got)
 
 	require.ElementsMatch(t, genesisState.ServiceRecordList, got.ServiceRecordList)
-	require.ElementsMatch(t, genesisState.ServiceRelationshipsList, got.ServiceRelationshipsList)
+	require.Equal(t, genesisState.ServiceRecordCount, got.ServiceRecordCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

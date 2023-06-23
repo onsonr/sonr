@@ -13,8 +13,8 @@ func (cw *ClaimableWallet) Address() string {
 // The function creates a new wallet claim with a given creator and key shares.
 func NewWalletClaims(creator string, did string) (*ClaimableWallet, error) {
 	cw := &ClaimableWallet{
-		Creator:   creator,
-		Did: 	 did,
+		Creator: creator,
+		Did:     did,
 	}
 	return cw, nil
 }

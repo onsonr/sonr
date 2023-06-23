@@ -1,7 +1,6 @@
 package crypto
 
 import (
-	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/pkg/party"
@@ -12,8 +11,8 @@ import (
 // PartyID is a type alias for party.ID in pkg/party.
 type PartyID = party.ID
 
-// PeerID is a type alias for peer.ID in pkg/peer.
-type PeerID = peer.ID
+// // PeerID is a type alias for peer.ID in pkg/peer.
+// type PeerID = peer.ID
 
 // MPCPool is a type alias for pool.Pool in pkg/pool.
 type MPCPool = pool.Pool
