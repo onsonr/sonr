@@ -4,7 +4,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
-	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 type GroupKeeper interface {
@@ -55,9 +54,5 @@ type BankKeeper interface {
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
-	// Methods imported from vault should be defined here
-	GetAccount(accDid string) (vaulttypes.Account, error)
-	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
-	InsertAccount(acc vaulttypes.Account) error
-	RemoveClaimableWallet(ctx sdk.Context, id uint64)
+
 }

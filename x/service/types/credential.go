@@ -16,16 +16,17 @@ import (
 	"github.com/yoseplee/vrf"
 )
 
-func LoadCredentialFromVerificationMethod(vm *idtypes.VerificationMethod) (*WebauthnCredential, error) {
-	if vm.Metadata == "" {
-		return nil, errors.New("no credential metadata")
+// GetCredentialDescriptorsForDIDDocument returns a list of credential descriptors for a DID document
+func GetCredentialDescriptorsForDIDDocument(didDoc *idtypes.DIDDocument) ([]protocol.CredentialDescriptor, error) {
+	creds := make([]protocol.CredentialDescriptor, 0)
+	for _, vr := range didDoc.Authentication {
+		vm := vr.GetVerificationMethod()
+		cred, err := vm.ToCredentialDescriptor()
+		if err == nil {
+			creds = append(creds, cred)
+		}
 	}
-	cred := &WebauthnCredential{}
-	err := json.Unmarshal([]byte(vm.Metadata), cred)
-	if err != nil {
-		return nil, err
-	}
-	return cred, nil
+	return creds, nil
 }
 
 // Serialize the credential to JSON
@@ -33,19 +34,9 @@ func (c *WebauthnCredential) Serialize() ([]byte, error) {
 	return json.Marshal(c)
 }
 
-// Descriptor returns the credential's descriptor
-func (c *WebauthnCredential) CredentialDescriptor() protocol.CredentialDescriptor {
-	transport := make([]protocol.AuthenticatorTransport, 0)
-	for _, t := range c.Transport {
-		transport = append(transport, protocol.AuthenticatorTransport(t))
-	}
-
-	return protocol.CredentialDescriptor{
-		CredentialID:    protocol.URLEncodedBase64(c.Id),
-		Type:            protocol.PublicKeyCredentialType,
-		Transport:       transport,
-		AttestationType: c.AttestationType,
-	}
+// Deserialize the credential from JSON
+func (c *WebauthnCredential) Deserialize(data []byte) error {
+	return json.Unmarshal(data, c)
 }
 
 // Encrypt is used to encrypt a message for the credential
@@ -148,10 +139,6 @@ func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 	return plaintext, nil
 }
 
-func (c *WebauthnCredential) GetWebauthnCredential() *WebauthnCredential {
-	return c
-}
-
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
 	vm := &idtypes.VerificationMethod{
@@ -159,12 +146,9 @@ func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod 
 		Type:               "webauthn/alg-es256",
 		PublicKeyMultibase: crypto.Base64Encode(c.PublicKey),
 		Controller:         c.Controller,
+		Transports:         c.Transport,
+		AttestationType:    c.AttestationType,
 	}
-	jsonCred, err := json.Marshal(c)
-	if err != nil {
-		return vm
-	}
-	vm.Metadata = string(jsonCred)
 	return vm
 }
 

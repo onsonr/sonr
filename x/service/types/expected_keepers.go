@@ -6,9 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/group"
-	"github.com/go-webauthn/webauthn/protocol"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
-	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 type GroupKeeper interface {
@@ -47,16 +45,9 @@ type IdentityKeeper interface {
 	CheckAlsoKnownAs(ctx sdk.Context, alias string) error
 	GetIdentityByPrimaryAlias(ctx sdk.Context, alias string) (val identitytypes.DIDDocument, found bool)
 	GetDIDDocument(ctx sdk.Context, did string) (val identitytypes.DIDDocument, found bool)
-	SignAndBroadcastCosmosTx(account vaulttypes.Account, msgs ...sdk.Msg)
 }
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
 	// Methods imported from vault should be defined here
-	AssignVault(ctx sdk.Context, ucw uint64, credential *WebauthnCredential) ([]vaulttypes.Account, *vaulttypes.VaultKeyshare, error)
-	GetClaimableWallet(ctx sdk.Context, id uint64) (val vaulttypes.ClaimableWallet, found bool)
-	NextUnclaimedWallet(ctx sdk.Context) (*vaulttypes.ClaimableWallet, protocol.URLEncodedBase64, error)
-	GetAccount(accDid string) (vaulttypes.Account, error)
-	GetAccountInfo(accDid string) (*vaulttypes.AccountInfo, error)
-	UnlockVault(ctx sdk.Context, didDocument *identitytypes.DIDDocument, credential *WebauthnCredential) (vaulttypes.Account, error)
 }

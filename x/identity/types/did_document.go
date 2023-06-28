@@ -1,17 +1,21 @@
 package types
 
 import (
+	"encoding/base64"
+	fmt "fmt"
 	"strings"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/go-webauthn/webauthn/protocol"
 	crypto "github.com/sonrhq/core/internal/crypto"
 	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 // NewDIDDocument creates a new DIDDocument from an Identification and optional VerificationRelationships
-func NewDIDDocument(primaryAccount vaulttypes.Account, authentication *VerificationMethod, alias string) *DIDDocument {
+func NewDIDDocument(primaryAccount *vaulttypes.AccountInfo, authentication *VerificationMethod, alias string) *DIDDocument {
 	params := DefaultParams()
 	didDoc := &DIDDocument{
-		Id:                   primaryAccount.Did(),
+		Id:                   primaryAccount.Did,
 		Context:              []string{params.AccountDidMethodContext, params.DidBaseContext},
 		Authentication:       make([]*VerificationRelationship, 0),
 		AssertionMethod:      make([]*VerificationRelationship, 0),
@@ -19,7 +23,6 @@ func NewDIDDocument(primaryAccount vaulttypes.Account, authentication *Verificat
 		CapabilityDelegation: make([]*VerificationRelationship, 0),
 		Controller:           []string{authentication.Id},
 		AlsoKnownAs:          []string{alias},
-		Metadata:             "",
 	}
 	didDoc.LinkAuthenticationMethod(authentication)
 	didDoc.LinkCapabilityInvocationFromVaultAccount(primaryAccount)
@@ -149,18 +152,18 @@ func (id *DIDDocument) LinkCapabilityInvocation(vm *VerificationMethod) (*Verifi
 }
 
 // LinkCapabilityInvocationFromVaultAccount adds a Vault Account to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
-func (id *DIDDocument) LinkCapabilityInvocationFromVaultAccount(accounts ...vaulttypes.Account) ([]*VerificationRelationship, bool) {
+func (id *DIDDocument) LinkCapabilityInvocationFromVaultAccount(accounts ...*vaulttypes.AccountInfo) ([]*VerificationRelationship, bool) {
 	vrs := make([]*VerificationRelationship, 0)
 	for _, account := range accounts {
 		vm := &VerificationMethod{
-			Id:                  account.Did(),
+			Id:                  account.Did,
 			Type:                crypto.Ed25519KeyType.FormatString(),
 			Controller:          id.Id,
-			PublicKeyMultibase:  account.PubKey().Multibase(),
-			BlockchainAccountId: account.Address(),
+			PublicKeyMultibase:  account.PublicKey,
+			BlockchainAccountId: account.Address,
 		}
 		vr := &VerificationRelationship{
-			Reference:          account.Did(),
+			Reference:          account.Did,
 			Type:               CapabilityInvocationRelationshipName,
 			VerificationMethod: vm,
 			Owner:              id.Id,
@@ -188,4 +191,53 @@ func (id *DIDDocument) LinkKeyAgreement(vm *VerificationMethod) (*VerificationRe
 	}
 	id.KeyAgreement = append(id.KeyAgreement, vr)
 	return vr, true
+}
+
+// ListWalletVerificationMethods returns all the VerificationMethods for the CapabilityInvocationRelationships
+func (d *DIDDocument) ListWalletVerificationMethods() []*VerificationMethod {
+	vms := make([]*VerificationMethod, 0)
+	for _, relationship := range d.CapabilityInvocation {
+		vms = append(vms, relationship.VerificationMethod)
+	}
+	return vms
+}
+
+func (id *DIDDocument) SDKAddress() (sdk.AccAddress, error) {
+	addr, err := sdk.AccAddressFromBech32(id.Address())
+	if err != nil {
+		return nil, err
+	}
+	return addr, nil
+}
+
+// ToCredentialDescriptor converts a VerificationMethod to a CredentialDescriptor if the VerificationMethod uses the `did:webauthn` method
+// returns an error if the VerificationMethod does not use the `did:webauthn` method
+func (vm *VerificationMethod) ToCredentialDescriptor() (protocol.CredentialDescriptor, error) {
+	// extract the method from the id
+	idParts := strings.Split(vm.Id, ":")
+	if len(idParts) < 3 {
+		return protocol.CredentialDescriptor{}, fmt.Errorf("malformed ID, expected at least 3 parts separated by colons")
+	}
+	method := idParts[1]
+	credentialIDStr := idParts[2]
+	if method != "webauthn" {
+		return protocol.CredentialDescriptor{}, fmt.Errorf("verification method is not a webauthn method")
+	}
+	// extract CredentialID from the id
+	credentialID, err := base64.RawURLEncoding.DecodeString(credentialIDStr)
+	if err != nil {
+		return protocol.CredentialDescriptor{}, fmt.Errorf("error decoding credential id: %w", err)
+	}
+
+	transport := make([]protocol.AuthenticatorTransport, 0)
+	for _, t := range vm.Transports {
+		transport = append(transport, protocol.AuthenticatorTransport(t))
+	}
+
+	return protocol.CredentialDescriptor{
+		CredentialID:    protocol.URLEncodedBase64(credentialID),
+		Type:            protocol.PublicKeyCredentialType,
+		Transport:       transport,
+		AttestationType: vm.AttestationType,
+	}, nil
 }

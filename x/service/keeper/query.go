@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/sonrhq/core/x/service/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -68,91 +67,6 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
 
-
-// ServiceAttestion returns the attestion options for a given service record and desired Identity alias
-func (k Keeper) ServiceAttestation(goCtx context.Context, req *types.GetServiceAttestationRequest) (*types.GetServiceAttestationResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	if req.GetAlias() == "" {
-		return nil, status.Error(codes.InvalidArgument, "alias cannot be empty")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	rec, ok := k.GetServiceRecord(ctx, cleanOriginUrl(req.Origin))
-	if !ok {
-		return nil, types.ErrServiceRecordNotFound
-	}
-
-	// Check if desired alias is already taken
-	err := k.identityKeeper.CheckAlsoKnownAs(ctx, req.Alias)
-	if err != nil {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "Desired alias already taken")
-	}
-
-	ucw, chal, err := k.vaultKeeper.NextUnclaimedWallet(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	attestionOpts, err := rec.GetCredentialCreationOptions(req.Alias, chal, ucw.Address(), req.GetIsMobile())
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.GetServiceAttestationResponse{
-		AttestionOptions: attestionOpts,
-		Challenge:        chal.String(),
-		Origin:           req.Origin,
-		UcwId:            ucw.Index,
-		Alias:            req.Alias,
-	}, nil
-}
-
-func (k Keeper) ServiceAssertion(goCtx context.Context, req *types.GetServiceAssertionRequest) (*types.GetServiceAssertionResponse, error) {
-	if req == nil {
-		return nil, status.Error(codes.InvalidArgument, "invalid request")
-	}
-
-	ctx := sdk.UnwrapSDKContext(goCtx)
-
-	id, ok := k.identityKeeper.GetIdentityByPrimaryAlias(ctx, req.GetAlias())
-	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "alias not found")
-	}
-	rec, ok := k.GetServiceRecord(ctx, cleanOriginUrl(req.Origin))
-	if !ok {
-		return nil, types.ErrServiceRecordNotFound
-	}
-
-	didDoc, ok := k.identityKeeper.GetDIDDocument(ctx, id.GetId())
-	if !ok {
-		return nil, sdkerrors.Wrap(sdkerrors.ErrInvalidRequest, "did doc not found")
-	}
-	vms := make([]protocol.CredentialDescriptor, 0)
-	for _, vm := range didDoc.Authentication {
-		cred, err := types.LoadCredentialFromVerificationMethod(vm.GetVerificationMethod())
-		if err != nil {
-			return nil, err
-		}
-		vms = append(vms, cred.CredentialDescriptor())
-	}
-	chal, err := protocol.CreateChallenge()
-	if err != nil {
-		return nil, err
-	}
-	assertionOpts, err := rec.GetCredentialAssertionOptions(vms, chal, req.GetIsMobile())
-	if err != nil {
-		return nil, err
-	}
-	return &types.GetServiceAssertionResponse{
-		AssertionOptions: assertionOpts,
-		Challenge:        chal.String(),
-		Origin:           req.Origin,
-		Did:              id.GetId(),
-	}, nil
-}
 
 // Removes www. and https:// from the origin url
 func cleanOriginUrl(url string) string {

@@ -6,5 +6,5 @@ option go_package = "github.com/sonrhq/core/x/vault/types";
 message ClaimableWallet {
   uint64 index = 1;
   string creator = 2;
-  string did = 3;
+  string address = 3;
 }

@@ -17,6 +17,26 @@ tasks:
       - echo ""
       - task --list
 
+  deps:
+    desc: Install dependencies
+    summary: |
+      Install Dependencies
+
+      This task will install the dependencies
+    cmds:
+      - npm i -g concurrently
+      -
+
+  build:
+    desc: Build the binary for the current platform
+    summary: |
+      Build Binary
+
+      This task will build the binary for the current platform
+    cmds:
+      - ignite chain build
+    interactive: true
+
   chain:
     desc: Serve the blockchain locally with verbose logging
     aliases:
@@ -32,14 +52,13 @@ tasks:
   generate:
     aliases:
       - "gen"
-    dir: scripts
     desc: Generate the protobuf files
     summary: |
       Generate Protobuf Files
 
       This task will generate the protobuf files
     cmds:
-      - ignite generate proto-go
+      - ignite generate proto-go -y
 
   docker:build:
     desc: Build the docker image
@@ -65,3 +84,39 @@ tasks:
       - docker push ghcr.io/sonrhq/sonrd:{{.VERSION}}
     deps:
       - docker:build
+
+  db:
+    desc: Run the database locally
+    dir: ./.tmp/bin
+    summary: |
+      Run Database Locally
+
+      This task will run the database locally
+    cmds:
+      - ./IceFireDB start
+
+  db:install:
+    desc: Install the database locally
+    dir: ./.tmp
+    summary: |
+      Install Database Locally
+
+      This task will install the database locally
+    cmds:
+      - mkdir -p ./bin
+      - git clone https://github.com/sonrhq/IceFireDB.git IceFireDB
+      - make -C ./IceFireDB
+      - mv ./IceFireDB/bin/IceFireDB ./bin/IceFireDB
+      - rm -rf ./IceFireDB
+
+  serve:
+    desc: Serve the Blockchain and Database locally
+    summary: |
+      Serve Blockchain and Database Locally
+
+      This task will serve the blockchain and database locally
+    cmds:
+      - rm -rf ./.tmp
+      - mkdir -p ./.tmp
+      - task: db:install
+      - conc "task chain" "task db" -n "chain,db" -g -r

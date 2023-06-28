@@ -19,37 +19,6 @@ service Query {
     option (google.api.http).get = "/core/params/vault";
 
   }
-
-  // !
-  // ||--------------------------------------------------------------------------------||
-  // ! ||                                 Gateway Methods || !
-  // ||--------------------------------------------------------------------------------||
-
-  // Sends an encrypted message to a given wallet address
-  rpc SendWalletMail (SendWalletMailRequest) returns (SendWalletMailResponse) {
-    option (google.api.http) = {
-      post : "/highway/vault/mailbox/{creator}/send/{to}"
-      body : "*"
-    };
-  }
-
-  // Reads messages for a given wallet address
-  rpc ReadWalletMail (ReadWalletMailRequest) returns (ReadWalletMailResponse) {
-    option (google.api.http) = {
-      post : "/highway/vault/mailbox/{creator}/read"
-      body : "*"
-    };
-  }
-
-  // Queries a list of ClaimableWallet items.
-  rpc ClaimableWallet    (QueryGetClaimableWalletRequest) returns (QueryGetClaimableWalletResponse) {
-    option (google.api.http).get = "/sonrhq/core/vault/claimable_wallet/{id}";
-
-  }
-  rpc ClaimableWalletAll (QueryAllClaimableWalletRequest) returns (QueryAllClaimableWalletResponse) {
-    option (google.api.http).get = "/sonrhq/core/vault/claimable_wallet";
-
-  }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -59,46 +28,5 @@ message QueryParamsResponse {
 
   // params holds all the parameters of this module.
   Params params = 1 [(gogoproto.nullable) = false];
-}
-
-// !
-// ||--------------------------------------------------------------------------------||
-// ! ||                              Gateway API Responses || !
-// ||--------------------------------------------------------------------------------||
-message SendWalletMailRequest {
-  string     creator = 1;
-  WalletMail mail    = 2;
-  string     to      = 3;
-}
-
-message SendWalletMailResponse {
-  bool  success   = 1;
-  int64 timestamp = 2;
-  bytes signature = 3;
-}
-
-message ReadWalletMailRequest {
-  string creator = 1;
-}
-
-message ReadWalletMailResponse {
-  map <string,WalletMailbox> mailboxes = 1;
-}
-
-message QueryGetClaimableWalletRequest {
-  uint64 id = 1;
-}
-
-message QueryGetClaimableWalletResponse {
-  ClaimableWallet ClaimableWallet = 1 [(gogoproto.nullable) = false];
-}
-
-message QueryAllClaimableWalletRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-message QueryAllClaimableWalletResponse {
-  repeated ClaimableWallet                        ClaimableWallet = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
 }
 

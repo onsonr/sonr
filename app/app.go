@@ -292,7 +292,7 @@ func New(
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	txConfig := encodingConfig.TxConfig
-
+	EnablePlugins()
 	bApp := baseapp.NewBaseApp(
 		Name,
 		logger,
@@ -976,7 +976,6 @@ func (app *App) SimulationManager() *module.SimulationManager {
 func (app *App) ModuleManager() *module.Manager {
 	return app.mm
 }
-
 
 func NewCustomAnteHandler(anteHandler sdk.AnteHandler, stakingKeeper stakingkeeper.Keeper, bankkeeper bankkeeper.Keeper, authkeeper authkeeper.AccountKeeper) sdk.AnteHandler {
 	return func(ctx sdk.Context, tx sdk.Tx, sim bool) (newCtx sdk.Context, err error) {

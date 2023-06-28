@@ -22,15 +22,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc: "valid genesis state",
 			genState: &types.GenesisState{
 
-				ClaimableWalletList: []types.ClaimableWallet{
-					{
-						Index: 0,
-					},
-					{
-						Index: 1,
-					},
-				},
-				ClaimableWalletCount: 2,
+
 				// this line is used by starport scaffolding # types/genesis/validField
 			},
 			valid: true,
@@ -38,26 +30,14 @@ func TestGenesisState_Validate(t *testing.T) {
 		{
 			desc: "duplicated claimableWallet",
 			genState: &types.GenesisState{
-				ClaimableWalletList: []types.ClaimableWallet{
-					{
-						Index: 0,
-					},
-					{
-						Index: 0,
-					},
-				},
+
 			},
 			valid: false,
 		},
 		{
 			desc: "invalid claimableWallet count",
 			genState: &types.GenesisState{
-				ClaimableWalletList: []types.ClaimableWallet{
-					{
-						Index: 1,
-					},
-				},
-				ClaimableWalletCount: 0,
+			
 			},
 			valid: false,
 		},

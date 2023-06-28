@@ -7,6 +7,7 @@ import (
 
 	"strings"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"github.com/shengdoushi/base58"
@@ -241,4 +242,12 @@ func formatBip44Path(coinType types.CoinType, idx int) []uint32 {
 		change,
 		addressIndex,
 	}
+}
+
+func NewSNRCoins(amt int) (sdk.Coins) {
+	return sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(amt))))
+}
+
+func NewUSNRCoins(amt int) (sdk.Coins) {
+	return sdk.NewCoins(sdk.NewCoin("usnr", sdk.NewInt(int64(amt))))
 }

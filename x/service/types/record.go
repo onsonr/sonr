@@ -4,6 +4,7 @@ package types
 
 import (
 	"encoding/json"
+	"errors"
 	"net/url"
 	"strings"
 
@@ -17,24 +18,22 @@ const (
 	DIDCommMessagingServiceType = "DIDCommMessaging"
 )
 
-func (s *ServiceRecord) CredentialEntity() protocol.CredentialEntity {
-	return protocol.CredentialEntity{
-		Name: s.Name,
-	}
-}
 
 func (s *ServiceRecord) GetUserEntity(id string) protocol.UserEntity {
 	return protocol.UserEntity{
 		ID:               []byte(id),
 		DisplayName:      id,
-		CredentialEntity: s.CredentialEntity(),
+		CredentialEntity: protocol.CredentialEntity{
+		Name: s.Name,
+	},
 	}
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, addr string, isMobile bool) (string, error) {
+func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, addr string) (string, error) {
 	params := DefaultParams()
-	cco, err := params.NewWebauthnCreationOptions(vm, username, chal, addr, isMobile)
+	rp := vm.RelyingPartyEntity()
+	cco, err := params.NewWebauthnCreationOptions(rp, username, chal, addr)
 	if err != nil {
 		return "", err
 	}
@@ -47,9 +46,12 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal prot
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, chal protocol.URLEncodedBase64, isMobile bool) (string, error) {
+func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, chal protocol.URLEncodedBase64) (string, error) {
+	if (len(allowedCredentials) == 0) {
+		return "", errors.New("No allowed credentials")
+	}
 	params := DefaultParams()
-	cco, err := params.NewWebauthnAssertionOptions(vm, chal, allowedCredentials, isMobile)
+	cco, err := params.NewWebauthnAssertionOptions(vm, chal, allowedCredentials)
 	if err != nil {
 		return "", err
 	}
@@ -74,7 +76,9 @@ func (s *ServiceRecord) NewServiceRelationship(id string) *ServiceRelationship {
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	return protocol.RelyingPartyEntity{
 		ID:               s.Id,
-		CredentialEntity: s.CredentialEntity(),
+		CredentialEntity: protocol.CredentialEntity{
+		Name: s.Name,
+	},
 	}
 }
 

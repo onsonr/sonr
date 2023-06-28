@@ -3,18 +3,20 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
+	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 const TypeMsgRegisterIdentity = "register_identity"
 
 var _ sdk.Msg = &MsgRegisterIdentity{}
 
-func NewMsgRegisterIdentity(creator string, doc *DIDDocument) *MsgRegisterIdentity {
+func NewMsgRegisterIdentity(acc *vaulttypes.AccountInfo, authentication *VerificationMethod, alias string) (*MsgRegisterIdentity, *DIDDocument) {
+	didDoc := NewDIDDocument(acc, authentication, alias)
 	msg := &MsgRegisterIdentity{
-		Creator:     creator,
-		DidDocument: doc,
+		Creator:     acc.Address,
+		DidDocument: didDoc,
 	}
-	return msg
+	return msg, didDoc
 }
 
 func (msg *MsgRegisterIdentity) Route() string {

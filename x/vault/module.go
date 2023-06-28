@@ -17,9 +17,10 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/internal/sfs"
+	"github.com/sonrhq/core/x/vault/blocker"
 	"github.com/sonrhq/core/x/vault/client/cli"
-	"github.com/sonrhq/core/x/vault/internal/blocker"
-	"github.com/sonrhq/core/x/vault/internal/sfs"
 	"github.com/sonrhq/core/x/vault/keeper"
 	"github.com/sonrhq/core/x/vault/types"
 )
@@ -149,8 +150,9 @@ func (am AppModule) ExportGenesis(ctx sdk.Context, cdc codec.JSONCodec) json.Raw
 func (AppModule) ConsensusVersion() uint64 { return 1 }
 
 // BeginBlock contains the logic that is automatically triggered at the beginning of each block
-func (am AppModule) BeginBlock(_ sdk.Context, _ abci.RequestBeginBlock) {
-	am.blocker.Next()
+func (am AppModule) BeginBlock(ctx sdk.Context, _ abci.RequestBeginBlock) {
+	goCtx := sdk.WrapSDKContext(ctx)
+	am.blocker.Next(goCtx)
 }
 
 // EndBlock contains the logic that is automatically triggered at the end of each block
@@ -158,9 +160,8 @@ func (am AppModule) EndBlock(ctx sdk.Context, _ abci.RequestEndBlock) []abci.Val
 	// and done channel.
 	cw := am.blocker.Pop()
 	if cw != nil {
-		ctx.Logger().Info("(x/vault) minted claimable wallet", "publicKey", cw.Did)
-		am.keeper.AppendClaimableWallet(ctx, *cw)
-		am.bankKeeper.MintCoins(ctx, "identity", sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(5))))
+		ctx.Logger().Info("(x/vault) Minted Wallet Claims", "address", cw.Address)
+		am.bankKeeper.MintCoins(ctx, "identity", crypto.NewSNRCoins(8))
 	}
 	return []abci.ValidatorUpdate{}
 }

@@ -74,7 +74,7 @@
     "**/**/*.pb.gw.go": true,
     "**/**/types/*_test.go": true,
     "LICENSE": true,
-    "proto/buf.lock": true,
+    "proto/buf.lock": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",

@@ -7,6 +7,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
+	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/x/identity/types"
 )
 
@@ -25,22 +26,26 @@ var _ types.MsgServer = msgServer{}
 // RegisterIdentity registers a new identity with the provided Identity and Verification Relationships. Fails if not at least one Authentication relationship is provided.
 func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterIdentity) (*types.MsgRegisterIdentityResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-
 	if !strings.Contains(msg.DidDocument.Id, msg.Creator) {
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "identity owner does not match creator")
 	}
-
+	doc := msg.GetDidDocument()
+	addr, err := doc.SDKAddress()
+	if err != nil {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to get sdk address")
+	}
 	// Set the identity
-	k.SetDIDDocument(ctx, *msg.DidDocument)
+	k.SetDIDDocument(ctx, *doc)
 	k.Logger(ctx).Info("(x/identity) Account registered", "did", msg.DidDocument.Id, "owner", msg.Creator)
-	k.vaultKeeper.RemoveClaimableWallet(ctx, msg.GetWalletId())
 
-	err := k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", sdk.AccAddress(msg.Creator), sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(1))))
+	// acc := k.accountKeeper.NewAccountWithAddress(ctx, addr)
+	// k.accountKeeper.SetAccount(ctx, acc)
+	err = k.bankKeeper.SendCoinsFromModuleToAccount(ctx, "identity", addr, crypto.NewSNRCoins(1))
 	if err != nil {
 		k.Logger(ctx).Error("failed to send coins", "error", err)
 		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, "failed to send coins")
 	}
-
+	k.Logger(ctx).Info("(x/identity) Sent Claims Reward", "did", msg.DidDocument.Id, "denom", "snr", "amount", 1)
 	return &types.MsgRegisterIdentityResponse{
 		Success:     true,
 		DidDocument: msg.DidDocument,

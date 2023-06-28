@@ -13,16 +13,6 @@ import (
 func TestGenesis(t *testing.T) {
 	genesisState := types.GenesisState{
 		Params: types.DefaultParams(),
-
-		ClaimableWalletList: []types.ClaimableWallet{
-			{
-				Index: 0,
-			},
-			{
-				Index: 1,
-			},
-		},
-		ClaimableWalletCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -34,7 +24,5 @@ func TestGenesis(t *testing.T) {
 	nullify.Fill(&genesisState)
 	nullify.Fill(got)
 
-	require.ElementsMatch(t, genesisState.ClaimableWalletList, got.ClaimableWalletList)
-	require.Equal(t, genesisState.ClaimableWalletCount, got.ClaimableWalletCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

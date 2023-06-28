@@ -30,14 +30,14 @@ builds:
 
 # The archives section.
 archives:
-  - id: "archive"
+  - id: "sonrd"
     builds:
       - sonrd
     format: tar.gz
     files:
       - LICENSE*
       - README.md
-    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}"
 
 # The checksum section.
 checksum:

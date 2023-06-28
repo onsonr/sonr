@@ -2,12 +2,9 @@ package local
 
 import (
 	"context"
-	"encoding/hex"
 	"fmt"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/gogo/protobuf/proto"
-	"github.com/gogo/protobuf/types"
 	"google.golang.org/grpc"
 )
 
@@ -21,7 +18,7 @@ type BroadcastTxResponse = txtypes.BroadcastTxResponse
 func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.GrpcEndpoint(),    // Or your gRPC server address.
+		GrpcEndpoint(),    // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
@@ -37,7 +34,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 	grpcRes, err := txClient.BroadcastTx(
 		context.Background(),
 		&txtypes.BroadcastTxRequest{
-			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_ASYNC,
+			Mode:    txtypes.BroadcastMode_BROADCAST_MODE_SYNC,
 			TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
 		},
 	)
@@ -57,7 +54,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 func (c LocalContext) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		c.RpcEndpoint(),     // Or your gRPC server address.
+		RpcEndpoint(),     // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
@@ -85,28 +82,6 @@ func (c LocalContext) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, 
 // ! ||                            Utility Helper Functions                            ||
 // ! ||--------------------------------------------------------------------------------||
 
-// DecodeTxResponseData decodes the data from a transaction response
-func DecodeTxResponseData(d string, v proto.Unmarshaler) error {
-	data, err := hex.DecodeString(d)
-	if err != nil {
-		return err
-	}
-
-	anyWrapper := new(types.Any)
-	if err := proto.Unmarshal(data, anyWrapper); err != nil {
-		return err
-	}
-
-	// TODO: figure out if there's a better 'cosmos' way of doing this
-	// you have to unwrap the Any twice, and the first time the bytes get decoded
-	// in the 'TypeUrl' field instead of 'Value' field
-	any := new(types.Any)
-	if err := proto.Unmarshal([]byte(anyWrapper.TypeUrl), any); err != nil {
-		return err
-	}
-
-	return v.Unmarshal(any.Value)
-}
 
 // // RequestFaucet funds an account with the given address
 // func (c LocalContext) RequestFaucet(ctx context.Context, address string) error {

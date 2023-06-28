@@ -1,50 +1,19 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
 )
 
-// KeyShare is a type that interacts with a cmp.Config file located on disk.
-type KeyShare interface {
-	// Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
-	Bytes() []byte
-
-	// Config returns the cmp.Config.
-	CMPConfig() *cmp.Config
-
-	// DeriveBip44 returns a new keyshare with the same key but a new coin type
-	DeriveBip44(ct uint32, idx int, name string) (KeyShare, error)
-
-	// Did returns the Identifier with fragment of the keyshare
-	Did() string
-
-	// IsEncrypted checks if the file at current path is encrypted.
-	IsEncrypted() bool
-
-	// PartyID returns the party id based on the keyshare file name
-	PartyID() crypto.PartyID
-
-	// CoinType returns the coin type based on the keyshare file name
-	ParseCoinType() crypto.CoinType
-
-	// PubKey returns the public key of the keyshare
-	PubKey() *crypto.PubKey
-
-	// Rename renames the keyshare file
-	Rename(opts ...KeyShareOption) KeyShare
-
-	// ToProto returns a protobuf representation of the keyshare
-	ToProto() *VaultKeyshare
-}
+type KeyShareCollection []*VaultKeyshare
 
 // Keyshare name format is a DID did:{coin_type}:{account_address}#ks-{account_name}-{keyshare_name}
 // did:{coin_type}:{account_address}#ks-{account_name}-{keyshare_name}
-func NewKeyshare(bytes []byte, coinType crypto.CoinType, opts ...KeyShareOption) (KeyShare, error) {
+func NewKeyshare(bytes []byte, coinType crypto.CoinType, opts ...KeyShareOption) (*VaultKeyshare, error) {
 	// setup default options
 	options := &keyshareOpts{
 		fragment: "",
@@ -67,37 +36,23 @@ func NewKeyshare(bytes []byte, coinType crypto.CoinType, opts ...KeyShareOption)
 	if options.fragment != "" {
 		ks.Id = fmt.Sprintf("did:%s:%s#%s", coinType.DidMethod(), addr, options.fragment)
 	} else {
-		ks.Id = fmt.Sprintf("did:%s:%s#ks-%s", coinType.DidMethod(), addr, string(conf.ID))
+		ks.Id = fmt.Sprintf("did:%s:%s", coinType.DidMethod(), addr)
 	}
 	return ks, nil
 }
 
-// GetPubKeyFromCmpConfigBytes loads KeyShare from a cmp.Config buffer.
-func GetPubKeyFromCmpConfigBytes(bytes []byte) (*crypto.PubKey, error) {
-	conf := cmp.EmptyConfig(curve.Secp256k1{})
-	err := conf.UnmarshalBinary(bytes)
+func LoadKeyshare(bz []byte) (*VaultKeyshare, error) {
+	ks := &VaultKeyshare{}
+	err := json.Unmarshal(bz, ks)
 	if err != nil {
 		return nil, err
 	}
-	skPP, ok := conf.PublicPoint().(*curve.Secp256k1Point)
-	if !ok {
-		return nil, fmt.Errorf("invalid public point type")
-	}
-	bz, err := skPP.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	return crypto.NewSecp256k1PubKey(bz), nil
+	return ks, nil
 }
 
 // Bytes returns the bytes of the keyshare file - the marshalled cmp.Config
 func (ks *VaultKeyshare) Bytes() []byte {
 	return ks.Config
-}
-
-// CoinType returns the coin type based on the keyshare file name
-func (ks *VaultKeyshare) ParseCoinType() crypto.CoinType {
-	return crypto.CoinTypeFromBipPath(ks.CoinType)
 }
 
 // Config returns the cmp.Config.
@@ -111,7 +66,7 @@ func (ks *VaultKeyshare) CMPConfig() *cmp.Config {
 }
 
 // DeriveBip44 returns a derived keyshare from the current keyshare.
-func (ks *VaultKeyshare) DeriveBip44(ct uint32, idx int, name string) (KeyShare, error) {
+func (ks *VaultKeyshare) DeriveBip44(ct uint32) (*VaultKeyshare, error) {
 	cnfg, err := ks.CMPConfig().DeriveBIP32(ct)
 	if err != nil {
 		return nil, err
@@ -122,23 +77,6 @@ func (ks *VaultKeyshare) DeriveBip44(ct uint32, idx int, name string) (KeyShare,
 		return nil, err
 	}
 	return NewKeyshare(bz, crypto.CoinTypeFromBipPath(ct))
-}
-
-// DID returns the cid of the keyshare
-func (ks *VaultKeyshare) Did() string {
-	return ks.Id
-}
-
-// A Keyshare is encrypted if its name contains an apostrophe at the end.
-func (ks *VaultKeyshare) IsEncrypted() bool {
-	if ks.IsVault() {
-		return false
-	}
-	return strings.HasSuffix(ks.Id, "'")
-}
-
-func (ks *VaultKeyshare) IsVault() bool {
-	return strings.Contains(ks.Id, "vault")
 }
 
 // PartyID returns the party id based on the keyshare file name
@@ -161,23 +99,6 @@ func (ks *VaultKeyshare) PubKey() *crypto.PubKey {
 		return nil
 	}
 	return crypto.NewSecp256k1PubKey(bz)
-}
-
-// Rename renames the keyshare did with fragment options
-func (ks *VaultKeyshare) Rename(opts ...KeyShareOption) KeyShare {
-	// setup default options
-	options := &keyshareOpts{
-		fragment: "",
-		modified: false,
-	}
-	for _, opt := range opts {
-		opt(options)
-	}
-	if !options.modified {
-		return ks
-	}
-	ks.Id = fmt.Sprintf("did:%s:%s#%s", ks.ParseCoinType().DidMethod(), ks.PubKey().Address(), options.fragment)
-	return ks
 }
 
 // ToProto returns a protobuf representation of the keyshare
@@ -208,4 +129,22 @@ func SetClaimed(fragment string) KeyShareOption {
 		o.modified = true
 		o.fragment = fragment
 	}
+}
+
+// GetPubKeyFromCmpConfigBytes loads KeyShare from a cmp.Config buffer.
+func GetPubKeyFromCmpConfigBytes(bytes []byte) (*crypto.PubKey, error) {
+	conf := cmp.EmptyConfig(curve.Secp256k1{})
+	err := conf.UnmarshalBinary(bytes)
+	if err != nil {
+		return nil, err
+	}
+	skPP, ok := conf.PublicPoint().(*curve.Secp256k1Point)
+	if !ok {
+		return nil, fmt.Errorf("invalid public point type")
+	}
+	bz, err := skPP.MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	return crypto.NewSecp256k1PubKey(bz), nil
 }

@@ -18,6 +18,7 @@ node_modules
 .pnp
 .pnp.js
 
+tmp
 # testing
 coverage
 

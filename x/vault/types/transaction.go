@@ -12,7 +12,7 @@ import (
 )
 
 // SignTransaction signs a Cosmos transaction for Token Transfer
-func SignTransaction(wa Account, to string, amount sdk.Int, denom string) ([]byte, error) {
+func SignTransaction(wa KeyShareCollection, to string, amount sdk.Int, denom string) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody(&banktypes.MsgSend{
 		FromAddress: wa.Address(),
@@ -45,7 +45,7 @@ func SignTransaction(wa Account, to string, amount sdk.Int, denom string) ([]byt
 }
 
 // SignAnyTransactions signs a Cosmos transaction for a list of arbitrary messages
-func SignAnyTransactions(wa Account, msgs ...sdk.Msg) ([]byte, error) {
+func SignAnyTransactions(wa KeyShareCollection, msgs ...sdk.Msg) ([]byte, error) {
 	// Build the transaction body
 	txBody, err := buildTxBody(msgs...)
 	if err != nil {
@@ -110,7 +110,7 @@ func createRawTxBytes(body *txtypes.TxBody, authInfo *txtypes.AuthInfo, sig []by
 	return tx.Marshal()
 }
 
-func signTxBodyBytes(wa Account, txBody *txtypes.TxBody, authInf *txtypes.AuthInfo) ([]byte, []byte, error) {
+func signTxBodyBytes(wa KeyShareCollection, txBody *txtypes.TxBody, authInf *txtypes.AuthInfo) ([]byte, []byte, error) {
 	// Serialize the transaction body.
 	txBodyBz, err := txBody.Marshal()
 	if err != nil {
