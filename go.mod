@@ -7,7 +7,7 @@ require (
 	cosmossdk.io/math v1.0.1
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
 	github.com/btcsuite/btcd v0.22.1
-	github.com/cometbft/cometbft v0.37.1
+	github.com/cometbft/cometbft v0.37.2
 	github.com/cometbft/cometbft-db v0.7.0
 	github.com/cosmos/cosmos-sdk v0.47.3
 	github.com/cosmos/gogoproto v1.4.10
