@@ -9,10 +9,13 @@
     "ghcr.io/devcontainers/features/go:1": {}
   },
   "hostRequirements": {
-    "cpus": 6
+    "cpus": 12
   },
   "waitFor": "onCreateCommand",
-  "postCreateCommand": "icefire start",
+  "postAttachCommand": [
+    "icefire start",
+    "task chain"
+  ],
   "customizations": {
     "codespaces": {
       "openFiles": [
@@ -23,23 +26,27 @@
   "portsAttributes": {
     "1317": {
       "label": "API server",
-      "onAutoForward": "notify"
+      "onAutoForward": "openPreview"
+    },
+    "4001": {
+      "label": "IceFire DB",
+      "onAutoForward": "ignore"
     },
     "6001": {
       "label": "IceFire Redis Proxy",
-      "onAutoForward": "notify"
+      "onAutoForward": "ignore"
     },
     "26657": {
       "label": "RPC server",
-      "onAutoForward": "notify"
+      "onAutoForward": "ignore"
     },
     "8080": {
       "label": "Highway server",
-      "onAutoForward": "notify"
+      "onAutoForward": "ignore"
     },
     "9090": {
       "label": "gRPC server",
-      "onAutoForward": "notify"
+      "onAutoForward": "ignore"
     }
   }
 }
