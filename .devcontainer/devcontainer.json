@@ -2,12 +2,44 @@
   "image": "mcr.microsoft.com/devcontainers/universal:2",
   "features": {
     "ghcr.io/akhildevelops/devcontainer-features/apt:0": {},
-    "ghcr.io/devcontainers/features/go:1": {},
-    "ghcr.io/devcontainers-contrib/features/typescript:2": {},
-      "ghcr.io/sonrhq/devcontainer-features/ignite:latest": {},
-    "ghcr.io/devcontainers-contrib/features/protoc-asdf:1": {},
-    "ghcr.io/devcontainers/features/go:1": {
-      "version": "1.19.9"
+    "ghcr.io/withfig/features/fig:1": {},
+    "ghcr.io/sonrhq/devcontainer-features/ignite:2": {},
+    "ghcr.io/sonrhq/devcontainer-features/icefire:2": {},
+    "ghcr.io/sonrhq/devcontainer-features/task:1": {},
+    "ghcr.io/devcontainers/features/go:1": {}
+  },
+  "hostRequirements": {
+    "cpus": 6
+  },
+  "waitFor": "onCreateCommand",
+  "postCreateCommand": "icefire start",
+  "customizations": {
+    "codespaces": {
+      "openFiles": [
+        "README.md"
+      ]
+    }
+  },
+  "portsAttributes": {
+    "1317": {
+      "label": "API server",
+      "onAutoForward": "notify"
+    },
+    "6001": {
+      "label": "IceFire Redis Proxy",
+      "onAutoForward": "notify"
+    },
+    "26657": {
+      "label": "RPC server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Highway server",
+      "onAutoForward": "notify"
+    },
+    "9090": {
+      "label": "gRPC server",
+      "onAutoForward": "notify"
     }
   }
 }
