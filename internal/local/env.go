@@ -1,7 +1,6 @@
 package local
 
 import (
-	"fmt"
 	"os"
 	"time"
 )
@@ -24,8 +23,6 @@ const (
 	kDefaultNodeAPIHost  = "0.0.0.0:1317"
 	kDefaultNodeGrpcHost = "0.0.0.0:9090"
 	kDefaultNodeRpcHost  = "0.0.0.0:26657"
-	kDefaultTLSCertPath  = ""
-	kDefaultTLSKeyPath   = ""
 )
 
 // ! ||--------------------------------------------------------------------------------||
@@ -125,16 +122,6 @@ func PublicDomain() string {
 		return env
 	}
 	return "localhost"
-}
-
-// PublicDomainURLs returns the preconfigured list of domains to use for autotls configuration in production.
-func PublicDomainURLs() []string {
-	return []string{
-		PublicDomain(),
-		fmt.Sprintf("api.%s", PublicDomain()),
-		fmt.Sprintf("rpc.%s", PublicDomain()),
-		fmt.Sprintf("grpc.%s", PublicDomain()),
-	}
 }
 
 // ValidatorAddress returns the validator address from the environment variable SONR_VALIDATOR_ADDRESS. (default: 0x0000000000)

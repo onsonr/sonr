@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gin-gonic/autotls"
 	"github.com/gin-gonic/gin"
 	"github.com/kardianos/service"
 	"github.com/sonrhq/core/internal/local"
@@ -41,9 +40,6 @@ func StartService() {
 }
 
 func (p highway) Start(s service.Service) error {
-	if local.IsProduction() {
-		return autotls.Run(p.r, local.PublicDomainURLs()...)
-	}
 	return p.r.Run(local.HighwayHostPort())
 }
 
