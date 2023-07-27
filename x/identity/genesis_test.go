@@ -25,10 +25,10 @@ func TestGenesis(t *testing.T) {
 
 		ControllerAccountList: []types.ControllerAccount{
 			{
-				Id: 0,
+				Address: "0",
 			},
 			{
-				Id: 1,
+				Address: "1",
 			},
 		},
 		ControllerAccountCount: 2,

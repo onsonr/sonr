@@ -51,7 +51,7 @@ func (p highway) Stop(s service.Service) error {
 func initGin() *gin.Engine {
 	// init gin
 	r := gin.Default()
-	r.Use(highlightGin.Middleware())
+
 	// add timeout middleware with 2 second duration
 	defaultMsg := `{"code": -1, "msg":"http: Handler timeout"}`
 	r.Use(timeout.Timeout(
@@ -61,6 +61,7 @@ func initGin() *gin.Engine {
 		timeout.WithCallBack(func(r *http.Request) {
 			fmt.Println("timeout happen, url:", r.URL.String())
 		})))
+	r.Use(highlightGin.Middleware())
 	routes.RegisterRoutes(r)
 	return r
 }

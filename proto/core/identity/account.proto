@@ -12,9 +12,8 @@ message EscrowAccount {
 }
 
 message ControllerAccount {
-  uint64 id = 1;
-  string address = 2;
-  string publicKey = 3;
-  repeated string authenticators = 4;
-  repeated string wallets = 5;
+  string address = 1;
+  string publicKey = 2;
+  repeated string authenticators = 3;
+  repeated string wallets = 4;
 }

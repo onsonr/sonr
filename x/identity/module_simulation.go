@@ -81,11 +81,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		},
 		ControllerAccountList: []types.ControllerAccount{
 			{
-				Id:      0,
+
 				Address: sample.AccAddress(),
 			},
 			{
-				Id:      1,
+			
 				Address: sample.AccAddress(),
 			},
 		},

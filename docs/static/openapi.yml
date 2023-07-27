@@ -1642,9 +1642,6 @@ paths:
                 items:
                   type: object
                   properties:
-                    id:
-                      type: string
-                      format: uint64
                     address:
                       type: string
                     publicKey:
@@ -1775,9 +1772,6 @@ paths:
               ControllerAccount:
                 type: object
                 properties:
-                  id:
-                    type: string
-                    format: uint64
                   address:
                     type: string
                   publicKey:
@@ -50066,9 +50060,6 @@ definitions:
   core.identity.ControllerAccount:
     type: object
     properties:
-      id:
-        type: string
-        format: uint64
       address:
         type: string
       publicKey:
@@ -50447,9 +50438,6 @@ definitions:
       account:
         type: object
         properties:
-          id:
-            type: string
-            format: uint64
           address:
             type: string
           publicKey:
@@ -50862,9 +50850,6 @@ definitions:
       account:
         type: object
         properties:
-          id:
-            type: string
-            format: uint64
           address:
             type: string
           publicKey:
@@ -51277,9 +51262,6 @@ definitions:
         items:
           type: object
           properties:
-            id:
-              type: string
-              format: uint64
             address:
               type: string
             publicKey:
@@ -52511,9 +52493,6 @@ definitions:
       ControllerAccount:
         type: object
         properties:
-          id:
-            type: string
-            format: uint64
           address:
             type: string
           publicKey:

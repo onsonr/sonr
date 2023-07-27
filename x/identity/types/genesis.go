@@ -2,6 +2,7 @@ package types
 
 import (
 	"fmt"
+
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 )
 
@@ -36,17 +37,15 @@ func (gs GenesisState) Validate() error {
 		}
 		dIDDocumentIndexMap[index] = struct{}{}
 	}
+
 	// Check for duplicated ID in controllerAccount
-	controllerAccountIdMap := make(map[uint64]bool)
-	controllerAccountCount := gs.GetControllerAccountCount()
+	controllerAccountIndexMap := make(map[string]struct{})
 	for _, elem := range gs.ControllerAccountList {
-		if _, ok := controllerAccountIdMap[elem.Id]; ok {
-			return fmt.Errorf("duplicated id for controllerAccount")
+		index := string(ControllerAccountKey(elem.Address))
+		if _, ok := controllerAccountIndexMap[index]; ok {
+			return fmt.Errorf("duplicated index for dIDDocument")
 		}
-		if elem.Id >= controllerAccountCount {
-			return fmt.Errorf("controllerAccount id should be lower or equal than the last id")
-		}
-		controllerAccountIdMap[elem.Id] = true
+		controllerAccountIndexMap[index] = struct{}{}
 	}
 	// Check for duplicated ID in escrowAccount
 	escrowAccountIdMap := make(map[uint64]bool)

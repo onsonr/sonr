@@ -144,7 +144,6 @@ func (k msgServer) UpdateControllerAccount(goCtx context.Context, msg *types.Msg
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	var controllerAccount = types.ControllerAccount{
-		Id:      msg.Id,
 		Address: msg.Address,
 	}
 

@@ -143,7 +143,6 @@ func (k Keeper) SetControllerAccount(ctx sdk.Context, controllerAccount types.Co
 	store := prefix.NewStore(ctx.KVStore(k.storeKey), types.KeyPrefix(types.ControllerAccountKeyPrefix))
 	b := k.cdc.MustMarshal(&controllerAccount)
 	count := k.GetControllerAccountCount(ctx)
-	controllerAccount.Id = count
 	store.Set(types.ControllerAccountKey(controllerAccount.Address), b)
 	k.SetControllerAccountCount(ctx, count+1)
 	return count

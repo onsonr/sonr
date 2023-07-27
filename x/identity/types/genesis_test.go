@@ -24,10 +24,10 @@ func TestGenesisState_Validate(t *testing.T) {
 				PortId: types.PortID,
 				ControllerAccountList: []types.ControllerAccount{
 					{
-						Id: 0,
+						Address: "0",
 					},
 					{
-						Id: 1,
+						Address: "1",
 					},
 				},
 				ControllerAccountCount: 2,
@@ -49,10 +49,10 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				ControllerAccountList: []types.ControllerAccount{
 					{
-						Id: 0,
+						Address: "0",
 					},
 					{
-						Id: 0,
+						Address: "0",
 					},
 				},
 			},
@@ -63,7 +63,7 @@ func TestGenesisState_Validate(t *testing.T) {
 			genState: &types.GenesisState{
 				ControllerAccountList: []types.ControllerAccount{
 					{
-						Id: 1,
+						Address: "0",
 					},
 				},
 				ControllerAccountCount: 0,

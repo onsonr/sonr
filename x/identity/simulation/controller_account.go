@@ -68,8 +68,7 @@ func SimulateMsgUpdateControllerAccount(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "controllerAccount creator not found"), nil, nil
 		}
 		msg.Address = simAccount.Address.String()
-		msg.Id = controllerAccount.Id
-
+		controllerAccount.Address = simAccount.Address.String()
 		txCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,
@@ -113,7 +112,7 @@ func SimulateMsgDeleteControllerAccount(
 			return simtypes.NoOpMsg(types.ModuleName, msg.Type(), "controllerAccount creator not found"), nil, nil
 		}
 		msg.Address = simAccount.Address.String()
-		msg.Id = controllerAccount.Id
+		controllerAccount.Address = simAccount.Address.String()
 
 		txCtx := simulation.OperationInput{
 			R:               r,

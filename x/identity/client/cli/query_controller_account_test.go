@@ -23,7 +23,7 @@ func networkWithControllerAccountObjects(t *testing.T, n int) (*network.Network,
 	state := types.GenesisState{PortId: types.PortID}
 	for i := 0; i < n; i++ {
 		controllerAccount := types.ControllerAccount{
-			Id: uint64(i),
+			Address: fmt.Sprintf("addr%v", i),
 		}
 		nullify.Fill(&controllerAccount)
 		state.ControllerAccountList = append(state.ControllerAccountList, controllerAccount)
@@ -50,7 +50,7 @@ func TestShowControllerAccount(t *testing.T) {
 	}{
 		{
 			desc: "found",
-			id:   fmt.Sprintf("%d", objs[0].Id),
+			id:   fmt.Sprintf("%v", objs[0].Address),
 			args: common,
 			obj:  objs[0],
 		},
