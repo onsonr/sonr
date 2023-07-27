@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/highlight/highlight/sdk/highlight-go"
 	mdw "github.com/sonrhq/core/pkg/highway/middleware"
 )
 
@@ -14,16 +15,19 @@ func GetCredentialAttestationParams(c *gin.Context) {
 	// Get the service record from the origin
 	rec, err := mdw.GetServiceRecord(origin)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	chal, err := protocol.CreateChallenge()
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "CreateChallenge"})
 		return
 	}
 	creOpts, err := rec.GetCredentialCreationOptions(alias, chal)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialCreationOptions"})
 		return
 	}
@@ -41,11 +45,13 @@ func GetCredentialAssertionParams(c *gin.Context) {
 	alias := c.Param("alias")
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	assertionOpts, chal, err := mdw.IssueCredentialAssertionOptions(alias, record)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
 		return
 	}

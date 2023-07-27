@@ -70,6 +70,7 @@ func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredentia
 	ctx := context.Background()
 	controller, err := controller.New(alias, cred, origin)
 	if err != nil {
+		highlight.RecordError(ctx, err)
 		return nil, nil, fmt.Errorf("failed to create controller: %w", err)
 
 	}

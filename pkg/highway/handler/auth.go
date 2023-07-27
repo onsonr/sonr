@@ -2,6 +2,7 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/highlight/highlight/sdk/highlight-go"
 	mdw "github.com/sonrhq/core/pkg/highway/middleware"
 	"github.com/sonrhq/core/pkg/highway/types"
 )
@@ -12,11 +13,13 @@ func RegisterEscrowIdentity(c *gin.Context) {
 	alias := c.Query("email")
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	assertionOpts, chal, err := mdw.IssueCredentialAssertionOptions(alias, record)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
 		return
 	}
@@ -37,22 +40,26 @@ func RegisterControllerIdentity(c *gin.Context) {
 	// Get the service record from the origin
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(404, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	credential, err := record.VerifyCreationChallenge(attestionResp, challenge)
 	if err != nil && credential == nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(412, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
 		return
 	}
 	cont, resp, err := mdw.PublishControllerAccount(alias, credential, origin)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "PublishControllerAccount"})
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(400, gin.H{"error": err.Error(), "where": "PublishControllerAccount"})
 		return
 	}
 	token, err := types.NewSessionJWTClaims(alias, cont.Account())
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(401, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
 		return
 	}
 	c.JSON(200, gin.H{
@@ -70,16 +77,19 @@ func SignInWithCredential(c *gin.Context) {
 	assertionResp := c.Query("assertion")
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	_, err = record.VerifyAssertionChallenge(assertionResp)
 	if err != nil{
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
 		return
 	}
 	isAuthenticated := mdw.IsAuthenticated(c)
 	if isAuthenticated {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(400, gin.H{"error": "Already authenticated"})
 		return
 	}

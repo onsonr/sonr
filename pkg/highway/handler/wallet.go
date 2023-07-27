@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/highlight/highlight/sdk/highlight-go"
 	"github.com/sonrhq/core/internal/crypto"
 	mdw "github.com/sonrhq/core/pkg/highway/middleware"
 )
@@ -14,17 +15,20 @@ func CreateAccount(c *gin.Context) {
 	ct := crypto.CoinTypeFromName(coinTypeName)
 	jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}
 	cont, err := mdw.UseControllerAccount(jwt)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
 		return
 	}
 
 	accInfo, err := cont.CreateWallet(ct)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "CreateWallet"})
 		return
 	}
@@ -42,16 +46,19 @@ func GetAccount(c *gin.Context) {
 	did := c.Param("did")
 	jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}
 	cont, err := mdw.UseControllerAccount(jwt)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
 		return
 	}
 	accInfo, err := cont.GetWallet(did)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetWallet"})
 		return
 	}
@@ -65,11 +72,14 @@ func GetAccount(c *gin.Context) {
 func ListAccounts(c *gin.Context) {
 	jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}
+
 	cont, err := mdw.UseControllerAccount(jwt)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
 		return
 	}
@@ -83,6 +93,7 @@ func ListAccounts(c *gin.Context) {
 func SignWithAccount(c *gin.Context) {
 	jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}
@@ -90,16 +101,19 @@ func SignWithAccount(c *gin.Context) {
 	msg := c.Query("msg")
 	bz, err := crypto.Base64Decode(msg)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	cont, err := mdw.UseControllerAccount(jwt)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
 		return
 	}
 	sig, err := cont.SignWithWallet(did, bz)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "SignWithWallet"})
 		return
 	}
@@ -115,6 +129,7 @@ func SignWithAccount(c *gin.Context) {
 func VerifyWithAccount(c *gin.Context) {
 jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}
@@ -123,21 +138,25 @@ jwt, err := c.Cookie("sonr-jwt")
 	sigStr := c.Query("sig")
 	cont, err := mdw.UseControllerAccount(jwt)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
 		return
 	}
 	msg, err := crypto.Base64Decode(msgStr)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	sig, err := crypto.Base64Decode(sigStr)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(400, gin.H{"error": err.Error()})
 		return
 	}
 	valid, err := cont.VerifyWithWallet(did, msg, sig)
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "VerifyWithWallet"})
 		return
 	}

@@ -12,16 +12,16 @@ import (
 )
 
 func main() {
-	highlight.SetProjectID("zg0wxve9")
-	highlight.Start()
-	defer highlight.Stop()
+
 	rootCmd, _ := cmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
 		switch e := err.(type) {
 		case server.ErrorCode:
+			highlight.Stop()
 			os.Exit(e.Code)
 
 		default:
+			highlight.Stop()
 			os.Exit(1)
 		}
 	}

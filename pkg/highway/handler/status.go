@@ -4,12 +4,14 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/highlight/highlight/sdk/highlight-go"
 )
 
 // CurrentUser returns the current user's details.
 func CurrentUser(c *gin.Context) {
 	jwt, err := c.Cookie("sonr-jwt")
 	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
 		return
 	}

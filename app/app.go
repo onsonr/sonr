@@ -107,6 +107,7 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v7/modules/core/keeper"
 	solomachine "github.com/cosmos/ibc-go/v7/modules/light-clients/06-solomachine"
 	ibctm "github.com/cosmos/ibc-go/v7/modules/light-clients/07-tendermint"
+	"github.com/highlight/highlight/sdk/highlight-go"
 	highlightGorillaMux "github.com/highlight/highlight/sdk/highlight-go/middleware/gorillamux"
 	"github.com/spf13/cast"
 
@@ -120,6 +121,7 @@ import (
 	domainmodule "github.com/sonrhq/core/x/domain"
 	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
 	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
+
 	// this line is used by starport scaffolding # stargate/app/moduleImport
 
 	appparams "github.com/sonrhq/core/app/params"
@@ -304,7 +306,8 @@ func New(
 	bApp.SetVersion(version.Version)
 	bApp.SetInterfaceRegistry(interfaceRegistry)
 	bApp.SetTxEncoder(txConfig.TxEncoder())
-
+	highlight.SetProjectID("zg0wxve9")
+	highlight.Start()
 	keys := sdk.NewKVStoreKeys(
 		authtypes.StoreKey, authz.ModuleName, banktypes.StoreKey, stakingtypes.StoreKey,
 		crisistypes.StoreKey, minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey,
