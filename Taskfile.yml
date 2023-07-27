@@ -8,8 +8,6 @@ vars:
     default: "v0.0.0"
 tasks:
   default:
-    aliases:
-      - "help"
     silent: true
     cmds:
       - echo ""
@@ -17,106 +15,55 @@ tasks:
       - echo ""
       - task --list
 
-  deps:
-    desc: Install dependencies
-    summary: |
-      Install Dependencies
-
-      This task will install the dependencies
-    cmds:
-      - npm i -g concurrently
-      -
-
   build:
     desc: Build the binary for the current platform
-    summary: |
-      Build Binary
-
-      This task will build the binary for the current platform
     cmds:
       - ignite chain build
-    interactive: true
 
   chain:
     desc: Serve the blockchain locally with verbose logging
-    aliases:
-      - "srv"
-    summary: |
-      Serve Blockchain Locally
-
-      This task will serve the blockchain locally. It will also reset the blockchain
     cmds:
-      - ignite chain serve --clear-cache --reset-once -v
-    interactive: true
+      - ignite chain serve --reset-once -v
+
+  chain:docker:
+    desc: Serve the blockchain locally with verbose logging
+    cmds:
+      - docker compose up --abort-on-container-exit --build
+
+  chain:slow-start:
+    desc: Serve the blockchain locally with verbose logging
+    cmds:
+      - ignite chain serve --reset-once -v
 
   generate:
-    aliases:
-      - "gen"
     desc: Generate the protobuf files
-    summary: |
-      Generate Protobuf Files
-
-      This task will generate the protobuf files
     cmds:
       - ignite generate proto-go -y
-
-  docker:build:
-    desc: Build the docker image
-    summary: |
-      Build Docker Image
-
-      This task will build the docker image
-    cmds:
-      - docker build -t sonr .
-      - docker tag sonr ghcr.io/sonrhq/sonrd:latest
-      - docker tag sonr ghcr.io/sonrhq/sonrd:{{.VERSION}}
-
-  docker:push:
-    aliases:
-      - "docker"
-    desc: Push the docker image
-    summary: |
-      Push Docker Image
-
-      This task will push the docker image
-    cmds:
-      - docker push ghcr.io/sonrhq/sonrd:latest
-      - docker push ghcr.io/sonrhq/sonrd:{{.VERSION}}
-    deps:
-      - docker:build
 
   db:
     desc: Run the database locally
     dir: ./.tmp/bin
-    summary: |
-      Run Database Locally
-
-      This task will run the database locally
     cmds:
-      - ./IceFireDB start
+      - ./icefire start
 
   db:install:
     desc: Install the database locally
     dir: ./.tmp
-    summary: |
-      Install Database Locally
-
-      This task will install the database locally
     cmds:
-      - mkdir -p ./bin
       - git clone https://github.com/sonrhq/IceFireDB.git IceFireDB
       - make -C ./IceFireDB
-      - mv ./IceFireDB/bin/IceFireDB ./bin/IceFireDB
+      - mv ./IceFireDB/bin/icefire ./bin/icefire
       - rm -rf ./IceFireDB
 
-  serve:
-    desc: Serve the Blockchain and Database locally
-    summary: |
-      Serve Blockchain and Database Locally
-
-      This task will serve the blockchain and database locally
+  deps:
+    desc: Install the dependencies
     cmds:
-      - rm -rf ./.tmp
-      - mkdir -p ./.tmp
+      - mkdir -p ./.tmp/bin
       - task: db:install
-      - conc "task chain" "task db" -n "chain,db" -g -r
+      - npm i concurrently -g
+      - curl https://get.ignite.com/cli! | bash
+
+  start:
+    desc: Start the Blockchain and Database locally
+    cmds:
+        - conc "task db" "task chain" -n "db,chain" -g -r

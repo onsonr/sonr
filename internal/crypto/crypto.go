@@ -2,11 +2,13 @@ package crypto
 
 import (
 	"encoding/base64"
+	"encoding/hex"
 	"errors"
 	"fmt"
 
 	"strings"
 
+	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
@@ -16,6 +18,9 @@ import (
 
 	types "github.com/sonrhq/core/types/crypto"
 )
+
+// Secp256k1PubKey is a type alias for secp256k1.PubKey in pkg/crypto/keys/secp256k1.
+type Secp256k1PubKey = secp256k1.PubKey
 
 // CoinType is a type alias for types.CoinType in pkg/crypto/internal/types.
 type CoinType = types.CoinType
@@ -61,6 +66,18 @@ const XRPCoinType = types.CoinType_CoinType_XRP
 
 // AllCoinTypes is a slice of all CoinTypes.
 var AllCoinTypes = types.AllCoinTypes
+
+// NewPubKey takes a byte array and returns a PubKey
+func NewPubKey(bz []byte, kt KeyType) *PubKey {
+	pk := &PubKey{}
+	pk.Key = bz
+	pk.KeyType = kt.PrettyString()
+	return pk
+}
+
+func NewSecp256k1PubKey(pk *secp256k1.PubKey) *PubKey {
+	return NewPubKey(pk.Bytes(), Secp256k1KeyType)
+}
 
 // CoinTypeFromAddrPrefix returns the CoinType from the public key address prefix (btc, eth).
 func CoinTypeFromAddrPrefix(str string) CoinType {
@@ -132,9 +149,14 @@ func Base64Decode(str string) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(str)
 }
 
-// NewSecp256k1PubKey takes a byte array of raw public key bytes and returns a PubKey.
-func NewSecp256k1PubKey(bz []byte) *PubKey {
-	return types.NewPubKey(bz, Secp256k1KeyType)
+// HexEncode takes a byte array and returns a hex encoded string.
+func HexEncode(bz []byte) string {
+	return hex.EncodeToString(bz)
+}
+
+// HexDecode takes a hex encoded string and returns a byte array.
+func HexDecode(str string) ([]byte, error) {
+	return hex.DecodeString(str)
 }
 
 // NewEd25519PubKey takes a byte array of raw public key bytes and returns a PubKey.
@@ -244,10 +266,10 @@ func formatBip44Path(coinType types.CoinType, idx int) []uint32 {
 	}
 }
 
-func NewSNRCoins(amt int) (sdk.Coins) {
+func NewSNRCoins(amt int) sdk.Coins {
 	return sdk.NewCoins(sdk.NewCoin("snr", sdk.NewInt(int64(amt))))
 }
 
-func NewUSNRCoins(amt int) (sdk.Coins) {
+func NewUSNRCoins(amt int) sdk.Coins {
 	return sdk.NewCoins(sdk.NewCoin("usnr", sdk.NewInt(int64(amt))))
 }

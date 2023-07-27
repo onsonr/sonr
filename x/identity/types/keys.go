@@ -28,3 +28,13 @@ var (
 func KeyPrefix(p string) []byte {
 	return []byte(p)
 }
+
+const (
+	ControllerAccountKeyPrefix      = "ControllerAccount/value/"
+	ControllerAccountCountKeyPrefix = "ControllerAccount/count/"
+)
+
+const (
+	EscrowAccountKeyPrefix      = "EscrowAccount/value/"
+	EscrowAccountCountKeyPrefix = "EscrowAccount/count/"
+)

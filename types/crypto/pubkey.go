@@ -37,6 +37,10 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 	return pk
 }
 
+func NewSecp256k1PubKey(pk *secp256k1.PubKey) *PubKey {
+	return NewPubKey(pk.Bytes(), KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019)
+}
+
 //
 // CryptoTypes Implementation of PubKey interface
 //

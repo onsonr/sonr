@@ -9,7 +9,6 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	idtypes "github.com/sonrhq/core/x/identity/types"
 )
 
 const (
@@ -18,22 +17,21 @@ const (
 	DIDCommMessagingServiceType = "DIDCommMessaging"
 )
 
-
 func (s *ServiceRecord) GetUserEntity(id string) protocol.UserEntity {
 	return protocol.UserEntity{
-		ID:               []byte(id),
-		DisplayName:      id,
+		ID:          []byte(id),
+		DisplayName: id,
 		CredentialEntity: protocol.CredentialEntity{
-		Name: s.Name,
-	},
+			Name: s.Name,
+		},
 	}
 }
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
-func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64, addr string) (string, error) {
+func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal protocol.URLEncodedBase64) (string, error) {
 	params := DefaultParams()
 	rp := vm.RelyingPartyEntity()
-	cco, err := params.NewWebauthnCreationOptions(rp, username, chal, addr)
+	cco, err := params.NewWebauthnCreationOptions(rp, username, chal)
 	if err != nil {
 		return "", err
 	}
@@ -47,7 +45,7 @@ func (vm *ServiceRecord) GetCredentialCreationOptions(username string, chal prot
 
 // GetCredentialCreationOptions issues a challenge for the VerificationMethod to sign and return
 func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []protocol.CredentialDescriptor, chal protocol.URLEncodedBase64) (string, error) {
-	if (len(allowedCredentials) == 0) {
+	if len(allowedCredentials) == 0 {
 		return "", errors.New("No allowed credentials")
 	}
 	params := DefaultParams()
@@ -67,18 +65,18 @@ func (vm *ServiceRecord) GetCredentialAssertionOptions(allowedCredentials []prot
 func (s *ServiceRecord) NewServiceRelationship(id string) *ServiceRelationship {
 	return &ServiceRelationship{
 		Reference: s.Id,
-		Did: 	 id,
-		Count:  0,
+		Did:       id,
+		Count:     0,
 	}
 }
 
 // RelyingPartyEntity is a struct that represents a Relying Party entity.
 func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 	return protocol.RelyingPartyEntity{
-		ID:               s.Id,
+		ID: s.Id,
 		CredentialEntity: protocol.CredentialEntity{
-		Name: s.Name,
-	},
+			Name: s.Name,
+		},
 	}
 }
 
@@ -103,7 +101,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Web
 }
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes.VerificationMethod) (*WebauthnCredential, error) {
+func (vm *ServiceRecord) VerifyAssertionChallenge(resp string) (*WebauthnCredential, error) {
 	var ccr protocol.CredentialAssertionResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
 	if err != nil {
@@ -119,21 +117,21 @@ func (vm *ServiceRecord) VerifyAssertionChallenge(resp string, creds ...*idtypes
 
 // GetBaseOrigin returns the origin url without a subdomain
 func (vm *ServiceRecord) GetBaseOrigin() string {
-    for _, origin := range vm.Origins {
-        u, err := url.Parse(origin)
-        if err != nil {
-            continue // skip invalid URLs
-        }
+	for _, origin := range vm.Origins {
+		u, err := url.Parse(origin)
+		if err != nil {
+			continue // skip invalid URLs
+		}
 
-        hostparts := strings.Split(u.Hostname(), ".")
-        if len(hostparts) > 2 {
-            // Remove subdomain
-            baseHost := strings.Join(hostparts[len(hostparts)-2:], ".")
-            u.Host = baseHost
-        }
+		hostparts := strings.Split(u.Hostname(), ".")
+		if len(hostparts) > 2 {
+			// Remove subdomain
+			baseHost := strings.Join(hostparts[len(hostparts)-2:], ".")
+			u.Host = baseHost
+		}
 
-        return u.String()
-    }
+		return u.String()
+	}
 
-    return "" // return empty string if no valid URLs
+	return "" // return empty string if no valid URLs
 }

@@ -294,6 +294,7 @@ func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) 
 		Id:        c.RawID,
 		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
 		Authenticator: &WebauthnAuthenticator{
+			Aaguid:    c.Response.AuthenticatorData.AttData.AAGUID,
 			SignCount: c.Response.AuthenticatorData.Counter,
 		},
 	}

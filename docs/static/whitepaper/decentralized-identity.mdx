@@ -1,0 +1,16 @@
+---
+title: Decentralized Identity
+description: Sonr's x/identity is a decentralized identity and asset management module that uses MPC Wallet Generation, DID Resolution, and Interchain Accounts to provide users with secure, user-friendly control over their data.
+---
+
+
+## Identity Keyshare System
+Sonr's system leverages the powerful cryptographic technique of Multi-Party Computation (MPC) for secure wallet generation and DID (Decentralized Identifier) resolution. As part of this process, keyshares are generated which form an integral part of the MPC technique.
+
+## Multi-Party Computation
+In MPC, a secret value (in this case, a user's private key) is divided into a number of shares. These keyshares are such that any subset of them can be used to reconstruct the secret, but no single share reveals any information about the secret itself. This ensures that even if a malicious party gains access to a share, they can't derive any meaningful information about the private key.
+
+## Encrypted Decentralized Storage
+The security and confidentiality of these keyshares are of paramount importance for the system's security. To ensure this, Sonr stores these keyshares in encrypted IPFS vaults. IPFS, or InterPlanetary File System, is a decentralized storage solution. Unlike traditional file storage systems, where files are located at specific server locations, IPFS identifies files based on their content, making it a robust and resilient system for storing information.
+
+When a keyshare is generated in Sonr's system, it is encrypted and stored in an IPFS vault. This vault is then "pinned," meaning it is marked for preservation and can be retrieved reliably from the IPFS network. This approach combines the benefits of MPC's secure computation with IPFS's resilient storage to create a robust security model for managing digital identities and wallets.

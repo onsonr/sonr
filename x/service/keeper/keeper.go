@@ -21,9 +21,8 @@ type (
 		memKey     storetypes.StoreKey
 		paramstore paramtypes.Subspace
 
-		groupKeeper types.GroupKeeper
+		groupKeeper    types.GroupKeeper
 		identityKeeper types.IdentityKeeper
-		vaultKeeper types.VaultKeeper
 	}
 )
 
@@ -35,7 +34,6 @@ func NewKeeper(
 
 	groupKeeper types.GroupKeeper,
 	identityKeeper types.IdentityKeeper,
-	vaultKeeper types.VaultKeeper,
 ) *Keeper {
 	// set KeyTable if it has not already been set
 	if !ps.HasKeyTable() {
@@ -48,16 +46,14 @@ func NewKeeper(
 		memKey:     memKey,
 		paramstore: ps,
 
-		groupKeeper: groupKeeper,
+		groupKeeper:    groupKeeper,
 		identityKeeper: identityKeeper,
-		vaultKeeper: vaultKeeper,
 	}
 }
 
 func (k Keeper) Logger(ctx sdk.Context) log.Logger {
 	return ctx.Logger().With("module", fmt.Sprintf("x/%s", types.ModuleName))
 }
-
 
 // GetServiceRecordCount get the total number of serviceRecord
 func (k Keeper) GetServiceRecordCount(ctx sdk.Context) uint64 {
@@ -122,4 +118,3 @@ func (k Keeper) GetAllServiceRecord(ctx sdk.Context) (list []types.ServiceRecord
 
 	return
 }
-

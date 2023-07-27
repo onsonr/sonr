@@ -50,7 +50,7 @@ func CoinTypeFromBipPath(i uint32) CoinType {
 func CoinTypeFromDidMethod(str string) CoinType {
 	coins := AllCoinTypes()
 	for _, coin := range coins {
-		if strings.ToLower(coin.DidMethod()) == strings.ToLower(str) {
+		if strings.ToLower(coin.DIDMethod()) == strings.ToLower(str) {
 			return coin
 		}
 	}
@@ -250,18 +250,12 @@ func (c CoinType) IsSonr() bool {
 	return c == CoinType_CoinType_SONR
 }
 
-// DidMethod returns the DID method for the given coin type.
-func (c CoinType) DidMethod() string {
-	if c.IsBitcoin() {
-		return "btcr"
-	}
-	if c.IsEthereum() {
-		return "ethr"
-	}
+// DIDMethod returns the DID method for the given coin type.
+func (c CoinType) DIDMethod() string {
 	if c.IsSonr() {
-		return "sonr"
+		return "idxr"
 	}
-	return strings.ToLower(c.Ticker())
+	return strings.ToLower(fmt.Sprintf(c.Ticker(), "r"))
 }
 
 // FormatAddress returns the address for the given public key for the spec of the coin type.
@@ -285,5 +279,5 @@ func (c CoinType) FormatAddress(pk *PubKey) string {
 
 // FormatDID returns the DID for the given public key for the spec of the coin type, along with the address.
 func (c CoinType) FormatDID(pk *PubKey) (string, string) {
-	return fmt.Sprintf("did:%s:%s", c.DidMethod(), c.FormatAddress(pk)), c.FormatAddress(pk)
+	return fmt.Sprintf("did:%s:%s", c.DIDMethod(), c.FormatAddress(pk)), c.FormatAddress(pk)
 }

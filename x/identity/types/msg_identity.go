@@ -3,14 +3,22 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	vaulttypes "github.com/sonrhq/core/x/vault/types"
+	"github.com/sonrhq/core/internal/crypto"
 )
 
 const TypeMsgRegisterIdentity = "register_identity"
 
 var _ sdk.Msg = &MsgRegisterIdentity{}
 
-func NewMsgRegisterIdentity(acc *vaulttypes.AccountInfo, authentication *VerificationMethod, alias string) (*MsgRegisterIdentity, *DIDDocument) {
+func NewMsgRegisterIdentity(creator string, doc *DIDDocument) *MsgRegisterIdentity {
+	msg := &MsgRegisterIdentity{
+		Creator:     creator,
+		DidDocument: doc,
+	}
+	return msg
+}
+
+func BuildMsgRegisterIdentity(acc *crypto.AccountData, authentication *VerificationMethod, alias string) (*MsgRegisterIdentity, *DIDDocument) {
 	didDoc := NewDIDDocument(acc, authentication, alias)
 	msg := &MsgRegisterIdentity{
 		Creator:     acc.Address,

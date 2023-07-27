@@ -9,7 +9,6 @@ import "core/service/params.proto";
 import "core/service/record.proto";
 import "core/service/credential.proto";
 import "core/identity/did.proto";
-import "core/vault/vault.proto";
 
 option go_package = "github.com/sonrhq/core/x/service/types";
 

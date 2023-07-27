@@ -48,11 +48,11 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 		Params: types.DefaultParams(),
 		ServiceRecordList: []types.ServiceRecord{
 			{
-				Id:      "0",
+				Id:         "0",
 				Controller: sample.AccAddress(),
 			},
 			{
-				Id:      "1",
+				Id:         "1",
 				Controller: sample.AccAddress(),
 			},
 		},

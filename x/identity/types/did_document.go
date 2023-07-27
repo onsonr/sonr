@@ -8,14 +8,13 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
 	crypto "github.com/sonrhq/core/internal/crypto"
-	vaulttypes "github.com/sonrhq/core/x/vault/types"
 )
 
 // NewDIDDocument creates a new DIDDocument from an Identification and optional VerificationRelationships
-func NewDIDDocument(primaryAccount *vaulttypes.AccountInfo, authentication *VerificationMethod, alias string) *DIDDocument {
+func NewDIDDocument(primaryAccount *crypto.AccountData, authentication *VerificationMethod, alias string) *DIDDocument {
 	params := DefaultParams()
 	didDoc := &DIDDocument{
-		Id:                   primaryAccount.Did,
+		Id:                   primaryAccount.Address,
 		Context:              []string{params.AccountDidMethodContext, params.DidBaseContext},
 		Authentication:       make([]*VerificationRelationship, 0),
 		AssertionMethod:      make([]*VerificationRelationship, 0),
@@ -25,13 +24,12 @@ func NewDIDDocument(primaryAccount *vaulttypes.AccountInfo, authentication *Veri
 		AlsoKnownAs:          []string{alias},
 	}
 	didDoc.LinkAuthenticationMethod(authentication)
-	didDoc.LinkCapabilityInvocationFromVaultAccount(primaryAccount)
 	return didDoc
 }
 
 // SearchRelationshipsByCoinType returns all verification relationships of a given the query options
 func (d *DIDDocument) SearchRelationshipsByCoinType(coinType crypto.CoinType) []*VerificationRelationship {
-	method := coinType.DidMethod()
+	method := coinType.DIDMethod()
 	relationships := make([]*VerificationRelationship, 0)
 	for _, relationship := range d.Authentication {
 		if strings.Contains(relationship.Reference, method) {
@@ -91,6 +89,7 @@ func (id *DIDDocument) LinkAuthenticationMethod(vm *VerificationMethod) (*Verifi
 		Owner:              id.Id,
 	}
 	id.Authentication = append(id.Authentication, vr)
+	id.Controller = append(id.Controller, vm.Id)
 	return vr, true
 }
 
@@ -151,29 +150,6 @@ func (id *DIDDocument) LinkCapabilityInvocation(vm *VerificationMethod) (*Verifi
 	return vr, true
 }
 
-// LinkCapabilityInvocationFromVaultAccount adds a Vault Account to the CapabilityInvocation list of the DID Document and returns the VerificationRelationship
-func (id *DIDDocument) LinkCapabilityInvocationFromVaultAccount(accounts ...*vaulttypes.AccountInfo) ([]*VerificationRelationship, bool) {
-	vrs := make([]*VerificationRelationship, 0)
-	for _, account := range accounts {
-		vm := &VerificationMethod{
-			Id:                  account.Did,
-			Type:                crypto.Ed25519KeyType.FormatString(),
-			Controller:          id.Id,
-			PublicKeyMultibase:  account.PublicKey,
-			BlockchainAccountId: account.Address,
-		}
-		vr := &VerificationRelationship{
-			Reference:          account.Did,
-			Type:               CapabilityInvocationRelationshipName,
-			VerificationMethod: vm,
-			Owner:              id.Id,
-		}
-		id.CapabilityInvocation = append(id.CapabilityInvocation, vr)
-		vrs = append(vrs, vr)
-	}
-	return vrs, true
-}
-
 // LinkKeyAgreement adds a VerificationMethod to the KeyAgreement list of the DID Document and returns the VerificationRelationship
 // Returns nil if the VerificationMethod is already in the KeyAgreement list
 func (id *DIDDocument) LinkKeyAgreement(vm *VerificationMethod) (*VerificationRelationship, bool) {
@@ -193,8 +169,8 @@ func (id *DIDDocument) LinkKeyAgreement(vm *VerificationMethod) (*VerificationRe
 	return vr, true
 }
 
-// ListWalletVerificationMethods returns all the VerificationMethods for the CapabilityInvocationRelationships
-func (d *DIDDocument) ListWalletVerificationMethods() []*VerificationMethod {
+// GetWalletVerificationMethods returns all the VerificationMethods for the CapabilityInvocationRelationships
+func (d *DIDDocument) GetWalletVerificationMethods() []*VerificationMethod {
 	vms := make([]*VerificationMethod, 0)
 	for _, relationship := range d.CapabilityInvocation {
 		vms = append(vms, relationship.VerificationMethod)
@@ -202,6 +178,7 @@ func (d *DIDDocument) ListWalletVerificationMethods() []*VerificationMethod {
 	return vms
 }
 
+// SDKAddress returns the address of the DIDDocument as an sdk.AccAddress
 func (id *DIDDocument) SDKAddress() (sdk.AccAddress, error) {
 	addr, err := sdk.AccAddressFromBech32(id.Address())
 	if err != nil {

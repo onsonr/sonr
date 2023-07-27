@@ -1,8 +1,13 @@
 package local
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"time"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"google.golang.org/grpc"
@@ -14,11 +19,41 @@ type BroadcastTxResponse = txtypes.BroadcastTxResponse
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
 
+var kBaseAPIUrl = fmt.Sprintf("http://%s", NodeAPIHost())
+
+// The `EncodeTx` function is a method of the `LocalContext` struct. It takes a transaction (`tx`) as input and returns the encoded transaction bytes as output.
+func (c LocalContext) EncodeTx(tx *txtypes.Tx) ([]byte, error) {
+	endpoint := fmt.Sprintf("%s/cosmos/tx/v1beta1/encode", kBaseAPIUrl)
+	req := &txtypes.TxEncodeRequest{
+		Tx: tx,
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+	bz, err := PostJSON(endpoint, body)
+	if err != nil {
+		return nil, err
+	}
+	resp := new(txtypes.TxEncodeResponse)
+	err = json.Unmarshal(bz, resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp.TxBytes, nil
+}
+
 // BroadcastTx broadcasts a transaction on the Sonr blockchain network
-func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, error) {
+func (c LocalContext) BroadcastTx(txMsg *txtypes.Tx) (*BroadcastTxResponse, error) {
+	// Encode the transaction to Protobuf binary.
+	txRawBytes, err := txMsg.Marshal()
+	if err != nil {
+		return nil, err
+	}
+
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		GrpcEndpoint(),    // Or your gRPC server address.
+		NodeGrpcHost(),      // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
@@ -54,7 +89,7 @@ func (c LocalContext) BroadcastTx(txRawBytes []byte) (*BroadcastTxResponse, erro
 func (c LocalContext) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		RpcEndpoint(),     // Or your gRPC server address.
+		NodeGrpcHost(),      // Or your gRPC server address.
 		grpc.WithInsecure(), // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
@@ -78,50 +113,87 @@ func (c LocalContext) SimulateTx(txRawBytes []byte) (*txtypes.SimulateResponse, 
 	return grpcRes, nil
 }
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                            Utility Helper Functions                            ||
-// ! ||--------------------------------------------------------------------------------||
+// BroadcastTx broadcasts a transaction on the Sonr blockchain network
+func (c LocalContext) BroadcastTxAPI(tx *txtypes.Tx) (*BroadcastTxResponse, error) {
+	endpoint := fmt.Sprintf("%s/cosmos/tx/v1beta1/txs", kBaseAPIUrl)
+	txBz, err := c.EncodeTx(tx)
+	if err != nil {
+		return nil, err
+	}
+	// Encode the transaction to Protobuf binary.
+	req := &txtypes.BroadcastTxRequest{
+		Mode:    txtypes.BroadcastMode_BROADCAST_MODE_UNSPECIFIED,
+		TxBytes: txBz, // Proto-binary of the signed transaction, see previous step.
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
+	// Create a connection to the gRPC server.
+	bz, err := PostJSON(endpoint, body)
+	if err != nil {
+		return nil, err
+	}
+	resp := new(txtypes.BroadcastTxResponse)
+	err = json.Unmarshal(bz, resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
 
+// SimulateTx simulates a transaction on the Sonr blockchain network
+func (c LocalContext) SimulateTxAPI(txRawBytes []byte) (*txtypes.SimulateResponse, error) {
+	endpoint := fmt.Sprintf("%s/cosmos/tx/v1beta1/txs", kBaseAPIUrl)
+	req := &txtypes.SimulateRequest{
+		TxBytes: txRawBytes, // Proto-binary of the signed transaction, see previous step.
+	}
+	body, err := json.Marshal(req)
+	if err != nil {
+		return nil, err
+	}
 
-// // RequestFaucet funds an account with the given address
-// func (c LocalContext) RequestFaucet(ctx context.Context, address string) error {
-// 	type FaucetRequest struct {
-// 		Address string   `json:"address"`
-// 		Coins   []string `json:"coins"`
-// 	}
-// 	type FaucetResponse struct {
-// 		Error string `json:"error"`
-// 	}
+	// Create a connection to the gRPC server.
+	bz, err := PostJSON(endpoint, body)
+	if err != nil {
+		return nil, err
+	}
+	resp := new(txtypes.SimulateResponse)
+	err = json.Unmarshal(bz, resp)
+	if err != nil {
+		return nil, err
+	}
+	return resp, nil
+}
 
-// 	faucetRequest := &FaucetRequest{
-// 		Address: address,
-// 		Coins:   []string{"200snr"},
-// 	}
+// GetJSON makes a GET request to the given URL and returns the response body as bytes
+func GetJSON(url string) ([]byte, error) {
+	var myClient = &http.Client{Timeout: 10 * time.Second}
+	r, err := myClient.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	buf := new(bytes.Buffer)
+	_, err = io.Copy(buf, r.Body)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
 
-// 	// Marshal the request data into JSON format
-// 	reqData, err := json.Marshal(faucetRequest)
-// 	if err != nil {
-// 		return errors.New("failed to marshal faucet request: " + err.Error())
-// 	}
-
-// 	// Create an HTTP request with JSON data
-// 	req, err := http.NewRequestWithContext(ctx, "POST", c.FaucetEndpoint(), bytes.NewBuffer(reqData))
-// 	if err != nil {
-// 		return errors.New("failed to create a new HTTP request: " + err.Error())
-// 	}
-// 	req.Header.Set("Content-Type", "application/json")
-
-// 	// Send the HTTP request
-// 	client := &http.Client{}
-// 	resp, err := client.Do(req)
-// 	if err != nil {
-// 		return errors.New("failed to send faucet request: " + err.Error())
-// 	}
-// 	defer resp.Body.Close()
-
-// 	if resp.StatusCode != http.StatusOK {
-// 		return errors.New("faucet request returned a non-200 status code")
-// 	}
-
-// 	return nil
-// }
+// PostJSON makes a POST request to the given URL and returns the response body as bytes
+func PostJSON(url string, body []byte) ([]byte, error) {
+	var myClient = &http.Client{Timeout: 10 * time.Second}
+	r, err := myClient.Post(url, "application/json", bytes.NewBuffer(body))
+	if err != nil {
+		return nil, err
+	}
+	defer r.Body.Close()
+	buf := new(bytes.Buffer)
+	_, err = io.Copy(buf, r.Body)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}

@@ -27,12 +27,28 @@ var (
 
 func RegisterCodec(cdc *codec.LegacyAmino) {
 	cdc.RegisterConcrete(&MsgRegisterIdentity{}, "identity/RegisterIdentity", nil)
+	cdc.RegisterConcrete(&MsgCreateControllerAccount{}, "identity/CreateControllerAccount", nil)
+	cdc.RegisterConcrete(&MsgUpdateControllerAccount{}, "identity/UpdateControllerAccount", nil)
+	cdc.RegisterConcrete(&MsgDeleteControllerAccount{}, "identity/DeleteControllerAccount", nil)
+	cdc.RegisterConcrete(&MsgCreateEscrowAccount{}, "identity/CreateEscrowAccount", nil)
+	cdc.RegisterConcrete(&MsgUpdateEscrowAccount{}, "identity/UpdateEscrowAccount", nil)
+	cdc.RegisterConcrete(&MsgDeleteEscrowAccount{}, "identity/DeleteEscrowAccount", nil)
 	// this line is used by starport scaffolding # 2
 }
 
 func RegisterInterfaces(registry cdctypes.InterfaceRegistry) {
 	registry.RegisterImplementations((*sdk.Msg)(nil),
 		&MsgRegisterIdentity{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateControllerAccount{},
+		&MsgUpdateControllerAccount{},
+		&MsgDeleteControllerAccount{},
+	)
+	registry.RegisterImplementations((*sdk.Msg)(nil),
+		&MsgCreateEscrowAccount{},
+		&MsgUpdateEscrowAccount{},
+		&MsgDeleteEscrowAccount{},
 	)
 	// this line is used by starport scaffolding # 3
 

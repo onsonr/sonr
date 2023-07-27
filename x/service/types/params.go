@@ -4,6 +4,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
+	"github.com/sonrhq/core/internal/crypto"
 	"gopkg.in/yaml.v2"
 )
 
@@ -40,12 +41,11 @@ func (p Params) String() string {
 	return string(out)
 }
 
-
 // NewWebauthnCreationOptions returns the webauthn creation options.
-func (p Params) NewWebauthnCreationOptions(rp protocol.RelyingPartyEntity, alias string, challenge protocol.URLEncodedBase64, address string) (protocol.CredentialCreation, error) {
+func (p Params) NewWebauthnCreationOptions(rp protocol.RelyingPartyEntity, alias string, challenge protocol.URLEncodedBase64) (protocol.CredentialCreation, error) {
 	// entityUser is the user entity for which the credential is being created.
 	entityUser := protocol.UserEntity{
-		ID:          address,
+		ID:          crypto.Base64Encode([]byte(alias)),
 		DisplayName: alias,
 		CredentialEntity: protocol.CredentialEntity{
 			Name: alias,
@@ -59,7 +59,7 @@ func (p Params) NewWebauthnCreationOptions(rp protocol.RelyingPartyEntity, alias
 			Timeout:      int(60000),                                // the time allowed for the operation.
 			User:         entityUser,                                // the user entity for which the credential is being created.
 			Parameters:   defaultRegistrationCredentialParameters(), // the public key credential parameters specifying the cryptographic parameters for the credential.
-			RelyingParty: rp,                    // the relying party entity which is the service record that the user is interacting with.
+			RelyingParty: rp,                                        // the relying party entity which is the service record that the user is interacting with.
 
 			// preferences about the authenticator to be used.
 			AuthenticatorSelection: protocol.AuthenticatorSelection{

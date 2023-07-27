@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,4 +51,134 @@ func (k Keeper) RegisterIdentity(goCtx context.Context, msg *types.MsgRegisterId
 		Success:     true,
 		DidDocument: msg.DidDocument,
 	}, nil
+}
+
+func (k msgServer) CreateEscrowAccount(goCtx context.Context, msg *types.MsgCreateEscrowAccount) (*types.MsgCreateEscrowAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	var escrowAccount = types.EscrowAccount{
+		Creator:          msg.Creator,
+		Address:          msg.Address,
+		PublicKey:        msg.PublicKey,
+		LockupUsdBalance: msg.LockupUsdBalance,
+	}
+
+	id := k.SetEscrowAccount(
+		ctx,
+		escrowAccount,
+	)
+
+	return &types.MsgCreateEscrowAccountResponse{
+		Id: id,
+	}, nil
+}
+
+func (k msgServer) UpdateEscrowAccount(goCtx context.Context, msg *types.MsgUpdateEscrowAccount) (*types.MsgUpdateEscrowAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	var escrowAccount = types.EscrowAccount{
+		Creator:          msg.Creator,
+		Id:               msg.Id,
+		Address:          msg.Address,
+		PublicKey:        msg.PublicKey,
+		LockupUsdBalance: msg.LockupUsdBalance,
+	}
+
+	// Checks that the element exists
+	val, found := k.GetEscrowAccount(ctx, msg.Address)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+	}
+
+	// Checks if the msg creator is the same as the current owner
+	if msg.Creator != val.Creator {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	k.SetEscrowAccount(ctx, escrowAccount)
+
+	return &types.MsgUpdateEscrowAccountResponse{}, nil
+}
+
+func (k msgServer) DeleteEscrowAccount(goCtx context.Context, msg *types.MsgDeleteEscrowAccount) (*types.MsgDeleteEscrowAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Checks that the element exists
+	val, found := k.GetEscrowAccount(ctx, msg.Address)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Address))
+	}
+
+	// Checks if the msg creator is the same as the current owner
+	if msg.Creator != val.Creator {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	k.RemoveEscrowAccount(ctx, msg.Address)
+
+	return &types.MsgDeleteEscrowAccountResponse{}, nil
+}
+
+func (k msgServer) CreateControllerAccount(goCtx context.Context, msg *types.MsgCreateControllerAccount) (*types.MsgCreateControllerAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	var controllerAccount = types.ControllerAccount{
+		Address:        msg.Address,
+		PublicKey:      msg.PublicKey,
+		Authenticators: msg.Authenticators,
+		Wallets:        msg.Wallets,
+	}
+
+	id := k.SetControllerAccount(
+		ctx,
+		controllerAccount,
+	)
+
+	return &types.MsgCreateControllerAccountResponse{
+		Account: &controllerAccount,
+		Id:      id,
+	}, nil
+}
+
+func (k msgServer) UpdateControllerAccount(goCtx context.Context, msg *types.MsgUpdateControllerAccount) (*types.MsgUpdateControllerAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	var controllerAccount = types.ControllerAccount{
+		Id:      msg.Id,
+		Address: msg.Address,
+	}
+
+	// Checks that the element exists
+	val, found := k.GetControllerAccount(ctx, msg.Address)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %d doesn't exist", msg.Id))
+	}
+
+	// Checks if the msg creator is the same as the current owner
+	if msg.Address != val.Address {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	k.SetControllerAccount(ctx, controllerAccount)
+
+	return &types.MsgUpdateControllerAccountResponse{}, nil
+}
+
+func (k msgServer) DeleteControllerAccount(goCtx context.Context, msg *types.MsgDeleteControllerAccount) (*types.MsgDeleteControllerAccountResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// Checks that the element exists
+	val, found := k.GetControllerAccount(ctx, msg.Address)
+	if !found {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrKeyNotFound, fmt.Sprintf("key %s doesn't exist", msg.Address))
+	}
+
+	// Checks if the msg creator is the same as the current owner
+	if msg.Creator != val.Address {
+		return nil, sdkerrors.Wrap(sdkerrors.ErrUnauthorized, "incorrect owner")
+	}
+
+	k.RemoveControllerAccount(ctx, msg.Address)
+
+	return &types.MsgDeleteControllerAccountResponse{}, nil
 }

@@ -1,0 +1,21 @@
+---
+title: Inbox Architecture
+description: Individual accounts derived from the root Sonr DID all have their own inbox. This inbox is used to store messages and notifications for the user.
+---
+
+## Real-time Wallet-to-Wallet Messaging
+Sonr innovates secure, real-time wallet-to-wallet messaging by implementing DIDComm Messaging over libp2p protocols. The integration allows stable identification of wallets via DIDs, tackling the issue of public key rotation in libp2p.
+
+Our system leverages mediators in high-availability mode to ensure consistent messaging, regardless of peer availability. Additionally, trust and authorization are enhanced through the implementation of Verifiable Credentials.
+
+This hybrid solution establishes a robust, secure, and efficient messaging platform for Sonr derived wallets, fostering a higher level of privacy and trust within the decentralized network.
+
+## Secret Key Algorithm
+In order to ensure that access to each of these individual inboxes are only accessible by an Authentication method, we use a secret key algorithm to generate a unique key for each inbox. This key is then used to encrypt the inbox, and is stored in the user's wallet. The key is generated using the following algorithm:
+
+``` js
+// Where DID is the account's DID
+blake3(signature('did:ethr:0x...')) // => Result: 32 bytes
+```
+
+The primary wallet identifier associated with the User's Sonr Alias is used to sign the DID, and the resulting signature is hashed using the blake3 algorithm. The resulting hash is then used as the key to encrypt the inbox.

@@ -40,3 +40,8 @@ enum CoinType {
   CoinType_XRP = 10;
 }
 
+message AccountData {
+  string address = 1;
+  string algo = 2;
+  bytes publicKey = 3;
+}

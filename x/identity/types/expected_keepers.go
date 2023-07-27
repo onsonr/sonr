@@ -54,5 +54,4 @@ type BankKeeper interface {
 
 // VaultKeeper defines the expected interface for managing Keys on IPFS Vaults
 type VaultKeeper interface {
-
 }

@@ -12,6 +12,20 @@ func InitGenesis(ctx sdk.Context, k keeper.Keeper, genState types.GenesisState) 
 	for _, elem := range genState.DIDDocumentList {
 		k.SetDIDDocument(ctx, elem)
 	}
+	// Set all the controllerAccount
+	for _, elem := range genState.ControllerAccountList {
+		k.SetControllerAccount(ctx, elem)
+	}
+
+	// Set controllerAccount count
+	k.SetControllerAccountCount(ctx, genState.ControllerAccountCount)
+	// Set all the escrowAccount
+	for _, elem := range genState.EscrowAccountList {
+		k.SetEscrowAccount(ctx, elem)
+	}
+
+	// Set escrowAccount count
+	k.SetEscrowAccountCount(ctx, genState.EscrowAccountCount)
 	// this line is used by starport scaffolding # genesis/module/init
 	k.SetPort(ctx, genState.PortId)
 	// Only try to bind to port if it is not already bound, since we may already own
@@ -34,6 +48,10 @@ func ExportGenesis(ctx sdk.Context, k keeper.Keeper) *types.GenesisState {
 
 	genesis.PortId = k.GetPort(ctx)
 	genesis.DIDDocumentList = k.GetAllDIDDocument(ctx)
+	genesis.ControllerAccountList = k.GetAllControllerAccount(ctx)
+	genesis.ControllerAccountCount = k.GetControllerAccountCount(ctx)
+	genesis.EscrowAccountList = k.GetAllEscrowAccount(ctx)
+	genesis.EscrowAccountCount = k.GetEscrowAccountCount(ctx)
 	// this line is used by starport scaffolding # genesis/module/export
 
 	return genesis

@@ -39,6 +39,11 @@ func (c *WebauthnCredential) Deserialize(data []byte) error {
 	return json.Unmarshal(data, c)
 }
 
+func (c *WebauthnCredential) DID() string {
+	did := fmt.Sprintf("did:%s:%s", "webauthn", crypto.Base64Encode(c.Id))
+	return did
+}
+
 // Encrypt is used to encrypt a message for the credential
 func (c *WebauthnCredential) Encrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
@@ -142,7 +147,7 @@ func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 // ToVerificationMethod converts the credential to a DID VerificationMethod
 func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
 	vm := &idtypes.VerificationMethod{
-		Id:                 fmt.Sprintf("did:%s:%s", "webauthn", protocol.URLEncodedBase64(c.Id).String()),
+		Id:                 c.DID(),
 		Type:               "webauthn/alg-es256",
 		PublicKeyMultibase: crypto.Base64Encode(c.PublicKey),
 		Controller:         c.Controller,
@@ -152,14 +157,24 @@ func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod 
 	return vm
 }
 
-// Did returns the credential's DID
-func (c *WebauthnCredential) Did() string {
-	return c.ToVerificationMethod().Id
-}
-
 // ShortID returns the first 8 characters of the base58 encoded credential id
 func (c *WebauthnCredential) ShortID() string {
 	return crypto.Base58Encode(c.Id)[0:8]
+}
+
+// ToCredentialDescriptor converts a VerificationMethod to a CredentialDescriptor if the VerificationMethod uses the `did:webauthn` method
+func (vm *WebauthnCredential) GetDescriptor() protocol.CredentialDescriptor {
+	transport := make([]protocol.AuthenticatorTransport, 0)
+	for _, t := range vm.Transport {
+		transport = append(transport, protocol.AuthenticatorTransport(t))
+	}
+
+	return protocol.CredentialDescriptor{
+		CredentialID:    protocol.URLEncodedBase64(vm.Id),
+		Type:            protocol.PublicKeyCredentialType,
+		Transport:       transport,
+		AttestationType: vm.AttestationType,
+	}
 }
 
 func computeVRF(secretKey ed25519.PrivateKey, message []byte) ([]byte, []byte, error) {

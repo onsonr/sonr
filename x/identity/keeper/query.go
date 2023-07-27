@@ -5,6 +5,8 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
 	"github.com/sonrhq/core/x/identity/types"
 	"google.golang.org/grpc/codes"
@@ -101,4 +103,88 @@ func (k Keeper) AliasAvailable(goCtx context.Context, req *types.QueryAliasAvail
 		return &types.QueryAliasAvailableResponse{Available: true}, nil
 	}
 	return &types.QueryAliasAvailableResponse{Available: false, ExistingDocument: &doc}, nil
+}
+
+func (k Keeper) ControllerAccountAll(goCtx context.Context, req *types.QueryAllControllerAccountRequest) (*types.QueryAllControllerAccountResponse, error) {
+if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var controllerAccounts []types.ControllerAccount
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := ctx.KVStore(k.storeKey)
+	controllerAccountStore := prefix.NewStore(store, types.KeyPrefix(types.ControllerAccountKeyPrefix))
+
+	pageRes, err := query.Paginate(controllerAccountStore, req.Pagination, func(key []byte, value []byte) error {
+		var controllerAccount types.ControllerAccount
+		if err := k.cdc.Unmarshal(value, &controllerAccount); err != nil {
+			return err
+		}
+
+		controllerAccounts = append(controllerAccounts, controllerAccount)
+		return nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryAllControllerAccountResponse{ControllerAccount: controllerAccounts, Pagination: pageRes}, nil
+}
+
+func (k Keeper) ControllerAccount(goCtx context.Context, req *types.QueryGetControllerAccountRequest) (*types.QueryGetControllerAccountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	controllerAccount, found := k.GetControllerAccount(ctx, req.Address)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryGetControllerAccountResponse{ControllerAccount: controllerAccount}, nil
+}
+
+func (k Keeper) EscrowAccountAll(goCtx context.Context, req *types.QueryAllEscrowAccountRequest) (*types.QueryAllEscrowAccountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	var escrowAccounts []types.EscrowAccount
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	store := ctx.KVStore(k.storeKey)
+	escrowAccountStore := prefix.NewStore(store, types.KeyPrefix(types.EscrowAccountKeyPrefix))
+
+	pageRes, err := query.Paginate(escrowAccountStore, req.Pagination, func(key []byte, value []byte) error {
+		var escrowAccount types.EscrowAccount
+		if err := k.cdc.Unmarshal(value, &escrowAccount); err != nil {
+			return err
+		}
+
+		escrowAccounts = append(escrowAccounts, escrowAccount)
+		return nil
+	})
+
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
+	return &types.QueryAllEscrowAccountResponse{EscrowAccount: escrowAccounts, Pagination: pageRes}, nil
+}
+
+func (k Keeper) EscrowAccount(goCtx context.Context, req *types.QueryGetEscrowAccountRequest) (*types.QueryGetEscrowAccountResponse, error) {
+	if req == nil {
+		return nil, status.Error(codes.InvalidArgument, "invalid request")
+	}
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	escrowAccount, found := k.GetEscrowAccount(ctx, req.Address)
+	if !found {
+		return nil, sdkerrors.ErrKeyNotFound
+	}
+
+	return &types.QueryGetEscrowAccountResponse{EscrowAccount: escrowAccount}, nil
 }

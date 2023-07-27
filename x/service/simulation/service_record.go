@@ -109,7 +109,6 @@ func SimulateMsgDeleteServiceRecord(
 		}
 		msg.Creator = simAccount.Address.String()
 
-
 		txCtx := simulation.OperationInput{
 			R:               r,
 			App:             app,

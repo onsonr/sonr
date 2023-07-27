@@ -1,4 +1,5 @@
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonrhq/core)
 
 <div style="text-align: center;">
 
@@ -14,7 +15,6 @@
 <p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
     <br>
 </p>
-
 
 ## Getting Started
 
@@ -110,3 +110,16 @@ For help and discussion around DID Documents, best practices, and more, join us 
 For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonrhq/core).
 
 For feature requests, bugs, or technical questions, [submit feedback here](https://roadmap.sonr.io). For general inquiries or inclusion in our upcoming feature betas, reach out on [Twitter](https://snr.la/tw).
+
+# Additional Resources
+
+## MPC
+
+### Version 1
+
+This is the second version of our MPC protocol which leverages the kryptology library from coinbase. This protocol uses DKG based signing for ecdsa signature generation. The protocol is described in the paper [here](https://eprint.iacr.org/2018/987.pdf).
+
+### Version 0
+
+This is the first version of the MPC protocol. It is a simple protocol that uses the taurusgroup implementation for CMP based ecdsa signature generation. The protocol is described in the paper [here](https://eprint.iacr.org/2017/552.pdf).
+

@@ -43,22 +43,6 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 
-# The nfpm section.
-nfpms:
-  - vendor: Sonr Inc.
-    homepage: https://sonr.io
-    maintainer: Prad Nukala <prad@sonr.io>
-    description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
-    license: Your License
-    formats:
-      - deb
-      - rpm
-    contents:
-      - src: "./**/*.md"
-        dst: "/usr/local/doc/core/"
-      - src: "./**/*.txt"
-        dst: "/usr/local/doc/core/"
-
 # The snapcraft section.
 snapcrafts:
 -
@@ -88,3 +72,21 @@ kos:
   - '{{ .Tag }}'
   sbom: none
   bare: true
+brews:
+  -
+    commit_author:
+      name: goreleaserbot
+      email: bot@sonr.io
+    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
+    folder: Formula
+    caveats: "Start using with `sonrd help` command."
+    homepage: "https://sonr.io/docs/"
+    description: "Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets."
+
+    # SPDX identifier of your app's license.
+    license: "Open GNU v3 License"
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      branch: master
+      token: "{{ .Env.GITHUB_TOKEN }}"

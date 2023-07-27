@@ -57,7 +57,6 @@ func (k Keeper) ServiceRecord(goCtx context.Context, req *types.QueryGetServiceR
 	return &types.QueryGetServiceRecordResponse{ServiceRecord: serviceRecord}, nil
 }
 
-
 func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	if req == nil {
 		return nil, status.Error(codes.InvalidArgument, "invalid request")
@@ -66,7 +65,6 @@ func (k Keeper) Params(goCtx context.Context, req *types.QueryParamsRequest) (*t
 
 	return &types.QueryParamsResponse{Params: k.GetParams(ctx)}, nil
 }
-
 
 // Removes www. and https:// from the origin url
 func cleanOriginUrl(url string) string {

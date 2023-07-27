@@ -10,7 +10,6 @@ import (
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
-	_ "github.com/sonrhq/core/x/vault/types"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -575,6 +574,374 @@ func (m *QueryDidByOwnerResponse) GetDidDocument() DIDDocument {
 	return DIDDocument{}
 }
 
+type QueryGetControllerAccountRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryGetControllerAccountRequest) Reset()         { *m = QueryGetControllerAccountRequest{} }
+func (m *QueryGetControllerAccountRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetControllerAccountRequest) ProtoMessage()    {}
+func (*QueryGetControllerAccountRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{12}
+}
+func (m *QueryGetControllerAccountRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetControllerAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetControllerAccountRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetControllerAccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetControllerAccountRequest.Merge(m, src)
+}
+func (m *QueryGetControllerAccountRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetControllerAccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetControllerAccountRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetControllerAccountRequest proto.InternalMessageInfo
+
+func (m *QueryGetControllerAccountRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryGetControllerAccountResponse struct {
+	ControllerAccount ControllerAccount `protobuf:"bytes,1,opt,name=ControllerAccount,proto3" json:"ControllerAccount"`
+}
+
+func (m *QueryGetControllerAccountResponse) Reset()         { *m = QueryGetControllerAccountResponse{} }
+func (m *QueryGetControllerAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetControllerAccountResponse) ProtoMessage()    {}
+func (*QueryGetControllerAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{13}
+}
+func (m *QueryGetControllerAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetControllerAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetControllerAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetControllerAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetControllerAccountResponse.Merge(m, src)
+}
+func (m *QueryGetControllerAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetControllerAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetControllerAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetControllerAccountResponse proto.InternalMessageInfo
+
+func (m *QueryGetControllerAccountResponse) GetControllerAccount() ControllerAccount {
+	if m != nil {
+		return m.ControllerAccount
+	}
+	return ControllerAccount{}
+}
+
+type QueryAllControllerAccountRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllControllerAccountRequest) Reset()         { *m = QueryAllControllerAccountRequest{} }
+func (m *QueryAllControllerAccountRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllControllerAccountRequest) ProtoMessage()    {}
+func (*QueryAllControllerAccountRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{14}
+}
+func (m *QueryAllControllerAccountRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllControllerAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllControllerAccountRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllControllerAccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllControllerAccountRequest.Merge(m, src)
+}
+func (m *QueryAllControllerAccountRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllControllerAccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllControllerAccountRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllControllerAccountRequest proto.InternalMessageInfo
+
+func (m *QueryAllControllerAccountRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllControllerAccountResponse struct {
+	ControllerAccount []ControllerAccount `protobuf:"bytes,1,rep,name=ControllerAccount,proto3" json:"ControllerAccount"`
+	Pagination        *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllControllerAccountResponse) Reset()         { *m = QueryAllControllerAccountResponse{} }
+func (m *QueryAllControllerAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllControllerAccountResponse) ProtoMessage()    {}
+func (*QueryAllControllerAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{15}
+}
+func (m *QueryAllControllerAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllControllerAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllControllerAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllControllerAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllControllerAccountResponse.Merge(m, src)
+}
+func (m *QueryAllControllerAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllControllerAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllControllerAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllControllerAccountResponse proto.InternalMessageInfo
+
+func (m *QueryAllControllerAccountResponse) GetControllerAccount() []ControllerAccount {
+	if m != nil {
+		return m.ControllerAccount
+	}
+	return nil
+}
+
+func (m *QueryAllControllerAccountResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryGetEscrowAccountRequest struct {
+	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+}
+
+func (m *QueryGetEscrowAccountRequest) Reset()         { *m = QueryGetEscrowAccountRequest{} }
+func (m *QueryGetEscrowAccountRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryGetEscrowAccountRequest) ProtoMessage()    {}
+func (*QueryGetEscrowAccountRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{16}
+}
+func (m *QueryGetEscrowAccountRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetEscrowAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetEscrowAccountRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetEscrowAccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetEscrowAccountRequest.Merge(m, src)
+}
+func (m *QueryGetEscrowAccountRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetEscrowAccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetEscrowAccountRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetEscrowAccountRequest proto.InternalMessageInfo
+
+func (m *QueryGetEscrowAccountRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+type QueryGetEscrowAccountResponse struct {
+	EscrowAccount EscrowAccount `protobuf:"bytes,1,opt,name=EscrowAccount,proto3" json:"EscrowAccount"`
+}
+
+func (m *QueryGetEscrowAccountResponse) Reset()         { *m = QueryGetEscrowAccountResponse{} }
+func (m *QueryGetEscrowAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryGetEscrowAccountResponse) ProtoMessage()    {}
+func (*QueryGetEscrowAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{17}
+}
+func (m *QueryGetEscrowAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryGetEscrowAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryGetEscrowAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryGetEscrowAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryGetEscrowAccountResponse.Merge(m, src)
+}
+func (m *QueryGetEscrowAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryGetEscrowAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryGetEscrowAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryGetEscrowAccountResponse proto.InternalMessageInfo
+
+func (m *QueryGetEscrowAccountResponse) GetEscrowAccount() EscrowAccount {
+	if m != nil {
+		return m.EscrowAccount
+	}
+	return EscrowAccount{}
+}
+
+type QueryAllEscrowAccountRequest struct {
+	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllEscrowAccountRequest) Reset()         { *m = QueryAllEscrowAccountRequest{} }
+func (m *QueryAllEscrowAccountRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryAllEscrowAccountRequest) ProtoMessage()    {}
+func (*QueryAllEscrowAccountRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{18}
+}
+func (m *QueryAllEscrowAccountRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllEscrowAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllEscrowAccountRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllEscrowAccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllEscrowAccountRequest.Merge(m, src)
+}
+func (m *QueryAllEscrowAccountRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllEscrowAccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllEscrowAccountRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllEscrowAccountRequest proto.InternalMessageInfo
+
+func (m *QueryAllEscrowAccountRequest) GetPagination() *query.PageRequest {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
+type QueryAllEscrowAccountResponse struct {
+	EscrowAccount []EscrowAccount     `protobuf:"bytes,1,rep,name=EscrowAccount,proto3" json:"EscrowAccount"`
+	Pagination    *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (m *QueryAllEscrowAccountResponse) Reset()         { *m = QueryAllEscrowAccountResponse{} }
+func (m *QueryAllEscrowAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryAllEscrowAccountResponse) ProtoMessage()    {}
+func (*QueryAllEscrowAccountResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_55ac06fdf68c11fd, []int{19}
+}
+func (m *QueryAllEscrowAccountResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QueryAllEscrowAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QueryAllEscrowAccountResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QueryAllEscrowAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryAllEscrowAccountResponse.Merge(m, src)
+}
+func (m *QueryAllEscrowAccountResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QueryAllEscrowAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryAllEscrowAccountResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QueryAllEscrowAccountResponse proto.InternalMessageInfo
+
+func (m *QueryAllEscrowAccountResponse) GetEscrowAccount() []EscrowAccount {
+	if m != nil {
+		return m.EscrowAccount
+	}
+	return nil
+}
+
+func (m *QueryAllEscrowAccountResponse) GetPagination() *query.PageResponse {
+	if m != nil {
+		return m.Pagination
+	}
+	return nil
+}
+
 func init() {
 	proto.RegisterType((*QueryParamsRequest)(nil), "core.identity.QueryParamsRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "core.identity.QueryParamsResponse")
@@ -588,57 +955,82 @@ func init() {
 	proto.RegisterType((*QueryAliasAvailableResponse)(nil), "core.identity.QueryAliasAvailableResponse")
 	proto.RegisterType((*QueryDidByOwnerRequest)(nil), "core.identity.QueryDidByOwnerRequest")
 	proto.RegisterType((*QueryDidByOwnerResponse)(nil), "core.identity.QueryDidByOwnerResponse")
+	proto.RegisterType((*QueryGetControllerAccountRequest)(nil), "core.identity.QueryGetControllerAccountRequest")
+	proto.RegisterType((*QueryGetControllerAccountResponse)(nil), "core.identity.QueryGetControllerAccountResponse")
+	proto.RegisterType((*QueryAllControllerAccountRequest)(nil), "core.identity.QueryAllControllerAccountRequest")
+	proto.RegisterType((*QueryAllControllerAccountResponse)(nil), "core.identity.QueryAllControllerAccountResponse")
+	proto.RegisterType((*QueryGetEscrowAccountRequest)(nil), "core.identity.QueryGetEscrowAccountRequest")
+	proto.RegisterType((*QueryGetEscrowAccountResponse)(nil), "core.identity.QueryGetEscrowAccountResponse")
+	proto.RegisterType((*QueryAllEscrowAccountRequest)(nil), "core.identity.QueryAllEscrowAccountRequest")
+	proto.RegisterType((*QueryAllEscrowAccountResponse)(nil), "core.identity.QueryAllEscrowAccountResponse")
 }
 
 func init() { proto.RegisterFile("core/identity/query.proto", fileDescriptor_55ac06fdf68c11fd) }
 
 var fileDescriptor_55ac06fdf68c11fd = []byte{
-	// 719 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x95, 0xdf, 0x6e, 0xd3, 0x3c,
-	0x14, 0xc0, 0x9b, 0xed, 0x5b, 0xb5, 0x79, 0xfa, 0xa6, 0x7e, 0xfe, 0xb6, 0x6e, 0x84, 0x2e, 0x40,
-	0x04, 0x1b, 0x0c, 0x14, 0x6b, 0x1b, 0x2f, 0xd0, 0xaa, 0x62, 0x02, 0x84, 0x18, 0xbd, 0x44, 0x42,
-	0xc8, 0x4d, 0xac, 0xcc, 0x22, 0xb5, 0xbb, 0xda, 0xdd, 0x56, 0x95, 0xdd, 0x70, 0x89, 0x34, 0x09,
-	0x89, 0xb7, 0xe0, 0x49, 0x76, 0x39, 0x89, 0x1b, 0xae, 0x10, 0xda, 0x78, 0x10, 0x54, 0xdb, 0x69,
-	0x92, 0x36, 0xdd, 0x06, 0xe2, 0x26, 0x89, 0x7d, 0xfe, 0xfd, 0x8e, 0x8f, 0xcf, 0x09, 0xb8, 0xe1,
-	0xf3, 0x0e, 0x41, 0x34, 0x20, 0x4c, 0x52, 0xd9, 0x43, 0xfb, 0x5d, 0xd2, 0xe9, 0x79, 0xed, 0x0e,
-	0x97, 0x1c, 0xfe, 0x3b, 0x10, 0x79, 0xb1, 0xc8, 0x5e, 0x0c, 0x79, 0xc8, 0x95, 0x04, 0x0d, 0xbe,
-	0xb4, 0x92, 0x5d, 0x09, 0x39, 0x0f, 0x23, 0x82, 0x70, 0x9b, 0x22, 0xcc, 0x18, 0x97, 0x58, 0x52,
-	0xce, 0x84, 0x91, 0x6e, 0xf8, 0x5c, 0xb4, 0xb8, 0x40, 0x4d, 0x2c, 0x88, 0xf6, 0x8d, 0x0e, 0x36,
-	0x9b, 0x44, 0xe2, 0x4d, 0xd4, 0xc6, 0x21, 0x65, 0x4a, 0xd9, 0xe8, 0xda, 0x59, 0x92, 0x36, 0xee,
-	0xe0, 0x56, 0xec, 0x67, 0x39, 0x2b, 0x0b, 0x68, 0x60, 0x04, 0x65, 0x25, 0x38, 0xc0, 0xdd, 0x48,
-	0xea, 0xa7, 0xde, 0x77, 0x17, 0x01, 0x7c, 0x35, 0x08, 0xb7, 0xab, 0xbc, 0x34, 0xc8, 0x7e, 0x97,
-	0x08, 0xe9, 0x3e, 0x03, 0xff, 0x67, 0x76, 0x45, 0x9b, 0x33, 0x41, 0xe0, 0x36, 0x28, 0xea, 0x68,
-	0x2b, 0xd6, 0x6d, 0xeb, 0xfe, 0xfc, 0xd6, 0x92, 0x97, 0xc9, 0xdc, 0xd3, 0xea, 0xb5, 0x7f, 0x4e,
-	0xbf, 0xdf, 0x2a, 0x34, 0x8c, 0xaa, 0xeb, 0x01, 0x5b, 0xf9, 0xda, 0x21, 0xb2, 0xfe, 0xb4, 0x5e,
-	0xe7, 0x7e, 0xb7, 0x45, 0x98, 0x34, 0x91, 0x60, 0x09, 0x4c, 0x07, 0x34, 0x50, 0xfe, 0xe6, 0x1a,
-	0x83, 0x4f, 0x17, 0x83, 0x9b, 0xb9, 0xfa, 0x86, 0xa1, 0x06, 0xe6, 0x83, 0x64, 0xdb, 0x80, 0xd8,
-	0x23, 0x20, 0x29, 0x43, 0x43, 0x93, 0x36, 0x72, 0x03, 0x83, 0x54, 0x8d, 0xa2, 0x1c, 0xa4, 0x27,
-	0x00, 0x24, 0x67, 0x6e, 0x02, 0xac, 0x79, 0xba, 0x40, 0xde, 0xa0, 0x40, 0x9e, 0x2e, 0xbe, 0x29,
-	0x90, 0xb7, 0x8b, 0x43, 0x62, 0x6c, 0x1b, 0x29, 0x4b, 0xf7, 0x8b, 0x65, 0x32, 0x19, 0x0d, 0x33,
-	0x29, 0x93, 0xe9, 0xdf, 0xce, 0x04, 0xee, 0x64, 0x58, 0xa7, 0x14, 0xeb, 0xfa, 0x95, 0xac, 0x1a,
-	0x20, 0x03, 0xfb, 0x18, 0x54, 0x14, 0x6b, 0x9d, 0x06, 0xb5, 0x5e, 0x35, 0x12, 0xfc, 0x39, 0xe3,
-	0x87, 0xac, 0x1a, 0xdf, 0x08, 0xb8, 0x08, 0x66, 0x70, 0x44, 0xb1, 0x30, 0x95, 0xd2, 0x0b, 0xd7,
-	0x07, 0xab, 0x13, 0xac, 0x52, 0x39, 0xd2, 0xe0, 0x0f, 0xaa, 0x95, 0x18, 0xb9, 0x5b, 0xc3, 0x6a,
-	0x51, 0x2c, 0xaa, 0x07, 0x98, 0x46, 0xb8, 0x19, 0x91, 0xcb, 0xc1, 0x3e, 0x26, 0x67, 0x9f, 0x35,
-	0x32, 0x5c, 0x15, 0x30, 0x87, 0xe3, 0x4d, 0x65, 0x39, 0xdb, 0x48, 0x36, 0xe0, 0x0b, 0xf0, 0x1f,
-	0x39, 0xa2, 0x42, 0x52, 0x16, 0xbe, 0x0d, 0x62, 0xf6, 0xa9, 0x6b, 0xb1, 0x5b, 0x8d, 0x52, 0x6c,
-	0x3a, 0x4c, 0xc0, 0x03, 0xe5, 0xe4, 0x94, 0x5e, 0x1e, 0x32, 0xd2, 0x49, 0xc1, 0xf3, 0xc1, 0x3a,
-	0x86, 0x57, 0x0b, 0xf7, 0x0d, 0x58, 0x1e, 0xd3, 0xff, 0x7b, 0xe7, 0xb9, 0x75, 0x52, 0x04, 0x33,
-	0xca, 0x3f, 0x64, 0xa0, 0xa8, 0x5b, 0x16, 0xde, 0x19, 0x71, 0x31, 0x3e, 0x13, 0x6c, 0xf7, 0x32,
-	0x15, 0x8d, 0xe7, 0xae, 0x7e, 0xf8, 0xfa, 0xf3, 0xf3, 0xd4, 0x32, 0x5c, 0x42, 0x6a, 0xdc, 0xe8,
-	0x09, 0x30, 0x1c, 0x47, 0xf0, 0x3d, 0x98, 0x4f, 0xb1, 0xc1, 0x07, 0x79, 0x1e, 0x73, 0xc7, 0x84,
-	0xbd, 0x71, 0x1d, 0x55, 0x03, 0x51, 0x56, 0x10, 0x25, 0xb8, 0x80, 0xcc, 0x30, 0x44, 0xfd, 0x80,
-	0x06, 0xc7, 0xb0, 0x07, 0x16, 0x52, 0xea, 0xd5, 0x28, 0xca, 0x07, 0xc8, 0x1d, 0x0a, 0xf9, 0x00,
-	0xf9, 0x8d, 0xed, 0x96, 0x14, 0x00, 0x80, 0xb3, 0x31, 0x00, 0xec, 0x03, 0x90, 0x14, 0x13, 0xde,
-	0xcb, 0xf3, 0x35, 0x76, 0x39, 0xec, 0xb5, 0xab, 0xd4, 0x4c, 0x38, 0x47, 0x85, 0x5b, 0x81, 0xe5,
-	0x61, 0xbe, 0xea, 0x1a, 0xa1, 0xbe, 0x7a, 0x1d, 0xc3, 0x13, 0x0b, 0x94, 0x46, 0x1b, 0x14, 0x3e,
-	0x9c, 0xe8, 0x7c, 0xbc, 0xf9, 0xed, 0x47, 0xd7, 0x53, 0x9e, 0xc8, 0xa3, 0x7a, 0x12, 0xf5, 0xd5,
-	0x4b, 0xf1, 0x2c, 0x64, 0xdb, 0x72, 0x52, 0x21, 0x72, 0xfa, 0x7d, 0x52, 0x21, 0xf2, 0xba, 0xdc,
-	0xbd, 0xab, 0x48, 0x1c, 0x58, 0xc9, 0x27, 0x41, 0xfe, 0x1e, 0xf1, 0xdf, 0xd5, 0xaa, 0xa7, 0xe7,
-	0x8e, 0x75, 0x76, 0xee, 0x58, 0x3f, 0xce, 0x1d, 0xeb, 0xd3, 0x85, 0x53, 0x38, 0xbb, 0x70, 0x0a,
-	0xdf, 0x2e, 0x9c, 0xc2, 0xeb, 0xf5, 0x90, 0xca, 0xbd, 0x6e, 0xd3, 0xf3, 0x79, 0x0b, 0x09, 0xce,
-	0x3a, 0x7b, 0xfb, 0xda, 0xd1, 0x51, 0xf2, 0x87, 0x95, 0xbd, 0x36, 0x11, 0xcd, 0xa2, 0xfa, 0x99,
-	0x6e, 0xff, 0x0a, 0x00, 0x00, 0xff, 0xff, 0xf7, 0x37, 0x47, 0x9f, 0x25, 0x08, 0x00, 0x00,
+	// 990 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x97, 0x4f, 0x6f, 0xdc, 0x44,
+	0x14, 0xc0, 0xe3, 0x84, 0x86, 0x76, 0xa2, 0x46, 0xdb, 0x61, 0x9b, 0x04, 0x77, 0x6b, 0xd2, 0x51,
+	0x49, 0xa1, 0xad, 0x3c, 0x6d, 0x8a, 0x10, 0x07, 0x2e, 0x0e, 0x81, 0xf0, 0x47, 0x88, 0xb2, 0xe2,
+	0x84, 0x84, 0xaa, 0x59, 0x7b, 0x70, 0x06, 0x1c, 0xcf, 0xc6, 0xf6, 0x36, 0x5d, 0x2d, 0xb9, 0x70,
+	0x04, 0x21, 0x21, 0x71, 0xe0, 0x80, 0xc4, 0x81, 0x23, 0x47, 0x3e, 0x02, 0xa7, 0x1e, 0x2b, 0x71,
+	0xe1, 0x84, 0x50, 0xc2, 0x07, 0x41, 0x1e, 0x3f, 0xaf, 0xed, 0xf5, 0x78, 0xbb, 0x4d, 0xf7, 0xb4,
+	0x6b, 0xbf, 0x7f, 0xbf, 0xf7, 0xde, 0xf8, 0x3d, 0x1b, 0xbd, 0xec, 0xca, 0x88, 0x53, 0xe1, 0xf1,
+	0x30, 0x11, 0xc9, 0x90, 0x1e, 0x0e, 0x78, 0x34, 0xb4, 0xfb, 0x91, 0x4c, 0x24, 0xbe, 0x98, 0x8a,
+	0xec, 0x5c, 0x64, 0xb6, 0x7d, 0xe9, 0x4b, 0x25, 0xa1, 0xe9, 0xbf, 0x4c, 0xc9, 0xec, 0xf8, 0x52,
+	0xfa, 0x01, 0xa7, 0xac, 0x2f, 0x28, 0x0b, 0x43, 0x99, 0xb0, 0x44, 0xc8, 0x30, 0x06, 0xe9, 0x4d,
+	0x57, 0xc6, 0x07, 0x32, 0xa6, 0x3d, 0x16, 0xf3, 0xcc, 0x37, 0x7d, 0x78, 0xb7, 0xc7, 0x13, 0x76,
+	0x97, 0xf6, 0x99, 0x2f, 0x42, 0xa5, 0x0c, 0xba, 0x66, 0x95, 0xa4, 0xcf, 0x22, 0x76, 0x90, 0xfb,
+	0x59, 0xaf, 0xca, 0x3c, 0xe1, 0x81, 0xe0, 0x4a, 0x55, 0xc0, 0x5c, 0x57, 0x0e, 0xc2, 0x24, 0x13,
+	0x92, 0x36, 0xc2, 0x9f, 0xa6, 0x31, 0xef, 0x2b, 0x57, 0x5d, 0x7e, 0x38, 0xe0, 0x71, 0x42, 0x3e,
+	0x44, 0x2f, 0x55, 0xee, 0xc6, 0x7d, 0x19, 0xc6, 0x1c, 0xdf, 0x43, 0xcb, 0x59, 0xc8, 0x0d, 0x63,
+	0xd3, 0x78, 0x6d, 0x65, 0xfb, 0xb2, 0x5d, 0x49, 0xdf, 0xce, 0xd4, 0x77, 0x5e, 0x78, 0xfc, 0xcf,
+	0x2b, 0x0b, 0x5d, 0x50, 0x25, 0x36, 0x32, 0x95, 0xaf, 0x3d, 0x9e, 0xec, 0x7e, 0xb0, 0xbb, 0x2b,
+	0xdd, 0xc1, 0x01, 0x0f, 0x13, 0x88, 0x84, 0x5b, 0x68, 0xc9, 0x13, 0x9e, 0xf2, 0x77, 0xa1, 0x9b,
+	0xfe, 0x25, 0x0c, 0x5d, 0xd1, 0xea, 0x03, 0xc3, 0x0e, 0x5a, 0xf1, 0x8a, 0xdb, 0x00, 0x62, 0x4e,
+	0x80, 0x94, 0x0c, 0x81, 0xa6, 0x6c, 0x44, 0x3c, 0x40, 0x72, 0x82, 0x40, 0x83, 0xf4, 0x1e, 0x42,
+	0x45, 0xe1, 0x21, 0xc0, 0x96, 0x9d, 0x75, 0xc9, 0x4e, 0xbb, 0x64, 0x67, 0x27, 0x00, 0xba, 0x64,
+	0xdf, 0x67, 0x3e, 0x07, 0xdb, 0x6e, 0xc9, 0x92, 0xfc, 0x6e, 0x40, 0x26, 0x93, 0x61, 0x9a, 0x32,
+	0x59, 0x7a, 0xe6, 0x4c, 0xf0, 0x5e, 0x85, 0x75, 0x51, 0xb1, 0xde, 0x78, 0x2a, 0x6b, 0x06, 0x50,
+	0x81, 0x7d, 0x03, 0x75, 0x14, 0xeb, 0xae, 0xf0, 0x76, 0x86, 0x4e, 0x10, 0xcb, 0x8f, 0x42, 0x79,
+	0x14, 0x3a, 0xf9, 0x89, 0xc0, 0x6d, 0x74, 0x8e, 0x05, 0x82, 0xc5, 0xd0, 0xa9, 0xec, 0x82, 0xb8,
+	0xe8, 0x6a, 0x83, 0x55, 0x29, 0x47, 0xe1, 0x9d, 0xa1, 0x5b, 0x85, 0x11, 0xd9, 0x1e, 0x77, 0x4b,
+	0xb0, 0xd8, 0x79, 0xc8, 0x44, 0xc0, 0x7a, 0x01, 0x9f, 0x0e, 0xf6, 0x5d, 0x51, 0xfb, 0xaa, 0x11,
+	0x70, 0x75, 0xd0, 0x05, 0x96, 0xdf, 0x54, 0x96, 0xe7, 0xbb, 0xc5, 0x0d, 0xfc, 0x31, 0xba, 0xc4,
+	0x1f, 0x89, 0x38, 0x11, 0xa1, 0xff, 0xc0, 0xcb, 0xd9, 0x17, 0x67, 0x62, 0x37, 0xba, 0xad, 0xdc,
+	0x74, 0x9c, 0x80, 0x8d, 0xd6, 0x8a, 0x2a, 0x7d, 0x72, 0x14, 0xf2, 0xa8, 0x04, 0x2f, 0xd3, 0xeb,
+	0x1c, 0x5e, 0x5d, 0x90, 0x2f, 0xd0, 0x7a, 0x4d, 0x7f, 0x8e, 0xf5, 0x7c, 0x1b, 0x6d, 0xe6, 0x0f,
+	0xd8, 0x3b, 0x32, 0x4c, 0x22, 0x19, 0x04, 0x3c, 0x72, 0xb2, 0xa9, 0x90, 0x83, 0x6d, 0xa0, 0x17,
+	0x99, 0xe7, 0x45, 0x3c, 0xce, 0xeb, 0x9a, 0x5f, 0x92, 0x21, 0xba, 0x36, 0xc5, 0x1a, 0x30, 0x3f,
+	0x43, 0x97, 0x6a, 0x42, 0x80, 0xdd, 0x9c, 0x80, 0xad, 0xe9, 0x01, 0x72, 0xdd, 0x01, 0xf9, 0x0a,
+	0xc0, 0x9d, 0x20, 0x68, 0x04, 0x9f, 0xd7, 0xc3, 0xfb, 0xa7, 0x01, 0x79, 0xea, 0x83, 0x4d, 0xcf,
+	0x73, 0xe9, 0xb9, 0xf2, 0x9c, 0xdf, 0x43, 0xfd, 0x16, 0x3c, 0xd4, 0x7b, 0x3c, 0x79, 0x37, 0x76,
+	0x23, 0x79, 0x34, 0x73, 0x97, 0x05, 0x3c, 0xd8, 0x75, 0x4b, 0xc8, 0xfc, 0x7d, 0x74, 0xb1, 0x22,
+	0x80, 0x52, 0x77, 0x26, 0xb2, 0xae, 0xe8, 0x40, 0xc6, 0x55, 0x43, 0xf2, 0x25, 0x40, 0x3a, 0x41,
+	0xa0, 0x85, 0x9c, 0x57, 0x47, 0xff, 0x30, 0x20, 0xa7, 0x7a, 0xa0, 0xe6, 0x9c, 0x96, 0xce, 0x94,
+	0xd3, 0xdc, 0x3a, 0xb8, 0xfd, 0xfd, 0x0a, 0x3a, 0xa7, 0xa0, 0x71, 0x88, 0x96, 0xb3, 0xf5, 0x8a,
+	0xaf, 0x4d, 0xf0, 0xd4, 0xf7, 0xb7, 0x49, 0xa6, 0xa9, 0x64, 0x61, 0xc8, 0xd5, 0x6f, 0xff, 0xfa,
+	0xef, 0xa7, 0xc5, 0x75, 0x7c, 0x99, 0xaa, 0xf7, 0x83, 0x6c, 0x5b, 0x8f, 0x5f, 0x13, 0xf0, 0x37,
+	0x68, 0xa5, 0x34, 0x47, 0xf0, 0xeb, 0x3a, 0x8f, 0xda, 0x95, 0x6e, 0xde, 0x9c, 0x45, 0x15, 0x20,
+	0xd6, 0x14, 0x44, 0x0b, 0xaf, 0x52, 0x78, 0x49, 0xa1, 0x23, 0x4f, 0x78, 0xc7, 0x78, 0x88, 0x56,
+	0x4b, 0xea, 0x4e, 0x10, 0xe8, 0x01, 0xb4, 0x0b, 0x5c, 0x0f, 0xa0, 0x5f, 0xc2, 0xa4, 0xa5, 0x00,
+	0x10, 0x3e, 0x9f, 0x03, 0xe0, 0x11, 0x42, 0xc5, 0xe0, 0xc5, 0xaf, 0xea, 0x7c, 0xd5, 0x06, 0xb9,
+	0xb9, 0xf5, 0x34, 0x35, 0x08, 0x67, 0xa9, 0x70, 0x1b, 0x78, 0x6d, 0x9c, 0xaf, 0x1a, 0xf9, 0x74,
+	0xa4, 0x7e, 0x8e, 0xf1, 0x0f, 0x06, 0x6a, 0x4d, 0x2e, 0x53, 0x7c, 0xab, 0xd1, 0x79, 0x7d, 0x51,
+	0x9b, 0xb7, 0x67, 0x53, 0x6e, 0xe4, 0x51, 0xfb, 0x93, 0x8e, 0xd4, 0x8f, 0xe2, 0x59, 0xad, 0xae,
+	0xd0, 0xa6, 0x46, 0x68, 0x76, 0x73, 0x53, 0x23, 0x74, 0x1b, 0x99, 0x5c, 0x57, 0x24, 0x16, 0xee,
+	0xe8, 0x49, 0xa8, 0xbb, 0xcf, 0xdd, 0xaf, 0xf1, 0xaf, 0x86, 0x66, 0xe2, 0x62, 0xda, 0x70, 0xe2,
+	0x9a, 0xb6, 0x84, 0x79, 0x67, 0x76, 0x03, 0xc0, 0xdb, 0x52, 0x78, 0x9b, 0xd8, 0x1a, 0xe3, 0xb9,
+	0x63, 0xdd, 0x14, 0x32, 0x9b, 0x9b, 0xc7, 0xf8, 0x67, 0x03, 0xb5, 0x6b, 0x5e, 0xd2, 0xf3, 0x4b,
+	0x1b, 0x0e, 0xe5, 0xb3, 0x31, 0x4e, 0xdb, 0x46, 0xa4, 0xa3, 0x18, 0xd7, 0x70, 0x5b, 0xc7, 0x88,
+	0x7f, 0x33, 0x26, 0xc6, 0x9b, 0xfe, 0x5c, 0x35, 0xec, 0x0a, 0xfd, 0xb9, 0x6a, 0x5a, 0x0f, 0xe4,
+	0x4d, 0x85, 0x72, 0x07, 0xdb, 0x34, 0x96, 0x61, 0xb4, 0x7f, 0x48, 0xab, 0xdf, 0x20, 0x5c, 0x19,
+	0x3d, 0x80, 0x4f, 0x91, 0x52, 0xf9, 0x7e, 0x31, 0x50, 0xab, 0xe2, 0x31, 0x2d, 0xdd, 0xad, 0x86,
+	0x4a, 0xcc, 0xce, 0xd9, 0x34, 0xf2, 0xc9, 0x6d, 0xc5, 0xb9, 0x85, 0xaf, 0xcf, 0xc2, 0xb9, 0xe3,
+	0x3c, 0x3e, 0xb1, 0x8c, 0x27, 0x27, 0x96, 0xf1, 0xef, 0x89, 0x65, 0xfc, 0x78, 0x6a, 0x2d, 0x3c,
+	0x39, 0xb5, 0x16, 0xfe, 0x3e, 0xb5, 0x16, 0x3e, 0xbf, 0xe1, 0x8b, 0x64, 0x7f, 0xd0, 0xb3, 0x5d,
+	0x79, 0x50, 0xf1, 0xf4, 0xa8, 0xf0, 0x95, 0x0c, 0xfb, 0x3c, 0xee, 0x2d, 0xab, 0xcf, 0xae, 0x7b,
+	0xff, 0x07, 0x00, 0x00, 0xff, 0xff, 0x1b, 0xdf, 0x0e, 0xcd, 0x54, 0x0e, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -664,6 +1056,12 @@ type QueryClient interface {
 	DidByAlsoKnownAs(ctx context.Context, in *QueryDidByAlsoKnownAsRequest, opts ...grpc.CallOption) (*QueryDidByAlsoKnownAsResponse, error)
 	// Checks if a given alias is available to register *only Sonr Identities
 	AliasAvailable(ctx context.Context, in *QueryAliasAvailableRequest, opts ...grpc.CallOption) (*QueryAliasAvailableResponse, error)
+	// Queries a list of ControllerAccount items.
+	ControllerAccount(ctx context.Context, in *QueryGetControllerAccountRequest, opts ...grpc.CallOption) (*QueryGetControllerAccountResponse, error)
+	ControllerAccountAll(ctx context.Context, in *QueryAllControllerAccountRequest, opts ...grpc.CallOption) (*QueryAllControllerAccountResponse, error)
+	// Queries a list of EscrowAccount items.
+	EscrowAccount(ctx context.Context, in *QueryGetEscrowAccountRequest, opts ...grpc.CallOption) (*QueryGetEscrowAccountResponse, error)
+	EscrowAccountAll(ctx context.Context, in *QueryAllEscrowAccountRequest, opts ...grpc.CallOption) (*QueryAllEscrowAccountResponse, error)
 }
 
 type queryClient struct {
@@ -728,6 +1126,42 @@ func (c *queryClient) AliasAvailable(ctx context.Context, in *QueryAliasAvailabl
 	return out, nil
 }
 
+func (c *queryClient) ControllerAccount(ctx context.Context, in *QueryGetControllerAccountRequest, opts ...grpc.CallOption) (*QueryGetControllerAccountResponse, error) {
+	out := new(QueryGetControllerAccountResponse)
+	err := c.cc.Invoke(ctx, "/core.identity.Query/ControllerAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ControllerAccountAll(ctx context.Context, in *QueryAllControllerAccountRequest, opts ...grpc.CallOption) (*QueryAllControllerAccountResponse, error) {
+	out := new(QueryAllControllerAccountResponse)
+	err := c.cc.Invoke(ctx, "/core.identity.Query/ControllerAccountAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EscrowAccount(ctx context.Context, in *QueryGetEscrowAccountRequest, opts ...grpc.CallOption) (*QueryGetEscrowAccountResponse, error) {
+	out := new(QueryGetEscrowAccountResponse)
+	err := c.cc.Invoke(ctx, "/core.identity.Query/EscrowAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) EscrowAccountAll(ctx context.Context, in *QueryAllEscrowAccountRequest, opts ...grpc.CallOption) (*QueryAllEscrowAccountResponse, error) {
+	out := new(QueryAllEscrowAccountResponse)
+	err := c.cc.Invoke(ctx, "/core.identity.Query/EscrowAccountAll", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Parameters queries the parameters of the module.
@@ -741,6 +1175,12 @@ type QueryServer interface {
 	DidByAlsoKnownAs(context.Context, *QueryDidByAlsoKnownAsRequest) (*QueryDidByAlsoKnownAsResponse, error)
 	// Checks if a given alias is available to register *only Sonr Identities
 	AliasAvailable(context.Context, *QueryAliasAvailableRequest) (*QueryAliasAvailableResponse, error)
+	// Queries a list of ControllerAccount items.
+	ControllerAccount(context.Context, *QueryGetControllerAccountRequest) (*QueryGetControllerAccountResponse, error)
+	ControllerAccountAll(context.Context, *QueryAllControllerAccountRequest) (*QueryAllControllerAccountResponse, error)
+	// Queries a list of EscrowAccount items.
+	EscrowAccount(context.Context, *QueryGetEscrowAccountRequest) (*QueryGetEscrowAccountResponse, error)
+	EscrowAccountAll(context.Context, *QueryAllEscrowAccountRequest) (*QueryAllEscrowAccountResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -764,6 +1204,18 @@ func (*UnimplementedQueryServer) DidByAlsoKnownAs(ctx context.Context, req *Quer
 }
 func (*UnimplementedQueryServer) AliasAvailable(ctx context.Context, req *QueryAliasAvailableRequest) (*QueryAliasAvailableResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AliasAvailable not implemented")
+}
+func (*UnimplementedQueryServer) ControllerAccount(ctx context.Context, req *QueryGetControllerAccountRequest) (*QueryGetControllerAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ControllerAccount not implemented")
+}
+func (*UnimplementedQueryServer) ControllerAccountAll(ctx context.Context, req *QueryAllControllerAccountRequest) (*QueryAllControllerAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ControllerAccountAll not implemented")
+}
+func (*UnimplementedQueryServer) EscrowAccount(ctx context.Context, req *QueryGetEscrowAccountRequest) (*QueryGetEscrowAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EscrowAccount not implemented")
+}
+func (*UnimplementedQueryServer) EscrowAccountAll(ctx context.Context, req *QueryAllEscrowAccountRequest) (*QueryAllEscrowAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EscrowAccountAll not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -878,6 +1330,78 @@ func _Query_AliasAvailable_Handler(srv interface{}, ctx context.Context, dec fun
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ControllerAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetControllerAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ControllerAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.identity.Query/ControllerAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ControllerAccount(ctx, req.(*QueryGetControllerAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ControllerAccountAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllControllerAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ControllerAccountAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.identity.Query/ControllerAccountAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ControllerAccountAll(ctx, req.(*QueryAllControllerAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EscrowAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryGetEscrowAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EscrowAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.identity.Query/EscrowAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EscrowAccount(ctx, req.(*QueryGetEscrowAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_EscrowAccountAll_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAllEscrowAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).EscrowAccountAll(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/core.identity.Query/EscrowAccountAll",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).EscrowAccountAll(ctx, req.(*QueryAllEscrowAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "core.identity.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -905,6 +1429,22 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AliasAvailable",
 			Handler:    _Query_AliasAvailable_Handler,
+		},
+		{
+			MethodName: "ControllerAccount",
+			Handler:    _Query_ControllerAccount_Handler,
+		},
+		{
+			MethodName: "ControllerAccountAll",
+			Handler:    _Query_ControllerAccountAll_Handler,
+		},
+		{
+			MethodName: "EscrowAccount",
+			Handler:    _Query_EscrowAccount_Handler,
+		},
+		{
+			MethodName: "EscrowAccountAll",
+			Handler:    _Query_EscrowAccountAll_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1315,6 +1855,300 @@ func (m *QueryDidByOwnerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *QueryGetControllerAccountRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetControllerAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetControllerAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetControllerAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetControllerAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetControllerAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.ControllerAccount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllControllerAccountRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllControllerAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllControllerAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllControllerAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllControllerAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllControllerAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.ControllerAccount) > 0 {
+		for iNdEx := len(m.ControllerAccount) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.ControllerAccount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetEscrowAccountRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetEscrowAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetEscrowAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryGetEscrowAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryGetEscrowAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryGetEscrowAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	{
+		size, err := m.EscrowAccount.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintQuery(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllEscrowAccountRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllEscrowAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllEscrowAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QueryAllEscrowAccountResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QueryAllEscrowAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QueryAllEscrowAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		{
+			size, err := m.Pagination.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.EscrowAccount) > 0 {
+		for iNdEx := len(m.EscrowAccount) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.EscrowAccount[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1476,6 +2310,118 @@ func (m *QueryDidByOwnerResponse) Size() (n int) {
 	_ = l
 	l = m.DidDocument.Size()
 	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryGetControllerAccountRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetControllerAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.ControllerAccount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryAllControllerAccountRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllControllerAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.ControllerAccount) > 0 {
+		for _, e := range m.ControllerAccount {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetEscrowAccountRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryGetEscrowAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = m.EscrowAccount.Size()
+	n += 1 + l + sovQuery(uint64(l))
+	return n
+}
+
+func (m *QueryAllEscrowAccountRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	return n
+}
+
+func (m *QueryAllEscrowAccountResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.EscrowAccount) > 0 {
+		for _, e := range m.EscrowAccount {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Pagination != nil {
+		l = m.Pagination.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	return n
 }
 
@@ -2483,6 +3429,748 @@ func (m *QueryDidByOwnerResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if err := m.DidDocument.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetControllerAccountRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetControllerAccountRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetControllerAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetControllerAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetControllerAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetControllerAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ControllerAccount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.ControllerAccount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllControllerAccountRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllControllerAccountRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllControllerAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllControllerAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllControllerAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllControllerAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ControllerAccount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ControllerAccount = append(m.ControllerAccount, ControllerAccount{})
+			if err := m.ControllerAccount[len(m.ControllerAccount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetEscrowAccountRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetEscrowAccountRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetEscrowAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryGetEscrowAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryGetEscrowAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryGetEscrowAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EscrowAccount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if err := m.EscrowAccount.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllEscrowAccountRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllEscrowAccountRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllEscrowAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageRequest{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QueryAllEscrowAccountResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QueryAllEscrowAccountResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QueryAllEscrowAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EscrowAccount", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EscrowAccount = append(m.EscrowAccount, EscrowAccount{})
+			if err := m.EscrowAccount[len(m.EscrowAccount)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Pagination", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Pagination == nil {
+				m.Pagination = &query.PageResponse{}
+			}
+			if err := m.Pagination.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex

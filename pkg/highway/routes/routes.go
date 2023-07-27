@@ -6,11 +6,14 @@ import (
 )
 
 func RegisterRoutes(r *gin.Engine) {
-	// Public routes
-	r.GET(kGetCredCreationOptionsEndpoint, h.GetCredentialCreationOptions)   // Services/Register
-	r.GET(kGetCredAssertionOptionsEndpoint, h.GetCredentialAssertionOptions) // Services/Login
-	r.POST(kRegisterCredForClaimsEndpoint, h.RegisterCredentialForClaims)    // Services/Register
-	r.POST(kVerifyCredForAccountEndpoint, h.VerifyCredentialForAccount)      // Services/Login
-	r.POST(kBroadcastSonrTxEndpoint, h.BroadcastSonrTx)                      // Transactions
+	r.GET(kGetHealthStatus, h.GetHealth)                                     // Accounts
+	r.GET(kCurrentControllerEndpoint, h.CurrentUser)                         // Authentication
+	r.GET(kGetCredCreationOptionsEndpoint, h.GetCredentialAttestationParams) // Authentication/Register
+	r.GET(kGetCredAssertionOptionsEndpoint, h.GetCredentialAssertionParams)  // Authentication/Login
+	r.POST(kRegisterCredForClaimsEndpoint, h.RegisterControllerIdentity)     // Authentication/Register
+	r.POST(kVerifyCredForAccountEndpoint, h.SignInWithCredential)            // Authentication/Login
 	r.POST(kVerifyWithAccountEndpoint, h.VerifyWithAccount)                  // Accounts
+
+	r.GET(kGetMagicEmailStartEndpoint, h.GetEmailAssertionParams)
+	r.POST(kRegisterMagicEmailEndpoint, h.SignInWithEmail)
 }
