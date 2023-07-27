@@ -4,12 +4,15 @@ import (
 
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
+	"context"
 	"fmt"
 
+	"github.com/highlight/highlight/sdk/highlight-go"
 	"github.com/sonrhq/core/pkg/did/method/authr"
 	"github.com/sonrhq/core/pkg/did/method/sonr"
 	"github.com/sonrhq/core/pkg/did/types"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
+	"go.opentelemetry.io/otel/attribute"
 )
 
 var kDefaultMethod = types.DIDMethod("idxr")
@@ -29,25 +32,31 @@ type SonrController struct {
 
 // New creates a new identifier for the IDX controller
 func New(email string, cred *types.Credential, origin string) (*SonrController, error) {
+	ctx := context.Background()
 	auth, err := authr.NewAuthenticator(email, cred, origin)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email), attribute.String("origin", origin))
 		return nil, err
 	}
 	sec, err := auth.DIDSecretKey(email)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email), attribute.String("origin", origin))
 		return nil, err
 	}
 	primary, err := sonr.NewSonrAccount(sec)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email), attribute.String("origin", origin))
 		return nil, err
 	}
 	pubKey, err := primary.PublicKey()
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email), attribute.String("origin", origin))
 		return nil, err
 	}
 	emailAcc := types.NewAccumulator(primary.ID, "emails")
 	err = emailAcc.Add(email, sec)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email), attribute.String("origin", origin))
 		return nil, err
 	}
 	idx := &SonrController{
@@ -71,20 +80,23 @@ func New(email string, cred *types.Credential, origin string) (*SonrController, 
 func AuthorizeIdentity(email string, controllerAcc *identitytypes.ControllerAccount) (*SonrController, error) {
 	m := kDefaultMethod
 	id := types.DIDIdentifier(controllerAcc.Address)
-
+	ctx := context.Background()
 	if !m.Equals(kDefaultMethod) {
 		return nil, fmt.Errorf("invalid method: %s, expected 'idxr'", m)
 	}
 	authnr, err := authr.ResolveAuthenticator(controllerAcc.Authenticators[0])
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email))
 		return nil, err
 	}
 	secKey, err := authnr.DIDSecretKey(email)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email))
 		return nil, err
 	}
 	primary, err := sonr.ResolveAccount(controllerAcc.Address, secKey)
 	if err != nil {
+		highlight.RecordError(ctx, err, attribute.String("email", email))
 		return nil, err
 	}
 	idx := &SonrController{

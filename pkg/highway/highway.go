@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	highlightGin "github.com/highlight/highlight/sdk/highlight-go/middleware/gin"
 	"github.com/kardianos/service"
 	"github.com/sonrhq/core/internal/local"
 	"github.com/sonrhq/core/pkg/highway/routes"
@@ -50,7 +51,7 @@ func (p highway) Stop(s service.Service) error {
 func initGin() *gin.Engine {
 	// init gin
 	r := gin.Default()
-
+	r.Use(highlightGin.Middleware())
 	// add timeout middleware with 2 second duration
 	defaultMsg := `{"code": -1, "msg":"http: Handler timeout"}`
 	r.Use(timeout.Timeout(

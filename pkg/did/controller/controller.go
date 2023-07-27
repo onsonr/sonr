@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/highlight/highlight/sdk/highlight-go"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/pkg/did/method/btcr"
 	"github.com/sonrhq/core/pkg/did/method/ethr"
@@ -23,14 +25,17 @@ func (c *SonrController) GetPrimaryWallet() *sonr.SonrAccount {
 
 // CreateWallet creates a new wallet for the given coin type
 func (c *SonrController) CreateWallet(ct crypto.CoinType) (*crypto.AccountData, error) {
+	ctx := context.Background()
 	secKey, err := c.Authenticator.DIDSecretKey(c.email)
 	if err != nil {
+		highlight.RecordError(ctx, err)
 		return nil, err
 	}
 	switch ct {
 	case crypto.BTCCoinType:
 		bacc, err := btcr.NewBitcoinAccount(secKey)
 		if err != nil {
+			highlight.RecordError(ctx, err)
 			return nil, err
 		}
 		did := types.NewDIDUrl(bacc.Method(), types.DIDIdentifier(bacc.Address())).String()
@@ -40,6 +45,7 @@ func (c *SonrController) CreateWallet(ct crypto.CoinType) (*crypto.AccountData, 
 	case crypto.ETHCoinType:
 		eacc, err := ethr.NewEthereumAccount(secKey)
 		if err != nil {
+			highlight.RecordError(ctx, err)
 			return nil, err
 		}
 		did := types.NewDIDUrl(eacc.Method(), types.DIDIdentifier(eacc.Address())).String()
@@ -89,8 +95,10 @@ func (c *SonrController) VerifyWithWallet(did string, msg []byte, sig []byte) (b
 
 // useWallet returns the wallet account for the given DID
 func (c *SonrController) useWallet(did string) (types.WalletAccount, error) {
+	ctx := context.Background()
 	secKey, err := c.Authenticator.DIDSecretKey(c.email)
 	if err != nil {
+		highlight.RecordError(ctx, err)
 		return nil, err
 	}
 	m, _, err := types.ParseDID(did)
@@ -101,12 +109,14 @@ func (c *SonrController) useWallet(did string) (types.WalletAccount, error) {
 	case btcr.Method:
 		bacc, err := btcr.ResolveAccount(did, secKey)
 		if err != nil {
+			highlight.RecordError(ctx, err)
 			return nil, err
 		}
 		return bacc, nil
 	case ethr.Method:
 		eacc, err := ethr.ResolveAccount(did, secKey)
 		if err != nil {
+			highlight.RecordError(ctx, err)
 			return nil, err
 		}
 		return eacc, nil

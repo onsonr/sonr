@@ -1,9 +1,11 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/highlight/highlight/sdk/highlight-go"
 	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/core/pkg/did/controller"
 	types "github.com/sonrhq/core/pkg/highway/types"
@@ -65,6 +67,7 @@ func IssueEmailAssertionOptions(email string, ucwDid string) (string, error) {
 }
 
 func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredential, origin string) (*controller.SonrController, *types.TxResponse, error) {
+	ctx := context.Background()
 	controller, err := controller.New(alias, cred, origin)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create controller: %w", err)
@@ -75,6 +78,7 @@ func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredentia
 	usrMsg := domaintypes.NewMsgCreateEmailUsernameRecord(acc.Address, alias)
 	resp, err := controller.GetPrimaryWallet().SendTx(accMsg, usrMsg)
 	if err != nil {
+		highlight.RecordError(ctx, err)
 		return nil, nil, fmt.Errorf("failed to send tx: %w", err)
 	}
 	fmt.Println(resp)
@@ -82,8 +86,10 @@ func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredentia
 }
 
 func UseControllerAccount(token string) (*controller.SonrController, error) {
+	ctx := context.Background()
 	claims, err := types.VerifySessionJWTClaims(token)
 	if err != nil {
+		highlight.RecordError(ctx, err)
 		return nil, fmt.Errorf("failed to verify claims: %w", err)
 	}
 	acc, err := GetControllerAccount(claims.Address)
