@@ -114,6 +114,18 @@ func (ks *Keyshare) Unmarshal(bz []byte) error {
 	return nil
 }
 
+func (ks *Keyshare) UnmarshalAlice(bz []byte) error {
+	var msg protocol.Message
+	if err := json.Unmarshal(bz, &msg); err != nil {
+		return fmt.Errorf("error unmarshalling keyshare: %v", err)
+	}
+	ks.Output = &msg
+	if _, err := ks.GetAliceDKGResult(); err != nil {
+		return fmt.Errorf("error getting alice dkg result: %v", err)
+	}
+	return nil
+}
+
 // PubKey returns the public key of the keyshare as a secp256k1.PubKey
 func (ks *Keyshare) PubKey() (*secp256k1.PubKey, error) {
 	buildSecp256k1 := func(bz []byte) *secp256k1.PubKey {

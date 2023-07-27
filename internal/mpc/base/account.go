@@ -111,11 +111,6 @@ func (a *AccountV1) Verify(msg, sig []byte) (bool, error) {
 
 // Marshal returns the JSON encoding of the account.
 func (a *AccountV1) Marshal() ([]byte, error) {
-	pbz, err := a.PublicKeyshare.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	a.Data = pbz
 	return json.Marshal(a)
 }
 
@@ -125,11 +120,5 @@ func (a *AccountV1) Unmarshal(data []byte) error {
 	if err != nil {
 		return err
 	}
-	pks := &v1types.Keyshare{}
-	err = pks.Unmarshal(a.Data)
-	if err != nil {
-		return err
-	}
-	a.PublicKeyshare = pks
 	return nil
 }
