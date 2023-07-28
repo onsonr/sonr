@@ -34,7 +34,7 @@ func NewEthereumAccount(key types.DIDSecretKey) (types.WalletAccount, error) {
 		return nil, err
 	}
 	m.SetKey(id.String(), string(pbz))
-	privBz, err := pks.Marshal()
+	privBz, err := pks.MarshalPrivate()
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +82,7 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (types.WalletAccou
 		return nil, err
 	}
 	pks := &mpc.KeyshareV1{}
-	if err := pks.Unmarshal(decBz); err != nil {
+	if err := pks.UnmarshalPrivate(decBz); err != nil {
 		return nil, err
 	}
 	return &EthereumAccount{

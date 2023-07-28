@@ -72,49 +72,43 @@ func (ks *Keyshare) GetBobDKGResult() (*dkg.BobOutput, error) {
 	return dklsv1.DecodeBobDkgResult(ks.Output)
 }
 
-func (ks *Keyshare) Marshal() ([]byte, error) {
-	if ks.Role.isAlice() {
-		dkgResult, err := ks.GetAliceDKGResult()
-		if err != nil {
-			return nil, fmt.Errorf("error getting alice dkg result: %v", err)
-		}
-		msg, err := dklsv1.EncodeAliceDkgOutput(dkgResult, protocol.Version1)
-		if err != nil {
-			return nil, fmt.Errorf("error encoding alice dkg result: %v", err)
-		}
-		return json.Marshal(msg)
-	} else {
-		dkgResult, err := ks.GetBobDKGResult()
-		if err != nil {
-			return nil, fmt.Errorf("error getting bob dkg result: %v", err)
-		}
-		msg, err := dklsv1.EncodeBobDkgOutput(dkgResult, protocol.Version1)
-		if err != nil {
-			return nil, fmt.Errorf("error encoding bob dkg result: %v", err)
-		}
-		return json.Marshal(msg)
+func (ks *Keyshare) MarshalPublic() ([]byte, error) {
+	dkgResult, err := ks.GetAliceDKGResult()
+	if err != nil {
+		return nil, fmt.Errorf("error getting alice dkg result: %v", err)
 	}
+	msg, err := dklsv1.EncodeAliceDkgOutput(dkgResult, protocol.Version1)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding alice dkg result: %v", err)
+	}
+	return json.Marshal(msg)
 }
 
-func (ks *Keyshare) Unmarshal(bz []byte) error {
+func (ks *Keyshare) MarshalPrivate() ([]byte, error) {
+	dkgResult, err := ks.GetBobDKGResult()
+	if err != nil {
+		return nil, fmt.Errorf("error getting bob dkg result: %v", err)
+	}
+	msg, err := dklsv1.EncodeBobDkgOutput(dkgResult, protocol.Version1)
+	if err != nil {
+		return nil, fmt.Errorf("error encoding bob dkg result: %v", err)
+	}
+	return json.Marshal(msg)
+}
+
+func (ks *Keyshare) UnmarshalPrivate(bz []byte) error {
 	var msg protocol.Message
 	if err := json.Unmarshal(bz, &msg); err != nil {
 		return fmt.Errorf("error unmarshalling keyshare: %v", err)
 	}
-	ks.Output = &msg
-	if ks.Role.isAlice() {
-		if _, err := ks.GetAliceDKGResult(); err != nil {
-			return fmt.Errorf("error getting alice dkg result: %v", err)
-		}
-	} else {
-		if _, err := ks.GetBobDKGResult(); err != nil {
-			return fmt.Errorf("error getting bob dkg result: %v", err)
-		}
+	if _, err := ks.GetBobDKGResult(); err != nil {
+		return fmt.Errorf("error getting bob dkg result: %v", err)
 	}
+	ks.Output = &msg
 	return nil
 }
 
-func (ks *Keyshare) UnmarshalAlice(bz []byte) error {
+func (ks *Keyshare) UnmarshalPublic(bz []byte) error {
 	var msg protocol.Message
 	if err := json.Unmarshal(bz, &msg); err != nil {
 		return fmt.Errorf("error unmarshalling keyshare: %v", err)

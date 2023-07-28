@@ -229,7 +229,7 @@ func (kss KeyshareSet) EncryptUserKeyshare(c ZKSet) (*EncKeyshareSet, error) {
 	if err := kss.IsValid(); err != nil {
 		return nil, fmt.Errorf("error validating keyshare set: %v", err)
 	}
-	bz, err := kss.Bob().Marshal()
+	bz, err := kss.Bob().MarshalPrivate()
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling bob keyshare: %v", err)
 	}
