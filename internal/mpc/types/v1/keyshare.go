@@ -59,16 +59,10 @@ func (ks *Keyshare) FormatDID(ct sonrcrypto.CoinType) (string, error) {
 }
 
 func (ks *Keyshare) GetAliceDKGResult() (*dkg.AliceOutput, error) {
-	if !ks.Role.isAlice() {
-		return nil, fmt.Errorf("keyshare role is not alice")
-	}
 	return dklsv1.DecodeAliceDkgResult(ks.Output)
 }
 
 func (ks *Keyshare) GetBobDKGResult() (*dkg.BobOutput, error) {
-	if !ks.Role.isBob() {
-		return nil, fmt.Errorf("keyshare role is not bob")
-	}
 	return dklsv1.DecodeBobDkgResult(ks.Output)
 }
 
