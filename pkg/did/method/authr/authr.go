@@ -48,7 +48,7 @@ func NewAuthenticator(email string, cred *types.Credential, origin string) (*Aut
 		return nil, err
 	}
 	ckey := credAuth.Key()
-	credABz, err := credAuth.Marshal()
+	credABz, err := cred.Serialize()
 	if err != nil {
 		return nil, err
 	}
