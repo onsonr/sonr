@@ -24,7 +24,7 @@ func TestNewAccountV1(t *testing.T) {
 		if strings.Contains(did, "invalid") {
 			continue
 		}
-		msgSig, err := account.Sign(token, []byte(msg))
+		msgSig, err := account.Sign(token.Bob(), []byte(msg))
 		assert.NoError(t, err)
 		ok, err := account.Verify([]byte(msg), msgSig)
 		assert.NoError(t, err)

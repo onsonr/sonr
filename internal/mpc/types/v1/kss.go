@@ -55,12 +55,12 @@ func (kss *EncKeyshareSet) Unmarshal(bz []byte) error {
 	return json.Unmarshal(bz, kss)
 }
 
-func (kss *EncKeyshareSet) DecryptUserKeyshare(c ZKSet, key Secp256k1PublicKey) (KeyshareSet, error) {
+func (kss *EncKeyshareSet) DecryptUserKeyshare(key crypto.EncryptionKey) (KeyshareSet, error) {
 	alice := kss.Public
 	if alice == nil {
 		return EmptyKeyshareSet(), fmt.Errorf("alice keyshare is nil")
 	}
-	bz, err := c.Decrypt(key, kss.Encrypted)
+	bz, err := key.Decrypt(kss.Encrypted)
 	if err != nil {
 		return EmptyKeyshareSet(), fmt.Errorf("error decrypting keyshare: %v", err)
 	}
@@ -225,7 +225,7 @@ func (kss KeyshareSet) Verify(msg []byte, sigBz []byte) (bool, error) {
 	return kss[0].Verify(msg, sigBz)
 }
 
-func (kss KeyshareSet) EncryptUserKeyshare(c ZKSet) (*EncKeyshareSet, error) {
+func (kss KeyshareSet) EncryptUserKeyshare(c crypto.EncryptionKey) (*EncKeyshareSet, error) {
 	if err := kss.IsValid(); err != nil {
 		return nil, fmt.Errorf("error validating keyshare set: %v", err)
 	}
@@ -233,7 +233,7 @@ func (kss KeyshareSet) EncryptUserKeyshare(c ZKSet) (*EncKeyshareSet, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error marshaling bob keyshare: %v", err)
 	}
-	enc, err := c.Encrypt(kss.PublicKey(), bz)
+	enc, err := c.Encrypt(bz)
 	if err != nil {
 		return nil, fmt.Errorf("error encrypting keyshare: %v", err)
 	}

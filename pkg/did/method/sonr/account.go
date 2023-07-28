@@ -16,7 +16,7 @@ type SonrAccount struct {
 	ID        types.DIDIdentifier
 
 	acc *mpc.AccountV1
-	pks *mpc.KeyshareV1
+	kss mpc.KeyshareSet
 }
 
 // NewSonrAccount creates a new Sonr Wallet Actor DID
@@ -37,11 +37,11 @@ func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
 		return nil, err
 	}
 	m.SetKey(id.String(), string(pbz))
-	privBz, err := pks.MarshalPrivate()
+	privBz, err := pks.EncryptUserKeyshare(key)
 	if err != nil {
 		return nil, err
 	}
-	encBz, err := key.Encrypt(privBz)
+	encBz, err := privBz.Marshal()
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
 		Method:    m,
 		ID:        id,
 		acc:       acc,
-		pks:       pks,
+		kss: pks,
 	}, nil
 }
 
@@ -73,25 +73,24 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (*SonrAccount, err
 	if err := acc.Unmarshal(pubResource); err != nil {
 		return nil, err
 	}
-
 	// Get private resource and decrypt it
 	privResource, err := id.FetchResource("private")
 	if err != nil {
 		return nil, err
 	}
-	decBz, err := key.Decrypt(privResource)
-	if err != nil {
+	epks := &mpc.EncKeyshareSet{}
+	if err := epks.Unmarshal(privResource); err != nil {
 		return nil, err
 	}
-	pks := &mpc.KeyshareV1{}
-	if err := pks.UnmarshalPrivate(decBz); err != nil {
+	kss, err := epks.DecryptUserKeyshare(key)
+	if err != nil {
 		return nil, err
 	}
 	return &SonrAccount{
 		Method:    m,
 		ID:        id,
 		acc:       acc,
-		pks:       pks,
+		kss:       kss,
 	}, nil
 }
 
@@ -107,7 +106,7 @@ func (a *SonrAccount) Info() *crypto.AccountData {
 
 // Sign signs a message with the account
 func (a *SonrAccount) Sign(msg []byte) ([]byte, error) {
-	return a.acc.Sign(a.pks, msg)
+	return a.kss.Sign(msg)
 }
 
 // PublicKey returns the public key of the account

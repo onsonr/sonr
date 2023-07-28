@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/pkg/did/types"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	algo "github.com/sonrhq/core/internal/mpc/protocol/dkls"
@@ -32,21 +31,20 @@ type AccountV1 struct {
 }
 
 // NewAccountV1 creates a new account with the given name and coin type.
-func NewAccountV1(name string, coin crypto.CoinType) (*AccountV1, *v1types.Keyshare, error) {
+func NewAccountV1(name string, coin crypto.CoinType) (*AccountV1, v1types.KeyshareSet, error) {
 	kss, err := algo.DKLSKeygen()
 	if err != nil {
-		return nil, nil, fmt.Errorf("error generating keyshare set: %v", err)
+		return nil, v1types.EmptyKeyshareSet(), fmt.Errorf("error generating keyshare set: %v", err)
 	}
 	addr := kss.FormatAddress(coin)
 	pubKs := kss.Alice()
-	privKs := kss.Bob()
 	acc := &AccountV1{
 		Address:        addr,
 		CoinType:       coin,
 		Name:           name,
 		PublicKeyshare: pubKs,
 	}
-	return acc, privKs, nil
+	return acc, kss, nil
 }
 
 // DID returns the DID of the account.
@@ -60,20 +58,6 @@ func (a *AccountV1) DIDAlias() string {
 	return a.Name
 }
 
-// DIDIdentifier returns the DID identifier of the account.
-func (a *AccountV1) DIDIdentifier() types.DIDIdentifier {
-	return types.DIDIdentifier(a.Address)
-}
-
-// DIDMethod returns the DID method of the account.
-func (a *AccountV1) DIDMethod() types.DIDMethod {
-	return types.DIDMethod(a.CoinType.DIDMethod())
-}
-
-// DIDAlias returns the DID alias or name of the account.
-func (a *AccountV1) DIDUrl() types.DIDUrl {
-	return types.NewDIDUrl(a.DIDMethod(), a.DIDIdentifier())
-}
 
 // The `PublicKey()` function is a method of the `KeyshareSet` type. It returns the public key corresponding to Alice's keyshare in the keyshare set. It does this by calling the `PubKey()` method of the `Keyshare` object corresponding to Alice's keyshare. If the keyshare set is not
 // valid or if there is an error in retrieving the public key, it returns an error.

@@ -13,7 +13,7 @@ type BitcoinAccount struct {
 	ID        types.DIDIdentifier
 	Resources []types.DIDResource
 	acc       *mpc.AccountV1
-	pks       *mpc.KeyshareV1
+	kss       mpc.KeyshareSet
 }
 
 // NewBitcoinAccount creates a new Bitcoin Wallet Actor DID
@@ -34,15 +34,15 @@ func NewBitcoinAccount(key types.DIDSecretKey) (types.WalletAccount, error) {
 		return nil, err
 	}
 	m.SetKey(id.String(), string(pbz))
-	privBz, err := pks.MarshalPrivate()
+	privBz, err := pks.EncryptUserKeyshare(key)
 	if err != nil {
 		return nil, err
 	}
-	encBz, err := key.Encrypt(privBz)
+	encBz, err := privBz.Marshal()
 	if err != nil {
 		return nil, err
 	}
-	pr, err = id.AddResource("private", encBz)
+	_, err = id.AddResource("private", encBz)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func NewBitcoinAccount(key types.DIDSecretKey) (types.WalletAccount, error) {
 		ID:        id,
 		Resources: []types.DIDResource{pr},
 		acc:       acc,
-		pks:       pks,
+		kss:       pks,
 	}, nil
 }
 
@@ -71,25 +71,24 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (types.WalletAccou
 	if err := acc.Unmarshal(pubResource); err != nil {
 		return nil, err
 	}
-
 	// Get private resource and decrypt it
 	privResource, err := id.FetchResource("private")
 	if err != nil {
 		return nil, err
 	}
-	decBz, err := key.Decrypt(privResource)
+	epks := &mpc.EncKeyshareSet{}
+	if err := epks.Unmarshal(privResource); err != nil {
+		return nil, err
+	}
+	kss, err := epks.DecryptUserKeyshare(key)
 	if err != nil {
 		return nil, err
 	}
-	pks := &mpc.KeyshareV1{}
-	if err := pks.UnmarshalPrivate(decBz); err != nil {
-		return nil, err
-	}
 	return &BitcoinAccount{
-		method:    m,
-		ID:        id,
-		acc:       acc,
-		pks:       pks,
+		method: m,
+		ID:     id,
+		acc:    acc,
+		kss:    kss,
 	}, nil
 }
 
@@ -110,7 +109,7 @@ func (a *BitcoinAccount) Method() types.DIDMethod {
 
 // Sign signs a message with the account
 func (a *BitcoinAccount) Sign(msg []byte) ([]byte, error) {
-	return a.acc.Sign(a.pks, msg)
+	return a.kss.Sign(msg)
 }
 
 // PublicKey returns the public key of the account

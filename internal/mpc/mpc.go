@@ -67,7 +67,7 @@ func KeygenV0(current crypto.PartyID, option ...v0types.KeygenOption) ([]*cmp.Co
 }
 
 // GenerateV2 generates a new account with a given ID.
-func GenerateV2(name string, ct crypto.CoinType) (*models.AccountV1, *KeyshareV1, error) {
+func GenerateV2(name string, ct crypto.CoinType) (*models.AccountV1, KeyshareSet, error) {
 	return models.NewAccountV1(name, ct)
 }
 
