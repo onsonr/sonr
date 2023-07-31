@@ -74,6 +74,7 @@ func RegisterControllerIdentity(c *gin.Context) {
 // SignInWithCredential verifies a credential for a given account and returns the JWT Keyshare.
 func SignInWithCredential(c *gin.Context) {
 	origin := c.Param("origin")
+	alias := c.Param("alias")
 	assertionResp := c.Query("assertion")
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
@@ -93,8 +94,30 @@ func SignInWithCredential(c *gin.Context) {
 		c.JSON(400, gin.H{"error": "Already authenticated"})
 		return
 	}
-
-	// c.JSON(200, mdw.StoreAuthCookies(c, resp, origin))
+	addr, err := mdw.GetEmailRecordCreator(alias)
+	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(500, gin.H{"error": err.Error(), "where": "GetEmailRecordCreator"})
+		return
+	}
+	contAcc, err := mdw.GetControllerAccount(addr)
+	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(500, gin.H{"error": err.Error(), "where": "GetControllerAccount"})
+		return
+	}
+	token, err := types.NewSessionJWTClaims(alias, contAcc)
+	if err != nil {
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(500, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
+		return
+	}
+	c.JSON(200, gin.H{
+		"token":  token,
+		"origin": origin,
+		"address": contAcc.Address,
+		"success": true,
+	})
 }
 
 // SignInWithEmail registers a DIDDocument for a given email authorized jwt.
