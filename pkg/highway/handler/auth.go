@@ -11,13 +11,14 @@ import (
 func RegisterEscrowIdentity(c *gin.Context) {
 	origin := c.Query("amount")
 	alias := c.Query("email")
+
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
 		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
-	assertionOpts, chal, err := mdw.IssueCredentialAssertionOptions(alias, record)
+	assertionOpts, chal, _, err := mdw.IssueCredentialAssertionOptions(alias, record)
 	if err != nil {
 		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
@@ -86,12 +87,6 @@ func SignInWithCredential(c *gin.Context) {
 	if err != nil{
 		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
-		return
-	}
-	isAuthenticated := mdw.IsAuthenticated(c)
-	if isAuthenticated {
-		highlight.RecordError(c.Request.Context(), err)
-		c.JSON(400, gin.H{"error": "Already authenticated"})
 		return
 	}
 	addr, err := mdw.GetEmailRecordCreator(alias)

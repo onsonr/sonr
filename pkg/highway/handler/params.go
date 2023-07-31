@@ -11,7 +11,12 @@ import (
 func GetCredentialAttestationParams(c *gin.Context) {
 	origin := c.Param("origin")
 	alias := c.Param("alias")
-
+	ok, err := mdw.CheckAliasAvailable(alias)
+	if err != nil && !ok {
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(500, gin.H{"error": err.Error(), "where": "CheckAliasAvailable"})
+		return
+	}
 	// Get the service record from the origin
 	rec, err := mdw.GetServiceRecord(origin)
 	if err != nil {
@@ -49,7 +54,13 @@ func GetCredentialAssertionParams(c *gin.Context) {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
-	assertionOpts, chal, err := mdw.IssueCredentialAssertionOptions(alias, record)
+	notok, err := mdw.CheckAliasUnavailable(alias)
+	if err != nil && notok {
+		highlight.RecordError(c.Request.Context(), err)
+		c.JSON(500, gin.H{"error": err.Error(), "where": "CheckAliasAvailable"})
+		return
+	}
+	assertionOpts, chal, addr, err := mdw.IssueCredentialAssertionOptions(alias, record)
 	if err != nil {
 		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
@@ -60,6 +71,7 @@ func GetCredentialAssertionParams(c *gin.Context) {
 		"challenge":         chal.String(),
 		"origin":            origin,
 		"alias":             alias,
+		"address":           addr,
 	})
 }
 

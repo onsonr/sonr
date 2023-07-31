@@ -13,21 +13,6 @@ import (
 
 var kBaseAPIUrl = fmt.Sprintf("http://%s", local.NodeAPIHost())
 
-// CheckAlias checks if an alias is already registered
-func CheckAlias(alias string) (bool, error) {
-	endpoint := fmt.Sprintf("%s/core/id/alias/%s/check", kBaseAPIUrl, alias)
-	resp := new(identitytypes.QueryAliasAvailableResponse)
-	bz, err := local.GetJSON(endpoint)
-	if err != nil {
-		return false, err
-	}
-	err = json.Unmarshal(bz, resp)
-	if err != nil {
-		return false, err
-	}
-	return resp.Available, nil
-}
-
 // GetEmailRecordCreator returns the creator of a given email
 func GetEmailRecordCreator(email string) (string, error) {
 	endpoint := fmt.Sprintf("%s/core/domain/username/%s", kBaseAPIUrl, domaintypes.EmailIndex(email))

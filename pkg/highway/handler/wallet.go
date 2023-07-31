@@ -173,9 +173,5 @@ jwt, err := c.Cookie("sonr-jwt")
 // ExportWallet returns the encoded Sonr Wallet structure with an encrypted keyshare, which can be opened
 // with the user's password, within Sonr Clients.
 func ExportWallet(c *gin.Context) {
-	isAuthenticated := mdw.IsAuthenticated(c)
-	if !isAuthenticated {
-		c.JSON(401, gin.H{"error": "Not authenticated"})
-		return
-	}
+
 }
