@@ -6,7 +6,6 @@
 [![Sonr Logo Banner](.github/images/banner.png)](https://snr.la/h)
 
 [![sonr](https://snapcraft.io/sonr/badge.svg)](https://snapcraft.io/sonr)
-[![buddy pipeline](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589/badge.svg?token=79d953e83c8db20019b1af51215b13e9eb2fc52ce5c20cbc881a46ae4437bd4c "buddy pipeline")](https://app.buddy.works/sonr/sonr/pipelines/pipeline/428589)
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/core)](https://goreportcard.com/report/github.com/sonrhq/core)
 [![wakatime](https://wakatime.com/badge/user/058be804-abc2-4536-854a-d9df25419807/project/5f8dabaf-b601-44c3-92b3-8b1a69e55936.svg)](https://wakatime.com/badge/user/058be804-abc2-4536-854a-d9df25419807/project/5f8dabaf-b601-44c3-92b3-8b1a69e55936)
