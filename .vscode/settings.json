@@ -95,6 +95,6 @@
       }
     ]
   },
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "editor.fontFamily": "FiraCode"
 }
