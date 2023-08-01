@@ -18,7 +18,8 @@ release:
       new-prefix: ''
 branch:
   version-branch-prefix: 'v'
-  create-minor-version-branch: true
+  create-minor-version-branch: false
+  create-major-version-branch: false
 categories:
   - title: 'Breaking Changes!'
     labels:
