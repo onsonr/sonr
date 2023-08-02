@@ -29,12 +29,13 @@ jobs:
       with:
         go-version: 1.19
 
-    - name: Build Release
+    - name: Build Binaries
       run: |
         make release-all
         make archive-all
 
-    - uses: MeilCli/bump-release-action@v1
+    - name: Configure Release
+      uses: MeilCli/bump-release-action@v1
       id: releaser
       with:
         config_path: '.github/bump.yml'
@@ -45,6 +46,10 @@ jobs:
         github_token: ${{ secrets.CR_GH_PAT }}
 
     - name: Publish Release Artifacts
-      run: |
-        make release-create
-        make archive-create
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.releaser.outputs.next_version }}
+        token:  ${{ secrets.CR_GH_PAT }}
+        files: |
+          release/*
+          archive/*

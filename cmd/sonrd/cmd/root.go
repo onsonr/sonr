@@ -144,6 +144,7 @@ func initRootCmd(
 		rpc.StatusCommand(),
 		queryCommand(),
 		txCommand(),
+		CreateGexCmd(),
 		keys.Commands(app.DefaultNodeHome),
 	)
 }
