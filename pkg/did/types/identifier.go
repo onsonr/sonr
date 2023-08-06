@@ -1,27 +1,28 @@
 package types
 
 import (
-	"github.com/sonrhq/core/internal/crypto"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
 	"github.com/sonrhq/kryptology/pkg/accumulator"
+
+	"github.com/sonrhq/core/pkg/crypto"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 // DIDIdentifier is a DID identifier
 type DIDIdentifier string
 
 // AddResource adds a resource to the store
-func (g DIDIdentifier) AddResource(k string, v []byte) (DIDResource, error) {
-	err := g.store().SetKey(k, encodeResource(v))
+func (d DIDIdentifier) AddResource(k string, v []byte) (DIDResource, error) {
+	err := d.store().SetKey(k, encodeResource(v))
 	if err != nil {
 		return "", err
 	}
-	did := NewResource(g, k)
+	did := NewResource(d, k)
 	return did, nil
 }
 
 // FetchResource fetches a resource from the store
-func (g DIDIdentifier) FetchResource(k string) ([]byte, error) {
-	vstr, err := g.store().GetKey(k)
+func (d DIDIdentifier) FetchResource(k string) ([]byte, error) {
+	vstr, err := d.store().GetKey(k)
 	if err != nil {
 		return nil, err
 	}
@@ -105,7 +106,7 @@ type DIDSecretKey interface {
 	Decrypt(ciphertext []byte) ([]byte, error)
 }
 
-// ControllerAccount
+// ControllerAccount is an interface for a controller account
 type ControllerAccount = identitytypes.ControllerAccount
 
 // WalletAccount is an interface that provides acces to a DID Wallet

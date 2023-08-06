@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonrhq/core/internal/local"
-	"github.com/sonrhq/core/internal/sfs"
 	"lukechampine.com/blake3"
+
+	"github.com/sonrhq/core/config"
+	"github.com/sonrhq/core/internal/sfs"
 )
 
 // DIDStore is a store for a DID
@@ -21,7 +22,7 @@ type DIDStore struct {
 // GetMethodStore returns a store for a DID method
 func GetMethodStore(name DIDMethod) *DIDStore {
 	hash := blake3.Sum256([]byte(name.String()))
-	id := fmt.Sprintf("%s://store/%s", local.ChainID(), hash)
+	id := fmt.Sprintf("%s://store/%s", config.ChainID, hash)
 	return &DIDStore{
 		Name:     id,
 		Store:    sfs.InitMap(id),
@@ -33,7 +34,7 @@ func GetMethodStore(name DIDMethod) *DIDStore {
 // GetIdentifierStore returns a store for a DID identifier
 func GetIdentifierStore(name DIDIdentifier) *DIDStore {
 	hash := blake3.Sum256([]byte(name.String()))
-	id := fmt.Sprintf("%s://store/%s", local.ChainID(), hash)
+	id := fmt.Sprintf("%s://store/%s", config.ChainID, hash)
 	return &DIDStore{
 		Name:       id,
 		Store:      sfs.InitMap(id),
@@ -107,5 +108,5 @@ func (g *DIDStore) GetList(key string) ([]string, error) {
 // StoreKey returns the store key for the store
 func (g *DIDStore) StoreKey() string {
 	id := blake3.Sum256([]byte(g.Name))
-	return fmt.Sprintf("%s://store/%s", local.ChainID(), id)
+	return fmt.Sprintf("%s://store/%s", config.ChainID, id)
 }

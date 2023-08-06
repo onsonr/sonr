@@ -74,7 +74,14 @@
     "**/**/*.pb.gw.go": true,
     "**/**/types/*_test.go": true,
     "LICENSE": true,
-    "proto/buf.lock": true
+    "proto/buf.lock": true,
+    "snap": true,
+    "types": true,
+    ".devcontainer": true,
+    "tools": true,
+    "testutil": true,
+    "go.sum": true,
+    ".swm": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -95,6 +102,19 @@
       }
     ]
   },
-  "explorer.excludeGitIgnore": true,
-  "editor.fontFamily": "FiraCode"
+  "explorer.excludeGitIgnore": false,
+  "editor.fontFamily": "FiraCode",
+  "hide-files.files": [
+    "snap",
+    "types",
+    ".devcontainer",
+    "tools",
+    "testutil",
+    "go.sum",
+    ".swm"
+  ],
+  "DockerRun.DisableDockerrc": true,
+  "DockerRun.Containers": [],
+  "doppler.autocomplete.enable": true,
+  "doppler.hover.enable": true
 }

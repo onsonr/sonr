@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/highlight/highlight/sdk/highlight-go"
-	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/method/btcr"
 	"github.com/sonrhq/core/pkg/did/method/ethr"
 	"github.com/sonrhq/core/pkg/did/method/sonr"

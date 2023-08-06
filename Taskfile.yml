@@ -16,54 +16,28 @@ tasks:
       - task --list
 
   build:
-    desc: Build the binary for the current platform
+    desc: Build the binary for docker
     cmds:
-      - ignite chain build
+      - docker build -f ./docker/Dockerfile -t sonrd .
 
-  chain:
+  dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
-      - ignite chain serve --reset-once -v
-
-  chain:docker:
-    desc: Serve the blockchain locally with verbose logging
-    cmds:
-      - docker compose up --abort-on-container-exit --build
-
-  chain:slow-start:
-    desc: Serve the blockchain locally with verbose logging
-    cmds:
-      - ignite chain serve --reset-once -v
+      - docker compose up --abort-on-container-exit
 
   generate:
     desc: Generate the protobuf files
     cmds:
-      - ignite generate proto-go -y
+      - sh ./scripts/generate.sh
 
-  db:
-    desc: Run the database locally
-    dir: ./.tmp/bin
+  release:
+    desc: Build the binary for docker
+    deps:
+      - build
     cmds:
-      - ./icefire start
-
-  db:install:
-    desc: Install the database locally
-    dir: ./.tmp
-    cmds:
-      - git clone https://github.com/sonrhq/IceFireDB.git IceFireDB
-      - make -C ./IceFireDB
-      - mv ./IceFireDB/bin/icefire ./bin/icefire
-      - rm -rf ./IceFireDB
-
-  deps:
-    desc: Install the dependencies
-    cmds:
-      - mkdir -p ./.tmp/bin
-      - task: db:install
-      - npm i concurrently -g
-      - curl https://get.ignite.com/cli! | bash
-
-  start:
-    desc: Start the Blockchain and Database locally
-    cmds:
-        - conc "task db" "task chain" -n "db,chain" -g -r
+      - docker tag sonrd sonrhq/sonrd:latest
+      - docker tag sonrd registry.digitalocean.com/sonrhq/sonrd:latest
+      - docker tag sonrd ghcr.io/sonrhq/sonrd:latest
+      - docker push sonrhq/sonrd:latest
+      - docker push registry.digitalocean.com/sonrhq/sonrd:latest
+      - docker push ghcr.io/sonrhq/sonrd:latest

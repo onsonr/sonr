@@ -2,9 +2,10 @@ package sonr
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/internal/mpc"
+
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/types"
+	"github.com/sonrhq/core/pkg/mpc"
 )
 
 const Method = types.DIDMethod("sonr")
@@ -12,8 +13,8 @@ const Method = types.DIDMethod("sonr")
 // The `SonrAccount` struct is defining a custom data type in Go. It represents a Sonr Wallet Actor DID (Decentralized Identifier) account. It has several fields including `Method`, `ID`, `Resources`, `acc`, and `pks`. These fields store information related to the Sonr account, such as the DID method, identifier,
 // associated resources, and cryptographic keys.
 type SonrAccount struct {
-	Method    types.DIDMethod
-	ID        types.DIDIdentifier
+	Method types.DIDMethod
+	ID     types.DIDIdentifier
 
 	acc *mpc.AccountV1
 	kss mpc.KeyshareSet
@@ -50,10 +51,10 @@ func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
 		return nil, err
 	}
 	return &SonrAccount{
-		Method:    m,
-		ID:        id,
-		acc:       acc,
-		kss: pks,
+		Method: m,
+		ID:     id,
+		acc:    acc,
+		kss:    pks,
 	}, nil
 }
 
@@ -87,10 +88,10 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (*SonrAccount, err
 		return nil, err
 	}
 	return &SonrAccount{
-		Method:    m,
-		ID:        id,
-		acc:       acc,
-		kss:       kss,
+		Method: m,
+		ID:     id,
+		acc:    acc,
+		kss:    kss,
 	}, nil
 }
 

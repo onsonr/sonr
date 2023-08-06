@@ -2,6 +2,7 @@
   "recommendations": [
     "unifiedjs.vscode-mdx",
     "arcanis.vscode-zipfs",
-    "dbaeumer.vscode-eslint"
+    "dbaeumer.vscode-eslint",
+    "golang.go"
   ]
 }

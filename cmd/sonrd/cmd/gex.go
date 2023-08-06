@@ -68,12 +68,13 @@ func CreateGexCmd() *cobra.Command {
 		Short: "GEX is a terminal explorer for the Cosmos SDK",
 		Long: `GEX is a terminal explorer for the Cosmos SDK.
 It allows you to explore blocks and transactions in real time.`,
-		Run: func(cmd *cobra.Command, args []string) {
+		Run: func(_ *cobra.Command, _ []string) {
 			Start()
 		},
 	}
 }
 
+// Start starts the gex command
 func Start() {
 	view()
 
@@ -560,7 +561,7 @@ func writeAmountValidators(ctx context.Context, t *text.Text, delay time.Duratio
 
 // writeGasWidget writes the status to the healthWidget.
 // Exits when the context expires.
-func writeGasWidget(ctx context.Context, info Info, tMax *text.Text, tAvgBlock *text.Text, tAvgTx *text.Text, tLatest *text.Text, delay time.Duration, connectionSignal chan string, genesisInfo gjson.Result) {
+func writeGasWidget(ctx context.Context, info Info, tMax *text.Text, tAvgBlock *text.Text, tAvgTx *text.Text, tLatest *text.Text, delay time.Duration, _ chan string, _ gjson.Result) {
 	tMax.Write("0")
 	tAvgBlock.Write("0")
 	tLatest.Write("0")
@@ -634,9 +635,9 @@ func writeSecondsPerBlock(ctx context.Context, info Info, t *text.Text, delay ti
 // writeBlocks writes the latest Block to the blocksWidget.
 // Exits when the context expires.
 func writeBlocks(ctx context.Context, info Info, t *text.Text, connectionSignal <-chan string) {
-	socket := gowebsocket.New(getWsUrl() + "/websocket")
+	socket := gowebsocket.New(getWSURL() + "/websocket")
 
-	socket.OnTextMessage = func(message string, socket gowebsocket.Socket) {
+	socket.OnTextMessage = func(message string, _ gowebsocket.Socket) {
 		currentBlock := gjson.Get(message, "result.data.value.block.header.height")
 		if currentBlock.String() != "" {
 			t.Reset()
@@ -674,9 +675,9 @@ func writeBlocks(ctx context.Context, info Info, t *text.Text, connectionSignal 
 // writeBlockDonut continuously changes the displayed percent value on the donut by the
 // step once every delay. Exits when the context expires.
 func writeBlockDonut(ctx context.Context, d *donut.Donut, start, step int, delay time.Duration, pt playType, connectionSignal <-chan string) {
-	socket := gowebsocket.New(getWsUrl() + "/websocket")
+	socket := gowebsocket.New(getWSURL() + "/websocket")
 
-	socket.OnTextMessage = func(message string, socket gowebsocket.Socket) {
+	socket.OnTextMessage = func(message string, _ gowebsocket.Socket) {
 		step := gjson.Get(message, "result.data.value.step")
 		progress := 0
 
@@ -730,9 +731,9 @@ func writeBlockDonut(ctx context.Context, d *donut.Donut, start, step int, delay
 // writeTransactions writes the latest Transactions to the transactionsWidget.
 // Exits when the context expires.
 func writeTransactions(ctx context.Context, info Info, t *text.Text, connectionSignal <-chan string) {
-	socket := gowebsocket.New(getWsUrl() + "/websocket")
+	socket := gowebsocket.New(getWSURL() + "/websocket")
 
-	socket.OnTextMessage = func(message string, socket gowebsocket.Socket) {
+	socket.OnTextMessage = func(message string, _ gowebsocket.Socket) {
 		currentTx := gjson.Get(message, "result.data.value.TxResult.result.log")
 		currentTime := time.Now()
 		if currentTx.String() != "" {
@@ -774,7 +775,7 @@ func getFromRPC(endpoint string) (string, error) {
 	resp, err := resty.R().
 		SetHeader("Cache-Control", "no-cache").
 		SetHeader("Content-Type", "application/json").
-		Get(getHttpUrl() + "/" + endpoint)
+		Get(getHTTPURL() + "/" + endpoint)
 
 	return resp.String(), err
 }
@@ -818,15 +819,15 @@ func numberWithComma(n int64) string {
 	}
 }
 
-func getHttpUrl() string {
-	return getUrl("http", *ssl)
+func getHTTPURL() string {
+	return getURL("http", *ssl)
 }
 
-func getWsUrl() string {
-	return getUrl("ws", *ssl)
+func getWSURL() string {
+	return getURL("ws", *ssl)
 }
 
-func getUrl(protocol string, secure bool) string {
+func getURL(protocol string, secure bool) string {
 	if secure {
 		protocol = protocol + "s"
 	}

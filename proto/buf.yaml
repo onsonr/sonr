@@ -8,13 +8,8 @@ deps:
   - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
   ignore:
-    - sonrhq/core/identity
-    - core/identity/
-    - core/vault/
-    - common
-    - protocol/auth/v1
-    - protocol/mailbox/v1
-    - protocol/vault/v1
+    - sonrhq/core
+    - sonrhq/sonr
   allow_comment_ignores: true
   use:
     - DEFAULT

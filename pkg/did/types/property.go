@@ -22,7 +22,7 @@ func (d DIDProperty) Key() string {
 	return ptrs[1]
 }
 
-// Returns the value for the Properties key
+// Value Returns the value for the Properties key
 func (d DIDProperty) Value() string {
 	return d.Identifier().GetKey(d.Key())
 }

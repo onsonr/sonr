@@ -1,0 +1,23 @@
+version: "3"
+services:
+  node:
+    image: sonrhq/sonrd:latest
+    command: sh localnet.sh
+    ports:
+      - 1317:1317 # rest
+      - 26656:26656 # p2p
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+      - 8080:8080 # highway
+
+  icefirekv:
+    image: sonrhq/icefirekv:latest
+    ports:
+      - 6001:6001 # icefiredb
+      - 80:80 # icefiredb admin
+
+  icefiresql:
+    image: sonrhq/icefiresql:latest
+    ports:
+      - 6002:6002 # icefiresql
+      - 8081:8081 # icefiresql admin

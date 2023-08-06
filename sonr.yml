@@ -1,0 +1,53 @@
+version: 1
+environment: development
+chain-id: sonr-localnet-1
+bin-path: bin/sonrd
+launch:
+  name: alice
+  address: "0x0000000000"
+  highway:
+    signing-key: sercrethatmaycontainch@r$32chars
+    api:
+      host: "localhost"
+      port: 8080
+      timeout: 15
+    db:
+      icefirekv:
+        host: "localhost:6001"
+        port: 6001
+        binary: "bin/icefirekv"
+      icefiresql:
+        host: "localhost:23306"
+        port: 23306
+        binary: "bin/icefiresql"
+  node:
+    api:
+      host: "0.0.0.0"
+      port: 1317
+    p2p:
+      host: "0.0.0.0"
+      port: 26656
+    rpc:
+      host: "0.0.0.0"
+      port: 26657
+    grpc:
+      host: "0.0.0.0"
+      port: 9090
+genesis:
+  accounts:
+    - name: alice
+      coins:
+        - 20000token
+        - 200000000stake
+    - name: bob
+      coins:
+        - 10000token
+        - 100000000stake
+  faucet:
+    name: bob
+    coins:
+      - 5token
+      - 100000stake
+  validators:
+    - name: alice
+      bonded: 100000000stake

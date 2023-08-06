@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/pkg/crypto"
 	"lukechampine.com/blake3"
 )
 
@@ -30,4 +30,3 @@ func EmailIndex(email string) string {
 	val := crypto.Base64Encode(hash[:])
 	return val
 }
-

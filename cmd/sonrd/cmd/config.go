@@ -33,27 +33,27 @@ func websocket() {
 
 	socket := gowebsocket.New("ws://localhost:26657/websocket")
 
-	socket.OnConnectError = func(err error, socket gowebsocket.Socket) {
+	socket.OnConnectError = func(err error, _ gowebsocket.Socket) {
 		log.Fatal("Received connect error - ", err)
 	}
 
-	socket.OnConnected = func(socket gowebsocket.Socket) {
+	socket.OnConnected = func(_ gowebsocket.Socket) {
 		log.Println("Connected to server")
 	}
 
-	socket.OnTextMessage = func(message string, socket gowebsocket.Socket) {
+	socket.OnTextMessage = func(message string, _ gowebsocket.Socket) {
 		log.Println("Received message - " + message)
 	}
 
-	socket.OnPingReceived = func(data string, socket gowebsocket.Socket) {
+	socket.OnPingReceived = func(data string, _ gowebsocket.Socket) {
 		log.Println("Received ping - " + data)
 	}
 
-	socket.OnPongReceived = func(data string, socket gowebsocket.Socket) {
+	socket.OnPongReceived = func(data string, _ gowebsocket.Socket) {
 		log.Println("Received pong - " + data)
 	}
 
-	socket.OnDisconnected = func(err error, socket gowebsocket.Socket) {
+	socket.OnDisconnected = func(_ error, _ gowebsocket.Socket) {
 		log.Println("Disconnected from server ")
 		return
 	}

@@ -6,6 +6,8 @@ import (
 	"os"
 	"path/filepath"
 
+	// this line is used by starport scaffolding # stargate/app/moduleImport
+
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	dbm "github.com/cometbft/cometbft-db"
@@ -111,26 +113,25 @@ import (
 	highlightGorillaMux "github.com/highlight/highlight/sdk/highlight-go/middleware/gorillamux"
 	"github.com/spf13/cast"
 
+	appparams "github.com/sonrhq/core/app/params"
+	"github.com/sonrhq/core/docs"
+	domainmodule "github.com/sonrhq/core/x/domain"
+	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
+	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
 	identitymodule "github.com/sonrhq/core/x/identity"
 	identitymodulekeeper "github.com/sonrhq/core/x/identity/keeper"
 	identitymoduletypes "github.com/sonrhq/core/x/identity/types"
 	servicemodule "github.com/sonrhq/core/x/service"
 	servicemodulekeeper "github.com/sonrhq/core/x/service/keeper"
 	servicemoduletypes "github.com/sonrhq/core/x/service/types"
-
-	domainmodule "github.com/sonrhq/core/x/domain"
-	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
-	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
-
-	// this line is used by starport scaffolding # stargate/app/moduleImport
-
-	appparams "github.com/sonrhq/core/app/params"
-	"github.com/sonrhq/core/docs"
 )
 
 const (
+	// AccountAddressPrefix is the prefix for account addresses.
 	AccountAddressPrefix = "idx"
-	Name                 = "sonr"
+
+	// Name is the name of the application.
+	Name = "sonr"
 )
 
 // this line is used by starport scaffolding # stargate/wasm/app/enabledProposals
@@ -979,6 +980,7 @@ func (app *App) ModuleManager() *module.Manager {
 	return app.mm
 }
 
+// NewCustomAnteHandler returns a new AnteHandler that checks and deducts fees
 func NewCustomAnteHandler(anteHandler sdk.AnteHandler, stakingKeeper stakingkeeper.Keeper, bankkeeper bankkeeper.Keeper, authkeeper authkeeper.AccountKeeper) sdk.AnteHandler {
 	return func(ctx sdk.Context, tx sdk.Tx, sim bool) (newCtx sdk.Context, err error) {
 		// Call the original AnteHandler for standard processing

@@ -1,9 +1,9 @@
 package ethr
 
 import (
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/internal/mpc"
+	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/types"
+	"github.com/sonrhq/core/pkg/mpc"
 )
 
 const Method = types.DIDMethod("ethr")
@@ -13,7 +13,7 @@ type EthereumAccount struct {
 	ID        types.DIDIdentifier
 	Resources []types.DIDResource
 	acc       *mpc.AccountV1
-	kss mpc.KeyshareSet
+	kss       mpc.KeyshareSet
 }
 
 // NewEthereumAccount creates a new Ethereum Wallet Actor DID
@@ -51,7 +51,7 @@ func NewEthereumAccount(key types.DIDSecretKey) (types.WalletAccount, error) {
 		ID:        id,
 		Resources: []types.DIDResource{pr},
 		acc:       acc,
-		kss: pks,
+		kss:       pks,
 	}, nil
 }
 
@@ -85,10 +85,10 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (types.WalletAccou
 		return nil, err
 	}
 	return &EthereumAccount{
-		method:    m,
-		ID:        id,
-		acc:       acc,
-		kss: kss,
+		method: m,
+		ID:     id,
+		acc:    acc,
+		kss:    kss,
 	}, nil
 }
 
@@ -101,6 +101,7 @@ func (a *EthereumAccount) Address() string {
 func (a *EthereumAccount) Info() *crypto.AccountData {
 	return a.acc.GetAccountData()
 }
+
 // Method returns the DID method
 func (a *EthereumAccount) Method() types.DIDMethod {
 	return a.method

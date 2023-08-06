@@ -5,9 +5,11 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/internal/crypto"
+
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
+// TxResponse is a type alias for sdk.TxResponse
 type TxResponse = sdk.TxResponse
 
 // DIDResource is a byte array that is stored under a DID identifier in its internal store.

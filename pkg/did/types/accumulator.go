@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonrhq/core/internal/crypto"
 	"github.com/sonrhq/kryptology/pkg/accumulator"
 	"github.com/sonrhq/kryptology/pkg/core/curves"
+
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 // DIDAccumulator is a ZKSet accumulator for a DID
@@ -18,22 +19,22 @@ func NewAccumulator(id DIDIdentifier, key string) DIDAccumulator {
 }
 
 // Key returns the key of the resource
-func (d DIDAccumulator) Key() string {
-	ptrs := strings.Split(string(d), "!")
+func (zk DIDAccumulator) Key() string {
+	ptrs := strings.Split(string(zk), "!")
 	if len(ptrs) < 2 {
 		return ""
 	}
 	return ptrs[1]
 }
 
-// Returns the value for the Properties key
-func (d DIDAccumulator) Value() string {
-	return d.Identifier().GetKey(d.Key())
+// Value Returns the value for the Properties key
+func (zk DIDAccumulator) Value() string {
+	return zk.Identifier().GetKey(zk.Key())
 }
 
 // Identifier returns the identifier of the resource
-func (d DIDAccumulator) Identifier() DIDIdentifier {
-	ptrs := strings.Split(string(d), "!")
+func (zk DIDAccumulator) Identifier() DIDIdentifier {
+	ptrs := strings.Split(string(zk), "!")
 	if len(ptrs) < 2 {
 		return ""
 	}
@@ -86,7 +87,7 @@ func (zk DIDAccumulator) Remove(id string, key DIDSecretKey) error {
 	return nil
 }
 
-// Contains checks if the accumulator contains an element
+// Validate checks if the accumulator contains an element
 func (zk DIDAccumulator) Validate(id string, key DIDSecretKey) (bool, error) {
 	accKey, err := key.AccumulatorKey()
 	if err != nil {
@@ -118,16 +119,16 @@ func (zk DIDAccumulator) String() string {
 }
 
 // acc returns the accumulator for the ZKSet
-func (s DIDAccumulator) acc() (*accumulator.Accumulator, error) {
+func (zk DIDAccumulator) acc() (*accumulator.Accumulator, error) {
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
-	if s.Value() == "" {
+	if zk.Value() == "" {
 		e, err := new(accumulator.Accumulator).New(curve)
 		if err != nil {
 			return nil, err
 		}
 		return e, nil
 	}
-	accBz, err := crypto.Base64Decode(s.Value())
+	accBz, err := crypto.Base64Decode(zk.Value())
 	if err != nil {
 		return nil, err
 	}

@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	// this line is used by starport scaffolding # root/moduleImport
+
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -36,8 +38,6 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
-
-	// this line is used by starport scaffolding # root/moduleImport
 
 	"github.com/sonrhq/core/app"
 	appparams "github.com/sonrhq/core/app/params"
@@ -88,6 +88,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
+		flags.FlagNode:           "tcp://localhost:26657",
 	})
 
 	return rootCmd, encodingConfig
@@ -352,19 +353,12 @@ func initAppConfig() (string, interface{}) {
 	srvCfg := serverconfig.DefaultConfig()
 	srvCfg.API.Enable = true
 	srvCfg.API.Swagger = true
-	// The SDK's default minimum gas price is set to "" (empty value) inside
-	// app.toml. If left empty by validators, the node will halt on startup.
-	// However, the chain developer can set a default app.toml value for their
-	// validators here.
-	//
-	// In summary:
-	// - if you leave srvCfg.MinGasPrices = "", all validators MUST tweak their
-	//   own app.toml config,
-	// - if you set srvCfg.MinGasPrices non-empty, validators CAN tweak their
-	//   own app.toml to override, or use this default value.
-	//
-	// In simapp, we set the min gas prices to 0.
-	srvCfg.MinGasPrices = "0stake"
+	srvCfg.API.Address = "0.0.0.0:1317"
+	srvCfg.GRPC.Enable = true
+	srvCfg.GRPC.Address = "0.0.0.0:26657"
+	srvCfg.GRPCWeb.Enable = true
+	srvCfg.GRPCWeb.Address = "0.0.0.0:9090"
+	srvCfg.MinGasPrices = "0usnr"
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
