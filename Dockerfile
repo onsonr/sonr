@@ -44,6 +44,14 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 
 FROM --platform=linux alpine
 
+# Download, extract, and install the toml-cli binary
+RUN apk add --update curl
+RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
+    tar -xvf toml-0.2.3-x86_64-linux.tar.gz && \
+    mv toml-0.2.3-x86_64-linux/toml /usr/local/bin && \
+    rm toml-0.2.3-x86_64-linux.tar.gz && \
+    rm -rf toml-0.2.3-x86_64-linux
+
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml .

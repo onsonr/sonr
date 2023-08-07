@@ -10,9 +10,6 @@ func init() {
 	// viper.SetConfigType("yml")
 
 	// viper.AddConfigPath(".")
-	// viper.AddConfigPath("../")
-	// viper.AddConfigPath("../../")
-	// viper.AddConfigPath("/.sonr")
 	// viper.AddConfigPath("$HOME/.sonr")
 	// viper.AddConfigPath("$HOME")
 
