@@ -88,7 +88,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
-		flags.FlagNode:           "tcp://localhost:26657",
+		flags.FlagNode:           "tcp://0.0.0.0:26657",
 	})
 
 	return rootCmd, encodingConfig
@@ -351,14 +351,7 @@ func initAppConfig() (string, interface{}) {
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.API.Enable = true
-	srvCfg.API.Swagger = true
-	srvCfg.API.Address = "0.0.0.0:1317"
-	srvCfg.GRPC.Enable = true
-	srvCfg.GRPC.Address = "0.0.0.0:26657"
-	srvCfg.GRPCWeb.Enable = true
-	srvCfg.GRPCWeb.Address = "0.0.0.0:9090"
-	srvCfg.MinGasPrices = "0usnr"
+	srvCfg.MinGasPrices = "0stake"
 
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,

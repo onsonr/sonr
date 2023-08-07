@@ -43,12 +43,6 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 # ! ||--------------------------------------------------------------------------------||
 
 FROM --platform=linux alpine
-
-# Install Doppler CLI
-RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub && \
-    echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories && \
-    apk add doppler
-
 # Download, extract, and install the toml-cli binary
 RUN apk add --update curl
 RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
@@ -59,7 +53,7 @@ RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0
 
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml .
+COPY ../sonr.yml .
 
 # Setup environment variables
 ENV KEY="alice"
