@@ -34,7 +34,7 @@ func JWTSigningKey() []byte {
 
 // HighwayHostAddress returns the host and port of the Highway API
 func HighwayHostAddress() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("highway.api.host"), viper.GetInt("launch.highway.api.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("highway.api.host"), viper.GetInt("highway.api.port"))
 }
 
 // HighwayRequestTimeout returns the timeout for Highway API requests
@@ -44,27 +44,27 @@ func HighwayRequestTimeout() time.Duration {
 
 // IceFireKVHost returns the host and port of the IceFire KV store
 func IceFireKVHost() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("highway.icefirekv.host"), viper.GetInt("launch.highway.db.icefirekv.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("highway.icefirekv.host"), viper.GetInt("highway.icefirekv.port"))
 }
 
 // NodeAPIHostAddress returns the host and port of the Node API
 func NodeAPIHostAddress() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("node.api.host"), viper.GetInt("launch.node.api.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("node.api.host"), viper.GetInt("node.api.port"))
 }
 
 // NodeGrpcHostAddress returns the host and port of the Node P2P
 func NodeGrpcHostAddress() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("node.grpc.host"), viper.GetInt("launch.node.grpc.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("node.grpc.host"), viper.GetInt("node.grpc.port"))
 }
 
 // NodeP2PHostAddress returns the host and port of the Node P2P
 func NodeP2PHostAddress() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("node.p2p.host"), viper.GetInt("launch.node.p2p.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("node.p2p.host"), viper.GetInt("node.p2p.port"))
 }
 
 // NodeRPCHostAddress returns the host and port of the Node RPC
 func NodeRPCHostAddress() string {
-	return fmt.Sprintf("%s:%d", viper.GetString("node.rpc.host"), viper.GetInt("launch.node.rpc.port"))
+	return fmt.Sprintf("%s:%d", viper.GetString("node.rpc.host"), viper.GetInt("node.rpc.port"))
 }
 
 // ValidatorAddress returns the validator address from the configuration.
