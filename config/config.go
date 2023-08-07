@@ -43,12 +43,10 @@ type Config struct {
 				IcefireKV struct {
 					Host   string `mapstructure:"host"`
 					Port   int    `mapstructure:"port"`
-					Binary string `mapstructure:"binary"`
 				} `mapstructure:"icefirekv"`
 				IcefireSQL struct {
 					Host   string `mapstructure:"host"`
 					Port   int    `mapstructure:"port"`
-					Binary string `mapstructure:"binary"`
 				} `mapstructure:"icefiresql"`
 			} `mapstructure:"db"`
 		} `mapstructure:"highway"`

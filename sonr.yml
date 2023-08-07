@@ -1,6 +1,6 @@
 version: 1
 environment: development
-chain-id: sonr-localnet-1
+chain-id: sonr-1
 bin-path: bin/sonrd
 launch:
   name: alice
