@@ -47,6 +47,11 @@ func IceFireKVHost() string {
 	return fmt.Sprintf("%s:%d", viper.GetString("highway.icefirekv.host"), viper.GetInt("highway.icefirekv.port"))
 }
 
+// IceFireSQLHost returns the host and port of the IceFire KV store
+func IceFireSQLHost() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("highway.icefiresql.host"), viper.GetInt("highway.icefiresql.port"))
+}
+
 // NodeAPIHostAddress returns the host and port of the Node API
 func NodeAPIHostAddress() string {
 	return fmt.Sprintf("%s:%d", viper.GetString("node.api.host"), viper.GetInt("node.api.port"))

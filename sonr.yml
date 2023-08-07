@@ -12,10 +12,10 @@ highway:
     port: 8080
     timeout: 15
   icefirekv:
-    host: "icefiredb:6001"
+    host: "icefiredb"
     port: 6001
   icefiresql:
-    host: "icefiresql:23306"
+    host: "icefiresql"
     port: 23306
 node:
   api:
