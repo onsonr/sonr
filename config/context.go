@@ -18,4 +18,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
+
+	viper.SetDefault("highway.icefirekv.host", "localhost")
+	viper.SetDefault("highway.icefirekv.port", 6001)
 }
