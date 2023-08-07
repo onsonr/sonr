@@ -19,7 +19,6 @@ tasks:
     desc: Build the binary for docker
     cmds:
       - docker build -f ./Dockerfile -t sonrd . --no-cache
-      - docker build . -f ./Dockerfile --target cosmos-faucet -t sonr-faucet --no-cache
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
@@ -38,18 +37,6 @@ tasks:
       - docker tag sonrd sonrhq/sonrd:latest
       - docker tag sonrd registry.digitalocean.com/sonrhq/sonrd:latest
       - docker tag sonrd ghcr.io/sonrhq/sonrd:latest
-      - docker tag sonr-faucet sonrhq/sonr-faucet:latest
-      - docker tag sonr-faucet registry.digitalocean.com/sonrhq/sonr-faucet:latest
-      - docker tag sonr-faucet ghcr.io/sonrhq/sonr-faucet:latest
       - docker push sonrhq/sonrd:latest
-      - docker push sonrhq/sonr-faucet:latest
       - docker push registry.digitalocean.com/sonrhq/sonrd:latest
-      - docker push registry.digitalocean.com/sonrhq/sonr-faucet:latest
       - docker push ghcr.io/sonrhq/sonrd:latest
-      - docker push ghcr.io/sonrhq/sonr-faucet:latest
-
-  publish:
-      desc: Publish the k8s manifests to the cluster
-      cmds:
-        - kompose convert
-        - kubectl apply -f faucet-service.yaml,icefiredb-service.yaml,icefiresql-service.yaml,node-service.yaml,fauce-deployment.yaml,icefiredb-deployment.yaml,icefiresql-deployment.yaml,node-deployment.yaml
