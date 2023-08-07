@@ -16,7 +16,7 @@ import (
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
 
-var kBaseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHost)
+var kBaseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress)
 
 // The `EncodeTx` function is a method of the `LocalContext` struct. It takes a transaction (`tx`) as input and returns the encoded transaction bytes as output.
 func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
@@ -44,8 +44,8 @@ func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
 func BroadcastCosmosTx(rawTx []byte) (*txtypes.BroadcastTxResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		config.NodeGrpcHost, // Or your gRPC server address.
-		grpc.WithInsecure(),   // The Cosmos SDK doesn't support any transport security mechanism.
+		config.NodeGrpcHostAddress, // Or your gRPC server address.
+		grpc.WithInsecure(),        // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
 		return nil, err

@@ -13,13 +13,11 @@ launch:
       timeout: 15
     db:
       icefirekv:
-        host: "localhost:6001"
+        host: "icefiredb:6001"
         port: 6001
-        binary: "bin/icefirekv"
       icefiresql:
-        host: "localhost:23306"
+        host: "icefiresql:23306"
         port: 23306
-        binary: "bin/icefiresql"
   node:
     api:
       host: "0.0.0.0"

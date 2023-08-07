@@ -9,13 +9,16 @@ import (
 
 func init() {
 	viper.SetEnvPrefix("sonr")
+	viper.AutomaticEnv()
 	viper.SetConfigName("sonr")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("../../")
 	viper.AddConfigPath("/.sonr")
 	viper.AddConfigPath("$HOME/.sonr")
-	viper.AutomaticEnv()
+	viper.AddConfigPath("/etc/sonr")
+	viper.AddConfigPath("$HOME/etc/sonr")
+	viper.AddConfigPath("/etc")
 	err := viper.ReadInConfig()
 	if err != nil {
 		fmt.Println("No config file found - using environment variables only")
@@ -35,8 +38,8 @@ var (
 	// ChainID returns the chain ID from the environment variable SONR_CHAIN_ID. (default: sonr-localnet-1)
 	ChainID = c.ChainID
 
-	// HighwayHostPort returns the host and port of the Highway API
-	HighwayHostPort = fmt.Sprintf("%s:%d", c.Launch.Highway.API.Host, c.Launch.Highway.API.Port)
+	// HighwayHostAddress returns the host and port of the Highway API
+	HighwayHostAddress = fmt.Sprintf("%s:%d", c.Launch.Highway.API.Host, c.Launch.Highway.API.Port)
 
 	// HighwayRequestTimeout returns the timeout for Highway API requests
 	HighwayRequestTimeout = time.Duration(c.Launch.Highway.API.Timeout) * time.Second
@@ -47,17 +50,17 @@ var (
 	// JWTSigningKey returns the JWT signing key
 	JWTSigningKey = []byte(c.Launch.Highway.SigningKey)
 
-	// NodeAPIHost returns the host and port of the Node API
-	NodeAPIHost = fmt.Sprintf("%s:%d", c.Launch.Node.API.Host, c.Launch.Node.API.Port)
+	// NodeAPIHostAddress returns the host and port of the Node API
+	NodeAPIHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.API.Host, c.Launch.Node.API.Port)
 
-	// NodeGrpcHost returns the host and port of the Node gRPC
-	NodeGrpcHost = fmt.Sprintf("%s:%d", c.Launch.Node.GRPC.Host, c.Launch.Node.GRPC.Port)
+	// NodeGrpcHostAddress returns the host and port of the Node gRPC
+	NodeGrpcHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.GRPC.Host, c.Launch.Node.GRPC.Port)
 
-	// NodeP2PHost returns the host and port of the Node P2P
-	NodeP2PHost = fmt.Sprintf("%s:%d", c.Launch.Node.P2P.Host, c.Launch.Node.P2P.Port)
+	// NodeP2PHostAddress returns the host and port of the Node P2P
+	NodeP2PHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.P2P.Host, c.Launch.Node.P2P.Port)
 
-	// NodeRPCHost returns the host and port of the Node RPC
-	NodeRPCHost = fmt.Sprintf("%s:%d", c.Launch.Node.RPC.Host, c.Launch.Node.RPC.Port)
+	// NodeRPCHostAddress returns the host and port of the Node RPC
+	NodeRPCHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.RPC.Host, c.Launch.Node.RPC.Port)
 
 	// Environment returns the environment from the environment variable SONR_ENVIRONMENT. (default: development)
 	Environment = c.Environment

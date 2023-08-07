@@ -44,7 +44,7 @@ func StartService() {
 }
 
 func (p highway) Start(s service.Service) error {
-	return p.r.Run(config.HighwayHostPort)
+	return p.r.Run(config.HighwayHostAddress)
 }
 
 func (p highway) Stop(s service.Service) error {
