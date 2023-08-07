@@ -23,10 +23,6 @@ func init() {
 	if err != nil {
 		fmt.Println("No config file found - using environment variables only")
 	}
-	err = viper.Unmarshal(&c)
-	if err != nil {
-		fmt.Println("No config file found - using environment variables only")
-	}
 }
 
 // Get returns the configuration values of the application.
@@ -38,6 +34,7 @@ func Get() Config {
 func ChainID() string {
 	return viper.GetString("SONR_CHAIN_ID")
 }
+
 // Environment returns the environment from the environment variable SONR_ENVIRONMENT. (default: development)
 func Environment() string {
 	return viper.GetString("SONR_ENVIRONMENT")
@@ -72,6 +69,7 @@ func IceFireKVHost() string {
 func NodeAPIHostAddress() string {
 	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_API_HOST"), viper.GetInt("SONR_LAUNCH_NODE_API_PORT"))
 }
+
 // NodeGrpcHostAddress returns the host and port of the Node P2P
 func NodeGrpcHostAddress() string {
 	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_GRPC_HOST"), viper.GetInt("SONR_LAUNCH_NODE_GRPC_PORT"))
