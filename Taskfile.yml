@@ -18,8 +18,8 @@ tasks:
   build:
     desc: Build the binary for docker
     cmds:
-      - docker build -f ./docker/Dockerfile -t sonrd . --no-cache
-      - docker build . -f ./docker/Dockerfile --target cosmos-faucet -t sonr-faucet --no-cache
+      - docker build -f ./Dockerfile -t sonrd . --no-cache
+      - docker build . -f ./Dockerfile --target cosmos-faucet -t sonr-faucet --no-cache
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
