@@ -50,16 +50,27 @@ COPY sonr.yml /root
 
 # Setup environment variables
 ENV KEY="alice"
+ENV CHAIN_ID=sonr-1
+ENV MONIKER=florence
 ENV KEYALGO=secp256k1
 ENV KEYRING=test
 ENV MNEMONIC="decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
 
 # Initialize the node
 RUN echo $MNEMONIC | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
-RUN sonrd init florence
+RUN sonrd init ${MONIKER} --chain-id ${CHAIN_ID} --home /root/.sonr --default-denom usnr
 RUN sonrd add-genesis-account $KEY 100000000000000000000000000usnr,1000000000000000snr --keyring-backend $KEYRING
 RUN sonrd gentx $KEY 1000000000000000000000usnr --keyring-backend $KEYRING --chain-id $CHAIN_ID
 RUN sonrd collect-gentxs
+
+# Update config.toml
+RUN toml set $HOME/.sonr/config/config.toml rpc.laddr tcp://0.0.0.0:26657 > /tmp/config.toml && mv /tmp/config.toml $HOME/.sonr/config/config.toml
+RUN toml set $HOME/.sonr/config/app.toml grpc.address 0.0.0.0:9000 > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
+RUN toml set $HOME/.sonr/config/app.toml api.enable true > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
+RUN toml set $HOME/.sonr/config/app.toml api.swagger true > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
+RUN toml set $HOME/.sonr/config/app.toml api.address tcp://0.0.0.0:1317 > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
+RUN toml set $HOME/.sonr/config/app.toml minimum-gas-prices 0.0000snr > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
+
 
 # Expose ports
 EXPOSE 26657

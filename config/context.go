@@ -6,14 +6,23 @@ import (
 
 func init() {
 	viper.SetEnvPrefix("sonr")
-	viper.AutomaticEnv()
 	viper.SetConfigName("sonr")
 	viper.SetConfigType("yml")
+
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("../")
+	viper.AddConfigPath("../../")
+	viper.AddConfigPath("/.sonr")
 	viper.AddConfigPath("$HOME/.sonr")
 	viper.AddConfigPath("$HOME")
-	viper.SetDefault("highway.icefirekv.host", "localhost")
-	viper.SetDefault("highway.icefirekv.port", 6001)
-	viper.SetDefault("highway.jwt.key", "@re33lyb@dsecret")
+
+	viper.AutomaticEnv()
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+	err = viper.Unmarshal(&c)
+	if err != nil {
+		panic(err)
+	}
 }
