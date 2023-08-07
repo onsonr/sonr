@@ -6,6 +6,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
 	// this line is used by starport scaffolding # root/moduleImport
 
 	dbm "github.com/cometbft/cometbft-db"
@@ -88,7 +89,6 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
 		flags.FlagNode:           "tcp://localhost:26657",
-
 	})
 
 	return rootCmd, encodingConfig
@@ -110,10 +110,10 @@ func initRootCmd(
 
 	gentxModule := app.ModuleBasics[genutiltypes.ModuleName].(genutil.AppModuleBasic)
 	rootCmd.AddCommand(
-		genutilcli.InitCmd(app.ModuleBasics, app.DefaultNodeHome),
+		InitCmd(app.ModuleBasics, app.DefaultNodeHome),
 		genutilcli.CollectGenTxsCmd(banktypes.GenesisBalancesIterator{}, app.DefaultNodeHome, gentxModule.GenTxValidator),
 		genutilcli.MigrateGenesisCmd(),
-		genutilcli.GenTxCmd(
+		GenTxCmd(
 			app.ModuleBasics,
 			encodingConfig.TxConfig,
 			banktypes.GenesisBalancesIterator{},
