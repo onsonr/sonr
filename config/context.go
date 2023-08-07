@@ -1,8 +1,6 @@
 package config
 
 import (
-	"fmt"
-
 	"github.com/spf13/viper"
 )
 
@@ -13,19 +11,11 @@ func init() {
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
 	viper.AddConfigPath("../../")
-	viper.AddConfigPath("/.sonr")
 	viper.AddConfigPath("$HOME/.sonr")
+	viper.AddConfigPath("$HOME")
 	viper.AddConfigPath("/etc/sonr")
-	viper.AddConfigPath("$HOME/etc/sonr")
-	viper.AddConfigPath("/etc")
 	err := viper.ReadInConfig()
 	if err != nil {
-		fmt.Println("No config file found - using environment variables only")
+		panic(err)
 	}
-}
-
-func setupDefaults() {
-	viper.SetDefault("node.api.host", "localhost:1317")
-	viper.SetDefault("node.grpc.host", "localhost:9090")
-	viper.SetDefault("icefire.kv.host", "localhost:6379")
 }

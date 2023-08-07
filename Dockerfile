@@ -44,9 +44,11 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 
 FROM --platform=linux alpine
 
+WORKDIR /root
+
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml /root/.sonr/sonr.yml
+COPY sonr.yml .
 
 # Setup environment variables
 ENV KEY="alice"
