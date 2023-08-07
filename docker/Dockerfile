@@ -53,7 +53,7 @@ RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0
 
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY ../sonr.yml .
+COPY ./sonr.yml .
 
 # Setup environment variables
 ENV KEY="alice"

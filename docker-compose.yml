@@ -18,6 +18,7 @@ services:
   icefiredb:
     image: sonrhq/icefiredb:latest
     init: true
+    container_name: icefiredb
     networks:
       - sonr-net
     ports:
