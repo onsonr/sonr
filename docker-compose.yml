@@ -6,6 +6,9 @@ services:
     image: sonrhq/sonrd:latest
     init: true
     container_name: validator
+    depends_on:
+      - icefiredb
+      - icefiresql
     networks:
       - sonr-net
     ports:
