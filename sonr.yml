@@ -1,35 +1,35 @@
 version: 1
-environment: development
-chain-id: sonr-1
 launch:
-  name: alice
-  address: "0x0000000000"
-  highway:
-    signing-key: sercrethatmaycontainch@r$32chars
-    api:
-      host: "localhost"
-      port: 8080
-      timeout: 15
-    db:
-      icefirekv:
-        host: "icefiredb:6001"
-        port: 6001
-      icefiresql:
-        host: "icefiresql:23306"
-        port: 23306
-  node:
-    api:
-      host: "0.0.0.0"
-      port: 1317
-    p2p:
-      host: "0.0.0.0"
-      port: 26656
-    rpc:
-      host: "0.0.0.0"
-      port: 26657
-    grpc:
-      host: "0.0.0.0"
-      port: 9090
+  environment: development
+  chain-id: sonr-localnet-1
+  moniker: alice
+  val_address: "0x0000000000"
+highway:
+  jwt:
+    key: "sercrethatmaycontainch@r$32chars"
+  api:
+    host: "localhost"
+    port: 8080
+    timeout: 15
+  icefirekv:
+    host: "icefiredb:6001"
+    port: 6001
+  icefiresql:
+    host: "icefiresql:23306"
+    port: 23306
+node:
+  api:
+    host: "0.0.0.0"
+    port: 1317
+  p2p:
+    host: "0.0.0.0"
+    port: 26656
+  rpc:
+    host: "0.0.0.0"
+    port: 26657
+  grpc:
+    host: "0.0.0.0"
+    port: 9090
 genesis:
   accounts:
     - name: alice

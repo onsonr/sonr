@@ -44,22 +44,19 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 
 FROM --platform=linux alpine
 
-WORKDIR /root
-
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml .
+COPY --from=builder /root/sonr/sonr.yml /root
 
 # Setup environment variables
 ENV KEY="alice"
-ENV MONIKER=florence
 ENV KEYALGO=secp256k1
 ENV KEYRING=test
 ENV MNEMONIC="decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
 
 # Initialize the node
 RUN echo $MNEMONIC | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
-RUN sonrd init ${MONIKER} --home /root/.sonr
+RUN sonrd init florence
 RUN sonrd add-genesis-account $KEY 100000000000000000000000000usnr,1000000000000000snr --keyring-backend $KEYRING
 RUN sonrd gentx $KEY 1000000000000000000000usnr --keyring-backend $KEYRING --chain-id $CHAIN_ID
 RUN sonrd collect-gentxs
