@@ -1,7 +1,6 @@
 version: 1
 environment: development
 chain-id: sonr-1
-bin-path: bin/sonrd
 launch:
   name: alice
   address: "0x0000000000"

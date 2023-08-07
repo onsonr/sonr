@@ -53,7 +53,7 @@ RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0
 
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY --from=builder /root/sonr/sonr.yml /etc/sonr/sonr.yml
+COPY sonr.yml .
 
 # Setup environment variables
 ENV KEY="alice"
@@ -65,7 +65,7 @@ ENV MNEMONIC="decorate bright ozone fork gallery riot bus exhaust worth way bone
 
 # Initialize the node
 RUN echo $MNEMONIC | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
-RUN sonrd init ${MONIKER} --chain-id ${CHAIN_ID} --default-denom usnr
+RUN sonrd init ${MONIKER} --chain-id ${CHAIN_ID} --default-denom usnr --home /root/.sonr
 RUN sonrd add-genesis-account $KEY 100000000000000000000000000usnr,1000000000000000snr --keyring-backend $KEYRING
 RUN sonrd gentx $KEY 1000000000000000000000usnr --keyring-backend $KEYRING --chain-id $CHAIN_ID
 RUN sonrd collect-gentxs
