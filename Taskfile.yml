@@ -19,7 +19,7 @@ tasks:
     desc: Build the binary for docker
     cmds:
       - docker build -f ./docker/Dockerfile -t sonrd .
-
+      - docker build . -f ./docker/Dockerfile --target cosmos-faucet -t sonr-faucet
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
@@ -38,6 +38,12 @@ tasks:
       - docker tag sonrd sonrhq/sonrd:latest
       - docker tag sonrd registry.digitalocean.com/sonrhq/sonrd:latest
       - docker tag sonrd ghcr.io/sonrhq/sonrd:latest
+      - docker tag sonr-faucet sonrhq/sonr-faucet:latest
+      - docker tag sonr-faucet registry.digitalocean.com/sonrhq/sonr-faucet:latest
+      - docker tag sonr-faucet ghcr.io/sonrhq/sonr-faucet:latest
       - docker push sonrhq/sonrd:latest
+      - docker push sonrhq/sonr-faucet:latest
       - docker push registry.digitalocean.com/sonrhq/sonrd:latest
+      - docker push registry.digitalocean.com/sonrhq/sonr-faucet:latest
       - docker push ghcr.io/sonrhq/sonrd:latest
+      - docker push ghcr.io/sonrhq/sonr-faucet:latest

@@ -1,24 +1,44 @@
 version: "3"
+networks:
+  sonr-net:
 
 services:
   node:
     image: sonrhq/sonrd:latest
     init: true
+    container_name: val-node
     environment:
       - DOPPLER_TOKEN
+    networks:
+      - sonr-net
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
       - 26657:26657 # rpc
       - 9090:9090 # grpc
       - 8080:8080 # highway
-  # icefiredb:
-  #   image: sonrhq/icefiredb:latest
-  #   <<: *doppler-env
-  #   ports:
-  #     - 127.0.0.1:6001:6001
-  # icefiresql:
-  #   image: sonrhq/icefiresql:latest
-  #   <<: *doppler-env
-  #   ports:
-  #     - 127.0.0.1:23357:23357
+  icefiredb:
+    image: sonrhq/icefiredb:latest
+    init: true
+    networks:
+      - sonr-net
+    ports:
+      - 6001:6001
+  icefiresql:
+    image: sonrhq/icefiresql:latest
+    init: true
+    networks:
+      - sonr-net
+    ports:
+      - 23357:23357
+  faucet:
+    image: sonrhq/sonr-faucet:latest
+    init: true
+    command: ["start", "http://val-node:26657"]
+    networks:
+      - sonr-net
+    depends_on:
+      - icefiredb
+      - icefiresql
+    ports:
+      - 4500:4500
