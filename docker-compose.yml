@@ -15,15 +15,6 @@ services:
       - 9090:9090 # grpc
       - 8080:8080 # highway
     restart: always
-    environment:
-      - SONR_LAUNCH_HIGHWAY_API_HOST
-      - SONR_LAUNCH_HIGHWAY_API_PORT
-      - SONR_LAUNCH_HIGHWAY_API_TIMEOUT
-      - SONR_LAUNCH_HIGHWAY_DB_ICEFIREKV_HOST
-      - SONR_LAUNCH_HIGHWAY_DB_ICEFIREKV_PORT
-      - SONR_LAUNCH_HIGHWAY_DB_ICEFIRESQL_HOST
-      - SONR_LAUNCH_HIGHWAY_DB_ICEFIRESQL_PORT
-      - SONR_LAUNCH_HIGHWAY_SIGNING_KEY
   icefiredb:
     image: sonrhq/icefiredb:latest
     init: true
