@@ -10,7 +10,7 @@ func init() {
 	viper.SetConfigName("sonr")
 	viper.SetConfigType("yml")
 	viper.AddConfigPath(".")
-	viper.AddConfigPath("../../")
+	viper.AddConfigPath("../")
 	viper.AddConfigPath("$HOME/.sonr")
 	viper.AddConfigPath("$HOME")
 	viper.SetDefault("highway.icefirekv.host", "localhost")
