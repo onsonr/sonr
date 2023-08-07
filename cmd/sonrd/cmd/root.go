@@ -6,7 +6,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
 	// this line is used by starport scaffolding # root/moduleImport
 
 	dbm "github.com/cometbft/cometbft-db"
@@ -88,7 +87,8 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	overwriteFlagDefaults(rootCmd, map[string]string{
 		flags.FlagChainID:        strings.ReplaceAll(app.Name, "-", ""),
 		flags.FlagKeyringBackend: "test",
-		flags.FlagNode:           "tcp://0.0.0.0:26657",
+		flags.FlagNode:           "tcp://localhost:26657",
+
 	})
 
 	return rootCmd, encodingConfig
@@ -351,8 +351,14 @@ func initAppConfig() (string, interface{}) {
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.MinGasPrices = "0stake"
-
+	srvCfg.API.Enable = true
+	srvCfg.API.Swagger = true
+	srvCfg.API.Address = "0.0.0.0:1317"
+	srvCfg.GRPC.Enable = true
+	srvCfg.GRPC.Address = "0.0.0.0:26657"
+	srvCfg.GRPCWeb.Enable = true
+	srvCfg.GRPCWeb.Address = "0.0.0.0:9090"
+	srvCfg.MinGasPrices = "0.0000snr"
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
 	}
