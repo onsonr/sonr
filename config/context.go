@@ -6,23 +6,23 @@ import (
 
 func init() {
 	viper.SetEnvPrefix("sonr")
-	viper.SetConfigName("sonr")
-	viper.SetConfigType("yml")
+	// viper.SetConfigName("sonr")
+	// viper.SetConfigType("yml")
 
-	viper.AddConfigPath(".")
-	viper.AddConfigPath("../")
-	viper.AddConfigPath("../../")
-	viper.AddConfigPath("/.sonr")
-	viper.AddConfigPath("$HOME/.sonr")
-	viper.AddConfigPath("$HOME")
+	// viper.AddConfigPath(".")
+	// viper.AddConfigPath("../")
+	// viper.AddConfigPath("../../")
+	// viper.AddConfigPath("/.sonr")
+	// viper.AddConfigPath("$HOME/.sonr")
+	// viper.AddConfigPath("$HOME")
 
 	viper.AutomaticEnv()
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(err)
-	}
-	err = viper.Unmarshal(&c)
-	if err != nil {
-		panic(err)
-	}
+	// err := viper.ReadInConfig()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// err = viper.Unmarshal(&c)
+	// if err != nil {
+	// 	panic(err)
+	// }
 }
