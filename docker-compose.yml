@@ -4,6 +4,7 @@ networks:
 services:
   node:
     image: sonrhq/sonrd:latest
+    entrypoint: ["sh", "./scripts/"]
     init: true
     container_name: validator
     depends_on:
