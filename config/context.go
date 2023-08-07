@@ -13,13 +13,13 @@ func init() {
 	viper.AddConfigPath("../../")
 	viper.AddConfigPath("$HOME/.sonr")
 	viper.AddConfigPath("$HOME")
-	viper.AddConfigPath("/etc/sonr")
+	viper.SetDefault("highway.icefirekv.host", "localhost")
+	viper.SetDefault("highway.icefirekv.port", 6001)
+	viper.SetDefault("highway.jwt.key", "@re33lyb@dsecret")
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
 	}
 
-	viper.SetDefault("highway.icefirekv.host", "localhost")
-	viper.SetDefault("highway.icefirekv.port", 6001)
-	viper.SetDefault("highway.jwt.key", "@re33lyb@dsecret")
+
 }

@@ -351,14 +351,7 @@ func initAppConfig() (string, interface{}) {
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.API.Enable = true
-	srvCfg.API.Swagger = true
-	srvCfg.API.Address = "0.0.0.0:1317"
-	srvCfg.GRPC.Enable = true
-	srvCfg.GRPC.Address = "0.0.0.0:26657"
-	srvCfg.GRPCWeb.Enable = true
-	srvCfg.GRPCWeb.Address = "0.0.0.0:9090"
-	srvCfg.MinGasPrices = "0.0000snr"
+	srvCfg.MinGasPrices = "0snr"
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
 	}
