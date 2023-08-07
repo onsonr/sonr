@@ -48,7 +48,7 @@ var (
 	IceFireHost = fmt.Sprintf("%s:%d", c.Launch.Highway.DB.IcefireKV.Host, c.Launch.Highway.DB.IcefireKV.Port)
 
 	// JWTSigningKey returns the JWT signing key
-	JWTSigningKey = []byte(c.Launch.Highway.SigningKey)
+	JWTSigningKey = []byte(c.Launch.Highway.JWTSigningKey)
 
 	// NodeAPIHostAddress returns the host and port of the Node API
 	NodeAPIHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.API.Host, c.Launch.Node.API.Port)
