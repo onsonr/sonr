@@ -16,11 +16,11 @@ import (
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
 
-var kBaseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress)
+var baseAPIURL = fmt.Sprintf("http://%s", config.NodeAPIHostAddress())
 
-// The `EncodeTx` function is a method of the `LocalContext` struct. It takes a transaction (`tx`) as input and returns the encoded transaction bytes as output.
+// EncodeCosmosTx function is a method of the `LocalContext` struct. It takes a transaction (`tx`) as input and returns the encoded transaction bytes as output.
 func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
-	endpoint := fmt.Sprintf("%s/cosmos/tx/v1beta1/encode", kBaseAPIUrl)
+	endpoint := fmt.Sprintf("%s/cosmos/tx/v1beta1/encode", baseAPIURL)
 	req := &txtypes.TxEncodeRequest{
 		Tx: tx,
 	}
@@ -40,12 +40,12 @@ func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
 	return resp.TxBytes, nil
 }
 
-// BroadcastTx broadcasts a transaction on the Sonr blockchain network
+// BroadcastCosmosTx broadcasts a transaction on the Sonr blockchain network
 func BroadcastCosmosTx(rawTx []byte) (*txtypes.BroadcastTxResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		config.NodeGrpcHostAddress, // Or your gRPC server address.
-		grpc.WithInsecure(),        // The Cosmos SDK doesn't support any transport security mechanism.
+		config.NodeGrpcHostAddress(), // Or your gRPC server address.
+		grpc.WithInsecure(),          // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
 		return nil, err

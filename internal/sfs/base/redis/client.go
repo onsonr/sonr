@@ -20,7 +20,7 @@ func init() {
 	ifr = &IceFireRedis{
 		ctx: context.Background(),
 		rdb: redis.NewClient(&redis.Options{
-			Addr:     config.IceFireHost,
+			Addr:     config.IceFireKVHost(),
 			Password: "", // no password set
 			DB:       0,  // use default DB
 		}),

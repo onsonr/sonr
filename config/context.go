@@ -34,40 +34,60 @@ func Get() Config {
 	return c
 }
 
-var (
-	// ChainID returns the chain ID from the environment variable SONR_CHAIN_ID. (default: sonr-localnet-1)
-	ChainID = c.ChainID
+// ChainID returns the chain ID from the environment variable SONR_CHAIN_ID. (default: sonr-localnet-1)
+func ChainID() string {
+	return viper.GetString("SONR_CHAIN_ID")
+}
+// Environment returns the environment from the environment variable SONR_ENVIRONMENT. (default: development)
+func Environment() string {
+	return viper.GetString("SONR_ENVIRONMENT")
+}
 
-	// HighwayHostAddress returns the host and port of the Highway API
-	HighwayHostAddress = fmt.Sprintf("%s:%d", c.Launch.Highway.API.Host, c.Launch.Highway.API.Port)
+// IsProduction returns true if the environment is production
+func IsProduction() bool {
+	return viper.GetString("SONR_ENVIRONMENT") == "production"
+}
 
-	// HighwayRequestTimeout returns the timeout for Highway API requests
-	HighwayRequestTimeout = time.Duration(c.Launch.Highway.API.Timeout) * time.Second
+// JWTSigningKey returns the JWT signing key
+func JWTSigningKey() []byte {
+	return []byte(viper.GetString("SONR_LAUNCH_HIGHWAY_SIGNING_KEY"))
+}
 
-	// IceFireHost returns the host and port of the IceFire KV store
-	IceFireHost = fmt.Sprintf("%s:%d", c.Launch.Highway.DB.IcefireKV.Host, c.Launch.Highway.DB.IcefireKV.Port)
+// HighwayHostAddress returns the host and port of the Highway API
+func HighwayHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_HIGHWAY_API_HOST"), viper.GetInt("SONR_LAUNCH_HIGHWAY_API_PORT"))
+}
 
-	// JWTSigningKey returns the JWT signing key
-	JWTSigningKey = []byte(c.Launch.Highway.JWTSigningKey)
+// HighwayRequestTimeout returns the timeout for Highway API requests
+func HighwayRequestTimeout() time.Duration {
+	return time.Duration(viper.GetInt("SONR_LAUNCH_HIGHWAY_API_TIMEOUT")) * time.Second
+}
 
-	// NodeAPIHostAddress returns the host and port of the Node API
-	NodeAPIHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.API.Host, c.Launch.Node.API.Port)
+// IceFireKVHost returns the host and port of the IceFire KV store
+func IceFireKVHost() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_HIGHWAY_DB_ICEFIREKV_HOST"), viper.GetInt("SONR_LAUNCH_HIGHWAY_DB_ICEFIREKV_PORT"))
+}
 
-	// NodeGrpcHostAddress returns the host and port of the Node gRPC
-	NodeGrpcHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.GRPC.Host, c.Launch.Node.GRPC.Port)
+// NodeAPIHostAddress returns the host and port of the Node API
+func NodeAPIHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_API_HOST"), viper.GetInt("SONR_LAUNCH_NODE_API_PORT"))
+}
+// NodeGrpcHostAddress returns the host and port of the Node P2P
+func NodeGrpcHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_GRPC_HOST"), viper.GetInt("SONR_LAUNCH_NODE_GRPC_PORT"))
+}
 
-	// NodeP2PHostAddress returns the host and port of the Node P2P
-	NodeP2PHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.P2P.Host, c.Launch.Node.P2P.Port)
+// NodeP2PHostAddress returns the host and port of the Node P2P
+func NodeP2PHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_P2P_HOST"), viper.GetInt("SONR_LAUNCH_NODE_P2P_PORT"))
+}
 
-	// NodeRPCHostAddress returns the host and port of the Node RPC
-	NodeRPCHostAddress = fmt.Sprintf("%s:%d", c.Launch.Node.RPC.Host, c.Launch.Node.RPC.Port)
+// NodeRPCHostAddress returns the host and port of the Node RPC
+func NodeRPCHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("SONR_LAUNCH_NODE_RPC_HOST"), viper.GetInt("SONR_LAUNCH_NODE_RPC_PORT"))
+}
 
-	// Environment returns the environment from the environment variable SONR_ENVIRONMENT. (default: development)
-	Environment = c.Environment
-
-	// IsProduction returns true if the environment is production
-	IsProduction = c.Environment == "production"
-
-	// ValidatorAddress returns the validator address from the environment variable SONR_VALIDATOR_ADDRESS.
-	ValidatorAddress = c.Launch.Address
-)
+// ValidatorAddress returns the validator address from the environment variable SONR_VALIDATOR_ADDRESS.
+func ValidatorAddress() string {
+	return viper.GetString("SONR_VALIDATOR_ADDRESS")
+}

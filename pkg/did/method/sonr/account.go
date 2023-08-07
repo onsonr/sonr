@@ -8,11 +8,12 @@ import (
 	"github.com/sonrhq/core/pkg/mpc"
 )
 
+// Method is the DID method for Sonr Wallet Actor DIDs
 const Method = types.DIDMethod("sonr")
 
-// The `SonrAccount` struct is defining a custom data type in Go. It represents a Sonr Wallet Actor DID (Decentralized Identifier) account. It has several fields including `Method`, `ID`, `Resources`, `acc`, and `pks`. These fields store information related to the Sonr account, such as the DID method, identifier,
+// Account struct is defining a custom data type in Go. It represents a Sonr Wallet Actor DID (Decentralized Identifier) account. It has several fields including `Method`, `ID`, `Resources`, `acc`, and `pks`. These fields store information related to the Sonr account, such as the DID method, identifier,
 // associated resources, and cryptographic keys.
-type SonrAccount struct {
+type Account struct {
 	Method types.DIDMethod
 	ID     types.DIDIdentifier
 
@@ -21,7 +22,7 @@ type SonrAccount struct {
 }
 
 // NewSonrAccount creates a new Sonr Wallet Actor DID
-func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
+func NewSonrAccount(key types.DIDSecretKey) (*Account, error) {
 	ct := crypto.SONRCoinType
 	m := types.DIDMethod(ct.DIDMethod())
 	acc, pks, err := mpc.GenerateV2("primary", ct)
@@ -50,7 +51,7 @@ func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &SonrAccount{
+	return &Account{
 		Method: m,
 		ID:     id,
 		acc:    acc,
@@ -59,7 +60,7 @@ func NewSonrAccount(key types.DIDSecretKey) (*SonrAccount, error) {
 }
 
 // ResolveAccount resolves a Sonr Wallet Actor DID
-func ResolveAccount(didString string, key types.DIDSecretKey) (*SonrAccount, error) {
+func ResolveAccount(didString string, key types.DIDSecretKey) (*Account, error) {
 	ct := crypto.SONRCoinType
 	m := types.DIDMethod(ct.DIDMethod())
 
@@ -87,7 +88,7 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (*SonrAccount, err
 	if err != nil {
 		return nil, err
 	}
-	return &SonrAccount{
+	return &Account{
 		Method: m,
 		ID:     id,
 		acc:    acc,
@@ -96,37 +97,37 @@ func ResolveAccount(didString string, key types.DIDSecretKey) (*SonrAccount, err
 }
 
 // Address returns the address of the account
-func (a *SonrAccount) Address() string {
+func (a *Account) Address() string {
 	return a.acc.Address
 }
 
 // Info returns the account data
-func (a *SonrAccount) Info() *crypto.AccountData {
+func (a *Account) Info() *crypto.AccountData {
 	return a.acc.GetAccountData()
 }
 
 // Sign signs a message with the account
-func (a *SonrAccount) Sign(msg []byte) ([]byte, error) {
+func (a *Account) Sign(msg []byte) ([]byte, error) {
 	return a.kss.Sign(msg)
 }
 
 // PublicKey returns the public key of the account
-func (a *SonrAccount) PublicKey() (*crypto.Secp256k1PubKey, error) {
+func (a *Account) PublicKey() (*crypto.Secp256k1PubKey, error) {
 	return a.acc.PublicKey(), nil
 }
 
 // Type returns the type of the account
-func (a *SonrAccount) Type() string {
+func (a *Account) Type() string {
 	return "secp256k1"
 }
 
 // Verify verifies a signature
-func (a *SonrAccount) Verify(msg []byte, sig []byte) (bool, error) {
+func (a *Account) Verify(msg []byte, sig []byte) (bool, error) {
 	return a.acc.Verify(msg, sig)
 }
 
 // SendTx sends a transaction
-func (a *SonrAccount) SendTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) {
+func (a *Account) SendTx(msgs ...sdk.Msg) (*sdk.TxResponse, error) {
 	rawBz, err := SignCosmosTx(a, msgs...)
 	if err != nil {
 		return nil, err

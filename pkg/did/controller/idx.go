@@ -22,7 +22,7 @@ type SonrController struct {
 	ID     types.DIDIdentifier
 	Method types.DIDMethod
 
-	primary       *sonr.SonrAccount
+	primary       *sonr.Account
 	Authenticator *authr.Authenticator
 	account       *types.ControllerAccount
 	email         string

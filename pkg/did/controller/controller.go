@@ -19,7 +19,7 @@ func (c *SonrController) Account() *identitytypes.ControllerAccount {
 }
 
 // GetPrimaryWallet returns the primary wallet sonr account
-func (c *SonrController) GetPrimaryWallet() *sonr.SonrAccount {
+func (c *SonrController) GetPrimaryWallet() *sonr.Account {
 	return c.primary
 }
 

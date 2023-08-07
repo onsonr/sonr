@@ -44,7 +44,7 @@ func StartService() {
 }
 
 func (p highway) Start(s service.Service) error {
-	return p.r.Run(config.HighwayHostAddress)
+	return p.r.Run(config.HighwayHostAddress())
 }
 
 func (p highway) Stop(s service.Service) error {
@@ -69,7 +69,7 @@ func initGin() *gin.Engine {
 	// add timeout middleware with 2 second duration
 	defaultMsg := `{"code": -1, "msg":"http: Handler timeout"}`
 	r.Use(timeout.Timeout(
-		timeout.WithTimeout(config.HighwayRequestTimeout),
+		timeout.WithTimeout(config.HighwayRequestTimeout()),
 		timeout.WithErrorHttpCode(http.StatusRequestTimeout), // optional
 		timeout.WithDefaultMsg(defaultMsg),                   // optional
 		timeout.WithCallBack(func(r *http.Request) {
