@@ -84,6 +84,8 @@ func NodeP2PHostAddress() string {
 
 // NodeRPCHostAddress returns the host and port of the Node RPC
 func NodeRPCHostAddress() string {
+	viper.SetDefault("node.p2p.host", "0.0.0.0")
+	viper.SetDefault("node.p2p.port", 26657)
 	return fmt.Sprintf("%s:%d", viper.GetString("node.rpc.host"), viper.GetInt("node.rpc.port"))
 }
 

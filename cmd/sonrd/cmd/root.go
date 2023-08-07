@@ -351,7 +351,7 @@ func initAppConfig() (string, interface{}) {
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := serverconfig.DefaultConfig()
-	srvCfg.MinGasPrices = "0snr"
+	srvCfg.MinGasPrices = "0stake"
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
 	}

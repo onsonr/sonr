@@ -16,5 +16,4 @@ func init() {
 	viper.SetDefault("highway.icefirekv.host", "localhost")
 	viper.SetDefault("highway.icefirekv.port", 6001)
 	viper.SetDefault("highway.jwt.key", "@re33lyb@dsecret")
-	viper.ReadInConfig()
 }
