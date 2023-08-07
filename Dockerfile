@@ -46,7 +46,7 @@ FROM --platform=linux alpine
 
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml /root
+COPY sonr.yml .
 
 # Setup environment variables
 ENV KEY="alice"
