@@ -8,24 +8,29 @@ import (
 	"github.com/spf13/viper"
 )
 
-// StartService starts the highway service
-func StartService() {
-	var err error
-	err = runHighway()
+// StartAPI starts the highway api service
+func StartAPI() {
+	err := runHighway()
 	if err != nil {
 		fmt.Println("Cannot start the service: " + err.Error())
 	}
+}
 
+// StartDB starts the highway db service
+func StartDB() {
 	kvArgs := viper.GetStringSlice("highway.icefirekv.args")
 	kvExecutable := viper.GetString("highway.icefirekv.executable")
-	err = runIcefireKv(kvExecutable, kvArgs)
+	err := runIcefireKv(kvExecutable, kvArgs)
 	if err != nil {
 		fmt.Println("Cannot start the service: " + err.Error())
 	}
+}
 
+// StartSQL starts the highway sql service
+func StartSQL() {
 	sqlArgs := viper.GetStringSlice("highway.icefiresql.args")
 	sqlExecutable := viper.GetString("highway.icefiresql.executable")
-	err = runIcefireSQL(sqlExecutable, sqlArgs)
+	err := runIcefireSQL(sqlExecutable, sqlArgs)
 	if err != nil {
 		fmt.Println("Cannot start the service: " + err.Error())
 	}

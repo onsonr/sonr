@@ -18,6 +18,7 @@ type highway struct {
 }
 
 func (p highway) Start(s service.Service) error {
+	fmt.Printf("Starting Highway at %s", config.HighwayHostAddress())
 	return p.r.Run(config.HighwayHostAddress())
 }
 
@@ -62,6 +63,7 @@ func (p icefirekv) Stop(s service.Service) error {
 
 func runIcefireKv(exec string, args []string) error {
 	if exec == "" {
+		fmt.Println("No executable found for IceFire KV")
 		return nil
 	}
 	fmt.Println("Starting IceFire KV")
@@ -102,6 +104,7 @@ func (p icefiresql) Stop(s service.Service) error {
 
 func runIcefireSQL(exec string, args []string) error {
 	if exec == "" {
+		fmt.Println("No executable found for IceFire SQL")
 		return nil
 	}
 	fmt.Println("Starting IceFire SQL")
