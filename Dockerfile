@@ -20,8 +20,9 @@ FROM --platform=linux alpine
 
 # Copy sonrd binary and config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml .
+COPY sonr.docker.yml sonr.yml
 COPY scripts scripts
+ENV SONR_LAUNCH_CONFIG=/sonr.yml
 
 # Copy IceFire binaries and config
 COPY build/bin/IceFireDB /usr/local/bin/icefirekv
