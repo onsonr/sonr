@@ -3,15 +3,9 @@ networks:
   sonr-net:
 services:
   node:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    entrypoint: ["sh", "./scripts/localnet.sh"]
+    image: sonr-devnet-val
     init: true
     container_name: validator
-    depends_on:
-      - icefiredb
-      - icefiresql
     networks:
       - sonr-net
     ports:
@@ -20,23 +14,6 @@ services:
       - 26657:26657 # rpc
       - 9090:9090 # grpc
       - 8080:8080 # highway
-    restart: always
-  icefiredb:
-    image: sonrhq/icefiredb:latest
-    init: true
-    container_name: icefiredb
-    networks:
-      - sonr-net
-    ports:
-      - 6001:6001
-    restart: always
-  icefiresql:
-    image: sonrhq/icefiresql:latest
-    init: true
-    networks:
-      - sonr-net
-    ports:
-      - 23306:23306
     restart: always
   faucet:
     image: sonrhq/sonr-faucet:latest

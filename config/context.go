@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/viper"
 )
@@ -10,23 +11,13 @@ func init() {
 	setupDefaults()
 	viper.SetEnvPrefix("sonr")
 	viper.AutomaticEnv()
-
-	configPath := viper.GetString("launch.config")
-	if configPath != "" {
-		viper.SetConfigFile(configPath)
+	confPath := os.Getenv("SONR_LAUNCH_CONFIG")
+	if confPath != "" {
+		viper.SetConfigFile(confPath)
 		err := viper.ReadInConfig()
 		if err != nil {
-			panic(err)
+			fmt.Println("Cannot read config file: " + err.Error())
 		}
 	}
 	fmt.Println("Using config file:", viper.ConfigFileUsed())
-	PrintEnv()
-}
-
-// PrintEnv prints the environment variables
-func PrintEnv() {
-	opts := viper.GetViper().AllSettings()
-	for k, v := range opts {
-		fmt.Printf("%s: %v\n", k, v)
-	}
 }

@@ -35,7 +35,7 @@ tasks:
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
-      - docker compose up --abort-on-container-exit
+      - docker compose up
 
   generate:
     desc: Generate the protobuf files

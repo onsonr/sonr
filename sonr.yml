@@ -14,9 +14,15 @@ highway:
   icefirekv:
     host: "icefiredb"
     port: 6001
+    executable: "build/bin/icefirekv"
+    args:
   icefiresql:
     host: "icefiresql"
     port: 23306
+    executable: "build/bin/icefiresql"
+    args:
+      - "-c"
+      - "./config.sql.yaml"
 node:
   api:
     host: "0.0.0.0"

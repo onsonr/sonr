@@ -8,15 +8,15 @@ highway:
   jwt:
     key: "sercrethatmaycontainch@r$32chars"
   api:
-    host: "localhost"
+    host: "0.0.0.0"
     port: 8080
     timeout: 15
   icefirekv:
-    host: "icefiredb"
+    host: "0.0.0.0"
     port: 6001
     executable: "/usr/local/bin/icefirekv"
   icefiresql:
-    host: "icefiresql"
+    host: "0.0.0.0"
     port: 23306
     executable: "/usr/local/bin/icefiresql"
     args:
