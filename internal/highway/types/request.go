@@ -10,7 +10,7 @@ import (
 // ! ||                                  SignAndSendTx                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// This struct is used to represent a request object for signing and sending a transaction. the messages to be included in the transaction, and `DID`, which is a string representing the decentralized identifier associated with the transaction.
+// SignAndSendTxRequest struct is used to represent a request object for signing and sending a transaction. the messages to be included in the transaction, and `DID`, which is a string representing the decentralized identifier associated with the transaction.
 type SignAndSendTxRequest struct {
 	Messages []*tx.SignDoc `json:"messages"`
 	DID      string        `json:"did"`
@@ -30,7 +30,7 @@ func (r *SignAndSendTxRequest) Unmarshal(data []byte) error {
 // ! ||                                 SignWithAccount                                ||
 // ! ||--------------------------------------------------------------------------------||
 
-// The `SignWithAccountRequest` struct is defining the structure of a request object for signing a message with an account. It has two fields: `Message`, which is a string representing the message to be signed, and `DID`, which is a string representing the decentralized identifier
+// SignWithAccountRequest struct is defining the structure of a request object for signing a message with an account. It has two fields: `Message`, which is a string representing the message to be signed, and `DID`, which is a string representing the decentralized identifier
 // associated with the account.
 type SignWithAccountRequest struct {
 	Message string `json:"message"`
@@ -51,7 +51,7 @@ func (r *SignWithAccountRequest) Unmarshal(data []byte) error {
 // ! ||                                VerifyWithAccount                               ||
 // ! ||--------------------------------------------------------------------------------||
 
-// The `VerifyWithAccountRequest` struct is defining the structure of a request object for verifying a message with an account. It has three fields: message, and `DID`, which is a string representing the decentralized identifier associated with the account.
+// VerifyWithAccountRequest struct is defining the structure of a request object for verifying a message with an account. It has three fields: message, and `DID`, which is a string representing the decentralized identifier associated with the account.
 type VerifyWithAccountRequest struct {
 	Message   string `json:"message"`
 	Signature string `json:"signature"`

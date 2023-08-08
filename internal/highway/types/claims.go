@@ -17,7 +17,7 @@ import (
 // ! ||                                 Credential JWT                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// The `CredentialJWTClaims` struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
+// CredentialJWTClaims struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
 // needs to be included in the JWT for authentication or authorization purposes.
 type CredentialJWTClaims struct {
 	AccountDid string `json:"did"`
@@ -25,7 +25,7 @@ type CredentialJWTClaims struct {
 	UUID       string `json:"uuid"`
 }
 
-// The function NewCredentialJWTClaims takes a did string and returns a JWTClaims struct.
+// NewCredentialJWTClaims takes a did string and returns a JWTClaims struct.
 func NewCredentialJWTClaims(did string) (CredentialJWTClaims, string, error) {
 	claims := CredentialJWTClaims{
 		AccountDid: did,
@@ -39,7 +39,7 @@ func NewCredentialJWTClaims(did string) (CredentialJWTClaims, string, error) {
 	return claims, crypto.Base58Encode(token), nil
 }
 
-// The function VerifyCredentialJWTClaims takes a token string as input and returns the JWTClaims and an error.
+// VerifyCredentialJWTClaims takes a token string as input and returns the JWTClaims and an error.
 func VerifyCredentialJWTClaims(token string) (CredentialJWTClaims, error) {
 	raw, err := crypto.Base58Decode(token)
 	if err != nil {
@@ -71,7 +71,7 @@ func (c CredentialJWTClaims) IsValid() error {
 // ! ||                                    Email JWT                                   ||
 // ! ||--------------------------------------------------------------------------------||
 
-// The `CredentialJWTClaims` struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
+// EmailJWTClaims struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
 // needs to be included in the JWT for authentication or authorization purposes.
 type EmailJWTClaims struct {
 	AccountDid    string `json:"did"`
@@ -80,7 +80,7 @@ type EmailJWTClaims struct {
 	Email         string `json:"email"`
 }
 
-// The function NewCredentialJWTClaims takes a did string and returns a JWTClaims struct.
+// NewEmailJWTClaims takes a did string and returns a JWTClaims struct.
 func NewEmailJWTClaims(did string, email string) (EmailJWTClaims, string, error) {
 	claims := EmailJWTClaims{
 		AccountDid: did,
@@ -94,7 +94,7 @@ func NewEmailJWTClaims(did string, email string) (EmailJWTClaims, string, error)
 	return claims, crypto.Base58Encode(token), nil
 }
 
-// The function VerifyCredentialJWTClaims takes a token string as input and returns the JWTClaims and an error.
+// VerifyEmailJWTClaims takes a token string as input and returns the JWTClaims and an error.
 func VerifyEmailJWTClaims(token string) (EmailJWTClaims, error) {
 	raw, err := crypto.Base58Decode(token)
 	if err != nil {
@@ -136,14 +136,14 @@ func (c EmailJWTClaims) ControllerIdentifier() string {
 // ! ||                             Email-based Encryption                             ||
 // ! ||--------------------------------------------------------------------------------||
 
-// The `EmailEncryptedData` struct is defining a data structure that represents the encrypted data to be stored in the JWT. It contains fields such as `Did` and `Base64`, which hold information related to the encrypted data. The `Did` field represents the decentralized identifier
+// EmailEncryptedData struct is defining a data structure that represents the encrypted data to be stored in the JWT. It contains fields such as `Did` and `Base64`, which hold information related to the encrypted data. The `Did` field represents the decentralized identifier
 // associated with the data, and the `Base64` field stores the encrypted data in base64 format. This struct is used in the `Encrypt` and `Decrypt` methods of the `EmailJWTClaims` struct to encrypt and decrypt data using the JWT signing key.
 type EmailEncryptedData struct {
 	Did    string `json:"did"`
 	Base64 string `json:"base64"`
 }
 
-// The `Encrypt` method of the `EmailJWTClaims` struct is used to encrypt data using the JWT signing key. It takes a byte slice `data` as input and returns a byte slice representing the encrypted data and an error.
+// Encrypt method of the `EmailJWTClaims` struct is used to encrypt data using the JWT signing key. It takes a byte slice `data` as input and returns a byte slice representing the encrypted data and an error.
 func (c EmailJWTClaims) Encrypt(data []byte) ([]byte, error) {
 	enc := EmailEncryptedData{
 		Did:    c.AccountDid,
@@ -156,7 +156,7 @@ func (c EmailJWTClaims) Encrypt(data []byte) ([]byte, error) {
 	return token, nil
 }
 
-// The `Decrypt` method of the `EmailJWTClaims` struct is used to decrypt data that has been encrypted using the JWT signing key. It takes a byte slice `data` as input, which represents the encrypted data, and returns a byte slice representing the decrypted data and an error.
+// Decrypt method of the `EmailJWTClaims` struct is used to decrypt data that has been encrypted using the JWT signing key. It takes a byte slice `data` as input, which represents the encrypted data, and returns a byte slice representing the decrypted data and an error.
 func (c EmailJWTClaims) Decrypt(data []byte) ([]byte, error) {
 	// Verify and extract claims from a token:
 	verifiedToken, err := jwt.Verify(jwt.HS256, c.SigningKey(), data)
@@ -184,7 +184,7 @@ func (c EmailJWTClaims) SigningKey() []byte {
 // ! ||                                 Session JWT                                 ||
 // ! ||-----------------------------------------------------------------------------||
 
-// The `CredentialJWTClaims` struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
+// SessionJWTClaims struct is defining a data structure that represents the claims (or payload) of a JSON Web Token (JWT). It contains fields such as `Did`, `ExpiresAt`, and `UUID`, which hold information related to the JWT. These fields can be used to store additional data that
 // needs to be included in the JWT for authentication or authorization purposes.
 type SessionJWTClaims struct {
 	Address       string `json:"address"`
@@ -193,7 +193,7 @@ type SessionJWTClaims struct {
 	ExpiresAt     int64  `json:"expires_at"`
 }
 
-// The function NewCredentialJWTClaims takes a did string and returns a JWTClaims struct.
+// NewSessionJWTClaims takes a did string and returns a JWTClaims struct.
 func NewSessionJWTClaims(email string, acc *identitytypes.ControllerAccount) (string, error) {
 	claims := SessionJWTClaims{
 		Address:       acc.Address,
@@ -208,7 +208,7 @@ func NewSessionJWTClaims(email string, acc *identitytypes.ControllerAccount) (st
 	return crypto.Base58Encode(token), nil
 }
 
-// The function VerifyCredentialJWTClaims takes a token string as input and returns the JWTClaims and an error.
+// VerifySessionJWTClaims takes a token string as input and returns the JWTClaims and an error.
 func VerifySessionJWTClaims(token string) (SessionJWTClaims, error) {
 	raw, err := crypto.Base58Decode(token)
 	if err != nil {

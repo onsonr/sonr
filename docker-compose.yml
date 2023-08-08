@@ -3,8 +3,10 @@ networks:
   sonr-net:
 services:
   node:
-    image: sonrhq/sonrd:latest
-    entrypoint: ["sh", "./scripts/"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    entrypoint: ["sh", "./scripts/localnet.sh"]
     init: true
     container_name: validator
     depends_on:

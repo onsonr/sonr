@@ -7,16 +7,34 @@ import (
 
 var (
 	// ErrNullWebauthnCredential is returned when a null credential is provided
-	ErrNullWebauthnCredential  = fmt.Errorf("provided webauthn credential is null")
-	ErrNullVaultKeyshare       = fmt.Errorf("provided vault keyshare is null")
-	ErrInvalidCredentailCount  = fmt.Errorf("expected 1 credential formatted as json")
-	ErrJWTExpired              = fmt.Errorf("jwt has expired")
-	ErrInvalidEmailController  = fmt.Errorf("controller is not a valid email controller containing 'did:email:'")
-	ErrInvalidEmailAddress     = fmt.Errorf("email address is not properly formatted")
-	ErrFailedToRenameKeyshare  = fmt.Errorf("failed to rename keyshare")
-	ErrNotFoundInPendingSet    = fmt.Errorf("this did is not in the pending set for this vault")
+	ErrNullWebauthnCredential = fmt.Errorf("provided webauthn credential is null")
+
+	// ErrNullVaultKeyshare is returned when a null keyshare is provided
+	ErrNullVaultKeyshare = fmt.Errorf("provided vault keyshare is null")
+
+	// ErrInvalidCredentailCount is returned when the credential count is not 1
+	ErrInvalidCredentailCount = fmt.Errorf("expected 1 credential formatted as json")
+
+	// ErrJWTExpired is returned when the jwt has expired
+	ErrJWTExpired = fmt.Errorf("jwt has expired")
+
+	// ErrInvalidEmailController is returned when the controller is not a valid email controller
+	ErrInvalidEmailController = fmt.Errorf("controller is not a valid email controller containing 'did:email:'")
+
+	// ErrInvalidEmailAddress is returned when the email address is not properly formatted
+	ErrInvalidEmailAddress = fmt.Errorf("email address is not properly formatted")
+
+	// ErrFailedToRenameKeyshare is returned when the keyshare could not be renamed
+	ErrFailedToRenameKeyshare = fmt.Errorf("failed to rename keyshare")
+
+	// ErrNotFoundInPendingSet is returned when the did is not in the pending set for this vault
+	ErrNotFoundInPendingSet = fmt.Errorf("this did is not in the pending set for this vault")
+
+	// ErrNotFoundInControlledSet is returned when the did is not in the controlled set for this vault
 	ErrNotFoundInControlledSet = fmt.Errorf("this did is not in the controlled set for this vault")
-	ErrInvalidKeyshareIndex    = fmt.Errorf("keyshare index is not valid")
+
+	// ErrInvalidKeyshareIndex is returned when the keyshare index is not valid
+	ErrInvalidKeyshareIndex = fmt.Errorf("keyshare index is not valid")
 )
 
 // IsValidEmailAddress returns true if the email is valid

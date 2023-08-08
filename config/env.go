@@ -21,8 +21,13 @@ func setupDefaults() {
 
 	viper.SetDefault("highway.icefirekv.host", "localhost")
 	viper.SetDefault("highway.icefirekv.port", 23305)
+	viper.SetDefault("highway.icefirekv.args", "")
+	viper.SetDefault("highway.icefirekv.executable", "")
+
 	viper.SetDefault("highway.icefiresql.host", "localhost")
 	viper.SetDefault("highway.icefiresql.port", 23306)
+	viper.SetDefault("highway.icefiresql.args", "")
+	viper.SetDefault("highway.icefiresql.executable", "")
 
 	viper.SetDefault("node.api.host", "0.0.0.0")
 	viper.SetDefault("node.api.port", 1317)

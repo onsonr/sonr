@@ -19,6 +19,7 @@ func init() {
 			panic(err)
 		}
 	}
+	fmt.Println("Using config file:", viper.ConfigFileUsed())
 	PrintEnv()
 }
 
