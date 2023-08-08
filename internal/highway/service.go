@@ -64,6 +64,7 @@ func runIcefireKv(exec string, args []string) error {
 	if exec == "" {
 		return nil
 	}
+	fmt.Println("Starting IceFire KV")
 	ikv := &icefirekv{
 		conf: &service.Config{
 			Name:        types.IceFireKVServiceName,
@@ -80,7 +81,7 @@ func runIcefireKv(exec string, args []string) error {
 	}
 	err = s.Run()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	return nil
 }
@@ -103,6 +104,7 @@ func runIcefireSQL(exec string, args []string) error {
 	if exec == "" {
 		return nil
 	}
+	fmt.Println("Starting IceFire SQL")
 	ikv := &icefiresql{
 		conf: &service.Config{
 			Name:        types.IceFireKVServiceName,
@@ -119,7 +121,7 @@ func runIcefireSQL(exec string, args []string) error {
 	}
 	err = s.Run()
 	if err != nil {
-		return err
+		panic(err)
 	}
 	return nil
 }
