@@ -18,6 +18,8 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 # ! ||--------------------------------------------------------------------------------||
 FROM --platform=linux alpine
 
+
+
 # Copy the sonrd binary from the builder stage and local config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml .
