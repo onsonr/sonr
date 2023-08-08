@@ -38,7 +38,7 @@ func JWTSigningKey() []byte {
 
 // HighwayHostAddress returns the host and port of the Highway API
 func HighwayHostAddress() string {
-	viper.SetDefault("highway.api.host", "localhost")
+	viper.SetDefault("highway.api.host", "0.0.0.0")
 	return fmt.Sprintf("%s:%d", viper.GetString("highway.api.host"), viper.GetInt("highway.api.port"))
 }
 
