@@ -81,7 +81,8 @@
     "tools": true,
     "testutil": true,
     "go.sum": true,
-    ".swm": true
+    ".swm": true,
+    "build": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -100,9 +101,10 @@
           "fontStyle": "italic"
         }
       }
-    ]
+    ],
+    "comments": ""
   },
-  "explorer.excludeGitIgnore": false,
+  "explorer.excludeGitIgnore": true,
   "editor.fontFamily": "FiraCode",
   "hide-files.files": [
     "snap",
@@ -111,7 +113,8 @@
     "tools",
     "testutil",
     "go.sum",
-    ".swm"
+    ".swm",
+    "build"
   ],
   "DockerRun.DisableDockerrc": true,
   "DockerRun.Containers": [],

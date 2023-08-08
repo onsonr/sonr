@@ -14,11 +14,24 @@ tasks:
       - echo "⭐️ TASKFILE (sonrhq/core) ⭐️"
       - echo ""
       - task --list
+      - rm -rf build
+      - git clone https://github.com/sonrhq/icefire.git ./build/icefire
+      - task: plugins
 
   build:
     desc: Build the binary for docker
     cmds:
       - docker build -f ./Dockerfile -t sonrd . --no-cache
+
+  plugins:
+    desc: Install the taskfile plugins
+    dir: ./build
+    cmds:
+      - cd icefire && task build && cd ..
+      - mv ./icefire/bin ./bin
+      - mv ./icefire/config ./config
+      - mv ./icefire/db ./db
+      - rm -rf ./icefire
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:

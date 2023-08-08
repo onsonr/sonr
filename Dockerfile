@@ -18,12 +18,16 @@ RUN go build -o ./build/sonrd ./cmd/sonrd/main.go
 # ! ||--------------------------------------------------------------------------------||
 FROM --platform=linux alpine
 
-
-
-# Copy the sonrd binary from the builder stage and local config
+# Copy sonrd binary and config
 COPY --from=builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml .
 COPY scripts scripts
+
+# Copy IceFire binaries and config
+COPY build/bin/IceFireDB /usr/local/bin/icefirekv
+COPY build/bin/IceFireDB-SQLite /usr/local/bin/icefiresql
+COPY build/config/config.sql.yaml config.sql.yaml
+COPY build/db/read.txt /db/read.txt
 
 # Expose ports
 EXPOSE 26657

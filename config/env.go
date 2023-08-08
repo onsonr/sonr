@@ -20,7 +20,7 @@ func setupDefaults() {
 	viper.SetDefault("highway.api.timeout", 15)
 
 	viper.SetDefault("highway.icefirekv.host", "localhost")
-	viper.SetDefault("highway.icefirekv.port", 23305)
+	viper.SetDefault("highway.icefirekv.port", 6001)
 	viper.SetDefault("highway.icefirekv.args", "")
 	viper.SetDefault("highway.icefirekv.executable", "")
 
