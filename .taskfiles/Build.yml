@@ -51,9 +51,21 @@ tasks:
     cmds:
       - task: docker-release-val
         vars:
-          TOKEN: $DOPPLER_VAL_DOCKER_TOKEN
+          TOKEN: $DOPPLER_VAL_AUSTIN_TOKEN
+          MONIKER: austin
+      - task: docker-release-val
+        vars:
+          TOKEN: $DOPPLER_VAL_BROOKLYN_TOKEN
+          MONIKER: brooklyn
+      - task: docker-release-val
+        vars:
+          TOKEN: $DOPPLER_VAL_CHELSEA_TOKEN
+          MONIKER: chelsea
+      - task: docker-release-val
+        vars:
+          TOKEN: $DOPPLER_VAL_MASON_TOKEN
           MONIKER: mason
-
+          
   release:deps:
     desc: Release support dependencies
     cmds:
@@ -63,7 +75,7 @@ tasks:
       - task: docker-release
         vars:
           IMAGE: sonr-faucet
-          
+
 # ------------------------------------------------------------------------------
 # -- Internal Tasks ------------------------------------------------------------
 # ------------------------------------------------------------------------------

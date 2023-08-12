@@ -11,7 +11,7 @@ import (
 	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
-var baseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress)
+var baseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress())
 
 // GetEmailRecordCreator returns the creator of a given email
 func GetEmailRecordCreator(email string) (string, error) {
