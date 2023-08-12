@@ -6,12 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	highlightGin "github.com/highlight/highlight/sdk/highlight-go/middleware/gin"
-	swaggerFiles "github.com/swaggo/files"     // swagger embed files
-	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
+	"github.com/kardianos/service"
+
 	timeout "github.com/vearne/gin-timeout"
 
 	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/internal/highway/routes"
+	"github.com/sonrhq/core/internal/highway/types"
 )
 
 // @title           Sonr Highway Protocol API
@@ -41,6 +42,41 @@ func initGin() *gin.Engine {
 		})))
 	r.Use(highlightGin.Middleware())
 	routes.RegisterRoutes(r)
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return r
+}
+
+type highway struct {
+	r    *gin.Engine
+	conf *service.Config
+}
+
+func (p highway) Start(s service.Service) error {
+	fmt.Printf("Starting Highway at %s", config.HighwayHostAddress())
+	go p.r.Run(":8080")
+	return nil
+}
+
+func (p highway) Stop(s service.Service) error {
+	return s.Stop()
+}
+
+func runHighway() error {
+	h := &highway{
+		r: initGin(),
+		conf: &service.Config{
+			Name:        types.HighwayServiceName,
+			DisplayName: types.HighwayServiceDisplayName,
+			Description: types.HighwayServiceDescription,
+		},
+	}
+
+	s, err := service.New(h, h.conf)
+	if err != nil {
+		return err
+	}
+	err = s.Run()
+	if err != nil {
+		return err
+	}
+	return nil
 }

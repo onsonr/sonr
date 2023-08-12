@@ -1,55 +1,41 @@
 version: "3"
 dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-env:
-  ENV: development
+
 vars:
   VERSION:
     sh: echo $(git describe --tags --abbrev=0)
     default: "v0.0.0"
+  COMMIT:
+    sh: git log -n 1 --format=%h
+    default: "0000000"
+  DATE:
+    sh: date -u '+%m/%d/%y %I:%M:%S%p'
+    default: "1970-01-01_00:00:00AM"
+
+includes:
+  build:
+    taskfile: .taskfiles/Build.yml
+  dev:
+    taskfile: .taskfiles/Dev.yml
+  sonr:
+    taskfile: .taskfiles/Sonr.yml
+
+
+# ----------------------------------------------------------------------------
+# -- Public Tasks ------------------------------------------------------------
+# ----------------------------------------------------------------------------
 tasks:
   default:
+    desc: Print the version
     silent: true
     cmds:
-      - echo ""
-      - echo "⭐️ TASKFILE (sonrhq/core) ⭐️"
-      - echo ""
-      - task --list
-      - rm -rf build
-      - git clone https://github.com/sonrhq/icefire.git ./build/icefire
-      - task: plugins
+      - echo -----------------------------------------------
+      - echo '(sonrhq/core) - https://github.com/sonrhq/core'
+      - echo -----------------------------------------------
+      - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
+      - task -l
 
-  build:
-    desc: Build the binary for docker
+  db:
+    desc: Install the database
     cmds:
-      - docker build -f ./Dockerfile -t sonrd . --no-cache
-
-  plugins:
-    desc: Install the taskfile plugins
-    dir: ./build
-    cmds:
-      - cd icefire && task build && cd ..
-      - mv ./icefire/bin ./bin
-      - mv ./icefire/config ./config
-      - mv ./icefire/db ./db
-      - rm -rf ./icefire
-  dev:
-    desc: Serve the blockchain locally with verbose logging
-    cmds:
-      - docker compose up
-
-  generate:
-    desc: Generate the protobuf files
-    cmds:
-      - sh ./scripts/generate.sh
-
-  release:
-    desc: Build the binary for docker
-    deps:
-      - build
-    cmds:
-      - docker tag sonrd sonrhq/sonrd:latest
-      - docker tag sonrd registry.digitalocean.com/sonrhq/sonrd:latest
-      - docker tag sonrd ghcr.io/sonrhq/sonrd:latest
-      - docker push sonrhq/sonrd:latest
-      - docker push registry.digitalocean.com/sonrhq/sonrd:latest
-      - docker push ghcr.io/sonrhq/sonrd:latest
+      - git clone https://github.com/sonrhq/icefire.git .tmp/icefire

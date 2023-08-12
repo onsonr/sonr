@@ -22,8 +22,11 @@ import (
 )
 
 type (
+	// Network is a wrapper around the network.Network type.
 	Network = network.Network
-	Config  = network.Config
+
+	// Config is a wrapper around the network.Config type.
+	Config = network.Config
 )
 
 // New creates instance with fully configured cosmos network.
@@ -69,7 +72,9 @@ func DefaultConfig() network.Config {
 				val.GetCtx().Config.RootDir,
 				0,
 				encoding,
+				nil,
 				simtestutil.EmptyAppOptions{},
+				nil,
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 				baseapp.SetChainID(chainID),

@@ -3,7 +3,7 @@ networks:
   sonr-net:
 services:
   node:
-    image: sonr-devnet-val
+    image: sonr-node
     init: true
     container_name: validator
     networks:
@@ -13,12 +13,12 @@ services:
       - 26656:26656 # p2p
       - 26657:26657 # rpc
       - 9090:9090 # grpc
-      - 8080:8080 # highway
+      - 8000:8080 # highway
     restart: always
   faucet:
-    image: sonrhq/sonr-faucet:latest
+    image: sonr-faucet
     init: true
-    command: ["start", "http://validator:26657"]
+    command: [ "start", "http://validator:26657" ]
     networks:
       - sonr-net
     depends_on:
@@ -26,3 +26,20 @@ services:
     ports:
       - 4500:4500
     restart: always
+  db:
+    image: ghcr.io/sonrhq/icefiredb:latest
+    init: true
+    container_name: db
+    networks:
+      - sonr-net
+    ports:
+      - 6001:6001
+    restart: always
+  sql:
+    image: ghcr.io/sonrhq/icefiresql:latest
+    init: true
+    container_name: sql
+    networks:
+      - sonr-net
+    ports:
+      - 23367:23367

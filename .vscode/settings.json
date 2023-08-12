@@ -75,14 +75,6 @@
     "**/**/types/*_test.go": true,
     "LICENSE": true,
     "proto/buf.lock": true,
-    "snap": true,
-    "types": true,
-    ".devcontainer": true,
-    "tools": true,
-    "testutil": true,
-    "go.sum": true,
-    ".swm": true,
-    "build": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -104,7 +96,7 @@
     ],
     "comments": ""
   },
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "editor.fontFamily": "FiraCode",
   "hide-files.files": [
     "snap",

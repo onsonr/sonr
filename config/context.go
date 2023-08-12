@@ -16,7 +16,7 @@ func init() {
 		viper.SetConfigFile(confPath)
 		err := viper.ReadInConfig()
 		if err != nil {
-			fmt.Println("Cannot read config file: " + err.Error())
+			panic(err)
 		}
 	}
 	fmt.Println("Using config file:", viper.ConfigFileUsed())

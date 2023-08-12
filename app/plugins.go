@@ -7,6 +7,4 @@ import (
 // EnablePlugins enables the plugins.
 func EnablePlugins() {
 	go highway.StartAPI()
-	go highway.StartDB()
-	go highway.StartSQL()
 }

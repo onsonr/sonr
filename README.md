@@ -1,6 +1,4 @@
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonrhq/core)
-
 <div style="text-align: center;">
 
 [![Sonr Logo Banner](.github/images/banner.png)](https://snr.la/h)
@@ -17,6 +15,8 @@
 
 ## Getting Started
 
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonrhq/core)
+
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
@@ -30,7 +30,6 @@ The `install.sh` script will install the following tools:
 - [Ignite CLI](https://github.com/ignite/cli)
 - [Taskfile](https://taskfile.dev)
 - [Buf CLI](https://docs.buf.build/introduction)
-- [Mintlify](https://mintlify.com/docs/development)
 
 You need to set the following environment variables to run the blockchain:
 

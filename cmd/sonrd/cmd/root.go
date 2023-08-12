@@ -8,7 +8,9 @@ import (
 	"strings"
 
 	// this line is used by starport scaffolding # root/moduleImport
+	"github.com/CosmWasm/wasmd/x/wasm"
 
+	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -35,10 +37,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
+	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/sonrhq/core/app"
 	appparams "github.com/sonrhq/core/app/params"
 )
@@ -139,7 +144,7 @@ func initRootCmd(
 		a.appExport,
 		addModuleInitFlags,
 	)
-
+	wasmcli.ExtendUnsafeResetAllCmd(rootCmd)
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
 		rpc.StatusCommand(),
@@ -204,6 +209,7 @@ func txCommand() *cobra.Command {
 
 func addModuleInitFlags(startCmd *cobra.Command) {
 	crisis.AddModuleInitFlags(startCmd)
+	wasm.AddModuleInitFlags(startCmd)
 	// this line is used by starport scaffolding # root/arguments
 }
 
@@ -277,6 +283,10 @@ func (a appCreator) newApp(
 		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
 	)
 
+	var wasmOpts []wasmkeeper.Option
+	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
+		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
+	}
 	return app.New(
 		logger,
 		db,
@@ -286,7 +296,9 @@ func (a appCreator) newApp(
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encodingConfig,
+		app.GetEnabledProposals(),
 		appOpts,
+		wasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
@@ -318,6 +330,7 @@ func (a appCreator) appExport(
 		return servertypes.ExportedApp{}, errors.New("application home not set")
 	}
 
+	var emptyWasmOpts []wasmkeeper.Option
 	app := app.New(
 		logger,
 		db,
@@ -327,7 +340,9 @@ func (a appCreator) appExport(
 		homePath,
 		uint(1),
 		a.encodingConfig,
+		app.GetEnabledProposals(),
 		appOpts,
+		emptyWasmOpts,
 	)
 
 	if height != -1 {
@@ -344,8 +359,19 @@ func (a appCreator) appExport(
 func initAppConfig() (string, interface{}) {
 	// The following code snippet is just for reference.
 
+	// WASMConfig defines configuration for the wasm module.
+	type WASMConfig struct {
+		// This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
+		QueryGasLimit uint64 `mapstructure:"query_gas_limit"`
+
+		// Address defines the gRPC-web server to listen on
+		LruSize uint64 `mapstructure:"lru_size"`
+	}
+
 	type CustomAppConfig struct {
 		serverconfig.Config
+
+		Wasm wasmtypes.WasmConfig `mapstructure:"wasm"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
@@ -353,8 +379,15 @@ func initAppConfig() (string, interface{}) {
 	srvCfg := serverconfig.DefaultConfig()
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
+		Wasm:   wasmtypes.DefaultWasmConfig(),
 	}
-	customAppTemplate := serverconfig.DefaultConfigTemplate
+	customAppTemplate := serverconfig.DefaultConfigTemplate + `
+	[wasm]
+	# This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
+	query_gas_limit = 300000
+	# This is the number of wasm vm instances we keep cached in memory for speed-up
+	# Warning: this is currently unstable and may lead to crashes, best to keep for 0 unless testing locally
+	lru_size = 0`
 
 	return customAppTemplate, customAppConfig
 }

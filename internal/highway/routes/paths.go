@@ -2,8 +2,8 @@ package routes
 
 const (
 	// Accounts endpoints
-	kGetHealthStatus           = "/health"                                        // Public
-	kCreateAccountEndpoint     = "/sonr/highway/accounts/create/:coin_type/:name" // Authenticated
+	getHealthStatusEndpoint    = "/health"                                        // Public
+	createAccountEndpoint      = "/sonr/highway/accounts/create/:coin_type/:name" // Authenticated
 	kGetAccountEndpoint        = "/sonr/highway/accounts/:did"                    // Public
 	kListAccountsEndpoint      = "/sonr/highway/accounts/:coin_type"              // Authenticated
 	kSignWithAccountEndpoint   = "/sonr/highway/accounts/:did/sign"               // Authenticated
