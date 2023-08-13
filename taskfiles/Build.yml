@@ -100,7 +100,7 @@ tasks:
     internal: true
     desc: Release support dependencies
     cmds:
-      - task: docker-release
+      - task: docker-release-deps
         vars:
           IMAGE: tkms
       - task: docker-release
@@ -125,12 +125,27 @@ tasks:
     requires:
       vars: [IMAGE]
 
+  docker-release-deps:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - docker build -f ./Dockerfile.deps . --no-cache --target {{.IMAGE}} -t {{.IMAGE}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+    requires:
+      vars: [IMAGE]
+
   docker-release-val:
     silent: true
     internal: true
     desc: Build, tag and push the docker image
     cmds:
-      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile . --no-cache --target sonr-validator -t sonr-val-{{.MONIKER}}
+      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile.prod . --no-cache --target sonr-validator -t sonr-val-{{.MONIKER}}
       - docker tag sonr-val-{{.MONIKER}} {{.REGISTRY}}/sonr-val-{{.MONIKER}}:latest
       - docker tag sonr-val-{{.MONIKER}} {{.REGISTRY}}/sonr-val-{{.MONIKER}}:{{.VERSION}}
       - docker tag sonr-val-{{.MONIKER}} {{.REGISTRY}}/sonr-val-{{.MONIKER}}:{{.COMMIT}}
@@ -145,7 +160,7 @@ tasks:
     internal: true
     desc: Build, tag and push the docker image
     cmds:
-      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile . --no-cache --target sonr-validator -t sonr-node-{{.MONIKER}}
+      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile.prod . --no-cache --target sonr-validator -t sonr-node-{{.MONIKER}}
       - docker tag sonr-node-{{.MONIKER}} {{.REGISTRY}}/sonr-node-{{.MONIKER}}:latest
       - docker tag sonr-node-{{.MONIKER}} {{.REGISTRY}}/sonr-node-{{.MONIKER}}:{{.VERSION}}
       - docker tag sonr-node-{{.MONIKER}} {{.REGISTRY}}/sonr-node-{{.MONIKER}}:{{.COMMIT}}
@@ -160,7 +175,7 @@ tasks:
     internal: true
     desc: Build, tag and push the docker image
     cmds:
-      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile . --no-cache --target sonr-validator -t sonr-sentry-{{.MONIKER}}
+      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f ./Dockerfile.prod . --no-cache --target sonr-validator -t sonr-sentry-{{.MONIKER}}
       - docker tag sonr-sentry-{{.MONIKER}} {{.REGISTRY}}/sonr-sentry-{{.MONIKER}}:latest
       - docker tag sonr-sentry-{{.MONIKER}} {{.REGISTRY}}/sonr-sentry-{{.MONIKER}}:{{.VERSION}}
       - docker tag sonr-sentry-{{.MONIKER}} {{.REGISTRY}}/sonr-sentry-{{.MONIKER}}:{{.COMMIT}}
