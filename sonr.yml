@@ -12,29 +12,23 @@ highway:
     port: 8080
     timeout: 15
   icefirekv:
-    host: "icefiredb"
+    host: "db"
     port: 6001
-    executable: "build/bin/icefirekv"
-    args:
   icefiresql:
-    host: "icefiresql"
+    host: "sql"
     port: 23306
-    executable: "build/bin/icefiresql"
-    args:
-      - "-c"
-      - "./config.sql.yaml"
 node:
   api:
-    host: "0.0.0.0"
+    host: "validator"
     port: 1317
   p2p:
-    host: "0.0.0.0"
+    host: "validator"
     port: 26656
   rpc:
-    host: "0.0.0.0"
+    host: "validator"
     port: 26657
   grpc:
-    host: "0.0.0.0"
+    host: "validator"
     port: 9090
 genesis:
   accounts:
