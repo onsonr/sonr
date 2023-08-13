@@ -187,7 +187,7 @@ RUN doppler secrets download doppler.encrypted.json
 RUN doppler run --command='echo $MNEMONIC | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover'
 RUN doppler run --command='sonrd init ${MONIKER} --chain-id ${CHAIN_ID} --home /root/.sonr'
 RUN doppler run --command='sonrd add-genesis-account $KEY ${BALANCE} --keyring-backend $KEYRING'
-RUN doppler run --command='sonrd gentx $KEY ${STAKE} --keyring-backend $KEYRING --chain-id $CHAIN_ID --moniker ${MONIKER} --website ${WEBSITE} --note ${NOTE} --security-contact ${SECURITY_CONTACT}'
+RUN doppler run --command='sonrd gentx $KEY $STAKE --keyring-backend $KEYRING --chain-id $CHAIN_ID'
 RUN doppler run --command='sonrd collect-gentxs'
 
 # Update config.toml
