@@ -14,11 +14,11 @@ vars:
 
 includes:
   build:
-    taskfile: .taskfiles/Build.yml
+    taskfile: taskfiles/Build.yml
   dev:
-    taskfile: .taskfiles/Dev.yml
+    taskfile: taskfiles/Dev.yml
   sonr:
-    taskfile: .taskfiles/Sonr.yml
+    taskfile: taskfiles/Sonr.yml
 
 
 # ----------------------------------------------------------------------------
