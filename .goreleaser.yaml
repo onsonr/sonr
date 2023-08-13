@@ -44,13 +44,6 @@ checksum:
   name_template: 'checksums.txt'
 
 # The snapcraft section.
-snapcrafts:
--
-  name_template: '{{ .ProjectName }}_{{ .Version }}'
-  publish: true
-  summary: Sonr is a cosmos based blockchain.
-  description: Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets.
-  name: sonr
 kos:
 -
   id: sonrd

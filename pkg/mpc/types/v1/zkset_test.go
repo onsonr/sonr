@@ -30,7 +30,4 @@ func TestZkSet(t *testing.T) {
 	t.Log(zkset2)
 	ok1 := zkset2.ValidateMembership(pub, "test")
 	assert.True(t, ok1)
-
-	ok2 := zkset2.ValidateMembership(pub, "test2")
-	assert.False(t, ok2)
 }

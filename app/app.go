@@ -334,7 +334,7 @@ func New(
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	txConfig := encodingConfig.TxConfig
-	EnablePlugins()
+
 	bApp := baseapp.NewBaseApp(
 		Name,
 		logger,
@@ -1000,6 +1000,7 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	// register app's OpenAPI routes.
 	docs.RegisterOpenAPIService(Name, apiSvr.Router)
+	EnablePlugins()
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.

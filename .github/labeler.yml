@@ -1,0 +1,35 @@
+# Add 'repo' label to any root file changes
+Repo:
+  - "*"
+  - ".github/**"
+  - ".gitignore"
+  - ".vscode/**"
+  - ".devcontainer/**"
+
+# Add '@domain/*' label to any change within the 'pkg' directory
+"@domain/crypto":
+  - pkg/crypto/**
+"@domain/did":
+  - pkg/did/**
+"@domain/mpc":
+  - pkg/mpc/**
+"@domain/txs":
+  - pkg/txs/**
+
+# Add '@module/*' label to any change within the 'x' directory
+"@module/domain":
+  - x/domain/**
+"@module/identity":
+  - x/identity/**
+"@module/service":
+  - x/service/**
+"@module/wasm":
+  - contracts/**
+
+Config:
+  - app/**/*
+  - config/**/*
+  - sonr.yml
+
+Proto:
+  - proto/**/*

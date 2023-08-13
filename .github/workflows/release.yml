@@ -4,52 +4,49 @@ on:
   workflow_dispatch:
     inputs:
       bump:
-        description: 'bump type, major or minor or patch or empty string'
-        default: ''
+        description: "bump type, major or minor or patch or empty string"
+        default: ""
       dry_run:
-        description: 'dry run, true or false'
-        default: 'false'
+        description: "dry run, true or false"
+        default: "false"
       draft:
-        description: 'draft, true or false'
-        default: 'false'
+        description: "draft, true or false"
+        default: "false"
       pre_release:
-        description: 'pre release, true or false'
-        default: 'false'
+        description: "pre release, true or false"
+        default: "false"
 jobs:
-
   build:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.CR_GH_PAT }}
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: 1.19
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.19
 
-    - name: Build Binaries
-      run: |
-        make release-all
-        make archive-all
+      - name: Build Binaries
+        run: |
+          make release
 
-    - name: Configure Release
-      uses: MeilCli/bump-release-action@v1
-      id: releaser
-      with:
-        config_path: '.github/bump.yml'
-        bump: ${{ github.event.inputs.bump }}
-        dry_run: ${{ github.event.inputs.dry_run }}
-        draft: ${{ github.event.inputs.draft }}
-        pre_release: ${{ github.event.inputs.pre_release }}
-        github_token: ${{ secrets.CR_GH_PAT }}
+      - name: Configure Release
+        uses: MeilCli/bump-release-action@v1
+        id: releaser
+        with:
+          config_path: ".github/bump.yml"
+          bump: ${{ github.event.inputs.bump }}
+          dry_run: ${{ github.event.inputs.dry_run }}
+          draft: ${{ github.event.inputs.draft }}
+          pre_release: ${{ github.event.inputs.pre_release }}
+          github_token: ${{ secrets.CR_GH_PAT }}
 
-    - name: Publish Release Artifacts
-      uses: softprops/action-gh-release@v1
-      with:
-        tag_name: ${{ steps.releaser.outputs.next_version }}
-        token:  ${{ secrets.CR_GH_PAT }}
-        files: |
-          release/*
-          archive/*
+      - name: Publish Release Artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.releaser.outputs.next_version }}
+          token: ${{ secrets.CR_GH_PAT }}
+          files: |
+            dist/*

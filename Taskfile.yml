@@ -20,7 +20,6 @@ includes:
   sonr:
     taskfile: taskfiles/Sonr.yml
 
-
 # ----------------------------------------------------------------------------
 # -- Public Tasks ------------------------------------------------------------
 # ----------------------------------------------------------------------------
@@ -35,7 +34,45 @@ tasks:
       - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
       - task -l
 
+  dev:
+    desc: Serve the blockchain locally with verbose logging
+    cmds:
+      - docker compose up
+
+  generate:
+    desc: Generate the protobuf files
+    cmds:
+      - sh ./scripts/proto-gen.sh
+
   db:
     desc: Install the database
     cmds:
       - git clone https://github.com/sonrhq/icefire.git .tmp/icefire
+
+  release:
+    desc: Build the binary for docker
+    cmds:
+      - task: docker-release
+        vars:
+          IMAGE: sonr-base
+      - task: docker-release
+        vars:
+          IMAGE: sonr-node
+
+  # ------------------------------------------------------------------------------
+  # -- Internal Tasks ------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  docker-release:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - docker build -f ./Dockerfile . --no-cache --target {{.IMAGE}} -t {{.IMAGE}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+    requires:
+      vars: [IMAGE]

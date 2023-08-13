@@ -1,58 +1,3 @@
-ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
-
-# ! ||--------------------------------------------------------------------------------||
-# ! ||                                  Cosmjs Faucet                                 ||
-# ! ||--------------------------------------------------------------------------------||
-FROM --platform=linux node:18.7-alpine AS sonr-faucet
-
-LABEL org.opencontainers.image.source https://github.com/sonrhq/core
-
-ENV COSMJS_VERSION=0.28.11
-
-RUN npm install @cosmjs/faucet@${COSMJS_VERSION} --global --production
-
-ENV FAUCET_CONCURRENCY=4
-ENV FAUCET_PORT=4500
-ENV FAUCET_GAS_PRICE=0.0000usnr
-# Prepared keys for determinism
-ENV FAUCET_MNEMONIC="decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
-ENV FAUCET_ADDRESS_PREFIX=idx
-ENV FAUCET_TOKENS="usnr, snr"
-ENV FAUCET_CREDIT_AMOUNT_STAKE=1000
-ENV FAUCET_CREDIT_AMOUNT_TOKEN=100
-ENV FAUCET_COOLDOWN_TIME=0
-
-EXPOSE 4500
-
-ENTRYPOINT [ "cosmos-faucet" ]
-
-# ! ||-----------------------------------------------------------------------||
-# ! ||                                  TKMS                                 ||
-# ! ||-----------------------------------------------------------------------||
-FROM --platform=linux rust:1.64.0-alpine AS tkms-builder
-
-RUN apk update
-RUN apk add libusb-dev=1.0.26-r0 musl-dev git
-
-ENV LOCAL=/usr/local
-ENV RUSTFLAGS=-Ctarget-feature=+aes,+ssse3
-ENV TMKMS_VERSION=v0.12.2
-
-WORKDIR /root
-RUN git clone --branch ${TMKMS_VERSION} https://github.com/iqlusioninc/tmkms.git
-WORKDIR /root/tmkms
-RUN cargo build --release --features=softsign
-
-# The production image starts here
-FROM --platform=linux alpine AS tkms
-
-LABEL org.opencontainers.image.source https://github.com/sonrhq/core
-
-COPY --from=tkms-builder /root/tmkms/target/release/tmkms ${LOCAL}/bin
-
-ENTRYPOINT [ "tmkms" ]
-
-
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                  Sonrd Builder                                 ||
 # ! ||--------------------------------------------------------------------------------||
@@ -124,7 +69,6 @@ EXPOSE 8080
 # ! ||----------------------------------------------------------------------------------||
 # ! ||                               Sonr Standalone Node                               ||
 # ! ||----------------------------------------------------------------------------------||
-
 FROM alpine AS sonr-node
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core

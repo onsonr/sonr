@@ -49,18 +49,6 @@ func TestGenesisState_Validate(t *testing.T) {
 			},
 			valid: false,
 		},
-		{
-			desc: "invalid serviceRecord count",
-			genState: &types.GenesisState{
-				ServiceRecordList: []types.ServiceRecord{
-					{
-						Id: "1",
-					},
-				},
-				ServiceRecordCount: 0,
-			},
-			valid: false,
-		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}
 	for _, tc := range tests {

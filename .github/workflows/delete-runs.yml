@@ -57,8 +57,8 @@ jobs:
         name: Set defaults for scheduled runs
         if: github.event_name == 'schedule'
         run: |
-          echo "::set-input name=days::30"
-          echo "::set-input name=minimum_runs::6"
+          echo "::set-input name=days::7"
+          echo "::set-input name=minimum_runs::1"
       -
         name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@v2
