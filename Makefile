@@ -7,8 +7,8 @@ build:
 	go build -o ./build/sonrd ./cmd/sonrd/main.go
 
 build-linux:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./build/sonrd-linux-amd64/sonrd ./cmd/sonrd/main.go
-	CGO_ENABLED=0 GOOS=linux GOARCH=arm64 go build -o ./build/sonrd-linux-arm64/sonrd ./cmd/sonrd/main.go
+	GOOS=linux GOARCH=amd64 go build -o ./build/sonrd-linux-amd64/sonrd ./cmd/sonrd/main.go
+	GOOS=linux GOARCH=arm64 go build -o ./build/sonrd-linux-arm64/sonrd ./cmd/sonrd/main.go
 
 do-checksum-linux:
 	cd build && sha256sum sonrd-linux-amd64/sonrd sonrd-linux-arm64/sonrd > sonr-checksum-linux

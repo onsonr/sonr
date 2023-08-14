@@ -45,27 +45,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     -o /root/sonr/build/sonrd ./cmd/sonrd/main.go
 
 
-
-# ! ||-----------------------------------------------------------------------------||
-# ! ||                               Sonr Base Image                               ||
-# ! ||-----------------------------------------------------------------------------||
-FROM alpine AS sonr-base
-
-LABEL org.opencontainers.image.source https://github.com/sonrhq/core
-
-# Copy sonrd binary and config
-COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml sonr.yml
-COPY scripts scripts
-ENV SONR_LAUNCH_CONFIG=/sonr.yml
-
-# Expose ports
-EXPOSE 26657
-EXPOSE 1317
-EXPOSE 26656
-EXPOSE 8080
-
-
 # ! ||----------------------------------------------------------------------------------||
 # ! ||                               Sonr Standalone Node                               ||
 # ! ||----------------------------------------------------------------------------------||
@@ -98,3 +77,23 @@ EXPOSE 8080
 EXPOSE 9090
 
 CMD [ "sonrd", "start" ]
+
+
+# ! ||-----------------------------------------------------------------------------||
+# ! ||                               Sonr Base Image                               ||
+# ! ||-----------------------------------------------------------------------------||
+FROM alpine AS sonr-base
+
+LABEL org.opencontainers.image.source https://github.com/sonrhq/core
+
+# Copy sonrd binary and config
+COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
+COPY sonr.yml sonr.yml
+COPY scripts scripts
+ENV SONR_LAUNCH_CONFIG=/sonr.yml
+
+# Expose ports
+EXPOSE 26657
+EXPOSE 1317
+EXPOSE 26656
+EXPOSE 8080
