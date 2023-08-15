@@ -3,6 +3,7 @@ project_name: sonrd
 
 env:
   - COSMWASM_VERSION=v1.3.0
+  - CGO_ENABLED=1
 
 before:
   hooks:
