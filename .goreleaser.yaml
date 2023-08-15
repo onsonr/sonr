@@ -105,38 +105,6 @@ builds:
     goarch:
       - amd64
 
-  # Build - Linux (arm64)
-  - id: sonrd-linux-arm64
-    main: ./cmd/sonrd
-    binary: sonrd
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
-    flags:
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
-      - -w -s
-      - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static'
-    tags:
-      - netgo
-      - muslc
-    env:
-      - CC=aarch64-linux-gnu-gcc
-      - CXX=aarch64-linux-gnu-g++
-      - GOOS=linux
-      - GOARCH=arm64
-      - CGO_LDFLAGS=-L/usr/lib/aarch64-linux-gnu
-    goos:
-      - linux
-    goarch:
-      - arm64
-
 universal_binaries:
   - id: sonrd-darwin-universal
     ids:
