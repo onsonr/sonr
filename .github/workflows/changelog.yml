@@ -17,7 +17,7 @@ jobs:
       - uses: BobAnkh/auto-generate-changelog@v1.2.5
         with:
           REPO_NAME: sonrhq/core
-          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          ACCESS_TOKEN: ${{secrets.GH_CORE_CHANGELOG_TOKEN}}
           PATH: "CHANGELOG.md"
           COMMIT_MESSAGE: "docs(CHANGELOG): update release notes"
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,build:Build System,ci:Continuous Integration,perf:Performance,style:Style,other:Other"
