@@ -13,10 +13,6 @@ before:
     - go generate ./...
     - mkdir -p ./dist/{{ .Version }}
 
-post:
-  hooks:
-    - rm -rf dist
-
 # The builds section.
 builds:
   # Build - Darwin (amd64)
@@ -193,6 +189,6 @@ release:
 
     All the images support `arm64` and `amd64` architectures.
 
-  name_template: "Sonr Core - v{{.Version}} 🧪"
+  name_template: "Sonr Core - v{{.Version}} 🆔"
   mode: replace
   draft: true

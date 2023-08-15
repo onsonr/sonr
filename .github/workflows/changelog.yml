@@ -20,7 +20,7 @@ jobs:
           ACCESS_TOKEN: ${{secrets.GH_CORE_CHANGELOG_TOKEN}}
           PATH: "CHANGELOG.md"
           COMMIT_MESSAGE: "docs(CHANGELOG): update release notes"
-          TYPE: "'* feat':Feature,'* fix':Bug Fixes,'* docs':Documentation,'* refactor':Refactor,'* test':Tests"
-          COMMITTER: "sOnr mInd <ai@sonr.io)"
+          TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests"
+          COMMITTER: "Sonr Mind <ai@sonr.io)"
           SUPPRESS_UNSCOPED: true
-          REGENERATE_COUNT: -1
+          REGENERATE_COUNT: 8
