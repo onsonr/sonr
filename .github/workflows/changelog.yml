@@ -4,6 +4,9 @@ on:
   release:
     types: [created, edited]
 
+permissions:
+  contents: write
+
 jobs:
   generate-changelog:
     runs-on: ubuntu-latest
