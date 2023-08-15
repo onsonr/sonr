@@ -3,7 +3,10 @@
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
 
-LEDGER_ENABLED ?= true
+GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+
+LEDGER_ENABLED ?= false
 DOCKER := $(shell which docker)
 E2E_UPGRADE_VERSION := "v17"
 #SHELL := /bin/bash
@@ -130,10 +133,7 @@ build-all-with-checksum: build build-linux-with-checksum build-darwin-with-check
 # 	cp ./scripts/localnet.sh ./dist/localnet.sh
 
 
-GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
 
-ifdef GITHUB_TOKEN
 release:
 	docker run \
 		--rm \
@@ -145,10 +145,6 @@ release:
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean
-else
-release:
-	@echo "Error: GITHUB_TOKEN is not defined. Please define it before running 'make release'."
-endif
 
 release-dry-run:
 	docker run \
