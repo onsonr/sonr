@@ -18,7 +18,6 @@ on:
       - "**"
   push:
     branches:
-      - "master"
       - "v[0-9]**"
   workflow_dispatch:
 
