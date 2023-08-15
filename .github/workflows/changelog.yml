@@ -22,4 +22,4 @@ jobs:
           COMMIT_MESSAGE: "docs(CHANGELOG): update release notes"
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,build:Build System,ci:Continuous Integration,perf:Performance,style:Style,other:Other"
           COMMITTER: "sOnr mInd <ai@sonr.io)"
-          REGENERATE_COUNT: -1
+          REGENERATE_COUNT: 8
