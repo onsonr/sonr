@@ -9,6 +9,12 @@ on:
       release_tag:
         description: "The desired tag for the release (e.g. v0.1.0)."
         required: true
+  # On tag if master
+  push:
+    tags:
+      - "v*"
+    branches:
+      - master
 
 permissions:
   contents: write
