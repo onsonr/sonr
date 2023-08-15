@@ -5,7 +5,6 @@ env:
   - CGO_ENABLED=1
   - COSMWASM_VERSION=v1.3.0
 
-# The prebuild section.
 before:
   hooks:
     - go mod download
@@ -24,6 +23,8 @@ builds:
     env:
       - CC=o64-clang
       - CGO_LDFLAGS=-L/lib
+      - GOOS=darwin
+      - GOARCH=amd64
     goos:
       - darwin
     goarch:
@@ -36,12 +37,11 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,static_wasm
       - -w -s
       - -linkmode=external
     tags:
       - netgo
-      - ledger
       - static_wasm
 
   - id: sonrd-darwin-arm64
@@ -65,12 +65,11 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,static_wasm
       - -w -s
       - -linkmode=external
     tags:
       - netgo
-      - ledger
       - static_wasm
 
   - id: sonrd-linux-amd64
@@ -79,29 +78,26 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
-    goos:
-      - linux
-    goarch:
-      - amd64
-    env:
-      - CC=x86_64-linux-gnu-gcc
-    flags:
-      - -mod=readonly
-      - -trimpath
+        - -trimpath
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm'
+      - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
-      - ledger
       - muslc
-      - osusergo
+    env:
+      - GOOS=linux
+      - GOARCH=amd64
+    goos:
+      - linux
+    goarch:
+      - amd64
 
   - id: sonrd-linux-arm64
     main: ./cmd/sonrd
@@ -109,60 +105,53 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
-    goos:
-      - linux
-    goarch:
-      - arm64
-    env:
-      - CC=aarch64-linux-gnu-gcc
     flags:
-      - -mod=readonly
       - -trimpath
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s
       - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static -lm'
+      - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
-      - ledger
       - muslc
-      - osusergo
+    env:
+      - CGO_ENABLED=0
+      - GOOS=linux
+      - GOARCH=arm64
+    goos:
+      - linux
+    goarch:
+      - amd64
 
 universal_binaries:
-  - id: osmosisd-darwin-universal
+  - id: sonrd-darwin-universal
     ids:
-      - osmosisd-darwin-amd64
-      - osmosisd-darwin-arm64
-    replace: false
+      - sonrd-darwin-amd64
+      - sonrd-darwin-arm64
+    replace: true
 
 archives:
   - id: zipped
     builds:
-      - osmosisd-darwin-universal
-      - osmosisd-linux-amd64
-      - osmosisd-linux-arm64
-      - osmosisd-darwin-amd64
-      - osmosisd-darwin-arm64
-    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+      - sonrd-darwin-universal
+      - sonrd-linux-amd64
+      - sonrd-linux-arm64
+    name_template: "{{ .Version }}/{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
-    files:
-      - none*
   - id: binaries
     builds:
-      - osmosisd-darwin-universal
-      - osmosisd-linux-amd64
-      - osmosisd-linux-arm64
-      - osmosisd-darwin-amd64
-      - osmosisd-darwin-arm64
-    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+      - sonrd-darwin-universal
+      - sonrd-linux-amd64
+      - sonrd-linux-arm64
+      - sonrd-darwin-amd64
+      - sonrd-darwin-arm64
+    name_template: "{{ .Version }}/{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: binary
-    files:
-      - none*
 
 checksum:
   name_template: "sha256sum.txt"
@@ -170,7 +159,8 @@ checksum:
 
 # Docs: https://goreleaser.com/customization/changelog/
 changelog:
-  skip: true
+  use: github
+  abbrev: -1
 
 # Docs: https://goreleaser.com/customization/release/
 release:
@@ -202,7 +192,7 @@ release:
 
     ## 🐳 Run with Docker
 
-    As an alternative to installing and running osmosisd on your system, you may run osmosisd in a Docker container.
+    As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
     The following Docker images are available in our registry:
 
     | Image Name                              | Base                                 | Description                       |
