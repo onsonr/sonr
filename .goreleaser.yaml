@@ -11,6 +11,11 @@ before:
     - go mod verify
     - go mod tidy
     - go generate ./...
+    - mkdir -p ./dist/{{ .Version }}
+
+post:
+  hooks:
+    - rm -rf dist
 
 # The builds section.
 builds:
