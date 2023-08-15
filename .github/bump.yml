@@ -19,32 +19,26 @@ categories:
       - "Feature"
     commits:
       - "feat"
-    changes-prefix: ":gift: "
   - title: "Changes"
     labels:
       - Maintenance
     commits:
       - "chore"
-    changes-prefix: ":hammer: "
   - title: "Bug Fixes"
     labels:
       - "Bug"
     commits:
       - "fix"
-    changes-prefix: ":ambulance: "
   - title: "Changes"
     labels:
       - "Documentation"
     commits:
       - "document"
-    changes-prefix: ":blue_book: "
   - title: "Dependency Updates"
     labels:
       - "Dependencies"
-    skip-label: "Development"
     commits:
       - "dependency"
-    changes-prefix: ":green_book: "
 bump:
   default: "patch"
   major:
@@ -66,7 +60,7 @@ bump:
     commits:
       - "fix"
       - "test"
-      - "chore"
+      - "documentation"
 files:
   file-path: "CHANGELOG.md"
   line: 1

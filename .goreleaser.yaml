@@ -82,7 +82,7 @@ builds:
     binary: sonrd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm.x86_64.so -O /usr/lib/x86_64-linux-gnu/libwasmvm.x86_64.so
     flags:
       - -trimpath
     ldflags:
@@ -92,7 +92,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s
-      - -linkmode=external
+      - -linkmode=shared
       - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
