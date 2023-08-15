@@ -1,9 +1,9 @@
 # Project information.
 project_name: sonrd
-release:
-  github:
-    owner: sonrhq
-    name: core
+
+env:
+  - CGO_ENABLED=1
+  - COSMWASM_VERSION=v1.3.0
 
 # The prebuild section.
 before:
@@ -15,71 +15,212 @@ before:
 
 # The builds section.
 builds:
-  - id: "sonrd"
-    main: ./cmd/sonrd
+  - id: sonrd-darwin-amd64
+    main: ./cmd/sonrd/main.go
     binary: sonrd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=o64-clang
+      - CGO_LDFLAGS=-L/lib
     goos:
-      - linux
       - darwin
     goarch:
       - amd64
     flags:
-      - -ldflags=-w -s -extldflags "-static" -X github.com/cosmos/cosmos-sdk/version.Name=sonr -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }} -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }} -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger"
-    env:
-      - CGO_ENABLED=0
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -w -s
+      - -linkmode=external
+    tags:
+      - netgo
+      - ledger
+      - static_wasm
 
-# The archives section.
+  - id: sonrd-darwin-arm64
+    main: ./cmd/sonrd/main.go
+    binary: sonrd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=oa64-clang
+      - CGO_LDFLAGS=-L/lib
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -w -s
+      - -linkmode=external
+    tags:
+      - netgo
+      - ledger
+      - static_wasm
+
+  - id: sonrd-linux-amd64
+    main: ./cmd/sonrd
+    binary: sonrd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+    goos:
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CC=x86_64-linux-gnu-gcc
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -w -s
+      - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static -lm'
+    tags:
+      - netgo
+      - ledger
+      - muslc
+      - osusergo
+
+  - id: sonrd-linux-arm64
+    main: ./cmd/sonrd
+    binary: sonrd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
+    goos:
+      - linux
+    goarch:
+      - arm64
+    env:
+      - CC=aarch64-linux-gnu-gcc
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc,osusergo
+      - -w -s
+      - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static -lm'
+    tags:
+      - netgo
+      - ledger
+      - muslc
+      - osusergo
+
+universal_binaries:
+  - id: osmosisd-darwin-universal
+    ids:
+      - osmosisd-darwin-amd64
+      - osmosisd-darwin-arm64
+    replace: false
+
 archives:
-  - id: "sonrd"
+  - id: zipped
     builds:
-      - sonrd
+      - osmosisd-darwin-universal
+      - osmosisd-linux-amd64
+      - osmosisd-linux-arm64
+      - osmosisd-darwin-amd64
+      - osmosisd-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
     files:
-      - LICENSE*
-      - README.md
-    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}"
+      - none*
+  - id: binaries
+    builds:
+      - osmosisd-darwin-universal
+      - osmosisd-linux-amd64
+      - osmosisd-linux-arm64
+      - osmosisd-darwin-amd64
+      - osmosisd-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    format: binary
+    files:
+      - none*
 
-# The checksum section.
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "sha256sum.txt"
+  algorithm: sha256
 
-# The snapcraft section.
-kos:
--
-  id: sonrd
-  build: sonrd
-  main: ./cmd/sonrd
-  working_dir: .
-  base_image: alpine
-  labels:
-    org.opencontainers.image.created: '{{ .Date }}'
-    org.opencontainers.image.title: '{{ .ProjectName }}'
-    org.opencontainers.image.version: '{{ .Tag }}'
-    org.opencontainers.image.source: 'https://github.com/sonrhq/core'
-  repository: ghcr.io/sonrhq/sonrd
-  platforms:
-  - linux/amd64
-  - linux/arm64
-  tags:
-  - latest
-  - '{{ .Tag }}'
-  sbom: none
-  bare: true
-brews:
-  -
-    commit_author:
-      name: goreleaserbot
-      email: bot@sonr.io
-    commit_msg_template: "Brew formula update for {{ .ProjectName }} version {{ .Tag }}"
-    folder: Formula
-    caveats: "Start using with `sonrd help` command."
-    homepage: "https://sonr.io/docs/"
-    description: "Sonr is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets."
+# Docs: https://goreleaser.com/customization/changelog/
+changelog:
+  skip: true
 
-    # SPDX identifier of your app's license.
-    license: "Open GNU v3 License"
-    repository:
-      owner: sonrhq
-      name: homebrew-tap
-      branch: master
-      token: "{{ .Env.GITHUB_TOKEN }}"
+# Docs: https://goreleaser.com/customization/release/
+release:
+  github:
+    owner: sonrhq
+    name: core
+  replace_existing_draft: true
+  header: |
+    < DESCRIPTION OF RELEASE >
+
+    ## Changelog
+
+    See the full changelog [here](https://github.com/sonrhq/core/blob/v{{ .Version }}/CHANGELOG.md)
+
+    ## ⚡️ Binaries
+
+    Binaries for Linux and Darwin (amd64 and arm64) are available below.
+    Darwin users can also use the same universal binary `sonrd-{{ .Version }}-darwin-all` for both amd64 and arm64.
+
+    #### 🔨 Build from source
+
+    If you prefer to build from source, you can use the following commands:
+
+    ````bash
+    git clone https://github.com/sonrhq/core
+    cd core && git checkout v{{ .Version }}
+    make build-darwin # or make build-linux
+    ````
+
+    ## 🐳 Run with Docker
+
+    As an alternative to installing and running osmosisd on your system, you may run osmosisd in a Docker container.
+    The following Docker images are available in our registry:
+
+    | Image Name                              | Base                                 | Description                       |
+    |-----------------------------------------|--------------------------------------|-----------------------------------|
+    | `sonrhq/core:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless |
+    | `sonrhq/core:{{ .Version }}-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
+    | `sonrhq/core:{{ .Version }}-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
+    | `sonrhq/core:{{ .Version }}-alpine`     | `alpine`                             | Alpine image                      |
+
+    Example run:
+
+    ```bash
+    docker run sonrhq/sonrd:{{ .Version }} version
+    # v{{ .Version }}
+    ````
+
+    All the images support `arm64` and `amd64` architectures.
+
+  name_template: "Sonr Core - v{{.Version}} 🧪"
+  mode: replace
+  draft: true

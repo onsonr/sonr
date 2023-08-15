@@ -1,52 +1,33 @@
-name: Release
+# This workflow creates a release using goreleaser
+# via the 'make release' command.
+
+name: Create release
 
 on:
   workflow_dispatch:
     inputs:
-      bump:
-        description: "bump type, major or minor or patch or empty string"
-        default: ""
-      dry_run:
-        description: "dry run, true or false"
-        default: "false"
-      draft:
-        description: "draft, true or false"
-        default: "false"
-      pre_release:
-        description: "pre release, true or false"
-        default: "false"
+      release_tag:
+        description: 'The desired tag for the release (e.g. v0.1.0).'
+        required: true
+
+permissions:
+  contents: write
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_TOKEN: ${{ secrets.CR_GH_PAT }}
+  release:
+    name: Create release
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      -
+        name: Check out repository code
+        uses: actions/checkout@v3
         with:
-          go-version: 1.19
-
-      - name: Build Binaries
+          fetch-depth: 0
+          ref: ${{ github.event.inputs.release_tag }}
+      -
+        name: Make release
         run: |
+          sudo rm -rf dist
           make release
-
-      - name: Configure Release
-        uses: MeilCli/bump-release-action@v1
-        id: releaser
-        with:
-          config_path: ".github/bump.yml"
-          bump: ${{ github.event.inputs.bump }}
-          dry_run: ${{ github.event.inputs.dry_run }}
-          draft: ${{ github.event.inputs.draft }}
-          pre_release: ${{ github.event.inputs.pre_release }}
-          github_token: ${{ secrets.CR_GH_PAT }}
-
-      - name: Publish Release Artifacts
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: ${{ steps.releaser.outputs.next_version }}
-          token: ${{ secrets.CR_GH_PAT }}
-          files: |
-            dist/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
