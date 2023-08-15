@@ -78,7 +78,8 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
-        - -trimpath
+    flags:
+      - -trimpath
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
