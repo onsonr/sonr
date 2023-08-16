@@ -179,4 +179,4 @@ release:
 
   name_template: "Sonr Core - v{{.Version}} 🆔"
   mode: replace
-  draft: true
+  draft: false
