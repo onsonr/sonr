@@ -15,17 +15,6 @@ services:
       - 9090:9090 # grpc
       - 8000:8080 # highway
     restart: always
-  faucet:
-    image: sonr-faucet
-    init: true
-    command: [ "start", "http://validator:26657" ]
-    networks:
-      - sonr-net
-    depends_on:
-      - node
-    ports:
-      - 4500:4500
-    restart: always
   db:
     image: ghcr.io/sonrhq/icefiredb:latest
     init: true

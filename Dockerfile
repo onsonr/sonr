@@ -48,7 +48,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 # ! ||----------------------------------------------------------------------------------||
 # ! ||                               Sonr Standalone Node                               ||
 # ! ||----------------------------------------------------------------------------------||
-FROM alpine AS sonr-node
+FROM --platform=linux alpine AS sonr-node
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 
@@ -82,7 +82,7 @@ CMD [ "sonrd", "start" ]
 # ! ||-----------------------------------------------------------------------------||
 # ! ||                               Sonr Base Image                               ||
 # ! ||-----------------------------------------------------------------------------||
-FROM alpine AS sonr-base
+FROM --platform=linux alpine AS sonr-base
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 

@@ -2,27 +2,54 @@
 project_name: sonrd
 
 env:
-  - COSMWASM_VERSION=v1.3.0
-  - CGO_ENABLED=1
+  - WASM_VERSION=v1.3.0
+  - CGO_ENABLED=1'
 
 before:
   hooks:
-    - rm -rf dist
+    - apt-get update && apt-get install -y glibc-source libc6-dev
     - go mod download
-    - go mod verify
-    - go mod tidy
-    - go generate ./...
-    - mkdir -p ./dist/{{ .Version }}
 
 # The builds section.
 builds:
+  # Build - Linux (amd64)
+  - id: sonrd-linux-amd64
+    main: ./cmd/sonrd
+    binary: sonrd
+    hooks:
+      pre:
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muslc.a
+    flags:
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
+      - -w -s
+      - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static'
+    tags:
+      - netgo
+      - muslc
+    env:
+      - GOOS=linux
+      - GOARCH=amd64
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
+    goos:
+      - linux
+    goarch:
+      - amd64
+
   # Build - Darwin (amd64)
   - id: sonrd-darwin-amd64
     main: ./cmd/sonrd/main.go
     binary: sonrd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=o64-clang
       - CXX=o64-clang++
@@ -53,7 +80,7 @@ builds:
     binary: sonrd
     hooks:
       pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
     env:
       - CC=oa64-clang
       - CGO_LDFLAGS=-L/lib
@@ -76,57 +103,26 @@ builds:
       - netgo
       - static_wasm
 
-  # Build - Linux (amd64)
-  - id: sonrd-linux-amd64
-    main: ./cmd/sonrd
-    binary: sonrd
-    hooks:
-      pre:
-        - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.COSMWASM_VERSION }}/libwasmvm.x86_64.so -O /usr/lib/x86_64-linux-gnu/libwasmvm.x86_64.so
-    flags:
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
-      - -w -s
-      - -linkmode=shared
-      - -extldflags '-Wl,-z,muldefs -static'
-    tags:
-      - netgo
-      - muslc
-    env:
-      - GOOS=linux
-      - GOARCH=amd64
-      - CC=x86_64-linux-gnu-gcc
-      - CXX=x86_64-linux-gnu-g++
-    goos:
-      - linux
-    goarch:
-      - amd64
-
 universal_binaries:
   - id: sonrd-darwin-universal
     ids:
       - sonrd-darwin-amd64
       - sonrd-darwin-arm64
-    replace: true
+    replace: false
 
 archives:
   - id: zipped
     builds:
       - sonrd-darwin-universal
       - sonrd-linux-amd64
-      - sonrd-linux-arm64
-    name_template: "{{ .Version }}/{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
+      - sonrd-darwin-amd64
+      - sonrd-darwin-arm64
+    name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
   - id: binaries
     builds:
       - sonrd-darwin-universal
       - sonrd-linux-amd64
-      - sonrd-linux-arm64
       - sonrd-darwin-amd64
       - sonrd-darwin-arm64
     name_template: "{{ .Version }}/{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
@@ -136,11 +132,6 @@ checksum:
   name_template: "sha256sum.txt"
   algorithm: sha256
 
-# Docs: https://goreleaser.com/customization/changelog/
-changelog:
-  use: github
-  abbrev: -1
-
 # Docs: https://goreleaser.com/customization/release/
 release:
   github:
@@ -149,10 +140,6 @@ release:
   replace_existing_draft: true
   header: |
     < DESCRIPTION OF RELEASE >
-
-    ## Changelog
-
-    See the full changelog [here](https://github.com/sonrhq/core/blob/v{{ .Version }}/CHANGELOG.md)
 
     ## ⚡️ Binaries
 

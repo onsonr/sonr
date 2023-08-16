@@ -97,7 +97,7 @@ build:
 	rm -rf ./build
 	rm -rf ./dist
 	mkdir -p build
-	go build -o ./build/sonrd ./cmd/sonrd/main.go
+	go build $(BUILD_FLAGS) -o ./build/sonrd ./cmd/sonrd/main.go
 
 build-linux:
 	GOOS=linux GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o ./build/sonrd-linux-amd64/sonrd ./cmd/sonrd/main.go
@@ -120,7 +120,7 @@ build-darwin-with-checksum: build-darwin do-checksum-darwin
 build-all-with-checksum: build build-linux-with-checksum build-darwin-with-checksum
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+COSMWASM_VERSION := v1.3.0
 
 release:
 	docker run \
