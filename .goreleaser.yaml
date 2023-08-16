@@ -3,7 +3,7 @@ project_name: sonrd
 
 env:
   - WASM_VERSION=v1.3.0
-  - CGO_ENABLED=1'
+  - CGO_ENABLED=1
 
 before:
   hooks:
