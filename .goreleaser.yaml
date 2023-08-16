@@ -34,8 +34,6 @@ builds:
       - netgo
       - muslc
     env:
-      - GOOS=linux
-      - GOARCH=amd64
       - CC=x86_64-linux-gnu-gcc
       - CXX=x86_64-linux-gnu-g++
     goos:
@@ -50,11 +48,6 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-    env:
-      - CC=o64-clang
-      - CXX=o64-clang++
-      - GOOS=darwin
-      - GOARCH=amd64
     goos:
       - darwin
     goarch:
@@ -81,9 +74,6 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-    env:
-      - CC=oa64-clang
-      - CGO_LDFLAGS=-L/lib
     goos:
       - darwin
     goarch:
