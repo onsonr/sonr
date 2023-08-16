@@ -1,33 +1,6 @@
 # CHANGELOG
 
-## [v0.6.29-beta.0](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.0) - 2023-06-23 21:25:15
-
-## Changelog
-* 7c3492a * chore(client.go): change broadcast mode from sync to async * feat(controller.go): add SignAndBroadcastCosmosTx method to Keeper struct
-
-## [v0.6.28-beta.16](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.16) - 2023-06-23 15:52:25
-
-## Changelog
-* 73a1fac chore(.goreleaser.yaml): remove generate.sh script from before section
-* 2f8148e * feat(release.yml): add Github Actions workflow to automate release process * feat(release.yml): create new pre-release when pushing a new tag with a "v" prefix * feat(release.yml): create/update the "latest" pre-release when pushing to default branch * feat(release.yml): issue release assets for linux:amd64, darwin:amd64, and darwin:arm64 * feat(release.yml): delete the "latest" release if it already exists * feat(release.yml): publish the release with the specified tag name and files in the release directory as assets
-* fa6c2f0 Migrate/v0.47 (#94)
-* 86788d5 Fix/keyshare (#93)
-* 5eb905e Add License (#89)
-* 2b2e63e Integrate/encryption (#88)
-* 75ae05b Integrate/encryption (#87)
-
-## [v0.6.28](https://github.com/sonrhq/core/releases/tag/v0.6.28) - 2023-06-23 16:46:22
-
-## Changelog
-* 0d53d09 * chore(release.yml): remove release workflow file.
-
-## [v0.6.28-beta.10](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.10) - 2023-06-11 00:42:34
-
-## [v0.6.28-beta.2](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.2) - 2023-06-10 16:40:10
-
-## [v0.6.26](https://github.com/sonrhq/core/releases/tag/v0.6.26) - 2023-05-28 20:30:43
-
-## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-16 19:44:33
+## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-16 20:29:31
 
 < DESCRIPTION OF RELEASE >
 
@@ -68,6 +41,9 @@ docker run sonrhq/sonrd:0.7.6 version
 All the images support `arm64` and `amd64` architectures.
 
 ## Changelog
+* 5260348 * fix(.goreleaser.yaml): remove version from name_template in archives section
+* f74f9ac * chore(.goreleaser.yaml): change draft value from true to false
+* 370a4b0 docs(CHANGELOG): update release notes
 * 5557674 * chore(summarizer.yml): remove unused GitHub Actions workflow file
 * d6afe75 Implement/contracts (#115)
 * 59b1924 * chore(bump.yml): remove changes-prefix for "Feature" category * chore(bump.yml): remove changes-prefix for "Maintenance" category * chore(bump.yml): remove changes-prefix for "Bug Fixes" category * chore(bump.yml): remove changes-prefix for "Documentation" category * chore(bump.yml): remove changes-prefix for "Dependency Updates" category * chore(bump.yml): remove skip-label for "Dependency Updates" category * fix(test.yml): add "master" branch to push event * chore(test.yml): add step to upload coverage reports to Codecov * chore(goreleaser.yaml): update pre-build hook to download libwasmvm.x86_64.so instead of libwasmvm_muslc.x86_64.a * chore(goreleaser.yaml): update ldflags to use shared linkmode instead of external linkmode
@@ -76,27 +52,99 @@ All the images support `arm64` and `amd64` architectures.
 * c1967c4 * chore(.goreleaser.yaml): add CGO_ENABLED environment variable * chore(.goreleaser.yaml): update COSMWASM_VERSION to v1.3.0
 * 459d354 docs(CHANGELOG): update release notes
 
-## [0.7.5](https://github.com/sonrhq/core/releases/tag/0.7.5) - 2023-08-14 23:49:32
+## [v0.7.4](https://github.com/sonrhq/core/releases/tag/v0.7.4) - 2023-08-13 23:55:00
 
-*No description*
+This release has no changes
 
-## [0.7.4](https://github.com/sonrhq/core/releases/tag/0.7.4) - 2023-08-13 23:55:00
+## What's Changed
+* Fix/docker deploy [OSS-4] by @prnk28 in https://github.com/sonrhq/core/pull/107
+* Setup/testnet env [OSS-6] by @prnk28 in https://github.com/sonrhq/core/pull/108
 
-*No description*
+
+**Full Changelog**: https://github.com/sonrhq/core/compare/v0.7.3...v0.7.4
 
 ## [v0.7.3](https://github.com/sonrhq/core/releases/tag/v0.7.3) - 2023-08-07 23:55:39
 
+## Changelog
+* 58a93d3 * chore(Taskfile.yml): remove docker build command for cosmos-faucet target * chore(Taskfile.yml): remove docker tag and push commands for sonr-faucet image * chore(Taskfile.yml): remove publish task for k8s manifests
+* 2b64d4f * refactor(Dockerfile): remove unused comments and empty lines * chore(Dockerfile): remove cosmos-faucet section
+* 8ef09d9 * chore(docker-compose.yml): add dependencies for validator service * fix(docker-compose.yml): add dependencies on icefiredb and icefiresql services for validator service
+* 23b160e * chore(Dockerfile): add toml-cli binary installation step * refactor(config/context.go): remove unnecessary config paths
+* a623b82 * refactor(context.go): comment out unused code and remove unused imports * refactor(context.go): comment out unused code and remove unused variables
+* b866cb4 * chore(Dockerfile): update sonr.yml file location to current directory * chore(root.go): remove srvCfg.MinGasPrices assignment
+* 13154a2 * fix(Dockerfile): remove unnecessary argument --default-denom from sonrd init command
+* dd01d5a * feat(Dockerfile): add environment variables CHAIN_ID, MONIKER, and KEYALGO * fix(Dockerfile): change sonrd init command to use MONIKER and CHAIN_ID variables * feat(Dockerfile): update config.toml and app.toml with new settings
+* e7f20d4 * fix(geninit.go): remove default chain-id value in the genesis file flag * fix(root.go): change minimum gas prices from "0snr" to "0stake" * fix(config.go): set default values for node.p2p.host and node.p2p.port * fix(context.go): remove unnecessary call to viper.ReadInConfig()
+* 42baae1 * feat(config.go): set default value for launch.chain-id to "sonr-localnet-1" * feat(config.go): set default value for launch.environment to "development" * feat(config.go): set default value for launch.moniker to "alice"
+* e440542 * chore(Dockerfile): update sonr.yml file path in COPY command * refactor(context.go): remove error handling for viper.ReadInConfig()
+* 027669c * refactor(root.go): remove unnecessary API and gRPC configurations * fix(context.go): set default values for highway.icefirekv.host, highway.icefirekv.port, and highway.jwt.key
+* ce26d78 * feat(config.go): add IceFireSQLHost function to return the host and port of the IceFire SQL store * chore(sonr.yml): update host values for icefirekv and icefiresql in sonr.yml configuration file
+* 1cd4f52 * chore(context.go): add default value for "highway.jwt.key" configuration option
+* 7a78d24 * chore(context.go): set default values for highway.icefirekv.host and highway.icefirekv.port
+* 89803a4 * chore(Dockerfile): copy sonr.yml file to current directory * fix(config.go): update config keys to use correct port values for highway, node, and launch services
+* 88f76f3 * fix(Dockerfile): copy sonr.yml from builder stage to /root directory * fix(Dockerfile): remove MONIKER environment variable and hardcode "florence" as the value for sonrd init command
+* 2fbdf4a * refactor(docker-compose.yml): remove unused environment variables in sonr service * chore(docker-compose.yml): remove init flag in icefiredb service
+* 6939f51 * refactor(config.go): remove unused struct types and fields * refactor(config.go): update function names to match configuration keys * refactor(config.go): update function implementations to use configuration keys instead of environment variables
+* 18458e0 * chore(Dockerfile): update sonr.yml file path in COPY command * chore(Dockerfile): remove --home flag from sonrd init command * chore(cmd/root.go): remove unnecessary gRPC configuration
+* ec909bf * fix(Dockerfile): remove unused CHAIN_ID environment variable * fix(Dockerfile): remove --default-denom flag from sonrd init command
+* 91473b3 * chore(Dockerfile): change working directory to /root * chore(Dockerfile): copy sonr.yml to current directory * chore(geninit.go): remove FlagDefaultBondDenom flag * chore(geninit.go): set sdk.DefaultBondDenom to "usnr" * chore(geninit.go): set flags.FlagChainID to "sonr-localnet-1"
+* ca4f2ec * chore(Dockerfile): update sonr.yml file path in COPY command * chore(Dockerfile): rename config.go to defaults.go in cmd/sonrd/cmd directory
+* e3bf2c6 * chore(Dockerfile): remove toml-cli installation step * chore(Dockerfile): remove config.toml update steps
+* 23cd1ec * refactor(context.go): remove duplicate code for handling missing config file * chore(context.go): add missing newline before Environment() function * chore(context.go): add missing newline before NodeAPIHostAddress() function * chore(context.go): add missing newline before NodeGrpcHostAddress() function
+* 683e5ae * refactor(context.go): convert variables to functions and use viper to retrieve values from environment variables * feat(context.go): add functions to retrieve chain ID, environment, JWT signing key, Highway host address, Highway request timeout, IceFire KV host address, Node API host address, Node gRPC host address, Node P2P host address, Node RPC host address, and validator address
+* 2d9e9b8 * chore(Dockerfile): move sonr.yml to current directory * fix(Dockerfile): set --home flag to /root/.sonr in sonrd init command
+* f1821ce * refactor(config.go): restructure the Config struct and its nested structs * feat(config.go): add LaunchConfig struct to store launch settings * feat(config.go): add HighwayConfig struct to store highway settings * feat(config.go): add HighwayAPIConfig struct to store API settings for highway * feat(config.go): add HighwayDBConfig struct to store database settings for highway * feat(config.go): add IcefireKVConfig struct to store IcefireKV settings for highway * feat(config.go): add IcefireSQLConfig struct to store IcefireSQL settings for highway * feat(config.go): add NodeConfig struct to store node settings * feat(config.go): add NodeAPIConfig struct to store API settings for node * feat(config.go): add NodeP2PConfig struct to store P2P settings for node * feat(config.go): add NodeRPCConfig struct to store RPC settings for node * feat(config.go): add NodeGRPCConfig
+* c526a63 * chore(Dockerfile): update COPY command to copy sonr.yml from builder stage to /etc/sonr/sonr.yml * fix(Dockerfile): remove --home flag from sonrd init command * fix(config.go): remove unused binary fields from IcefireKV and IcefireSQL structs in Config * chore(sonr.yml): update chain-id to sonr-1
+* d35b946 * chore(Dockerfile): rename docker/Dockerfile to Dockerfile * chore(Dockerfile.dev): rename docker/Dockerfile.dev to Dockerfile.dev * chore(Taskfile.yml): update docker build commands to use renamed Dockerfile paths
+* 2bf701d * chore(docker-compose.yml): add container_name for icefiredb service * fix(Dockerfile): change relative path for copying sonr.yml
+* cdc1962 * refactor(context.go): add additional config paths for sonr.yml file * refactor(context.go): rename HighwayHostPort to HighwayHostAddress * refactor(context.go): rename NodeAPIHost to NodeAPIHostAddress * refactor(context.go): rename NodeGrpcHost to NodeGrpcHostAddress * refactor(context.go): rename NodeP2PHost to NodeP2PHostAddress * refactor(context.go): rename NodeRPCHost to NodeRPCHostAddress
+* 456bc8e * chore(Taskfile.yml): add publish task to publish k8s manifests to the cluster * feat(Taskfile.yml): add kompose convert command to convert manifests * feat(Taskfile.yml): add kubectl apply command to apply manifests to the cluster
+* 622a9ee * chore(Taskfile.yml): add --no-cache flag to docker build command for building sonrd image * chore(Taskfile.yml): add --no-cache flag to docker build command for building sonr-faucet image
+* 910d91a * fix(root.go): update flags.FlagNode value to "tcp://0.0.0.0:26657" * chore(root.go): remove unnecessary configuration for srvCfg.MinGasPrices * fix(Dockerfile): update COPY path for sonr.yml
+* b01f2ae * chore(Taskfile.yml): add docker build command for sonr-faucet target * chore(Taskfile.yml): add docker tag and push commands for sonr-faucet image * chore(docker-compose.yml): add faucet service configuration
+* f5964b5 Feat/sql (#106)
+* 1951a12 docs(swimm): create doc: "README" (#104)
+
+### Documentation
+
+- swimm:
+  - create doc: "README" (#104) ([1951a12](https://github.com/sonrhq/core/commit/1951a123a7fb321fe85015aaf3aed79a9b22c516)) ([#104](https://github.com/sonrhq/core/pull/104))
+
 ## [v0.7.3-beta.4](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.4) - 2023-08-02 03:50:58
+
+## Changelog
+* b11386b * feat(sonrd): add new file cored (#102)
+* e19ae8e Add Gex explorer cmd
+* ae220a3 * chore(bump.yml): disable creation of minor version branch * chore(bump.yml): disable creation of major version branch
+* c054b42 * feat(bump.yml): add bump configuration file * feat(bump.yml): define release and branch configuration * feat(bump.yml): define categories for breaking changes, features, maintenance, bug fixes, documentation, and dependency updates * feat(bump.yml): define bump configuration for major, minor, and patch versions
+* fe0820d Update README.md
 
 ## [v0.7.3-beta.3](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.3) - 2023-07-31 21:35:25
 
-## [v0.7.3-beta.2](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.2) - 2023-07-31 15:46:47
+## Changelog
+* 257d1ef * chore(go.mod): update github.com/go-webauthn/webauthn to v0.8.6 * chore(go.mod): update github.com/stretchr/testify to v1.8.4 * chore(go.mod): update github.com/go-webauthn/x to v0.1.4 * chore(go.mod): update github.com/golang-jwt/jwt/v5 to v5.0.0 * chore(go.mod): update github.com/google/go-tpm to v0.9.0
+* 715ccae * fix(auth.go): remove unused isAuthenticated variable in SignInWithCredential function * fix(auth.go): remove unused addr variable in SignInWithCredential function * fix(auth.go): remove unused chal variable in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrow
 
 ## [v0.7.3-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.1) - 2023-07-28 01:32:34
 
+## Changelog
+* 9b2d7e8 * fix(authr.go): fix method call to serialize credential
+* 8926128 * feat(crypto/keys.go): add EncryptionKey interface * refactor(account.go): update NewAccountV1 function signature to return v1types.KeyshareSet instead of *v1types.Keyshare * refactor(account.go): remove unused import of github.com/sonrhq/core/pkg/did/types * refactor(account.go): remove unused variable privKs in NewAccountV1 function * refactor(account.go): update return statement in NewAccountV1 function to return v1types.EmptyKeyshareSet() instead of nil * refactor(account.go): update return statement in NewAccountV1 function to return kss instead of privKs * refactor(account.go): remove DIDIdentifier method from AccountV1 struct * refactor(account.go): remove DIDMethod method from AccountV1 struct * refactor(account.go): remove DIDUrl method from AccountV1 struct * refactor(account.go): remove comment explaining PublicKey method, as it is incomplete
+* ca6183b * refactor(keyshare.go): remove unnecessary role check in GetAliceDKGResult() method * refactor(keyshare.go): remove unnecessary role check in GetBobDKGResult() method
+* d61b5b3 * chore(application-services.mdx): delete application-services.mdx file from docs/static/whitepaper directory
+* a6f2a7c * chore(account.go): remove unused code in Marshal method * chore(account.go): remove unused code in Unmarshal method * feat(keyshare.go): add UnmarshalAlice method to unmarshal keyshare for Alice
+* 631dc29 * fix(openapi.yml): remove id property from objects in paths and definitions * chore(highway.go): rearrange middleware order in initGin function
+* 0d3b537 * chore(app.go): import highlight-go SDK package * chore(app.go): import highlight-go middleware for Gorilla Mux * chore(app.go): set project ID for highlight-go SDK * chore(app.go): start highlight-go SDK * chore(main.go): stop highlight-go SDK before exiting
+
 ## [v0.7.3-beta.0](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.0) - 2023-07-27 18:09:16
 
+## Changelog
+* ec4e2fb * chore(root.go): update Viper configuration to use "SONR" as the config file name * chore(go.mod): add go.opentelemetry.io/otel v1.13.0 as a required module * chore(parser.go): delete internal/crypto/parser.go file
+
 ## [v0.7.2](https://github.com/sonrhq/core/releases/tag/v0.7.2) - 2023-07-27 11:48:51
+
+## Changelog
+* c6b209b * chore(go.mod): remove github.com/gin-gonic/autotls v0.0.5 dependency * chore(go.mod): remove golang.org/x/sync v0.2.0 dependency
 
 ## [v0.7.1](https://github.com/sonrhq/core/releases/tag/v0.7.1) - 2023-07-27 02:35:51
 
@@ -108,22 +156,27 @@ All the images support `arm64` and `amd64` architectures.
 
 ## [v0.6.29-beta.5](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.5) - 2023-06-23 21:28:33
 
+## [v0.6.29-beta.0](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.0) - 2023-06-23 21:25:15
+
+## [v0.6.29](https://github.com/sonrhq/core/releases/tag/v0.6.29) - 2023-06-23 21:28:33
+
 ## Changelog
-* 5edb208 * refactor(sfs.go): remove commented out code * refactor(sfs.go): move InsertPublicKeyshare and InsertEncryptedKeyshare to goroutines * fix(sfs.go): handle error when broadcasting transaction
-* 44af9b5 * refactor(kss.go): use crypto.Base64Encode and crypto.Base64Decode to encode and decode data in keyshare store
-* 6a2a17d Create KeyPrefix and Redis integration for db
-* fa83e65 Remove account interface utilize kss, and credential for actions
-* 648127b Remove highway methods from node query keeper
-* ae8d3b0 * refactor(nacl.go): add context parameter to ClaimAccount function * refactor(services.go): add context parameter to ClaimAccount function call * refactor(claims.go): add context parameter to ClaimAccount function call
-* c207120 feat(vscode): change explorer.excludeGitIgnore setting to false
-* cf77bc2 chore(README.md): add wakatime badge to README.md
+* c9a0ae7 Remove WalletClaims from Vault Genesis, manage through distributed store
+* a394937 * chore(.gitignore): add tmp directory to gitignore * feat(Taskfile.yml): add task to install and run database locally * feat(Taskfile.yml): add task to serve blockchain and database locally
+
+## [v0.6.28-beta.16](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.16) - 2023-06-23 15:52:25
+
+## [v0.6.28](https://github.com/sonrhq/core/releases/tag/v0.6.28) - 2023-06-23 16:46:22
 
 ## [v0.6.28-beta.9](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.9) - 2023-06-11 00:42:34
 
-## Changelog
-* 431ce12 Add Webauthn Credential to register user response
+## [v0.6.28-beta.10](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.10) - 2023-06-11 00:42:34
+
+## [v0.6.28-beta.2](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.2) - 2023-06-10 16:40:10
 
 ## [v0.6.27](https://github.com/sonrhq/core/releases/tag/v0.6.27) - 2023-06-01 18:10:36
+
+## [v0.6.26](https://github.com/sonrhq/core/releases/tag/v0.6.26) - 2023-05-28 20:30:43
 
 ## [v0.6.26-beta.9](https://github.com/sonrhq/core/releases/tag/v0.6.26-beta.9) - 2023-05-16 19:52:29
 
