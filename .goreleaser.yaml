@@ -125,7 +125,7 @@ archives:
       - sonrd-linux-amd64
       - sonrd-darwin-amd64
       - sonrd-darwin-arm64
-    name_template: "{{ .Version }}/{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: binary
 
 checksum:
