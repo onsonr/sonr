@@ -48,6 +48,9 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=o64-clang
+      - CXX=o64-clang++
     goos:
       - darwin
     goarch:
@@ -74,6 +77,10 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=oa64-clang
+      - CXX=oa64-clang++
+      - CGO_LDFLAGS=-L/lib
     goos:
       - darwin
     goarch:
