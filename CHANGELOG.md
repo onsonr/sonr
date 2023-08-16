@@ -1,109 +1,80 @@
 # CHANGELOG
 
-## [v0.7.3-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.1) - 2023-07-28 01:32:34
-
-## Changelog
-* 9b2d7e8 * fix(authr.go): fix method call to serialize credential
-* 8926128 * feat(crypto/keys.go): add EncryptionKey interface * refactor(account.go): update NewAccountV1 function signature to return v1types.KeyshareSet instead of *v1types.Keyshare * refactor(account.go): remove unused import of github.com/sonrhq/core/pkg/did/types * refactor(account.go): remove unused variable privKs in NewAccountV1 function * refactor(account.go): update return statement in NewAccountV1 function to return v1types.EmptyKeyshareSet() instead of nil * refactor(account.go): update return statement in NewAccountV1 function to return kss instead of privKs * refactor(account.go): remove DIDIdentifier method from AccountV1 struct * refactor(account.go): remove DIDMethod method from AccountV1 struct * refactor(account.go): remove DIDUrl method from AccountV1 struct * refactor(account.go): remove comment explaining PublicKey method, as it is incomplete
-* ca6183b * refactor(keyshare.go): remove unnecessary role check in GetAliceDKGResult() method * refactor(keyshare.go): remove unnecessary role check in GetBobDKGResult() method
-* d61b5b3 * chore(application-services.mdx): delete application-services.mdx file from docs/static/whitepaper directory
-* a6f2a7c * chore(account.go): remove unused code in Marshal method * chore(account.go): remove unused code in Unmarshal method * feat(keyshare.go): add UnmarshalAlice method to unmarshal keyshare for Alice
-* 631dc29 * fix(openapi.yml): remove id property from objects in paths and definitions * chore(highway.go): rearrange middleware order in initGin function
-* 0d3b537 * chore(app.go): import highlight-go SDK package * chore(app.go): import highlight-go middleware for Gorilla Mux * chore(app.go): set project ID for highlight-go SDK * chore(app.go): start highlight-go SDK * chore(main.go): stop highlight-go SDK before exiting
-
-## [v0.7.3-beta.0](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.0) - 2023-07-27 18:09:16
-
-## Changelog
-* ec4e2fb * chore(root.go): update Viper configuration to use "SONR" as the config file name * chore(go.mod): add go.opentelemetry.io/otel v1.13.0 as a required module * chore(parser.go): delete internal/crypto/parser.go file
-
-## [v0.7.2](https://github.com/sonrhq/core/releases/tag/v0.7.2) - 2023-07-27 11:48:51
-
-## Changelog
-* c6b209b * chore(go.mod): remove github.com/gin-gonic/autotls v0.0.5 dependency * chore(go.mod): remove golang.org/x/sync v0.2.0 dependency
-
-## [v0.7.1](https://github.com/sonrhq/core/releases/tag/v0.7.1) - 2023-07-27 02:35:51
-
-## Changelog
-* c28f091 Migrate/mpc v1 (#101)
-* 1c51a64 bugfix: Update scripts
-* 64b00bd Update devcontainer.json
-* 62ddb56 Update devcontainer.json
-* eef99f9 Create snapcraft.yaml
-
-## [v0.7.1-beta.4](https://github.com/sonrhq/core/releases/tag/v0.7.1-beta.4) - 2023-07-14 05:50:49
-
-## Changelog
-* 5ad51ae * feat(auth.go): add new file for the auth controller in the pkg/did/controller directory
-* 734ec59 Refactor Type organization
-* 2fd59e7 Add new controller account type
-* 77fbe1a * refactor(openapi.yml): remove /core/params/vault endpoint * chore(openapi.yml): update /cosmos/auth/v1beta1/account_info/{address} endpoint summary
-* 4a4532f Introduce Controller DID
-* b041590 Simplify DID Method
-* b76624e Add resolution
-* fa401bc Add Account based did/method configurations
-* 96cf5e2 add zkset
-* 683ab4d Remove Vault, fix sfs (#100)
-* cf98186 Strip highway sfs connection
-* 3e8dde6 bugfix: Update MPC Tests
-* 8e25abf bugfix: Update readme
-* 9a16fb6 bugfix: Update container
-* 41348bd Update Container
-* bbb895b Change container start cmd
-* a043bfd Update script
-* eda6827 Update devcontainer.json
-* bf59c2c * fix(devcontainer.json): update go feature version to 1.19
-* cd146c6 * fix(devcontainer.json): update postAttachCommand to start icefiredb instead of server
-* d7ed03d * feat(devcontainer.json): add support for fig feature * chore(devcontainer.json): update devcontainer base image to mcr.microsoft.com/devcontainers/universal:2
-* 654ff37 * chore(devcontainer.json): update devcontainer features to use specific versions of ignite and icefire * chore(Taskfile.yml): remove unnecessary 'deps' task from cmds list
-* 5656870 * chore(devcontainer.json): update devcontainer features * chore(settings.json): exclude git ignore files from explorer
-* a729f20 update devcontainer
-* acf33e1 * feat(devcontainer.json): add IceFire Redis Proxy port 6001 with label and onAutoForward configuration
-* 02cddb9 * chore(devcontainer.json): remove unused go feature * feat(devcontainer.json): add go SDK version 1.19
-* 11acc54 * chore(devcontainer.json): update postAttachCommand to start the server using 'task start' command instead of 'task chain' command
-* 5201b67 * chore(devcontainer.json): update devcontainer.json * feat(devcontainer.json): add hostRequirements for cpus * feat(devcontainer.json): add postCreateCommand to install go-task * feat(devcontainer.json): add postAttachCommand to start task chain server * feat(devcontainer.json): customize codespaces to open README.md * feat(devcontainer.json): add portsAttributes for API server, RPC server, Highway server, and gRPC server
-* 3d82029 * chore(.goreleaser.yaml): remove nfpm section * chore(.goreleaser.yaml): update caveats in brews section
-* 819e0f0 * chore(.goreleaser.yaml): update license field to "Open GNU v3 License" for nfpms section * feat(.goreleaser.yaml): add brews section with brew formula update for Sonr version {{ .Tag }}
-* b7d9572 * refactor(account.go): remove unused imports and variables * feat(account.go): add GetAccountData method * feat(account.go): add LinkController method * feat(account.go): add Type method
-* c1edc51 * chore(settings.json): update explorer.excludeGitIgnore to false * chore(env.go): add IsAccountIceFireEnabled function to check if the account icefire is enabled
-* c53a9b1 bugfix: Update git tag
-* acc83dc * refactor(root.go): remove unused import of icefiredbcmd * chore(root.go): remove icefiredbcmd.CreateStartCommand() from command initialization
-* 6125c05 feat: Updated cmd to have icefiredb start
-* fb4c269 * fix(settings.json): exclude .gitignore files from the explorer view
-* 40967f1 * feat(crypto/parser.go): add parser for DID components * feat(crypto/parser.go): add SplitDID function to split a DID into its components * feat(crypto/parser.go): add CombineDID function to combine DID components into a single string * refactor(mpc/mpc.go): rename ControllerV1 type to ZKSet for clarity * refactor(mpc/mpc.go): rename KeyshareV0 type to Keyshare for consistency * refactor(mpc/mpc.go): rename KeyshareSet type to KeyShareCollection for clarity
-* 43c864e * refactor(types): rename zkbls.go to zkset.go in internal/mpc/v1/types directory
-* 82199b3 * refactor(store): rename package sfs/store to highway/store * refactor(store): rename struct Store to IceFireStore * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package
-* 043f535 Fix/jwt (#99)
-
-## [v0.7.1-beta.3](https://github.com/sonrhq/core/releases/tag/v0.7.1-beta.3) - 2023-07-13 02:43:22
-
-## Changelog
-* 819e0f0 * chore(.goreleaser.yaml): update license field to "Open GNU v3 License" for nfpms section * feat(.goreleaser.yaml): add brews section with brew formula update for Sonr version {{ .Tag }}
-* b7d9572 * refactor(account.go): remove unused imports and variables * feat(account.go): add GetAccountData method * feat(account.go): add LinkController method * feat(account.go): add Type method
-* c1edc51 * chore(settings.json): update explorer.excludeGitIgnore to false * chore(env.go): add IsAccountIceFireEnabled function to check if the account icefire is enabled
-* c53a9b1 bugfix: Update git tag
-* acc83dc * refactor(root.go): remove unused import of icefiredbcmd * chore(root.go): remove icefiredbcmd.CreateStartCommand() from command initialization
-* 6125c05 feat: Updated cmd to have icefiredb start
-* fb4c269 * fix(settings.json): exclude .gitignore files from the explorer view
-* 40967f1 * feat(crypto/parser.go): add parser for DID components * feat(crypto/parser.go): add SplitDID function to split a DID into its components * feat(crypto/parser.go): add CombineDID function to combine DID components into a single string * refactor(mpc/mpc.go): rename ControllerV1 type to ZKSet for clarity * refactor(mpc/mpc.go): rename KeyshareV0 type to Keyshare for consistency * refactor(mpc/mpc.go): rename KeyshareSet type to KeyShareCollection for clarity
-* 43c864e * refactor(types): rename zkbls.go to zkset.go in internal/mpc/v1/types directory
-* 82199b3 * refactor(store): rename package sfs/store to highway/store * refactor(store): rename struct Store to IceFireStore * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package * refactor(api): remove import of sfs/store package
-* 043f535 Fix/jwt (#99)
-
-## [v0.7.0](https://github.com/sonrhq/core/releases/tag/v0.7.0) - 2023-06-28 22:51:16
-
 ## [v0.6.29-beta.0](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.0) - 2023-06-23 21:25:15
 
-## [v0.6.29](https://github.com/sonrhq/core/releases/tag/v0.6.29) - 2023-06-23 21:28:33
+## Changelog
+* 7c3492a * chore(client.go): change broadcast mode from sync to async * feat(controller.go): add SignAndBroadcastCosmosTx method to Keeper struct
 
 ## [v0.6.28-beta.16](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.16) - 2023-06-23 15:52:25
 
+## Changelog
+* 73a1fac chore(.goreleaser.yaml): remove generate.sh script from before section
+* 2f8148e * feat(release.yml): add Github Actions workflow to automate release process * feat(release.yml): create new pre-release when pushing a new tag with a "v" prefix * feat(release.yml): create/update the "latest" pre-release when pushing to default branch * feat(release.yml): issue release assets for linux:amd64, darwin:amd64, and darwin:arm64 * feat(release.yml): delete the "latest" release if it already exists * feat(release.yml): publish the release with the specified tag name and files in the release directory as assets
+* fa6c2f0 Migrate/v0.47 (#94)
+* 86788d5 Fix/keyshare (#93)
+* 5eb905e Add License (#89)
+* 2b2e63e Integrate/encryption (#88)
+* 75ae05b Integrate/encryption (#87)
+
 ## [v0.6.28](https://github.com/sonrhq/core/releases/tag/v0.6.28) - 2023-06-23 16:46:22
+
+## Changelog
+* 0d53d09 * chore(release.yml): remove release workflow file.
 
 ## [v0.6.28-beta.10](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.10) - 2023-06-11 00:42:34
 
 ## [v0.6.28-beta.2](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.2) - 2023-06-10 16:40:10
 
 ## [v0.6.26](https://github.com/sonrhq/core/releases/tag/v0.6.26) - 2023-05-28 20:30:43
+
+## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-16 19:44:33
+
+< DESCRIPTION OF RELEASE >
+
+## ⚡️ Binaries
+
+Binaries for Linux and Darwin (amd64 and arm64) are available below.
+Darwin users can also use the same universal binary `sonrd-0.7.6-darwin-all` for both amd64 and arm64.
+
+#### 🔨 Build from source
+
+If you prefer to build from source, you can use the following commands:
+
+````bash
+git clone https://github.com/sonrhq/core
+cd core && git checkout v0.7.6
+make build-darwin # or make build-linux
+````
+
+## 🐳 Run with Docker
+
+As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
+The following Docker images are available in our registry:
+
+| Image Name                              | Base                                 | Description                       |
+|-----------------------------------------|--------------------------------------|-----------------------------------|
+| `sonrhq/core:0.7.6`            | `distroless/static-debian11`         | Default image based on Distroless |
+| `sonrhq/core:0.7.6-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
+| `sonrhq/core:0.7.6-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
+| `sonrhq/core:0.7.6-alpine`     | `alpine`                             | Alpine image                      |
+
+Example run:
+
+```bash
+docker run sonrhq/sonrd:0.7.6 version
+# v0.7.6
+````
+
+All the images support `arm64` and `amd64` architectures.
+
+## Changelog
+* 5557674 * chore(summarizer.yml): remove unused GitHub Actions workflow file
+* d6afe75 Implement/contracts (#115)
+* 59b1924 * chore(bump.yml): remove changes-prefix for "Feature" category * chore(bump.yml): remove changes-prefix for "Maintenance" category * chore(bump.yml): remove changes-prefix for "Bug Fixes" category * chore(bump.yml): remove changes-prefix for "Documentation" category * chore(bump.yml): remove changes-prefix for "Dependency Updates" category * chore(bump.yml): remove skip-label for "Dependency Updates" category * fix(test.yml): add "master" branch to push event * chore(test.yml): add step to upload coverage reports to Codecov * chore(goreleaser.yaml): update pre-build hook to download libwasmvm.x86_64.so instead of libwasmvm_muslc.x86_64.a * chore(goreleaser.yaml): update ldflags to use shared linkmode instead of external linkmode
+* fbe0225 * chore(build.yml): remove "master" branch from push trigger * chore(test.yml): remove "master" branch from push trigger
+* 66ade0c * chore(release.yml): add condition to run the workflow only on tag starting with 'v' * chore(release.yml): update comment to specify that the workflow runs only on tag
+* c1967c4 * chore(.goreleaser.yaml): add CGO_ENABLED environment variable * chore(.goreleaser.yaml): update COSMWASM_VERSION to v1.3.0
+* 459d354 docs(CHANGELOG): update release notes
 
 ## [0.7.5](https://github.com/sonrhq/core/releases/tag/0.7.5) - 2023-08-14 23:49:32
 
@@ -120,6 +91,37 @@
 ## [v0.7.3-beta.3](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.3) - 2023-07-31 21:35:25
 
 ## [v0.7.3-beta.2](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.2) - 2023-07-31 15:46:47
+
+## [v0.7.3-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.1) - 2023-07-28 01:32:34
+
+## [v0.7.3-beta.0](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.0) - 2023-07-27 18:09:16
+
+## [v0.7.2](https://github.com/sonrhq/core/releases/tag/v0.7.2) - 2023-07-27 11:48:51
+
+## [v0.7.1](https://github.com/sonrhq/core/releases/tag/v0.7.1) - 2023-07-27 02:35:51
+
+## [v0.7.1-beta.4](https://github.com/sonrhq/core/releases/tag/v0.7.1-beta.4) - 2023-07-14 05:50:49
+
+## [v0.7.1-beta.3](https://github.com/sonrhq/core/releases/tag/v0.7.1-beta.3) - 2023-07-13 02:43:22
+
+## [v0.7.0](https://github.com/sonrhq/core/releases/tag/v0.7.0) - 2023-06-28 22:51:16
+
+## [v0.6.29-beta.5](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.5) - 2023-06-23 21:28:33
+
+## Changelog
+* 5edb208 * refactor(sfs.go): remove commented out code * refactor(sfs.go): move InsertPublicKeyshare and InsertEncryptedKeyshare to goroutines * fix(sfs.go): handle error when broadcasting transaction
+* 44af9b5 * refactor(kss.go): use crypto.Base64Encode and crypto.Base64Decode to encode and decode data in keyshare store
+* 6a2a17d Create KeyPrefix and Redis integration for db
+* fa83e65 Remove account interface utilize kss, and credential for actions
+* 648127b Remove highway methods from node query keeper
+* ae8d3b0 * refactor(nacl.go): add context parameter to ClaimAccount function * refactor(services.go): add context parameter to ClaimAccount function call * refactor(claims.go): add context parameter to ClaimAccount function call
+* c207120 feat(vscode): change explorer.excludeGitIgnore setting to false
+* cf77bc2 chore(README.md): add wakatime badge to README.md
+
+## [v0.6.28-beta.9](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.9) - 2023-06-11 00:42:34
+
+## Changelog
+* 431ce12 Add Webauthn Credential to register user response
 
 ## [v0.6.27](https://github.com/sonrhq/core/releases/tag/v0.6.27) - 2023-06-01 18:10:36
 
