@@ -120,7 +120,7 @@ build-darwin-with-checksum: build-darwin do-checksum-darwin
 build-all-with-checksum: build build-linux-with-checksum build-darwin-with-checksum
 
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := v1.3.0
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
 
 release:
 	docker run \

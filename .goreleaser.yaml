@@ -19,7 +19,17 @@ builds:
     hooks:
       pre:
         - wget https://github.com/CosmWasm/wasmvm/releases/download/{{ .Env.WASM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muslc.a
+    env:
+      - CC=x86_64-linux-gnu-gcc
+      - CXX=x86_64-linux-gnu-g++
+      - GOOS=linux
+      - GOARCH=amd64
+    goos:
+      - linux
+    goarch:
+      - amd64
     flags:
+      - -mod=readonly
       - -trimpath
     ldflags:
       - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
@@ -33,13 +43,6 @@ builds:
     tags:
       - netgo
       - muslc
-    env:
-      - CC=x86_64-linux-gnu-gcc
-      - CXX=x86_64-linux-gnu-g++
-    goos:
-      - linux
-    goarch:
-      - amd64
 
   # Build - Darwin (amd64)
   - id: sonrd-darwin-amd64
@@ -51,6 +54,9 @@ builds:
     env:
       - CC=o64-clang
       - CXX=o64-clang++
+      - CGO_LDFLAGS=-L/lib
+      - GOOS=darwin
+      - GOARCH=amd64
     goos:
       - darwin
     goarch:
@@ -66,6 +72,7 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,static_wasm
       - -w -s
       - -linkmode=external
+      - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
       - static_wasm
@@ -81,6 +88,8 @@ builds:
       - CC=oa64-clang
       - CXX=oa64-clang++
       - CGO_LDFLAGS=-L/lib
+      - GOOS=darwin
+      - GOARCH=arm64
     goos:
       - darwin
     goarch:
@@ -95,7 +104,6 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,static_wasm
       - -w -s
-      - -linkmode=external
     tags:
       - netgo
       - static_wasm
