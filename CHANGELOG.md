@@ -1,13 +1,19 @@
 # CHANGELOG
 
-## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-16 20:29:31
+## [v0.7.5-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.5-beta.1) - 2023-08-16 23:04:23
+
+![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=878ea17bba90be8b45a00308fe5a7aa4e35fc2ce&date[text]=2023-08-17T02:22:39Z&version[text]=0.7.5-beta.1)
 
 < DESCRIPTION OF RELEASE >
+
+## Changelog
+
+See the full changelog [here](https://github.com/sonrhq/core/blob/v0.7.5-beta.1/CHANGELOG.md)
 
 ## ⚡️ Binaries
 
 Binaries for Linux and Darwin (amd64 and arm64) are available below.
-Darwin users can also use the same universal binary `sonrd-0.7.6-darwin-all` for both amd64 and arm64.
+Darwin users can also use the same universal binary `sonrd-0.7.5-beta.1-darwin-all` for both amd64 and arm64.
 
 #### 🔨 Build from source
 
@@ -15,7 +21,7 @@ If you prefer to build from source, you can use the following commands:
 
 ````bash
 git clone https://github.com/sonrhq/core
-cd core && git checkout v0.7.6
+cd core && git checkout v0.7.5-beta.1
 make build-darwin # or make build-linux
 ````
 
@@ -26,31 +32,19 @@ The following Docker images are available in our registry:
 
 | Image Name                              | Base                                 | Description                       |
 |-----------------------------------------|--------------------------------------|-----------------------------------|
-| `sonrhq/core:0.7.6`            | `distroless/static-debian11`         | Default image based on Distroless |
-| `sonrhq/core:0.7.6-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
-| `sonrhq/core:0.7.6-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
-| `sonrhq/core:0.7.6-alpine`     | `alpine`                             | Alpine image                      |
+| `sonrhq/core:0.7.5-beta.1`            | `distroless/static-debian11`         | Default image based on Distroless |
+| `sonrhq/core:0.7.5-beta.1-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
+| `sonrhq/core:0.7.5-beta.1-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
+| `sonrhq/core:0.7.5-beta.1-alpine`     | `alpine`                             | Alpine image                      |
 
 Example run:
 
 ```bash
-docker run sonrhq/sonrd:0.7.6 version
-# v0.7.6
+docker run sonrhq/sonrd:0.7.5-beta.1 version
+# v0.7.5-beta.1
 ````
 
 All the images support `arm64` and `amd64` architectures.
-
-## Changelog
-* 5260348 * fix(.goreleaser.yaml): remove version from name_template in archives section
-* f74f9ac * chore(.goreleaser.yaml): change draft value from true to false
-* 370a4b0 docs(CHANGELOG): update release notes
-* 5557674 * chore(summarizer.yml): remove unused GitHub Actions workflow file
-* d6afe75 Implement/contracts (#115)
-* 59b1924 * chore(bump.yml): remove changes-prefix for "Feature" category * chore(bump.yml): remove changes-prefix for "Maintenance" category * chore(bump.yml): remove changes-prefix for "Bug Fixes" category * chore(bump.yml): remove changes-prefix for "Documentation" category * chore(bump.yml): remove changes-prefix for "Dependency Updates" category * chore(bump.yml): remove skip-label for "Dependency Updates" category * fix(test.yml): add "master" branch to push event * chore(test.yml): add step to upload coverage reports to Codecov * chore(goreleaser.yaml): update pre-build hook to download libwasmvm.x86_64.so instead of libwasmvm_muslc.x86_64.a * chore(goreleaser.yaml): update ldflags to use shared linkmode instead of external linkmode
-* fbe0225 * chore(build.yml): remove "master" branch from push trigger * chore(test.yml): remove "master" branch from push trigger
-* 66ade0c * chore(release.yml): add condition to run the workflow only on tag starting with 'v' * chore(release.yml): update comment to specify that the workflow runs only on tag
-* c1967c4 * chore(.goreleaser.yaml): add CGO_ENABLED environment variable * chore(.goreleaser.yaml): update COSMWASM_VERSION to v1.3.0
-* 459d354 docs(CHANGELOG): update release notes
 
 ## [v0.7.4](https://github.com/sonrhq/core/releases/tag/v0.7.4) - 2023-08-13 23:55:00
 
@@ -159,10 +153,6 @@ This release has no changes
 ## [v0.6.29-beta.0](https://github.com/sonrhq/core/releases/tag/v0.6.29-beta.0) - 2023-06-23 21:25:15
 
 ## [v0.6.29](https://github.com/sonrhq/core/releases/tag/v0.6.29) - 2023-06-23 21:28:33
-
-## Changelog
-* c9a0ae7 Remove WalletClaims from Vault Genesis, manage through distributed store
-* a394937 * chore(.gitignore): add tmp directory to gitignore * feat(Taskfile.yml): add task to install and run database locally * feat(Taskfile.yml): add task to serve blockchain and database locally
 
 ## [v0.6.28-beta.16](https://github.com/sonrhq/core/releases/tag/v0.6.28-beta.16) - 2023-06-23 15:52:25
 
