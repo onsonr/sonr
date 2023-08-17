@@ -41,7 +41,7 @@ services:
       dockerfile: Dockerfile.dev
       args:
         - arch=${ARCH:-x86_64}
-    command: sh testnode.sh
+    command: sh scripts/localnet.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p

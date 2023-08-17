@@ -22,18 +22,18 @@ jobs:
         run: docker-compose up -d
 
       - name: Copy binary
-        run: docker cp composable-centauri_node_1:/bin/centaurid ./centaurid
+        run: docker cp core_node_1:/bin/sonrd ./sonrd
 
       - name: Save sha256 sum
-        run: sha256sum ./centaurid > ./centaurid_sha256.txt
+        run: sha256sum ./sonrd > ./sonrd_sha256.txt
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            centaurid
-            centaurid_sha256.txt
+            sonrd
+            sonrd_sha256.txt
 
       - name: Dump docker logs on failure
         if: failure()
