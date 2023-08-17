@@ -93,6 +93,10 @@ else
     SKIP_WASM_WSL_TESTS := "true"
 endif
 
+###############################################################################
+###                                  Build                                  ###
+###############################################################################
+
 build:
 	rm -rf ./build
 	rm -rf ./dist
@@ -119,8 +123,12 @@ build-darwin-with-checksum: build-darwin do-checksum-darwin
 
 build-all-with-checksum: build build-linux-with-checksum build-darwin-with-checksum
 
+###############################################################################
+###                                Release                                  ###
+###############################################################################
+
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
-COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+COSMWASM_VERSION := v1.3.0
 
 release:
 	docker run \
