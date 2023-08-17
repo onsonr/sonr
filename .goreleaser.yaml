@@ -6,24 +6,16 @@ env:
 
 before:
   hooks:
-    - apt-get update && apt-get install -y gccgo
     - go mod download
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                     Builds                                     ||
 # ! ||--------------------------------------------------------------------------------||
-
-# The builds section.
 builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
     main: ./cmd/sonrd
     binary: sonrd
-    hooks:
-      pre:
-        - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
-    env:
-      - CC=x86_64-linux-gnu-gcc
     goos:
       - linux
     goarch:
@@ -36,24 +28,12 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s
-      - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static'
-    tags:
-      - netgo
-      - muslc
 
   # Build - Linux (arm64)
   - id: sonrd-linux-arm64
     main: ./cmd/sonrd
     binary: sonrd
-    hooks:
-      pre:
-        - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
-    env:
-      - CC=aarch64-linux-gnu-gcc
-      - CGO_ENABLED=0
     goos:
       - linux
     goarch:
@@ -66,25 +46,12 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc
       - -w -s
-      - -linkmode=external
-      - -extldflags '-Wl,-z,muldefs -static'
-    tags:
-      - netgo
-      - ledger
-      - muslc
 
   # Build - Darwin (amd64)
   - id: sonrd-darwin-amd64
     main: ./cmd/sonrd/main.go
     binary: sonrd
-    hooks:
-      pre:
-        - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-    env:
-      - CC=o64-clang
-      - CGO_LDFLAGS=-L/lib
     goos:
       - darwin
     goarch:
@@ -97,24 +64,12 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
       - -w -s
-      - -linkmode=external
-    tags:
-      - netgo
-      - static_wasm
-      - ledger
 
   # Build - Darwin (arm64)
   - id: sonrd-darwin-arm64
     main: ./cmd/sonrd/main.go
     binary: sonrd
-    hooks:
-      pre:
-        - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-    env:
-      - CC=oa64-clang
-      - CGO_LDFLAGS=-L/lib
     goos:
       - darwin
     goarch:
@@ -129,19 +84,16 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
       - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
       - -w -s
-      - -linkmode=external
-    tags:
-      - netgo
-      - static_wasm
-      - ledger
 
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                                Tarball Archives                                ||
+# ! ||--------------------------------------------------------------------------------||
 universal_binaries:
   - id: sonrd-darwin-universal
     ids:
       - sonrd-darwin-amd64
       - sonrd-darwin-arm64
     replace: false
-
 archives:
   - id: zipped
     builds:
@@ -161,16 +113,13 @@ archives:
       - sonrd-darwin-arm64
     name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: binary
-
 checksum:
   name_template: "sha256sum.txt"
   algorithm: sha256
 
-# Docs: https://goreleaser.com/customization/changelog/
-changelog:
-  skip: true
-
-# Docs: https://goreleaser.com/customization/release/
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                              Release and Changelog                             ||
+# ! ||--------------------------------------------------------------------------------||
 release:
   github:
     owner: sonrhq
@@ -180,23 +129,22 @@ release:
 
     < DESCRIPTION OF RELEASE >
 
-    ## Changelog
-
-    See the full changelog [here](https://github.com/sonrhq/core/blob/v{{ .Version }}/CHANGELOG.md)
-
     ## ⚡️ Binaries
 
     Binaries for Linux and Darwin (amd64 and arm64) are available below.
     Darwin users can also use the same universal binary `sonrd-{{ .Version }}-darwin-all` for both amd64 and arm64.
 
-    #### 🔨 Build from source
+    ## 🔨 Build from source
 
     If you prefer to build from source, you can use the following commands:
 
     ````bash
     git clone https://github.com/sonrhq/core
     cd core && git checkout v{{ .Version }}
-    make build-darwin # or make build-linux
+    make install
+    # Then run sonrd
+    sonrd version
+    # v{{ .Version }}
     ````
 
     ## 🐳 Run with Docker
@@ -204,12 +152,11 @@ release:
     As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
     The following Docker images are available in our registry:
 
-    | Image Name                              | Base                                 | Description                       |
-    |-----------------------------------------|--------------------------------------|-----------------------------------|
-    | `sonrhq/core:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless |
-    | `sonrhq/core:{{ .Version }}-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
-    | `sonrhq/core:{{ .Version }}-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
-    | `sonrhq/core:{{ .Version }}-alpine`     | `alpine`                             | Alpine image                      |
+    | Image Name                               | Base                                 | Description                       |
+    |------------------------------------------|--------------------------------------|-----------------------------------|
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     |
+    | `sonrhq/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    |
 
     Example run:
 
@@ -218,8 +165,10 @@ release:
     # v{{ .Version }}
     ````
 
-    All the images support `arm64` and `amd64` architectures.
+    All the images support `amd64` architectures.
 
   name_template: "Sonr Core - v{{.Version}} 🆔"
   mode: replace
   draft: false
+changelog:
+  skip: true

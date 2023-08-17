@@ -145,6 +145,7 @@ release:
 		$(GORELEASER_IMAGE) \
 		release \
 		--clean
+	task release
 
 release-dry-run:
 	docker run \

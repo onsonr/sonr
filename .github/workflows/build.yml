@@ -20,7 +20,7 @@ on:
     branches:
       - "v[0-9]**"
   workflow_dispatch:
-
+  merge_group:
 env:
   GO_VERSION: '1.20.5'
 

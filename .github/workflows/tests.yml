@@ -21,9 +21,9 @@ on:
       - "master"
       - "v[0-9]**"
   workflow_dispatch:
-
+  merge_group:
 env:
-  GO_VERSION: '1.20.5'
+  GO_VERSION: "1.20.5"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -43,11 +43,9 @@ jobs:
             arch: arm64
 
     steps:
-      -
-        name: Check out repository code
+      - name: Check out repository code
         uses: actions/checkout@v3
-      -
-        name: Get git diff
+      - name: Get git diff
         uses: technote-space/get-diff-action@v6.1.2
         with:
           PATTERNS: |
@@ -57,8 +55,7 @@ jobs:
             go.sum
             Makefile
             .github/workflows/build.yml
-      -
-        name: 🐿 Setup Golang
+      - name: 🐿 Setup Golang
         uses: actions/setup-go@v4
         if: env.GIT_DIFF
         with:
@@ -66,12 +63,10 @@ jobs:
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
-      -
-        name: Download Dependencies
+      - name: Download Dependencies
         if: env.GIT_DIFF
         run: go mod download
-      -
-        name: Test Sonr
+      - name: Test Sonr
         if: env.GIT_DIFF
         run: |
           go test -v ./...
@@ -80,3 +75,9 @@ jobs:
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+          
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

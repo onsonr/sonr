@@ -4,10 +4,14 @@
 name: Create release
 
 on:
-  # On tag if master
   workflow_dispatch:
+  push:
+    tags:
+      - v*
 permissions:
   contents: write
+  packages: write
+  pull-requests: write
 
 jobs:
   release:
@@ -20,9 +24,6 @@ jobs:
           fetch-depth: 0
           # Run only on tag
       - name: Make release
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          PATH=$PATH:/usr/local/go/bin
-          make release
+        run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
