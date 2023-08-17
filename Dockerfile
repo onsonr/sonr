@@ -1,7 +1,11 @@
+
+ARG GO_VERSION="1.19"
+ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
+
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                  Sonrd Builder                                 ||
 # ! ||--------------------------------------------------------------------------------||
-FROM --platform=linux golang:1.19-alpine AS sonr-builder
+FROM golang:${GO_VERSION}-alpine as sonr-builder
 
 ARG arch=x86_64
 
@@ -59,8 +63,7 @@ COPY scripts scripts
 ENV SONR_LAUNCH_CONFIG=/sonr.yml
 
 # Download, extract, and install the toml-cli binary
-RUN apk add --update curl
-RUN curl -LO https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
+RUN wget https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
     tar -xvf toml-0.2.3-x86_64-linux.tar.gz && \
     mv toml-0.2.3-x86_64-linux/toml /usr/local/bin && \
     rm toml-0.2.3-x86_64-linux.tar.gz && \
@@ -82,7 +85,7 @@ CMD [ "sonrd", "start" ]
 # ! ||-----------------------------------------------------------------------------||
 # ! ||                               Sonr Base Image                               ||
 # ! ||-----------------------------------------------------------------------------||
-FROM --platform=linux alpine AS sonr-base
+FROM ${RUNNER_IMAGE} AS sonr-base
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 
@@ -97,3 +100,5 @@ EXPOSE 26657
 EXPOSE 1317
 EXPOSE 26656
 EXPOSE 8080
+
+ENTRYPOINT [  "sonrd" ]
