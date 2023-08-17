@@ -6,6 +6,7 @@ env:
 
 before:
   hooks:
+    - apt-get update && apt-get install -y gccgo
     - go mod download
 
 # ! ||--------------------------------------------------------------------------------||
@@ -35,13 +36,12 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s
       - -linkmode=external
       - -extldflags '-Wl,-z,muldefs -static'
     tags:
       - netgo
-      - ledger
       - muslc
 
   # Build - Linux (arm64)
