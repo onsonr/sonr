@@ -53,6 +53,7 @@ builds:
         - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
     env:
       - CC=aarch64-linux-gnu-gcc
+      - CGO_ENABLED=0
     goos:
       - linux
     goarch:
