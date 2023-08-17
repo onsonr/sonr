@@ -5,12 +5,7 @@ name: Create release
 
 on:
   # On tag if master
-  push:
-    tags:
-      - "v*"
-    branches:
-      - master
-
+  workflow_dispatch:
 permissions:
   contents: write
 

@@ -5,7 +5,9 @@ on:
   release:
     types: [created]
   workflow_dispatch:
-
+  push:
+    tags:
+      - "v*"
 jobs:
   release:
     permissions: write-all
