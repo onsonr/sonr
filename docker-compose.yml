@@ -1,34 +1,48 @@
+# version: "3"
+# networks:
+#   sonr-net:
+# services:
+#   node:
+#     image: sonr-node
+#     init: true
+#     container_name: validator
+#     networks:
+#       - sonr-net
+#     ports:
+#       - 1317:1317 # rest
+#       - 26656:26656 # p2p
+#       - 26657:26657 # rpc
+#       - 9090:9090 # grpc
+#       - 8000:8080 # highway
+#     restart: always
+#   db:
+#     image: ghcr.io/sonrhq/icefiredb:latest
+#     init: true
+#     container_name: db
+#     networks:
+#       - sonr-net
+#     ports:
+#       - 6001:6001
+#     restart: always
+#   sql:
+#     image: ghcr.io/sonrhq/icefiresql:latest
+#     init: true
+#     container_name: sql
+#     networks:
+#       - sonr-net
+#     ports:
+#       - 23367:23367
+
 version: "3"
-networks:
-  sonr-net:
 services:
   node:
-    image: sonr-node
-    init: true
-    container_name: validator
-    networks:
-      - sonr-net
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+      args:
+        - arch=${ARCH:-x86_64}
+    command: sh testnode.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
       - 26657:26657 # rpc
-      - 9090:9090 # grpc
-      - 8000:8080 # highway
-    restart: always
-  db:
-    image: ghcr.io/sonrhq/icefiredb:latest
-    init: true
-    container_name: db
-    networks:
-      - sonr-net
-    ports:
-      - 6001:6001
-    restart: always
-  sql:
-    image: ghcr.io/sonrhq/icefiresql:latest
-    init: true
-    container_name: sql
-    networks:
-      - sonr-net
-    ports:
-      - 23367:23367
