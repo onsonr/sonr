@@ -55,6 +55,10 @@ jobs:
             go.sum
             Makefile
             .github/workflows/build.yml
+
+      - name: 'Dependency Review'
+        uses: actions/dependency-review-action@v3
+
       - name: 🐿 Setup Golang
         uses: actions/setup-go@v4
         if: env.GIT_DIFF
@@ -75,7 +79,7 @@ jobs:
         uses: codecov/codecov-action@v3
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-          
+
       - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:

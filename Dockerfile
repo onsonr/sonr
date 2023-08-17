@@ -55,7 +55,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 FROM --platform=linux alpine AS sonr-node
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
-
+LABEL org.opencontainers.image.description "Standalone localnet development node"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml sonr.yml
@@ -88,7 +88,7 @@ CMD [ "sonrd", "start" ]
 FROM ${RUNNER_IMAGE} AS sonr-base
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
-
+LABEL org.opencontainers.image.description "Default node image for sonr"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml sonr.yml

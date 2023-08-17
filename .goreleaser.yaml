@@ -152,11 +152,11 @@ release:
     As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
     The following Docker images are available in our registry:
 
-    | Image Name                               | Base                                 | Description                       |
-    |------------------------------------------|--------------------------------------|-----------------------------------|
-    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless |
-    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     |
-    | `sonrhq/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    |
+    | Image Name                               | Base                                 | Description                       | Registry Source                                     |
+    |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonrhq/sonrd](https://ghcr.io/sonrhq/sonrd:latest) |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonrhq/sonrd-standalone](https://ghcr.io/sonrhq/sonrd:latest-standalone) |
+    | `sonrhq/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonrhq/sonr-faucet](https://ghcr.io/sonrhq/sonr-faucet:latest) |
 
     Example run:
 

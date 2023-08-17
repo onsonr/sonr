@@ -42,6 +42,7 @@ ENVIRONMENT="dev"
 HIGHWAY_MODE="fiber"
 ```
 
+
 ## Documentation
 
 Sonr utilizes Mintlify to generate documentation from the source code. To view the documentation, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
@@ -120,4 +121,3 @@ This is the second version of our MPC protocol which leverages the kryptology li
 ### Version 0
 
 This is the first version of the MPC protocol. It is a simple protocol that uses the taurusgroup implementation for CMP based ecdsa signature generation. The protocol is described in the paper [here](https://eprint.iacr.org/2017/552.pdf).
-

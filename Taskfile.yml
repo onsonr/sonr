@@ -47,10 +47,10 @@ tasks:
     cmds:
       - task: docker-release
         vars:
-          IMAGE: sonr-base
-      - task: docker-release
+          IMAGE: sonrd
+      - task: docker-release-alone
         vars:
-          IMAGE: sonr-node
+          IMAGE: sonrd
 
   # ------------------------------------------------------------------------------
   # -- Internal Tasks ------------------------------------------------------------
@@ -60,12 +60,27 @@ tasks:
     internal: true
     desc: Build, tag and push the docker image
     cmds:
-      - docker build -f ./Dockerfile . --target {{.IMAGE}} -t {{.IMAGE}}
+      - docker build -f ./Dockerfile . --target sonr-base -t {{.IMAGE}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
       - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+    requires:
+      vars: [IMAGE]
+
+  docker-release-alone:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - docker build -f ./Dockerfile . --target sonr-node -t {{.IMAGE}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest-standalone
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}-standalone
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}-standalone
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest-standalone
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}-standalone
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}-standalone
     requires:
       vars: [IMAGE]
