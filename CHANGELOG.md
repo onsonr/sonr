@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## [v0.7.5](https://github.com/sonrhq/core/releases/tag/v0.7.5) - 2023-08-17 02:42:37
+## [v0.7.5](https://github.com/sonrhq/core/releases/tag/v0.7.5) - 2023-08-17 03:09:46
 
-![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=024ba0ae5582ef9cd37155701eb8f720bde317dc&date[text]=2023-08-17T02:43:24Z&version[text]=0.7.5)
+![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=c2093e90ac4380232f3a768beba7ffed54b4e106&date[text]=2023-08-17T03:09:57Z&version[text]=0.7.5)
 
 < DESCRIPTION OF RELEASE >
 
@@ -42,52 +42,6 @@ Example run:
 ```bash
 docker run sonrhq/sonrd:0.7.5 version
 # v0.7.5
-````
-
-All the images support `arm64` and `amd64` architectures.
-
-## [v0.7.5-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.5-beta.1) - 2023-08-16 23:04:23
-
-![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=878ea17bba90be8b45a00308fe5a7aa4e35fc2ce&date[text]=2023-08-17T02:22:39Z&version[text]=0.7.5-beta.1)
-
-< DESCRIPTION OF RELEASE >
-
-## Changelog
-
-See the full changelog [here](https://github.com/sonrhq/core/blob/v0.7.5-beta.1/CHANGELOG.md)
-
-## ⚡️ Binaries
-
-Binaries for Linux and Darwin (amd64 and arm64) are available below.
-Darwin users can also use the same universal binary `sonrd-0.7.5-beta.1-darwin-all` for both amd64 and arm64.
-
-#### 🔨 Build from source
-
-If you prefer to build from source, you can use the following commands:
-
-````bash
-git clone https://github.com/sonrhq/core
-cd core && git checkout v0.7.5-beta.1
-make build-darwin # or make build-linux
-````
-
-## 🐳 Run with Docker
-
-As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
-The following Docker images are available in our registry:
-
-| Image Name                              | Base                                 | Description                       |
-|-----------------------------------------|--------------------------------------|-----------------------------------|
-| `sonrhq/core:0.7.5-beta.1`            | `distroless/static-debian11`         | Default image based on Distroless |
-| `sonrhq/core:0.7.5-beta.1-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
-| `sonrhq/core:0.7.5-beta.1-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
-| `sonrhq/core:0.7.5-beta.1-alpine`     | `alpine`                             | Alpine image                      |
-
-Example run:
-
-```bash
-docker run sonrhq/sonrd:0.7.5-beta.1 version
-# v0.7.5-beta.1
 ````
 
 All the images support `arm64` and `amd64` architectures.
@@ -182,6 +136,9 @@ This release has no changes
 * ec4e2fb * chore(root.go): update Viper configuration to use "SONR" as the config file name * chore(go.mod): add go.opentelemetry.io/otel v1.13.0 as a required module * chore(parser.go): delete internal/crypto/parser.go file
 
 ## [v0.7.2](https://github.com/sonrhq/core/releases/tag/v0.7.2) - 2023-07-27 11:48:51
+
+## Changelog
+* c6b209b * chore(go.mod): remove github.com/gin-gonic/autotls v0.0.5 dependency * chore(go.mod): remove golang.org/x/sync v0.2.0 dependency
 
 ## [v0.7.1](https://github.com/sonrhq/core/releases/tag/v0.7.1) - 2023-07-27 02:35:51
 
