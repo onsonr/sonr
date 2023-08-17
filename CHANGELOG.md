@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-17 04:29:34
+
+**Full Changelog**: https://github.com/sonrhq/core/compare/v0.7.5...v0.7.6
+
 ## [v0.7.5](https://github.com/sonrhq/core/releases/tag/v0.7.5) - 2023-08-17 03:09:46
 
 ![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=c2093e90ac4380232f3a768beba7ffed54b4e106&date[text]=2023-08-17T03:09:57Z&version[text]=0.7.5)
@@ -136,9 +140,6 @@ This release has no changes
 * ec4e2fb * chore(root.go): update Viper configuration to use "SONR" as the config file name * chore(go.mod): add go.opentelemetry.io/otel v1.13.0 as a required module * chore(parser.go): delete internal/crypto/parser.go file
 
 ## [v0.7.2](https://github.com/sonrhq/core/releases/tag/v0.7.2) - 2023-07-27 11:48:51
-
-## Changelog
-* c6b209b * chore(go.mod): remove github.com/gin-gonic/autotls v0.0.5 dependency * chore(go.mod): remove golang.org/x/sync v0.2.0 dependency
 
 ## [v0.7.1](https://github.com/sonrhq/core/releases/tag/v0.7.1) - 2023-07-27 02:35:51
 
