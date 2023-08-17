@@ -1,0 +1,40 @@
+---
+name: Release Binary through docker-compose
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  release:
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Docker compose
+        run: docker-compose up -d
+
+      - name: Copy binary
+        run: docker cp composable-centauri_node_1:/bin/centaurid ./centaurid
+
+      - name: Save sha256 sum
+        run: sha256sum ./centaurid > ./centaurid_sha256.txt
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
+            centaurid
+            centaurid_sha256.txt
+
+      - name: Dump docker logs on failure
+        if: failure()
+        uses: jwalton/gh-docker-logs@v2
