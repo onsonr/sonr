@@ -20,6 +20,10 @@ RUN apk add --no-cache \
 # Download go dependencies
 WORKDIR /root
 COPY go.mod go.sum ./
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/root/go/pkg/mod \
+    go mod download
+
 
 # Cosmwasm - Download correct libwasmvm version
 RUN set -eux; \
@@ -32,9 +36,9 @@ RUN set -eux; \
 
 # Copy the remaining files
 COPY . .
-
-# Build sonrd binary
-RUN GOWORK=off go build \
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/root/go/pkg/mod \
+    GOWORK=off go build \
     -mod=readonly \
     -tags "netgo,ledger,muslc" \
     -ldflags \
