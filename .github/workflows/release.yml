@@ -53,7 +53,7 @@ jobs:
           fetch-depth: 0
           # Run only on tag
       - name: Make release
-        run: make release
+        run: make release-binaries
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build Binaries
