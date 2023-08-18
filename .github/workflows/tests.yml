@@ -56,9 +56,6 @@ jobs:
             Makefile
             .github/workflows/build.yml
 
-      - name: 'Dependency Review'
-        uses: actions/dependency-review-action@v3
-
       - name: 🐿 Setup Golang
         uses: actions/setup-go@v4
         if: env.GIT_DIFF
