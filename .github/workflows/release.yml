@@ -16,6 +16,7 @@ permissions:
 jobs:
   release:
     name: Create release
+    if: startsWith(github.ref, 'refs/tags/vvv')
     runs-on: self-hosted
     steps:
       - name: Check out repository code
@@ -41,3 +42,28 @@ jobs:
         run: make release-docker
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  release-binaries:
+    name: Create release binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          # Run only on tag
+      - name: Make release
+        run: make release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Binaries
+        run: |
+          make release
+
+      - name: Publish Release Artifacts
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.releaser.outputs.next_version }}
+          token: ${{ secrets.CR_GH_PAT }}
+          files: |
+            dist/*
