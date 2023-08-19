@@ -42,33 +42,32 @@ builds:
       - -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static'
 
   # Build - Linux (arm64)
-  - id: sonrd-linux-arm64
-    skip: true
-    env:
-        - ARCH=$(uname -m)
-        - CC=aarch64-linux-gnu-gcc
-    hooks:
-      pre:
-        -
-          wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.aarch64.a -O /lib/libwasmvm_muscl.a && \
-          wget {{ .Env.WASMVM_URL }}/checksums.txt -O /tmp/checksums.txt && \
-          sha256sum /lib/libwasmvm_muslc.a | grep $(cat /tmp/checksums.txt | grep {{ .Env.ARCH }} | cut -d ' ' -f 1)
-    main: ./cmd/sonrd
-    binary: sonrd
-    goos:
-      - linux
-    goarch:
-      - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc
-      - -w -s -buildmode=shared -linkshared -extldflags '-Wl,-z,muldefs -static'
+  # - id: sonrd-linux-arm64
+  #   skip: true
+  #   env:
+  #       - ARCH=$(uname -m)
+  #       - CC=aarch64-linux-gnu-gcc
+  #   hooks:
+  #     pre:
+  #       -
+  #         wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.aarch64.a -O /lib/libwasmvm_muscl.a && \
+  #         wget {{ .Env.WASMVM_URL }}/checksums.txt -O /tmp/checksums.txt && \
+  #         sha256sum /lib/libwasmvm_muslc.a | grep $(cat /tmp/checksums.txt | grep {{ .Env.ARCH }} | cut -d ' ' -f 1)
+  #   main: ./cmd/sonrd
+  #   binary: sonrd
+  #   goos:
+  #     - linux
+  #   goarch:
+  #     - arm64
+  #   flags:
+  #     - -mod=readonly
+  #     - -trimpath
+  #   ldflags:
+  #     - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+  #     - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+  #     - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+  #     - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc
 
   # Build - Darwin (amd64)
   - id: sonrd-darwin-amd64
