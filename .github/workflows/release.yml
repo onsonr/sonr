@@ -22,6 +22,6 @@ jobs:
         with:
           fetch-depth: 0
           # Run only on tag
-      - run: make release-snapshot
+      - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
