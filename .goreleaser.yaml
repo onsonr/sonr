@@ -18,11 +18,10 @@ builds:
   - id: sonrd-linux-amd64
     env:
         - ARCH=$(uname -m)
-        - CC=x86_64-linux-gnu-gcc
     hooks:
       pre:
         # - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
-        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
     main: ./cmd/sonrd
     binary: sonrd
     goos:
