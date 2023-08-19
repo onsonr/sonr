@@ -22,23 +22,6 @@ jobs:
         with:
           fetch-depth: 0
           # Run only on tag
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.19'
-      - run: make release-snapshot
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  release-hosted:
-    name: Create release
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          # Run only on tag
-      - uses: actions/setup-go@v4
-        with:
-          go-version: '1.19'
       - run: make release-snapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
