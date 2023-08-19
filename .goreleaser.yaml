@@ -17,6 +17,7 @@ builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
     env:
+        - CC=x86_64-linux-gnu-gcc
         - ARCH=$(uname -m)
     hooks:
       pre:
