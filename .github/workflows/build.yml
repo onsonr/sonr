@@ -29,7 +29,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  build-default:
     name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
     runs-on: ubuntu-latest
 
@@ -74,3 +74,12 @@ jobs:
         with:
           name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
           path: cmd/sonrd/sonrd
+
+  build-make:
+    name: Build using makefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Run make build
+        run: make build
