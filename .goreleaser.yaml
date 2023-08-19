@@ -3,7 +3,7 @@ project_name: sonrd
 
 env:
   - WASMVM_URL=https://github.com/CosmWasm/wasmvm/releases/download
-  - WASMVM_VERSION=v1.3.0
+  - WASMVM_VERSION=v1.2.0
   - CGO_ENABLED=1
 
 before:
@@ -22,9 +22,8 @@ builds:
     hooks:
       pre:
         # - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
-        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
-        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.a
-        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muscl.a
+        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muslc.x86_64.a
+        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muslc.aarch64.a
     main: ./cmd/sonrd
     binary: sonrd
     goos:
@@ -39,8 +38,11 @@ builds:
       - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
       - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
       - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,muslc
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,muslc
       - -w -s -linkmode=external -extldflags '-Wl,-z,muldefs -static'
+    tags:
+      - netgo
+      - muslc
 
   # Build - Linux (arm64)
   # - id: sonrd-linux-arm64
