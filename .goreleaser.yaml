@@ -74,6 +74,7 @@ builds:
   #     pre:
   #       - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
   #   env:
+  #     - CC=o64-clang
   #     - CGO_LDFLAGS=-L/lib
   #   goos:
   #     - darwin
@@ -103,6 +104,7 @@ builds:
   #     pre:
   #       - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
   #   env:
+  #     - CC=oa64-clang
   #     - CGO_LDFLAGS=-L/lib
   #   goos:
   #     - darwin
