@@ -30,7 +30,7 @@ concurrency:
 
 jobs:
   build-default:
-    name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+    name: Build sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
     runs-on: ubuntu-latest
 
     strategy:
