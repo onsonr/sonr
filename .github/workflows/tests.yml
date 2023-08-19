@@ -134,6 +134,6 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-go-mod-
 
-        - name: Build Sonr
+        - name: Build Sonr Docker Image
           run: |
             docker build --build-arg GIT_VERSION=${GIT_VERSION} --build-arg GIT_COMMIT=${GIT_COMMIT} -f Dockerfile -t sonr .
