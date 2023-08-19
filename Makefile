@@ -13,8 +13,6 @@ GO_MODULE := $(shell cat go.mod | grep "module " | cut -d ' ' -f 2)
 GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
 GO_MINOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
 
-export GO111MODULE = on
-
 # process build tags
 
 build_tags = netgo
@@ -102,7 +100,6 @@ install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
 
 build:
-	go mod download
 	rm -rf ./build
 	rm -rf ./dist
 	mkdir -p build
