@@ -24,6 +24,7 @@ builds:
         # - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
         - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
         - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.a
+        - wget {{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muscl.a
     main: ./cmd/sonrd
     binary: sonrd
     goos:
