@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
-	"hash"
 
 	"github.com/btcsuite/btcd/btcec"
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
@@ -16,12 +15,11 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
-	"github.com/taurusgroup/multi-party-sig/pkg/ecdsa"
-	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
 	"lukechampine.com/blake3"
 )
 
 type (
+	// Address is a type alias for tmcrypto.Address in libs/bytes.
 	Address = tmcrypto.HexBytes
 )
 
@@ -37,6 +35,7 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 	return pk
 }
 
+// NewSecp256k1PubKey takes a secp256k1.PubKey and returns a PubKey
 func NewSecp256k1PubKey(pk *secp256k1.PubKey) *PubKey {
 	return NewPubKey(pk.Bytes(), KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019)
 }
@@ -45,7 +44,7 @@ func NewSecp256k1PubKey(pk *secp256k1.PubKey) *PubKey {
 // CryptoTypes Implementation of PubKey interface
 //
 
-// Creating a new method called Address() that returns an Address type.
+// Address Creating a new method called Address() that returns an Address type.
 func (pk *PubKey) Address() Address {
 	sckp, err := pk.Secp256k1()
 	if err != nil {
@@ -84,7 +83,7 @@ func (pk *PubKey) Multibase() string {
 	return b58BKeyStr
 }
 
-// Returning the key in bytes.
+// Bytes Returning the key in bytes.
 func (pk *PubKey) Bytes() []byte {
 	raw := pk.Key
 	// Get the multicodec code for the key type
@@ -100,7 +99,7 @@ func (pk *PubKey) Bytes() []byte {
 	return pk.Key
 }
 
-// Comparing the two keys.
+// Equals Comparing the two keys.
 func (pk *PubKey) Equals(other cryptotypes.PubKey) bool {
 	if other == nil {
 		return false
@@ -113,7 +112,7 @@ func (pk *PubKey) Raw() []byte {
 	return pk.Key
 }
 
-// Returning the secp256k1 public key.
+// Secp256k1 Returning the secp256k1 public key.
 func (pk *PubKey) Secp256k1() (*secp256k1.PubKey, error) {
 	if len(pk.Bytes()) != 33 {
 		return nil, errors.New("invalid public key length")
@@ -132,76 +131,9 @@ func (pk *PubKey) Secp256k1AnyProto() (*codectypes.Any, error) {
 	return codectypes.NewAnyWithValue(scpk)
 }
 
-// Returning the type of the key.
+// Type Returning the type of the key.
 func (pk *PubKey) Type() string {
 	return pk.KeyType
-}
-
-// Verifying the signature of the message.
-func (pk *PubKey) VerifySignature(msg []byte, sig []byte) bool {
-	if pk.KeyType == KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019.FormatString() {
-		pp := &curve.Secp256k1Point{}
-		if err := pp.UnmarshalBinary(pk.Key); err != nil {
-			return false
-		}
-		signature, err := deserializeSignature(sig)
-		if err != nil {
-			return false
-		}
-		return signature.Verify(pp, msg)
-	}
-	if pk.KeyType == KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018.FormatString() {
-		return verifyWebAuthnSignature(pk.Key, msg, sig)
-	}
-	return false
-}
-
-// Calculate the hash of hasher over buf.
-func calcHash(buf []byte, hasher hash.Hash) []byte {
-	hasher.Write(buf)
-	return hasher.Sum(nil)
-}
-
-// SerializeSignature marshals an ECDSA signature to DER format for use with the CMP protocol
-func serializeSignature(sig *ecdsa.Signature) ([]byte, error) {
-	rBytes, err := sig.R.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	sBytes, err := sig.S.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-
-	sigBytes := make([]byte, 65)
-	// 0 pad the byte arrays from the left if they aren't big enough.
-	copy(sigBytes[33-len(rBytes):33], rBytes)
-	copy(sigBytes[65-len(sBytes):65], sBytes)
-	return sigBytes, nil
-}
-
-// - The R and S values must be in the valid range for secp256k1 scalars:
-//   - Negative values are rejected
-//   - Zero is rejected
-//   - Values greater than or equal to the secp256k1 group order are rejected
-func deserializeSignature(sigStr []byte) (*ecdsa.Signature, error) {
-	rBytes := sigStr[:33]
-	sBytes := sigStr[33:65]
-
-	sig := ecdsa.EmptySignature(curve.Secp256k1{})
-	if err := sig.R.UnmarshalBinary(rBytes); err != nil {
-		return nil, errors.New("malformed signature: R is not in the range [1, N-1]")
-	}
-
-	// S must be in the range [1, N-1].  Notice the check for the maximum number
-	// of bytes is required because SetByteSlice truncates as noted in its
-	// comment so it could otherwise fail to detect the overflow.
-	if err := sig.S.UnmarshalBinary(sBytes); err != nil {
-		return nil, errors.New("malformed signature: S is not in the range [1, N-1]")
-	}
-
-	// Create and return the signature.
-	return &sig, nil
 }
 
 func verifyWebAuthnSignature(msg []byte, sig []byte, key []byte) bool {

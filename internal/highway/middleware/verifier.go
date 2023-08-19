@@ -1,12 +1,10 @@
 package middleware
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/highlight/highlight/sdk/highlight-go"
 
 	"github.com/sonrhq/core/internal/highway/types"
 	"github.com/sonrhq/core/pkg/crypto"
@@ -94,10 +92,8 @@ func IssueEmailAssertionOptions(email string, ucwDid string) (string, error) {
 
 // UseControllerAccount takes a jwt token and returns a controller account.
 func UseControllerAccount(token string) (*controller.SonrController, error) {
-	ctx := context.Background()
 	claims, err := types.VerifySessionJWTClaims(token)
 	if err != nil {
-		highlight.RecordError(ctx, err)
 		return nil, fmt.Errorf("failed to verify claims: %w", err)
 	}
 	acc, err := GetControllerAccount(claims.Address)

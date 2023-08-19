@@ -37,13 +37,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	"github.com/prometheus/client_golang/prometheus"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	wasmcli "github.com/CosmWasm/wasmd/x/wasm/client/cli"
-	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	"github.com/sonrhq/core/app"
 	appparams "github.com/sonrhq/core/app/params"
 )
@@ -144,13 +141,12 @@ func initRootCmd(
 		a.appExport,
 		addModuleInitFlags,
 	)
-	wasmcli.ExtendUnsafeResetAllCmd(rootCmd)
+
 	// add keybase, auxiliary RPC, query, and tx child commands
 	rootCmd.AddCommand(
 		rpc.StatusCommand(),
 		queryCommand(),
 		txCommand(),
-		CreateGexCmd(),
 		keys.Commands(app.DefaultNodeHome),
 	)
 }
@@ -283,10 +279,7 @@ func (a appCreator) newApp(
 		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
 	)
 
-	var wasmOpts []wasmkeeper.Option
-	if cast.ToBool(appOpts.Get("telemetry.enabled")) {
-		wasmOpts = append(wasmOpts, wasmkeeper.WithVMCacheMetrics(prometheus.DefaultRegisterer))
-	}
+	var emptyWasmOpts []wasm.Option
 	return app.New(
 		logger,
 		db,
@@ -298,7 +291,7 @@ func (a appCreator) newApp(
 		a.encodingConfig,
 		app.GetEnabledProposals(),
 		appOpts,
-		wasmOpts,
+		emptyWasmOpts,
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
@@ -357,8 +350,6 @@ func (a appCreator) appExport(
 // initAppConfig helps to override default appConfig template and configs.
 // return "", nil if no custom configuration is required for the application.
 func initAppConfig() (string, interface{}) {
-	// The following code snippet is just for reference.
-
 	// WASMConfig defines configuration for the wasm module.
 	type WASMConfig struct {
 		// This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries
@@ -371,16 +362,42 @@ func initAppConfig() (string, interface{}) {
 	type CustomAppConfig struct {
 		serverconfig.Config
 
-		Wasm wasmtypes.WasmConfig `mapstructure:"wasm"`
+		WASM WASMConfig `mapstructure:"wasm"`
 	}
 
 	// Optionally allow the chain developer to overwrite the SDK's default
 	// server config.
 	srvCfg := serverconfig.DefaultConfig()
+	// The SDK's default minimum gas price is set to "" (empty value) inside
+	// app.toml. If left empty by validators, the node will halt on startup.
+	// However, the chain developer can set a default app.toml value for their
+	// validators here.
+	//
+	// In summary:
+	// - if you leave srvCfg.MinGasPrices = "", all validators MUST tweak their
+	//   own app.toml config,
+	// - if you set srvCfg.MinGasPrices non-empty, validators CAN tweak their
+	//   own app.toml to override, or use this default value.
+	//
+	// In simapp, we set the min gas prices to 0.
+	// TODO TEST-48 investigate if this is sufficient to allow 0 gas transactions
+	srvCfg.MinGasPrices = ""
+	srvCfg.API.Enable = true
+	srvCfg.API.EnableUnsafeCORS = true
+	srvCfg.GRPCWeb.EnableUnsafeCORS = true
+	srvCfg.MinGasPrices = "0stake"
+
+	// This ensures that upgraded nodes will use iavl fast node.
+	srvCfg.IAVLDisableFastNode = false
+
 	customAppConfig := CustomAppConfig{
 		Config: *srvCfg,
-		Wasm:   wasmtypes.DefaultWasmConfig(),
+		WASM: WASMConfig{
+			LruSize:       1,
+			QueryGasLimit: 300000,
+		},
 	}
+
 	customAppTemplate := serverconfig.DefaultConfigTemplate + `
 	[wasm]
 	# This is the maximum sdk gas (wasm and storage) that we allow for any x/wasm "smart" queries

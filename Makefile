@@ -2,7 +2,7 @@
 
 VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
 COMMIT := $(shell git log -1 --format='%H')
-
+PATH := $(PATH):/usr/local/go/bin
 LEDGER_ENABLED ?= false
 DOCKER := $(shell which docker)
 E2E_UPGRADE_VERSION := "v17"
@@ -102,6 +102,7 @@ install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
 
 build:
+	go mod download
 	rm -rf ./build
 	rm -rf ./dist
 	mkdir -p build

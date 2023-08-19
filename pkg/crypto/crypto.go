@@ -3,7 +3,6 @@ package crypto
 import (
 	"encoding/base64"
 	"encoding/hex"
-	"errors"
 	"fmt"
 	"strings"
 
@@ -12,9 +11,6 @@ import (
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"github.com/shengdoushi/base58"
-	"github.com/taurusgroup/multi-party-sig/pkg/math/curve"
-	"github.com/taurusgroup/multi-party-sig/protocols/cmp"
-
 	types "github.com/sonrhq/core/types/crypto"
 )
 
@@ -116,19 +112,6 @@ const RSAKeyType = types.KeyType_KeyType_RSA_VERIFICATION_KEY_2018
 // WebAuthnKeyType is the key type for WebAuthn.
 const WebAuthnKeyType = types.KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018
 
-// NewPubKeyFromCmpConfig takes a `cmp.Config` and returns a `PubKey`
-func NewPubKeyFromCmpConfig(config *cmp.Config) (*PubKey, error) {
-	skPP, ok := config.PublicPoint().(*curve.Secp256k1Point)
-	if !ok {
-		return nil, errors.New("invalid public point")
-	}
-	bz, err := skPP.MarshalBinary()
-	if err != nil {
-		return nil, err
-	}
-	return types.NewPubKey(bz, Secp256k1KeyType), nil
-}
-
 // Base58Encode takes a byte array and returns a base68 encoded string.
 func Base58Encode(bz []byte) string {
 	return base58.Encode(bz, base58.BitcoinAlphabet)
@@ -210,60 +193,6 @@ func PubKeyFromBytes(bz []byte) (*PubKey, error) {
 		return nil, err
 	}
 	return types.NewPubKey(bz[n:], kt), nil
-}
-
-// DeriveBIP44 function derives a BIP44 configuration for a specific coin type, account, change, and address index.
-func DeriveBIP44(config *cmp.Config, coinType types.CoinType, account, change, addressIndex uint32) (*cmp.Config, error) {
-	purpose := uint32(44)
-
-	// m / purpose'
-	configPurpose, err := config.DeriveBIP32(purpose | 0x80000000)
-	if err != nil {
-		return nil, err
-	}
-
-	// m / purpose' / coin_type'
-	configCoinType, err := configPurpose.DeriveBIP32(uint32(coinType.BipPath()) | 0x80000000)
-	if err != nil {
-		return nil, err
-	}
-
-	// m / purpose' / coin_type' / account'
-	configAccount, err := configCoinType.DeriveBIP32(account | 0x80000000)
-	if err != nil {
-		return nil, err
-	}
-
-	// m / purpose' / coin_type' / account' / change
-	configChange, err := configAccount.DeriveBIP32(change)
-	if err != nil {
-		return nil, err
-	}
-
-	// m / purpose' / coin_type' / account' / change / address_index
-	configAddress, err := configChange.DeriveBIP32(addressIndex)
-	if err != nil {
-		return nil, err
-	}
-
-	return configAddress, nil
-}
-
-const hardenedOffset uint32 = 0x80000000
-
-func formatBip44Path(coinType types.CoinType, idx int) []uint32 {
-	purpose := uint32(44)
-	coinTypeNum := uint32(coinType.BipPath())
-	account := uint32(0)
-	change := uint32(0)
-	addressIndex := uint32(idx)
-	return []uint32{
-		purpose + hardenedOffset,
-		coinTypeNum + hardenedOffset,
-		account + hardenedOffset,
-		change,
-		addressIndex,
-	}
 }
 
 // NewSNRCoins returns a new sdk.Coins object with the given amount of SNR.

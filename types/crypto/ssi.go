@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// FormatString returns the string representation of the key type
 func (kt KeyType) FormatString() string {
 	str := kt.String()
 	ptrs := strings.Split(str, "_")
@@ -17,6 +18,7 @@ func (kt KeyType) FormatString() string {
 	return result
 }
 
+// FormatString returns the string representation of the key type
 func (kt ProofType) FormatString() string {
 	str := kt.String()
 	ptrs := strings.Split(str, "_")
@@ -29,6 +31,7 @@ func (kt ProofType) FormatString() string {
 	return result
 }
 
+// MulticodecType returns the multicodec code for the key type
 // -- We represent those as raw public key bytes prefixed with public key
 // -- multiformat code.
 // | secp256k1  "0xe7"
@@ -37,8 +40,6 @@ func (kt ProofType) FormatString() string {
 // | P384       "0x1201"
 // | P512       "0x1202"
 // | RSA        "0x1205"
-//
-// MulticodecType returns the multicodec code for the key type
 func (kt KeyType) MulticodecType() uint64 {
 	switch kt {
 	case KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019:

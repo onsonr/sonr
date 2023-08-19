@@ -1,4 +1,4 @@
-name: Auto-PR-Body Generator
+name: 🤖 Summarize PR
 
 on:
   pull_request:
@@ -13,7 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: AI powerd Automatic PR Body Generation
-        uses: jbrocher/auto-pr-body-generator@v0.2.2
+      - uses: jbrocher/auto-pr-body-generator@v0.2.2
         with:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

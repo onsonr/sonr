@@ -2,7 +2,6 @@ package handler
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/highlight/highlight/sdk/highlight-go"
 
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/internal/highway/types"
@@ -25,13 +24,11 @@ func RegisterEscrowIdentity(c *gin.Context) {
 
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	assertionOpts, chal, _, err := mdw.IssueCredentialAssertionOptions(alias, record)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
 		return
 	}
@@ -67,25 +64,21 @@ func RegisterControllerIdentity(c *gin.Context) {
 	// Get the service record from the origin
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(404, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	credential, err := record.VerifyCreationChallenge(attestionResp, challenge)
 	if err != nil && credential == nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(412, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
 		return
 	}
 	cont, resp, err := mdw.PublishControllerAccount(alias, credential, origin)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(400, gin.H{"error": err.Error(), "where": "PublishControllerAccount"})
 		return
 	}
 	token, err := types.NewSessionJWTClaims(alias, cont.Account())
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(401, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
 		return
 	}
@@ -120,31 +113,26 @@ func SignInWithCredential(c *gin.Context) {
 	assertionResp := c.Query("assertion")
 	record, err := mdw.GetServiceRecord(origin)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(441, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
 	_, err = record.VerifyAssertionChallenge(assertionResp)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(442, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
 		return
 	}
 	addr, err := mdw.GetEmailRecordCreator(alias)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(443, gin.H{"error": err.Error(), "where": "GetEmailRecordCreator"})
 		return
 	}
 	contAcc, err := mdw.GetControllerAccount(addr)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(444, gin.H{"error": err.Error(), "where": "GetControllerAccount"})
 		return
 	}
 	token, err := types.NewSessionJWTClaims(alias, contAcc)
 	if err != nil {
-		highlight.RecordError(c.Request.Context(), err)
 		c.JSON(445, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
 		return
 	}

@@ -46,7 +46,7 @@ func CoinTypeFromBipPath(i uint32) CoinType {
 	return CoinType_CoinType_TESTNET
 }
 
-// CoinTypeFromDIDMethod returns the CoinType from the DID method.
+// CoinTypeFromDidMethod returns the CoinType from the DID method.
 func CoinTypeFromDidMethod(str string) CoinType {
 	coins := AllCoinTypes()
 	for _, coin := range coins {
@@ -196,81 +196,81 @@ func (ct CoinType) Ticker() string {
 }
 
 // IsBitcoin returns true if the coin type is bitcoin.
-func (c CoinType) IsBitcoin() bool {
-	return c == CoinType_CoinType_BITCOIN
+func (ct CoinType) IsBitcoin() bool {
+	return ct == CoinType_CoinType_BITCOIN
 }
 
 // IsCosmos returns true if the coin type is cosmos.
-func (c CoinType) IsCosmos() bool {
-	return c == CoinType_CoinType_COSMOS
+func (ct CoinType) IsCosmos() bool {
+	return ct == CoinType_CoinType_COSMOS
 }
 
 // IsEthereum returns true if the coin type is ethereum.
-func (c CoinType) IsEthereum() bool {
-	return c == CoinType_CoinType_ETHEREUM
+func (ct CoinType) IsEthereum() bool {
+	return ct == CoinType_CoinType_ETHEREUM
 }
 
 // IsFilecoin returns true if the coin type is filecoin.
-func (c CoinType) IsFilecoin() bool {
-	return c == CoinType_CoinType_FILECOIN
+func (ct CoinType) IsFilecoin() bool {
+	return ct == CoinType_CoinType_FILECOIN
 }
 
 // IsHandshake returns true if the coin type is handshake.
-func (c CoinType) IsHandshake() bool {
-	return c == CoinType_CoinType_HNS
+func (ct CoinType) IsHandshake() bool {
+	return ct == CoinType_CoinType_HNS
 }
 
 // IsLitecoin returns true if the coin type is litecoin.
-func (c CoinType) IsLitecoin() bool {
-	return c == CoinType_CoinType_LITECOIN
+func (ct CoinType) IsLitecoin() bool {
+	return ct == CoinType_CoinType_LITECOIN
 }
 
 // IsSolana returns true if the coin type is solana.
-func (c CoinType) IsSolana() bool {
-	return c == CoinType_CoinType_SOLANA
+func (ct CoinType) IsSolana() bool {
+	return ct == CoinType_CoinType_SOLANA
 }
 
 // IsRipple returns true if the coin type is ripple.
-func (c CoinType) IsRipple() bool {
-	return c == CoinType_CoinType_XRP
+func (ct CoinType) IsRipple() bool {
+	return ct == CoinType_CoinType_XRP
 }
 
 // IsTestnet returns true if the coin type is testnet.
-func (c CoinType) IsTestnet() bool {
-	return c == CoinType_CoinType_TESTNET
+func (ct CoinType) IsTestnet() bool {
+	return ct == CoinType_CoinType_TESTNET
 }
 
 // IsDogecoin returns true if the coin type is dogecoin.
-func (c CoinType) IsDogecoin() bool {
-	return c == CoinType_CoinType_DOGE
+func (ct CoinType) IsDogecoin() bool {
+	return ct == CoinType_CoinType_DOGE
 }
 
 // IsSonr returns true if the coin type is sonr.
-func (c CoinType) IsSonr() bool {
-	return c == CoinType_CoinType_SONR
+func (ct CoinType) IsSonr() bool {
+	return ct == CoinType_CoinType_SONR
 }
 
 // DIDMethod returns the DID method for the given coin type.
-func (c CoinType) DIDMethod() string {
-	if c.IsSonr() {
+func (ct CoinType) DIDMethod() string {
+	if ct.IsSonr() {
 		return "idxr"
 	}
-	return strings.ToLower(fmt.Sprintf(c.Ticker(), "r"))
+	return strings.ToLower(fmt.Sprintf(ct.Ticker(), "r"))
 }
 
 // FormatAddress returns the address for the given public key for the spec of the coin type.
-func (c CoinType) FormatAddress(pk *PubKey) string {
-	if c.IsBitcoin() {
+func (ct CoinType) FormatAddress(pk *PubKey) string {
+	if ct.IsBitcoin() {
 		return BitcoinAddress(pk)
 	}
-	if c.IsEthereum() {
+	if ct.IsEthereum() {
 		return EthereumAddress(pk)
 	}
-	if c.IsSonr() {
+	if ct.IsSonr() {
 		addr, _ := bech32.ConvertAndEncode("idx", pk.Address().Bytes())
 		return addr
 	}
-	if c.IsCosmos() {
+	if ct.IsCosmos() {
 		addr, _ := bech32.ConvertAndEncode("cosmos", pk.Address().Bytes())
 		return addr
 	}
@@ -278,6 +278,6 @@ func (c CoinType) FormatAddress(pk *PubKey) string {
 }
 
 // FormatDID returns the DID for the given public key for the spec of the coin type, along with the address.
-func (c CoinType) FormatDID(pk *PubKey) (string, string) {
-	return fmt.Sprintf("did:%s:%s", c.DIDMethod(), c.FormatAddress(pk)), c.FormatAddress(pk)
+func (ct CoinType) FormatDID(pk *PubKey) (string, string) {
+	return fmt.Sprintf("did:%s:%s", ct.DIDMethod(), ct.FormatAddress(pk)), ct.FormatAddress(pk)
 }

@@ -54,12 +54,10 @@ jobs:
     permissions:
       actions: write
     steps:
-      - name: Set defaults for scheduled runs
-        run: |
+      - run: |
           echo "::set-input name=days::7"
           echo "::set-input name=minimum_runs::1"
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@v2
+      - uses: Mattraks/delete-workflow-runs@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
@@ -69,8 +67,7 @@ jobs:
           delete_workflow_by_state_pattern: ${{ github.event.inputs.delete_workflow_by_state_pattern }}
           delete_run_by_conclusion_pattern: ${{ github.event.inputs.delete_run_by_conclusion_pattern }}
           dry_run: ${{ github.event.inputs.dry_run }}
-      - name: Delete drafts
-        uses: hugo19941994/delete-draft-releases@v1.0.0
+      - uses: hugo19941994/delete-draft-releases@v1.0.0
         with:
           threshold: 5d
         env:

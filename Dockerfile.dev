@@ -1,16 +1,12 @@
-# syntax=docker/dockerfile:1
-
 ARG GO_VERSION="1.19"
 ARG RUNNER_IMAGE="alpine:3.16"
 
-# --------------------------------------------------------
-# Builder
-# --------------------------------------------------------
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                                  Sonrd Builder                                 ||
+# ! ||--------------------------------------------------------------------------------||
+FROM golang:${GO_VERSION}-alpine as sonr-builder
 
-FROM golang:${GO_VERSION}-alpine as builder
-
-ARG GIT_VERSION
-ARG GIT_COMMIT
+ARG arch=x86_64
 
 RUN apk add --no-cache \
     ca-certificates \
@@ -24,15 +20,13 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
     go mod download
 
-
 # Cosmwasm - Download correct libwasmvm version
-RUN set -eux; \
-    export ARCH=$(uname -m); \
-    WASM_VERSION=$(go list -m all | grep github.com/CosmWasm/wasmvm | awk '{print $2}'); \
-    if [ ! -z "${WASM_VERSION}" ]; then \
-    wget -O /lib/libwasmvm_muslc.a https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.${ARCH}.a; \
-    fi; \
-    go mod download;
+RUN WASMVM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | cut -d ' ' -f 2) && \
+    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/libwasmvm_muslc.$(uname -m).a \
+    -O /lib/libwasmvm_muslc.a && \
+    # verify checksum
+    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt -O /tmp/checksums.txt && \
+    sha256sum /lib/libwasmvm_muslc.a | grep $(cat /tmp/checksums.txt | grep $(uname -m) | cut -d ' ' -f 1)
 
 # Copy the remaining files
 COPY . .
@@ -51,26 +45,57 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     -trimpath \
     -o /root/sonr/build/sonrd ./cmd/sonrd/main.go
 
-# --------------------------------------------------------
-# Runner
-# --------------------------------------------------------
 
-FROM ${RUNNER_IMAGE}
+# ! ||----------------------------------------------------------------------------------||
+# ! ||                               Sonr Standalone Node                               ||
+# ! ||----------------------------------------------------------------------------------||
+FROM --platform=linux alpine AS sonr-node
 
-COPY --from=builder /root/sonr/build/sonrd /bin/sonrd
-
-ENV HOME /sonr
-
-WORKDIR $HOME
-
+LABEL org.opencontainers.image.source https://github.com/sonrhq/core
+LABEL org.opencontainers.image.description "Standalone localnet development node"
+# Copy sonrd binary and config
+COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
+COPY sonr.yml sonr.yml
 COPY scripts scripts
+ENV SONR_LAUNCH_CONFIG=/sonr.yml
 
-# rest server
-EXPOSE 1317
-# tendermint p2p
-EXPOSE 26656
-# tendermint rpc
+# Download, extract, and install the toml-cli binary
+RUN wget https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
+    tar -xvf toml-0.2.3-x86_64-linux.tar.gz && \
+    mv toml-0.2.3-x86_64-linux/toml /usr/local/bin && \
+    rm toml-0.2.3-x86_64-linux.tar.gz && \
+    rm -rf toml-0.2.3-x86_64-linux
+
+# Setup localnet environment
+RUN sh scripts/localnet.sh
+
+# Expose ports
 EXPOSE 26657
-# grpc
+EXPOSE 1317
+EXPOSE 26656
+EXPOSE 8080
 EXPOSE 9090
 
+ENTRYPOINT [ "sonrd", "start" ]
+
+
+# ! ||-----------------------------------------------------------------------------||
+# ! ||                               Sonr Base Image                               ||
+# ! ||-----------------------------------------------------------------------------||
+FROM alpine AS sonr-base
+
+LABEL org.opencontainers.image.source https://github.com/sonrhq/core
+LABEL org.opencontainers.image.description "Default node image for sonr"
+# Copy sonrd binary and config
+COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
+COPY sonr.yml sonr.yml
+COPY scripts scripts
+ENV SONR_LAUNCH_CONFIG=/sonr.yml
+
+# Expose ports
+EXPOSE 26657
+EXPOSE 1317
+EXPOSE 26656
+EXPOSE 8080
+
+ENTRYPOINT [  "sonrd" ]

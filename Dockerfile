@@ -7,12 +7,14 @@ ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
 # ! ||--------------------------------------------------------------------------------||
 FROM golang:${GO_VERSION}-alpine as sonr-builder
 
-ARG arch=x86_64
+ARG GIT_VERSION
+ARG GIT_COMMIT
 
 RUN apk add --no-cache \
     ca-certificates \
     build-base \
     linux-headers
+
 
 # Download go dependencies
 WORKDIR /root
@@ -20,7 +22,6 @@ COPY go.mod go.sum ./
 RUN --mount=type=cache,target=/root/.cache/go-build \
     --mount=type=cache,target=/root/go/pkg/mod \
     go mod download
-
 
 # Cosmwasm - Download correct libwasmvm version
 RUN set -eux; \
@@ -52,7 +53,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 # ! ||----------------------------------------------------------------------------------||
 # ! ||                               Sonr Standalone Node                               ||
 # ! ||----------------------------------------------------------------------------------||
-FROM --platform=linux alpine AS sonr-node
+FROM ${RUNNER_IMAGE} AS sonr-node
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 LABEL org.opencontainers.image.description "Standalone localnet development node"
@@ -85,7 +86,7 @@ CMD [ "sonrd", "start" ]
 # ! ||-----------------------------------------------------------------------------||
 # ! ||                               Sonr Base Image                               ||
 # ! ||-----------------------------------------------------------------------------||
-FROM alpine AS sonr-base
+FROM ${RUNNER_IMAGE} AS sonr-base
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 LABEL org.opencontainers.image.description "Default node image for sonr"

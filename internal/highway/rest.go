@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	highlightGin "github.com/highlight/highlight/sdk/highlight-go/middleware/gin"
 	"github.com/kardianos/service"
 
 	timeout "github.com/vearne/gin-timeout"
@@ -40,7 +39,6 @@ func initGin() *gin.Engine {
 		timeout.WithCallBack(func(r *http.Request) {
 			fmt.Println("timeout happen, url:", r.URL.String())
 		})))
-	r.Use(highlightGin.Middleware())
 	routes.RegisterRoutes(r)
 	return r
 }
