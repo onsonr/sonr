@@ -2,7 +2,7 @@
 project_name: sonrd
 
 env:
-  - WASMVM_URL=https://github.com/CosmWasm/wasmvm/releases/download/v1.3.0
+  - WASMVM_URL=https://github.com/CosmWasm/wasmvm/releases/download
   - WASMVM_VERSION=v1.3.0
   - CGO_ENABLED=1
 
@@ -17,7 +17,8 @@ builds:
         - CC=x86_64-linux-gnu-gcc
     hooks:
       pre:
-        - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.a
+        # - wget {{ .Env.WASMVM_URL }}/libwasmvm_muslc.x86_64.a -O /lib/libwasmvm_muscl.x86_64.a
+        - wget{{ .Env.WASMVM_URL }}/{{ .Env.WASMVM_VERSION }}/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
     main: ./cmd/sonrd
     binary: sonrd
     goos:
