@@ -1,11 +1,11 @@
 module github.com/sonrhq/core
 
-go 1.19
+go 1.21
 
 require (
 	cosmossdk.io/api v0.3.1
 	cosmossdk.io/simapp v0.0.0-20230323161446-0af178d721ff
-	github.com/CosmWasm/wasmd v0.40.1
+	github.com/CosmWasm/wasmd v0.41.0
 	github.com/CosmWasm/wasmvm v1.3.0 // indirect
 	github.com/btcsuite/btcd v0.22.1
 	github.com/cometbft/cometbft v0.37.2

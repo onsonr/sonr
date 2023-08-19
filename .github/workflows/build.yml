@@ -10,7 +10,7 @@
 # ensuring that the cache will be invalidated when your dependencies change.
 # The cache will be stored on a per-branch basis, which should prevent cache pollution issues between different branches.
 
-name: Bur
+name: Build
 
 on:
   pull_request:

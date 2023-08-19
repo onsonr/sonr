@@ -143,6 +143,7 @@ COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //
 release:
 	docker run \
 		--rm \
+		-e CGO_ENABLED=1 \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
@@ -158,6 +159,7 @@ release-docker:
 release-dry-run:
 	docker run \
 		--rm \
+		-e CGO_ENABLED=1 \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/sonrd \
