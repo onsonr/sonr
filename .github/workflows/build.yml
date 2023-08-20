@@ -67,7 +67,13 @@ jobs:
       - name: Build sonrd
         if: env.GIT_DIFF
         run: |
-          make build
+          GOWRK=off go build cmd/sonrd/main.go
+      - name: Upload sonrd artifact
+        if: env.GIT_DIFF
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+          path: cmd/sonrd/sonrd
 
   build-make:
     name: Build using makefile
