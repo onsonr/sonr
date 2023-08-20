@@ -1,10 +1,51 @@
 # Add 'repo' label to any root file changes
 Repo:
   - "*"
-  - ".github/**"
+  - ".github/images/**"
   - ".gitignore"
   - ".vscode/**"
   - ".devcontainer/**"
+
+CI-CD:
+  - ".github/workflows/**"
+  - "sonr.yaml"
+  - scripts/**/*
+  - CHANGELOG.md
+  - ".github/labeler.yml"
+
+Community:
+  - "CODE_OF_CONDUCT.md"
+  - "CONTRIBUTING.md"
+  - "LICENSE"
+  - "SECURITY.md"
+  - "README.md"
+  - ".github/ISSUE_TEMPLATE/**"
+  - ".github/PULL_REQUEST_TEMPLATE/**"
+  - docs/**/*
+
+Config:
+  - app/**/*
+  - config/**/*
+  - Makefile
+  - buf.gen.yaml
+  - buf.work.yaml
+  - go.mod
+  - go.sum
+
+Docker:
+  - ".dockerignore"
+  - "Dockerfile"
+  - "docker-compose.yml"
+  - "Dockerfile.dev"
+
+Inrastructure:
+  - internal/**/*
+  - x/**/*
+  - tools/**/*
+
+Proto:
+  - proto/**/*
+  - types/**/*
 
 # Add '@domain/*' label to any change within the 'pkg' directory
 "@domain/crypto":
@@ -26,10 +67,3 @@ Repo:
 "@module/wasm":
   - contracts/**
 
-Config:
-  - app/**/*
-  - config/**/*
-  - sonr.yml
-
-Proto:
-  - proto/**/*
