@@ -128,22 +128,12 @@ build-all-with-checksum: build build-linux-with-checksum build-darwin-with-check
 ###############################################################################
 ###                                Release                                  ###
 ###############################################################################
-release-binaries: build-all-with-checksum
-	mkdir -p dist
-	tar -C build -czf dist/sonrd-linux-amd64.tar.gz sonrd-linux-amd64 sonr-checksum-linux
-	tar -C build -czf dist/sonrd-linux-arm64.tar.gz sonrd-linux-arm64 sonr-checksum-linux
-	tar -C build -czf dist/sonrd-darwin-amd64.tar.gz sonrd-darwin-amd64 sonr-checksum-darwin
-	tar -C build -czf dist/sonrd-darwin-arm64.tar.gz sonrd-darwin-arm64 sonr-checksum-darwin
-	cp ./LICENSE ./dist/LICENSE
-	cp ./sonr.yml ./dist/sonr.yml
-	cp ./scripts/localnet.sh ./dist/localnet.sh
 GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
 
 release:
 	docker run \
 		--rm \
-		-e CGO_ENABLED=1 \
 		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
@@ -159,7 +149,6 @@ release-docker:
 release-dry-run:
 	docker run \
 		--rm \
-		-e CGO_ENABLED=1 \
 		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
 		-v /var/run/docker.sock:/var/run/docker.sock \
 		-v `pwd`:/go/src/sonrd \
