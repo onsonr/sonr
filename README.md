@@ -1,6 +1,10 @@
 <div style="text-align: center;">
 
 [![Sonr Logo Banner](.github/images/core-cover.png)](https://sonr.io)
+
+</div>
+<div style="text-align: left;">
+
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
 [![Test sonrd](https://github.com/sonrhq/core/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/tests.yml)
 [![Release sonrd](https://github.com/sonrhq/core/actions/workflows/release.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/release.yml)
@@ -10,25 +14,25 @@
 
 ---
 
-# Sonr
+# `sonr-io/sonr`
 
 Sonr is an ibc-enabled blockchain for decentralized identity.
 
-- [x] Passkey based User Accounts. [Docs](https://sonr.io/docs/guides/database)
-- [x] DKLS MPC Powered Wallets _(No seed phrases)_. [Docs](https://sonr.io/docs/guides/auth)
-- [x] IPFS Database and Storage. [Docs](https://sonr.io/docs/guides/storage)
-  - [x] Redis. [Docs](https://sonr.io/docs/guides/api#rest-api-overview)
-  - [x] MySQL. [Docs](https://sonr.io/docs/guides/api#graphql-api-overview)
-  - [ ] User mailboxes. [Docs](https://sonr.io/docs/guides/api#realtime-api-overview)
-  - [ ] Realtime subscriptions. [Docs](https://sonr.io/docs/guides/api#realtime-api-overview)
-  - [ ] Matrix chat. [Docs](https://sonr.io/docs/guides/api#realtime-api-overview)
+- [x] Passkey based User Accounts. [__Docs__](https://sonr.io/docs/guides/database)
+- [x] DKLS-MPC Powered Wallets _(No seed phrases)_. [__Docs__](https://sonr.io/docs/guides/auth)
+- [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
+  - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
+  - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
+  - [ ] User mailboxes. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+  - [ ] Realtime subscriptions. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+  - [ ] Matrix chat. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
 - [x] IBC Integrations.
-  - [ ] Nomic. [Docs](https://sonr.io/docs/guides/database/functions)
-  - [ ] Evmos. [Docs](https://sonr.io/docs/guides/functions)
-  - [ ] Osmosis. [Docs](https://sonr.io/docs/guides/functions)
-- [x] Smart Contracts  _(CosmWasm)_. [Docs](https://sonr.io/docs/guides/storage)
-- [ ] Typescript Client SDKs. [Docs](https://sonr.io/docs/guides/ai)
-- [ ] Dashboard. [Repo](https://github.com/sonr-io/front)
+  - [ ] Nomic. [Status](https://sonr.io/docs/guides/database/functions)
+  - [ ] Evmos. [Status](https://sonr.io/docs/guides/functions)
+  - [ ] Osmosis. [Status](https://sonr.io/docs/guides/functions)
+- [x] Smart Contracts. [__Docs__](https://sonr.io/docs/guides/storage)
+- [ ] Typescript Client SDKs. [Status](https://sonr.io/docs/guides/ai)
+- [ ] Dashboard. [Status](https://github.com/sonr-io/front)
 
 ## Documentation
 
@@ -38,19 +42,20 @@ To see how to Contribute, visit [Getting Started](./docs/wiki/DEVELOPERS.md)
 
 ## Community & Support
 
-- [Community Forum](https://github.com/sonr-io/sonr/discussions). Best for: help with building, discussion about database best practices.
-- [GitHub Issues](https://github.com/sonr-io/sonr/issues). Best for: bugs and errors you encounter using Sonr.
-- [Email Support](https://sonr.io/docs/support#business-support). Best for: problems with your database or infrastructure.
-- [Discord](https://discord.sonr.com). Best for: sharing your applications and hanging out with the community.
+- [Forum](https://github.com/sonr-io/sonr/discussions)
+- [Issues](https://github.com/sonr-io/sonr/issues)
+- [Twitter](https://sonr.io/docs/support#business-support)
+- [Dev Chat](https://discord.sonr.com)
 
 ## Status
 
-- [x] **Alpha**: We are testing Sonr with a closed set of customers
-- [x] **Private Devnet**: Try it over at [sonr.com/dashboard](https://sonr.io/dashboard).
-- [ ] **Public Testnet**: Stable enough for most non-enterprise use-cases, But go easy on us - there are a few kinks. Try it over at [sonr.io/dashboard](https://sonr.io/dashboard).
-- [ ] **Mainnet**: General Availability with a DEX enlisted token, [watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
+- [X] __Alpha__: Closed testing.
+- [X] __Private Devnet__: May have kinks. [See projects](https://sonr.io/dashboard).
+- [ ] __Public Testnet__: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
+- [ ] __Mainnet__: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
-We are currently in Private Devnet. Watch "releases" of this repo to get notified of major updates.
+
+We are currently in transitioning to Public Testnet. Watch [releases](#) of this repo to get notified of major updates.
 
 ## How it works
 
@@ -59,16 +64,15 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We use these modules:
 - `x/auth`
 - `x/bank`
-- `x/staking`
-- `x/slashing`
-- `x/gov`
-- `x/params`
 - `x/distribution`
-- `x/upgrade`
 - `x/ibc`
 - `x/ibc/applications/transfer`
+- `x/gov`
+- `x/params`
+- `x/slashing`
+- `x/staking`
+- `x/upgrade`
 - `x/wasm`
-
 
 ### Architecture
 
