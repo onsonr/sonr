@@ -1,7 +1,7 @@
 
 <div style="text-align: center;">
 
-[![Sonr Logo Banner](.github/images/banner.png)](https://sonr.io)
+[![Sonr Logo Banner](.github/images/core-banner.png)](https://sonr.io)
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
 [![Test sonrd](https://github.com/sonrhq/core/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/tests.yml)
