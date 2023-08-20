@@ -1,7 +1,9 @@
-
 <div style="text-align: center;">
 
 [![Sonr Logo Banner](.github/images/core-cover.png)](https://sonr.io)
+
+</div>
+<div style="text-align: left;">
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
 [![Test sonrd](https://github.com/sonrhq/core/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/tests.yml)
@@ -10,115 +12,172 @@
 
 </div>
 
-<p align="center"> Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management system</strong> that leverages <italic>DID Documents, WebAuthn, and IPFS</italic> - to provide users with a <strong>secure, user-friendly</strong> way to manage their <strong>digital identity and assets.</strong>
-    <br>
-</p>
+---
 
-## Getting Started
+# `sonr-io/sonr`
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonrhq/core)
+Sonr is an ibc-enabled blockchain for decentralized identity.
 
-You can setup your macOS or Linux machine to be ready for local development with these steps:
-
-```sh
-git clone https://github.com/sonrhq/core.git       # Clone the repository
-sh scripts/install.sh                               # Install dependencies
-task                                                # Display the available commands
-```
-
-The `install.sh` script will install the following tools:
-
-- [Ignite CLI](https://github.com/ignite/cli)
-- [Taskfile](https://taskfile.dev)
-- [Buf CLI](https://docs.buf.build/introduction)
-
-You need to set the following environment variables to run the blockchain:
-
-```sh
-CONNECT_SERVER_HOST="localhost"
-CONNECT_SERVER_PORT="8080"
-TLS_CERT_FILE=""
-TLS_KEY_FILE=""
-ENVIRONMENT="dev"
-HIGHWAY_MODE="fiber"
-```
-
+- [x] Passkey based User Accounts. [__Docs__](https://sonr.io/docs/guides/database)
+- [x] DKLS-MPC Powered Wallets _(No seed phrases)_. [__Docs__](https://sonr.io/docs/guides/auth)
+- [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
+  - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
+  - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
+  - [ ] User mailboxes. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+  - [ ] Realtime subscriptions. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+  - [ ] Matrix chat. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+- [x] IBC Integrations.
+  - [ ] Nomic. [Status](https://sonr.io/docs/guides/database/functions)
+  - [ ] Evmos. [Status](https://sonr.io/docs/guides/functions)
+  - [ ] Osmosis. [Status](https://sonr.io/docs/guides/functions)
+- [x] Smart Contracts. [__Docs__](https://sonr.io/docs/guides/storage)
+- [ ] Typescript Client SDKs. [Status](https://sonr.io/docs/guides/ai)
+- [ ] Dashboard. [Status](https://github.com/sonr-io/front)
 
 ## Documentation
 
-Sonr utilizes Mintlify to generate documentation from the source code. To view the documentation, execute `task docs` from the root directory. Or, visit the [documentation site](https://snr.la/docs).
+For full documentation, visit [sonr.io/docs](https://sonr.io/docs)
 
-<details>
-<summary><strong>Architecture Diagram</strong></summary>
+To see how to Contribute, visit [Getting Started](./docs/wiki/DEVELOPERS.md)
 
-![Architecture](./docs/static/images/diagrams/architecture-light.svg)
+## Community & Support
 
-</details>
+- [Forum](https://github.com/sonr-io/sonr/discussions)
+- [Issues](https://github.com/sonr-io/sonr/issues)
+- [Twitter](https://sonr.io/docs/support#business-support)
+- [Dev Chat](https://discord.sonr.com)
 
-<details>
-<summary><strong>Repository Structure Map</strong></summary>
+## Status
 
-![Repository structure](./docs/static/images/diagrams/repo-structure.svg)
+- [X] __Alpha__: Closed testing.
+- [X] __Private Devnet__: May have kinks. [See projects](https://sonr.io/dashboard).
+- [ ] __Public Testnet__: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
+- [ ] __Mainnet__: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
-</details>
 
-## Usage
+We are currently in transitioning to Public Testnet. Watch [releases](#) of this repo to get notified of major updates.
 
-`task serve` command installs dependencies, builds, initializes, and starts your blockchain in development.
+## How it works
 
-<details>
-<summary><strong>Command Reference</strong></summary>
+Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
 
-```sh
-* docs                  Serve the docs locally
-* chain:build:          Build the blockchain                  (aliases: build)
-* chain:generate:       Generate the protobuf files           (aliases: gen)
-* chain:serve:          Serve the blockchain locally          (aliases: serve)
-* web                   Run the web app in dev mode           (aliases: web)
-```
-</details>
-<details>
-<summary><strong>Publish New Release</strong></summary>
+Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We use these modules:
+- `x/auth`
+- `x/bank`
+- `x/distribution`
+- `x/ibc`
+- `x/ibc/applications/transfer`
+- `x/gov`
+- `x/params`
+- `x/slashing`
+- `x/staking`
+- `x/upgrade`
+- `x/wasm`
 
-To release a new version of your blockchain, create and push a new tag with `v` prefix. A new draft release with the configured targets will be created.
+### Architecture
 
-```sh
-git tag v0.1
-git push origin v0.1
-```
+Sonr is a [blockchain node](https://sonr.io/dashboard) which you can run locally, or use to join our testnet. You can sign up and start using Sonr without installing anything using our [dashboard](https://sonr.io/dashboard).
 
-After a draft release is created, make your final changes from the release page and publish it.
+![Architecture](.github/images/architecture.svg)
 
-</details>
+See [additional details](https://sonr.io/docs) on these components.
 
-### Installation
-To install the latest version of your blockchain node's binary, execute the following command on your machine:
+### Client libraries
 
-```sh
-curl https://get.ignite.com/sonrhq/core! | sudo bash
-```
-Production endpoints are available at the following URLs:
+Our approach for client libraries is uniform. Abstract away any blockchain specific details, and provide a simple interface for developers to use. We have a few client libraries that we maintain, and provide [guidelines](#) for community maintained libraries.
 
-- REST API:    [api.sonr.ws](https://api.sonr.ws)
-- Tendermint:  [rpc.sonr.ws](https://rpc.sonr.ws)
-- gRPC Server: [grpc.sonr.ws](https://grpc.sonr.ws)
+<table style="table-layout:fixed; white-space: nowrap;">
+  <tr>
+    <th>Language</th>
+    <th>Client</th>
+    <th colspan="5">Feature-Clients (bundled in Sonr client)</th>
+  </tr>
+  <!-- notranslate -->
+  <tr>
+    <th></th>
+    <th>Sonr</th>
+    <th><a href="https://github.com/postgrest/postgrest" target="_blank" rel="noopener noreferrer">PostgREST</a></th>
+    <th><a href="https://github.com/sonr/realtime" target="_blank" rel="noopener noreferrer">Realtime</a></th>
+    <th><a href="https://github.com/sonr/storage-api" target="_blank" rel="noopener noreferrer">Storage</a></th>
+    <th>Functions</th>
+  </tr>
+  <!-- TEMPLATE FOR NEW ROW -->
+  <!-- START ROW
+  <tr>
+    <td>lang</td>
+    <td><a href="https://github.com/sonr-community/sonr-lang" target="_blank" rel="noopener noreferrer">sonr-lang</a></td>
+    <td><a href="https://github.com/sonr-community/postgrest-lang" target="_blank" rel="noopener noreferrer">postgrest-lang</a></td>
+    <td><a href="https://github.com/sonr-community/realtime-lang" target="_blank" rel="noopener noreferrer">realtime-lang</a></td>
+    <td><a href="https://github.com/sonr-community/storage-lang" target="_blank" rel="noopener noreferrer">storage-lang</a></td>
+  </tr>
+  END ROW -->
+  <!-- /notranslate -->
+  <th colspan="7">⚡️ Official ⚡️</th>
+  <!-- notranslate -->
+  <tr>
+    <td>JavaScript (TypeScript)</td>
+    <td><a href="https://github.com/sonr-io/sonr-js" target="_blank" rel="noopener noreferrer">sonr-js</a></td>
+    <td><a href="https://github.com/sonr/postgrest-js" target="_blank" rel="noopener noreferrer">postgrest-js</a></td>
+    <td><a href="https://github.com/sonr/realtime-js" target="_blank" rel="noopener noreferrer">realtime-js</a></td>
+    <td><a href="https://github.com/sonr/storage-js" target="_blank" rel="noopener noreferrer">storage-js</a></td>
+    <td><a href="https://github.com/sonr/functions-js" target="_blank" rel="noopener noreferrer">functions-js</a></td>
+  </tr>
+    <tr>
+    <td>Flutter</td>
+    <td><a href="https://github.com/sonr-io/sonr-flutter" target="_blank" rel="noopener noreferrer">sonr-flutter</a></td>
+    <td><a href="https://github.com/sonr/postgrest-dart" target="_blank" rel="noopener noreferrer">postgrest-dart</a></td>
+    <td><a href="https://github.com/sonr/realtime-dart" target="_blank" rel="noopener noreferrer">realtime-dart</a></td>
+    <td><a href="https://github.com/sonr/storage-dart" target="_blank" rel="noopener noreferrer">storage-dart</a></td>
+    <td><a href="https://github.com/sonr/functions-dart" target="_blank" rel="noopener noreferrer">functions-dart</a></td>
+  </tr>
+  <!-- /notranslate -->
+  <th colspan="7">💚 Community 💚</th>
+  <!-- notranslate -->
+  <tr>
+    <td>C#</td>
+    <td><a href="https://github.com/sonr-community/sonr-csharp" target="_blank" rel="noopener noreferrer">sonr-csharp</a></td>
+    <td><a href="https://github.com/sonr-community/postgrest-csharp" target="_blank" rel="noopener noreferrer">postgrest-csharp</a></td>
+    <td><a href="https://github.com/sonr-community/realtime-csharp" target="_blank" rel="noopener noreferrer">realtime-csharp</a></td>
+    <td><a href="https://github.com/sonr-community/storage-csharp" target="_blank" rel="noopener noreferrer">storage-csharp</a></td>
+    <td><a href="https://github.com/sonr-community/functions-csharp" target="_blank" rel="noopener noreferrer">functions-csharp</a></td>
+  </tr>
+  <tr>
+    <td>Go</td>
+    <td>-</td>
+    <td><a href="https://github.com/sonr-community/postgrest-go" target="_blank" rel="noopener noreferrer">postgrest-go</a></td>
+    <td>-</td>
+    <td><a href="https://github.com/sonr-community/storage-go" target="_blank" rel="noopener noreferrer">storage-go</a></td>
+    <td><a href="https://github.com/sonr-community/functions-go" target="_blank" rel="noopener noreferrer">functions-go</a></td>
+  </tr>
+  <tr>
+    <td>Java</td>
+    <td>-</td>
+    <td>-</td>
+    <td>-</td>
+    <td><a href="https://github.com/sonr-community/storage-java" target="_blank" rel="noopener noreferrer">storage-java</a></td>
+    <td>-</td>
+  </tr>
+  <tr>
+    <td>Swift</td>
+    <td><a href="https://github.com/sonr-community/sonr-swift" target="_blank" rel="noopener noreferrer">sonr-swift</a></td>
+    <td><a href="https://github.com/sonr-community/postgrest-swift" target="_blank" rel="noopener noreferrer">postgrest-swift</a></td>
+    <td><a href="https://github.com/sonr-community/realtime-swift" target="_blank" rel="noopener noreferrer">realtime-swift</a></td>
+    <td><a href="https://github.com/sonr-community/storage-swift" target="_blank" rel="noopener noreferrer">storage-swift</a></td>
+    <td><a href="https://github.com/sonr-community/functions-swift" target="_blank" rel="noopener noreferrer">functions-swift</a></td>
+  </tr>
+  <!-- /notranslate -->
+</table>
 
-## Community
+---
 
-For help and discussion around DID Documents, best practices, and more, join us on [Discord](https://snr.la/dev-chat).
+## Acknowledgements
 
-For updates on the Sonr Daemon, [follow this repo on GitHub](https://github.com/sonrhq/core).
+Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-For feature requests, bugs, or technical questions, [submit feedback here](https://roadmap.sonr.io). For general inquiries or inclusion in our upcoming feature betas, reach out on [Twitter](https://snr.la/tw).
+- **Protocol Labs**: For IPFS & Libp2p.
+- **Interchain Foundation**: For Cosmos & IBC.
+- **Tim Berners-Lee**: For the Internet.
+- **Satoshi Nakamoto**: For Bitcoin.
+- **Steve Jobs**: For Taste.
 
-# Additional Resources
-
-## MPC
-
-### Version 1
-
-This is the second version of our MPC protocol which leverages the kryptology library from coinbase. This protocol uses DKG based signing for ecdsa signature generation. The protocol is described in the paper [here](https://eprint.iacr.org/2018/987.pdf).
-
-### Version 0
-
-This is the first version of the MPC protocol. It is a simple protocol that uses the taurusgroup implementation for CMP based ecdsa signature generation. The protocol is described in the paper [here](https://eprint.iacr.org/2017/552.pdf).
+Thank you for your support and inspiration!
