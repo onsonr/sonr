@@ -1,8 +1,7 @@
 # This workflow deletes old workflow runs in a repository.
 # It runs on a schedule and allows manual triggering with customizable options.
 
-name: Delete old workflow runs
-
+name: Cleanup Repository
 on:
   schedule:
     - cron: "59 23 * * *"
