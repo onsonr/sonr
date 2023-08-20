@@ -4,7 +4,7 @@ project_name: sonrd
 env:
   - CGO_ENABLED=1
   - WASMVM_URL=https://github.com/CosmWasm/wasmvm/releases/download
-
+  - COSMWASM_VERSION=v1.2.4
 before:
   hooks:
     - go mod download
