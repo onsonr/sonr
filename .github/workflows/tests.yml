@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   build:
-    name: Run sonrd-${{ matrix.targetos }}-${{ matrix.arch }} Tests
+    name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
     runs-on: ubuntu-latest
 
     strategy:
