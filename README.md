@@ -31,7 +31,7 @@ Sonr is a <strong>peer-to-peer identity</strong> and <strong>asset management sy
 
 For full documentation, visit [sonr.io/docs](https://sonr.io/docs)
 
-To see how to Contribute, visit [Getting Started](./DEVELOPERS.md)
+To see how to Contribute, visit [Getting Started](./docs/wiki/DEVELOPERS.md)
 
 ## Community & Support
 
