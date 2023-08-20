@@ -54,7 +54,9 @@ We are currently in Private Devnet. Watch "releases" of this repo to get notifie
 
 ## How it works
 
-Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, user-friendly way to manage their digital identity and assets. Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. The Cosmos SDK is a modular framework that allows developers to easily spin up a blockchain application with a set of pre-built modules. Sonr is built on top of the following Cosmos SDK modules:
+Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
+
+Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We use these modules:
 - `x/auth`
 - `x/bank`
 - `x/staking`
@@ -70,21 +72,15 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 ### Architecture
 
-Sonr is a [blockchain node](https://sonr.io/dashboard) which you can run locally, or use to join our testnet. You can sign up and start using Sonr without installing anything using our [hosted service](https://sonr.io/dashboard).
+Sonr is a [blockchain node](https://sonr.io/dashboard) which you can run locally, or use to join our testnet. You can sign up and start using Sonr without installing anything using our [dashboard](https://sonr.io/dashboard).
 
 ![Architecture](.github/images/architecture.svg)
 
-- [L1 Blockchain](https://www.postgresql.org/) is an object-relational database system with over 30 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
-- [API Gateway](https://github.com/sonr/realtime) is an Elixir server that allows you to listen to PostgreSQL inserts, updates, and deletes using websockets. Realtime polls Postgres' built-in replication functionality for database changes, converts changes to JSON, then broadcasts the JSON over websockets to authorized clients.
-- [CosmWasm Contracts](http://postgrest.org/) is a web server that turns your PostgreSQL database directly into a RESTful API
-- [IcefireDB Redis/SQL](http://github.com/sonr/pg_graphql/) a PostgreSQL extension that exposes a GraphQL API
-- [IBC Channel](https://github.com/sonr/postgres-meta) is a RESTful API for managing your Postgres, allowing you to fetch tables, add roles, and run queries, etc.
-- [Matrix](https://github.com/sonr/gotrue) is an JWT based API for managing users and issuing JWT tokens.
-- [Libp2p](https://github.com/Kong/kong) is a cloud-native API gateway.
+See [additional details](https://sonr.io/docs) on these components.
 
 ### Client libraries
 
-Our approach for client libraries is modular. Each sub-library is a standalone implementation for a single external system. This is one of the ways we support existing tools.
+Our approach for client libraries is uniform. Abstract away any blockchain specific details, and provide a simple interface for developers to use. We have a few client libraries that we maintain, and provide [guidelines](#) for community maintained libraries.
 
 <table style="table-layout:fixed; white-space: nowrap;">
   <tr>
@@ -107,7 +103,6 @@ Our approach for client libraries is modular. Each sub-library is a standalone i
     <td>lang</td>
     <td><a href="https://github.com/sonr-community/sonr-lang" target="_blank" rel="noopener noreferrer">sonr-lang</a></td>
     <td><a href="https://github.com/sonr-community/postgrest-lang" target="_blank" rel="noopener noreferrer">postgrest-lang</a></td>
-    <td><a href="https://github.com/sonr-community/gotrue-lang" target="_blank" rel="noopener noreferrer">gotrue-lang</a></td>
     <td><a href="https://github.com/sonr-community/realtime-lang" target="_blank" rel="noopener noreferrer">realtime-lang</a></td>
     <td><a href="https://github.com/sonr-community/storage-lang" target="_blank" rel="noopener noreferrer">storage-lang</a></td>
   </tr>
@@ -169,15 +164,16 @@ Our approach for client libraries is modular. Each sub-library is a standalone i
   <!-- /notranslate -->
 </table>
 
+---
 
 ## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- **Protocol Labs**: For IPFS.
-- **Interchain Foundation**: For Cosmos.
+- **Protocol Labs**: For IPFS & Libp2p.
+- **Interchain Foundation**: For Cosmos & IBC.
 - **Tim Berners-Lee**: For the Internet.
 - **Satoshi Nakamoto**: For Bitcoin.
-- **Apple**: For Taste.
+- **Steve Jobs**: For Taste.
 
 Thank you for your support and inspiration!
