@@ -18,8 +18,7 @@ on:
       - "**"
   push:
     branches:
-      - "**/**"
-      - "v[0-9]**"
+      - "master"
   workflow_dispatch:
   merge_group:
 env:
