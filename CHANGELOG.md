@@ -1,55 +1,5 @@
 # CHANGELOG
 
-## [v0.7.6](https://github.com/sonrhq/core/releases/tag/v0.7.6) - 2023-08-17 04:29:34
-
-**Full Changelog**: https://github.com/sonrhq/core/compare/v0.7.5...v0.7.6
-
-## [v0.7.5](https://github.com/sonrhq/core/releases/tag/v0.7.5) - 2023-08-17 03:09:46
-
-![Release Image](https://api.placid.app/u/cpqufnq7i?&commit[text]=c2093e90ac4380232f3a768beba7ffed54b4e106&date[text]=2023-08-17T03:09:57Z&version[text]=0.7.5)
-
-< DESCRIPTION OF RELEASE >
-
-## Changelog
-
-See the full changelog [here](https://github.com/sonrhq/core/blob/v0.7.5/CHANGELOG.md)
-
-## ⚡️ Binaries
-
-Binaries for Linux and Darwin (amd64 and arm64) are available below.
-Darwin users can also use the same universal binary `sonrd-0.7.5-darwin-all` for both amd64 and arm64.
-
-#### 🔨 Build from source
-
-If you prefer to build from source, you can use the following commands:
-
-````bash
-git clone https://github.com/sonrhq/core
-cd core && git checkout v0.7.5
-make build-darwin # or make build-linux
-````
-
-## 🐳 Run with Docker
-
-As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
-The following Docker images are available in our registry:
-
-| Image Name                              | Base                                 | Description                       |
-|-----------------------------------------|--------------------------------------|-----------------------------------|
-| `sonrhq/core:0.7.5`            | `distroless/static-debian11`         | Default image based on Distroless |
-| `sonrhq/core:0.7.5-distroless` | `distroless/static-debian11`         | Distroless image (same as above)  |
-| `sonrhq/core:0.7.5-nonroot`    | `distroless/static-debian11:nonroot` | Distroless non-root image         |
-| `sonrhq/core:0.7.5-alpine`     | `alpine`                             | Alpine image                      |
-
-Example run:
-
-```bash
-docker run sonrhq/sonrd:0.7.5 version
-# v0.7.5
-````
-
-All the images support `arm64` and `amd64` architectures.
-
 ## [v0.7.4](https://github.com/sonrhq/core/releases/tag/v0.7.4) - 2023-08-13 23:55:00
 
 This release has no changes
