@@ -70,65 +70,65 @@ builds:
       - netgo
       - muslc
       - ousergo
-  # # Build - Darwin (amd64)
-  # - id: sonrd-darwin-amd64
-  #   main: ./cmd/sonrd/main.go
-  #   binary: sonrd
-  #   hooks:
-  #     pre:
-  #       - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-  #   env:
-  #     - CC=o64-clang
-  #     - CGO_LDFLAGS=-L/lib
-  #   goos:
-  #     - darwin
-  #   goarch:
-  #     - amd64
-  #   flags:
-  #     - -mod=readonly
-  #     - -trimpath
-  #   ldflags:
-  #     - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-  #     - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-  #     - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-  #     - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-  #     - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
-  #     - -w -s
-  #     - -linkmode=external
-  #   tags:
-  #     - netgo
-  #     - static_wasm
-  #     - ledger
+  # Build - Darwin (amd64)
+  - id: sonrd-darwin-amd64
+    main: ./cmd/sonrd/main.go
+    binary: sonrd
+    hooks:
+      pre:
+        - wget {{ .Env.WASMVM_URL }}/v1.2.4/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=o64-clang
+      - CGO_LDFLAGS=-L/lib
+    goos:
+      - darwin
+    goarch:
+      - amd64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -w -s
+      - -linkmode=external
+    tags:
+      - netgo
+      - static_wasm
+      - ledger
 
-  # # Build - Darwin (arm64)
-  # - id: sonrd-darwin-arm64
-  #   main: ./cmd/sonrd/main.go
-  #   binary: sonrd
-  #   hooks:
-  #     pre:
-  #       - wget {{ .Env.WASMVM_URL }}/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-  #   env:
-  #     - CC=oa64-clang
-  #     - CGO_LDFLAGS=-L/lib
-  #   goos:
-  #     - darwin
-  #   goarch:
-  #     - arm64
-  #   flags:
-  #     - -mod=readonly
-  #     - -trimpath
-  #   ldflags:
-  #     - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-  #     - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-  #     - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-  #     - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-  #     - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
-  #     - -w -s
-  #     - -linkmode=external
-  #   tags:
-  #     - netgo
-  #     - static_wasm
-  #     - ledger
+  # Build - Darwin (arm64)
+  - id: sonrd-darwin-arm64
+    main: ./cmd/sonrd/main.go
+    binary: sonrd
+    hooks:
+      pre:
+        - wget {{ .Env.WASMVM_URL }}/v1.2.4/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+    env:
+      - CC=oa64-clang
+      - CGO_LDFLAGS=-L/lib
+    goos:
+      - darwin
+    goarch:
+      - arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
+      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
+      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
+      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
+      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo,ledger,static_wasm
+      - -w -s
+      - -linkmode=external
+    tags:
+      - netgo
+      - static_wasm
+      - ledger
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
