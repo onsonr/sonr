@@ -170,13 +170,13 @@ release:
     owner: sonr-io
     name: sonr
   footer: |
-
-    ## ⚡️ Binaries
+    ## Installation
+    ### ⚡️ Binaries
 
     Binaries for Linux and Darwin (amd64 and arm64) are available below.
     Darwin users can also use the same universal binary `sonrd-{{ .Version }}-darwin-all` for both amd64 and arm64.
 
-    ## 🔨 Build from source
+    ### 🔨 Build from source
 
     If you prefer to build from source, you can use the following commands:
 
@@ -189,7 +189,7 @@ release:
     # v{{ .Version }}
     ````
 
-    ## 🐳 Run with Docker
+    ### 🐳 Run with Docker
 
     As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
     The following Docker images are available in our registry:
