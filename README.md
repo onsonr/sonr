@@ -32,8 +32,8 @@ Sonr is an ibc-enabled blockchain for decentralized identity.
   - [ ] Evmos. [Status](https://github.com/sonr-io/sonr/issues/785)
   - [ ] Osmosis. [Status](https://github.com/sonr-io/sonr/issues/786)
 - [x] Smart Contracts. [__Docs__](https://sonr.io/docs/guides/storage)
-- [ ] Typescript Client SDKs. [Status](https://sonr.io/docs/guides/ai)
-- [ ] Dashboard. [Status](https://github.com/sonr-io/front)
+- [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
+- [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
 
 ## Documentation
 
