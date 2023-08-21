@@ -6,10 +6,10 @@ import (
 
 	"fmt"
 
-	"github.com/sonr-io/sonr/pkg/did/method/authr"
-	"github.com/sonr-io/sonr/pkg/did/method/sonr"
-	"github.com/sonr-io/sonr/pkg/did/types"
-	identitytypes "github.com/sonr-io/sonr/x/identity/types"
+	"github.com/sonrhq/core/pkg/did/method/authr"
+	"github.com/sonrhq/core/pkg/did/method/sonr"
+	"github.com/sonrhq/core/pkg/did/types"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 var defaultDidMethod = types.DIDMethod("idxr")

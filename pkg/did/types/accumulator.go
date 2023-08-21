@@ -7,7 +7,7 @@ import (
 	"github.com/sonrhq/kryptology/pkg/accumulator"
 	"github.com/sonrhq/kryptology/pkg/core/curves"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonrhq/core/pkg/crypto"
 )
 
 // DIDAccumulator is a ZKSet accumulator for a DID

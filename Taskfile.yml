@@ -22,7 +22,7 @@ tasks:
     silent: true
     cmds:
       - echo -----------------------------------------------
-      - echo '(sonr-io/core) - https://github.com/sonr-io/sonr'
+      - echo '(sonr-io/core) - https://github.com/sonrhq/core'
       - echo -----------------------------------------------
       - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
       - task -l
@@ -37,18 +37,15 @@ tasks:
     cmds:
       - sh ./scripts/proto-gen.sh
 
-  db:
-    desc: Install the database
+  deps:
+    desc: Pull Docker dependencies
     cmds:
-      - git clone https://github.com/sonr-io/icefire.git .tmp/icefire
+      - docker compose pull
 
   release:
     desc: Build the binary for docker
     cmds:
       - task: docker-release
-        vars:
-          IMAGE: sonrd
-      - task: docker-release-alone
         vars:
           IMAGE: sonrd
 

@@ -18,7 +18,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/sonr/app"
+	"github.com/sonrhq/core/app"
 )
 
 type (

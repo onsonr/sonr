@@ -1,4 +1,4 @@
-module github.com/sonr-io/sonr
+module github.com/sonrhq/core
 
 go 1.20
 
@@ -49,8 +49,6 @@ require (
 	lukechampine.com/blake3 v1.2.1
 )
 
-require github.com/sonrhq/core v0.7.6
-
 require (
 	cloud.google.com/go v0.110.4 // indirect
 	cloud.google.com/go/compute v1.20.1 // indirect
@@ -97,10 +95,8 @@ require (
 	github.com/cosmos/ledger-cosmos-go v0.12.1 // indirect
 	github.com/cosmos/rosetta-sdk-go v0.10.0 // indirect
 	github.com/creachadair/taskgroup v0.4.2 // indirect
-	github.com/cronokirby/safenum v0.29.0 // indirect
 	github.com/danieljoos/wincred v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/decred/dcrd/dcrec/secp256k1/v3 v3.0.0 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/dgraph-io/badger/v2 v2.2007.4 // indirect
@@ -210,7 +206,6 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
 	github.com/syndtr/goleveldb v1.0.1-0.20220721030215-126854af5e6d // indirect
-	github.com/taurusgroup/multi-party-sig v0.6.0-alpha-2021-09-21 // indirect
 	github.com/tendermint/go-amino v0.16.0 // indirect
 	github.com/tidwall/btree v1.6.0 // indirect
 	github.com/twitchyliquid64/golang-asm v0.15.1 // indirect
@@ -218,7 +213,6 @@ require (
 	github.com/ulikunitz/xz v0.5.11 // indirect
 	github.com/vektah/gqlparser/v2 v2.5.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	github.com/zeebo/blake3 v0.2.0 // indirect
 	github.com/zondax/hid v0.9.1 // indirect
 	github.com/zondax/ledger-go v0.14.1 // indirect
 	go.etcd.io/bbolt v1.3.7 // indirect

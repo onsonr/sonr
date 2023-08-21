@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonr-io/sonr/x/domain/types"
+	"github.com/sonrhq/core/x/domain/types"
 )
 
 func (k msgServer) CreateUsernameRecord(goCtx context.Context, msg *types.MsgCreateUsernameRecords) (*types.MsgCreateUsernameRecordsResponse, error) {

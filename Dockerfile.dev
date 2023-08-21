@@ -52,7 +52,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 # ! ||----------------------------------------------------------------------------------||
 FROM --platform=linux alpine
 
-LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
+LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 LABEL org.opencontainers.image.description "Base sonr daemon image"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd

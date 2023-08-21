@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/sacOO7/gowebsocket"
-	"github.com/sonr-io/sonr/app"
+	"github.com/sonrhq/core/app"
 )
 
 func initSDKConfig() {

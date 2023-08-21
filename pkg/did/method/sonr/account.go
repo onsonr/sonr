@@ -3,9 +3,9 @@ package sonr
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
-	"github.com/sonr-io/sonr/pkg/did/types"
-	"github.com/sonr-io/sonr/pkg/mpc"
+	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonrhq/core/pkg/did/types"
+	"github.com/sonrhq/core/pkg/mpc"
 )
 
 // Method is the DID method for Sonr Wallet Actor DIDs

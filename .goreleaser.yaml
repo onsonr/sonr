@@ -181,7 +181,7 @@ release:
     If you prefer to build from source, you can use the following commands:
 
     ````bash
-    git clone https://github.com/sonr-io/sonr
+    git clone https://github.com/sonrhq/core
     cd core && git checkout v{{ .Version }}
     make install
     # Then run sonrd

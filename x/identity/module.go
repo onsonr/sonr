@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+
 	// this line is used by starport scaffolding # 1
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
@@ -17,9 +18,9 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
-	"github.com/sonr-io/sonr/x/identity/client/cli"
-	"github.com/sonr-io/sonr/x/identity/keeper"
-	"github.com/sonr-io/sonr/x/identity/types"
+	"github.com/sonrhq/core/x/identity/client/cli"
+	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 var (

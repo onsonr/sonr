@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonrhq/core/pkg/crypto"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	algo "github.com/sonr-io/sonr/pkg/mpc/protocol/dkls"
-	v1types "github.com/sonr-io/sonr/pkg/mpc/types/v1"
+	algo "github.com/sonrhq/core/pkg/mpc/protocol/dkls"
+	v1types "github.com/sonrhq/core/pkg/mpc/types/v1"
 )
 
 type EncryptionKey = *secp256k1.PubKey

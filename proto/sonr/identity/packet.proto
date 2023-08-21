@@ -1,7 +1,7 @@
 syntax = "proto3";
 package core.identity;
 
-option go_package = "github.com/sonr-io/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 message IdentityPacketData {
   oneof packet { NoData noData = 1; }

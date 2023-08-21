@@ -1,6 +1,5 @@
 # version: "3"
-# networks:
-#   sonr-net:
+
 # services:
 #   node:
 #     image: sonr-node
@@ -15,34 +14,27 @@
 #       - 9090:9090 # grpc
 #       - 8000:8080 # highway
 #     restart: always
-#   db:
-#     image: ghcr.io/sonr-io/icefiredb:latest
-#     init: true
-#     container_name: db
-#     networks:
-#       - sonr-net
-#     ports:
-#       - 6001:6001
-#     restart: always
-#   sql:
-#     image: ghcr.io/sonr-io/icefiresql:latest
-#     init: true
-#     container_name: sql
-#     networks:
-#       - sonr-net
-#     ports:
-#       - 23367:23367
+
 
 version: "3"
+networks:
+  sonr-net:
 services:
   node:
-    build:
-      context: .
-      dockerfile: Dockerfile.dev
-      args:
-        - arch=${ARCH:-x86_64}
+    image: ghcr.io/sonr-io/sonrd:latest
     command: sh scripts/localnet.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
       - 26657:26657 # rpc
+      - 9090:9090 # grpc
+    restart: always
+  db:
+    image: ghcr.io/sonr-io/icefiredb:latest
+    init: true
+    container_name: db
+    networks:
+      - sonr-net
+    ports:
+      - 6001:6001
+    restart: always
