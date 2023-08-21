@@ -8,9 +8,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/kataras/jwt"
 
-	"github.com/sonrhq/core/config"
-	"github.com/sonrhq/core/pkg/crypto"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
+	"github.com/sonr-io/sonr/config"
+	"github.com/sonr-io/sonr/pkg/crypto"
+	identitytypes "github.com/sonr-io/sonr/x/identity/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||

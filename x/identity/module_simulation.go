@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sonrhq/core/testutil/sample"
-	identitysimulation "github.com/sonrhq/core/x/identity/simulation"
-	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonr-io/sonr/testutil/sample"
+	identitysimulation "github.com/sonr-io/sonr/x/identity/simulation"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 // avoid unused import issue
@@ -85,7 +85,7 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 				Address: sample.AccAddress(),
 			},
 			{
-			
+
 				Address: sample.AccAddress(),
 			},
 		},

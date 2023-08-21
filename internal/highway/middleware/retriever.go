@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonrhq/core/config"
-	"github.com/sonrhq/core/internal/local"
-	domaintypes "github.com/sonrhq/core/x/domain/types"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
-	servicetypes "github.com/sonrhq/core/x/service/types"
+	"github.com/sonr-io/sonr/config"
+	"github.com/sonr-io/sonr/internal/local"
+	domaintypes "github.com/sonr-io/sonr/x/domain/types"
+	identitytypes "github.com/sonr-io/sonr/x/identity/types"
+	servicetypes "github.com/sonr-io/sonr/x/service/types"
 )
 
 var baseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress())

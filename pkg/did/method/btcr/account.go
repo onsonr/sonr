@@ -1,9 +1,9 @@
 package btcr
 
 import (
-	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/core/pkg/did/types"
-	"github.com/sonrhq/core/pkg/mpc"
+	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/did/types"
+	"github.com/sonr-io/sonr/pkg/mpc"
 )
 
 const Method = types.DIDMethod("btcr")

@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	servicetypes "github.com/sonrhq/core/x/service/types"
+	servicetypes "github.com/sonr-io/sonr/x/service/types"
 )
 
 // Credential is a webauthn credential

@@ -2,8 +2,8 @@ package domain
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/x/domain/keeper"
-	"github.com/sonrhq/core/x/domain/types"
+	"github.com/sonr-io/sonr/x/domain/keeper"
+	"github.com/sonr-io/sonr/x/domain/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

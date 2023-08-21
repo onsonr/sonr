@@ -1,7 +1,7 @@
 package app
 
 import (
-	"github.com/sonrhq/core/internal/highway"
+	"github.com/sonr-io/sonr/internal/highway"
 )
 
 // EnablePlugins enables the plugins.

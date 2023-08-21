@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonrhq/core/pkg/mpc/types/v1"
+	"github.com/sonr-io/sonr/pkg/mpc/types/v1"
 	"github.com/stretchr/testify/assert"
 )
 

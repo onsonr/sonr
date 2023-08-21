@@ -5,8 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	mdw "github.com/sonrhq/core/internal/highway/middleware"
-	"github.com/sonrhq/core/pkg/crypto"
+	mdw "github.com/sonr-io/sonr/internal/highway/middleware"
+	"github.com/sonr-io/sonr/pkg/crypto"
 )
 
 // CreateAccount creates a new account with a given coin type and name.

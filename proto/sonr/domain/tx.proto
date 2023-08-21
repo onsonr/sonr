@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package core.domain;
+package sonr.domain;
 
-import "core/domain/record.proto";
+import "sonr/domain/record.proto";
 
-option go_package = "github.com/sonrhq/core/x/domain/types";
+option go_package = "github.com/sonr-io/sonr/x/domain/types";
 
 // Msg defines the Msg service.
 service Msg {

@@ -3,13 +3,13 @@ package middleware
 import (
 	"fmt"
 
-	types "github.com/sonrhq/core/internal/highway/types"
-	"github.com/sonrhq/core/pkg/did/controller"
+	types "github.com/sonr-io/sonr/internal/highway/types"
+	"github.com/sonr-io/sonr/pkg/did/controller"
 
-	// "github.com/sonrhq/core/pkg/sfs/store"
-	domaintypes "github.com/sonrhq/core/x/domain/types"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
-	servicetypes "github.com/sonrhq/core/x/service/types"
+	// "github.com/sonr-io/sonr/pkg/sfs/store"
+	domaintypes "github.com/sonr-io/sonr/x/domain/types"
+	identitytypes "github.com/sonr-io/sonr/x/identity/types"
+	servicetypes "github.com/sonr-io/sonr/x/service/types"
 )
 
 // PublishControllerAccount creates a new controller account and publishes it to the blockchain

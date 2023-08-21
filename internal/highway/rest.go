@@ -9,9 +9,9 @@ import (
 
 	timeout "github.com/vearne/gin-timeout"
 
-	"github.com/sonrhq/core/config"
-	"github.com/sonrhq/core/internal/highway/routes"
-	"github.com/sonrhq/core/internal/highway/types"
+	"github.com/sonr-io/sonr/config"
+	"github.com/sonr-io/sonr/internal/highway/routes"
+	"github.com/sonr-io/sonr/internal/highway/types"
 )
 
 // @title           Sonr Highway Protocol API

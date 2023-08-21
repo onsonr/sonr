@@ -6,8 +6,8 @@ import (
 
 	"lukechampine.com/blake3"
 
-	"github.com/sonrhq/core/config"
-	"github.com/sonrhq/core/internal/sfs"
+	"github.com/sonr-io/sonr/config"
+	"github.com/sonr-io/sonr/internal/sfs"
 )
 
 // DIDStore is a store for a DID

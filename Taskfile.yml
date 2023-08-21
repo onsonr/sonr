@@ -22,7 +22,7 @@ tasks:
     silent: true
     cmds:
       - echo -----------------------------------------------
-      - echo '(sonrhq/core) - https://github.com/sonrhq/core'
+      - echo '(sonrhq/core) - https://github.com/sonr-io/sonr'
       - echo -----------------------------------------------
       - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
       - task -l

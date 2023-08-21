@@ -41,8 +41,8 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
-	"github.com/sonrhq/core/app"
-	appparams "github.com/sonrhq/core/app/params"
+	"github.com/sonr-io/sonr/app"
+	appparams "github.com/sonr-io/sonr/app/params"
 )
 
 // NewRootCmd creates a new root command for a Cosmos SDK application

@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonr-io/sonr/pkg/crypto"
 )
 
 // PublicKeyMultibase returns the public key in multibase format

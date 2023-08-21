@@ -9,8 +9,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sonrhq/core/x/domain/keeper"
-	"github.com/sonrhq/core/x/domain/types"
+	"github.com/sonr-io/sonr/x/domain/keeper"
+	"github.com/sonr-io/sonr/x/domain/types"
 )
 
 // Prevent strconv unused error

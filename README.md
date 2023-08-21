@@ -5,10 +5,10 @@
 </div>
 <div style="text-align: left;">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
-[![Test sonrd](https://github.com/sonrhq/core/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/tests.yml)
-[![Release sonrd](https://github.com/sonrhq/core/actions/workflows/release.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/release.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/core)](https://goreportcard.com/report/github.com/sonrhq/core)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
+[![Test sonrd](https://github.com/sonr-io/sonr/actions/workflows/tests.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/tests.yml)
+[![Release sonrd](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
 
 </div>
 

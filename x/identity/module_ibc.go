@@ -10,8 +10,8 @@ import (
 	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	ibcexported "github.com/cosmos/ibc-go/v7/modules/core/exported"
-	"github.com/sonrhq/core/x/identity/keeper"
-	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonr-io/sonr/x/identity/keeper"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 type IBCModule struct {

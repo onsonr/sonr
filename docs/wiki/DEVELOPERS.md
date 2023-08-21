@@ -34,7 +34,7 @@ You will need to install and configure the following dependencies on your machin
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
-git clone https://github.com/sonrhq/core.git       # Clone the repository
+git clone https://github.com/sonr-io/sonr.git       # Clone the repository
 sh scripts/install.sh                               # Install dependencies
 task                                                # Display the available commands
 ```

@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-redis/redis/v8"
 
-	"github.com/sonrhq/core/config"
+	"github.com/sonr-io/sonr/config"
 )
 
 var ifr *IceFireRedis
