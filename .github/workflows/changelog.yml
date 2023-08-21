@@ -6,6 +6,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 jobs:
   generate-changelog:
@@ -17,7 +18,7 @@ jobs:
       - uses: BobAnkh/auto-generate-changelog@v1.2.5
         with:
           REPO_NAME: sonr-io/core
-          ACCESS_TOKEN: ${{secrets.GH_ACTIONS_PAT}}
+          ACCESS_TOKEN: ${{secrets.GITHUB_TOKEN}}
           PATH: "CHANGELOG.md"
           COMMIT_MESSAGE: "docs(CHANGELOG): update release notes"
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests"
