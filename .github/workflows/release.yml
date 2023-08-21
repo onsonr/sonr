@@ -24,4 +24,4 @@ jobs:
           # Run only on tag
       - run: make release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

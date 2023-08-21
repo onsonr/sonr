@@ -167,8 +167,8 @@ checksum:
 # ! ||--------------------------------------------------------------------------------||
 release:
   github:
-    owner: sonrhq
-    name: core
+    owner: sonr-io
+    name: sonr
   footer: |
 
     ## ⚡️ Binaries
