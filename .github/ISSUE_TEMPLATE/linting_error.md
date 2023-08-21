@@ -1,8 +1,8 @@
 ---
-name: Epic Task
-about: Define an initiative that can be broken down into smaller tasks
-title: ''
-labels: 'type: epic'
+name: Fix linting error
+about: Fix linting error in codebase
+title: 'Fix linting error: <error>'
+labels: 'type: style'
 assignees: ''
 
 ---
@@ -11,13 +11,12 @@ assignees: ''
 
 > A clear and concise description of what the initiative is.
 
-```[tasklist]
 ### Tasks
+
 - [ ] Draft task
 - [ ] Draft task
 - [ ] Draft task
 - [ ] Draft task
-```
 
 ### Acceptance Criteria
 

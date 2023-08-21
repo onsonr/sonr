@@ -9,7 +9,7 @@ import "core/identity/params.proto";
 import "core/identity/did.proto";
 import "core/identity/account.proto";
 
-option go_package = "github.com/sonr-io/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Query defines the gRPC querier service.
 service Query {
@@ -60,11 +60,11 @@ service Query {
 
   // Queries a list of EscrowAccount items.
   rpc EscrowAccount    (QueryGetEscrowAccountRequest) returns (QueryGetEscrowAccountResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/escrow_account/{address}";
+    option (google.api.http).get = "/sonr-io/core/identity/escrow_account/{address}";
 
   }
   rpc EscrowAccountAll (QueryAllEscrowAccountRequest) returns (QueryAllEscrowAccountResponse) {
-    option (google.api.http).get = "/sonrhq/core/identity/escrow_account";
+    option (google.api.http).get = "/sonr-io/core/identity/escrow_account";
 
   }
 }

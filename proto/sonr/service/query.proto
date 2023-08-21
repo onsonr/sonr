@@ -10,7 +10,7 @@ import "core/service/record.proto";
 import "core/service/credential.proto";
 import "core/identity/did.proto";
 
-option go_package = "github.com/sonr-io/sonr/x/service/types";
+option go_package = "github.com/sonrhq/core/x/service/types";
 
 // Query defines the gRPC querier service.
 service Query {

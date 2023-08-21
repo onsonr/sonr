@@ -4,7 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
 
-	mdw "github.com/sonr-io/sonr/internal/highway/middleware"
+	mdw "github.com/sonrhq/core/internal/highway/middleware"
 )
 
 // GetCredentialAttestationParams returns the credential creation options to start account registration.

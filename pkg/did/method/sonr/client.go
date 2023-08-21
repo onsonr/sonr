@@ -8,8 +8,8 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"google.golang.org/grpc"
 
-	"github.com/sonr-io/sonr/config"
-	"github.com/sonr-io/sonr/internal/local"
+	"github.com/sonrhq/core/config"
+	"github.com/sonrhq/core/internal/local"
 )
 
 // ! ||--------------------------------------------------------------------------------||

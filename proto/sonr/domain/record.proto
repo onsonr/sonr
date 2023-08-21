@@ -1,7 +1,7 @@
 syntax = "proto3";
 package sonr.domain;
 
-option go_package = "github.com/sonr-io/sonr/x/domain/types";
+option go_package = "github.com/sonrhq/core/x/domain/types";
 
 message UsernameRecord {
   string index = 1;

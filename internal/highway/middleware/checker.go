@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonr-io/sonr/internal/local"
-	domaintypes "github.com/sonr-io/sonr/x/domain/types"
+	"github.com/sonrhq/core/internal/local"
+	domaintypes "github.com/sonrhq/core/x/domain/types"
 )
 
 // CheckAliasAvailable checks if an alias is already registered

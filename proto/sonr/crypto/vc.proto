@@ -3,7 +3,7 @@ package sonr.crypto;
 
 // this line is used by starport scaffolding # proto/tx/import
 
-option go_package = "github.com/sonr-io/sonr/types/crypto";
+option go_package = "github.com/sonrhq/core/types/crypto";
 
 // PubKey represents a public key in bytes format.
 message PubKey {

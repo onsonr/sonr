@@ -3,7 +3,7 @@ package dkls
 import (
 	"fmt"
 
-	mpcv1types "github.com/sonr-io/sonr/pkg/mpc/types/v1"
+	mpcv1types "github.com/sonrhq/core/pkg/mpc/types/v1"
 	"github.com/sonrhq/kryptology/pkg/core/curves"
 	"github.com/sonrhq/kryptology/pkg/core/protocol"
 	dklsv1 "github.com/sonrhq/kryptology/pkg/tecdsa/dkls/v1"

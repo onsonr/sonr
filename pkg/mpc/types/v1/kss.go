@@ -8,7 +8,7 @@ import (
 	dklsv1 "github.com/sonrhq/kryptology/pkg/tecdsa/dkls/v1"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonr-io/sonr/pkg/crypto"
+	"github.com/sonrhq/core/pkg/crypto"
 	"golang.org/x/crypto/sha3"
 )
 

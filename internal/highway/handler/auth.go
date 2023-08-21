@@ -3,8 +3,8 @@ package handler
 import (
 	"github.com/gin-gonic/gin"
 
-	mdw "github.com/sonr-io/sonr/internal/highway/middleware"
-	"github.com/sonr-io/sonr/internal/highway/types"
+	mdw "github.com/sonrhq/core/internal/highway/middleware"
+	"github.com/sonrhq/core/internal/highway/types"
 )
 
 // RegisterEscrowIdentity returns the credential assertion options to start account login.

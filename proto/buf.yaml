@@ -1,5 +1,5 @@
 version: v1beta1
-name: buf.build/sonrhq/sonr
+name: buf.build/sonr-io/sonr
 deps:
   - buf.build/googleapis/googleapis
   - buf.build/cosmos/cosmos-sdk
@@ -8,8 +8,8 @@ deps:
   - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
   ignore:
-    - sonrhq/core
-    - sonrhq/sonr
+    - sonr-io/core
+    - sonr-io/sonr
   allow_comment_ignores: true
   use:
     - DEFAULT

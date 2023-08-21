@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sonr-io/sonr/pkg/crypto"
-	v1 "github.com/sonr-io/sonr/pkg/mpc/base"
+	"github.com/sonrhq/core/pkg/crypto"
+	v1 "github.com/sonrhq/core/pkg/mpc/base"
 	"github.com/stretchr/testify/assert"
 )
 

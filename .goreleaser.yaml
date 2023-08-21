@@ -167,21 +167,21 @@ checksum:
 # ! ||--------------------------------------------------------------------------------||
 release:
   github:
-    owner: sonrhq
-    name: core
+    owner: sonr-io
+    name: sonr
   footer: |
-
-    ## ⚡️ Binaries
+    ## Installation
+    ### ⚡️ Binaries
 
     Binaries for Linux and Darwin (amd64 and arm64) are available below.
     Darwin users can also use the same universal binary `sonrd-{{ .Version }}-darwin-all` for both amd64 and arm64.
 
-    ## 🔨 Build from source
+    ### 🔨 Build from source
 
     If you prefer to build from source, you can use the following commands:
 
     ````bash
-    git clone https://github.com/sonr-io/sonr
+    git clone https://github.com/sonrhq/core
     cd core && git checkout v{{ .Version }}
     make install
     # Then run sonrd
@@ -189,21 +189,21 @@ release:
     # v{{ .Version }}
     ````
 
-    ## 🐳 Run with Docker
+    ### 🐳 Run with Docker
 
     As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
     The following Docker images are available in our registry:
 
     | Image Name                               | Base                                 | Description                       | Registry Source                                     |
     |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
-    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonrhq/sonrd](https://ghcr.io/sonrhq/sonrd:latest) |
-    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonrhq/sonrd-standalone](https://ghcr.io/sonrhq/sonrd:latest-standalone) |
-    | `sonrhq/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonrhq/sonr-faucet](https://ghcr.io/sonrhq/sonr-faucet:latest) |
+    | `sonr-io/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
+    | `sonr-io/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
+    | `sonr-io/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
 
     Example run:
 
     ```bash
-    docker run sonrhq/sonrd:{{ .Version }} version
+    docker run sonr-io/sonrd:{{ .Version }} version
     # v{{ .Version }}
     ````
 
