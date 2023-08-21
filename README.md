@@ -44,8 +44,8 @@ To see how to Contribute, visit [Getting Started](./docs/wiki/DEVELOPERS.md)
 
 - [Forum](https://github.com/sonr-io/sonr/discussions)
 - [Issues](https://github.com/sonr-io/sonr/issues)
-- [Twitter](https://sonr.io/docs/support#business-support)
-- [Dev Chat](https://discord.sonr.com)
+- [Twitter](https://sonr.io/twitter)
+- [Dev Chat](https://sonr.io/discord)
 
 ## Status
 
