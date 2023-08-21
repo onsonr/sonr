@@ -169,9 +169,7 @@ release:
   github:
     owner: sonrhq
     name: core
-  header: |
-
-    < DESCRIPTION OF RELEASE >
+  footer: |
 
     ## ⚡️ Binaries
 
@@ -213,6 +211,22 @@ release:
 
   name_template: "Sonr Core - v{{.Version}} 🆔"
   mode: replace
-  draft: false
+  draft: true
 changelog:
-  skip: true
+  sort: asc
+  abbrev: -1
+  groups:
+    - title: Features
+      regexp: '.*?feat\(.*\):.*$'
+      order: 0
+    - title: "Documentation"
+      regexp: '.*?docs\(.*\):.*$'
+      order: 1
+    - title: "Fixes"
+      regexp: '.*?fix\(.*\):.*$'
+      order: 2
+    - title: "Chores"
+      regexp: '.*?chore\(.*\):.*$'
+      order: 3
+    - title: Others
+      order: 999

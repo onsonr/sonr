@@ -23,4 +23,4 @@ jobs:
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests"
           COMMITTER: "Sonr Mind <ai@sonr.io)"
           SUPPRESS_UNSCOPED: true
-          REGENERATE_COUNT: 8
+          REGENERATE_COUNT: -1
