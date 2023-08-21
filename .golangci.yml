@@ -3,6 +3,8 @@ run:
   timeout: 5m
 
 linters:
+  ignore:
+    - *.pb.go
   disable-all: true
   # Enable specific linter
   # https://golangci-lint.run/usage/linters/#enabled-by-default-linters

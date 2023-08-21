@@ -54,14 +54,14 @@ To see how to Contribute, visit [Getting Started](./docs/wiki/DEVELOPERS.md)
 - [ ] __Public Testnet__: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
 - [ ] __Mainnet__: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
-
-We are currently in transitioning to Public Testnet. Watch [releases](#) of this repo to get notified of major updates.
+We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/sonr-io/sonr/releases) of this repo to get notified of major updates.
 
 ## How it works
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
 
 Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We use these modules:
+
 - `x/auth`
 - `x/bank`
 - `x/distribution`
@@ -84,7 +84,7 @@ See [additional details](https://sonr.io/docs) on these components.
 
 ### Client libraries
 
-Our approach for client libraries is uniform. Abstract away any blockchain specific details, and provide a simple interface for developers to use. We have a few client libraries that we maintain, and provide [guidelines](#) for community maintained libraries.
+Our approach for client libraries is uniform. Abstract away any blockchain specific details, and provide a simple interface for developers to use. We have a few client libraries that we maintain, and provide [guidelines](https://sonr.io) for community maintained libraries.
 
 <table style="table-layout:fixed; white-space: nowrap;">
   <tr>
@@ -174,10 +174,10 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- **Protocol Labs**: For IPFS & Libp2p.
-- **Interchain Foundation**: For Cosmos & IBC.
-- **Tim Berners-Lee**: For the Internet.
-- **Satoshi Nakamoto**: For Bitcoin.
-- **Steve Jobs**: For Taste.
+- __Protocol Labs__: For IPFS & Libp2p.
+- __Interchain Foundation__: For Cosmos & IBC.
+- __Tim Berners-Lee__: For the Internet.
+- __Satoshi Nakamoto__: For Bitcoin.
+- __Steve Jobs__: For Taste.
 
 Thank you for your support and inspiration!

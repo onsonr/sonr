@@ -21,12 +21,13 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     go mod download
 
 # Cosmwasm - Download correct libwasmvm version
-RUN WASMVM_VERSION=$(go list -m github.com/CosmWasm/wasmvm | cut -d ' ' -f 2) && \
-    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/libwasmvm_muslc.$(uname -m).a \
-    -O /lib/libwasmvm_muslc.a && \
-    # verify checksum
-    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt -O /tmp/checksums.txt && \
-    sha256sum /lib/libwasmvm_muslc.a | grep $(cat /tmp/checksums.txt | grep $(uname -m) | cut -d ' ' -f 1)
+RUN set -eux; \
+    export ARCH=$(uname -m); \
+    WASM_VERSION=$(go list -m all | grep github.com/CosmWasm/wasmvm | awk '{print $2}'); \
+    if [ ! -z "${WASM_VERSION}" ]; then \
+    wget -O /lib/libwasmvm_muslc.a https://github.com/CosmWasm/wasmvm/releases/download/${WASM_VERSION}/libwasmvm_muslc.${ARCH}.a; \
+    fi; \
+    go mod download;
 
 # Copy the remaining files
 COPY . .
@@ -52,22 +53,12 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 FROM --platform=linux alpine
 
 LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
-LABEL org.opencontainers.image.description "Standalone localnet development node"
+LABEL org.opencontainers.image.description "Base sonr daemon image"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY sonr.yml sonr.yml
 COPY scripts scripts
 ENV SONR_LAUNCH_CONFIG=/sonr.yml
-
-# Download, extract, and install the toml-cli binary
-RUN wget https://github.com/gnprice/toml-cli/releases/latest/download/toml-0.2.3-x86_64-linux.tar.gz && \
-    tar -xvf toml-0.2.3-x86_64-linux.tar.gz && \
-    mv toml-0.2.3-x86_64-linux/toml /usr/local/bin && \
-    rm toml-0.2.3-x86_64-linux.tar.gz && \
-    rm -rf toml-0.2.3-x86_64-linux
-
-# Setup localnet environment
-RUN sh scripts/localnet.sh
 
 # Expose ports
 EXPOSE 26657
@@ -76,4 +67,3 @@ EXPOSE 26656
 EXPOSE 8080
 EXPOSE 9090
 
-ENTRYPOINT [ "sonrd", "start" ]
