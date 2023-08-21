@@ -22,7 +22,7 @@ tasks:
     silent: true
     cmds:
       - echo -----------------------------------------------
-      - echo '(sonrhq/core) - https://github.com/sonr-io/sonr'
+      - echo '(sonr-io/core) - https://github.com/sonr-io/sonr'
       - echo -----------------------------------------------
       - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
       - task -l
@@ -40,7 +40,7 @@ tasks:
   db:
     desc: Install the database
     cmds:
-      - git clone https://github.com/sonrhq/icefire.git .tmp/icefire
+      - git clone https://github.com/sonr-io/icefire.git .tmp/icefire
 
   release:
     desc: Build the binary for docker

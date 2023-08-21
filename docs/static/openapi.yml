@@ -2744,7 +2744,7 @@ paths:
                   additionalProperties: {}
       tags:
         - Query
-  /sonrhq/core/identity/escrow_account:
+  /sonr-io/core/identity/escrow_account:
     get:
       operationId: CoreIdentityEscrowAccountAll
       responses:
@@ -2874,7 +2874,7 @@ paths:
           type: boolean
       tags:
         - Query
-  /sonrhq/core/identity/escrow_account/{address}:
+  /sonr-io/core/identity/escrow_account/{address}:
     get:
       summary: Queries a list of EscrowAccount items.
       operationId: CoreIdentityEscrowAccount

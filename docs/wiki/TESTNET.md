@@ -44,7 +44,7 @@ task                                                # Display the available comm
 
 You can also use GitHub Codespaces to develop Sonr. To get started, click the button below:
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonrhq/core)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/sonr-io/core)
 
 ## Local development
 

@@ -16,7 +16,7 @@
 #       - 8000:8080 # highway
 #     restart: always
 #   db:
-#     image: ghcr.io/sonrhq/icefiredb:latest
+#     image: ghcr.io/sonr-io/icefiredb:latest
 #     init: true
 #     container_name: db
 #     networks:
@@ -25,7 +25,7 @@
 #       - 6001:6001
 #     restart: always
 #   sql:
-#     image: ghcr.io/sonrhq/icefiresql:latest
+#     image: ghcr.io/sonr-io/icefiresql:latest
 #     init: true
 #     container_name: sql
 #     networks:
