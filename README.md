@@ -9,7 +9,8 @@
 [![Test sonrd](https://github.com/sonr-io/sonr/actions/workflows/tests.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/tests.yml)
 [![Release sonrd](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
-
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 </div>
 
 ---
@@ -23,7 +24,7 @@ Sonr is an ibc-enabled blockchain for decentralized identity.
 - [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
   - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
   - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
-  - [ ] User mailboxes. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
+  - [ ] User mailboxes. [Status](https://github.com/sonr-io/sonr/issues/781)
   - [ ] Realtime subscriptions. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
   - [ ] Matrix chat. [Status](https://sonr.io/docs/guides/api#realtime-api-overview)
 - [x] IBC Integrations.

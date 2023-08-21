@@ -80,7 +80,7 @@ jobs:
           # Run only on tag
       - run: make release-snapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
 
 
   coverage:
@@ -98,7 +98,7 @@ jobs:
         - name: SonarCloud Scan
           uses: sonarsource/sonarcloud-github-action@master
           env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
             SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   docker:
