@@ -28,6 +28,7 @@ services:
       - 26656:26656 # p2p
       - 26657:26657 # rpc
       - 9090:9090 # grpc
+      - 8000:8080 # highway
     restart: always
   db:
     image: ghcr.io/sonr-io/icefiredb:latest
