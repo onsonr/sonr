@@ -13,8 +13,6 @@ This release has no changes
 
 ## [v0.7.3](https://github.com/sonrhq/core/releases/tag/v0.7.3) - 2023-08-07 23:55:39
 
-## Changelog
-
 * 58a93d3 *chore(Taskfile.yml): remove docker build command for cosmos-faucet target* chore(Taskfile.yml): remove docker tag and push commands for sonr-faucet image * chore(Taskfile.yml): remove publish task for k8s manifests
 * 2b64d4f *refactor(Dockerfile): remove unused comments and empty lines* chore(Dockerfile): remove cosmos-faucet section
 * 8ef09d9 *chore(docker-compose.yml): add dependencies for validator service* fix(docker-compose.yml): add dependencies on icefiredb and icefiresql services for validator service
@@ -61,8 +59,6 @@ This release has no changes
 
 ## [v0.7.3-beta.4](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.4) - 2023-08-02 03:50:58
 
-## Changelog
-
 * b11386b * feat(sonrd): add new file cored (#102)
 * e19ae8e Add Gex explorer cmd
 * ae220a3 *chore(bump.yml): disable creation of minor version branch* chore(bump.yml): disable creation of major version branch
@@ -71,14 +67,10 @@ This release has no changes
 
 ## [v0.7.3-beta.3](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.3) - 2023-07-31 21:35:25
 
-## Changelog
-
 * 257d1ef *chore(go.mod): update github.com/go-webauthn/webauthn to v0.8.6* chore(go.mod): update github.com/stretchr/testify to v1.8.4 *chore(go.mod): update github.com/go-webauthn/x to v0.1.4* chore(go.mod): update github.com/golang-jwt/jwt/v5 to v5.0.0 * chore(go.mod): update github.com/google/go-tpm to v0.9.0
 * 715ccae *fix(auth.go): remove unused isAuthenticated variable in SignInWithCredential function* fix(auth.go): remove unused addr variable in SignInWithCredential function *fix(auth.go): remove unused chal variable in RegisterEscrowIdentity function* fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function *fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function* fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function *fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function* fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function *fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function* fix(auth.go): add blank line after alias variable declaration in RegisterEscrowIdentity function * fix(auth.go): add blank line after alias variable declaration in RegisterEscrow
 
 ## [v0.7.3-beta.1](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.1) - 2023-07-28 01:32:34
-
-## Changelog
 
 * 9b2d7e8 * fix(authr.go): fix method call to serialize credential
 * 8926128 *feat(crypto/keys.go): add EncryptionKey interface* refactor(account.go): update NewAccountV1 function signature to return v1types.KeyshareSet instead of *v1types.Keyshare* refactor(account.go): remove unused import of github.com/sonrhq/core/pkg/did/types *refactor(account.go): remove unused variable privKs in NewAccountV1 function* refactor(account.go): update return statement in NewAccountV1 function to return v1types.EmptyKeyshareSet() instead of nil *refactor(account.go): update return statement in NewAccountV1 function to return kss instead of privKs* refactor(account.go): remove DIDIdentifier method from AccountV1 struct *refactor(account.go): remove DIDMethod method from AccountV1 struct* refactor(account.go): remove DIDUrl method from AccountV1 struct * refactor(account.go): remove comment explaining PublicKey method, as it is incomplete
@@ -89,8 +81,6 @@ This release has no changes
 * 0d3b537 *chore(app.go): import highlight-go SDK package* chore(app.go): import highlight-go middleware for Gorilla Mux *chore(app.go): set project ID for highlight-go SDK* chore(app.go): start highlight-go SDK * chore(main.go): stop highlight-go SDK before exiting
 
 ## [v0.7.3-beta.0](https://github.com/sonrhq/core/releases/tag/v0.7.3-beta.0) - 2023-07-27 18:09:16
-
-## Changelog
 
 * ec4e2fb *chore(root.go): update Viper configuration to use "SONR" as the config file name* chore(go.mod): add go.opentelemetry.io/otel v1.13.0 as a required module * chore(parser.go): delete internal/crypto/parser.go file
 

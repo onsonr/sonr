@@ -14,17 +14,6 @@ import (
 	"github.com/sonrhq/core/internal/highway/types"
 )
 
-// @title           Sonr Highway Protocol API
-// @version         1.0
-// @description     API for the Sonr Highway Protocol, a peer-to-peer identity and asset management system.
-// @termsOfService  <URL_to_your_terms_of_service>
-// @contact.name    Sonr API Support
-// @contact.url     <URL_to_your_support>
-// @contact.email   <your_support_email>
-// @license.name    <Your_License_Name>
-// @license.url     <URL_to_license>
-// @host            <host_address>:<port>
-// @BasePath        /api/v1
 func initGin() *gin.Engine {
 	gin.SetMode("release")
 	// init gin
@@ -49,9 +38,8 @@ type highway struct {
 }
 
 func (p highway) Start(s service.Service) error {
-	fmt.Printf("Starting Highway at %s", config.HighwayHostAddress())
-	go p.r.Run(":8080")
-	return nil
+	fmt.Printf("Starting Highway at :8080")
+	return p.r.Run(":8080")
 }
 
 func (p highway) Stop(s service.Service) error {

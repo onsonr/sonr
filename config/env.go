@@ -67,7 +67,6 @@ func HighwayHostAddress() string {
 
 // HighwayRequestTimeout returns the timeout for Highway API requests
 func HighwayRequestTimeout() time.Duration {
-
 	return time.Duration(viper.GetInt("highway.api.timeout")) * time.Second
 }
 

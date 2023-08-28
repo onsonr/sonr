@@ -1,4 +1,4 @@
-name: 🤖 Summarize PR
+name: Auto-PR Body
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ permissions:
   contents: read
   repository-projects: write
   pull-requests: write
-
+  
 jobs:
   build:
     runs-on: ubuntu-latest
