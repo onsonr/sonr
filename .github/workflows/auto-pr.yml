@@ -7,7 +7,6 @@ permissions:
   contents: read
   repository-projects: write
   pull-requests: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
