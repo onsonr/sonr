@@ -70,102 +70,104 @@ func InitCmd(mbm module.BasicManager, defaultNodeHome string) *cobra.Command {
 		Long:  `Initialize validators's and node's configuration files.`,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			clientCtx := client.GetClientContextFromCmd(cmd)
-			cdc := clientCtx.Codec
-
-			serverCtx := server.GetServerContextFromCmd(cmd)
-			config := serverCtx.Config
-			config.SetRoot(clientCtx.HomeDir)
-
-			chainID, _ := cmd.Flags().GetString(flags.FlagChainID)
-			switch {
-			case chainID != "":
-			case clientCtx.ChainID != "":
-				chainID = clientCtx.ChainID
-			default:
-				chainID = fmt.Sprintf("test-chain-%v", tmrand.Str(6))
-			}
-
-			// Get bip39 mnemonic
-			var mnemonic string
-			recover, _ := cmd.Flags().GetBool(FlagRecover)
-			if recover {
-				inBuf := bufio.NewReader(cmd.InOrStdin())
-				value, err := input.GetString("Enter your bip39 mnemonic", inBuf)
-				if err != nil {
-					return err
-				}
-
-				mnemonic = value
-				if !bip39.IsMnemonicValid(mnemonic) {
-					return errors.New("invalid mnemonic")
-				}
-			}
-
-			// Get initial height
-			initHeight, _ := cmd.Flags().GetInt64(flags.FlagInitHeight)
-			if initHeight < 1 {
-				initHeight = 1
-			}
-
-			nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic)
-			if err != nil {
-				return err
-			}
-
-			config.Moniker = args[0]
-
-			genFile := config.GenesisFile()
-			overwrite, _ := cmd.Flags().GetBool(FlagOverwrite)
-
-			// use os.Stat to check if the file exists
-			_, err = os.Stat(genFile)
-			if !overwrite && !os.IsNotExist(err) {
-				return fmt.Errorf("genesis.json file already exists: %v", genFile)
-			}
-
-			// Overwrites the SDK default denom for side-effects
-			sdk.DefaultBondDenom = "usnr"
-			appGenState := mbm.DefaultGenesis(cdc)
-
-			appState, err := json.MarshalIndent(appGenState, "", " ")
-			if err != nil {
-				return errors.Wrap(err, "Failed to marshal default genesis state")
-			}
-
-			genDoc := &types.GenesisDoc{}
-			if _, err := os.Stat(genFile); err != nil {
-				if !os.IsNotExist(err) {
-					return err
-				}
-			} else {
-				genDoc, err = types.GenesisDocFromFile(genFile)
-				if err != nil {
-					return errors.Wrap(err, "Failed to read genesis doc from file")
-				}
-			}
-
-			genDoc.ChainID = chainID
-			genDoc.Validators = nil
-			genDoc.AppState = appState
-			genDoc.InitialHeight = initHeight
-
-			if err = genutil.ExportGenesisFile(genDoc, genFile); err != nil {
-				return errors.Wrap(err, "Failed to export genesis file")
-			}
-
-			toPrint := newPrintInfo(config.Moniker, chainID, nodeID, "", appState)
-
-			cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
-			return displayInfo(toPrint)
+			return baseInitFunc(mbm, cmd, args)
 		},
 	}
-
 	cmd.Flags().String(cli.HomeFlag, defaultNodeHome, "node's home directory")
 	cmd.Flags().BoolP(FlagOverwrite, "o", false, "overwrite the genesis.json file")
 	cmd.Flags().Bool(FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, config.ChainID(), "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().Int64(flags.FlagInitHeight, 1, "specify the initial block height at genesis")
-
 	return cmd
+}
+
+func baseInitFunc(mbm module.BasicManager, cmd *cobra.Command, args []string) error {
+	clientCtx := client.GetClientContextFromCmd(cmd)
+	cdc := clientCtx.Codec
+
+	serverCtx := server.GetServerContextFromCmd(cmd)
+	config := serverCtx.Config
+	config.SetRoot(clientCtx.HomeDir)
+
+	chainID, _ := cmd.Flags().GetString(flags.FlagChainID)
+	switch {
+	case chainID != "":
+	case clientCtx.ChainID != "":
+		chainID = clientCtx.ChainID
+	default:
+		chainID = fmt.Sprintf("test-chain-%v", tmrand.Str(6))
+	}
+
+	// Get bip39 mnemonic
+	var mnemonic string
+	recover, _ := cmd.Flags().GetBool(FlagRecover)
+	if recover {
+		inBuf := bufio.NewReader(cmd.InOrStdin())
+		value, err := input.GetString("Enter your bip39 mnemonic", inBuf)
+		if err != nil {
+			return err
+		}
+
+		mnemonic = value
+		if !bip39.IsMnemonicValid(mnemonic) {
+			return errors.New("invalid mnemonic")
+		}
+	}
+
+	// Get initial height
+	initHeight, _ := cmd.Flags().GetInt64(flags.FlagInitHeight)
+	if initHeight < 1 {
+		initHeight = 1
+	}
+
+	nodeID, _, err := genutil.InitializeNodeValidatorFilesFromMnemonic(config, mnemonic)
+	if err != nil {
+		return err
+	}
+
+	config.Moniker = args[0]
+
+	genFile := config.GenesisFile()
+	overwrite, _ := cmd.Flags().GetBool(FlagOverwrite)
+
+	// use os.Stat to check if the file exists
+	_, err = os.Stat(genFile)
+	if !overwrite && !os.IsNotExist(err) {
+		return fmt.Errorf("genesis.json file already exists: %v", genFile)
+	}
+
+	// Overwrites the SDK default denom for side-effects
+	sdk.DefaultBondDenom = "usnr"
+	appGenState := mbm.DefaultGenesis(cdc)
+
+	appState, err := json.MarshalIndent(appGenState, "", " ")
+	if err != nil {
+		return errors.Wrap(err, "Failed to marshal default genesis state")
+	}
+
+	genDoc := &types.GenesisDoc{}
+	if _, err := os.Stat(genFile); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+	} else {
+		genDoc, err = types.GenesisDocFromFile(genFile)
+		if err != nil {
+			return errors.Wrap(err, "Failed to read genesis doc from file")
+		}
+	}
+
+	genDoc.ChainID = chainID
+	genDoc.Validators = nil
+	genDoc.AppState = appState
+	genDoc.InitialHeight = initHeight
+
+	if err = genutil.ExportGenesisFile(genDoc, genFile); err != nil {
+		return errors.Wrap(err, "Failed to export genesis file")
+	}
+
+	toPrint := newPrintInfo(config.Moniker, chainID, nodeID, "", appState)
+
+	cfg.WriteConfigFile(filepath.Join(config.RootDir, "config", "config.toml"), config)
+	return displayInfo(toPrint)
 }

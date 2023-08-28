@@ -121,6 +121,12 @@ func initRootCmd(
 			banktypes.GenesisBalancesIterator{},
 			app.DefaultNodeHome,
 		),
+		LaunchCmd(
+			app.ModuleBasics,
+			encodingConfig.TxConfig,
+			banktypes.GenesisBalancesIterator{},
+			app.DefaultNodeHome,
+		),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
