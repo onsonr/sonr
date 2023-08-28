@@ -7,10 +7,12 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
 [![Test sonrd](https://github.com/sonr-io/sonr/actions/workflows/tests.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/tests.yml)
-[![Release sonrd](https://github.com/sonr-io/sonr/actions/workflows/release.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/release.yml)
+[![GitHub all releases](https://img.shields.io/github/downloads/sonr-io/sonr/total)](https://github.com/sonr-io/sonr/releases/latest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
+[![Twitter](https://img.shields.io/twitter/follow/sonr_io?style=social)](https://sonr.io/twitter)
+
 </div>
 
 ---
