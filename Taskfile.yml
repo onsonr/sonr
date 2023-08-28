@@ -32,6 +32,12 @@ tasks:
     cmds:
       - docker compose up
 
+
+  build:
+    desc: Build the binary
+    cmds:
+      - go build -o ./bin/sonr ./cmd/sonrd
+
   generate:
     desc: Generate the protobuf files
     cmds:

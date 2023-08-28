@@ -12,6 +12,7 @@ build/
 dist/
 .vscode/
 .docker-credentials.json
+.bin
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 data
@@ -84,3 +85,4 @@ yarn-error.log*
 
 # vercel
 .vercel
+bin/sonr
