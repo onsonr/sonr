@@ -1,4 +1,4 @@
-name: 🤖 Summarize PR
+name: Auto-PR Body
 
 on:
   pull_request:
