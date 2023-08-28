@@ -29,8 +29,6 @@ You will need to install and configure the following dependencies on your machin
 - [Taskfile](https://taskfile.dev)
 - [Buf CLI](https://docs.buf.build/introduction)
 
-
-
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
@@ -38,7 +36,6 @@ git clone https://github.com/sonrhq/core.git       # Clone the repository
 sh scripts/install.sh                               # Install dependencies
 task                                                # Display the available commands
 ```
-
 
 ## Codespace development
 
@@ -59,7 +56,6 @@ ENVIRONMENT="dev"
 HIGHWAY_MODE="fiber"
 ```
 
-
 We are in the process of migrating this repository to monorepo, using [Turborepo](https://turborepo.org/docs).
 
 Eventually, all the apps will be run using [Turborepo](https://turborepo.org/docs), which will significantly improve the developer workflow.
@@ -77,6 +73,7 @@ To contribute code to [Sonr](https://sonr.io), you must fork the [Sonr Repositor
    ```
 
 2. Go to the Sonr directory:
+
    ```sh
    cd supabase
    ```
@@ -92,6 +89,7 @@ To contribute code to [Sonr](https://sonr.io), you must fork the [Sonr Repositor
    ```
 
 2. After that you can run the apps simultaneously with the following.
+
    ```sh
    npm run dev # start all the applications
    ```
@@ -100,9 +98,9 @@ Then visit, and edit, any of the following sites:
 
 | Site                                                     | Directory    | Scope name | Description                          | Local development server   |
 | -------------------------------------------------------- | ------------ | ---------- | ------------------------------------ | -------------------------- |
-| [supabase.com](https://sonr.io)                     | `/apps/www`  | www        | The main website                     | http://localhost:3000      |
-| [supabase.com/dashboard](https://sonr.io/dashboard) | `/studio`    | studio     | Studio dashboard                     | http://localhost:8082      |
-| [supabase.com/docs](https://sonr.io/docs)           | `/apps/docs` | docs       | Guides and Reference (Next.js based) | http://localhost:3001/docs |
+| [supabase.com](https://sonr.io)                     | `/apps/www`  | www        | The main website                     | <http://localhost:3000>      |
+| [supabase.com/dashboard](https://sonr.io/dashboard) | `/studio`    | studio     | Studio dashboard                     | <http://localhost:8082>      |
+| [supabase.com/docs](https://sonr.io/docs)           | `/apps/docs` | docs       | Guides and Reference (Next.js based) | <http://localhost:3001/docs> |
 
 #### Running sites individually
 
