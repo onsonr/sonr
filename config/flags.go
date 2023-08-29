@@ -1,6 +1,11 @@
 package config
 
-import "github.com/spf13/cobra"
+import (
+	"os"
+	"path/filepath"
+
+	"github.com/spf13/cobra"
+)
 
 var (
 	// FlagGrpcAddress is the grpc address of the application.
@@ -21,8 +26,8 @@ var (
 	// FlagPrivatePeerIds is the private peer ids of the application.
 	FlagPrivatePeerIds = Flag("p2p.private_peer_ids")
 
-	// FlagHomeDir is the home directory of the application.
-	FlagHomeDir = Flag("home")
+    // HomeDir is the home directory of the application.
+    HomeDir string
 )
 
 // Flag is a type alias for string.
@@ -41,7 +46,6 @@ func AppendFlags(cmd *cobra.Command) {
     cmd.Flags().String(FlagSeeds.String(), "", "seeds of the application")
     cmd.Flags().String(FlagPersistentPeers.String(), "", "persistent peers of the application")
     cmd.Flags().String(FlagPrivatePeerIds.String(), "", "private peer ids of the application")
-    cmd.Flags().String(FlagHomeDir.String(), "$HOME/.sonr", "home directory of the application")
 }
 
 // Flags is a struct to contain the values of the flags.
@@ -64,10 +68,16 @@ type Flags struct {
     // PrivatePeerIds is the private peer ids of the application.
     PrivatePeerIds string
 
-    // HomeDir is the home directory of the application.
-    HomeDir string
+    // UsrHomeDir is the home directory of the application.
+    UsrHomeDir string
 }
-
+func init() {
+	userHomeDir, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+	HomeDir = filepath.Join(userHomeDir)
+}
 // GetFlags returns the flags of the given command.
 func GetFlags(cmd *cobra.Command) Flags {
     return Flags{
@@ -77,6 +87,6 @@ func GetFlags(cmd *cobra.Command) Flags {
         Seeds: cmd.Flag(FlagSeeds.String()).Value.String(),
         PersistentPeers: cmd.Flag(FlagPersistentPeers.String()).Value.String(),
         PrivatePeerIds: cmd.Flag(FlagPrivatePeerIds.String()).Value.String(),
-        HomeDir: cmd.Flag(FlagHomeDir.String()).Value.String(),
+        UsrHomeDir: HomeDir,
     }
 }
