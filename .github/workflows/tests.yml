@@ -79,6 +79,7 @@ jobs:
           fetch-depth: 0
           # Run only on tag
       - run: make release-snapshot
+        if: startsWith(github.ref, 'refs/tags/v')
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
 

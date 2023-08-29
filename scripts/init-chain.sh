@@ -13,6 +13,7 @@ sonrd config chain-id $CHAIN_ID
 echo $MNEMONIC | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover
 
 sonrd init $MONIKER --chain-id $CHAIN_ID
+
 # Update app.toml to reflect changes
 if [ -n "$GRPC_ADDRESS" ]; then
   sed -i "s/grpc.address = .*/grpc.address = \"$GRPC_ADDRESS\"/" $HOME/.sonr/config/app.toml

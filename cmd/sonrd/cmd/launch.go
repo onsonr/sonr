@@ -1,6 +1,8 @@
 package cmd
 
 import (
+	"os/exec"
+
 	"github.com/cometbft/cometbft/libs/cli"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -34,6 +36,51 @@ func LaunchCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBal
 	return cmd
 }
 
+func updateAppToml(grpcAddress, apiAddress, minimumGasPrices, seeds, persistentPeers, privatePeerIds, homeDir string) error {
+    if grpcAddress != "" {
+        cmd := exec.Command("sed", "-i", "s/grpc.address = .*/grpc.address = \""+grpcAddress+"\"/", homeDir+"/.sonr/config/app.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    if apiAddress != "" {
+        cmd := exec.Command("sed", "-i", "s/api.address = .*/api.address = \""+apiAddress+"\"/", homeDir+"/.sonr/config/app.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    if minimumGasPrices != "" {
+        cmd := exec.Command("sed", "-i", "s/minimum-gas-prices = .*/minimum-gas-prices = \""+minimumGasPrices+"\"/", homeDir+"/.sonr/config/app.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    if seeds != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.seeds = .*/p2p.seeds = \""+seeds+"\"/", homeDir+"/.sonr/config/config.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    if persistentPeers != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.persistent_peers = .*/p2p.persistent_peers = \""+persistentPeers+"\"/", homeDir+"/.sonr/config/config.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    if privatePeerIds != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.private_peer_ids = .*/p2p.private_peer_ids = \""+privatePeerIds+"\"/", homeDir+"/.sonr/config/config.toml")
+        err := cmd.Run()
+        if err != nil {
+            return err
+        }
+    }
+    return nil
+}
 func setupSeeds(cmd *cobra.Command) {
 }
 

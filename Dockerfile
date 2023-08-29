@@ -79,7 +79,7 @@ CMD [ "sonrd", "start" ]
 # ! ||-----------------------------------------------------------------------------||
 # ! ||                               Sonr Base Image                               ||
 # ! ||-----------------------------------------------------------------------------||
-FROM ${RUNNER_IMAGE} AS sonr-base
+FROM ${RUNNER_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/core
 LABEL org.opencontainers.image.description "Default node image for sonr"

@@ -10,10 +10,9 @@
   "hostRequirements": {
     "cpus": 12
   },
-  "waitFor": "onCreateCommand",
+  "waitFor": "initializeCommand",
   "postAttachCommand": [
-    "icefire start",
-    "task chain"
+
   ],
   "customizations": {
     "codespaces": {
