@@ -184,5 +184,3 @@ Sonr would not have been possible without the direct and indirect support of the
 - __Steve Jobs__: For Taste.
 
 Thank you for your support and inspiration!
-
-
