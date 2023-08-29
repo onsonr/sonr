@@ -39,7 +39,11 @@ type highway struct {
 
 func (p highway) Start(s service.Service) error {
 	fmt.Printf("Starting Highway at :8080")
-	return p.r.Run(":8080")
+	errCh := make(chan error)
+	go func() {
+		errCh <- p.r.Run(":8080")
+	}()
+	return <-errCh
 }
 
 func (p highway) Stop(s service.Service) error {
