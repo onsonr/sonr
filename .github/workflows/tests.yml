@@ -1,0 +1,138 @@
+# This workflow builds the sonrd binary for amd64 and arm64 on Darwin and Linux.
+#
+# This workflow runs:
+# - on pushes to main
+# - on every pull requests
+# - when manually triggered
+#
+# Caching strategy
+# This code will store the Go modules cache based on the hash of your go.sum file,
+# ensuring that the cache will be invalidated when your dependencies change.
+# The cache will be stored on a per-branch basis, which should prevent cache pollution issues between different branches.
+
+name: Test sonrd
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  push:
+    branches:
+      - "master"
+  workflow_dispatch:
+  merge_group:
+env:
+  GO_VERSION: "1.20.5"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        targetos: [darwin, linux]
+        include:
+          - targetos: darwin
+            arch: arm64
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Get git diff
+        uses: technote-space/get-diff-action@v6.1.2
+        with:
+          PATTERNS: |
+            **/**.wasm
+            **/**.go
+            go.mod
+            go.sum
+            Makefile
+            .github/workflows/build.yml
+
+      - uses: actions/setup-go@v4
+        if: env.GIT_DIFF
+        with:
+          go-version: ${{env.GO_VERSION}}
+        env:
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+      - name: Download Dependencies
+        if: env.GIT_DIFF
+        run: go mod download
+      - name: Test Sonr
+        if: env.GIT_DIFF
+        run: |
+          go test -v ./...
+
+  snapshot:
+    name: Test Release Snapshot
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          # Run only on tag
+      - run: make release-snapshot
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+
+
+  coverage:
+      name: Scan/Upload Coverage
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+          with:
+            fetch-depth: 0
+        - name: Upload coverage reports to Codecov
+          uses: codecov/codecov-action@v3
+          env:
+            CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+        - name: SonarCloud Scan
+          uses: sonarsource/sonarcloud-github-action@master
+          env:
+            GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+            SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  docker:
+    name: Test Docker Build
+    runs-on: ubuntu-latest
+    env:
+        GO_VERSION: '1.19.12' # Replace with your Go version
+        GIT_VERSION: ${{ github.sha }}
+        GIT_COMMIT: ${{ github.sha }}
+
+    steps:
+        - name: Check out code
+          uses: actions/checkout@v2
+
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+
+        - name: Cache Go dependencies
+          uses: actions/cache@v2
+          with:
+            path: /root/.cache/go-build
+            key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+            restore-keys: |
+              ${{ runner.os }}-go-build-
+
+        - name: Cache Go modules
+          uses: actions/cache@v2
+          with:
+            path: /root/go/pkg/mod
+            key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+            restore-keys: |
+              ${{ runner.os }}-go-mod-
+
+        - name: Build Sonr Docker Image
+          run: |
+            docker build --build-arg GIT_VERSION=${GIT_VERSION} --build-arg GIT_COMMIT=${GIT_COMMIT} -f Dockerfile -t sonr .
