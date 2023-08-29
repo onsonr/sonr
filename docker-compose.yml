@@ -1,0 +1,41 @@
+# version: "3"
+
+# services:
+#   node:
+#     image: sonr-node
+#     init: true
+#     container_name: validator
+#     networks:
+#       - sonr-net
+#     ports:
+#       - 1317:1317 # rest
+#       - 26656:26656 # p2p
+#       - 26657:26657 # rpc
+#       - 9090:9090 # grpc
+#       - 8000:8080 # highway
+#     restart: always
+
+
+version: "3"
+networks:
+  sonr-net:
+services:
+  node:
+    image: ghcr.io/sonr-io/sonrd:latest
+    command: sh scripts/localnet.sh
+    ports:
+      - 1317:1317 # rest
+      - 26656:26656 # p2p
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+      - 8000:8080 # highway
+    restart: always
+  db:
+    image: ghcr.io/sonr-io/icefiredb:latest
+    init: true
+    container_name: db
+    networks:
+      - sonr-net
+    ports:
+      - 6001:6001
+    restart: always

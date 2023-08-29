@@ -1,0 +1,42 @@
+syntax = "proto3";
+package core.identity;
+
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+// DIDDocument represents a Decentralized Identifier (DID) document that
+// contains information about the DID subject, such as public keys, verification
+// methods, and services.
+message DIDDocument {
+  repeated string context = 1; // The JSON-LD context(s) used in the document
+  string id = 2;               // The identifier for the DID subject
+  repeated string controller = 3; // optional, the entity/entities controlling the DID subject
+  repeated VerificationRelationship authentication = 5; // optional, the set of authentication methods associated with the DID
+  repeated VerificationRelationship assertion_method = 6; // optional, the set of assertion methods associated with the DID
+  repeated VerificationRelationship capability_invocation = 7; // optional, the set of capability invocation methods associated with
+  repeated VerificationRelationship capability_delegation = 8; // optional, the set of capability delegation methods associated with
+  repeated VerificationRelationship key_agreement = 9; // optional, the set of key agreement methods associated with the DID
+  repeated string also_known_as = 10; // optional, the set of identifiers for other personas or identities
+}
+
+// VerificationMethod represents a verification method that can be used to
+// authenticate the DID subject or perform other cryptographic operations.
+message VerificationMethod {
+  string id = 1;         // The identifier for the verification method
+  string type = 2;       // The type of the verification method
+  string controller = 3; // The entity controlling the verification method
+  string public_key_jwk = 4; // optional, the public key in JSON Web Key (JWK) format
+  string public_key_multibase = 5; // optional, the public key in multibase-encoded format
+  string blockchain_account_id = 6; // optional, the blockchain account identifier associated with the
+  string attestation_type = 7; // optional, the type of attestation associated with the verification
+  repeated string transports = 8; // optional, the set of transport protocols supported by the
+}
+
+// VerificationRelationship represents a relationship between a verification
+// method and a specific verification purpose (e.g., authentication, assertion,
+// etc.).
+message VerificationRelationship {
+  VerificationMethod verification_method = 1; // The verification method associated with the relationship
+  string reference = 2; // The reference identifier for the relationship
+  string type = 3;      // The type of the verification relationship
+  string owner = 4; // The idx address of the owner of the verification relationship
+}

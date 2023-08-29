@@ -1,0 +1,164 @@
+syntax = "proto3";
+
+package core.identity;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "core/identity/params.proto";
+import "core/identity/did.proto";
+import "core/identity/account.proto";
+
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/core/params/identity";
+
+  }
+
+  // Queries a list of DIDDocument items.
+  rpc DIDDocument    (QueryGetDIDDocumentRequest) returns (QueryGetDIDDocumentResponse) {
+    option (google.api.http).get = "/core/id/{did}";
+
+  }
+  rpc DIDDocumentAll (QueryAllDIDDocumentRequest) returns (QueryAllDIDDocumentResponse) {
+    option (google.api.http).get = "/core/id";
+
+  }
+
+  // Returns DIDDocument based on an owner
+  rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
+    option (google.api.http).get = "/core/id/owner/{owner}";
+
+  }
+
+  // Returns DIDDocument based on an alias *only Sonr Identities
+  rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
+    option (google.api.http).get = "/core/id/alias/{alias}";
+
+  }
+
+  // Checks if a given alias is available to register *only Sonr Identities
+  rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
+    option (google.api.http).get = "/core/id/alias/{alias}/check";
+
+  }
+
+  // Queries a list of ControllerAccount items.
+  rpc ControllerAccount    (QueryGetControllerAccountRequest) returns (QueryGetControllerAccountResponse) {
+    option (google.api.http).get = "/core/id/controllers/{address}";
+  }
+
+  rpc ControllerAccountAll (QueryAllControllerAccountRequest) returns (QueryAllControllerAccountResponse) {
+    option (google.api.http).get = "/core/id/controllers";
+
+  }
+
+  // Queries a list of EscrowAccount items.
+  rpc EscrowAccount    (QueryGetEscrowAccountRequest) returns (QueryGetEscrowAccountResponse) {
+    option (google.api.http).get = "/sonr-io/core/identity/escrow_account/{address}";
+
+  }
+  rpc EscrowAccountAll (QueryAllEscrowAccountRequest) returns (QueryAllEscrowAccountResponse) {
+    option (google.api.http).get = "/sonr-io/core/identity/escrow_account";
+
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetDIDDocumentRequest {
+  string did = 1;
+}
+
+message QueryGetDIDDocumentResponse {
+  DIDDocument dIDDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllDIDDocumentRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllDIDDocumentResponse {
+  repeated DIDDocument                            dIDDocument = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination  = 2;
+}
+
+message QueryDidByAlsoKnownAsRequest {
+
+  // aka_aliasid is the unique identifier of the DIDDocument - it appears like
+  // ("example.snr")
+  string alias = 1;
+}
+
+message QueryDidByAlsoKnownAsResponse {
+
+  // A DIDDocument is a JSON-LD object that contains a set of public keys
+  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAliasAvailableRequest {
+
+  // alias is the unique identifier of the DIDDocument - it appears like
+  // ("example.snr")
+  string alias = 1;
+}
+
+message QueryAliasAvailableResponse {
+  bool        available         = 1;
+  DIDDocument existing_document = 2 [(gogoproto.nullable) = true];
+}
+
+message QueryDidByOwnerRequest {
+  string owner = 1;
+}
+
+message QueryDidByOwnerResponse {
+  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetControllerAccountRequest {
+  string address = 1;
+}
+
+message QueryGetControllerAccountResponse {
+  ControllerAccount ControllerAccount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllControllerAccountRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllControllerAccountResponse {
+  repeated ControllerAccount                      ControllerAccount = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination        = 2;
+}
+
+message QueryGetEscrowAccountRequest {
+  string address = 1;
+}
+
+message QueryGetEscrowAccountResponse {
+  EscrowAccount EscrowAccount = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllEscrowAccountRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllEscrowAccountResponse {
+  repeated EscrowAccount                          EscrowAccount = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+}
+

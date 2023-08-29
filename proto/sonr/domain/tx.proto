@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package sonr.domain;
+
+import "sonr/domain/record.proto";
+
+option go_package = "github.com/sonrhq/core/x/domain/types";
+
+// Msg defines the Msg service.
+service Msg {
+  rpc CreateUsernameRecord (MsgCreateUsernameRecords) returns (MsgCreateUsernameRecordsResponse);
+  rpc UpdateUsernameRecord (MsgUpdateUsernameRecords) returns (MsgUpdateUsernameRecordsResponse);
+  rpc DeleteUsernameRecord (MsgDeleteUsernameRecords) returns (MsgDeleteUsernameRecordsResponse);
+}
+message MsgCreateUsernameRecords {
+  string creator = 1;
+  string index   = 2;
+  string method   = 3;
+}
+
+message MsgCreateUsernameRecordsResponse {}
+
+message MsgUpdateUsernameRecords {
+  string creator = 1;
+  string index   = 2;
+}
+
+message MsgUpdateUsernameRecordsResponse {}
+
+message MsgDeleteUsernameRecords {
+  string creator = 1;
+  string index   = 2;
+}
+
+message MsgDeleteUsernameRecordsResponse {}
+

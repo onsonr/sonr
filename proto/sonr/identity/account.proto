@@ -1,0 +1,19 @@
+syntax = "proto3";
+package core.identity;
+
+option go_package = "github.com/sonrhq/core/x/identity/types";
+
+message EscrowAccount {
+  uint64 id = 1;
+  string address = 2;
+  string publicKey = 3;
+  string lockupUsdBalance = 4;
+  string creator = 5;
+}
+
+message ControllerAccount {
+  string address = 1;
+  string publicKey = 2;
+  repeated string authenticators = 3;
+  repeated string wallets = 4;
+}

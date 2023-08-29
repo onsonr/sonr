@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package sonr.domain;
+
+import "gogoproto/gogo.proto";
+import "sonr/domain/params.proto";
+import "sonr/domain/record.proto";
+
+option go_package = "github.com/sonrhq/core/x/domain/types";
+
+// GenesisState defines the domain module's genesis state.
+message GenesisState {
+           Params          params              = 1 [(gogoproto.nullable) = false];
+  repeated UsernameRecord usernameRecordsList = 2 [(gogoproto.nullable) = false];
+}
+

@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package sonr.domain;
+
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "sonr/domain/params.proto";
+import "sonr/domain/record.proto";
+
+option go_package = "github.com/sonrhq/core/x/domain/types";
+
+// Query defines the gRPC querier service.
+service Query {
+
+  // Parameters queries the parameters of the module.
+  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/core/domain/params";
+
+  }
+
+  // Queries a list of UsernameRecords items.
+  rpc UsernameRecord    (QueryGetUsernameRecordsRequest) returns (QueryGetUsernameRecordsResponse) {
+    option (google.api.http).get = "/core/domain/username/{index}";
+
+  }
+  rpc UsernameRecordAll (QueryAllUsernameRecordsRequest) returns (QueryAllUsernameRecordsResponse) {
+    option (google.api.http).get = "/core/domain/username";
+
+  }
+}
+// QueryParamsRequest is request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is response type for the Query/Params RPC method.
+message QueryParamsResponse {
+
+  // params holds all the parameters of this module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryGetUsernameRecordsRequest {
+  string index = 1;
+}
+
+message QueryGetUsernameRecordsResponse {
+  UsernameRecord usernameRecords = 1 [(gogoproto.nullable) = false];
+}
+
+message QueryAllUsernameRecordsRequest {
+  cosmos.base.query.v1beta1.PageRequest pagination = 1;
+}
+
+message QueryAllUsernameRecordsResponse {
+  repeated UsernameRecord                        usernameRecords = 1 [(gogoproto.nullable) = false];
+           cosmos.base.query.v1beta1.PageResponse pagination      = 2;
+}
+

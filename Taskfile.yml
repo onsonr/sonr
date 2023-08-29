@@ -1,0 +1,74 @@
+version: "3"
+dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
+
+vars:
+  VERSION:
+    sh: echo $(git describe --tags --abbrev=0)
+    default: "v0.0.0"
+  COMMIT:
+    sh: git log -n 1 --format=%h
+    default: "0000000"
+  DATE:
+    sh: date -u '+%m/%d/%y %I:%M:%S%p'
+    default: "1970-01-01_00:00:00AM"
+  REGISTRY: "ghcr.io/sonr-io"
+
+# ----------------------------------------------------------------------------
+# -- Public Tasks ------------------------------------------------------------
+# ----------------------------------------------------------------------------
+tasks:
+  default:
+    desc: Print the version
+    silent: true
+    cmds:
+      - echo -----------------------------------------------
+      - echo '(sonr-io/core) - https://github.com/sonrhq/core'
+      - echo -----------------------------------------------
+      - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
+      - task -l
+
+  dev:
+    desc: Serve the blockchain locally with verbose logging
+    cmds:
+      - docker compose up
+
+
+  build:
+    desc: Build the binary
+    cmds:
+      - go build -o ./bin/sonr ./cmd/sonrd
+
+  generate:
+    desc: Generate the protobuf files
+    cmds:
+      - sh ./scripts/proto-gen.sh
+
+  deps:
+    desc: Pull Docker dependencies
+    cmds:
+      - docker compose pull
+
+  release:
+    desc: Build the binary for docker
+    cmds:
+      - task: docker-release
+        vars:
+          IMAGE: sonrd
+
+  # ------------------------------------------------------------------------------
+  # -- Internal Tasks ------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  docker-release:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - docker build -f ./Dockerfile . -t {{.IMAGE}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+    requires:
+      vars: [IMAGE]
