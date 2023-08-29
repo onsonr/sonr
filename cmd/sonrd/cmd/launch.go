@@ -25,6 +25,11 @@ func LaunchCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBal
             if err != nil {
                 return err
             }
+            // Update with flags
+            err = updateAppToml(config.GetFlags(cmd))
+            if err != nil {
+                return err
+            }
             return baseGentxFunc(mbm, txEncCfg, genBalIterator, cmd, args)
 		},
 	}
@@ -33,47 +38,48 @@ func LaunchCmd(mbm module.BasicManager, txEncCfg client.TxEncodingConfig, genBal
 	cmd.Flags().Bool(FlagRecover, false, "provide seed phrase to recover existing key instead of creating")
 	cmd.Flags().String(flags.FlagChainID, config.ChainID(), "genesis file chain-id, if left blank will be randomly created")
 	cmd.Flags().Int64(flags.FlagInitHeight, 1, "specify the initial block height at genesis")
+    config.AppendFlags(cmd)
 	return cmd
 }
 
-func updateAppToml(grpcAddress, apiAddress, minimumGasPrices, seeds, persistentPeers, privatePeerIds, homeDir string) error {
-    if grpcAddress != "" {
-        cmd := exec.Command("sed", "-i", "s/grpc.address = .*/grpc.address = \""+grpcAddress+"\"/", homeDir+"/.sonr/config/app.toml")
+func updateAppToml(flags config.Flags) error {
+    if flags.GrpcAddress != "" {
+        cmd := exec.Command("sed", "-i", "s/grpc.address = .*/grpc.address = \""+flags.GrpcAddress+"\"/", flags.HomeDir+"/.sonr/config/app.toml")
         err := cmd.Run()
         if err != nil {
             return err
         }
     }
-    if apiAddress != "" {
-        cmd := exec.Command("sed", "-i", "s/api.address = .*/api.address = \""+apiAddress+"\"/", homeDir+"/.sonr/config/app.toml")
+    if flags.APIAddress != "" {
+        cmd := exec.Command("sed", "-i", "s/api.address = .*/api.address = \""+flags.APIAddress+"\"/", flags.HomeDir+"/.sonr/config/app.toml")
         err := cmd.Run()
         if err != nil {
             return err
         }
     }
-    if minimumGasPrices != "" {
-        cmd := exec.Command("sed", "-i", "s/minimum-gas-prices = .*/minimum-gas-prices = \""+minimumGasPrices+"\"/", homeDir+"/.sonr/config/app.toml")
+    if flags.MinimumGasPrices != "" {
+        cmd := exec.Command("sed", "-i", "s/minimum-gas-prices = .*/minimum-gas-prices = \""+flags.MinimumGasPrices+"\"/", flags.HomeDir+"/.sonr/config/app.toml")
         err := cmd.Run()
         if err != nil {
             return err
         }
     }
-    if seeds != "" {
-        cmd := exec.Command("sed", "-i", "s/p2p.seeds = .*/p2p.seeds = \""+seeds+"\"/", homeDir+"/.sonr/config/config.toml")
+    if flags.Seeds != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.seeds = .*/p2p.seeds = \""+flags.Seeds+"\"/", flags.HomeDir+"/.sonr/config/config.toml")
         err := cmd.Run()
         if err != nil {
             return err
         }
     }
-    if persistentPeers != "" {
-        cmd := exec.Command("sed", "-i", "s/p2p.persistent_peers = .*/p2p.persistent_peers = \""+persistentPeers+"\"/", homeDir+"/.sonr/config/config.toml")
+    if flags.PersistentPeers != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.persistent_peers = .*/p2p.persistent_peers = \""+flags.PersistentPeers+"\"/", flags.HomeDir+"/.sonr/config/config.toml")
         err := cmd.Run()
         if err != nil {
             return err
         }
     }
-    if privatePeerIds != "" {
-        cmd := exec.Command("sed", "-i", "s/p2p.private_peer_ids = .*/p2p.private_peer_ids = \""+privatePeerIds+"\"/", homeDir+"/.sonr/config/config.toml")
+    if flags.PrivatePeerIds != "" {
+        cmd := exec.Command("sed", "-i", "s/p2p.private_peer_ids = .*/p2p.private_peer_ids = \""+flags.PrivatePeerIds+"\"/", flags.HomeDir+"/.sonr/config/config.toml")
         err := cmd.Run()
         if err != nil {
             return err
