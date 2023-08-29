@@ -16,35 +16,35 @@ sonrd init $MONIKER --chain-id $CHAIN_ID
 
 # Update app.toml to reflect changes
 if [ -n "$GRPC_ADDRESS" ]; then
-  sed -i "s/grpc.address = .*/grpc.address = \"$GRPC_ADDRESS\"/" $HOME/.sonr/config/app.toml
+  toml set $HOME/.sonr/config/app.toml grpc.address ${GRPC_ADDRESS} > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
 fi
 
 if [ -n "$API_ENABLE" ]; then
-  sed -i "s/api.enable = .*/api.enable = $API_ENABLE/" $HOME/.sonr/config/app.toml
+  toml set $HOME/.sonr/config/app.toml api.enable ${API_ENABLE} > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
 fi
 
 if [ -n "$API_SWAGGER" ]; then
-  sed -i "s/api.swagger = .*/api.swagger = $API_SWAGGER/" $HOME/.sonr/config/app.toml
+  toml set $HOME/.sonr/config/app.toml api.swagger ${API_SWAGGER} > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
 fi
 
 if [ -n "$API_ADDRESS" ]; then
-  sed -i "s/api.address = .*/api.address = \"$API_ADDRESS\"/" $HOME/.sonr/config/app.toml
+  toml set $HOME/.sonr/config/app.toml api.address ${API_ADDRESS} > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
 fi
 
 if [ -n "$MINIMUM_GAS_PRICES" ]; then
-  sed -i "s/minimum-gas-prices = .*/minimum-gas-prices = \"$MINIMUM_GAS_PRICES\"/" $HOME/.sonr/config/app.toml
+  toml set $HOME/.sonr/config/app.toml minimum-gas-prices ${MINIMUM_GAS_PRICES} > /tmp/app.toml && mv /tmp/app.toml $HOME/.sonr/config/app.toml
 fi
 
 if [ -n "$SEEDS" ]; then
-  sed -i "s/p2p.seeds = .*/p2p.seeds = \"$SEEDS\"/" $HOME/.sonr/config/config.toml
+  toml set $HOME/.sonr/config/config.toml p2p.seeds ${SEEDS} > /tmp/config.toml && mv /tmp/config.toml $HOME/.sonr/config/config.toml
 fi
 
 if [ -n "$PERSISTENT_PEERS" ]; then
-  sed -i "s/p2p.persistent_peers = .*/p2p.persistent_peers = \"$PERSISTENT_PEERS\"/" $HOME/.sonr/config/config.toml
+  toml set $HOME/.sonr/config/config.toml p2p.persistent_peers ${PERSISTENT_PEERS} > /tmp/config.toml && mv /tmp/config.toml $HOME/.sonr/config/config.toml
 fi
 
 if [ -n "$PRIVATE_PEER_IDS" ]; then
-  sed -i "s/p2p.private_peer_ids = .*/p2p.private_peer_ids = \"$PRIVATE_PEER_IDS\"/" $HOME/.sonr/config/config.toml
+  toml set $HOME/.sonr/config/config.toml p2p.private_peer_ids ${PRIVATE_PEER_IDS} > /tmp/config.toml && mv /tmp/config.toml $HOME/.sonr/config/config.toml
 fi
 
 rm -rf $HOME/.sonr/config/genesis.json
