@@ -81,13 +81,3 @@ func updateAppToml(grpcAddress, apiAddress, minimumGasPrices, seeds, persistentP
     }
     return nil
 }
-func setupSeeds(cmd *cobra.Command) {
-}
-
-func setupPersistentPeers(cmd *cobra.Command) {
-}
-
-func setupPrivValidator(cmd *cobra.Command) {
-}
-
-
