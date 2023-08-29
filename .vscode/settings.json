@@ -1,0 +1,139 @@
+{
+  "gitlens.views.formats.commits.label": "${❰ tips ❱➤  }${message}",
+  "gitlens.views.formats.commits.description": "${author, }${agoOrDate}${tips}",
+  "gitlens.views.commitDetails.files.layout": "tree",
+  "gitlens.views.commitDetails.files.compact": false,
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#65cbe9",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "#37474F",
+      "bold": true,
+      "italic": false
+    },
+    {
+      "tag": "?",
+      "color": "#3498DB",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "//",
+      "color": "#474747",
+      "strikethrough": true,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "*",
+      "color": "#98C379",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    }
+  ],
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "!**/.git/hooks": true,
+    ".dart_tool": true,
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.flutter-plugins": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/.packages": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/largeFolder": true,
+    "**/pubspec.lock": true,
+    "**pubspec.lock": true,
+    "app.iml": true,
+    "Contents.json": true,
+    "**/.trunk/*out/": true,
+    "**/.trunk/*actions/": true,
+    "**/.trunk/*logs/": true,
+    "**/.trunk/*plugins/": true,
+    "**/**/*.pb.go": true,
+    "**/**/*.pb.gw.go": true,
+    "**/**/types/*_test.go": true,
+    "LICENSE": true,
+    "proto/buf.lock": true,
+    "**/.circleci": true,
+    "**/.compodocrc*": true,
+    "**/.editorconfig": true,
+    "**/.gitattributes": true,
+    "**/.gitkeep": true,
+    "**/.gitignore": true,
+  },
+  "svg.preview.background": "custom",
+  "typescript.preferences.importModuleSpecifier": "non-relative",
+  "[go]": {
+    "editor.defaultFormatter": "golang.go",
+    "editor.formatOnType": true
+  },
+  "go.formatTool": "default",
+  "go.lintTool": "golint",
+  "editor.tokenColorCustomizations": {
+    "textMateRules": [
+      {
+        "scope": "comment",
+        "settings": {
+          "fontStyle": "italic"
+        }
+      }
+    ]
+  },
+  "explorer.excludeGitIgnore": true,
+  "editor.fontFamily": "FiraCode",
+  "hide-files.files": [
+    "snap",
+    "types",
+    ".devcontainer",
+    "tools",
+    "testutil",
+    "go.sum",
+    ".swm",
+    "build"
+  ],
+  "DockerRun.DisableDockerrc": true,
+  "DockerRun.Containers": [],
+  "doppler.autocomplete.enable": true,
+  "doppler.hover.enable": true,
+  "workbench.colorCustomizations": {
+    "activityBar.activeBackground": "#099fd3",
+    "activityBar.background": "#099fd3",
+    "activityBar.foreground": "#e7e7e7",
+    "activityBar.inactiveForeground": "#e7e7e799",
+    "activityBarBadge.background": "#b7088a",
+    "activityBarBadge.foreground": "#e7e7e7",
+    "commandCenter.border": "#e7e7e799",
+    "sash.hoverBorder": "#099fd3",
+    "statusBar.background": "#077aa2",
+    "statusBar.foreground": "#e7e7e7",
+    "statusBarItem.hoverBackground": "#099fd3",
+    "statusBarItem.remoteBackground": "#077aa2",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#077aa2",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#077aa299",
+    "titleBar.inactiveForeground": "#e7e7e799"
+  },
+  "peacock.color": "#077aa2"
+}
