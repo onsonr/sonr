@@ -14,7 +14,7 @@ func setupDefaults() {
 	viper.SetDefault("launch.environment", "development")
 	viper.SetDefault("launch.moniker", "alice")
 	viper.SetDefault("launch.val_address", "")
-
+	viper.SetDefault("highway.enabled", true)
 	viper.SetDefault("highway.jwt.key", "@re33lyb@dsecret")
 	viper.SetDefault("highway.api.host", "localhost")
 	viper.SetDefault("highway.api.timeout", 15)
@@ -58,6 +58,11 @@ func IsProduction() bool {
 // JWTSigningKey returns the JWT signing key
 func JWTSigningKey() []byte {
 	return []byte(viper.GetString("highway.jwt.key"))
+}
+
+// HighwayEnabled returns true if the Highway API is enabled
+func HighwayEnabled() bool {
+	return viper.GetBool("highway.enabled")
 }
 
 // HighwayHostAddress returns the host and port of the Highway API

@@ -1,6 +1,6 @@
 
 ARG GO_VERSION="1.19"
-ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
+ARG RUNNER_IMAGE="debian:bullseye-slim"
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                  Sonrd Builder                                 ||
@@ -50,31 +50,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     -o /root/sonr/build/sonrd ./cmd/sonrd/main.go
 
 
-# ! ||----------------------------------------------------------------------------------||
-# ! ||                               Sonr Standalone Node                               ||
-# ! ||----------------------------------------------------------------------------------||
-FROM ${RUNNER_IMAGE} AS sonr-node
-
-LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
-LABEL org.opencontainers.image.description "Standalone localnet development node"
-# Copy sonrd binary and config
-COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml sonr.yml
-COPY scripts scripts
-ENV SONR_LAUNCH_CONFIG=/sonr.yml
-
-# Setup localnet environment
-RUN sh scripts/localnet.sh
-
-# Expose ports
-EXPOSE 26657
-EXPOSE 1317
-EXPOSE 26656
-EXPOSE 8080
-EXPOSE 9090
-
-CMD [ "sonrd", "start" ]
-
 
 # ! ||-----------------------------------------------------------------------------||
 # ! ||                               Sonr Base Image                               ||
@@ -94,5 +69,3 @@ EXPOSE 26657
 EXPOSE 1317
 EXPOSE 26656
 EXPOSE 8080
-
-ENTRYPOINT [  "sonrd" ]

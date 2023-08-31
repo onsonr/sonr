@@ -1,10 +1,13 @@
 package app
 
 import (
+	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/internal/highway"
 )
 
 // EnablePlugins enables the plugins.
 func EnablePlugins() {
-	go highway.StartAPI()
+	if config.HighwayEnabled() {
+		highway.StartAPI()
+	}
 }
