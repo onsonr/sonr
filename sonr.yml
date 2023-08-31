@@ -5,6 +5,7 @@ launch:
   moniker: alice
   val_address: "0x0000000000"
 highway:
+  enabled: true
   jwt:
     key: "sercrethatmaycontainch@r$32chars"
   api:
