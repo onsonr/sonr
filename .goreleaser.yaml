@@ -216,7 +216,7 @@ release:
 
   name_template: "Sonr - v{{.Version}} 🆔"
   mode: replace
-  draft: true
+  draft: false
   extra_files:
     - glob: ./scripts/install.sh
 
