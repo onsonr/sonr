@@ -2,6 +2,8 @@ package highway
 
 import (
 	"fmt"
+
+	"github.com/sonrhq/core/internal/highway/types"
 	// swagger embed files
 	// gin-swagger middleware
 )
@@ -19,8 +21,10 @@ import (
 // @host            <host_address>:<port>
 // @BasePath        /api/v1
 func StartAPI() {
-	err := runHighway()
-	if err != nil {
-		fmt.Println("Cannot start the service: " + err.Error())
+	if types.EnvEnabled() {
+		err := runHighway()
+		if err != nil {
+			fmt.Println("Cannot start the service: " + err.Error())
+		}
 	}
 }

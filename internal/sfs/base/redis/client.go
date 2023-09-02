@@ -2,10 +2,11 @@ package redis
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-redis/redis/v8"
-
-	"github.com/sonrhq/core/config"
+	"github.com/sonrhq/core/internal/sfs/types"
+	"github.com/spf13/viper"
 )
 
 var ifr *IceFireRedis
@@ -20,7 +21,7 @@ func init() {
 	ifr = &IceFireRedis{
 		ctx: context.Background(),
 		rdb: redis.NewClient(&redis.Options{
-			Addr:     config.IceFireKVHost(),
+			Addr:     types.EnvIceFireKVHost(),
 			Password: "", // no password set
 			DB:       0,  // use default DB
 		}),
@@ -57,4 +58,9 @@ func delMapItem(key string, field string) (int64, error) {
 
 func addMapItem(key string, field string, value string) error {
 	return ifr.rdb.HSet(ifr.ctx, key, field, value).Err()
+}
+
+// EnvIceFireKVHost returns the host and port of the IceFire KV store
+func envIceFireKVHost() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("highway.icefirekv.host"), viper.GetInt("highway.icefirekv.port"))
 }
