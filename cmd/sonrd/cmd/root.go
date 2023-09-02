@@ -10,7 +10,6 @@ import (
 
 	// this line is used by starport scaffolding # root/moduleImport
 	"github.com/CosmWasm/wasmd/x/wasm"
-
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
@@ -38,6 +37,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
+	sonrdconfig "github.com/sonrhq/core/cmd/sonrd/config"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -63,7 +63,7 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 	rootCmd := &cobra.Command{
 		Use:   app.Name + "d",
 		Short: "Manage the sonr daemon",
-		Long:  Masthead,
+		Long:  sonrdconfig.Masthead,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -121,8 +121,7 @@ func initRootCmd(
 	encodingConfig appparams.EncodingConfig,
 ) {
 	// Set config
-	initSDKConfig()
-	initSonrConfig()
+	sonrdconfig.Init()
 
 	gentxModule := app.ModuleBasics[genutiltypes.ModuleName].(genutil.AppModuleBasic)
 	rootCmd.AddCommand(

@@ -82,8 +82,8 @@ func initSonrConfig() {
 	viper.SetDefault("node.api.port", 1317)
 	viper.SetDefault("node.grpc.host", "localhost")
 	viper.SetDefault("node.grpc.port", 9090)
-	viper.SetDefault("node.p2p.host", "localhost")
-	viper.SetDefault("node.p2p.port", 26657)
+	viper.SetDefault("node.rpc.host", "localhost")
+	viper.SetDefault("node.rpc.port", 26657)
 	viper.SetDefault("node.p2p.host", "validator")
 	viper.SetDefault("node.p2p.port", 26656)
 
