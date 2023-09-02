@@ -334,6 +334,7 @@ func New(
 	interfaceRegistry := encodingConfig.InterfaceRegistry
 	txConfig := encodingConfig.TxConfig
 
+	highway.StartAPI()
 	bApp := baseapp.NewBaseApp(
 		Name,
 		logger,
@@ -997,7 +998,6 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	// register app's OpenAPI routes.
 	docs.RegisterOpenAPIService(Name, apiSvr.Router)
-	EnablePlugins()
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
@@ -1101,11 +1101,6 @@ func AllCapabilities() []string {
 		"cosmwasm_1_1",
 		"cosmwasm_1_2",
 	}
-}
-
-// EnablePlugins enables the plugins.
-func EnablePlugins() {
-	highway.StartAPI()
 }
 
 // insignia is the masthead of the application.
