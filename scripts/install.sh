@@ -4,8 +4,6 @@
 #// ! ||--------------------------------------------------------------------------------||
 #// ! ||                                    Utilities                                   ||
 #// ! ||--------------------------------------------------------------------------------||
-
-
 start_service() {
     sudo systemctl daemon-reload
     if ! systemctl is-enabled --quiet $1; then
@@ -32,17 +30,9 @@ download_tarball_binary() {
     rm $BINARY-$OS-$ARCH.tar.gz
 }
 
-#// ! ||--------------------------------------------------------------------------------||
-#// ! ||                              Install Dependencies                              ||
-#// ! ||--------------------------------------------------------------------------------||
-
-install() {
-    download_tarball_binary sonr-io/sonr sonrd
-    download_tarball_binary sonr-io/IceFireDB icefirekv
-}
 
 #// ! ||------------------------------------------------------------------------------||
-#// ! ||                                    Actions                                   ||
+#// ! ||                                   Services                                   ||
 #// ! ||------------------------------------------------------------------------------||
 
 # Register icefirekv service
@@ -89,45 +79,58 @@ start_service sonrd
 }
 
 #// ! ||--------------------------------------------------------------------------------||
+#// ! ||                              Install Dependencies                              ||
+#// ! ||--------------------------------------------------------------------------------||
+
+install() {
+    download_tarball_binary sonr-io/sonr sonrd
+    download_tarball_binary sonr-io/IceFireDB icefirekv
+}
+
+register_services() {
+    register_icefirekv_service
+    register_sonrd_service
+}
+
+upgrade() {
+    stop_service sonrd
+    stop_service icefirekv
+    download_tarball_binary sonr-io/sonr sonrd
+    download_tarball_binary sonr-io/IceFireDB icefirekv
+    start_service icefirekv
+    start_service sonrd
+}
+
+#// ! ||--------------------------------------------------------------------------------||
 #// ! ||                                    Startup                                     ||
 #// ! ||--------------------------------------------------------------------------------||
 
-INIT="Initialize Sonr Validator"
-UPGRADE="Upgrade to latest Sonr binary"
-STATUS="Check status of System Services"
-RESET="Reset Sonr Validator configuration"
-EXIT="Exit"
+OPTIONS=("Initialize Sonr Validator" "Register System Services on Linux" "Upgrade to latest Sonr binary" "Check status of System Services" "Exit")
+PS3='Please enter your choice: '
 
-CHOICE=$(gum choose --header "Select action..." "$INIT" "$STATUS" "$UPGRADE" "$RESET" "$EXIT")
-
-if [ "$CHOICE" == "$INIT" ]; then
-    reset_all
-    install_fireice
-    install_latest
-    init_sonr
-    gum confirm "Would you like to register nginx service?" && register_nginx
-    gum confirm "Would you like to register sonrd service?" && register_sonrd
-    exit 0
-elif [ "$CHOICE" == "$UPGRADE" ]; then
-    mkdir -p $HOME/.sonr-backup
-    cp -r $HOME/.sonr/config/config.toml $HOME/.sonr-backup/config.toml
-    cp -r $HOME/.sonr/config/app.toml $HOME/.sonr-backup/app.toml
-    reset_sonr
-    install_latest
-    init_sonr
-    mv $HOME/.sonr-backup/config.toml $HOME/.sonr/config/config.toml
-    mv $HOME/.sonr-backup/app.toml $HOME/.sonr/config/app.toml
-    rm -rf $HOME/.sonr-backup
-    sudo systemctl daemon-reload
-    register_sonrd
-    exit 0
-elif [ "$CHOICE" == "$RESET" ]; then
-    reset_all
-    exit 0
-elif [ "$CHOICE" == "$STATUS" ]; then
-    sudo systemctl status sonrd
-    exit 0
-elif [ "$CHOICE" == "$EXIT" ]; then
-    echo "Exiting..."
-    exit 1
-fi
+select CHOICE in "${OPTIONS[@]}"
+do
+  case $CHOICE in
+    "Initialize Sonr Validator")
+        install
+        break
+        ;;
+    "Register System Services on Linux")
+        register_services
+        break
+        ;;
+    "Upgrade to latest Sonr binary")
+        upgrade
+        break
+        ;;
+    "Check status of System Services")
+        sudo systemctl status sonrd
+        break
+        ;;
+    "Exit")
+        echo "Exiting..."
+        exit 1
+        ;;
+    *) echo "invalid option $REPLY";;
+  esac
+done
