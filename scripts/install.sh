@@ -110,7 +110,7 @@ upgrade() {
 #// ! ||                                    Startup                                     ||
 #// ! ||--------------------------------------------------------------------------------||
 
-OPTIONS=("Initialize Sonr Validator" "Register System Services on Linux" "Upgrade to latest Sonr binary" "Check status of System Services" "Exit")
+OPTIONS=("Install Sonr and Deps" "Register System Service" "Upgrade to latest" "Check status of Service" "Exit")
 PS3='Please enter your choice: '
 
 select CHOICE in "${OPTIONS[@]}"
