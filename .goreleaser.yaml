@@ -173,7 +173,7 @@ release:
     Run the following command to install sonrd:
 
     ```bash
-    curl -sSfL https://raw.githubusercontent.com/sonr-io/sonr/master/scripts/install.sh | sh
+    curl -L https://github.com/sonr-io/sonr/releases/latest/download/install.sh | sh
     ```
 
     ### ⚡️ Binaries
