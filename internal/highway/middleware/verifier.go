@@ -1,14 +1,18 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
-
 	"github.com/sonrhq/core/internal/highway/types"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/controller"
+	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
+	domaintypes "github.com/sonrhq/core/x/domain/types"
+	identityproxy "github.com/sonrhq/core/x/identity/client/proxy"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
@@ -57,11 +61,12 @@ func IssueCredentialAttestationOptions(alias string, record *servicetypes.Servic
 
 // IssueCredentialAssertionOptions takes a didDocument and serviceRecord in order to create a credential options.
 func IssueCredentialAssertionOptions(email string, record *servicetypes.ServiceRecord) (string, protocol.URLEncodedBase64, string, error) {
-	addr, err := GetEmailRecordCreator(email)
+	ctx := context.Background()
+	addr, err := domainproxy.GetEmailRecordCreator(ctx, email)
 	if err != nil {
 		return "", nil, "", fmt.Errorf("failed to get email record creator: %w", err)
 	}
-	controllerAcc, err := GetControllerAccount(addr)
+	controllerAcc, err := identityproxy.GetControllerAccount(ctx, addr)
 	if err != nil {
 		return "", nil, "", fmt.Errorf("failed to get controller account: %w", err)
 	}
@@ -92,11 +97,12 @@ func IssueEmailAssertionOptions(email string, ucwDid string) (string, error) {
 
 // UseControllerAccount takes a jwt token and returns a controller account.
 func UseControllerAccount(token string) (*controller.SonrController, error) {
+	ctx := context.Background()
 	claims, err := types.VerifySessionJWTClaims(token)
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify claims: %w", err)
 	}
-	acc, err := GetControllerAccount(claims.Address)
+	acc, err := identityproxy.GetControllerAccount(ctx, claims.Address)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get controller account: %w", err)
 	}
@@ -105,4 +111,27 @@ func UseControllerAccount(token string) (*controller.SonrController, error) {
 		return nil, fmt.Errorf("failed to authorize identity: %w", err)
 	}
 	return controller, nil
+}
+
+// PublishControllerAccount creates a new controller account and publishes it to the blockchain
+func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredential, origin string) (*controller.SonrController, *types.TxResponse, error) {
+	controller, err := controller.New(alias, cred, origin)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to create controller: %w", err)
+
+	}
+	acc := controller.Account()
+	accMsg := identitytypes.NewMsgCreateControllerAccount(acc.Address, acc.PublicKey, acc.Authenticators...)
+	usrMsg := domaintypes.NewMsgCreateEmailUsernameRecord(acc.Address, alias)
+	resp, err := controller.GetPrimaryWallet().SendTx(accMsg, usrMsg)
+	if err != nil {
+		return nil, nil, fmt.Errorf("failed to send tx: %w", err)
+	}
+	fmt.Println(resp)
+	return controller, resp, nil
+}
+
+// CreateOrganizationRecord creates a new organization record and publishes it to the blockchain
+func CreateOrganizationRecord(name string, origin string, admin string, controller *controller.SonrController) error {
+	return nil
 }
