@@ -61,7 +61,7 @@ download_tarball_binary() {
     REPO=$1
     BINARY=$2
     OS=$(uname -s | tr '[:upper:]' '[:lower:]')
-    ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
+    ARCH=$(uname -m | tr '[:upper:]' '[:lower:]' | sed 's/x86_64/amd64/')
     wget https://github.com/$REPO/releases/latest/download/$BINARY-$OS-$ARCH.tar.gz
     sudo tar -xvf $BINARY-$OS-$ARCH.tar.gz -C /usr/local/bin
     rm $BINARY-$OS-$ARCH.tar.gz
@@ -145,7 +145,7 @@ install() {
     download_tarball_binary sonr-io/IceFireDB icefirekv
     download_tarball_binary sonr-io/IceFireDB icefiresql
     mkdir -p /var/lib/icefiresql
-    download_release_file sonr-io/IceFireDB config.sqlite.yml /var/lib/icefiresql/config.yml
+    download_release_file sonr-io/IceFireDB config.sqlite.yaml /var/lib/icefiresql/config.yml
 }
 
 register_services() {
