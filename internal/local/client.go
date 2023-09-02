@@ -9,6 +9,7 @@ import (
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 )
 
+// BroadcastTxResponse is a type alias for the BroadcastTxResponse type from the Cosmos SDK
 type BroadcastTxResponse = txtypes.BroadcastTxResponse
 
 // ! ||--------------------------------------------------------------------------------||

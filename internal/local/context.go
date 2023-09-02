@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 )
 
-// LocalContext is a struct that holds the current context of the application.
-type LocalContext struct {
+// AppContext is a struct that holds the current context of the application.
+type AppContext struct {
 	HomeDir        string
 	NodeHome       string
 	ConfigDirPath  string
@@ -14,11 +14,11 @@ type LocalContext struct {
 }
 
 // Option is a function that configures the local context
-type Option func(LocalContext)
+type Option func(AppContext)
 
 // Context returns the current context of the Sonr blockchain application.
-func Context(opts ...Option) LocalContext {
-	c := LocalContext{
+func Context(opts ...Option) AppContext {
+	c := AppContext{
 		HomeDir:        filepath.Join(HomeDir()),
 		NodeHome:       filepath.Join(HomeDir(), ".sonr"),
 		ConfigDirPath:  filepath.Join(HomeDir(), ".sonr", "config"),
@@ -31,7 +31,7 @@ func Context(opts ...Option) LocalContext {
 	return c
 }
 
-// The HomeDir function returns the home directory of the current user.
+// HomeDir function returns the home directory of the current user.
 func HomeDir() string {
 	homeDir := os.Getenv("HOME")
 	if homeDir == "" {

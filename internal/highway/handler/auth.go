@@ -5,6 +5,9 @@ import (
 
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/internal/highway/types"
+	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
+	identityproxy "github.com/sonrhq/core/x/identity/client/proxy"
+	serviceproxy "github.com/sonrhq/core/x/service/client/proxy"
 )
 
 // RegisterEscrowIdentity returns the credential assertion options to start account login.
@@ -22,7 +25,7 @@ func RegisterEscrowIdentity(c *gin.Context) {
 	origin := c.Query("amount")
 	alias := c.Query("email")
 
-	record, err := mdw.GetServiceRecord(origin)
+	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
@@ -62,7 +65,7 @@ func RegisterControllerIdentity(c *gin.Context) {
 	attestionResp := c.Query("attestation")
 	challenge := c.Query("challenge")
 	// Get the service record from the origin
-	record, err := mdw.GetServiceRecord(origin)
+	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
 	if err != nil {
 		c.JSON(404, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
@@ -111,7 +114,7 @@ func SignInWithCredential(c *gin.Context) {
 	origin := c.Param("origin")
 	alias := c.Param("alias")
 	assertionResp := c.Query("assertion")
-	record, err := mdw.GetServiceRecord(origin)
+	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
 	if err != nil {
 		c.JSON(441, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
@@ -121,12 +124,12 @@ func SignInWithCredential(c *gin.Context) {
 		c.JSON(442, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
 		return
 	}
-	addr, err := mdw.GetEmailRecordCreator(alias)
+	addr, err := domainproxy.GetEmailRecordCreator(c.Request.Context(), alias)
 	if err != nil {
 		c.JSON(443, gin.H{"error": err.Error(), "where": "GetEmailRecordCreator"})
 		return
 	}
-	contAcc, err := mdw.GetControllerAccount(addr)
+	contAcc, err := identityproxy.GetControllerAccount(c.Request.Context(), addr)
 	if err != nil {
 		c.JSON(444, gin.H{"error": err.Error(), "where": "GetControllerAccount"})
 		return

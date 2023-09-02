@@ -5,6 +5,8 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
+	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
+	serviceproxy "github.com/sonrhq/core/x/service/client/proxy"
 )
 
 // GetCredentialAttestationParams returns the credential creation options to start account registration.
@@ -21,13 +23,13 @@ import (
 func GetCredentialAttestationParams(c *gin.Context) {
 	origin := c.Param("origin")
 	alias := c.Param("alias")
-	ok, err := mdw.CheckAliasAvailable(alias)
+	ok, err := domainproxy.CheckAliasAvailable(c.Request.Context(), alias)
 	if err != nil && !ok {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "CheckAliasAvailable"})
 		return
 	}
 	// Get the service record from the origin
-	rec, err := mdw.GetServiceRecord(origin)
+	rec, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
@@ -64,12 +66,12 @@ func GetCredentialAttestationParams(c *gin.Context) {
 func GetCredentialAssertionParams(c *gin.Context) {
 	origin := c.Param("origin")
 	alias := c.Param("alias")
-	record, err := mdw.GetServiceRecord(origin)
+	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
 		return
 	}
-	notok, err := mdw.CheckAliasUnavailable(alias)
+	notok, err := domainproxy.CheckAliasUnavailable(c.Request.Context(), alias)
 	if err != nil && notok {
 		c.JSON(500, gin.H{"error": err.Error(), "where": "CheckAliasAvailable"})
 		return
