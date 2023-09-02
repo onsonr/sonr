@@ -70,20 +70,6 @@ jobs:
         run: |
           go test -v ./...
 
-  snapshot:
-    name: Test Release Snapshot
-    runs-on: self-hosted
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-          # Run only on tag
-      - run: make release-snapshot
-        if: startsWith(github.ref, 'refs/tags/v')
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
-
-
   coverage:
       name: Scan/Upload Coverage
       runs-on: ubuntu-latest
