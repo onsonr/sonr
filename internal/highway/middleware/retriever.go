@@ -4,14 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sonrhq/core/config"
+	types "github.com/sonrhq/core/internal/highway/types"
 	"github.com/sonrhq/core/internal/local"
 	domaintypes "github.com/sonrhq/core/x/domain/types"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
-var baseAPIUrl = fmt.Sprintf("http://%s", config.NodeAPIHostAddress())
+var baseAPIUrl = fmt.Sprintf("http://%s", types.EnvNodeAPIHostAddress())
 
 // GetEmailRecordCreator returns the creator of a given email
 func GetEmailRecordCreator(email string) (string, error) {

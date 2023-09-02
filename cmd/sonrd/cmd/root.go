@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"errors"
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
@@ -40,6 +41,7 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 
 	"github.com/sonrhq/core/app"
 	appparams "github.com/sonrhq/core/app/params"
@@ -60,7 +62,8 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 
 	rootCmd := &cobra.Command{
 		Use:   app.Name + "d",
-		Short: "Start sonr node",
+		Short: "Manage the sonr daemon",
+		Long:  Masthead,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -77,7 +80,17 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
-
+			viper.SetEnvPrefix("sonr")
+			viper.AutomaticEnv()
+			confPath := os.Getenv("SONR_LAUNCH_CONFIG")
+			if confPath != "" {
+				viper.SetConfigFile(confPath)
+				err := viper.ReadInConfig()
+				if err != nil {
+					return err
+				}
+			}
+			fmt.Println("Using config file:", viper.ConfigFileUsed())
 			customAppTemplate, customAppConfig := initAppConfig()
 			customTMConfig := initTendermintConfig()
 			return server.InterceptConfigsPreRunHandler(
@@ -109,6 +122,7 @@ func initRootCmd(
 ) {
 	// Set config
 	initSDKConfig()
+	initSonrConfig()
 
 	gentxModule := app.ModuleBasics[genutiltypes.ModuleName].(genutil.AppModuleBasic)
 	rootCmd.AddCommand(

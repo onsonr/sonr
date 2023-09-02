@@ -1,4 +1,4 @@
-package cmd
+package config
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -35,6 +35,7 @@ Sonr Node
 🚀 - https://github.com/sonr-io/sonr
 `
 
+// Init initializes the configuration parameters.
 func Init() {
 	// Set defaults
 	initSonrConfig()

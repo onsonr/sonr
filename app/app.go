@@ -120,6 +120,7 @@ import (
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
 	appparams "github.com/sonrhq/core/app/params"
 	"github.com/sonrhq/core/docs"
+	"github.com/sonrhq/core/internal/highway"
 	domainmodule "github.com/sonrhq/core/x/domain"
 	domainmodulekeeper "github.com/sonrhq/core/x/domain/keeper"
 	domainmoduletypes "github.com/sonrhq/core/x/domain/types"
@@ -1100,4 +1101,9 @@ func AllCapabilities() []string {
 		"cosmwasm_1_1",
 		"cosmwasm_1_2",
 	}
+}
+
+// EnablePlugins enables the plugins.
+func EnablePlugins() {
+	highway.StartAPI()
 }

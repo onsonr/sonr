@@ -7,8 +7,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/kataras/jwt"
+	"github.com/spf13/viper"
 
-	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/pkg/crypto"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
@@ -32,7 +32,7 @@ func NewCredentialJWTClaims(did string) (CredentialJWTClaims, string, error) {
 		ExpiresAt:  time.Now().Add(time.Hour).Unix(),
 		UUID:       uuid.NewString(),
 	}
-	token, err := jwt.Sign(jwt.HS256, config.JWTSigningKey, claims)
+	token, err := jwt.Sign(jwt.HS256, envJWTSigningKey(), claims)
 	if err != nil {
 		return CredentialJWTClaims{}, "", err
 	}
@@ -46,7 +46,7 @@ func VerifyCredentialJWTClaims(token string) (CredentialJWTClaims, error) {
 		return CredentialJWTClaims{}, err
 	}
 	// Verify and extract claims from a token:
-	verifiedToken, err := jwt.Verify(jwt.HS256, config.JWTSigningKey, raw)
+	verifiedToken, err := jwt.Verify(jwt.HS256, envJWTSigningKey(), raw)
 	if err != nil {
 		return CredentialJWTClaims{}, err
 	}
@@ -87,7 +87,7 @@ func NewEmailJWTClaims(did string, email string) (EmailJWTClaims, string, error)
 		ExpiresAt:  time.Now().Add(time.Minute * 5).Unix(),
 		Email:      email,
 	}
-	token, err := jwt.Sign(jwt.HS256, config.JWTSigningKey, claims)
+	token, err := jwt.Sign(jwt.HS256, envJWTSigningKey(), claims)
 	if err != nil {
 		return EmailJWTClaims{}, "", err
 	}
@@ -102,7 +102,7 @@ func VerifyEmailJWTClaims(token string) (EmailJWTClaims, error) {
 	}
 
 	// Verify and extract claims from a token:
-	verifiedToken, err := jwt.Verify(jwt.HS256, config.JWTSigningKey, raw)
+	verifiedToken, err := jwt.Verify(jwt.HS256, envJWTSigningKey(), raw)
 	if err != nil {
 		return EmailJWTClaims{}, err
 	}
@@ -201,7 +201,7 @@ func NewSessionJWTClaims(email string, acc *identitytypes.ControllerAccount) (st
 		Email:         email,
 		ExpiresAt:     time.Now().Add(time.Minute * 30).Unix(),
 	}
-	token, err := jwt.Sign(jwt.HS256, config.JWTSigningKey, claims)
+	token, err := jwt.Sign(jwt.HS256, envJWTSigningKey(), claims)
 	if err != nil {
 		return "", err
 	}
@@ -215,7 +215,7 @@ func VerifySessionJWTClaims(token string) (SessionJWTClaims, error) {
 		return SessionJWTClaims{}, err
 	}
 	// Verify and extract claims from a token:
-	verifiedToken, err := jwt.Verify(jwt.HS256, config.JWTSigningKey, raw)
+	verifiedToken, err := jwt.Verify(jwt.HS256, envJWTSigningKey(), raw)
 	if err != nil {
 		return SessionJWTClaims{}, err
 	}
@@ -234,4 +234,9 @@ func (c SessionJWTClaims) IsValid() error {
 		return ErrJWTExpired
 	}
 	return nil
+}
+
+// envJWTSigningKey returns the JWT signing key
+func envJWTSigningKey() []byte {
+	return []byte(viper.GetString("highway.jwt.key"))
 }

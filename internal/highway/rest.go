@@ -9,7 +9,6 @@ import (
 
 	timeout "github.com/vearne/gin-timeout"
 
-	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/internal/highway/routes"
 	"github.com/sonrhq/core/internal/highway/types"
 )
@@ -22,7 +21,7 @@ func initGin() *gin.Engine {
 	// add timeout middleware with 2 second duration
 	defaultMsg := `{"code": -1, "msg":"http: Handler timeout"}`
 	r.Use(timeout.Timeout(
-		timeout.WithTimeout(config.HighwayRequestTimeout()),
+		timeout.WithTimeout(types.EnvRequestTimeout()),
 		timeout.WithErrorHttpCode(http.StatusRequestTimeout), // optional
 		timeout.WithDefaultMsg(defaultMsg),                   // optional
 		timeout.WithCallBack(func(r *http.Request) {
@@ -38,8 +37,10 @@ type highway struct {
 }
 
 func (p highway) Start(s service.Service) error {
-	fmt.Printf("Starting Highway at :8080")
-	go p.r.Run(":8080")
+	if types.EnvEnabled() {
+		fmt.Printf("Starting Highway at :8080")
+		go p.r.Run(":8080")
+	}
 	return nil
 }
 

@@ -6,8 +6,8 @@ import (
 
 	"lukechampine.com/blake3"
 
-	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/internal/sfs"
+	"github.com/spf13/viper"
 )
 
 // DIDStore is a store for a DID
@@ -22,7 +22,7 @@ type DIDStore struct {
 // GetMethodStore returns a store for a DID method
 func GetMethodStore(name DIDMethod) *DIDStore {
 	hash := blake3.Sum256([]byte(name.String()))
-	id := fmt.Sprintf("%s://store/%s", config.ChainID(), hash)
+	id := fmt.Sprintf("%s://store/%s", EnvChainID(), hash)
 	return &DIDStore{
 		Name:     id,
 		Store:    sfs.InitMap(id),
@@ -34,7 +34,7 @@ func GetMethodStore(name DIDMethod) *DIDStore {
 // GetIdentifierStore returns a store for a DID identifier
 func GetIdentifierStore(name DIDIdentifier) *DIDStore {
 	hash := blake3.Sum256([]byte(name.String()))
-	id := fmt.Sprintf("%s://store/%s", config.ChainID(), hash)
+	id := fmt.Sprintf("%s://store/%s", EnvChainID(), hash)
 	return &DIDStore{
 		Name:       id,
 		Store:      sfs.InitMap(id),
@@ -108,5 +108,15 @@ func (g *DIDStore) GetList(key string) ([]string, error) {
 // StoreKey returns the store key for the store
 func (g *DIDStore) StoreKey() string {
 	id := blake3.Sum256([]byte(g.Name))
-	return fmt.Sprintf("%s://store/%s", config.ChainID(), id)
+	return fmt.Sprintf("%s://store/%s", EnvChainID(), id)
+}
+
+// EnvChainID returns the chain ID from the configuration. (default: sonr-localnet-1)
+func EnvChainID() string {
+	return viper.GetString("launch.chain-id")
+}
+
+// EnvNodeGrpcHostAddress returns the host and port of the Node P2P
+func EnvNodeGrpcHostAddress() string {
+	return fmt.Sprintf("%s:%d", viper.GetString("node.grpc.host"), viper.GetInt("node.grpc.port"))
 }

@@ -6,17 +6,18 @@ import (
 	"fmt"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
+	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
-	"github.com/sonrhq/core/config"
 	"github.com/sonrhq/core/internal/local"
+	"github.com/sonrhq/core/pkg/did/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                               Tendermint Node RPC                              ||
 // ! ||--------------------------------------------------------------------------------||
 
-var baseAPIURL = fmt.Sprintf("http://%s", config.NodeAPIHostAddress())
+var baseAPIURL = fmt.Sprintf("http://%s", fmt.Sprintf("%s:%d", viper.GetString("node.api.host"), viper.GetInt("node.api.port")))
 
 // EncodeCosmosTx function is a method of the `LocalContext` struct. It takes a transaction (`tx`) as input and returns the encoded transaction bytes as output.
 func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
@@ -44,8 +45,8 @@ func EncodeCosmosTx(tx *txtypes.Tx) ([]byte, error) {
 func BroadcastCosmosTx(rawTx []byte) (*txtypes.BroadcastTxResponse, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		config.NodeGrpcHostAddress(), // Or your gRPC server address.
-		grpc.WithInsecure(),          // The Cosmos SDK doesn't support any transport security mechanism.
+		types.EnvNodeGrpcHostAddress(), // Or your gRPC server address.
+		grpc.WithInsecure(),            // The Cosmos SDK doesn't support any transport security mechanism.
 	)
 	if err != nil {
 		return nil, err

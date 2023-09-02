@@ -1,5 +1,6 @@
 package types
 
+// SFSMap is a map of strings
 type SFSMap interface {
 	// Add adds an item to the map
 	Add(key string, value string) error
@@ -17,6 +18,7 @@ type SFSMap interface {
 	Get(key string) (string, error)
 }
 
+// SFSSet is a set of strings
 type SFSSet interface {
 	// Add adds an item to the set
 	Add(item string) error
