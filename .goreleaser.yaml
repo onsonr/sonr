@@ -214,7 +214,7 @@ release:
 
     All the images support `amd64` architectures.
 
-  name_template: "Sonr Core - v{{.Version}} 🆔"
+  name_template: "Sonr - v{{.Version}} 🆔"
   mode: replace
   draft: true
   extra_files:
