@@ -1107,3 +1107,28 @@ func AllCapabilities() []string {
 func EnablePlugins() {
 	highway.StartAPI()
 }
+
+// insignia is the masthead of the application.
+const insignia = `
+MMMMMMMMMMMMMMMMMMMWWMMMMMMMMMMMMMMMMMMM
+MMMMMMMMMMMMMWXkoc:;;:cokXWMMMMMMMMMMMMM
+MMMMMMMMMMMWOc.          'oXMMMMMMMMMMMM
+MMMMMMMMMWO:.            .oXMMMMMMMMMMMM
+MMMMMMMWO:.     .lk00kl;oKWMMN0KWMMMMMMM
+MMMMMWO:.     .lKWMMMMWWWMMNk,..lKWMMMMM
+MMMW0:.     .lKWMWKOOKWMMMNo.    .oKWMMM
+MMWx.     .lKWMW0l.  .c0WMWKl.     'kWMM
+MMO'    .lKWMW0l.      .c0WMWKl.    'OMM
+MWd    .dWMMMk.          .kMMMWd.    dWM
+MMx.    :KWMMKl.        .lKMMWK:    .xMM
+MMXc     .lKWMW0c.    .l0WMWKl.     cXMM
+MMMXo.     .dNMMW0o::l0WMWKl.     .oXMMM
+MMMMWKl.   ;kNMMMMMMWMMWKl.     .lKWMMMM
+MMMMMMWKocxNMMWKkKWMMWKl.     .lKWMMMMMM
+MMMMMMMMWMMWKl. .;cc;.     .lKWMMMMMMMMM
+MMMMMMMMMMMK:            .lKWMMMMMMMMMMM
+MMMMMMMMMMMWKd;..    ..;dKWMMMMMMMMMMMMM
+MMMMMMMMMMMMMMWX0OkkO0XWMMMMMMMMMMMMMMMM
+
+Sonr: The Internet Rebuilt for you.
+`
