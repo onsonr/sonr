@@ -23,8 +23,8 @@ stop_service() {
 download_tarball_binary() {
     REPO=$1
     BINARY=$2
-    OS=$(uname -s)
-    ARCH=$(uname -m)
+    OS=$(uname -s | tr '[:upper:]' '[:lower:]')
+    ARCH=$(uname -m | tr '[:upper:]' '[:lower:]')
     wget https://github.com/$REPO/releases/latest/download/$BINARY-$OS-$ARCH.tar.gz
     sudo tar -xvf $BINARY-$OS-$ARCH.tar.gz -C /usr/local/bin
     rm $BINARY-$OS-$ARCH.tar.gz
@@ -59,18 +59,19 @@ start_service icefirekv
 register_sonrd_service() {
 sudo cat << EOF > /etc/systemd/system/sonrd.service
 [Unit]
-Description=Sonr Blockchain Node
+Description=Sonr Node Service
 After=network-online.target
 
 [Service]
 User=root
-ExecStart=/usr/local/bin/sonrd start --home /root/.sonr --rpc.laddr tcp://0.0.0.0:26657
+ExecStart=/usr/local/bin/sonrd start
 LimitNOFILE=4096
 Environment=SONR_ENVIRONMENT=production
-Environment=SONR_VALIDATOR_ADDRESS=$VALIDATOR_ADDRESS
-Environment=SONR_PUBLIC_DOMAIN=$ROOT_DOMAIN
-Environment=SONR_CHAIN_ID=$SONR_CHAIN_ID
-Environment=SONR_ACCOUNT_ICEFIRE_ENABLED=true
+Environment=SONR_HIGHWAY_ICEFIREKV_HOST=localhost
+Environment=SONR_HIGHWAY_ICEFIREKV_PORT=6001
+Environment=SONR_HIGHWAY_ICEFIRESQL_HOST=localhost
+Environment=SONR_HIGHWAY_ICEFIRESQL_PORT=23306
+Environment=SONR_CHAIN_ID=sonr-testnet-1
 
 [Install]
 WantedBy=multi-user.target
@@ -88,8 +89,12 @@ install() {
 }
 
 register_services() {
-    register_icefirekv_service
-    register_sonrd_service
+    if [ "$(uname)" == "Linux" ]; then
+        register_icefirekv_service
+        register_sonrd_service
+    else
+        echo "This function can only be run on Linux."
+    fi
 }
 
 upgrade() {
@@ -111,19 +116,19 @@ PS3='Please enter your choice: '
 select CHOICE in "${OPTIONS[@]}"
 do
   case $CHOICE in
-    "Initialize Sonr Validator")
+    "Install Sonr and Deps")
         install
         break
         ;;
-    "Register System Services on Linux")
+    "Register System Service")
         register_services
         break
         ;;
-    "Upgrade to latest Sonr binary")
+    "Upgrade to latest")
         upgrade
         break
         ;;
-    "Check status of System Services")
+    "Check status of Service")
         sudo systemctl status sonrd
         break
         ;;
