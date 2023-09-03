@@ -22,6 +22,7 @@ import (
 // @BasePath        /api/v1
 func StartAPI() {
 	if types.EnvEnabled() {
+		
 		err := runHighway()
 		if err != nil {
 			fmt.Println("Cannot start the service: " + err.Error())

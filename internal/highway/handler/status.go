@@ -1,37 +1,8 @@
 package handler
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 )
-
-// CurrentUser returns the current user's details.
-//
-// @Summary Current user's details
-// @Description Returns the current user's details.
-// @Accept  json
-// @Produce  json
-// @Success 200 {object} map[string]string "JWT Token"
-// @Failure 400 {object} map[string]string "Missing JWT"
-// @Failure 401 {object} map[string]string "No JWT cookie found"
-// @Router /currentUser [get]
-func CurrentUser(c *gin.Context) {
-	jwt, err := c.Cookie("sonr-jwt")
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
-	}
-	if jwt == "" {
-		c.JSON(400, gin.H{
-			"error": "missing jwt",
-		})
-		return
-	}
-	c.JSON(200, gin.H{
-		"jwt": jwt,
-	})
-}
 
 // GetHealth returns the health of the service.
 //

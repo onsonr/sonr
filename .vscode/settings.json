@@ -120,9 +120,9 @@
     "titleBar.inactiveForeground": "#e7e7e799"
   },
   "peacock.color": "#077aa2",
-  "a-file-icon-vscode.arrowTheme": "arrow",
+  "a-file-icon-vscode.arrowTheme": "triangle",
   "a-file-icon-vscode.folderTheme": "specific",
-  "a-file-icon-vscode.folderColor": "#999",
+  "a-file-icon-vscode.folderColor": "#ffd0aa",
   "a-file-icon-vscode.activeIconPacks": [
     "angular",
     "ngrx",
@@ -134,11 +134,10 @@
     "vuex",
     "rails",
     "phalcon",
-    "volt",
-    "none"
+    "volt"
   ],
-  "a-file-icon-vscode.opacity": 0.7,
-  "a-file-icon-vscode.saturation": 0.7,
+  "a-file-icon-vscode.opacity": 1,
+  "a-file-icon-vscode.saturation": 1,
   "editor.fontFamily": "Iosevka Custom",
   "terminal.integrated.fontFamily": "Iosevka Custom"
 }
