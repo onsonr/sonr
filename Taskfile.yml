@@ -52,6 +52,7 @@ tasks:
   release:
     desc: Build the binary for docker
     cmds:
+      - task: buf-push
       - task: docker-release
         vars:
           IMAGE: sonrd
@@ -73,3 +74,29 @@ tasks:
       - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
     requires:
       vars: [IMAGE]
+
+  buf-mod:
+    dir: proto
+    internal: true
+    silent: true
+    desc: Update the buf.lock file
+    cmds:
+      - buf mod update
+
+  buf-build:
+    dir: proto
+    internal: true
+    silent: true
+    desc: Build the protobuf files
+    deps: [buf-mod]
+    cmds:
+      - buf build
+
+  buf-push:
+    dir: proto
+    internal: true
+    silent: true
+    desc: Push the protobuf files to the registry
+    deps: [buf-build]
+    cmds:
+      - buf push
