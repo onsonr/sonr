@@ -9,6 +9,10 @@ tags:
   - name: Msg
   - name: Query
   - name: Msg
+  - name: AuthenticationService
+  - name: DatabaseService
+  - name: StorageService
+  - name: WalletService
 consumes:
   - application/json
 produces:
@@ -31,6 +35,7 @@ paths:
         - Query
   /core/domain/username:
     get:
+      summary: Queries a list of UsernameRecords items.
       operationId: Query_UsernameRecordAll
       responses:
         "200":
@@ -346,19 +351,27 @@ paths:
         - Query
   /core/params/service:
     get:
-      summary: Parameters queries the parameters of the module.
-      operationId: Query_Params
+      operationId: WalletService_CreateAccount
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/coreserviceQueryParamsResponse'
+            $ref: '#/definitions/highwaywalletv1AuthenticateResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: username
+          in: query
+          required: false
+          type: string
+        - name: password
+          in: query
+          required: false
+          type: string
       tags:
-        - Query
+        - WalletService
   /core/service:
     get:
       operationId: Query_ServiceRecordAll
@@ -593,6 +606,82 @@ definitions:
         type: string
       method:
         type: string
+  highwayauthenticationv1AuthenticateResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwayauthenticationv1RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwayauthenticationv1VerifyTokenResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  highwaydatabasev1AuthenticateResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaydatabasev1RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaydatabasev1VerifyTokenResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  highwaystoragev1AuthenticateResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaystoragev1RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaystoragev1VerifyTokenResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  highwaywalletv1AuthenticateResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaywalletv1RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
+  highwaywalletv1VerifyTokenResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
   identityControllerAccount:
     type: object
     properties:

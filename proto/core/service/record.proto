@@ -7,7 +7,7 @@ message ServiceRecord {
   string id = 1;
   string controller = 2; // The entity controlling the service
   repeated string origins = 3;
-  string name = 4;        // The name of the service
+  string name = 4; // The name of the service
   string description = 5; // The description of the service
 }
 

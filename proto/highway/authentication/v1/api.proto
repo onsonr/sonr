@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-package highway.authentication.v1;
-
-option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";

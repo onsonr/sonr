@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-package highway.database.v1;
-
-option go_package = "github.com/sonrhq/core/types/highway/database/v1;databasepb";

@@ -2,4 +2,44 @@ syntax = "proto3";
 
 package highway.wallet.v1;
 
+import "google/api/annotations.proto";
+
 option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
+
+service WalletService {
+  rpc CreateAccount(AuthenticateRequest) returns (AuthenticateResponse) {
+    option (google.api.http).get = "/core/params/service";
+  }
+  rpc GetAccount(RefreshTokenRequest) returns (RefreshTokenResponse) {}
+  rpc ListAccounts(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc SignWithAccount(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc VerifyWithAccount(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc ExportWallet(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+}
+
+message AuthenticateRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message AuthenticateResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message VerifyTokenRequest {
+  string access_token = 1;
+}
+
+message VerifyTokenResponse {
+  bool valid = 1;
+}
