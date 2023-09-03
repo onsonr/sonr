@@ -64,16 +64,11 @@
     "**/largeFolder": true,
     "**/pubspec.lock": true,
     "**pubspec.lock": true,
-    "app.iml": true,
-    "Contents.json": true,
     "**/.trunk/*out/": true,
     "**/.trunk/*actions/": true,
     "**/.trunk/*logs/": true,
     "**/.trunk/*plugins/": true,
-    "**/**/*.pb.go": true,
-    "**/**/*.pb.gw.go": true,
     "**/**/types/*_test.go": true,
-    "LICENSE": true,
     "proto/buf.lock": true,
     "**/.circleci": true,
     "**/.compodocrc*": true,
@@ -101,17 +96,6 @@
     ]
   },
   "explorer.excludeGitIgnore": true,
-  "editor.fontFamily": "FiraCode",
-  "hide-files.files": [
-    "snap",
-    "types",
-    ".devcontainer",
-    "tools",
-    "testutil",
-    "go.sum",
-    ".swm",
-    "build"
-  ],
   "DockerRun.DisableDockerrc": true,
   "DockerRun.Containers": [],
   "doppler.autocomplete.enable": true,
@@ -154,5 +138,7 @@
     "none"
   ],
   "a-file-icon-vscode.opacity": 0.7,
-  "a-file-icon-vscode.saturation": 0.7
+  "a-file-icon-vscode.saturation": 0.7,
+  "editor.fontFamily": "Iosevka Custom",
+  "terminal.integrated.fontFamily": "Iosevka Custom"
 }
