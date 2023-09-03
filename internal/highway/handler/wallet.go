@@ -7,7 +7,13 @@ import (
 
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/pkg/crypto"
+
+
+	walletpb "github.com/sonrhq/core/types/highway/wallet/v1"
 )
+
+// WalletAPI is the alias for the Highway Wallet Service Server.
+type WalletAPI = walletpb.WalletServiceServer
 
 // CreateAccount creates a new account with a given coin type and name.
 //
@@ -207,3 +213,9 @@ func VerifyWithAccount(c *gin.Context) {
 func ExportWallet(c *gin.Context) {
 
 }
+
+// ! ||----------------------------------------------------------------||
+// ! ||                                Internal Structs                                 ||
+// ! ||----------------------------------------------------------------||
+
+type walletAPI struct{}

@@ -54,6 +54,7 @@ message RegisterRequest {
   string origin = 1;
   string username = 2;
   string attestation = 3;
+  string challenge = 4;
 }
 
 message RegisterResponse {

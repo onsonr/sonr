@@ -1,10 +1,17 @@
 package handler
 
 import (
+	"context"
+
 	"github.com/gin-gonic/gin"
+
+	databasepb "github.com/sonrhq/core/types/highway/database/v1"
 )
 
-// GetHealth returns the health of the service.
+// DatabaseAPI is the alias for the Highway Database Service Server.
+type DatabaseAPI = databasepb.DatabaseServiceServer
+
+// Health returns the health of the service.
 //
 // @Summary Health of the service
 // @Description Returns the health of the service.
@@ -12,11 +19,10 @@ import (
 // @Produce  json
 // @Success 200 {object} map[string]string "Status message"
 // @Router /getHealth [get]
-func GetHealth(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"status":  "ok",
-		"message": "im alive and well",
-	})
+func (a *databaseAPI) Health(ctx context.Context, req *databasepb.HealthRequest) (*databasepb.HealthResponse, error) {
+	return &databasepb.HealthResponse{
+		Ok: true,
+	}, nil
 }
 
 // GetBlockHeight returns the current block height.
@@ -45,4 +51,14 @@ func GetValidatorSet(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"validators": []string{},
 	})
+}
+
+// ! ||----------------------------------------------------------------||
+// ! ||                                Internal Structs                                 ||
+// ! ||----------------------------------------------------------------||
+
+type databaseAPI struct{}
+
+func newDatabaseAPI() DatabaseAPI {
+	return &databaseAPI{}
 }
