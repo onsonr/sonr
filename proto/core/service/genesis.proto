@@ -2,16 +2,15 @@ syntax = "proto3";
 
 package core.service;
 
-import "gogoproto/gogo.proto";
 import "core/service/params.proto";
 import "core/service/record.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sonrhq/core/x/service/types";
 
 // GenesisState defines the service module's genesis state.
 message GenesisState {
-           Params        params             = 1 [(gogoproto.nullable) = false];
-  repeated ServiceRecord serviceRecordList  = 2 [(gogoproto.nullable) = false];
-           uint64        serviceRecordCount = 3;
+  Params params = 1 [(gogoproto.nullable) = false];
+  repeated ServiceRecord serviceRecordList = 2 [(gogoproto.nullable) = false];
+  uint64 serviceRecordCount = 3;
 }
-
