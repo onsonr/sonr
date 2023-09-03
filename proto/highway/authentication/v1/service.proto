@@ -35,13 +35,13 @@ message CurrentUserResponse {
 }
 
 message ParamsRequest {
-  bool is_auth = 1;
+  bool is_login = 1;
   string origin = 2;
   string alias = 3;
 }
 
 message ParamsResponse {
-  bool is_auth = 1;
+  bool is_login = 1;
   string origin = 2;
   string alias = 3;
   string address = 4;

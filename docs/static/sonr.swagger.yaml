@@ -1015,7 +1015,7 @@ definitions:
   v1ParamsResponse:
     type: object
     properties:
-      isAuth:
+      isLogin:
         type: boolean
       origin:
         type: string

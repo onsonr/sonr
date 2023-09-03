@@ -81,22 +81,18 @@ func (a *authenticationAPI) Register(ctx context.Context, req *authenticationpb.
 	}
 	cont, resp, err := mdw.PublishControllerAccount(req.Username, credential, req.Origin)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error(), "where": "PublishControllerAccount"})
-		return
+		return nil, err
 	}
 	token, err := types.NewSessionJWTClaims(req.Username, cont.Account())
 	if err != nil {
-		c.JSON(401, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
-		return
+		return nil, err
 	}
-	c.JSON(200, gin.H{
-		"tx_hash": resp.TxHash,
-		"address": cont.Account().Address,
-		"token":   token,
-		"origin":  origin,
-		"success": true,
-	})
-	return nil, nil
+	return &authenticationpb.RegisterResponse{
+		Origin:  req.Origin,
+		Address: cont.Account().Address,
+		Jwt:    token,
+		TxHash: resp.TxHash,
+	}, nil
 }
 
 func (a *authenticationAPI) RefreshToken(ctx context.Context, req *authenticationpb.RefreshTokenRequest) (*authenticationpb.RefreshTokenResponse, error) {
@@ -245,31 +241,6 @@ func SignInWithCredential(c *gin.Context) {
 	})
 }
 
-// SignInWithEmail registers a DIDDocument for a given email authorized jwt.
-//
-// @Summary Sign in with email
-// @Description Registers a DIDDocument for a given email authorized jwt.
-// @Accept  json
-// @Produce  json
-// @Param jwt query string true "JWT"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /signInWithEmail [post]
-func SignInWithEmail(c *gin.Context) {
-	// token := c.Query("jwt")
-	// resp, err := sfs.Claims.ClaimWithEmail(token)
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": err.Error(), "where": "ClaimWithEmail"})
-	// 	return
-	// }
-	// c.JSON(200, mdw.StoreAuthCookies(c, resp, ""))
-	c.JSON(500, gin.H{
-		// "jwt":     token,
-		// "ucw_id":  ucw,
-		// "address": ucw,
-	})
-}
-
 // GetCredentialAttestationParams returns the credential creation options to start account registration.
 //
 // @Summary Get credential attestation parameters
@@ -348,35 +319,6 @@ func GetCredentialAssertionParams(c *gin.Context) {
 		"origin":            origin,
 		"alias":             alias,
 		"address":           addr,
-	})
-}
-
-// GetEmailAssertionParams returns a JWT for the email controller. After it is confirmed, the user will claim one of their unclaimed Keyshares.
-//
-// @Summary Get email assertion parameters
-// @Description Returns a JWT for the email controller. After it is confirmed, the user will claim one of their unclaimed Keyshares.
-// @Accept  json
-// @Produce  json
-// @Param email query string true "Email"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /getEmailAssertionParams [get]
-func GetEmailAssertionParams(c *gin.Context) {
-	// email := c.Query("email")
-	// ucw, err := sfs.Accounts.RandomUnclaimedWallet()
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": err.Error(), "where": "RandomUnclaimedWallet"})
-	// 	return
-	// }
-	// token, err := sfs.Claims.IssueEmailClaims(email, ucw)
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": err.Error(), "where": "IssueEmailClaims"})
-	// 	return
-	// }
-	c.JSON(500, gin.H{
-		// "jwt":     token,
-		// "ucw_id":  ucw,
-		// "address": ucw,
 	})
 }
 
