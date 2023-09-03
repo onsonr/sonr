@@ -137,3 +137,5 @@ jobs:
           input: "proto"
           against: "https://github.com/sonr-io/sonr.git#branch=master"
       - uses: bufbuild/buf-lint-action@v1
+        with:
+          input: "proto"
