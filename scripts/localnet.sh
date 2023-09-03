@@ -8,7 +8,6 @@ MONIKER="florence"
 KEYALGO="secp256k1"
 KEYRING="test"
 LOGLEVEL="info"
-PROJECTROOT=$(pwd)/../
 
 # remove existing daemon
 rm -rf ~/.sonr*
