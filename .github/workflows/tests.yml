@@ -123,9 +123,8 @@ jobs:
         run: |
           docker build --build-arg GIT_VERSION=${GIT_VERSION} --build-arg GIT_COMMIT=${GIT_COMMIT} -f Dockerfile -t sonr .
 
-
-  breaking-changes:
-    name: Check for breaking changes using Buf
+  lint-protos:
+    name: Lint Protos and Check for Breaking Changes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -137,3 +136,4 @@ jobs:
         with:
           input: "proto"
           against: "https://github.com/sonr-io/sonr.git#branch=master"
+      - uses: bufbuild/buf-lint-action@v1
