@@ -38,7 +38,7 @@ require (
 	github.com/stretchr/testify v1.8.4
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0
-	github.com/swaggo/swag v1.16.1
+	github.com/swaggo/swag v1.16.1 // indirect
 	github.com/vearne/gin-timeout v0.1.6
 	github.com/yoseplee/vrf v0.0.0-20210814110709-d1caf509310b
 	golang.org/x/crypto v0.11.0
