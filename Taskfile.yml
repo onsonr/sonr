@@ -30,7 +30,8 @@ tasks:
   dev:
     desc: Serve the blockchain locally with verbose logging
     cmds:
-      - docker compose up
+      - go build -o ./bin/sonrd ./cmd/sonrd
+      - sh scripts/localnet.sh ./bin/sonr
 
   build:
     desc: Build the binary

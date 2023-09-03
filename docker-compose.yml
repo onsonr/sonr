@@ -24,7 +24,7 @@ services:
     init: true
     build:
       dockerfile: Dockerfile.dev
-    command: sh scripts/localnet.sh
+    command: sh scripts/entrypoint.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
