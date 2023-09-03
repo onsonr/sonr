@@ -3,13 +3,14 @@ syntax = "proto3";
 package highway.authentication.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";
 
 service AuthenticationService {
-  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {
-    option (google.api.http).get = "/core/params/service";
-  }
+  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {}
+  rpc Params(google.protobuf.Empty) returns (ParamsResponse) {}
+  rpc Register(RegisterRequest) returns (RegisterResponse) {}
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {}
 }
@@ -20,6 +21,20 @@ message AuthenticateRequest {
 }
 
 message AuthenticateResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message ParamsResponse {
+  repeated string params = 1;
+}
+
+message RegisterRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message RegisterResponse {
   string access_token = 1;
   string refresh_token = 2;
 }

@@ -8,7 +8,6 @@ option go_package = "github.com/sonrhq/core/types/highway/storage/v1;storagepb";
 
 service StorageService {
     rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {
-      option (google.api.http).get = "/core/params/service";
     }
     rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
     rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {}

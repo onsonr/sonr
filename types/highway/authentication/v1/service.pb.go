@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -132,6 +133,154 @@ func (m *AuthenticateResponse) GetRefreshToken() string {
 	return ""
 }
 
+type ParamsResponse struct {
+	Params []string `protobuf:"bytes,1,rep,name=params,proto3" json:"params,omitempty"`
+}
+
+func (m *ParamsResponse) Reset()         { *m = ParamsResponse{} }
+func (m *ParamsResponse) String() string { return proto.CompactTextString(m) }
+func (*ParamsResponse) ProtoMessage()    {}
+func (*ParamsResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a204e94b3257a8d4, []int{2}
+}
+func (m *ParamsResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *ParamsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_ParamsResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *ParamsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ParamsResponse.Merge(m, src)
+}
+func (m *ParamsResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *ParamsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ParamsResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ParamsResponse proto.InternalMessageInfo
+
+func (m *ParamsResponse) GetParams() []string {
+	if m != nil {
+		return m.Params
+	}
+	return nil
+}
+
+type RegisterRequest struct {
+	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
+	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+}
+
+func (m *RegisterRequest) Reset()         { *m = RegisterRequest{} }
+func (m *RegisterRequest) String() string { return proto.CompactTextString(m) }
+func (*RegisterRequest) ProtoMessage()    {}
+func (*RegisterRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a204e94b3257a8d4, []int{3}
+}
+func (m *RegisterRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RegisterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RegisterRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RegisterRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterRequest.Merge(m, src)
+}
+func (m *RegisterRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *RegisterRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterRequest proto.InternalMessageInfo
+
+func (m *RegisterRequest) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+func (m *RegisterRequest) GetPassword() string {
+	if m != nil {
+		return m.Password
+	}
+	return ""
+}
+
+type RegisterResponse struct {
+	AccessToken  string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+}
+
+func (m *RegisterResponse) Reset()         { *m = RegisterResponse{} }
+func (m *RegisterResponse) String() string { return proto.CompactTextString(m) }
+func (*RegisterResponse) ProtoMessage()    {}
+func (*RegisterResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_a204e94b3257a8d4, []int{4}
+}
+func (m *RegisterResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *RegisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_RegisterResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *RegisterResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_RegisterResponse.Merge(m, src)
+}
+func (m *RegisterResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *RegisterResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_RegisterResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_RegisterResponse proto.InternalMessageInfo
+
+func (m *RegisterResponse) GetAccessToken() string {
+	if m != nil {
+		return m.AccessToken
+	}
+	return ""
+}
+
+func (m *RegisterResponse) GetRefreshToken() string {
+	if m != nil {
+		return m.RefreshToken
+	}
+	return ""
+}
+
 type RefreshTokenRequest struct {
 	RefreshToken string `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
 }
@@ -140,7 +289,7 @@ func (m *RefreshTokenRequest) Reset()         { *m = RefreshTokenRequest{} }
 func (m *RefreshTokenRequest) String() string { return proto.CompactTextString(m) }
 func (*RefreshTokenRequest) ProtoMessage()    {}
 func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a204e94b3257a8d4, []int{2}
+	return fileDescriptor_a204e94b3257a8d4, []int{5}
 }
 func (m *RefreshTokenRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -185,7 +334,7 @@ func (m *RefreshTokenResponse) Reset()         { *m = RefreshTokenResponse{} }
 func (m *RefreshTokenResponse) String() string { return proto.CompactTextString(m) }
 func (*RefreshTokenResponse) ProtoMessage()    {}
 func (*RefreshTokenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a204e94b3257a8d4, []int{3}
+	return fileDescriptor_a204e94b3257a8d4, []int{6}
 }
 func (m *RefreshTokenResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -236,7 +385,7 @@ func (m *VerifyTokenRequest) Reset()         { *m = VerifyTokenRequest{} }
 func (m *VerifyTokenRequest) String() string { return proto.CompactTextString(m) }
 func (*VerifyTokenRequest) ProtoMessage()    {}
 func (*VerifyTokenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a204e94b3257a8d4, []int{4}
+	return fileDescriptor_a204e94b3257a8d4, []int{7}
 }
 func (m *VerifyTokenRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -280,7 +429,7 @@ func (m *VerifyTokenResponse) Reset()         { *m = VerifyTokenResponse{} }
 func (m *VerifyTokenResponse) String() string { return proto.CompactTextString(m) }
 func (*VerifyTokenResponse) ProtoMessage()    {}
 func (*VerifyTokenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_a204e94b3257a8d4, []int{5}
+	return fileDescriptor_a204e94b3257a8d4, []int{8}
 }
 func (m *VerifyTokenResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -319,6 +468,9 @@ func (m *VerifyTokenResponse) GetValid() bool {
 func init() {
 	proto.RegisterType((*AuthenticateRequest)(nil), "highway.authentication.v1.AuthenticateRequest")
 	proto.RegisterType((*AuthenticateResponse)(nil), "highway.authentication.v1.AuthenticateResponse")
+	proto.RegisterType((*ParamsResponse)(nil), "highway.authentication.v1.ParamsResponse")
+	proto.RegisterType((*RegisterRequest)(nil), "highway.authentication.v1.RegisterRequest")
+	proto.RegisterType((*RegisterResponse)(nil), "highway.authentication.v1.RegisterResponse")
 	proto.RegisterType((*RefreshTokenRequest)(nil), "highway.authentication.v1.RefreshTokenRequest")
 	proto.RegisterType((*RefreshTokenResponse)(nil), "highway.authentication.v1.RefreshTokenResponse")
 	proto.RegisterType((*VerifyTokenRequest)(nil), "highway.authentication.v1.VerifyTokenRequest")
@@ -330,34 +482,39 @@ func init() {
 }
 
 var fileDescriptor_a204e94b3257a8d4 = []byte{
-	// 420 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0x31, 0x8f, 0xd3, 0x30,
-	0x14, 0x4e, 0x0e, 0x81, 0x0e, 0x5f, 0x58, 0xdc, 0x80, 0x8e, 0xe8, 0x14, 0x41, 0x18, 0x40, 0x42,
-	0xd8, 0x3a, 0x18, 0x90, 0x60, 0x3a, 0x16, 0x26, 0x96, 0x80, 0x18, 0x18, 0x0e, 0xb9, 0xe9, 0x6b,
-	0x62, 0xd1, 0xda, 0xa9, 0xed, 0xa4, 0xea, 0xca, 0x88, 0x84, 0x84, 0xc4, 0x9f, 0x62, 0xac, 0xc4,
-	0xc2, 0x88, 0x5a, 0x7e, 0x08, 0x6a, 0x9c, 0x40, 0xa2, 0xa6, 0xa5, 0x03, 0xe3, 0x7b, 0xef, 0xfb,
-	0x3e, 0x7f, 0x7a, 0xdf, 0x33, 0xba, 0x9f, 0xf1, 0x34, 0x9b, 0xb3, 0x05, 0x65, 0x85, 0xc9, 0x40,
-	0x18, 0x9e, 0x30, 0xc3, 0xa5, 0xa0, 0xe5, 0x39, 0xd5, 0xa0, 0x4a, 0x9e, 0x00, 0xc9, 0x95, 0x34,
-	0x12, 0xdf, 0xae, 0x81, 0xa4, 0x0b, 0x24, 0xe5, 0x79, 0x70, 0x96, 0x4a, 0x99, 0x4e, 0x80, 0xb2,
-	0x9c, 0x53, 0x26, 0x84, 0x34, 0xd5, 0x44, 0x5b, 0x62, 0xf4, 0x0a, 0x0d, 0x2e, 0xfe, 0x52, 0x20,
-	0x86, 0x59, 0x01, 0xda, 0xe0, 0x00, 0x1d, 0x17, 0x1a, 0x94, 0x60, 0x53, 0x38, 0x75, 0xef, 0xb8,
-	0x0f, 0xae, 0xc7, 0x7f, 0xea, 0xcd, 0x2c, 0x67, 0x5a, 0xcf, 0xa5, 0x1a, 0x9d, 0x1e, 0xd9, 0x59,
-	0x53, 0x47, 0x97, 0xc8, 0xef, 0xca, 0xe9, 0x5c, 0x0a, 0x0d, 0xf8, 0x2e, 0xf2, 0x58, 0x92, 0x80,
-	0xd6, 0xef, 0x8d, 0xfc, 0x00, 0xa2, 0xd6, 0x3c, 0xb1, 0xbd, 0x37, 0x9b, 0x16, 0xbe, 0x87, 0x6e,
-	0x28, 0x18, 0x2b, 0xd0, 0x59, 0x8d, 0xb1, 0xda, 0x5e, 0xdd, 0xac, 0x40, 0xd1, 0x33, 0x34, 0x88,
-	0x5b, 0x75, 0x63, 0x77, 0x8b, 0xeb, 0xf6, 0x70, 0x2f, 0x91, 0xdf, 0xe5, 0xfe, 0x67, 0x6f, 0x4f,
-	0x11, 0x7e, 0x0b, 0x8a, 0x8f, 0x17, 0x1d, 0x6b, 0xff, 0x56, 0x8f, 0x1e, 0xa2, 0x41, 0x87, 0x58,
-	0xfb, 0xf2, 0xd1, 0xd5, 0x92, 0x4d, 0xf8, 0xa8, 0xa2, 0x1c, 0xc7, 0xb6, 0x78, 0xfc, 0xe9, 0x0a,
-	0xba, 0x79, 0xd1, 0x09, 0xf9, 0xb5, 0xbd, 0x04, 0xfc, 0xd9, 0x45, 0x5e, 0x7b, 0xf9, 0x98, 0x90,
-	0x9d, 0x57, 0x41, 0x7a, 0x42, 0x0f, 0xe8, 0xc1, 0x78, 0xeb, 0x30, 0x3a, 0xfb, 0xf8, 0xfd, 0xd7,
-	0xd7, 0xa3, 0x5b, 0xd8, 0xa7, 0x89, 0x54, 0x40, 0x73, 0xa6, 0xd8, 0x54, 0x37, 0x97, 0x89, 0x67,
-	0xc8, 0x6b, 0xef, 0x7b, 0xaf, 0x9d, 0x9e, 0x50, 0xf7, 0xda, 0xe9, 0x0b, 0x32, 0x72, 0xb0, 0x40,
-	0x27, 0xad, 0x4d, 0xe2, 0x47, 0x7b, 0x14, 0xb6, 0xa3, 0x0a, 0xc8, 0xa1, 0xf0, 0xe6, 0xbd, 0x17,
-	0xec, 0xdb, 0x2a, 0x74, 0x97, 0xab, 0xd0, 0xfd, 0xb9, 0x0a, 0xdd, 0x2f, 0xeb, 0xd0, 0x59, 0xae,
-	0x43, 0xe7, 0xc7, 0x3a, 0x74, 0xde, 0xbd, 0x4c, 0xb9, 0xc9, 0x8a, 0x21, 0x49, 0xe4, 0x94, 0x6a,
-	0x29, 0x54, 0x36, 0xb3, 0x3b, 0x32, 0x8b, 0x1c, 0x34, 0xdd, 0xf9, 0xad, 0x9f, 0x77, 0x3b, 0xf9,
-	0x70, 0x78, 0xad, 0xfa, 0xa7, 0x4f, 0x7e, 0x07, 0x00, 0x00, 0xff, 0xff, 0x88, 0xfc, 0x1c, 0x6b,
-	0x0b, 0x04, 0x00, 0x00,
+	// 502 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xb5, 0xf9, 0x88, 0xd2, 0x69, 0xf8, 0xd0, 0x26, 0x54, 0xc1, 0x20, 0xab, 0x98, 0x03, 0x81,
+	0x8a, 0x5d, 0x15, 0x0e, 0x48, 0x70, 0x2a, 0x12, 0x42, 0x1c, 0x2a, 0x21, 0x83, 0x38, 0xf4, 0x50,
+	0xb4, 0x71, 0x27, 0xb6, 0x45, 0xe3, 0x75, 0x76, 0xd7, 0xa9, 0xf2, 0x2f, 0xf8, 0x0f, 0xfc, 0x19,
+	0x8e, 0x3d, 0x72, 0x44, 0xc9, 0x1f, 0x41, 0xf1, 0xda, 0x69, 0x4c, 0x53, 0x13, 0x89, 0x1c, 0xdf,
+	0xcc, 0x7b, 0xcf, 0xb3, 0xbb, 0x6f, 0x0c, 0x4f, 0xa2, 0x38, 0x8c, 0xce, 0xf8, 0x84, 0xf1, 0x4c,
+	0x47, 0x98, 0xe8, 0x38, 0xe0, 0x3a, 0x16, 0x09, 0x1b, 0xef, 0x33, 0x85, 0x72, 0x1c, 0x07, 0x48,
+	0x53, 0x29, 0xb4, 0x20, 0xf7, 0x0b, 0x22, 0xad, 0x12, 0xe9, 0x78, 0xdf, 0x79, 0x18, 0x0a, 0x11,
+	0x9e, 0x22, 0xe3, 0x69, 0xcc, 0x78, 0x92, 0x08, 0x9d, 0x77, 0x94, 0x11, 0x3a, 0x0f, 0x8a, 0x6e,
+	0x8e, 0xfa, 0xd9, 0x80, 0xe1, 0x30, 0xd5, 0x13, 0xd3, 0xf4, 0x0e, 0xa1, 0x7d, 0x70, 0xe1, 0x87,
+	0x3e, 0x8e, 0x32, 0x54, 0x9a, 0x38, 0xd0, 0xcc, 0x14, 0xca, 0x84, 0x0f, 0xb1, 0x6b, 0xef, 0xda,
+	0xbd, 0x2d, 0x7f, 0x81, 0xe7, 0xbd, 0x94, 0x2b, 0x75, 0x26, 0xe4, 0x49, 0xf7, 0x9a, 0xe9, 0x95,
+	0xd8, 0x3b, 0x86, 0x4e, 0xd5, 0x4e, 0xa5, 0x22, 0x51, 0x48, 0x1e, 0x41, 0x8b, 0x07, 0x01, 0x2a,
+	0xf5, 0x55, 0x8b, 0x6f, 0x98, 0x14, 0x9e, 0xdb, 0xa6, 0xf6, 0x79, 0x5e, 0x22, 0x8f, 0xe1, 0x96,
+	0xc4, 0x81, 0x44, 0x15, 0x15, 0x1c, 0xe3, 0xdd, 0x2a, 0x8a, 0x39, 0xc9, 0xeb, 0xc1, 0xed, 0x8f,
+	0x5c, 0xf2, 0xa1, 0x5a, 0x38, 0xef, 0x40, 0x23, 0xcd, 0x2b, 0x5d, 0x7b, 0xf7, 0x7a, 0x6f, 0xcb,
+	0x2f, 0x90, 0xf7, 0x01, 0xee, 0xf8, 0x18, 0xc6, 0x4a, 0xa3, 0xfc, 0xdf, 0x43, 0x1d, 0xc1, 0xdd,
+	0x0b, 0xab, 0x0d, 0x1f, 0xe8, 0x35, 0xb4, 0xfd, 0x25, 0x5c, 0x8e, 0x7a, 0x49, 0x6b, 0xaf, 0xd0,
+	0x1e, 0x43, 0xa7, 0xaa, 0xdd, 0xf0, 0x6c, 0xaf, 0x80, 0x7c, 0x41, 0x19, 0x0f, 0x26, 0x95, 0xd1,
+	0xfe, 0xed, 0xee, 0xed, 0x41, 0xbb, 0x22, 0x2c, 0xe6, 0xea, 0xc0, 0xcd, 0x31, 0x3f, 0x8d, 0x4f,
+	0x72, 0x49, 0xd3, 0x37, 0xe0, 0xc5, 0x8f, 0x1b, 0x70, 0xef, 0xa0, 0x12, 0xe9, 0x4f, 0x26, 0xf7,
+	0x64, 0x04, 0xad, 0xe5, 0x30, 0x11, 0x4a, 0xaf, 0x5c, 0x01, 0xba, 0x22, 0xc4, 0x0e, 0x5b, 0x9b,
+	0x6f, 0x06, 0xf4, 0x2c, 0x72, 0x08, 0x0d, 0x93, 0x2f, 0xb2, 0x43, 0xcd, 0xda, 0xd0, 0x72, 0x6d,
+	0xe8, 0xbb, 0xf9, 0xda, 0x38, 0x4f, 0x6b, 0x4c, 0xab, 0xd1, 0xf4, 0x2c, 0x82, 0xd0, 0x2c, 0x93,
+	0x43, 0x9e, 0xd5, 0x08, 0xff, 0x4a, 0xaa, 0xb3, 0xb7, 0x16, 0x77, 0xf1, 0x99, 0x11, 0xb4, 0x96,
+	0x83, 0x50, 0x7b, 0x51, 0x2b, 0xd2, 0x56, 0x7b, 0x51, 0xab, 0x12, 0xe6, 0x59, 0x24, 0x81, 0xed,
+	0xa5, 0x27, 0x26, 0xcf, 0x6b, 0x1c, 0x2e, 0x67, 0xc8, 0xa1, 0xeb, 0xd2, 0xcb, 0xef, 0xbd, 0xe5,
+	0x3f, 0xa7, 0xae, 0x7d, 0x3e, 0x75, 0xed, 0xdf, 0x53, 0xd7, 0xfe, 0x3e, 0x73, 0xad, 0xf3, 0x99,
+	0x6b, 0xfd, 0x9a, 0xb9, 0xd6, 0xd1, 0xfb, 0x30, 0xd6, 0x51, 0xd6, 0xa7, 0x81, 0x18, 0x32, 0x25,
+	0x12, 0x19, 0x8d, 0x58, 0x20, 0x24, 0x32, 0x3d, 0x49, 0x51, 0xb1, 0x2b, 0xff, 0xae, 0x6f, 0xaa,
+	0x95, 0xb4, 0xdf, 0x6f, 0xe4, 0x2f, 0xfd, 0xf2, 0x4f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x2f, 0x12,
+	0x23, 0x71, 0x92, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -373,6 +530,8 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AuthenticationServiceClient interface {
 	Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
+	Params(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ParamsResponse, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
 }
@@ -388,6 +547,24 @@ func NewAuthenticationServiceClient(cc grpc1.ClientConn) AuthenticationServiceCl
 func (c *authenticationServiceClient) Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error) {
 	out := new(AuthenticateResponse)
 	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Authenticate", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) Params(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*ParamsResponse, error) {
+	out := new(ParamsResponse)
+	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Params", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
+	out := new(RegisterResponse)
+	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Register", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -415,6 +592,8 @@ func (c *authenticationServiceClient) VerifyToken(ctx context.Context, in *Verif
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 type AuthenticationServiceServer interface {
 	Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
+	Params(context.Context, *emptypb.Empty) (*ParamsResponse, error)
+	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 }
@@ -425,6 +604,12 @@ type UnimplementedAuthenticationServiceServer struct {
 
 func (*UnimplementedAuthenticationServiceServer) Authenticate(ctx context.Context, req *AuthenticateRequest) (*AuthenticateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+}
+func (*UnimplementedAuthenticationServiceServer) Params(ctx context.Context, req *emptypb.Empty) (*ParamsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (*UnimplementedAuthenticationServiceServer) Register(ctx context.Context, req *RegisterRequest) (*RegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
 }
 func (*UnimplementedAuthenticationServiceServer) RefreshToken(ctx context.Context, req *RefreshTokenRequest) (*RefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
@@ -451,6 +636,42 @@ func _AuthenticationService_Authenticate_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).Authenticate(ctx, req.(*AuthenticateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).Params(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/highway.authentication.v1.AuthenticationService/Params",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).Params(ctx, req.(*emptypb.Empty))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/highway.authentication.v1.AuthenticationService/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).Register(ctx, req.(*RegisterRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -498,6 +719,14 @@ var _AuthenticationService_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Authenticate",
 			Handler:    _AuthenticationService_Authenticate_Handler,
+		},
+		{
+			MethodName: "Params",
+			Handler:    _AuthenticationService_Params_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _AuthenticationService_Register_Handler,
 		},
 		{
 			MethodName: "RefreshToken",
@@ -565,6 +794,112 @@ func (m *AuthenticateResponse) MarshalTo(dAtA []byte) (int, error) {
 }
 
 func (m *AuthenticateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.RefreshToken) > 0 {
+		i -= len(m.RefreshToken)
+		copy(dAtA[i:], m.RefreshToken)
+		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AccessToken) > 0 {
+		i -= len(m.AccessToken)
+		copy(dAtA[i:], m.AccessToken)
+		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Params) > 0 {
+		for iNdEx := len(m.Params) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Params[iNdEx])
+			copy(dAtA[i:], m.Params[iNdEx])
+			i = encodeVarintService(dAtA, i, uint64(len(m.Params[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RegisterRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RegisterRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RegisterRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Password) > 0 {
+		i -= len(m.Password)
+		copy(dAtA[i:], m.Password)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Password)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Username) > 0 {
+		i -= len(m.Username)
+		copy(dAtA[i:], m.Username)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Username)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *RegisterResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *RegisterResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *RegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -745,6 +1080,55 @@ func (m *AuthenticateRequest) Size() (n int) {
 }
 
 func (m *AuthenticateResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AccessToken)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.RefreshToken)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	return n
+}
+
+func (m *ParamsResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Params) > 0 {
+		for _, s := range m.Params {
+			l = len(s)
+			n += 1 + l + sovService(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *RegisterRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Username)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.Password)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	return n
+}
+
+func (m *RegisterResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -963,6 +1347,316 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 		}
 		if fieldNum <= 0 {
 			return fmt.Errorf("proto: AuthenticateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccessToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ParamsResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Params = append(m.Params, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RegisterRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RegisterRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RegisterRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Username = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Password = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: RegisterResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: RegisterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

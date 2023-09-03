@@ -351,27 +351,19 @@ paths:
         - Query
   /core/params/service:
     get:
-      operationId: WalletService_CreateAccount
+      summary: Parameters queries the parameters of the module.
+      operationId: Query_Params
       responses:
         "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/highwaywalletv1AuthenticateResponse'
+            $ref: '#/definitions/coreserviceQueryParamsResponse'
         default:
           description: An unexpected error response.
           schema:
             $ref: '#/definitions/rpcStatus'
-      parameters:
-        - name: username
-          in: query
-          required: false
-          type: string
-        - name: password
-          in: query
-          required: false
-          type: string
       tags:
-        - WalletService
+        - Query
   /core/service:
     get:
       operationId: Query_ServiceRecordAll
@@ -528,6 +520,47 @@ paths:
           type: string
       tags:
         - Query
+  /v1/cid/{cid}:
+    get:
+      operationId: DatabaseService_GetCID
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1GetCIDResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+      tags:
+        - DatabaseService
+    post:
+      operationId: DatabaseService_PutData
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1PutDataResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: cid
+          in: path
+          required: true
+          type: string
+        - name: data
+          in: query
+          required: false
+          type: string
+      tags:
+        - DatabaseService
 definitions:
   coredomainParams:
     type: object
@@ -621,25 +654,6 @@ definitions:
       refreshToken:
         type: string
   highwayauthenticationv1VerifyTokenResponse:
-    type: object
-    properties:
-      valid:
-        type: boolean
-  highwaydatabasev1AuthenticateResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwaydatabasev1RefreshTokenResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwaydatabasev1VerifyTokenResponse:
     type: object
     properties:
       valid:
@@ -976,6 +990,32 @@ definitions:
       description:
         type: string
         title: The description of the service
+  v1GetCIDResponse:
+    type: object
+    properties:
+      cid:
+        type: string
+      data:
+        type: string
+  v1ParamsResponse:
+    type: object
+    properties:
+      params:
+        type: array
+        items:
+          type: string
+  v1PutDataResponse:
+    type: object
+    properties:
+      cid:
+        type: string
+  v1RegisterResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
   v1beta1PageRequest:
     type: object
     properties:

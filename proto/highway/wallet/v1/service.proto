@@ -8,7 +8,6 @@ option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
 
 service WalletService {
   rpc CreateAccount(AuthenticateRequest) returns (AuthenticateResponse) {
-    option (google.api.http).get = "/core/params/service";
   }
   rpc GetAccount(RefreshTokenRequest) returns (RefreshTokenResponse) {}
   rpc ListAccounts(VerifyTokenRequest) returns (VerifyTokenResponse) {}
