@@ -3,6 +3,7 @@ package handler
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/gin-gonic/gin"
 
 	databasepb "github.com/sonrhq/core/types/highway/database/v1"
@@ -10,6 +11,11 @@ import (
 
 // DatabaseAPI is the alias for the Highway Database Service Server.
 type DatabaseAPI = databasepb.DatabaseServiceServer
+
+// DatabaseHandler is the handler for the authentication service
+type DatabaseHandler struct {
+	cctx client.Context
+}
 
 // Health returns the health of the service.
 //
@@ -19,7 +25,7 @@ type DatabaseAPI = databasepb.DatabaseServiceServer
 // @Produce  json
 // @Success 200 {object} map[string]string "Status message"
 // @Router /getHealth [get]
-func (a *databaseAPI) Health(ctx context.Context, req *databasepb.HealthRequest) (*databasepb.HealthResponse, error) {
+func (a *DatabaseHandler) Health(ctx context.Context, req *databasepb.HealthRequest) (*databasepb.HealthResponse, error) {
 	return &databasepb.HealthResponse{
 		Ok: true,
 	}, nil
@@ -51,14 +57,4 @@ func GetValidatorSet(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"validators": []string{},
 	})
-}
-
-// ! ||----------------------------------------------------------------||
-// ! ||                                Internal Structs                                 ||
-// ! ||----------------------------------------------------------------||
-
-type databaseAPI struct{}
-
-func newDatabaseAPI() DatabaseAPI {
-	return &databaseAPI{}
 }

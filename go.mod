@@ -24,7 +24,6 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/highlight/highlight/sdk/highlight-go v0.9.9
-	github.com/kardianos/service v1.2.2
 	github.com/kataras/jwt v0.1.8
 	github.com/multiformats/go-multibase v0.2.0
 	github.com/multiformats/go-varint v0.0.7
@@ -36,7 +35,6 @@ require (
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.16.0
 	github.com/stretchr/testify v1.8.4
-	github.com/vearne/gin-timeout v0.1.6
 	github.com/yoseplee/vrf v0.0.0-20210814110709-d1caf509310b
 	golang.org/x/crypto v0.11.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20230720185612-659f7aaaa771

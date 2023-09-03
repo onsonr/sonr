@@ -1,19 +1,23 @@
 package handler
 
 import (
-	"net/http"
+	"context"
+	"fmt"
 
-	"github.com/gin-gonic/gin"
-
+	"github.com/cosmos/cosmos-sdk/client"
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/pkg/crypto"
-
 
 	walletpb "github.com/sonrhq/core/types/highway/wallet/v1"
 )
 
 // WalletAPI is the alias for the Highway Wallet Service Server.
 type WalletAPI = walletpb.WalletServiceServer
+
+// WalletHandler is the handler for the authentication service
+type WalletHandler struct {
+	cctx client.Context
+}
 
 // CreateAccount creates a new account with a given coin type and name.
 //
@@ -24,32 +28,22 @@ type WalletAPI = walletpb.WalletServiceServer
 // @Param   coinType path string true "Coin Type Name"
 // @Success 200 {object} map[string]interface{} "Account Info"
 // @Router /createAccount/{coinType} [post]
-func CreateAccount(c *gin.Context) {
-	coinTypeName := c.Param("coinType")
-	ct := crypto.CoinTypeFromName(coinTypeName)
-	jwt, err := c.Cookie("sonr-jwt")
+func (a *WalletHandler) CreateAccount(ctx context.Context, req *walletpb.CreateAccountRequest) (*walletpb.CreateAccountResponse, error) {
+	ct := crypto.CoinTypeFromName(req.CoinType)
+	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
-	}
-	cont, err := mdw.UseControllerAccount(jwt)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
-		return
+		return nil, err
 	}
 
 	accInfo, err := cont.CreateWallet(ct)
 	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "CreateWallet"})
-		return
+		return nil, err
 	}
-
-	c.JSON(200, gin.H{
-		"jwt":      jwt,
-		"account":  accInfo,
-		"coinType": ct,
-		"success":  true,
-	})
+	return &walletpb.CreateAccountResponse{
+		Address:  accInfo.Address,
+		CoinType: ct.Name(),
+		Owner:    cont.Account().Address,
+	}, nil
 }
 
 // GetAccount returns an account's details given its DID.
@@ -61,27 +55,18 @@ func CreateAccount(c *gin.Context) {
 // @Param   did path string true "DID of Account"
 // @Success 200 {object} map[string]interface{} "Account Info"
 // @Router /getAccount/{did} [get]
-func GetAccount(c *gin.Context) {
-	did := c.Param("did")
-	jwt, err := c.Cookie("sonr-jwt")
+func (a *WalletHandler) GetAccount(ctx context.Context, req *walletpb.GetAccountRequest) (*walletpb.GetAccountResponse, error) {
+	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
+		return nil, err
 	}
-	cont, err := mdw.UseControllerAccount(jwt)
+	accInfo, err := cont.GetWallet(req.Address)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
-		return
+		return nil, err
 	}
-	accInfo, err := cont.GetWallet(did)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "GetWallet"})
-		return
-	}
-	c.JSON(200, gin.H{
-		"claimed": true,
-		"account": accInfo,
-	})
+	return &walletpb.GetAccountResponse{
+		Address: accInfo.Address,
+	}, nil
 }
 
 // ListAccounts returns a list of wallet accounts given a coin type.
@@ -92,22 +77,15 @@ func GetAccount(c *gin.Context) {
 // @Produce  json
 // @Success 200 {object} map[string]interface{} "Accounts List"
 // @Router /listAccounts [get]
-func ListAccounts(c *gin.Context) {
-	jwt, err := c.Cookie("sonr-jwt")
+func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAccountsRequest) (*walletpb.ListAccountsResponse, error) {
+	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
-	}
 
-	cont, err := mdw.UseControllerAccount(jwt)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
-		return
+		return nil, err
 	}
-	c.JSON(200, gin.H{
-		"jwt":      jwt,
-		"accounts": cont.ListWallets(),
-	})
+	return &walletpb.ListAccountsResponse{
+		Accounts: cont.ListWallets(),
+	}, nil
 }
 
 // SignWithAccount signs a message with an account given its DID. Requires the JWT of their Keyshare.
@@ -120,35 +98,18 @@ func ListAccounts(c *gin.Context) {
 // @Param   msg query string true "Message to Sign"
 // @Success 200 {object} map[string]interface{} "Signature Info"
 // @Router /signWithAccount/{did} [post]
-func SignWithAccount(c *gin.Context) {
-	jwt, err := c.Cookie("sonr-jwt")
+func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignWithAccountRequest) (*walletpb.SignWithAccountResponse, error) {
+	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
+		return nil, err
 	}
-	did := c.Param("did")
-	msg := c.Query("msg")
-	bz, err := crypto.Base64Decode(msg)
+	sig, err := cont.SignWithWallet("did", []byte{0x00})
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
+		return nil, err
 	}
-	cont, err := mdw.UseControllerAccount(jwt)
-	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
-		return
-	}
-	sig, err := cont.SignWithWallet(did, bz)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "SignWithWallet"})
-		return
-	}
-	c.JSON(200, gin.H{
-		"jwt": jwt,
-		"sig": crypto.Base64Encode(sig),
-		"msg": msg,
-		"did": did,
-	})
+	return &walletpb.SignWithAccountResponse{
+		Signature: sig,
+	}, nil
 }
 
 // VerifyWithAccount verifies a signature with an account.
@@ -162,43 +123,26 @@ func SignWithAccount(c *gin.Context) {
 // @Param   sig query string true "Signature"
 // @Success 200 {object} map[string]interface{} "Verification Result"
 // @Router /verifyWithAccount/{did} [post]
-func VerifyWithAccount(c *gin.Context) {
-	jwt, err := c.Cookie("sonr-jwt")
+func (a *WalletHandler) VerifyWithAccount(ctx context.Context, req *walletpb.VerifyWithAccountRequest) (*walletpb.VerifyWithAccountResponse, error) {
+	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "no jwt cookie found"})
-		return
+		return nil, err
 	}
-	did := c.Param("did")
-	msgStr := c.Query("msg")
-	sigStr := c.Query("sig")
-	cont, err := mdw.UseControllerAccount(jwt)
+	msg, err := crypto.Base64Decode(req.Address)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error(), "status": "failed to use controller account"})
-		return
+		return nil, err
 	}
-	msg, err := crypto.Base64Decode(msgStr)
+	sig, err := crypto.Base64Decode(req.Address)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
+		return nil, err
 	}
-	sig, err := crypto.Base64Decode(sigStr)
+	valid, err := cont.VerifyWithWallet(req.Address, msg, sig)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error()})
-		return
+		return nil, err
 	}
-	valid, err := cont.VerifyWithWallet(did, msg, sig)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "VerifyWithWallet"})
-		return
-	}
-	c.JSON(200, gin.H{
-		// "valid": valid,
-		"msg":   msgStr,
-		"sig":   sigStr,
-		"did":   did,
-		"jwt":   jwt,
-		"valid": valid,
-	})
+	return &walletpb.VerifyWithAccountResponse{
+		Verified: valid,
+	}, nil
 }
 
 // ExportWallet returns the encoded Sonr Wallet structure with an encrypted keyshare, which can be opened
@@ -210,12 +154,6 @@ func VerifyWithAccount(c *gin.Context) {
 // @Produce  json
 // @Success 200 {object} map[string]interface{} "Wallet Export Info"
 // @Router /exportWallet [get]
-func ExportWallet(c *gin.Context) {
-
+func (a *WalletHandler) ExportWallet(ctx context.Context, req *walletpb.ExportWalletRequest) (*walletpb.ExportWalletResponse, error) {
+	return nil, fmt.Errorf("not implemented")
 }
-
-// ! ||----------------------------------------------------------------||
-// ! ||                                Internal Structs                                 ||
-// ! ||----------------------------------------------------------------||
-
-type walletAPI struct{}

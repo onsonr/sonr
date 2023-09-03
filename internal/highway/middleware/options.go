@@ -10,17 +10,7 @@ import (
 	serviceproxy "github.com/sonrhq/core/x/service/client/proxy"
 )
 
-// GetCredentialAttestationParams returns the credential creation options to start account registration.
-//
-// @Summary Get credential attestation parameters
-// @Description Returns the credential creation options to start account registration.
-// @Accept  json
-// @Produce  json
-// @Param origin path string true "Origin"
-// @Param alias path string true "Alias"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /getCredentialAttestationParams/{origin}/{alias} [get]
+// GetCredentialAttestationParams returns the credential attestation options to start wallet registration.
 func GetCredentialAttestationParams(ctx context.Context, origin string, alias string) (*authenticationpb.ParamsResponse, error) {
 	ok, err := domainproxy.CheckAliasAvailable(ctx, alias)
 	if err != nil || !ok {
@@ -44,21 +34,11 @@ func GetCredentialAttestationParams(ctx context.Context, origin string, alias st
 		Challenge:          chal.String(),
 		Origin:             origin,
 		Alias:              alias,
-		IsAuth:             false,
+		IsLogin:            false,
 	}, nil
 }
 
-// GetCredentialAssertionParams returns the credential assertion options to start account login.
-//
-// @Summary Get credential assertion parameters
-// @Description Returns the credential assertion options to start account login.
-// @Accept  json
-// @Produce  json
-// @Param origin path string true "Origin"
-// @Param alias path string true "Alias"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /getCredentialAssertionParams/{origin}/{alias} [get]
+// GetCredentialAssertionOptions returns the credential assertion options to start wallet authentication.
 func GetCredentialAssertionOptions(ctx context.Context, origin string, alias string) (*authenticationpb.ParamsResponse, error) {
 	record, err := serviceproxy.GetServiceRecord(ctx, origin)
 	if err != nil {
@@ -78,6 +58,6 @@ func GetCredentialAssertionOptions(ctx context.Context, origin string, alias str
 		Origin:           origin,
 		Alias:            alias,
 		Address:          addr,
-		IsAuth:           true,
+		IsLogin:          true,
 	}, nil
 }

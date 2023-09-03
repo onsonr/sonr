@@ -456,6 +456,37 @@ paths:
             $ref: '#/definitions/rpcStatus'
       tags:
         - DatabaseService
+  /highway/wallet/accounts/create:
+    post:
+      operationId: WalletService_CreateAccount
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1CreateAccountResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      parameters:
+        - name: jwt
+          in: query
+          required: false
+          type: string
+        - name: name
+          in: query
+          required: false
+          type: string
+        - name: coinType
+          in: query
+          required: false
+          type: string
+        - name: network
+          in: query
+          required: false
+          type: string
+      tags:
+        - WalletService
   /sonr-io/core/identity/escrow_account:
     get:
       operationId: Query_EscrowAccountAll
@@ -653,30 +684,6 @@ definitions:
         type: string
       method:
         type: string
-  highwayauthenticationv1RefreshTokenResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwayauthenticationv1VerifyTokenResponse:
-    type: object
-    properties:
-      valid:
-        type: boolean
-  highwaywalletv1RefreshTokenResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwaywalletv1VerifyTokenResponse:
-    type: object
-    properties:
-      valid:
-        type: boolean
   identityControllerAccount:
     type: object
     properties:
@@ -998,6 +1005,20 @@ definitions:
         type: string
       origin:
         type: string
+  v1ExportWalletResponse:
+    type: object
+    properties:
+      wallet:
+        type: string
+  v1GetAccountResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      coinType:
+        type: string
+      owner:
+        type: string
   v1GetCIDResponse:
     type: object
     properties:
@@ -1012,6 +1033,13 @@ definitions:
         type: boolean
       message:
         type: string
+  v1ListAccountsResponse:
+    type: object
+    properties:
+      accounts:
+        type: array
+        items:
+          type: string
   v1ParamsResponse:
     type: object
     properties:
@@ -1034,6 +1062,13 @@ definitions:
     properties:
       cid:
         type: string
+  v1RefreshTokenResponse:
+    type: object
+    properties:
+      accessToken:
+        type: string
+      refreshToken:
+        type: string
   v1RegisterResponse:
     type: object
     properties:
@@ -1045,6 +1080,22 @@ definitions:
         type: string
       origin:
         type: string
+  v1SignWithAccountResponse:
+    type: object
+    properties:
+      signature:
+        type: string
+        format: byte
+  v1VerifyTokenResponse:
+    type: object
+    properties:
+      valid:
+        type: boolean
+  v1VerifyWithAccountResponse:
+    type: object
+    properties:
+      verified:
+        type: boolean
   v1beta1PageRequest:
     type: object
     properties:

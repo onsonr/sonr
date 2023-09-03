@@ -7,12 +7,14 @@ import "google/api/annotations.proto";
 option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
 
 service WalletService {
-  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {}
-  rpc GetAccount(RefreshTokenRequest) returns (RefreshTokenResponse) {}
-  rpc ListAccounts(VerifyTokenRequest) returns (VerifyTokenResponse) {}
-  rpc SignWithAccount(VerifyTokenRequest) returns (VerifyTokenResponse) {}
-  rpc VerifyWithAccount(VerifyTokenRequest) returns (VerifyTokenResponse) {}
-  rpc ExportWallet(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/create";
+  }
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {}
+  rpc SignWithAccount(SignWithAccountRequest) returns (SignWithAccountResponse) {}
+  rpc VerifyWithAccount(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {}
+  rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {}
 }
 
 message CreateAccountRequest {
@@ -28,19 +30,50 @@ message CreateAccountResponse {
   string owner = 3;
 }
 
-message RefreshTokenRequest {
+message GetAccountRequest {
+  string jwt = 1;
+  string address = 2;
+}
+
+message GetAccountResponse {
+  string address = 1;
+  string coin_type = 2;
+  string owner = 3;
+}
+
+message ListAccountsRequest {
   string jwt = 1;
 }
 
-message RefreshTokenResponse {
-  string access_token = 1;
-  string refresh_token = 2;
+message ListAccountsResponse {
+  repeated string accounts = 1;
 }
 
-message VerifyTokenRequest {
+message SignWithAccountRequest {
+  string jwt = 1;
+  string address = 2;
+  bytes message = 3;
+}
+
+message SignWithAccountResponse {
+  bytes signature = 1;
+}
+
+message VerifyWithAccountRequest {
+  string jwt = 1;
+  string address = 2;
+  bytes message = 3;
+  bytes signature = 4;
+}
+
+message VerifyWithAccountResponse {
+  bool verified = 1;
+}
+
+message ExportWalletRequest {
   string jwt = 1;
 }
 
-message VerifyTokenResponse {
-  bool valid = 1;
+message ExportWalletResponse {
+  string wallet = 1;
 }
