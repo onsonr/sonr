@@ -42,7 +42,10 @@ tasks:
       - gen
     desc: Generate the protobuf files
     cmds:
-      - sh ./scripts/proto-gen.sh
+      - |
+        sh ./scripts/proto-gen.sh
+        git add .
+        git commit -m "chore: update proto files"
 
   deps:
     desc: Pull Docker dependencies

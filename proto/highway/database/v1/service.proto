@@ -3,33 +3,19 @@ syntax = "proto3";
 package highway.database.v1;
 
 import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/database/v1;databasepb";
 
 service DatabaseService {
-  rpc GetCID(GetCIDRequest) returns (GetCIDResponse) {
-    option (google.api.http) = {get: "/v1/cid/{cid}"};
-  }
-
-  rpc PutData(PutDataRequest) returns (PutDataResponse) {
-    option (google.api.http) = {post: "/v1/cid/{cid}"};
+  rpc Health(HealthRequest) returns (HealthResponse) {
+    option (google.api.http) = {get: "/health"};
   }
 }
 
-message GetCIDRequest {
-  string cid = 1;
-}
+message HealthRequest {}
 
-message GetCIDResponse {
-  string cid = 1;
-  string data = 2;
-}
-
-message PutDataRequest {
-  string cid = 1;
-  string data = 2;
-}
-
-message PutDataResponse {
-  string cid = 1;
+message HealthResponse {
+  bool ok = 1;
+  string message = 2;
 }

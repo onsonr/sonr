@@ -28,23 +28,22 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type AuthenticateRequest struct {
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+type GetCIDRequest struct {
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
 }
 
-func (m *AuthenticateRequest) Reset()         { *m = AuthenticateRequest{} }
-func (m *AuthenticateRequest) String() string { return proto.CompactTextString(m) }
-func (*AuthenticateRequest) ProtoMessage()    {}
-func (*AuthenticateRequest) Descriptor() ([]byte, []int) {
+func (m *GetCIDRequest) Reset()         { *m = GetCIDRequest{} }
+func (m *GetCIDRequest) String() string { return proto.CompactTextString(m) }
+func (*GetCIDRequest) ProtoMessage()    {}
+func (*GetCIDRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_913be91a9864b42e, []int{0}
 }
-func (m *AuthenticateRequest) XXX_Unmarshal(b []byte) error {
+func (m *GetCIDRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthenticateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetCIDRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthenticateRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetCIDRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,49 +53,42 @@ func (m *AuthenticateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *AuthenticateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthenticateRequest.Merge(m, src)
+func (m *GetCIDRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCIDRequest.Merge(m, src)
 }
-func (m *AuthenticateRequest) XXX_Size() int {
+func (m *GetCIDRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthenticateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthenticateRequest.DiscardUnknown(m)
+func (m *GetCIDRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCIDRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthenticateRequest proto.InternalMessageInfo
+var xxx_messageInfo_GetCIDRequest proto.InternalMessageInfo
 
-func (m *AuthenticateRequest) GetUsername() string {
+func (m *GetCIDRequest) GetCid() string {
 	if m != nil {
-		return m.Username
+		return m.Cid
 	}
 	return ""
 }
 
-func (m *AuthenticateRequest) GetPassword() string {
-	if m != nil {
-		return m.Password
-	}
-	return ""
+type GetCIDResponse struct {
+	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-type AuthenticateResponse struct {
-	AccessToken  string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
-}
-
-func (m *AuthenticateResponse) Reset()         { *m = AuthenticateResponse{} }
-func (m *AuthenticateResponse) String() string { return proto.CompactTextString(m) }
-func (*AuthenticateResponse) ProtoMessage()    {}
-func (*AuthenticateResponse) Descriptor() ([]byte, []int) {
+func (m *GetCIDResponse) Reset()         { *m = GetCIDResponse{} }
+func (m *GetCIDResponse) String() string { return proto.CompactTextString(m) }
+func (*GetCIDResponse) ProtoMessage()    {}
+func (*GetCIDResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_913be91a9864b42e, []int{1}
 }
-func (m *AuthenticateResponse) XXX_Unmarshal(b []byte) error {
+func (m *GetCIDResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetCIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthenticateResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetCIDResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -106,48 +98,49 @@ func (m *AuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *AuthenticateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthenticateResponse.Merge(m, src)
+func (m *GetCIDResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetCIDResponse.Merge(m, src)
 }
-func (m *AuthenticateResponse) XXX_Size() int {
+func (m *GetCIDResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthenticateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthenticateResponse.DiscardUnknown(m)
+func (m *GetCIDResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetCIDResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthenticateResponse proto.InternalMessageInfo
+var xxx_messageInfo_GetCIDResponse proto.InternalMessageInfo
 
-func (m *AuthenticateResponse) GetAccessToken() string {
+func (m *GetCIDResponse) GetCid() string {
 	if m != nil {
-		return m.AccessToken
+		return m.Cid
 	}
 	return ""
 }
 
-func (m *AuthenticateResponse) GetRefreshToken() string {
+func (m *GetCIDResponse) GetData() string {
 	if m != nil {
-		return m.RefreshToken
+		return m.Data
 	}
 	return ""
 }
 
-type RefreshTokenRequest struct {
-	RefreshToken string `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+type PutDataRequest struct {
+	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
-func (m *RefreshTokenRequest) Reset()         { *m = RefreshTokenRequest{} }
-func (m *RefreshTokenRequest) String() string { return proto.CompactTextString(m) }
-func (*RefreshTokenRequest) ProtoMessage()    {}
-func (*RefreshTokenRequest) Descriptor() ([]byte, []int) {
+func (m *PutDataRequest) Reset()         { *m = PutDataRequest{} }
+func (m *PutDataRequest) String() string { return proto.CompactTextString(m) }
+func (*PutDataRequest) ProtoMessage()    {}
+func (*PutDataRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_913be91a9864b42e, []int{2}
 }
-func (m *RefreshTokenRequest) XXX_Unmarshal(b []byte) error {
+func (m *PutDataRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RefreshTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PutDataRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RefreshTokenRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_PutDataRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -157,42 +150,48 @@ func (m *RefreshTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *RefreshTokenRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RefreshTokenRequest.Merge(m, src)
+func (m *PutDataRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PutDataRequest.Merge(m, src)
 }
-func (m *RefreshTokenRequest) XXX_Size() int {
+func (m *PutDataRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *RefreshTokenRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_RefreshTokenRequest.DiscardUnknown(m)
+func (m *PutDataRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_PutDataRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RefreshTokenRequest proto.InternalMessageInfo
+var xxx_messageInfo_PutDataRequest proto.InternalMessageInfo
 
-func (m *RefreshTokenRequest) GetRefreshToken() string {
+func (m *PutDataRequest) GetCid() string {
 	if m != nil {
-		return m.RefreshToken
+		return m.Cid
 	}
 	return ""
 }
 
-type RefreshTokenResponse struct {
-	AccessToken  string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+func (m *PutDataRequest) GetData() string {
+	if m != nil {
+		return m.Data
+	}
+	return ""
 }
 
-func (m *RefreshTokenResponse) Reset()         { *m = RefreshTokenResponse{} }
-func (m *RefreshTokenResponse) String() string { return proto.CompactTextString(m) }
-func (*RefreshTokenResponse) ProtoMessage()    {}
-func (*RefreshTokenResponse) Descriptor() ([]byte, []int) {
+type PutDataResponse struct {
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+}
+
+func (m *PutDataResponse) Reset()         { *m = PutDataResponse{} }
+func (m *PutDataResponse) String() string { return proto.CompactTextString(m) }
+func (*PutDataResponse) ProtoMessage()    {}
+func (*PutDataResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_913be91a9864b42e, []int{3}
 }
-func (m *RefreshTokenResponse) XXX_Unmarshal(b []byte) error {
+func (m *PutDataResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *RefreshTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *PutDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_RefreshTokenResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_PutDataResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -202,158 +201,57 @@ func (m *RefreshTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *RefreshTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_RefreshTokenResponse.Merge(m, src)
+func (m *PutDataResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_PutDataResponse.Merge(m, src)
 }
-func (m *RefreshTokenResponse) XXX_Size() int {
+func (m *PutDataResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *RefreshTokenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_RefreshTokenResponse.DiscardUnknown(m)
+func (m *PutDataResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_PutDataResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_RefreshTokenResponse proto.InternalMessageInfo
+var xxx_messageInfo_PutDataResponse proto.InternalMessageInfo
 
-func (m *RefreshTokenResponse) GetAccessToken() string {
+func (m *PutDataResponse) GetCid() string {
 	if m != nil {
-		return m.AccessToken
+		return m.Cid
 	}
 	return ""
-}
-
-func (m *RefreshTokenResponse) GetRefreshToken() string {
-	if m != nil {
-		return m.RefreshToken
-	}
-	return ""
-}
-
-type VerifyTokenRequest struct {
-	AccessToken string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-}
-
-func (m *VerifyTokenRequest) Reset()         { *m = VerifyTokenRequest{} }
-func (m *VerifyTokenRequest) String() string { return proto.CompactTextString(m) }
-func (*VerifyTokenRequest) ProtoMessage()    {}
-func (*VerifyTokenRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_913be91a9864b42e, []int{4}
-}
-func (m *VerifyTokenRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *VerifyTokenRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_VerifyTokenRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *VerifyTokenRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VerifyTokenRequest.Merge(m, src)
-}
-func (m *VerifyTokenRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *VerifyTokenRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VerifyTokenRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VerifyTokenRequest proto.InternalMessageInfo
-
-func (m *VerifyTokenRequest) GetAccessToken() string {
-	if m != nil {
-		return m.AccessToken
-	}
-	return ""
-}
-
-type VerifyTokenResponse struct {
-	Valid bool `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
-}
-
-func (m *VerifyTokenResponse) Reset()         { *m = VerifyTokenResponse{} }
-func (m *VerifyTokenResponse) String() string { return proto.CompactTextString(m) }
-func (*VerifyTokenResponse) ProtoMessage()    {}
-func (*VerifyTokenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_913be91a9864b42e, []int{5}
-}
-func (m *VerifyTokenResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *VerifyTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_VerifyTokenResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *VerifyTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VerifyTokenResponse.Merge(m, src)
-}
-func (m *VerifyTokenResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *VerifyTokenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VerifyTokenResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_VerifyTokenResponse proto.InternalMessageInfo
-
-func (m *VerifyTokenResponse) GetValid() bool {
-	if m != nil {
-		return m.Valid
-	}
-	return false
 }
 
 func init() {
-	proto.RegisterType((*AuthenticateRequest)(nil), "highway.storage.v1.AuthenticateRequest")
-	proto.RegisterType((*AuthenticateResponse)(nil), "highway.storage.v1.AuthenticateResponse")
-	proto.RegisterType((*RefreshTokenRequest)(nil), "highway.storage.v1.RefreshTokenRequest")
-	proto.RegisterType((*RefreshTokenResponse)(nil), "highway.storage.v1.RefreshTokenResponse")
-	proto.RegisterType((*VerifyTokenRequest)(nil), "highway.storage.v1.VerifyTokenRequest")
-	proto.RegisterType((*VerifyTokenResponse)(nil), "highway.storage.v1.VerifyTokenResponse")
+	proto.RegisterType((*GetCIDRequest)(nil), "highway.storage.v1.GetCIDRequest")
+	proto.RegisterType((*GetCIDResponse)(nil), "highway.storage.v1.GetCIDResponse")
+	proto.RegisterType((*PutDataRequest)(nil), "highway.storage.v1.PutDataRequest")
+	proto.RegisterType((*PutDataResponse)(nil), "highway.storage.v1.PutDataResponse")
 }
 
 func init() { proto.RegisterFile("highway/storage/v1/service.proto", fileDescriptor_913be91a9864b42e) }
 
 var fileDescriptor_913be91a9864b42e = []byte{
-	// 398 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x53, 0xc1, 0x6e, 0xda, 0x40,
-	0x10, 0xb5, 0x91, 0x5a, 0xd1, 0x85, 0xf6, 0xb0, 0x70, 0x40, 0x56, 0x65, 0x51, 0x57, 0x2a, 0x48,
-	0x95, 0xbc, 0xa2, 0x3d, 0x54, 0x6d, 0x4f, 0xed, 0x3d, 0x17, 0x13, 0xe5, 0x90, 0x03, 0xc9, 0x62,
-	0x06, 0x7b, 0x15, 0xd8, 0x35, 0xbb, 0x6b, 0x23, 0xfe, 0x22, 0x1f, 0x94, 0x0f, 0xc8, 0x91, 0x63,
-	0x8e, 0x11, 0xfc, 0x48, 0x04, 0x6b, 0x22, 0x5b, 0xb6, 0xc4, 0x25, 0x37, 0xcf, 0xec, 0x7b, 0x33,
-	0x4f, 0xef, 0x79, 0x50, 0x3f, 0x66, 0x51, 0xbc, 0xa6, 0x1b, 0xa2, 0xb4, 0x90, 0x34, 0x02, 0x92,
-	0x8d, 0x88, 0x02, 0x99, 0xb1, 0x10, 0xfc, 0x44, 0x0a, 0x2d, 0x30, 0xce, 0x11, 0x7e, 0x8e, 0xf0,
-	0xb3, 0x91, 0xf3, 0x39, 0x12, 0x22, 0x5a, 0x00, 0xa1, 0x09, 0x23, 0x94, 0x73, 0xa1, 0xa9, 0x66,
-	0x82, 0x2b, 0xc3, 0xf0, 0x2e, 0x50, 0xe7, 0x5f, 0xaa, 0x63, 0xe0, 0x9a, 0x85, 0x54, 0x43, 0x00,
-	0xab, 0x14, 0x94, 0xc6, 0x0e, 0x6a, 0xa6, 0x0a, 0x24, 0xa7, 0x4b, 0xe8, 0xd9, 0x7d, 0x7b, 0xf8,
-	0x21, 0x78, 0xad, 0x0f, 0x6f, 0x09, 0x55, 0x6a, 0x2d, 0xe4, 0xac, 0xd7, 0x30, 0x6f, 0xa7, 0xda,
-	0x9b, 0xa0, 0x6e, 0x79, 0x9c, 0x4a, 0x04, 0x57, 0x80, 0xbf, 0xa0, 0x36, 0x0d, 0x43, 0x50, 0xea,
-	0x46, 0x8b, 0x3b, 0xe0, 0xf9, 0xcc, 0x96, 0xe9, 0x5d, 0x1e, 0x5a, 0xf8, 0x2b, 0xfa, 0x28, 0x61,
-	0x2e, 0x41, 0xc5, 0x39, 0xc6, 0xcc, 0x6e, 0xe7, 0xcd, 0x23, 0xc8, 0xfb, 0x83, 0x3a, 0x41, 0xa1,
-	0x3e, 0xc9, 0xad, 0x70, 0xed, 0x1a, 0xee, 0x04, 0x75, 0xcb, 0xdc, 0x37, 0xd6, 0xf6, 0x0b, 0xe1,
-	0x2b, 0x90, 0x6c, 0xbe, 0x29, 0x49, 0x3b, 0x3f, 0xdd, 0xfb, 0x8e, 0x3a, 0x25, 0x62, 0xae, 0xab,
-	0x8b, 0xde, 0x65, 0x74, 0xc1, 0x66, 0x47, 0x4a, 0x33, 0x30, 0xc5, 0x8f, 0x87, 0x06, 0xfa, 0x34,
-	0x36, 0xe9, 0x8e, 0x4d, 0xf6, 0x38, 0x44, 0xed, 0xa2, 0xe9, 0x78, 0xe0, 0x57, 0x7f, 0x03, 0xbf,
-	0x26, 0x65, 0x67, 0x78, 0x1e, 0x68, 0xb4, 0x78, 0xd6, 0x61, 0x49, 0xd1, 0xbd, 0xfa, 0x25, 0x35,
-	0xd9, 0xd4, 0x2f, 0xa9, 0x0b, 0xc2, 0xb3, 0xf0, 0x2d, 0x6a, 0x15, 0x9c, 0xc0, 0xdf, 0xea, 0xa8,
-	0x55, 0x8f, 0x9d, 0xc1, 0x59, 0xdc, 0x69, 0xc3, 0xff, 0xf1, 0xe3, 0xce, 0xb5, 0xb7, 0x3b, 0xd7,
-	0x7e, 0xde, 0xb9, 0xf6, 0xfd, 0xde, 0xb5, 0xb6, 0x7b, 0xd7, 0x7a, 0xda, 0xbb, 0xd6, 0xf5, 0xef,
-	0x88, 0xe9, 0x38, 0x9d, 0xfa, 0xa1, 0x58, 0x12, 0x25, 0xb8, 0x8c, 0x57, 0x24, 0x14, 0x12, 0x88,
-	0xde, 0x24, 0xa0, 0x48, 0xf5, 0xf4, 0xfe, 0xe6, 0x9f, 0xc9, 0x74, 0xfa, 0xfe, 0x78, 0x4b, 0x3f,
-	0x5f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x09, 0xc8, 0x10, 0x37, 0xa1, 0x03, 0x00, 0x00,
+	// 321 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x92, 0x4f, 0x4b, 0xc3, 0x30,
+	0x18, 0xc6, 0x97, 0x29, 0x13, 0x03, 0xdb, 0x24, 0x20, 0x8c, 0x21, 0x61, 0xeb, 0x2e, 0x9e, 0x12,
+	0xa6, 0x20, 0x88, 0x37, 0x1d, 0x88, 0x37, 0x59, 0x6f, 0xde, 0xd2, 0x34, 0xb6, 0x01, 0x6d, 0xba,
+	0x26, 0xad, 0x0c, 0xf1, 0xe2, 0x27, 0x10, 0xfc, 0x52, 0x1e, 0x07, 0x5e, 0x3c, 0x4a, 0xeb, 0x07,
+	0x91, 0xfe, 0x51, 0x28, 0xdd, 0x76, 0x7b, 0x29, 0xbf, 0xe7, 0x7d, 0xde, 0xe7, 0x69, 0xe0, 0xc8,
+	0x97, 0x9e, 0xff, 0xc4, 0x96, 0x54, 0x1b, 0x15, 0x31, 0x4f, 0xd0, 0x64, 0x4a, 0xb5, 0x88, 0x12,
+	0xc9, 0x05, 0x09, 0x23, 0x65, 0x14, 0x42, 0x15, 0x41, 0x2a, 0x82, 0x24, 0xd3, 0xe1, 0x91, 0xa7,
+	0x94, 0xf7, 0x20, 0x28, 0x0b, 0x25, 0x65, 0x41, 0xa0, 0x0c, 0x33, 0x52, 0x05, 0xba, 0x54, 0x58,
+	0x63, 0xd8, 0xbd, 0x16, 0xe6, 0xea, 0x66, 0x36, 0x17, 0x8b, 0x58, 0x68, 0x83, 0x0e, 0xe0, 0x0e,
+	0x97, 0xee, 0x00, 0x8c, 0xc0, 0xf1, 0xfe, 0x3c, 0x1f, 0xad, 0x33, 0xd8, 0xfb, 0x43, 0x74, 0xa8,
+	0x02, 0x2d, 0x9a, 0x0c, 0x42, 0x70, 0xd7, 0x65, 0x86, 0x0d, 0xda, 0xc5, 0xa7, 0x62, 0xce, 0x75,
+	0xb7, 0xb1, 0x99, 0x31, 0xc3, 0x36, 0xee, 0x5e, 0xab, 0x9b, 0xc0, 0xfe, 0xbf, 0x6e, 0x93, 0xe1,
+	0x49, 0x06, 0x60, 0xcf, 0x2e, 0x43, 0xda, 0x65, 0x05, 0xe8, 0x1e, 0x76, 0xca, 0x3b, 0xd1, 0x98,
+	0x34, 0x7b, 0x20, 0xb5, 0x98, 0x43, 0x6b, 0x1b, 0x52, 0xba, 0x5a, 0x87, 0xaf, 0x9f, 0x3f, 0xef,
+	0xed, 0x3e, 0xea, 0xe6, 0x45, 0x73, 0xe9, 0xd2, 0x67, 0x2e, 0xdd, 0x17, 0x24, 0xe1, 0x5e, 0x75,
+	0x1f, 0x5a, 0xbb, 0xa5, 0x1e, 0x7a, 0x38, 0xd9, 0xca, 0xd4, 0xad, 0xac, 0xba, 0xd5, 0xa5, 0xfd,
+	0x91, 0x62, 0xb0, 0x4a, 0x31, 0xf8, 0x4e, 0x31, 0x78, 0xcb, 0x70, 0x6b, 0x95, 0xe1, 0xd6, 0x57,
+	0x86, 0x5b, 0x77, 0xe7, 0x9e, 0x34, 0x7e, 0xec, 0x10, 0xae, 0x1e, 0xa9, 0x56, 0x41, 0xe4, 0x2f,
+	0x28, 0x57, 0x91, 0xa0, 0x66, 0x19, 0x0a, 0x4d, 0x9b, 0x0f, 0xe5, 0xa2, 0x1a, 0x43, 0xc7, 0xe9,
+	0x14, 0x7f, 0xfe, 0xf4, 0x37, 0x00, 0x00, 0xff, 0xff, 0xe2, 0x0d, 0x80, 0xb4, 0x4f, 0x02, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -368,9 +266,8 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StorageServiceClient interface {
-	Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
-	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
-	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
+	GetCID(ctx context.Context, in *GetCIDRequest, opts ...grpc.CallOption) (*GetCIDResponse, error)
+	PutData(ctx context.Context, in *PutDataRequest, opts ...grpc.CallOption) (*PutDataResponse, error)
 }
 
 type storageServiceClient struct {
@@ -381,27 +278,18 @@ func NewStorageServiceClient(cc grpc1.ClientConn) StorageServiceClient {
 	return &storageServiceClient{cc}
 }
 
-func (c *storageServiceClient) Authenticate(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error) {
-	out := new(AuthenticateResponse)
-	err := c.cc.Invoke(ctx, "/highway.storage.v1.StorageService/Authenticate", in, out, opts...)
+func (c *storageServiceClient) GetCID(ctx context.Context, in *GetCIDRequest, opts ...grpc.CallOption) (*GetCIDResponse, error) {
+	out := new(GetCIDResponse)
+	err := c.cc.Invoke(ctx, "/highway.storage.v1.StorageService/GetCID", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *storageServiceClient) RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error) {
-	out := new(RefreshTokenResponse)
-	err := c.cc.Invoke(ctx, "/highway.storage.v1.StorageService/RefreshToken", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *storageServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error) {
-	out := new(VerifyTokenResponse)
-	err := c.cc.Invoke(ctx, "/highway.storage.v1.StorageService/VerifyToken", in, out, opts...)
+func (c *storageServiceClient) PutData(ctx context.Context, in *PutDataRequest, opts ...grpc.CallOption) (*PutDataResponse, error) {
+	out := new(PutDataResponse)
+	err := c.cc.Invoke(ctx, "/highway.storage.v1.StorageService/PutData", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -410,79 +298,57 @@ func (c *storageServiceClient) VerifyToken(ctx context.Context, in *VerifyTokenR
 
 // StorageServiceServer is the server API for StorageService service.
 type StorageServiceServer interface {
-	Authenticate(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
-	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
-	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
+	GetCID(context.Context, *GetCIDRequest) (*GetCIDResponse, error)
+	PutData(context.Context, *PutDataRequest) (*PutDataResponse, error)
 }
 
 // UnimplementedStorageServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedStorageServiceServer struct {
 }
 
-func (*UnimplementedStorageServiceServer) Authenticate(ctx context.Context, req *AuthenticateRequest) (*AuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+func (*UnimplementedStorageServiceServer) GetCID(ctx context.Context, req *GetCIDRequest) (*GetCIDResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCID not implemented")
 }
-func (*UnimplementedStorageServiceServer) RefreshToken(ctx context.Context, req *RefreshTokenRequest) (*RefreshTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
-}
-func (*UnimplementedStorageServiceServer) VerifyToken(ctx context.Context, req *VerifyTokenRequest) (*VerifyTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyToken not implemented")
+func (*UnimplementedStorageServiceServer) PutData(ctx context.Context, req *PutDataRequest) (*PutDataResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PutData not implemented")
 }
 
 func RegisterStorageServiceServer(s grpc1.Server, srv StorageServiceServer) {
 	s.RegisterService(&_StorageService_serviceDesc, srv)
 }
 
-func _StorageService_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthenticateRequest)
+func _StorageService_GetCID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCIDRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StorageServiceServer).Authenticate(ctx, in)
+		return srv.(StorageServiceServer).GetCID(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/highway.storage.v1.StorageService/Authenticate",
+		FullMethod: "/highway.storage.v1.StorageService/GetCID",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServiceServer).Authenticate(ctx, req.(*AuthenticateRequest))
+		return srv.(StorageServiceServer).GetCID(ctx, req.(*GetCIDRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StorageService_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RefreshTokenRequest)
+func _StorageService_PutData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(PutDataRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StorageServiceServer).RefreshToken(ctx, in)
+		return srv.(StorageServiceServer).PutData(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/highway.storage.v1.StorageService/RefreshToken",
+		FullMethod: "/highway.storage.v1.StorageService/PutData",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServiceServer).RefreshToken(ctx, req.(*RefreshTokenRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StorageService_VerifyToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyTokenRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StorageServiceServer).VerifyToken(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/highway.storage.v1.StorageService/VerifyToken",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StorageServiceServer).VerifyToken(ctx, req.(*VerifyTokenRequest))
+		return srv.(StorageServiceServer).PutData(ctx, req.(*PutDataRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -492,23 +358,19 @@ var _StorageService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*StorageServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Authenticate",
-			Handler:    _StorageService_Authenticate_Handler,
+			MethodName: "GetCID",
+			Handler:    _StorageService_GetCID_Handler,
 		},
 		{
-			MethodName: "RefreshToken",
-			Handler:    _StorageService_RefreshToken_Handler,
-		},
-		{
-			MethodName: "VerifyToken",
-			Handler:    _StorageService_VerifyToken_Handler,
+			MethodName: "PutData",
+			Handler:    _StorageService_PutData_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "highway/storage/v1/service.proto",
 }
 
-func (m *AuthenticateRequest) Marshal() (dAtA []byte, err error) {
+func (m *GetCIDRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -518,34 +380,64 @@ func (m *AuthenticateRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthenticateRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetCIDRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthenticateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetCIDRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Password) > 0 {
-		i -= len(m.Password)
-		copy(dAtA[i:], m.Password)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Password)))
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *GetCIDResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GetCIDResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GetCIDResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Data)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Username) > 0 {
-		i -= len(m.Username)
-		copy(dAtA[i:], m.Username)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Username)))
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *AuthenticateResponse) Marshal() (dAtA []byte, err error) {
+func (m *PutDataRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -555,34 +447,34 @@ func (m *AuthenticateResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthenticateResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *PutDataRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthenticateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PutDataRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+	if len(m.Data) > 0 {
+		i -= len(m.Data)
+		copy(dAtA[i:], m.Data)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Data)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *RefreshTokenRequest) Marshal() (dAtA []byte, err error) {
+func (m *PutDataResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -592,122 +484,22 @@ func (m *RefreshTokenRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *RefreshTokenRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *PutDataResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *RefreshTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *PutDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+	if len(m.Cid) > 0 {
+		i -= len(m.Cid)
+		copy(dAtA[i:], m.Cid)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
 		i--
 		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *RefreshTokenResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *RefreshTokenResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *RefreshTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *VerifyTokenRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *VerifyTokenRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *VerifyTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *VerifyTokenResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *VerifyTokenResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *VerifyTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Valid {
-		i--
-		if m.Valid {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -723,91 +515,62 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *AuthenticateRequest) Size() (n int) {
+func (m *GetCIDRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Username)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	l = len(m.Password)
+	l = len(m.Cid)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
 	return n
 }
 
-func (m *AuthenticateResponse) Size() (n int) {
+func (m *GetCIDResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.AccessToken)
+	l = len(m.Cid)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.RefreshToken)
+	l = len(m.Data)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
 	return n
 }
 
-func (m *RefreshTokenRequest) Size() (n int) {
+func (m *PutDataRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.RefreshToken)
+	l = len(m.Cid)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.Data)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
 	return n
 }
 
-func (m *RefreshTokenResponse) Size() (n int) {
+func (m *PutDataResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.AccessToken)
+	l = len(m.Cid)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
-	}
-	l = len(m.RefreshToken)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
-func (m *VerifyTokenRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.AccessToken)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
-func (m *VerifyTokenResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Valid {
-		n += 2
 	}
 	return n
 }
@@ -818,7 +581,7 @@ func sovService(x uint64) (n int) {
 func sozService(x uint64) (n int) {
 	return sovService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
+func (m *GetCIDRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -841,15 +604,15 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthenticateRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetCIDRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthenticateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetCIDRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -877,11 +640,93 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Username = string(dAtA[iNdEx:postIndex])
+			m.Cid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipService(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthService
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GetCIDResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowService
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GetCIDResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GetCIDResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Cid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -909,7 +754,7 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Password = string(dAtA[iNdEx:postIndex])
+			m.Data = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -932,7 +777,7 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
+func (m *PutDataRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -955,15 +800,15 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthenticateResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: PutDataRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthenticateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: PutDataRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -991,11 +836,11 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
+			m.Cid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1023,7 +868,7 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			m.Data = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1046,7 +891,7 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *RefreshTokenRequest) Unmarshal(dAtA []byte) error {
+func (m *PutDataResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1069,15 +914,15 @@ func (m *RefreshTokenRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: RefreshTokenRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: PutDataResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RefreshTokenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: PutDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1105,274 +950,8 @@ func (m *RefreshTokenRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			m.Cid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *RefreshTokenResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: RefreshTokenResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: RefreshTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *VerifyTokenRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: VerifyTokenRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: VerifyTokenRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *VerifyTokenResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: VerifyTokenResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: VerifyTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Valid", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Valid = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])

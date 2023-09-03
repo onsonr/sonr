@@ -12,6 +12,7 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
+	_ "google.golang.org/protobuf/types/known/emptypb"
 	io "io"
 	math "math"
 	math_bits "math/bits"
@@ -28,22 +29,21 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type GetCIDRequest struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+type HealthRequest struct {
 }
 
-func (m *GetCIDRequest) Reset()         { *m = GetCIDRequest{} }
-func (m *GetCIDRequest) String() string { return proto.CompactTextString(m) }
-func (*GetCIDRequest) ProtoMessage()    {}
-func (*GetCIDRequest) Descriptor() ([]byte, []int) {
+func (m *HealthRequest) Reset()         { *m = HealthRequest{} }
+func (m *HealthRequest) String() string { return proto.CompactTextString(m) }
+func (*HealthRequest) ProtoMessage()    {}
+func (*HealthRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f6a3579db4bb4b52, []int{0}
 }
-func (m *GetCIDRequest) XXX_Unmarshal(b []byte) error {
+func (m *HealthRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetCIDRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *HealthRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetCIDRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_HealthRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -53,42 +53,35 @@ func (m *GetCIDRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error
 		return b[:n], nil
 	}
 }
-func (m *GetCIDRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetCIDRequest.Merge(m, src)
+func (m *HealthRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HealthRequest.Merge(m, src)
 }
-func (m *GetCIDRequest) XXX_Size() int {
+func (m *HealthRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetCIDRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetCIDRequest.DiscardUnknown(m)
+func (m *HealthRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_HealthRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetCIDRequest proto.InternalMessageInfo
+var xxx_messageInfo_HealthRequest proto.InternalMessageInfo
 
-func (m *GetCIDRequest) GetCid() string {
-	if m != nil {
-		return m.Cid
-	}
-	return ""
+type HealthResponse struct {
+	Ok      bool   `protobuf:"varint,1,opt,name=ok,proto3" json:"ok,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-type GetCIDResponse struct {
-	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-}
-
-func (m *GetCIDResponse) Reset()         { *m = GetCIDResponse{} }
-func (m *GetCIDResponse) String() string { return proto.CompactTextString(m) }
-func (*GetCIDResponse) ProtoMessage()    {}
-func (*GetCIDResponse) Descriptor() ([]byte, []int) {
+func (m *HealthResponse) Reset()         { *m = HealthResponse{} }
+func (m *HealthResponse) String() string { return proto.CompactTextString(m) }
+func (*HealthResponse) ProtoMessage()    {}
+func (*HealthResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f6a3579db4bb4b52, []int{1}
 }
-func (m *GetCIDResponse) XXX_Unmarshal(b []byte) error {
+func (m *HealthResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetCIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *HealthResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetCIDResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_HealthResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -98,160 +91,60 @@ func (m *GetCIDResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, erro
 		return b[:n], nil
 	}
 }
-func (m *GetCIDResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetCIDResponse.Merge(m, src)
+func (m *HealthResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_HealthResponse.Merge(m, src)
 }
-func (m *GetCIDResponse) XXX_Size() int {
+func (m *HealthResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetCIDResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetCIDResponse.DiscardUnknown(m)
+func (m *HealthResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_HealthResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetCIDResponse proto.InternalMessageInfo
+var xxx_messageInfo_HealthResponse proto.InternalMessageInfo
 
-func (m *GetCIDResponse) GetCid() string {
+func (m *HealthResponse) GetOk() bool {
 	if m != nil {
-		return m.Cid
+		return m.Ok
 	}
-	return ""
+	return false
 }
 
-func (m *GetCIDResponse) GetData() string {
+func (m *HealthResponse) GetMessage() string {
 	if m != nil {
-		return m.Data
-	}
-	return ""
-}
-
-type PutDataRequest struct {
-	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
-}
-
-func (m *PutDataRequest) Reset()         { *m = PutDataRequest{} }
-func (m *PutDataRequest) String() string { return proto.CompactTextString(m) }
-func (*PutDataRequest) ProtoMessage()    {}
-func (*PutDataRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f6a3579db4bb4b52, []int{2}
-}
-func (m *PutDataRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *PutDataRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_PutDataRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *PutDataRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PutDataRequest.Merge(m, src)
-}
-func (m *PutDataRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *PutDataRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_PutDataRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PutDataRequest proto.InternalMessageInfo
-
-func (m *PutDataRequest) GetCid() string {
-	if m != nil {
-		return m.Cid
-	}
-	return ""
-}
-
-func (m *PutDataRequest) GetData() string {
-	if m != nil {
-		return m.Data
-	}
-	return ""
-}
-
-type PutDataResponse struct {
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-}
-
-func (m *PutDataResponse) Reset()         { *m = PutDataResponse{} }
-func (m *PutDataResponse) String() string { return proto.CompactTextString(m) }
-func (*PutDataResponse) ProtoMessage()    {}
-func (*PutDataResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f6a3579db4bb4b52, []int{3}
-}
-func (m *PutDataResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *PutDataResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_PutDataResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *PutDataResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_PutDataResponse.Merge(m, src)
-}
-func (m *PutDataResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *PutDataResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_PutDataResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_PutDataResponse proto.InternalMessageInfo
-
-func (m *PutDataResponse) GetCid() string {
-	if m != nil {
-		return m.Cid
+		return m.Message
 	}
 	return ""
 }
 
 func init() {
-	proto.RegisterType((*GetCIDRequest)(nil), "highway.database.v1.GetCIDRequest")
-	proto.RegisterType((*GetCIDResponse)(nil), "highway.database.v1.GetCIDResponse")
-	proto.RegisterType((*PutDataRequest)(nil), "highway.database.v1.PutDataRequest")
-	proto.RegisterType((*PutDataResponse)(nil), "highway.database.v1.PutDataResponse")
+	proto.RegisterType((*HealthRequest)(nil), "highway.database.v1.HealthRequest")
+	proto.RegisterType((*HealthResponse)(nil), "highway.database.v1.HealthResponse")
 }
 
 func init() { proto.RegisterFile("highway/database/v1/service.proto", fileDescriptor_f6a3579db4bb4b52) }
 
 var fileDescriptor_f6a3579db4bb4b52 = []byte{
-	// 323 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x52, 0xcc, 0xc8, 0x4c, 0xcf,
-	0x28, 0x4f, 0xac, 0xd4, 0x4f, 0x49, 0x2c, 0x49, 0x4c, 0x4a, 0x2c, 0x4e, 0xd5, 0x2f, 0x33, 0xd4,
-	0x2f, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0xd5, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x86,
-	0x2a, 0xd1, 0x83, 0x29, 0xd1, 0x2b, 0x33, 0x94, 0x92, 0x49, 0xcf, 0xcf, 0x4f, 0xcf, 0x49, 0xd5,
-	0x4f, 0x2c, 0xc8, 0xd4, 0x4f, 0xcc, 0xcb, 0xcb, 0x2f, 0x49, 0x2c, 0xc9, 0xcc, 0xcf, 0x2b, 0x86,
-	0x68, 0x51, 0x52, 0xe4, 0xe2, 0x75, 0x4f, 0x2d, 0x71, 0xf6, 0x74, 0x09, 0x4a, 0x2d, 0x2c, 0x4d,
-	0x2d, 0x2e, 0x11, 0x12, 0xe0, 0x62, 0x4e, 0xce, 0x4c, 0x91, 0x60, 0x54, 0x60, 0xd4, 0xe0, 0x0c,
-	0x02, 0x31, 0x95, 0xcc, 0xb8, 0xf8, 0x60, 0x4a, 0x8a, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x31, 0xd5,
-	0x08, 0x09, 0x71, 0xb1, 0x80, 0xec, 0x94, 0x60, 0x02, 0x0b, 0x81, 0xd9, 0x20, 0x7d, 0x01, 0xa5,
-	0x25, 0x2e, 0x89, 0x25, 0x89, 0x38, 0xcd, 0xc6, 0xaa, 0x4f, 0x99, 0x8b, 0x1f, 0xae, 0x0f, 0x97,
-	0x85, 0x46, 0x2f, 0x18, 0xb9, 0xf8, 0x5d, 0xa0, 0xbe, 0x0c, 0x86, 0x04, 0x82, 0x50, 0x06, 0x17,
-	0x1b, 0xc4, 0xa1, 0x42, 0x4a, 0x7a, 0x58, 0x42, 0x42, 0x0f, 0xc5, 0xa3, 0x52, 0xca, 0x78, 0xd5,
-	0x40, 0x2c, 0x56, 0x12, 0x6d, 0xba, 0xfc, 0x64, 0x32, 0x13, 0xbf, 0x10, 0x2f, 0x28, 0xb0, 0x93,
-	0x33, 0x53, 0xf4, 0xab, 0x93, 0x33, 0x53, 0x6a, 0x85, 0xb2, 0xb9, 0xd8, 0xa1, 0x4e, 0x14, 0xc2,
-	0x6e, 0x0c, 0xaa, 0xc7, 0xa5, 0x54, 0xf0, 0x2b, 0x42, 0xb5, 0x4c, 0x09, 0xd5, 0x32, 0xa7, 0xd0,
-	0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39,
-	0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0xb2, 0x4e, 0xcf, 0x2c, 0xc9, 0x28,
-	0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0x2f, 0xce, 0xcf, 0x2b, 0xca, 0x28, 0xd4, 0x4f, 0xce, 0x2f,
-	0x4a, 0xd5, 0x2f, 0xa9, 0x2c, 0x48, 0x2d, 0xd6, 0xc7, 0x92, 0x5e, 0xac, 0x61, 0xec, 0x82, 0xa4,
-	0x24, 0x36, 0x70, 0x02, 0x30, 0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0xb8, 0x35, 0x79, 0xce, 0x58,
-	0x02, 0x00, 0x00,
+	// 289 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x7c, 0x90, 0x3f, 0x4f, 0xc3, 0x30,
+	0x10, 0xc5, 0xeb, 0x0c, 0x2d, 0xb5, 0x44, 0x2b, 0x99, 0xa5, 0x2a, 0xc8, 0x2a, 0x61, 0xe9, 0x64,
+	0xab, 0xb0, 0xd1, 0x0d, 0x31, 0x30, 0x17, 0xb1, 0xb0, 0xd9, 0xe5, 0x88, 0xa3, 0xb6, 0x39, 0x37,
+	0x76, 0x8a, 0xb2, 0xf2, 0x09, 0x90, 0xf8, 0x52, 0x8c, 0x95, 0x58, 0x18, 0x51, 0xc2, 0x07, 0x41,
+	0xca, 0x9f, 0x01, 0xa9, 0x62, 0xf3, 0xf3, 0x7b, 0x77, 0xf7, 0xd3, 0xa3, 0xe7, 0x26, 0x8e, 0xcc,
+	0x8b, 0xca, 0xe5, 0x93, 0xf2, 0x4a, 0x2b, 0x07, 0x72, 0x37, 0x93, 0x0e, 0xd2, 0x5d, 0xbc, 0x04,
+	0x61, 0x53, 0xf4, 0xc8, 0x4e, 0x9a, 0x88, 0x68, 0x23, 0x62, 0x37, 0x1b, 0x9f, 0x45, 0x88, 0xd1,
+	0x1a, 0xa4, 0xb2, 0xb1, 0x54, 0x49, 0x82, 0x5e, 0xf9, 0x18, 0x13, 0x57, 0x8f, 0x8c, 0x4f, 0x1b,
+	0xb7, 0x52, 0x3a, 0x7b, 0x96, 0xb0, 0xb1, 0x3e, 0xaf, 0xcd, 0x70, 0x48, 0x8f, 0xef, 0x40, 0xad,
+	0xbd, 0x59, 0xc0, 0x36, 0x03, 0xe7, 0xc3, 0x6b, 0x3a, 0x68, 0x3f, 0x9c, 0xc5, 0xc4, 0x01, 0x1b,
+	0xd0, 0x00, 0x57, 0x23, 0x32, 0x21, 0xd3, 0xa3, 0x45, 0x80, 0x2b, 0x36, 0xa2, 0xbd, 0x0d, 0x38,
+	0xa7, 0x22, 0x18, 0x05, 0x13, 0x32, 0xed, 0x2f, 0x5a, 0x79, 0x99, 0xd1, 0xe1, 0x6d, 0x83, 0x75,
+	0x5f, 0x53, 0x33, 0x4d, 0xbb, 0xf5, 0x3a, 0x16, 0x8a, 0x03, 0xe8, 0xe2, 0xcf, 0xf1, 0xf1, 0xc5,
+	0xbf, 0x99, 0x9a, 0x27, 0x1c, 0xbe, 0x7e, 0xfe, 0xbc, 0x07, 0x7d, 0xd6, 0x93, 0xa6, 0x32, 0x6e,
+	0x1e, 0x3e, 0x0a, 0x4e, 0xf6, 0x05, 0x27, 0xdf, 0x05, 0x27, 0x6f, 0x25, 0xef, 0xec, 0x4b, 0xde,
+	0xf9, 0x2a, 0x79, 0xe7, 0x71, 0x1e, 0xc5, 0xde, 0x64, 0x5a, 0x2c, 0x71, 0x23, 0x1d, 0x26, 0xa9,
+	0xd9, 0xca, 0x25, 0xa6, 0x20, 0x7d, 0x6e, 0xc1, 0xc9, 0x03, 0x6d, 0xcf, 0xdb, 0xb7, 0xd5, 0xba,
+	0x5b, 0x35, 0x74, 0xf5, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x68, 0x02, 0x5c, 0x88, 0x96, 0x01, 0x00,
+	0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -266,8 +159,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type DatabaseServiceClient interface {
-	GetCID(ctx context.Context, in *GetCIDRequest, opts ...grpc.CallOption) (*GetCIDResponse, error)
-	PutData(ctx context.Context, in *PutDataRequest, opts ...grpc.CallOption) (*PutDataResponse, error)
+	Health(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error)
 }
 
 type databaseServiceClient struct {
@@ -278,18 +170,9 @@ func NewDatabaseServiceClient(cc grpc1.ClientConn) DatabaseServiceClient {
 	return &databaseServiceClient{cc}
 }
 
-func (c *databaseServiceClient) GetCID(ctx context.Context, in *GetCIDRequest, opts ...grpc.CallOption) (*GetCIDResponse, error) {
-	out := new(GetCIDResponse)
-	err := c.cc.Invoke(ctx, "/highway.database.v1.DatabaseService/GetCID", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *databaseServiceClient) PutData(ctx context.Context, in *PutDataRequest, opts ...grpc.CallOption) (*PutDataResponse, error) {
-	out := new(PutDataResponse)
-	err := c.cc.Invoke(ctx, "/highway.database.v1.DatabaseService/PutData", in, out, opts...)
+func (c *databaseServiceClient) Health(ctx context.Context, in *HealthRequest, opts ...grpc.CallOption) (*HealthResponse, error) {
+	out := new(HealthResponse)
+	err := c.cc.Invoke(ctx, "/highway.database.v1.DatabaseService/Health", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -298,57 +181,35 @@ func (c *databaseServiceClient) PutData(ctx context.Context, in *PutDataRequest,
 
 // DatabaseServiceServer is the server API for DatabaseService service.
 type DatabaseServiceServer interface {
-	GetCID(context.Context, *GetCIDRequest) (*GetCIDResponse, error)
-	PutData(context.Context, *PutDataRequest) (*PutDataResponse, error)
+	Health(context.Context, *HealthRequest) (*HealthResponse, error)
 }
 
 // UnimplementedDatabaseServiceServer can be embedded to have forward compatible implementations.
 type UnimplementedDatabaseServiceServer struct {
 }
 
-func (*UnimplementedDatabaseServiceServer) GetCID(ctx context.Context, req *GetCIDRequest) (*GetCIDResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCID not implemented")
-}
-func (*UnimplementedDatabaseServiceServer) PutData(ctx context.Context, req *PutDataRequest) (*PutDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PutData not implemented")
+func (*UnimplementedDatabaseServiceServer) Health(ctx context.Context, req *HealthRequest) (*HealthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Health not implemented")
 }
 
 func RegisterDatabaseServiceServer(s grpc1.Server, srv DatabaseServiceServer) {
 	s.RegisterService(&_DatabaseService_serviceDesc, srv)
 }
 
-func _DatabaseService_GetCID_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCIDRequest)
+func _DatabaseService_Health_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(HealthRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(DatabaseServiceServer).GetCID(ctx, in)
+		return srv.(DatabaseServiceServer).Health(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/highway.database.v1.DatabaseService/GetCID",
+		FullMethod: "/highway.database.v1.DatabaseService/Health",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).GetCID(ctx, req.(*GetCIDRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _DatabaseService_PutData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(PutDataRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(DatabaseServiceServer).PutData(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/highway.database.v1.DatabaseService/PutData",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(DatabaseServiceServer).PutData(ctx, req.(*PutDataRequest))
+		return srv.(DatabaseServiceServer).Health(ctx, req.(*HealthRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -358,19 +219,15 @@ var _DatabaseService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*DatabaseServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetCID",
-			Handler:    _DatabaseService_GetCID_Handler,
-		},
-		{
-			MethodName: "PutData",
-			Handler:    _DatabaseService_PutData_Handler,
+			MethodName: "Health",
+			Handler:    _DatabaseService_Health_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "highway/database/v1/service.proto",
 }
 
-func (m *GetCIDRequest) Marshal() (dAtA []byte, err error) {
+func (m *HealthRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -380,27 +237,20 @@ func (m *GetCIDRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetCIDRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *HealthRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetCIDRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *HealthRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
-		i--
-		dAtA[i] = 0xa
-	}
 	return len(dAtA) - i, nil
 }
 
-func (m *GetCIDResponse) Marshal() (dAtA []byte, err error) {
+func (m *HealthResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -410,96 +260,32 @@ func (m *GetCIDResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetCIDResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *HealthResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetCIDResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *HealthResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Data) > 0 {
-		i -= len(m.Data)
-		copy(dAtA[i:], m.Data)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Data)))
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
+	if m.Ok {
 		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *PutDataRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *PutDataRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *PutDataRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Data) > 0 {
-		i -= len(m.Data)
-		copy(dAtA[i:], m.Data)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Data)))
+		if m.Ok {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
 		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *PutDataResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *PutDataResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *PutDataResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Cid) > 0 {
-		i -= len(m.Cid)
-		copy(dAtA[i:], m.Cid)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Cid)))
-		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -515,60 +301,25 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GetCIDRequest) Size() (n int) {
+func (m *HealthRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
 	return n
 }
 
-func (m *GetCIDResponse) Size() (n int) {
+func (m *HealthResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
+	if m.Ok {
+		n += 2
 	}
-	l = len(m.Data)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
-func (m *PutDataRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Cid)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	l = len(m.Data)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
-	}
-	return n
-}
-
-func (m *PutDataResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Cid)
+	l = len(m.Message)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -581,7 +332,7 @@ func sovService(x uint64) (n int) {
 func sozService(x uint64) (n int) {
 	return sovService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GetCIDRequest) Unmarshal(dAtA []byte) error {
+func (m *HealthRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -604,44 +355,12 @@ func (m *GetCIDRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetCIDRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: HealthRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetCIDRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: HealthRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
@@ -663,7 +382,7 @@ func (m *GetCIDRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetCIDResponse) Unmarshal(dAtA []byte) error {
+func (m *HealthResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -686,17 +405,17 @@ func (m *GetCIDResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetCIDResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: HealthResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetCIDResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: HealthResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ok", wireType)
 			}
-			var stringLen uint64
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowService
@@ -706,27 +425,15 @@ func (m *GetCIDResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
+			m.Ok = bool(v != 0)
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -754,203 +461,7 @@ func (m *GetCIDResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Data = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *PutDataRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: PutDataRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PutDataRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Data", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Data = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipService(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthService
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *PutDataResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowService
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: PutDataResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: PutDataResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowService
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Cid = string(dAtA[iNdEx:postIndex])
+			m.Message = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

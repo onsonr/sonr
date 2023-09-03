@@ -28,23 +28,25 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type AuthenticateRequest struct {
-	Username string `protobuf:"bytes,1,opt,name=username,proto3" json:"username,omitempty"`
-	Password string `protobuf:"bytes,2,opt,name=password,proto3" json:"password,omitempty"`
+type CreateAccountRequest struct {
+	Jwt      string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	CoinType string `protobuf:"bytes,3,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
+	Network  string `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
 }
 
-func (m *AuthenticateRequest) Reset()         { *m = AuthenticateRequest{} }
-func (m *AuthenticateRequest) String() string { return proto.CompactTextString(m) }
-func (*AuthenticateRequest) ProtoMessage()    {}
-func (*AuthenticateRequest) Descriptor() ([]byte, []int) {
+func (m *CreateAccountRequest) Reset()         { *m = CreateAccountRequest{} }
+func (m *CreateAccountRequest) String() string { return proto.CompactTextString(m) }
+func (*CreateAccountRequest) ProtoMessage()    {}
+func (*CreateAccountRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{0}
 }
-func (m *AuthenticateRequest) XXX_Unmarshal(b []byte) error {
+func (m *CreateAccountRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthenticateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthenticateRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateAccountRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -54,49 +56,64 @@ func (m *AuthenticateRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *AuthenticateRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthenticateRequest.Merge(m, src)
+func (m *CreateAccountRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateAccountRequest.Merge(m, src)
 }
-func (m *AuthenticateRequest) XXX_Size() int {
+func (m *CreateAccountRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthenticateRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthenticateRequest.DiscardUnknown(m)
+func (m *CreateAccountRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateAccountRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthenticateRequest proto.InternalMessageInfo
+var xxx_messageInfo_CreateAccountRequest proto.InternalMessageInfo
 
-func (m *AuthenticateRequest) GetUsername() string {
+func (m *CreateAccountRequest) GetJwt() string {
 	if m != nil {
-		return m.Username
+		return m.Jwt
 	}
 	return ""
 }
 
-func (m *AuthenticateRequest) GetPassword() string {
+func (m *CreateAccountRequest) GetName() string {
 	if m != nil {
-		return m.Password
+		return m.Name
 	}
 	return ""
 }
 
-type AuthenticateResponse struct {
-	AccessToken  string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+func (m *CreateAccountRequest) GetCoinType() string {
+	if m != nil {
+		return m.CoinType
+	}
+	return ""
 }
 
-func (m *AuthenticateResponse) Reset()         { *m = AuthenticateResponse{} }
-func (m *AuthenticateResponse) String() string { return proto.CompactTextString(m) }
-func (*AuthenticateResponse) ProtoMessage()    {}
-func (*AuthenticateResponse) Descriptor() ([]byte, []int) {
+func (m *CreateAccountRequest) GetNetwork() string {
+	if m != nil {
+		return m.Network
+	}
+	return ""
+}
+
+type CreateAccountResponse struct {
+	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
+	CoinType string `protobuf:"bytes,2,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
+	Owner    string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+}
+
+func (m *CreateAccountResponse) Reset()         { *m = CreateAccountResponse{} }
+func (m *CreateAccountResponse) String() string { return proto.CompactTextString(m) }
+func (*CreateAccountResponse) ProtoMessage()    {}
+func (*CreateAccountResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{1}
 }
-func (m *AuthenticateResponse) XXX_Unmarshal(b []byte) error {
+func (m *CreateAccountResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *AuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *CreateAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_AuthenticateResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_CreateAccountResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -106,34 +123,41 @@ func (m *AuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte
 		return b[:n], nil
 	}
 }
-func (m *AuthenticateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_AuthenticateResponse.Merge(m, src)
+func (m *CreateAccountResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_CreateAccountResponse.Merge(m, src)
 }
-func (m *AuthenticateResponse) XXX_Size() int {
+func (m *CreateAccountResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *AuthenticateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_AuthenticateResponse.DiscardUnknown(m)
+func (m *CreateAccountResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_CreateAccountResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_AuthenticateResponse proto.InternalMessageInfo
+var xxx_messageInfo_CreateAccountResponse proto.InternalMessageInfo
 
-func (m *AuthenticateResponse) GetAccessToken() string {
+func (m *CreateAccountResponse) GetAddress() string {
 	if m != nil {
-		return m.AccessToken
+		return m.Address
 	}
 	return ""
 }
 
-func (m *AuthenticateResponse) GetRefreshToken() string {
+func (m *CreateAccountResponse) GetCoinType() string {
 	if m != nil {
-		return m.RefreshToken
+		return m.CoinType
+	}
+	return ""
+}
+
+func (m *CreateAccountResponse) GetOwner() string {
+	if m != nil {
+		return m.Owner
 	}
 	return ""
 }
 
 type RefreshTokenRequest struct {
-	RefreshToken string `protobuf:"bytes,1,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	Jwt string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 }
 
 func (m *RefreshTokenRequest) Reset()         { *m = RefreshTokenRequest{} }
@@ -169,9 +193,9 @@ func (m *RefreshTokenRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RefreshTokenRequest proto.InternalMessageInfo
 
-func (m *RefreshTokenRequest) GetRefreshToken() string {
+func (m *RefreshTokenRequest) GetJwt() string {
 	if m != nil {
-		return m.RefreshToken
+		return m.Jwt
 	}
 	return ""
 }
@@ -229,7 +253,7 @@ func (m *RefreshTokenResponse) GetRefreshToken() string {
 }
 
 type VerifyTokenRequest struct {
-	AccessToken string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
+	Jwt string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 }
 
 func (m *VerifyTokenRequest) Reset()         { *m = VerifyTokenRequest{} }
@@ -265,9 +289,9 @@ func (m *VerifyTokenRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_VerifyTokenRequest proto.InternalMessageInfo
 
-func (m *VerifyTokenRequest) GetAccessToken() string {
+func (m *VerifyTokenRequest) GetJwt() string {
 	if m != nil {
-		return m.AccessToken
+		return m.Jwt
 	}
 	return ""
 }
@@ -317,8 +341,8 @@ func (m *VerifyTokenResponse) GetValid() bool {
 }
 
 func init() {
-	proto.RegisterType((*AuthenticateRequest)(nil), "highway.wallet.v1.AuthenticateRequest")
-	proto.RegisterType((*AuthenticateResponse)(nil), "highway.wallet.v1.AuthenticateResponse")
+	proto.RegisterType((*CreateAccountRequest)(nil), "highway.wallet.v1.CreateAccountRequest")
+	proto.RegisterType((*CreateAccountResponse)(nil), "highway.wallet.v1.CreateAccountResponse")
 	proto.RegisterType((*RefreshTokenRequest)(nil), "highway.wallet.v1.RefreshTokenRequest")
 	proto.RegisterType((*RefreshTokenResponse)(nil), "highway.wallet.v1.RefreshTokenResponse")
 	proto.RegisterType((*VerifyTokenRequest)(nil), "highway.wallet.v1.VerifyTokenRequest")
@@ -328,35 +352,38 @@ func init() {
 func init() { proto.RegisterFile("highway/wallet/v1/service.proto", fileDescriptor_6b44f8b21811e31c) }
 
 var fileDescriptor_6b44f8b21811e31c = []byte{
-	// 441 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
-	0x10, 0x8d, 0x11, 0xa0, 0x32, 0x24, 0x42, 0xdd, 0xe4, 0x50, 0x45, 0xc8, 0x80, 0x11, 0x05, 0x09,
-	0xc9, 0xab, 0xc2, 0xa1, 0x12, 0x9c, 0x0a, 0x42, 0x5c, 0xe0, 0x40, 0x8a, 0xa8, 0xc4, 0xa1, 0xd1,
-	0x7a, 0x33, 0xb5, 0x57, 0xa4, 0xbb, 0xee, 0xee, 0x38, 0x21, 0x7f, 0xc1, 0x67, 0x71, 0xec, 0x91,
-	0x63, 0x95, 0xfc, 0x08, 0xaa, 0xd7, 0x89, 0x88, 0x6c, 0x91, 0x4b, 0x7a, 0xf3, 0xcc, 0xbc, 0x37,
-	0xef, 0x79, 0xdf, 0x6a, 0xe1, 0x51, 0xa6, 0xd2, 0x6c, 0x2a, 0x66, 0x7c, 0x2a, 0xc6, 0x63, 0x24,
-	0x3e, 0x39, 0xe0, 0x0e, 0xed, 0x44, 0x49, 0x8c, 0x73, 0x6b, 0xc8, 0xb0, 0xdd, 0x0a, 0x10, 0x7b,
-	0x40, 0x3c, 0x39, 0xe8, 0x3f, 0x4c, 0x8d, 0x49, 0xc7, 0xc8, 0x45, 0xae, 0xb8, 0xd0, 0xda, 0x90,
-	0x20, 0x65, 0xb4, 0xf3, 0x84, 0xe8, 0x33, 0x74, 0x8f, 0x0a, 0xca, 0x50, 0x93, 0x92, 0x82, 0x70,
-	0x80, 0x17, 0x05, 0x3a, 0x62, 0x7d, 0xd8, 0x29, 0x1c, 0x5a, 0x2d, 0xce, 0x71, 0x2f, 0x78, 0x1c,
-	0xbc, 0xb8, 0x37, 0x58, 0xd5, 0xd7, 0xb3, 0x5c, 0x38, 0x37, 0x35, 0x76, 0xb4, 0x77, 0xcb, 0xcf,
-	0x96, 0x75, 0x74, 0x0a, 0xbd, 0xf5, 0x75, 0x2e, 0x37, 0xda, 0x21, 0x7b, 0x02, 0x6d, 0x21, 0x25,
-	0x3a, 0x37, 0x24, 0xf3, 0x03, 0x75, 0xb5, 0xf3, 0xbe, 0xef, 0x7d, 0xbd, 0x6e, 0xb1, 0xa7, 0xd0,
-	0xb1, 0x78, 0x66, 0xd1, 0x65, 0x15, 0xc6, 0xef, 0x6e, 0x57, 0xcd, 0x12, 0x14, 0xbd, 0x81, 0xee,
-	0xe0, 0x9f, 0x7a, 0x69, 0xb7, 0xc6, 0x0d, 0x1a, 0xb8, 0xa7, 0xd0, 0x5b, 0xe7, 0x6e, 0xd9, 0xdb,
-	0x21, 0xb0, 0x6f, 0x68, 0xd5, 0xd9, 0x6c, 0xcd, 0xda, 0xe6, 0xed, 0xd1, 0x4b, 0xe8, 0xae, 0x11,
-	0x2b, 0x5f, 0x3d, 0xb8, 0x33, 0x11, 0x63, 0x35, 0x2a, 0x29, 0x3b, 0x03, 0x5f, 0xbc, 0xba, 0xba,
-	0x0d, 0x9d, 0x93, 0x32, 0xdc, 0x63, 0x9f, 0x3c, 0x4b, 0xa0, 0xf3, 0xde, 0xa2, 0x20, 0x3c, 0x92,
-	0xd2, 0x14, 0x9a, 0xd8, 0x7e, 0x5c, 0xbb, 0x05, 0x71, 0x43, 0xc8, 0xfd, 0xe7, 0x1b, 0x71, 0xde,
-	0x49, 0xd4, 0x62, 0x43, 0x80, 0x8f, 0x48, 0xff, 0x13, 0x68, 0x88, 0xa5, 0x51, 0xa0, 0x29, 0x82,
-	0x52, 0xa0, 0xfd, 0x49, 0xb9, 0xa5, 0x82, 0x63, 0xcf, 0x1a, 0xa8, 0xf5, 0xd3, 0xed, 0xef, 0x6f,
-	0x82, 0xad, 0x04, 0x12, 0x78, 0x70, 0xac, 0x52, 0x7d, 0xa2, 0x28, 0x5b, 0xfe, 0xc6, 0xd6, 0x35,
-	0x46, 0xb0, 0xeb, 0x07, 0x37, 0xaa, 0x32, 0x84, 0xf6, 0x87, 0x9f, 0xb9, 0xb1, 0xe4, 0xaf, 0xc1,
-	0xd6, 0x05, 0xde, 0x7d, 0xf9, 0x3d, 0x0f, 0x83, 0xcb, 0x79, 0x18, 0x5c, 0xcd, 0xc3, 0xe0, 0xd7,
-	0x22, 0x6c, 0x5d, 0x2e, 0xc2, 0xd6, 0x9f, 0x45, 0xd8, 0xfa, 0x7e, 0x98, 0x2a, 0xca, 0x8a, 0x24,
-	0x96, 0xe6, 0x9c, 0x3b, 0xa3, 0x6d, 0x76, 0xc1, 0xa5, 0xb1, 0xc8, 0x69, 0x96, 0xa3, 0xe3, 0xb5,
-	0xc7, 0xe9, 0xad, 0xff, 0xca, 0x93, 0xe4, 0x6e, 0xf9, 0xda, 0xbc, 0xfe, 0x1b, 0x00, 0x00, 0xff,
-	0xff, 0x4b, 0x64, 0xcb, 0xc7, 0xc1, 0x04, 0x00, 0x00,
+	// 482 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x54, 0xcf, 0x6f, 0xd3, 0x30,
+	0x14, 0x6e, 0xb6, 0x0e, 0xb6, 0x47, 0x2b, 0x98, 0x57, 0xa4, 0xa8, 0xa0, 0x00, 0x41, 0xb4, 0x93,
+	0x90, 0x62, 0x0d, 0x0e, 0x1c, 0x38, 0x01, 0x42, 0x5c, 0xb8, 0xd0, 0x4d, 0x4c, 0xe2, 0x40, 0xe5,
+	0x26, 0x6f, 0x89, 0x59, 0x67, 0x67, 0xb6, 0xdb, 0xd0, 0xff, 0x82, 0x3f, 0x8b, 0xe3, 0x8e, 0x1c,
+	0x51, 0xfb, 0x8f, 0xa0, 0xda, 0x09, 0x5a, 0xd7, 0xa2, 0x5e, 0xca, 0xed, 0xfd, 0xf8, 0xbe, 0x7c,
+	0x9f, 0x9f, 0x5f, 0x0c, 0x8f, 0x32, 0x9e, 0x66, 0x05, 0x9b, 0xd0, 0x82, 0x0d, 0x87, 0x68, 0xe8,
+	0xf8, 0x88, 0x6a, 0x54, 0x63, 0x1e, 0x63, 0x94, 0x2b, 0x69, 0x24, 0xd9, 0x2f, 0x01, 0x91, 0x03,
+	0x44, 0xe3, 0xa3, 0xf6, 0xc3, 0x54, 0xca, 0x74, 0x88, 0x94, 0xe5, 0x9c, 0x32, 0x21, 0xa4, 0x61,
+	0x86, 0x4b, 0xa1, 0x1d, 0x21, 0xd4, 0xd0, 0x7a, 0xa7, 0x90, 0x19, 0x7c, 0x13, 0xc7, 0x72, 0x24,
+	0x4c, 0x0f, 0x2f, 0x47, 0xa8, 0x0d, 0xb9, 0x07, 0xdb, 0xdf, 0x0a, 0xe3, 0x7b, 0x8f, 0xbd, 0xc3,
+	0xbd, 0xde, 0x3c, 0x24, 0x04, 0xea, 0x82, 0x5d, 0xa0, 0xbf, 0x65, 0x4b, 0x36, 0x26, 0x0f, 0x60,
+	0x2f, 0x96, 0x5c, 0xf4, 0xcd, 0x24, 0x47, 0x7f, 0xdb, 0x36, 0x76, 0xe7, 0x85, 0x93, 0x49, 0x8e,
+	0xc4, 0x87, 0xdb, 0x02, 0x4d, 0x21, 0xd5, 0xb9, 0x5f, 0xb7, 0xad, 0x2a, 0x0d, 0x13, 0xb8, 0x7f,
+	0x43, 0x54, 0xe7, 0x52, 0x68, 0x4b, 0x61, 0x49, 0xa2, 0x50, 0xeb, 0x52, 0xb9, 0x4a, 0x17, 0x95,
+	0xb6, 0x6e, 0x28, 0xb5, 0x60, 0x47, 0x16, 0x02, 0x55, 0x69, 0xc1, 0x25, 0x61, 0x17, 0x0e, 0x7a,
+	0x78, 0xa6, 0x50, 0x67, 0x27, 0xf2, 0x1c, 0xc5, 0x3f, 0x4f, 0x16, 0x7e, 0x85, 0xd6, 0x22, 0xb0,
+	0x74, 0xf3, 0x04, 0x1a, 0x2c, 0x8e, 0x51, 0xeb, 0xbe, 0x99, 0xd7, 0x4b, 0xca, 0x1d, 0x57, 0xb3,
+	0x50, 0xf2, 0x14, 0x9a, 0xca, 0x51, 0x4b, 0x8c, 0xb3, 0xd6, 0x50, 0xd7, 0xbe, 0x17, 0x76, 0x80,
+	0x7c, 0x46, 0xc5, 0xcf, 0x26, 0x6b, 0x7c, 0x3c, 0x87, 0x83, 0x05, 0x5c, 0x69, 0xa3, 0x05, 0x3b,
+	0x63, 0x36, 0xe4, 0x89, 0x85, 0xee, 0xf6, 0x5c, 0xf2, 0x62, 0x5a, 0x87, 0xe6, 0xa9, 0xbd, 0xe4,
+	0x63, 0xb7, 0x01, 0x24, 0x81, 0xe6, 0xc2, 0x54, 0x49, 0x37, 0x5a, 0xda, 0x86, 0x68, 0xd5, 0x65,
+	0xb7, 0x0f, 0xd7, 0x03, 0x9d, 0x97, 0xb0, 0x46, 0xfa, 0x00, 0x1f, 0xd0, 0x54, 0x12, 0x9d, 0x15,
+	0xcc, 0x15, 0x43, 0x6f, 0x77, 0xd7, 0xe2, 0xae, 0x09, 0x34, 0x3e, 0x72, 0x5d, 0x29, 0x68, 0xf2,
+	0x6c, 0x05, 0x75, 0x79, 0x9c, 0xed, 0xce, 0x3a, 0xd8, 0x5f, 0x81, 0x01, 0xdc, 0x3d, 0xe6, 0xa9,
+	0x38, 0xe5, 0x26, 0xab, 0x8e, 0xb1, 0x71, 0x8d, 0x04, 0xf6, 0x5d, 0xe3, 0xbf, 0xaa, 0xf4, 0xa1,
+	0xf1, 0xfe, 0x7b, 0x2e, 0x95, 0x71, 0x8b, 0xb0, 0x71, 0x81, 0xb7, 0x9f, 0x7e, 0x4e, 0x03, 0xef,
+	0x6a, 0x1a, 0x78, 0xbf, 0xa7, 0x81, 0xf7, 0x63, 0x16, 0xd4, 0xae, 0x66, 0x41, 0xed, 0xd7, 0x2c,
+	0xa8, 0x7d, 0x79, 0x95, 0x72, 0x93, 0x8d, 0x06, 0x51, 0x2c, 0x2f, 0xa8, 0x96, 0x42, 0x65, 0x97,
+	0x34, 0x96, 0x0a, 0xe9, 0xfc, 0xff, 0xd4, 0x74, 0xe9, 0x99, 0x7a, 0xed, 0xa2, 0x7c, 0x30, 0xb8,
+	0x65, 0xdf, 0x9d, 0x97, 0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x48, 0x85, 0xba, 0x0f, 0xcb, 0x04,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -371,7 +398,7 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WalletServiceClient interface {
-	CreateAccount(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error)
+	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	GetAccount(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	ListAccounts(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
 	SignWithAccount(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
@@ -387,8 +414,8 @@ func NewWalletServiceClient(cc grpc1.ClientConn) WalletServiceClient {
 	return &walletServiceClient{cc}
 }
 
-func (c *walletServiceClient) CreateAccount(ctx context.Context, in *AuthenticateRequest, opts ...grpc.CallOption) (*AuthenticateResponse, error) {
-	out := new(AuthenticateResponse)
+func (c *walletServiceClient) CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error) {
+	out := new(CreateAccountResponse)
 	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/CreateAccount", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -443,7 +470,7 @@ func (c *walletServiceClient) ExportWallet(ctx context.Context, in *VerifyTokenR
 
 // WalletServiceServer is the server API for WalletService service.
 type WalletServiceServer interface {
-	CreateAccount(context.Context, *AuthenticateRequest) (*AuthenticateResponse, error)
+	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	GetAccount(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	ListAccounts(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 	SignWithAccount(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
@@ -455,7 +482,7 @@ type WalletServiceServer interface {
 type UnimplementedWalletServiceServer struct {
 }
 
-func (*UnimplementedWalletServiceServer) CreateAccount(ctx context.Context, req *AuthenticateRequest) (*AuthenticateResponse, error) {
+func (*UnimplementedWalletServiceServer) CreateAccount(ctx context.Context, req *CreateAccountRequest) (*CreateAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateAccount not implemented")
 }
 func (*UnimplementedWalletServiceServer) GetAccount(ctx context.Context, req *RefreshTokenRequest) (*RefreshTokenResponse, error) {
@@ -479,7 +506,7 @@ func RegisterWalletServiceServer(s grpc1.Server, srv WalletServiceServer) {
 }
 
 func _WalletService_CreateAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthenticateRequest)
+	in := new(CreateAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -491,7 +518,7 @@ func _WalletService_CreateAccount_Handler(srv interface{}, ctx context.Context, 
 		FullMethod: "/highway.wallet.v1.WalletService/CreateAccount",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalletServiceServer).CreateAccount(ctx, req.(*AuthenticateRequest))
+		return srv.(WalletServiceServer).CreateAccount(ctx, req.(*CreateAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -619,7 +646,7 @@ var _WalletService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "highway/wallet/v1/service.proto",
 }
 
-func (m *AuthenticateRequest) Marshal() (dAtA []byte, err error) {
+func (m *CreateAccountRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -629,34 +656,48 @@ func (m *AuthenticateRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthenticateRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateAccountRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthenticateRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CreateAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Password) > 0 {
-		i -= len(m.Password)
-		copy(dAtA[i:], m.Password)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Password)))
+	if len(m.Network) > 0 {
+		i -= len(m.Network)
+		copy(dAtA[i:], m.Network)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Network)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.CoinType) > 0 {
+		i -= len(m.CoinType)
+		copy(dAtA[i:], m.CoinType)
+		i = encodeVarintService(dAtA, i, uint64(len(m.CoinType)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Name) > 0 {
+		i -= len(m.Name)
+		copy(dAtA[i:], m.Name)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Name)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.Username) > 0 {
-		i -= len(m.Username)
-		copy(dAtA[i:], m.Username)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Username)))
+	if len(m.Jwt) > 0 {
+		i -= len(m.Jwt)
+		copy(dAtA[i:], m.Jwt)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Jwt)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *AuthenticateResponse) Marshal() (dAtA []byte, err error) {
+func (m *CreateAccountResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -666,27 +707,34 @@ func (m *AuthenticateResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *AuthenticateResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *CreateAccountResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *AuthenticateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *CreateAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+	if len(m.Owner) > 0 {
+		i -= len(m.Owner)
+		copy(dAtA[i:], m.Owner)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Owner)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.CoinType) > 0 {
+		i -= len(m.CoinType)
+		copy(dAtA[i:], m.CoinType)
+		i = encodeVarintService(dAtA, i, uint64(len(m.CoinType)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -713,10 +761,10 @@ func (m *RefreshTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+	if len(m.Jwt) > 0 {
+		i -= len(m.Jwt)
+		copy(dAtA[i:], m.Jwt)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Jwt)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -780,10 +828,10 @@ func (m *VerifyTokenRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
+	if len(m.Jwt) > 0 {
+		i -= len(m.Jwt)
+		copy(dAtA[i:], m.Jwt)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Jwt)))
 		i--
 		dAtA[i] = 0xa
 	}
@@ -834,34 +882,46 @@ func encodeVarintService(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *AuthenticateRequest) Size() (n int) {
+func (m *CreateAccountRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Username)
+	l = len(m.Jwt)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.Password)
+	l = len(m.Name)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.CoinType)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.Network)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
 	return n
 }
 
-func (m *AuthenticateResponse) Size() (n int) {
+func (m *CreateAccountResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.AccessToken)
+	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.RefreshToken)
+	l = len(m.CoinType)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.Owner)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -874,7 +934,7 @@ func (m *RefreshTokenRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.RefreshToken)
+	l = len(m.Jwt)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -904,7 +964,7 @@ func (m *VerifyTokenRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.AccessToken)
+	l = len(m.Jwt)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -929,7 +989,7 @@ func sovService(x uint64) (n int) {
 func sozService(x uint64) (n int) {
 	return sovService(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
+func (m *CreateAccountRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -952,15 +1012,15 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthenticateRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateAccountRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthenticateRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Username", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -988,11 +1048,11 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Username = string(dAtA[iNdEx:postIndex])
+			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Password", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1020,7 +1080,71 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Password = string(dAtA[iNdEx:postIndex])
+			m.Name = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CoinType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Network = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1043,7 +1167,7 @@ func (m *AuthenticateRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
+func (m *CreateAccountResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1066,15 +1190,15 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: AuthenticateResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: CreateAccountResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: AuthenticateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: CreateAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1102,11 +1226,11 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
+			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1134,7 +1258,39 @@ func (m *AuthenticateResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			m.CoinType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Owner = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1188,7 +1344,7 @@ func (m *RefreshTokenRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1216,7 +1372,7 @@ func (m *RefreshTokenRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1384,7 +1540,7 @@ func (m *VerifyTokenRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1412,7 +1568,7 @@ func (m *VerifyTokenRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
+			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

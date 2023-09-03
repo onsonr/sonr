@@ -442,6 +442,20 @@ paths:
           type: string
       tags:
         - Query
+  /health:
+    get:
+      operationId: DatabaseService_Health
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1HealthResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/rpcStatus'
+      tags:
+        - DatabaseService
   /sonr-io/core/identity/escrow_account:
     get:
       operationId: Query_EscrowAccountAll
@@ -522,7 +536,7 @@ paths:
         - Query
   /v1/cid/{cid}:
     get:
-      operationId: DatabaseService_GetCID
+      operationId: StorageService_GetCID
       responses:
         "200":
           description: A successful response.
@@ -538,9 +552,9 @@ paths:
           required: true
           type: string
       tags:
-        - DatabaseService
+        - StorageService
     post:
-      operationId: DatabaseService_PutData
+      operationId: StorageService_PutData
       responses:
         "200":
           description: A successful response.
@@ -560,7 +574,7 @@ paths:
           required: false
           type: string
       tags:
-        - DatabaseService
+        - StorageService
 definitions:
   coredomainParams:
     type: object
@@ -639,13 +653,6 @@ definitions:
         type: string
       method:
         type: string
-  highwayauthenticationv1AuthenticateResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
   highwayauthenticationv1RefreshTokenResponse:
     type: object
     properties:
@@ -658,32 +665,6 @@ definitions:
     properties:
       valid:
         type: boolean
-  highwaystoragev1AuthenticateResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwaystoragev1RefreshTokenResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
-  highwaystoragev1VerifyTokenResponse:
-    type: object
-    properties:
-      valid:
-        type: boolean
-  highwaywalletv1AuthenticateResponse:
-    type: object
-    properties:
-      accessToken:
-        type: string
-      refreshToken:
-        type: string
   highwaywalletv1RefreshTokenResponse:
     type: object
     properties:
@@ -990,6 +971,33 @@ definitions:
       description:
         type: string
         title: The description of the service
+  v1AuthenticateResponse:
+    type: object
+    properties:
+      jwt:
+        type: string
+      address:
+        type: string
+      origin:
+        type: string
+  v1CreateAccountResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      coinType:
+        type: string
+      owner:
+        type: string
+  v1CurrentUserResponse:
+    type: object
+    properties:
+      address:
+        type: string
+      alias:
+        type: string
+      origin:
+        type: string
   v1GetCIDResponse:
     type: object
     properties:
@@ -997,13 +1005,30 @@ definitions:
         type: string
       data:
         type: string
+  v1HealthResponse:
+    type: object
+    properties:
+      ok:
+        type: boolean
+      message:
+        type: string
   v1ParamsResponse:
     type: object
     properties:
-      params:
-        type: array
-        items:
-          type: string
+      isAuth:
+        type: boolean
+      origin:
+        type: string
+      alias:
+        type: string
+      address:
+        type: string
+      challenge:
+        type: string
+      attestationOptions:
+        type: string
+      assertionOptions:
+        type: string
   v1PutDataResponse:
     type: object
     properties:
@@ -1012,9 +1037,13 @@ definitions:
   v1RegisterResponse:
     type: object
     properties:
-      accessToken:
+      txHash:
         type: string
-      refreshToken:
+      address:
+        type: string
+      jwt:
+        type: string
+      origin:
         type: string
   v1beta1PageRequest:
     type: object

@@ -7,8 +7,7 @@ import "google/api/annotations.proto";
 option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
 
 service WalletService {
-  rpc CreateAccount(AuthenticateRequest) returns (AuthenticateResponse) {
-  }
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {}
   rpc GetAccount(RefreshTokenRequest) returns (RefreshTokenResponse) {}
   rpc ListAccounts(VerifyTokenRequest) returns (VerifyTokenResponse) {}
   rpc SignWithAccount(VerifyTokenRequest) returns (VerifyTokenResponse) {}
@@ -16,18 +15,21 @@ service WalletService {
   rpc ExportWallet(VerifyTokenRequest) returns (VerifyTokenResponse) {}
 }
 
-message AuthenticateRequest {
-  string username = 1;
-  string password = 2;
+message CreateAccountRequest {
+  string jwt = 1;
+  string name = 2;
+  string coin_type = 3;
+  string network = 4;
 }
 
-message AuthenticateResponse {
-  string access_token = 1;
-  string refresh_token = 2;
+message CreateAccountResponse {
+  string address = 1;
+  string coin_type = 2;
+  string owner = 3;
 }
 
 message RefreshTokenRequest {
-  string refresh_token = 1;
+  string jwt = 1;
 }
 
 message RefreshTokenResponse {
@@ -36,7 +38,7 @@ message RefreshTokenResponse {
 }
 
 message VerifyTokenRequest {
-  string access_token = 1;
+  string jwt = 1;
 }
 
 message VerifyTokenResponse {
