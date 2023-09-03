@@ -8,9 +8,6 @@ import (
 	storagepb "github.com/sonrhq/core/types/highway/storage/v1"
 )
 
-// StorageAPI is the alias for the Highway Database Service Server.
-type StorageAPI = storagepb.StorageServiceServer
-
 // StorageHandler is the handler for the authentication service
 type StorageHandler struct {
 	cctx client.Context

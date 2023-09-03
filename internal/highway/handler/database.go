@@ -9,8 +9,6 @@ import (
 	databasepb "github.com/sonrhq/core/types/highway/database/v1"
 )
 
-// DatabaseAPI is the alias for the Highway Database Service Server.
-type DatabaseAPI = databasepb.DatabaseServiceServer
 
 // DatabaseHandler is the handler for the authentication service
 type DatabaseHandler struct {
