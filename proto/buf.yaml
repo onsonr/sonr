@@ -9,7 +9,6 @@ deps:
 lint:
   ignore:
     - sonr-io/core
-    - sonr-io/sonr
   allow_comment_ignores: true
   use:
     - DEFAULT

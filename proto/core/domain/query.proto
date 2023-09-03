@@ -1,12 +1,12 @@
 syntax = "proto3";
 
-package sonr.domain;
+package core.domain;
 
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
-import "sonr/domain/params.proto";
-import "sonr/domain/record.proto";
+import "core/domain/params.proto";
+import "core/domain/record.proto";
 
 option go_package = "github.com/sonrhq/core/x/domain/types";
 
@@ -24,9 +24,10 @@ service Query {
     option (google.api.http).get = "/core/domain/username/{index}";
 
   }
+
+  // Queries a list of UsernameRecords items.
   rpc UsernameRecordAll (QueryAllUsernameRecordsRequest) returns (QueryAllUsernameRecordsResponse) {
     option (google.api.http).get = "/core/domain/username";
-
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.

@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+package highway.wallet.v1;
+
+option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
