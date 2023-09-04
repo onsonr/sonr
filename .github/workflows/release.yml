@@ -19,6 +19,10 @@ jobs:
     name: Run goreleaser
     runs-on:
       group: Goliath
+      labels:
+        - ubuntu-ultra-instinct
+        - ubuntu-super
+        - ubuntu-baryon
     steps:
       - uses: actions/checkout@v3
         with:
