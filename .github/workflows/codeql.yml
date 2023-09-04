@@ -7,7 +7,7 @@ on:
 jobs:
   codeql-analysis:
     name: Run CodeQL Analysis
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read

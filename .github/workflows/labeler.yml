@@ -10,7 +10,7 @@ on: [pull_request]
 
 jobs:
   label:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       pull-requests: write
