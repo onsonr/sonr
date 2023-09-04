@@ -77,7 +77,7 @@ jobs:
 
   build-make:
     name: Build using makefile
-    runs-on: ubuntu-super
+    runs-on: self-hosted
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3

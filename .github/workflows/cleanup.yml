@@ -48,7 +48,7 @@ on:
 
 jobs:
   del_runs:
-    runs-on: ubuntu-super
+    runs-on: self-hosted
     permissions:
       actions: write
     steps:
