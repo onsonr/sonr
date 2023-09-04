@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-drafts:
-    runs-on: Snorlax
+    runs-on: ubuntu-super
     steps:
       - name: Publish Drafts
         run: |

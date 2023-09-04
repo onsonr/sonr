@@ -48,7 +48,7 @@ on:
 
 jobs:
   del_runs:
-    runs-on: Snorlax
+    runs-on: ubuntu-super
     permissions:
       actions: write
     steps:

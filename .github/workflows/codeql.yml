@@ -7,7 +7,7 @@ on:
 jobs:
   codeql-analysis:
     name: Run CodeQL Analysis
-    runs-on: Snorlax
+    runs-on: ubuntu-super
     permissions:
       actions: read
       contents: read

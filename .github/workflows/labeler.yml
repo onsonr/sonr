@@ -10,7 +10,7 @@ on: [pull_request]
 
 jobs:
   label:
-    runs-on: Snorlax
+    runs-on: ubuntu-super
     permissions:
       contents: read
       pull-requests: write
