@@ -18,7 +18,7 @@ jobs:
   release:
     name: Run goreleaser
     runs-on:
-      labels: Snorlax
+      group: Goliath
     steps:
       - uses: actions/checkout@v3
         with:

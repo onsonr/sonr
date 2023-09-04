@@ -49,7 +49,7 @@ on:
 jobs:
   del_runs:
     runs-on:
-      labels: Snorlax
+      group: Goliath
     permissions:
       actions: write
     steps:

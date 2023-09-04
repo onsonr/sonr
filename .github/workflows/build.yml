@@ -77,7 +77,8 @@ jobs:
 
   build-make:
     name: Build using makefile
-    runs-on: ubuntu-latest
+    runs-on:
+      group: Goliath
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3

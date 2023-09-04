@@ -7,7 +7,7 @@ on:
 jobs:
   publish-drafts:
     runs-on:
-      labels: Snorlax
+      group: Goliath
     steps:
       - name: Publish Drafts
         run: |

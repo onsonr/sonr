@@ -11,12 +11,12 @@ on: [pull_request]
 jobs:
   label:
     runs-on:
-      labels: Snorlax
+      group: Goliath
     permissions:
       contents: read
       pull-requests: write
 
     steps:
-    - uses: actions/labeler@v4
-      with:
-        repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
