@@ -964,25 +964,25 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "params", "identity"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "params", "identity"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DIDDocument_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "did"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DIDDocument_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "did"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DIDDocumentAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"core", "id"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DIDDocumentAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"core", "id"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidByOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "owner"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidByOwner_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "owner"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_DidByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "alias"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_DidByAlsoKnownAs_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2}, []string{"core", "id", "alias"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_AliasAvailable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"core", "id", "alias", "check"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_AliasAvailable_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 2, 2, 3}, []string{"core", "id", "alias", "check"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ControllerAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"core", "id", "controllers", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ControllerAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"core", "id", "controllers", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_ControllerAccountAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "controllers"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_ControllerAccountAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "id", "controllers"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_EscrowAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonrhq", "core", "identity", "escrow_account", "address"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_EscrowAccount_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3, 1, 0, 4, 1, 5, 4}, []string{"sonr-io", "core", "identity", "escrow_account", "address"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_EscrowAccountAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonrhq", "core", "identity", "escrow_account"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_EscrowAccountAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"sonr-io", "core", "identity", "escrow_account"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

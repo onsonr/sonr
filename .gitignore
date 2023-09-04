@@ -10,7 +10,6 @@ release/
 .tmp
 build/
 dist/
-.vscode/
 .docker-credentials.json
 .bin
 ./sonrd

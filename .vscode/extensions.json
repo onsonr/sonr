@@ -1,8 +1,16 @@
 {
   "recommendations": [
-    "unifiedjs.vscode-mdx",
-    "arcanis.vscode-zipfs",
-    "dbaeumer.vscode-eslint",
-    "golang.go"
+    "bufbuild.vscode-buf",
+    "sanchitverma.block-comments",
+    "aaron-bond.better-comments",
+    "ms-azuretools.vscode-docker",
+    "golang.go",
+    "qufiwefefwoyn.inline-sql-syntax",
+    "ms-vscode.makefile-tools",
+    "pbkit.vscode-pbkit",
+    "kangping.protobuf",
+    "hangxingliu.vscode-systemd-support",
+    "atommaterial.a-file-icon-vscode",
+    "davidanson.vscode-markdownlint"
   ]
 }

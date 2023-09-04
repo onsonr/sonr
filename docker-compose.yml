@@ -21,8 +21,10 @@ networks:
   sonr-net:
 services:
   node:
-    image: ghcr.io/sonr-io/sonrd:latest
-    command: sh scripts/localnet.sh
+    init: true
+    build:
+      dockerfile: Dockerfile.dev
+    command: sh scripts/entrypoint.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
@@ -31,6 +33,7 @@ services:
       - 8000:8080 # highway
     restart: always
   db:
+    pull_policy: always
     image: ghcr.io/sonr-io/icefiredb:latest
     init: true
     container_name: db

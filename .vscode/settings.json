@@ -64,16 +64,11 @@
     "**/largeFolder": true,
     "**/pubspec.lock": true,
     "**pubspec.lock": true,
-    "app.iml": true,
-    "Contents.json": true,
     "**/.trunk/*out/": true,
     "**/.trunk/*actions/": true,
     "**/.trunk/*logs/": true,
     "**/.trunk/*plugins/": true,
-    "**/**/*.pb.go": true,
-    "**/**/*.pb.gw.go": true,
     "**/**/types/*_test.go": true,
-    "LICENSE": true,
     "proto/buf.lock": true,
     "**/.circleci": true,
     "**/.compodocrc*": true,
@@ -101,17 +96,6 @@
     ]
   },
   "explorer.excludeGitIgnore": true,
-  "editor.fontFamily": "FiraCode",
-  "hide-files.files": [
-    "snap",
-    "types",
-    ".devcontainer",
-    "tools",
-    "testutil",
-    "go.sum",
-    ".swm",
-    "build"
-  ],
   "DockerRun.DisableDockerrc": true,
   "DockerRun.Containers": [],
   "doppler.autocomplete.enable": true,
@@ -135,5 +119,25 @@
     "titleBar.inactiveBackground": "#077aa299",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#077aa2"
+  "peacock.color": "#077aa2",
+  "a-file-icon-vscode.arrowTheme": "triangle",
+  "a-file-icon-vscode.folderTheme": "specific",
+  "a-file-icon-vscode.folderColor": "#ffd0aa",
+  "a-file-icon-vscode.activeIconPacks": [
+    "angular",
+    "ngrx",
+    "nest",
+    "react",
+    "redux",
+    "recoil",
+    "vue",
+    "vuex",
+    "rails",
+    "phalcon",
+    "volt"
+  ],
+  "a-file-icon-vscode.opacity": 1,
+  "a-file-icon-vscode.saturation": 1,
+  "editor.fontFamily": "Iosevka Custom",
+  "terminal.integrated.fontFamily": "Iosevka Custom"
 }

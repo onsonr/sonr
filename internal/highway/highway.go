@@ -1,30 +1,43 @@
 package highway
 
 import (
-	"fmt"
-
-	"github.com/sonrhq/core/internal/highway/types"
-	// swagger embed files
-	// gin-swagger middleware
+	client "github.com/cosmos/cosmos-sdk/client"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/sonrhq/core/internal/highway/handler"
+	"github.com/sonrhq/core/internal/highway/router"
+	"google.golang.org/grpc"
 )
 
-// StartAPI starts the highway api service
-// @title           Sonr Highway Protocol API
-// @version         1.0
-// @description     API for the Sonr Highway Protocol, a peer-to-peer identity and asset management system.
-// @termsOfService  <URL_to_your_terms_of_service>
-// @contact.name    Sonr API Support
-// @contact.url     <URL_to_your_support>
-// @contact.email   <your_support_email>
-// @license.name    <Your_License_Name>
-// @license.url     <URL_to_license>
-// @host            <host_address>:<port>
-// @BasePath        /api/v1
-func StartAPI() {
-	if types.EnvEnabled() {
-		err := runHighway()
-		if err != nil {
-			fmt.Println("Cannot start the service: " + err.Error())
-		}
+var hway *Instance
+
+// Instance is the local process instance of the Highway Service Server.
+type Instance struct {
+	grpcServer *grpc.Server
+}
+
+func init() {
+	hway = &Instance{
+		grpcServer: grpc.NewServer(),
 	}
+}
+
+// RegisterHighwayGateway registers the Highway Service Server.
+func RegisterHighwayGateway(cctx client.Context, mux *runtime.ServeMux) {
+	bAPIURL := getBaseAPIURL(cctx)
+	handler.RegisterHandlers(cctx, hway.grpcServer)
+	router.RegisterRouter(mux, bAPIURL)
+}
+
+// utility function to get the base API URL
+func getBaseAPIURL(cctx client.Context) string {
+	b := "localhost:1317"
+	tAPIAddr := cctx.GRPCClient.Target()
+	if tAPIAddr != "" {
+		b = tAPIAddr
+	}
+	vAPIAddr := cctx.Viper.GetString("api.address")
+	if vAPIAddr != "" && vAPIAddr != "localhost:1317" && vAPIAddr != b {
+		b = vAPIAddr
+	}
+	return b
 }

@@ -1,173 +1,103 @@
 package handler
 
 import (
-	"github.com/gin-gonic/gin"
+	"context"
+	"fmt"
 
+	"github.com/cosmos/cosmos-sdk/client"
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/internal/highway/types"
+	authenticationpb "github.com/sonrhq/core/types/highway/authentication/v1"
 	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
 	identityproxy "github.com/sonrhq/core/x/identity/client/proxy"
 	serviceproxy "github.com/sonrhq/core/x/service/client/proxy"
+	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
-// RegisterEscrowIdentity returns the credential assertion options to start account login.
-//
-// @Summary Register escrow identity
-// @Description Returns the credential assertion options to start account login.
-// @Accept  json
-// @Produce  json
-// @Param amount query string true "Amount"
-// @Param email query string true "Email"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /registerEscrowIdentity [get]
-func RegisterEscrowIdentity(c *gin.Context) {
-	origin := c.Query("amount")
-	alias := c.Query("email")
-
-	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
-		return
-	}
-	assertionOpts, chal, _, err := mdw.IssueCredentialAssertionOptions(alias, record)
-	if err != nil {
-		c.JSON(500, gin.H{"error": err.Error(), "where": "GetCredentialAssertionOptions"})
-		return
-	}
-	c.JSON(200, gin.H{
-		"assertion_options": assertionOpts,
-		"challenge":         chal.String(),
-		"origin":            origin,
-		"alias":             alias,
-	})
+// AuthenticationHandler is the handler for the authentication service
+type AuthenticationHandler struct {
+	cctx client.Context
 }
 
-// RegisterControllerIdentity registers a credential for a given Unclaimed Wallet.
-//
-// @Summary Register controller identity
-// @Description Registers a credential for a given Unclaimed Wallet.
-// @Accept  json
-// @Produce  json
-// @Param origin path string true "Origin"
-// @Param alias path string true "Alias"
-// @Param attestation query string true "Attestation"
-// @Param challenge query string true "Challenge"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 404 {object} map[string]string "Error message"
-// @Failure 412 {object} map[string]string "Error message"
-// @Failure 400 {object} map[string]string "Error message"
-// @Failure 401 {object} map[string]string "Error message"
-// @Router /registerControllerIdentity/{origin}/{alias} [post]
-func RegisterControllerIdentity(c *gin.Context) {
-	origin := c.Param("origin")
-	alias := c.Param("alias")
-	attestionResp := c.Query("attestation")
-	challenge := c.Query("challenge")
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                   API Methods                                  ||
+// ! ||--------------------------------------------------------------------------------||
+
+// Authenticate handles the authentication request
+func (a *AuthenticationHandler) Authenticate(ctx context.Context, req *authenticationpb.AuthenticateRequest) (*authenticationpb.AuthenticateResponse, error) {
+	record, err := serviceproxy.GetServiceRecord(ctx, req.Origin)
+	if err != nil {
+		return nil, err
+	}
+	_, err = record.VerifyAssertionChallenge(req.Assertion)
+	if err != nil {
+		return nil, err
+	}
+	addr, err := domainproxy.GetEmailRecordCreator(ctx, req.Alias)
+	if err != nil {
+		return nil, err
+	}
+	contAcc, err := identityproxy.GetControllerAccount(ctx, addr)
+	if err != nil {
+		return nil, err
+	}
+	token, err := types.NewSessionJWTClaims(req.Alias, contAcc)
+	if err != nil {
+		return nil, err
+	}
+	return &authenticationpb.AuthenticateResponse{
+		Origin:  req.Origin,
+		Address: contAcc.Address,
+		Jwt:     token,
+	}, nil
+}
+
+// CurrentUser returns the current user
+func (a *AuthenticationHandler) CurrentUser(ctx context.Context, req *emptypb.Empty) (*authenticationpb.CurrentUserResponse, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+// Params returns the parameters for the given request
+func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationpb.ParamsRequest) (*authenticationpb.ParamsResponse, error) {
+	if req.IsLogin {
+		return mdw.GetCredentialAssertionOptions(ctx, req.Origin, req.Alias)
+	}
+	return mdw.GetCredentialAttestationParams(ctx, req.Origin, req.Alias)
+}
+
+// Register handles the registration request
+func (a *AuthenticationHandler) Register(ctx context.Context, req *authenticationpb.RegisterRequest) (*authenticationpb.RegisterResponse, error) {
 	// Get the service record from the origin
-	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
+	record, err := serviceproxy.GetServiceRecord(ctx, req.Origin)
 	if err != nil {
-		c.JSON(404, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
-		return
+		return nil, err
 	}
-	credential, err := record.VerifyCreationChallenge(attestionResp, challenge)
+	credential, err := record.VerifyCreationChallenge(req.Attestation, req.Challenge)
 	if err != nil && credential == nil {
-		c.JSON(412, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
-		return
+		return nil, err
 	}
-	cont, resp, err := mdw.PublishControllerAccount(alias, credential, origin)
+	cont, resp, err := mdw.PublishControllerAccount(req.Username, credential, req.Origin)
 	if err != nil {
-		c.JSON(400, gin.H{"error": err.Error(), "where": "PublishControllerAccount"})
-		return
+		return nil, err
 	}
-	token, err := types.NewSessionJWTClaims(alias, cont.Account())
+	token, err := types.NewSessionJWTClaims(req.Username, cont.Account())
 	if err != nil {
-		c.JSON(401, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
-		return
+		return nil, err
 	}
-	c.JSON(200, gin.H{
-		"tx_hash": resp.TxHash,
-		"address": cont.Account().Address,
-		"token":   token,
-		"origin":  origin,
-		"success": true,
-	})
+	return &authenticationpb.RegisterResponse{
+		Origin:  req.Origin,
+		Address: cont.Account().Address,
+		Jwt:     token,
+		TxHash:  resp.TxHash,
+	}, nil
 }
 
-// SignInWithCredential verifies a credential for a given account and returns the JWT Keyshare.
-//
-// @Summary Sign in with credential
-// @Description Verifies a credential for a given account and returns the JWT Keyshare.
-// @Accept  json
-// @Produce  json
-// @Param origin path string true "Origin"
-// @Param alias path string true "Alias"
-// @Param assertion query string true "Assertion"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 441 {object} map[string]string "Error message"
-// @Failure 442 {object} map[string]string "Error message"
-// @Failure 443 {object} map[string]string "Error message"
-// @Failure 444 {object} map[string]string "Error message"
-// @Failure 445 {object} map[string]string "Error message"
-// @Router /signInWithCredential/{origin}/{alias} [post]
-func SignInWithCredential(c *gin.Context) {
-	origin := c.Param("origin")
-	alias := c.Param("alias")
-	assertionResp := c.Query("assertion")
-	record, err := serviceproxy.GetServiceRecord(c.Request.Context(), origin)
-	if err != nil {
-		c.JSON(441, gin.H{"error": err.Error(), "where": "GetServiceRecord"})
-		return
-	}
-	_, err = record.VerifyAssertionChallenge(assertionResp)
-	if err != nil {
-		c.JSON(442, gin.H{"error": err.Error(), "where": "VerifyCreationChallenge"})
-		return
-	}
-	addr, err := domainproxy.GetEmailRecordCreator(c.Request.Context(), alias)
-	if err != nil {
-		c.JSON(443, gin.H{"error": err.Error(), "where": "GetEmailRecordCreator"})
-		return
-	}
-	contAcc, err := identityproxy.GetControllerAccount(c.Request.Context(), addr)
-	if err != nil {
-		c.JSON(444, gin.H{"error": err.Error(), "where": "GetControllerAccount"})
-		return
-	}
-	token, err := types.NewSessionJWTClaims(alias, contAcc)
-	if err != nil {
-		c.JSON(445, gin.H{"error": err.Error(), "where": "NewSessionJWTClaims"})
-		return
-	}
-	c.JSON(200, gin.H{
-		"token":   token,
-		"origin":  origin,
-		"address": contAcc.Address,
-		"success": true,
-	})
+// RefreshToken handles the refresh token request
+func (a *AuthenticationHandler) RefreshToken(ctx context.Context, req *authenticationpb.RefreshTokenRequest) (*authenticationpb.RefreshTokenResponse, error) {
+	return nil, nil
 }
 
-// SignInWithEmail registers a DIDDocument for a given email authorized jwt.
-//
-// @Summary Sign in with email
-// @Description Registers a DIDDocument for a given email authorized jwt.
-// @Accept  json
-// @Produce  json
-// @Param jwt query string true "JWT"
-// @Success 200 {object} map[string]interface{} "Success response"
-// @Failure 500 {object} map[string]string "Error message"
-// @Router /signInWithEmail [post]
-func SignInWithEmail(c *gin.Context) {
-	// token := c.Query("jwt")
-	// resp, err := sfs.Claims.ClaimWithEmail(token)
-	// if err != nil {
-	// 	c.JSON(500, gin.H{"error": err.Error(), "where": "ClaimWithEmail"})
-	// 	return
-	// }
-	// c.JSON(200, mdw.StoreAuthCookies(c, resp, ""))
-	c.JSON(500, gin.H{
-		// "jwt":     token,
-		// "ucw_id":  ucw,
-		// "address": ucw,
-	})
+// VerifyToken handles the verify token request
+func (a *AuthenticationHandler) VerifyToken(ctx context.Context, req *authenticationpb.VerifyTokenRequest) (*authenticationpb.VerifyTokenResponse, error) {
+	return nil, nil
 }

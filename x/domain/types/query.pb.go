@@ -359,6 +359,7 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Queries a list of UsernameRecords items.
 	UsernameRecord(ctx context.Context, in *QueryGetUsernameRecordsRequest, opts ...grpc.CallOption) (*QueryGetUsernameRecordsResponse, error)
+	// Queries a list of UsernameRecords items.
 	UsernameRecordAll(ctx context.Context, in *QueryAllUsernameRecordsRequest, opts ...grpc.CallOption) (*QueryAllUsernameRecordsResponse, error)
 }
 
@@ -403,6 +404,7 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Queries a list of UsernameRecords items.
 	UsernameRecord(context.Context, *QueryGetUsernameRecordsRequest) (*QueryGetUsernameRecordsResponse, error)
+	// Queries a list of UsernameRecords items.
 	UsernameRecordAll(context.Context, *QueryAllUsernameRecordsRequest) (*QueryAllUsernameRecordsResponse, error)
 }
 

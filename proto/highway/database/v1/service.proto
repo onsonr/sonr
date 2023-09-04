@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package highway.database.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/sonrhq/core/types/highway/database/v1;databasepb";
+
+service DatabaseService {
+  rpc Health(HealthRequest) returns (HealthResponse) {
+    option (google.api.http) = {get: "/health"};
+  }
+}
+
+message HealthRequest {}
+
+message HealthResponse {
+  bool ok = 1;
+  string message = 2;
+}

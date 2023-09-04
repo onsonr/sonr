@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package highway.storage.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/sonrhq/core/types/highway/storage/v1;storagepb";
+
+service StorageService {
+  rpc GetCID(GetCIDRequest) returns (GetCIDResponse) {
+    option (google.api.http) = {get: "/v1/cid/{cid}"};
+  }
+
+  rpc PutData(PutDataRequest) returns (PutDataResponse) {
+    option (google.api.http) = {post: "/v1/cid/{cid}"};
+  }
+}
+
+message GetCIDRequest {
+  string cid = 1;
+}
+
+message GetCIDResponse {
+  string cid = 1;
+  string data = 2;
+}
+
+message PutDataRequest {
+  string cid = 1;
+  string data = 2;
+}
+
+message PutDataResponse {
+  string cid = 1;
+}

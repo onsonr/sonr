@@ -7,14 +7,18 @@ deps:
   - buf.build/cosmos/gogo-proto
   - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
-  ignore:
-    - sonr-io/core
-    - sonr-io/sonr
   allow_comment_ignores: true
+  ignore:
+    - highway/authentication/v1
+    - highway/database/v1
+    - highway/storage/v1
+    - highway/wallet/v1
   use:
     - DEFAULT
-    - FILE_LOWER_SNAKE_CASE
   except:
+    - ENUM_ZERO_VALUE_SUFFIX
+    - FIELD_LOWER_SNAKE_CASE
+    - ENUM_VALUE_PREFIX
     - PACKAGE_DIRECTORY_MATCH
     - UNARY_RPC
     - COMMENT_FIELD

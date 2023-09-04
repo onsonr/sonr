@@ -1,0 +1,79 @@
+syntax = "proto3";
+
+package highway.wallet.v1;
+
+import "google/api/annotations.proto";
+
+option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
+
+service WalletService {
+  rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/create";
+  }
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {}
+  rpc SignWithAccount(SignWithAccountRequest) returns (SignWithAccountResponse) {}
+  rpc VerifyWithAccount(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {}
+  rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {}
+}
+
+message CreateAccountRequest {
+  string jwt = 1;
+  string name = 2;
+  string coin_type = 3;
+  string network = 4;
+}
+
+message CreateAccountResponse {
+  string address = 1;
+  string coin_type = 2;
+  string owner = 3;
+}
+
+message GetAccountRequest {
+  string jwt = 1;
+  string address = 2;
+}
+
+message GetAccountResponse {
+  string address = 1;
+  string coin_type = 2;
+  string owner = 3;
+}
+
+message ListAccountsRequest {
+  string jwt = 1;
+}
+
+message ListAccountsResponse {
+  repeated string accounts = 1;
+}
+
+message SignWithAccountRequest {
+  string jwt = 1;
+  string address = 2;
+  bytes message = 3;
+}
+
+message SignWithAccountResponse {
+  bytes signature = 1;
+}
+
+message VerifyWithAccountRequest {
+  string jwt = 1;
+  string address = 2;
+  bytes message = 3;
+  bytes signature = 4;
+}
+
+message VerifyWithAccountResponse {
+  bool verified = 1;
+}
+
+message ExportWalletRequest {
+  string jwt = 1;
+}
+
+message ExportWalletResponse {
+  string wallet = 1;
+}

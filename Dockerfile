@@ -60,9 +60,7 @@ LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
 LABEL org.opencontainers.image.description "Default node image for sonr"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY sonr.yml sonr.yml
 COPY scripts scripts
-ENV SONR_LAUNCH_CONFIG=/sonr.yml
 
 # Expose ports
 EXPOSE 26657

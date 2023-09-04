@@ -321,11 +321,11 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "domain", "params"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "domain", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_UsernameRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"core", "domain", "username", "index"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UsernameRecord_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"core", "domain", "username", "index"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_UsernameRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "domain", "username"}, "", runtime.AssumeColonVerbOpt(true)))
+	pattern_Query_UsernameRecordAll_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"core", "domain", "username"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

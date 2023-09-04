@@ -1,0 +1,49 @@
+syntax = "proto3";
+package core.service;
+
+option go_package = "github.com/sonrhq/core/x/service/types";
+
+message ServiceRecord {
+  string id = 1;
+  string controller = 2; // The entity controlling the service
+  repeated string origins = 3;
+  string name = 4; // The name of the service
+  string description = 5; // The description of the service
+}
+
+// ServiceRelationship is a relationship between a service and a User entity.
+// This relation is used to track the number of times a user has interacted with
+// a service, utilizing a verifiable random function (VRF) to generate a random
+// number that is used to determine whether or not a user has access to a
+// service.
+message ServiceRelationship {
+  // Reference is the reference to the service record
+  string reference = 1;
+
+  // Did is the user's DID
+  string did = 2;
+
+  // Count is the number of times the user has interacted with the service
+  uint32 count = 3;
+}
+
+// Permissions are a bitfield of permissions that a user has for a given service
+// in order to perform certain actions.
+enum Permissions {
+  // Authenticated user with basic public info and read access to public
+  // resources
+  SR_BASE = 0;
+
+  // Authenticated user with service-side access to signing privelages
+  SR_SIGN = 1;
+
+  // Authenticated user with service-side access to writing to ipfs
+  SR_WRITE = 2;
+
+  // Authenticated user with service-side access to updating user DID documents
+  // and creating new ones
+  SR_CREATE = 3;
+
+  // Authenticated user with service-side access to receiving notifications
+  SR_NOTIFY = 4;
+}
