@@ -17,12 +17,7 @@ permissions:
 jobs:
   release:
     name: Run goreleaser
-    runs-on:
-      group: Goliath
-      labels:
-        - ubuntu-ultra-instinct
-        - ubuntu-super
-        - ubuntu-baryon
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
