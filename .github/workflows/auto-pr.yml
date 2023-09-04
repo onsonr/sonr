@@ -10,8 +10,7 @@ permissions:
 
 jobs:
   build:
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     steps:
       - uses: actions/checkout@v2
       - uses: jbrocher/auto-pr-body-generator@v0.2.2

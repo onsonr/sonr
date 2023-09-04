@@ -48,8 +48,7 @@ on:
 
 jobs:
   del_runs:
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     permissions:
       actions: write
     steps:

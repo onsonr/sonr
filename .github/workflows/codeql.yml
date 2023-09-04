@@ -7,8 +7,7 @@ on:
 jobs:
   codeql-analysis:
     name: Run CodeQL Analysis
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     permissions:
       actions: read
       contents: read

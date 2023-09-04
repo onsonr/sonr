@@ -31,8 +31,7 @@ concurrency:
 jobs:
   build:
     name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
 
     strategy:
       matrix:
@@ -73,8 +72,7 @@ jobs:
 
   coverage:
     name: Scan/Upload Coverage
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     steps:
       - uses: actions/checkout@v3
         with:
@@ -92,8 +90,7 @@ jobs:
 
   docker:
     name: Test Docker Build
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     env:
       GO_VERSION: "1.19.12" # Replace with your Go version
       GIT_VERSION: ${{ github.sha }}
@@ -128,8 +125,7 @@ jobs:
 
   lint-protos:
     name: Lint Protos and Check for Breaking Changes
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     steps:
       - uses: actions/checkout@v2
       - uses: bufbuild/buf-setup-action@v1

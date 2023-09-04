@@ -10,8 +10,7 @@ on: [pull_request]
 
 jobs:
   label:
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     permissions:
       contents: read
       pull-requests: write

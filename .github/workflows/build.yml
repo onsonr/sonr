@@ -77,8 +77,7 @@ jobs:
 
   build-make:
     name: Build using makefile
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3

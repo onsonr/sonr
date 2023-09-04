@@ -17,8 +17,7 @@ permissions:
 jobs:
   release:
     name: Run goreleaser
-    runs-on:
-      group: Goliath
+    runs-on: Snorlax
     steps:
       - uses: actions/checkout@v3
         with:
