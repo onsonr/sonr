@@ -17,7 +17,8 @@ permissions:
 jobs:
   release:
     name: Run goreleaser
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: Snorlax
     steps:
       - uses: actions/checkout@v3
         with:

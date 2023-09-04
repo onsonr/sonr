@@ -6,8 +6,8 @@ on:
 
 jobs:
   publish-drafts:
-    runs-on: ubuntu-latest
-
+    runs-on:
+      labels: Snorlax
     steps:
       - name: Publish Drafts
         run: |

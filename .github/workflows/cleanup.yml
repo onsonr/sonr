@@ -48,7 +48,8 @@ on:
 
 jobs:
   del_runs:
-    runs-on: ubuntu-latest
+    runs-on:
+      labels: Snorlax
     permissions:
       actions: write
     steps:
