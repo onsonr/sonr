@@ -7,11 +7,11 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Params defines the parameters for the module.
 message Params {
-option (gogoproto.goproto_stringer) = false;
-string account_did_method_name = 1;
-string account_did_method_context = 2;
-int64 acccount_discovery_reward = 3;
-string did_base_context = 4;
-int32 maximum_identity_aliases = 5;
-repeated string supported_did_methods = 6;
- }
+  option (gogoproto.goproto_stringer) = false;
+  string account_did_method_name = 1;
+  string account_did_method_context = 2;
+  int64 acccount_discovery_reward = 3;
+  string did_base_context = 4;
+  int32 maximum_identity_aliases = 5;
+  repeated string supported_did_methods = 6;
+}

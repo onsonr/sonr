@@ -19,6 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/sonrhq/core/app"
+	"github.com/sonrhq/core/internal/highway"
 )
 
 type (
@@ -75,6 +76,7 @@ func DefaultConfig() network.Config {
 				nil,
 				simtestutil.EmptyAppOptions{},
 				nil,
+				highway.DefaultConfig(),
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),
 				baseapp.SetChainID(chainID),

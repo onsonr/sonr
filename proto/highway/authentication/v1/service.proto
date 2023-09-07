@@ -9,16 +9,16 @@ option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;auth
 
 service AuthenticationService {
   rpc Login(LoginRequest) returns (LoginResponse) {
-    option (google.api.http).post = "/highway/auth/login/:origin";
+    option (google.api.http).post = "/highway/auth/login/{origin}";
   }
   rpc CurrentUser(google.protobuf.Empty) returns (CurrentUserResponse) {
     option (google.api.http).get = "/highway/auth/current";
   }
   rpc Params(ParamsRequest) returns (ParamsResponse) {
-    option (google.api.http).get = "/highway/auth/params/:origin";
+    option (google.api.http).get = "/highway/auth/params/{origin}";
   }
   rpc Register(RegisterRequest) returns (RegisterResponse) {
-    option (google.api.http).post = "/highway/auth/register/:origin";
+    option (google.api.http).post = "/highway/auth/register/{origin}";
   }
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
     option (google.api.http).post = "/highway/auth/refresh";
@@ -76,19 +76,13 @@ message RegisterResponse {
   string origin = 4;
 }
 
-message RefreshTokenRequest {
-  string jwt = 1;
-}
+message RefreshTokenRequest { string jwt = 1; }
 
 message RefreshTokenResponse {
   string access_token = 1;
   string refresh_token = 2;
 }
 
-message VerifyTokenRequest {
-  string jwt = 1;
-}
+message VerifyTokenRequest { string jwt = 1; }
 
-message VerifyTokenResponse {
-  bool valid = 1;
-}
+message VerifyTokenResponse { bool valid = 1; }

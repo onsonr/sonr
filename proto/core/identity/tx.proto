@@ -9,27 +9,34 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 service Msg {
-  rpc RegisterIdentity        (MsgRegisterIdentity       ) returns (MsgRegisterIdentityResponse       );
-  rpc CreateControllerAccount (MsgCreateControllerAccount) returns (MsgCreateControllerAccountResponse);
-  rpc UpdateControllerAccount (MsgUpdateControllerAccount) returns (MsgUpdateControllerAccountResponse);
-  rpc DeleteControllerAccount (MsgDeleteControllerAccount) returns (MsgDeleteControllerAccountResponse);
-  rpc CreateEscrowAccount     (MsgCreateEscrowAccount    ) returns (MsgCreateEscrowAccountResponse    );
-  rpc UpdateEscrowAccount     (MsgUpdateEscrowAccount    ) returns (MsgUpdateEscrowAccountResponse    );
-  rpc DeleteEscrowAccount     (MsgDeleteEscrowAccount    ) returns (MsgDeleteEscrowAccountResponse    );
+  rpc RegisterIdentity(MsgRegisterIdentity)
+      returns (MsgRegisterIdentityResponse);
+  rpc CreateControllerAccount(MsgCreateControllerAccount)
+      returns (MsgCreateControllerAccountResponse);
+  rpc UpdateControllerAccount(MsgUpdateControllerAccount)
+      returns (MsgUpdateControllerAccountResponse);
+  rpc DeleteControllerAccount(MsgDeleteControllerAccount)
+      returns (MsgDeleteControllerAccountResponse);
+  rpc CreateEscrowAccount(MsgCreateEscrowAccount)
+      returns (MsgCreateEscrowAccountResponse);
+  rpc UpdateEscrowAccount(MsgUpdateEscrowAccount)
+      returns (MsgUpdateEscrowAccountResponse);
+  rpc DeleteEscrowAccount(MsgDeleteEscrowAccount)
+      returns (MsgDeleteEscrowAccountResponse);
 }
 message MsgRegisterIdentity {
-  string      creator      = 1;
+  string creator = 1;
   DIDDocument did_document = 2;
-  uint64      wallet_id    = 3;
+  uint64 wallet_id = 3;
 }
 
 message MsgRegisterIdentityResponse {
-  bool        success      = 1;
+  bool success = 1;
   DIDDocument did_document = 2;
 }
 
 message MsgCreateControllerAccount {
-  string address   = 1;
+  string address = 1;
   string publicKey = 3;
   repeated string authenticators = 4;
   repeated string wallets = 5;
@@ -41,40 +48,38 @@ message MsgCreateControllerAccountResponse {
 }
 
 message MsgUpdateControllerAccount {
-  string address   = 1;
-  uint64 id        = 2;
+  string address = 1;
+  uint64 id = 2;
   repeated string authenticators = 4;
   repeated string wallets = 5;
 }
 
-message MsgUpdateControllerAccountResponse {
-  ControllerAccount account = 1;
-}
+message MsgUpdateControllerAccountResponse { ControllerAccount account = 1; }
 
 message MsgDeleteControllerAccount {
-  string creator   = 1;
-  string address   = 2;
+  string creator = 1;
+  string address = 2;
 }
 
 message MsgDeleteControllerAccountResponse {}
 
 message MsgCreateEscrowAccount {
-  string creator          = 1;
-  string address          = 2;
-  string publicKey        = 3;
+  string creator = 1;
+  string address = 2;
+  string publicKey = 3;
   string lockupUsdBalance = 4;
 }
 
 message MsgCreateEscrowAccountResponse {
-   uint64 id = 1;
-   EscrowAccount account = 2;
+  uint64 id = 1;
+  EscrowAccount account = 2;
 }
 
 message MsgUpdateEscrowAccount {
-  string creator          = 1;
-  uint64 id               = 2;
-  string address          = 3;
-  string publicKey        = 4;
+  string creator = 1;
+  uint64 id = 2;
+  string address = 3;
+  string publicKey = 4;
   string lockupUsdBalance = 5;
 }
 
@@ -86,4 +91,3 @@ message MsgDeleteEscrowAccount {
 }
 
 message MsgDeleteEscrowAccountResponse {}
-
