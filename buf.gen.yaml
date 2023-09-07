@@ -7,13 +7,6 @@ plugins:
   - name: grpc-gateway
     out: .
     opt: logtostderr=true,allow_colon_final_segments=true
-  - plugin: openapiv2
-    out: docs/static
-    strategy: all
-    opt:
-      - allow_merge=true
-      - merge_file_name=sonr
-      - output_format=yaml
   - plugin: buf.build/protocolbuffers/go
     out: internal/gen
     opt:
