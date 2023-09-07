@@ -38,6 +38,7 @@ import (
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
 	sonrdconfig "github.com/sonrhq/core/cmd/sonrd/config"
+	"github.com/sonrhq/core/internal/highway"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -45,6 +46,11 @@ import (
 
 	"github.com/sonrhq/core/app"
 	appparams "github.com/sonrhq/core/app/params"
+)
+
+var (
+	FlagHighwayHost = "highway.host"
+	FlagHighwayPort = "highway.port"
 )
 
 // NewRootCmd creates a new root command for a Cosmos SDK application
@@ -98,6 +104,10 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			)
 		},
 	}
+
+	// Add highway flags
+	rootCmd.PersistentFlags().String(FlagHighwayHost, "localhost", "highway host")
+	rootCmd.PersistentFlags().Int(FlagHighwayPort, 8080, "highway port")
 
 	initRootCmd(rootCmd, encodingConfig)
 	overwriteFlagDefaults(rootCmd, map[string]string{
@@ -270,7 +280,8 @@ func (a appCreator) newApp(
 	if err != nil {
 		panic(err)
 	}
-
+	highwayHost := cast.ToString(appOpts.Get(FlagHighwayHost))
+	highwayPort := cast.ToString(appOpts.Get(FlagHighwayPort))
 	homeDir := cast.ToString(appOpts.Get(flags.FlagHome))
 	chainID := cast.ToString(appOpts.Get(flags.FlagChainID))
 	if chainID == "" {
@@ -311,6 +322,7 @@ func (a appCreator) newApp(
 		app.GetEnabledProposals(),
 		appOpts,
 		emptyWasmOpts,
+		highway.NewConfig(highwayHost, highwayPort),
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
 		baseapp.SetHaltHeight(cast.ToUint64(appOpts.Get(server.FlagHaltHeight))),
@@ -355,6 +367,7 @@ func (a appCreator) appExport(
 		app.GetEnabledProposals(),
 		appOpts,
 		emptyWasmOpts,
+		highway.DefaultConfig(),
 	)
 
 	if height != -1 {

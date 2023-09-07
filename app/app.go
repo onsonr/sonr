@@ -327,8 +327,11 @@ func New(
 	enabledProposals []wasmtypes.ProposalType,
 	appOpts servertypes.AppOptions,
 	wasmOpts []wasmkeeper.Option,
+	highwayCnfg *highway.Config,
 	baseAppOptions ...func(*baseapp.BaseApp),
 ) *App {
+	// Register grpc-gateway routes for highway protocol.
+	highway.RegisterHighwayGateway(highwayCnfg)
 	appCodec := encodingConfig.Marshaler
 	cdc := encodingConfig.Amino
 	interfaceRegistry := encodingConfig.InterfaceRegistry
@@ -993,9 +996,6 @@ func (app *App) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig
 
 	// Register grpc-gateway routes for all modules.
 	ModuleBasics.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
-
-	// Register grpc-gateway routes for highway protocol.
-	highway.RegisterHighwayGateway(clientCtx, apiSvr.GRPCGatewayRouter)
 
 	// register app's OpenAPI routes.
 	docs.RegisterOpenAPIService(Name, apiSvr.Router)

@@ -15,57 +15,57 @@ option go_package = "github.com/sonrhq/core/x/identity/types";
 service Query {
 
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/identity";
-
   }
 
   // Queries a list of DIDDocument items.
-  rpc DIDDocument    (QueryGetDIDDocumentRequest) returns (QueryGetDIDDocumentResponse) {
+  rpc DIDDocument(QueryGetDIDDocumentRequest)
+      returns (QueryGetDIDDocumentResponse) {
     option (google.api.http).get = "/core/id/{did}";
-
   }
-  rpc DIDDocumentAll (QueryAllDIDDocumentRequest) returns (QueryAllDIDDocumentResponse) {
+  rpc DIDDocumentAll(QueryAllDIDDocumentRequest)
+      returns (QueryAllDIDDocumentResponse) {
     option (google.api.http).get = "/core/id";
-
   }
 
   // Returns DIDDocument based on an owner
-  rpc DidByOwner (QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
+  rpc DidByOwner(QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
     option (google.api.http).get = "/core/id/owner/{owner}";
-
   }
 
   // Returns DIDDocument based on an alias *only Sonr Identities
-  rpc DidByAlsoKnownAs (QueryDidByAlsoKnownAsRequest) returns (QueryDidByAlsoKnownAsResponse) {
+  rpc DidByAlsoKnownAs(QueryDidByAlsoKnownAsRequest)
+      returns (QueryDidByAlsoKnownAsResponse) {
     option (google.api.http).get = "/core/id/alias/{alias}";
-
   }
 
   // Checks if a given alias is available to register *only Sonr Identities
-  rpc AliasAvailable (QueryAliasAvailableRequest) returns (QueryAliasAvailableResponse) {
+  rpc AliasAvailable(QueryAliasAvailableRequest)
+      returns (QueryAliasAvailableResponse) {
     option (google.api.http).get = "/core/id/alias/{alias}/check";
-
   }
 
   // Queries a list of ControllerAccount items.
-  rpc ControllerAccount    (QueryGetControllerAccountRequest) returns (QueryGetControllerAccountResponse) {
+  rpc ControllerAccount(QueryGetControllerAccountRequest)
+      returns (QueryGetControllerAccountResponse) {
     option (google.api.http).get = "/core/id/controllers/{address}";
   }
 
-  rpc ControllerAccountAll (QueryAllControllerAccountRequest) returns (QueryAllControllerAccountResponse) {
+  rpc ControllerAccountAll(QueryAllControllerAccountRequest)
+      returns (QueryAllControllerAccountResponse) {
     option (google.api.http).get = "/core/id/controllers";
-
   }
 
   // Queries a list of EscrowAccount items.
-  rpc EscrowAccount    (QueryGetEscrowAccountRequest) returns (QueryGetEscrowAccountResponse) {
-    option (google.api.http).get = "/sonr-io/core/identity/escrow_account/{address}";
-
+  rpc EscrowAccount(QueryGetEscrowAccountRequest)
+      returns (QueryGetEscrowAccountResponse) {
+    option (google.api.http).get =
+        "/sonr-io/core/identity/escrow_account/{address}";
   }
-  rpc EscrowAccountAll (QueryAllEscrowAccountRequest) returns (QueryAllEscrowAccountResponse) {
+  rpc EscrowAccountAll(QueryAllEscrowAccountRequest)
+      returns (QueryAllEscrowAccountResponse) {
     option (google.api.http).get = "/sonr-io/core/identity/escrow_account";
-
   }
 }
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -75,15 +75,13 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
 
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetDIDDocumentRequest {
-  string did = 1;
-}
+message QueryGetDIDDocumentRequest { string did = 1; }
 
 message QueryGetDIDDocumentResponse {
-  DIDDocument dIDDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument dIDDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllDIDDocumentRequest {
@@ -91,8 +89,8 @@ message QueryAllDIDDocumentRequest {
 }
 
 message QueryAllDIDDocumentResponse {
-  repeated DIDDocument                            dIDDocument = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination  = 2;
+  repeated DIDDocument dIDDocument = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
 message QueryDidByAlsoKnownAsRequest {
@@ -105,7 +103,7 @@ message QueryDidByAlsoKnownAsRequest {
 message QueryDidByAlsoKnownAsResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
-  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument didDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAliasAvailableRequest {
@@ -116,24 +114,20 @@ message QueryAliasAvailableRequest {
 }
 
 message QueryAliasAvailableResponse {
-  bool        available         = 1;
-  DIDDocument existing_document = 2 [(gogoproto.nullable) = true];
+  bool available = 1;
+  DIDDocument existing_document = 2 [ (gogoproto.nullable) = true ];
 }
 
-message QueryDidByOwnerRequest {
-  string owner = 1;
-}
+message QueryDidByOwnerRequest { string owner = 1; }
 
 message QueryDidByOwnerResponse {
-  DIDDocument didDocument = 1 [(gogoproto.nullable) = false];
+  DIDDocument didDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetControllerAccountRequest {
-  string address = 1;
-}
+message QueryGetControllerAccountRequest { string address = 1; }
 
 message QueryGetControllerAccountResponse {
-  ControllerAccount ControllerAccount = 1 [(gogoproto.nullable) = false];
+  ControllerAccount ControllerAccount = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllControllerAccountRequest {
@@ -141,16 +135,15 @@ message QueryAllControllerAccountRequest {
 }
 
 message QueryAllControllerAccountResponse {
-  repeated ControllerAccount                      ControllerAccount = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination        = 2;
+  repeated ControllerAccount ControllerAccount = 1
+      [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-message QueryGetEscrowAccountRequest {
-  string address = 1;
-}
+message QueryGetEscrowAccountRequest { string address = 1; }
 
 message QueryGetEscrowAccountResponse {
-  EscrowAccount EscrowAccount = 1 [(gogoproto.nullable) = false];
+  EscrowAccount EscrowAccount = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllEscrowAccountRequest {
@@ -158,7 +151,6 @@ message QueryAllEscrowAccountRequest {
 }
 
 message QueryAllEscrowAccountResponse {
-  repeated EscrowAccount                          EscrowAccount = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+  repeated EscrowAccount EscrowAccount = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
-
