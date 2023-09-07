@@ -21,8 +21,3 @@ deps:
     repository: googleapis
     commit: 28151c0d0a1641bf938a7672c500e01d
     digest: shake256:49215edf8ef57f7863004539deff8834cfb2195113f0b890dd1f67815d9353e28e668019165b9d872395871eeafcbab3ccfdb2b5f11734d3cca95be9e8d139de
-  - remote: buf.build
-    owner: ysugimoto
-    repository: grpc-graphql-gateway
-    commit: 5bbe51f0268c413ba31bc3c2f117ba9a
-    digest: shake256:80c13dc1789040266533b61b625874ce26985abd3d79121c08c7175344391b77855685b8831c893b90a1587764f3ad686f14cd0a9d6db527d8d42a9687b3fc95
