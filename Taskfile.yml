@@ -31,7 +31,7 @@ tasks:
     desc: Serve the blockchain locally with verbose logging
     cmds:
       - go build -o ./bin/sonrd ./cmd/sonrd
-      - sh scripts/localnet.sh ./bin/sonr
+      - sh scripts/localnet.sh ./bin/sonrd
 
   build:
     desc: Build the binary

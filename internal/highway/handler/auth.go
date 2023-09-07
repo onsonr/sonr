@@ -59,6 +59,9 @@ func (a *AuthenticationHandler) CurrentUser(ctx context.Context, req *emptypb.Em
 
 // Params returns the parameters for the given request
 func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationpb.ParamsRequest) (*authenticationpb.ParamsResponse, error) {
+	if req.Alias == "" {
+		return nil, fmt.Errorf("user provided identifier cannot be empty")
+	}
 	if req.IsLogin {
 		return mdw.GetCredentialAssertionOptions(ctx, req.Origin, req.Alias)
 	}
