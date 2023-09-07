@@ -4,10 +4,10 @@ plugins:
   - name: gocosmos
     out: .
     opt: plugins=grpc
-  - name: grpc-gateway
+  - name: buf.build/grpc-ecosystem/gateway:v2.16.2
     out: .
     opt: logtostderr=true,allow_colon_final_segments=true
-  - plugin: openapiv2
+  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.2
     out: docs/static
     strategy: all
     opt:
