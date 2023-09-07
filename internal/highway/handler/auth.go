@@ -24,7 +24,7 @@ type AuthenticationHandler struct {
 // ! ||--------------------------------------------------------------------------------||
 
 // Authenticate handles the authentication request
-func (a *AuthenticationHandler) Authenticate(ctx context.Context, req *authenticationpb.AuthenticateRequest) (*authenticationpb.AuthenticateResponse, error) {
+func (a *AuthenticationHandler) Login(ctx context.Context, req *authenticationpb.LoginRequest) (*authenticationpb.LoginResponse, error) {
 	record, err := serviceproxy.GetServiceRecord(ctx, req.Origin)
 	if err != nil {
 		return nil, err
@@ -45,7 +45,7 @@ func (a *AuthenticationHandler) Authenticate(ctx context.Context, req *authentic
 	if err != nil {
 		return nil, err
 	}
-	return &authenticationpb.AuthenticateResponse{
+	return &authenticationpb.LoginResponse{
 		Origin:  req.Origin,
 		Address: contAcc.Address,
 		Jwt:     token,

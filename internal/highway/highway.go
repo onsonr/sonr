@@ -1,43 +1,65 @@
 package highway
 
 import (
-	client "github.com/cosmos/cosmos-sdk/client"
+	"context"
+	"fmt"
+	"net/http"
+
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/sonrhq/core/internal/highway/handler"
-	"github.com/sonrhq/core/internal/highway/router"
-	"google.golang.org/grpc"
 )
 
 var hway *Instance
 
 // Instance is the local process instance of the Highway Service Server.
 type Instance struct {
-	grpcServer *grpc.Server
+	ctx 	  context.Context
+	addr 	string
 }
 
 func init() {
-	hway = &Instance{
-		grpcServer: grpc.NewServer(),
-	}
+
 }
 
 // RegisterHighwayGateway registers the Highway Service Server.
-func RegisterHighwayGateway(cctx client.Context, mux *runtime.ServeMux) {
-	bAPIURL := getBaseAPIURL(cctx)
-	handler.RegisterHandlers(cctx, hway.grpcServer)
-	router.RegisterRouter(mux, bAPIURL)
+func RegisterHighwayGateway(c *Config) {
+hway = &Instance{
+		ctx: context.Background(),
+		addr: fmt.Sprintf("%s:%s", c.Host, c.Port),
+	}
+	mux := runtime.NewServeMux()
+	handler.RegisterHandlers(hway.ctx, mux)
+	go hway.Serve(mux)
 }
 
 // utility function to get the base API URL
-func getBaseAPIURL(cctx client.Context) string {
-	b := "localhost:1317"
-	tAPIAddr := cctx.GRPCClient.Target()
-	if tAPIAddr != "" {
-		b = tAPIAddr
+func (i *Instance) Serve(mux *runtime.ServeMux) {
+	s := &http.Server{
+		Addr:    i.addr,
+		Handler: mux,
 	}
-	vAPIAddr := cctx.Viper.GetString("api.address")
-	if vAPIAddr != "" && vAPIAddr != "localhost:1317" && vAPIAddr != b {
-		b = vAPIAddr
+
+	fmt.Printf("Starting Highway Gateway on %s\n", i.addr)
+	if err := s.ListenAndServe(); err != http.ErrServerClosed {
+		panic(err)
 	}
-	return b
+}
+
+type Config struct {
+	Host string
+	Port string
+}
+
+func NewConfig(host string, port string) *Config {
+	return &Config{
+		Host: host,
+		Port: port,
+	}
+}
+
+func DefaultConfig() *Config {
+	return &Config{
+		Host: "localhost",
+		Port: "8080",
+	}
 }

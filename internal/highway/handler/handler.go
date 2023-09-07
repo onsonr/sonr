@@ -1,18 +1,19 @@
 package handler
 
 import (
-	"github.com/cosmos/cosmos-sdk/client"
+	"context"
+
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	authenticationpb "github.com/sonrhq/core/types/highway/authentication/v1"
 	databasepb "github.com/sonrhq/core/types/highway/database/v1"
 	storagepb "github.com/sonrhq/core/types/highway/storage/v1"
 	walletpb "github.com/sonrhq/core/types/highway/wallet/v1"
-	grpc "google.golang.org/grpc"
 )
 
 // RegisterHandlers registers the Highway Service Server.
-func RegisterHandlers(cctx client.Context, grpcServer *grpc.Server) {
-	authenticationpb.RegisterAuthenticationServiceServer(grpcServer, &AuthenticationHandler{cctx: cctx})
-	databasepb.RegisterDatabaseServiceServer(grpcServer, &DatabaseHandler{cctx: cctx})
-	storagepb.RegisterStorageServiceServer(grpcServer, &StorageHandler{cctx: cctx})
-	walletpb.RegisterWalletServiceServer(grpcServer, &WalletHandler{cctx: cctx})
+func RegisterHandlers(ctx context.Context, mux *runtime.ServeMux) {
+	authenticationpb.RegisterAuthenticationServiceHandlerServer(ctx, mux, &AuthenticationHandler{})
+	databasepb.RegisterDatabaseServiceHandlerServer(ctx,mux, &DatabaseHandler{})
+	storagepb.RegisterStorageServiceHandlerServer(ctx, mux,&StorageHandler{})
+	walletpb.RegisterWalletServiceHandlerServer(ctx, mux,&WalletHandler{})
 }
