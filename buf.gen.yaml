@@ -7,8 +7,9 @@ plugins:
   - name: buf.build/grpc-ecosystem/gateway:v2.16.2
     out: .
     opt: logtostderr=true,allow_colon_final_segments=true
-  - plugin: buf.build/grpc-ecosystem/openapiv2:v2.16.2
+  - plugin: openapiv2
     out: docs/static
+    strategy: all
     opt:
       - allow_merge=true
       - merge_file_name=sonr
