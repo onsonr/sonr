@@ -10,6 +10,6 @@ rm -rf types/core
 rm -rf types/sonr
 
 # Blockchain
-cp -r github.com/sonrhq/core/* .
+cp -r github.com/sonr-io/sonr/* .
 rm -rf github.com
 go mod tidy
