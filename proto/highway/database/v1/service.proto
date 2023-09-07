@@ -9,7 +9,9 @@ option go_package = "github.com/sonrhq/core/types/highway/database/v1;databasepb
 
 service DatabaseService {
   rpc Health(HealthRequest) returns (HealthResponse) {
-    option (google.api.http) = {get: "/health"};
+    option (google.api.http) = {
+      get : "/health"
+    };
   }
 }
 

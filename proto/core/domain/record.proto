@@ -8,4 +8,3 @@ message UsernameRecord {
   string address = 2;
   string method = 3;
 }
-

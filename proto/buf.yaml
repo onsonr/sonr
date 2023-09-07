@@ -5,7 +5,6 @@ deps:
   - buf.build/cosmos/cosmos-sdk
   - buf.build/cosmos/cosmos-proto
   - buf.build/cosmos/gogo-proto
-  - buf.build/ysugimoto/grpc-graphql-gateway
 lint:
   allow_comment_ignores: true
   ignore:

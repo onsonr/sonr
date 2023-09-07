@@ -16,10 +16,12 @@ service WalletService {
   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/list";
   }
-  rpc SignWithAccount(SignWithAccountRequest) returns (SignWithAccountResponse) {
+  rpc SignWithAccount(SignWithAccountRequest)
+      returns (SignWithAccountResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/sign";
   }
-  rpc VerifyWithAccount(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {
+  rpc VerifyWithAccount(VerifyWithAccountRequest)
+      returns (VerifyWithAccountResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/verify";
   }
   rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {
@@ -51,13 +53,9 @@ message GetAccountResponse {
   string owner = 3;
 }
 
-message ListAccountsRequest {
-  string jwt = 1;
-}
+message ListAccountsRequest { string jwt = 1; }
 
-message ListAccountsResponse {
-  repeated string accounts = 1;
-}
+message ListAccountsResponse { repeated string accounts = 1; }
 
 message SignWithAccountRequest {
   string jwt = 1;
@@ -65,9 +63,7 @@ message SignWithAccountRequest {
   bytes message = 3;
 }
 
-message SignWithAccountResponse {
-  bytes signature = 1;
-}
+message SignWithAccountResponse { bytes signature = 1; }
 
 message VerifyWithAccountRequest {
   string jwt = 1;
@@ -76,14 +72,8 @@ message VerifyWithAccountRequest {
   bytes signature = 4;
 }
 
-message VerifyWithAccountResponse {
-  bool verified = 1;
-}
+message VerifyWithAccountResponse { bool verified = 1; }
 
-message ExportWalletRequest {
-  string jwt = 1;
-}
+message ExportWalletRequest { string jwt = 1; }
 
-message ExportWalletResponse {
-  string wallet = 1;
-}
+message ExportWalletResponse { string wallet = 1; }

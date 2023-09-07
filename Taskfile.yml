@@ -44,7 +44,7 @@ tasks:
     desc: Generate the protobuf files
     cmds:
       - |
-        sh ./scripts/proto-gen.sh
+        sh ./scripts/protocgen.sh
         git add .
         git commit -m "chore: update proto files"
 

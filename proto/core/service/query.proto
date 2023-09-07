@@ -16,15 +16,17 @@ option go_package = "github.com/sonrhq/core/x/service/types";
 service Query {
 
   // Parameters queries the parameters of the module.
-  rpc Params (QueryParamsRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/service";
   }
 
   // Queries a list of ServiceRecord items.
-  rpc ServiceRecord    (QueryGetServiceRecordRequest) returns (QueryGetServiceRecordResponse) {
+  rpc ServiceRecord(QueryGetServiceRecordRequest)
+      returns (QueryGetServiceRecordResponse) {
     option (google.api.http).get = "/core/service/{origin}";
   }
-  rpc ServiceRecordAll (QueryAllServiceRecordRequest) returns (QueryAllServiceRecordResponse) {
+  rpc ServiceRecordAll(QueryAllServiceRecordRequest)
+      returns (QueryAllServiceRecordResponse) {
     option (google.api.http).get = "/core/service";
   }
 }
@@ -35,15 +37,13 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
 
   // params holds all the parameters of this module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
-message QueryGetServiceRecordRequest {
-  string origin = 1;
-}
+message QueryGetServiceRecordRequest { string origin = 1; }
 
 message QueryGetServiceRecordResponse {
-  ServiceRecord ServiceRecord = 1 [(gogoproto.nullable) = false];
+  ServiceRecord ServiceRecord = 1 [ (gogoproto.nullable) = false ];
 }
 
 message QueryAllServiceRecordRequest {
@@ -51,6 +51,6 @@ message QueryAllServiceRecordRequest {
 }
 
 message QueryAllServiceRecordResponse {
-  repeated ServiceRecord                          ServiceRecord = 1 [(gogoproto.nullable) = false];
-           cosmos.base.query.v1beta1.PageResponse pagination    = 2;
+  repeated ServiceRecord ServiceRecord = 1 [ (gogoproto.nullable) = false ];
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

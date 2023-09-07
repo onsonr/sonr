@@ -28,15 +28,21 @@ type KeyType int32
 const (
 	// No key type specified
 	KeyType_KeyType_UNSPECIFIED KeyType = 0
-	// JsonWebKey2020 is a VerificationMethod type. https://w3c-ccg.github.io/lds-jws2020/
+	// JsonWebKey2020 is a VerificationMethod type.
+	// https://w3c-ccg.github.io/lds-jws2020/
 	KeyType_KeyType_JSON_WEB_KEY_2020 KeyType = 1
-	// ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+	// ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification
+	// key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
 	KeyType_KeyType_ED25519_VERIFICATION_KEY_2018 KeyType = 2
-	// ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019 verification key type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+	// ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019
+	// verification key type as specified here:
+	// https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
 	KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019 KeyType = 3
-	// RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+	// RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type
+	// as specified here: https://w3c-ccg.github.io/lds-rsa2018/
 	KeyType_KeyType_RSA_VERIFICATION_KEY_2018 KeyType = 4
-	// WebAuthnAuthentication2018 is the WebAuthnAuthentication2018 verification key type as specified here: https://w3c-ccg.github.io/lds-webauthn/
+	// WebAuthnAuthentication2018 is the WebAuthnAuthentication2018 verification
+	// key type as specified here: https://w3c-ccg.github.io/lds-webauthn/
 	KeyType_KeyType_WEB_AUTHN_AUTHENTICATION_2018 KeyType = 5
 )
 
@@ -72,13 +78,17 @@ type ProofType int32
 const (
 	// No proof type specified
 	ProofType_ProofType_UNSPECIFIED ProofType = 0
-	// JsonWebSignature2020 is a proof type. https://w3c-ccg.github.io/lds-jws2020/
+	// JsonWebSignature2020 is a proof type.
+	// https://w3c-ccg.github.io/lds-jws2020/
 	ProofType_ProofType_JSON_WEB_SIGNATURE_2020 ProofType = 1
-	// ED25519Signature2018 is the Ed25519Signature2018 proof type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+	// ED25519Signature2018 is the Ed25519Signature2018 proof type as specified
+	// here: https://w3c-ccg.github.io/lds-ed25519-2018/
 	ProofType_ProofType_ED25519_SIGNATURE_2018 ProofType = 2
-	// EcdsaSecp256k1Signature2019 is the EcdsaSecp256k1Signature2019 proof type as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+	// EcdsaSecp256k1Signature2019 is the EcdsaSecp256k1Signature2019 proof type
+	// as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
 	ProofType_ProofType_ECDSA_SECP256K1_SIGNATURE_2019 ProofType = 3
-	// RsaSignature2018 is the RsaSignature2018 proof type as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+	// RsaSignature2018 is the RsaSignature2018 proof type as specified here:
+	// https://w3c-ccg.github.io/lds-rsa2018/
 	ProofType_ProofType_RSA_SIGNATURE_2018 ProofType = 4
 )
 
@@ -106,13 +116,19 @@ func (ProofType) EnumDescriptor() ([]byte, []int) {
 	return fileDescriptor_6e1e1ddaeb1c143c, []int{1}
 }
 
-// Proof represents a credential/presentation proof as defined by the Linked Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).
+// Proof represents a credential/presentation proof as defined by the Linked
+// Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).
 type Proof struct {
-	// Type defines the specific proof type used. For example, an Ed25519Signature2018 type indicates that the proof includes a digital signature produced by an ed25519 cryptographic key.
+	// Type defines the specific proof type used. For example, an
+	// Ed25519Signature2018 type indicates that the proof includes a digital
+	// signature produced by an ed25519 cryptographic key.
 	Type ProofType `protobuf:"varint,1,opt,name=type,proto3,enum=core.crypto.ProofType" json:"type,omitempty"`
-	// ProofPurpose defines the intent for the proof, the reason why an entity created it. Acts as a safeguard to prevent the proof from being misused for a purpose other than the one it was intended for.
+	// ProofPurpose defines the intent for the proof, the reason why an entity
+	// created it. Acts as a safeguard to prevent the proof from being misused for
+	// a purpose other than the one it was intended for.
 	ProofPurpose string `protobuf:"bytes,2,opt,name=proof_purpose,json=proofPurpose,proto3" json:"proof_purpose,omitempty"`
-	// VerificationMethod points to the ID that can be used to verify the proof, eg: a public key.
+	// VerificationMethod points to the ID that can be used to verify the proof,
+	// eg: a public key.
 	VerificationMethod string `protobuf:"bytes,3,opt,name=verification_method,json=verificationMethod,proto3" json:"verification_method,omitempty"`
 	// Created notes when the proof was created using a iso8601 string
 	Created string `protobuf:"bytes,4,opt,name=created,proto3" json:"created,omitempty"`
@@ -188,7 +204,8 @@ func (m *Proof) GetDomain() string {
 	return ""
 }
 
-// JSONWebSignature2020Proof is a VC proof with a signature according to JsonWebSignature2020
+// JSONWebSignature2020Proof is a VC proof with a signature according to
+// JsonWebSignature2020
 type JSONWebSignature2020Proof struct {
 	Proof *Proof `protobuf:"bytes,1,opt,name=proof,proto3" json:"proof,omitempty"`
 	Jws   string `protobuf:"bytes,2,opt,name=jws,proto3" json:"jws,omitempty"`
@@ -241,7 +258,9 @@ func (m *JSONWebSignature2020Proof) GetJws() string {
 	return ""
 }
 
-// VerifiableCredential represents a credential as defined by the Verifiable Credentials Data Model 1.0 specification (https://www.w3.org/TR/vc-data-model/).
+// VerifiableCredential represents a credential as defined by the Verifiable
+// Credentials Data Model 1.0 specification
+// (https://www.w3.org/TR/vc-data-model/).
 type VerifiableCredential struct {
 	// ID is the unique identifier for the credential.
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
