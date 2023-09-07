@@ -10,11 +10,21 @@ service WalletService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/create";
   }
-  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {}
-  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {}
-  rpc SignWithAccount(SignWithAccountRequest) returns (SignWithAccountResponse) {}
-  rpc VerifyWithAccount(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {}
-  rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {}
+  rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/get";
+  }
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/list";
+  }
+  rpc SignWithAccount(SignWithAccountRequest) returns (SignWithAccountResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/sign";
+  }
+  rpc VerifyWithAccount(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {
+    option (google.api.http).post = "/highway/wallet/accounts/verify";
+  }
+  rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {
+    option (google.api.http).post = "/highway/wallet/export";
+  }
 }
 
 message CreateAccountRequest {

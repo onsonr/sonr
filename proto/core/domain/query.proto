@@ -22,7 +22,6 @@ service Query {
   // Queries a list of UsernameRecords items.
   rpc UsernameRecord    (QueryGetUsernameRecordsRequest) returns (QueryGetUsernameRecordsResponse) {
     option (google.api.http).get = "/core/domain/username/{index}";
-
   }
 
   // Queries a list of UsernameRecords items.

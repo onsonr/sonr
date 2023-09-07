@@ -8,21 +8,33 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";
 
 service AuthenticationService {
-  rpc Authenticate(AuthenticateRequest) returns (AuthenticateResponse) {}
-  rpc CurrentUser(google.protobuf.Empty) returns (CurrentUserResponse) {}
-  rpc Params(ParamsRequest) returns (ParamsResponse) {}
-  rpc Register(RegisterRequest) returns (RegisterResponse) {}
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {}
-  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {}
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http).post = "/highway/auth/login/:origin";
+  }
+  rpc CurrentUser(google.protobuf.Empty) returns (CurrentUserResponse) {
+    option (google.api.http).get = "/highway/auth/current";
+  }
+  rpc Params(ParamsRequest) returns (ParamsResponse) {
+    option (google.api.http).get = "/highway/auth/params/:origin";
+  }
+  rpc Register(RegisterRequest) returns (RegisterResponse) {
+    option (google.api.http).post = "/highway/auth/register/:origin";
+  }
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http).post = "/highway/auth/refresh";
+  }
+  rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {
+    option (google.api.http).post = "/highway/auth/verify";
+  }
 }
 
-message AuthenticateRequest {
+message LoginRequest {
   string origin = 1;
   string alias = 2;
   string assertion = 3;
 }
 
-message AuthenticateResponse {
+message LoginResponse {
   string jwt = 1;
   string address = 2;
   string origin = 3;

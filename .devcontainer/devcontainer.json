@@ -3,8 +3,6 @@
   "features": {
     "ghcr.io/akhildevelops/devcontainer-features/apt:0": {},
     "ghcr.io/withfig/features/fig:1": {},
-    "ghcr.io/sonr-io/devcontainer-features/icefire:2": {},
-    "ghcr.io/sonr-io/devcontainer-features/task:1": {},
     "ghcr.io/devcontainers/features/go:1": {}
   },
   "hostRequirements": {
