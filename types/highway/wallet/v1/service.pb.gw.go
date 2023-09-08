@@ -146,7 +146,7 @@ var (
 )
 
 func request_WalletService_SignMessage_0(ctx context.Context, marshaler runtime.Marshaler, client WalletServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignWithAccountRequest
+	var protoReq SignMessageRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -162,7 +162,7 @@ func request_WalletService_SignMessage_0(ctx context.Context, marshaler runtime.
 }
 
 func local_request_WalletService_SignMessage_0(ctx context.Context, marshaler runtime.Marshaler, server WalletServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq SignWithAccountRequest
+	var protoReq SignMessageRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -182,7 +182,7 @@ var (
 )
 
 func request_WalletService_VerifySignature_0(ctx context.Context, marshaler runtime.Marshaler, client WalletServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq VerifyWithAccountRequest
+	var protoReq VerifySignatureRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {
@@ -198,7 +198,7 @@ func request_WalletService_VerifySignature_0(ctx context.Context, marshaler runt
 }
 
 func local_request_WalletService_VerifySignature_0(ctx context.Context, marshaler runtime.Marshaler, server WalletServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq VerifyWithAccountRequest
+	var protoReq VerifySignatureRequest
 	var metadata runtime.ServerMetadata
 
 	if err := req.ParseForm(); err != nil {

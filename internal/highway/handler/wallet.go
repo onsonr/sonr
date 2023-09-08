@@ -29,19 +29,18 @@ type WalletHandler struct {
 // @Success 200 {object} map[string]interface{} "Account Info"
 // @Router /createAccount/{coinType} [post]
 func (a *WalletHandler) CreateAccount(ctx context.Context, req *walletpb.CreateAccountRequest) (*walletpb.CreateAccountResponse, error) {
-	ct := crypto.CoinTypeFromName(req.CoinType)
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
 	}
 
-	accInfo, err := cont.CreateWallet(ct)
+	accInfo, err := cont.CreateWallet(req.GetCoinType())
 	if err != nil {
 		return nil, err
 	}
 	return &walletpb.CreateAccountResponse{
 		Address:  accInfo.Address,
-		CoinType: ct.Name(),
+		CoinType: req.GetCoinType(),
 		Owner:    cont.Account().Address,
 	}, nil
 }
@@ -98,7 +97,7 @@ func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAcco
 // @Param   msg query string true "Message to Sign"
 // @Success 200 {object} map[string]interface{} "Signature Info"
 // @Router /signWithAccount/{did} [post]
-func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignWithAccountRequest) (*walletpb.SignWithAccountResponse, error) {
+func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignWithAccountRequest) (*walletpb.SignWithAccountResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -123,7 +122,7 @@ func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignW
 // @Param   sig query string true "Signature"
 // @Success 200 {object} map[string]interface{} "Verification Result"
 // @Router /verifyWithAccount/{did} [post]
-func (a *WalletHandler) VerifyWithAccount(ctx context.Context, req *walletpb.VerifyWithAccountRequest) (*walletpb.VerifyWithAccountResponse, error) {
+func (a *WalletHandler) VerifySignature(ctx context.Context, req *walletpb.VerifySignatureRequest) (*walletpb.VerifyWithAccountResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -141,7 +140,8 @@ func (a *WalletHandler) VerifyWithAccount(ctx context.Context, req *walletpb.Ver
 		return nil, err
 	}
 	return &walletpb.VerifyWithAccountResponse{
-		Verified: valid,
+		MessageVerified: valid,
+		Message: 	   string(req.Message),
 	}, nil
 }
 

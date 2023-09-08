@@ -30,11 +30,12 @@ func GetCredentialAttestationParams(ctx context.Context, origin string, alias st
 		return nil, err
 	}
 	return &authenticationpb.ParamsResponse{
+		Success:            true,
 		AttestationOptions: creOpts,
 		Challenge:          chal.String(),
 		Origin:             origin,
 		Alias:              alias,
-		IsLogin:            false,
+		Existing:           false,
 	}, nil
 }
 
@@ -53,11 +54,12 @@ func GetCredentialAssertionOptions(ctx context.Context, origin string, alias str
 		return nil, err
 	}
 	return &authenticationpb.ParamsResponse{
+		Success:          true,
 		AssertionOptions: assertionOpts,
 		Challenge:        chal.String(),
 		Origin:           origin,
 		Alias:            alias,
 		Address:          addr,
-		IsLogin:          true,
+		Existing:         true,
 	}, nil
 }

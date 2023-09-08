@@ -405,24 +405,24 @@ func (m *ListAccountsResponse) GetAccounts() []string {
 	return nil
 }
 
-type SignWithAccountRequest struct {
+type SignMessageRequest struct {
 	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	Message []byte `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 }
 
-func (m *SignWithAccountRequest) Reset()         { *m = SignWithAccountRequest{} }
-func (m *SignWithAccountRequest) String() string { return proto.CompactTextString(m) }
-func (*SignWithAccountRequest) ProtoMessage()    {}
-func (*SignWithAccountRequest) Descriptor() ([]byte, []int) {
+func (m *SignMessageRequest) Reset()         { *m = SignMessageRequest{} }
+func (m *SignMessageRequest) String() string { return proto.CompactTextString(m) }
+func (*SignMessageRequest) ProtoMessage()    {}
+func (*SignMessageRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{6}
 }
-func (m *SignWithAccountRequest) XXX_Unmarshal(b []byte) error {
+func (m *SignMessageRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SignWithAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SignMessageRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SignWithAccountRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SignMessageRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -432,57 +432,57 @@ func (m *SignWithAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *SignWithAccountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SignWithAccountRequest.Merge(m, src)
+func (m *SignMessageRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignMessageRequest.Merge(m, src)
 }
-func (m *SignWithAccountRequest) XXX_Size() int {
+func (m *SignMessageRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *SignWithAccountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SignWithAccountRequest.DiscardUnknown(m)
+func (m *SignMessageRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignMessageRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SignWithAccountRequest proto.InternalMessageInfo
+var xxx_messageInfo_SignMessageRequest proto.InternalMessageInfo
 
-func (m *SignWithAccountRequest) GetJwt() string {
+func (m *SignMessageRequest) GetJwt() string {
 	if m != nil {
 		return m.Jwt
 	}
 	return ""
 }
 
-func (m *SignWithAccountRequest) GetAddress() string {
+func (m *SignMessageRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *SignWithAccountRequest) GetMessage() []byte {
+func (m *SignMessageRequest) GetMessage() []byte {
 	if m != nil {
 		return m.Message
 	}
 	return nil
 }
 
-type SignWithAccountResponse struct {
+type SignMessageResponse struct {
 	Success   bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message   string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	Signature []byte `protobuf:"bytes,3,opt,name=signature,proto3" json:"signature,omitempty"`
 }
 
-func (m *SignWithAccountResponse) Reset()         { *m = SignWithAccountResponse{} }
-func (m *SignWithAccountResponse) String() string { return proto.CompactTextString(m) }
-func (*SignWithAccountResponse) ProtoMessage()    {}
-func (*SignWithAccountResponse) Descriptor() ([]byte, []int) {
+func (m *SignMessageResponse) Reset()         { *m = SignMessageResponse{} }
+func (m *SignMessageResponse) String() string { return proto.CompactTextString(m) }
+func (*SignMessageResponse) ProtoMessage()    {}
+func (*SignMessageResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{7}
 }
-func (m *SignWithAccountResponse) XXX_Unmarshal(b []byte) error {
+func (m *SignMessageResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SignWithAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SignMessageResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SignWithAccountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SignMessageResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -492,58 +492,58 @@ func (m *SignWithAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *SignWithAccountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SignWithAccountResponse.Merge(m, src)
+func (m *SignMessageResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SignMessageResponse.Merge(m, src)
 }
-func (m *SignWithAccountResponse) XXX_Size() int {
+func (m *SignMessageResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *SignWithAccountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SignWithAccountResponse.DiscardUnknown(m)
+func (m *SignMessageResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SignMessageResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SignWithAccountResponse proto.InternalMessageInfo
+var xxx_messageInfo_SignMessageResponse proto.InternalMessageInfo
 
-func (m *SignWithAccountResponse) GetSuccess() bool {
+func (m *SignMessageResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *SignWithAccountResponse) GetMessage() string {
+func (m *SignMessageResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-func (m *SignWithAccountResponse) GetSignature() []byte {
+func (m *SignMessageResponse) GetSignature() []byte {
 	if m != nil {
 		return m.Signature
 	}
 	return nil
 }
 
-type VerifyWithAccountRequest struct {
+type VerifySignatureRequest struct {
 	Jwt       string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address   string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 	Message   []byte `protobuf:"bytes,3,opt,name=message,proto3" json:"message,omitempty"`
 	Signature []byte `protobuf:"bytes,4,opt,name=signature,proto3" json:"signature,omitempty"`
 }
 
-func (m *VerifyWithAccountRequest) Reset()         { *m = VerifyWithAccountRequest{} }
-func (m *VerifyWithAccountRequest) String() string { return proto.CompactTextString(m) }
-func (*VerifyWithAccountRequest) ProtoMessage()    {}
-func (*VerifyWithAccountRequest) Descriptor() ([]byte, []int) {
+func (m *VerifySignatureRequest) Reset()         { *m = VerifySignatureRequest{} }
+func (m *VerifySignatureRequest) String() string { return proto.CompactTextString(m) }
+func (*VerifySignatureRequest) ProtoMessage()    {}
+func (*VerifySignatureRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{8}
 }
-func (m *VerifyWithAccountRequest) XXX_Unmarshal(b []byte) error {
+func (m *VerifySignatureRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *VerifyWithAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *VerifySignatureRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_VerifyWithAccountRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_VerifySignatureRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -553,64 +553,64 @@ func (m *VerifyWithAccountRequest) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *VerifyWithAccountRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VerifyWithAccountRequest.Merge(m, src)
+func (m *VerifySignatureRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifySignatureRequest.Merge(m, src)
 }
-func (m *VerifyWithAccountRequest) XXX_Size() int {
+func (m *VerifySignatureRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *VerifyWithAccountRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_VerifyWithAccountRequest.DiscardUnknown(m)
+func (m *VerifySignatureRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifySignatureRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_VerifyWithAccountRequest proto.InternalMessageInfo
+var xxx_messageInfo_VerifySignatureRequest proto.InternalMessageInfo
 
-func (m *VerifyWithAccountRequest) GetJwt() string {
+func (m *VerifySignatureRequest) GetJwt() string {
 	if m != nil {
 		return m.Jwt
 	}
 	return ""
 }
 
-func (m *VerifyWithAccountRequest) GetAddress() string {
+func (m *VerifySignatureRequest) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *VerifyWithAccountRequest) GetMessage() []byte {
+func (m *VerifySignatureRequest) GetMessage() []byte {
 	if m != nil {
 		return m.Message
 	}
 	return nil
 }
 
-func (m *VerifyWithAccountRequest) GetSignature() []byte {
+func (m *VerifySignatureRequest) GetSignature() []byte {
 	if m != nil {
 		return m.Signature
 	}
 	return nil
 }
 
-type VerifyWithAccountResponse struct {
+type VerifySignatureResponse struct {
 	Success         bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message         string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
 	MessageVerified bool   `protobuf:"varint,3,opt,name=message_verified,json=messageVerified,proto3" json:"message_verified,omitempty"`
 }
 
-func (m *VerifyWithAccountResponse) Reset()         { *m = VerifyWithAccountResponse{} }
-func (m *VerifyWithAccountResponse) String() string { return proto.CompactTextString(m) }
-func (*VerifyWithAccountResponse) ProtoMessage()    {}
-func (*VerifyWithAccountResponse) Descriptor() ([]byte, []int) {
+func (m *VerifySignatureResponse) Reset()         { *m = VerifySignatureResponse{} }
+func (m *VerifySignatureResponse) String() string { return proto.CompactTextString(m) }
+func (*VerifySignatureResponse) ProtoMessage()    {}
+func (*VerifySignatureResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6b44f8b21811e31c, []int{9}
 }
-func (m *VerifyWithAccountResponse) XXX_Unmarshal(b []byte) error {
+func (m *VerifySignatureResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *VerifyWithAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *VerifySignatureResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_VerifyWithAccountResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_VerifySignatureResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -620,33 +620,33 @@ func (m *VerifyWithAccountResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *VerifyWithAccountResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_VerifyWithAccountResponse.Merge(m, src)
+func (m *VerifySignatureResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerifySignatureResponse.Merge(m, src)
 }
-func (m *VerifyWithAccountResponse) XXX_Size() int {
+func (m *VerifySignatureResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *VerifyWithAccountResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_VerifyWithAccountResponse.DiscardUnknown(m)
+func (m *VerifySignatureResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerifySignatureResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_VerifyWithAccountResponse proto.InternalMessageInfo
+var xxx_messageInfo_VerifySignatureResponse proto.InternalMessageInfo
 
-func (m *VerifyWithAccountResponse) GetSuccess() bool {
+func (m *VerifySignatureResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *VerifyWithAccountResponse) GetMessage() string {
+func (m *VerifySignatureResponse) GetMessage() string {
 	if m != nil {
 		return m.Message
 	}
 	return ""
 }
 
-func (m *VerifyWithAccountResponse) GetMessageVerified() bool {
+func (m *VerifySignatureResponse) GetMessageVerified() bool {
 	if m != nil {
 		return m.MessageVerified
 	}
@@ -772,10 +772,10 @@ func init() {
 	proto.RegisterType((*GetAccountResponse)(nil), "highway.wallet.v1.GetAccountResponse")
 	proto.RegisterType((*ListAccountsRequest)(nil), "highway.wallet.v1.ListAccountsRequest")
 	proto.RegisterType((*ListAccountsResponse)(nil), "highway.wallet.v1.ListAccountsResponse")
-	proto.RegisterType((*SignWithAccountRequest)(nil), "highway.wallet.v1.SignWithAccountRequest")
-	proto.RegisterType((*SignWithAccountResponse)(nil), "highway.wallet.v1.SignWithAccountResponse")
-	proto.RegisterType((*VerifyWithAccountRequest)(nil), "highway.wallet.v1.VerifyWithAccountRequest")
-	proto.RegisterType((*VerifyWithAccountResponse)(nil), "highway.wallet.v1.VerifyWithAccountResponse")
+	proto.RegisterType((*SignMessageRequest)(nil), "highway.wallet.v1.SignMessageRequest")
+	proto.RegisterType((*SignMessageResponse)(nil), "highway.wallet.v1.SignMessageResponse")
+	proto.RegisterType((*VerifySignatureRequest)(nil), "highway.wallet.v1.VerifySignatureRequest")
+	proto.RegisterType((*VerifySignatureResponse)(nil), "highway.wallet.v1.VerifySignatureResponse")
 	proto.RegisterType((*ExportWalletRequest)(nil), "highway.wallet.v1.ExportWalletRequest")
 	proto.RegisterType((*ExportWalletResponse)(nil), "highway.wallet.v1.ExportWalletResponse")
 }
@@ -783,54 +783,54 @@ func init() {
 func init() { proto.RegisterFile("highway/wallet/v1/service.proto", fileDescriptor_6b44f8b21811e31c) }
 
 var fileDescriptor_6b44f8b21811e31c = []byte{
-	// 746 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xd3, 0x4c,
-	0x14, 0xad, 0x9b, 0xb4, 0x5f, 0x72, 0xbf, 0x96, 0xb6, 0xd3, 0xb4, 0x35, 0x56, 0x71, 0xcb, 0xa8,
-	0x25, 0xe1, 0x47, 0xb6, 0x5a, 0x24, 0x58, 0xb0, 0x40, 0x6d, 0x85, 0xd8, 0xc0, 0x82, 0x14, 0xb5,
-	0x12, 0x0b, 0x22, 0xc7, 0x99, 0x38, 0xa6, 0xa9, 0xc7, 0xf5, 0x4c, 0x12, 0xc2, 0x82, 0x4a, 0x5d,
-	0xb0, 0x80, 0x0d, 0x12, 0xe2, 0x2d, 0x90, 0x78, 0x0d, 0x56, 0xa8, 0x12, 0x1b, 0x96, 0xa8, 0xe5,
-	0x41, 0x90, 0xc7, 0x76, 0x9a, 0x1f, 0x47, 0x89, 0x1a, 0x21, 0xb1, 0x9b, 0x3b, 0xf7, 0xfa, 0x9e,
-	0x73, 0x3d, 0x3e, 0xc7, 0x03, 0x2b, 0x15, 0xdb, 0xaa, 0x34, 0x8c, 0xa6, 0xde, 0x30, 0xaa, 0x55,
-	0xc2, 0xf5, 0xfa, 0x86, 0xce, 0x88, 0x57, 0xb7, 0x4d, 0xa2, 0xb9, 0x1e, 0xe5, 0x14, 0xcd, 0x85,
-	0x05, 0x5a, 0x50, 0xa0, 0xd5, 0x37, 0x94, 0x45, 0x93, 0x7a, 0x44, 0x37, 0xbd, 0xa6, 0xcb, 0xa9,
-	0x6e, 0x52, 0xdb, 0x09, 0x4a, 0x95, 0x65, 0x8b, 0x52, 0xab, 0x4a, 0x74, 0xc3, 0xb5, 0x75, 0xc3,
-	0x71, 0x28, 0x37, 0xb8, 0x4d, 0x1d, 0x16, 0x64, 0xf1, 0x7b, 0x09, 0x32, 0x3b, 0x1e, 0x31, 0x38,
-	0xd9, 0x32, 0x4d, 0x5a, 0x73, 0x78, 0x9e, 0x1c, 0xd5, 0x08, 0xe3, 0x68, 0x16, 0x12, 0xaf, 0x1a,
-	0x5c, 0x96, 0x56, 0xa5, 0x5c, 0x3a, 0xef, 0x2f, 0x11, 0x82, 0xa4, 0x63, 0x1c, 0x12, 0x79, 0x5c,
-	0x6c, 0x89, 0x35, 0xda, 0x84, 0xb4, 0x0f, 0x55, 0xe0, 0x4d, 0x97, 0xc8, 0x89, 0x55, 0x29, 0x77,
-	0x65, 0x73, 0x41, 0xf3, 0x89, 0x68, 0x01, 0x11, 0x6d, 0x87, 0xda, 0xce, 0xf3, 0xa6, 0x4b, 0xf2,
-	0x29, 0x33, 0x5c, 0x21, 0x19, 0xfe, 0x73, 0x08, 0x6f, 0x50, 0xef, 0x40, 0x4e, 0x8a, 0x56, 0x51,
-	0x88, 0xbf, 0x4a, 0xb0, 0xd0, 0x45, 0x86, 0xb9, 0xd4, 0x61, 0xe2, 0x19, 0x56, 0x33, 0x4d, 0xc2,
-	0x98, 0x60, 0x94, 0xca, 0x47, 0xa1, 0x9f, 0x39, 0x24, 0x8c, 0x19, 0x56, 0x44, 0x2c, 0x0a, 0xfd,
-	0x8c, 0x51, 0x2a, 0x79, 0xfe, 0x33, 0x89, 0x20, 0x13, 0x86, 0x9d, 0xac, 0x93, 0xc3, 0xb1, 0xce,
-	0xc0, 0x04, 0x6d, 0x38, 0xc4, 0x93, 0x27, 0x44, 0xaf, 0x20, 0xc0, 0x0f, 0x61, 0xee, 0x31, 0xe1,
-	0x03, 0x5f, 0x5d, 0x1b, 0x95, 0xf1, 0x0e, 0x2a, 0xf8, 0x8b, 0x04, 0xa8, 0xbd, 0xc3, 0x3f, 0x3e,
-	0x6f, 0x16, 0xe6, 0x9f, 0xd8, 0x2c, 0xa2, 0xcb, 0xfa, 0x4e, 0x8c, 0xcb, 0x90, 0xe9, 0x2c, 0x1c,
-	0x61, 0x30, 0x05, 0x52, 0x46, 0xd8, 0x47, 0x4e, 0xac, 0x26, 0x72, 0xe9, 0x7c, 0x2b, 0xc6, 0x2f,
-	0x61, 0x71, 0xd7, 0xb6, 0x9c, 0x7d, 0x9b, 0x57, 0x2e, 0x7f, 0x0a, 0xed, 0xd8, 0xfe, 0xab, 0x9b,
-	0x6a, 0x61, 0xe3, 0x03, 0x58, 0xea, 0xe9, 0x3f, 0xc2, 0x28, 0xcb, 0x90, 0x66, 0xb6, 0xe5, 0x18,
-	0xbc, 0xe6, 0x45, 0x50, 0x17, 0x1b, 0xf8, 0x2d, 0xc8, 0x7b, 0xc4, 0xb3, 0xcb, 0xcd, 0xbf, 0x35,
-	0x4e, 0x27, 0x7e, 0xb2, 0x1b, 0xff, 0x0d, 0x5c, 0x8d, 0xc1, 0x1f, 0x61, 0xdc, 0x9b, 0x30, 0x1b,
-	0x2e, 0x0b, 0x75, 0xbf, 0xb1, 0x4d, 0x4a, 0x82, 0x51, 0x2a, 0x3f, 0x13, 0xee, 0xef, 0x85, 0xdb,
-	0x78, 0x0b, 0xe6, 0x1f, 0xbd, 0x76, 0xa9, 0xc7, 0xf7, 0x85, 0xa3, 0x5d, 0x46, 0x4b, 0x27, 0x12,
-	0x64, 0x3a, 0x7b, 0x8c, 0x40, 0xfd, 0x1e, 0x2c, 0x11, 0x47, 0xc8, 0x83, 0x94, 0x0a, 0x81, 0xcb,
-	0x16, 0x8a, 0xb5, 0x72, 0x99, 0x78, 0xa1, 0xba, 0x16, 0x5a, 0xe9, 0x00, 0x6d, 0x5b, 0x24, 0x37,
-	0xbf, 0x4f, 0xc2, 0x74, 0xb0, 0xb1, 0x1b, 0x38, 0x36, 0xfa, 0x20, 0xc1, 0x74, 0x87, 0xab, 0xa1,
-	0xac, 0xd6, 0x63, 0xdf, 0x5a, 0x9c, 0x09, 0x2b, 0xb9, 0xc1, 0x85, 0xc1, 0x88, 0x38, 0x7b, 0xf2,
-	0xe3, 0xf7, 0xa7, 0xf1, 0xeb, 0x78, 0x45, 0xef, 0xfa, 0x75, 0x44, 0x4a, 0xd1, 0x4d, 0xf1, 0x1c,
-	0x3a, 0x06, 0xb8, 0xf0, 0x1b, 0xb4, 0x16, 0x03, 0xd0, 0x63, 0x68, 0xca, 0xfa, 0x80, 0xaa, 0x90,
-	0xc3, 0x9a, 0xe0, 0xa0, 0xe2, 0xe5, 0xbe, 0x1c, 0x2c, 0xc2, 0xd1, 0x3b, 0x09, 0xa6, 0xda, 0xad,
-	0x01, 0xdd, 0x88, 0xe9, 0x1e, 0x63, 0x32, 0x4a, 0x76, 0x60, 0x5d, 0xc8, 0x63, 0x5d, 0xf0, 0x58,
-	0xc1, 0xd7, 0xfa, 0xf2, 0xa8, 0xda, 0x8c, 0xfb, 0xe7, 0xf2, 0xbf, 0xaf, 0xed, 0xa7, 0xd1, 0xc7,
-	0x1a, 0xd3, 0x3f, 0xde, 0x5b, 0x94, 0x5b, 0xc3, 0x94, 0x0e, 0xcd, 0xc6, 0x17, 0x20, 0xfa, 0x2c,
-	0xc1, 0x4c, 0x20, 0xbe, 0xdd, 0x48, 0x8f, 0xe8, 0x76, 0x0c, 0x4c, 0x3f, 0x83, 0x50, 0xee, 0x0c,
-	0x57, 0x3c, 0xf4, 0xf7, 0x22, 0x04, 0xdb, 0x44, 0xc7, 0x30, 0xd5, 0xae, 0xa9, 0xd8, 0xd3, 0x8a,
-	0x11, 0x6e, 0xec, 0x69, 0xc5, 0x89, 0x13, 0xab, 0x82, 0x89, 0x8c, 0x17, 0xbb, 0x99, 0x10, 0x51,
-	0xbd, 0xfd, 0xec, 0xdb, 0x99, 0x2a, 0x9d, 0x9e, 0xa9, 0xd2, 0xaf, 0x33, 0x55, 0xfa, 0x78, 0xae,
-	0x8e, 0x9d, 0x9e, 0xab, 0x63, 0x3f, 0xcf, 0xd5, 0xb1, 0x17, 0xf7, 0x2d, 0x9b, 0x57, 0x6a, 0x45,
-	0xcd, 0xa4, 0x87, 0x3a, 0xa3, 0x8e, 0x57, 0x39, 0xd2, 0xc5, 0x1d, 0xc8, 0xff, 0xcd, 0x31, 0xbd,
-	0xe7, 0x0a, 0xf5, 0x20, 0x58, 0xb9, 0xc5, 0xe2, 0xa4, 0xb8, 0xfb, 0xdc, 0xfd, 0x13, 0x00, 0x00,
-	0xff, 0xff, 0xd9, 0x6c, 0xf6, 0x89, 0x67, 0x09, 0x00, 0x00,
+	// 743 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0x4d, 0x4f, 0xdb, 0x4a,
+	0x14, 0xc5, 0x24, 0xf0, 0x92, 0xfb, 0xe0, 0x01, 0x43, 0x00, 0xcb, 0xe2, 0x19, 0xde, 0x08, 0x48,
+	0x78, 0x0b, 0x5b, 0x50, 0xa9, 0x5d, 0x74, 0x51, 0x01, 0xaa, 0xba, 0x69, 0x17, 0x0d, 0x15, 0x95,
+	0xd8, 0x44, 0x8e, 0x33, 0x71, 0xdc, 0x86, 0x19, 0xe3, 0x99, 0x24, 0x44, 0xaa, 0x84, 0x44, 0xa5,
+	0x2e, 0xda, 0x4d, 0xab, 0xfe, 0x8d, 0x4a, 0xfd, 0x0f, 0x5d, 0x75, 0x89, 0xd4, 0x4d, 0x97, 0x15,
+	0xf4, 0x87, 0x54, 0x1e, 0xdb, 0x90, 0x0f, 0xa3, 0x44, 0xa4, 0x8b, 0xee, 0xe6, 0xde, 0x7b, 0x7c,
+	0xef, 0xb9, 0x71, 0xce, 0xf1, 0xc0, 0x4a, 0xcd, 0x75, 0x6a, 0x2d, 0xab, 0x6d, 0xb6, 0xac, 0x7a,
+	0x9d, 0x08, 0xb3, 0xb9, 0x65, 0x72, 0xe2, 0x37, 0x5d, 0x9b, 0x18, 0x9e, 0xcf, 0x04, 0x43, 0x73,
+	0x11, 0xc0, 0x08, 0x01, 0x46, 0x73, 0x4b, 0x5b, 0xb4, 0x99, 0x4f, 0x4c, 0xdb, 0x6f, 0x7b, 0x82,
+	0x99, 0x36, 0x73, 0x69, 0x08, 0xd5, 0x96, 0x1d, 0xc6, 0x9c, 0x3a, 0x31, 0x2d, 0xcf, 0x35, 0x2d,
+	0x4a, 0x99, 0xb0, 0x84, 0xcb, 0x28, 0x0f, 0xab, 0xf8, 0xad, 0x02, 0xb9, 0x3d, 0x9f, 0x58, 0x82,
+	0xec, 0xd8, 0x36, 0x6b, 0x50, 0x51, 0x24, 0xc7, 0x0d, 0xc2, 0x05, 0x9a, 0x85, 0xd4, 0x8b, 0x96,
+	0x50, 0x95, 0x55, 0xa5, 0x90, 0x2d, 0x06, 0x47, 0x84, 0x20, 0x4d, 0xad, 0x23, 0xa2, 0x8e, 0xcb,
+	0x94, 0x3c, 0xa3, 0x6d, 0xc8, 0x06, 0xa3, 0x4a, 0xa2, 0xed, 0x11, 0x35, 0xb5, 0xaa, 0x14, 0xfe,
+	0xd9, 0x5e, 0x30, 0x02, 0x22, 0x46, 0x48, 0xc4, 0xd8, 0x63, 0x2e, 0x7d, 0xd6, 0xf6, 0x48, 0x31,
+	0x63, 0x47, 0x27, 0xa4, 0xc2, 0x5f, 0x94, 0x88, 0x16, 0xf3, 0x5f, 0xaa, 0x69, 0xd9, 0x2a, 0x0e,
+	0xf1, 0x67, 0x05, 0x16, 0x7a, 0xc8, 0x70, 0x8f, 0x51, 0x2e, 0x9f, 0xe1, 0x0d, 0xdb, 0x26, 0x9c,
+	0x4b, 0x46, 0x99, 0x62, 0x1c, 0x06, 0x95, 0x23, 0xc2, 0xb9, 0xe5, 0xc4, 0xc4, 0xe2, 0x30, 0xa8,
+	0x58, 0x95, 0x8a, 0x1f, 0x3c, 0x93, 0x0a, 0x2b, 0x51, 0xd8, 0xcd, 0x3a, 0x3d, 0x1c, 0xeb, 0x1c,
+	0x4c, 0xb0, 0x16, 0x25, 0xbe, 0x3a, 0x21, 0x7b, 0x85, 0x01, 0x7e, 0x00, 0x73, 0x8f, 0x88, 0x18,
+	0xf8, 0xd3, 0x75, 0x50, 0x19, 0xef, 0xa2, 0x82, 0x3f, 0x29, 0x80, 0x3a, 0x3b, 0xfc, 0xe1, 0xfb,
+	0xe6, 0x61, 0xfe, 0xb1, 0xcb, 0x63, 0xba, 0xfc, 0xc6, 0x8d, 0x71, 0x15, 0x72, 0xdd, 0xc0, 0x11,
+	0x16, 0xd3, 0x20, 0x63, 0x45, 0x7d, 0xd4, 0xd4, 0x6a, 0xaa, 0x90, 0x2d, 0x5e, 0xc5, 0xf8, 0x10,
+	0xd0, 0xbe, 0xeb, 0xd0, 0x27, 0x21, 0xf4, 0x16, 0x6f, 0xa0, 0x73, 0x6e, 0xf0, 0xb3, 0x4d, 0x5d,
+	0xcd, 0xc5, 0x0e, 0xcc, 0x77, 0xf5, 0x1e, 0x61, 0x85, 0x65, 0xc8, 0x72, 0xd7, 0xa1, 0x96, 0x68,
+	0xf8, 0xf1, 0x98, 0xeb, 0x04, 0x7e, 0x05, 0x8b, 0x07, 0xc4, 0x77, 0xab, 0xed, 0xfd, 0x38, 0xf5,
+	0x5b, 0x17, 0xe9, 0x9e, 0x9e, 0xee, 0x9d, 0x7e, 0x02, 0x4b, 0x7d, 0xd3, 0x47, 0x58, 0x75, 0x13,
+	0x66, 0xa3, 0x63, 0xa9, 0x19, 0xb4, 0x75, 0x49, 0x45, 0xf2, 0xc9, 0x14, 0x67, 0xa2, 0xfc, 0x41,
+	0x94, 0xc6, 0x3b, 0x30, 0xff, 0xf0, 0xc4, 0x63, 0xbe, 0x78, 0x2e, 0x5d, 0xec, 0x36, 0xfa, 0x39,
+	0x53, 0x20, 0xd7, 0xdd, 0x63, 0x04, 0xea, 0x77, 0x61, 0x89, 0x50, 0x29, 0x09, 0x52, 0x29, 0x85,
+	0xce, 0x5a, 0x2a, 0x37, 0xaa, 0x55, 0xe2, 0x47, 0x8a, 0x5a, 0xb8, 0x2a, 0x87, 0xd3, 0x76, 0x65,
+	0x71, 0xfb, 0xcb, 0x24, 0x4c, 0x87, 0x89, 0xfd, 0xd0, 0xa5, 0xd1, 0x3b, 0x05, 0xa6, 0xbb, 0x9c,
+	0x0c, 0xe5, 0x8d, 0x3e, 0xcb, 0x36, 0x92, 0x8c, 0x57, 0x2b, 0x0c, 0x06, 0x86, 0x2b, 0xe2, 0xfc,
+	0xd9, 0xb7, 0x9f, 0x1f, 0xc7, 0xff, 0xc3, 0x2b, 0x66, 0xcf, 0xe7, 0x22, 0x56, 0x87, 0x69, 0xcb,
+	0xe7, 0xd0, 0x29, 0xc0, 0xb5, 0xc7, 0xa0, 0xb5, 0x84, 0x01, 0x7d, 0x26, 0xa6, 0xad, 0x0f, 0x40,
+	0x45, 0x1c, 0xd6, 0x24, 0x07, 0x1d, 0x2f, 0xdf, 0xc8, 0xc1, 0x21, 0x02, 0xbd, 0x51, 0x60, 0xaa,
+	0xd3, 0x0e, 0xd0, 0x46, 0x42, 0xf7, 0x04, 0x63, 0xd1, 0xf2, 0x03, 0x71, 0x11, 0x8f, 0x75, 0xc9,
+	0x63, 0x05, 0xff, 0x7b, 0x23, 0x8f, 0xba, 0xcb, 0x05, 0x7a, 0xad, 0xc0, 0xdf, 0x1d, 0x9a, 0x46,
+	0x49, 0x5b, 0xf6, 0xfb, 0x89, 0xb6, 0x31, 0x08, 0x36, 0x34, 0x8b, 0x40, 0x76, 0xe8, 0x83, 0x02,
+	0x33, 0x3d, 0x92, 0x43, 0x9b, 0x09, 0x23, 0x92, 0x4d, 0x41, 0xfb, 0x7f, 0x18, 0xe8, 0xd0, 0xff,
+	0x11, 0x29, 0xd2, 0x36, 0x3a, 0x85, 0xa9, 0x4e, 0x1d, 0x25, 0xbe, 0xa1, 0x04, 0xb1, 0x26, 0xbe,
+	0xa1, 0x24, 0x41, 0x62, 0x5d, 0x32, 0x51, 0xf1, 0x62, 0x2f, 0x13, 0x22, 0xd1, 0xbb, 0x4f, 0xbf,
+	0x5e, 0xe8, 0xca, 0xf9, 0x85, 0xae, 0xfc, 0xb8, 0xd0, 0x95, 0xf7, 0x97, 0xfa, 0xd8, 0xf9, 0xa5,
+	0x3e, 0xf6, 0xfd, 0x52, 0x1f, 0x3b, 0xbc, 0xe7, 0xb8, 0xa2, 0xd6, 0x28, 0x1b, 0x36, 0x3b, 0x32,
+	0x39, 0xa3, 0x7e, 0xed, 0xd8, 0x94, 0x77, 0x9d, 0xe0, 0x73, 0xc6, 0xcd, 0xbe, 0xab, 0xd2, 0xfd,
+	0xf0, 0xe4, 0x95, 0xcb, 0x93, 0xf2, 0x8e, 0x73, 0xe7, 0x57, 0x00, 0x00, 0x00, 0xff, 0xff, 0xb4,
+	0x5a, 0x84, 0x55, 0x4f, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -848,8 +848,8 @@ type WalletServiceClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error)
 	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
-	SignMessage(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error)
-	VerifySignature(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error)
+	SignMessage(ctx context.Context, in *SignMessageRequest, opts ...grpc.CallOption) (*SignMessageResponse, error)
+	VerifySignature(ctx context.Context, in *VerifySignatureRequest, opts ...grpc.CallOption) (*VerifySignatureResponse, error)
 	ExportWallet(ctx context.Context, in *ExportWalletRequest, opts ...grpc.CallOption) (*ExportWalletResponse, error)
 }
 
@@ -888,8 +888,8 @@ func (c *walletServiceClient) ListAccounts(ctx context.Context, in *ListAccounts
 	return out, nil
 }
 
-func (c *walletServiceClient) SignMessage(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error) {
-	out := new(SignWithAccountResponse)
+func (c *walletServiceClient) SignMessage(ctx context.Context, in *SignMessageRequest, opts ...grpc.CallOption) (*SignMessageResponse, error) {
+	out := new(SignMessageResponse)
 	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/SignMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -897,8 +897,8 @@ func (c *walletServiceClient) SignMessage(ctx context.Context, in *SignWithAccou
 	return out, nil
 }
 
-func (c *walletServiceClient) VerifySignature(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error) {
-	out := new(VerifyWithAccountResponse)
+func (c *walletServiceClient) VerifySignature(ctx context.Context, in *VerifySignatureRequest, opts ...grpc.CallOption) (*VerifySignatureResponse, error) {
+	out := new(VerifySignatureResponse)
 	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/VerifySignature", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -920,8 +920,8 @@ type WalletServiceServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error)
 	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
-	SignMessage(context.Context, *SignWithAccountRequest) (*SignWithAccountResponse, error)
-	VerifySignature(context.Context, *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error)
+	SignMessage(context.Context, *SignMessageRequest) (*SignMessageResponse, error)
+	VerifySignature(context.Context, *VerifySignatureRequest) (*VerifySignatureResponse, error)
 	ExportWallet(context.Context, *ExportWalletRequest) (*ExportWalletResponse, error)
 }
 
@@ -938,10 +938,10 @@ func (*UnimplementedWalletServiceServer) GetAccount(ctx context.Context, req *Ge
 func (*UnimplementedWalletServiceServer) ListAccounts(ctx context.Context, req *ListAccountsRequest) (*ListAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
 }
-func (*UnimplementedWalletServiceServer) SignMessage(ctx context.Context, req *SignWithAccountRequest) (*SignWithAccountResponse, error) {
+func (*UnimplementedWalletServiceServer) SignMessage(ctx context.Context, req *SignMessageRequest) (*SignMessageResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SignMessage not implemented")
 }
-func (*UnimplementedWalletServiceServer) VerifySignature(ctx context.Context, req *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error) {
+func (*UnimplementedWalletServiceServer) VerifySignature(ctx context.Context, req *VerifySignatureRequest) (*VerifySignatureResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method VerifySignature not implemented")
 }
 func (*UnimplementedWalletServiceServer) ExportWallet(ctx context.Context, req *ExportWalletRequest) (*ExportWalletResponse, error) {
@@ -1007,7 +1007,7 @@ func _WalletService_ListAccounts_Handler(srv interface{}, ctx context.Context, d
 }
 
 func _WalletService_SignMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SignWithAccountRequest)
+	in := new(SignMessageRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1019,13 +1019,13 @@ func _WalletService_SignMessage_Handler(srv interface{}, ctx context.Context, de
 		FullMethod: "/highway.wallet.v1.WalletService/SignMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalletServiceServer).SignMessage(ctx, req.(*SignWithAccountRequest))
+		return srv.(WalletServiceServer).SignMessage(ctx, req.(*SignMessageRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _WalletService_VerifySignature_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(VerifyWithAccountRequest)
+	in := new(VerifySignatureRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -1037,7 +1037,7 @@ func _WalletService_VerifySignature_Handler(srv interface{}, ctx context.Context
 		FullMethod: "/highway.wallet.v1.WalletService/VerifySignature",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalletServiceServer).VerifySignature(ctx, req.(*VerifyWithAccountRequest))
+		return srv.(WalletServiceServer).VerifySignature(ctx, req.(*VerifySignatureRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -1376,7 +1376,7 @@ func (m *ListAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SignWithAccountRequest) Marshal() (dAtA []byte, err error) {
+func (m *SignMessageRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1386,12 +1386,12 @@ func (m *SignWithAccountRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SignWithAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *SignMessageRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SignWithAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SignMessageRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1420,7 +1420,7 @@ func (m *SignWithAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *SignWithAccountResponse) Marshal() (dAtA []byte, err error) {
+func (m *SignMessageResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1430,12 +1430,12 @@ func (m *SignWithAccountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SignWithAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *SignMessageResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SignWithAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SignMessageResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1467,7 +1467,7 @@ func (m *SignWithAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *VerifyWithAccountRequest) Marshal() (dAtA []byte, err error) {
+func (m *VerifySignatureRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1477,12 +1477,12 @@ func (m *VerifyWithAccountRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *VerifyWithAccountRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *VerifySignatureRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *VerifyWithAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *VerifySignatureRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1518,7 +1518,7 @@ func (m *VerifyWithAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *VerifyWithAccountResponse) Marshal() (dAtA []byte, err error) {
+func (m *VerifySignatureResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1528,12 +1528,12 @@ func (m *VerifyWithAccountResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *VerifyWithAccountResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *VerifySignatureResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *VerifyWithAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *VerifySignatureResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1793,7 +1793,7 @@ func (m *ListAccountsResponse) Size() (n int) {
 	return n
 }
 
-func (m *SignWithAccountRequest) Size() (n int) {
+func (m *SignMessageRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1814,7 +1814,7 @@ func (m *SignWithAccountRequest) Size() (n int) {
 	return n
 }
 
-func (m *SignWithAccountResponse) Size() (n int) {
+func (m *SignMessageResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1834,7 +1834,7 @@ func (m *SignWithAccountResponse) Size() (n int) {
 	return n
 }
 
-func (m *VerifyWithAccountRequest) Size() (n int) {
+func (m *VerifySignatureRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1859,7 +1859,7 @@ func (m *VerifyWithAccountRequest) Size() (n int) {
 	return n
 }
 
-func (m *VerifyWithAccountResponse) Size() (n int) {
+func (m *VerifySignatureResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2786,7 +2786,7 @@ func (m *ListAccountsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SignWithAccountRequest) Unmarshal(dAtA []byte) error {
+func (m *SignMessageRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2809,10 +2809,10 @@ func (m *SignWithAccountRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SignWithAccountRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: SignMessageRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SignWithAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SignMessageRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2934,7 +2934,7 @@ func (m *SignWithAccountRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SignWithAccountResponse) Unmarshal(dAtA []byte) error {
+func (m *SignMessageResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2957,10 +2957,10 @@ func (m *SignWithAccountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SignWithAccountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: SignMessageResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SignWithAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SignMessageResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3070,7 +3070,7 @@ func (m *SignWithAccountResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *VerifyWithAccountRequest) Unmarshal(dAtA []byte) error {
+func (m *VerifySignatureRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3093,10 +3093,10 @@ func (m *VerifyWithAccountRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: VerifyWithAccountRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: VerifySignatureRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: VerifyWithAccountRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: VerifySignatureRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -3252,7 +3252,7 @@ func (m *VerifyWithAccountRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *VerifyWithAccountResponse) Unmarshal(dAtA []byte) error {
+func (m *VerifySignatureResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -3275,10 +3275,10 @@ func (m *VerifyWithAccountResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: VerifyWithAccountResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: VerifySignatureResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: VerifyWithAccountResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: VerifySignatureResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

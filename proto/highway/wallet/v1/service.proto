@@ -18,11 +18,11 @@ service WalletService {
     option (google.api.http).post = "/highway/wallet/accounts/list";
   }
 
-  rpc SignMessage(SignWithAccountRequest) returns (SignWithAccountResponse) {
+  rpc SignMessage(SignMessageRequest) returns (SignMessageResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/sign";
   }
 
-  rpc VerifySignature(VerifyWithAccountRequest) returns (VerifyWithAccountResponse) {
+  rpc VerifySignature(VerifySignatureRequest) returns (VerifySignatureResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/verify";
   }
 
@@ -69,26 +69,26 @@ message ListAccountsResponse {
   repeated string accounts = 3;
 }
 
-message SignWithAccountRequest {
+message SignMessageRequest {
   string jwt = 1;
   string address = 2;
   bytes message = 3;
 }
 
-message SignWithAccountResponse {
+message SignMessageResponse {
   bool success = 1;
   string message = 2;
   bytes signature = 3;
 }
 
-message VerifyWithAccountRequest {
+message VerifySignatureRequest {
   string jwt = 1;
   string address = 2;
   bytes message = 3;
   bytes signature = 4;
 }
 
-message VerifyWithAccountResponse {
+message VerifySignatureResponse {
   bool success = 1;
   string message = 2;
   bool message_verified = 3;

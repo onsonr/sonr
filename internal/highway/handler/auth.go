@@ -62,7 +62,7 @@ func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationp
 	if req.Alias == "" {
 		return nil, fmt.Errorf("user provided identifier cannot be empty")
 	}
-	if req.IsLogin {
+	if req.GetExisting() {
 		return mdw.GetCredentialAssertionOptions(ctx, req.Origin, req.Alias)
 	}
 	return mdw.GetCredentialAttestationParams(ctx, req.Origin, req.Alias)
