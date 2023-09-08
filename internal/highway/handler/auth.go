@@ -59,7 +59,13 @@ func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationp
 	if req.Alias == "" {
 		return nil, fmt.Errorf("user provided identifier cannot be empty")
 	}
+
+	// Check if the user provided identifier is already registered
 	if req.GetExisting() {
+		existing, err := mdw.CheckAliasAvailable(ctx, req.Alias)
+		if !existing || err != nil {
+			return nil, fmt.Errorf("user provided identifier is not registered")
+		}
 		return mdw.GetCredentialAssertionOptions(ctx, req.Origin, req.Alias)
 	}
 	return mdw.GetCredentialAttestationParams(ctx, req.Origin, req.Alias)
