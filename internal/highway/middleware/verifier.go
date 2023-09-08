@@ -9,9 +9,7 @@ import (
 	"github.com/sonrhq/core/internal/highway/types"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/controller"
-	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
 	domaintypes "github.com/sonrhq/core/x/domain/types"
-	identityproxy "github.com/sonrhq/core/x/identity/client/proxy"
 	identitytypes "github.com/sonrhq/core/x/identity/types"
 	servicetypes "github.com/sonrhq/core/x/service/types"
 )
@@ -62,11 +60,11 @@ func IssueCredentialAttestationOptions(alias string, record *servicetypes.Servic
 // IssueCredentialAssertionOptions takes a didDocument and serviceRecord in order to create a credential options.
 func IssueCredentialAssertionOptions(email string, record *servicetypes.ServiceRecord) (string, protocol.URLEncodedBase64, string, error) {
 	ctx := context.Background()
-	addr, err := domainproxy.GetEmailRecordCreator(ctx, email)
+	addr, err := GetEmailRecordCreator(ctx, email)
 	if err != nil {
 		return "", nil, "", fmt.Errorf("failed to get email record creator: %w", err)
 	}
-	controllerAcc, err := identityproxy.GetControllerAccount(ctx, addr)
+	controllerAcc, err := GetControllerAccount(ctx, addr)
 	if err != nil {
 		return "", nil, "", fmt.Errorf("failed to get controller account: %w", err)
 	}
@@ -102,7 +100,7 @@ func UseControllerAccount(token string) (*controller.SonrController, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to verify claims: %w", err)
 	}
-	acc, err := identityproxy.GetControllerAccount(ctx, claims.Address)
+	acc, err := GetControllerAccount(ctx, claims.Address)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get controller account: %w", err)
 	}

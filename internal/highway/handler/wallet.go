@@ -79,10 +79,10 @@ func (a *WalletHandler) GetAccount(ctx context.Context, req *walletpb.GetAccount
 func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAccountsRequest) (*walletpb.ListAccountsResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-
 		return nil, err
 	}
 	return &walletpb.ListAccountsResponse{
+		Success: true,
 		Accounts: cont.ListWallets(),
 	}, nil
 }
@@ -97,7 +97,7 @@ func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAcco
 // @Param   msg query string true "Message to Sign"
 // @Success 200 {object} map[string]interface{} "Signature Info"
 // @Router /signWithAccount/{did} [post]
-func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignWithAccountRequest) (*walletpb.SignWithAccountResponse, error) {
+func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignMessageRequest) (*walletpb.SignMessageResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -106,8 +106,10 @@ func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignWithA
 	if err != nil {
 		return nil, err
 	}
-	return &walletpb.SignWithAccountResponse{
+	return &walletpb.SignMessageResponse{
+		Success:  true,
 		Signature: sig,
+		Message:   string(req.Message),
 	}, nil
 }
 
@@ -122,7 +124,7 @@ func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignWithA
 // @Param   sig query string true "Signature"
 // @Success 200 {object} map[string]interface{} "Verification Result"
 // @Router /verifyWithAccount/{did} [post]
-func (a *WalletHandler) VerifySignature(ctx context.Context, req *walletpb.VerifySignatureRequest) (*walletpb.VerifyWithAccountResponse, error) {
+func (a *WalletHandler) VerifySignature(ctx context.Context, req *walletpb.VerifySignatureRequest) (*walletpb.VerifySignatureResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -139,7 +141,7 @@ func (a *WalletHandler) VerifySignature(ctx context.Context, req *walletpb.Verif
 	if err != nil {
 		return nil, err
 	}
-	return &walletpb.VerifyWithAccountResponse{
+	return &walletpb.VerifySignatureResponse{
 		MessageVerified: valid,
 		Message: 	   string(req.Message),
 	}, nil
