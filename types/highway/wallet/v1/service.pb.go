@@ -8,6 +8,7 @@ import (
 	fmt "fmt"
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
+	crypto "github.com/sonrhq/core/types/crypto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -29,10 +30,10 @@ var _ = math.Inf
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 type CreateAccountRequest struct {
-	Jwt      string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
-	Name     string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	CoinType string `protobuf:"bytes,3,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
-	Network  string `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
+	Jwt      string          `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Name     string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	CoinType crypto.CoinType `protobuf:"varint,3,opt,name=coin_type,json=coinType,proto3,enum=core.crypto.CoinType" json:"coin_type,omitempty"`
+	Network  string          `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
 }
 
 func (m *CreateAccountRequest) Reset()         { *m = CreateAccountRequest{} }
@@ -82,11 +83,11 @@ func (m *CreateAccountRequest) GetName() string {
 	return ""
 }
 
-func (m *CreateAccountRequest) GetCoinType() string {
+func (m *CreateAccountRequest) GetCoinType() crypto.CoinType {
 	if m != nil {
 		return m.CoinType
 	}
-	return ""
+	return crypto.CoinType_CoinType_BITCOIN
 }
 
 func (m *CreateAccountRequest) GetNetwork() string {
@@ -97,9 +98,11 @@ func (m *CreateAccountRequest) GetNetwork() string {
 }
 
 type CreateAccountResponse struct {
-	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	CoinType string `protobuf:"bytes,2,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
-	Owner    string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+	Success  bool            `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message  string          `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Address  string          `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	CoinType crypto.CoinType `protobuf:"varint,4,opt,name=coin_type,json=coinType,proto3,enum=core.crypto.CoinType" json:"coin_type,omitempty"`
+	Owner    string          `protobuf:"bytes,5,opt,name=owner,proto3" json:"owner,omitempty"`
 }
 
 func (m *CreateAccountResponse) Reset()         { *m = CreateAccountResponse{} }
@@ -135,6 +138,20 @@ func (m *CreateAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CreateAccountResponse proto.InternalMessageInfo
 
+func (m *CreateAccountResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *CreateAccountResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
 func (m *CreateAccountResponse) GetAddress() string {
 	if m != nil {
 		return m.Address
@@ -142,11 +159,11 @@ func (m *CreateAccountResponse) GetAddress() string {
 	return ""
 }
 
-func (m *CreateAccountResponse) GetCoinType() string {
+func (m *CreateAccountResponse) GetCoinType() crypto.CoinType {
 	if m != nil {
 		return m.CoinType
 	}
-	return ""
+	return crypto.CoinType_CoinType_BITCOIN
 }
 
 func (m *CreateAccountResponse) GetOwner() string {
@@ -209,9 +226,11 @@ func (m *GetAccountRequest) GetAddress() string {
 }
 
 type GetAccountResponse struct {
-	Address  string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	CoinType string `protobuf:"bytes,2,opt,name=coin_type,json=coinType,proto3" json:"coin_type,omitempty"`
-	Owner    string `protobuf:"bytes,3,opt,name=owner,proto3" json:"owner,omitempty"`
+	Success  bool            `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message  string          `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Address  string          `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	CoinType crypto.CoinType `protobuf:"varint,4,opt,name=coin_type,json=coinType,proto3,enum=core.crypto.CoinType" json:"coin_type,omitempty"`
+	Owner    string          `protobuf:"bytes,5,opt,name=owner,proto3" json:"owner,omitempty"`
 }
 
 func (m *GetAccountResponse) Reset()         { *m = GetAccountResponse{} }
@@ -247,6 +266,20 @@ func (m *GetAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_GetAccountResponse proto.InternalMessageInfo
 
+func (m *GetAccountResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *GetAccountResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
 func (m *GetAccountResponse) GetAddress() string {
 	if m != nil {
 		return m.Address
@@ -254,11 +287,11 @@ func (m *GetAccountResponse) GetAddress() string {
 	return ""
 }
 
-func (m *GetAccountResponse) GetCoinType() string {
+func (m *GetAccountResponse) GetCoinType() crypto.CoinType {
 	if m != nil {
 		return m.CoinType
 	}
-	return ""
+	return crypto.CoinType_CoinType_BITCOIN
 }
 
 func (m *GetAccountResponse) GetOwner() string {
@@ -313,7 +346,9 @@ func (m *ListAccountsRequest) GetJwt() string {
 }
 
 type ListAccountsResponse struct {
-	Accounts []string `protobuf:"bytes,1,rep,name=accounts,proto3" json:"accounts,omitempty"`
+	Success  bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message  string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Accounts []string `protobuf:"bytes,3,rep,name=accounts,proto3" json:"accounts,omitempty"`
 }
 
 func (m *ListAccountsResponse) Reset()         { *m = ListAccountsResponse{} }
@@ -348,6 +383,20 @@ func (m *ListAccountsResponse) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_ListAccountsResponse proto.InternalMessageInfo
+
+func (m *ListAccountsResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *ListAccountsResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
 
 func (m *ListAccountsResponse) GetAccounts() []string {
 	if m != nil {
@@ -417,7 +466,9 @@ func (m *SignWithAccountRequest) GetMessage() []byte {
 }
 
 type SignWithAccountResponse struct {
-	Signature []byte `protobuf:"bytes,1,opt,name=signature,proto3" json:"signature,omitempty"`
+	Success   bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message   string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Signature []byte `protobuf:"bytes,3,opt,name=signature,proto3" json:"signature,omitempty"`
 }
 
 func (m *SignWithAccountResponse) Reset()         { *m = SignWithAccountResponse{} }
@@ -452,6 +503,20 @@ func (m *SignWithAccountResponse) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_SignWithAccountResponse proto.InternalMessageInfo
+
+func (m *SignWithAccountResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *SignWithAccountResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
 
 func (m *SignWithAccountResponse) GetSignature() []byte {
 	if m != nil {
@@ -529,7 +594,9 @@ func (m *VerifyWithAccountRequest) GetSignature() []byte {
 }
 
 type VerifyWithAccountResponse struct {
-	Verified bool `protobuf:"varint,1,opt,name=verified,proto3" json:"verified,omitempty"`
+	Success         bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message         string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	MessageVerified bool   `protobuf:"varint,3,opt,name=message_verified,json=messageVerified,proto3" json:"message_verified,omitempty"`
 }
 
 func (m *VerifyWithAccountResponse) Reset()         { *m = VerifyWithAccountResponse{} }
@@ -565,15 +632,30 @@ func (m *VerifyWithAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_VerifyWithAccountResponse proto.InternalMessageInfo
 
-func (m *VerifyWithAccountResponse) GetVerified() bool {
+func (m *VerifyWithAccountResponse) GetSuccess() bool {
 	if m != nil {
-		return m.Verified
+		return m.Success
+	}
+	return false
+}
+
+func (m *VerifyWithAccountResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *VerifyWithAccountResponse) GetMessageVerified() bool {
+	if m != nil {
+		return m.MessageVerified
 	}
 	return false
 }
 
 type ExportWalletRequest struct {
-	Jwt string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
 }
 
 func (m *ExportWalletRequest) Reset()         { *m = ExportWalletRequest{} }
@@ -616,8 +698,17 @@ func (m *ExportWalletRequest) GetJwt() string {
 	return ""
 }
 
+func (m *ExportWalletRequest) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
 type ExportWalletResponse struct {
-	Wallet string `protobuf:"bytes,1,opt,name=wallet,proto3" json:"wallet,omitempty"`
+	Success               bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message               string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	EncryptedWalletBuffer string `protobuf:"bytes,3,opt,name=encrypted_wallet_buffer,json=encryptedWalletBuffer,proto3" json:"encrypted_wallet_buffer,omitempty"`
 }
 
 func (m *ExportWalletResponse) Reset()         { *m = ExportWalletResponse{} }
@@ -653,9 +744,23 @@ func (m *ExportWalletResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ExportWalletResponse proto.InternalMessageInfo
 
-func (m *ExportWalletResponse) GetWallet() string {
+func (m *ExportWalletResponse) GetSuccess() bool {
 	if m != nil {
-		return m.Wallet
+		return m.Success
+	}
+	return false
+}
+
+func (m *ExportWalletResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *ExportWalletResponse) GetEncryptedWalletBuffer() string {
+	if m != nil {
+		return m.EncryptedWalletBuffer
 	}
 	return ""
 }
@@ -678,48 +783,54 @@ func init() {
 func init() { proto.RegisterFile("highway/wallet/v1/service.proto", fileDescriptor_6b44f8b21811e31c) }
 
 var fileDescriptor_6b44f8b21811e31c = []byte{
-	// 646 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x95, 0x4f, 0x6f, 0xd3, 0x30,
-	0x18, 0xc6, 0x97, 0x6e, 0x8c, 0xed, 0x55, 0x27, 0x98, 0x29, 0x23, 0x84, 0x91, 0x0d, 0x6b, 0xa3,
-	0xe3, 0x8f, 0x12, 0x6d, 0x1c, 0x76, 0xe0, 0x80, 0x00, 0x21, 0x2e, 0x5c, 0xe8, 0x10, 0x93, 0x38,
-	0x80, 0xbc, 0xd4, 0xa4, 0x86, 0xce, 0xce, 0x62, 0xb7, 0xa5, 0x17, 0x26, 0x71, 0xe0, 0xc2, 0x01,
-	0x24, 0x0e, 0x7c, 0x25, 0x8e, 0x93, 0xe0, 0xc0, 0x11, 0x6d, 0x7c, 0x10, 0x14, 0x27, 0xa5, 0x4d,
-	0xea, 0xaa, 0x15, 0xd2, 0x6e, 0x7e, 0xed, 0xc7, 0x7e, 0x7e, 0x89, 0xdf, 0x27, 0x81, 0x95, 0x06,
-	0x0b, 0x1b, 0x1d, 0xd2, 0xf5, 0x3b, 0xa4, 0xd9, 0xa4, 0xca, 0x6f, 0x6f, 0xfa, 0x92, 0xc6, 0x6d,
-	0x16, 0x50, 0x2f, 0x8a, 0x85, 0x12, 0x68, 0x31, 0x13, 0x78, 0xa9, 0xc0, 0x6b, 0x6f, 0x3a, 0xcb,
-	0xa1, 0x10, 0x61, 0x93, 0xfa, 0x24, 0x62, 0x3e, 0xe1, 0x5c, 0x28, 0xa2, 0x98, 0xe0, 0x32, 0xdd,
-	0x80, 0x25, 0x54, 0x1e, 0xc6, 0x94, 0x28, 0x7a, 0x3f, 0x08, 0x44, 0x8b, 0xab, 0x1a, 0x3d, 0x68,
-	0x51, 0xa9, 0xd0, 0x79, 0x98, 0x7e, 0xd3, 0x51, 0xb6, 0xb5, 0x6a, 0x6d, 0xcc, 0xd7, 0x92, 0x21,
-	0x42, 0x30, 0xc3, 0xc9, 0x3e, 0xb5, 0x4b, 0x7a, 0x4a, 0x8f, 0xd1, 0x15, 0x98, 0x0f, 0x04, 0xe3,
-	0xaf, 0x54, 0x37, 0xa2, 0xf6, 0xb4, 0x5e, 0x98, 0x4b, 0x26, 0x9e, 0x75, 0x23, 0x8a, 0x6c, 0x38,
-	0xcb, 0xa9, 0xea, 0x88, 0xf8, 0xad, 0x3d, 0xa3, 0x97, 0x7a, 0x25, 0xae, 0xc3, 0xc5, 0x82, 0xa9,
-	0x8c, 0x04, 0x97, 0x7a, 0x0b, 0xa9, 0xd7, 0x63, 0x2a, 0x65, 0xe6, 0xdc, 0x2b, 0xf3, 0x4e, 0xa5,
-	0x82, 0x53, 0x05, 0xce, 0x88, 0x0e, 0xa7, 0x71, 0x86, 0x90, 0x16, 0xf8, 0x1e, 0x2c, 0x3e, 0xa6,
-	0x6a, 0xec, 0x73, 0x0d, 0x78, 0x96, 0x72, 0x9e, 0x98, 0x00, 0x1a, 0x3c, 0xe0, 0x34, 0x18, 0xab,
-	0x70, 0xe1, 0x09, 0x93, 0x3d, 0x0f, 0x39, 0x92, 0x12, 0x6f, 0x41, 0x25, 0x2f, 0xcc, 0x68, 0x1c,
-	0x98, 0x23, 0xd9, 0x9c, 0x6d, 0xad, 0x4e, 0x27, 0x96, 0xbd, 0x1a, 0xbf, 0x84, 0xa5, 0x1d, 0x16,
-	0xf2, 0x5d, 0xa6, 0x1a, 0xff, 0xff, 0x16, 0x92, 0x95, 0x7d, 0x2a, 0x25, 0x09, 0xd3, 0x1b, 0x2e,
-	0xd7, 0x7a, 0x25, 0xde, 0x86, 0x4b, 0x43, 0xe7, 0x67, 0x58, 0xcb, 0x30, 0x2f, 0x59, 0xc8, 0x89,
-	0x6a, 0xc5, 0x54, 0xdb, 0x94, 0x6b, 0xfd, 0x09, 0xfc, 0x1e, 0xec, 0xe7, 0x34, 0x66, 0xaf, 0xbb,
-	0xa7, 0x85, 0x96, 0xf7, 0x9f, 0x29, 0xfa, 0x6f, 0xc3, 0x65, 0x83, 0x7f, 0xff, 0x8d, 0xb6, 0x93,
-	0x45, 0x46, 0xeb, 0x9a, 0x62, 0xae, 0xf6, 0xaf, 0x4e, 0xae, 0xeb, 0xd1, 0xbb, 0x48, 0xc4, 0x6a,
-	0x57, 0xc7, 0x6b, 0xf4, 0x75, 0x79, 0x50, 0xc9, 0x0b, 0xb3, 0xc3, 0x97, 0x60, 0x36, 0x4d, 0x66,
-	0x26, 0xce, 0xaa, 0xad, 0x9f, 0xb3, 0xb0, 0x90, 0x4a, 0x77, 0xd2, 0x3c, 0xa3, 0x4f, 0x16, 0x2c,
-	0xe4, 0x42, 0x82, 0xaa, 0xde, 0x50, 0xb8, 0x3d, 0x53, 0x76, 0x9d, 0x8d, 0xf1, 0xc2, 0x14, 0x07,
-	0x57, 0x3f, 0xfc, 0xf8, 0xf3, 0xb5, 0x74, 0x0d, 0xaf, 0xf8, 0x85, 0x0f, 0x4b, 0xaf, 0x87, 0xfc,
-	0x40, 0xef, 0x43, 0x87, 0x00, 0xfd, 0x28, 0xa0, 0x35, 0x83, 0xc1, 0x50, 0xd4, 0x9c, 0xf5, 0x31,
-	0xaa, 0x8c, 0x61, 0x4d, 0x33, 0xb8, 0x78, 0x79, 0x24, 0x43, 0x48, 0x15, 0xfa, 0x68, 0x41, 0x79,
-	0x30, 0x00, 0xe8, 0xba, 0xe1, 0x74, 0x43, 0x94, 0x9c, 0xea, 0x58, 0x5d, 0xc6, 0xb1, 0xae, 0x39,
-	0x56, 0xf0, 0xd5, 0x91, 0x1c, 0x4d, 0x26, 0x15, 0xfa, 0x6c, 0xc1, 0xb9, 0x42, 0xd7, 0xa3, 0x1b,
-	0x06, 0x0f, 0x73, 0xf2, 0x9c, 0x9b, 0x93, 0x48, 0x27, 0x26, 0x4a, 0x5a, 0x1a, 0x7d, 0xb3, 0x60,
-	0x71, 0xa8, 0x9d, 0xd1, 0x2d, 0x83, 0xd1, 0xa8, 0xd0, 0x39, 0xb7, 0x27, 0x13, 0x4f, 0xdc, 0x35,
-	0x3a, 0x30, 0x5d, 0x74, 0x08, 0xe5, 0xc1, 0x14, 0x18, 0xef, 0xcc, 0x90, 0x27, 0xe3, 0x9d, 0x99,
-	0xe2, 0x84, 0x5d, 0x4d, 0x62, 0xe3, 0xa5, 0x22, 0x09, 0xd5, 0xea, 0x07, 0x4f, 0xbf, 0x1f, 0xbb,
-	0xd6, 0xd1, 0xb1, 0x6b, 0xfd, 0x3e, 0x76, 0xad, 0x2f, 0x27, 0xee, 0xd4, 0xd1, 0x89, 0x3b, 0xf5,
-	0xeb, 0xc4, 0x9d, 0x7a, 0xb1, 0x1d, 0x32, 0xd5, 0x68, 0xed, 0x79, 0x81, 0xd8, 0xf7, 0xa5, 0xe0,
-	0x71, 0xe3, 0xc0, 0x0f, 0x44, 0x4c, 0xfd, 0xe4, 0xdb, 0x2d, 0xfd, 0xa1, 0xdf, 0xec, 0xdd, 0x74,
-	0x14, 0xed, 0xed, 0xcd, 0xea, 0xff, 0xe6, 0x9d, 0xbf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x91, 0xf5,
-	0xf8, 0x88, 0x8b, 0x07, 0x00, 0x00,
+	// 746 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xcc, 0x56, 0xcd, 0x6e, 0xd3, 0x4c,
+	0x14, 0xad, 0x9b, 0xb4, 0x5f, 0x72, 0xbf, 0x96, 0xb6, 0xd3, 0xb4, 0x35, 0x56, 0x71, 0xcb, 0xa8,
+	0x25, 0xe1, 0x47, 0xb6, 0x5a, 0x24, 0x58, 0xb0, 0x40, 0x6d, 0x85, 0xd8, 0xc0, 0x82, 0x14, 0xb5,
+	0x12, 0x0b, 0x22, 0xc7, 0x99, 0x38, 0xa6, 0xa9, 0xc7, 0xf5, 0x4c, 0x12, 0xc2, 0x82, 0x4a, 0x5d,
+	0xb0, 0x80, 0x0d, 0x12, 0xe2, 0x2d, 0x90, 0x78, 0x0d, 0x56, 0xa8, 0x12, 0x1b, 0x96, 0xa8, 0xe5,
+	0x41, 0x90, 0xc7, 0x76, 0x9a, 0x1f, 0x47, 0x89, 0x1a, 0x21, 0xb1, 0x9b, 0x3b, 0xf7, 0xfa, 0x9e,
+	0x73, 0x3d, 0x3e, 0xc7, 0x03, 0x2b, 0x15, 0xdb, 0xaa, 0x34, 0x8c, 0xa6, 0xde, 0x30, 0xaa, 0x55,
+	0xc2, 0xf5, 0xfa, 0x86, 0xce, 0x88, 0x57, 0xb7, 0x4d, 0xa2, 0xb9, 0x1e, 0xe5, 0x14, 0xcd, 0x85,
+	0x05, 0x5a, 0x50, 0xa0, 0xd5, 0x37, 0x94, 0x45, 0x93, 0x7a, 0x44, 0x37, 0xbd, 0xa6, 0xcb, 0xa9,
+	0x6e, 0x52, 0xdb, 0x09, 0x4a, 0x95, 0x65, 0x8b, 0x52, 0xab, 0x4a, 0x74, 0xc3, 0xb5, 0x75, 0xc3,
+	0x71, 0x28, 0x37, 0xb8, 0x4d, 0x1d, 0x16, 0x64, 0xf1, 0x7b, 0x09, 0x32, 0x3b, 0x1e, 0x31, 0x38,
+	0xd9, 0x32, 0x4d, 0x5a, 0x73, 0x78, 0x9e, 0x1c, 0xd5, 0x08, 0xe3, 0x68, 0x16, 0x12, 0xaf, 0x1a,
+	0x5c, 0x96, 0x56, 0xa5, 0x5c, 0x3a, 0xef, 0x2f, 0x11, 0x82, 0xa4, 0x63, 0x1c, 0x12, 0x79, 0x5c,
+	0x6c, 0x89, 0x35, 0xda, 0x84, 0xb4, 0x0f, 0x55, 0xe0, 0x4d, 0x97, 0xc8, 0x89, 0x55, 0x29, 0x77,
+	0x65, 0x73, 0x41, 0xf3, 0x89, 0x68, 0x01, 0x11, 0x6d, 0x87, 0xda, 0xce, 0xf3, 0xa6, 0x4b, 0xf2,
+	0x29, 0x33, 0x5c, 0x21, 0x19, 0xfe, 0x73, 0x08, 0x6f, 0x50, 0xef, 0x40, 0x4e, 0x8a, 0x56, 0x51,
+	0x88, 0xbf, 0x4a, 0xb0, 0xd0, 0x45, 0x86, 0xb9, 0xd4, 0x61, 0xe2, 0x19, 0x56, 0x33, 0x4d, 0xc2,
+	0x98, 0x60, 0x94, 0xca, 0x47, 0xa1, 0x9f, 0x39, 0x24, 0x8c, 0x19, 0x56, 0x44, 0x2c, 0x0a, 0xfd,
+	0x8c, 0x51, 0x2a, 0x79, 0xfe, 0x33, 0x89, 0x20, 0x13, 0x86, 0x9d, 0xac, 0x93, 0xc3, 0xb1, 0xce,
+	0xc0, 0x04, 0x6d, 0x38, 0xc4, 0x93, 0x27, 0x44, 0xaf, 0x20, 0xc0, 0x0f, 0x61, 0xee, 0x31, 0xe1,
+	0x03, 0x5f, 0x5d, 0x1b, 0x95, 0xf1, 0x0e, 0x2a, 0xf8, 0x8b, 0x04, 0xa8, 0xbd, 0xc3, 0x3f, 0x3e,
+	0x6f, 0x16, 0xe6, 0x9f, 0xd8, 0x2c, 0xa2, 0xcb, 0xfa, 0x4e, 0x8c, 0xcb, 0x90, 0xe9, 0x2c, 0x1c,
+	0x61, 0x30, 0x05, 0x52, 0x46, 0xd8, 0x47, 0x4e, 0xac, 0x26, 0x72, 0xe9, 0x7c, 0x2b, 0xc6, 0x2f,
+	0x61, 0x71, 0xd7, 0xb6, 0x9c, 0x7d, 0x9b, 0x57, 0x2e, 0x7f, 0x0a, 0xed, 0xd8, 0xfe, 0xab, 0x9b,
+	0x6a, 0x61, 0xe3, 0x03, 0x58, 0xea, 0xe9, 0x3f, 0xc2, 0x28, 0xcb, 0x90, 0x66, 0xb6, 0xe5, 0x18,
+	0xbc, 0xe6, 0x45, 0x50, 0x17, 0x1b, 0xf8, 0x2d, 0xc8, 0x7b, 0xc4, 0xb3, 0xcb, 0xcd, 0xbf, 0x35,
+	0x4e, 0x27, 0x7e, 0xb2, 0x1b, 0xff, 0x0d, 0x5c, 0x8d, 0xc1, 0x1f, 0x61, 0xdc, 0x9b, 0x30, 0x1b,
+	0x2e, 0x0b, 0x75, 0xbf, 0xb1, 0x4d, 0x4a, 0x82, 0x51, 0x2a, 0x3f, 0x13, 0xee, 0xef, 0x85, 0xdb,
+	0x78, 0x0b, 0xe6, 0x1f, 0xbd, 0x76, 0xa9, 0xc7, 0xf7, 0x85, 0xa3, 0x5d, 0x46, 0x4b, 0x27, 0x12,
+	0x64, 0x3a, 0x7b, 0x8c, 0x40, 0xfd, 0x1e, 0x2c, 0x11, 0x47, 0xc8, 0x83, 0x94, 0x0a, 0x81, 0xcb,
+	0x16, 0x8a, 0xb5, 0x72, 0x99, 0x78, 0xa1, 0xba, 0x16, 0x5a, 0xe9, 0x00, 0x6d, 0x5b, 0x24, 0x37,
+	0xbf, 0x4f, 0xc2, 0x74, 0xb0, 0xb1, 0x1b, 0x38, 0x36, 0xfa, 0x20, 0xc1, 0x74, 0x87, 0xab, 0xa1,
+	0xac, 0xd6, 0x63, 0xdf, 0x5a, 0x9c, 0x09, 0x2b, 0xb9, 0xc1, 0x85, 0xc1, 0x88, 0x38, 0x7b, 0xf2,
+	0xe3, 0xf7, 0xa7, 0xf1, 0xeb, 0x78, 0x45, 0xef, 0xfa, 0x75, 0x44, 0x4a, 0xd1, 0x4d, 0xf1, 0x1c,
+	0x3a, 0x06, 0xb8, 0xf0, 0x1b, 0xb4, 0x16, 0x03, 0xd0, 0x63, 0x68, 0xca, 0xfa, 0x80, 0xaa, 0x90,
+	0xc3, 0x9a, 0xe0, 0xa0, 0xe2, 0xe5, 0xbe, 0x1c, 0x2c, 0xc2, 0xd1, 0x3b, 0x09, 0xa6, 0xda, 0xad,
+	0x01, 0xdd, 0x88, 0xe9, 0x1e, 0x63, 0x32, 0x4a, 0x76, 0x60, 0x5d, 0xc8, 0x63, 0x5d, 0xf0, 0x58,
+	0xc1, 0xd7, 0xfa, 0xf2, 0xa8, 0xda, 0x8c, 0xfb, 0xe7, 0xf2, 0xbf, 0xaf, 0xed, 0xa7, 0xd1, 0xc7,
+	0x1a, 0xd3, 0x3f, 0xde, 0x5b, 0x94, 0x5b, 0xc3, 0x94, 0x0e, 0xcd, 0xc6, 0x17, 0x20, 0xfa, 0x2c,
+	0xc1, 0x4c, 0x20, 0xbe, 0xdd, 0x48, 0x8f, 0xe8, 0x76, 0x0c, 0x4c, 0x3f, 0x83, 0x50, 0xee, 0x0c,
+	0x57, 0x3c, 0xf4, 0xf7, 0x22, 0x04, 0xdb, 0x44, 0xc7, 0x30, 0xd5, 0xae, 0xa9, 0xd8, 0xd3, 0x8a,
+	0x11, 0x6e, 0xec, 0x69, 0xc5, 0x89, 0x13, 0xab, 0x82, 0x89, 0x8c, 0x17, 0xbb, 0x99, 0x10, 0x51,
+	0xbd, 0xfd, 0xec, 0xdb, 0x99, 0x2a, 0x9d, 0x9e, 0xa9, 0xd2, 0xaf, 0x33, 0x55, 0xfa, 0x78, 0xae,
+	0x8e, 0x9d, 0x9e, 0xab, 0x63, 0x3f, 0xcf, 0xd5, 0xb1, 0x17, 0xf7, 0x2d, 0x9b, 0x57, 0x6a, 0x45,
+	0xcd, 0xa4, 0x87, 0x3a, 0xa3, 0x8e, 0x57, 0x39, 0xd2, 0xc5, 0x1d, 0xc8, 0xff, 0xcd, 0x31, 0xbd,
+	0xe7, 0x0a, 0xf5, 0x20, 0x58, 0xb9, 0xc5, 0xe2, 0xa4, 0xb8, 0xfb, 0xdc, 0xfd, 0x13, 0x00, 0x00,
+	0xff, 0xff, 0xd9, 0x6c, 0xf6, 0x89, 0x67, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -737,8 +848,8 @@ type WalletServiceClient interface {
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
 	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error)
 	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
-	SignWithAccount(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error)
-	VerifyWithAccount(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error)
+	SignMessage(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error)
+	VerifySignature(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error)
 	ExportWallet(ctx context.Context, in *ExportWalletRequest, opts ...grpc.CallOption) (*ExportWalletResponse, error)
 }
 
@@ -777,18 +888,18 @@ func (c *walletServiceClient) ListAccounts(ctx context.Context, in *ListAccounts
 	return out, nil
 }
 
-func (c *walletServiceClient) SignWithAccount(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error) {
+func (c *walletServiceClient) SignMessage(ctx context.Context, in *SignWithAccountRequest, opts ...grpc.CallOption) (*SignWithAccountResponse, error) {
 	out := new(SignWithAccountResponse)
-	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/SignWithAccount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/SignMessage", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *walletServiceClient) VerifyWithAccount(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error) {
+func (c *walletServiceClient) VerifySignature(ctx context.Context, in *VerifyWithAccountRequest, opts ...grpc.CallOption) (*VerifyWithAccountResponse, error) {
 	out := new(VerifyWithAccountResponse)
-	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/VerifyWithAccount", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/highway.wallet.v1.WalletService/VerifySignature", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -809,8 +920,8 @@ type WalletServiceServer interface {
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
 	GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error)
 	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
-	SignWithAccount(context.Context, *SignWithAccountRequest) (*SignWithAccountResponse, error)
-	VerifyWithAccount(context.Context, *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error)
+	SignMessage(context.Context, *SignWithAccountRequest) (*SignWithAccountResponse, error)
+	VerifySignature(context.Context, *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error)
 	ExportWallet(context.Context, *ExportWalletRequest) (*ExportWalletResponse, error)
 }
 
@@ -827,11 +938,11 @@ func (*UnimplementedWalletServiceServer) GetAccount(ctx context.Context, req *Ge
 func (*UnimplementedWalletServiceServer) ListAccounts(ctx context.Context, req *ListAccountsRequest) (*ListAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
 }
-func (*UnimplementedWalletServiceServer) SignWithAccount(ctx context.Context, req *SignWithAccountRequest) (*SignWithAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SignWithAccount not implemented")
+func (*UnimplementedWalletServiceServer) SignMessage(ctx context.Context, req *SignWithAccountRequest) (*SignWithAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SignMessage not implemented")
 }
-func (*UnimplementedWalletServiceServer) VerifyWithAccount(ctx context.Context, req *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method VerifyWithAccount not implemented")
+func (*UnimplementedWalletServiceServer) VerifySignature(ctx context.Context, req *VerifyWithAccountRequest) (*VerifyWithAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method VerifySignature not implemented")
 }
 func (*UnimplementedWalletServiceServer) ExportWallet(ctx context.Context, req *ExportWalletRequest) (*ExportWalletResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExportWallet not implemented")
@@ -895,38 +1006,38 @@ func _WalletService_ListAccounts_Handler(srv interface{}, ctx context.Context, d
 	return interceptor(ctx, in, info, handler)
 }
 
-func _WalletService_SignWithAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _WalletService_SignMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SignWithAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WalletServiceServer).SignWithAccount(ctx, in)
+		return srv.(WalletServiceServer).SignMessage(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/highway.wallet.v1.WalletService/SignWithAccount",
+		FullMethod: "/highway.wallet.v1.WalletService/SignMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalletServiceServer).SignWithAccount(ctx, req.(*SignWithAccountRequest))
+		return srv.(WalletServiceServer).SignMessage(ctx, req.(*SignWithAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _WalletService_VerifyWithAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _WalletService_VerifySignature_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(VerifyWithAccountRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(WalletServiceServer).VerifyWithAccount(ctx, in)
+		return srv.(WalletServiceServer).VerifySignature(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/highway.wallet.v1.WalletService/VerifyWithAccount",
+		FullMethod: "/highway.wallet.v1.WalletService/VerifySignature",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(WalletServiceServer).VerifyWithAccount(ctx, req.(*VerifyWithAccountRequest))
+		return srv.(WalletServiceServer).VerifySignature(ctx, req.(*VerifyWithAccountRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -966,12 +1077,12 @@ var _WalletService_serviceDesc = grpc.ServiceDesc{
 			Handler:    _WalletService_ListAccounts_Handler,
 		},
 		{
-			MethodName: "SignWithAccount",
-			Handler:    _WalletService_SignWithAccount_Handler,
+			MethodName: "SignMessage",
+			Handler:    _WalletService_SignMessage_Handler,
 		},
 		{
-			MethodName: "VerifyWithAccount",
-			Handler:    _WalletService_VerifyWithAccount_Handler,
+			MethodName: "VerifySignature",
+			Handler:    _WalletService_VerifySignature_Handler,
 		},
 		{
 			MethodName: "ExportWallet",
@@ -1009,12 +1120,10 @@ func (m *CreateAccountRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.CoinType) > 0 {
-		i -= len(m.CoinType)
-		copy(dAtA[i:], m.CoinType)
-		i = encodeVarintService(dAtA, i, uint64(len(m.CoinType)))
+	if m.CoinType != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.CoinType))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x18
 	}
 	if len(m.Name) > 0 {
 		i -= len(m.Name)
@@ -1058,21 +1167,36 @@ func (m *CreateAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
-	if len(m.CoinType) > 0 {
-		i -= len(m.CoinType)
-		copy(dAtA[i:], m.CoinType)
-		i = encodeVarintService(dAtA, i, uint64(len(m.CoinType)))
+	if m.CoinType != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.CoinType))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x20
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1139,21 +1263,36 @@ func (m *GetAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Owner)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Owner)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
-	if len(m.CoinType) > 0 {
-		i -= len(m.CoinType)
-		copy(dAtA[i:], m.CoinType)
-		i = encodeVarintService(dAtA, i, uint64(len(m.CoinType)))
+	if m.CoinType != 0 {
+		i = encodeVarintService(dAtA, i, uint64(m.CoinType))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x20
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1214,8 +1353,25 @@ func (m *ListAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], m.Accounts[iNdEx])
 			i = encodeVarintService(dAtA, i, uint64(len(m.Accounts[iNdEx])))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x1a
 		}
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1289,7 +1445,24 @@ func (m *SignWithAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 		copy(dAtA[i:], m.Signature)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Signature)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1365,9 +1538,26 @@ func (m *VerifyWithAccountResponse) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	_ = i
 	var l int
 	_ = l
-	if m.Verified {
+	if m.MessageVerified {
 		i--
-		if m.Verified {
+		if m.MessageVerified {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1398,6 +1588,13 @@ func (m *ExportWalletRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Jwt) > 0 {
 		i -= len(m.Jwt)
 		copy(dAtA[i:], m.Jwt)
@@ -1428,12 +1625,29 @@ func (m *ExportWalletResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Wallet) > 0 {
-		i -= len(m.Wallet)
-		copy(dAtA[i:], m.Wallet)
-		i = encodeVarintService(dAtA, i, uint64(len(m.Wallet)))
+	if len(m.EncryptedWalletBuffer) > 0 {
+		i -= len(m.EncryptedWalletBuffer)
+		copy(dAtA[i:], m.EncryptedWalletBuffer)
+		i = encodeVarintService(dAtA, i, uint64(len(m.EncryptedWalletBuffer)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1463,9 +1677,8 @@ func (m *CreateAccountRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.CoinType)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
+	if m.CoinType != 0 {
+		n += 1 + sovService(uint64(m.CoinType))
 	}
 	l = len(m.Network)
 	if l > 0 {
@@ -1480,13 +1693,19 @@ func (m *CreateAccountResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.CoinType)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
+	if m.CoinType != 0 {
+		n += 1 + sovService(uint64(m.CoinType))
 	}
 	l = len(m.Owner)
 	if l > 0 {
@@ -1518,13 +1737,19 @@ func (m *GetAccountResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.CoinType)
-	if l > 0 {
-		n += 1 + l + sovService(uint64(l))
+	if m.CoinType != 0 {
+		n += 1 + sovService(uint64(m.CoinType))
 	}
 	l = len(m.Owner)
 	if l > 0 {
@@ -1552,6 +1777,13 @@ func (m *ListAccountsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	if len(m.Accounts) > 0 {
 		for _, s := range m.Accounts {
 			l = len(s)
@@ -1588,6 +1820,13 @@ func (m *SignWithAccountResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.Signature)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
@@ -1626,7 +1865,14 @@ func (m *VerifyWithAccountResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Verified {
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	if m.MessageVerified {
 		n += 2
 	}
 	return n
@@ -1642,6 +1888,10 @@ func (m *ExportWalletRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	return n
 }
 
@@ -1651,7 +1901,14 @@ func (m *ExportWalletResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.Wallet)
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	l = len(m.EncryptedWalletBuffer)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -1758,10 +2015,10 @@ func (m *CreateAccountRequest) Unmarshal(dAtA []byte) error {
 			m.Name = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
-			if wireType != 2 {
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
 			}
-			var stringLen uint64
+			m.CoinType = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowService
@@ -1771,24 +2028,11 @@ func (m *CreateAccountRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.CoinType |= crypto.CoinType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CoinType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
@@ -1872,6 +2116,58 @@ func (m *CreateAccountResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -1903,11 +2199,11 @@ func (m *CreateAccountResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
+		case 4:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
 			}
-			var stringLen uint64
+			m.CoinType = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowService
@@ -1917,25 +2213,12 @@ func (m *CreateAccountResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.CoinType |= crypto.CoinType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CoinType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -2132,6 +2415,58 @@ func (m *GetAccountResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -2163,11 +2498,11 @@ func (m *GetAccountResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
+		case 4:
+			if wireType != 0 {
 				return fmt.Errorf("proto: wrong wireType = %d for field CoinType", wireType)
 			}
-			var stringLen uint64
+			m.CoinType = 0
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowService
@@ -2177,25 +2512,12 @@ func (m *GetAccountResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				m.CoinType |= crypto.CoinType(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CoinType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Owner", wireType)
 			}
@@ -2360,6 +2682,58 @@ func (m *ListAccountsResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Accounts", wireType)
 			}
@@ -2590,6 +2964,58 @@ func (m *SignWithAccountResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Signature", wireType)
 			}
@@ -2857,7 +3283,7 @@ func (m *VerifyWithAccountResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Verified", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -2874,7 +3300,59 @@ func (m *VerifyWithAccountResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.Verified = bool(v != 0)
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MessageVerified", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.MessageVerified = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
@@ -2957,6 +3435,38 @@ func (m *ExportWalletRequest) Unmarshal(dAtA []byte) error {
 			}
 			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
@@ -3008,8 +3518,28 @@ func (m *ExportWalletResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Wallet", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3037,7 +3567,39 @@ func (m *ExportWalletResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Wallet = string(dAtA[iNdEx:postIndex])
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EncryptedWalletBuffer", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.EncryptedWalletBuffer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

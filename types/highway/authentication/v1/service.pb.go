@@ -90,9 +90,11 @@ func (m *LoginRequest) GetAssertion() string {
 }
 
 type LoginResponse struct {
-	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Origin  string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Jwt     string `protobuf:"bytes,3,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Address string `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	Origin  string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (m *LoginResponse) Reset()         { *m = LoginResponse{} }
@@ -128,6 +130,20 @@ func (m *LoginResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_LoginResponse proto.InternalMessageInfo
 
+func (m *LoginResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *LoginResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
 func (m *LoginResponse) GetJwt() string {
 	if m != nil {
 		return m.Jwt
@@ -150,9 +166,11 @@ func (m *LoginResponse) GetOrigin() string {
 }
 
 type CurrentUserResponse struct {
-	Address string `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
-	Alias   string `protobuf:"bytes,2,opt,name=alias,proto3" json:"alias,omitempty"`
-	Origin  string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	Alias   string `protobuf:"bytes,4,opt,name=alias,proto3" json:"alias,omitempty"`
+	Origin  string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (m *CurrentUserResponse) Reset()         { *m = CurrentUserResponse{} }
@@ -188,6 +206,20 @@ func (m *CurrentUserResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_CurrentUserResponse proto.InternalMessageInfo
 
+func (m *CurrentUserResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *CurrentUserResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
 func (m *CurrentUserResponse) GetAddress() string {
 	if m != nil {
 		return m.Address
@@ -210,9 +242,9 @@ func (m *CurrentUserResponse) GetOrigin() string {
 }
 
 type ParamsRequest struct {
-	IsLogin bool   `protobuf:"varint,1,opt,name=is_login,json=isLogin,proto3" json:"is_login,omitempty"`
-	Origin  string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	Alias   string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	Existing bool   `protobuf:"varint,1,opt,name=existing,proto3" json:"existing,omitempty"`
+	Origin   string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	Alias    string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
 }
 
 func (m *ParamsRequest) Reset()         { *m = ParamsRequest{} }
@@ -248,9 +280,9 @@ func (m *ParamsRequest) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ParamsRequest proto.InternalMessageInfo
 
-func (m *ParamsRequest) GetIsLogin() bool {
+func (m *ParamsRequest) GetExisting() bool {
 	if m != nil {
-		return m.IsLogin
+		return m.Existing
 	}
 	return false
 }
@@ -270,13 +302,15 @@ func (m *ParamsRequest) GetAlias() string {
 }
 
 type ParamsResponse struct {
-	IsLogin            bool   `protobuf:"varint,1,opt,name=is_login,json=isLogin,proto3" json:"is_login,omitempty"`
-	Origin             string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	Alias              string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
-	Address            string `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
-	Challenge          string `protobuf:"bytes,5,opt,name=challenge,proto3" json:"challenge,omitempty"`
-	AttestationOptions string `protobuf:"bytes,6,opt,name=attestation_options,json=attestationOptions,proto3" json:"attestation_options,omitempty"`
-	AssertionOptions   string `protobuf:"bytes,7,opt,name=assertion_options,json=assertionOptions,proto3" json:"assertion_options,omitempty"`
+	Success            bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message            string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	Existing           bool   `protobuf:"varint,3,opt,name=existing,proto3" json:"existing,omitempty"`
+	Origin             string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
+	Alias              string `protobuf:"bytes,5,opt,name=alias,proto3" json:"alias,omitempty"`
+	Address            string `protobuf:"bytes,6,opt,name=address,proto3" json:"address,omitempty"`
+	Challenge          string `protobuf:"bytes,7,opt,name=challenge,proto3" json:"challenge,omitempty"`
+	AttestationOptions string `protobuf:"bytes,8,opt,name=attestation_options,json=attestationOptions,proto3" json:"attestation_options,omitempty"`
+	AssertionOptions   string `protobuf:"bytes,9,opt,name=assertion_options,json=assertionOptions,proto3" json:"assertion_options,omitempty"`
 }
 
 func (m *ParamsResponse) Reset()         { *m = ParamsResponse{} }
@@ -312,9 +346,23 @@ func (m *ParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_ParamsResponse proto.InternalMessageInfo
 
-func (m *ParamsResponse) GetIsLogin() bool {
+func (m *ParamsResponse) GetSuccess() bool {
 	if m != nil {
-		return m.IsLogin
+		return m.Success
+	}
+	return false
+}
+
+func (m *ParamsResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *ParamsResponse) GetExisting() bool {
+	if m != nil {
+		return m.Existing
 	}
 	return false
 }
@@ -430,10 +478,12 @@ func (m *RegisterRequest) GetChallenge() string {
 }
 
 type RegisterResponse struct {
-	TxHash  string `protobuf:"bytes,1,opt,name=tx_hash,json=txHash,proto3" json:"tx_hash,omitempty"`
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
-	Jwt     string `protobuf:"bytes,3,opt,name=jwt,proto3" json:"jwt,omitempty"`
-	Origin  string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	TxHash  string `protobuf:"bytes,3,opt,name=tx_hash,json=txHash,proto3" json:"tx_hash,omitempty"`
+	Address string `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	Jwt     string `protobuf:"bytes,5,opt,name=jwt,proto3" json:"jwt,omitempty"`
+	Origin  string `protobuf:"bytes,6,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (m *RegisterResponse) Reset()         { *m = RegisterResponse{} }
@@ -468,6 +518,20 @@ func (m *RegisterResponse) XXX_DiscardUnknown() {
 }
 
 var xxx_messageInfo_RegisterResponse proto.InternalMessageInfo
+
+func (m *RegisterResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *RegisterResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
 
 func (m *RegisterResponse) GetTxHash() string {
 	if m != nil {
@@ -542,8 +606,9 @@ func (m *RefreshTokenRequest) GetJwt() string {
 }
 
 type RefreshTokenResponse struct {
-	AccessToken  string `protobuf:"bytes,1,opt,name=access_token,json=accessToken,proto3" json:"access_token,omitempty"`
-	RefreshToken string `protobuf:"bytes,2,opt,name=refresh_token,json=refreshToken,proto3" json:"refresh_token,omitempty"`
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	NewJwt  string `protobuf:"bytes,3,opt,name=new_jwt,json=newJwt,proto3" json:"new_jwt,omitempty"`
 }
 
 func (m *RefreshTokenResponse) Reset()         { *m = RefreshTokenResponse{} }
@@ -579,16 +644,23 @@ func (m *RefreshTokenResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_RefreshTokenResponse proto.InternalMessageInfo
 
-func (m *RefreshTokenResponse) GetAccessToken() string {
+func (m *RefreshTokenResponse) GetSuccess() bool {
 	if m != nil {
-		return m.AccessToken
+		return m.Success
+	}
+	return false
+}
+
+func (m *RefreshTokenResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
 	}
 	return ""
 }
 
-func (m *RefreshTokenResponse) GetRefreshToken() string {
+func (m *RefreshTokenResponse) GetNewJwt() string {
 	if m != nil {
-		return m.RefreshToken
+		return m.NewJwt
 	}
 	return ""
 }
@@ -638,7 +710,9 @@ func (m *VerifyTokenRequest) GetJwt() string {
 }
 
 type VerifyTokenResponse struct {
-	Valid bool `protobuf:"varint,1,opt,name=valid,proto3" json:"valid,omitempty"`
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	IsValid bool   `protobuf:"varint,3,opt,name=is_valid,json=isValid,proto3" json:"is_valid,omitempty"`
 }
 
 func (m *VerifyTokenResponse) Reset()         { *m = VerifyTokenResponse{} }
@@ -674,9 +748,23 @@ func (m *VerifyTokenResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_VerifyTokenResponse proto.InternalMessageInfo
 
-func (m *VerifyTokenResponse) GetValid() bool {
+func (m *VerifyTokenResponse) GetSuccess() bool {
 	if m != nil {
-		return m.Valid
+		return m.Success
+	}
+	return false
+}
+
+func (m *VerifyTokenResponse) GetMessage() string {
+	if m != nil {
+		return m.Message
+	}
+	return ""
+}
+
+func (m *VerifyTokenResponse) GetIsValid() bool {
+	if m != nil {
+		return m.IsValid
 	}
 	return false
 }
@@ -700,57 +788,60 @@ func init() {
 }
 
 var fileDescriptor_a204e94b3257a8d4 = []byte{
-	// 796 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x56, 0xcf, 0x4f, 0x1b, 0x47,
-	0x14, 0x66, 0x31, 0xfe, 0xc1, 0xb3, 0x69, 0xe9, 0xd8, 0x80, 0xd9, 0x1a, 0x03, 0xdb, 0x1f, 0xa6,
-	0x45, 0xdd, 0x15, 0xed, 0xb1, 0xa7, 0xb6, 0xaa, 0xda, 0x43, 0xa5, 0x56, 0xa6, 0xad, 0x2a, 0xa4,
-	0xd6, 0x1a, 0x2f, 0xc3, 0xee, 0x36, 0xf6, 0xce, 0x32, 0x33, 0x36, 0x58, 0x51, 0xa4, 0x28, 0x4a,
-	0x2e, 0x51, 0x14, 0x45, 0xca, 0xbf, 0x94, 0x43, 0x8e, 0x48, 0xb9, 0xe4, 0x18, 0x41, 0xee, 0xf9,
-	0x17, 0x22, 0xcf, 0xcc, 0xda, 0xbb, 0x60, 0x16, 0x0e, 0xb9, 0x79, 0xde, 0xfb, 0xf6, 0x7b, 0xdf,
-	0x9b, 0xf9, 0xde, 0x93, 0xa1, 0xe5, 0x07, 0x9e, 0x7f, 0x82, 0x47, 0x0e, 0x1e, 0x08, 0x9f, 0x84,
-	0x22, 0x70, 0xb1, 0x08, 0x68, 0xe8, 0x0c, 0xf7, 0x1c, 0x4e, 0xd8, 0x30, 0x70, 0x89, 0x1d, 0x31,
-	0x2a, 0x28, 0x5a, 0xd7, 0x40, 0x3b, 0x0d, 0xb4, 0x87, 0x7b, 0x66, 0xc3, 0xa3, 0xd4, 0xeb, 0x11,
-	0x07, 0x47, 0x81, 0x83, 0xc3, 0x90, 0x0a, 0x99, 0xe1, 0xea, 0x43, 0xf3, 0x53, 0x9d, 0x95, 0xa7,
-	0xee, 0xe0, 0xc8, 0x21, 0xfd, 0x48, 0x8c, 0x54, 0xd2, 0x3a, 0x80, 0xca, 0x6f, 0xd4, 0x0b, 0xc2,
-	0x36, 0x39, 0x1e, 0x10, 0x2e, 0xd0, 0x2a, 0x14, 0x28, 0x0b, 0xbc, 0x20, 0xac, 0x1b, 0x5b, 0xc6,
-	0xce, 0x62, 0x5b, 0x9f, 0x50, 0x0d, 0xf2, 0xb8, 0x17, 0x60, 0x5e, 0x9f, 0x97, 0x61, 0x75, 0x40,
-	0x0d, 0x58, 0xc4, 0x9c, 0x13, 0x36, 0x2e, 0x57, 0xcf, 0xc9, 0xcc, 0x34, 0x60, 0xed, 0xc3, 0x92,
-	0xe6, 0xe6, 0x11, 0x0d, 0x39, 0x41, 0xcb, 0x90, 0xfb, 0xff, 0x44, 0x68, 0xe6, 0xf1, 0x4f, 0x54,
-	0x87, 0x22, 0x3e, 0x3c, 0x64, 0x84, 0xc7, 0xc4, 0xf1, 0x31, 0x21, 0x24, 0x97, 0x14, 0x62, 0xfd,
-	0x0b, 0xd5, 0x9f, 0x06, 0x8c, 0x91, 0x50, 0xfc, 0xc5, 0x09, 0x9b, 0x50, 0x27, 0x88, 0x8c, 0x34,
-	0xd1, 0x6c, 0xe5, 0xd7, 0xd1, 0xff, 0x03, 0x4b, 0x7f, 0x60, 0x86, 0xfb, 0x3c, 0xbe, 0x90, 0x75,
-	0x28, 0x05, 0xbc, 0xd3, 0xa3, 0xf1, 0x95, 0x94, 0xda, 0xc5, 0x80, 0xcb, 0xb6, 0x12, 0x1c, 0xf3,
-	0xb3, 0xef, 0x2a, 0x97, 0xa8, 0x68, 0xbd, 0x33, 0xe0, 0xa3, 0x98, 0x5a, 0x8b, 0xfe, 0x50, 0xdc,
-	0xc9, 0xee, 0x17, 0xd2, 0xdd, 0x37, 0x60, 0xd1, 0xf5, 0x71, 0xaf, 0x47, 0x42, 0x8f, 0xd4, 0xf3,
-	0xea, 0x85, 0x26, 0x01, 0xe4, 0x40, 0x15, 0x0b, 0x41, 0xb8, 0x32, 0x4c, 0x87, 0x46, 0xd2, 0x37,
-	0xf5, 0x82, 0xc4, 0xa1, 0x44, 0xea, 0x77, 0x95, 0x41, 0xbb, 0xf0, 0xc9, 0xe4, 0x7d, 0x27, 0xf0,
-	0xa2, 0x84, 0x2f, 0x4f, 0x12, 0x1a, 0x6c, 0x3d, 0x32, 0xe0, 0xe3, 0x36, 0xf1, 0x02, 0x2e, 0xc6,
-	0x0f, 0x95, 0xed, 0x2f, 0x13, 0x4a, 0x03, 0x4e, 0x58, 0x88, 0xfb, 0x44, 0x77, 0x3c, 0x39, 0xa3,
-	0x2d, 0x28, 0x27, 0xa4, 0xe8, 0xce, 0x93, 0xa1, 0x74, 0x97, 0x0b, 0x97, 0xba, 0xb4, 0x28, 0x2c,
-	0x4f, 0x65, 0xe8, 0xab, 0x5f, 0x83, 0xa2, 0x38, 0xed, 0xf8, 0x98, 0xfb, 0xb1, 0x10, 0x71, 0xfa,
-	0x2b, 0xe6, 0x7e, 0x86, 0x23, 0xb5, 0x7b, 0x73, 0x53, 0xf7, 0x4e, 0x9b, 0x59, 0x48, 0x99, 0xa8,
-	0x05, 0xd5, 0x36, 0x39, 0x62, 0x84, 0xfb, 0x7f, 0xd2, 0x3b, 0x64, 0x32, 0x5b, 0x57, 0xec, 0x6f,
-	0xfd, 0x07, 0xb5, 0x34, 0x50, 0xab, 0xdb, 0x86, 0x0a, 0x76, 0x5d, 0xc2, 0x79, 0x47, 0x8c, 0xe3,
-	0xfa, 0x93, 0xb2, 0x8a, 0x49, 0x28, 0xfa, 0x0c, 0x96, 0x98, 0xfa, 0x54, 0x63, 0x94, 0xda, 0x0a,
-	0x4b, 0xf0, 0x59, 0x5f, 0x02, 0xfa, 0x9b, 0xb0, 0xe0, 0x68, 0x74, 0x83, 0x8e, 0x5d, 0xa8, 0xa6,
-	0x70, 0x5a, 0x46, 0x0d, 0xf2, 0x43, 0xdc, 0x0b, 0x0e, 0xb5, 0x39, 0xd5, 0xe1, 0xdb, 0x17, 0x05,
-	0x58, 0xf9, 0x21, 0xb5, 0x83, 0xf6, 0xd5, 0xa2, 0x42, 0xf7, 0x0d, 0xc8, 0x2b, 0xfb, 0xb6, 0xec,
-	0x6b, 0xb7, 0x95, 0x9d, 0xdc, 0x37, 0xe6, 0xce, 0xcd, 0x40, 0x25, 0xc6, 0xfa, 0xfc, 0xc1, 0xab,
-	0xb7, 0xcf, 0xe7, 0x9b, 0x56, 0xc3, 0x49, 0x6e, 0x4c, 0x47, 0x4e, 0x8f, 0x73, 0x57, 0xdd, 0xfc,
-	0x3d, 0x24, 0xa0, 0x9c, 0x58, 0x0f, 0x68, 0xd5, 0x56, 0xcb, 0xcf, 0x8e, 0x97, 0x9f, 0xfd, 0xf3,
-	0x78, 0xf9, 0x99, 0x76, 0x46, 0xd9, 0x19, 0xeb, 0xc5, 0xda, 0x90, 0xc5, 0xd7, 0xd0, 0x4a, 0xba,
-	0xb8, 0xab, 0xa0, 0xe8, 0xa1, 0x01, 0x05, 0x35, 0xdb, 0x28, 0xab, 0xa1, 0xd4, 0x66, 0x31, 0xbf,
-	0xba, 0x05, 0x52, 0x97, 0xff, 0x42, 0x96, 0xdf, 0x44, 0x1b, 0xe9, 0xf2, 0x91, 0x44, 0x4d, 0x9b,
-	0x7f, 0x62, 0x40, 0x29, 0x76, 0x3a, 0xfa, 0x3a, 0x83, 0xfe, 0xd2, 0x54, 0x9a, 0xbb, 0xb7, 0xc2,
-	0x6a, 0x31, 0x2d, 0x29, 0x66, 0xdb, 0xda, 0x4c, 0x8b, 0x61, 0x1a, 0x37, 0x95, 0xf3, 0xd4, 0x80,
-	0x4a, 0xd2, 0xde, 0xc8, 0xce, 0x2c, 0x73, 0x65, 0x60, 0x4c, 0xe7, 0xd6, 0xf8, 0xf4, 0x33, 0x59,
-	0x2b, 0x97, 0xa5, 0x49, 0x2c, 0x7a, 0x6c, 0x40, 0x39, 0xe1, 0x73, 0xf4, 0x4d, 0x06, 0xff, 0xd5,
-	0xb9, 0xc9, 0x34, 0xcd, 0x8c, 0xf1, 0xb1, 0x1a, 0x52, 0xcd, 0xaa, 0x55, 0x4b, 0xab, 0x19, 0x4a,
-	0xe8, 0x8f, 0xf8, 0xe5, 0x79, 0xd3, 0x38, 0x3b, 0x6f, 0x1a, 0x6f, 0xce, 0x9b, 0xc6, 0xb3, 0x8b,
-	0xe6, 0xdc, 0xd9, 0x45, 0x73, 0xee, 0xf5, 0x45, 0x73, 0xee, 0xe0, 0x17, 0x2f, 0x10, 0xfe, 0xa0,
-	0x6b, 0xbb, 0xb4, 0xef, 0x70, 0x1a, 0x32, 0xff, 0xd8, 0x71, 0x29, 0x23, 0x8e, 0x18, 0x45, 0x84,
-	0x3b, 0xd7, 0xfe, 0x5f, 0xf8, 0x3e, 0x1d, 0x89, 0xba, 0xdd, 0x82, 0x74, 0xfd, 0x77, 0xef, 0x03,
-	0x00, 0x00, 0xff, 0xff, 0xe7, 0xd5, 0xa2, 0xfe, 0x64, 0x08, 0x00, 0x00,
+	// 836 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0xcf, 0x8f, 0xdb, 0x44,
+	0x14, 0x5e, 0x6f, 0x36, 0x4e, 0xf2, 0xb6, 0x85, 0x65, 0xd2, 0x1f, 0xa9, 0x49, 0xdd, 0xc5, 0x82,
+	0x66, 0xa1, 0xc2, 0xa3, 0xc2, 0x91, 0x13, 0x20, 0x04, 0x42, 0x48, 0xa0, 0x00, 0x95, 0xe8, 0x25,
+	0x9a, 0x38, 0xb3, 0xf6, 0x2c, 0x89, 0xed, 0xce, 0x4c, 0x92, 0x8d, 0xaa, 0x4a, 0x08, 0x81, 0xb8,
+	0x70, 0x00, 0xc1, 0x81, 0x3b, 0xfc, 0x31, 0x1c, 0x2b, 0x71, 0xe9, 0x11, 0xed, 0xf2, 0x87, 0x20,
+	0x8f, 0x27, 0xce, 0xb8, 0x9b, 0xb8, 0x2b, 0xe5, 0x96, 0x37, 0xef, 0xcb, 0x7b, 0xdf, 0xbc, 0x79,
+	0xdf, 0x7b, 0x86, 0x5e, 0xc4, 0xc2, 0x68, 0x4e, 0x16, 0x98, 0x4c, 0x65, 0x44, 0x63, 0xc9, 0x02,
+	0x22, 0x59, 0x12, 0xe3, 0xd9, 0x7d, 0x2c, 0x28, 0x9f, 0xb1, 0x80, 0xfa, 0x29, 0x4f, 0x64, 0x82,
+	0x6e, 0x69, 0xa0, 0x5f, 0x06, 0xfa, 0xb3, 0xfb, 0x4e, 0x37, 0x4c, 0x92, 0x70, 0x4c, 0x31, 0x49,
+	0x19, 0x26, 0x71, 0x9c, 0x48, 0xe5, 0x11, 0xf9, 0x1f, 0x9d, 0x57, 0xb5, 0x57, 0x59, 0xc3, 0xe9,
+	0x31, 0xa6, 0x93, 0x54, 0x2e, 0x72, 0xa7, 0xf7, 0x10, 0xae, 0x7c, 0x96, 0x84, 0x2c, 0xee, 0xd3,
+	0x47, 0x53, 0x2a, 0x24, 0xba, 0x01, 0x76, 0xc2, 0x59, 0xc8, 0xe2, 0x8e, 0x75, 0x68, 0x1d, 0xb5,
+	0xfa, 0xda, 0x42, 0xd7, 0xa0, 0x4e, 0xc6, 0x8c, 0x88, 0xce, 0xae, 0x3a, 0xce, 0x0d, 0xd4, 0x85,
+	0x16, 0x11, 0x82, 0xf2, 0x2c, 0x5d, 0xa7, 0xa6, 0x3c, 0xab, 0x03, 0xef, 0x27, 0x0b, 0xae, 0xea,
+	0xe0, 0x22, 0x4d, 0x62, 0x41, 0x51, 0x07, 0x1a, 0x62, 0x1a, 0x04, 0x54, 0x08, 0x15, 0xbe, 0xd9,
+	0x5f, 0x9a, 0x99, 0x67, 0x42, 0x85, 0x20, 0x21, 0xd5, 0x19, 0x96, 0x26, 0x3a, 0x80, 0xda, 0xc9,
+	0x5c, 0xea, 0xe8, 0xd9, 0xcf, 0x0c, 0x4b, 0x46, 0x23, 0x9e, 0x45, 0xd9, 0xcb, 0xb1, 0xda, 0x34,
+	0xd8, 0xd7, 0x4d, 0xf6, 0xde, 0xaf, 0x16, 0xb4, 0x3f, 0x9c, 0x72, 0x4e, 0x63, 0xf9, 0xb5, 0xa0,
+	0x7c, 0x2b, 0x3e, 0x46, 0xf6, 0x5a, 0x39, 0x7b, 0x51, 0xa3, 0x3d, 0xb3, 0x46, 0x9b, 0x38, 0x7d,
+	0x03, 0x57, 0xbf, 0x20, 0x9c, 0x4c, 0xc4, 0xb2, 0xf4, 0x0e, 0x34, 0xe9, 0x29, 0x13, 0x92, 0xc5,
+	0xa1, 0x66, 0x53, 0xd8, 0x46, 0x90, 0xdd, 0xf5, 0xcf, 0x52, 0x33, 0x52, 0x7a, 0x7f, 0xed, 0xc2,
+	0x4b, 0xcb, 0xd8, 0x5b, 0xdc, 0xd4, 0x24, 0x54, 0xdb, 0x48, 0x68, 0x6f, 0x3d, 0xa1, 0xba, 0x59,
+	0x03, 0xa3, 0x66, 0x76, 0xb9, 0x66, 0x5d, 0x68, 0x05, 0x11, 0x19, 0x8f, 0x69, 0x1c, 0xd2, 0x4e,
+	0x23, 0xef, 0xa0, 0xe2, 0x00, 0x61, 0x68, 0x13, 0x29, 0xa9, 0xc8, 0x1b, 0x7a, 0x90, 0xa4, 0xaa,
+	0xaf, 0x3b, 0x4d, 0x85, 0x43, 0x86, 0xeb, 0xf3, 0xdc, 0x83, 0xee, 0xc1, 0x2b, 0x45, 0xff, 0x15,
+	0xf0, 0x96, 0x82, 0x1f, 0x14, 0x0e, 0x0d, 0xf6, 0x7e, 0xb4, 0xe0, 0xe5, 0x3e, 0x0d, 0x99, 0x90,
+	0x59, 0x4b, 0x54, 0xf7, 0xbf, 0x03, 0xcd, 0xa9, 0xa0, 0x3c, 0x26, 0x93, 0x65, 0x99, 0x0a, 0x1b,
+	0x1d, 0xc2, 0xbe, 0x41, 0x45, 0x3f, 0x85, 0x79, 0x54, 0xbe, 0xe5, 0xde, 0x73, 0xb7, 0xf4, 0xfe,
+	0xb4, 0xe0, 0x60, 0xc5, 0x63, 0x8b, 0x07, 0xbb, 0x09, 0x0d, 0x79, 0x3a, 0x88, 0x88, 0x88, 0x34,
+	0x09, 0x5b, 0x9e, 0x7e, 0x42, 0x44, 0x54, 0xa1, 0x18, 0xad, 0xae, 0xfa, 0x4a, 0x5d, 0xab, 0x0a,
+	0xd8, 0xa5, 0x7e, 0xed, 0x41, 0xbb, 0x4f, 0x8f, 0x39, 0x15, 0xd1, 0x57, 0xc9, 0xb7, 0xb4, 0x18,
+	0x18, 0x3a, 0x80, 0x55, 0x04, 0xf0, 0x02, 0xb8, 0x56, 0x06, 0x6e, 0x77, 0xa3, 0x98, 0xce, 0x07,
+	0xab, 0x01, 0x60, 0xc7, 0x74, 0xfe, 0xe9, 0x5c, 0x7a, 0x77, 0x01, 0x3d, 0xa0, 0x9c, 0x1d, 0x2f,
+	0x5e, 0x40, 0x66, 0x04, 0xed, 0x12, 0x6e, 0x0b, 0x2e, 0xb7, 0xa0, 0xc9, 0xc4, 0x60, 0x46, 0xc6,
+	0x6c, 0xa4, 0xe5, 0xd0, 0x60, 0xe2, 0x41, 0x66, 0xbe, 0xf3, 0xcc, 0x86, 0xeb, 0xef, 0x97, 0xc6,
+	0xf2, 0x97, 0xf9, 0xec, 0x46, 0x3f, 0x58, 0x60, 0xe7, 0x52, 0x44, 0x47, 0xfe, 0xc6, 0x09, 0xee,
+	0x97, 0x26, 0x81, 0xf3, 0xe6, 0x25, 0x90, 0xf9, 0x45, 0xbc, 0x37, 0xbe, 0xff, 0xe7, 0xbf, 0xdf,
+	0x76, 0xef, 0xa0, 0xdb, 0xd8, 0xdc, 0x23, 0x38, 0x55, 0x28, 0xfc, 0x38, 0x7f, 0xbb, 0x27, 0xe8,
+	0x3b, 0x0b, 0xea, 0x6a, 0x14, 0xa3, 0x5e, 0x45, 0x6c, 0x73, 0x13, 0x38, 0x47, 0x2f, 0x06, 0x6a,
+	0x0e, 0xaf, 0x2b, 0x0e, 0xae, 0xd7, 0x2d, 0x73, 0x18, 0x67, 0xa0, 0x15, 0x85, 0x9f, 0x2d, 0x68,
+	0x2e, 0xbb, 0x1c, 0xbd, 0x55, 0x11, 0xfc, 0x39, 0x49, 0x3a, 0xf7, 0x2e, 0x85, 0xd5, 0x5c, 0x7a,
+	0x8a, 0xcb, 0x6b, 0xde, 0x9d, 0x32, 0x17, 0xae, 0x71, 0x2b, 0x3a, 0x12, 0xf6, 0x8d, 0x8d, 0x80,
+	0x6e, 0xf8, 0xf9, 0x96, 0xf4, 0x97, 0x5b, 0xd2, 0xff, 0x28, 0xdb, 0x92, 0x8e, 0x5f, 0x91, 0x7c,
+	0xcd, 0x46, 0xf1, 0x6e, 0xab, 0xfc, 0x37, 0xd1, 0xf5, 0x72, 0xfe, 0x20, 0x87, 0xa2, 0x3f, 0x2c,
+	0xb8, 0x62, 0x8a, 0x03, 0xf9, 0x95, 0x97, 0xbb, 0x20, 0x37, 0x07, 0x5f, 0x1a, 0x5f, 0x5d, 0x90,
+	0x93, 0xb9, 0xc4, 0x3c, 0xc7, 0xe3, 0xc7, 0x27, 0x73, 0xf9, 0x04, 0xfd, 0x6e, 0xc1, 0xbe, 0x21,
+	0x15, 0xf4, 0x76, 0x45, 0xa6, 0x8b, 0xd2, 0xab, 0x2c, 0xd4, 0x1a, 0x05, 0x7a, 0x77, 0x15, 0xaf,
+	0x43, 0xcf, 0xbd, 0xc8, 0x6b, 0xa6, 0xe0, 0x39, 0xad, 0x0f, 0xc8, 0xdf, 0x67, 0xae, 0xf5, 0xf4,
+	0xcc, 0xb5, 0xfe, 0x3d, 0x73, 0xad, 0x5f, 0xce, 0xdd, 0x9d, 0xa7, 0xe7, 0xee, 0xce, 0xb3, 0x73,
+	0x77, 0xe7, 0xe1, 0xc7, 0x21, 0x93, 0xd1, 0x74, 0xe8, 0x07, 0xc9, 0x04, 0x8b, 0x24, 0xe6, 0xd1,
+	0x23, 0x1c, 0x24, 0x9c, 0x62, 0xb9, 0x48, 0xa9, 0xc0, 0x1b, 0x3f, 0xab, 0xde, 0x2b, 0x9f, 0xa4,
+	0xc3, 0xa1, 0xad, 0xde, 0xfc, 0xdd, 0xff, 0x03, 0x00, 0x00, 0xff, 0xff, 0xde, 0xc2, 0x1b, 0x55,
+	0x8b, 0x09, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -765,10 +856,10 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type AuthenticationServiceClient interface {
-	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
-	CurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentUserResponse, error)
 	Params(ctx context.Context, in *ParamsRequest, opts ...grpc.CallOption) (*ParamsResponse, error)
+	Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error)
 	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
+	CurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentUserResponse, error)
 	RefreshToken(ctx context.Context, in *RefreshTokenRequest, opts ...grpc.CallOption) (*RefreshTokenResponse, error)
 	VerifyToken(ctx context.Context, in *VerifyTokenRequest, opts ...grpc.CallOption) (*VerifyTokenResponse, error)
 }
@@ -781,24 +872,6 @@ func NewAuthenticationServiceClient(cc grpc1.ClientConn) AuthenticationServiceCl
 	return &authenticationServiceClient{cc}
 }
 
-func (c *authenticationServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
-	out := new(LoginResponse)
-	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Login", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authenticationServiceClient) CurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentUserResponse, error) {
-	out := new(CurrentUserResponse)
-	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/CurrentUser", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *authenticationServiceClient) Params(ctx context.Context, in *ParamsRequest, opts ...grpc.CallOption) (*ParamsResponse, error) {
 	out := new(ParamsResponse)
 	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Params", in, out, opts...)
@@ -808,9 +881,27 @@ func (c *authenticationServiceClient) Params(ctx context.Context, in *ParamsRequ
 	return out, nil
 }
 
+func (c *authenticationServiceClient) Login(ctx context.Context, in *LoginRequest, opts ...grpc.CallOption) (*LoginResponse, error) {
+	out := new(LoginResponse)
+	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Login", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *authenticationServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
 	out := new(RegisterResponse)
 	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *authenticationServiceClient) CurrentUser(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CurrentUserResponse, error) {
+	out := new(CurrentUserResponse)
+	err := c.cc.Invoke(ctx, "/highway.authentication.v1.AuthenticationService/CurrentUser", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -837,10 +928,10 @@ func (c *authenticationServiceClient) VerifyToken(ctx context.Context, in *Verif
 
 // AuthenticationServiceServer is the server API for AuthenticationService service.
 type AuthenticationServiceServer interface {
-	Login(context.Context, *LoginRequest) (*LoginResponse, error)
-	CurrentUser(context.Context, *emptypb.Empty) (*CurrentUserResponse, error)
 	Params(context.Context, *ParamsRequest) (*ParamsResponse, error)
+	Login(context.Context, *LoginRequest) (*LoginResponse, error)
 	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
+	CurrentUser(context.Context, *emptypb.Empty) (*CurrentUserResponse, error)
 	RefreshToken(context.Context, *RefreshTokenRequest) (*RefreshTokenResponse, error)
 	VerifyToken(context.Context, *VerifyTokenRequest) (*VerifyTokenResponse, error)
 }
@@ -849,17 +940,17 @@ type AuthenticationServiceServer interface {
 type UnimplementedAuthenticationServiceServer struct {
 }
 
-func (*UnimplementedAuthenticationServiceServer) Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
-}
-func (*UnimplementedAuthenticationServiceServer) CurrentUser(ctx context.Context, req *emptypb.Empty) (*CurrentUserResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CurrentUser not implemented")
-}
 func (*UnimplementedAuthenticationServiceServer) Params(ctx context.Context, req *ParamsRequest) (*ParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
+func (*UnimplementedAuthenticationServiceServer) Login(ctx context.Context, req *LoginRequest) (*LoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Login not implemented")
+}
 func (*UnimplementedAuthenticationServiceServer) Register(ctx context.Context, req *RegisterRequest) (*RegisterResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
+func (*UnimplementedAuthenticationServiceServer) CurrentUser(ctx context.Context, req *emptypb.Empty) (*CurrentUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CurrentUser not implemented")
 }
 func (*UnimplementedAuthenticationServiceServer) RefreshToken(ctx context.Context, req *RefreshTokenRequest) (*RefreshTokenResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
@@ -870,42 +961,6 @@ func (*UnimplementedAuthenticationServiceServer) VerifyToken(ctx context.Context
 
 func RegisterAuthenticationServiceServer(s grpc1.Server, srv AuthenticationServiceServer) {
 	s.RegisterService(&_AuthenticationService_serviceDesc, srv)
-}
-
-func _AuthenticationService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(LoginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthenticationServiceServer).Login(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/highway.authentication.v1.AuthenticationService/Login",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServiceServer).Login(ctx, req.(*LoginRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthenticationService_CurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthenticationServiceServer).CurrentUser(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/highway.authentication.v1.AuthenticationService/CurrentUser",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthenticationServiceServer).CurrentUser(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _AuthenticationService_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -926,6 +981,24 @@ func _AuthenticationService_Params_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AuthenticationService_Login_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).Login(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/highway.authentication.v1.AuthenticationService/Login",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).Login(ctx, req.(*LoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _AuthenticationService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(RegisterRequest)
 	if err := dec(in); err != nil {
@@ -940,6 +1013,24 @@ func _AuthenticationService_Register_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(AuthenticationServiceServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AuthenticationService_CurrentUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(emptypb.Empty)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AuthenticationServiceServer).CurrentUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/highway.authentication.v1.AuthenticationService/CurrentUser",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AuthenticationServiceServer).CurrentUser(ctx, req.(*emptypb.Empty))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -985,20 +1076,20 @@ var _AuthenticationService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*AuthenticationServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Login",
-			Handler:    _AuthenticationService_Login_Handler,
-		},
-		{
-			MethodName: "CurrentUser",
-			Handler:    _AuthenticationService_CurrentUser_Handler,
-		},
-		{
 			MethodName: "Params",
 			Handler:    _AuthenticationService_Params_Handler,
 		},
 		{
+			MethodName: "Login",
+			Handler:    _AuthenticationService_Login_Handler,
+		},
+		{
 			MethodName: "Register",
 			Handler:    _AuthenticationService_Register_Handler,
+		},
+		{
+			MethodName: "CurrentUser",
+			Handler:    _AuthenticationService_CurrentUser_Handler,
 		},
 		{
 			MethodName: "RefreshToken",
@@ -1082,21 +1173,38 @@ func (m *LoginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Origin)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Origin)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x22
 	}
 	if len(m.Jwt) > 0 {
 		i -= len(m.Jwt)
 		copy(dAtA[i:], m.Jwt)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Jwt)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1126,21 +1234,38 @@ func (m *CurrentUserResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Origin)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Origin)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
 	if len(m.Alias) > 0 {
 		i -= len(m.Alias)
 		copy(dAtA[i:], m.Alias)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Alias)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x22
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1179,9 +1304,9 @@ func (m *ParamsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x12
 	}
-	if m.IsLogin {
+	if m.Existing {
 		i--
-		if m.IsLogin {
+		if m.Existing {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1217,46 +1342,63 @@ func (m *ParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.AssertionOptions)
 		i = encodeVarintService(dAtA, i, uint64(len(m.AssertionOptions)))
 		i--
-		dAtA[i] = 0x3a
+		dAtA[i] = 0x4a
 	}
 	if len(m.AttestationOptions) > 0 {
 		i -= len(m.AttestationOptions)
 		copy(dAtA[i:], m.AttestationOptions)
 		i = encodeVarintService(dAtA, i, uint64(len(m.AttestationOptions)))
 		i--
-		dAtA[i] = 0x32
+		dAtA[i] = 0x42
 	}
 	if len(m.Challenge) > 0 {
 		i -= len(m.Challenge)
 		copy(dAtA[i:], m.Challenge)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Challenge)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x3a
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if len(m.Alias) > 0 {
 		i -= len(m.Alias)
 		copy(dAtA[i:], m.Alias)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Alias)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
 	if len(m.Origin) > 0 {
 		i -= len(m.Origin)
 		copy(dAtA[i:], m.Origin)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Origin)))
 		i--
+		dAtA[i] = 0x22
+	}
+	if m.Existing {
+		i--
+		if m.Existing {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
 		dAtA[i] = 0x12
 	}
-	if m.IsLogin {
+	if m.Success {
 		i--
-		if m.IsLogin {
+		if m.Success {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1343,28 +1485,45 @@ func (m *RegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		copy(dAtA[i:], m.Origin)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Origin)))
 		i--
-		dAtA[i] = 0x22
+		dAtA[i] = 0x32
 	}
 	if len(m.Jwt) > 0 {
 		i -= len(m.Jwt)
 		copy(dAtA[i:], m.Jwt)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Jwt)))
 		i--
-		dAtA[i] = 0x1a
+		dAtA[i] = 0x2a
 	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
 		i = encodeVarintService(dAtA, i, uint64(len(m.Address)))
 		i--
-		dAtA[i] = 0x12
+		dAtA[i] = 0x22
 	}
 	if len(m.TxHash) > 0 {
 		i -= len(m.TxHash)
 		copy(dAtA[i:], m.TxHash)
 		i = encodeVarintService(dAtA, i, uint64(len(m.TxHash)))
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1419,19 +1578,29 @@ func (m *RefreshTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.RefreshToken) > 0 {
-		i -= len(m.RefreshToken)
-		copy(dAtA[i:], m.RefreshToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.RefreshToken)))
+	if len(m.NewJwt) > 0 {
+		i -= len(m.NewJwt)
+		copy(dAtA[i:], m.NewJwt)
+		i = encodeVarintService(dAtA, i, uint64(len(m.NewJwt)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
 		i--
 		dAtA[i] = 0x12
 	}
-	if len(m.AccessToken) > 0 {
-		i -= len(m.AccessToken)
-		copy(dAtA[i:], m.AccessToken)
-		i = encodeVarintService(dAtA, i, uint64(len(m.AccessToken)))
+	if m.Success {
 		i--
-		dAtA[i] = 0xa
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1486,9 +1655,26 @@ func (m *VerifyTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.Valid {
+	if m.IsValid {
 		i--
-		if m.Valid {
+		if m.IsValid {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x18
+	}
+	if len(m.Message) > 0 {
+		i -= len(m.Message)
+		copy(dAtA[i:], m.Message)
+		i = encodeVarintService(dAtA, i, uint64(len(m.Message)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
 			dAtA[i] = 1
 		} else {
 			dAtA[i] = 0
@@ -1537,6 +1723,13 @@ func (m *LoginResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.Jwt)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
@@ -1558,6 +1751,13 @@ func (m *CurrentUserResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
@@ -1579,7 +1779,7 @@ func (m *ParamsRequest) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.IsLogin {
+	if m.Existing {
 		n += 2
 	}
 	l = len(m.Origin)
@@ -1599,7 +1799,14 @@ func (m *ParamsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.IsLogin {
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	if m.Existing {
 		n += 2
 	}
 	l = len(m.Origin)
@@ -1660,6 +1867,13 @@ func (m *RegisterResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
 	l = len(m.TxHash)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
@@ -1698,11 +1912,14 @@ func (m *RefreshTokenResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	l = len(m.AccessToken)
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
-	l = len(m.RefreshToken)
+	l = len(m.NewJwt)
 	if l > 0 {
 		n += 1 + l + sovService(uint64(l))
 	}
@@ -1728,7 +1945,14 @@ func (m *VerifyTokenResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Valid {
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Message)
+	if l > 0 {
+		n += 1 + l + sovService(uint64(l))
+	}
+	if m.IsValid {
 		n += 2
 	}
 	return n
@@ -1916,6 +2140,58 @@ func (m *LoginResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
 			}
@@ -1947,7 +2223,7 @@ func (m *LoginResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -1979,7 +2255,7 @@ func (m *LoginResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 			}
@@ -2062,6 +2338,58 @@ func (m *CurrentUserResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -2093,7 +2421,7 @@ func (m *CurrentUserResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
 			}
@@ -2125,7 +2453,7 @@ func (m *CurrentUserResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Alias = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 			}
@@ -2209,7 +2537,7 @@ func (m *ParamsRequest) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IsLogin", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Existing", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -2226,7 +2554,7 @@ func (m *ParamsRequest) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.IsLogin = bool(v != 0)
+			m.Existing = bool(v != 0)
 		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
@@ -2343,7 +2671,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IsLogin", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -2360,8 +2688,60 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.IsLogin = bool(v != 0)
+			m.Success = bool(v != 0)
 		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Existing", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Existing = bool(v != 0)
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 			}
@@ -2393,7 +2773,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Origin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
 			}
@@ -2425,7 +2805,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Alias = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -2457,7 +2837,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 7:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Challenge", wireType)
 			}
@@ -2489,7 +2869,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Challenge = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 6:
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AttestationOptions", wireType)
 			}
@@ -2521,7 +2901,7 @@ func (m *ParamsResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.AttestationOptions = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
+		case 9:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field AssertionOptions", wireType)
 			}
@@ -2782,6 +3162,58 @@ func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field TxHash", wireType)
 			}
@@ -2813,7 +3245,7 @@ func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.TxHash = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 2:
+		case 4:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
@@ -2845,7 +3277,7 @@ func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 3:
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Jwt", wireType)
 			}
@@ -2877,7 +3309,7 @@ func (m *RegisterResponse) Unmarshal(dAtA []byte) error {
 			}
 			m.Jwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 4:
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 			}
@@ -3042,10 +3474,10 @@ func (m *RefreshTokenResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AccessToken", wireType)
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
 			}
-			var stringLen uint64
+			var v int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowService
@@ -3055,27 +3487,15 @@ func (m *RefreshTokenResponse) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				v |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthService
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthService
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AccessToken = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
+			m.Success = bool(v != 0)
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field RefreshToken", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -3103,7 +3523,39 @@ func (m *RefreshTokenResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.RefreshToken = string(dAtA[iNdEx:postIndex])
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field NewJwt", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.NewJwt = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -3239,7 +3691,7 @@ func (m *VerifyTokenResponse) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Valid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
 			}
 			var v int
 			for shift := uint(0); ; shift += 7 {
@@ -3256,7 +3708,59 @@ func (m *VerifyTokenResponse) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.Valid = bool(v != 0)
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Message", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthService
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthService
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Message = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IsValid", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowService
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IsValid = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipService(dAtA[iNdEx:])
