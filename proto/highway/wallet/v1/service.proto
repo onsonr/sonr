@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package highway.wallet.v1;
 
+import "core/crypto/coin.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
@@ -16,14 +17,15 @@ service WalletService {
   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/list";
   }
-  rpc SignWithAccount(SignWithAccountRequest)
-      returns (SignWithAccountResponse) {
+
+  rpc SignMessage(SignMessageRequest) returns (SignMessageResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/sign";
   }
-  rpc VerifyWithAccount(VerifyWithAccountRequest)
-      returns (VerifyWithAccountResponse) {
+
+  rpc VerifySignature(VerifySignatureRequest) returns (VerifySignatureResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/verify";
   }
+
   rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {
     option (google.api.http).post = "/highway/wallet/export";
   }
@@ -32,14 +34,16 @@ service WalletService {
 message CreateAccountRequest {
   string jwt = 1;
   string name = 2;
-  string coin_type = 3;
+  core.crypto.CoinType coin_type = 3;
   string network = 4;
 }
 
 message CreateAccountResponse {
-  string address = 1;
-  string coin_type = 2;
-  string owner = 3;
+  bool success = 1;
+  string message = 2;
+  string address = 3;
+  core.crypto.CoinType coin_type = 4;
+  string owner = 5;
 }
 
 message GetAccountRequest {
@@ -48,32 +52,55 @@ message GetAccountRequest {
 }
 
 message GetAccountResponse {
-  string address = 1;
-  string coin_type = 2;
-  string owner = 3;
+  bool success = 1;
+  string message = 2;
+  string address = 3;
+  core.crypto.CoinType coin_type = 4;
+  string owner = 5;
 }
 
-message ListAccountsRequest { string jwt = 1; }
+message ListAccountsRequest {
+  string jwt = 1;
+}
 
-message ListAccountsResponse { repeated string accounts = 1; }
+message ListAccountsResponse {
+  bool success = 1;
+  string message = 2;
+  repeated string accounts = 3;
+}
 
-message SignWithAccountRequest {
+message SignMessageRequest {
   string jwt = 1;
   string address = 2;
   bytes message = 3;
 }
 
-message SignWithAccountResponse { bytes signature = 1; }
+message SignMessageResponse {
+  bool success = 1;
+  string message = 2;
+  bytes signature = 3;
+}
 
-message VerifyWithAccountRequest {
+message VerifySignatureRequest {
   string jwt = 1;
   string address = 2;
   bytes message = 3;
   bytes signature = 4;
 }
 
-message VerifyWithAccountResponse { bool verified = 1; }
+message VerifySignatureResponse {
+  bool success = 1;
+  string message = 2;
+  bool message_verified = 3;
+}
 
-message ExportWalletRequest { string jwt = 1; }
+message ExportWalletRequest {
+  string jwt = 1;
+  string address = 2;
+}
 
-message ExportWalletResponse { string wallet = 1; }
+message ExportWalletResponse {
+  bool success = 1;
+  string message = 2;
+  string encrypted_wallet_buffer = 3;
+}

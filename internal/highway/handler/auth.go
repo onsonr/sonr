@@ -8,9 +8,6 @@ import (
 	mdw "github.com/sonrhq/core/internal/highway/middleware"
 	"github.com/sonrhq/core/internal/highway/types"
 	authenticationpb "github.com/sonrhq/core/types/highway/authentication/v1"
-	domainproxy "github.com/sonrhq/core/x/domain/client/proxy"
-	identityproxy "github.com/sonrhq/core/x/identity/client/proxy"
-	serviceproxy "github.com/sonrhq/core/x/service/client/proxy"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
@@ -25,7 +22,7 @@ type AuthenticationHandler struct {
 
 // Authenticate handles the authentication request
 func (a *AuthenticationHandler) Login(ctx context.Context, req *authenticationpb.LoginRequest) (*authenticationpb.LoginResponse, error) {
-	record, err := serviceproxy.GetServiceRecord(ctx, req.Origin)
+	record, err := mdw.GetServiceRecord(ctx, req.Origin)
 	if err != nil {
 		return nil, err
 	}
@@ -33,11 +30,11 @@ func (a *AuthenticationHandler) Login(ctx context.Context, req *authenticationpb
 	if err != nil {
 		return nil, err
 	}
-	addr, err := domainproxy.GetEmailRecordCreator(ctx, req.Alias)
+	addr, err := mdw.GetEmailRecordCreator(ctx, req.Alias)
 	if err != nil {
 		return nil, err
 	}
-	contAcc, err := identityproxy.GetControllerAccount(ctx, addr)
+	contAcc, err := mdw.GetControllerAccount(ctx, addr)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +59,13 @@ func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationp
 	if req.Alias == "" {
 		return nil, fmt.Errorf("user provided identifier cannot be empty")
 	}
-	if req.IsLogin {
+
+	// Check if the user provided identifier is already registered
+	if req.GetExisting() {
+		existing, err := mdw.CheckAliasAvailable(ctx, req.Alias)
+		if !existing || err != nil {
+			return nil, fmt.Errorf("user provided identifier is not registered")
+		}
 		return mdw.GetCredentialAssertionOptions(ctx, req.Origin, req.Alias)
 	}
 	return mdw.GetCredentialAttestationParams(ctx, req.Origin, req.Alias)
@@ -71,7 +74,7 @@ func (a *AuthenticationHandler) Params(ctx context.Context, req *authenticationp
 // Register handles the registration request
 func (a *AuthenticationHandler) Register(ctx context.Context, req *authenticationpb.RegisterRequest) (*authenticationpb.RegisterResponse, error) {
 	// Get the service record from the origin
-	record, err := serviceproxy.GetServiceRecord(ctx, req.Origin)
+	record, err := mdw.GetServiceRecord(ctx, req.Origin)
 	if err != nil {
 		return nil, err
 	}

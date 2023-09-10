@@ -8,23 +8,28 @@ import "google/protobuf/empty.proto";
 option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";
 
 service AuthenticationService {
-  rpc Login(LoginRequest) returns (LoginResponse) {
-    option (google.api.http).post = "/highway/auth/login/{origin}";
-  }
-  rpc CurrentUser(google.protobuf.Empty) returns (CurrentUserResponse) {
-    option (google.api.http).get = "/highway/auth/current";
-  }
   rpc Params(ParamsRequest) returns (ParamsResponse) {
     option (google.api.http).get = "/highway/auth/params/{origin}";
   }
+
+  rpc Login(LoginRequest) returns (LoginResponse) {
+    option (google.api.http).post = "/highway/auth/login/{origin}";
+  }
+
   rpc Register(RegisterRequest) returns (RegisterResponse) {
     option (google.api.http).post = "/highway/auth/register/{origin}";
   }
-  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
-    option (google.api.http).post = "/highway/auth/refresh";
+
+  rpc CurrentUser(google.protobuf.Empty) returns (CurrentUserResponse) {
+    option (google.api.http).get = "/highway/auth/current";
   }
+
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse) {
+    option (google.api.http).post = "/highway/auth/jwt/refresh/{jwt}";
+  }
+
   rpc VerifyToken(VerifyTokenRequest) returns (VerifyTokenResponse) {
-    option (google.api.http).post = "/highway/auth/verify";
+    option (google.api.http).post = "/highway/auth/jwt/verify/{jwt}";
   }
 }
 
@@ -35,31 +40,37 @@ message LoginRequest {
 }
 
 message LoginResponse {
-  string jwt = 1;
-  string address = 2;
-  string origin = 3;
+  bool success = 1;
+  string message = 2;
+  string jwt = 3;
+  string address = 4;
+  string origin = 5;
 }
 
 message CurrentUserResponse {
-  string address = 1;
-  string alias = 2;
-  string origin = 3;
+  bool success = 1;
+  string message = 2;
+  string address = 3;
+  string alias = 4;
+  string origin = 5;
 }
 
 message ParamsRequest {
-  bool is_login = 1;
+  bool existing = 1;
   string origin = 2;
   string alias = 3;
 }
 
 message ParamsResponse {
-  bool is_login = 1;
-  string origin = 2;
-  string alias = 3;
-  string address = 4;
-  string challenge = 5;
-  string attestation_options = 6;
-  string assertion_options = 7;
+bool success = 1;
+  string message = 2;
+  bool existing = 3;
+  string origin = 4;
+  string alias = 5;
+  string address = 6;
+  string challenge = 7;
+  string attestation_options = 8;
+  string assertion_options = 9;
 }
 
 message RegisterRequest {
@@ -70,19 +81,26 @@ message RegisterRequest {
 }
 
 message RegisterResponse {
-  string tx_hash = 1;
-  string address = 2;
-  string jwt = 3;
-  string origin = 4;
+  bool success = 1;
+  string message = 2;
+  string tx_hash = 3;
+  string address = 4;
+  string jwt = 5;
+  string origin = 6;
 }
 
 message RefreshTokenRequest { string jwt = 1; }
 
 message RefreshTokenResponse {
-  string access_token = 1;
-  string refresh_token = 2;
+  bool success = 1;
+  string message = 2;
+  string new_jwt = 3;
 }
 
 message VerifyTokenRequest { string jwt = 1; }
 
-message VerifyTokenResponse { bool valid = 1; }
+message VerifyTokenResponse {
+  bool success = 1;
+  string message = 2;
+  bool is_valid = 3;
+}

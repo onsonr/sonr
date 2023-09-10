@@ -29,19 +29,18 @@ type WalletHandler struct {
 // @Success 200 {object} map[string]interface{} "Account Info"
 // @Router /createAccount/{coinType} [post]
 func (a *WalletHandler) CreateAccount(ctx context.Context, req *walletpb.CreateAccountRequest) (*walletpb.CreateAccountResponse, error) {
-	ct := crypto.CoinTypeFromName(req.CoinType)
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
 	}
 
-	accInfo, err := cont.CreateWallet(ct)
+	accInfo, err := cont.CreateWallet(req.GetCoinType())
 	if err != nil {
 		return nil, err
 	}
 	return &walletpb.CreateAccountResponse{
 		Address:  accInfo.Address,
-		CoinType: ct.Name(),
+		CoinType: req.GetCoinType(),
 		Owner:    cont.Account().Address,
 	}, nil
 }
@@ -80,10 +79,10 @@ func (a *WalletHandler) GetAccount(ctx context.Context, req *walletpb.GetAccount
 func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAccountsRequest) (*walletpb.ListAccountsResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
-
 		return nil, err
 	}
 	return &walletpb.ListAccountsResponse{
+		Success: true,
 		Accounts: cont.ListWallets(),
 	}, nil
 }
@@ -98,7 +97,7 @@ func (a *WalletHandler) ListAccounts(ctx context.Context, req *walletpb.ListAcco
 // @Param   msg query string true "Message to Sign"
 // @Success 200 {object} map[string]interface{} "Signature Info"
 // @Router /signWithAccount/{did} [post]
-func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignWithAccountRequest) (*walletpb.SignWithAccountResponse, error) {
+func (a *WalletHandler) SignMessage(ctx context.Context, req *walletpb.SignMessageRequest) (*walletpb.SignMessageResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -107,8 +106,10 @@ func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignW
 	if err != nil {
 		return nil, err
 	}
-	return &walletpb.SignWithAccountResponse{
+	return &walletpb.SignMessageResponse{
+		Success:  true,
 		Signature: sig,
+		Message:   string(req.Message),
 	}, nil
 }
 
@@ -123,7 +124,7 @@ func (a *WalletHandler) SignWithAccount(ctx context.Context, req *walletpb.SignW
 // @Param   sig query string true "Signature"
 // @Success 200 {object} map[string]interface{} "Verification Result"
 // @Router /verifyWithAccount/{did} [post]
-func (a *WalletHandler) VerifyWithAccount(ctx context.Context, req *walletpb.VerifyWithAccountRequest) (*walletpb.VerifyWithAccountResponse, error) {
+func (a *WalletHandler) VerifySignature(ctx context.Context, req *walletpb.VerifySignatureRequest) (*walletpb.VerifySignatureResponse, error) {
 	cont, err := mdw.UseControllerAccount(req.Jwt)
 	if err != nil {
 		return nil, err
@@ -140,8 +141,9 @@ func (a *WalletHandler) VerifyWithAccount(ctx context.Context, req *walletpb.Ver
 	if err != nil {
 		return nil, err
 	}
-	return &walletpb.VerifyWithAccountResponse{
-		Verified: valid,
+	return &walletpb.VerifySignatureResponse{
+		MessageVerified: valid,
+		Message: 	   string(req.Message),
 	}, nil
 }
 

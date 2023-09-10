@@ -20,4 +20,5 @@ message HealthRequest {}
 message HealthResponse {
   bool ok = 1;
   string message = 2;
+  map<string, string> details = 3;
 }
