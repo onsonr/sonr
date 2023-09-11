@@ -17,10 +17,6 @@ type Instance struct {
 	addr 	string
 }
 
-func init() {
-
-}
-
 // RegisterHighwayGateway registers the Highway Service Server.
 func RegisterHighwayGateway(c *Config) {
 hway = &Instance{
