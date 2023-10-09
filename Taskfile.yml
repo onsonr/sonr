@@ -68,7 +68,7 @@ tasks:
   build-darwin-amd64:
     cmds:
       - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a"
-      - go build -mod=readonly -trimpath -o build/sonr-darwin-amd64/sonrd ./cmd/sonrd/main.go -v
+      - go build -mod=readonly -trimpath -o build/sonr-darwin-amd64/sonrd ./cmd/sonrd/main.go
     env:
       CC: "o64-clang"
       CGO_LDFLAGS: "-L/lib"
@@ -78,11 +78,10 @@ tasks:
 
   build-darwin-arm64:
     cmds:
-      # - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a"
-      - go build -mod=readonly -trimpath -o build/sonr-darwin-arm64/sonrd ./cmd/sonrd/main.go
+      # - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+      - go build -mod=readonly -trimpath -o build/sonrd ./cmd/sonrd/main.go
     env:
       CC: "oa64-clang"
-      CGO_LDFLAGS: "-L/lib"
       CGO_ENABLED: "1"
       GOOS: "darwin"
       GOARCH: "arm64"

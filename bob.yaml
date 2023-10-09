@@ -14,6 +14,7 @@ build:
 
     # Rebuild policy, defaults to [on-change]
     rebuild: always
+
 dependencies:
   - go-task
   - go_1_19
