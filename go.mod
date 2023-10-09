@@ -29,7 +29,7 @@ require (
 	github.com/multiformats/go-varint v0.0.7
 	github.com/pkg/errors v0.9.1
 	github.com/shengdoushi/base58 v1.0.0
-	github.com/sonrhq/kryptology v1.9.0
+	github.com/sonr-io/kryptology v1.9.0
 	github.com/spf13/cast v1.5.1
 	github.com/spf13/cobra v1.7.0
 	github.com/spf13/pflag v1.0.5
@@ -236,4 +236,7 @@ require (
 	sigs.k8s.io/yaml v1.3.0 // indirect
 )
 
-replace github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+replace (
+	github.com/sonr-io/kryptology => github.com/sonr-io/kryptology v1.10.0
+	github.com/syndtr/goleveldb => github.com/syndtr/goleveldb v1.0.1-0.20210819022825-2ae1ddf74ef7
+)

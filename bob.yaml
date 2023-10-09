@@ -1,0 +1,28 @@
+# Pin nixpkgs to get reproducable behaviour.
+nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
+
+# Declare tasks below the build keyword.
+build:
+  # build - is the default task execute when calling "bob build".
+  build:
+    # Inputs of the task.
+    # If any of the inputs changes the task is rebuild.
+    # input: .
+
+    # Command to execute
+    cmd: make build-linux
+
+    # Rebuild policy, defaults to [on-change]
+    rebuild: always
+
+    # Output of a task. Can be a file, directory or docker image.
+    # Path must reside inside the scope of a repository.
+    # Is packed into an .tar.gz and stored as artifact
+    # in the local and/or remote cache.
+
+    # Create pipelines by depending on other tasks.
+    # Bob takes care of executing tasks in the correct order
+    # and if possible in parallel.
+    # dependsOn:
+dependencies:
+  - go_1_19
