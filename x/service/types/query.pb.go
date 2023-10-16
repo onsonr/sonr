@@ -114,6 +114,8 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+// QueryGetServiceRecordRequest is the request type for the Query/ServiceRecord
+// RPC method.
 type QueryGetServiceRecordRequest struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 }
@@ -158,6 +160,8 @@ func (m *QueryGetServiceRecordRequest) GetOrigin() string {
 	return ""
 }
 
+// QueryGetServiceRecordResponse is the response type for the
+// Query/ServiceRecord RPC method.
 type QueryGetServiceRecordResponse struct {
 	ServiceRecord ServiceRecord `protobuf:"bytes,1,opt,name=ServiceRecord,proto3" json:"ServiceRecord"`
 }
@@ -202,6 +206,8 @@ func (m *QueryGetServiceRecordResponse) GetServiceRecord() ServiceRecord {
 	return ServiceRecord{}
 }
 
+// QueryAllServiceRecordRequest is the request type for the
+// Query/ServiceRecordAll RPC method.
 type QueryAllServiceRecordRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -246,6 +252,8 @@ func (m *QueryAllServiceRecordRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// QueryAllServiceRecordResponse is the response type for the
+// Query/ServiceRecordAll RPC method.
 type QueryAllServiceRecordResponse struct {
 	ServiceRecord []ServiceRecord     `protobuf:"bytes,1,rep,name=ServiceRecord,proto3" json:"ServiceRecord"`
 	Pagination    *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -357,10 +365,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Parameters queries the parameters of the module.
+	// Params queries the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of ServiceRecord items.
+	// ServiceRecord queries a list of ServiceRecord items.
 	ServiceRecord(ctx context.Context, in *QueryGetServiceRecordRequest, opts ...grpc.CallOption) (*QueryGetServiceRecordResponse, error)
+	// ServiceRecordAll queries all ServiceRecord items.
 	ServiceRecordAll(ctx context.Context, in *QueryAllServiceRecordRequest, opts ...grpc.CallOption) (*QueryAllServiceRecordResponse, error)
 }
 
@@ -401,10 +410,11 @@ func (c *queryClient) ServiceRecordAll(ctx context.Context, in *QueryAllServiceR
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Parameters queries the parameters of the module.
+	// Params queries the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of ServiceRecord items.
+	// ServiceRecord queries a list of ServiceRecord items.
 	ServiceRecord(context.Context, *QueryGetServiceRecordRequest) (*QueryGetServiceRecordResponse, error)
+	// ServiceRecordAll queries all ServiceRecord items.
 	ServiceRecordAll(context.Context, *QueryAllServiceRecordRequest) (*QueryAllServiceRecordResponse, error)
 }
 

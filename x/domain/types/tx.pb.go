@@ -27,6 +27,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgCreateUsernameRecords represents a request to create a UsernameRecord.
 type MsgCreateUsernameRecords struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
@@ -87,6 +88,8 @@ func (m *MsgCreateUsernameRecords) GetMethod() string {
 	return ""
 }
 
+// MsgCreateUsernameRecordsResponse represents the response from creating a
+// UsernameRecord.
 type MsgCreateUsernameRecordsResponse struct {
 }
 
@@ -123,6 +126,7 @@ func (m *MsgCreateUsernameRecordsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgCreateUsernameRecordsResponse proto.InternalMessageInfo
 
+// MsgUpdateUsernameRecords represents a request to update a UsernameRecord.
 type MsgUpdateUsernameRecords struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
@@ -175,6 +179,8 @@ func (m *MsgUpdateUsernameRecords) GetIndex() string {
 	return ""
 }
 
+// MsgUpdateUsernameRecordsResponse represents the response from updating a
+// UsernameRecord.
 type MsgUpdateUsernameRecordsResponse struct {
 }
 
@@ -211,6 +217,7 @@ func (m *MsgUpdateUsernameRecordsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateUsernameRecordsResponse proto.InternalMessageInfo
 
+// MsgDeleteUsernameRecords represents a request to delete a UsernameRecord.
 type MsgDeleteUsernameRecords struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Index   string `protobuf:"bytes,2,opt,name=index,proto3" json:"index,omitempty"`
@@ -263,6 +270,8 @@ func (m *MsgDeleteUsernameRecords) GetIndex() string {
 	return ""
 }
 
+// MsgDeleteUsernameRecordsResponse represents the response from deleting a
+// UsernameRecord.
 type MsgDeleteUsernameRecordsResponse struct {
 }
 
@@ -345,8 +354,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// CreateUsernameRecord creates a new UsernameRecord.
 	CreateUsernameRecord(ctx context.Context, in *MsgCreateUsernameRecords, opts ...grpc.CallOption) (*MsgCreateUsernameRecordsResponse, error)
+	// UpdateUsernameRecord updates an existing UsernameRecord.
 	UpdateUsernameRecord(ctx context.Context, in *MsgUpdateUsernameRecords, opts ...grpc.CallOption) (*MsgUpdateUsernameRecordsResponse, error)
+	// DeleteUsernameRecord deletes an existing UsernameRecord.
 	DeleteUsernameRecord(ctx context.Context, in *MsgDeleteUsernameRecords, opts ...grpc.CallOption) (*MsgDeleteUsernameRecordsResponse, error)
 }
 
@@ -387,8 +399,11 @@ func (c *msgClient) DeleteUsernameRecord(ctx context.Context, in *MsgDeleteUsern
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// CreateUsernameRecord creates a new UsernameRecord.
 	CreateUsernameRecord(context.Context, *MsgCreateUsernameRecords) (*MsgCreateUsernameRecordsResponse, error)
+	// UpdateUsernameRecord updates an existing UsernameRecord.
 	UpdateUsernameRecord(context.Context, *MsgUpdateUsernameRecords) (*MsgUpdateUsernameRecordsResponse, error)
+	// DeleteUsernameRecord deletes an existing UsernameRecord.
 	DeleteUsernameRecord(context.Context, *MsgDeleteUsernameRecords) (*MsgDeleteUsernameRecordsResponse, error)
 }
 

@@ -166,6 +166,6 @@ tasks:
     desc: Generate the protobuf files
     cmds:
       - |
-        make proto-gen
+        make proto-all
         git add .
         git commit -m "chore: update proto files"

@@ -7,31 +7,36 @@ import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/core/types/highway/wallet/v1;walletpb";
 
+// WalletService provides methods for managing wallet accounts.
 service WalletService {
+  // CreateAccount creates a new account.
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/create";
   }
+  // GetAccount retrieves an account by its address.
   rpc GetAccount(GetAccountRequest) returns (GetAccountResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/get";
   }
+  // ListAccounts lists all accounts.
   rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/list";
   }
-
+  // SignMessage signs a message with the private key of an account.
   rpc SignMessage(SignMessageRequest) returns (SignMessageResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/sign";
   }
-
+  // VerifySignature verifies a signature with the public key of an account.
   rpc VerifySignature(VerifySignatureRequest)
       returns (VerifySignatureResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/verify";
   }
-
+  // ExportWallet exports a wallet.
   rpc ExportWallet(ExportWalletRequest) returns (ExportWalletResponse) {
     option (google.api.http).post = "/highway/wallet/export";
   }
 }
 
+// CreateAccountRequest is the request message for creating an account.
 message CreateAccountRequest {
   string jwt = 1;
   string name = 2;
@@ -39,6 +44,7 @@ message CreateAccountRequest {
   string network = 4;
 }
 
+// CreateAccountResponse is the response message for creating an account.
 message CreateAccountResponse {
   bool success = 1;
   string message = 2;
@@ -47,11 +53,13 @@ message CreateAccountResponse {
   string owner = 5;
 }
 
+// GetAccountRequest is the request message for getting an account.
 message GetAccountRequest {
   string jwt = 1;
   string address = 2;
 }
 
+// GetAccountResponse is the response message for getting an account.
 message GetAccountResponse {
   bool success = 1;
   string message = 2;
@@ -60,26 +68,31 @@ message GetAccountResponse {
   string owner = 5;
 }
 
+// ListAccountsRequest is the request message for listing accounts.
 message ListAccountsRequest { string jwt = 1; }
 
+// ListAccountsResponse is the response message for listing accounts.
 message ListAccountsResponse {
   bool success = 1;
   string message = 2;
   repeated string accounts = 3;
 }
 
+// SignMessageRequest is the request message for signing a message.
 message SignMessageRequest {
   string jwt = 1;
   string address = 2;
   bytes message = 3;
 }
 
+// SignMessageResponse is the response message for signing a message.
 message SignMessageResponse {
   bool success = 1;
   string message = 2;
   bytes signature = 3;
 }
 
+// VerifySignatureRequest is the request message for verifying a signature.
 message VerifySignatureRequest {
   string jwt = 1;
   string address = 2;
@@ -87,17 +100,20 @@ message VerifySignatureRequest {
   bytes signature = 4;
 }
 
+// VerifySignatureResponse is the response message for verifying a signature.
 message VerifySignatureResponse {
   bool success = 1;
   string message = 2;
   bool message_verified = 3;
 }
 
+// ExportWalletRequest is the request message for exporting a wallet.
 message ExportWalletRequest {
   string jwt = 1;
   string address = 2;
 }
 
+// ExportWalletResponse is the response message for exporting a wallet.
 message ExportWalletResponse {
   bool success = 1;
   string message = 2;

@@ -6,13 +6,16 @@ import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/core/types/highway/storage/v1;storagepb";
 
+// StorageService provides methods for storing and retrieving data.
 service StorageService {
+  // GetCID retrieves data associated with a given CID.
   rpc GetCID(GetCIDRequest) returns (GetCIDResponse) {
     option (google.api.http) = {
       get : "/v1/cid/{cid}"
     };
   }
 
+  // PutData stores data and associates it with a given CID.
   rpc PutData(PutDataRequest) returns (PutDataResponse) {
     option (google.api.http) = {
       post : "/v1/cid/{cid}"
@@ -20,16 +23,30 @@ service StorageService {
   }
 }
 
-message GetCIDRequest { string cid = 1; }
+// GetCIDRequest is the request type for the GetCID method.
+message GetCIDRequest {
+  // cid is the content identifier of the data to retrieve.
+  string cid = 1;
+}
 
+// GetCIDResponse is the response type for the GetCID method.
 message GetCIDResponse {
+  // cid is the content identifier of the retrieved data.
   string cid = 1;
+  // data is the retrieved data.
   string data = 2;
 }
 
+// PutDataRequest is the request type for the PutData method.
 message PutDataRequest {
+  // cid is the content identifier to associate with the data.
   string cid = 1;
+  // data is the data to store.
   string data = 2;
 }
 
-message PutDataResponse { string cid = 1; }
+// PutDataResponse is the response type for the PutData method.
+message PutDataResponse {
+  // cid is the content identifier associated with the stored data.
+  string cid = 1;
+}

@@ -29,6 +29,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// CreateAccountRequest is the request message for creating an account.
 type CreateAccountRequest struct {
 	Jwt      string          `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Name     string          `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
@@ -97,6 +98,7 @@ func (m *CreateAccountRequest) GetNetwork() string {
 	return ""
 }
 
+// CreateAccountResponse is the response message for creating an account.
 type CreateAccountResponse struct {
 	Success  bool            `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message  string          `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -173,6 +175,7 @@ func (m *CreateAccountResponse) GetOwner() string {
 	return ""
 }
 
+// GetAccountRequest is the request message for getting an account.
 type GetAccountRequest struct {
 	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -225,6 +228,7 @@ func (m *GetAccountRequest) GetAddress() string {
 	return ""
 }
 
+// GetAccountResponse is the response message for getting an account.
 type GetAccountResponse struct {
 	Success  bool            `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message  string          `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -301,6 +305,7 @@ func (m *GetAccountResponse) GetOwner() string {
 	return ""
 }
 
+// ListAccountsRequest is the request message for listing accounts.
 type ListAccountsRequest struct {
 	Jwt string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 }
@@ -345,6 +350,7 @@ func (m *ListAccountsRequest) GetJwt() string {
 	return ""
 }
 
+// ListAccountsResponse is the response message for listing accounts.
 type ListAccountsResponse struct {
 	Success  bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message  string   `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -405,6 +411,7 @@ func (m *ListAccountsResponse) GetAccounts() []string {
 	return nil
 }
 
+// SignMessageRequest is the request message for signing a message.
 type SignMessageRequest struct {
 	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -465,6 +472,7 @@ func (m *SignMessageRequest) GetMessage() []byte {
 	return nil
 }
 
+// SignMessageResponse is the response message for signing a message.
 type SignMessageResponse struct {
 	Success   bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message   string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -525,6 +533,7 @@ func (m *SignMessageResponse) GetSignature() []byte {
 	return nil
 }
 
+// VerifySignatureRequest is the request message for verifying a signature.
 type VerifySignatureRequest struct {
 	Jwt       string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address   string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -593,6 +602,7 @@ func (m *VerifySignatureRequest) GetSignature() []byte {
 	return nil
 }
 
+// VerifySignatureResponse is the response message for verifying a signature.
 type VerifySignatureResponse struct {
 	Success         bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message         string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -653,6 +663,7 @@ func (m *VerifySignatureResponse) GetMessageVerified() bool {
 	return false
 }
 
+// ExportWalletRequest is the request message for exporting a wallet.
 type ExportWalletRequest struct {
 	Jwt     string `protobuf:"bytes,1,opt,name=jwt,proto3" json:"jwt,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -705,6 +716,7 @@ func (m *ExportWalletRequest) GetAddress() string {
 	return ""
 }
 
+// ExportWalletResponse is the response message for exporting a wallet.
 type ExportWalletResponse struct {
 	Success               bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message               string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -845,11 +857,17 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type WalletServiceClient interface {
+	// CreateAccount creates a new account.
 	CreateAccount(ctx context.Context, in *CreateAccountRequest, opts ...grpc.CallOption) (*CreateAccountResponse, error)
+	// GetAccount retrieves an account by its address.
 	GetAccount(ctx context.Context, in *GetAccountRequest, opts ...grpc.CallOption) (*GetAccountResponse, error)
+	// ListAccounts lists all accounts.
 	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
+	// SignMessage signs a message with the private key of an account.
 	SignMessage(ctx context.Context, in *SignMessageRequest, opts ...grpc.CallOption) (*SignMessageResponse, error)
+	// VerifySignature verifies a signature with the public key of an account.
 	VerifySignature(ctx context.Context, in *VerifySignatureRequest, opts ...grpc.CallOption) (*VerifySignatureResponse, error)
+	// ExportWallet exports a wallet.
 	ExportWallet(ctx context.Context, in *ExportWalletRequest, opts ...grpc.CallOption) (*ExportWalletResponse, error)
 }
 
@@ -917,11 +935,17 @@ func (c *walletServiceClient) ExportWallet(ctx context.Context, in *ExportWallet
 
 // WalletServiceServer is the server API for WalletService service.
 type WalletServiceServer interface {
+	// CreateAccount creates a new account.
 	CreateAccount(context.Context, *CreateAccountRequest) (*CreateAccountResponse, error)
+	// GetAccount retrieves an account by its address.
 	GetAccount(context.Context, *GetAccountRequest) (*GetAccountResponse, error)
+	// ListAccounts lists all accounts.
 	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
+	// SignMessage signs a message with the private key of an account.
 	SignMessage(context.Context, *SignMessageRequest) (*SignMessageResponse, error)
+	// VerifySignature verifies a signature with the public key of an account.
 	VerifySignature(context.Context, *VerifySignatureRequest) (*VerifySignatureResponse, error)
+	// ExportWallet exports a wallet.
 	ExportWallet(context.Context, *ExportWalletRequest) (*ExportWalletResponse, error)
 }
 

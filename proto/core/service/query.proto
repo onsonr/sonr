@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package core.service;
 
+// Importing necessary proto files
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
@@ -14,42 +15,51 @@ option go_package = "github.com/sonr-io/core/x/service/types";
 
 // Query defines the gRPC querier service.
 service Query {
-
-  // Parameters queries the parameters of the module.
+  // Params queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/service";
   }
 
-  // Queries a list of ServiceRecord items.
+  // ServiceRecord queries a list of ServiceRecord items.
   rpc ServiceRecord(QueryGetServiceRecordRequest)
       returns (QueryGetServiceRecordResponse) {
     option (google.api.http).get = "/core/service/{origin}";
   }
+
+  // ServiceRecordAll queries all ServiceRecord items.
   rpc ServiceRecordAll(QueryAllServiceRecordRequest)
       returns (QueryAllServiceRecordResponse) {
     option (google.api.http).get = "/core/service";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryGetServiceRecordRequest is the request type for the Query/ServiceRecord
+// RPC method.
 message QueryGetServiceRecordRequest { string origin = 1; }
 
+// QueryGetServiceRecordResponse is the response type for the
+// Query/ServiceRecord RPC method.
 message QueryGetServiceRecordResponse {
   ServiceRecord ServiceRecord = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllServiceRecordRequest is the request type for the
+// Query/ServiceRecordAll RPC method.
 message QueryAllServiceRecordRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllServiceRecordResponse is the response type for the
+// Query/ServiceRecordAll RPC method.
 message QueryAllServiceRecordResponse {
   repeated ServiceRecord ServiceRecord = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;

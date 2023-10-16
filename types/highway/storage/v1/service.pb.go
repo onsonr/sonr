@@ -28,7 +28,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// GetCIDRequest is the request type for the GetCID method.
 type GetCIDRequest struct {
+	// cid is the content identifier of the data to retrieve.
 	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
 }
 
@@ -72,8 +74,11 @@ func (m *GetCIDRequest) GetCid() string {
 	return ""
 }
 
+// GetCIDResponse is the response type for the GetCID method.
 type GetCIDResponse struct {
-	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	// cid is the content identifier of the retrieved data.
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	// data is the retrieved data.
 	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
@@ -124,8 +129,11 @@ func (m *GetCIDResponse) GetData() string {
 	return ""
 }
 
+// PutDataRequest is the request type for the PutData method.
 type PutDataRequest struct {
-	Cid  string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	// cid is the content identifier to associate with the data.
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	// data is the data to store.
 	Data string `protobuf:"bytes,2,opt,name=data,proto3" json:"data,omitempty"`
 }
 
@@ -176,7 +184,9 @@ func (m *PutDataRequest) GetData() string {
 	return ""
 }
 
+// PutDataResponse is the response type for the PutData method.
 type PutDataResponse struct {
+	// cid is the content identifier associated with the stored data.
 	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
 }
 
@@ -266,7 +276,9 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StorageServiceClient interface {
+	// GetCID retrieves data associated with a given CID.
 	GetCID(ctx context.Context, in *GetCIDRequest, opts ...grpc.CallOption) (*GetCIDResponse, error)
+	// PutData stores data and associates it with a given CID.
 	PutData(ctx context.Context, in *PutDataRequest, opts ...grpc.CallOption) (*PutDataResponse, error)
 }
 
@@ -298,7 +310,9 @@ func (c *storageServiceClient) PutData(ctx context.Context, in *PutDataRequest, 
 
 // StorageServiceServer is the server API for StorageService service.
 type StorageServiceServer interface {
+	// GetCID retrieves data associated with a given CID.
 	GetCID(context.Context, *GetCIDRequest) (*GetCIDResponse, error)
+	// PutData stores data and associates it with a given CID.
 	PutData(context.Context, *PutDataRequest) (*PutDataResponse, error)
 }
 

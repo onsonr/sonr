@@ -68,6 +68,7 @@ func (m *QueryParamsRequest) XXX_DiscardUnknown() {
 var xxx_messageInfo_QueryParamsRequest proto.InternalMessageInfo
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
+// It holds all the parameters of this module.
 type QueryParamsResponse struct {
 	// params holds all the parameters of this module.
 	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
@@ -113,6 +114,9 @@ func (m *QueryParamsResponse) GetParams() Params {
 	return Params{}
 }
 
+// QueryGetUsernameRecordsRequest is the request type for the
+// Query/UsernameRecord RPC method. It contains the index of the UsernameRecords
+// to be queried.
 type QueryGetUsernameRecordsRequest struct {
 	Index string `protobuf:"bytes,1,opt,name=index,proto3" json:"index,omitempty"`
 }
@@ -157,6 +161,8 @@ func (m *QueryGetUsernameRecordsRequest) GetIndex() string {
 	return ""
 }
 
+// QueryGetUsernameRecordsResponse is the response type for the
+// Query/UsernameRecord RPC method. It contains the queried UsernameRecords.
 type QueryGetUsernameRecordsResponse struct {
 	UsernameRecords UsernameRecord `protobuf:"bytes,1,opt,name=usernameRecords,proto3" json:"usernameRecords"`
 }
@@ -201,6 +207,9 @@ func (m *QueryGetUsernameRecordsResponse) GetUsernameRecords() UsernameRecord {
 	return UsernameRecord{}
 }
 
+// QueryAllUsernameRecordsRequest is the request type for the
+// Query/UsernameRecordAll RPC method. It contains the pagination information
+// for the query.
 type QueryAllUsernameRecordsRequest struct {
 	Pagination *query.PageRequest `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
@@ -245,6 +254,9 @@ func (m *QueryAllUsernameRecordsRequest) GetPagination() *query.PageRequest {
 	return nil
 }
 
+// QueryAllUsernameRecordsResponse is the response type for the
+// Query/UsernameRecordAll RPC method. It contains all queried UsernameRecords
+// and the pagination information.
 type QueryAllUsernameRecordsResponse struct {
 	UsernameRecords []UsernameRecord    `protobuf:"bytes,1,rep,name=usernameRecords,proto3" json:"usernameRecords"`
 	Pagination      *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
@@ -355,11 +367,14 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type QueryClient interface {
-	// Parameters queries the parameters of the module.
+	// Params queries the parameters of the module.
+	// It returns the parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Queries a list of UsernameRecords items.
+	// UsernameRecord queries a list of UsernameRecords items by index.
+	// It returns a list of UsernameRecords items.
 	UsernameRecord(ctx context.Context, in *QueryGetUsernameRecordsRequest, opts ...grpc.CallOption) (*QueryGetUsernameRecordsResponse, error)
-	// Queries a list of UsernameRecords items.
+	// UsernameRecordAll queries all UsernameRecords items.
+	// It returns all UsernameRecords items.
 	UsernameRecordAll(ctx context.Context, in *QueryAllUsernameRecordsRequest, opts ...grpc.CallOption) (*QueryAllUsernameRecordsResponse, error)
 }
 
@@ -400,11 +415,14 @@ func (c *queryClient) UsernameRecordAll(ctx context.Context, in *QueryAllUsernam
 
 // QueryServer is the server API for Query service.
 type QueryServer interface {
-	// Parameters queries the parameters of the module.
+	// Params queries the parameters of the module.
+	// It returns the parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Queries a list of UsernameRecords items.
+	// UsernameRecord queries a list of UsernameRecords items by index.
+	// It returns a list of UsernameRecords items.
 	UsernameRecord(context.Context, *QueryGetUsernameRecordsRequest) (*QueryGetUsernameRecordsResponse, error)
-	// Queries a list of UsernameRecords items.
+	// UsernameRecordAll queries all UsernameRecords items.
+	// It returns all UsernameRecords items.
 	UsernameRecordAll(context.Context, *QueryAllUsernameRecordsRequest) (*QueryAllUsernameRecordsResponse, error)
 }
 

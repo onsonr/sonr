@@ -27,6 +27,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgRegisterIdentity represents a request to register a new identity.
 type MsgRegisterIdentity struct {
 	Creator     string       `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	DidDocument *DIDDocument `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
@@ -87,6 +88,8 @@ func (m *MsgRegisterIdentity) GetWalletId() uint64 {
 	return 0
 }
 
+// MsgRegisterIdentityResponse represents the response to a register identity
+// request.
 type MsgRegisterIdentityResponse struct {
 	Success     bool         `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	DidDocument *DIDDocument `protobuf:"bytes,2,opt,name=did_document,json=didDocument,proto3" json:"did_document,omitempty"`
@@ -139,6 +142,8 @@ func (m *MsgRegisterIdentityResponse) GetDidDocument() *DIDDocument {
 	return nil
 }
 
+// MsgCreateControllerAccount represents a request to create a new controller
+// account.
 type MsgCreateControllerAccount struct {
 	Address        string   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	PublicKey      string   `protobuf:"bytes,3,opt,name=publicKey,proto3" json:"publicKey,omitempty"`
@@ -207,6 +212,8 @@ func (m *MsgCreateControllerAccount) GetWallets() []string {
 	return nil
 }
 
+// MsgCreateControllerAccountResponse represents the response to a create
+// controller account request.
 type MsgCreateControllerAccountResponse struct {
 	Id      uint64             `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Account *ControllerAccount `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
@@ -259,6 +266,8 @@ func (m *MsgCreateControllerAccountResponse) GetAccount() *ControllerAccount {
 	return nil
 }
 
+// MsgUpdateControllerAccount represents a request to update an existing
+// controller account.
 type MsgUpdateControllerAccount struct {
 	Address        string   `protobuf:"bytes,1,opt,name=address,proto3" json:"address,omitempty"`
 	Id             uint64   `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -327,6 +336,8 @@ func (m *MsgUpdateControllerAccount) GetWallets() []string {
 	return nil
 }
 
+// MsgUpdateControllerAccountResponse represents the response to an update
+// controller account request.
 type MsgUpdateControllerAccountResponse struct {
 	Account *ControllerAccount `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 }
@@ -371,6 +382,8 @@ func (m *MsgUpdateControllerAccountResponse) GetAccount() *ControllerAccount {
 	return nil
 }
 
+// MsgDeleteControllerAccount represents a request to delete a controller
+// account.
 type MsgDeleteControllerAccount struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -423,6 +436,8 @@ func (m *MsgDeleteControllerAccount) GetAddress() string {
 	return ""
 }
 
+// MsgDeleteControllerAccountResponse represents the response to a delete
+// controller account request.
 type MsgDeleteControllerAccountResponse struct {
 }
 
@@ -459,6 +474,7 @@ func (m *MsgDeleteControllerAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgDeleteControllerAccountResponse proto.InternalMessageInfo
 
+// MsgCreateEscrowAccount represents a request to create a new escrow account.
 type MsgCreateEscrowAccount struct {
 	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Address          string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -527,6 +543,8 @@ func (m *MsgCreateEscrowAccount) GetLockupUsdBalance() string {
 	return ""
 }
 
+// MsgCreateEscrowAccountResponse represents the response to a create escrow
+// account request.
 type MsgCreateEscrowAccountResponse struct {
 	Id      uint64         `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Account *EscrowAccount `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
@@ -579,6 +597,8 @@ func (m *MsgCreateEscrowAccountResponse) GetAccount() *EscrowAccount {
 	return nil
 }
 
+// MsgUpdateEscrowAccount represents a request to update an existing escrow
+// account.
 type MsgUpdateEscrowAccount struct {
 	Creator          string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Id               uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -655,6 +675,8 @@ func (m *MsgUpdateEscrowAccount) GetLockupUsdBalance() string {
 	return ""
 }
 
+// MsgUpdateEscrowAccountResponse represents the response to an update escrow
+// account request.
 type MsgUpdateEscrowAccountResponse struct {
 }
 
@@ -691,6 +713,7 @@ func (m *MsgUpdateEscrowAccountResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateEscrowAccountResponse proto.InternalMessageInfo
 
+// MsgDeleteEscrowAccount represents a request to delete an escrow account.
 type MsgDeleteEscrowAccount struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
@@ -743,6 +766,8 @@ func (m *MsgDeleteEscrowAccount) GetAddress() string {
 	return ""
 }
 
+// MsgDeleteEscrowAccountResponse represents the response to a delete escrow
+// account request.
 type MsgDeleteEscrowAccountResponse struct {
 }
 
@@ -856,12 +881,19 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// RegisterIdentity registers a new identity.
 	RegisterIdentity(ctx context.Context, in *MsgRegisterIdentity, opts ...grpc.CallOption) (*MsgRegisterIdentityResponse, error)
+	// CreateControllerAccount creates a new controller account.
 	CreateControllerAccount(ctx context.Context, in *MsgCreateControllerAccount, opts ...grpc.CallOption) (*MsgCreateControllerAccountResponse, error)
+	// UpdateControllerAccount updates an existing controller account.
 	UpdateControllerAccount(ctx context.Context, in *MsgUpdateControllerAccount, opts ...grpc.CallOption) (*MsgUpdateControllerAccountResponse, error)
+	// DeleteControllerAccount deletes a controller account.
 	DeleteControllerAccount(ctx context.Context, in *MsgDeleteControllerAccount, opts ...grpc.CallOption) (*MsgDeleteControllerAccountResponse, error)
+	// CreateEscrowAccount creates a new escrow account.
 	CreateEscrowAccount(ctx context.Context, in *MsgCreateEscrowAccount, opts ...grpc.CallOption) (*MsgCreateEscrowAccountResponse, error)
+	// UpdateEscrowAccount updates an existing escrow account.
 	UpdateEscrowAccount(ctx context.Context, in *MsgUpdateEscrowAccount, opts ...grpc.CallOption) (*MsgUpdateEscrowAccountResponse, error)
+	// DeleteEscrowAccount deletes an escrow account.
 	DeleteEscrowAccount(ctx context.Context, in *MsgDeleteEscrowAccount, opts ...grpc.CallOption) (*MsgDeleteEscrowAccountResponse, error)
 }
 
@@ -938,12 +970,19 @@ func (c *msgClient) DeleteEscrowAccount(ctx context.Context, in *MsgDeleteEscrow
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// RegisterIdentity registers a new identity.
 	RegisterIdentity(context.Context, *MsgRegisterIdentity) (*MsgRegisterIdentityResponse, error)
+	// CreateControllerAccount creates a new controller account.
 	CreateControllerAccount(context.Context, *MsgCreateControllerAccount) (*MsgCreateControllerAccountResponse, error)
+	// UpdateControllerAccount updates an existing controller account.
 	UpdateControllerAccount(context.Context, *MsgUpdateControllerAccount) (*MsgUpdateControllerAccountResponse, error)
+	// DeleteControllerAccount deletes a controller account.
 	DeleteControllerAccount(context.Context, *MsgDeleteControllerAccount) (*MsgDeleteControllerAccountResponse, error)
+	// CreateEscrowAccount creates a new escrow account.
 	CreateEscrowAccount(context.Context, *MsgCreateEscrowAccount) (*MsgCreateEscrowAccountResponse, error)
+	// UpdateEscrowAccount updates an existing escrow account.
 	UpdateEscrowAccount(context.Context, *MsgUpdateEscrowAccount) (*MsgUpdateEscrowAccountResponse, error)
+	// DeleteEscrowAccount deletes an escrow account.
 	DeleteEscrowAccount(context.Context, *MsgDeleteEscrowAccount) (*MsgDeleteEscrowAccountResponse, error)
 }
 

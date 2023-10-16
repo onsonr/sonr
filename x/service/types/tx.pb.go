@@ -27,6 +27,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
+// MsgCreateServiceRecord is the request type for the CreateServiceRecord
+// method. It takes a creator as a parameter.
 type MsgCreateServiceRecord struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 }
@@ -71,6 +73,8 @@ func (m *MsgCreateServiceRecord) GetCreator() string {
 	return ""
 }
 
+// MsgCreateServiceRecordResponse is the response type for the
+// CreateServiceRecord method. It returns the id of the created ServiceRecord.
 type MsgCreateServiceRecordResponse struct {
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
@@ -115,6 +119,8 @@ func (m *MsgCreateServiceRecordResponse) GetId() uint64 {
 	return 0
 }
 
+// MsgUpdateServiceRecord is the request type for the UpdateServiceRecord
+// method. It takes a creator and an id as parameters.
 type MsgUpdateServiceRecord struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -167,6 +173,8 @@ func (m *MsgUpdateServiceRecord) GetId() uint64 {
 	return 0
 }
 
+// MsgUpdateServiceRecordResponse is the response type for the
+// UpdateServiceRecord method. It doesn't return any specific value.
 type MsgUpdateServiceRecordResponse struct {
 }
 
@@ -203,6 +211,8 @@ func (m *MsgUpdateServiceRecordResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateServiceRecordResponse proto.InternalMessageInfo
 
+// MsgDeleteServiceRecord is the request type for the DeleteServiceRecord
+// method. It takes a creator and an id as parameters.
 type MsgDeleteServiceRecord struct {
 	Creator string `protobuf:"bytes,1,opt,name=creator,proto3" json:"creator,omitempty"`
 	Id      uint64 `protobuf:"varint,2,opt,name=id,proto3" json:"id,omitempty"`
@@ -255,6 +265,8 @@ func (m *MsgDeleteServiceRecord) GetId() uint64 {
 	return 0
 }
 
+// MsgDeleteServiceRecordResponse is the response type for the
+// DeleteServiceRecord method. It doesn't return any specific value.
 type MsgDeleteServiceRecordResponse struct {
 }
 
@@ -336,8 +348,11 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
+	// CreateServiceRecord creates a new ServiceRecord.
 	CreateServiceRecord(ctx context.Context, in *MsgCreateServiceRecord, opts ...grpc.CallOption) (*MsgCreateServiceRecordResponse, error)
+	// UpdateServiceRecord updates an existing ServiceRecord.
 	UpdateServiceRecord(ctx context.Context, in *MsgUpdateServiceRecord, opts ...grpc.CallOption) (*MsgUpdateServiceRecordResponse, error)
+	// DeleteServiceRecord deletes an existing ServiceRecord.
 	DeleteServiceRecord(ctx context.Context, in *MsgDeleteServiceRecord, opts ...grpc.CallOption) (*MsgDeleteServiceRecordResponse, error)
 }
 
@@ -378,8 +393,11 @@ func (c *msgClient) DeleteServiceRecord(ctx context.Context, in *MsgDeleteServic
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
+	// CreateServiceRecord creates a new ServiceRecord.
 	CreateServiceRecord(context.Context, *MsgCreateServiceRecord) (*MsgCreateServiceRecordResponse, error)
+	// UpdateServiceRecord updates an existing ServiceRecord.
 	UpdateServiceRecord(context.Context, *MsgUpdateServiceRecord) (*MsgUpdateServiceRecordResponse, error)
+	// DeleteServiceRecord deletes an existing ServiceRecord.
 	DeleteServiceRecord(context.Context, *MsgDeleteServiceRecord) (*MsgDeleteServiceRecordResponse, error)
 }
 
