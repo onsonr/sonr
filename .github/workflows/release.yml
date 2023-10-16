@@ -23,10 +23,13 @@ jobs:
         with:
           fetch-depth: 0
           # Run only on tag
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
       - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
   publish-buf:
     name: Publish buf.build proto
     runs-on: ubuntu-latest

@@ -74,7 +74,11 @@ jobs:
         with:
           name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
           path: cmd/sonrd/sonrd
-
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          
   build-make:
     name: Build using makefile
     runs-on: ubuntu-latest
@@ -83,3 +87,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Run make build
         run: make build
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}

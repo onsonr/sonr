@@ -15,3 +15,7 @@ jobs:
           for draft in $drafts; do
             gh release update $draft --draft false
           done
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
