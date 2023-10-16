@@ -2,30 +2,34 @@ version: "3"
 dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
 
 vars:
+  CGO_ENABLED: 1
+  WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
+  COSMWASM_VERSION: v1.3.0
   VERSION:
     sh: echo $(git describe --tags --abbrev=0)
-    default: "v0.0.0"
+    default: v0.0.0
   COMMIT:
     sh: git log -n 1 --format=%h
-    default: "0000000"
+    default: 0000000
   DATE:
     sh: date -u '+%m/%d/%y %I:%M:%S%p'
     default: "1970-01-01_00:00:00AM"
   REGISTRY: "ghcr.io/sonr-io"
 
-# ----------------------------------------------------------------------------
-# -- Public Tasks ------------------------------------------------------------
-# ----------------------------------------------------------------------------
 tasks:
+  # ----------------------------------------------------------------------------
+  # -- Run Tasks ---------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   default:
     desc: Print the version
     silent: true
     cmds:
-      - echo -----------------------------------------------
-      - echo '(sonr-io/core) - https://github.com/sonrhq/core'
-      - echo -----------------------------------------------
-      - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
       - task -l
+
+  deps:
+    desc: Pull Docker dependencies
+    cmds:
+      - docker compose pull
 
   dev:
     desc: Serve the blockchain locally with verbose logging
@@ -33,37 +37,88 @@ tasks:
       - go build -o ./bin/sonrd ./cmd/sonrd
       - sh scripts/localnet.sh ./bin/sonrd
 
+  # ----------------------------------------------------------------------------
+  # -- Build Tasks -------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   build:
     desc: Build the binary
     cmds:
-      - go build -o ./bin/sonr ./cmd/sonrd
+      - task: build-darwin-arm64
 
-  generate:
-    aliases:
-      - gen
-    desc: Generate the protobuf files
+  build-linux-amd64:
     cmds:
-      - |
-        make proto-gen
-        git add .
-        git commit -m "chore: update proto files"
+      # - wget {{.WASMVM_URL}}/v1.3.0/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
+      - go build -mod=readonly -trimpath -o bin/sonr-linux-amd64/sonrd ./cmd/sonrd -v
+    env:
+      CC: "x86_64-linux-gnu-gcc"
+      CGO_ENABLED: "1"
+      GOOS: "linux"
+      GOARCH: "amd64"
 
-  deps:
-    desc: Pull Docker dependencies
+  build-linux-arm64:
     cmds:
-      - docker compose pull
+      - wget {{.WASMVM_URL}}/v1.3.0/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
+      - go build -mod=readonly -trimpath -o bin/sonr-linux-arm64/sonrd ./cmd/sonrd -v
+    env:
+      CC: "aarch64-linux-gnu-gcc"
+      CGO_ENABLED: "1"
+      GOOS: "linux"
+      GOARCH: "arm64"
 
-  release:
+  build-darwin-amd64:
+    cmds:
+      - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a"
+      - go build -mod=readonly -trimpath -o bin/sonr-darwin-amd64/sonrd ./cmd/sonrd/main.go
+    env:
+      CC: "o64-clang"
+      CGO_LDFLAGS: "-L/lib"
+      CGO_ENABLED: "1"
+      GOOS: "darwin"
+      GOARCH: "amd64"
+
+  build-darwin-arm64:
+    cmds:
+      # - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
+      - go build -mod=readonly -trimpath -o bin/sonrd ./cmd/sonrd/main.go
+    env:
+      CC: "oa64-clang"
+      CGO_ENABLED: "1"
+      GOOS: "darwin"
+      GOARCH: "arm64"
+
+  # ------------------------------------------------------------------------------
+  # -- Release Tasks -------------------------------------------------------------
+  # ------------------------------------------------------------------------------
+  tarball:
+    cmds:
+      - tar -czvf sonrd-{{.OS}}-{{.ARCH}}.tar.gz sonrd
+
+  sha256:
+    cmds:
+      - sha256sum sonrd-{{.OS}}-{{.ARCH}}.tar.gz > sha256sum.txt
+
+  setup:
+    cmds:
+      - go mod download
+
+  release:github:
+    deps:
+      - setup
+      - build-linux-amd64
+      - build-linux-arm64
+      - build-darwin-amd64
+      - build-darwin-arm64
+      - tarball
+      - sha256
+
+  release:docker:
     desc: Build the binary for docker
     cmds:
-      - task: buf-push
       - task: docker-release
         vars:
           IMAGE: sonrd
 
-  # ------------------------------------------------------------------------------
-  # -- Internal Tasks ------------------------------------------------------------
-  # ------------------------------------------------------------------------------
+
   docker-release:
     silent: true
     internal: true
@@ -73,12 +128,12 @@ tasks:
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
     requires:
       vars: [IMAGE]
 
+  # ----------------------------------------------------------------------------
+  # -- Protobuf Tasks -------------------------------------------------------------
+  # ----------------------------------------------------------------------------
   buf-mod:
     dir: proto
     internal: true
@@ -104,3 +159,13 @@ tasks:
     deps: [buf-build]
     cmds:
       - buf push
+
+  generate:
+    aliases:
+      - gen
+    desc: Generate the protobuf files
+    cmds:
+      - |
+        make proto-gen
+        git add .
+        git commit -m "chore: update proto files"
