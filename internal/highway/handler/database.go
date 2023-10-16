@@ -3,7 +3,7 @@ package handler
 import (
 	"context"
 
-	databasepb "github.com/sonrhq/core/types/highway/database/v1"
+	databasepb "github.com/sonr-io/core/types/highway/database/v1"
 )
 
 // DatabaseHandler is the handler for the authentication service

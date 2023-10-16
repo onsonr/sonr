@@ -37,15 +37,15 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	sonrdconfig "github.com/sonrhq/core/cmd/sonrd/config"
-	"github.com/sonrhq/core/internal/highway"
+	sonrdconfig "github.com/sonr-io/core/cmd/sonrd/config"
+	"github.com/sonr-io/core/internal/highway"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/sonrhq/core/app"
-	appparams "github.com/sonrhq/core/app/params"
+	"github.com/sonr-io/core/app"
+	appparams "github.com/sonr-io/core/app/params"
 )
 
 var (

@@ -3,9 +3,9 @@ package txs
 import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	grouptypes "github.com/cosmos/cosmos-sdk/x/group"
-	domaintypes "github.com/sonrhq/core/x/domain/types"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
-	servicetypes "github.com/sonrhq/core/x/service/types"
+	domaintypes "github.com/sonr-io/core/x/domain/types"
+	identitytypes "github.com/sonr-io/core/x/identity/types"
+	servicetypes "github.com/sonr-io/core/x/service/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||

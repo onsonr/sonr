@@ -4,7 +4,7 @@ package core.service;
 
 import "core/service/record.proto";
 
-option go_package = "github.com/sonrhq/core/x/service/types";
+option go_package = "github.com/sonr-io/core/x/service/types";
 
 // Msg defines the Msg service.
 service Msg {

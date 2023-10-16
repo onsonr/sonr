@@ -3,10 +3,10 @@ package dkls
 import (
 	"fmt"
 
+	mpcv1types "github.com/sonr-io/core/pkg/mpc/types/v1"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonr-io/kryptology/pkg/core/protocol"
 	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
-	mpcv1types "github.com/sonrhq/core/pkg/mpc/types/v1"
 )
 
 // The DKLSKeygen function generates a set of keyshares.

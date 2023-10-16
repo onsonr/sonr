@@ -5,7 +5,7 @@ package highway.authentication.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";
+option go_package = "github.com/sonr-io/core/types/highway/authentication/v1;authenticationpb";
 
 service AuthenticationService {
   rpc Params(ParamsRequest) returns (ParamsResponse) {
@@ -62,7 +62,7 @@ message ParamsRequest {
 }
 
 message ParamsResponse {
-bool success = 1;
+  bool success = 1;
   string message = 2;
   bool existing = 3;
   string origin = 4;

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/sonrhq/core/x/service/types"
+	"github.com/sonr-io/core/x/service/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -5,7 +5,7 @@ package highway.wallet.v1;
 import "core/crypto/coin.proto";
 import "google/api/annotations.proto";
 
-option go_package = "github.com/sonrhq/core/types/highway/wallet/v1;walletpb";
+option go_package = "github.com/sonr-io/core/types/highway/wallet/v1;walletpb";
 
 service WalletService {
   rpc CreateAccount(CreateAccountRequest) returns (CreateAccountResponse) {
@@ -22,7 +22,8 @@ service WalletService {
     option (google.api.http).post = "/highway/wallet/accounts/sign";
   }
 
-  rpc VerifySignature(VerifySignatureRequest) returns (VerifySignatureResponse) {
+  rpc VerifySignature(VerifySignatureRequest)
+      returns (VerifySignatureResponse) {
     option (google.api.http).post = "/highway/wallet/accounts/verify";
   }
 
@@ -59,9 +60,7 @@ message GetAccountResponse {
   string owner = 5;
 }
 
-message ListAccountsRequest {
-  string jwt = 1;
-}
+message ListAccountsRequest { string jwt = 1; }
 
 message ListAccountsResponse {
   bool success = 1;
