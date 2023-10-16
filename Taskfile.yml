@@ -48,7 +48,7 @@ tasks:
   build-linux-amd64:
     cmds:
       # - wget {{.WASMVM_URL}}/v1.3.0/libwasmvm_muslc.x86_64.a -O /usr/lib/x86_64-linux-gnu/libwasmvm_muslc.a
-      - go build -mod=readonly -trimpath -o build/sonr-linux-amd64/sonrd ./cmd/sonrd -v
+      - go build -mod=readonly -trimpath -o bin/sonr-linux-amd64/sonrd ./cmd/sonrd -v
     env:
       CC: "x86_64-linux-gnu-gcc"
       CGO_ENABLED: "1"
@@ -58,7 +58,7 @@ tasks:
   build-linux-arm64:
     cmds:
       - wget {{.WASMVM_URL}}/v1.3.0/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
-      - go build -mod=readonly -trimpath -o build/sonr-linux-arm64/sonrd ./cmd/sonrd -v
+      - go build -mod=readonly -trimpath -o bin/sonr-linux-arm64/sonrd ./cmd/sonrd -v
     env:
       CC: "aarch64-linux-gnu-gcc"
       CGO_ENABLED: "1"
@@ -68,7 +68,7 @@ tasks:
   build-darwin-amd64:
     cmds:
       - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a"
-      - go build -mod=readonly -trimpath -o build/sonr-darwin-amd64/sonrd ./cmd/sonrd/main.go
+      - go build -mod=readonly -trimpath -o bin/sonr-darwin-amd64/sonrd ./cmd/sonrd/main.go
     env:
       CC: "o64-clang"
       CGO_LDFLAGS: "-L/lib"
@@ -79,7 +79,7 @@ tasks:
   build-darwin-arm64:
     cmds:
       # - wget "{{.WASMVM_URL}}/v1.3.0/libwasmvmstatic_darwin.a -O /lib/libwasmvmstatic_darwin.a
-      - go build -mod=readonly -trimpath -o build/sonrd ./cmd/sonrd/main.go
+      - go build -mod=readonly -trimpath -o bin/sonrd ./cmd/sonrd/main.go
     env:
       CC: "oa64-clang"
       CGO_ENABLED: "1"
@@ -114,7 +114,6 @@ tasks:
   release:docker:
     desc: Build the binary for docker
     cmds:
-      - task: buf-push
       - task: docker-release
         vars:
           IMAGE: sonrd
@@ -129,9 +128,6 @@ tasks:
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:latest
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
-      - docker push {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
     requires:
       vars: [IMAGE]
 
