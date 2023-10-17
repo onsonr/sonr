@@ -1,21 +1,3 @@
-# version: "3"
-
-# services:
-#   node:
-#     image: sonr-node
-#     init: true
-#     container_name: validator
-#     networks:
-#       - sonr-net
-#     ports:
-#       - 1317:1317 # rest
-#       - 26656:26656 # p2p
-#       - 26657:26657 # rpc
-#       - 9090:9090 # grpc
-#       - 8000:8080 # highway
-#     restart: always
-
-
 version: "3"
 networks:
   sonr-net:
