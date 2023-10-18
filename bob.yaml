@@ -12,6 +12,7 @@ build:
   # generate - is the default task execute when executing code generation.
   generate:
     cmd: task generate
+    input: proto
 
   # binary - is the default task execute when building go binary.
   binary:
