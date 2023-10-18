@@ -1,0 +1,21 @@
+# Pin nixpkgs to get reproducable behaviour.
+nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
+
+# Declare tasks below the build keyword.
+build:
+  # build - is the default task execute when calling "bob build".
+  build:
+    cmd: task build
+    rebuild: always
+
+  # docker - is the default task execute when calling "bob docker".
+  docker:
+    cmd: task release:docker
+    rebuild: always
+
+dependencies:
+  - go-task
+  - go_1_19
+  - git
+  - wget
+  - docker

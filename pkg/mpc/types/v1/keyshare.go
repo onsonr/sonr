@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-io/kryptology/pkg/core/protocol"
+	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
 	sonrcrypto "github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/types/crypto"
-	"github.com/sonrhq/kryptology/pkg/core/curves"
-	"github.com/sonrhq/kryptology/pkg/core/protocol"
-	dklsv1 "github.com/sonrhq/kryptology/pkg/tecdsa/dkls/v1"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonrhq/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1/dkg"
 	"golang.org/x/crypto/sha3"
 )
 

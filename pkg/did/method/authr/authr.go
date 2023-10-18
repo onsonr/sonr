@@ -4,9 +4,9 @@ import (
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonrhq/core/pkg/crypto"
 	"github.com/sonrhq/core/pkg/did/types"
-	"github.com/sonrhq/kryptology/pkg/core/curves"
 )
 
 const Method = types.DIDMethod("authr")

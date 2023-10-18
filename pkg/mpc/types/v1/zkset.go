@@ -7,9 +7,9 @@ import (
 	"errors"
 	"io"
 
+	"github.com/sonr-io/kryptology/pkg/accumulator"
+	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonrhq/core/pkg/crypto"
-	"github.com/sonrhq/kryptology/pkg/accumulator"
-	"github.com/sonrhq/kryptology/pkg/core/curves"
 )
 
 func (zk ZKEphemeralKey) String() string {

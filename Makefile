@@ -117,8 +117,8 @@ do-checksum-linux:
 build-linux-with-checksum: build-linux do-checksum-linux
 
 build-darwin:
-	GOOS=darwin GOARCH=amd64 go build -mod=readonly $(BUILD_FLAGS) -o ./build/sonrd-darwin-amd64/sonrd ./cmd/sonrd/main.go
-	GOOS=darwin GOARCH=arm64 go build -mod=readonly $(BUILD_FLAGS) -o ./build/sonrd-darwin-arm64/sonrd ./cmd/sonrd/main.go
+	go build -mod=readonly $(BUILD_FLAGS) -o ./build/sonrd-darwin-amd64/sonrd ./cmd/sonrd/main.go
+	go build -mod=readonly $(BUILD_FLAGS) -o ./build/sonrd-darwin-arm64/sonrd ./cmd/sonrd/main.go
 
 do-checksum-darwin:
 	cd build && sha256sum sonrd-darwin-amd64/sonrd sonrd-darwin-arm64/sonrd > sonr-checksum-darwin
