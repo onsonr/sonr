@@ -264,21 +264,21 @@ func blake3HashHex(input string) string {
 	return hashString
 }
 
-// makeCredentialFromCreationData creates a new WebauthnCredential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
+// makeCredentialFromCreationData creates a new Credential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *WebauthnCredential {
+func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *Credential {
 	transport := make([]string, 0)
 	for _, t := range c.Response.Transports {
 		transport = append(transport, string(t))
 	}
 
-	newCredential := &WebauthnCredential{
+	newCredential := &Credential{
 		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
 		AttestationType: c.Response.AttestationObject.Format,
 		Transport:       transport,
 
-		Authenticator: &WebauthnAuthenticator{
+		Authenticator: &Authenticator{
 			Aaguid:     c.Response.AttestationObject.AuthData.AttData.AAGUID,
 			SignCount:  c.Response.AttestationObject.AuthData.Counter,
 			Attachment: string(c.AuthenticatorAttachment),
@@ -287,13 +287,13 @@ func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *W
 	return newCredential
 }
 
-// makeCredentialFromAssertionData creates a new WebauthnCredential from a ParsedCredentialAssertionData and contains all needed information about a WebAuthn credential for storage.
+// makeCredentialFromAssertionData creates a new Credential from a ParsedCredentialAssertionData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *WebauthnCredential {
-	return &WebauthnCredential{
+func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *Credential {
+	return &Credential{
 		Id:        c.RawID,
 		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
-		Authenticator: &WebauthnAuthenticator{
+		Authenticator: &Authenticator{
 			Aaguid:    c.Response.AuthenticatorData.AttData.AAGUID,
 			SignCount: c.Response.AuthenticatorData.Counter,
 		},

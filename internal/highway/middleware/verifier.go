@@ -112,7 +112,7 @@ func UseControllerAccount(token string) (*controller.SonrController, error) {
 }
 
 // PublishControllerAccount creates a new controller account and publishes it to the blockchain
-func PublishControllerAccount(alias string, cred *servicetypes.WebauthnCredential, origin string) (*controller.SonrController, *types.TxResponse, error) {
+func PublishControllerAccount(alias string, cred *servicetypes.Credential, origin string) (*controller.SonrController, *types.TxResponse, error) {
 	controller, err := controller.New(alias, cred, origin)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create controller: %w", err)

@@ -9,7 +9,7 @@ import (
 )
 
 // Credential is a webauthn credential
-type Credential = servicetypes.WebauthnCredential
+type Credential = servicetypes.Credential
 
 // BroadcastTxResponse is a tx response
 type BroadcastTxResponse = txtypes.BroadcastTxResponse
