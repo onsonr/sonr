@@ -1,0 +1,790 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "core/identity/query.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/core/id": {
+      "get": {
+        "summary": "DIDDocumentAll queries all DIDDocument items.",
+        "operationId": "DIDDocumentAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryAllDIDDocumentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.key",
+            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.limit",
+            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.count_total",
+            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "pagination.reverse",
+            "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/alias/{alias}": {
+      "get": {
+        "summary": "DidByAlsoKnownAs returns DIDDocument based on an alias *only Sonr\nIdentities.",
+        "operationId": "DidByAlsoKnownAs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryDidByAlsoKnownAsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "alias",
+            "description": "aka_aliasid is the unique identifier of the DIDDocument - it appears like\n(\"example.snr\")",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/alias/{alias}/check": {
+      "get": {
+        "summary": "AliasAvailable checks if a given alias is available to register *only Sonr\nIdentities.",
+        "operationId": "AliasAvailable",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryAliasAvailableResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "alias",
+            "description": "alias is the unique identifier of the DIDDocument - it appears like\n(\"example.snr\")",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/controllers": {
+      "get": {
+        "summary": "ControllerAccountAll queries all ControllerAccount items.",
+        "operationId": "ControllerAccountAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryAllControllerAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.key",
+            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.limit",
+            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.count_total",
+            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "pagination.reverse",
+            "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/controllers/{address}": {
+      "get": {
+        "summary": "ControllerAccount queries a list of ControllerAccount items.",
+        "operationId": "ControllerAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryGetControllerAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/owner/{owner}": {
+      "get": {
+        "summary": "DidByOwner returns DIDDocument based on an owner.",
+        "operationId": "DidByOwner",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryDidByOwnerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "owner",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/id/{did}": {
+      "get": {
+        "summary": "DIDDocument queries a list of DIDDocument items.",
+        "operationId": "DIDDocument",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryGetDIDDocumentResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "did",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/core/params/identity": {
+      "get": {
+        "summary": "Params queries the parameters of the module.",
+        "operationId": "Params",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/sonr-io/core/identity/escrow_account": {
+      "get": {
+        "summary": "EscrowAccountAll queries all EscrowAccount items.",
+        "operationId": "EscrowAccountAll",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryAllEscrowAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "pagination.key",
+            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "byte"
+          },
+          {
+            "name": "pagination.offset",
+            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.limit",
+            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "uint64"
+          },
+          {
+            "name": "pagination.count_total",
+            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "pagination.reverse",
+            "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/sonr-io/core/identity/escrow_account/{address}": {
+      "get": {
+        "summary": "EscrowAccount queries a list of EscrowAccount items.",
+        "operationId": "EscrowAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/core.identity.QueryGetEscrowAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "address",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "core.identity.ControllerAccount": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "publicKey": {
+          "type": "string"
+        },
+        "authenticators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "wallets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "core.identity.DIDDocument": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authentication": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "assertion_method": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "capability_invocation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "capability_delegation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "key_agreement": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "also_known_as": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "DIDDocument represents a Decentralized Identifier (DID) document that\ncontains information about the DID subject, such as public keys, verification\nmethods, and services."
+    },
+    "core.identity.EscrowAccount": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "address": {
+          "type": "string"
+        },
+        "publicKey": {
+          "type": "string"
+        },
+        "lockupUsdBalance": {
+          "type": "string"
+        },
+        "creator": {
+          "type": "string"
+        }
+      }
+    },
+    "core.identity.Params": {
+      "type": "object",
+      "properties": {
+        "account_did_method_name": {
+          "type": "string"
+        },
+        "account_did_method_context": {
+          "type": "string"
+        },
+        "acccount_discovery_reward": {
+          "type": "string",
+          "format": "int64"
+        },
+        "did_base_context": {
+          "type": "string"
+        },
+        "maximum_identity_aliases": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "supported_did_methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Params defines the parameters for the module."
+    },
+    "core.identity.QueryAliasAvailableResponse": {
+      "type": "object",
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "existing_document": {
+          "$ref": "#/definitions/core.identity.DIDDocument"
+        }
+      },
+      "description": "QueryAliasAvailableResponse is the response type for the Query/AliasAvailable\nRPC method."
+    },
+    "core.identity.QueryAllControllerAccountResponse": {
+      "type": "object",
+      "properties": {
+        "controllerAccount": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.ControllerAccount"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+        }
+      },
+      "description": "QueryAllControllerAccountResponse is the response type for the\nQuery/ControllerAccountAll RPC method."
+    },
+    "core.identity.QueryAllDIDDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "dIDDocument": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.DIDDocument"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+        }
+      },
+      "description": "QueryAllDIDDocumentResponse is the response type for the Query/DIDDocumentAll\nRPC method."
+    },
+    "core.identity.QueryAllEscrowAccountResponse": {
+      "type": "object",
+      "properties": {
+        "escrowAccount": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.EscrowAccount"
+          }
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+        }
+      },
+      "description": "QueryAllEscrowAccountResponse is the response type for the\nQuery/EscrowAccountAll RPC method."
+    },
+    "core.identity.QueryDidByAlsoKnownAsResponse": {
+      "type": "object",
+      "properties": {
+        "didDocument": {
+          "$ref": "#/definitions/core.identity.DIDDocument",
+          "title": "A DIDDocument is a JSON-LD object that contains a set of public keys"
+        }
+      },
+      "description": "QueryDidByAlsoKnownAsResponse is the response type for the\nQuery/DidByAlsoKnownAs RPC method."
+    },
+    "core.identity.QueryDidByOwnerResponse": {
+      "type": "object",
+      "properties": {
+        "didDocument": {
+          "$ref": "#/definitions/core.identity.DIDDocument"
+        }
+      },
+      "description": "QueryDidByOwnerResponse is the response type for the Query/DidByOwner RPC\nmethod."
+    },
+    "core.identity.QueryGetControllerAccountResponse": {
+      "type": "object",
+      "properties": {
+        "controllerAccount": {
+          "$ref": "#/definitions/core.identity.ControllerAccount"
+        }
+      },
+      "description": "QueryGetControllerAccountResponse is the response type for the\nQuery/ControllerAccount RPC method."
+    },
+    "core.identity.QueryGetDIDDocumentResponse": {
+      "type": "object",
+      "properties": {
+        "dIDDocument": {
+          "$ref": "#/definitions/core.identity.DIDDocument"
+        }
+      },
+      "description": "QueryGetDIDDocumentResponse is the response type for the Query/DIDDocument\nRPC method."
+    },
+    "core.identity.QueryGetEscrowAccountResponse": {
+      "type": "object",
+      "properties": {
+        "escrowAccount": {
+          "$ref": "#/definitions/core.identity.EscrowAccount"
+        }
+      },
+      "description": "QueryGetEscrowAccountResponse is the response type for the\nQuery/EscrowAccount RPC method."
+    },
+    "core.identity.QueryParamsResponse": {
+      "type": "object",
+      "properties": {
+        "params": {
+          "$ref": "#/definitions/core.identity.Params",
+          "description": "params holds all the parameters of this module."
+        }
+      },
+      "description": "QueryParamsResponse is response type for the Query/Params RPC method."
+    },
+    "core.identity.VerificationMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "string"
+        },
+        "public_key_jwk": {
+          "type": "string"
+        },
+        "public_key_multibase": {
+          "type": "string"
+        },
+        "blockchain_account_id": {
+          "type": "string"
+        },
+        "attestation_type": {
+          "type": "string"
+        },
+        "transports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "VerificationMethod represents a verification method that can be used to\nauthenticate the DID subject or perform other cryptographic operations."
+    },
+    "core.identity.VerificationRelationship": {
+      "type": "object",
+      "properties": {
+        "verification_method": {
+          "$ref": "#/definitions/core.identity.VerificationMethod"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "description": "VerificationRelationship represents a relationship between a verification\nmethod and a specific verification purpose (e.g., authentication, assertion,\netc.)."
+    },
+    "cosmos.base.query.v1beta1.PageRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "byte",
+          "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set."
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64",
+          "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set."
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64",
+          "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
+        },
+        "count_total": {
+          "type": "boolean",
+          "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set."
+        },
+        "reverse": {
+          "type": "boolean",
+          "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43"
+        }
+      },
+      "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
+      "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
+    },
+    "cosmos.base.query.v1beta1.PageResponse": {
+      "type": "object",
+      "properties": {
+        "next_key": {
+          "type": "string",
+          "format": "byte",
+          "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently. It will be empty if\nthere are no more results."
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64",
+          "title": "total is total number of results available if PageRequest.count_total\nwas set, its value is undefined otherwise"
+        }
+      },
+      "description": "PageResponse is to be embedded in gRPC response messages where the\ncorresponding request message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    }
+  }
+}

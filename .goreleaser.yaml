@@ -158,7 +158,7 @@ archives:
     name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: binary
 checksum:
-  name_template: "sha256sum.txt"
+  name_template: sha256sum.txt
   algorithm: sha256
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
@@ -225,16 +225,16 @@ changelog:
   abbrev: -1
   groups:
     - title: Features
-      regexp: '.*?feat\(.*\):.*$'
+      regexp: .*?feat\(.*\):.*$
       order: 0
-    - title: "Documentation"
-      regexp: '.*?docs\(.*\):.*$'
+    - title: Documentation
+      regexp: .*?docs\(.*\):.*$
       order: 1
-    - title: "Fixes"
-      regexp: '.*?fix\(.*\):.*$'
+    - title: Fixes
+      regexp: .*?fix\(.*\):.*$
       order: 2
-    - title: "Misc"
-      regexp: '.*?chore\(.*\):.*$'
+    - title: Misc
+      regexp: .*?chore\(.*\):.*$
       order: 3
     - title: Others
       order: 999

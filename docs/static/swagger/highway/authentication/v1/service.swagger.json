@@ -1,0 +1,370 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "highway/authentication/v1/service.proto",
+    "description": "Package highway.authentication.v1 provides authentication services.",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/highway/auth/current": {
+      "get": {
+        "summary": "CurrentUser retrieves the currently authenticated user.",
+        "operationId": "CurrentUser",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.CurrentUserResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    },
+    "/highway/auth/jwt/refresh/{jwt}": {
+      "post": {
+        "summary": "RefreshToken refreshes a user's authentication token.",
+        "operationId": "RefreshToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.RefreshTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "jwt",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    },
+    "/highway/auth/jwt/verify/{jwt}": {
+      "post": {
+        "summary": "VerifyToken verifies a user's authentication token.",
+        "operationId": "VerifyToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.VerifyTokenResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "jwt",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    },
+    "/highway/auth/login/{origin}": {
+      "post": {
+        "summary": "Login authenticates a user.",
+        "operationId": "Login",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.LoginResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    },
+    "/highway/auth/params/{origin}": {
+      "get": {
+        "summary": "Params retrieves authentication parameters.",
+        "operationId": "Params",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.ParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "existing",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "alias",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    },
+    "/highway/auth/register/{origin}": {
+      "post": {
+        "summary": "Register registers a new user.",
+        "operationId": "Register",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.authentication.v1.RegisterResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "origin",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "AuthenticationService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "highway.authentication.v1.CurrentUserResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        }
+      },
+      "description": "CurrentUserResponse is the response from the CurrentUser method."
+    },
+    "highway.authentication.v1.LoginResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "jwt": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        }
+      },
+      "description": "LoginResponse is the response from the Login method."
+    },
+    "highway.authentication.v1.ParamsResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "existing": {
+          "type": "boolean"
+        },
+        "origin": {
+          "type": "string"
+        },
+        "alias": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "challenge": {
+          "type": "string"
+        },
+        "attestation_options": {
+          "type": "string"
+        },
+        "assertion_options": {
+          "type": "string"
+        }
+      },
+      "description": "ParamsResponse is the response from the Params method."
+    },
+    "highway.authentication.v1.RefreshTokenResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "new_jwt": {
+          "type": "string"
+        }
+      },
+      "description": "RefreshTokenResponse is the response from the RefreshToken method."
+    },
+    "highway.authentication.v1.RegisterResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "tx_hash": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "jwt": {
+          "type": "string"
+        },
+        "origin": {
+          "type": "string"
+        }
+      },
+      "description": "RegisterResponse is the response from the Register method."
+    },
+    "highway.authentication.v1.VerifyTokenResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "is_valid": {
+          "type": "boolean"
+        }
+      },
+      "description": "VerifyTokenResponse is the response from the VerifyToken method."
+    }
+  }
+}

@@ -1,0 +1,312 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "highway/wallet/v1/service.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/highway/wallet/accounts/create": {
+      "post": {
+        "summary": "CreateAccount creates a new account.",
+        "operationId": "CreateAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.CreateAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    },
+    "/highway/wallet/accounts/get": {
+      "post": {
+        "summary": "GetAccount retrieves an account by its address.",
+        "operationId": "GetAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.GetAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    },
+    "/highway/wallet/accounts/list": {
+      "post": {
+        "summary": "ListAccounts lists all accounts.",
+        "operationId": "ListAccounts",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.ListAccountsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    },
+    "/highway/wallet/accounts/sign": {
+      "post": {
+        "summary": "SignMessage signs a message with the private key of an account.",
+        "operationId": "SignMessage",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.SignMessageResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    },
+    "/highway/wallet/accounts/verify": {
+      "post": {
+        "summary": "VerifySignature verifies a signature with the public key of an account.",
+        "operationId": "VerifySignature",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.VerifySignatureResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    },
+    "/highway/wallet/export": {
+      "post": {
+        "summary": "ExportWallet exports a wallet.",
+        "operationId": "ExportWallet",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.wallet.v1.ExportWalletResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "tags": [
+          "WalletService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "core.crypto.CoinType": {
+      "type": "string",
+      "enum": [
+        "CoinType_BITCOIN",
+        "CoinType_TESTNET",
+        "CoinType_LITECOIN",
+        "CoinType_DOGE",
+        "CoinType_ETHEREUM",
+        "CoinType_SONR",
+        "CoinType_COSMOS",
+        "CoinType_FILECOIN",
+        "CoinType_HNS",
+        "CoinType_SOLANA",
+        "CoinType_XRP"
+      ],
+      "default": "CoinType_BITCOIN",
+      "description": "CoinType is the BIP-0044 coin type for each supported coin.\n\n - CoinType_BITCOIN: Bitcoins coin type is 0\n - CoinType_TESTNET: Testnet coin type is 1\n - CoinType_LITECOIN: Litecoin coin type is 2\n - CoinType_DOGE: Dogecoin coin type is 3\n - CoinType_ETHEREUM: Ethereum coin type is 60\n - CoinType_SONR: Sonr coin type is 703\n - CoinType_COSMOS: Cosmos coin type is 118\n - CoinType_FILECOIN: Filecoin coin type is 461\n - CoinType_HNS: Handshake coin type is 5353\n - CoinType_SOLANA: Solana coin type is 501\n - CoinType_XRP: Ripple coin type is 144"
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "highway.wallet.v1.CreateAccountResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "coin_type": {
+          "$ref": "#/definitions/core.crypto.CoinType"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "description": "CreateAccountResponse is the response message for creating an account."
+    },
+    "highway.wallet.v1.ExportWalletResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "encrypted_wallet_buffer": {
+          "type": "string"
+        }
+      },
+      "description": "ExportWalletResponse is the response message for exporting a wallet."
+    },
+    "highway.wallet.v1.GetAccountResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "coin_type": {
+          "$ref": "#/definitions/core.crypto.CoinType"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "description": "GetAccountResponse is the response message for getting an account."
+    },
+    "highway.wallet.v1.ListAccountsResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "accounts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "ListAccountsResponse is the response message for listing accounts."
+    },
+    "highway.wallet.v1.SignMessageResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "signature": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "description": "SignMessageResponse is the response message for signing a message."
+    },
+    "highway.wallet.v1.VerifySignatureResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "message_verified": {
+          "type": "boolean"
+        }
+      },
+      "description": "VerifySignatureResponse is the response message for verifying a signature."
+    }
+  }
+}

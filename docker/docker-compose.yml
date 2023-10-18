@@ -1,6 +1,6 @@
 version: "3"
 networks:
-  sonr-net:
+  sonr-net: {}
 services:
   node:
     init: true
