@@ -57,7 +57,7 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
 FROM ${RUNNER_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
-LABEL org.opencontainers.image.description "Default node image for sonr"
+LABEL org.opencontainers.image.description "Sonr Validator node container"
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
 COPY scripts scripts

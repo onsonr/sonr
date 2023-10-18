@@ -10,7 +10,6 @@ import (
 
 	// this line is used by starport scaffolding # root/moduleImport
 	"github.com/CosmWasm/wasmd/x/wasm"
-	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
 	tmcli "github.com/cometbft/cometbft/libs/cli"
@@ -309,7 +308,6 @@ func (a appCreator) newApp(
 		cast.ToUint32(appOpts.Get(server.FlagStateSyncSnapshotKeepRecent)),
 	)
 
-	var emptyWasmOpts []wasm.Option
 	return app.New(
 		logger,
 		db,
@@ -319,9 +317,7 @@ func (a appCreator) newApp(
 		cast.ToString(appOpts.Get(flags.FlagHome)),
 		cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod)),
 		a.encodingConfig,
-		app.GetEnabledProposals(),
 		appOpts,
-		emptyWasmOpts,
 		highway.NewConfig(highwayHost, highwayPort),
 		baseapp.SetPruning(pruningOpts),
 		baseapp.SetMinGasPrices(cast.ToString(appOpts.Get(server.FlagMinGasPrices))),
@@ -354,7 +350,6 @@ func (a appCreator) appExport(
 		return servertypes.ExportedApp{}, errors.New("application home not set")
 	}
 
-	var emptyWasmOpts []wasmkeeper.Option
 	app := app.New(
 		logger,
 		db,
@@ -364,9 +359,7 @@ func (a appCreator) appExport(
 		homePath,
 		uint(1),
 		a.encodingConfig,
-		app.GetEnabledProposals(),
 		appOpts,
-		emptyWasmOpts,
 		highway.DefaultConfig(),
 	)
 

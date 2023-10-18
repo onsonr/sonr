@@ -1,5 +1,0 @@
-repositories:
-    - name: studio
-      sshurl: git@github.com:sonr-io/studio.git
-      httpsurl: https://github.com/sonr-io/studio.git
-      localurl: ""

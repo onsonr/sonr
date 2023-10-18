@@ -5,13 +5,23 @@ nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
 build:
   # build - is the default task execute when calling "bob build".
   build:
-    cmd: task build
-    rebuild: always
+    cmd: echo "Building for all platforms"
+    dependson:
+      - darwin
+      - linux
+      - docker
+
+  # darwin - is the task execute when calling "bob build:darwin".
+  darwin:
+    cmd: task build-darwin
+
+  # linux - is the task execute when calling "bob build:darwin".
+  linux:
+    cmd: task build-linux
 
   # docker - is the default task execute when calling "bob docker".
   docker:
-    cmd: task release:docker
-    rebuild: always
+    cmd: task release-docker
 
 dependencies:
   - go-task

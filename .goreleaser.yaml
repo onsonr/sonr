@@ -5,10 +5,6 @@ env:
   - CGO_ENABLED=1
   - WASMVM_URL=https://github.com/CosmWasm/wasmvm/releases/download
   - COSMWASM_VERSION=v1.2.4
-before:
-  hooks:
-    - go mod download
-
 builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
@@ -46,7 +42,7 @@ builds:
       - CC=aarch64-linux-gnu-gcc
     hooks:
       pre:
-        - wget {{ .Env.WASMVM_URL }}/v1.3.0/libwasmvm_muslc.aarch64.a -O /usr/lib/aarch64-linux-gnu/libwasmvm_muslc.a
+        - wget {{ .Env.WASMVM_URL }}/v1.3.0/libwasmvm_muslc.aarch64.a -O /opt/homebrew/lib/aarch64-linux-gnu/libwasmvm_muslc.a
     main: ./cmd/sonrd
     binary: sonrd
     goos:
@@ -137,7 +133,7 @@ universal_binaries:
     ids:
       - sonrd-darwin-amd64
       - sonrd-darwin-arm64
-    replace: false
+    replace: true
 archives:
   - id: zipped
     builds:
