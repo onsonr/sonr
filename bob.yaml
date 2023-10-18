@@ -5,14 +5,12 @@ nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
 build:
   # build - is the default task execute when calling "bob build".
   build:
-    # Inputs of the task.
-    # If any of the inputs changes the task is rebuild.
-    # input: .
-
-    # Command to execute
     cmd: task build
+    rebuild: always
 
-    # Rebuild policy, defaults to [on-change]
+  # docker - is the default task execute when calling "bob docker".
+  docker:
+    cmd: task release:docker
     rebuild: always
 
 dependencies:
@@ -20,3 +18,4 @@ dependencies:
   - go_1_19
   - git
   - wget
+  - docker

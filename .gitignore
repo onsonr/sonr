@@ -20,7 +20,7 @@ data
 node_modules
 .pnp
 .pnp.js
-
+bin
 tmp
 # testing
 coverage
