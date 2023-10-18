@@ -8,7 +8,6 @@ import "google/api/annotations.proto";
 import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/service/params.proto";
 import "core/service/record.proto";
-import "core/service/credential.proto";
 import "core/identity/did.proto";
 
 option go_package = "github.com/sonr-io/core/x/service/types";

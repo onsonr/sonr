@@ -34,31 +34,10 @@ tasks:
     cmds:
       - task -l
 
-  build-all:
+  build:
     desc: Build the binary for all platforms
     cmds:
-      - task: build-mac
-      - task: build-linux
-
-  build-darwin:
-    desc: Build the binary for mac
-    cmds:
-      - task: go-cross-build
-        vars:
-          ID: sonrd-darwin-amd64
-      - task: go-cross-build
-        vars:
-          ID: sonrd-darwin-arm64
-
-  build-linux:
-    desc: Build the binary for linux
-    cmds:
-      - task: go-cross-build
-        vars:
-          ID: sonrd-linux-amd64
-      - task: go-cross-build
-        vars:
-          ID: sonrd-linux-arm64
+      - make build
 
   release-docker:
     desc: Build the binary for docker
@@ -74,6 +53,7 @@ tasks:
     desc: Build, tag and push the docker image
     cmds:
       - docker build -f ./Dockerfile . -t {{.IMAGE}}
+      - docker tag {{.IMAGE}} {{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}

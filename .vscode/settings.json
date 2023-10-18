@@ -46,8 +46,7 @@
     }
   ],
   "files.exclude": {
-    "**/.git": true,
-        "**/.idea": true,
+    "**/.git": false,
     "**/.svn": true,
     "**/.hg": true,
     "**/CVS": true,
@@ -71,6 +70,8 @@
     "**/.trunk/*actions/": true,
     "**/.trunk/*logs/": true,
     "**/.trunk/*plugins/": true,
+    "**/.trunk/*notifications/": true,
+    "**/.idea": true,
     "**/**/types/*_test.go": true,
     "proto/buf.lock": true,
     "**/.circleci": false,
@@ -112,7 +113,7 @@
     "**/*.yaml": false,
     "**/Makefile": false,
     "**/*.sh": false,
-    "studio": true,
+    "studio": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",

@@ -3,29 +3,32 @@ nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
 
 # Declare tasks below the build keyword.
 build:
-  # build - is the default task execute when calling "bob build".
+  # build - is the default task execute when building go binary.
   build:
-    cmd: echo "Building for all platforms"
     dependson:
-      - darwin
-      - linux
+      - binary
       - docker
 
-  # darwin - is the task execute when calling "bob build:darwin".
-  darwin:
-    cmd: task build-darwin
+  # generate - is the default task execute when executing code generation.
+  generate:
+    cmd: task generate
 
-  # linux - is the task execute when calling "bob build:darwin".
-  linux:
-    cmd: task build-linux
+  # binary - is the default task execute when building go binary.
+  binary:
+    cmd: task build
+    target: ./bin/sonrd
 
-  # docker - is the default task execute when calling "bob docker".
+  # docker - is the default task execute when building docker image.
   docker:
     cmd: task release-docker
-
+    dependson:
+      - binary
+    target:
+      image: ghcr.io/sonr-io/sonrd:latest
 dependencies:
   - go-task
   - go_1_19
   - git
   - wget
   - docker
+  - gcc
