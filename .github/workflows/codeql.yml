@@ -16,7 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: ["go"]
+        language: ["go", "typescript"]
+        queries: ['crypto-com/cosmos-sdk-codeql@v0.0.7']
         # CodeQL supports [ 'cpp', 'csharp', 'go', 'java', 'javascript', 'python', 'ruby' ]
         # Learn more about CodeQL language support at https://git.io/codeql-language-support
 
