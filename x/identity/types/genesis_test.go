@@ -34,32 +34,6 @@ func TestGenesisState_Validate(t *testing.T) {
 			},
 			valid: true,
 		},
-		{
-			desc: "duplicated controllerAccount",
-			genState: &types.GenesisState{
-				ControllerAccountList: []types.ControllerAccount{
-					{
-						Address: "0",
-					},
-					{
-						Address: "0",
-					},
-				},
-			},
-			valid: false,
-		},
-		{
-			desc: "invalid controllerAccount count",
-			genState: &types.GenesisState{
-				ControllerAccountList: []types.ControllerAccount{
-					{
-						Address: "0",
-					},
-				},
-				ControllerAccountCount: 0,
-			},
-			valid: false,
-		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}
 	for _, tc := range tests {

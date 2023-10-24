@@ -12,6 +12,7 @@ func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		DIDDocumentList:       []DIDDocument{},
 		ControllerAccountList: []ControllerAccount{},
+		ControllerAccountCount: 0,
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}

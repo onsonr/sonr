@@ -12,6 +12,10 @@ import (
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 )
 
+type Accumulator = accumulator.Accumulator
+type SecretKey = accumulator.SecretKey
+type Element = accumulator.Element
+
 func (zk ZKEphemeralKey) String() string {
 	return crypto.Base64Encode(zk)
 }
