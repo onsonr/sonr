@@ -3,6 +3,22 @@
 BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 COMMIT := $(shell git log -1 --format='%H')
 
+VERSION := $(shell echo $(shell git describe --tags) | sed 's/^v//')
+COMMIT := $(shell git log -1 --format='%H')
+PATH := $(PATH):/usr/local/go/bin
+LEDGER_ENABLED ?= false
+DOCKER := $(shell which docker)
+E2E_UPGRADE_VERSION := "v17"
+#SHELL := /bin/bash
+
+GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
+GO_MODULE := $(shell cat go.mod | grep "module " | cut -d ' ' -f 2)
+GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
+GO_MINOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f2)
+protoVer=0.11.2
+protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
+protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
+
 ifeq (,$(VERSION))
   VERSION := $(shell git describe --tags)
   # if VERSION is empty, then populate it with branch's name and raw commit hash
@@ -128,6 +144,8 @@ proto-check-breaking:
 	@$(DOCKER_BUF) breaking --against $(HTTPS_GIT)#branch=main
 
 .PHONY: proto-all proto-gen proto-format proto-lint proto-check-breaking
+
+###############################################################################
 ###                             Interchain test                             ###
 ###############################################################################
 
@@ -158,3 +176,97 @@ ictest-push-wasm:
 	cd tests/interchaintest && go test -race -v -run TestPushWasmClientCode .
 
 .PHONY: ictest-start-cosmos ictest-start-polkadot ictest-ibc ictest-push-wasm ictest-all
+
+###############################################################################
+###                                Release                                  ###
+###############################################################################
+GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
+COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
+
+release:
+	docker run \
+		--rm \
+		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/sonrd \
+		-w /go/src/sonrd \
+		$(GORELEASER_IMAGE) \
+		release \
+		--clean
+
+release-docker:
+	task release
+
+release-dry-run:
+	docker run \
+		--rm \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/sonrd \
+		-w /go/src/sonrd \
+		$(GORELEASER_IMAGE) \
+		release \
+		--clean \
+		--skip-publish
+
+release-snapshot:
+	docker run \
+		--rm \
+		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
+		-v /var/run/docker.sock:/var/run/docker.sock \
+		-v `pwd`:/go/src/sonrd \
+		-w /go/src/sonrd \
+		$(GORELEASER_IMAGE) \
+		release \
+		--clean \
+		--snapshot \
+		--skip-validate \
+		--skip-publish
+
+
+###############################################################################
+###                                Linting                                  ###
+###############################################################################
+
+lint:
+	@echo "--> Running linter"
+	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run --timeout=10m
+	@docker run -v $(PWD):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.md"
+
+format:
+	@go run github.com/golangci/golangci-lint/cmd/golangci-lint run ./... --fix
+	@go run mvdan.cc/gofumpt -l -w x/ app/ ante/ tests/
+	@docker run -v $(PWD):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.md" --fix
+
+mdlint:
+	@echo "--> Running markdown linter"
+	@docker run -v $(PWD):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.md"
+
+markdown:
+	@docker run -v $(PWD):/workdir ghcr.io/igorshubovych/markdownlint-cli:latest "**/*.md" --fix
+
+
+
+###############################################################################
+###                                Protobuf                                 ###
+###############################################################################
+
+proto-all: proto-format proto-lint proto-gen
+
+proto-gen:
+	@echo "Generating Protobuf files"
+	@$(protoImage) sh ./scripts/protocgen.sh
+
+proto-swagger-gen:
+	@echo "Generating Protobuf Swagger"
+	@$(protoImage) sh ./scripts/protoc-swagger-gen.sh
+
+proto-format:
+	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
+
+proto-lint:
+	@$(protoImage) buf lint --error-format=json
+
+proto-check-breaking:
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
