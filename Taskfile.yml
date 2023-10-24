@@ -3,7 +3,6 @@ dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
 
 vars:
   CGO_ENABLED: 1
-  REGISTRY: "ghcr.io/sonr-io"
   WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
   VERSION:
     sh: echo $(git describe --tags --abbrev=0)
@@ -42,24 +41,50 @@ tasks:
   release-docker:
     desc: Build the binary for docker
     cmds:
-      - task: docker-build-push
+      - task: docker-build
         vars:
           IMAGE: sonrd
 
-
-  docker-build-push:
+  docker-build:
     silent: true
     internal: true
     desc: Build, tag and push the docker image
     cmds:
       - docker build -f ./Dockerfile . -t {{.IMAGE}}
-      - docker tag {{.IMAGE}} {{.IMAGE}}:latest
+      - for: ["ghcr.io/sonr-io", "registry.digitalocean.com/sonrhq"]
+        task: docker-tag
+        vars:
+          REGISTRY: '{{.ITEM}}'
+          IMAGE: '{{.IMAGE}}'
+      - for: ["ghcr.io/sonr-io", "registry.digitalocean.com/sonrhq"]
+        task: docker-push
+        vars:
+          REGISTRY: '{{.ITEM}}'
+          IMAGE: '{{.IMAGE}}'
+    requires:
+      vars: [IMAGE]
+
+  docker-tag:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - echo "Tagging {{.IMAGE}} with {{.REGISTRY}}/{{.IMAGE}}"
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
     requires:
-      vars: [IMAGE]
+      vars: [IMAGE, REGISTRY]
 
+  docker-push:
+    silent: true
+    internal: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - echo "Pushing {{.REGISTRY}}/{{.IMAGE}}..."
+      - docker push {{.REGISTRY}}/{{.IMAGE}} --all-tags
+    requires:
+      vars: [IMAGE, REGISTRY]
   # ----------------------------------------------------------------------------
   # -- Protobuf Tasks -------------------------------------------------------------
   # ----------------------------------------------------------------------------
