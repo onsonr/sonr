@@ -1,5 +1,7 @@
 # Pin nixpkgs to get reproducable behaviour.
 nixpkgs: https://github.com/NixOS/nixpkgs/archive/refs/tags/23.05.tar.gz
+dependencies: [go-task, go_1_19, git, wget, docker, gcc]
+project: bob.build/sonr/core
 
 # Declare tasks below the build keyword.
 build:
@@ -19,6 +21,10 @@ build:
     cmd: task build
     target: ./bin/sonrd
 
+  # release - is the default task execute when building release.
+  release:
+    cmd: make release
+
   # docker - is the default task execute when building docker image.
   docker:
     cmd: task docker-build
@@ -26,10 +32,3 @@ build:
       - binary
     target:
       image: ghcr.io/sonr-io/sonrd:latest
-dependencies:
-  - go-task
-  - go_1_19
-  - git
-  - wget
-  - docker
-  - gcc
