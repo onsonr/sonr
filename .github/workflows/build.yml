@@ -24,6 +24,7 @@ on:
   merge_group:
 env:
   GO_VERSION: "1.20.5"
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
@@ -44,13 +45,38 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Install nix
-        uses: cachix/install-nix-action@v15
+      - name: Get git diff
+        uses: technote-space/get-diff-action@v6.1.2
         with:
-          nix_path: nixpkgs=channel:nixos-unstable
+          PATTERNS: |
+            **/**.wasm
+            **/**.go
+            go.mod
+            go.sum
+            Makefile
+            .github/workflows/build.yml
+      - uses: actions/setup-go@v4
+        with:
+          go-version: ${{env.GO_VERSION}}
+        env:
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+      - name: Download Dependencies
+        run: go mod download
+      - name: Build sonrd
+        run: |
+          GOWRK=off go build cmd/sonrd/main.go
+      - name: Upload sonrd artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+          path: cmd/sonrd/sonrd
 
-      - name: Install bob
-        run: curl -L https://bob.build/install.sh | BIN_DIR=/usr/local/bin sh
-
-      - name: Bob build
-        run: bob build
+  build-make:
+    name: Build using makefile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Run make build
+        run: make build
