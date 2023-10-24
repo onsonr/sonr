@@ -5,11 +5,11 @@ import (
 	"strings"
 
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	servicetypes "github.com/sonr-io/core/x/service/types"
+	"github.com/sonr-io/core/types/webauthn"
 )
 
 // Credential is a webauthn credential
-type Credential = servicetypes.Credential
+type Credential = webauthn.Credential
 
 // BroadcastTxResponse is a tx response
 type BroadcastTxResponse = txtypes.BroadcastTxResponse

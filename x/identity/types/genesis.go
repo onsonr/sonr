@@ -15,7 +15,6 @@ func DefaultGenesis() *GenesisState {
 		PortId:                PortID,
 		DIDDocumentList:       []DIDDocument{},
 		ControllerAccountList: []ControllerAccount{},
-		EscrowAccountList:     []EscrowAccount{},
 		// this line is used by starport scaffolding # genesis/types/default
 		Params: DefaultParams(),
 	}
@@ -46,18 +45,6 @@ func (gs GenesisState) Validate() error {
 			return fmt.Errorf("duplicated index for dIDDocument")
 		}
 		controllerAccountIndexMap[index] = struct{}{}
-	}
-	// Check for duplicated ID in escrowAccount
-	escrowAccountIdMap := make(map[uint64]bool)
-	escrowAccountCount := gs.GetEscrowAccountCount()
-	for _, elem := range gs.EscrowAccountList {
-		if _, ok := escrowAccountIdMap[elem.Id]; ok {
-			return fmt.Errorf("duplicated id for escrowAccount")
-		}
-		if elem.Id >= escrowAccountCount {
-			return fmt.Errorf("escrowAccount id should be lower or equal than the last id")
-		}
-		escrowAccountIdMap[elem.Id] = true
 	}
 	// this line is used by starport scaffolding # genesis/types/validate
 

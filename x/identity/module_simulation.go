@@ -90,17 +90,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 			},
 		},
 		ControllerAccountCount: 2,
-		EscrowAccountList: []types.EscrowAccount{
-			{
-				Id:      0,
-				Creator: sample.AccAddress(),
-			},
-			{
-				Id:      1,
-				Creator: sample.AccAddress(),
-			},
-		},
-		EscrowAccountCount: 2,
 		// this line is used by starport scaffolding # simapp/module/genesisState
 	}
 	simState.GenState[types.ModuleName] = simState.Cdc.MustMarshalJSON(&identityGenesis)
@@ -184,39 +173,6 @@ func (am AppModule) WeightedOperations(simState module.SimulationState) []simtyp
 		identitysimulation.SimulateMsgDeleteControllerAccount(am.accountKeeper, am.bankKeeper, am.keeper),
 	))
 
-	var weightMsgCreateEscrowAccount int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateEscrowAccount, &weightMsgCreateEscrowAccount, nil,
-		func(_ *rand.Rand) {
-			weightMsgCreateEscrowAccount = defaultWeightMsgCreateEscrowAccount
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgCreateEscrowAccount,
-		identitysimulation.SimulateMsgCreateEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgUpdateEscrowAccount int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateEscrowAccount, &weightMsgUpdateEscrowAccount, nil,
-		func(_ *rand.Rand) {
-			weightMsgUpdateEscrowAccount = defaultWeightMsgUpdateEscrowAccount
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgUpdateEscrowAccount,
-		identitysimulation.SimulateMsgUpdateEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
-	var weightMsgDeleteEscrowAccount int
-	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteEscrowAccount, &weightMsgDeleteEscrowAccount, nil,
-		func(_ *rand.Rand) {
-			weightMsgDeleteEscrowAccount = defaultWeightMsgDeleteEscrowAccount
-		},
-	)
-	operations = append(operations, simulation.NewWeightedOperation(
-		weightMsgDeleteEscrowAccount,
-		identitysimulation.SimulateMsgDeleteEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper),
-	))
-
 	// this line is used by starport scaffolding # simapp/module/operation
 
 	return operations
@@ -270,30 +226,6 @@ func (am AppModule) ProposalMsgs(simState module.SimulationState) []simtypes.Wei
 			defaultWeightMsgDeleteControllerAccount,
 			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
 				identitysimulation.SimulateMsgDeleteControllerAccount(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgCreateEscrowAccount,
-			defaultWeightMsgCreateEscrowAccount,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				identitysimulation.SimulateMsgCreateEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgUpdateEscrowAccount,
-			defaultWeightMsgUpdateEscrowAccount,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				identitysimulation.SimulateMsgUpdateEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper)
-				return nil
-			},
-		),
-		simulation.NewWeightedProposalMsg(
-			opWeightMsgDeleteEscrowAccount,
-			defaultWeightMsgDeleteEscrowAccount,
-			func(r *rand.Rand, ctx sdk.Context, accs []simtypes.Account) sdk.Msg {
-				identitysimulation.SimulateMsgDeleteEscrowAccount(am.accountKeeper, am.bankKeeper, am.keeper)
 				return nil
 			},
 		),

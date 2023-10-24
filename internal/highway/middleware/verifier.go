@@ -9,6 +9,7 @@ import (
 	"github.com/sonr-io/core/internal/highway/types"
 	"github.com/sonr-io/core/pkg/crypto"
 	"github.com/sonr-io/core/pkg/did/controller"
+	"github.com/sonr-io/core/types/webauthn"
 	domaintypes "github.com/sonr-io/core/x/domain/types"
 	identitytypes "github.com/sonr-io/core/x/identity/types"
 	servicetypes "github.com/sonr-io/core/x/service/types"
@@ -112,7 +113,7 @@ func UseControllerAccount(token string) (*controller.SonrController, error) {
 }
 
 // PublishControllerAccount creates a new controller account and publishes it to the blockchain
-func PublishControllerAccount(alias string, cred *servicetypes.Credential, origin string) (*controller.SonrController, *types.TxResponse, error) {
+func PublishControllerAccount(alias string, cred *webauthn.Credential, origin string) (*controller.SonrController, *types.TxResponse, error) {
 	controller, err := controller.New(alias, cred, origin)
 	if err != nil {
 		return nil, nil, fmt.Errorf("failed to create controller: %w", err)

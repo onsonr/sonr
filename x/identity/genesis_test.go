@@ -32,15 +32,6 @@ func TestGenesis(t *testing.T) {
 			},
 		},
 		ControllerAccountCount: 2,
-		EscrowAccountList: []types.EscrowAccount{
-			{
-				Id: 0,
-			},
-			{
-				Id: 1,
-			},
-		},
-		EscrowAccountCount: 2,
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
@@ -55,7 +46,5 @@ func TestGenesis(t *testing.T) {
 	require.ElementsMatch(t, genesisState.DIDDocumentList, got.DIDDocumentList)
 	require.ElementsMatch(t, genesisState.ControllerAccountList, got.ControllerAccountList)
 	require.Equal(t, genesisState.ControllerAccountCount, got.ControllerAccountCount)
-	require.ElementsMatch(t, genesisState.EscrowAccountList, got.EscrowAccountList)
-	require.Equal(t, genesisState.EscrowAccountCount, got.EscrowAccountCount)
 	// this line is used by starport scaffolding # genesis/test/assert
 }

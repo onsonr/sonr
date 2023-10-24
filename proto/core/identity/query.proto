@@ -60,19 +60,6 @@ service Query {
       returns (QueryAllControllerAccountResponse) {
     option (google.api.http).get = "/core/id/controllers";
   }
-
-  // EscrowAccount queries a list of EscrowAccount items.
-  rpc EscrowAccount(QueryGetEscrowAccountRequest)
-      returns (QueryGetEscrowAccountResponse) {
-    option (google.api.http).get =
-        "/sonr-io/core/identity/escrow_account/{address}";
-  }
-
-  // EscrowAccountAll queries all EscrowAccount items.
-  rpc EscrowAccountAll(QueryAllEscrowAccountRequest)
-      returns (QueryAllEscrowAccountResponse) {
-    option (google.api.http).get = "/sonr-io/core/identity/escrow_account";
-  }
 }
 
 // QueryParamsRequest is request type for the Query/Params RPC method.
@@ -168,28 +155,5 @@ message QueryAllControllerAccountRequest {
 message QueryAllControllerAccountResponse {
   repeated ControllerAccount controllerAccount = 1
       [ (gogoproto.nullable) = false ];
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// QueryGetEscrowAccountRequest is the request type for the Query/EscrowAccount
-// RPC method.
-message QueryGetEscrowAccountRequest { string address = 1; }
-
-// QueryGetEscrowAccountResponse is the response type for the
-// Query/EscrowAccount RPC method.
-message QueryGetEscrowAccountResponse {
-  EscrowAccount escrowAccount = 1 [ (gogoproto.nullable) = false ];
-}
-
-// QueryAllEscrowAccountRequest is the request type for the
-// Query/EscrowAccountAll RPC method.
-message QueryAllEscrowAccountRequest {
-  cosmos.base.query.v1beta1.PageRequest pagination = 1;
-}
-
-// QueryAllEscrowAccountResponse is the response type for the
-// Query/EscrowAccountAll RPC method.
-message QueryAllEscrowAccountResponse {
-  repeated EscrowAccount escrowAccount = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

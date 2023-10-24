@@ -17,6 +17,4 @@ message GenesisState {
   repeated ControllerAccount controllerAccountList = 4
       [ (gogoproto.nullable) = false ];
   uint64 controllerAccountCount = 5;
-  repeated EscrowAccount escrowAccountList = 6 [ (gogoproto.nullable) = false ];
-  uint64 escrowAccountCount = 7;
 }

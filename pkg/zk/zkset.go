@@ -1,4 +1,4 @@
-package types
+package zk
 
 import (
 	"crypto/aes"
@@ -215,4 +215,14 @@ func (c ZKSet) ValidateMembership(spk PubKey, elem string) bool {
 		return false
 	}
 	return true
+}
+
+// NewZKSet creates a new zero-knowledge set from a list of zero-knowledge proofs.
+func NewZKSet(pubKey *crypto.Secp256k1PubKey, initialIds ...string) (ZKSet, error) {
+	return CreateZkSet(pubKey, initialIds...)
+}
+
+// LoadZKSet loads a zero-knowledge set from a list of zero-knowledge proofs.
+func LoadZKSet(str string) (ZKSet, error) {
+	return OpenZkSet(str)
 }

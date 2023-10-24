@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/sonr-io/core/types/webauthn"
 )
 
 const (
@@ -81,7 +82,7 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 }
 
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Credential, error) {
+func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*webauthn.Credential, error) {
 	// Get Credential Creation Respons
 	var ccr protocol.CredentialCreationResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
@@ -101,7 +102,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Cre
 }
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyAssertionChallenge(resp string) (*Credential, error) {
+func (vm *ServiceRecord) VerifyAssertionChallenge(resp string) (*webauthn.Credential, error) {
 	var ccr protocol.CredentialAssertionResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
 	if err != nil {

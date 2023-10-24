@@ -96,8 +96,6 @@ tasks:
     cmds:
       - |
         make proto-all
-        git add .
-        git commit -m "chore: update proto files"
 
   go-cross-build:
     desc: Build the binary for all platforms

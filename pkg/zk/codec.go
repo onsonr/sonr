@@ -1,4 +1,4 @@
-package types
+package zk
 
 import (
 	"crypto/sha256"

@@ -1,4 +1,4 @@
-package types
+package webauthn
 
 import (
 	"encoding/base64"

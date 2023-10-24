@@ -8,7 +8,7 @@ import (
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	algo "github.com/sonr-io/core/pkg/mpc/protocol/dkls"
-	v1types "github.com/sonr-io/core/pkg/mpc/types/v1"
+	v1types "github.com/sonr-io/core/pkg/mpc/types"
 )
 
 type EncryptionKey = *secp256k1.PubKey

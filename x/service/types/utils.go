@@ -8,6 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/sonr-io/core/types/webauthn"
 	"lukechampine.com/blake3"
 )
 
@@ -266,19 +267,19 @@ func blake3HashHex(input string) string {
 
 // makeCredentialFromCreationData creates a new Credential from a ParsedCredentialCreationData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *Credential {
+func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *webauthn.Credential {
 	transport := make([]string, 0)
 	for _, t := range c.Response.Transports {
 		transport = append(transport, string(t))
 	}
 
-	newCredential := &Credential{
+	newCredential := &webauthn.Credential{
 		Id:              c.Response.AttestationObject.AuthData.AttData.CredentialID,
 		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
 		AttestationType: c.Response.AttestationObject.Format,
 		Transport:       transport,
 
-		Authenticator: &Authenticator{
+		Authenticator: &webauthn.Authenticator{
 			Aaguid:     c.Response.AttestationObject.AuthData.AttData.AAGUID,
 			SignCount:  c.Response.AttestationObject.AuthData.Counter,
 			Attachment: string(c.AuthenticatorAttachment),
@@ -289,11 +290,11 @@ func makeCredentialFromCreationData(c *protocol.ParsedCredentialCreationData) *C
 
 // makeCredentialFromAssertionData creates a new Credential from a ParsedCredentialAssertionData and contains all needed information about a WebAuthn credential for storage.
 // This is then used to create a VerificationMethod for the DID Document.
-func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *Credential {
-	return &Credential{
+func makeCredentialFromAssertionData(c *protocol.ParsedCredentialAssertionData) *webauthn.Credential {
+	return &webauthn.Credential{
 		Id:        c.RawID,
 		PublicKey: c.Response.AuthenticatorData.AttData.CredentialPublicKey,
-		Authenticator: &Authenticator{
+		Authenticator: &webauthn.Authenticator{
 			Aaguid:    c.Response.AuthenticatorData.AttData.AAGUID,
 			SignCount: c.Response.AuthenticatorData.Counter,
 		},
