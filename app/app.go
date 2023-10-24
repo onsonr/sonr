@@ -569,9 +569,6 @@ icahosttypes.StoreKey,
 		app.BankKeeper,
 	)
 	identityModule := identitymodule.NewAppModule(appCodec, app.IdentityKeeper, app.AccountKeeper, app.BankKeeper)
-
-	identityIBCModule := identitymodule.NewIBCModule(app.IdentityKeeper)
-
 	app.ServiceKeeper = *servicemodulekeeper.NewKeeper(
 		appCodec,
 		keys[servicemoduletypes.StoreKey],
@@ -602,7 +599,6 @@ icahosttypes.StoreKey,
 	ibcRouter := ibcporttypes.NewRouter()
 	ibcRouter.AddRoute(icahosttypes.SubModuleName, icaHostIBCModule).
 		AddRoute(ibctransfertypes.ModuleName, transferIBCModule)
-	ibcRouter.AddRoute(identitymoduletypes.ModuleName, identityIBCModule)
 	// this line is used by starport scaffolding # ibc/app/router
 	app.IBCKeeper.SetRouter(ibcRouter)
 

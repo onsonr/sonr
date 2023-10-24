@@ -12,9 +12,8 @@ option go_package = "github.com/sonr-io/core/x/identity/types";
 // GenesisState defines the identity module's genesis state.
 message GenesisState {
   Params params = 1 [ (gogoproto.nullable) = false ];
-  string port_id = 2;
-  repeated DIDDocument dIDDocumentList = 3 [ (gogoproto.nullable) = false ];
-  repeated ControllerAccount controllerAccountList = 4
+  repeated DIDDocument dIDDocumentList = 2 [ (gogoproto.nullable) = false ];
+  repeated ControllerAccount controllerAccountList = 3
       [ (gogoproto.nullable) = false ];
-  uint64 controllerAccountCount = 5;
+  uint64 controllerAccountCount = 4;
 }

@@ -70,7 +70,6 @@ func (AppModule) GenerateGenesisState(simState *module.SimulationState) {
 	}
 	identityGenesis := types.GenesisState{
 		Params: types.DefaultParams(),
-		PortId: types.PortID,
 		DIDDocumentList: []types.DIDDocument{
 			{
 				Id: sample.AccAddress(),

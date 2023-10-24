@@ -17,7 +17,6 @@ import (
 	cdctypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	porttypes "github.com/cosmos/ibc-go/v7/modules/core/05-port/types"
 	"github.com/sonr-io/core/x/identity/client/cli"
 	"github.com/sonr-io/core/x/identity/keeper"
 	"github.com/sonr-io/core/x/identity/types"
@@ -26,7 +25,6 @@ import (
 var (
 	_ module.AppModule      = AppModule{}
 	_ module.AppModuleBasic = AppModuleBasic{}
-	_ porttypes.IBCModule   = IBCModule{}
 )
 
 // ----------------------------------------------------------------------------
