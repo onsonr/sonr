@@ -84,7 +84,7 @@ Sonr is a [blockchain node](https://sonr.io/dashboard) which you can run locally
 ![Architecture](.github/images/architecture.svg)
 
 See [additional details](https://sonr.io/docs) on these components.
-
+<!--
 ### Client libraries
 
 Our approach for client libraries is uniform. Abstract away any blockchain specific details, and provide a simple interface for developers to use. We have a few client libraries that we maintain, and provide [guidelines](./docs/contribution/CLIENT_GUIDELINES.md) for community maintained libraries.
@@ -169,7 +169,7 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
     <td><a href="https://github.com/sonr-community/wallet-csharp" target="_blank" rel="noopener noreferrer">wallet-csharp</a></td>
   </tr>
   <!-- /notranslate -->
-</table>
+</table> -->
 
 ---
 
