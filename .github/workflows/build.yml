@@ -30,7 +30,7 @@ concurrency:
 jobs:
   build-default:
     name: Build sonrd-${{ matrix.targetos }}-${{ matrix.arch }} for ${{ github.ref }}
-    runs-on: ubuntu-ultra-instinct
+    runs-on: self-hosted
     strategy:
       matrix:
         arch: [amd64, arm64]

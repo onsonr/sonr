@@ -19,6 +19,7 @@ on:
   push:
     branches:
       - "master"
+      - "**"
   workflow_dispatch:
   merge_group:
 env:
@@ -31,7 +32,7 @@ concurrency:
 jobs:
   build:
     name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
-    runs-on: ubuntu-ultra-instinct
+    runs-on: ubuntu-latest
 
     strategy:
       matrix:

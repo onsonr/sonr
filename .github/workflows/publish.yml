@@ -6,7 +6,7 @@ on:
 
 jobs:
   publish-drafts:
-    runs-on: ubuntu-ultra-instinct
+    runs-on: self-hosted
     steps:
       - name: Publish Drafts
         run: |
