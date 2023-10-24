@@ -3,7 +3,7 @@ package core.domain;
 
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sonrhq/core/x/domain/types";
+option go_package = "github.com/sonr-io/core/x/domain/types";
 
 // Params defines the parameters for the module.
 message Params { option (gogoproto.goproto_stringer) = false; }

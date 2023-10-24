@@ -18,8 +18,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/app"
-	"github.com/sonrhq/core/internal/highway"
+	"github.com/sonr-io/core/app"
+	"github.com/sonr-io/core/internal/highway"
 )
 
 type (
@@ -73,9 +73,7 @@ func DefaultConfig() network.Config {
 				val.GetCtx().Config.RootDir,
 				0,
 				encoding,
-				nil,
 				simtestutil.EmptyAppOptions{},
-				nil,
 				highway.DefaultConfig(),
 				baseapp.SetPruning(pruningtypes.NewPruningOptionsFromString(val.GetAppConfig().Pruning)),
 				baseapp.SetMinGasPrices(val.GetAppConfig().MinGasPrices),

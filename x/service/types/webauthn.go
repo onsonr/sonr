@@ -7,16 +7,16 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/shengdoushi/base58"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonr-io/core/pkg/crypto"
 )
 
 // PublicKeyMultibase returns the public key in multibase format
-func (c *WebauthnCredential) PubKey() *crypto.PubKey {
+func (c *Credential) PubKey() *crypto.PubKey {
 	return crypto.NewEd25519PubKey(c.PublicKey)
 }
 
-// CredentialFromDIDString converts a DID string into a WebauthnCredential
-func CredentialFromDIDString(did string) (*WebauthnCredential, error) {
+// CredentialFromDIDString converts a DID string into a Credential
+func CredentialFromDIDString(did string) (*Credential, error) {
 	parts := strings.Split(did, "#")
 	if len(parts) != 2 {
 		return nil, fmt.Errorf("invalid DID string format")
@@ -36,7 +36,7 @@ func CredentialFromDIDString(did string) (*WebauthnCredential, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to decode public key: %v", err)
 	}
-	return &WebauthnCredential{PublicKey: pubKeyBytes, Id: credIdBz}, nil
+	return &Credential{PublicKey: pubKeyBytes, Id: credIdBz}, nil
 }
 
 // PublicKeyCredentialRequestOptions is a struct that contains the options for a PublicKeyCredentialRequest

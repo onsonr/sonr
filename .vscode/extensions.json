@@ -11,6 +11,7 @@
     "kangping.protobuf",
     "hangxingliu.vscode-systemd-support",
     "atommaterial.a-file-icon-vscode",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "chrisbibby.hide-git-ignored"
   ]
 }

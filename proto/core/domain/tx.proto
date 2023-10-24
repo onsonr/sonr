@@ -4,35 +4,51 @@ package core.domain;
 
 import "core/domain/record.proto";
 
-option go_package = "github.com/sonrhq/core/x/domain/types";
+option go_package = "github.com/sonr-io/core/x/domain/types";
 
 // Msg defines the Msg service.
+// This service provides CRUD operations for UsernameRecords.
 service Msg {
+  // CreateUsernameRecord creates a new UsernameRecord.
   rpc CreateUsernameRecord(MsgCreateUsernameRecords)
       returns (MsgCreateUsernameRecordsResponse);
+
+  // UpdateUsernameRecord updates an existing UsernameRecord.
   rpc UpdateUsernameRecord(MsgUpdateUsernameRecords)
       returns (MsgUpdateUsernameRecordsResponse);
+
+  // DeleteUsernameRecord deletes an existing UsernameRecord.
   rpc DeleteUsernameRecord(MsgDeleteUsernameRecords)
       returns (MsgDeleteUsernameRecordsResponse);
 }
+
+// MsgCreateUsernameRecords represents a request to create a UsernameRecord.
 message MsgCreateUsernameRecords {
-  string creator = 1;
-  string index = 2;
-  string method = 3;
+  string creator = 1; // The creator of the UsernameRecord.
+  string index = 2;   // The index of the UsernameRecord.
+  string method = 3;  // The method used to create the UsernameRecord.
 }
 
+// MsgCreateUsernameRecordsResponse represents the response from creating a
+// UsernameRecord.
 message MsgCreateUsernameRecordsResponse {}
 
+// MsgUpdateUsernameRecords represents a request to update a UsernameRecord.
 message MsgUpdateUsernameRecords {
-  string creator = 1;
-  string index = 2;
+  string creator = 1; // The creator of the UsernameRecord.
+  string index = 2;   // The index of the UsernameRecord.
 }
 
+// MsgUpdateUsernameRecordsResponse represents the response from updating a
+// UsernameRecord.
 message MsgUpdateUsernameRecordsResponse {}
 
+// MsgDeleteUsernameRecords represents a request to delete a UsernameRecord.
 message MsgDeleteUsernameRecords {
-  string creator = 1;
-  string index = 2;
+  string creator = 1; // The creator of the UsernameRecord.
+  string index = 2;   // The index of the UsernameRecord.
 }
 
+// MsgDeleteUsernameRecordsResponse represents the response from deleting a
+// UsernameRecord.
 message MsgDeleteUsernameRecordsResponse {}

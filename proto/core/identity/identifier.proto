@@ -1,0 +1,26 @@
+syntax = "proto3";
+package core.identity;
+
+option go_package = "github.com/sonr-io/core/x/identity/types";
+
+// UserIdentifierType defines the type of the user identifier\
+enum UserIdentifierType {
+NONE = 0;
+EMAIL = 1;
+PHONE = 2;
+FIDO = 3;
+PASSKEY = 4;
+GPG = 5;
+}
+
+// UserIdentifier defines a user identifier
+message UserIdentifier {
+  UserIdentifierType type = 1;
+  string identifier = 2;
+}
+
+// WalletIdentifier defines a wallet identifier
+message WalletIdentifier {
+  uint64 chain_id = 1;
+  string address = 2;
+}

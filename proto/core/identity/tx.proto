@@ -5,89 +5,138 @@ package core.identity;
 import "core/identity/did.proto";
 import "core/identity/account.proto";
 
-option go_package = "github.com/sonrhq/core/x/identity/types";
+option go_package = "github.com/sonr-io/core/x/identity/types";
 
 // Msg defines the Msg service.
+// This service provides methods for managing identities.
 service Msg {
+  // RegisterIdentity registers a new identity.
   rpc RegisterIdentity(MsgRegisterIdentity)
       returns (MsgRegisterIdentityResponse);
+
+  // CreateControllerAccount creates a new controller account.
   rpc CreateControllerAccount(MsgCreateControllerAccount)
       returns (MsgCreateControllerAccountResponse);
+
+  // UpdateControllerAccount updates an existing controller account.
   rpc UpdateControllerAccount(MsgUpdateControllerAccount)
       returns (MsgUpdateControllerAccountResponse);
+
+  // DeleteControllerAccount deletes a controller account.
   rpc DeleteControllerAccount(MsgDeleteControllerAccount)
       returns (MsgDeleteControllerAccountResponse);
+
+  // CreateEscrowAccount creates a new escrow account.
   rpc CreateEscrowAccount(MsgCreateEscrowAccount)
       returns (MsgCreateEscrowAccountResponse);
+
+  // UpdateEscrowAccount updates an existing escrow account.
   rpc UpdateEscrowAccount(MsgUpdateEscrowAccount)
       returns (MsgUpdateEscrowAccountResponse);
+
+  // DeleteEscrowAccount deletes an escrow account.
   rpc DeleteEscrowAccount(MsgDeleteEscrowAccount)
       returns (MsgDeleteEscrowAccountResponse);
 }
+
+// MsgRegisterIdentity represents a request to register a new identity.
 message MsgRegisterIdentity {
-  string creator = 1;
-  DIDDocument did_document = 2;
-  uint64 wallet_id = 3;
+  string creator = 1; // The creator of the identity.
+  DIDDocument did_document =
+      2;                // The DID document associated with the identity.
+  uint64 wallet_id = 3; // The wallet ID associated with the identity.
 }
 
+// MsgRegisterIdentityResponse represents the response to a register identity
+// request.
 message MsgRegisterIdentityResponse {
-  bool success = 1;
-  DIDDocument did_document = 2;
+  bool success = 1; // Indicates if the registration was successful.
+  DIDDocument did_document =
+      2; // The DID document associated with the registered identity.
 }
 
+// MsgCreateControllerAccount represents a request to create a new controller
+// account.
 message MsgCreateControllerAccount {
-  string address = 1;
-  string publicKey = 3;
-  repeated string authenticators = 4;
-  repeated string wallets = 5;
+  string address = 1;   // The address of the controller account.
+  string publicKey = 3; // The public key of the controller account.
+  repeated string authenticators =
+      4; // The authenticators of the controller account.
+  repeated string wallets =
+      5; // The wallets associated with the controller account.
 }
 
+// MsgCreateControllerAccountResponse represents the response to a create
+// controller account request.
 message MsgCreateControllerAccountResponse {
-  uint64 id = 1;
-  ControllerAccount account = 2;
+  uint64 id = 1;                 // The ID of the created controller account.
+  ControllerAccount account = 2; // The created controller account.
 }
 
+// MsgUpdateControllerAccount represents a request to update an existing
+// controller account.
 message MsgUpdateControllerAccount {
-  string address = 1;
-  uint64 id = 2;
-  repeated string authenticators = 4;
-  repeated string wallets = 5;
+  string address = 1; // The address of the controller account to be updated.
+  uint64 id = 2;      // The ID of the controller account to be updated.
+  repeated string authenticators =
+      4; // The updated authenticators of the controller account.
+  repeated string wallets =
+      5; // The updated wallets associated with the controller account.
 }
 
-message MsgUpdateControllerAccountResponse { ControllerAccount account = 1; }
+// MsgUpdateControllerAccountResponse represents the response to an update
+// controller account request.
+message MsgUpdateControllerAccountResponse {
+  ControllerAccount account = 1; // The updated controller account.
+}
 
+// MsgDeleteControllerAccount represents a request to delete a controller
+// account.
 message MsgDeleteControllerAccount {
-  string creator = 1;
-  string address = 2;
+  string creator = 1; // The creator of the controller account.
+  string address = 2; // The address of the controller account to be deleted.
 }
 
+// MsgDeleteControllerAccountResponse represents the response to a delete
+// controller account request.
 message MsgDeleteControllerAccountResponse {}
 
+// MsgCreateEscrowAccount represents a request to create a new escrow account.
 message MsgCreateEscrowAccount {
-  string creator = 1;
-  string address = 2;
-  string publicKey = 3;
-  string lockupUsdBalance = 4;
+  string creator = 1;          // The creator of the escrow account.
+  string address = 2;          // The address of the escrow account.
+  string publicKey = 3;        // The public key of the escrow account.
+  string lockupUsdBalance = 4; // The lockup USD balance of the escrow account.
 }
 
+// MsgCreateEscrowAccountResponse represents the response to a create escrow
+// account request.
 message MsgCreateEscrowAccountResponse {
-  uint64 id = 1;
-  EscrowAccount account = 2;
+  uint64 id = 1;             // The ID of the created escrow account.
+  EscrowAccount account = 2; // The created escrow account.
 }
 
+// MsgUpdateEscrowAccount represents a request to update an existing escrow
+// account.
 message MsgUpdateEscrowAccount {
-  string creator = 1;
-  uint64 id = 2;
-  string address = 3;
-  string publicKey = 4;
-  string lockupUsdBalance = 5;
+  string creator = 1;   // The creator of the escrow account.
+  uint64 id = 2;        // The ID of the escrow account to be updated.
+  string address = 3;   // The address of the escrow account to be updated.
+  string publicKey = 4; // The updated public key of the escrow account.
+  string lockupUsdBalance =
+      5; // The updated lockup USD balance of the escrow account.
 }
 
+// MsgUpdateEscrowAccountResponse represents the response to an update escrow
+// account request.
 message MsgUpdateEscrowAccountResponse {}
 
+// MsgDeleteEscrowAccount represents a request to delete an escrow account.
 message MsgDeleteEscrowAccount {
-  string creator = 1;
-  string address = 2;
+  string creator = 1; // The creator of the escrow account.
+  string address = 2; // The address of the escrow account to be deleted.
 }
 
+// MsgDeleteEscrowAccountResponse represents the response to a delete escrow
+// account request.
 message MsgDeleteEscrowAccountResponse {}

@@ -1,0 +1,136 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "highway/storage/v1/service.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/cid/{cid}": {
+      "get": {
+        "summary": "GetCID retrieves data associated with a given CID.",
+        "operationId": "GetCID",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.storage.v1.GetCIDResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cid",
+            "description": "cid is the content identifier of the data to retrieve.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StorageService"
+        ]
+      },
+      "post": {
+        "summary": "PutData stores data and associates it with a given CID.",
+        "operationId": "PutData",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/highway.storage.v1.PutDataResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "cid",
+            "description": "cid is the content identifier to associate with the data.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "StorageService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "highway.storage.v1.GetCIDResponse": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "description": "cid is the content identifier of the retrieved data."
+        },
+        "data": {
+          "type": "string",
+          "description": "data is the retrieved data."
+        }
+      },
+      "description": "GetCIDResponse is the response type for the GetCID method."
+    },
+    "highway.storage.v1.PutDataResponse": {
+      "type": "object",
+      "properties": {
+        "cid": {
+          "type": "string",
+          "description": "cid is the content identifier associated with the stored data."
+        }
+      },
+      "description": "PutDataResponse is the response type for the PutData method."
+    }
+  }
+}

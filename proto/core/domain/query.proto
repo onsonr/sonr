@@ -8,48 +8,65 @@ import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/domain/params.proto";
 import "core/domain/record.proto";
 
-option go_package = "github.com/sonrhq/core/x/domain/types";
+option go_package = "github.com/sonr-io/core/x/domain/types";
 
 // Query defines the gRPC querier service.
+// It provides methods to query parameters and UsernameRecords.
 service Query {
 
-  // Parameters queries the parameters of the module.
+  // Params queries the parameters of the module.
+  // It returns the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/domain/params";
   }
 
-  // Queries a list of UsernameRecords items.
+  // UsernameRecord queries a list of UsernameRecords items by index.
+  // It returns a list of UsernameRecords items.
   rpc UsernameRecord(QueryGetUsernameRecordsRequest)
       returns (QueryGetUsernameRecordsResponse) {
     option (google.api.http).get = "/core/domain/username/{index}";
   }
 
-  // Queries a list of UsernameRecords items.
+  // UsernameRecordAll queries all UsernameRecords items.
+  // It returns all UsernameRecords items.
   rpc UsernameRecordAll(QueryAllUsernameRecordsRequest)
       returns (QueryAllUsernameRecordsResponse) {
     option (google.api.http).get = "/core/domain/username";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
+// It holds all the parameters of this module.
 message QueryParamsResponse {
 
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryGetUsernameRecordsRequest is the request type for the
+// Query/UsernameRecord RPC method. It contains the index of the UsernameRecords
+// to be queried.
 message QueryGetUsernameRecordsRequest { string index = 1; }
 
+// QueryGetUsernameRecordsResponse is the response type for the
+// Query/UsernameRecord RPC method. It contains the queried UsernameRecords.
 message QueryGetUsernameRecordsResponse {
   UsernameRecord usernameRecords = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllUsernameRecordsRequest is the request type for the
+// Query/UsernameRecordAll RPC method. It contains the pagination information
+// for the query.
 message QueryAllUsernameRecordsRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllUsernameRecordsResponse is the response type for the
+// Query/UsernameRecordAll RPC method. It contains all queried UsernameRecords
+// and the pagination information.
 message QueryAllUsernameRecordsResponse {
   repeated UsernameRecord usernameRecords = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;

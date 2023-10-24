@@ -54,6 +54,10 @@ jobs:
             go.sum
             Makefile
             .github/workflows/build.yml
+      - uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
 
       - uses: actions/setup-go@v4
         if: env.GIT_DIFF
@@ -62,6 +66,7 @@ jobs:
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
+
       - name: Download Dependencies
         if: env.GIT_DIFF
         run: go mod download

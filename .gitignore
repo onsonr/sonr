@@ -86,3 +86,5 @@ yarn-error.log*
 # vercel
 .vercel
 bin/sonr
+
+studio/

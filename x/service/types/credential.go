@@ -11,8 +11,8 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
-	"github.com/sonrhq/core/pkg/crypto"
-	idtypes "github.com/sonrhq/core/x/identity/types"
+	"github.com/sonr-io/core/pkg/crypto"
+	idtypes "github.com/sonr-io/core/x/identity/types"
 	"github.com/yoseplee/vrf"
 )
 
@@ -30,22 +30,22 @@ func GetCredentialDescriptorsForDIDDocument(didDoc *idtypes.DIDDocument) ([]prot
 }
 
 // Serialize the credential to JSON
-func (c *WebauthnCredential) Serialize() ([]byte, error) {
+func (c *Credential) Serialize() ([]byte, error) {
 	return json.Marshal(c)
 }
 
 // Deserialize the credential from JSON
-func (c *WebauthnCredential) Deserialize(data []byte) error {
+func (c *Credential) Deserialize(data []byte) error {
 	return json.Unmarshal(data, c)
 }
 
-func (c *WebauthnCredential) DID() string {
+func (c *Credential) DID() string {
 	did := fmt.Sprintf("did:%s:%s", "webauthn", crypto.Base64Encode(c.Id))
 	return did
 }
 
 // Encrypt is used to encrypt a message for the credential
-func (c *WebauthnCredential) Encrypt(data []byte) ([]byte, error) {
+func (c *Credential) Encrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
 	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
 	if err != nil {
@@ -100,7 +100,7 @@ func (c *WebauthnCredential) Encrypt(data []byte) ([]byte, error) {
 }
 
 // Decrypt is used to decrypt a message for the credential
-func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
+func (c *Credential) Decrypt(data []byte) ([]byte, error) {
 	// Get the public key from the credential
 	keyFace, err := webauthncose.ParsePublicKey(c.PublicKey)
 	if err != nil {
@@ -145,7 +145,7 @@ func (c *WebauthnCredential) Decrypt(data []byte) ([]byte, error) {
 }
 
 // ToVerificationMethod converts the credential to a DID VerificationMethod
-func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod {
+func (c *Credential) ToVerificationMethod() *idtypes.VerificationMethod {
 	vm := &idtypes.VerificationMethod{
 		Id:                 c.DID(),
 		Type:               "webauthn/alg-es256",
@@ -158,12 +158,12 @@ func (c *WebauthnCredential) ToVerificationMethod() *idtypes.VerificationMethod 
 }
 
 // ShortID returns the first 8 characters of the base58 encoded credential id
-func (c *WebauthnCredential) ShortID() string {
+func (c *Credential) ShortID() string {
 	return crypto.Base58Encode(c.Id)[0:8]
 }
 
 // ToCredentialDescriptor converts a VerificationMethod to a CredentialDescriptor if the VerificationMethod uses the `did:webauthn` method
-func (vm *WebauthnCredential) GetDescriptor() protocol.CredentialDescriptor {
+func (vm *Credential) GetDescriptor() protocol.CredentialDescriptor {
 	transport := make([]protocol.AuthenticatorTransport, 0)
 	for _, t := range vm.Transport {
 		transport = append(transport, protocol.AuthenticatorTransport(t))

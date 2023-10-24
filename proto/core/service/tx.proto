@@ -2,33 +2,54 @@ syntax = "proto3";
 
 package core.service;
 
+// Importing the necessary proto file.
 import "core/service/record.proto";
 
-option go_package = "github.com/sonrhq/core/x/service/types";
+// Specifying the go package for this service.
+option go_package = "github.com/sonr-io/core/x/service/types";
 
 // Msg defines the Msg service.
+// This service provides CRUD operations for ServiceRecord.
 service Msg {
+  // CreateServiceRecord creates a new ServiceRecord.
   rpc CreateServiceRecord(MsgCreateServiceRecord)
       returns (MsgCreateServiceRecordResponse);
+
+  // UpdateServiceRecord updates an existing ServiceRecord.
   rpc UpdateServiceRecord(MsgUpdateServiceRecord)
       returns (MsgUpdateServiceRecordResponse);
+
+  // DeleteServiceRecord deletes an existing ServiceRecord.
   rpc DeleteServiceRecord(MsgDeleteServiceRecord)
       returns (MsgDeleteServiceRecordResponse);
 }
+
+// MsgCreateServiceRecord is the request type for the CreateServiceRecord
+// method. It takes a creator as a parameter.
 message MsgCreateServiceRecord { string creator = 1; }
 
+// MsgCreateServiceRecordResponse is the response type for the
+// CreateServiceRecord method. It returns the id of the created ServiceRecord.
 message MsgCreateServiceRecordResponse { uint64 id = 1; }
 
+// MsgUpdateServiceRecord is the request type for the UpdateServiceRecord
+// method. It takes a creator and an id as parameters.
 message MsgUpdateServiceRecord {
   string creator = 1;
   uint64 id = 2;
 }
 
+// MsgUpdateServiceRecordResponse is the response type for the
+// UpdateServiceRecord method. It doesn't return any specific value.
 message MsgUpdateServiceRecordResponse {}
 
+// MsgDeleteServiceRecord is the request type for the DeleteServiceRecord
+// method. It takes a creator and an id as parameters.
 message MsgDeleteServiceRecord {
   string creator = 1;
   uint64 id = 2;
 }
 
+// MsgDeleteServiceRecordResponse is the response type for the
+// DeleteServiceRecord method. It doesn't return any specific value.
 message MsgDeleteServiceRecordResponse {}

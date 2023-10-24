@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
-	"github.com/sonrhq/core/pkg/crypto"
+	"github.com/sonr-io/core/pkg/crypto"
 )
 
 const TypeMsgRegisterIdentity = "register_identity"

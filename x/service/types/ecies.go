@@ -104,7 +104,7 @@ func deriveKeys(sharedSecret []byte) ([]byte, []byte) {
 	return encKeyBytes, macKeyBytes
 }
 
-func derivePrivateKey(credential *WebauthnCredential) (*ecdsa.PrivateKey, error) {
+func derivePrivateKey(credential *Credential) (*ecdsa.PrivateKey, error) {
 	// Parse the public key from the credential
 	pubKeyFace, err := webauthncose.ParsePublicKey(credential.PublicKey)
 	if err != nil {

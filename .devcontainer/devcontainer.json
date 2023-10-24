@@ -3,7 +3,10 @@
   "features": {
     "ghcr.io/akhildevelops/devcontainer-features/apt:0": {},
     "ghcr.io/withfig/features/fig:1": {},
-    "ghcr.io/devcontainers/features/go:1": {}
+    "ghcr.io/devcontainers/features/go:1": {},
+    "ghcr.io/earthly/devcontainer-features/earthly:1": {
+      "bootstrap": true
+    }
   },
   "hostRequirements": {
     "cpus": 12

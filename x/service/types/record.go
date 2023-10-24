@@ -81,7 +81,7 @@ func (s *ServiceRecord) RelyingPartyEntity() protocol.RelyingPartyEntity {
 }
 
 // VerifyCreationChallenge verifies the challenge and a creation signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*WebauthnCredential, error) {
+func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Credential, error) {
 	// Get Credential Creation Respons
 	var ccr protocol.CredentialCreationResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
@@ -101,7 +101,7 @@ func (vm *ServiceRecord) VerifyCreationChallenge(resp string, chal string) (*Web
 }
 
 // VeriifyAssertionChallenge verifies the challenge and an assertion signature and returns an error if it fails to verify
-func (vm *ServiceRecord) VerifyAssertionChallenge(resp string) (*WebauthnCredential, error) {
+func (vm *ServiceRecord) VerifyAssertionChallenge(resp string) (*Credential, error) {
 	var ccr protocol.CredentialAssertionResponse
 	err := json.Unmarshal([]byte(resp), &ccr)
 	if err != nil {

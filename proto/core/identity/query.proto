@@ -9,65 +9,73 @@ import "core/identity/params.proto";
 import "core/identity/did.proto";
 import "core/identity/account.proto";
 
-option go_package = "github.com/sonrhq/core/x/identity/types";
+option go_package = "github.com/sonr-io/core/x/identity/types";
 
 // Query defines the gRPC querier service.
 service Query {
 
-  // Parameters queries the parameters of the module.
+  // Params queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/identity";
   }
 
-  // Queries a list of DIDDocument items.
+  // DIDDocument queries a list of DIDDocument items.
   rpc DIDDocument(QueryGetDIDDocumentRequest)
       returns (QueryGetDIDDocumentResponse) {
     option (google.api.http).get = "/core/id/{did}";
   }
+
+  // DIDDocumentAll queries all DIDDocument items.
   rpc DIDDocumentAll(QueryAllDIDDocumentRequest)
       returns (QueryAllDIDDocumentResponse) {
     option (google.api.http).get = "/core/id";
   }
 
-  // Returns DIDDocument based on an owner
+  // DidByOwner returns DIDDocument based on an owner.
   rpc DidByOwner(QueryDidByOwnerRequest) returns (QueryDidByOwnerResponse) {
     option (google.api.http).get = "/core/id/owner/{owner}";
   }
 
-  // Returns DIDDocument based on an alias *only Sonr Identities
+  // DidByAlsoKnownAs returns DIDDocument based on an alias *only Sonr
+  // Identities.
   rpc DidByAlsoKnownAs(QueryDidByAlsoKnownAsRequest)
       returns (QueryDidByAlsoKnownAsResponse) {
     option (google.api.http).get = "/core/id/alias/{alias}";
   }
 
-  // Checks if a given alias is available to register *only Sonr Identities
+  // AliasAvailable checks if a given alias is available to register *only Sonr
+  // Identities.
   rpc AliasAvailable(QueryAliasAvailableRequest)
       returns (QueryAliasAvailableResponse) {
     option (google.api.http).get = "/core/id/alias/{alias}/check";
   }
 
-  // Queries a list of ControllerAccount items.
+  // ControllerAccount queries a list of ControllerAccount items.
   rpc ControllerAccount(QueryGetControllerAccountRequest)
       returns (QueryGetControllerAccountResponse) {
     option (google.api.http).get = "/core/id/controllers/{address}";
   }
 
+  // ControllerAccountAll queries all ControllerAccount items.
   rpc ControllerAccountAll(QueryAllControllerAccountRequest)
       returns (QueryAllControllerAccountResponse) {
     option (google.api.http).get = "/core/id/controllers";
   }
 
-  // Queries a list of EscrowAccount items.
+  // EscrowAccount queries a list of EscrowAccount items.
   rpc EscrowAccount(QueryGetEscrowAccountRequest)
       returns (QueryGetEscrowAccountResponse) {
     option (google.api.http).get =
         "/sonr-io/core/identity/escrow_account/{address}";
   }
+
+  // EscrowAccountAll queries all EscrowAccount items.
   rpc EscrowAccountAll(QueryAllEscrowAccountRequest)
       returns (QueryAllEscrowAccountResponse) {
     option (google.api.http).get = "/sonr-io/core/identity/escrow_account";
   }
 }
+
 // QueryParamsRequest is request type for the Query/Params RPC method.
 message QueryParamsRequest {}
 
@@ -78,21 +86,31 @@ message QueryParamsResponse {
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryGetDIDDocumentRequest is the request type for the Query/DIDDocument RPC
+// method.
 message QueryGetDIDDocumentRequest { string did = 1; }
 
+// QueryGetDIDDocumentResponse is the response type for the Query/DIDDocument
+// RPC method.
 message QueryGetDIDDocumentResponse {
   DIDDocument dIDDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllDIDDocumentRequest is the request type for the Query/DIDDocumentAll
+// RPC method.
 message QueryAllDIDDocumentRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllDIDDocumentResponse is the response type for the Query/DIDDocumentAll
+// RPC method.
 message QueryAllDIDDocumentResponse {
   repeated DIDDocument dIDDocument = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// QueryDidByAlsoKnownAsRequest is the request type for the
+// Query/DidByAlsoKnownAs RPC method.
 message QueryDidByAlsoKnownAsRequest {
 
   // aka_aliasid is the unique identifier of the DIDDocument - it appears like
@@ -100,12 +118,16 @@ message QueryDidByAlsoKnownAsRequest {
   string alias = 1;
 }
 
+// QueryDidByAlsoKnownAsResponse is the response type for the
+// Query/DidByAlsoKnownAs RPC method.
 message QueryDidByAlsoKnownAsResponse {
 
   // A DIDDocument is a JSON-LD object that contains a set of public keys
   DIDDocument didDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAliasAvailableRequest is the request type for the Query/AliasAvailable
+// RPC method.
 message QueryAliasAvailableRequest {
 
   // alias is the unique identifier of the DIDDocument - it appears like
@@ -113,44 +135,66 @@ message QueryAliasAvailableRequest {
   string alias = 1;
 }
 
+// QueryAliasAvailableResponse is the response type for the Query/AliasAvailable
+// RPC method.
 message QueryAliasAvailableResponse {
   bool available = 1;
   DIDDocument existing_document = 2 [ (gogoproto.nullable) = true ];
 }
 
+// QueryDidByOwnerRequest is the request type for the Query/DidByOwner RPC
+// method.
 message QueryDidByOwnerRequest { string owner = 1; }
 
+// QueryDidByOwnerResponse is the response type for the Query/DidByOwner RPC
+// method.
 message QueryDidByOwnerResponse {
   DIDDocument didDocument = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryGetControllerAccountRequest is the request type for the
+// Query/ControllerAccount RPC method.
 message QueryGetControllerAccountRequest { string address = 1; }
 
+// QueryGetControllerAccountResponse is the response type for the
+// Query/ControllerAccount RPC method.
 message QueryGetControllerAccountResponse {
-  ControllerAccount ControllerAccount = 1 [ (gogoproto.nullable) = false ];
+  ControllerAccount controllerAccount = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllControllerAccountRequest is the request type for the
+// Query/ControllerAccountAll RPC method.
 message QueryAllControllerAccountRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllControllerAccountResponse is the response type for the
+// Query/ControllerAccountAll RPC method.
 message QueryAllControllerAccountResponse {
-  repeated ControllerAccount ControllerAccount = 1
+  repeated ControllerAccount controllerAccount = 1
       [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
+// QueryGetEscrowAccountRequest is the request type for the Query/EscrowAccount
+// RPC method.
 message QueryGetEscrowAccountRequest { string address = 1; }
 
+// QueryGetEscrowAccountResponse is the response type for the
+// Query/EscrowAccount RPC method.
 message QueryGetEscrowAccountResponse {
-  EscrowAccount EscrowAccount = 1 [ (gogoproto.nullable) = false ];
+  EscrowAccount escrowAccount = 1 [ (gogoproto.nullable) = false ];
 }
 
+// QueryAllEscrowAccountRequest is the request type for the
+// Query/EscrowAccountAll RPC method.
 message QueryAllEscrowAccountRequest {
   cosmos.base.query.v1beta1.PageRequest pagination = 1;
 }
 
+// QueryAllEscrowAccountResponse is the response type for the
+// Query/EscrowAccountAll RPC method.
 message QueryAllEscrowAccountResponse {
-  repeated EscrowAccount EscrowAccount = 1 [ (gogoproto.nullable) = false ];
+  repeated EscrowAccount escrowAccount = 1 [ (gogoproto.nullable) = false ];
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
