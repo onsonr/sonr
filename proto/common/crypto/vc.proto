@@ -1,5 +1,5 @@
 syntax = "proto3";
-package core.crypto;
+package common.crypto;
 
 // this line is used by starport scaffolding # proto/tx/import
 

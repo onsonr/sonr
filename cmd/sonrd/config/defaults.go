@@ -35,6 +35,10 @@ Sonr Node
 🚀 - https://github.com/sonr-io/sonr
 `
 
+const bip44_purpose = 44
+
+const bip44_coin_type = 703
+
 // Init initializes the configuration parameters.
 func Init() {
 	// Set defaults
@@ -57,6 +61,8 @@ func initSDKConfig() {
 	config.SetBech32PrefixForAccount(app.AccountAddressPrefix, accountPubKeyPrefix)
 	config.SetBech32PrefixForValidator(validatorAddressPrefix, validatorPubKeyPrefix)
 	config.SetBech32PrefixForConsensusNode(consNodeAddressPrefix, consNodePubKeyPrefix)
+	config.SetCoinType(bip44_coin_type)
+	config.SetPurpose(bip44_purpose)
 	config.Seal()
 }
 

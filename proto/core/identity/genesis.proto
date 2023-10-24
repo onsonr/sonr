@@ -2,10 +2,10 @@ syntax = "proto3";
 
 package core.identity;
 
-import "gogoproto/gogo.proto";
-import "core/identity/params.proto";
-import "core/identity/did.proto";
 import "core/identity/account.proto";
+import "core/identity/did.proto";
+import "core/identity/params.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sonr-io/core/x/identity/types";
 

@@ -17,3 +17,5 @@ message ControllerAccount {
   repeated string authenticators = 3;
   repeated string wallets = 4;
 }
+
+message SonrAccount {}

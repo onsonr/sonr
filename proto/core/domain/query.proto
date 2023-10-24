@@ -2,18 +2,17 @@ syntax = "proto3";
 
 package core.domain;
 
-import "gogoproto/gogo.proto";
-import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
 import "core/domain/params.proto";
 import "core/domain/record.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
+import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/core/x/domain/types";
 
 // Query defines the gRPC querier service.
 // It provides methods to query parameters and UsernameRecords.
 service Query {
-
   // Params queries the parameters of the module.
   // It returns the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
@@ -41,7 +40,6 @@ message QueryParamsRequest {}
 // QueryParamsResponse is response type for the Query/Params RPC method.
 // It holds all the parameters of this module.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }

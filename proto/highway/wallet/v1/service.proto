@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package highway.wallet.v1;
 
-import "core/crypto/coin.proto";
+import "common/crypto/coin.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/sonr-io/core/types/highway/wallet/v1;walletpb";
@@ -40,7 +40,7 @@ service WalletService {
 message CreateAccountRequest {
   string jwt = 1;
   string name = 2;
-  core.crypto.CoinType coin_type = 3;
+  common.crypto.CoinType coin_type = 3;
   string network = 4;
 }
 
@@ -49,7 +49,7 @@ message CreateAccountResponse {
   bool success = 1;
   string message = 2;
   string address = 3;
-  core.crypto.CoinType coin_type = 4;
+  common.crypto.CoinType coin_type = 4;
   string owner = 5;
 }
 
@@ -64,7 +64,7 @@ message GetAccountResponse {
   bool success = 1;
   string message = 2;
   string address = 3;
-  core.crypto.CoinType coin_type = 4;
+  common.crypto.CoinType coin_type = 4;
   string owner = 5;
 }
 

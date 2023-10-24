@@ -2,18 +2,17 @@ syntax = "proto3";
 
 package core.identity;
 
+import "core/identity/account.proto";
+import "core/identity/did.proto";
+import "core/identity/params.proto";
+import "cosmos/base/query/v1beta1/pagination.proto";
 import "gogoproto/gogo.proto";
 import "google/api/annotations.proto";
-import "cosmos/base/query/v1beta1/pagination.proto";
-import "core/identity/params.proto";
-import "core/identity/did.proto";
-import "core/identity/account.proto";
 
 option go_package = "github.com/sonr-io/core/x/identity/types";
 
 // Query defines the gRPC querier service.
 service Query {
-
   // Params queries the parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/core/params/identity";
@@ -81,7 +80,6 @@ message QueryParamsRequest {}
 
 // QueryParamsResponse is response type for the Query/Params RPC method.
 message QueryParamsResponse {
-
   // params holds all the parameters of this module.
   Params params = 1 [ (gogoproto.nullable) = false ];
 }
@@ -112,7 +110,6 @@ message QueryAllDIDDocumentResponse {
 // QueryDidByAlsoKnownAsRequest is the request type for the
 // Query/DidByAlsoKnownAs RPC method.
 message QueryDidByAlsoKnownAsRequest {
-
   // aka_aliasid is the unique identifier of the DIDDocument - it appears like
   // ("example.snr")
   string alias = 1;
@@ -121,7 +118,6 @@ message QueryDidByAlsoKnownAsRequest {
 // QueryDidByAlsoKnownAsResponse is the response type for the
 // Query/DidByAlsoKnownAs RPC method.
 message QueryDidByAlsoKnownAsResponse {
-
   // A DIDDocument is a JSON-LD object that contains a set of public keys
   DIDDocument didDocument = 1 [ (gogoproto.nullable) = false ];
 }
@@ -129,7 +125,6 @@ message QueryDidByAlsoKnownAsResponse {
 // QueryAliasAvailableRequest is the request type for the Query/AliasAvailable
 // RPC method.
 message QueryAliasAvailableRequest {
-
   // alias is the unique identifier of the DIDDocument - it appears like
   // ("example.snr")
   string alias = 1;
