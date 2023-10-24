@@ -6,10 +6,10 @@ import (
 
 	"github.com/highlight/highlight/sdk/highlight-go"
 	"github.com/sonr-io/core/pkg/crypto"
-	"github.com/sonr-io/core/pkg/did/method/btcr"
-	"github.com/sonr-io/core/pkg/did/method/ethr"
-	"github.com/sonr-io/core/pkg/did/method/sonr"
-	"github.com/sonr-io/core/pkg/did/types"
+	"github.com/sonr-io/core/services/did/method/btcr"
+	"github.com/sonr-io/core/services/did/method/ethr"
+	"github.com/sonr-io/core/services/did/method/sonr"
+	"github.com/sonr-io/core/services/did/types"
 	identitytypes "github.com/sonr-io/core/x/identity/types"
 )
 

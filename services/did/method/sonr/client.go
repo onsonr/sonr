@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 
 	"github.com/sonr-io/core/internal/local"
-	"github.com/sonr-io/core/pkg/did/types"
+	"github.com/sonr-io/core/services/did/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||

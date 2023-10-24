@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/sonr-io/core/pkg/crypto"
-	"github.com/sonr-io/core/pkg/did/types"
+	"github.com/sonr-io/core/services/did/types"
 	identitytypes "github.com/sonr-io/core/x/identity/types"
 )
 

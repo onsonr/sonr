@@ -36,7 +36,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	sonrdconfig "github.com/sonr-io/core/cmd/sonrd/config"
+	sonrdconfig "github.com/sonr-io/core/config"
 	"github.com/sonr-io/core/internal/highway"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"

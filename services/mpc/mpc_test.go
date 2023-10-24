@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/sonr-io/core/pkg/crypto"
-	v1 "github.com/sonr-io/core/pkg/mpc/base"
+	v1 "github.com/sonr-io/core/services/mpc/base"
 	"github.com/stretchr/testify/assert"
 )
 
