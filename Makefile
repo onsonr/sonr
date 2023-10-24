@@ -11,6 +11,9 @@ DOCKER := $(shell which docker)
 E2E_UPGRADE_VERSION := "v17"
 #SHELL := /bin/bash
 
+GH_IMAGE=ghcr.io/sonr-io/sonrd
+DO_IMAGE=registry.digitalocean.com/sonrhq/sonrd
+
 GO_VERSION := $(shell cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2)
 GO_MODULE := $(shell cat go.mod | grep "module " | cut -d ' ' -f 2)
 GO_MAJOR_VERSION = $(shell go version | cut -c 14- | cut -d' ' -f1 | cut -d'.' -f1)
@@ -107,8 +110,9 @@ install: go.sum
 build:
 	go build $(BUILD_FLAGS) -o bin/sonrd ./cmd/sonrd
 
-docker-build-debug:
-	@DOCKER_BUILDKIT=1 docker build -t sonr:debug -f Dockerfile .
+docker-build:
+	docker build -t $(GH_IMAGE) -t $(DO_IMAGE) -f Dockerfile .
+	docker push $(GH_IMAGE) --all-tags
 
 lint:
 	@find . -name '*.go' -type f -not -path "./vendor*" -not -path "*.git*" -not -name '*.pb.go' -not -name '*.gw.go' | xargs go run mvdan.cc/gofumpt -w .
