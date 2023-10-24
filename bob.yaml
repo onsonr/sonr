@@ -21,7 +21,7 @@ build:
 
   # docker - is the default task execute when building docker image.
   docker:
-    cmd: task release-docker
+    cmd: task docker-build
     dependson:
       - binary
     target:
