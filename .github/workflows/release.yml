@@ -26,9 +26,11 @@ jobs:
       - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish-buf:
     name: Publish buf.build proto
     runs-on: ubuntu-latest
+    needs: release
     steps:
       - uses: actions/checkout@v3
         with:
