@@ -11,8 +11,8 @@ FROM ${RUNNER_IMAGE}
 LABEL org.opencontainers.image.source https://github.com/sonr-io/sonr
 LABEL org.opencontainers.image.description "Sonr Validator node container"
 # Copy sonrd binary and config
-COPY bin/sonrd /usr/local/bin/sonrd
-COPY scripts scripts
+COPY ../bin/sonrd /usr/local/bin/sonrd
+COPY docker/deploy/deploy.sh start.sh
 
 # Expose ports
 EXPOSE 26657

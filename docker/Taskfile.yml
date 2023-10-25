@@ -1,12 +1,4 @@
 version: "3"
-dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-includes:
-  docker:
-    taskfile: ./docker/Taskfile.yml
-    dir: .
-  proto:
-    taskfile: ./proto/Taskfile.yml
-    dir: ./proto
 vars:
   CGO_ENABLED: 1
   WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
@@ -29,31 +21,47 @@ vars:
     sh: echo $GITHUB_TOKEN
     default: ""
   GORELEASER_IMAGE: ghcr.io/goreleaser/goreleaser-cross:v{{.GO_VERSION}}
+tasks:
   # ----------------------------------------------------------------------------
   # -- Run Tasks ---------------------------------------------------------------
   # ----------------------------------------------------------------------------
-tasks:
-  default:
+  docker:
     desc: Print the version
     silent: true
     cmds:
       - task -l
 
+  release:
+    desc: Build the binary for docker
+    cmds:
+      - task: docker-build
+      - for: ["ghcr.io/sonr-io", "registry.digitalocean.com/sonrhq"]
+        task: docker-push
+        vars:
+          REGISTRY: '{{.ITEM}}'
+          IMAGE: sonrd
+
   build:
-    desc: Build the binary for all platforms
+    silent: true
+    desc: Build, tag and push the docker image
     cmds:
-      - make build
+      - docker build -f ./docker/deploy/Dockerfile . -t sonrd
 
-  build-all:
-    desc: Build the binary for all platforms and docker
+  tag:
+    silent: true
+    desc: Build, tag and push the docker image
     cmds:
-      - make build
-      - task: docker:build
+      - echo "Tagging {{.IMAGE}} with {{.REGISTRY}}/{{.IMAGE}}"
+      - docker tag sonrd {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
+      - docker tag sonrd {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
+    requires:
+      vars: [IMAGE, REGISTRY]
 
-  generate:
-    aliases:
-      - gen
-    desc: Generate the protobuf files
+  push:
+    silent: true
+    desc: Build, tag and push the docker image
     cmds:
-      - |
-        make proto-all
+      - echo "Pushing {{.REGISTRY}}/{{.IMAGE}}..."
+      - docker push {{.REGISTRY}}/{{.IMAGE}} --all-tags
+    requires:
+      vars: [IMAGE, REGISTRY]

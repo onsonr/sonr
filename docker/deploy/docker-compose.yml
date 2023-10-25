@@ -5,8 +5,8 @@ services:
   node:
     init: true
     build:
-      dockerfile: Dockerfile.dev
-    command: sh scripts/entrypoint.sh
+      dockerfile: Dockerfile
+    command: sh deploy.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p

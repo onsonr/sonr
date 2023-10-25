@@ -1,12 +1,4 @@
 version: "3"
-dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-includes:
-  docker:
-    taskfile: ./docker/Taskfile.yml
-    dir: .
-  proto:
-    taskfile: ./proto/Taskfile.yml
-    dir: ./proto
 vars:
   CGO_ENABLED: 1
   WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
@@ -29,31 +21,31 @@ vars:
     sh: echo $GITHUB_TOKEN
     default: ""
   GORELEASER_IMAGE: ghcr.io/goreleaser/goreleaser-cross:v{{.GO_VERSION}}
+tasks:
   # ----------------------------------------------------------------------------
   # -- Run Tasks ---------------------------------------------------------------
   # ----------------------------------------------------------------------------
-tasks:
-  default:
+  proto:
     desc: Print the version
     silent: true
     cmds:
       - task -l
-
-  build:
-    desc: Build the binary for all platforms
+  buf-mod:
+    silent: true
+    desc: Update the buf.lock file
     cmds:
-      - make build
+      - buf mod update
 
-  build-all:
-    desc: Build the binary for all platforms and docker
+  buf-build:
+    silent: true
+    desc: Build the protobuf files
+    deps: [buf-mod]
     cmds:
-      - make build
-      - task: docker:build
+      - buf build
 
-  generate:
-    aliases:
-      - gen
-    desc: Generate the protobuf files
+  buf-push:
+    silent: true
+    desc: Push the protobuf files to the registry
+    deps: [buf-build]
     cmds:
-      - |
-        make proto-all
+      - buf push

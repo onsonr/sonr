@@ -30,24 +30,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  coverage:
-    name: Scan/Upload Coverage
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: SonarCloud Scan
-        uses: sonarsource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   lint-protos:
     name: Lint Protos and Check for Breaking Changes
     runs-on: ubuntu-latest

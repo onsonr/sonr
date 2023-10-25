@@ -52,17 +52,11 @@
     "**/CVS": true,
     "**/.DS_Store": true,
     ".vscode/": true,
-    ".trunk/": true,
-    ".devcontainer/": true,
-    ".markdownlint.json": true,
-    ".golangci.yml": true,
-    "CHANGELOG.md": true,
-    "CODE_OF_CONDUCT.md": true,
-    "codecov.yml": true,
-    "LICENSE": true,
     "sonar-project.properties": true,
-    "go.sum": true,
-    "buf.work.yaml": true
+    "LICENSE": true,
+    "codecov.yml": true,
+    "CODE_OF_CONDUCT.md": true,
+    "CHANGELOG.md": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
@@ -82,7 +76,7 @@
       }
     ]
   },
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "DockerRun.DisableDockerrc": true,
   "DockerRun.Containers": [],
   "doppler.autocomplete.enable": true,
