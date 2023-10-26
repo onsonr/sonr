@@ -19,7 +19,6 @@ for dir in $proto_dirs; do
     fi
   done
 done
-
 cd ..
 
 # move proto files to the right places

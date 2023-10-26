@@ -57,3 +57,4 @@ tasks:
     cmds:
       - |
         make proto-all
+        cd proto && buf generate --template buf.gen.pulsar.yaml

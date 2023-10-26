@@ -2,12 +2,9 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: cosmossdk.io/api
-    except:
-      - buf.build/googleapis/googleapis
-      - buf.build/cosmos/gogo-proto
-      - buf.build/cosmos/cosmos-proto
+    default: github.com/sonr-io/api
     override:
+      buf.build/cosmos/cosmos-sdk: cosmossdk.io/api
 plugins:
   - name: go-pulsar
     out: ../api
@@ -16,3 +13,5 @@ plugins:
     out: ../api
     opt: paths=source_relative
   - name: go-cosmos-orm
+    out: .
+    opt: paths=source_relative

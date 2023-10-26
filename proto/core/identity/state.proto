@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package core.identity;
+
+import "cosmos/orm/v1/orm.proto";
+
+option go_package = "github.com/sonr-io/core/x/identity/types";
+
+message Balance {
+  option (cosmos.orm.v1.table) = {
+    id : 1;
+primary_key : {
+fields:
+  "account,denom"
+}
+index : {
+id:
+  1 fields : "denom"
+} /* this allows querying for the accounts which own a denom */
+};
+
+bytes account = 1;
+string denom = 2;
+uint64 amount = 3;
+}
+
+message Account {
+  option (cosmos.orm.v1.table) = {
+    id : 2;
+primary_key : {
+fields:
+  "id", auto_increment : true
+}
+index : {
+id:
+  1, fields : "address", unique : true
+}
+};
+
+uint64 id = 1;
+bytes address = 2;
+}
+
+message Config {
+  option (cosmos.orm.v1.singleton) = {
+    id : 3
+  };
+
+  int64 voting_period = 1;
+  uint64 min_threshold = 2;
+  string account_did_method_name = 3;
+  string account_did_method_context = 4;
+  int64 acccount_discovery_reward = 5;
+  string did_base_context = 6;
+  int32 maximum_identity_aliases = 7;
+  repeated string supported_did_methods = 8;
+}
