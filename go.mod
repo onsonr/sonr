@@ -37,7 +37,7 @@ require (
 	github.com/yoseplee/vrf v0.0.0-20210814110709-d1caf509310b
 	golang.org/x/crypto v0.14.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20230726155614-23370e0ffb3e
-	google.golang.org/grpc v1.57.0
+	google.golang.org/grpc v1.57.1
 	gopkg.in/yaml.v2 v2.4.0
 	lukechampine.com/blake3 v1.2.1
 )
