@@ -5,7 +5,7 @@ package core.identity;
 import "core/identity/account.proto";
 import "core/identity/did.proto";
 
-option go_package = "github.com/sonr-io/core/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 // Msg defines the Msg service.
 // This service provides methods for managing identities.

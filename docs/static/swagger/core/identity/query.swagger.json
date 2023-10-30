@@ -316,100 +316,6 @@
           "Query"
         ]
       }
-    },
-    "/sonr-io/core/identity/escrow_account": {
-      "get": {
-        "summary": "EscrowAccountAll queries all EscrowAccount items.",
-        "operationId": "EscrowAccountAll",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/core.identity.QueryAllEscrowAccountResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "pagination.key",
-            "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          },
-          {
-            "name": "pagination.offset",
-            "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.limit",
-            "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app.",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "uint64"
-          },
-          {
-            "name": "pagination.count_total",
-            "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          },
-          {
-            "name": "pagination.reverse",
-            "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43",
-            "in": "query",
-            "required": false,
-            "type": "boolean"
-          }
-        ],
-        "tags": [
-          "Query"
-        ]
-      }
-    },
-    "/sonr-io/core/identity/escrow_account/{address}": {
-      "get": {
-        "summary": "EscrowAccount queries a list of EscrowAccount items.",
-        "operationId": "EscrowAccount",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/core.identity.QueryGetEscrowAccountResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "address",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "Query"
-        ]
-      }
     }
   },
   "definitions": {
@@ -493,27 +399,6 @@
       },
       "description": "DIDDocument represents a Decentralized Identifier (DID) document that\ncontains information about the DID subject, such as public keys, verification\nmethods, and services."
     },
-    "core.identity.EscrowAccount": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        },
-        "address": {
-          "type": "string"
-        },
-        "publicKey": {
-          "type": "string"
-        },
-        "lockupUsdBalance": {
-          "type": "string"
-        },
-        "creator": {
-          "type": "string"
-        }
-      }
-    },
     "core.identity.Params": {
       "type": "object",
       "properties": {
@@ -585,21 +470,6 @@
       },
       "description": "QueryAllDIDDocumentResponse is the response type for the Query/DIDDocumentAll\nRPC method."
     },
-    "core.identity.QueryAllEscrowAccountResponse": {
-      "type": "object",
-      "properties": {
-        "escrowAccount": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/core.identity.EscrowAccount"
-          }
-        },
-        "pagination": {
-          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
-        }
-      },
-      "description": "QueryAllEscrowAccountResponse is the response type for the\nQuery/EscrowAccountAll RPC method."
-    },
     "core.identity.QueryDidByAlsoKnownAsResponse": {
       "type": "object",
       "properties": {
@@ -636,15 +506,6 @@
         }
       },
       "description": "QueryGetDIDDocumentResponse is the response type for the Query/DIDDocument\nRPC method."
-    },
-    "core.identity.QueryGetEscrowAccountResponse": {
-      "type": "object",
-      "properties": {
-        "escrowAccount": {
-          "$ref": "#/definitions/core.identity.EscrowAccount"
-        }
-      },
-      "description": "QueryGetEscrowAccountResponse is the response type for the\nQuery/EscrowAccount RPC method."
     },
     "core.identity.QueryParamsResponse": {
       "type": "object",

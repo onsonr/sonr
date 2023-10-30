@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/core/pkg/xstrings"
+	"github.com/sonrhq/core/pkg/xstrings"
 )
 
 func TestNoDash(t *testing.T) {

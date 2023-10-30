@@ -1,4 +1,4 @@
-package cmd
+package sonrcmd
 
 import (
 	"bufio"
@@ -20,7 +20,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
-	"github.com/sonr-io/core/config"
+	"github.com/sonrhq/core/config"
 	"github.com/spf13/cobra"
 )
 

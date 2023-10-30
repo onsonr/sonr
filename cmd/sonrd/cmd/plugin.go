@@ -1,4 +1,4 @@
-package cmd
+package sonrcmd
 
 import (
 	"context"
@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 
-	pluginsconfig "github.com/sonr-io/core/config/plugins"
-	"github.com/sonr-io/core/pkg/clictx"
-	"github.com/sonr-io/core/pkg/cliui"
-	"github.com/sonr-io/core/pkg/cliui/icons"
-	"github.com/sonr-io/core/services/plugin"
+	pluginsconfig "github.com/sonrhq/core/config/plugins"
+	"github.com/sonrhq/core/pkg/clictx"
+	"github.com/sonrhq/core/pkg/cliui"
+	"github.com/sonrhq/core/pkg/cliui/icons"
+	"github.com/sonrhq/core/services/plugin"
 )
 
 const (

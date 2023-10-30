@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"math/big"
 
-	sonrcrypto "github.com/sonr-io/core/internal/crypto"
-	"github.com/sonr-io/core/types/crypto"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonr-io/kryptology/pkg/core/protocol"
 	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
+	sonrcrypto "github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/types/crypto"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	"github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1/dkg"

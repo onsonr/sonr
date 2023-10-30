@@ -1,6 +1,6 @@
 package types
 
-import "github.com/sonr-io/core/internal/crypto"
+import "github.com/sonrhq/core/internal/crypto"
 
 // DIDMethod is a DID method
 type DIDMethod string

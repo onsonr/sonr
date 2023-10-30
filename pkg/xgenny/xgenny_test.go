@@ -9,7 +9,7 @@ import (
 	"github.com/gobuffalo/plush/v4"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/core/pkg/xgenny"
+	"github.com/sonrhq/core/pkg/xgenny"
 )
 
 func Test_Transformer(t *testing.T) {

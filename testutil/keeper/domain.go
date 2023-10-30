@@ -12,8 +12,8 @@ import (
 	storetypes "github.com/cosmos/cosmos-sdk/store/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	typesparams "github.com/cosmos/cosmos-sdk/x/params/types"
-	"github.com/sonr-io/core/x/domain/keeper"
-	"github.com/sonr-io/core/x/domain/types"
+	"github.com/sonrhq/core/x/domain/keeper"
+	"github.com/sonrhq/core/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

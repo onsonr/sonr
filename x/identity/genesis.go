@@ -2,8 +2,8 @@ package identity
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/core/x/identity/keeper"
-	"github.com/sonr-io/core/x/identity/types"
+	"github.com/sonrhq/core/x/identity/keeper"
+	"github.com/sonrhq/core/x/identity/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

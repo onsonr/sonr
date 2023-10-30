@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/sonr-io/core/internal/highway/handler"
+	"github.com/sonrhq/core/internal/highway/handler"
 )
 
 var hway *Instance

@@ -3,10 +3,10 @@ package domain_test
 import (
 	"testing"
 
-	keepertest "github.com/sonr-io/core/testutil/keeper"
-	"github.com/sonr-io/core/testutil/nullify"
-	"github.com/sonr-io/core/x/domain"
-	"github.com/sonr-io/core/x/domain/types"
+	keepertest "github.com/sonrhq/core/testutil/keeper"
+	"github.com/sonrhq/core/testutil/nullify"
+	"github.com/sonrhq/core/x/domain"
+	"github.com/sonrhq/core/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

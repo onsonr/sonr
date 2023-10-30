@@ -1,13 +1,13 @@
-package cmd
+package sonrcmd
 
 import (
 	"fmt"
 
 	"github.com/spf13/cobra"
 
-	pluginsconfig "github.com/sonr-io/core/config/plugins"
-	"github.com/sonr-io/core/pkg/cliui"
-	"github.com/sonr-io/core/services/plugin"
+	pluginsconfig "github.com/sonrhq/core/config/plugins"
+	"github.com/sonrhq/core/pkg/cliui"
+	"github.com/sonrhq/core/services/plugin"
 )
 
 type defaultPlugin struct {

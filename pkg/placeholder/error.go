@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonr-io/core/pkg/validation"
+	"github.com/sonrhq/core/pkg/validation"
 )
 
 var _ validation.Error = (*MissingPlaceholdersError)(nil)

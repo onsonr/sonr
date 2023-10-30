@@ -35,7 +35,7 @@ SDK_PACK := $(shell go list -m github.com/cosmos/cosmos-sdk | sed  's/ /\@/g')
 DOCKER := $(shell which docker)
 DOCKER_BUF := $(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace bufbuild/buf:1.0.0-rc8
 BUILDDIR ?= $(CURDIR)/build
-HTTPS_GIT := https://github.com/sonr-io/sonr.git
+HTTPS_GIT := https://github.com/sonrhq/core.git
 
 export GO111MODULE = on
 

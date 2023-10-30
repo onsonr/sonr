@@ -151,7 +151,7 @@
     }
   },
   "definitions": {
-    "core.crypto.CoinType": {
+    "common.crypto.CoinType": {
       "type": "string",
       "enum": [
         "CoinType_BITCOIN",
@@ -215,7 +215,7 @@
           "type": "string"
         },
         "coin_type": {
-          "$ref": "#/definitions/core.crypto.CoinType"
+          "$ref": "#/definitions/common.crypto.CoinType"
         },
         "owner": {
           "type": "string"
@@ -251,7 +251,7 @@
           "type": "string"
         },
         "coin_type": {
-          "$ref": "#/definitions/core.crypto.CoinType"
+          "$ref": "#/definitions/common.crypto.CoinType"
         },
         "owner": {
           "type": "string"

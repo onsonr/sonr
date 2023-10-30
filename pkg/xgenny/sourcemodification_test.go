@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/core/pkg/xgenny"
+	"github.com/sonrhq/core/pkg/xgenny"
 )
 
 var (

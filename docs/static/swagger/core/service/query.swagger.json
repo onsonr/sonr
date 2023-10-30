@@ -188,6 +188,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "category": {
+          "type": "string"
         }
       }
     },

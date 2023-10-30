@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package common.crypto;
 
-option go_package = "github.com/sonr-io/core/types/crypto";
+option go_package = "github.com/sonrhq/core/types/crypto";
 
 // CoinType is the BIP-0044 coin type for each supported coin.
 enum CoinType {

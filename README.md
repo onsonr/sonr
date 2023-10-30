@@ -5,10 +5,10 @@
 </div>
 <div style="text-align: left;">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sonr-io/sonr.svg)](https://pkg.go.dev/github.com/sonr-io/sonr)
-[![Test sonrd](https://github.com/sonr-io/sonr/actions/workflows/tests.yml/badge.svg)](https://github.com/sonr-io/sonr/actions/workflows/tests.yml)
-[![GitHub all releases](https://img.shields.io/github/downloads/sonr-io/sonr/total)](https://github.com/sonr-io/sonr/releases/latest)
-[![Go Report Card](https://goreportcard.com/badge/github.com/sonr-io/sonr)](https://goreportcard.com/report/github.com/sonr-io/sonr)
+[![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/core.svg)](https://pkg.go.dev/github.com/sonrhq/core)
+[![Test sonrd](https://github.com/sonrhq/core/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/core/actions/workflows/tests.yml)
+[![GitHub all releases](https://img.shields.io/github/downloads/sonr-io/sonr/total)](https://github.com/sonrhq/core/releases/latest)
+[![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/core)](https://goreportcard.com/report/github.com/sonrhq/core)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 [![Twitter](https://img.shields.io/twitter/follow/sonr_io?style=social)](https://sonr.io/twitter)
@@ -26,13 +26,13 @@ Sonr is an ibc-enabled blockchain for decentralized identity.
 - [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
   - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
   - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
-  - [ ] User mailboxes. [Status](https://github.com/sonr-io/sonr/issues/781)
-  - [ ] database subscriptions. [Status](https://github.com/sonr-io/sonr/issues/782)
-  - [ ] Matrix chat. [Status](https://github.com/sonr-io/sonr/issues/783)
+  - [ ] User mailboxes. [Status](https://github.com/sonrhq/core/issues/781)
+  - [ ] database subscriptions. [Status](https://github.com/sonrhq/core/issues/782)
+  - [ ] Matrix chat. [Status](https://github.com/sonrhq/core/issues/783)
 - [x] IBC Integrations.
-  - [ ] Nomic. [Status](https://github.com/sonr-io/sonr/issues/784)
-  - [ ] Evmos. [Status](https://github.com/sonr-io/sonr/issues/785)
-  - [ ] Osmosis. [Status](https://github.com/sonr-io/sonr/issues/786)
+  - [ ] Nomic. [Status](https://github.com/sonrhq/core/issues/784)
+  - [ ] Evmos. [Status](https://github.com/sonrhq/core/issues/785)
+  - [ ] Osmosis. [Status](https://github.com/sonrhq/core/issues/786)
 - [x] Smart Contracts. [__Docs__](https://sonr.io/docs/guides/storage)
 - [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
 - [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
@@ -45,8 +45,8 @@ To see how to Contribute, visit [Getting Started](./docs/contribution/DEVELOPERS
 
 ## Community & Support
 
-- [Forum](https://github.com/sonr-io/sonr/discussions)
-- [Issues](https://github.com/sonr-io/sonr/issues)
+- [Forum](https://github.com/sonrhq/core/discussions)
+- [Issues](https://github.com/sonrhq/core/issues)
 - [Twitter](https://sonr.io/twitter)
 - [Dev Chat](https://sonr.io/discord)
 
@@ -57,7 +57,7 @@ To see how to Contribute, visit [Getting Started](./docs/contribution/DEVELOPERS
 - [ ] __Public Testnet__: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
 - [ ] __Mainnet__: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
-We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/sonr-io/sonr/releases) of this repo to get notified of major updates.
+We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/sonrhq/core/releases) of this repo to get notified of major updates.
 
 ## How it works
 
@@ -119,7 +119,7 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
   <!-- notranslate -->
   <tr>
     <td>JavaScript (TypeScript)</td>
-    <td><a href="https://github.com/sonr-io/core-js" target="_blank" rel="noopener noreferrer">sonr-js</a></td>
+    <td><a href="https://github.com/sonrhq/core-js" target="_blank" rel="noopener noreferrer">sonr-js</a></td>
     <td><a href="https://github.com/sonr-io/auth-js" target="_blank" rel="noopener noreferrer">auth-js</a></td>
     <td><a href="https://github.com/sonr-io/database-js" target="_blank" rel="noopener noreferrer">database-js</a></td>
     <td><a href="https://github.com/sonr-io/storage-js" target="_blank" rel="noopener noreferrer">storage-js</a></td>
@@ -127,7 +127,7 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
   </tr>
     <tr>
     <td>Flutter</td>
-    <td><a href="https://github.com/sonr-io/core-flutter" target="_blank" rel="noopener noreferrer">sonr-flutter</a></td>
+    <td><a href="https://github.com/sonrhq/core-flutter" target="_blank" rel="noopener noreferrer">sonr-flutter</a></td>
     <td><a href="https://github.com/sonr-io/auth-dart" target="_blank" rel="noopener noreferrer">auth-dart</a></td>
     <td><a href="https://github.com/sonr-io/database-dart" target="_blank" rel="noopener noreferrer">database-dart</a></td>
     <td><a href="https://github.com/sonr-io/storage-dart" target="_blank" rel="noopener noreferrer">storage-dart</a></td>

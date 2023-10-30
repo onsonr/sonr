@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/core/pkg/xnet"
+	"github.com/sonrhq/core/pkg/xnet"
 )
 
 func TestLocalhostIPv4Address(t *testing.T) {

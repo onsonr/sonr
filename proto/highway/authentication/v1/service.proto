@@ -6,7 +6,7 @@ package highway.authentication.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/sonr-io/core/types/highway/authentication/v1;authenticationpb";
+option go_package = "github.com/sonrhq/core/types/highway/authentication/v1;authenticationpb";
 
 // AuthenticationService provides methods for user authentication.
 service AuthenticationService {

@@ -8,11 +8,11 @@ import (
 
 	"github.com/manifoldco/promptui"
 
-	"github.com/sonr-io/core/pkg/cliui/cliquiz"
-	"github.com/sonr-io/core/pkg/cliui/clispinner"
-	"github.com/sonr-io/core/pkg/cliui/entrywriter"
-	uilog "github.com/sonr-io/core/pkg/cliui/log"
-	"github.com/sonr-io/core/pkg/events"
+	"github.com/sonrhq/core/pkg/cliui/cliquiz"
+	"github.com/sonrhq/core/pkg/cliui/clispinner"
+	"github.com/sonrhq/core/pkg/cliui/entrywriter"
+	uilog "github.com/sonrhq/core/pkg/cliui/log"
+	"github.com/sonrhq/core/pkg/events"
 )
 
 type sessionOptions struct {

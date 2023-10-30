@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/viper"
 
-	"github.com/sonr-io/core/app"
+	"github.com/sonrhq/core/app"
 )
 
 // Masthead is the masthead of the application.
@@ -32,7 +32,7 @@ MMMMMMMMMMMMMMWX0OkkO0XWMMMMMMMMMMMMMMMM
 Sonr Node
 > Sonr is an Encrypted & Private by default Identity Verification System for the IBC Protocol.
 🌐 - https://sonr.io
-🚀 - https://github.com/sonr-io/sonr
+🚀 - https://github.com/sonrhq/core
 `
 
 const bip44_purpose = 44
