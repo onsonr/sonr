@@ -41,7 +41,7 @@ type Plugin struct {
 	// With holds arguments passed to the plugin interface
 	With map[string]string `yaml:"with,omitempty"`
 	// Global holds whether the plugin is installed globally
-	// (default: $HOME/.ignite/plugins/plugins.yml) or locally for a chain.
+	// (default: $HOME/.sonr/plugins/plugins.yml) or locally for a chain.
 	Global bool `yaml:"-"`
 }
 

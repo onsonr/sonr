@@ -9,7 +9,6 @@ build:
   build:
     dependson:
       - binary
-      - docker
 
   # generate - is the default task execute when executing code generation.
   generate:
@@ -27,7 +26,7 @@ build:
 
   # docker - is the default task execute when building docker image.
   docker:
-    cmd: task docker-build
+    cmd: task docker:build
     dependson:
       - binary
     target:

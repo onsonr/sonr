@@ -11,7 +11,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
-	"github.com/sonr-io/core/pkg/crypto"
+	"github.com/sonr-io/core/internal/crypto"
 	idtypes "github.com/sonr-io/core/x/identity/types"
 	"github.com/yoseplee/vrf"
 )

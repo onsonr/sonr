@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -158,6 +159,11 @@ func initRootCmd(
 		config.Cmd(),
 		// this line is used by starport scaffolding # root/commands
 	)
+
+	// Load plugins if any
+	if err := LoadPlugins(context.Background(), rootCmd); err != nil {
+		panic(err)
+	}
 
 	a := appCreator{
 		encodingConfig,

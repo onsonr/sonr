@@ -9,7 +9,7 @@ import (
 	"github.com/kataras/jwt"
 	"github.com/spf13/viper"
 
-	"github.com/sonr-io/core/pkg/crypto"
+	"github.com/sonr-io/core/internal/crypto"
 	identitytypes "github.com/sonr-io/core/x/identity/types"
 )
 

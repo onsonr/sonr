@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	sonrcrypto "github.com/sonr-io/core/pkg/crypto"
+	sonrcrypto "github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/types/crypto"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonr-io/kryptology/pkg/core/protocol"

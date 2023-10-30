@@ -7,7 +7,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/sonr-io/core/pkg/crypto"
+	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/kryptology/pkg/accumulator"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 )

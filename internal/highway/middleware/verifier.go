@@ -6,8 +6,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/internal/highway/types"
-	"github.com/sonr-io/core/pkg/crypto"
 	"github.com/sonr-io/core/services/did/controller"
 	"github.com/sonr-io/core/types/webauthn"
 	domaintypes "github.com/sonr-io/core/x/domain/types"

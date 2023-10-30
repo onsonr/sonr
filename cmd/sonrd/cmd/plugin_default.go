@@ -17,10 +17,13 @@ type defaultPlugin struct {
 	path    string
 }
 
-const (
-	PluginNetworkVersion = "v0.1.0"
-	PluginNetworkPath    = "github.com/ignite/cli-plugin-network@" + PluginNetworkVersion
-)
+func defaultNetworkPlugin() string {
+	const (
+		PluginNetworkVersion = "v0.2.0"
+		PluginNetworkPath    = "github.com/sonr-eco/cli-plugin-network@" + PluginNetworkVersion
+	)
+	return PluginNetworkPath
+}
 
 // defaultPlugins holds the plugin that are considered trustable and for which
 // a command will added if the plugin is not already installed.
@@ -30,7 +33,7 @@ var defaultPlugins = []defaultPlugin{
 		use:     "network",
 		short:   "Launch a blockchain in production",
 		aliases: []string{"n"},
-		path:    PluginNetworkPath,
+		path:    defaultNetworkPlugin(),
 	},
 }
 

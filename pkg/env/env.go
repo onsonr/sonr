@@ -25,7 +25,7 @@ func ConfigDir() xfilepath.PathRetriever {
 			}
 			return dir, nil
 		}
-		return xfilepath.JoinFromHome(xfilepath.Path(".ignite"))()
+		return xfilepath.JoinFromHome(xfilepath.Path(".sonr"))()
 	}
 }
 

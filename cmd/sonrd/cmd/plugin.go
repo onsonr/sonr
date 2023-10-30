@@ -358,7 +358,7 @@ func NewPluginList() *cobra.Command {
 		Use:   "list",
 		Short: "List declared plugins and status",
 		Long:  "Prints status and information of declared plugins",
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, _ []string) error {
 			s := cliui.New(cliui.WithStdout(os.Stdout))
 			return printPlugins(s)
 		},
@@ -372,7 +372,7 @@ func NewPluginUpdate() *cobra.Command {
 		Short: "Update plugins",
 		Long:  "Updates a plugin specified by path. If no path is specified all declared plugins are updated",
 		Args:  cobra.MaximumNArgs(1),
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(_ *cobra.Command, args []string) error {
 			if len(args) == 0 {
 				// update all plugins
 				err := plugin.Update(plugins...)
@@ -573,7 +573,7 @@ func printPlugins(session *cliui.Session) error {
 func flagSetPluginsGlobal() *flag.FlagSet {
 	fs := flag.NewFlagSet("", flag.ContinueOnError)
 	fs.BoolP(flagPluginsGlobal, "g", false, "use global plugins configuration"+
-		" ($HOME/.ignite/plugins/plugins.yml)")
+		" ($HOME/.sonr/plugins/plugins.yml)")
 	return fs
 }
 

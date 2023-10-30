@@ -1,7 +1,7 @@
 package mpc
 
 import (
-	"github.com/sonr-io/core/pkg/crypto"
+	"github.com/sonr-io/core/internal/crypto"
 	"github.com/sonr-io/core/services/mpc/base"
 	models "github.com/sonr-io/core/services/mpc/base"
 	v1algo "github.com/sonr-io/core/services/mpc/protocol/dkls"
