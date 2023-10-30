@@ -4,12 +4,11 @@ import (
 	"testing"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonr-io/core/pkg/zk"
-
-	"github.com/stretchr/testify/require"
-
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+
+	"github.com/sonr-io/core/internal/zk"
 )
 
 func TestZkSet(t *testing.T) {
