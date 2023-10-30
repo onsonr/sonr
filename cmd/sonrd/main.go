@@ -7,12 +7,12 @@ import (
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 
 	"github.com/sonr-io/core/app"
-	"github.com/sonr-io/core/cmd/sonrd/cmd"
+	sonrcmd "github.com/sonr-io/core/cmd/sonrd/cmd"
 )
 
 func main() {
 
-	rootCmd, _ := cmd.NewRootCmd()
+	rootCmd, _ := sonrcmd.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, "SONR", app.DefaultNodeHome); err != nil {
 		switch e := err.(type) {
 		case server.ErrorCode:
