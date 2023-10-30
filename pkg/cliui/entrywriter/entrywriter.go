@@ -7,7 +7,7 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/sonr-io/sonr/pkg/xstrings"
+	"github.com/sonrhq/core/pkg/xstrings"
 )
 
 const (

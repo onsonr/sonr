@@ -18,14 +18,14 @@ import (
 	hplugin "github.com/hashicorp/go-plugin"
 	"github.com/pkg/errors"
 
-	"github.com/sonr-io/sonr/config"
-	pluginsconfig "github.com/sonr-io/sonr/config/plugins"
-	"github.com/sonr-io/sonr/pkg/env"
-	"github.com/sonr-io/sonr/pkg/events"
-	"github.com/sonr-io/sonr/pkg/gocmd"
-	"github.com/sonr-io/sonr/pkg/xfilepath"
-	"github.com/sonr-io/sonr/pkg/xgit"
-	"github.com/sonr-io/sonr/pkg/xurl"
+	"github.com/sonrhq/core/config"
+	pluginsconfig "github.com/sonrhq/core/config/plugins"
+	"github.com/sonrhq/core/pkg/env"
+	"github.com/sonrhq/core/pkg/events"
+	"github.com/sonrhq/core/pkg/gocmd"
+	"github.com/sonrhq/core/pkg/xfilepath"
+	"github.com/sonrhq/core/pkg/xgit"
+	"github.com/sonrhq/core/pkg/xurl"
 )
 
 // PluginsPath holds the plugin cache directory.

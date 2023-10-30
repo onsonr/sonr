@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	authenticationpb "github.com/sonr-io/sonr/types/highway/authentication/v1"
-	databasepb "github.com/sonr-io/sonr/types/highway/database/v1"
-	storagepb "github.com/sonr-io/sonr/types/highway/storage/v1"
-	walletpb "github.com/sonr-io/sonr/types/highway/wallet/v1"
+	authenticationpb "github.com/sonrhq/core/types/highway/authentication/v1"
+	databasepb "github.com/sonrhq/core/types/highway/database/v1"
+	storagepb "github.com/sonrhq/core/types/highway/storage/v1"
+	walletpb "github.com/sonrhq/core/types/highway/wallet/v1"
 )
 
 // RegisterHandlers registers the Highway Service Server.

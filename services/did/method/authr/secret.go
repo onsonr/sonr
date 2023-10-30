@@ -11,7 +11,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sonr-io/kryptology/pkg/accumulator"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
-	"github.com/sonr-io/sonr/internal/crypto"
+	"github.com/sonrhq/core/internal/crypto"
 	"golang.org/x/crypto/hkdf"
 	"lukechampine.com/blake3"
 )

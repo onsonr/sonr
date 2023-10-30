@@ -10,9 +10,9 @@ import (
 
 	"golang.org/x/sync/errgroup"
 
-	"github.com/sonr-io/sonr/pkg/cmdrunner/step"
-	"github.com/sonr-io/sonr/pkg/env"
-	"github.com/sonr-io/sonr/pkg/goenv"
+	"github.com/sonrhq/core/pkg/cmdrunner/step"
+	"github.com/sonrhq/core/pkg/env"
+	"github.com/sonrhq/core/pkg/goenv"
 )
 
 // Runner is an object to run commands.

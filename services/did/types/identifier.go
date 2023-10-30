@@ -3,8 +3,8 @@ package types
 import (
 	"github.com/sonr-io/kryptology/pkg/accumulator"
 
-	"github.com/sonr-io/sonr/internal/crypto"
-	identitytypes "github.com/sonr-io/sonr/x/identity/types"
+	"github.com/sonrhq/core/internal/crypto"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 // DIDIdentifier is a DID identifier

@@ -129,7 +129,7 @@ release:
     Run the following command to install sonrd:
 
     ```bash
-    curl -L https://github.com/sonr-io/sonr/releases/latest/download/install.sh | sh
+    curl -L https://github.com/sonrhq/core/releases/latest/download/install.sh | sh
     ```
 
     ### ⚡️ Binaries
@@ -142,7 +142,7 @@ release:
     If you prefer to build from source, you can use the following commands:
 
     ````bash
-    git clone https://github.com/sonr-io/sonr
+    git clone https://github.com/sonrhq/core
     cd core && git checkout v{{ .Version }}
     make install
     # Then run sonrd

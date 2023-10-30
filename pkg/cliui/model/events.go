@@ -9,9 +9,9 @@ import (
 	"github.com/charmbracelet/bubbles/spinner"
 	tea "github.com/charmbracelet/bubbletea"
 
-	"github.com/sonr-io/sonr/pkg/cliui/colors"
-	"github.com/sonr-io/sonr/pkg/cliui/icons"
-	"github.com/sonr-io/sonr/pkg/events"
+	"github.com/sonrhq/core/pkg/cliui/colors"
+	"github.com/sonrhq/core/pkg/cliui/icons"
+	"github.com/sonrhq/core/pkg/events"
 )
 
 // EventMsg defines a message for events.

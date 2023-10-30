@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/sonr-io/sonr/pkg/env"
-	"github.com/sonr-io/sonr/pkg/xfilepath"
+	"github.com/sonrhq/core/pkg/env"
+	"github.com/sonrhq/core/pkg/xfilepath"
 )
 
 var c Config

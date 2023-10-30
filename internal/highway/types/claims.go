@@ -9,8 +9,8 @@ import (
 	"github.com/kataras/jwt"
 	"github.com/spf13/viper"
 
-	"github.com/sonr-io/sonr/internal/crypto"
-	identitytypes "github.com/sonr-io/sonr/x/identity/types"
+	"github.com/sonrhq/core/internal/crypto"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||

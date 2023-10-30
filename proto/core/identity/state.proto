@@ -4,7 +4,7 @@ package core.identity;
 
 import "cosmos/orm/v1/orm.proto";
 
-option go_package = "github.com/sonr-io/sonr/x/identity/types";
+option go_package = "github.com/sonrhq/core/x/identity/types";
 
 message Balance {
   option (cosmos.orm.v1.table) = {

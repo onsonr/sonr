@@ -6,13 +6,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonr-io/sonr/internal/crypto"
-	"github.com/sonr-io/sonr/internal/highway/types"
-	"github.com/sonr-io/sonr/services/did/controller"
-	"github.com/sonr-io/sonr/types/webauthn"
-	domaintypes "github.com/sonr-io/sonr/x/domain/types"
-	identitytypes "github.com/sonr-io/sonr/x/identity/types"
-	servicetypes "github.com/sonr-io/sonr/x/service/types"
+	"github.com/sonrhq/core/internal/crypto"
+	"github.com/sonrhq/core/internal/highway/types"
+	"github.com/sonrhq/core/services/did/controller"
+	"github.com/sonrhq/core/types/webauthn"
+	domaintypes "github.com/sonrhq/core/x/domain/types"
+	identitytypes "github.com/sonrhq/core/x/identity/types"
+	servicetypes "github.com/sonrhq/core/x/service/types"
 )
 
 // The function GetAuthCookies takes a gin.Context as input and returns three strings and an error.
