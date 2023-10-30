@@ -40,11 +40,15 @@ tasks:
       - task -l
 
   build:
-    desc: Build the binary for all platforms
+    aliases:
+      - b
+    desc: Build the binary for current platform
     cmds:
       - make build
 
   build-all:
+    aliases:
+      - ba
     desc: Build the binary for all platforms and docker
     cmds:
       - make build

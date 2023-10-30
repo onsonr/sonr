@@ -25,7 +25,7 @@ tasks:
   # ----------------------------------------------------------------------------
   # -- Run Tasks ---------------------------------------------------------------
   # ----------------------------------------------------------------------------
-  docker:
+  default:
     desc: Print the version
     silent: true
     cmds:
@@ -46,6 +46,15 @@ tasks:
     desc: Build, tag and push the docker image
     cmds:
       - docker build -f ./docker/deploy/Dockerfile . -t sonrd
+
+  start:
+    silent: true
+    desc: Start the docker image
+    dir: ./docker/start
+    cmds:
+      - docker compose up
+    deps:
+      - build
 
   tag:
     silent: true

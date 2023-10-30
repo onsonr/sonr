@@ -1,5 +1,10 @@
 package config
 
+import (
+	"github.com/sonr-io/core/pkg/env"
+	"github.com/sonr-io/core/pkg/xfilepath"
+)
+
 var c Config
 
 // Config is defining a struct type named `Config`. This struct is used to store the configuration values for the application. It has various fields that correspond to different configuration parameters, such as version, chain ID, launch settings, database settings, node settings, genesis settings, etc. Each field is annotated with `mapstructure` tags, which are used to map the corresponding configuration values from a YAML file to the struct fields.
@@ -100,3 +105,6 @@ type Config struct {
 		} `mapstructure:"validators"`
 	} `mapstructure:"genesis"`
 }
+
+// DirPath returns the path of configuration directory of Ignite.
+var DirPath = xfilepath.Mkdir(env.ConfigDir())
