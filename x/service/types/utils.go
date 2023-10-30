@@ -8,7 +8,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
-	"sonr.io/core/types/webauthn"
+	"github.com/sonr-io/sonr/types/webauthn"
 	"lukechampine.com/blake3"
 )
 

@@ -3,10 +3,10 @@ package identity_test
 import (
 	"testing"
 
-	keepertest "sonr.io/core/testutil/keeper"
-	"sonr.io/core/testutil/nullify"
-	"sonr.io/core/x/identity"
-	"sonr.io/core/x/identity/types"
+	keepertest "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/testutil/nullify"
+	"github.com/sonr-io/sonr/x/identity"
+	"github.com/sonr-io/sonr/x/identity/types"
 	"github.com/stretchr/testify/require"
 )
 

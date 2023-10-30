@@ -14,9 +14,9 @@ import (
 	"golang.org/x/mod/modfile"
 	"golang.org/x/mod/module"
 
-	"sonr.io/core/pkg/cache"
-	"sonr.io/core/pkg/cmdrunner"
-	"sonr.io/core/pkg/cmdrunner/step"
+	"github.com/sonr-io/sonr/pkg/cache"
+	"github.com/sonr-io/sonr/pkg/cmdrunner"
+	"github.com/sonr-io/sonr/pkg/cmdrunner/step"
 )
 
 const pathCacheNamespace = "gomodule.path"

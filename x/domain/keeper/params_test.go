@@ -3,8 +3,8 @@ package keeper_test
 import (
 	"testing"
 
-	testkeeper "sonr.io/core/testutil/keeper"
-	"sonr.io/core/x/domain/types"
+	testkeeper "github.com/sonr-io/sonr/testutil/keeper"
+	"github.com/sonr-io/sonr/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

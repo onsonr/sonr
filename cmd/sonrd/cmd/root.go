@@ -43,10 +43,10 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"sonr.io/core/app"
-	appparams "sonr.io/core/app/params"
-	sonrdconfig "sonr.io/core/config"
-	"sonr.io/core/internal/highway"
+	"github.com/sonr-io/sonr/app"
+	appparams "github.com/sonr-io/sonr/app/params"
+	sonrdconfig "github.com/sonr-io/sonr/config"
+	"github.com/sonr-io/sonr/internal/highway"
 )
 
 var (

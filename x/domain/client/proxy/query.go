@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	domaintypes "sonr.io/core/x/domain/types"
+	domaintypes "github.com/sonr-io/sonr/x/domain/types"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )

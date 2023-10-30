@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	storagepb "sonr.io/core/types/highway/storage/v1"
+	storagepb "github.com/sonr-io/sonr/types/highway/storage/v1"
 )
 
 // StorageHandler is the handler for the authentication service

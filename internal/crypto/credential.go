@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 
-	"sonr.io/core/types/crypto"
+	"github.com/sonr-io/sonr/types/crypto"
 )
 
 const (

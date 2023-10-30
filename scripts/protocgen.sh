@@ -22,5 +22,5 @@ done
 cd ..
 
 # move proto files to the right places
-cp -r sonr.io/core/* ./
-rm -rf sonr.io
+cp -r github.com/sonr-io/sonr/* ./
+rm -rf github.com

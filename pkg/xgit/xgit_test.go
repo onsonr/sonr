@@ -14,8 +14,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/pkg/randstr"
-	"sonr.io/core/pkg/xgit"
+	"github.com/sonr-io/sonr/pkg/randstr"
+	"github.com/sonr-io/sonr/pkg/xgit"
 )
 
 func TestInitAndCommit(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/group"
-	identitytypes "sonr.io/core/x/identity/types"
+	identitytypes "github.com/sonr-io/sonr/x/identity/types"
 )
 
 type GroupKeeper interface {

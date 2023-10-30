@@ -7,9 +7,9 @@ import (
 	"errors"
 	"io"
 
-	"sonr.io/core/internal/crypto"
 	"github.com/sonr-io/kryptology/pkg/accumulator"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-io/sonr/internal/crypto"
 )
 
 type Accumulator = accumulator.Accumulator

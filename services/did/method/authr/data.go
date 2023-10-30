@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io"
 
-	"sonr.io/core/services/did/types"
+	"github.com/sonr-io/sonr/services/did/types"
 	"golang.org/x/crypto/hkdf"
 	"lukechampine.com/blake3"
 )

@@ -1,7 +1,7 @@
 package types
 
 import (
-	"sonr.io/core/internal/crypto"
+	"github.com/sonr-io/sonr/internal/crypto"
 	"lukechampine.com/blake3"
 )
 

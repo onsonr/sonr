@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"sonr.io/core/x/service/types"
+	"github.com/sonr-io/sonr/x/service/types"
 )
 
 // GetParams get all parameters as types.Params

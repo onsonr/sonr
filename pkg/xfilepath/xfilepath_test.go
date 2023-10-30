@@ -9,7 +9,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/pkg/xfilepath"
+	"github.com/sonr-io/sonr/pkg/xfilepath"
 )
 
 func TestJoin(t *testing.T) {

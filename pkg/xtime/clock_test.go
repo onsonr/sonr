@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/pkg/xtime"
+	"github.com/sonr-io/sonr/pkg/xtime"
 )
 
 func TestClockSystem(t *testing.T) {

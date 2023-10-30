@@ -9,9 +9,9 @@ import (
 	"io"
 
 	"github.com/google/uuid"
-	"sonr.io/core/internal/crypto"
 	"github.com/sonr-io/kryptology/pkg/accumulator"
 	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-io/sonr/internal/crypto"
 	"golang.org/x/crypto/hkdf"
 	"lukechampine.com/blake3"
 )

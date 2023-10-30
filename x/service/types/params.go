@@ -4,7 +4,7 @@ import (
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
-	"sonr.io/core/internal/crypto"
+	"github.com/sonr-io/sonr/internal/crypto"
 	"gopkg.in/yaml.v2"
 )
 

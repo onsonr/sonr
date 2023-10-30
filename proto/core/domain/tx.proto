@@ -4,7 +4,7 @@ package core.domain;
 
 import "core/domain/record.proto";
 
-option go_package = "sonr.io/core/x/domain/types";
+option go_package = "github.com/sonr-io/sonr/x/domain/types";
 
 // Msg defines the Msg service.
 // This service provides CRUD operations for UsernameRecords.

@@ -11,8 +11,8 @@ import (
 	"github.com/gobuffalo/plush/v4"
 	"github.com/pkg/errors"
 
-	"sonr.io/core/pkg/gocmd"
-	"sonr.io/core/pkg/xgenny"
+	"github.com/sonr-io/sonr/pkg/gocmd"
+	"github.com/sonr-io/sonr/pkg/xgenny"
 )
 
 //go:embed template/*

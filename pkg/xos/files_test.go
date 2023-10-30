@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/pkg/xos"
+	"github.com/sonr-io/sonr/pkg/xos"
 )
 
 func TestFindFiles(t *testing.T) {

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/services/plugin"
+	"github.com/sonr-io/sonr/services/plugin"
 )
 
 func TestCommandToCobraCommand(t *testing.T) {

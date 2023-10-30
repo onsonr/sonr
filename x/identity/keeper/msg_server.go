@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 
-	"sonr.io/core/internal/crypto"
-	"sonr.io/core/x/identity/types"
+	"github.com/sonr-io/sonr/internal/crypto"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 type msgServer struct {

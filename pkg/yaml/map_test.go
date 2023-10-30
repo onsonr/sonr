@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"gopkg.in/yaml.v2"
 
-	xyaml "sonr.io/core/pkg/yaml"
+	xyaml "github.com/sonr-io/sonr/pkg/yaml"
 )
 
 func TestUnmarshalWithCustomMapType(t *testing.T) {

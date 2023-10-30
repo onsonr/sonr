@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/pkg/events"
+	"github.com/sonr-io/sonr/pkg/events"
 )
 
 func TestNew(t *testing.T) {

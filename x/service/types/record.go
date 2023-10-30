@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"sonr.io/core/types/webauthn"
+	"github.com/sonr-io/sonr/types/webauthn"
 )
 
 const (

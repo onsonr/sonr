@@ -6,8 +6,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
-	"sonr.io/core/x/identity/keeper"
-	"sonr.io/core/x/identity/types"
+	"github.com/sonr-io/sonr/x/identity/keeper"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 func SimulateMsgRegisterIdentity(

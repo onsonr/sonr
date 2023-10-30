@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"sonr.io/core/pkg/xfilepath"
+	"github.com/sonr-io/sonr/pkg/xfilepath"
 )
 
 const (

@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"sonr.io/core/internal/zk"
+	"github.com/sonr-io/sonr/internal/zk"
 )
 
 func TestZkSet(t *testing.T) {

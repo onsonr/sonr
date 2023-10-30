@@ -5,7 +5,7 @@ package highway.wallet.v1;
 import "common/crypto/coin.proto";
 import "google/api/annotations.proto";
 
-option go_package = "sonr.io/core/types/highway/wallet/v1;walletpb";
+option go_package = "github.com/sonr-io/sonr/types/highway/wallet/v1;walletpb";
 
 // WalletService provides methods for managing wallet accounts.
 service WalletService {

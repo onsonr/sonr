@@ -1,8 +1,8 @@
 package sfs
 
 import (
-	"sonr.io/core/internal/sfs/base/redis"
-	"sonr.io/core/internal/sfs/types"
+	"github.com/sonr-io/sonr/internal/sfs/base/redis"
+	"github.com/sonr-io/sonr/internal/sfs/types"
 )
 
 type Map = types.SFSMap

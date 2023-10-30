@@ -20,7 +20,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	"github.com/cosmos/go-bip39"
 	"github.com/pkg/errors"
-	"sonr.io/core/config"
+	"github.com/sonr-io/sonr/config"
 	"github.com/spf13/cobra"
 )
 

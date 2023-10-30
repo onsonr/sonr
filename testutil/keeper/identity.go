@@ -3,8 +3,8 @@ package keeper
 import (
 	"testing"
 
-	"sonr.io/core/x/identity/keeper"
-	"sonr.io/core/x/identity/types"
+	"github.com/sonr-io/sonr/x/identity/keeper"
+	"github.com/sonr-io/sonr/x/identity/types"
 
 	tmdb "github.com/cometbft/cometbft-db"
 	"github.com/cometbft/cometbft/libs/log"

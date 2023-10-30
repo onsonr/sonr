@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	sdkerrors "github.com/cosmos/cosmos-sdk/types/errors"
 	"github.com/cosmos/cosmos-sdk/types/query"
-	"sonr.io/core/x/service/types"
+	"github.com/sonr-io/sonr/x/service/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

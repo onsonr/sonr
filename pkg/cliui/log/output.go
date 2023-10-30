@@ -4,10 +4,10 @@ import (
 	"io"
 	"os"
 
-	"sonr.io/core/pkg/cliui/colors"
-	"sonr.io/core/pkg/cliui/lineprefixer"
-	"sonr.io/core/pkg/cliui/prefixgen"
-	"sonr.io/core/pkg/xio"
+	"github.com/sonr-io/sonr/pkg/cliui/colors"
+	"github.com/sonr-io/sonr/pkg/cliui/lineprefixer"
+	"github.com/sonr-io/sonr/pkg/cliui/prefixgen"
+	"github.com/sonr-io/sonr/pkg/xio"
 )
 
 const (

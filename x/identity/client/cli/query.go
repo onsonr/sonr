@@ -10,7 +10,7 @@ import (
 	// "github.com/cosmos/cosmos-sdk/client/flags"
 	// sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"sonr.io/core/x/identity/types"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 // GetQueryCmd returns the cli query commands for this module

@@ -1,7 +1,7 @@
 package icons
 
 import (
-	"sonr.io/core/pkg/cliui/colors"
+	"github.com/sonr-io/sonr/pkg/cliui/colors"
 )
 
 var (

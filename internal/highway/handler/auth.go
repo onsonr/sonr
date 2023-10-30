@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	mdw "sonr.io/core/internal/highway/middleware"
-	"sonr.io/core/internal/highway/types"
-	authenticationpb "sonr.io/core/types/highway/authentication/v1"
+	mdw "github.com/sonr-io/sonr/internal/highway/middleware"
+	"github.com/sonr-io/sonr/internal/highway/types"
+	authenticationpb "github.com/sonr-io/sonr/types/highway/authentication/v1"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 

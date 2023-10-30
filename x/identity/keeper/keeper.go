@@ -14,7 +14,7 @@ import (
 	host "github.com/cosmos/ibc-go/v7/modules/core/24-host"
 	"github.com/cosmos/ibc-go/v7/modules/core/exported"
 
-	"sonr.io/core/x/identity/types"
+	"github.com/sonr-io/sonr/x/identity/types"
 )
 
 type (

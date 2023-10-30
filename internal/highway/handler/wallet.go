@@ -5,10 +5,10 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
-	"sonr.io/core/internal/crypto"
-	mdw "sonr.io/core/internal/highway/middleware"
+	"github.com/sonr-io/sonr/internal/crypto"
+	mdw "github.com/sonr-io/sonr/internal/highway/middleware"
 
-	walletpb "sonr.io/core/types/highway/wallet/v1"
+	walletpb "github.com/sonr-io/sonr/types/highway/wallet/v1"
 )
 
 // WalletAPI is the alias for the Highway Wallet Service Server.
