@@ -1,0 +1,113 @@
+syntax = "proto3";
+package common.crypto;
+
+option go_package = "github.com/sonr-io/core/types/crypto";
+
+// KeyType is the type of key used to sign a DID document.
+enum KeyType {
+  // No key type specified
+  KeyType_UNSPECIFIED = 0;
+
+  // JsonWebKey2020 is a VerificationMethod type.
+  // https://w3c-ccg.github.io/lds-jws2020/
+  KeyType_JSON_WEB_KEY_2020 = 1;
+
+  // ED25519VerificationKey2018 is the Ed25519VerificationKey2018 verification
+  // key type as specified here: https://w3c-ccg.github.io/lds-ed25519-2018/
+  KeyType_ED25519_VERIFICATION_KEY_2018 = 2;
+
+  // ECDSASECP256K1VerificationKey2019 is the EcdsaSecp256k1VerificationKey2019
+  // verification key type as specified here:
+  // https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+  KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019 = 3;
+
+  // RSAVerificationKey2018 is the RsaVerificationKey2018 verification key type
+  // as specified here: https://w3c-ccg.github.io/lds-rsa2018/
+  KeyType_RSA_VERIFICATION_KEY_2018 = 4;
+
+  // WebAuthnAuthentication2018 is the WebAuthnAuthentication2018 verification
+  // key type as specified here: https://w3c-ccg.github.io/lds-webauthn/
+  KeyType_WEB_AUTHN_AUTHENTICATION_2018 = 5;
+}
+
+// ProofType is the type of proof used to present claims over a DID document.
+enum ProofType {
+  // No proof type specified
+  ProofType_UNSPECIFIED = 0;
+
+  // JsonWebSignature2020 is a proof type.
+  // https://w3c-ccg.github.io/lds-jws2020/
+  ProofType_JSON_WEB_SIGNATURE_2020 = 1;
+
+  // ED25519Signature2018 is the Ed25519Signature2018 proof type as specified
+  // here: https://w3c-ccg.github.io/lds-ed25519-2018/
+  ProofType_ED25519_SIGNATURE_2018 = 2;
+
+  // EcdsaSecp256k1Signature2019 is the EcdsaSecp256k1Signature2019 proof type
+  // as specified here: https://w3c-ccg.github.io/lds-ecdsa-secp256k1-2019/
+  ProofType_ECDSA_SECP256K1_SIGNATURE_2019 = 3;
+
+  // RsaSignature2018 is the RsaSignature2018 proof type as specified here:
+  // https://w3c-ccg.github.io/lds-rsa2018/
+  ProofType_RSA_SIGNATURE_2018 = 4;
+}
+
+// Proof represents a credential/presentation proof as defined by the Linked
+// Data Proofs 1.0 specification (https://w3c-ccg.github.io/ld-proofs/).
+message Proof {
+  // Type defines the specific proof type used. For example, an
+  // Ed25519Signature2018 type indicates that the proof includes a digital
+  // signature produced by an ed25519 cryptographic key.
+  ProofType type = 1;
+
+  // ProofPurpose defines the intent for the proof, the reason why an entity
+  // created it. Acts as a safeguard to prevent the proof from being misused for
+  // a purpose other than the one it was intended for.
+  string proof_purpose = 2;
+
+  // VerificationMethod points to the ID that can be used to verify the proof,
+  // eg: a public key.
+  string verification_method = 3;
+
+  // Created notes when the proof was created using a iso8601 string
+  string created = 4;
+
+  // Domain specifies the restricted domain of the proof
+  string domain = 5;
+}
+
+// JSONWebSignature2020Proof is a VC proof with a signature according to
+// JsonWebSignature2020
+message JSONWebSignature2020Proof {
+  Proof proof = 1;
+  string jws = 2;
+}
+
+// VerifiableCredential represents a credential as defined by the Verifiable
+// Credentials Data Model 1.0 specification
+// (https://www.w3.org/TR/vc-data-model/).
+message VerifiableCredential {
+  // ID is the unique identifier for the credential.
+  string id = 1;
+
+  // Context is a list of URIs that define the context of the credential.
+  repeated string context = 2;
+
+  // Type is a list of URIs that define the type of the credential.
+  repeated string type = 3;
+
+  // Issuer is the DID of the issuer of the credential.
+  string issuer = 4;
+
+  // IssuanceDate is the date the credential was issued.
+  string issuance_date = 5;
+
+  // ExpirationDate is the date the credential expires.
+  string expiration_date = 6;
+
+  // CredentialSubject is the subject of the credential.
+  map<string, string> credential_subject = 7;
+
+  // Proof is the proof of the credential.
+  map<string, string> proof = 8;
+}

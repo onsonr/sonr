@@ -17,7 +17,7 @@ permissions:
 jobs:
   release:
     name: Run goreleaser
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
         with:
@@ -26,9 +26,11 @@ jobs:
       - run: make release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   publish-buf:
     name: Publish buf.build proto
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    needs: release
     steps:
       - uses: actions/checkout@v3
         with:

@@ -16,13 +16,9 @@ on:
   pull_request:
     branches:
       - "**"
-  push:
-    branches:
-      - "v[0-9]**"
-  workflow_dispatch:
   merge_group:
-env:
-  GO_VERSION: "1.20.5"
+  workflow_dispatch:
+  workflow_call:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -30,9 +26,8 @@ concurrency:
 
 jobs:
   build-default:
-    name: Build sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
-    runs-on: ubuntu-latest
-
+    name: Build sonrd-${{ matrix.targetos }}-${{ matrix.arch }} for ${{ github.ref }}
+    runs-on: self-hosted
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -40,46 +35,19 @@ jobs:
         include:
           - targetos: darwin
             arch: arm64
-
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Get git diff
-        uses: technote-space/get-diff-action@v6.1.2
-        with:
-          PATTERNS: |
-            **/**.wasm
-            **/**.go
-            go.mod
-            go.sum
-            Makefile
-            .github/workflows/build.yml
+
       - uses: actions/setup-go@v4
-        if: env.GIT_DIFF
-        with:
-          go-version: ${{env.GO_VERSION}}
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
+
       - name: Download Dependencies
-        if: env.GIT_DIFF
         run: go mod download
-      - name: Build sonrd
-        if: env.GIT_DIFF
-        run: |
-          GOWRK=off go build cmd/sonrd/main.go
-      - name: Upload sonrd artifact
-        if: env.GIT_DIFF
-        uses: actions/upload-artifact@v3
+      - run: make build
+      - uses: actions/upload-artifact@v3
         with:
           name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
-          path: cmd/sonrd/sonrd
-
-  build-make:
-    name: Build using makefile
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Run make build
-        run: make build
+          path: bin/sonrd

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	"github.com/cosmos/cosmos-sdk/x/genutil/types"
-	"github.com/sonr-io/core/cmd/sonrd/config"
+	"github.com/sonr-io/core/config"
 	"github.com/spf13/cobra"
 )
 

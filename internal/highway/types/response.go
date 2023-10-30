@@ -3,7 +3,7 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonr-io/core/pkg/crypto"
+	"github.com/sonr-io/core/internal/crypto"
 	identitytypes "github.com/sonr-io/core/x/identity/types"
 )
 

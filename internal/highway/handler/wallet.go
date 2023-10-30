@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/cosmos/cosmos-sdk/client"
+	"github.com/sonr-io/core/internal/crypto"
 	mdw "github.com/sonr-io/core/internal/highway/middleware"
-	"github.com/sonr-io/core/pkg/crypto"
 
 	walletpb "github.com/sonr-io/core/types/highway/wallet/v1"
 )

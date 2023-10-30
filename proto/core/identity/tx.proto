@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package core.identity;
 
-import "core/identity/did.proto";
 import "core/identity/account.proto";
+import "core/identity/did.proto";
 
 option go_package = "github.com/sonr-io/core/x/identity/types";
 
@@ -25,18 +25,6 @@ service Msg {
   // DeleteControllerAccount deletes a controller account.
   rpc DeleteControllerAccount(MsgDeleteControllerAccount)
       returns (MsgDeleteControllerAccountResponse);
-
-  // CreateEscrowAccount creates a new escrow account.
-  rpc CreateEscrowAccount(MsgCreateEscrowAccount)
-      returns (MsgCreateEscrowAccountResponse);
-
-  // UpdateEscrowAccount updates an existing escrow account.
-  rpc UpdateEscrowAccount(MsgUpdateEscrowAccount)
-      returns (MsgUpdateEscrowAccountResponse);
-
-  // DeleteEscrowAccount deletes an escrow account.
-  rpc DeleteEscrowAccount(MsgDeleteEscrowAccount)
-      returns (MsgDeleteEscrowAccountResponse);
 }
 
 // MsgRegisterIdentity represents a request to register a new identity.
@@ -100,43 +88,3 @@ message MsgDeleteControllerAccount {
 // MsgDeleteControllerAccountResponse represents the response to a delete
 // controller account request.
 message MsgDeleteControllerAccountResponse {}
-
-// MsgCreateEscrowAccount represents a request to create a new escrow account.
-message MsgCreateEscrowAccount {
-  string creator = 1;          // The creator of the escrow account.
-  string address = 2;          // The address of the escrow account.
-  string publicKey = 3;        // The public key of the escrow account.
-  string lockupUsdBalance = 4; // The lockup USD balance of the escrow account.
-}
-
-// MsgCreateEscrowAccountResponse represents the response to a create escrow
-// account request.
-message MsgCreateEscrowAccountResponse {
-  uint64 id = 1;             // The ID of the created escrow account.
-  EscrowAccount account = 2; // The created escrow account.
-}
-
-// MsgUpdateEscrowAccount represents a request to update an existing escrow
-// account.
-message MsgUpdateEscrowAccount {
-  string creator = 1;   // The creator of the escrow account.
-  uint64 id = 2;        // The ID of the escrow account to be updated.
-  string address = 3;   // The address of the escrow account to be updated.
-  string publicKey = 4; // The updated public key of the escrow account.
-  string lockupUsdBalance =
-      5; // The updated lockup USD balance of the escrow account.
-}
-
-// MsgUpdateEscrowAccountResponse represents the response to an update escrow
-// account request.
-message MsgUpdateEscrowAccountResponse {}
-
-// MsgDeleteEscrowAccount represents a request to delete an escrow account.
-message MsgDeleteEscrowAccount {
-  string creator = 1; // The creator of the escrow account.
-  string address = 2; // The address of the escrow account to be deleted.
-}
-
-// MsgDeleteEscrowAccountResponse represents the response to a delete escrow
-// account request.
-message MsgDeleteEscrowAccountResponse {}

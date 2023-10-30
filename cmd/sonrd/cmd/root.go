@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"io"
@@ -9,6 +10,7 @@ import (
 	"strings"
 
 	// this line is used by starport scaffolding # root/moduleImport
+
 	"github.com/CosmWasm/wasmd/x/wasm"
 	dbm "github.com/cometbft/cometbft-db"
 	tmcfg "github.com/cometbft/cometbft/config"
@@ -36,8 +38,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/genutil"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
 	genutiltypes "github.com/cosmos/cosmos-sdk/x/genutil/types"
-	sonrdconfig "github.com/sonr-io/core/cmd/sonrd/config"
-	"github.com/sonr-io/core/internal/highway"
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -45,6 +45,8 @@ import (
 
 	"github.com/sonr-io/core/app"
 	appparams "github.com/sonr-io/core/app/params"
+	sonrdconfig "github.com/sonr-io/core/config"
+	"github.com/sonr-io/core/internal/highway"
 )
 
 var (
@@ -149,6 +151,7 @@ func initRootCmd(
 			banktypes.GenesisBalancesIterator{},
 			app.DefaultNodeHome,
 		),
+		NewPlugin(),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
@@ -156,6 +159,11 @@ func initRootCmd(
 		config.Cmd(),
 		// this line is used by starport scaffolding # root/commands
 	)
+
+	// Load plugins if any
+	if err := LoadPlugins(context.Background(), rootCmd); err != nil {
+		panic(err)
+	}
 
 	a := appCreator{
 		encodingConfig,

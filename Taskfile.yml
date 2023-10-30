@@ -1,9 +1,14 @@
 version: "3"
 dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
-
+includes:
+  docker:
+    taskfile: ./docker/Taskfile.yml
+    dir: .
+  proto:
+    taskfile: ./proto/Taskfile.yml
+    dir: ./proto
 vars:
   CGO_ENABLED: 1
-  REGISTRY: "ghcr.io/sonr-io"
   WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
   VERSION:
     sh: echo $(git describe --tags --abbrev=0)
@@ -24,10 +29,10 @@ vars:
     sh: echo $GITHUB_TOKEN
     default: ""
   GORELEASER_IMAGE: ghcr.io/goreleaser/goreleaser-cross:v{{.GO_VERSION}}
-tasks:
   # ----------------------------------------------------------------------------
   # -- Run Tasks ---------------------------------------------------------------
   # ----------------------------------------------------------------------------
+tasks:
   default:
     desc: Print the version
     silent: true
@@ -35,59 +40,19 @@ tasks:
       - task -l
 
   build:
-    desc: Build the binary for all platforms
+    aliases:
+      - b
+    desc: Build the binary for current platform
     cmds:
       - make build
 
-  release-docker:
-    desc: Build the binary for docker
+  build-all:
+    aliases:
+      - ba
+    desc: Build the binary for all platforms and docker
     cmds:
-      - task: docker-build-push
-        vars:
-          IMAGE: sonrd
-
-
-  docker-build-push:
-    silent: true
-    internal: true
-    desc: Build, tag and push the docker image
-    cmds:
-      - docker build -f ./Dockerfile . -t {{.IMAGE}}
-      - docker tag {{.IMAGE}} {{.IMAGE}}:latest
-      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:latest
-      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
-      - docker tag {{.IMAGE}} {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
-    requires:
-      vars: [IMAGE]
-
-  # ----------------------------------------------------------------------------
-  # -- Protobuf Tasks -------------------------------------------------------------
-  # ----------------------------------------------------------------------------
-  buf-mod:
-    dir: proto
-    internal: true
-    silent: true
-    desc: Update the buf.lock file
-    cmds:
-      - buf mod update
-
-  buf-build:
-    dir: proto
-    internal: true
-    silent: true
-    desc: Build the protobuf files
-    deps: [buf-mod]
-    cmds:
-      - buf build
-
-  buf-push:
-    dir: proto
-    internal: true
-    silent: true
-    desc: Push the protobuf files to the registry
-    deps: [buf-build]
-    cmds:
-      - buf push
+      - make build
+      - task: docker:build
 
   generate:
     aliases:
@@ -96,23 +61,4 @@ tasks:
     cmds:
       - |
         make proto-all
-        git add .
-        git commit -m "chore: update proto files"
-
-  go-cross-build:
-    desc: Build the binary for all platforms
-    cmds:
-      - |
-        docker run \
-        --rm \
-        -e COSMWASM_VERSION={{.COSMWASM_VERSION}} \
-        -v /var/run/docker.sock:/var/run/docker.sock \
-        -v `pwd`:/go/src/sonrd \
-        -w /go/src/sonrd \
-        {{.GORELEASER_IMAGE}} \
-        build \
-        --clean \
-        --skip=validate \
-        --id={{.ID}} \
-    requires:
-      vars: [ID]
+        cd proto && buf generate --template buf.gen.pulsar.yaml

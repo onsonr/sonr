@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   generate-changelog:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-ultra-instinct
     steps:
       - uses: actions/checkout@v2
         with:

@@ -9,6 +9,7 @@ message ServiceRecord {
   repeated string origins = 3;
   string name = 4;        // The name of the service
   string description = 5; // The description of the service
+  string category = 6;    // The category of the service
 }
 
 // ServiceRelationship is a relationship between a service and a User entity.

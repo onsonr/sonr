@@ -2,9 +2,9 @@ syntax = "proto3";
 
 package core.domain;
 
-import "gogoproto/gogo.proto";
 import "core/domain/params.proto";
 import "core/domain/record.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sonr-io/core/x/domain/types";
 

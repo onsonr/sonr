@@ -51,7 +51,12 @@
     "**/.hg": true,
     "**/CVS": true,
     "**/.DS_Store": true,
-    ".vscode/": true
+    ".vscode/": true,
+    "sonar-project.properties": true,
+    "LICENSE": true,
+    "codecov.yml": true,
+    "CODE_OF_CONDUCT.md": true,
+    "CHANGELOG.md": true
   },
   "svg.preview.background": "custom",
   "typescript.preferences.importModuleSpecifier": "non-relative",
