@@ -8,8 +8,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sonr-io/core/x/service/keeper"
-	"github.com/sonr-io/core/x/service/types"
+	"sonr.io/core/x/service/keeper"
+	"sonr.io/core/x/service/types"
 )
 
 func SimulateMsgCreateServiceRecord(

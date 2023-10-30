@@ -7,7 +7,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/go-webauthn/webauthn/protocol"
-	crypto "github.com/sonr-io/core/internal/crypto"
+	crypto "sonr.io/core/internal/crypto"
 )
 
 // NewDIDDocument creates a new DIDDocument from an Identification and optional VerificationRelationships

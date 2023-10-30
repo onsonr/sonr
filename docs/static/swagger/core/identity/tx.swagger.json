@@ -1,0 +1,218 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "core/identity/tx.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "core.identity.ControllerAccount": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "publicKey": {
+          "type": "string"
+        },
+        "authenticators": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "wallets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "core.identity.DIDDocument": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "id": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "authentication": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "assertion_method": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "capability_invocation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "capability_delegation": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "key_agreement": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
+        },
+        "also_known_as": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "DIDDocument represents a Decentralized Identifier (DID) document that\ncontains information about the DID subject, such as public keys, verification\nmethods, and services."
+    },
+    "core.identity.MsgCreateControllerAccountResponse": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "account": {
+          "$ref": "#/definitions/core.identity.ControllerAccount"
+        }
+      },
+      "description": "MsgCreateControllerAccountResponse represents the response to a create\ncontroller account request."
+    },
+    "core.identity.MsgDeleteControllerAccountResponse": {
+      "type": "object",
+      "description": "MsgDeleteControllerAccountResponse represents the response to a delete\ncontroller account request."
+    },
+    "core.identity.MsgRegisterIdentityResponse": {
+      "type": "object",
+      "properties": {
+        "success": {
+          "type": "boolean"
+        },
+        "did_document": {
+          "$ref": "#/definitions/core.identity.DIDDocument"
+        }
+      },
+      "description": "MsgRegisterIdentityResponse represents the response to a register identity\nrequest."
+    },
+    "core.identity.MsgUpdateControllerAccountResponse": {
+      "type": "object",
+      "properties": {
+        "account": {
+          "$ref": "#/definitions/core.identity.ControllerAccount"
+        }
+      },
+      "description": "MsgUpdateControllerAccountResponse represents the response to an update\ncontroller account request."
+    },
+    "core.identity.VerificationMethod": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "controller": {
+          "type": "string"
+        },
+        "public_key_jwk": {
+          "type": "string"
+        },
+        "public_key_multibase": {
+          "type": "string"
+        },
+        "blockchain_account_id": {
+          "type": "string"
+        },
+        "attestation_type": {
+          "type": "string"
+        },
+        "transports": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "VerificationMethod represents a verification method that can be used to\nauthenticate the DID subject or perform other cryptographic operations."
+    },
+    "core.identity.VerificationRelationship": {
+      "type": "object",
+      "properties": {
+        "verification_method": {
+          "$ref": "#/definitions/core.identity.VerificationMethod"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        }
+      },
+      "description": "VerificationRelationship represents a relationship between a verification\nmethod and a specific verification purpose (e.g., authentication, assertion,\netc.)."
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    }
+  }
+}

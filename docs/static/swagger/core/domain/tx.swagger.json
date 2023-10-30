@@ -1,0 +1,61 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "core/domain/tx.proto",
+    "version": "version not set"
+  },
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {},
+  "definitions": {
+    "core.domain.MsgCreateUsernameRecordsResponse": {
+      "type": "object",
+      "description": "MsgCreateUsernameRecordsResponse represents the response from creating a\nUsernameRecord."
+    },
+    "core.domain.MsgDeleteUsernameRecordsResponse": {
+      "type": "object",
+      "description": "MsgDeleteUsernameRecordsResponse represents the response from deleting a\nUsernameRecord."
+    },
+    "core.domain.MsgUpdateUsernameRecordsResponse": {
+      "type": "object",
+      "description": "MsgUpdateUsernameRecordsResponse represents the response from updating a\nUsernameRecord."
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    }
+  }
+}

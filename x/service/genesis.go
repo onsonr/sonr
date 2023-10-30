@@ -2,8 +2,8 @@ package service
 
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/core/x/service/keeper"
-	"github.com/sonr-io/core/x/service/types"
+	"sonr.io/core/x/service/keeper"
+	"sonr.io/core/x/service/types"
 )
 
 // InitGenesis initializes the module's state from a provided genesis state.

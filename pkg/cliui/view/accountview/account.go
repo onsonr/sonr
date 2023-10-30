@@ -7,8 +7,8 @@ import (
 	"github.com/muesli/reflow/indent"
 	"github.com/muesli/reflow/wordwrap"
 
-	"github.com/sonr-io/core/pkg/cliui/colors"
-	"github.com/sonr-io/core/pkg/cliui/icons"
+	"sonr.io/core/pkg/cliui/colors"
+	"sonr.io/core/pkg/cliui/icons"
 )
 
 var (

@@ -3,10 +3,10 @@ package service_test
 import (
 	"testing"
 
-	keepertest "github.com/sonr-io/core/testutil/keeper"
-	"github.com/sonr-io/core/testutil/nullify"
-	"github.com/sonr-io/core/x/service"
-	"github.com/sonr-io/core/x/service/types"
+	keepertest "sonr.io/core/testutil/keeper"
+	"sonr.io/core/testutil/nullify"
+	"sonr.io/core/x/service"
+	"sonr.io/core/x/service/types"
 	"github.com/stretchr/testify/require"
 )
 

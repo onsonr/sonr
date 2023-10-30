@@ -6,7 +6,7 @@ import (
 
 	"lukechampine.com/blake3"
 
-	"github.com/sonr-io/core/internal/sfs"
+	"sonr.io/core/internal/sfs"
 	"github.com/spf13/viper"
 )
 

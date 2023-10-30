@@ -6,7 +6,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonr-io/core/internal/crypto"
+	"sonr.io/core/internal/crypto"
 )
 
 // TxResponse is a type alias for sdk.TxResponse

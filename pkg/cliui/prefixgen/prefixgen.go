@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonr-io/core/pkg/cliui/colors"
+	"sonr.io/core/pkg/cliui/colors"
 )
 
 // Prefixer generates prefixes.

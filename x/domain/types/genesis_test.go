@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/sonr-io/core/x/domain/types"
+	"sonr.io/core/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

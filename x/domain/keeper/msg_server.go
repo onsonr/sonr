@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/sonr-io/core/x/domain/types"
+	"sonr.io/core/x/domain/types"
 )
 
 type msgServer struct {
