@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/viper"
 
-	"github.com/sonr-io/core/app"
+	"sonr.io/core/app"
 )
 
 // Masthead is the masthead of the application.

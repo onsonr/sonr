@@ -9,8 +9,8 @@ import (
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 
-	"github.com/sonr-io/core/internal/local"
-	"github.com/sonr-io/core/services/did/types"
+	"sonr.io/core/internal/local"
+	"sonr.io/core/services/did/types"
 )
 
 // ! ||--------------------------------------------------------------------------------||

@@ -5,12 +5,12 @@ import (
 	"fmt"
 
 	"github.com/highlight/highlight/sdk/highlight-go"
-	"github.com/sonr-io/core/internal/crypto"
-	"github.com/sonr-io/core/services/did/method/btcr"
-	"github.com/sonr-io/core/services/did/method/ethr"
-	"github.com/sonr-io/core/services/did/method/sonr"
-	"github.com/sonr-io/core/services/did/types"
-	identitytypes "github.com/sonr-io/core/x/identity/types"
+	"sonr.io/core/internal/crypto"
+	"sonr.io/core/services/did/method/btcr"
+	"sonr.io/core/services/did/method/ethr"
+	"sonr.io/core/services/did/method/sonr"
+	"sonr.io/core/services/did/types"
+	identitytypes "sonr.io/core/x/identity/types"
 )
 
 // Account returns the controller account

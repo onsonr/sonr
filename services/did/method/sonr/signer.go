@@ -7,9 +7,9 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	txtypes "github.com/cosmos/cosmos-sdk/types/tx"
-	"github.com/sonr-io/core/internal/crypto"
-	"github.com/sonr-io/core/services/did/types"
-	identitytypes "github.com/sonr-io/core/x/identity/types"
+	"sonr.io/core/internal/crypto"
+	"sonr.io/core/services/did/types"
+	identitytypes "sonr.io/core/x/identity/types"
 )
 
 // SignCosmosTx signs a transaction with the given inputs.

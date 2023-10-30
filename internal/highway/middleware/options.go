@@ -5,7 +5,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 
-	authenticationpb "github.com/sonr-io/core/types/highway/authentication/v1"
+	authenticationpb "sonr.io/core/types/highway/authentication/v1"
 )
 
 // GetCredentialAttestationParams returns the credential attestation options to start wallet registration.

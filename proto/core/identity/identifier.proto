@@ -1,7 +1,7 @@
 syntax = "proto3";
 package core.identity;
 
-option go_package = "github.com/sonr-io/core/x/identity/types";
+option go_package = "sonr.io/core/x/identity/types";
 
 // UserIdentifierType defines the type of the user identifier\
 enum UserIdentifierType {

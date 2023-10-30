@@ -8,7 +8,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonr-io/core/pkg/xos"
+	"sonr.io/core/pkg/xos"
 )
 
 func TestRename(t *testing.T) {

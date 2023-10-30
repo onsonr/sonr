@@ -5,7 +5,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sonr-io/core/pkg/xtime"
+	"sonr.io/core/pkg/xtime"
 
 	"github.com/stretchr/testify/require"
 )

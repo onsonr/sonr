@@ -4,7 +4,7 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/core/x/service/types"
+	"sonr.io/core/x/service/types"
 )
 
 type msgServer struct {

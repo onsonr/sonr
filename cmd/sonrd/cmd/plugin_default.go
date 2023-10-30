@@ -5,9 +5,9 @@ import (
 
 	"github.com/spf13/cobra"
 
-	pluginsconfig "github.com/sonr-io/core/config/plugins"
-	"github.com/sonr-io/core/pkg/cliui"
-	"github.com/sonr-io/core/services/plugin"
+	pluginsconfig "sonr.io/core/config/plugins"
+	"sonr.io/core/pkg/cliui"
+	"sonr.io/core/services/plugin"
 )
 
 type defaultPlugin struct {

@@ -3,7 +3,7 @@ package redis
 import (
 	"fmt"
 
-	"github.com/sonr-io/core/internal/sfs/types"
+	"sonr.io/core/internal/sfs/types"
 )
 
 type sfsSet struct {

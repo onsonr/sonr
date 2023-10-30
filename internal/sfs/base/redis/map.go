@@ -1,7 +1,7 @@
 package redis
 
 import (
-	"github.com/sonr-io/core/internal/sfs/types"
+	"sonr.io/core/internal/sfs/types"
 )
 
 type sfsMap struct {

@@ -3,7 +3,7 @@ package keeper
 import (
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonr-io/core/x/domain/types"
+	"sonr.io/core/x/domain/types"
 )
 
 // SetUsernameRecords set a specific UsernameRecord in the store from its index

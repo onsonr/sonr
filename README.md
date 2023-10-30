@@ -119,7 +119,7 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
   <!-- notranslate -->
   <tr>
     <td>JavaScript (TypeScript)</td>
-    <td><a href="https://github.com/sonr-io/core-js" target="_blank" rel="noopener noreferrer">sonr-js</a></td>
+    <td><a href="https://sonr.io/core-js" target="_blank" rel="noopener noreferrer">sonr-js</a></td>
     <td><a href="https://github.com/sonr-io/auth-js" target="_blank" rel="noopener noreferrer">auth-js</a></td>
     <td><a href="https://github.com/sonr-io/database-js" target="_blank" rel="noopener noreferrer">database-js</a></td>
     <td><a href="https://github.com/sonr-io/storage-js" target="_blank" rel="noopener noreferrer">storage-js</a></td>
@@ -127,7 +127,7 @@ Our approach for client libraries is uniform. Abstract away any blockchain speci
   </tr>
     <tr>
     <td>Flutter</td>
-    <td><a href="https://github.com/sonr-io/core-flutter" target="_blank" rel="noopener noreferrer">sonr-flutter</a></td>
+    <td><a href="https://sonr.io/core-flutter" target="_blank" rel="noopener noreferrer">sonr-flutter</a></td>
     <td><a href="https://github.com/sonr-io/auth-dart" target="_blank" rel="noopener noreferrer">auth-dart</a></td>
     <td><a href="https://github.com/sonr-io/database-dart" target="_blank" rel="noopener noreferrer">database-dart</a></td>
     <td><a href="https://github.com/sonr-io/storage-dart" target="_blank" rel="noopener noreferrer">storage-dart</a></td>

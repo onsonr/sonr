@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sonr-io/core/x/domain/types"
+	"sonr.io/core/x/domain/types"
 )
 
 type (

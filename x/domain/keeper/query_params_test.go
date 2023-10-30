@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	testkeeper "github.com/sonr-io/core/testutil/keeper"
-	"github.com/sonr-io/core/x/domain/types"
+	testkeeper "sonr.io/core/testutil/keeper"
+	"sonr.io/core/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

@@ -9,7 +9,7 @@ import (
 	"golang.org/x/exp/slices"
 	"gopkg.in/yaml.v2"
 
-	"github.com/sonr-io/core/pkg/gomodule"
+	"sonr.io/core/pkg/gomodule"
 )
 
 type Config struct {

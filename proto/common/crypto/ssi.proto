@@ -1,7 +1,7 @@
 syntax = "proto3";
 package common.crypto;
 
-option go_package = "github.com/sonr-io/core/types/crypto";
+option go_package = "sonr.io/core/types/crypto";
 
 // KeyType is the type of key used to sign a DID document.
 enum KeyType {
