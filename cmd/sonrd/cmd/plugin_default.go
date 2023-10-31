@@ -5,8 +5,8 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/sonrhq/cli-utils/cliui"
 	pluginsconfig "github.com/sonrhq/sonr/config/plugins"
+	"github.com/sonrhq/sonr/pkg/cliui"
 	"github.com/sonrhq/sonr/services/plugin"
 )
 

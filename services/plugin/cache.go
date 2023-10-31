@@ -7,13 +7,15 @@ import (
 	"path"
 
 	hplugin "github.com/hashicorp/go-plugin"
-	"github.com/sonrhq/cli-utils/cache"
+
+	"github.com/sonrhq/sonr/pkg/cache"
 )
 
 const (
 	cacheFileName  = "sonr_plugin_cache.db"
 	cacheNamespace = "plugin.rpc.context"
 )
+
 
 var storageCache *cache.Cache[hplugin.ReattachConfig]
 

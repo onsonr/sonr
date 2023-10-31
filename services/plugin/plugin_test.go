@@ -14,12 +14,12 @@ import (
 	"github.com/go-git/go-git/v5/plumbing/object"
 	hplugin "github.com/hashicorp/go-plugin"
 	"github.com/pkg/errors"
-	"github.com/sonrhq/cli-utils/gocmd"
-	"github.com/sonrhq/cli-utils/gomodule"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	pluginsconfig "github.com/sonrhq/sonr/config/plugins"
+	"github.com/sonrhq/sonr/pkg/gocmd"
+	"github.com/sonrhq/sonr/pkg/gomodule"
 )
 
 func TestNewPlugin(t *testing.T) {
@@ -478,6 +478,7 @@ func TestPluginClean(t *testing.T) {
 		})
 	}
 }
+
 
 // scaffoldPlugin runs Scaffold and updates the go.mod so it uses the
 // current ignite/cli sources.
