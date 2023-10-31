@@ -4,13 +4,12 @@
     "title": "highway/storage/v1/service.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "StorageService"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/v1/cid/{cid}": {
       "get": {
@@ -20,13 +19,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetCIDResponse"
+              "$ref": "#/definitions/highway.storage.v1.GetCIDResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
@@ -39,7 +38,9 @@
             "type": "string"
           }
         ],
-        "tags": ["StorageService"]
+        "tags": [
+          "StorageService"
+        ]
       },
       "post": {
         "summary": "PutData stores data and associates it with a given CID.",
@@ -48,13 +49,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1PutDataResponse"
+              "$ref": "#/definitions/highway.storage.v1.PutDataResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
@@ -65,32 +66,33 @@
             "in": "path",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "data",
-            "description": "data is the data to store.",
-            "in": "query",
-            "required": false,
-            "type": "string"
           }
         ],
-        "tags": ["StorageService"]
+        "tags": [
+          "StorageService"
+        ]
       }
     }
   },
   "definitions": {
-    "protobufAny": {
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
-        "@type": {
+        "type_url": {
           "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
         }
-      },
-      "additionalProperties": {}
+      }
     },
-    "rpcStatus": {
+    "grpc.gateway.runtime.Error": {
       "type": "object",
       "properties": {
+        "error": {
+          "type": "string"
+        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -101,13 +103,12 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/google.protobuf.Any"
           }
         }
       }
     },
-    "v1GetCIDResponse": {
+    "highway.storage.v1.GetCIDResponse": {
       "type": "object",
       "properties": {
         "cid": {
@@ -121,7 +122,7 @@
       },
       "description": "GetCIDResponse is the response type for the GetCID method."
     },
-    "v1PutDataResponse": {
+    "highway.storage.v1.PutDataResponse": {
       "type": "object",
       "properties": {
         "cid": {

@@ -17,9 +17,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/cli-utils/gocmd"
-	"github.com/sonrhq/cli-utils/gomodule"
 	pluginsconfig "github.com/sonrhq/sonr/config/plugins"
+	"github.com/sonrhq/sonr/pkg/gocmd"
+	"github.com/sonrhq/sonr/pkg/gomodule"
 )
 
 func TestNewPlugin(t *testing.T) {

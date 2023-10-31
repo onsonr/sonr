@@ -4,27 +4,50 @@
     "title": "core/service/tx.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "Msg"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {},
   "definitions": {
-    "protobufAny": {
+    "core.service.MsgCreateServiceRecordResponse": {
       "type": "object",
       "properties": {
-        "@type": {
-          "type": "string"
+        "id": {
+          "type": "string",
+          "format": "uint64"
         }
       },
-      "additionalProperties": {}
+      "description": "MsgCreateServiceRecordResponse is the response type for the\nCreateServiceRecord method. It returns the id of the created ServiceRecord."
     },
-    "rpcStatus": {
+    "core.service.MsgDeleteServiceRecordResponse": {
+      "type": "object",
+      "description": "MsgDeleteServiceRecordResponse is the response type for the\nDeleteServiceRecord method. It doesn't return any specific value."
+    },
+    "core.service.MsgUpdateServiceRecordResponse": {
+      "type": "object",
+      "description": "MsgUpdateServiceRecordResponse is the response type for the\nUpdateServiceRecord method. It doesn't return any specific value."
+    },
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -35,29 +58,10 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/google.protobuf.Any"
           }
         }
       }
-    },
-    "serviceMsgCreateServiceRecordResponse": {
-      "type": "object",
-      "properties": {
-        "id": {
-          "type": "string",
-          "format": "uint64"
-        }
-      },
-      "description": "MsgCreateServiceRecordResponse is the response type for the\nCreateServiceRecord method. It returns the id of the created ServiceRecord."
-    },
-    "serviceMsgDeleteServiceRecordResponse": {
-      "type": "object",
-      "description": "MsgDeleteServiceRecordResponse is the response type for the\nDeleteServiceRecord method. It doesn't return any specific value."
-    },
-    "serviceMsgUpdateServiceRecordResponse": {
-      "type": "object",
-      "description": "MsgUpdateServiceRecordResponse is the response type for the\nUpdateServiceRecord method. It doesn't return any specific value."
     }
   }
 }

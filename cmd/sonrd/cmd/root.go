@@ -46,7 +46,7 @@ import (
 	"github.com/sonrhq/sonr/app"
 	appparams "github.com/sonrhq/sonr/app/params"
 	sonrdconfig "github.com/sonrhq/sonr/config"
-	"github.com/sonrhq/sonr/services/highway"
+	"github.com/sonrhq/sonr/internal/highway"
 )
 
 var (

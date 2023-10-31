@@ -4,39 +4,44 @@
     "title": "core/domain/tx.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "Msg"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {},
   "definitions": {
-    "domainMsgCreateUsernameRecordsResponse": {
+    "core.domain.MsgCreateUsernameRecordsResponse": {
       "type": "object",
       "description": "MsgCreateUsernameRecordsResponse represents the response from creating a\nUsernameRecord."
     },
-    "domainMsgDeleteUsernameRecordsResponse": {
+    "core.domain.MsgDeleteUsernameRecordsResponse": {
       "type": "object",
       "description": "MsgDeleteUsernameRecordsResponse represents the response from deleting a\nUsernameRecord."
     },
-    "domainMsgUpdateUsernameRecordsResponse": {
+    "core.domain.MsgUpdateUsernameRecordsResponse": {
       "type": "object",
       "description": "MsgUpdateUsernameRecordsResponse represents the response from updating a\nUsernameRecord."
     },
-    "protobufAny": {
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
-        "@type": {
+        "type_url": {
           "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
         }
-      },
-      "additionalProperties": {}
+      }
     },
-    "rpcStatus": {
+    "grpc.gateway.runtime.Error": {
       "type": "object",
       "properties": {
+        "error": {
+          "type": "string"
+        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -47,8 +52,7 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/google.protobuf.Any"
           }
         }
       }

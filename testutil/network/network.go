@@ -19,7 +19,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/sonrhq/sonr/app"
-	"github.com/sonrhq/sonr/services/highway"
+	"github.com/sonrhq/sonr/internal/highway"
 )
 
 type (
