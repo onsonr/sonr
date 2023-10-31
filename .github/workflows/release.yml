@@ -23,7 +23,9 @@ jobs:
         with:
           fetch-depth: 0
           # Run only on tag
-      - run: make release
+      - run: |
+          go mod download
+          goreleaser release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

@@ -2,7 +2,6 @@
 project_name: sonrd
 before:
   hooks:
-    - go mod tidy
     - go mod download
 builds:
   # Build - Linux (amd64)
