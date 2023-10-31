@@ -4,12 +4,13 @@
     "title": "highway/database/v1/service.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
+  "tags": [
+    {
+      "name": "DatabaseService"
+    }
   ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/health": {
       "get": {
@@ -18,41 +19,33 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/highway.database.v1.HealthResponse"
+              "$ref": "#/definitions/v1HealthResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
-        "tags": [
-          "DatabaseService"
-        ]
+        "tags": ["DatabaseService"]
       }
     }
   },
   "definitions": {
-    "google.protobuf.Any": {
+    "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
-    "grpc.gateway.runtime.Error": {
+    "rpcStatus": {
       "type": "object",
       "properties": {
-        "error": {
-          "type": "string"
-        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -63,12 +56,13 @@
         "details": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/google.protobuf.Any"
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
           }
         }
       }
     },
-    "highway.database.v1.HealthResponse": {
+    "v1HealthResponse": {
       "type": "object",
       "properties": {
         "ok": {

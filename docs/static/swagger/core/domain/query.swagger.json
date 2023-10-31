@@ -4,12 +4,13 @@
     "title": "core/domain/query.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
+  "tags": [
+    {
+      "name": "Query"
+    }
   ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/core/domain/params": {
       "get": {
@@ -19,19 +20,17 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.domain.QueryParamsResponse"
+              "$ref": "#/definitions/domainQueryParamsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/domain/username": {
@@ -42,13 +41,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.domain.QueryAllUsernameRecordsResponse"
+              "$ref": "#/definitions/domainQueryAllUsernameRecordsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -78,7 +77,7 @@
             "format": "uint64"
           },
           {
-            "name": "pagination.count_total",
+            "name": "pagination.countTotal",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
             "in": "query",
             "required": false,
@@ -92,9 +91,7 @@
             "type": "boolean"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/domain/username/{index}": {
@@ -105,13 +102,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.domain.QueryGetUsernameRecordsResponse"
+              "$ref": "#/definitions/domainQueryGetUsernameRecordsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -123,52 +120,51 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     }
   },
   "definitions": {
-    "core.domain.Params": {
+    "domainParams": {
       "type": "object",
       "description": "Params defines the parameters for the module."
     },
-    "core.domain.QueryAllUsernameRecordsResponse": {
+    "domainQueryAllUsernameRecordsResponse": {
       "type": "object",
       "properties": {
         "usernameRecords": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.domain.UsernameRecord"
+            "type": "object",
+            "$ref": "#/definitions/domainUsernameRecord"
           }
         },
         "pagination": {
-          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+          "$ref": "#/definitions/v1beta1PageResponse"
         }
       },
       "description": "QueryAllUsernameRecordsResponse is the response type for the\nQuery/UsernameRecordAll RPC method. It contains all queried UsernameRecords\nand the pagination information."
     },
-    "core.domain.QueryGetUsernameRecordsResponse": {
+    "domainQueryGetUsernameRecordsResponse": {
       "type": "object",
       "properties": {
         "usernameRecords": {
-          "$ref": "#/definitions/core.domain.UsernameRecord"
+          "$ref": "#/definitions/domainUsernameRecord"
         }
       },
       "description": "QueryGetUsernameRecordsResponse is the response type for the\nQuery/UsernameRecord RPC method. It contains the queried UsernameRecords."
     },
-    "core.domain.QueryParamsResponse": {
+    "domainQueryParamsResponse": {
       "type": "object",
       "properties": {
         "params": {
-          "$ref": "#/definitions/core.domain.Params",
+          "$ref": "#/definitions/domainParams",
           "description": "params holds all the parameters of this module."
         }
       },
       "description": "QueryParamsResponse is response type for the Query/Params RPC method.\nIt holds all the parameters of this module."
     },
-    "core.domain.UsernameRecord": {
+    "domainUsernameRecord": {
       "type": "object",
       "properties": {
         "index": {
@@ -182,7 +178,35 @@
         }
       }
     },
-    "cosmos.base.query.v1beta1.PageRequest": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1beta1PageRequest": {
       "type": "object",
       "properties": {
         "key": {
@@ -200,7 +224,7 @@
           "format": "uint64",
           "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
         },
-        "count_total": {
+        "countTotal": {
           "type": "boolean",
           "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set."
         },
@@ -212,10 +236,10 @@
       "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
       "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
     },
-    "cosmos.base.query.v1beta1.PageResponse": {
+    "v1beta1PageResponse": {
       "type": "object",
       "properties": {
-        "next_key": {
+        "nextKey": {
           "type": "string",
           "format": "byte",
           "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently. It will be empty if\nthere are no more results."
@@ -227,39 +251,6 @@
         }
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the\ncorresponding request message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
-    },
-    "google.protobuf.Any": {
-      "type": "object",
-      "properties": {
-        "type_url": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "grpc.gateway.runtime.Error": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/google.protobuf.Any"
-          }
-        }
-      }
     }
   }
 }
