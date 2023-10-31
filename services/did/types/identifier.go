@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/sonr-io/kryptology/pkg/accumulator"
+	"github.com/sonr-eco/kryptology/pkg/accumulator"
 
 	"github.com/sonrhq/sonr/internal/crypto"
 	identitytypes "github.com/sonrhq/sonr/x/identity/types"

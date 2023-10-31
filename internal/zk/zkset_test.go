@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
@@ -86,7 +86,6 @@ func TestWithElements(t *testing.T) {
 	_, _ = newAcc.Remove(key, element1)
 	_, _ = newAcc.Remove(key, element2)
 }
-
 
 func TestUpdate(t *testing.T) {
 	curve := curves.BLS12381(&curves.PointBls12381G1{})

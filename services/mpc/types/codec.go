@@ -6,8 +6,8 @@ import (
 
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/sonr-io/kryptology/pkg/core/curves"
-	pv1 "github.com/sonr-io/kryptology/pkg/core/protocol"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
+	pv1 "github.com/sonr-eco/kryptology/pkg/core/protocol"
 )
 
 type Secp256k1PublicKey = *secp256k1.PubKey

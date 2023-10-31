@@ -3,9 +3,10 @@ package dkls
 import (
 	"fmt"
 
-	"github.com/sonr-io/kryptology/pkg/core/curves"
-	"github.com/sonr-io/kryptology/pkg/core/protocol"
-	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
+	"github.com/sonr-eco/kryptology/pkg/core/protocol"
+	dklsv1 "github.com/sonr-eco/kryptology/pkg/tecdsa/dkls/v1"
+
 	mpcv1types "github.com/sonrhq/sonr/services/mpc/types"
 )
 

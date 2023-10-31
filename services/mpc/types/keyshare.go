@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/sonr-io/kryptology/pkg/core/curves"
-	"github.com/sonr-io/kryptology/pkg/core/protocol"
-	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
-	sonrcrypto "github.com/sonrhq/sonr/internal/crypto"
-	"github.com/sonrhq/sonr/types/crypto"
-
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
-	"github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1/dkg"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
+	"github.com/sonr-eco/kryptology/pkg/core/protocol"
+	dklsv1 "github.com/sonr-eco/kryptology/pkg/tecdsa/dkls/v1"
+	"github.com/sonr-eco/kryptology/pkg/tecdsa/dkls/v1/dkg"
 	"golang.org/x/crypto/sha3"
+
+	"github.com/sonrhq/sonr/internal/crypto"
+	sonrcrypto "github.com/sonrhq/sonr/internal/crypto"
 )
 
 var kDefaultCurve = curves.K256()

@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/go-webauthn/webauthn/protocol"
-	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
 	"github.com/sonrhq/sonr/internal/crypto"
 	"github.com/sonrhq/sonr/services/did/types"
 )

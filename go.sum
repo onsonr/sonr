@@ -1288,8 +1288,8 @@ github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d/go.mod h1
 github.com/smartystreets/go-aws-auth v0.0.0-20180515143844-0c1422d1fdb9/go.mod h1:SnhjPscd9TpLiy1LpzGSKh3bXCfxxXuqd9xmQJy3slM=
 github.com/smartystreets/goconvey v1.6.4/go.mod h1:syvi0/a8iFYH4r/RixwvyeAJjdLS9QV7WQ/tjFTllLA=
 github.com/soheilhy/cmux v0.1.4/go.mod h1:IM3LyeVVIOuxMH7sFAkER9+bJ4dT7Ms6E4xg4kGIyLM=
-github.com/sonr-io/kryptology v1.10.0 h1:vZ3S1Ct29SKDH6VwYPa9xUeFfwZ0O20mgPIXknCuPM0=
-github.com/sonr-io/kryptology v1.10.0/go.mod h1:INzpheY1ROZyPxoLGQenlaxM5uRAoz67XNuScsr39Ys=
+github.com/sonr-eco/kryptology v1.11.0 h1:WO7pvimSFo5V9Wez5fnIVxcgsgtvyZOvpG+V/wOuLEM=
+github.com/sonr-eco/kryptology v1.11.0/go.mod h1:GUM9xFT768jjeCQXmpN+tpnPAlxcr4mQpRvxOffCW98=
 github.com/sony/gobreaker v0.4.1/go.mod h1:ZKptC7FHNvhBz7dN2LGjPVBz2sZJmc0/PkyDJOjmxWY=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d h1:yKm7XZV6j9Ev6lojP2XaIshpT4ymkqhMeSghO5Ps00E=
 github.com/sourcegraph/annotate v0.0.0-20160123013949-f4cad6c6324d/go.mod h1:UdhH50NIW0fCiwBSr0co2m7BnFLdv4fQTgdqdJTHFeE=

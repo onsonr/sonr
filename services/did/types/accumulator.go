@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/sonr-io/kryptology/pkg/accumulator"
-	"github.com/sonr-io/kryptology/pkg/core/curves"
+	"github.com/sonr-eco/kryptology/pkg/accumulator"
+	"github.com/sonr-eco/kryptology/pkg/core/curves"
 
 	"github.com/sonrhq/sonr/internal/crypto"
 )
