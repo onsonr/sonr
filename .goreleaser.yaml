@@ -1,8 +1,5 @@
 # Project information.
 project_name: sonrd
-before:
-  hooks:
-    - go mod download
 builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
