@@ -6,7 +6,7 @@ import "core/domain/params.proto";
 import "core/domain/record.proto";
 import "gogoproto/gogo.proto";
 
-option go_package = "github.com/sonrhq/core/x/domain/types";
+option go_package = "github.com/sonrhq/sonr/x/domain/types";
 
 // GenesisState defines the domain module's genesis state.
 message GenesisState {

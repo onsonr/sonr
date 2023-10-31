@@ -43,10 +43,10 @@ import (
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 
-	"github.com/sonrhq/core/app"
-	appparams "github.com/sonrhq/core/app/params"
-	sonrdconfig "github.com/sonrhq/core/config"
-	"github.com/sonrhq/core/internal/highway"
+	"github.com/sonrhq/sonr/app"
+	appparams "github.com/sonrhq/sonr/app/params"
+	sonrdconfig "github.com/sonrhq/sonr/config"
+	"github.com/sonrhq/sonr/internal/highway"
 )
 
 var (
@@ -87,9 +87,9 @@ func NewRootCmd() (*cobra.Command, appparams.EncodingConfig) {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
-			viper.SetEnvPrefix("sonr")
+			viper.SetEnvPrefix("SONR")
 			viper.AutomaticEnv()
-			confPath := os.Getenv("SONR_LAUNCH_CONFIG")
+			confPath := os.Getenv("SONR_CONFIG")
 			if confPath != "" {
 				viper.SetConfigFile(confPath)
 				err := viper.ReadInConfig()

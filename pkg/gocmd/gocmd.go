@@ -9,9 +9,9 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/sonrhq/core/pkg/cmdrunner/exec"
-	"github.com/sonrhq/core/pkg/cmdrunner/step"
-	"github.com/sonrhq/core/pkg/goenv"
+	"github.com/sonrhq/sonr/pkg/cmdrunner/exec"
+	"github.com/sonrhq/sonr/pkg/cmdrunner/step"
+	"github.com/sonrhq/sonr/pkg/goenv"
 )
 
 const (

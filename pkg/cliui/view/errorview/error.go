@@ -5,7 +5,7 @@ import (
 
 	"github.com/muesli/reflow/wordwrap"
 
-	"github.com/sonrhq/core/pkg/cliui/colors"
+	"github.com/sonrhq/sonr/pkg/cliui/colors"
 )
 
 func NewError(err error) Error {

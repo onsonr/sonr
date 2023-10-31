@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/sonrhq/core/x/domain/types"
+	"github.com/sonrhq/sonr/x/domain/types"
 )
 
 var _ types.QueryServer = Keeper{}

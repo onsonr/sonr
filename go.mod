@@ -1,4 +1,4 @@
-module github.com/sonrhq/core
+module github.com/sonrhq/sonr
 
 go 1.21
 

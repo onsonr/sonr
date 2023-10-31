@@ -10,8 +10,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/sonrhq/core/pkg/cmdrunner"
-	"github.com/sonrhq/core/pkg/cmdrunner/step"
+	"github.com/sonrhq/sonr/pkg/cmdrunner"
+	"github.com/sonrhq/sonr/pkg/cmdrunner/step"
 )
 
 // ExitError is an alias to exec.ExitError.

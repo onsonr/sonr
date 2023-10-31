@@ -8,7 +8,7 @@ ARG RUNNER_IMAGE="debian:bullseye-slim"
 # ! ||-----------------------------------------------------------------------------||
 FROM ${RUNNER_IMAGE}
 
-LABEL org.opencontainers.image.source https://github.com/sonrhq/core
+LABEL org.opencontainers.image.source https://github.com/sonrhq/sonr
 LABEL org.opencontainers.image.description "Sonr Validator node container"
 # Copy sonrd binary and config
 COPY ../bin/sonrd /usr/local/bin/sonrd

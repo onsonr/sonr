@@ -4,7 +4,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/spf13/viper"
 
-	"github.com/sonrhq/core/app"
+	"github.com/sonrhq/sonr/app"
 )
 
 // Masthead is the masthead of the application.
@@ -32,7 +32,7 @@ MMMMMMMMMMMMMMWX0OkkO0XWMMMMMMMMMMMMMMMM
 Sonr Node
 > Sonr is an Encrypted & Private by default Identity Verification System for the IBC Protocol.
 🌐 - https://sonr.io
-🚀 - https://github.com/sonrhq/core
+🚀 - https://github.com/sonrhq/sonr
 `
 
 const bip44_purpose = 44
@@ -68,7 +68,6 @@ func initSDKConfig() {
 
 // initSonrConfig sets the default values for the configuration parameters.
 func initSonrConfig() {
-	viper.SetDefault("launch.config", "")
 	viper.SetDefault("launch.chain-id", "sonr-localnet-1")
 	viper.SetDefault("launch.environment", "development")
 	viper.SetDefault("launch.moniker", "alice")

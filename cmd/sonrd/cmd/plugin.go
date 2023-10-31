@@ -11,11 +11,11 @@ import (
 	"github.com/spf13/cobra"
 	flag "github.com/spf13/pflag"
 
-	pluginsconfig "github.com/sonrhq/core/config/plugins"
-	"github.com/sonrhq/core/pkg/clictx"
-	"github.com/sonrhq/core/pkg/cliui"
-	"github.com/sonrhq/core/pkg/cliui/icons"
-	"github.com/sonrhq/core/services/plugin"
+	pluginsconfig "github.com/sonrhq/sonr/config/plugins"
+	"github.com/sonrhq/sonr/pkg/clictx"
+	"github.com/sonrhq/sonr/pkg/cliui"
+	"github.com/sonrhq/sonr/pkg/cliui/icons"
+	"github.com/sonrhq/sonr/services/plugin"
 )
 
 const (

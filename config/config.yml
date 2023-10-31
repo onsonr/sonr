@@ -35,17 +35,17 @@ genesis:
   accounts:
     - name: alice
       coins:
-        - 20000token
-        - 200000000stake
+        - 20000snr
+        - 200000000usnr
     - name: bob
       coins:
-        - 10000token
-        - 100000000stake
+        - 10000snr
+        - 100000000usnr
   faucet:
     name: bob
     coins:
-      - 5token
-      - 100000stake
+      - 5snr
+      - 10000000usnr
   validators:
     - name: alice
-      bonded: 100000000stake
+      bonded: 100000000usnr

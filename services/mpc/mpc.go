@@ -1,11 +1,11 @@
 package mpc
 
 import (
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/services/mpc/base"
-	models "github.com/sonrhq/core/services/mpc/base"
-	v1algo "github.com/sonrhq/core/services/mpc/protocol/dkls"
-	v1types "github.com/sonrhq/core/services/mpc/types"
+	"github.com/sonrhq/sonr/internal/crypto"
+	"github.com/sonrhq/sonr/services/mpc/base"
+	models "github.com/sonrhq/sonr/services/mpc/base"
+	v1algo "github.com/sonrhq/sonr/services/mpc/protocol/dkls"
+	v1types "github.com/sonrhq/sonr/services/mpc/types"
 )
 
 // AccountV1 is a type alias for the AccountV1 struct in the base package.

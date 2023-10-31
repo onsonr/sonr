@@ -71,6 +71,7 @@ type Flags struct {
     // UsrHomeDir is the home directory of the application.
     UsrHomeDir string
 }
+
 func init() {
 	userHomeDir, err := os.UserHomeDir()
 	if err != nil {
@@ -78,6 +79,7 @@ func init() {
 	}
 	HomeDir = filepath.Join(userHomeDir)
 }
+
 // GetFlags returns the flags of the given command.
 func GetFlags(cmd *cobra.Command) Flags {
     return Flags{

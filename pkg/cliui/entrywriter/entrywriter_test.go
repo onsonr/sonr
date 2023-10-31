@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/pkg/cliui/entrywriter"
+	"github.com/sonrhq/sonr/pkg/cliui/entrywriter"
 )
 
 type WriterWithError struct{}

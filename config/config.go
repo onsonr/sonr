@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/sonrhq/core/pkg/env"
-	"github.com/sonrhq/core/pkg/xfilepath"
+	"github.com/sonrhq/sonr/pkg/env"
+	"github.com/sonrhq/sonr/pkg/xfilepath"
 )
 
 var c Config
@@ -106,5 +106,5 @@ type Config struct {
 	} `mapstructure:"genesis"`
 }
 
-// DirPath returns the path of configuration directory of Ignite.
+// DirPath returns the path of configuration directory of Sonr.
 var DirPath = xfilepath.Mkdir(env.ConfigDir())

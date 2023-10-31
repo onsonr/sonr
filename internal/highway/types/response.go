@@ -3,8 +3,8 @@ package types
 import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/sonrhq/core/internal/crypto"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/sonr/internal/crypto"
+	identitytypes "github.com/sonrhq/sonr/x/identity/types"
 )
 
 // AuthenticationResult struct is defining a data structure that represents the response returned after a successful authentication process. It contains various fields such as `Account`, `Address`, `Alias`, `DID`, `DIDDocument`, and `JWT`, which hold information related to

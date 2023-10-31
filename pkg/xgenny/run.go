@@ -10,8 +10,8 @@ import (
 	"github.com/gobuffalo/logger"
 	"github.com/gobuffalo/packd"
 
-	"github.com/sonrhq/core/pkg/placeholder"
-	"github.com/sonrhq/core/pkg/validation"
+	"github.com/sonrhq/sonr/pkg/placeholder"
+	"github.com/sonrhq/sonr/pkg/validation"
 )
 
 var _ validation.Error = (*dryRunError)(nil)

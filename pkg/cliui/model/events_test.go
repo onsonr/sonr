@@ -8,10 +8,10 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/pkg/cliui/colors"
-	"github.com/sonrhq/core/pkg/cliui/icons"
-	cliuimodel "github.com/sonrhq/core/pkg/cliui/model"
-	"github.com/sonrhq/core/pkg/events"
+	"github.com/sonrhq/sonr/pkg/cliui/colors"
+	"github.com/sonrhq/sonr/pkg/cliui/icons"
+	cliuimodel "github.com/sonrhq/sonr/pkg/cliui/model"
+	"github.com/sonrhq/sonr/pkg/events"
 )
 
 func TestStatusEventsView(t *testing.T) {

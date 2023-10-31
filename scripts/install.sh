@@ -114,26 +114,26 @@ start_service icefiresql
 
 # Setup systemd for sonrd
 register_sonrd_service() {
-sudo cat << EOF > /etc/systemd/system/sonrd.service
-[Unit]
-Description=Sonr Node Service
-After=network-online.target
+    sudo cat << EOF > /etc/systemd/system/sonrd.service
+    [Unit]
+    Description=Sonr Node Service
+    After=network-online.target
 
-[Service]
-User=root
-ExecStart=/usr/local/bin/sonrd start
-LimitNOFILE=4096
-Environment=SONR_ENVIRONMENT=production
-Environment=SONR_HIGHWAY_ICEFIREKV_HOST=localhost
-Environment=SONR_HIGHWAY_ICEFIREKV_PORT=6001
-Environment=SONR_HIGHWAY_ICEFIRESQL_HOST=localhost
-Environment=SONR_HIGHWAY_ICEFIRESQL_PORT=23306
-Environment=SONR_CHAIN_ID=sonr-testnet-1
+    [Service]
+    User=root
+    ExecStart=/usr/local/bin/sonrd start
+    LimitNOFILE=4096
+    Environment=SONR_ENVIRONMENT=production
+    Environment=SONR_HIGHWAY_ICEFIREKV_HOST=localhost
+    Environment=SONR_HIGHWAY_ICEFIREKV_PORT=6001
+    Environment=SONR_HIGHWAY_ICEFIRESQL_HOST=localhost
+    Environment=SONR_HIGHWAY_ICEFIRESQL_PORT=23306
+    Environment=SONR_CHAIN_ID=sonr-testnet-1
 
-[Install]
-WantedBy=multi-user.target
-EOF
-start_service sonrd
+    [Install]
+    WantedBy=multi-user.target
+    EOF
+    start_service sonrd
 }
 
 #// ! ||--------------------------------------------------------------------------------||

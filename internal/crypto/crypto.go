@@ -11,7 +11,7 @@ import (
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"github.com/shengdoushi/base58"
-	types "github.com/sonrhq/core/types/crypto"
+	types "github.com/sonrhq/sonr/types/crypto"
 )
 
 // Secp256k1PubKey is a type alias for secp256k1.PubKey in pkg/crypto/keys/secp256k1.

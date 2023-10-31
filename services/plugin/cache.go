@@ -8,7 +8,7 @@ import (
 
 	hplugin "github.com/hashicorp/go-plugin"
 
-	"github.com/sonrhq/core/pkg/cache"
+	"github.com/sonrhq/sonr/pkg/cache"
 )
 
 const (

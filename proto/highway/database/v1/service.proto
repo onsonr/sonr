@@ -5,7 +5,7 @@ package highway.database.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
-option go_package = "github.com/sonrhq/core/types/highway/database/v1;databasepb";
+option go_package = "github.com/sonrhq/sonr/types/highway/database/v1;databasepb";
 
 service DatabaseService {
   rpc Health(HealthRequest) returns (HealthResponse) {

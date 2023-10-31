@@ -4,7 +4,7 @@ package highway.storage.v1;
 
 import "google/api/annotations.proto";
 
-option go_package = "github.com/sonrhq/core/types/highway/storage/v1;storagepb";
+option go_package = "github.com/sonrhq/sonr/types/highway/storage/v1;storagepb";
 
 // StorageService provides methods for storing and retrieving data.
 service StorageService {

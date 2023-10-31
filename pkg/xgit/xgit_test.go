@@ -14,8 +14,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/pkg/randstr"
-	"github.com/sonrhq/core/pkg/xgit"
+	"github.com/sonrhq/sonr/pkg/randstr"
+	"github.com/sonrhq/sonr/pkg/xgit"
 )
 
 func TestInitAndCommit(t *testing.T) {
@@ -119,10 +119,10 @@ func TestInitAndCommit(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, tt.expectedNumCommits, numCommits)
 			if assert.NotNil(t, lastCommit) {
-				require.Equal(t, "Initialized with Ignite CLI", lastCommit.Message)
+				require.Equal(t, "Initialized with Sonr CLI", lastCommit.Message)
 				require.WithinDuration(t, time.Now(), lastCommit.Committer.When, 10*time.Second)
-				require.Equal(t, "Developer Experience team at Ignite", lastCommit.Author.Name)
-				require.Equal(t, "hello@ignite.com", lastCommit.Author.Email)
+				require.Equal(t, "Developer Experience team at Sonr", lastCommit.Author.Name)
+				require.Equal(t, "team@sonr.io", lastCommit.Author.Email)
 				stats, err := lastCommit.Stats()
 				require.NoError(t, err)
 				var files []string

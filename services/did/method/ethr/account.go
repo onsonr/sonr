@@ -1,9 +1,9 @@
 package ethr
 
 import (
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/services/did/types"
-	"github.com/sonrhq/core/services/mpc"
+	"github.com/sonrhq/sonr/internal/crypto"
+	"github.com/sonrhq/sonr/services/did/types"
+	"github.com/sonrhq/sonr/services/mpc"
 )
 
 const Method = types.DIDMethod("ethr")

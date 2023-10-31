@@ -6,7 +6,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
 	"github.com/cosmos/cosmos-sdk/client/tx"
-	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/sonr/x/identity/types"
 	"github.com/spf13/cobra"
 )
 

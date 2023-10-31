@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/sonrhq/core/internal/sfs/types"
+	"github.com/sonrhq/sonr/internal/sfs/types"
 	"github.com/spf13/viper"
 )
 

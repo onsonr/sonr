@@ -18,8 +18,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/app"
-	"github.com/sonrhq/core/internal/highway"
+	"github.com/sonrhq/sonr/app"
+	"github.com/sonrhq/sonr/internal/highway"
 )
 
 type (

@@ -40,7 +40,7 @@ jobs:
         continue-on-error: true
         with:
           input: "proto"
-          against: "https://github.com/sonrhq/core.git#branch=master"
+          against: "https://github.com/sonrhq/sonr.git#branch=master"
       - uses: bufbuild/buf-lint-action@v1
         with:
           input: "proto"

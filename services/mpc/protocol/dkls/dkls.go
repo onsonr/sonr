@@ -6,7 +6,7 @@ import (
 	"github.com/sonr-io/kryptology/pkg/core/curves"
 	"github.com/sonr-io/kryptology/pkg/core/protocol"
 	dklsv1 "github.com/sonr-io/kryptology/pkg/tecdsa/dkls/v1"
-	mpcv1types "github.com/sonrhq/core/services/mpc/types"
+	mpcv1types "github.com/sonrhq/sonr/services/mpc/types"
 )
 
 // The DKLSKeygen function generates a set of keyshares.

@@ -15,11 +15,11 @@ import (
 )
 
 var (
-	commitMsg       = "Initialized with Ignite CLI"
+	commitMsg       = "Initialized with Sonr CLI"
 	defaultOpenOpts = git.PlainOpenOptions{DetectDotGit: true}
 	devXAuthor      = &object.Signature{
-		Name:  "Developer Experience team at Ignite",
-		Email: "hello@ignite.com",
+		Name:  "Developer Experience team at Sonr",
+		Email: "team@sonr.io",
 		When:  time.Now(),
 	}
 )

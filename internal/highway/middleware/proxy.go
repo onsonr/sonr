@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	domaintypes "github.com/sonrhq/core/x/domain/types"
-	identitytypes "github.com/sonrhq/core/x/identity/types"
-	servicetypes "github.com/sonrhq/core/x/service/types"
+	domaintypes "github.com/sonrhq/sonr/x/domain/types"
+	identitytypes "github.com/sonrhq/sonr/x/identity/types"
+	servicetypes "github.com/sonrhq/sonr/x/service/types"
 	"github.com/spf13/viper"
 	"google.golang.org/grpc"
 )

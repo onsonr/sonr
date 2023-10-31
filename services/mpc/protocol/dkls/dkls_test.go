@@ -3,8 +3,8 @@ package dkls_test
 import (
 	"testing"
 
-	"github.com/sonrhq/core/internal/crypto"
-	"github.com/sonrhq/core/services/mpc/protocol/dkls"
+	"github.com/sonrhq/sonr/internal/crypto"
+	"github.com/sonrhq/sonr/services/mpc/protocol/dkls"
 	"github.com/stretchr/testify/assert"
 )
 

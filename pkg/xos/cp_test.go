@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/pkg/xos"
+	"github.com/sonrhq/sonr/pkg/xos"
 )
 
 func TestCopyFolder(t *testing.T) {

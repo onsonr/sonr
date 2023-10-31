@@ -11,7 +11,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	paramtypes "github.com/cosmos/cosmos-sdk/x/params/types"
 
-	"github.com/sonrhq/core/x/service/types"
+	"github.com/sonrhq/sonr/x/service/types"
 )
 
 type (

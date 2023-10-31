@@ -22,5 +22,5 @@ done
 cd ..
 
 # move proto files to the right places
-cp -r github.com/sonrhq/core/* ./
+cp -r github.com/sonrhq/sonr/* ./
 rm -rf github.com

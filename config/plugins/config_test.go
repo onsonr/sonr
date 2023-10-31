@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	pluginsconfig "github.com/sonrhq/core/config/plugins"
+	pluginsconfig "github.com/sonrhq/sonr/config/plugins"
 )
 
 func TestPluginIsGlobal(t *testing.T) {

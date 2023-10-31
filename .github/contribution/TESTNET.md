@@ -1,16 +1,18 @@
 # Joining Testnet
 
-1. [Setup your environment](#setup-your-environment)
-   - [Linux Machine](#linux-machine)
-   - [Docker](#docker)
-2. [Configure Genesis](#configure-genesis)
-   - [Initialize Config](#initialize-config)
-   - [Get Testnet Genesis](#get-testnet-genesis)
-   - [Setup Cosmosvisor](#setup-cosmosvisor)
-   - [Run your node](#run-your-node)
-3. [Connect to the network](#connect-to-the-network)
-   - [Common tasks](#common-tasks)
-   - [Community channels](#community-channels)
+- [Joining Testnet](#joining-testnet)
+  - [Setup your environment](#setup-your-environment)
+    - [Linux Machine](#linux-machine)
+    - [Docker](#docker)
+  - [Configure Genesis](#configure-genesis)
+    - [Initialize Config](#initialize-config)
+    - [Get Testnet Genesis](#get-testnet-genesis)
+    - [Setup Cosmosvisor](#setup-cosmosvisor)
+    - [Run your node](#run-your-node)
+  - [Connect to the network](#connect-to-the-network)
+    - [Common tasks](#common-tasks)
+      - [Add a redirect](#add-a-redirect)
+      - [Federated docs](#federated-docs)
 
 ## Setup your environment
 
@@ -29,7 +31,7 @@ You will need to install and configure the following dependencies on your machin
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
-git clone https://github.com/sonrhq/core.git       # Clone the repository
+git clone https://github.com/sonrhq/sonr.git       # Clone the repository
 sh scripts/install.sh                               # Install dependencies
 task                                                # Display the available commands
 ```
@@ -45,7 +47,7 @@ You will need to install and configure the following dependencies on your machin
 You can setup your macOS or Linux machine to be ready for local development with these steps:
 
 ```sh
-git clone https://github.com/sonrhq/core.git       # Clone the repository
+git clone https://github.com/sonrhq/sonr.git       # Clone the repository
 sh scripts/install.sh                               # Install dependencies
 task                                                # Display the available commands
 ```
@@ -110,6 +112,7 @@ To contribute code to [Sonr](https://sonr.io), you must fork the [Sonr Repositor
    ```
 
 2. After that you can run the apps simultaneously with the following.
+
    ```sh
    npm run dev # start all the applications
    ```
@@ -118,9 +121,9 @@ Then visit, and edit, any of the following sites:
 
 | Site                                                     | Directory    | Scope name | Description                          | Local development server   |
 | -------------------------------------------------------- | ------------ | ---------- | ------------------------------------ | -------------------------- |
-| [supabase.com](https://sonr.io)                     | `/apps/www`  | www        | The main website                     | http://localhost:3000      |
-| [supabase.com/dashboard](https://sonr.io/dashboard) | `/studio`    | studio     | Studio dashboard                     | http://localhost:8082      |
-| [supabase.com/docs](https://sonr.io/docs)           | `/apps/docs` | docs       | Guides and Reference (Next.js based) | http://localhost:3001/docs |
+| [supabase.com](https://sonr.io)                     | `/apps/www`  | www        | The main website                     | <http://localhost:3000>      |
+| [supabase.com/dashboard](https://sonr.io/dashboard) | `/studio`    | studio     | Studio dashboard                     | <http://localhost:8082>      |
+| [supabase.com/docs](https://sonr.io/docs)           | `/apps/docs` | docs       | Guides and Reference (Next.js based) | <http://localhost:3001/docs> |
 
 ## Connect to the network
 

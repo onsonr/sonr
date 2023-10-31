@@ -5,7 +5,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/store/prefix"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/sonrhq/core/x/identity/types"
+	"github.com/sonrhq/sonr/x/identity/types"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

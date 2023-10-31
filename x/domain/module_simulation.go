@@ -8,9 +8,9 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
 	"github.com/cosmos/cosmos-sdk/x/simulation"
-	"github.com/sonrhq/core/testutil/sample"
-	domainsimulation "github.com/sonrhq/core/x/domain/simulation"
-	"github.com/sonrhq/core/x/domain/types"
+	"github.com/sonrhq/sonr/testutil/sample"
+	domainsimulation "github.com/sonrhq/sonr/x/domain/simulation"
+	"github.com/sonrhq/sonr/x/domain/types"
 )
 
 // avoid unused import issue

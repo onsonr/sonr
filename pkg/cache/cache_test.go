@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/core/pkg/cache"
+	"github.com/sonrhq/sonr/pkg/cache"
 )
 
 type TestStruct struct {

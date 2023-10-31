@@ -5,10 +5,10 @@ import (
 	"testing"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	keepertest "github.com/sonrhq/core/testutil/keeper"
-	"github.com/sonrhq/core/testutil/nullify"
-	"github.com/sonrhq/core/x/domain/keeper"
-	"github.com/sonrhq/core/x/domain/types"
+	keepertest "github.com/sonrhq/sonr/testutil/keeper"
+	"github.com/sonrhq/sonr/testutil/nullify"
+	"github.com/sonrhq/sonr/x/domain/keeper"
+	"github.com/sonrhq/sonr/x/domain/types"
 	"github.com/stretchr/testify/require"
 )
 

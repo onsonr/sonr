@@ -8,7 +8,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client"
 	// "github.com/cosmos/cosmos-sdk/client/flags"
-	"github.com/sonrhq/core/x/service/types"
+	"github.com/sonrhq/sonr/x/service/types"
 )
 
 var (
