@@ -4,32 +4,22 @@
     "title": "common/crypto/ssi.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {},
   "definitions": {
-    "google.protobuf.Any": {
+    "protobufAny": {
       "type": "object",
       "properties": {
-        "type_url": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
-    "grpc.gateway.runtime.Error": {
+    "rpcStatus": {
       "type": "object",
       "properties": {
-        "error": {
-          "type": "string"
-        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -40,7 +30,8 @@
         "details": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/google.protobuf.Any"
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
           }
         }
       }

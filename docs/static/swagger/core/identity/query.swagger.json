@@ -4,12 +4,13 @@
     "title": "core/identity/query.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
+  "tags": [
+    {
+      "name": "Query"
+    }
   ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/core/id": {
       "get": {
@@ -19,13 +20,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryAllDIDDocumentResponse"
+              "$ref": "#/definitions/identityQueryAllDIDDocumentResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -55,7 +56,7 @@
             "format": "uint64"
           },
           {
-            "name": "pagination.count_total",
+            "name": "pagination.countTotal",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
             "in": "query",
             "required": false,
@@ -69,9 +70,7 @@
             "type": "boolean"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/alias/{alias}": {
@@ -82,13 +81,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryDidByAlsoKnownAsResponse"
+              "$ref": "#/definitions/identityQueryDidByAlsoKnownAsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -101,9 +100,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/alias/{alias}/check": {
@@ -114,13 +111,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryAliasAvailableResponse"
+              "$ref": "#/definitions/identityQueryAliasAvailableResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -133,9 +130,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/controllers": {
@@ -146,13 +141,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryAllControllerAccountResponse"
+              "$ref": "#/definitions/identityQueryAllControllerAccountResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -182,7 +177,7 @@
             "format": "uint64"
           },
           {
-            "name": "pagination.count_total",
+            "name": "pagination.countTotal",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
             "in": "query",
             "required": false,
@@ -196,9 +191,7 @@
             "type": "boolean"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/controllers/{address}": {
@@ -209,13 +202,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryGetControllerAccountResponse"
+              "$ref": "#/definitions/identityQueryGetControllerAccountResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -227,9 +220,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/owner/{owner}": {
@@ -240,13 +231,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryDidByOwnerResponse"
+              "$ref": "#/definitions/identityQueryDidByOwnerResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -258,9 +249,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/id/{did}": {
@@ -271,13 +260,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryGetDIDDocumentResponse"
+              "$ref": "#/definitions/identityQueryGetDIDDocumentResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
@@ -289,9 +278,7 @@
             "type": "string"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/core/params/identity": {
@@ -302,24 +289,22 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/core.identity.QueryParamsResponse"
+              "$ref": "#/definitions/identityQueryParamsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/grpc.gateway.runtime.Error"
+              "$ref": "#/definitions/rpcStatus"
             }
           }
         },
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     }
   },
   "definitions": {
-    "core.identity.ControllerAccount": {
+    "identityControllerAccount": {
       "type": "object",
       "properties": {
         "address": {
@@ -342,84 +327,98 @@
         }
       }
     },
-    "core.identity.DIDDocument": {
+    "identityDIDDocument": {
       "type": "object",
       "properties": {
         "context": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "The JSON-LD context(s) used in the document"
         },
         "id": {
-          "type": "string"
+          "type": "string",
+          "title": "The identifier for the DID subject"
         },
         "controller": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "optional, the entity/entities controlling the DID subject"
         },
         "authentication": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.VerificationRelationship"
-          }
+            "type": "object",
+            "$ref": "#/definitions/identityVerificationRelationship"
+          },
+          "title": "optional, the set of authentication methods associated with the DID"
         },
-        "assertion_method": {
+        "assertionMethod": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.VerificationRelationship"
-          }
+            "type": "object",
+            "$ref": "#/definitions/identityVerificationRelationship"
+          },
+          "title": "optional, the set of assertion methods associated with the DID"
         },
-        "capability_invocation": {
+        "capabilityInvocation": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.VerificationRelationship"
-          }
+            "type": "object",
+            "$ref": "#/definitions/identityVerificationRelationship"
+          },
+          "title": "optional, the set of capability invocation methods associated with"
         },
-        "capability_delegation": {
+        "capabilityDelegation": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.VerificationRelationship"
-          }
+            "type": "object",
+            "$ref": "#/definitions/identityVerificationRelationship"
+          },
+          "title": "optional, the set of capability delegation methods associated with"
         },
-        "key_agreement": {
+        "keyAgreement": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.VerificationRelationship"
-          }
+            "type": "object",
+            "$ref": "#/definitions/identityVerificationRelationship"
+          },
+          "title": "optional, the set of key agreement methods associated with the DID"
         },
-        "also_known_as": {
+        "alsoKnownAs": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "optional, the set of identifiers for other personas or identities"
         }
       },
       "description": "DIDDocument represents a Decentralized Identifier (DID) document that\ncontains information about the DID subject, such as public keys, verification\nmethods, and services."
     },
-    "core.identity.Params": {
+    "identityParams": {
       "type": "object",
       "properties": {
-        "account_did_method_name": {
+        "accountDidMethodName": {
           "type": "string"
         },
-        "account_did_method_context": {
+        "accountDidMethodContext": {
           "type": "string"
         },
-        "acccount_discovery_reward": {
+        "acccountDiscoveryReward": {
           "type": "string",
           "format": "int64"
         },
-        "did_base_context": {
+        "didBaseContext": {
           "type": "string"
         },
-        "maximum_identity_aliases": {
+        "maximumIdentityAliases": {
           "type": "integer",
           "format": "int32"
         },
-        "supported_did_methods": {
+        "supportedDidMethods": {
           "type": "array",
           "items": {
             "type": "string"
@@ -428,147 +427,189 @@
       },
       "description": "Params defines the parameters for the module."
     },
-    "core.identity.QueryAliasAvailableResponse": {
+    "identityQueryAliasAvailableResponse": {
       "type": "object",
       "properties": {
         "available": {
           "type": "boolean"
         },
-        "existing_document": {
-          "$ref": "#/definitions/core.identity.DIDDocument"
+        "existingDocument": {
+          "$ref": "#/definitions/identityDIDDocument"
         }
       },
       "description": "QueryAliasAvailableResponse is the response type for the Query/AliasAvailable\nRPC method."
     },
-    "core.identity.QueryAllControllerAccountResponse": {
+    "identityQueryAllControllerAccountResponse": {
       "type": "object",
       "properties": {
         "controllerAccount": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.ControllerAccount"
+            "type": "object",
+            "$ref": "#/definitions/identityControllerAccount"
           }
         },
         "pagination": {
-          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+          "$ref": "#/definitions/v1beta1PageResponse"
         }
       },
       "description": "QueryAllControllerAccountResponse is the response type for the\nQuery/ControllerAccountAll RPC method."
     },
-    "core.identity.QueryAllDIDDocumentResponse": {
+    "identityQueryAllDIDDocumentResponse": {
       "type": "object",
       "properties": {
         "dIDDocument": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/core.identity.DIDDocument"
+            "type": "object",
+            "$ref": "#/definitions/identityDIDDocument"
           }
         },
         "pagination": {
-          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
+          "$ref": "#/definitions/v1beta1PageResponse"
         }
       },
       "description": "QueryAllDIDDocumentResponse is the response type for the Query/DIDDocumentAll\nRPC method."
     },
-    "core.identity.QueryDidByAlsoKnownAsResponse": {
+    "identityQueryDidByAlsoKnownAsResponse": {
       "type": "object",
       "properties": {
         "didDocument": {
-          "$ref": "#/definitions/core.identity.DIDDocument",
+          "$ref": "#/definitions/identityDIDDocument",
           "title": "A DIDDocument is a JSON-LD object that contains a set of public keys"
         }
       },
       "description": "QueryDidByAlsoKnownAsResponse is the response type for the\nQuery/DidByAlsoKnownAs RPC method."
     },
-    "core.identity.QueryDidByOwnerResponse": {
+    "identityQueryDidByOwnerResponse": {
       "type": "object",
       "properties": {
         "didDocument": {
-          "$ref": "#/definitions/core.identity.DIDDocument"
+          "$ref": "#/definitions/identityDIDDocument"
         }
       },
       "description": "QueryDidByOwnerResponse is the response type for the Query/DidByOwner RPC\nmethod."
     },
-    "core.identity.QueryGetControllerAccountResponse": {
+    "identityQueryGetControllerAccountResponse": {
       "type": "object",
       "properties": {
         "controllerAccount": {
-          "$ref": "#/definitions/core.identity.ControllerAccount"
+          "$ref": "#/definitions/identityControllerAccount"
         }
       },
       "description": "QueryGetControllerAccountResponse is the response type for the\nQuery/ControllerAccount RPC method."
     },
-    "core.identity.QueryGetDIDDocumentResponse": {
+    "identityQueryGetDIDDocumentResponse": {
       "type": "object",
       "properties": {
         "dIDDocument": {
-          "$ref": "#/definitions/core.identity.DIDDocument"
+          "$ref": "#/definitions/identityDIDDocument"
         }
       },
       "description": "QueryGetDIDDocumentResponse is the response type for the Query/DIDDocument\nRPC method."
     },
-    "core.identity.QueryParamsResponse": {
+    "identityQueryParamsResponse": {
       "type": "object",
       "properties": {
         "params": {
-          "$ref": "#/definitions/core.identity.Params",
+          "$ref": "#/definitions/identityParams",
           "description": "params holds all the parameters of this module."
         }
       },
       "description": "QueryParamsResponse is response type for the Query/Params RPC method."
     },
-    "core.identity.VerificationMethod": {
+    "identityVerificationMethod": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string"
+          "type": "string",
+          "title": "The identifier for the verification method"
         },
         "type": {
-          "type": "string"
+          "type": "string",
+          "title": "The type of the verification method"
         },
         "controller": {
-          "type": "string"
+          "type": "string",
+          "title": "The entity controlling the verification method"
         },
-        "public_key_jwk": {
-          "type": "string"
+        "publicKeyJwk": {
+          "type": "string",
+          "title": "optional, the public key in JSON Web Key (JWK) format"
         },
-        "public_key_multibase": {
-          "type": "string"
+        "publicKeyMultibase": {
+          "type": "string",
+          "title": "optional, the public key in multibase-encoded format"
         },
-        "blockchain_account_id": {
-          "type": "string"
+        "blockchainAccountId": {
+          "type": "string",
+          "title": "optional, the blockchain account identifier associated with the"
         },
-        "attestation_type": {
-          "type": "string"
+        "attestationType": {
+          "type": "string",
+          "title": "optional, the type of attestation associated with the verification"
         },
         "transports": {
           "type": "array",
           "items": {
             "type": "string"
-          }
+          },
+          "title": "optional, the set of transport protocols supported by the"
         }
       },
       "description": "VerificationMethod represents a verification method that can be used to\nauthenticate the DID subject or perform other cryptographic operations."
     },
-    "core.identity.VerificationRelationship": {
+    "identityVerificationRelationship": {
       "type": "object",
       "properties": {
-        "verification_method": {
-          "$ref": "#/definitions/core.identity.VerificationMethod"
+        "verificationMethod": {
+          "$ref": "#/definitions/identityVerificationMethod",
+          "title": "The verification method associated with the relationship"
         },
         "reference": {
-          "type": "string"
+          "type": "string",
+          "title": "The reference identifier for the relationship"
         },
         "type": {
-          "type": "string"
+          "type": "string",
+          "title": "The type of the verification relationship"
         },
         "owner": {
-          "type": "string"
+          "type": "string",
+          "title": "The idx address of the owner of the verification relationship"
         }
       },
       "description": "VerificationRelationship represents a relationship between a verification\nmethod and a specific verification purpose (e.g., authentication, assertion,\netc.)."
     },
-    "cosmos.base.query.v1beta1.PageRequest": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1beta1PageRequest": {
       "type": "object",
       "properties": {
         "key": {
@@ -586,7 +627,7 @@
           "format": "uint64",
           "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
         },
-        "count_total": {
+        "countTotal": {
           "type": "boolean",
           "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set."
         },
@@ -598,10 +639,10 @@
       "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
       "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
     },
-    "cosmos.base.query.v1beta1.PageResponse": {
+    "v1beta1PageResponse": {
       "type": "object",
       "properties": {
-        "next_key": {
+        "nextKey": {
           "type": "string",
           "format": "byte",
           "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently. It will be empty if\nthere are no more results."
@@ -613,39 +654,6 @@
         }
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the\ncorresponding request message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
-    },
-    "google.protobuf.Any": {
-      "type": "object",
-      "properties": {
-        "type_url": {
-          "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
-        }
-      }
-    },
-    "grpc.gateway.runtime.Error": {
-      "type": "object",
-      "properties": {
-        "error": {
-          "type": "string"
-        },
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/google.protobuf.Any"
-          }
-        }
-      }
     }
   }
 }
