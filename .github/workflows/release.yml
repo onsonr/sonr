@@ -23,9 +23,14 @@ jobs:
         with:
           fetch-depth: 0
           # Run only on tag
-      - run: |
-          go mod download
-          goreleaser release --clean
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
