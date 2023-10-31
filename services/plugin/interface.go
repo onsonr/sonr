@@ -126,7 +126,7 @@ func (c Command) PlaceCommandUnderFull() string {
 }
 
 func commandFull(cmdPath string) string {
-	const rootCmdName = "ignite"
+	const rootCmdName = "sonrd"
 	if !strings.HasPrefix(cmdPath, rootCmdName) {
 		cmdPath = rootCmdName + " " + cmdPath
 	}
