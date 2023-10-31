@@ -4,13 +4,12 @@
     "title": "highway/wallet/v1/service.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "WalletService"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/highway/wallet/accounts/create": {
       "post": {
@@ -20,58 +19,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1CreateAccountResponse"
+              "$ref": "#/definitions/highway.wallet.v1.CreateAccountResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "name",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "coinType",
-            "description": " - CoinType_BITCOIN: Bitcoins coin type is 0\n - CoinType_TESTNET: Testnet coin type is 1\n - CoinType_LITECOIN: Litecoin coin type is 2\n - CoinType_DOGE: Dogecoin coin type is 3\n - CoinType_ETHEREUM: Ethereum coin type is 60\n - CoinType_SONR: Sonr coin type is 703\n - CoinType_COSMOS: Cosmos coin type is 118\n - CoinType_FILECOIN: Filecoin coin type is 461\n - CoinType_HNS: Handshake coin type is 5353\n - CoinType_SOLANA: Solana coin type is 501\n - CoinType_XRP: Ripple coin type is 144",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "enum": [
-              "CoinType_BITCOIN",
-              "CoinType_TESTNET",
-              "CoinType_LITECOIN",
-              "CoinType_DOGE",
-              "CoinType_ETHEREUM",
-              "CoinType_SONR",
-              "CoinType_COSMOS",
-              "CoinType_FILECOIN",
-              "CoinType_HNS",
-              "CoinType_SOLANA",
-              "CoinType_XRP"
-            ],
-            "default": "CoinType_BITCOIN"
-          },
-          {
-            "name": "network",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     },
     "/highway/wallet/accounts/get": {
@@ -82,31 +42,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1GetAccountResponse"
+              "$ref": "#/definitions/highway.wallet.v1.GetAccountResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "address",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     },
     "/highway/wallet/accounts/list": {
@@ -117,25 +65,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListAccountsResponse"
+              "$ref": "#/definitions/highway.wallet.v1.ListAccountsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     },
     "/highway/wallet/accounts/sign": {
@@ -146,38 +88,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1SignMessageResponse"
+              "$ref": "#/definitions/highway.wallet.v1.SignMessageResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "address",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "message",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     },
     "/highway/wallet/accounts/verify": {
@@ -188,45 +111,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1VerifySignatureResponse"
+              "$ref": "#/definitions/highway.wallet.v1.VerifySignatureResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "address",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "message",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          },
-          {
-            "name": "signature",
-            "in": "query",
-            "required": false,
-            "type": "string",
-            "format": "byte"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     },
     "/highway/wallet/export": {
@@ -237,36 +134,24 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ExportWalletResponse"
+              "$ref": "#/definitions/highway.wallet.v1.ExportWalletResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "parameters": [
-          {
-            "name": "jwt",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "address",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "tags": ["WalletService"]
+        "tags": [
+          "WalletService"
+        ]
       }
     }
   },
   "definitions": {
-    "cryptoCoinType": {
+    "common.crypto.CoinType": {
       "type": "string",
       "enum": [
         "CoinType_BITCOIN",
@@ -284,18 +169,24 @@
       "default": "CoinType_BITCOIN",
       "description": "CoinType is the BIP-0044 coin type for each supported coin.\n\n - CoinType_BITCOIN: Bitcoins coin type is 0\n - CoinType_TESTNET: Testnet coin type is 1\n - CoinType_LITECOIN: Litecoin coin type is 2\n - CoinType_DOGE: Dogecoin coin type is 3\n - CoinType_ETHEREUM: Ethereum coin type is 60\n - CoinType_SONR: Sonr coin type is 703\n - CoinType_COSMOS: Cosmos coin type is 118\n - CoinType_FILECOIN: Filecoin coin type is 461\n - CoinType_HNS: Handshake coin type is 5353\n - CoinType_SOLANA: Solana coin type is 501\n - CoinType_XRP: Ripple coin type is 144"
     },
-    "protobufAny": {
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
-        "@type": {
+        "type_url": {
           "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
         }
-      },
-      "additionalProperties": {}
+      }
     },
-    "rpcStatus": {
+    "grpc.gateway.runtime.Error": {
       "type": "object",
       "properties": {
+        "error": {
+          "type": "string"
+        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -306,13 +197,12 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/google.protobuf.Any"
           }
         }
       }
     },
-    "v1CreateAccountResponse": {
+    "highway.wallet.v1.CreateAccountResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -324,8 +214,8 @@
         "address": {
           "type": "string"
         },
-        "coinType": {
-          "$ref": "#/definitions/cryptoCoinType"
+        "coin_type": {
+          "$ref": "#/definitions/common.crypto.CoinType"
         },
         "owner": {
           "type": "string"
@@ -333,7 +223,7 @@
       },
       "description": "CreateAccountResponse is the response message for creating an account."
     },
-    "v1ExportWalletResponse": {
+    "highway.wallet.v1.ExportWalletResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -342,13 +232,13 @@
         "message": {
           "type": "string"
         },
-        "encryptedWalletBuffer": {
+        "encrypted_wallet_buffer": {
           "type": "string"
         }
       },
       "description": "ExportWalletResponse is the response message for exporting a wallet."
     },
-    "v1GetAccountResponse": {
+    "highway.wallet.v1.GetAccountResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -360,8 +250,8 @@
         "address": {
           "type": "string"
         },
-        "coinType": {
-          "$ref": "#/definitions/cryptoCoinType"
+        "coin_type": {
+          "$ref": "#/definitions/common.crypto.CoinType"
         },
         "owner": {
           "type": "string"
@@ -369,7 +259,7 @@
       },
       "description": "GetAccountResponse is the response message for getting an account."
     },
-    "v1ListAccountsResponse": {
+    "highway.wallet.v1.ListAccountsResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -387,7 +277,7 @@
       },
       "description": "ListAccountsResponse is the response message for listing accounts."
     },
-    "v1SignMessageResponse": {
+    "highway.wallet.v1.SignMessageResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -403,7 +293,7 @@
       },
       "description": "SignMessageResponse is the response message for signing a message."
     },
-    "v1VerifySignatureResponse": {
+    "highway.wallet.v1.VerifySignatureResponse": {
       "type": "object",
       "properties": {
         "success": {
@@ -412,7 +302,7 @@
         "message": {
           "type": "string"
         },
-        "messageVerified": {
+        "message_verified": {
           "type": "boolean"
         }
       },

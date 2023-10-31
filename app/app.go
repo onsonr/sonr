@@ -114,7 +114,7 @@ import (
 
 	appparams "github.com/sonrhq/sonr/app/params"
 	"github.com/sonrhq/sonr/docs"
-	"github.com/sonrhq/sonr/services/highway"
+	"github.com/sonrhq/sonr/internal/highway"
 	domainmodule "github.com/sonrhq/sonr/x/domain"
 	domainmodulekeeper "github.com/sonrhq/sonr/x/domain/keeper"
 	domainmoduletypes "github.com/sonrhq/sonr/x/domain/types"

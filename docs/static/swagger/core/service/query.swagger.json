@@ -4,13 +4,12 @@
     "title": "core/service/query.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "Query"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {
     "/core/params/service": {
       "get": {
@@ -20,17 +19,19 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/serviceQueryParamsResponse"
+              "$ref": "#/definitions/core.service.QueryParamsResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
-        "tags": ["Query"]
+        "tags": [
+          "Query"
+        ]
       }
     },
     "/core/service": {
@@ -41,13 +42,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/serviceQueryAllServiceRecordResponse"
+              "$ref": "#/definitions/core.service.QueryAllServiceRecordResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
@@ -77,7 +78,7 @@
             "format": "uint64"
           },
           {
-            "name": "pagination.countTotal",
+            "name": "pagination.count_total",
             "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set.",
             "in": "query",
             "required": false,
@@ -91,7 +92,9 @@
             "type": "boolean"
           }
         ],
-        "tags": ["Query"]
+        "tags": [
+          "Query"
+        ]
       }
     },
     "/core/service/{origin}": {
@@ -102,13 +105,13 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/serviceQueryGetServiceRecordResponse"
+              "$ref": "#/definitions/core.service.QueryGetServiceRecordResponse"
             }
           },
           "default": {
             "description": "An unexpected error response.",
             "schema": {
-              "$ref": "#/definitions/rpcStatus"
+              "$ref": "#/definitions/grpc.gateway.runtime.Error"
             }
           }
         },
@@ -120,87 +123,59 @@
             "type": "string"
           }
         ],
-        "tags": ["Query"]
+        "tags": [
+          "Query"
+        ]
       }
     }
   },
   "definitions": {
-    "protobufAny": {
-      "type": "object",
-      "properties": {
-        "@type": {
-          "type": "string"
-        }
-      },
-      "additionalProperties": {}
-    },
-    "rpcStatus": {
-      "type": "object",
-      "properties": {
-        "code": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "message": {
-          "type": "string"
-        },
-        "details": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
-          }
-        }
-      }
-    },
-    "serviceParams": {
+    "core.service.Params": {
       "type": "object",
       "description": "Params defines the parameters for the module."
     },
-    "serviceQueryAllServiceRecordResponse": {
+    "core.service.QueryAllServiceRecordResponse": {
       "type": "object",
       "properties": {
         "ServiceRecord": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/serviceServiceRecord"
+            "$ref": "#/definitions/core.service.ServiceRecord"
           }
         },
         "pagination": {
-          "$ref": "#/definitions/v1beta1PageResponse"
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse"
         }
       },
       "description": "QueryAllServiceRecordResponse is the response type for the\nQuery/ServiceRecordAll RPC method."
     },
-    "serviceQueryGetServiceRecordResponse": {
+    "core.service.QueryGetServiceRecordResponse": {
       "type": "object",
       "properties": {
         "ServiceRecord": {
-          "$ref": "#/definitions/serviceServiceRecord"
+          "$ref": "#/definitions/core.service.ServiceRecord"
         }
       },
       "description": "QueryGetServiceRecordResponse is the response type for the\nQuery/ServiceRecord RPC method."
     },
-    "serviceQueryParamsResponse": {
+    "core.service.QueryParamsResponse": {
       "type": "object",
       "properties": {
         "params": {
-          "$ref": "#/definitions/serviceParams",
+          "$ref": "#/definitions/core.service.Params",
           "description": "params holds all the parameters of this module."
         }
       },
       "description": "QueryParamsResponse is response type for the Query/Params RPC method."
     },
-    "serviceServiceRecord": {
+    "core.service.ServiceRecord": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
         "controller": {
-          "type": "string",
-          "title": "The entity controlling the service"
+          "type": "string"
         },
         "origins": {
           "type": "array",
@@ -209,20 +184,17 @@
           }
         },
         "name": {
-          "type": "string",
-          "title": "The name of the service"
+          "type": "string"
         },
         "description": {
-          "type": "string",
-          "title": "The description of the service"
+          "type": "string"
         },
         "category": {
-          "type": "string",
-          "title": "The category of the service"
+          "type": "string"
         }
       }
     },
-    "v1beta1PageRequest": {
+    "cosmos.base.query.v1beta1.PageRequest": {
       "type": "object",
       "properties": {
         "key": {
@@ -240,7 +212,7 @@
           "format": "uint64",
           "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
         },
-        "countTotal": {
+        "count_total": {
           "type": "boolean",
           "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set."
         },
@@ -252,10 +224,10 @@
       "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
       "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
     },
-    "v1beta1PageResponse": {
+    "cosmos.base.query.v1beta1.PageResponse": {
       "type": "object",
       "properties": {
-        "nextKey": {
+        "next_key": {
           "type": "string",
           "format": "byte",
           "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently. It will be empty if\nthere are no more results."
@@ -267,6 +239,39 @@
         }
       },
       "description": "PageResponse is to be embedded in gRPC response messages where the\ncorresponding request message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "type_url": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
+        }
+      }
+    },
+    "grpc.gateway.runtime.Error": {
+      "type": "object",
+      "properties": {
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
     }
   }
 }

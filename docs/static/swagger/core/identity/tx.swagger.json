@@ -4,16 +4,15 @@
     "title": "core/identity/tx.proto",
     "version": "version not set"
   },
-  "tags": [
-    {
-      "name": "Msg"
-    }
+  "consumes": [
+    "application/json"
   ],
-  "consumes": ["application/json"],
-  "produces": ["application/json"],
+  "produces": [
+    "application/json"
+  ],
   "paths": {},
   "definitions": {
-    "identityControllerAccount": {
+    "core.identity.ControllerAccount": {
       "type": "object",
       "properties": {
         "address": {
@@ -36,195 +35,170 @@
         }
       }
     },
-    "identityDIDDocument": {
+    "core.identity.DIDDocument": {
       "type": "object",
       "properties": {
         "context": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "title": "The JSON-LD context(s) used in the document"
+          }
         },
         "id": {
-          "type": "string",
-          "title": "The identifier for the DID subject"
+          "type": "string"
         },
         "controller": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "title": "optional, the entity/entities controlling the DID subject"
+          }
         },
         "authentication": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/identityVerificationRelationship"
-          },
-          "title": "optional, the set of authentication methods associated with the DID"
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
         },
-        "assertionMethod": {
+        "assertion_method": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/identityVerificationRelationship"
-          },
-          "title": "optional, the set of assertion methods associated with the DID"
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
         },
-        "capabilityInvocation": {
+        "capability_invocation": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/identityVerificationRelationship"
-          },
-          "title": "optional, the set of capability invocation methods associated with"
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
         },
-        "capabilityDelegation": {
+        "capability_delegation": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/identityVerificationRelationship"
-          },
-          "title": "optional, the set of capability delegation methods associated with"
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
         },
-        "keyAgreement": {
+        "key_agreement": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/identityVerificationRelationship"
-          },
-          "title": "optional, the set of key agreement methods associated with the DID"
+            "$ref": "#/definitions/core.identity.VerificationRelationship"
+          }
         },
-        "alsoKnownAs": {
+        "also_known_as": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "title": "optional, the set of identifiers for other personas or identities"
+          }
         }
       },
       "description": "DIDDocument represents a Decentralized Identifier (DID) document that\ncontains information about the DID subject, such as public keys, verification\nmethods, and services."
     },
-    "identityMsgCreateControllerAccountResponse": {
+    "core.identity.MsgCreateControllerAccountResponse": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string",
-          "format": "uint64",
-          "description": "The ID of the created controller account."
+          "format": "uint64"
         },
         "account": {
-          "$ref": "#/definitions/identityControllerAccount",
-          "description": "The created controller account."
+          "$ref": "#/definitions/core.identity.ControllerAccount"
         }
       },
       "description": "MsgCreateControllerAccountResponse represents the response to a create\ncontroller account request."
     },
-    "identityMsgDeleteControllerAccountResponse": {
+    "core.identity.MsgDeleteControllerAccountResponse": {
       "type": "object",
       "description": "MsgDeleteControllerAccountResponse represents the response to a delete\ncontroller account request."
     },
-    "identityMsgRegisterIdentityResponse": {
+    "core.identity.MsgRegisterIdentityResponse": {
       "type": "object",
       "properties": {
         "success": {
-          "type": "boolean",
-          "description": "Indicates if the registration was successful."
+          "type": "boolean"
         },
-        "didDocument": {
-          "$ref": "#/definitions/identityDIDDocument",
-          "description": "The DID document associated with the registered identity."
+        "did_document": {
+          "$ref": "#/definitions/core.identity.DIDDocument"
         }
       },
       "description": "MsgRegisterIdentityResponse represents the response to a register identity\nrequest."
     },
-    "identityMsgUpdateControllerAccountResponse": {
+    "core.identity.MsgUpdateControllerAccountResponse": {
       "type": "object",
       "properties": {
         "account": {
-          "$ref": "#/definitions/identityControllerAccount",
-          "description": "The updated controller account."
+          "$ref": "#/definitions/core.identity.ControllerAccount"
         }
       },
       "description": "MsgUpdateControllerAccountResponse represents the response to an update\ncontroller account request."
     },
-    "identityVerificationMethod": {
+    "core.identity.VerificationMethod": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "title": "The identifier for the verification method"
+          "type": "string"
         },
         "type": {
-          "type": "string",
-          "title": "The type of the verification method"
+          "type": "string"
         },
         "controller": {
-          "type": "string",
-          "title": "The entity controlling the verification method"
+          "type": "string"
         },
-        "publicKeyJwk": {
-          "type": "string",
-          "title": "optional, the public key in JSON Web Key (JWK) format"
+        "public_key_jwk": {
+          "type": "string"
         },
-        "publicKeyMultibase": {
-          "type": "string",
-          "title": "optional, the public key in multibase-encoded format"
+        "public_key_multibase": {
+          "type": "string"
         },
-        "blockchainAccountId": {
-          "type": "string",
-          "title": "optional, the blockchain account identifier associated with the"
+        "blockchain_account_id": {
+          "type": "string"
         },
-        "attestationType": {
-          "type": "string",
-          "title": "optional, the type of attestation associated with the verification"
+        "attestation_type": {
+          "type": "string"
         },
         "transports": {
           "type": "array",
           "items": {
             "type": "string"
-          },
-          "title": "optional, the set of transport protocols supported by the"
+          }
         }
       },
       "description": "VerificationMethod represents a verification method that can be used to\nauthenticate the DID subject or perform other cryptographic operations."
     },
-    "identityVerificationRelationship": {
+    "core.identity.VerificationRelationship": {
       "type": "object",
       "properties": {
-        "verificationMethod": {
-          "$ref": "#/definitions/identityVerificationMethod",
-          "title": "The verification method associated with the relationship"
+        "verification_method": {
+          "$ref": "#/definitions/core.identity.VerificationMethod"
         },
         "reference": {
-          "type": "string",
-          "title": "The reference identifier for the relationship"
+          "type": "string"
         },
         "type": {
-          "type": "string",
-          "title": "The type of the verification relationship"
+          "type": "string"
         },
         "owner": {
-          "type": "string",
-          "title": "The idx address of the owner of the verification relationship"
+          "type": "string"
         }
       },
       "description": "VerificationRelationship represents a relationship between a verification\nmethod and a specific verification purpose (e.g., authentication, assertion,\netc.)."
     },
-    "protobufAny": {
+    "google.protobuf.Any": {
       "type": "object",
       "properties": {
-        "@type": {
+        "type_url": {
           "type": "string"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte"
         }
-      },
-      "additionalProperties": {}
+      }
     },
-    "rpcStatus": {
+    "grpc.gateway.runtime.Error": {
       "type": "object",
       "properties": {
+        "error": {
+          "type": "string"
+        },
         "code": {
           "type": "integer",
           "format": "int32"
@@ -235,8 +209,7 @@
         "details": {
           "type": "array",
           "items": {
-            "type": "object",
-            "$ref": "#/definitions/protobufAny"
+            "$ref": "#/definitions/google.protobuf.Any"
           }
         }
       }
