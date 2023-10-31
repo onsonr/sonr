@@ -188,19 +188,7 @@ GORELEASER_IMAGE := ghcr.io/goreleaser/goreleaser-cross:v$(GO_VERSION)
 COSMWASM_VERSION := $(shell go list -m github.com/CosmWasm/wasmvm | sed 's/.* //')
 
 release:
-	docker run \
-		--rm \
-		-e GITHUB_TOKEN=$(GITHUB_TOKEN) \
-		-e COSMWASM_VERSION=$(COSMWASM_VERSION) \
-		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v `pwd`:/go/src/sonrd \
-		-w /go/src/sonrd \
-		$(GORELEASER_IMAGE) \
-		release \
-		--clean
-
-release-docker:
-	task release
+	goreleaser release --clean
 
 release-dry-run:
 	docker run \
