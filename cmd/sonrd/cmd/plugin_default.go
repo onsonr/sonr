@@ -17,10 +17,18 @@ type defaultPlugin struct {
 	path    string
 }
 
-func defaultNetworkPlugin() string {
+func datastorePlugin() string {
 	const (
-		PluginNetworkVersion = "v0.2.0"
-		PluginNetworkPath    = "github.com/sonr-eco/cli-plugin-network@" + PluginNetworkVersion
+		PluginNetworkVersion = "v0.1.4"
+		PluginNetworkPath    = "github.com/sonrhq/datastore@" + PluginNetworkVersion
+	)
+	return PluginNetworkPath
+}
+
+func nitroPlugin() string {
+	const (
+		PluginNetworkVersion = "v0.1.4"
+		PluginNetworkPath    = "github.com/sonrhq/nitro@" + PluginNetworkVersion
 	)
 	return PluginNetworkPath
 }
@@ -30,10 +38,10 @@ func defaultNetworkPlugin() string {
 // When the user executes that command, the plugin is automatically installed.
 var defaultPlugins = []defaultPlugin{
 	{
-		use:     "network",
-		short:   "Launch a blockchain in production",
-		aliases: []string{"n"},
-		path:    defaultNetworkPlugin(),
+		use:     "datastore",
+		short:   "Manage IceFire Datastore instance and configuration",
+		aliases: []string{"db"},
+		path:    datastorePlugin(),
 	},
 }
 

@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
-
 	// this line is used by starport scaffolding # root/moduleImport
 
 	"github.com/CosmWasm/wasmd/x/wasm"
@@ -145,7 +144,6 @@ func initRootCmd(
 			banktypes.GenesisBalancesIterator{},
 			app.DefaultNodeHome,
 		),
-		NewPlugin(),
 		genutilcli.ValidateGenesisCmd(app.ModuleBasics),
 		AddGenesisAccountCmd(app.DefaultNodeHome),
 		tmcli.NewCompletionCmd(rootCmd, true),
@@ -178,6 +176,7 @@ func initRootCmd(
 		queryCommand(),
 		txCommand(),
 		keys.Commands(app.DefaultNodeHome),
+		NewPlugin(),
 	)
 }
 
