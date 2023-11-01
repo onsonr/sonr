@@ -10,7 +10,7 @@ FROM --platform=linux alpine
 LABEL org.opencontainers.image.source https://github.com/sonrhq/sonr
 LABEL org.opencontainers.image.description "Base sonr daemon image"
 # Copy sonrd binary and config
-COPY ../bin/sonrd /usr/local/bin/sonrd
+COPY bin/sonrd /usr/local/bin/sonrd
 COPY start.sh start.sh
 COPY sonr.yml sonr.yml
 ENV SONR_CONFIG=/sonr.yml

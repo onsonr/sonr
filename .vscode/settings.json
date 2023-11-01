@@ -76,7 +76,7 @@
       }
     ]
   },
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "DockerRun.DisableDockerrc": true,
   "DockerRun.Containers": [],
   "doppler.autocomplete.enable": true,

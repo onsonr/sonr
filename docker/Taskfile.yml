@@ -34,11 +34,11 @@ tasks:
   release:
     desc: Build the binary for docker
     cmds:
-      - task: docker-build
-      - for: ["ghcr.io/sonr-io", "registry.digitalocean.com/sonrhq"]
-        task: docker-push
+      - task: build
+      - for: ["ghcr.io/sonrhq", "pkg.sonr.build"]
+        task: push
         vars:
-          REGISTRY: '{{.ITEM}}'
+          REGISTRY: "{{.ITEM}}"
           IMAGE: sonrd
 
   build:
@@ -56,20 +56,13 @@ tasks:
     deps:
       - build
 
-  tag:
+  push:
     silent: true
     desc: Build, tag and push the docker image
     cmds:
       - echo "Tagging {{.IMAGE}} with {{.REGISTRY}}/{{.IMAGE}}"
       - docker tag sonrd {{.REGISTRY}}/{{.IMAGE}}:{{.VERSION}}
       - docker tag sonrd {{.REGISTRY}}/{{.IMAGE}}:{{.COMMIT}}
-    requires:
-      vars: [IMAGE, REGISTRY]
-
-  push:
-    silent: true
-    desc: Build, tag and push the docker image
-    cmds:
       - echo "Pushing {{.REGISTRY}}/{{.IMAGE}}..."
       - docker push {{.REGISTRY}}/{{.IMAGE}} --all-tags
     requires:
