@@ -1,6 +1,6 @@
 steps:
   - name: golang:1.20
-    args: ["mod", "download"]
+    args: ["go", "mod", "download"]
   - name: golang:1.20
     dir: cmd/sonrd
     args: ["go", "build", "-o", "bin/sonrd", "main.go"]
