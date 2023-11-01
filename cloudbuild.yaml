@@ -1,0 +1,10 @@
+steps:
+  - name: golang:1.20
+    args: ["mod", "download"]
+  - name: golang:1.20
+    dir: cmd/sonrd
+    args: ["go", "build", "-o", "bin/sonrd", "main.go"]
+  - name: "gcr.io/cloud-builders/docker"
+    dir: docker/deploy
+    args: ["build", "--tag=gcr.io/sonr-testnet-0/sonr", "."]
+images: ["gcr.io/sonr-testnet-0/sonr"]
