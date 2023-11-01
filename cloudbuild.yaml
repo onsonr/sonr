@@ -2,13 +2,7 @@ steps:
   - name: golang:1.20
     args: ["go", "mod", "download"]
   - name: golang:1.20
-    args: ["go", "build", "-o", "bin/sonrd", "cmd/sonrd"]
+    args: ["go", "build", "-o", "bin/sonrd", "./cmd/sonrd"]
   - name: "gcr.io/cloud-builders/docker"
-    args:
-      [
-        "build",
-        "-f docker/deploy/Dockerfile",
-        "--tag=gcr.io/sonr-testnet-0/sonrd:latest",
-        ".",
-      ]
-images: ["gcr.io/sonr-testnet-0/sonrd:latest"]
+    args: ["build", "--tag=gcr.io/sonr-testnet-0/sonrd", "."]
+images: ["gcr.io/sonr-testnet-0/sonrd"]

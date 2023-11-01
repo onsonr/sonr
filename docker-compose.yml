@@ -5,7 +5,8 @@ services:
   node:
     init: true
     build:
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile
+    command: sh entrypoint.sh
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
@@ -13,23 +14,13 @@ services:
       - 9090:9090 # grpc
       - 8000:8080 # highway
     restart: always
-  fireice-nosql:
+  db:
     pull_policy: always
-    image: ghcr.io/sonr-io/fireice-nosql:latest
+    image: ghcr.io/sonr-io/icefiredb:latest
     init: true
-    container_name: fireice-nosql
+    container_name: db
     networks:
       - sonr-net
     ports:
       - 6001:6001
-    restart: always
-  fireice-sqlite:
-    pull_policy: always
-    image: ghcr.io/sonr-io/fireice-sqlite:latest
-    init: true
-    container_name: fireice-sqlite
-    networks:
-      - sonr-net
-    ports:
-      - 6002:6002
     restart: always

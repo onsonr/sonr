@@ -2,17 +2,14 @@
 ARG GO_VERSION="1.19"
 ARG RUNNER_IMAGE="debian:bullseye-slim"
 
-
-# ! ||-----------------------------------------------------------------------------||
-# ! ||                               Sonr Base Image                               ||
-# ! ||-----------------------------------------------------------------------------||
 FROM ${RUNNER_IMAGE}
 
 LABEL org.opencontainers.image.source https://github.com/sonrhq/sonr
 LABEL org.opencontainers.image.description "Sonr Validator node container"
+
 # Copy sonrd binary and config
 COPY bin/sonrd /usr/local/bin/sonrd
-COPY docker/deploy/deploy.sh start.sh
+COPY scripts/entrypoint.sh entrypoint.sh
 
 # Expose ports
 EXPOSE 26657
