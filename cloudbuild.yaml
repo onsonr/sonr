@@ -1,6 +1,7 @@
 steps:
   - name: "gcr.io/cloud-builders/go"
     args: ["install", "."]
+    env: ["PROJECT_ROOT=sonr"]
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "--tag=gcr.io/sonr-testnet-0/sonrd", "."]
-images: ["gcr.io/sonr-testnet-0/sonrd"]
+    args: ["build", "--tag=gcr.io/sonr-testnet-0/sonr", "."]
+images: ["gcr.io/sonr-testnet-0/sonr"]
