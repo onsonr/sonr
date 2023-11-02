@@ -30,7 +30,7 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release -f build/release/goreleaser.yaml --clean
+          args: release -f build/binary/goreleaser.yaml --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
