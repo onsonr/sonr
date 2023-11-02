@@ -1,0 +1,32 @@
+# ! ||---------------------------------------------------------------------------||
+# ! ||                                  CosmScan                                 ||
+# ! ||---------------------------------------------------------------------------||
+FROM rust:1.64.0-alpine AS tkms-builder
+
+RUN apk update
+RUN apk add libusb-dev=1.0.26-r0 musl-dev git
+
+ENV LOCAL=/usr/local
+ENV RUSTFLAGS=-Ctarget-feature=+aes,+ssse3
+ENV TMKMS_VERSION=v0.12.2
+
+WORKDIR /root
+RUN git clone --branch ${TMKMS_VERSION} https://github.com/iqlusioninc/tmkms.git
+WORKDIR /root/tmkms
+RUN cargo build --release --features=softsign
+
+# The production image starts here
+FROM alpine AS sonr-testnet-tkms
+
+# Install Doppler CLI
+RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub && \
+	echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories && \
+	apk add doppler
+
+ARG DOPPLER_TOKEN
+
+LABEL org.opencontainers.image.source https://github.com/sonrhq/testnet
+
+COPY --from=tkms-builder /root/tmkms/target/release/tmkms ${LOCAL}/bin
+
+ENTRYPOINT [ "tmkms" ]

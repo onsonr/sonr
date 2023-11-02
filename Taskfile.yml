@@ -2,7 +2,7 @@ version: "3"
 dotenv: [".env", "{{.ENV}}/.env.", "{{.HOME}}/.env"]
 includes:
   docker:
-    taskfile: ./docker/Taskfile.yml
+    taskfile: ./build/Taskfile.yml
     dir: .
   proto:
     taskfile: ./proto/Taskfile.yml

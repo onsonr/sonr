@@ -1,0 +1,117 @@
+version: "3"
+networks:
+  brooklyn-net:
+  chelsea-net:
+  mason-net:
+  public-net:
+services:
+  # Node Cluster
+  val-brooklyn:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_VAL_BROOKLYN_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: val-brooklyn
+    hostname: val-brooklyn
+    volumes:
+      - ${VOL_BROOKLYN_VAL_DIR}
+    networks:
+      - brooklyn-net
+
+  val-chelsea:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_VAL_CHELSEA_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: val-chelsea
+    hostname: val-chelsea
+    volumes:
+      - ${VOL_CHELSEA_VAL_DIR}
+    networks:
+      - chelsea-net
+
+  val-mason:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_VAL_MASON_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: val-mason
+    hostname: val-mason
+    volumes:
+      - ${VOL_MASON_VAL_DIR}
+    networks:
+      - mason-net
+
+  sentry-brooklyn:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_SNT_BROOKLYN_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: sentry-brooklyn
+    hostname: sentry-brooklyn
+    volumes:
+      - ${VOL_BROOKLYN_SNT_DIR}
+    networks:
+      - brooklyn-net
+      - public-net
+
+  sentry-chelsea:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_SNT_CHELSEA_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: sentry-chelsea
+    hostname: sentry-chelsea
+    volumes:
+      - ${VOL_CHELSEA_SNT_DIR}
+    networks:
+      - chelsea-net
+      - public-net
+
+  sentry-mason:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_SNT_MASON_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: sentry-mason
+    hostname: sentry-mason
+    volumes:
+      - ${VOL_MASON_SNT_DIR}
+    networks:
+      - mason-net
+      - public-net
+
+  node-austin:
+    init: true
+    build:
+      args:
+        - DOPPLER_TOKEN=${DOPPLER_NDE_AUSTIN_TOKEN}
+      dockerfile: ./images/Dockerfile.val
+    command: ["start"]
+    container_name: node-austin
+    hostname: node-austin
+    volumes:
+      - ${VOL_AUSTIN_NDE_DIR}
+    networks:
+      - brooklyn-net
+      - chelsea-net
+      - mason-net
+      - public-net
+    ports:
+      - 1317:1317 # rest
+      - 26656:26656 # p2p
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+      - 8000:8080 # highway
