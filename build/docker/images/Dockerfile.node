@@ -57,7 +57,7 @@ LABEL org.opencontainers.image.source https://github.com/sonr-io/networks
 
 # Copy sonrd binary and config
 COPY --from=sonr-builder /root/sonr/build/sonrd /usr/local/bin/sonrd
-COPY config.yml sonr.yml
+COPY config/sonr.yaml sonr.yml
 COPY scripts scripts
 ENV SONR_LAUNCH_CONFIG=/sonr.yml
 
