@@ -2,7 +2,7 @@ project_name: sonrd
 builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
-    main: ./cmd/sonrd
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux
@@ -23,7 +23,7 @@ builds:
 
   # Build - Linux (arm64)
   - id: sonrd-linux-arm64
-    main: cmd/sonrd
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux

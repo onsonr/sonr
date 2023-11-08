@@ -5,19 +5,12 @@ ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
 # ! ||--------------------------------------------------------------------------------||
 FROM node:18.7-alpine AS sonr-faucet
 
-LABEL org.opencontainers.image.source https://github.com/sonrhq/testnet
+LABEL org.opencontainers.image.source https://github.com/sonrhq/sonr
 
 ENV COSMJS_VERSION=0.28.11
 
 RUN npm install @cosmjs/faucet@${COSMJS_VERSION} --global --production
 
-# Install Doppler CLI
-RUN wget -q -t3 'https://packages.doppler.com/public/cli/rsa.8004D9FF50437357.key' -O /etc/apk/keys/cli@doppler-8004D9FF50437357.rsa.pub && \
-	echo 'https://packages.doppler.com/public/cli/alpine/any-version/main' | tee -a /etc/apk/repositories && \
-	apk add doppler
-
-ARG DOPPLER_TOKEN
-
 EXPOSE 4500
 
-ENTRYPOINT ["doppler", "run", "--", "cosmos-faucet" ]
+ENTRYPOINT ["cosmos-faucet"]
