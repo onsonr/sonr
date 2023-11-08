@@ -45,7 +45,7 @@ tasks:
     silent: true
     desc: Build, tag and push the docker image
     cmds:
-      - docker build -f ./docker/deploy/Dockerfile . -t sonrd
+      - docker build -f build/gcloud/Dockerfile . -t sonrd
 
   start:
     silent: true

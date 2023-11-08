@@ -1,9 +1,8 @@
-# Project information.
 project_name: sonrd
 builds:
   # Build - Linux (amd64)
   - id: sonrd-linux-amd64
-    main: ./cmd/sonrd
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux
@@ -24,7 +23,7 @@ builds:
 
   # Build - Linux (arm64)
   - id: sonrd-linux-arm64
-    main: ./cmd/sonrd
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux
@@ -45,7 +44,7 @@ builds:
 
   # Build - Darwin (amd64)
   - id: sonrd-darwin-amd64
-    main: ./cmd/sonrd/main.go
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - darwin
@@ -66,7 +65,7 @@ builds:
 
   # Build - Darwin (arm64)
   - id: sonrd-darwin-arm64
-    main: ./cmd/sonrd/main.go
+    main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - darwin
@@ -121,7 +120,7 @@ checksum:
 # ! ||--------------------------------------------------------------------------------||
 release:
   github:
-    owner: sonr-io
+    owner: sonrhq
     name: sonr
   footer: |
     ## Installation
@@ -174,7 +173,7 @@ release:
   mode: replace
   draft: false
   extra_files:
-    - glob: ./scripts/install.sh
+    - glob: scripts/install.sh
 
 changelog:
   sort: asc

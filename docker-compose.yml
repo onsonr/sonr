@@ -5,7 +5,7 @@ services:
   node:
     init: true
     build:
-      dockerfile: Dockerfile
+      dockerfile: build/docker/images/Dockerfile.node
     command: sh entrypoint.sh
     ports:
       - 1317:1317 # rest

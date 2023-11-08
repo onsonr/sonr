@@ -1,0 +1,16 @@
+ARG RUNNER_IMAGE="gcr.io/distroless/static-debian11"
+
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                                  Cosmjs Faucet                                 ||
+# ! ||--------------------------------------------------------------------------------||
+FROM node:18.7-alpine AS sonr-faucet
+
+LABEL org.opencontainers.image.source https://github.com/sonrhq/sonr
+
+ENV COSMJS_VERSION=0.28.11
+
+RUN npm install @cosmjs/faucet@${COSMJS_VERSION} --global --production
+
+EXPOSE 4500
+
+ENTRYPOINT ["cosmos-faucet"]

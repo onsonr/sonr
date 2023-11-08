@@ -1,0 +1,30 @@
+version: "3"
+tasks:
+  default:
+    desc: Print the version
+    silent: true
+    cmds:
+      - task -l
+
+  build:
+    aliases:
+      - b
+    desc: Build the binary for current platform
+    cmds:
+      - make build
+
+  build-all:
+    aliases:
+      - ba
+    desc: Build the binary for all platforms and docker
+    cmds:
+      - make build
+      - task: docker:build
+
+  generate:
+    aliases:
+      - gen
+    desc: Generate the protobuf files
+    cmds:
+      - |
+        make proto-all

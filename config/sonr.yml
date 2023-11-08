@@ -4,6 +4,15 @@ launch:
   chain-id: sonr-localnet-1
   moniker: alice
   val_address: "0x0000000000"
+gateway:
+  listenAddr: localhost:8080
+  routes:
+    - name: Service A
+      context: /service-a
+      target: http://localhost:8082
+    - name: Service B
+      context: /service-b
+      target: http://localhost:8081
 highway:
   enabled: true
   jwt:
