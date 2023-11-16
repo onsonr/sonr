@@ -5,7 +5,7 @@
 			"path": "chain"
 		},
 		{
-			"name": "📦 → @sonrhq/identity",
+			"name": "🆔 → @sonrhq/identity",
 			"path": "identity"
 		},
 		{
@@ -13,7 +13,7 @@
 			"path": "service"
 		},
 		{
-			"name": "🌐 → @sonrhq/studio",
+			"name": "📝 → @sonrhq/studio",
 			"path": "studio"
 		},
 		{
@@ -29,7 +29,6 @@
 		"explorer.excludeGitIgnore": true,
 		"files.exclude": {
 			"**/.git": true,
-			"**/Icon": true,
 			"**/.svn": true,
 			"**/.hg": true,
 			"**/CVS": true,
@@ -53,7 +52,60 @@
 			"**/.trunk/*actions/": true,
 			"**/.trunk/*logs/": true,
 			"**/.trunk/*plugins/": true,
+			"Icon?": true,
+			".bob.workspace": true,
+			"go.work*": true,
+			"SECURITY.md": true,
+			"codecov.yml": true,
+			"CODE_OF_CONDUCT.md": true,
+"*.code-workspace": true,
 			"**/node_modules": true
-		}
+		},
+		"hidefiles.configurationType": "local",
+		"hidefiles.globalConfig": {
+			"profiles": [
+				{
+					"hidden": [
+						"Users/prad/Sonr/.vscode/",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/.vscode/"
+					],
+					"name": "Sonr Monorepo",
+					"description": "",
+					"detail": "",
+					"peek": []
+				},
+				{
+					"name": "Default",
+					"detail": "",
+					"description": "Test",
+					"hidden": [
+						".vscode/",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/.bob.workspace",
+						"Users/prad/Sonr/.bob.workspace",
+						"Users/prad/Sonr/.bob.workspace"
+					],
+					"peek": [
+						"Users/"
+					]
+				},
+				{
+					"name": "Strict",
+					"detail": "Hide everything not immediately required",
+					"hidden": [
+						"$Default"
+					]
+				}
+			]
+		},
+		"hidefiles.selectedProfile": "Strict",
+		"explorerExclude.backup": {}
+	},
+	"extensions": {
+		"recommendations": [
+			"peterschmalfeldt.explorer-exclude"
+		]
 	}
 }
