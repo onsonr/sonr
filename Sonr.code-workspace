@@ -53,12 +53,12 @@
 			"**/.trunk/*logs/": true,
 			"**/.trunk/*plugins/": true,
 			"Icon?": true,
-			".vscode/": true,
 			".bob.workspace": true,
 			"go.work*": true,
 			"SECURITY.md": true,
 			"codecov.yml": true,
 			"CODE_OF_CONDUCT.md": true,
+"*.code-workspace": true,
 			"**/node_modules": true
 		},
 		"hidefiles.configurationType": "local",
