@@ -2,8 +2,8 @@ VERSION 0.7
 
 dev-up:
     LOCALLY
-    RUN docker-compose up
+    RUN task up
 
 dev-down:
     LOCALLY
-    RUN docker-compose down
+    RUN task down
