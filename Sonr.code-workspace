@@ -34,8 +34,14 @@
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			".vscode/": true,
-			"Users/prad/Sonr/Icon\r": true,
-			"Users/prad/Sonr/.bob.workspace": true
+			"Icon?": true,
+			"LICENSE": true,
+			".bob.workspace": true,
+			"go.work*": true,
+			"SECURITY.md": true,
+			"codecov.yml": true,
+			"Sonr.code-workspace": true,
+			"CODE_OF_CONDUCT.md": true,
 		},
 		"hidefiles.configurationType": "local",
 		"hidefiles.globalConfig": {
