@@ -5,7 +5,7 @@
 			"path": "chain"
 		},
 		{
-			"name": "📦 → @sonrhq/identity",
+			"name": "🆔 → @sonrhq/identity",
 			"path": "identity"
 		},
 		{
@@ -13,7 +13,7 @@
 			"path": "service"
 		},
 		{
-			"name": "🌐 → @sonrhq/studio",
+			"name": "📝 → @sonrhq/studio",
 			"path": "studio"
 		},
 		{
@@ -29,31 +29,60 @@
 		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.git": true,
-			"**/Icon": true,
 			"**/.svn": true,
 			"**/.hg": true,
 			"**/CVS": true,
 			"**/.DS_Store": true,
-			"**/Thumbs.db": true,
-			"!**/.git/hooks": true,
-			".dart_tool": true,
-			"**/.classpath": true,
-			"**/.factorypath": true,
-			"**/.flutter-plugins": true,
-			"**/.flutter-plugins-dependencies": true,
-			"**/.packages": true,
-			"**/.project": true,
-			"**/.settings": true,
-			"**/largeFolder": true,
-			"**/pubspec.lock": true,
-			"**pubspec.lock": true,
-			"app.iml": true,
-			"Contents.json": true,
-			"**/.trunk/*out/": true,
-			"**/.trunk/*actions/": true,
-			"**/.trunk/*logs/": true,
-			"**/.trunk/*plugins/": true,
-			"**/node_modules": true
-		}
+			".vscode/": true,
+			"Users/prad/Sonr/Icon\r": true,
+			"Users/prad/Sonr/.bob.workspace": true
+		},
+		"hidefiles.configurationType": "local",
+		"hidefiles.globalConfig": {
+			"profiles": [
+				{
+					"hidden": [
+						"Users/prad/Sonr/.vscode/",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/.vscode/"
+					],
+					"name": "Sonr Monorepo",
+					"description": "",
+					"detail": "",
+					"peek": []
+				},
+				{
+					"name": "Default",
+					"detail": "",
+					"description": "Test",
+					"hidden": [
+						".vscode/",
+						"Users/prad/Sonr/Icon\r",
+						"Users/prad/Sonr/.bob.workspace",
+						"Users/prad/Sonr/.bob.workspace",
+						"Users/prad/Sonr/.bob.workspace"
+					],
+					"peek": [
+						"Users/"
+					]
+				},
+				{
+					"name": "Strict",
+					"detail": "Hide everything not immediately required",
+					"hidden": [
+						"$Default"
+					]
+				}
+			]
+		},
+		"hidefiles.selectedProfile": "Strict",
+		"explorerExclude.backup": {}
+	},
+	"extensions": {
+		"recommendations": [
+			"cnshenj.vscode-task-manager",
+			"peterschmalfeldt.explorer-exclude"
+		]
 	}
 }
