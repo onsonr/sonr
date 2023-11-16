@@ -1,6 +1,4 @@
 version: "3"
-networks:
-  sonr-net: {}
 services:
   node:
     init: true
@@ -10,13 +8,8 @@ services:
       - 26656:26656 # p2p
       - 26657:26657 # rpc
     restart: always
-  db:
-    pull_policy: always
-    image: ghcr.io/sonr-io/icefiredb:latest
+  studio:
     init: true
-    container_name: db
-    networks:
-      - sonr-net
+    image: ghcr.io/sonr-io/icefiredb:latest
     ports:
-      - 6001:6001
-    restart: always
+      - 3000:3000
