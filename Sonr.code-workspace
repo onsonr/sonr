@@ -26,7 +26,7 @@
 		},
 	],
 	"settings": {
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.git": true,
 			"**/Icon": true,
