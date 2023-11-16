@@ -48,6 +48,28 @@
 		{
 			"type": "shell",
 			"isBackground": true,
+			"label": "npm: Dev Website",
+			"command": "npm run dev",
+			"options": {
+				"cwd": "${workspaceFolder}/website"
+			},
+			"detail": "cd /Users/prad/Sonr/chain; go build ${fileDirname}",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": false,
+				"close": false,
+				"clear": true,
+				"group": "website"
+			}
+		},
+		{
+			"type": "shell",
+			"isBackground": true,
 			"label": "npm: Dev Emails",
 			"command": "npm run email",
 			"options": {
