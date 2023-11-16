@@ -1,0 +1,22 @@
+version: '3'
+tasks:
+  build:
+    cmds:
+      - echo "Building Binaries..."
+
+  docker:
+    cmds:
+      - echo "Building Docker Images..."
+
+  clean:
+    cmds:
+      - rm -rf sonr
+      - rm -rf fireice
+      - rm -rf dendrite
+      - bob clone --https
+
+  archive:
+    cmds:
+      - tar -czvf sonr.tar.gz sonr
+      - tar -czvf fireice.tar.gz fireice
+      - tar -czvf dendrite.tar.gz dendrite

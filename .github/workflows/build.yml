@@ -1,0 +1,53 @@
+# This workflow builds the sonrd binary for amd64 and arm64 on Darwin and Linux.
+#
+# This workflow runs:
+# - on pushes to main
+# - on every pull requests
+# - when manually triggered
+#
+# Caching strategy
+# This code will store the Go modules cache based on the hash of your go.sum file,
+# ensuring that the cache will be invalidated when your dependencies change.
+# The cache will be stored on a per-branch basis, which should prevent cache pollution issues between different branches.
+
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - "**"
+  merge_group:
+  workflow_dispatch:
+  workflow_call:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-default:
+    name: Build sonrd-${{ matrix.targetos }}-${{ matrix.arch }} for ${{ github.ref }}
+    runs-on: self-hosted
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        targetos: [darwin, linux]
+        include:
+          - targetos: darwin
+            arch: arm64
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v4
+        env:
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+
+      - name: Download Dependencies
+        run: go mod download
+      - run: make build
+      - uses: actions/upload-artifact@v3
+        with:
+          name: sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+          path: bin/sonrd

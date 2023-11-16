@@ -1,0 +1,104 @@
+version: "3"
+# -----------------------------------------------------------------------------
+# -- Project Config ------------------------------------------------------------
+# -----------------------------------------------------------------------------
+vars:
+  VERSION:
+    sh: echo $(git describe --tags --abbrev=0)
+    default: "v0.0.0"
+  COMMIT:
+    sh: git log -n 1 --format=%h
+    default: "0000000"
+  DATE:
+    sh: date -u '+%m/%d/%y %I:%M:%S%p'
+    default: "1970-01-01_00:00:00AM"
+
+includes:
+  build:
+    taskfile: ../../taskfiles/Build.yml
+    dir: .
+
+# ----------------------------------------------------------------------------
+# -- Public Tasks ------------------------------------------------------------
+# ----------------------------------------------------------------------------
+tasks:
+  default:
+    desc: Print the version
+    silent: true
+    cmds:
+      - echo ---------------------------------------------------------
+      - echo '(sonr-testnet-pool) - Commands for managing pool images'
+      - echo ---------------------------------------------------------
+      - echo "{{.VERSION}}   |  {{.COMMIT}}  |   {{.DATE}}"
+      - task -l
+
+  build:
+    desc: Publish docker images
+    cmds:
+      - task: build-vals
+      - task: build-sentrys
+      - task: build-nodes
+      - task: build-deps
+
+  build-nodes:
+    internal: true
+    desc: Release node docker images
+    cmds:
+      - task: build:docker
+        vars:
+          TOKEN: $DOPPLER_NDE_AUSTIN_TOKEN
+          NAME: node-austin
+          FILE: ./images/Dockerfile.base
+
+  build-vals:
+    internal: true
+    desc: Release validator docker images
+    cmds:
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_VAL_BROOKLYN_TOKEN
+          NAME: val-brooklyn
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_VAL_CHELSEA_TOKEN
+          NAME: val-chelsea
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_VAL_MASON_TOKEN
+          NAME: val-mason
+
+  build-sentrys:
+    internal: true
+    desc: Release sentry docker images
+    cmds:
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_SNT_BROOKLYN_TOKEN
+          NAME: sentry-brooklyn
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_SNT_CHELSEA_TOKEN
+          NAME: sentry-chelsea
+      - task: build:docker
+        vars:
+          FILE: ./images/Dockerfile.base
+          TOKEN: $DOPPLER_SNT_MASON_TOKEN
+          NAME: sentry-mason
+
+  build-and-push:
+    internal: true
+    silent: true
+    desc: Build, tag and push the docker image
+    cmds:
+      - docker build --build-arg "DOPPLER_TOKEN={{.TOKEN}}" -f {{.FILE}} . -t {{.NAME}}
+      - docker tag {{.NAME}} {{.REGISTRY}}/{{.NAME}}:latest
+      - docker tag {{.NAME}} {{.REGISTRY}}/{{.NAME}}:{{.COMMIT}}
+      - docker push {{.REGISTRY}}/{{.NAME}}:latest
+      - docker push {{.REGISTRY}}/{{.NAME}}:{{.COMMIT}}
+    requires:
+      vars: [TOKEN, NAME, FILE]

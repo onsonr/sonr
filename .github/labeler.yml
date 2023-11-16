@@ -1,0 +1,70 @@
+# Add 'repo' label to any root file changes
+Repo:
+  - "*"
+  - ".github/images/**"
+  - ".gitignore"
+  - ".vscode/**"
+  - ".devcontainer/**"
+
+CI-CD:
+  - ".github/workflows/**"
+  - "sonr.yaml"
+  - scripts/**/*
+  - CHANGELOG.md
+  - ".github/labeler.yml"
+
+Community:
+  - "CODE_OF_CONDUCT.md"
+  - "CONTRIBUTING.md"
+  - "LICENSE"
+  - "SECURITY.md"
+  - "README.md"
+  - ".github/ISSUE_TEMPLATE/**"
+  - ".github/PULL_REQUEST_TEMPLATE/**"
+  - docs/**/*
+  - DEVELOPERS.md
+
+Config:
+  - app/**/*
+  - config/**/*
+  - Makefile
+  - buf.gen.yaml
+  - buf.work.yaml
+  - go.mod
+  - go.sum
+
+Docker:
+  - ".dockerignore"
+  - "Dockerfile"
+  - "docker-compose.yml"
+  - "Dockerfile.dev"
+
+Inrastructure:
+  - internal/**/*
+  - x/**/*
+  - tools/**/*
+
+Proto:
+  - proto/**/*
+  - types/**/*
+
+# Add '@domain/*' label to any change within the 'pkg' directory
+"@domain/crypto":
+  - pkg/crypto/**
+"@domain/did":
+  - pkg/did/**
+"@domain/mpc":
+  - pkg/mpc/**
+"@domain/txs":
+  - pkg/txs/**
+
+# Add '@module/*' label to any change within the 'x' directory
+"@module/domain":
+  - x/domain/**
+"@module/identity":
+  - x/identity/**
+"@module/service":
+  - x/service/**
+"@module/wasm":
+  - contracts/**
+
