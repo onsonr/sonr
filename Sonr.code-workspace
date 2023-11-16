@@ -105,7 +105,6 @@
 	},
 	"extensions": {
 		"recommendations": [
-			"cnshenj.vscode-task-manager",
 			"peterschmalfeldt.explorer-exclude"
 		]
 	}
