@@ -1,8 +1,8 @@
 {
 	"folders": [
 		{
-			"name": "🚀 → @sonrhq/chain",
-			"path": "chain"
+			"path": ".",
+			"name": "🔆 → @sonrhq/sonr"
 		},
 		{
 			"name": "🆔 → @sonrhq/identity",
@@ -13,16 +13,16 @@
 			"path": "service"
 		},
 		{
-			"name": "📝 → @sonrhq/studio",
-			"path": "studio"
-		},
-		{
 			"name": "🌐 → @sonrhq/website",
 			"path": "website"
 		},
 		{
-			"path": ".",
-			"name": "🔆 → @sonrhq/sonr"
+			"name": "📝 → @sonrhq/studio",
+			"path": "studio"
+		},
+		{
+			"name": "🚀 → @sonrhq/chain",
+			"path": "chain"
 		},
 	],
 	"settings": {
@@ -58,7 +58,6 @@
 			"SECURITY.md": true,
 			"codecov.yml": true,
 			"CODE_OF_CONDUCT.md": true,
-"*.code-workspace": true,
 			"**/node_modules": true
 		},
 		"hidefiles.configurationType": "local",
