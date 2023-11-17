@@ -100,7 +100,27 @@
 			]
 		},
 		"hidefiles.selectedProfile": "Strict",
-		"explorerExclude.backup": {}
+		"explorerExclude.backup": {},
+		"workbench.colorCustomizations": {
+			"activityBar.activeBackground": "#7aeaf7",
+			"activityBar.background": "#7aeaf7",
+			"activityBar.foreground": "#15202b",
+			"activityBar.inactiveForeground": "#15202b99",
+			"activityBarBadge.background": "#f44be3",
+			"activityBarBadge.foreground": "#15202b",
+			"commandCenter.border": "#15202b99",
+			"sash.hoverBorder": "#7aeaf7",
+			"statusBar.background": "#4ae2f4",
+			"statusBar.foreground": "#15202b",
+			"statusBarItem.hoverBackground": "#1adaf1",
+			"statusBarItem.remoteBackground": "#4ae2f4",
+			"statusBarItem.remoteForeground": "#15202b",
+			"titleBar.activeBackground": "#4ae2f4",
+			"titleBar.activeForeground": "#15202b",
+			"titleBar.inactiveBackground": "#4ae2f499",
+			"titleBar.inactiveForeground": "#15202b99"
+		},
+		"peacock.color": "#4ae2f4"
 	},
 	"extensions": {
 		"recommendations": [
