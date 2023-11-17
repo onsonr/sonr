@@ -13,6 +13,10 @@
 			"path": "../service"
 		},
 		{
+			"name": "📝 → @sonrhq/studio",
+			"path": "../studio"
+		},
+		{
 			"path": "..",
 			"name": "🔆 → @sonrhq/sonr"
 		},
