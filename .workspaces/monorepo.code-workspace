@@ -103,7 +103,8 @@
 			"titleBar.inactiveBackground": "#180d5799",
 			"titleBar.inactiveForeground": "#e7e7e799"
 		},
-		"peacock.color": "#180d57"
+		"peacock.color": "#180d57",
+		"gitdoc.enabled": true
 	},
 	"extensions": {
 		"recommendations": [
