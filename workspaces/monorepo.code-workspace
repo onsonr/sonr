@@ -38,7 +38,7 @@
 			"Users/prad/Sonr/.bob.workspace": true,
 			".bob.workspace": true,
 			"codecov.yml": true,
-			"Icon?": true
+			"Icon\r": true
 		},
 		"hidefiles.configurationType": "local",
 		"hidefiles.globalConfig": {
