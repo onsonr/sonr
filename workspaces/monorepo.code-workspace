@@ -35,7 +35,10 @@
 			"**/.DS_Store": true,
 			".vscode/": true,
 			"Users/prad/Sonr/Icon\r": true,
-			"Users/prad/Sonr/.bob.workspace": true
+			"Users/prad/Sonr/.bob.workspace": true,
+			".bob.workspace": true,
+			"codecov.yml": true,
+			"Icon?": true
 		},
 		"hidefiles.configurationType": "local",
 		"hidefiles.globalConfig": {
@@ -71,7 +74,10 @@
 					"name": "Strict",
 					"detail": "Hide everything not immediately required",
 					"hidden": [
-						"$Default"
+						"$Default",
+						".bob.workspace",
+						"codecov.yml",
+						"Icon\r"
 					]
 				}
 			]

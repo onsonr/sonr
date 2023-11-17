@@ -22,8 +22,8 @@
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			".vscode/": true,
-			"Users/prad/Sonr/Icon\r": true,
-			"Users/prad/Sonr/.bob.workspace": true
+			"Icon?": true,
+			".bob.workspace": true
 		},
 		"hidefiles.configurationType": "local",
 		"hidefiles.globalConfig": {
