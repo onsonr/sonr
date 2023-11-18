@@ -1,8 +1,6 @@
 version: v1
 name: buf.build/sonrhq/common
 deps:
-  - buf.build/cosmos/cosmos-sdk # pin the Cosmos SDK version
-  - buf.build/cosmos/cosmos-proto
   - buf.build/googleapis/googleapis
 lint:
   use:

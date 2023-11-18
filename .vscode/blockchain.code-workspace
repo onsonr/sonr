@@ -22,7 +22,7 @@
 		},
 	],
 	"settings": {
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.git": true,
 			"**/.svn": true,
