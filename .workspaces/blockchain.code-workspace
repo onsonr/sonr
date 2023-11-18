@@ -28,6 +28,8 @@
 			"**/.svn": true,
 			"**/.hg": true,
 			"**/CVS": true,
+			"../studio/go.mod": true,
+			"../website/go.mod": true,
 			"**/.DS_Store": true,
 			".vscode/": false,
 			"Icon?": true,

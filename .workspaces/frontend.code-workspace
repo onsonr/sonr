@@ -18,6 +18,8 @@
 			"**/CVS": true,
 			"**/.DS_Store": true,
 			".vscode/": false,
+			"**/studio/go.mod": true,
+			"**/website/go.mod": true,
 			"Users/prad/Sonr/Icon\r": true,
 			"Users/prad/Sonr/.bob.workspace": true
 		},
