@@ -33,7 +33,7 @@
 			"**/.hg": true,
 			"**/CVS": true,
 			"**/.DS_Store": true,
-			".vscode/": true,
+			".vscode/": false,
 			"Users/prad/Sonr/Icon\r": true,
 			"Users/prad/Sonr/.bob.workspace": true,
 			".bob.workspace": true,
