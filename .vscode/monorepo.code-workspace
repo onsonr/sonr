@@ -18,7 +18,7 @@
 		},
 		{
 			"name": "📝 → @sonrhq/studio",
-			"path": "../studio"
+			"path": "../studio" 
 		},
 		{
 			"name": "🚀 → @sonrhq/chain",
