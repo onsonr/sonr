@@ -4,3 +4,4 @@ service/
 identity/
 studio/
 website/
+.DS_Store
