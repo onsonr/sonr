@@ -5,3 +5,6 @@ identity/
 studio/
 website/
 .DS_Store
+
+datastore/
+nitro/

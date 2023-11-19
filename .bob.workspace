@@ -2,20 +2,28 @@ repositories:
     - name: chain
       sshurl: git@github.com:sonrhq/chain.git
       httpsurl: https://github.com/sonrhq/chain.git
-      localurl: ""
+      localurl: "./chain"
     - name: service
       sshurl: git@github.com:sonrhq/service.git
       httpsurl: https://github.com/sonrhq/service.git
-      localurl: ""
+      localurl: "./service"
     - name: identity
       sshurl: git@github.com:sonrhq/identity.git
       httpsurl: https://github.com/sonrhq/identity.git
-      localurl: ""
+      localurl: "./identity"
     - name: studio
       sshurl: git@github.com:sonrhq/studio.git
       httpsurl: https://github.com/sonrhq/studio.git
-      localurl: ""
+      localurl: "./studio"
     - name: website
       sshurl: git@github.com:sonrhq/website.git
       httpsurl: https://github.com/sonrhq/website.git
+      localurl: ""
+    - name: datastore
+      sshurl: git@github.com:sonrhq/datastore.git
+      httpsurl: https://github.com/sonrhq/datastore.git
+      localurl: ""
+    - name: nitro
+      sshurl: git@github.com:sonrhq/nitro.git
+      httpsurl: https://github.com/sonrhq/nitro.git
       localurl: ""
