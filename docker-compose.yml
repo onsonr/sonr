@@ -1,15 +1,7 @@
-version: "3"
+version: "3.7"
 services:
-  node:
-    init: true
-    image: sonrd:latest
-    ports:
-      - 1317:1317 # rest
-      - 26656:26656 # p2p
-      - 26657:26657 # rpc
-    restart: always
   studio:
     init: true
-    image: ghcr.io/sonr-io/icefiredb:latest
+    image: sonrhq/studio:latest
     ports:
       - 3000:3000
