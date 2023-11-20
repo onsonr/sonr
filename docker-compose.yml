@@ -1,7 +1,15 @@
 version: "3.7"
 services:
-  studio:
-    init: true
-    image: sonrhq/studio:latest
+  sonr-val-1:
+    image: sonrhq/sonrd:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 3000:3000
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    command: flask run --host=

@@ -1,12 +1,12 @@
 {
 	"folders": [
 		{
-			"name": "🚀 → @sonrhq/chain",
-			"path": "../chain"
-		},
-		{
 			"name": "🆔 → @sonrhq/identity",
 			"path": "../identity"
+		},
+		{
+			"name": "🚀 → @sonrhq/chain",
+			"path": "../chain"
 		},
 		{
 			"name": "📦 → @sonrhq/service",
@@ -18,7 +18,7 @@
 		},
 	],
 	"settings": {
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.git": true,
 			"**/.svn": true,
