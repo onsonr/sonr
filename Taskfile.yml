@@ -3,9 +3,10 @@ tasks:
   build:
     cmds:
       - earthly +faucet
+      - earthly +vmbase
 
   push:
     deps:
       - build
     cmds:
-      - gum confirm "Push to Docker Hub?" && docker push sonrhq/faucet:latest
+      - gum confirm "Push to Docker Hub?" && docker push sonrhq/faucet:latest && docker push sonrhq/vmbase:latest
