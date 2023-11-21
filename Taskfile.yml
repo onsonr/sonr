@@ -2,21 +2,10 @@ version: '3'
 tasks:
   build:
     cmds:
-      - echo "Building Binaries..."
+      - earthly +faucet
 
-  docker:
+  push:
+    deps:
+      - build
     cmds:
-      - echo "Building Docker Images..."
-
-  clean:
-    cmds:
-      - rm -rf sonr
-      - rm -rf fireice
-      - rm -rf dendrite
-      - bob clone --https
-
-  archive:
-    cmds:
-      - tar -czvf sonr.tar.gz sonr
-      - tar -czvf fireice.tar.gz fireice
-      - tar -czvf dendrite.tar.gz dendrite
+      - gum confirm "Push to Docker Hub?" && docker push sonrhq/faucet:latest

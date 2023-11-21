@@ -104,6 +104,16 @@ download_release_tarball() {
     rm $BINARY-$OS-$ARCH.tar.gz
 }
 
+# Downloads the latest tagged release tarball from a GitHub repository for current OS and architecture.
+download_release_binary() {
+    REPO=$1
+    BINARY=$2
+    OS=$3
+    ARCH=$4
+    wget https://github.com/$REPO/releases/latest/download/$BINARY-$OS-$ARCH -O /usr/local/bin/$BINARY
+    chmod +x /usr/local/bin/$BINARY
+}
+
 #// ! ||---------------------------------------------------------------------------||
 #// ! ||                                    Main                                   ||
 #// ! ||---------------------------------------------------------------------------||
