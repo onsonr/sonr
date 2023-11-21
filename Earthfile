@@ -3,7 +3,7 @@ PROJECT sonrhq/sonr-testnet-0
 
 build:
     BUILD github.com/sonrhq/chain:story/cosmos-v0.50-upgrade+build
-    BUILD github.com/sonrhq/studio:story/base-view+build
+    # BUILD github.com/sonrhq/studio:story/base-view+build
     BUILD +faucet
 
 generate:
