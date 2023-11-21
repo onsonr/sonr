@@ -1,19 +1,14 @@
 VERSION 0.7
 PROJECT sonrhq/sonr-testnet-0
 
-IMPORT ./chain AS chain
-IMPORT ./identity AS identity
-IMPORT ./service AS service
-IMPORT ./studio AS studio
-
 build:
-    BUILD chain+build
-    BUILD studio+build
+    BUILD github.com/sonrhq/chain:story/cosmos-v0.50-upgrade+build
+    BUILD github.com/sonrhq/studio:story/base-view+build
     BUILD +faucet
 
 generate:
-    BUILD identity+generate
-    BUILD service+generate
+    BUILD github.com/sonrhq/identity:story/module-init]+generate
+    BUILD github.com/sonrhq/service:story/module-init+generate
 
 test:
     BUILD identity+test
