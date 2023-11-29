@@ -3,17 +3,9 @@ PROJECT sonrhq/sonr-testnet-0
 
 build:
     BUILD github.com/sonrhq/chain:story/cosmos-v0.50-upgrade+build
-    BUILD +faucet
+    BUILD +build-faucet
 
-generate:
-    BUILD github.com/sonrhq/identity:story/module-init+generate
-    BUILD github.com/sonrhq/service:story/module-init+generate
-
-test:
-    BUILD identity+test
-    BUILD service+test
-
-faucet:
+build-faucet:
     FROM node:18.7-alpine
     ARG cosmosjsVersion=0.28.11
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
@@ -38,3 +30,11 @@ build-vm:
     RUN nix-env -iA nixpkgs.gum
     RUN nix-env -iA nixpkgs.bob
     SAVE IMAGE sonrhq/vmbase:latest
+
+generate:
+    BUILD github.com/sonrhq/identity:story/module-init+generate
+    BUILD github.com/sonrhq/service:story/module-init+generate
+
+test:
+    BUILD identity+test
+    BUILD service+test
