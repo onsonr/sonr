@@ -1,45 +1,18 @@
 version: "3"
-vars:
-  CGO_ENABLED: 1
-  WASMVM_URL: https://github.com/CosmWasm/wasmvm/releases/download
-  VERSION:
-    sh: echo $(git describe --tags --abbrev=0)
-    default: v0.0.0
-  COMMIT:
-    sh: git log -n 1 --format=%h
-    default: 0000000
-  DATE:
-    sh: date -u '+%m/%d/%y %I:%M:%S%p'
-    default: "1970-01-01_00:00:00AM"
-  COSMWASM_VERSION:
-    sh: go list -m github.com/CosmWasm/wasmvm | sed 's/.* //'
-    default: v1.3.0
-  GO_VERSION:
-    sh: cat go.mod | grep -E 'go [0-9].[0-9]+' | cut -d ' ' -f 2
-    default: 1.21
-  GITHUB_TOKEN:
-    sh: echo $GITHUB_TOKEN
-    default: ""
-  GORELEASER_IMAGE: ghcr.io/goreleaser/goreleaser-cross:v{{.GO_VERSION}}
 tasks:
   # ----------------------------------------------------------------------------
   # -- Run Tasks ---------------------------------------------------------------
   # ----------------------------------------------------------------------------
   default:
-    desc: Bobc is 
+    desc: Bobc is
     silent: true
     cmds:
       - task -l
 
-  release:
-    desc: Build the binary for docker
+  clone:
+    desc: Clone the repo
     cmds:
-      - task: build
-      - for: ["ghcr.io/sonrhq", "pkg.sonr.build"]
-        task: push
-        vars:
-          REGISTRY: "{{.ITEM}}"
-          IMAGE: sonrd
+      - bob clone --https
 
   build:
     silent: true

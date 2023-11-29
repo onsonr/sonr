@@ -1,5 +1,9 @@
 version: '3'
 tasks:
+  default:
+    cmds:
+      - bob clone --https
+
   build:
     cmds:
       - earthly +build
