@@ -1,6 +1,6 @@
-// Package v1 provides a wrapper around the [DKLs18](https://eprint.iacr.org/2018/499.pdf) sign and dkg and provides
+// package dklsv1 provides a wrapper around the [DKLs18](https://eprint.iacr.org/2018/499.pdf) sign and dkg and provides
 // serialization, serialization, and versioning for the serialized data.
-package v1
+package dklsv1
 
 import (
 	"github.com/sonrhq/sonr/crypto/core/protocol"
