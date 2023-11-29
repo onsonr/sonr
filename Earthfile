@@ -1,6 +1,49 @@
 VERSION 0.7
 PROJECT sonrhq/sonr-testnet-0
 
+FROM golang:1.21-alpine3.17
+RUN apk add --update --no-cache \
+    bash \
+    bash-completion \
+    binutils \
+    ca-certificates \
+    clang-extra-tools \
+    coreutils \
+    curl \
+    findutils \
+    g++ \
+    git \
+    grep \
+    jq \
+    less \
+    make \
+    nodejs \
+    npm \
+    openssl \
+    util-linux
+
+WORKDIR /sonr
+COPY . .
+
+# gomod - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
+gomod:
+    FROM +base
+    RUN go work sync
+    RUN go mod download
+    SAVE ARTIFACT go.mod AS LOCAL go.mod
+    SAVE ARTIFACT go.sum AS LOCAL go.sum
+    SAVE ARTIFACT go.work AS LOCAL go.work
+    SAVE ARTIFACT go.work.sum AS LOCAL go.work.sum
+
+# deps - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
+deps:
+    FROM +base
+    RUN npm install -g swagger-combine
+    RUN npm install @bufbuild/buf
+    FROM ghcr.io/cosmos/proto-builder:0.14.0
+    RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
+	RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+
 build:
     BUILD github.com/sonrhq/chain:story/cosmos-v0.50-upgrade+build
     BUILD +build-faucet
@@ -31,9 +74,13 @@ build-vm:
     RUN nix-env -iA nixpkgs.bob
     SAVE IMAGE sonrhq/vmbase:latest
 
+# generate - generates all code from proto files
 generate:
-    BUILD github.com/sonrhq/identity:story/module-init+generate
-    BUILD github.com/sonrhq/service:story/module-init+generate
+    FROM +deps
+    COPY . .
+    RUN sh ./scripts/protocgen.sh
+    SAVE ARTIFACT common/crypto/*.go AS LOCAL common/crypto/*.go
+
 
 test:
     BUILD identity+test

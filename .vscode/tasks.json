@@ -10,7 +10,7 @@
 			},
 			"icon": {
 				"id": "settings-gear",
-				"color": "terminal.ansiRed"
+				"color": "terminal.ansiWhite"
 			},
 			"detail": "Build monorepo common protobuf files",
 			"problemMatcher": [],
@@ -26,25 +26,71 @@
 		},
 		{
 			"type": "shell",
-			"label": "Test: Service Module",
-			"command": "make test",
+			"label": "Switch: To Monorepo Workspace",
+			"command": "code .vscode/monorepo.code-workspace",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "beaker",
-				"color": "terminal.ansiRed"
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
 			},
-			"detail": "Run x/service go tests",
+			"detail": "code .vscode/monorepo.code-workspace",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
 				"reveal": "always",
 				"revealProblems": "onProblem",
 				"focus": true,
-				"panel": "shared",
+				"panel": "dedicated",
 				"showReuseMessage": true,
-				"group": "chain"
+				"close": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Switch: To Frontend Workspace",
+			"command": "code .vscode/frontend.code-workspace",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "code .vscode/frontend.code-workspace",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"close": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Switch: To Frontend Workspace",
+			"command": "code .vscode/frontend.code-workspace",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "code .vscode/frontend.code-workspace",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"close": true
 			}
 		},
 	]

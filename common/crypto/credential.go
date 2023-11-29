@@ -52,12 +52,12 @@ func (a Algo) KeyType() KeyType {
 }
 
 // NewDefaultAccountData creates a new AccountData with the default values.
-func NewDefaultAccountData(cointype CoinType, publicKey *PubKey) (*AccountData, error) {
+func NewDefaultAccountData(cointype CoinType, publicKey PublicKey) (*AccountData, error) {
 	if publicKey == nil {
 		return nil, fmt.Errorf("public key is nil")
 	}
 	return &AccountData{
-		Address:   cointype.FormatAddress(publicKey),
+		Address:   cointype.FormatAddress(publicKey.ToProto()),
 		Algo:      "secp256k1",
 		PublicKey: publicKey.Bytes(),
 	}, nil

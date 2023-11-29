@@ -10,6 +10,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	secp256k1 "github.com/cosmos/cosmos-sdk/crypto/keys/secp256k1"
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	proto "github.com/cosmos/gogoproto/proto"
 	mb "github.com/multiformats/go-multibase"
 	"github.com/multiformats/go-varint"
 	"lukechampine.com/blake3"
@@ -20,12 +21,24 @@ type (
 	Address = tmcrypto.HexBytes
 )
 
+// PublicKey defines a public key and extends proto.Message.
+type PublicKey interface {
+	proto.Message
+
+	Address() Address
+	Bytes() []byte
+	VerifySignature(msg, sig []byte) bool
+	Equals(cryptotypes.PubKey) bool
+	Type() string
+	ToProto() *PubKey
+}
+
 //
 // Constructors
 //
 
 // NewPubKey takes a byte array and returns a PubKey
-func NewPubKey(bz []byte, kt KeyType) *PubKey {
+func NewPubKey(bz []byte, kt KeyType) PublicKey {
 	pk := &PubKey{}
 	pk.Key = bz
 	pk.KeyType = kt.PrettyString()
@@ -33,8 +46,8 @@ func NewPubKey(bz []byte, kt KeyType) *PubKey {
 }
 
 // NewSecp256k1PubKey takes a secp256k1.PubKey and returns a PubKey
-func NewSecp256k1PubKey(pk *secp256k1.PubKey) *PubKey {
-	return NewPubKey(pk.Bytes(), KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019)
+func NewSecp256k1PubKey(key []byte) PublicKey {
+	return NewPubKey(key, KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019)
 }
 
 //
@@ -62,6 +75,13 @@ func (pk *PubKey) Blake3() string {
 	return hex.EncodeToString(hasher.Sum(nil))
 }
 
+// Equals Comparing the two keys.
+func (pk *PubKey) Equals(other cryptotypes.PubKey) bool {
+	if other == nil {
+		return false
+	}
+	return bytes.Equal(pk.Bytes(), other.Bytes())
+}
 
 // Multibase returns the Base58 encoding the key.
 func (pk *PubKey) Multibase() string {
@@ -88,14 +108,6 @@ func (pk *PubKey) Bytes() []byte {
 	return pk.Key
 }
 
-// Equals Comparing the two keys.
-func (pk *PubKey) Equals(other cryptotypes.PubKey) bool {
-	if other == nil {
-		return false
-	}
-	return bytes.Equal(pk.Bytes(), other.Bytes())
-}
-
 // Raw returns the raw key without the type.
 func (pk *PubKey) Raw() []byte {
 	return pk.Key
@@ -120,7 +132,21 @@ func (pk *PubKey) Secp256k1AnyProto() (*codectypes.Any, error) {
 	return codectypes.NewAnyWithValue(scpk)
 }
 
+// ToProto returns the proto representation of the public key.
+func (pk *PubKey) ToProto() *PubKey {
+	return pk
+}
+
 // Type Returning the type of the key.
 func (pk *PubKey) Type() string {
 	return pk.KeyType
+}
+
+// VerifySignature Verifying the signature.
+func (pk *PubKey) VerifySignature(msg, sig []byte) bool {
+	sckp, err := pk.Secp256k1()
+	if err != nil {
+		return false
+	}
+	return sckp.VerifySignature(msg, sig)
 }

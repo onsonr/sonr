@@ -91,22 +91,22 @@ func HexDecode(str string) ([]byte, error) {
 }
 
 // NewEd25519PubKey takes a byte array of raw public key bytes and returns a PubKey.
-func NewEd25519PubKey(bz []byte) *PubKey {
+func NewEd25519PubKey(bz []byte) PublicKey {
 	return NewPubKey(bz, Ed25519KeyType)
 }
 
 // NewRSAPubKey takes a byte array of raw public key bytes and returns a PubKey.
-func NewRSAPubKey(bz []byte) *PubKey {
+func NewRSAPubKey(bz []byte) PublicKey {
 	return NewPubKey(bz, RSAKeyType)
 }
 
 // NewWebAuthnPubKey takes a byte array of raw public key bytes and returns a PubKey.
-func NewWebAuthnPubKey(bz []byte) *PubKey {
+func NewWebAuthnPubKey(bz []byte) PublicKey {
 	return NewPubKey(bz, WebAuthnKeyType)
 }
 
 // PubKeyFromDID takes a string of a DID, decodes it from base58, unmarshals it into a PubKey, and returns the PubKey
-func PubKeyFromDID(did string) (*PubKey, error) {
+func PubKeyFromDID(did string) (PublicKey, error) {
 	ptrs := strings.Split(did, ":")
 	keystr := ptrs[len(ptrs)-1]
 
@@ -131,7 +131,7 @@ func PubKeyFromDID(did string) (*PubKey, error) {
 }
 
 // PubKeyFromBytes takes a byte array and returns a PubKey
-func PubKeyFromBytes(bz []byte) (*PubKey, error) {
+func PubKeyFromBytes(bz []byte) (PublicKey, error) {
 	code, n, err := varint.FromUvarint(bz)
 	if err != nil {
 		return nil, err

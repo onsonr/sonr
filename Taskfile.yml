@@ -2,12 +2,20 @@ version: '3'
 tasks:
   default:
     cmds:
-      - bob clone --https
+      - task --list-all
+
+  tidy:
+    cmds:
+      - earthly --no-sat +deps
 
   build:
     cmds:
-      - earthly +build
-      - earthly +vmbase
+      - earthly --sat=david +build
+
+  build-vm:
+    cmds:
+      - earthly sat wake goliath
+      - earthly --sat=goliath +vmbase
 
   push:
     deps:

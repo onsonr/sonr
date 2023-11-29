@@ -259,7 +259,7 @@ func (ct CoinType) DIDMethod() string {
 }
 
 // FormatAddress returns the address for the given public key for the spec of the coin type.
-func (ct CoinType) FormatAddress(pk *PubKey) string {
+func (ct CoinType) FormatAddress(pk PublicKey) string {
 	if ct.IsSonr() {
 		addr, _ := bech32.ConvertAndEncode("idx", pk.Address().Bytes())
 		return addr
@@ -272,6 +272,6 @@ func (ct CoinType) FormatAddress(pk *PubKey) string {
 }
 
 // FormatDID returns the DID for the given public key for the spec of the coin type, along with the address.
-func (ct CoinType) FormatDID(pk *PubKey) (string, string) {
+func (ct CoinType) FormatDID(pk PublicKey) (string, string) {
 	return fmt.Sprintf("did:%s:%s", ct.DIDMethod(), ct.FormatAddress(pk)), ct.FormatAddress(pk)
 }
