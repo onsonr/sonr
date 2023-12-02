@@ -80,4 +80,6 @@ proto:
 
 # test - runs all tests
 test:
+    FROM +base
+    COPY . .
     RUN go test -v ./...
