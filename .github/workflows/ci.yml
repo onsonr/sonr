@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: sonr-testnet-1
+    runs-on: self-hosted
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
