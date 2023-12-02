@@ -12,10 +12,10 @@ tasks:
     cmds:
       - earthly --sat=david +build
 
-  build-vm:
+  builder:
     cmds:
       - earthly sat wake goliath
-      - earthly --sat=goliath +vmbase
+      - earthly --sat=goliath +builder
 
   push:
     deps:
