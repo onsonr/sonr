@@ -78,7 +78,6 @@ proto:
     RUN sh ./scripts/protocgen.sh
     SAVE ARTIFACT common/crypto/*.go AS LOCAL common/crypto/*.go
 
-# tests - runs all tests
-tests:
-    BUILD identity+test
-    BUILD service+test
+# test - runs all tests
+test:
+    RUN go test -v ./...
