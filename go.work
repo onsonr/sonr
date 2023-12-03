@@ -1,7 +1,10 @@
 go 1.21.3
 
 use (
+<<<<<<< HEAD
 	.
+=======
+>>>>>>> main
 	./chain
 	./identity
 	./service

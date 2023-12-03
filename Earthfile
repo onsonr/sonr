@@ -1,4 +1,5 @@
 VERSION 0.7
+<<<<<<< HEAD
 PROJECT sonrhq/sonr-testnet-0
 
 FROM golang:1.21-alpine3.17
@@ -83,3 +84,13 @@ test:
     FROM +base
     COPY . .
     RUN go test -v ./...
+=======
+
+dev-up:
+    LOCALLY
+    RUN task up
+
+dev-down:
+    LOCALLY
+    RUN task down
+>>>>>>> main
