@@ -1,5 +1,5 @@
 {
-	"explorer.excludeGitIgnore": true,
+	"explorer.excludeGitIgnore": false,
 	"files.exclude": {
 		"**/.git": true,
 		"Icon": true,
@@ -26,6 +26,27 @@
 		"**/.trunk/*actions/": true,
 		"**/.trunk/*logs/": true,
 		"**/.trunk/*plugins/": true,
-		"**/node_modules": true
+		"**/node_modules": true,
+		"go.work": true,
+		"go.sum": true,
+		"go.work.sum": true,
+		"**/CODE_OF_CONDUCT.md": true,
+		"**/codecov.yml": true,
+		"**/SECURITY.md": true,
+		"**/LICENSE": true,
+		".devcontainer": true,
+		"chain": true,
+		"identity": true,
+		"datastore": true,
+		"nitro": true,
+		"service": true,
+		"website": true,
+		"**/.next": true,
+		"**/.vercel": true,
+		"**/bun.lockb": true,
+		"**/next-env.d.ts": true,
+		"**/postcss.config.js": true,
+		"**/package-lock.json": true,
+		"**/.eslintrc.json": true,
 	}
 }

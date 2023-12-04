@@ -1,15 +1,15 @@
-version: "3"
+version: "3.7"
 services:
-  node:
-    init: true
-    image: sonrd:latest
+  sonr-val-1:
+    image: sonrhq/sonrd:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - 1317:1317 # rest
-      - 26656:26656 # p2p
-      - 26657:26657 # rpc
-    restart: always
-  studio:
-    init: true
-    image: ghcr.io/sonr-io/icefiredb:latest
-    ports:
-      - 3000:3000
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    command: flask run --host=

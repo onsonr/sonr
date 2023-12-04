@@ -1,0 +1,71 @@
+{
+	"folders": [
+		{
+			"path": "..",
+			"name": "🔆 → @sonrhq/sonr"
+		},
+		{
+			"name": "🆔 → @sonrhq/identity",
+			"path": "../identity"
+		},
+		{
+			"name": "📦 → @sonrhq/service",
+			"path": "../service"
+		},
+		{
+			"name": "🌐 → @sonrhq/website",
+			"path": "../website"
+		},
+		{
+			"name": "📝 → @sonrhq/studio",
+			"path": "../studio" 
+		},
+		{
+			"name": "🚀 → @sonrhq/chain",
+			"path": "../chain"
+		},
+	],
+	"settings": {
+		"explorer.excludeGitIgnore": true,
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/CVS": true,
+			"**/.DS_Store": true,
+			"**/studio/go.mod": true,
+			"**/website/go.mod": true,
+			".vscode/": false,
+			"codecov.yml": true,
+			"Icon?": true
+		},
+		"hidefiles.configurationType": "local",
+		"explorerExclude.backup": {},
+		"workbench.colorCustomizations": {
+			"activityBar.activeBackground": "#241483",
+			"activityBar.background": "#241483",
+			"activityBar.foreground": "#e7e7e7",
+			"activityBar.inactiveForeground": "#e7e7e799",
+			"activityBarBadge.background": "#a62e19",
+			"activityBarBadge.foreground": "#e7e7e7",
+			"commandCenter.border": "#e7e7e799",
+			"sash.hoverBorder": "#241483",
+			"statusBar.background": "#180d57",
+			"statusBar.foreground": "#e7e7e7",
+			"statusBarItem.hoverBackground": "#241483",
+			"statusBarItem.remoteBackground": "#180d57",
+			"statusBarItem.remoteForeground": "#e7e7e7",
+			"titleBar.activeBackground": "#180d57",
+			"titleBar.activeForeground": "#e7e7e7",
+			"titleBar.inactiveBackground": "#180d5799",
+			"titleBar.inactiveForeground": "#e7e7e799"
+		},
+		"peacock.color": "#180d57",
+		"gitdoc.enabled": true
+	},
+	"extensions": {
+		"recommendations": [
+			"peterschmalfeldt.explorer-exclude"
+		]
+	}
+}

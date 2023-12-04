@@ -1,0 +1,97 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "Generate: Common Proto",
+			"command": "sh ./scripts/protogen.sh",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "settings-gear",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "Build monorepo common protobuf files",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"group": "root"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Switch: To Monorepo Workspace",
+			"command": "code .vscode/monorepo.code-workspace",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "code .vscode/monorepo.code-workspace",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"close": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Switch: To Frontend Workspace",
+			"command": "code .vscode/frontend.code-workspace",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "code .vscode/frontend.code-workspace",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"close": true
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Switch: To Frontend Workspace",
+			"command": "code .vscode/frontend.code-workspace",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "workspace-trusted",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "code .vscode/frontend.code-workspace",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+				"showReuseMessage": true,
+				"close": true
+			}
+		},
+	]
+}

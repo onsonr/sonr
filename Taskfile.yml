@@ -1,22 +1,24 @@
 version: '3'
 tasks:
+  default:
+    cmds:
+      - task --list-all
+
+  tidy:
+    cmds:
+      - earthly --no-sat +deps
+
   build:
     cmds:
-      - echo "Building Binaries..."
+      - earthly --sat=david +build
 
-  docker:
+  builder:
     cmds:
-      - echo "Building Docker Images..."
+      - earthly sat wake goliath
+      - earthly --sat=goliath +builder
 
-  clean:
+  push:
+    deps:
+      - build
     cmds:
-      - rm -rf sonr
-      - rm -rf fireice
-      - rm -rf dendrite
-      - bob clone --https
-
-  archive:
-    cmds:
-      - tar -czvf sonr.tar.gz sonr
-      - tar -czvf fireice.tar.gz fireice
-      - tar -czvf dendrite.tar.gz dendrite
+      - gum confirm "Push to Docker Hub?" && docker push sonrhq/faucet:latest && docker push sonrhq/vmbase:latest && docker push sonrhq/sonrd:latest
