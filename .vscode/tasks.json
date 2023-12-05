@@ -93,5 +93,31 @@
 				"close": true
 			}
 		},
+				{
+					"type": "shell",
+					"isBackground": true,
+					"label": "Run: Studio Web",
+					"command": "bun run dev",
+					"options": {
+						"cwd": "${workspaceFolder}/studio"
+					},
+					"icon": {
+						"id": "play-circle",
+						"color": "terminal.ansiMagenta"
+					},
+					"detail": "Run node.js nota-lang dev server",
+					"problemMatcher": [],
+					"presentation": {
+						"echo": true,
+						"reveal": "always",
+						"revealProblems": "onProblem",
+						"focus": true,
+						"panel": "dedicated",
+						"showReuseMessage": false,
+						"close": false,
+						"clear": true,
+						"group": "website"
+					}
+				},
 	]
 }
