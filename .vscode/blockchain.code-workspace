@@ -13,9 +13,9 @@
 			"path": "../service"
 		},
 		{
-			"path": "..",
-			"name": "🔆 → @sonrhq/sonr"
-		},
+			"name": "🔆 → @sonrhq/sonr",
+			"path": ".."
+		}
 	],
 	"settings": {
 		"explorer.excludeGitIgnore": true,
