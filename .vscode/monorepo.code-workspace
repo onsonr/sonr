@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "..",
-			"name": "🔆 → @sonrhq/sonr"
-		},
-		{
 			"name": "🆔 → @sonrhq/identity",
 			"path": "../identity"
 		},
@@ -13,16 +9,12 @@
 			"path": "../service"
 		},
 		{
-			"name": "🌐 → @sonrhq/website",
-			"path": "../website"
-		},
-		{
-			"name": "📝 → @sonrhq/studio",
-			"path": "../studio"
-		},
-		{
 			"name": "🚀 → @sonrhq/chain",
 			"path": "../chain"
+		},
+		{
+			"path": "..",
+			"name": "🔆 → @sonrhq/sonr"
 		},
 	],
 	"settings": {
@@ -54,7 +46,6 @@
 			"**/.trunk/*plugins/": true,
 			"**/studio/go.mod": true,
 			"**/website/go.mod": true,
-			".vscode/": false,
 			"codecov.yml": true,
 			"Icon?": true,
 			"**/node_modules": false

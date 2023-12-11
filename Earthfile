@@ -26,11 +26,6 @@ RUN apk add --update --no-cache \
 WORKDIR /sonr
 COPY . .
 
-testt:
-    FROM +base
-    COPY . .
-    RUN gum choose 'test' 'sure'
-
 # gomod - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
 gomod:
     FROM +base

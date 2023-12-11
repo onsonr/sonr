@@ -6,10 +6,8 @@ package-lock.json
 package.json
 
 chain/
-front/
 service/
 identity/
 studio/
-website/
-datastore/
-nitro/
+
+front/
