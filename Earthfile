@@ -62,6 +62,18 @@ builder:
     RUN nix-env -iA nixpkgs.bob
     SAVE IMAGE sonrhq/builder:latest
 
+runner:
+    FROM earthly/dind:ubuntu-23.04-docker-24.0.5-1
+    WORKDIR /runner
+    COPY docker-compose.yml ./
+    COPY scripts/entrypoint.sh ./
+    WITH DOCKER \
+        --compose docker-compose.yml \
+        --pull sonrhq/sonrd:latest \
+        --allow-privileged
+    RUN ...
+END
+
 # deps - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
 deps:
     FROM +base

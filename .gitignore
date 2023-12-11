@@ -6,6 +6,7 @@ package-lock.json
 package.json
 
 chain/
+front/
 service/
 identity/
 studio/

@@ -1,81 +1,92 @@
-# Turborepo starter
+# Landing
 
-This is an official starter Turborepo.
+<div style="text-align: center;">
 
-## Using this example
+[![Sonr Logo Banner](.github/images/front-cover.png)](https://sonr.io)
 
-Run the following command:
+</div>
+
+---
+
+## `sonr-io/landing`
+
+This is the official front-end repository for Sonr, leveraging Turborepo, Next.js 13, and Tailwind CSS for a seamless development experience.
+
+## Getting Started
+
+To initiate the project, run:
 
 ```sh
 npx create-turbo@latest
 ```
 
-## What's inside?
+## Structure
 
-This Turborepo includes the following packages/apps:
+### Applications and Packages
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+- `docs`: Documentation app built with [Next.js](https://nextjs.org/)
+- `web`: Main web application built with [Next.js](https://nextjs.org/)
+- `ui`: Shared React component library (utilizes shadcn styles)
+- `eslint-config-custom`: ESLint configurations
+- `tsconfig`: Shared TypeScript configurations
 
 ### Utilities
 
-This Turborepo has some additional tools already setup for you:
+- [TypeScript](https://www.typescriptlang.org/): Static type checking
+- [ESLint](https://eslint.org/): Code linting
+- [Prettier](https://prettier.io): Code formatting
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+### Tech Stack
+
+sonrhq/website is built on the following main stack:
+
+- [Node.js](http://nodejs.org/) – Frameworks (Full Stack)
+- [React](https://reactjs.org/) – Javascript UI Libraries
+- [JavaScript](https://developer.mozilla.org/en-US/docs/Web/JavaScript) – Languages
+- [TypeScript](http://www.typescriptlang.org) – Languages
+- [Autoprefixer](https://github.com/postcss/autoprefixer) – CSS Pre-processors / Extensions
+- [Lodash](https://lodash.com) – Javascript Utilities & Libraries
+- [ESLint](http://eslint.org/) – Code Review
+- [React Router](https://github.com/rackt/react-router) – JavaScript Framework Components
+- [GraphQL](http://graphql.org/) – Query Languages
+- [Yarn](https://yarnpkg.com/) – Front End Package Manager
+- [Next.js](https://nextjs.org/) – Frameworks (Full Stack)
+- [highlight.js](https://highlightjs.org/) – Text Editor
+- [Prettier](https://prettier.io/) – Code Review
+- [Prisma](https://www.prisma.io/) – Object Relational Mapper (ORM)
+- [date-fns](https://date-fns.org/) – Javascript Utilities & Libraries
+- [Zustand](https://github.com/react-spring/zustand) – State Management Library
+- [GitHub Actions](https://github.com/features/actions) – Continuous Integration
+- [Algolia](https://www.algolia.com/?utm_source=stackshare&utm_medium=referral) – Search as a Service
+- [Docker](https://www.docker.com/) – Virtual Machine Platforms & Containers
+
+## Development
 
 ### Build
 
-To build all apps and packages, run the following command:
-
-```
+```sh
 cd my-turborepo
 pnpm build
 ```
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+#### Environment Variables
 
-```
+```sh
 cd my-turborepo
 pnpm dev
 ```
 
-### Remote Caching
+### Remote Caching with Vercel
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+Follow the instructions in the original content to set up remote caching with Vercel.
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
+## Features
 
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
+- Monorepo structure with Turborepo
+- Tailwind integration for styling
+- Shared UI components and configurations
+- Additional packages for client management
 
 ## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)

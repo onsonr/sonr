@@ -5,15 +5,9 @@ const project = resolve(process.cwd(), "tsconfig.json");
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   extends: [
-    "eslint:recommended",
-    "prettier",
-    require.resolve("@vercel/style-guide/eslint/next"),
+    "next/core-web-vitals",
     "eslint-config-turbo",
   ],
-  globals: {
-    React: true,
-    JSX: true,
-  },
   env: {
     node: true,
     browser: true,

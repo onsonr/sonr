@@ -1,20 +1,20 @@
 {
 	"folders": [
 		{
-			"name": "🆔 → @sonrhq/identity",
-			"path": "../identity"
+			"name": "🔆 → @sonrhq/sonr",
+			"path": ".."
 		},
 		{
-			"name": "🚀 → @sonrhq/chain",
-			"path": "../chain"
+			"name": "🆔 → @sonrhq/identity",
+			"path": "../identity"
 		},
 		{
 			"name": "📦 → @sonrhq/service",
 			"path": "../service"
 		},
 		{
-			"name": "🔆 → @sonrhq/sonr",
-			"path": ".."
+			"name": "🚀 → @sonrhq/chain",
+			"path": "../chain"
 		}
 	],
 	"settings": {
