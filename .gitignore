@@ -9,6 +9,5 @@ chain/
 service/
 identity/
 studio/
-website/
-datastore/
-nitro/
+
+front/

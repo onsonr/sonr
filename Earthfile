@@ -14,6 +14,7 @@ RUN apk add --update --no-cache \
     g++ \
     git \
     grep \
+    gum \
     jq \
     less \
     make \
@@ -46,21 +47,6 @@ faucet:
     ENTRYPOINT ["faucet"]
     SAVE IMAGE sonrhq/faucet:latest
 
-builder:
-    FROM nixos/nix
-    RUN nix-channel --add https://nixos.org/channels/nixpkgs-unstable
-    RUN nix-channel --update
-    RUN nix-env -iA nixpkgs.bash
-    RUN nix-env -iA nixpkgs.curl
-    RUN nix-env -iA nixpkgs.git
-    RUN nix-env -iA nixpkgs.go
-    RUN nix-env -iA nixpkgs.go-task
-    RUN nix-env -iA nixpkgs.docker
-    RUN nix-env -iA nixpkgs.earthly
-    RUN nix-env -iA nixpkgs.nodejs
-    RUN nix-env -iA nixpkgs.gum
-    RUN nix-env -iA nixpkgs.bob
-    SAVE IMAGE sonrhq/builder:latest
 
 # deps - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
 deps:

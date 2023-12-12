@@ -1,10 +1,6 @@
 {
 	"folders": [
 		{
-			"path": "..",
-			"name": "🔆 → @sonrhq/sonr"
-		},
-		{
 			"name": "🆔 → @sonrhq/identity",
 			"path": "../identity"
 		},
@@ -13,31 +9,46 @@
 			"path": "../service"
 		},
 		{
-			"name": "🌐 → @sonrhq/website",
-			"path": "../website"
-		},
-		{
-			"name": "📝 → @sonrhq/studio",
-			"path": "../studio" 
-		},
-		{
 			"name": "🚀 → @sonrhq/chain",
 			"path": "../chain"
 		},
+		{
+			"path": "..",
+			"name": "🔆 → @sonrhq/sonr"
+		},
 	],
 	"settings": {
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.git": true,
 			"**/.svn": true,
 			"**/.hg": true,
 			"**/CVS": true,
 			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			"!**/.git/hooks": true,
+			".dart_tool": true,
+			"**/.classpath": true,
+			"**/.factorypath": true,
+			"**/.flutter-plugins": true,
+			"**/.flutter-plugins-dependencies": true,
+			"**/.packages": true,
+			"**/.project": true,
+			"**/.settings": true,
+			"**/largeFolder": true,
+			"**/pubspec.lock": true,
+			"**pubspec.lock": true,
+			"app.iml": true,
+			"Contents.json": true,
+			"**/.trunk/*out/": true,
+			"**/.trunk/*actions/": true,
+			"**/.trunk/*logs/": true,
+			"**/.trunk/*plugins/": true,
 			"**/studio/go.mod": true,
 			"**/website/go.mod": true,
-			".vscode/": false,
 			"codecov.yml": true,
-			"Icon?": true
+			"Icon?": true,
+			"**/node_modules": false
 		},
 		"hidefiles.configurationType": "local",
 		"explorerExclude.backup": {},

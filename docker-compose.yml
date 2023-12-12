@@ -1,15 +1,15 @@
-version: "3.7"
+version: "3"
+networks:
+  sonr-net: {}
 services:
-  sonr-val-1:
+  node:
+    init: true
     image: sonrhq/sonrd:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
+    command: sh entrypoint.sh
     ports:
-      - "5000:5000"
-    volumes:
-      - ./app:/app
-    environment:
-      - FLASK_ENV=development
-      - FLASK_APP=app.py
-    command: flask run --host=
+      - 1317:1317 # rest
+      - 26656:26656 # p2p
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+      - 8000:8080 # highway
+    restart: always
