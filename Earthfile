@@ -1,6 +1,11 @@
 VERSION 0.7
 PROJECT sonrhq/sonr-testnet-0
 
+ARG branch=master
+
+IMPORT github.com/sonrhq/chain:$branch AS sonrd
+
+
 FROM golang:1.21-alpine3.17
 RUN apk add --update --no-cache \
     bash \
@@ -26,40 +31,20 @@ RUN apk add --update --no-cache \
 WORKDIR /sonr
 COPY . .
 
-# gomod - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
-gomod:
-    FROM +base
-    RUN go work sync
-    RUN go mod download
-    SAVE ARTIFACT go.mod AS LOCAL go.mod
-    SAVE ARTIFACT go.sum AS LOCAL go.sum
-    SAVE ARTIFACT go.work AS LOCAL go.work
-    SAVE ARTIFACT go.work.sum AS LOCAL go.work.sum
-
-
-faucet:
-    FROM node:18.7-alpine
-    ARG cosmosjsVersion=0.28.11
-    RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
-    COPY ./scripts/start-faucet.sh /usr/local/bin/faucet
-    RUN chmod +x /usr/local/bin/faucet
-    EXPOSE 4500
-    ENTRYPOINT ["faucet"]
-    SAVE IMAGE sonrhq/faucet:latest
-
-runner:
+# testnet - installs the latest version of infisical and configures it for the testnet
+testnet:
     FROM +base
     RUN curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash
     RUN apk add infisical
 
-# deps - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
-deps:
-    FROM +base
-    RUN npm install -g swagger-combine
-    RUN npm install @bufbuild/buf
-    FROM ghcr.io/cosmos/proto-builder:0.14.0
-    RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
-	RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+# ipfs - builds the ipfs binary
+ipfs:
+    BUILD sonrd+docker
+    FROM ipfs/kubo:latest
+    COPY scripts/setup-ipfs.sh /container-init.d/ipfs-config.sh
+    RUN chmod a+x /container-init.d/ipfs-config.sh
+    EXPOSE 8080 4001 5001 8081
+    SAVE IMAGE sonrhq/ipfs:latest sonr-ipfs:latest
 
 # proto - generates all code from proto files
 proto:

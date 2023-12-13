@@ -170,11 +170,8 @@ stop_service() {
 
 install() {
     download_release_tarball sonr-io/sonr sonrd
-    download_release_tarball sonr-io/IceFireDB icefirekv
-    download_release_tarball sonr-io/IceFireDB icefiresql
-    mkdir -p /var/lib/icefiresql
-    download_release_file sonr-io/IceFireDB config.sqlite.yaml /var/lib/icefiresql/config.yml
-    curl https://i.jpillora.com/benammann/git-secrets! | bash
+    mkdir -p /var/lib/sonrt https://raw.githubusercontent.com/sonrhq/sonr/main/docker-compose.yml -o /var/lib/sonr/docker-compose.yml
+
 }
 
 register_services() {
