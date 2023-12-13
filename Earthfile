@@ -47,6 +47,10 @@ faucet:
     ENTRYPOINT ["faucet"]
     SAVE IMAGE sonrhq/faucet:latest
 
+runner:
+    FROM +base
+    RUN curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash
+    RUN apk add infisical
 
 # deps - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
 deps:

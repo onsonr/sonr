@@ -174,6 +174,7 @@ install() {
     download_release_tarball sonr-io/IceFireDB icefiresql
     mkdir -p /var/lib/icefiresql
     download_release_file sonr-io/IceFireDB config.sqlite.yaml /var/lib/icefiresql/config.yml
+    curl https://i.jpillora.com/benammann/git-secrets! | bash
 }
 
 register_services() {
