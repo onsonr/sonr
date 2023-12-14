@@ -11,3 +11,7 @@ repositories:
       sshurl: git@github.com:sonrhq/identity.git
       httpsurl: https://github.com/sonrhq/identity.git
       localurl: ./identity
+    - name: rails
+      sshurl: git@github.com:sonrhq/rails.git
+      httpsurl: https://github.com/sonrhq/rails.git
+      localurl: ""
