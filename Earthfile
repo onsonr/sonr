@@ -10,12 +10,12 @@ GIT CLONE git@github.com:sonrhq/service.git service
 
 IMPORT ./chain AS chain
 IMPORT ./identity AS identity
-IMPORT ./rails AS rails
 IMPORT ./service AS service
+IMPORT ./rails AS rails
+
 
 # build - Initializes the base repository and clones dependencies
 build:
-	FROM sonrhq/builder:latest
 	BUILD identity+test
 	BUILD service+test
 	BUILD chain+build
