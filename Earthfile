@@ -37,15 +37,6 @@ testnet:
     RUN curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash
     RUN apk add infisical
 
-# ipfs - builds the ipfs binary
-ipfs:
-    BUILD sonrd+docker
-    FROM ipfs/kubo:latest
-    COPY scripts/setup-ipfs.sh /container-init.d/ipfs-config.sh
-    RUN chmod a+x /container-init.d/ipfs-config.sh
-    EXPOSE 8080 4001 5001 8081
-    SAVE IMAGE sonrhq/ipfs:latest sonr-ipfs:latest
-
 # proto - generates all code from proto files
 proto:
     FROM +deps
