@@ -22,8 +22,9 @@
 		},
 	],
 	"settings": {
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
+			"**/.tmp-earthly-out": true,
 			"**/.git": true,
 			"**/.svn": true,
 			"**/.hg": true,
