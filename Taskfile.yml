@@ -6,7 +6,7 @@ tasks:
 
   init:
     cmds:
-      - earthly +init
+      - earthly --no-sat +setup
 
   build:
     deps:
@@ -21,6 +21,7 @@ tasks:
      - init
     cmds:
      - earthly sat wake tester
+     - earthly --sat=tester --org=sonrhq +test
      - earthly --sat=tester --org=sonrhq ./identity+test
      - earthly --sat=tester --org=sonrhq ./service+test
      - earthly --sat=tester --org=sonrhq ./chain+test
