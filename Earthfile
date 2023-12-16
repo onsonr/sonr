@@ -22,26 +22,23 @@ RUN apk add --update --no-cache \
     openssl \
     util-linux
 
-WORKDIR /sonr
+# repo - Creates repository container environment
+repo:
+	FROM +base
+    ARG EARTHLY_GIT_BRANCH
 
-# setup - clones all repositories
-setup:
-	LOCALLY
-	GIT CLONE git@github.com:sonrhq/chain.git chain
-	GIT CLONE git@github.com:sonrhq/identity.git identity
-	GIT CLONE git@github.com:sonrhq/service.git service
-	GIT CLONE git@github.com:sonrhq/rails.git rails
+    GIT CLONE --branch $EARTHLY_GIT_BRANCH git@github.com:sonrhq/sonr.git sonr
+    CACHE --sharing shared sonr
+    WORKDIR /sonr
 
-# gomod - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
-gomod:
-    FROM +base
     COPY ./go.mod ./go.sum ./
     RUN go mod download
+    CACHE --sharing shared /go/pkg/mod
+
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
 # test - runs all tests
 test:
-    FROM +gomod
-    COPY . .
+    FROM +repo
 	RUN go test -v ./...
