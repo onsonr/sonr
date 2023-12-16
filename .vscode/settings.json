@@ -38,7 +38,7 @@
 		"chain": true,
 		"identity": true,
 		"datastore": true,
-		"nitro": true,
+		"rails": true,
 		"service": true,
 		"website": true,
 		"**/.next": true,

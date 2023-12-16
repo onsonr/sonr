@@ -10,9 +10,7 @@ branch:
 categories:
   - title: "Breaking Changes!"
     labels:
-      - "BreakingChange"
-    commits:
-      - "breaking"
+      - "Breaking Changes"
     changes-prefix: ":warning: "
   - title: "Changes"
     labels:
@@ -43,7 +41,7 @@ bump:
   default: "patch"
   major:
     labels:
-      - "BreakingChange"
+      - "Breaking Changes"
     commits:
       - "breaking"
   minor:

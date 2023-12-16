@@ -1,10 +1,5 @@
 VERSION 0.7
-PROJECT sonrhq/sonr-testnet-0
-
-ARG branch=master
-
-IMPORT github.com/sonrhq/chain:$branch AS sonrd
-
+PROJECT sonrhq/testnet-1
 
 FROM golang:1.21-alpine3.17
 RUN apk add --update --no-cache \
@@ -19,7 +14,6 @@ RUN apk add --update --no-cache \
     g++ \
     git \
     grep \
-    gum \
     jq \
     less \
     make \
@@ -29,32 +23,25 @@ RUN apk add --update --no-cache \
     util-linux
 
 WORKDIR /sonr
-COPY . .
 
-# testnet - installs the latest version of infisical and configures it for the testnet
-testnet:
+# setup - clones all repositories
+setup:
+	LOCALLY
+	GIT CLONE git@github.com:sonrhq/chain.git chain
+	GIT CLONE git@github.com:sonrhq/identity.git identity
+	GIT CLONE git@github.com:sonrhq/service.git service
+	GIT CLONE git@github.com:sonrhq/rails.git rails
+
+# gomod - downloads and caches all dependencies for earthly. go.mod and go.sum will be updated locally.
+gomod:
     FROM +base
-    RUN curl -1sLf 'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash
-    RUN apk add infisical
-
-# ipfs - builds the ipfs binary
-ipfs:
-    BUILD sonrd+docker
-    FROM ipfs/kubo:latest
-    COPY scripts/setup-ipfs.sh /container-init.d/ipfs-config.sh
-    RUN chmod a+x /container-init.d/ipfs-config.sh
-    EXPOSE 8080 4001 5001 8081
-    SAVE IMAGE sonrhq/ipfs:latest sonr-ipfs:latest
-
-# proto - generates all code from proto files
-proto:
-    FROM +deps
-    COPY . .
-    RUN sh ./scripts/protocgen.sh
-    SAVE ARTIFACT common/crypto/*.go AS LOCAL common/crypto/*.go
+    COPY ./go.mod ./go.sum ./
+    RUN go mod download
+    SAVE ARTIFACT go.mod AS LOCAL go.mod
+    SAVE ARTIFACT go.sum AS LOCAL go.sum
 
 # test - runs all tests
 test:
-    FROM +base
+    FROM +gomod
     COPY . .
-    RUN go test -v ./...
+	RUN go test -v ./...

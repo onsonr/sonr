@@ -13,6 +13,10 @@
 			"path": "../chain"
 		},
 		{
+			"name": "🚆 → @sonrhq/rails",
+			"path": "../rails"
+		},
+		{
 			"path": "..",
 			"name": "🔆 → @sonrhq/sonr"
 		},
@@ -20,6 +24,7 @@
 	"settings": {
 		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
+			"**/.tmp-earthly-out": true,
 			"**/.git": true,
 			"**/.svn": true,
 			"**/.hg": true,

@@ -1,0 +1,128 @@
+name: New Pull Request -> Lint, Test, Analyze
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  lint-protos:
+    runs-on: ubuntu-latest
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: pnorton5432/setup-task@v1
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+      - run: task lint
+
+  run-tests:
+    runs-on: ubuntu-latest
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: pnorton5432/setup-task@v1
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+      - run: task tests
+
+  codeql-analysis:
+    name: Run CodeQL Analysis
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ["go", "typescript"]
+        queries: ['crypto-com/cosmos-sdk-codeql@v0.0.7']
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+  test-coverage:
+    name: Scan/Upload Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-github-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  analyze-pull:
+    runs-on: ubuntu-latest
+    needs: [lint-protos]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
+      - uses: jefflinse/pr-semver-bump@v1.6.0
+        name: Validate Pull Request Metadata
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
+          major-label: '@Major-Release'
+          minor-label: '@Minor-Release'
+          patch-label: '@Patch-Release'
+          noop-labels: 'Community'
+          require-release-notes: false
+          release-notes-prefix: ''
+          release-notes-suffix: ''
+          with-v: true
+          base-branch: false
+
+  add-to-merge-queue:
+    runs-on: ubuntu-latest
+    needs: [run-tests, analyze-pull, codeql-analysis, test-coverage]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: gh pr merge ${{ github.event.pull_request.number }}

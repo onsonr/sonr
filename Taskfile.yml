@@ -4,21 +4,31 @@ tasks:
     cmds:
       - task --list-all
 
-  tidy:
+  init:
     cmds:
-      - earthly --no-sat +deps
+      - earthly --no-sat +setup
 
   build:
-    cmds:
-      - earthly --sat=david +build
-
-  builder:
-    cmds:
-      - earthly sat wake goliath
-      - earthly --sat=goliath +builder
-
-  push:
     deps:
-      - build
+      - init
     cmds:
-      - gum confirm "Push to Docker Hub?" && docker push sonrhq/faucet:latest && docker push sonrhq/vmbase:latest && docker push sonrhq/sonrd:latest
+      - earthly sat wake builder
+      - earthly --sat=builder --org=sonrhq ./chain+build
+      - earthly --sat=builder --org=sonrhq ./rails+build
+
+  tests:
+    deps:
+     - init
+    cmds:
+     - earthly sat wake tester
+     - earthly --sat=tester --org=sonrhq ./identity+test
+     - earthly --sat=tester --org=sonrhq ./service+test
+     - earthly --sat=tester --org=sonrhq ./chain+test
+
+  lint:
+   deps:
+    - init
+   cmds:
+    - earthly sat wake linter
+    - earthly --sat=linter --org=sonrhq ./identity+lint
+    - earthly --sat=linter --org=sonrhq ./service+lint

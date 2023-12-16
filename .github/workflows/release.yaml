@@ -1,0 +1,80 @@
+name: Branch Merged to Master -> Create Release
+
+on:
+  pull_request_target:
+    types:
+      - closed
+
+permissions:
+  contents: write
+  issues: read
+  pull-requests: read
+
+jobs:
+  bump-tag:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jefflinse/pr-semver-bump@v1.6.0
+        name: Bump and Tag Version
+        id: pr-semver-bump
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
+          major-label: '@Major-Release'
+          minor-label: '@Minor-Release'
+          patch-label: '@Patch-Release'
+          noop-labels: 'Community'
+          require-release-notes: false
+          release-notes-prefix: ''
+          release-notes-suffix: ''
+          with-v: true
+          base-branch: false
+    outputs:
+      version: ${{ steps.pr-semver-bump.outputs.version }}
+      old-version: ${{ steps.pr-semver-bump.outputs.old-version }}
+      skipped: ${{ steps.pr-semver-bump.outputs.skipped }}
+
+  run-goreleaser:
+    if: needs.bump-tag.outputs.skipped == false
+    runs-on: ubuntu-latest
+    needs: [bump-tag]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Run only on tag
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-images:
+    if: needs.bump-tag.outputs.skipped == false
+    runs-on: ubuntu-latest
+    needs: [bump-tag]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: pnorton5432/setup-task@v1
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+
