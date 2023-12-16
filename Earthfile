@@ -38,6 +38,12 @@ repo:
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
+# clone - Clones the dependencies as git submodules
+clone:
+    FROM +repo
+    GIT CLONE git@github.com:sonrhq/identity.git identity
+    SAVE ARTIFACT sonrhq/identity AS LOCAL identity
+
 # generate - generates all code from proto files
 generate:
     LOCALLY
