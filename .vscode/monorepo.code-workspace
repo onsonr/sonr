@@ -13,10 +13,6 @@
 			"path": "../chain"
 		},
 		{
-			"name": "🚆 → @sonrhq/rails",
-			"path": "../rails"
-		},
-		{
 			"path": "..",
 			"name": "🔆 → @sonrhq/sonr"
 		},

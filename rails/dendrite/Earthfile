@@ -1,0 +1,23 @@
+VERSION 0.7
+PROJECT sonrhq/rails
+
+
+# build - build the image
+build:
+    FROM +init
+    RUN mkdir -p /etc/dendrite
+    COPY +init/matrix_key.pem /etc/dendrite/
+    COPY +init/server.crt /etc/dendrite/
+    COPY +init/server.key /etc/dendrite/
+    COPY ./dendrite.yaml /etc/dendrite/
+    EXPOSE 8008
+    EXPOSE 8448
+    SAVE IMAGE sonrhq/dendrite:latest
+
+# init - initializes matrix keys
+init:
+    FROM matrixdotorg/dendrite-monolith:latest
+    RUN /usr/bin/generate-keys -private-key matrix_key.pem -tls-cert server.crt -tls-key server.key -server localhost
+    SAVE ARTIFACT matrix_key.pem
+    SAVE ARTIFACT server.crt
+    SAVE ARTIFACT server.key

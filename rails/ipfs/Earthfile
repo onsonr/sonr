@@ -1,0 +1,10 @@
+VERSION 0.7
+PROJECT sonrhq/rails
+
+
+# build - builds the ipfs binary
+build:
+    FROM ipfs/kubo:latest
+    COPY ./config.sh config.sh
+    EXPOSE 8080 4001 5001 8081
+    SAVE IMAGE sonrhq/ipfs:latest

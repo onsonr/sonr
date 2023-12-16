@@ -1,0 +1,18 @@
+VERSION 0.7
+PROJECT sonrhq/rails
+
+IMPORT ./dendrite AS dendrite
+IMPORT ./faucet AS faucet
+IMPORT ./indexer AS indexer
+IMPORT ./ipfs AS ipfs
+IMPORT ./nginx AS nginx
+IMPORT ./postgres AS postgres
+
+# builds - builds the postgres binary
+build:
+    BUILD dendrite+build
+    BUILD faucet+build
+    BUILD indexer+build
+    BUILD ipfs+build
+    BUILD nginx+build
+

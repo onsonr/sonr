@@ -1,0 +1,11 @@
+VERSION 0.7
+PROJECT sonrhq/rails
+
+
+# build - builds the indexer binary
+build:
+    FROM ghcr.io/defiantlabs/cosmos-indexer:main
+    COPY ./start.sh /usr/local/bin/indexer
+    RUN chmod +x /usr/local/bin/indexer
+    ENTRYPOINT ["indexer"]
+    SAVE IMAGE sonrhq/indexer:latest
