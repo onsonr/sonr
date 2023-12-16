@@ -41,8 +41,15 @@ repo:
 # clone - Clones the dependencies as git submodules
 clone:
     FROM +repo
+    WORKDIR /sonr
     GIT CLONE git@github.com:sonrhq/identity.git identity
-    SAVE ARTIFACT sonrhq/identity AS LOCAL identity
+    SAVE ARTIFACT identity AS LOCAL identity
+    GIT CLONE git@github.com:sonrhq/service.git service
+    SAVE ARTIFACT service AS LOCAL service
+    GIT CLONE git@github.com:sonrhq/chain.git chain
+    SAVE ARTIFACT chain AS LOCAL chain
+    GIT CLONE git@github.com:sonrhq/rails.git rails
+    SAVE ARTIFACT rails AS LOCAL rails
 
 # generate - generates all code from proto files
 generate:
