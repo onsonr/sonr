@@ -15,7 +15,7 @@ import (
 	"math/big"
 
 	"filippo.io/edwards25519"
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/bwesterb/go-ristretto"
 
 "github.com/sonrhq/sonr/crypto/internal"

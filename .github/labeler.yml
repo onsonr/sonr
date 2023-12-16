@@ -41,7 +41,6 @@ Breaking Changes:
 "@Minor-Release":
   - "go.mod"
   - "go.sum"
-  - "crypto/**"
   - Earthfile
   - ".github/**"
 

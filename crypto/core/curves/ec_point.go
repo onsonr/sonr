@@ -12,10 +12,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 
-"github.com/sonrhq/sonr/crypto/internal"
-"github.com/sonrhq/sonr/crypto/core"
+	"github.com/sonrhq/sonr/crypto/core"
+	"github.com/sonrhq/sonr/crypto/internal"
 )
 
 var curveNameToId = map[string]byte{

@@ -6,29 +6,37 @@ tasks:
 
   init:
     cmds:
-      - earthly --no-sat +setup
+      - earthly --no-sat +repo
 
   build:
     deps:
       - init
     cmds:
       - earthly sat wake builder
-      - earthly --sat=builder --org=sonrhq ./chain+build
-      - earthly --sat=builder --org=sonrhq ./rails+build
+      - earthly --sat=builder --org=sonrhq github.com/sonrhq/chain+build
+      - earthly --sat=builder --org=sonrhq github.com/sonrhq/rails+build
 
   tests:
     deps:
      - init
     cmds:
      - earthly sat wake tester
-     - earthly --sat=tester --org=sonrhq ./identity+test
-     - earthly --sat=tester --org=sonrhq ./service+test
-     - earthly --sat=tester --org=sonrhq ./chain+test
+     - earthly --sat=tester --org=sonrhq github.com/sonrhq/identity+test
+     - earthly --sat=tester --org=sonrhq github.com/sonrhq/service+test
+     - earthly --sat=tester --org=sonrhq github.com/sonrhq/chain+test
 
   lint:
    deps:
     - init
    cmds:
     - earthly sat wake linter
-    - earthly --sat=linter --org=sonrhq ./identity+lint
-    - earthly --sat=linter --org=sonrhq ./service+lint
+    - earthly --sat=linter --org=sonrhq github.com/sonrhq/identity+lint
+    - earthly --sat=linter --org=sonrhq github.com/sonrhq/service+lint
+
+  publish:
+    deps:
+      - init
+    cmds:
+      - earthly sat wake builder
+      - earthly --sat=builder --org=sonrhq github.com/sonrhq/chain+build --push
+      - earthly --sat=builder --org=sonrhq github.com/sonrhq/rails+build --push
