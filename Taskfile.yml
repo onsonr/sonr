@@ -38,5 +38,5 @@ tasks:
       - init
     cmds:
       - earthly sat wake builder
-      - earthly --sat=builder --org=sonrhq github.com/sonrhq/chain+build --push
-      - earthly --sat=builder --org=sonrhq github.com/sonrhq/rails+build --push
+      - earthly --sat=builder --push --org=sonrhq github.com/sonrhq/chain+build
+      - earthly --sat=builder --push --org=sonrhq github.com/sonrhq/rails+build
