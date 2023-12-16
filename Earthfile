@@ -2,29 +2,33 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 
 FROM golang:1.21-alpine3.17
-RUN apk add --update --no-cache \
-    bash \
-    bash-completion \
-    binutils \
-    ca-certificates \
-    clang-extra-tools \
-    coreutils \
-    curl \
-    findutils \
-    g++ \
-    git \
-    grep \
-    jq \
-    less \
-    make \
-    nodejs \
-    npm \
-    openssl \
-    util-linux
+
+# deps - Installs dependencies for the project
+deps:
+    FROM +base
+    RUN apk add --update --no-cache \
+        bash \
+        bash-completion \
+        binutils \
+        ca-certificates \
+        clang-extra-tools \
+        coreutils \
+        curl \
+        findutils \
+        g++ \
+        git \
+        grep \
+        jq \
+        less \
+        make \
+        nodejs \
+        npm \
+        openssl \
+        util-linux
 
 # repo - Creates repository container environment
 repo:
-	FROM +base
+	FROM +deps
     ARG EARTHLY_GIT_BRANCH
 
     GIT CLONE --branch $EARTHLY_GIT_BRANCH git@github.com:sonrhq/sonr.git sonr
@@ -55,7 +59,7 @@ clone:
 generate:
     LOCALLY
     RUN make proto-gen
-    FROM +deps
+    FROM +repo
     COPY . .
     RUN sh ./scripts/protogen-orm.sh
     SAVE ARTIFACT sonrhq/identity AS LOCAL api
