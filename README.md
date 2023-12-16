@@ -113,7 +113,7 @@ Sonr is built on top of the Cosmos SDK, which is a framework for building blockc
 
 For full documentation, visit [sonr.io/docs](https://sonr.io/docs). To see how to Contribute, visit [Getting Started](./docs/contribution/DEVELOPERS.md)
 
-Its reccomended to install the following tools:
+It's recommended to install the following tools:
 
 - [golang](https://golang.org/doc/install)
 - [grpcui](https://github.com/fullstorydev/grpcui)
