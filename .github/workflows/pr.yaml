@@ -53,7 +53,7 @@ jobs:
       PR_NUMBER: ${{ github.event.number }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/labeler@v5
+      - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
       - uses: jefflinse/pr-semver-bump@v1.6.0
