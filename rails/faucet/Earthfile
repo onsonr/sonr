@@ -7,8 +7,8 @@ build:
     FROM node:18.7-alpine
     ARG cosmosjsVersion=0.28.11
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
-    COPY ./start.sh /usr/local/bin/faucet
-    RUN chmod +x /usr/local/bin/faucet
+    WORKDIR /app
+    COPY start.sh .
     EXPOSE 4500
-    ENTRYPOINT ["faucet"]
+    ENTRYPOINT ["sh", "start.sh"]
     SAVE IMAGE sonrhq/faucet:latest
