@@ -2,14 +2,59 @@ version: "3"
 networks:
   sonr-net: {}
 services:
-  node:
-    init: true
+  # Sonr Validator
+  sonrd:
+    container_name: sonrd
+    hostname: sonrd
     image: sonrhq/sonrd:latest
-    command: sh entrypoint.sh
+    command: sonrd start
+    expose:
+      - 1317 # rest
+      - 26656 # p2p
+      - 26657 # rpc
+      - 9090 # grpc
     ports:
       - 1317:1317 # rest
       - 26656:26656 # p2p
       - 26657:26657 # rpc
       - 9090:9090 # grpc
-      - 8000:8080 # highway
+    volumes:
+      - $DOCKER_SONR_VALIDATOR_HOME:/root/.sonr
     restart: always
+
+  # Matrix Homeserver
+  dendrite:
+    image: sonrhq/dendrite:latest
+    command: sh entrypoint.sh
+    ports:
+      - 8008:8008 # rest
+      - 8448:8448 # p2p
+    volumes:
+      - $DOCKER_DENDRITE_HOME:/etc/dendrite
+    restart: always
+
+  # IPFS Gateway
+  ipfs:
+   image: sonrhq/ipfs:latest
+   volumes:
+      - $DOCKER_IPFS_HOME:/root/.ipfs
+   restart: always
+
+  # Token Faucet
+  faucet:
+   image: sonrhq/faucet:latest
+   ports:
+     - 4500:4500 # rest
+
+  # Chain Indexer
+  indexer:
+   image: sonrhq/indexer:latest
+   restart: always
+
+  # Reverse Proxy
+  proxy:
+   image: nginxproxy/nginx-proxy:latest
+   ports:
+      - 80:80
+   volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
