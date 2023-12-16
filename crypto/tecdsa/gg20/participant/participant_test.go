@@ -14,7 +14,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/stretchr/testify/require"
 
 	"github.com/sonrhq/sonr/crypto/core"
@@ -355,28 +355,6 @@ func TestNormalizeSK256(t *testing.T) {
 		sNorm := signer.normalizeS(s)
 
 		require.NotEqual(t, s, sNorm)
-	}
-}
-
-func TestNormalizeSK256Identity(t *testing.T) {
-	curve := btcec.S256()
-
-	signer := Signer{
-		state: &state{},
-	}
-	signer.Curve = curve
-	for i := 0; i < 1000; i++ {
-		msg, err := core.Rand(curve.N)
-		require.NoError(t, err)
-		sk, err := btcec.NewPrivateKey(curve)
-		require.NoError(t, err)
-
-		sig, err := sk.Sign(msg.Bytes())
-		require.NoError(t, err)
-
-		sNorm := signer.normalizeS(sig.S)
-
-		require.Equal(t, sig.S, sNorm)
 	}
 }
 

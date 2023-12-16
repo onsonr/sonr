@@ -13,7 +13,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/btcsuite/btcd/btcec"
+	"github.com/btcsuite/btcd/btcec/v2"
 
 	"github.com/sonrhq/sonr/crypto/core/curves/native"
 	secp256k1 "github.com/sonrhq/sonr/crypto/core/curves/native/k256"
