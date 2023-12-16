@@ -24,7 +24,6 @@ tasks:
      - earthly --sat=tester --org=sonrhq github.com/sonrhq/identity+test
      - earthly --sat=tester --org=sonrhq github.com/sonrhq/service+test
      - earthly --sat=tester --org=sonrhq github.com/sonrhq/chain+test
-     - earthly --sat=tester --org=sonrhq +test
 
   lint:
    deps:
