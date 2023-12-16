@@ -5,6 +5,15 @@ node_modules/
 package-lock.json
 package.json
 
+debug_container.dot
+debug_container.log
+
+dist
+bin
+.DS_Store
+data
+sonrd
+
 chain/
 service/
 identity/
