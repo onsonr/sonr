@@ -2,7 +2,7 @@ name: New Pull Request -> Lint, Test, Analyze
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, labeled, edited]
 
 permissions:
   contents: read
