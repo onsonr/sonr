@@ -32,3 +32,11 @@ tasks:
     - earthly sat wake linter
     - earthly --sat=linter --org=sonrhq ./identity+lint
     - earthly --sat=linter --org=sonrhq ./service+lint
+
+  publish:
+    deps:
+      - init
+    cmds:
+      - earthly sat wake builder
+      - earthly --sat=builder --org=sonrhq ./chain+build --push
+      - earthly --sat=builder --org=sonrhq ./rails+build --push
