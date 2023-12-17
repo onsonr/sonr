@@ -32,11 +32,3 @@ services:
    container_name: ipfs
    hostname: ipfs
    image: sonrhq/ipfs:latest
-
-  # Reverse Proxy
-  proxy:
-   image: nginxproxy/nginx-proxy:latest
-   ports:
-      - 80:80
-   volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro

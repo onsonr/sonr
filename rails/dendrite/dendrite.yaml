@@ -41,7 +41,7 @@ global:
   # sections. For monolith deployments using SQLite databases,
   # you must configure the "database" block for each component instead.
   database:
-    connection_string: postgresql://username:password@hostname/dendrite?sslmode=disable
+    connection_string: postgresql://prad:yK43YSXagPbF@ep-orange-violet-03328187.us-east-2.aws.neon.tech/neondb?sslmode=require
     max_open_conns: 90
     max_idle_conns: 5
     conn_max_lifetime: -1

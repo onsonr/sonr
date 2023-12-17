@@ -14,5 +14,4 @@ build:
     BUILD faucet+build
     BUILD indexer+build
     BUILD ipfs+build
-    #BUILD nginx+build
-
+    BUILD postgres+build
