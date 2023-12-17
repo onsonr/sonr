@@ -1,8 +1,0 @@
-VERSION 0.7
-PROJECT sonrhq/rails
-
-
-# builds - builds the nginx binary
-build:
-    FROM nginxproxy/nginx-proxy:latest
-    SAVE IMAGE sonrhq/nginx:latest
