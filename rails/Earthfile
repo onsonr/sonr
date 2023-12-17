@@ -22,17 +22,6 @@ ipfs:
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest
 
-# indexer - builds the indexer binary
-indexer:
-    FROM ghcr.io/defiantlabs/cosmos-indexer:main
-    RUN apk add --no-cache bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
-    WORKDIR /indexer
-    COPY ./etc/indexer/start.sh .
-    ENTRYPOINT ["sh", "start.sh"]
-    SAVE IMAGE ghcr.io/sonrhq/indexer:latest
-
 # faucet - builds the faucet binary
 faucet:
     FROM node:18.7-alpine
@@ -42,8 +31,7 @@ faucet:
         && apk add infisical
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
-    CMD ["infisical", "run", "--command", "sonrd start"]
-    ENTRYPOINT ["cosmos-faucet", "start"]
+    CMD ["infisical", "run", "--command", "cosmos-faucet start"]
     SAVE IMAGE ghcr.io/sonrhq/faucet:latest
 
 # dendrite - builds and configures monolithic dendrite matrix homeserver
