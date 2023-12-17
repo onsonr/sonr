@@ -5,7 +5,6 @@ PROJECT sonrhq/rails
 build:
     BUILD +postgres
     BUILD +ipfs
-    BUILD +indexer
     BUILD +faucet
     BUILD +dendrite
 
@@ -19,9 +18,6 @@ postgres:
 # ipfs - builds the ipfs binary
 ipfs:
     FROM ipfs/kubo:latest
-    RUN apk add --no-cache bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
     COPY ./etc/ipfs/config.sh config.sh
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest
@@ -53,10 +49,20 @@ faucet:
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
     FROM matrixdotorg/dendrite-monolith:latest
+    ARG privateKey
+    ARG tlsCert
+    ARG tlsKey
+    ARG serverName=localhost
+    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
+    ARG dirPath=./
     RUN mkdir -p /etc/dendrite
-    WORKDIR /etc/dendrite
-    RUN /usr/bin/generate-keys -private-key matrix_key.pem -tls-cert server.crt -tls-key server.key -server localhost
-    COPY ./etc/dendrite/dendrite.yaml /etc/dendrite/dendrite.yaml
+    IF ["$privateKey" == ""]
+        RUN /usr/bin/generate-keys -private-key matrix_key.pem
+    END
+    IF ["$serverName" == "localhost"]
+        RUN /usr/bin/generate-keys -tls-cert server.crt -tls-key server.key -server-name $serverName
+    END
+    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI -dir $dirPath > /etc/dendrite/dendrite.yaml
     EXPOSE 8008
     EXPOSE 8448
     SAVE IMAGE ghcr.io/sonrhq/dendrite:latest
