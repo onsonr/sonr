@@ -9,6 +9,7 @@ permissions:
 jobs:
   deploy-devnet:
     runs-on: self-hosted
+    environment: Devnet
     if: github.actor == 'prnk28'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}

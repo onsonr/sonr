@@ -1,4 +1,4 @@
-name: New Release on Master -> Run CD
+name: New Release on Master -> Run CD Testnet
 
 on:
   release:
@@ -9,6 +9,7 @@ permissions:
 
 jobs:
   deploy-stack:
+    environment: Testnet
     runs-on: self-hosted
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
