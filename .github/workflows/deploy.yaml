@@ -8,6 +8,7 @@ permissions:
 
 jobs:
   deploy-devnet:
+    name: Deploy Devnet
     runs-on: self-hosted
     environment: Devnet
     if: github.actor == 'prnk28'

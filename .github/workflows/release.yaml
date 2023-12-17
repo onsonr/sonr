@@ -11,40 +11,10 @@ permissions:
   pull-requests: read
 
 jobs:
-  bump-tag:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-    steps:
-      - uses: actions/checkout@v4
-      - uses: jefflinse/pr-semver-bump@v1.6.0
-        name: Bump and Tag Version
-        id: pr-semver-bump
-        with:
-          mode: bump
-          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: '@Major-Release'
-          minor-label: '@Minor-Release'
-          patch-label: '@Patch-Release'
-          noop-labels: 'Community'
-          require-release-notes: false
-          release-notes-prefix: ''
-          release-notes-suffix: ''
-          with-v: true
-          base-branch: false
-    outputs:
-      version: ${{ steps.pr-semver-bump.outputs.version }}
-      old-version: ${{ steps.pr-semver-bump.outputs.old-version }}
-      skipped: ${{ steps.pr-semver-bump.outputs.skipped }}
-
   publish-images:
-    if: needs.bump-tag.outputs.skipped == false
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref =='main'
+    name: Publish Docker Images
     runs-on: ubuntu-latest
-    needs: [bump-tag]
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
