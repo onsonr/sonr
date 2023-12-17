@@ -1,6 +1,7 @@
 VERSION 0.7
 PROJECT sonrhq/rails
 
+IMPORT ./cloudflared AS cfd
 IMPORT ./dendrite AS dendrite
 IMPORT ./faucet AS faucet
 IMPORT ./indexer AS indexer
@@ -10,6 +11,7 @@ IMPORT ./postgres AS postgres
 
 # builds - builds the postgres binary
 build:
+    BUILD cfd+build
     BUILD dendrite+build
     BUILD faucet+build
     BUILD indexer+build

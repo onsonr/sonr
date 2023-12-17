@@ -4,17 +4,21 @@ PROJECT sonrhq/rails
 
 # build - build the image
 build:
+	BUILD +devnet-proxy
+	BUILD +testnet-proxy
 
 # devnet-proxy - build the image for sonr.dev
 devnet-proxy:
     FROM cloudflare/cloudflared:latest
-    ENV TUNNEL_TOKEN
+	ARG token
+    ENV TUNNEL_TOKEN $token
 	CMD ["tunnel", "run"]
 	SAVE IMAGE sonrhq/proxy-devnet:latest
 
 # testnet-proxy - build the image for sonr.zone
 testnet-proxy:
     FROM cloudflare/cloudflared:latest
-    ENV TUNNEL_TOKEN
+    ARG token
+    ENV TUNNEL_TOKEN $token
 	CMD ["tunnel", "run"]
 	SAVE IMAGE sonrhq/proxy-testnet:latest
