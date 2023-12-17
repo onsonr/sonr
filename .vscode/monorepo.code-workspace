@@ -13,10 +13,6 @@
 			"path": "../chain"
 		},
 		{
-			"name": "🚆 → @sonrhq/rails",
-			"path": "../rails"
-		},
-		{
 			"path": "..",
 			"name": "🔆 → @sonrhq/sonr"
 		},
@@ -58,25 +54,25 @@
 		"hidefiles.configurationType": "local",
 		"explorerExclude.backup": {},
 		"workbench.colorCustomizations": {
-			"activityBar.activeBackground": "#241483",
-			"activityBar.background": "#241483",
-			"activityBar.foreground": "#e7e7e7",
-			"activityBar.inactiveForeground": "#e7e7e799",
-			"activityBarBadge.background": "#a62e19",
+			"activityBar.activeBackground": "#40c5df",
+			"activityBar.background": "#40c5df",
+			"activityBar.foreground": "#15202b",
+			"activityBar.inactiveForeground": "#15202b99",
+			"activityBarBadge.background": "#da25bd",
 			"activityBarBadge.foreground": "#e7e7e7",
-			"commandCenter.border": "#e7e7e799",
-			"sash.hoverBorder": "#241483",
-			"statusBar.background": "#180d57",
-			"statusBar.foreground": "#e7e7e7",
-			"statusBarItem.hoverBackground": "#241483",
-			"statusBarItem.remoteBackground": "#180d57",
-			"statusBarItem.remoteForeground": "#e7e7e7",
-			"titleBar.activeBackground": "#180d57",
-			"titleBar.activeForeground": "#e7e7e7",
-			"titleBar.inactiveBackground": "#180d5799",
-			"titleBar.inactiveForeground": "#e7e7e799"
+			"commandCenter.border": "#15202b99",
+			"sash.hoverBorder": "#40c5df",
+			"statusBar.background": "#22afca",
+			"statusBar.foreground": "#15202b",
+			"statusBarItem.hoverBackground": "#1b899e",
+			"statusBarItem.remoteBackground": "#22afca",
+			"statusBarItem.remoteForeground": "#15202b",
+			"titleBar.activeBackground": "#22afca",
+			"titleBar.activeForeground": "#15202b",
+			"titleBar.inactiveBackground": "#22afca99",
+			"titleBar.inactiveForeground": "#15202b99"
 		},
-		"peacock.color": "#180d57",
+		"peacock.color": "#22afca",
 		"gitdoc.enabled": true
 	},
 	"extensions": {
