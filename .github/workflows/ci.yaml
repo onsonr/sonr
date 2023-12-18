@@ -107,6 +107,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Tag Release from Bump Action
+        run: git tag ${{ needs.bump-tag.outputs.version }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser
