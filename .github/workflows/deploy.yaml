@@ -2,6 +2,7 @@ name: Prad Pushes to Origin -> Run CD Devnet
 
 on:
   push:
+    branches-ignore: [master, main]
 
 permissions:
   contents: write
