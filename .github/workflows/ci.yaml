@@ -35,8 +35,23 @@ jobs:
       - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
+
+  validate-pr:
+    name: Validate PR Labels
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    environment: Staging
+    needs: [run-lints]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
       - uses: jefflinse/pr-semver-bump@v1.6.0
-        name: Validate Pull Request Labels
+        name: Validate Pull Request Metadata
         with:
           mode: validate
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
@@ -101,10 +116,10 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Set up Go
-        uses: actions/setup-go@v4
       - name: Tag Release from Bump Action
         run: git tag ${{ needs.bump-tag.outputs.version }}
+      - name: Set up Go
+        uses: actions/setup-go@v4
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
