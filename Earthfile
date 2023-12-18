@@ -4,6 +4,8 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 
 FROM golang:1.21-alpine3.18
+IMPORT github.com/sonrhq/identity AS identity
+IMPORT github.com/sonrhq/service AS service
 IMPORT ./rails AS rails
 WORKDIR /chain
 # ---------------------------------------------------------------------
@@ -116,10 +118,6 @@ generate:
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
-    GIT CLONE git@github.com:sonrhq/identity.git identity
-    SAVE ARTIFACT identity AS LOCAL identity
-    GIT CLONE git@github.com:sonrhq/service.git service
-    SAVE ARTIFACT service AS LOCAL service
-    BUILD ./identity+test
-    BUILD ./service+test
+    BUILD identity+test
+    BUILD service+test
 
