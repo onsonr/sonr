@@ -1,4 +1,4 @@
-name: prnk28 Pushes to Origin -> Run CD Devnet
+name: Prad Pushes to Origin -> Run CD Devnet
 
 on:
   push:
