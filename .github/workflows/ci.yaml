@@ -76,6 +76,11 @@ jobs:
           version: v0.7.10
       - uses: actions/checkout@v4
       - run: earthly --sat=tester +test
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
 
   run-goreleaser:
     name: Run GoReleaser
@@ -85,11 +90,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Bump version and push tag
-        id: tag_version
-        uses: mathieudutour/github-tag-action@v6.1
-        with:
-          github_token: ${{ secrets.GH_ACTIONS_PAT }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser
