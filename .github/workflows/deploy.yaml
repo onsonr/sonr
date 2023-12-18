@@ -19,4 +19,4 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Fix me."
+      - run: echo "Fix me ."
