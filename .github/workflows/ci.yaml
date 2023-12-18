@@ -106,4 +106,4 @@ jobs:
           GOARCH: ${{ matrix.arch }}
       - name: Download Dependencies
         run: go mod download
-      - run: go build ./cmd/sonrd/main.go -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }}
+      - run: go build -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/sonrd/main.go
