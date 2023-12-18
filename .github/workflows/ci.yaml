@@ -85,26 +85,17 @@ jobs:
     needs: [run-tests]
     if: github.event_name == 'merge_group'
     env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
+      GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
     steps:
       - uses: actions/checkout@v4
-      - uses: jefflinse/pr-semver-bump@v1.6.0
-        name: Bump and Tag Version
-        id: pr-semver-bump
-        with:
-          mode: bump
-          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: 'Breaking Changes'
-          minor-label: 'Patch'
-          require-release-notes: false
-          with-v: true
-    outputs:
-      version: ${{ steps.pr-semver-bump.outputs.version }}
-      old-version: ${{ steps.pr-semver-bump.outputs.old-version }}
-      skipped: ${{ steps.pr-semver-bump.outputs.skipped }}
+      - name: install gh extension
+        run: gh extension install johnmanjiro13/gh-bump
+      - name: Bump Minor for Breaking Changes
+        if: contains(github.event.pull_request.labels.*.name, 'Breaking Changes')
+        run: gh bump --bump-type minor -p -y
+      - name: Bump Patch for Patches
+        if: contains(github.event.pull_request.labels.*.name, 'Patch')
+        run: gh bump --bump-type patch -p -y
 
   run-goreleaser:
     name: Run GoReleaser
