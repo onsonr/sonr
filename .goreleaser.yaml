@@ -108,9 +108,9 @@ release:
 
     | Image Name                               | Base                                 | Description                       | Registry Source                                     |
     |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
-    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
-    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
-    | `sonrhq/faucet:{{ .Version }}`           | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [Hub:sonrhq/sonrd](https://hub.docker.com/r/sonrhq/sonrd) |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [Hub:sonrhq/sonrd-standalone](https://hub.docker.com/r/sonrhq/sonrd) |
+    | `sonrhq/faucet:{{ .Version }}`           | `distroless/static-debian11`         | Development environment faucet    | [Hub:sonrhq/faucet](https://hub.docker.com/r/sonrhq/faucet) |
 
     Example run:
 
