@@ -58,7 +58,7 @@ jobs:
           minor-label: '@Minor-Release'
           require-release-notes: false
           with-v: true
-      - run: gh pr merge ${{ github.event.pull_request.number }}
+      - run: gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
 
