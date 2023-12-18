@@ -35,23 +35,8 @@ jobs:
       - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
-
-  add-to-merge-queue:
-    name: Add to Merge Queue
-    runs-on: ubuntu-latest
-    if: github.event_name == 'merge_group'
-    environment: Staging
-    needs: [run-lints]
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-      PR_NUMBER: ${{ github.event.number }}
-    steps:
-      - uses: actions/checkout@v4
       - uses: jefflinse/pr-semver-bump@v1.6.0
-        name: Validate Pull Request Metadata
+        name: Validate Pull Request Labels
         with:
           mode: validate
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
@@ -118,6 +103,8 @@ jobs:
           fetch-depth: 0
       - name: Set up Go
         uses: actions/setup-go@v4
+      - name: Tag Release from Bump Action
+        run: git tag ${{ needs.bump-tag.outputs.version }}
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
