@@ -2,6 +2,8 @@ module github.com/sonrhq/sonr
 
 go 1.21.3
 
+toolchain go1.21.5
+
 replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
 	// Downgraded to avoid bugs in following commits which caused simulations to fail.
