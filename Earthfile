@@ -26,7 +26,6 @@ RUN apk add --update --no-cache \
 
 # ---------------------------------------------------------------------
 
-
 # deps - downloads dependencies
 deps:
     COPY go.mod go.sum ./
@@ -47,6 +46,7 @@ build:
 
 # docker - builds the docker image
 docker:
+    FROM distroless/static-debian11
     ARG tag=latest
     COPY +build/sonrd .
     EXPOSE 26657
@@ -58,7 +58,7 @@ docker:
 
 # runner - Creates a containerized node with preconfigured keys
 runner:
-    FROM debian:11-slim
+    FROM distroless/static-debian11
     ARG tag=latest
     ARG mount
 
@@ -99,20 +99,7 @@ runner:
     EXPOSE 9090
 
     CMD ["/chain/sonrd start"]
-    SAVE IMAGE --push sonrhq/sonr:$tag ghcr.io/sonrhq/sonr:$tag
-
-# clone - Clones the dependencies as git submodules
-clone:
-    FROM +deps
-    WORKDIR /sonr
-    GIT CLONE git@github.com:sonrhq/identity.git identity
-    SAVE ARTIFACT identity AS LOCAL identity
-    GIT CLONE git@github.com:sonrhq/service.git service
-    SAVE ARTIFACT service AS LOCAL service
-    GIT CLONE git@github.com:sonrhq/chain.git chain
-    SAVE ARTIFACT chain AS LOCAL chain
-    GIT CLONE git@github.com:sonrhq/rails.git rails
-    SAVE ARTIFACT rails AS LOCAL rails
+    SAVE IMAGE --push sonrhq/sonrd:$tag-standalone ghcr.io/sonrhq/sonrd:$tag-standalone
 
 # generate - generates all code from proto files
 generate:
@@ -130,4 +117,13 @@ generate:
 test:
     FROM +deps
     COPY . .
-	RUN go test -v ./...
+	RUN go test -v ./common/...
+    RUN go test -v ./crypto/...
+
+# test-modules - runs tests on x/identity and x/service
+test-modules:
+    GIT CLONE git@github.com:sonrhq/identity.git identity
+    GIT CLONE git@github.com:sonrhq/service.git service
+    BUILD ./identity+test
+    BUILD ./service+test
+

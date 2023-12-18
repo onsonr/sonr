@@ -1,17 +1,20 @@
-name: New Release on Master -> Run CD Testnet
+name: New Release / Prad Pushed to Origin -> Run CD
 
 on:
   release:
     types: [published]
+  push:
+    branches-ignore: [master, main]
 
 permissions:
   contents: write
 
 jobs:
   deploy-testnet:
-    name: Deploy Testnet
+    name: Deploy Testnet for New Version
     environment: Testnet
     runs-on: testnet
+    if: github.event =='release' && github.event.action == 'published'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -21,9 +24,24 @@ jobs:
       - uses: actions/checkout@v4
       - run: earthly +deploy
 
+  deploy-devnet:
+    name: Deploy Devnet for Prad
+    runs-on: devnet
+    environment: Devnet
+    if: github.actor == 'prnk28' && github.event == 'push'
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: echo "Fix me ."
+
   changelog:
     name: Generate Changelog
     runs-on: ubuntu-latest
+    if: github.event =='release' && github.event.action == 'published'
     steps:
       - uses: actions/checkout@v4
         with:

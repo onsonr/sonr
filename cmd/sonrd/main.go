@@ -27,6 +27,7 @@ func init() {
 	version.AppName = "sonrd"
 	version.Version = Version
 	version.Commit = Commit
+	version.BuildTags = "netgo"
 }
 
 // main is the entry point for the application.

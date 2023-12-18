@@ -1,75 +1,32 @@
 project_name: sonrd
 builds:
-  # Build - Linux (amd64)
-  - id: sonrd-linux-amd64
+  # Build - Linux
+  - id: sonrd-linux
     main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux
     goarch:
       - amd64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo
-      - -w -s
-    tags:
-      - netgo
-
-  # Build - Linux (arm64)
-  - id: sonrd-linux-arm64
-    main: cmd/sonrd/main.go
-    binary: sonrd
-    goos:
-      - linux
-    goarch:
       - arm64
     flags:
       - -mod=readonly
       - -trimpath
     ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .Commit }}
       - -w -s
     tags:
       - netgo
 
-  # Build - Darwin (amd64)
-  - id: sonrd-darwin-amd64
+  # Build - Darwin
+  - id: sonrd-darwin
     main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - darwin
     goarch:
       - amd64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo
-      - -w -s
-    tags:
-      - netgo
-
-  # Build - Darwin (arm64)
-  - id: sonrd-darwin-arm64
-    main: cmd/sonrd/main.go
-    binary: sonrd
-    goos:
-      - darwin
-    goarch:
       - arm64
     flags:
       - -mod=readonly
@@ -90,26 +47,21 @@ builds:
 universal_binaries:
   - id: sonrd-darwin-universal
     ids:
-      - sonrd-darwin-amd64
-      - sonrd-darwin-arm64
-    replace: true
+      - sonrd-darwin
+    replace: false
 archives:
   - id: zipped
     builds:
       - sonrd-darwin-universal
-      - sonrd-linux-amd64
-      - sonrd-linux-arm64
-      - sonrd-darwin-amd64
-      - sonrd-darwin-arm64
+      - sonrd-linux
+      - sonrd-darwin
     name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
   - id: binaries
     builds:
       - sonrd-darwin-universal
-      - sonrd-linux-arm64
-      - sonrd-linux-amd64
-      - sonrd-darwin-amd64
-      - sonrd-darwin-arm64
+      - sonrd-linux
+      - sonrd-darwin
     name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: binary
 checksum:
@@ -156,9 +108,9 @@ release:
 
     | Image Name                               | Base                                 | Description                       | Registry Source                                     |
     |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
-    | `sonr-io/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
-    | `sonr-io/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
-    | `sonr-io/sonr-faucet:{{ .Version }}`      | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
+    | `sonrhq/faucet:{{ .Version }}`           | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
 
     Example run:
 

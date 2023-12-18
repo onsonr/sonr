@@ -1,12 +1,113 @@
-name: Added to Merge Queue -> Run CI
+name: New Pull Request -> Run CI
 
 on:
+  pull_request:
+    types: [opened, reopened, synchronize, labeled, edited]
   merge_group:
     types: [checks_requested]
+  push:
+    tags: [v*]
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
 
 jobs:
-  bump-tag:
+  validate-protos:
+    name: Validate Protos
     runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+      - run: earthly +test
+      - run: earthly +test-modules
+
+  analyze-pull:
+    name: Analyze Pull Request
+    runs-on: ubuntu-latest
+    needs: [validate-protos]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/labeler@v4
+        with:
+          repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
+      - uses: jefflinse/pr-semver-bump@v1.6.0
+        name: Validate Pull Request Metadata
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
+          major-label: '@Major-Release'
+          minor-label: '@Minor-Release'
+          patch-label: '@Patch-Release'
+          noop-labels: 'Community'
+          require-release-notes: false
+          release-notes-prefix: ''
+          release-notes-suffix: ''
+          with-v: true
+          base-branch: false
+
+  add-to-merge-queue:
+    name: Add to Merge Queue
+    runs-on: ubuntu-latest
+    environment: Staging
+    needs: [analyze-pull]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: jefflinse/pr-semver-bump@v1
+        name: Validate Pull Request Metadata
+        with:
+          mode: validate
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: gh pr merge ${{ github.event.pull_request.number }}
+
+  run-tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
+    environment: Staging
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+      PR_NUMBER: ${{ github.event.number }}
+    steps:
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+      - run: earthly +test
+      - run: earthly +test-modules
+
+  bump-tag:
+    name: Bump and Tag Version
+    runs-on: ubuntu-latest
+    environment: Staging
+    needs: [run-tests]
+    if: github.event_name == 'merge_group'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -33,3 +134,24 @@ jobs:
       version: ${{ steps.pr-semver-bump.outputs.version }}
       old-version: ${{ steps.pr-semver-bump.outputs.old-version }}
       skipped: ${{ steps.pr-semver-bump.outputs.skipped }}
+
+  run-goreleaser:
+    name: Run GoReleaser
+    runs-on: ubuntu-latest
+    environment: Staging
+    if: github.event_name =='push' && startsWith(github.ref,'refs/tags/')
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Go
+        uses: actions/setup-go@v4
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

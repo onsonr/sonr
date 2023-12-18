@@ -27,14 +27,17 @@ ipfs:
 # faucet - builds the faucet binary
 faucet:
     FROM node:18.7-alpine
+    ARG infisicalToken
     ARG cosmosjsVersion=0.28.11
+    ARG environment=testnet
+    ENV INFISICAL_TOKEN $infisicalToken
     RUN apk add --no-cache bash curl && curl -1sLf \
     'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
         && apk add infisical
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
     CMD ["infisical", "run", "--command", "cosmos-faucet start"]
-    SAVE IMAGE ghcr.io/sonrhq/faucet:latest
+    SAVE IMAGE sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest
 
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
