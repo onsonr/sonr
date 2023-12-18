@@ -86,7 +86,7 @@ jobs:
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser
@@ -96,4 +96,4 @@ jobs:
           version: latest
           args: release --clean --autosnapshot
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
