@@ -121,3 +121,8 @@ test:
     BUILD identity+test
     BUILD service+test
 
+# breaking - runs tests on x/identity and x/service with breaking changes
+breaking:
+    FROM +deps
+    BUILD identity+breaking
+    BUILD service+breaking
