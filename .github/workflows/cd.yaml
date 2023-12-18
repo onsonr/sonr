@@ -11,7 +11,7 @@ jobs:
   deploy-testnet:
     name: Deploy Testnet
     environment: Testnet
-    runs-on: self-hosted
+    runs-on: testnet
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}

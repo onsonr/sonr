@@ -9,7 +9,7 @@ permissions:
 jobs:
   deploy-devnet:
     name: Deploy Devnet
-    runs-on: self-hosted
+    runs-on: devnet
     environment: Devnet
     if: github.actor == 'prnk28'
     env:
