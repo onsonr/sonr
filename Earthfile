@@ -113,15 +113,8 @@ generate:
     RUN sh ./scripts/protocgen-docs.sh
     SAVE ARTIFACT docs AS LOCAL docs
 
-# test - runs all tests
+# test - runs tests on x/identity and x/service
 test:
-    FROM +deps
-    COPY . .
-	RUN go test -v ./common/...
-    RUN go test -v ./crypto/...
-
-# test-modules - runs tests on x/identity and x/service
-test-modules:
     GIT CLONE git@github.com:sonrhq/identity.git identity
     GIT CLONE git@github.com:sonrhq/service.git service
     BUILD ./identity+test
