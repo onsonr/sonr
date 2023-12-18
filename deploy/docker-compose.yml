@@ -32,3 +32,7 @@ services:
    container_name: ipfs
    hostname: ipfs
    image: sonrhq/ipfs:latest
+   ports:
+     - 4001:4001 # rest
+     - 5001:5001 # p2p
+     - 8080:8080 # gateway
