@@ -39,6 +39,7 @@ jobs:
   add-to-merge-queue:
     name: Add to Merge Queue
     runs-on: ubuntu-latest
+    if: github.event_name == 'merge_group'
     environment: Staging
     needs: [run-lints]
     env:
@@ -58,9 +59,6 @@ jobs:
           minor-label: '@Minor-Release'
           require-release-notes: false
           with-v: true
-      - run: gh pr merge ${{ github.event.pull_request.number }} --squash --delete-branch
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
 
   run-tests:
     name: Run Tests
