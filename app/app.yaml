@@ -1,0 +1,57 @@
+modules:
+  - name: runtime
+    config:
+      "@type": cosmos.app.runtime.v1alpha1.Module
+      app_name: Sonr
+      # During begin block slashing happens after distr.BeginBlocker so that
+      # there is nothing left over in the validator fee pool, so as to keep the CanWithdrawInvariant invariant.
+      # NOTE: staking module is required if HistoricalEntries param > 0
+      begin_blockers: [distribution, staking]
+      end_blockers: [staking, group]
+      # NOTE: The genutils module must occur after staking so that pools are properly initialized with tokens from genesis accounts.
+      # NOTE: The genutils module must also occur after auth so that it can access the params from auth.
+      init_genesis: [auth, bank, distribution, staking, group, genutil, identity, service]
+      override_store_keys:
+        - module_name: auth
+          kv_store_key: acc
+  - name: auth
+    config:
+      "@type": cosmos.auth.module.v1.Module
+      bech32_prefix: idx
+      module_account_permissions:
+        - account: fee_collector
+        - account: distribution
+        - account: bonded_tokens_pool
+          permissions: [burner, staking]
+        - account: not_bonded_tokens_pool
+          permissions: [burner, staking]
+  - name: bank
+    config:
+      "@type": cosmos.bank.module.v1.Module
+      blocked_module_accounts_override:
+        [auth, distribution, bonded_tokens_pool, not_bonded_tokens_pool]
+  - name: staking
+    config:
+      "@type": cosmos.staking.module.v1.Module
+  - name: distribution
+    config:
+      "@type": cosmos.distribution.module.v1.Module
+  - name: consensus
+    config:
+      "@type": cosmos.consensus.module.v1.Module
+  - name: group
+    config:
+      "@type": cosmos.group.module.v1.Module
+  - name: genutil
+    config:
+      "@type": cosmos.genutil.module.v1.Module
+  - name: tx
+    config:
+      "@type": cosmos.tx.config.v1.Config
+  - name: identity
+    config:
+      "@type": sonrhq.identity.module.v1.Module
+  - name: service
+    config:
+      "@type": sonrhq.service.module.v1.Module
+

@@ -9,10 +9,6 @@
 			"path": "../service"
 		},
 		{
-			"name": "🚀 → @sonrhq/chain",
-			"path": "../chain"
-		},
-		{
 			"path": "..",
 			"name": "🔆 → @sonrhq/sonr"
 		},

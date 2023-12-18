@@ -1,50 +1,107 @@
+# sonrhq/chain: Earthfile
+# ---------------------------------------------------------------------
 VERSION 0.7
 PROJECT sonrhq/testnet-1
+FROM golang:1.21-alpine3.18
+WORKDIR /chain
+# ---------------------------------------------------------------------
 
-FROM golang:1.21-alpine3.17
+# Initial Setup
+RUN apk add --update --no-cache \
+    bash \
+    binutils \
+    ca-certificates \
+    coreutils \
+    curl \
+    findutils \
+    g++ \
+    git \
+    grep \
+    make \
+    openssl \
+    util-linux
 
-# deps - Installs dependencies for the project
+
+# ---------------------------------------------------------------------
+
+
+# deps - downloads dependencies
 deps:
-    FROM +base
-    RUN apk add --update --no-cache \
-        bash \
-        bash-completion \
-        binutils \
-        ca-certificates \
-        clang-extra-tools \
-        coreutils \
-        curl \
-        findutils \
-        g++ \
-        git \
-        grep \
-        jq \
-        less \
-        make \
-        nodejs \
-        npm \
-        openssl \
-        util-linux
-
-# repo - Creates repository container environment
-repo:
-	FROM +deps
-    ARG EARTHLY_GIT_BRANCH
-
-    GIT CLONE --branch $EARTHLY_GIT_BRANCH git@github.com:sonrhq/sonr.git sonr
-    CACHE --sharing shared sonr
-    WORKDIR /sonr
-
-    COPY ./go.mod ./go.sum ./
+    COPY go.mod go.sum ./
     RUN go mod download
-    CACHE --sharing shared /go/pkg/mod
-
+    # Output these back in case go mod download changes them.
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
+# build - builds binary
+build:
+    FROM +deps
+    ARG version=$EARTHLY_GIT_REFS
+    ARG commit=$EARTHLY_BUILD_SHA
+
+    COPY . .
+    RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o bin/sonrd ./cmd/sonrd/main.go
+    SAVE ARTIFACT bin/sonrd AS LOCAL bin/sonrd
+
+# docker - builds the docker image
+docker:
+    ARG tag=latest
+    COPY +build/sonrd .
+    EXPOSE 26657
+    EXPOSE 1317
+    EXPOSE 26656
+    EXPOSE 9090
+    ENTRYPOINT ["/chain/sonrd"]
+    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag
+
+# runner - Creates a containerized node with preconfigured keys
+runner:
+    FROM debian:11-slim
+    ARG tag=latest
+    ARG mount
+
+    ARG --secret --required validatorMnemonic
+    ARG --secret --required faucetMnemonic
+    ARG --secret tlsCert
+    ARG --secret tlsKey
+
+    ARG chainId=sonr-testnet-1
+    ARG enableSwagger=true
+    ARG enableAPI=true
+    ARG faucetBalance=1000000snr
+    ARG faucetKey=bob
+    ARG genesisBalance=10000000snr
+    ARG keyringBackend=test
+    ARG moniker=austin
+    ARG validatorKey=alice
+    ARG vestingAmount=1000000snr
+
+    COPY +build/sonrd .
+
+    RUN ./sonrd config set client chain-id $chainId
+    RUN ./sonrd config set client keyring-backend $keyringBackend
+    RUN ./sonrd config set app api.enable $enableAPI
+    RUN ./sonrd config set app api.swagger $enableSwagger
+    RUN ./sonrd keys add $validatorKey --recover $validatorMnemonic
+    RUN ./sonrd keys add $faucetKey --recover $faucetMnemonic
+
+    RUN ./sonrd init $moniker --chain-id $chainId --default-denom snr --home $home
+    RUN ./sonrd genesis add-genesis-account $validatorKey $genesisBalance --chain-id $chainId --home $home
+    RUN ./sonrd genesis add-genesis-account $faucetKey $faucetBalance --chain-id $chainId --home $home
+    RUN ./sonrd genesis gentx $validatorKey $vestingAmount --chain-id $chainId --home $home
+    RUN ./sonrd genesis collect-gentxs --home $home
+
+    EXPOSE 26657
+    EXPOSE 1317
+    EXPOSE 26656
+    EXPOSE 9090
+
+    CMD ["/chain/sonrd start"]
+    SAVE IMAGE --push sonrhq/sonr:$tag ghcr.io/sonrhq/sonr:$tag
+
 # clone - Clones the dependencies as git submodules
 clone:
-    FROM +repo
+    FROM +deps
     WORKDIR /sonr
     GIT CLONE git@github.com:sonrhq/identity.git identity
     SAVE ARTIFACT identity AS LOCAL identity
@@ -59,7 +116,7 @@ clone:
 generate:
     LOCALLY
     RUN make proto-gen
-    FROM +repo
+    FROM +deps
     COPY . .
     RUN sh ./scripts/protogen-orm.sh
     SAVE ARTIFACT sonrhq/identity AS LOCAL api
@@ -69,6 +126,6 @@ generate:
 
 # test - runs all tests
 test:
-    FROM +repo
+    FROM +deps
     COPY . .
 	RUN go test -v ./...
