@@ -55,8 +55,8 @@ jobs:
         with:
           mode: validate
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: '@Major-Release'
-          minor-label: '@Minor-Release'
+          major-label: 'Breaking Changes'
+          minor-label: 'Patch'
           require-release-notes: false
           with-v: true
 
@@ -97,8 +97,8 @@ jobs:
         with:
           mode: bump
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: '@Major-Release'
-          minor-label: '@Minor-Release'
+          major-label: 'Breaking Changes'
+          minor-label: 'Patch'
           require-release-notes: false
           with-v: true
     outputs:
