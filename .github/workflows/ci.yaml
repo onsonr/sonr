@@ -85,10 +85,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: install gh extension
-        run: gh extension install johnmanjiro13/gh-bump
-      - name: Bump Patch for Patches
-        run: gh bump --bump-type patch -p -y
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser
