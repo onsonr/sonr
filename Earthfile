@@ -115,6 +115,7 @@ generate:
 
 # test - runs tests on x/identity and x/service
 test:
+    FROM +deps
     GIT CLONE git@github.com:sonrhq/identity.git identity
     SAVE ARTIFACT identity AS LOCAL identity
     GIT CLONE git@github.com:sonrhq/service.git service
