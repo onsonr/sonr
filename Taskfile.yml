@@ -8,7 +8,8 @@ tasks:
     cmds:
       - earthly sat wake tester
       - earthly --sat=tester --org=sonrhq ./chain+docker
-      - earthly --sat=tester --org=sonrhq ./rails+build
+      - earthly --sat=tester --org=sonrhq ./rails+ipfs
+      - earthly --sat=tester --org=sonrhq ./rails+postgres
 
   tests:
     cmds:
@@ -28,4 +29,5 @@ tasks:
       - earthly sat wake builder
       - earthly --sat=builder --push --org=sonrhq ./chain+docker
       - earthly --sat=builder --push --org=sonrhq ./chain+runner
-      - earthly --sat=builder --push --org=sonrhq ./rails+build
+      - earthly --sat=tester --push --org=sonrhq ./rails+ipfs
+      - earthly --sat=tester --push --org=sonrhq ./rails+postgres

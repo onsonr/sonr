@@ -1,12 +1,14 @@
 VERSION 0.7
 PROJECT sonrhq/rails
 
-# build - builds all dependencies
-build:
-    BUILD +postgres
-    BUILD +ipfs
-    BUILD +faucet
-    BUILD +dendrite
+# cloudflared - builds an image for the cloudflare tunnel
+cloudflared:
+    FROM cloudflare/cloudflared:latest
+	ARG token
+	ARG environment=testnet
+    ENV TUNNEL_TOKEN $token
+	CMD ["tunnel", "run"]
+	SAVE IMAGE ghcr.io/sonrhq/proxy-$environment:latest
 
 # postgres - builds the postgres binary
 postgres:
@@ -37,12 +39,14 @@ faucet:
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
     FROM matrixdotorg/dendrite-monolith:latest
-    ARG privateKey
-    ARG tlsCert
-    ARG tlsKey
+    ARG --secret privateKey
+    ARG --secret tlsCert
+    ARG --secret tlsKey
+
     ARG serverName=localhost
     ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
     ARG dirPath=./
+
     RUN mkdir -p /etc/dendrite
     IF ["$privateKey" == ""]
         RUN /usr/bin/generate-keys -private-key matrix_key.pem
@@ -55,11 +59,3 @@ dendrite:
     EXPOSE 8448
     SAVE IMAGE ghcr.io/sonrhq/dendrite:latest
 
-# cloudflared - builds an image for the cloudflare tunnel
-cloudflared:
-    FROM cloudflare/cloudflared:latest
-	ARG token
-	ARG environment=testnet
-    ENV TUNNEL_TOKEN $token
-	CMD ["tunnel", "run"]
-	SAVE IMAGE ghcr.io/sonrhq/proxy-$environment:latest
