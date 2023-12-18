@@ -31,7 +31,8 @@ jobs:
         with:
           version: v0.7.10
       - uses: actions/checkout@v4
-      - run: earthly +test
+      - run: earthly wake sat tester
+      - run: earthly --sat=tester +test
 
   analyze-pull:
     name: Analyze Pull Request
@@ -55,13 +56,8 @@ jobs:
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
           major-label: '@Major-Release'
           minor-label: '@Minor-Release'
-          patch-label: '@Patch-Release'
-          noop-labels: 'Community'
           require-release-notes: false
-          release-notes-prefix: ''
-          release-notes-suffix: ''
           with-v: true
-          base-branch: false
 
   add-to-merge-queue:
     name: Add to Merge Queue
@@ -123,13 +119,8 @@ jobs:
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
           major-label: '@Major-Release'
           minor-label: '@Minor-Release'
-          patch-label: '@Patch-Release'
-          noop-labels: 'Community'
           require-release-notes: false
-          release-notes-prefix: ''
-          release-notes-suffix: ''
           with-v: true
-          base-branch: false
     outputs:
       version: ${{ steps.pr-semver-bump.outputs.version }}
       old-version: ${{ steps.pr-semver-bump.outputs.old-version }}
@@ -152,6 +143,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
