@@ -79,7 +79,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: Staging
     needs: [run-tests]
-    if: github.event_name == 'merge_group'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -95,6 +94,6 @@ jobs:
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --skip=validate
+          args: release --clean --autosnapshot
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
