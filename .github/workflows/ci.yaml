@@ -36,8 +36,8 @@ jobs:
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
 
-  add-to-merge-queue:
-    name: Add to Merge Queue
+  validate-pr:
+    name: Validate PR Labels
     runs-on: ubuntu-latest
     if: github.event_name == 'merge_group'
     environment: Staging
@@ -55,8 +55,8 @@ jobs:
         with:
           mode: validate
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: '@Major-Release'
-          minor-label: '@Minor-Release'
+          major-label: 'Breaking Changes'
+          minor-label: 'Patch'
           require-release-notes: false
           with-v: true
 
@@ -97,8 +97,8 @@ jobs:
         with:
           mode: bump
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
-          major-label: '@Major-Release'
-          minor-label: '@Minor-Release'
+          major-label: 'Breaking Changes'
+          minor-label: 'Patch'
           require-release-notes: false
           with-v: true
     outputs:
@@ -116,6 +116,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Tag Release from Bump Action
+        run: git tag ${{ needs.bump-tag.outputs.version }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser

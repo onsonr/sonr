@@ -37,8 +37,8 @@ Breaking Changes:
   - proto/**/*
   - types/**/*
   - Earthfile
-  - github/**/*
+  - .github/**/*
 
-"@Minor-Release":
+Patch:
   - "go.mod"
   - "go.sum"
