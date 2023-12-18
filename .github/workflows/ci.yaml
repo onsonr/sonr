@@ -4,10 +4,6 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   merge_group:
-    types: [checks_requested]
-  push:
-    tags: [v*]
-    branches: [main, master]
 
 permissions:
   contents: write
@@ -78,8 +74,8 @@ jobs:
       - uses: actions/checkout@v4
       - run: earthly --sat=tester +test
 
-  bump-tag:
-    name: Bump and Tag Version
+  run-goreleaser:
+    name: Run GoReleaser
     runs-on: ubuntu-latest
     environment: Staging
     needs: [run-tests]
@@ -87,7 +83,8 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: install gh extension
         run: gh extension install johnmanjiro13/gh-bump
       - name: Bump Minor for Breaking Changes
@@ -96,19 +93,6 @@ jobs:
       - name: Bump Patch for Patches
         if: contains(github.event.pull_request.labels.*.name, 'Patch')
         run: gh bump --bump-type patch -p -y
-
-  run-goreleaser:
-    name: Run GoReleaser
-    runs-on: ubuntu-latest
-    environment: Staging
-    needs: [bump-tag]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Tag Release from Bump Action
-        run: git tag ${{ needs.bump-tag.outputs.version }}
       - name: Set up Go
         uses: actions/setup-go@v4
       - name: Run GoReleaser
