@@ -1,12 +1,14 @@
 VERSION 0.7
 PROJECT sonrhq/rails
 
-# build - builds all dependencies
-build:
-    BUILD +postgres
-    BUILD +ipfs
-    BUILD +faucet
-    BUILD +dendrite
+# cloudflared - builds an image for the cloudflare tunnel
+cloudflared:
+    FROM cloudflare/cloudflared:latest
+	ARG token
+	ARG environment=testnet
+    ENV TUNNEL_TOKEN $token
+	CMD ["tunnel", "run"]
+	SAVE IMAGE ghcr.io/sonrhq/proxy-$environment:latest
 
 # postgres - builds the postgres binary
 postgres:
@@ -22,39 +24,32 @@ ipfs:
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest
 
-# indexer - builds the indexer binary
-indexer:
-    FROM ghcr.io/defiantlabs/cosmos-indexer:main
-    RUN apk add --no-cache bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
-    WORKDIR /indexer
-    COPY ./etc/indexer/start.sh .
-    ENTRYPOINT ["sh", "start.sh"]
-    SAVE IMAGE ghcr.io/sonrhq/indexer:latest
-
 # faucet - builds the faucet binary
 faucet:
     FROM node:18.7-alpine
+    ARG infisicalToken
     ARG cosmosjsVersion=0.28.11
+    ARG environment=testnet
+    ENV INFISICAL_TOKEN $infisicalToken
     RUN apk add --no-cache bash curl && curl -1sLf \
     'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
         && apk add infisical
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
-    CMD ["infisical", "run", "--command", "sonrd start"]
-    ENTRYPOINT ["cosmos-faucet", "start"]
-    SAVE IMAGE ghcr.io/sonrhq/faucet:latest
+    CMD ["infisical", "run", "--command", "cosmos-faucet start"]
+    SAVE IMAGE sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest
 
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
     FROM matrixdotorg/dendrite-monolith:latest
-    ARG privateKey
-    ARG tlsCert
-    ARG tlsKey
+    ARG --secret privateKey
+    ARG --secret tlsCert
+    ARG --secret tlsKey
+
     ARG serverName=localhost
     ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
     ARG dirPath=./
+
     RUN mkdir -p /etc/dendrite
     IF ["$privateKey" == ""]
         RUN /usr/bin/generate-keys -private-key matrix_key.pem
@@ -67,11 +62,3 @@ dendrite:
     EXPOSE 8448
     SAVE IMAGE ghcr.io/sonrhq/dendrite:latest
 
-# cloudflared - builds an image for the cloudflare tunnel
-cloudflared:
-    FROM cloudflare/cloudflared:latest
-	ARG token
-	ARG environment=testnet
-    ENV TUNNEL_TOKEN $token
-	CMD ["tunnel", "run"]
-	SAVE IMAGE ghcr.io/sonrhq/proxy-$environment:latest

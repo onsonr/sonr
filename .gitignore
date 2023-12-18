@@ -12,7 +12,6 @@ dist
 bin
 .DS_Store
 data
-sonrd
 
 chain/
 service/

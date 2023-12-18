@@ -25,40 +25,43 @@
 			}
 		},
 		{
+			"label": "Build: Node Binary",
 			"type": "shell",
-			"label": "Switch: To Monorepo Workspace",
-			"command": "code .vscode/monorepo.code-workspace",
+			"command": "earthly --no-sat +build && earthly --no-sat +docker",
+			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "workspace-trusted",
-				"color": "terminal.ansiWhite"
+				"id": "rocket",
+				"color": "terminal.ansiBlue"
 			},
-			"detail": "code .vscode/monorepo.code-workspace",
+			"detail": "Build binary with earthly",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
 				"reveal": "always",
 				"revealProblems": "onProblem",
 				"focus": true,
-				"panel": "dedicated",
+				"panel": "shared",
 				"showReuseMessage": true,
-				"close": true
+				"close": true,
+				"group": "chain"
 			}
 		},
 		{
+			"label": "Run: Local Node",
 			"type": "shell",
-			"label": "Switch: To Frontend Workspace",
-			"command": "code .vscode/frontend.code-workspace",
+			"command": "make run",
+			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "workspace-trusted",
-				"color": "terminal.ansiWhite"
+				"id": "play-circle",
+				"color": "terminal.ansiBlue"
 			},
-			"detail": "code .vscode/frontend.code-workspace",
+			"detail": "Run local chain node",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -66,58 +69,37 @@
 				"revealProblems": "onProblem",
 				"focus": true,
 				"panel": "dedicated",
+				"clear": true,
 				"showReuseMessage": true,
-				"close": true
+				"close": false,
+				"group": "chain"
 			}
 		},
 		{
+			"label": "Open: gRPC UI Local Node",
 			"type": "shell",
-			"label": "Switch: To Frontend Workspace",
-			"command": "code .vscode/frontend.code-workspace",
+			"command": "grpcui -plaintext localhost:9090",
+			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "workspace-trusted",
-				"color": "terminal.ansiWhite"
+				"id": "play-circle",
+				"color": "terminal.ansiBlue"
 			},
-			"detail": "code .vscode/frontend.code-workspace",
+			"detail": "Run local chain node",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
-				"reveal": "always",
+				"reveal": "silent",
 				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "dedicated",
+				"focus": false,
+				"panel": "shared",
+				"clear": true,
 				"showReuseMessage": true,
-				"close": true
+				"close": true,
+				"group": "chain"
 			}
 		},
-				{
-					"type": "shell",
-					"isBackground": true,
-					"label": "Run: Studio Web",
-					"command": "bun run dev",
-					"options": {
-						"cwd": "${workspaceFolder}/studio"
-					},
-					"icon": {
-						"id": "play-circle",
-						"color": "terminal.ansiMagenta"
-					},
-					"detail": "Run node.js nota-lang dev server",
-					"problemMatcher": [],
-					"presentation": {
-						"echo": true,
-						"reveal": "always",
-						"revealProblems": "onProblem",
-						"focus": true,
-						"panel": "dedicated",
-						"showReuseMessage": false,
-						"close": false,
-						"clear": true,
-						"group": "website"
-					}
-				},
 	]
 }
