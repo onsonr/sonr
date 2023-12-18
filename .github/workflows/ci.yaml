@@ -87,11 +87,7 @@ jobs:
         uses: actions/checkout@v4
       - name: install gh extension
         run: gh extension install johnmanjiro13/gh-bump
-      - name: Bump Minor for Breaking Changes
-        if: contains(github.event.pull_request.labels.*.name, 'Breaking Changes')
-        run: gh bump --bump-type minor -p -y
       - name: Bump Patch for Patches
-        if: contains(github.event.pull_request.labels.*.name, 'Patch')
         run: gh bump --bump-type patch -p -y
       - name: Set up Go
         uses: actions/setup-go@v4
