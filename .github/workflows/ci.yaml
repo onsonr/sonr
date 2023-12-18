@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
   merge_group:
+  push:
+    tags:
+      - '*'
 
 permissions:
   contents: write
@@ -73,33 +76,29 @@ jobs:
           version: v0.7.10
       - uses: actions/checkout@v4
       - run: earthly --sat=tester +test
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
 
   run-goreleaser:
     name: Run GoReleaser
     runs-on: ubuntu-latest
     environment: Staging
-    needs: [run-tests]
-    if: github.event_name == 'merge_group'
-    env:
-      GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: install gh extension
-        run: gh extension install johnmanjiro13/gh-bump
-      - name: Bump Minor for Breaking Changes
-        if: contains(github.event.pull_request.labels.*.name, 'Breaking Changes')
-        run: gh bump --bump-type minor -p -y
-      - name: Bump Patch for Patches
-        if: contains(github.event.pull_request.labels.*.name, 'Patch')
-        run: gh bump --bump-type patch -p -y
       - name: Set up Go
         uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean --skip=validate
+          args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
