@@ -1,33 +1,27 @@
 VERSION 0.7
-PROJECT sonrhq/rails
+PROJECT sonrhq/testnet-1
+IMPORT ../ AS root
 
 # cloudflared - builds an image for the cloudflare tunnel
 cloudflared:
     FROM cloudflare/cloudflared:latest
-	ARG token
+	ARG tunnelToken
 	ARG environment=testnet
-    ENV TUNNEL_TOKEN $token
+    ENV TUNNEL_TOKEN $tunnelToken
 	CMD ["tunnel", "run"]
-	SAVE IMAGE ghcr.io/sonrhq/proxy-$environment:latest
-
-# postgres - builds the postgres binary
-postgres:
-    FROM postgres:15-alpine
-    ARG password=pwd
-    COPY ./etc/postgres/schema.sql /docker-entrypoint-initdb.d/
-    SAVE IMAGE ghcr.io/sonrhq/postgres:15
+	SAVE IMAGE ghcr.io/sonrhq/cloudflared:latest sonrhq/cloudflared:latest cloudflared-runner:latest
 
 # ipfs - builds the ipfs binary
 ipfs:
     FROM ipfs/kubo:latest
     COPY ./etc/ipfs/config.sh config.sh
     EXPOSE 8080 4001 5001 8081
-    SAVE IMAGE ghcr.io/sonrhq/ipfs:latest
+    SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
 
 # faucet - builds the faucet binary
 faucet:
     FROM node:18.7-alpine
-    ARG infisicalToken
+    ARG --secret infisicalToken
     ARG cosmosjsVersion=0.28.11
     ARG environment=testnet
     ENV INFISICAL_TOKEN $infisicalToken
@@ -37,14 +31,19 @@ faucet:
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
     CMD ["infisical", "run", "--command", "cosmos-faucet start"]
-    SAVE IMAGE sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest
+    SAVE IMAGE --push sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest faucet-runner:latest
 
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
     FROM matrixdotorg/dendrite-monolith:latest
-    ARG --secret privateKey
-    ARG --secret tlsCert
-    ARG --secret tlsKey
+    ARG --secret infisicalToken
+    ENV INFISICAL_TOKEN $infisicalToken
+    RUN apk add --no-cache bash curl && curl -1sLf \
+    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
+        && apk add infisical
+
+    COPY root+scripts/src/inf-sonr.sh .
+    RUN infisical run --command "sh inf-dendrite.sh"
 
     ARG serverName=localhost
     ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
@@ -60,5 +59,5 @@ dendrite:
     RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI -dir $dirPath > /etc/dendrite/dendrite.yaml
     EXPOSE 8008
     EXPOSE 8448
-    SAVE IMAGE ghcr.io/sonrhq/dendrite:latest
+    SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
 

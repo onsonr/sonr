@@ -4,10 +4,14 @@ tasks:
     cmds:
       - task --list-all
 
+  dev:
+    cmds:
+      - earthly +build
+
   build:
     cmds:
       - earthly sat wake tester
-      - earthly --sat=tester --org=sonrhq ./chain+docker
+      - earthly --sat=tester --org=sonrhq +docker
       - earthly --sat=tester --org=sonrhq ./rails+ipfs
       - earthly --sat=tester --org=sonrhq ./rails+postgres
 
@@ -31,3 +35,7 @@ tasks:
       - earthly --sat=builder --push --org=sonrhq ./chain+runner
       - earthly --sat=tester --push --org=sonrhq ./rails+ipfs
       - earthly --sat=tester --push --org=sonrhq ./rails+postgres
+
+  deploy:
+    cmds:
+     - earthly ./cmd+init --home .

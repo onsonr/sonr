@@ -6,6 +6,7 @@ PROJECT sonrhq/testnet-1
 FROM golang:1.21-alpine3.18
 IMPORT github.com/sonrhq/identity AS identity
 IMPORT github.com/sonrhq/service AS service
+IMPORT ./cmd AS cmd
 IMPORT ./rails AS rails
 IMPORT ./deploy AS deploy
 WORKDIR /chain
@@ -61,55 +62,7 @@ docker:
     EXPOSE 1317
     EXPOSE 26656
     EXPOSE 9090
-    ENTRYPOINT ["sonrd"]
     SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag
-
-# runner - Creates a containerized node with preconfigured keys
-runner:
-    ARG tag=latest
-    ARG --secret --required infisicalToken
-    ARG --required mountVolume
-
-    ENV INFISICAL_TOKEN=$infisicalToken
-    VOLUME $mountVolume:/root/.sonr
-
-    RUN apt-get update && apt-get install -y bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | bash \
-    && apt-get update && apt-get install -y infisical
-
-    ARG chainId=sonr-testnet-1
-    ARG enableSwagger=true
-    ARG enableAPI=true
-    ARG faucetBalance=1000000snr
-    ARG faucetKey=bob
-    ARG genesisBalance=10000000snr
-    ARG keyringBackend=test
-    ARG moniker=austin
-    ARG validatorKey=alice
-    ARG vestingAmount=1000000snr
-
-    COPY +build/sonrd .
-
-    RUN ./sonrd config set client chain-id $chainId
-    RUN ./sonrd config set client keyring-backend $keyringBackend
-    RUN ./sonrd config set app api.enable $enableAPI
-    RUN ./sonrd config set app api.swagger $enableSwagger
-    RUN ./sonrd keys add $validatorKey --recover $validatorMnemonic
-    RUN ./sonrd keys add $faucetKey --recover $faucetMnemonic
-
-    RUN ./sonrd init $moniker --chain-id $chainId --default-denom snr --home $home
-    RUN ./sonrd genesis add-genesis-account $validatorKey $genesisBalance --chain-id $chainId --home $home
-    RUN ./sonrd genesis add-genesis-account $faucetKey $faucetBalance --chain-id $chainId --home $home
-    RUN ./sonrd genesis gentx $validatorKey $vestingAmount --chain-id $chainId --home $home
-    RUN ./sonrd genesis collect-gentxs --home $home
-
-    EXPOSE 26657
-    EXPOSE 1317
-    EXPOSE 26656
-    EXPOSE 9090
-
-    CMD ["/chain/sonrd start"]
-    SAVE IMAGE --push sonrhq/sonrd:$tag-standalone ghcr.io/sonrhq/sonrd:$tag-standalone
 
 # generate - generates all code from proto files
 generate:
@@ -123,6 +76,11 @@ generate:
     RUN sh ./scripts/protocgen-docs.sh
     SAVE ARTIFACT docs AS LOCAL docs
 
+# scripts - Stores the repository scripts in the local cache
+scripts:
+    COPY ./scripts ./src
+    SAVE ARTIFACT src AS LOCAL scripts
+
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
@@ -134,3 +92,14 @@ breaking:
     FROM +deps
     BUILD identity+breaking
     BUILD service+breaking
+
+# rails - builds the required rails to run sonr
+rails:
+    ARG --required tunnelToken
+    ARG --required infisicalToken
+    ARG --required matrixMount
+    ARG --required ipfsMount
+    BUILD rails+ipfs
+    BUILD rails+faucet  --infisicalToken $infisicalToken
+    BUILD rails+dendrite  --infisicalToken $infisicalToken
+    BUILD rails+cloudflared --tunnelToken $tunnelToken

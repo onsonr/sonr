@@ -41,7 +41,7 @@ jobs:
 
   run-goreleaser:
     name: Run GoReleaser
-    runs-on: ubuntu-latest
+    runs-on: builder
     environment: Staging
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -63,7 +63,7 @@ jobs:
   changelog:
     name: Generate Changelog
     environment: Staging
-    runs-on: ubuntu-latest
+    runs-on: builder
     if: github.event_name =='release'
     steps:
       - uses: actions/checkout@v4
