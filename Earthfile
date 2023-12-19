@@ -33,7 +33,7 @@ RUN apk add --update --no-cache \
 dev:
     BUILD +docker
     LOCALLY
-    RUN docker compose -f ./deploy/docker-compose.dev.yml up
+    RUN docker compose -f ./deploy/docker-compose.dev.yml up --quiet-pull --build --remove-orphans
 
 # deps - downloads dependencies
 deps:
@@ -55,9 +55,8 @@ build:
 
 # docker - builds the docker image
 docker:
-    FROM distroless/static-debian11
     ARG tag=latest
-    COPY +build/sonrd .
+    COPY +build/sonrd /usr/local/bin/sonrd
     EXPOSE 26657
     EXPOSE 1317
     EXPOSE 26656
@@ -67,7 +66,6 @@ docker:
 
 # runner - Creates a containerized node with preconfigured keys
 runner:
-    FROM distroless/static-debian11
     ARG tag=latest
     ARG --secret --required infisicalToken
     ARG --required mountVolume
