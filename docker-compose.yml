@@ -1,0 +1,17 @@
+version: "3"
+networks:
+  sonr-net: {}
+services:
+  sonrd:
+    init: true
+    container_name: sonrd
+    hostname: sonrd
+    image: sonrhq/sonrd:latest
+    command: ["start"]
+    ports:
+      - 1317:1317 # rest
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+    volumes:
+      - $HOME/.sonr:/root/.sonr
+    restart: always

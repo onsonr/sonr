@@ -1,41 +1,37 @@
 version: '3'
 tasks:
   default:
+    desc: List all tasks
     cmds:
       - task --list-all
 
-  dev:
-    cmds:
-      - earthly +build
-
-  build:
-    cmds:
-      - earthly sat wake tester
-      - earthly --sat=tester --org=sonrhq +docker
-      - earthly --sat=tester --org=sonrhq ./rails+ipfs
-      - earthly --sat=tester --org=sonrhq ./rails+postgres
-
-  tests:
-    cmds:
-     - earthly sat wake tester
-     - earthly --sat=tester --org=sonrhq ./identity+test
-     - earthly --sat=tester --org=sonrhq ./service+test
-     - earthly --sat=tester --org=sonrhq ./chain+test
-
-  lint:
+  compose:up:
+   desc: Start Local Network
    cmds:
-    - earthly sat wake linter
-    - earthly --sat=linter --org=sonrhq ./identity+lint
-    - earthly --sat=linter --org=sonrhq ./service+lint
+    - earthly ./cmd+init --home $HOME/.sonr
+    - docker compose -f ./docker-compose.yml up
 
-  publish:
-    cmds:
-      - earthly sat wake builder
-      - earthly --sat=builder --push --org=sonrhq ./chain+docker
-      - earthly --sat=builder --push --org=sonrhq ./chain+runner
-      - earthly --sat=tester --push --org=sonrhq ./rails+ipfs
-      - earthly --sat=tester --push --org=sonrhq ./rails+postgres
+  compose:down:
+   desc: Stop Local Network
+   cmds:
+    - docker compose -f ./docker-compose.yml down
 
-  deploy:
-    cmds:
-     - earthly ./cmd+init --home .
+  devnet:deploy:
+   desc: Docker Stack Deploy Devnet
+   cmds:
+    - ls
+
+  devnet:update:
+   desc: Update the Devnet deployment
+   cmds:
+    - ls
+
+  testnet:deploy:
+   desc: Docker Stack Deploy Testnet
+   cmds:
+    - ls
+
+  testnet:update:
+   desc: Update the Testnet Deployment
+   cmds:
+    - ls

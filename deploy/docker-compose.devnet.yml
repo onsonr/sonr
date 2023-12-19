@@ -7,14 +7,12 @@ services:
     init: true
     container_name: sonrd
     hostname: sonrd
-    image: sonrhq/sonrd:latest
+    image: sonrd-runner:latest
     command: ["start"]
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
       - 9090:9090 # grpc
-    volumes:
-      - ~/.sonr:/root/.sonr
     restart: always
 
   # Matrix Homeserver
@@ -22,7 +20,7 @@ services:
     init: true
     container_name: dendrite
     hostname: dendrite
-    image: sonrhq/dendrite:latest
+    image: dendrite-runner:latest
     ports:
       - 8008:8008 # rest
       - 8448:8448 # p2p
@@ -31,8 +29,29 @@ services:
   ipfs:
    container_name: ipfs
    hostname: ipfs
-   image: sonrhq/ipfs:latest
+   image: ipfs-runner:latest
    ports:
      - 4001:4001 # rest
      - 5001:5001 # p2p
      - 8080:8080 # gateway
+
+  # Sonr Faucet
+  faucet:
+   container_name: faucet
+   hostname: faucet
+   image: faucet-runner:latest
+   ports:
+     - 3000:3000 # rest
+
+  # Cloudflared Reverse Proxy
+  reverse-proxy:
+   image: cloudflared-runner:latest
+   depends_on:
+     - ipfs
+     - faucet
+     - dendrite
+     - sonrd
+   expose:
+     - 80
+     - 443
+     - 8080
