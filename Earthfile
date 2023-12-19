@@ -7,6 +7,7 @@ FROM golang:1.21-alpine3.18
 IMPORT github.com/sonrhq/identity AS identity
 IMPORT github.com/sonrhq/service AS service
 IMPORT ./rails AS rails
+IMPORT ./deploy AS deploy
 WORKDIR /chain
 # ---------------------------------------------------------------------
 
@@ -27,6 +28,12 @@ RUN apk add --update --no-cache \
 
 
 # ---------------------------------------------------------------------
+
+# dev - Starts a development chain
+dev:
+    BUILD +docker
+    LOCALLY
+    RUN docker compose -f ./deploy/docker-compose.dev.yml up
 
 # deps - downloads dependencies
 deps:
@@ -55,19 +62,22 @@ docker:
     EXPOSE 1317
     EXPOSE 26656
     EXPOSE 9090
-    ENTRYPOINT ["/chain/sonrd"]
+    ENTRYPOINT ["sonrd"]
     SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag
 
 # runner - Creates a containerized node with preconfigured keys
 runner:
     FROM distroless/static-debian11
     ARG tag=latest
-    ARG mount
+    ARG --secret --required infisicalToken
+    ARG --required mountVolume
 
-    ARG --secret --required validatorMnemonic
-    ARG --secret --required faucetMnemonic
-    ARG --secret tlsCert
-    ARG --secret tlsKey
+    ENV INFISICAL_TOKEN=$infisicalToken
+    VOLUME $mountVolume:/root/.sonr
+
+    RUN apt-get update && apt-get install -y bash curl && curl -1sLf \
+    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.deb.sh' | bash \
+    && apt-get update && apt-get install -y infisical
 
     ARG chainId=sonr-testnet-1
     ARG enableSwagger=true

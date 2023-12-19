@@ -1,0 +1,36 @@
+version: "3"
+networks:
+  sonr-net: {}
+services:
+  # Sonr Validator
+  sonrd:
+    init: true
+    container_name: sonrd
+    hostname: sonrd
+    image: sonrhq/sonrd:latest
+    command: ["start"]
+    ports:
+      - 1317:1317 # rest
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+    restart: always
+
+  # Matrix Homeserver
+  dendrite:
+    init: true
+    container_name: dendrite
+    hostname: dendrite
+    image: sonrhq/dendrite:latest
+    ports:
+      - 8008:8008 # rest
+      - 8448:8448 # p2p
+
+  # IPFS Gateway
+  ipfs:
+   container_name: ipfs
+   hostname: ipfs
+   image: sonrhq/ipfs:latest
+   ports:
+     - 4001:4001 # rest
+     - 5001:5001 # p2p
+     - 8080:8080 # gateway
