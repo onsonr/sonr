@@ -81,6 +81,7 @@ jobs:
     name: Bump Tag and Push
     runs-on: ubuntu-latest
     needs: [run-tests, build-test]
+    if: github.event_name == 'merge_group'
     environment: Staging
     steps:
       - name: Bump version and push tag

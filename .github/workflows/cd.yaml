@@ -15,7 +15,6 @@ jobs:
     name: Deploy Testnet for New Version
     environment: Testnet
     runs-on: testnet
-    if: github.event_name =='release'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -29,7 +28,7 @@ jobs:
 
   run-goreleaser:
     name: Run GoReleaser
-    runs-on: builder
+    runs-on: ubuntu-latest
     environment: Staging
     if: startsWith(github.ref, 'refs/tags/')
     steps:
@@ -51,7 +50,7 @@ jobs:
   changelog:
     name: Generate Changelog
     environment: Staging
-    runs-on: builder
+    runs-on: ubuntu-latest
     if: github.event_name =='release'
     steps:
       - uses: actions/checkout@v4
