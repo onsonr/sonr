@@ -57,7 +57,6 @@ jobs:
   build-test:
     name: Build for Target Platforms
     runs-on: ubuntu-latest
-    if: github.event_name == 'merge_group'
     environment: Staging
     strategy:
       matrix:
