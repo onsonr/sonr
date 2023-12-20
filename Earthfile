@@ -4,8 +4,8 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 
 FROM golang:1.21-alpine3.18
-IMPORT github.com/sonrhq/identity AS identity
-IMPORT github.com/sonrhq/service AS service
+IMPORT github.com/sonrhq/identity:main AS identity
+IMPORT github.com/sonrhq/service:main AS service
 IMPORT ./cmd AS cmd
 IMPORT ./rails AS rails
 IMPORT ./deploy AS deploy
