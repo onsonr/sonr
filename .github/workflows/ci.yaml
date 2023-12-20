@@ -39,7 +39,6 @@ jobs:
   run-tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'merge_group'
     environment: Staging
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
