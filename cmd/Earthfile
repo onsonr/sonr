@@ -21,7 +21,7 @@ RUN apk add --update --no-cache \
 
 # init - Creates base config and keys
 init:
-    ARG --required home
+    WORKDIR /root
     ARG chainId=sonr-testnet-1
     ARG enableSwagger=true
     ARG enableAPI=true
@@ -43,7 +43,7 @@ init:
     RUN ./sonrd genesis add-genesis-account bob $faucetBalance
     RUN ./sonrd genesis gentx alice $vestingAmount --chain-id $chainId
     RUN ./sonrd genesis collect-gentxs
-    SAVE ARTIFACT /root/.sonr AS LOCAL $home
+    SAVE ARTIFACT /root/.sonr AS LOCAL data
 
 
 # runner - Creates a containerized node with preconfigured keys

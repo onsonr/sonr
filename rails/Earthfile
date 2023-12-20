@@ -36,15 +36,6 @@ faucet:
 # dendrite - builds and configures monolithic dendrite matrix homeserver
 dendrite:
     FROM matrixdotorg/dendrite-monolith:latest
-    ARG --secret infisicalToken
-    ENV INFISICAL_TOKEN $infisicalToken
-    RUN apk add --no-cache bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
-
-    COPY root+scripts/src/inf-sonr.sh .
-    RUN infisical run --command "sh inf-dendrite.sh"
-
     ARG serverName=localhost
     ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
     ARG dirPath=./
@@ -60,4 +51,5 @@ dendrite:
     EXPOSE 8008
     EXPOSE 8448
     SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
-
+    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
+    SAVE ARTIFACT /etc/dendrite/dendrite.yaml AS LOCAL dendrite.yaml
