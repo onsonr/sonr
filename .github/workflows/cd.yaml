@@ -23,7 +23,7 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: task testnet:update
+      - run: task testnet:deploy
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
 
