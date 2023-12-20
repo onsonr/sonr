@@ -23,7 +23,10 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: earthly +runner
+      - run: task testnet:update
+        env:
+          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
+
 
   deploy-devnet:
     name: Deploy Devnet for Prad
@@ -37,7 +40,9 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: echo "Fix me ."
+      - run: task devnet:update
+        env:
+          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
 
   run-goreleaser:
     name: Run GoReleaser
