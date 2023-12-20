@@ -25,7 +25,7 @@ tasks:
   devnet:deploy:
    desc: Docker Stack Deploy Devnet
    cmds:
-    - docker stack deploy --compose-file ./deploy/docker-compose.devnet.yml
+    - docker stack deploy --compose-file ./deploy/docker-compose.devnet.yml sonr-devnet-0
 
   testnet:init:
    desc: Initialize Production Testnet Env
@@ -35,4 +35,4 @@ tasks:
   testnet:deploy:
    desc: Docker Stack Deploy Testnet
    cmds:
-    - docker stack deploy --compose-file ./deploy/docker-compose.testnet.yml
+    - docker stack deploy --compose-file ./deploy/docker-compose.testnet.yml sonr-testnet-1
