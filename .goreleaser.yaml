@@ -67,6 +67,7 @@ archives:
 checksum:
   name_template: sha256sum.txt
   algorithm: sha256
+
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
@@ -145,3 +146,6 @@ changelog:
       order: 3
     - title: Others
       order: 999
+
+sboms:
+  - artifacts: archive

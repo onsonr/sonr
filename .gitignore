@@ -13,9 +13,8 @@ bin
 .DS_Store
 data
 
-chain/
+.env*
 service/
 identity/
-studio/
 
 front/
