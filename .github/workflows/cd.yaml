@@ -27,23 +27,6 @@ jobs:
         env:
           INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
 
-
-  deploy-devnet:
-    name: Deploy Devnet for Prad
-    runs-on: devnet
-    environment: Devnet
-    if: github.actor == 'prnk28' && github.event_name == 'push'
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-    steps:
-      - uses: actions/checkout@v4
-      - run: task devnet:update
-        env:
-          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
-
   run-goreleaser:
     name: Run GoReleaser
     runs-on: builder

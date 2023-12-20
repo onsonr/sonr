@@ -25,12 +25,7 @@ tasks:
   devnet:deploy:
    desc: Docker Stack Deploy Devnet
    cmds:
-    - ls
-
-  devnet:update:
-   desc: Update the Devnet deployment
-   cmds:
-    - ls
+    - docker stack deploy --compose-file ./deploy/docker-compose.devnet.yml
 
   testnet:init:
    desc: Initialize Production Testnet Env
@@ -40,9 +35,4 @@ tasks:
   testnet:deploy:
    desc: Docker Stack Deploy Testnet
    cmds:
-    - ls
-
-  testnet:update:
-   desc: Update the Testnet Deployment
-   cmds:
-    - ls
+    - docker stack deploy --compose-file ./deploy/docker-compose.testnet.yml
