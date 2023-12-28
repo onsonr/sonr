@@ -44,5 +44,7 @@
 		"**/postcss.config.js": true,
 		"**/package-lock.json": true,
 		"**/.eslintrc.json": true,
+		"**/go.work": true,
+		"**/go.work.sum": true,
 	}
 }
