@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/sonrhq/common
+name: buf.build/sonrhq/sonr
 deps:
   - buf.build/googleapis/googleapis
 lint:
