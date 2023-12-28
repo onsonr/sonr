@@ -52,7 +52,7 @@ build:
 
     COPY . .
     RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o bin/sonrd ./cmd/sonrd/main.go
-    SAVE ARTIFACT bin/sonrd AS LOCAL sonrd
+    SAVE ARTIFACT bin/sonrd AS LOCAL bin/sonrd
 
 # docker - builds the docker image
 docker:

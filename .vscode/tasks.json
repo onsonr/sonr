@@ -27,7 +27,7 @@
 		{
 			"label": "Build: Node Binary",
 			"type": "shell",
-			"command": "earthly --no-sat +build && earthly --no-sat +docker",
+			"command": "earthly --no-sat +docker",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
