@@ -4,7 +4,7 @@
 		{
 			"type": "shell",
 			"label": "Generate: Common Proto",
-			"command": "sh ./scripts/protogen.sh",
+			"command": "sh ./scripts/protocgen.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},

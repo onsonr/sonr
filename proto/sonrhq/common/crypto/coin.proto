@@ -7,37 +7,40 @@ option go_package = "github.com/sonrhq/sonr/common/crypto";
 // CoinType is the BIP-0044 coin type for each supported coin.
 enum CoinType {
   // Bitcoins coin type is 0
-  CoinType_BITCOIN = 0;
+  CoinType_UNSPECIFIED = 0;
 
   // Testnet coin type is 1
-  CoinType_TESTNET = 1;
+  CoinType_ATOM = 1;
 
   // Litecoin coin type is 2
-  CoinType_LITECOIN = 2;
+  CoinType_AXELAR = 2;
 
   // Dogecoin coin type is 3
-  CoinType_DOGE = 3;
+  CoinType_BITCOIN = 3;
 
   // Ethereum coin type is 60
   CoinType_ETHEREUM = 4;
 
   // Sonr coin type is 703
-  CoinType_SONR = 5;
+  CoinType_EVMOS = 5;
 
   // Cosmos coin type is 118
-  CoinType_COSMOS = 6;
+  CoinType_FILECOIN = 6;
 
   // Filecoin coin type is 461
-  CoinType_FILECOIN = 7;
+  CoinType_JUNO = 7;
 
   // Handshake coin type is 5353
-  CoinType_HNS = 8;
+  CoinType_OSMO = 8;
 
   // Solana coin type is 501
   CoinType_SOLANA = 9;
 
   // Ripple coin type is 144
-  CoinType_XRP = 10;
+  CoinType_SONR = 10;
+
+  // Stargaze coin type is 1001
+  CoinType_STARGAZE = 11;
 }
 
 // AccountData is the data needed to create an account.

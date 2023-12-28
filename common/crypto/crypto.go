@@ -15,39 +15,6 @@ import (
 // Secp256k1PubKey is a type alias for secp256k1.PubKey in pkg/crypto/keys/secp256k1.
 type Secp256k1PubKey = secp256k1.PubKey
 
-// BTCCoinType is the CoinType for Bitcoin.
-const BTCCoinType = CoinType_CoinType_BITCOIN
-
-// ETHCoinType is the CoinType for Ethereum.
-const ETHCoinType = CoinType_CoinType_ETHEREUM
-
-// LTCCoinType is the CoinType for Litecoin.
-const LTCCoinType = CoinType_CoinType_LITECOIN
-
-// DOGECoinType is the CoinType for Dogecoin.
-const DOGECoinType = CoinType_CoinType_DOGE
-
-// SONRCoinType is the CoinType for Sonr.
-const SONRCoinType = CoinType_CoinType_SONR
-
-// COSMOSCoinType is the CoinType for Cosmos.
-const COSMOSCoinType = CoinType_CoinType_COSMOS
-
-// FILCoinType is the CoinType for Filecoin.
-const FILCoinType = CoinType_CoinType_FILECOIN
-
-// HNSCoinType is the CoinType for Handshake.
-const HNSCoinType = CoinType_CoinType_HNS
-
-// TestCoinType is the CoinType for Testnet.
-const TestCoinType = CoinType_CoinType_TESTNET
-
-// SOLCoinType is the CoinType for Solana.
-const SOLCoinType = CoinType_CoinType_SOLANA
-
-// XRPCoinType is the CoinType for XRP.
-const XRPCoinType = CoinType_CoinType_XRP
-
 // Secp256k1KeyType is the key type for secp256k1.
 const Secp256k1KeyType = KeyType_KeyType_ECDSA_SECP256K1_VERIFICATION_KEY_2019
 
