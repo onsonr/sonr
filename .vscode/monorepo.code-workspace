@@ -45,7 +45,8 @@
 			"**/website/go.mod": true,
 			"codecov.yml": true,
 			"Icon?": true,
-			"**/node_modules": false
+			"**/node_modules": false,
+			"**/**.pb.gw.go": true,
 		},
 		"hidefiles.configurationType": "local",
 		"explorerExclude.backup": {},
