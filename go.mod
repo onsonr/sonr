@@ -22,6 +22,7 @@ require (
 	cosmossdk.io/tools/confix v0.1.1
 	filippo.io/edwards25519 v1.0.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
+	github.com/a-h/templ v0.2.501
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/bwesterb/go-ristretto v1.2.3
@@ -38,6 +39,7 @@ require (
 	github.com/multiformats/go-multibase v0.2.0
 	github.com/multiformats/go-varint v0.0.7
 	github.com/pkg/errors v0.9.1
+	github.com/segmentio/ksuid v1.0.4
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonrhq/identity v0.0.4
 	github.com/sonrhq/service v0.0.7
@@ -94,7 +96,7 @@ require (
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/emicklei/dot v1.6.0 // indirect
 	github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5 // indirect
-	github.com/fatih/color v1.15.0 // indirect
+	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/fsnotify/fsnotify v1.6.0 // indirect
 	github.com/fxamacker/cbor/v2 v2.5.0 // indirect
