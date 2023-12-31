@@ -62,7 +62,7 @@ docker:
     EXPOSE 1317
     EXPOSE 26656
     EXPOSE 9090
-    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd-runner:$tag
+    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
 
 # generate - generates all code from proto files
 generate:
