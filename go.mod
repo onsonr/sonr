@@ -22,7 +22,6 @@ require (
 	cosmossdk.io/tools/confix v0.1.1
 	filippo.io/edwards25519 v1.0.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
-	github.com/a-h/templ v0.2.501
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/bwesterb/go-ristretto v1.2.3
@@ -39,7 +38,6 @@ require (
 	github.com/multiformats/go-multibase v0.2.0
 	github.com/multiformats/go-varint v0.0.7
 	github.com/pkg/errors v0.9.1
-	github.com/segmentio/ksuid v1.0.4
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonrhq/identity v0.0.4
 	github.com/sonrhq/service v0.0.7

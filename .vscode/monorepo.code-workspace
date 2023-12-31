@@ -8,12 +8,29 @@
 			"name": "📦 → @sonrhq/service",
 			"path": "../service"
 		},
-		{
-			"path": "..",
-			"name": "🔆 → @sonrhq/sonr"
-		},
+				{
+					"path": "..",
+					"name": "🔆 → @sonrhq/sonr"
+				},
+				{
+					"path": "../crypto",
+					"name": "🔐 → @sonrhq/sonr · crypto"
+				},
+				{
+					"path": "../rails",
+					"name": "🚊 → @sonrhq/sonr · rails"
+				},
+				{
+					"path": "../web",
+					"name": "🌎 → @sonrhq/sonr · web"
+				},
 	],
 	"settings": {
+		"editor.formatOnSave": true,
+		"editor.autoIndent": "advanced",
+		"editor.codeActionsOnSave": {
+			"source.organizeImports": true
+		},
 		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.tmp-earthly-out": true,

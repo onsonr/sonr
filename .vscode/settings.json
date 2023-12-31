@@ -40,11 +40,11 @@
 		"**/SECURITY.md": true,
 		"**/LICENSE": true,
 		".devcontainer": true,
-		"chain": true,
+		"crypto": true,
 		"identity": true,
-		"datastore": true,
+		"rails": true,
 		"service": true,
-		"website": true,
+		"web": true,
 		"**/.next": true,
 		"**/.vercel": true,
 		"**/bun.lockb": true,
@@ -54,6 +54,7 @@
 		"**/.eslintrc.json": true,
 		"**/go.work": true,
 		"**/go.work.sum": true,
+		"**/go.sum": true,
 		"**/**.pb.go": true,
 	}
 }
