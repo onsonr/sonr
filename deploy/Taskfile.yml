@@ -1,0 +1,8 @@
+version: '3'
+
+tasks:
+  build: go build -v -o ./app{{exeExt}} .
+
+  run:
+    - task: build
+    - ./app{{exeExt}} -h localhost -p 8080

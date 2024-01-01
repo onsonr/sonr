@@ -13,14 +13,6 @@
 					"name": "🔆 → @sonrhq/sonr"
 				},
 				{
-					"path": "../crypto",
-					"name": "🔐 → @sonrhq/sonr · crypto"
-				},
-				{
-					"path": "../rails",
-					"name": "🚊 → @sonrhq/sonr · rails"
-				},
-				{
 					"path": "../web",
 					"name": "🌎 → @sonrhq/sonr · web"
 				},

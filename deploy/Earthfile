@@ -1,33 +1,25 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
-IMPORT ../ AS root
+FROM earthly/earthly:v0.7.23
+RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
+    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
+        && apk add infisical
 
-# cloudflared - builds an image for the cloudflare tunnel
-cloudflared:
-    FROM cloudflare/cloudflared:latest
-	ARG tunnelToken
-	ARG environment=testnet
-    ENV TUNNEL_TOKEN $tunnelToken
-	CMD ["tunnel", "run"]
-	SAVE IMAGE ghcr.io/sonrhq/cloudflared:latest sonrhq/cloudflared:latest cloudflared-runner:latest
-
-# ipfs - builds the ipfs binary
-ipfs:
+# build-ipfs - builds the ipfs binary
+build-ipfs:
     FROM ipfs/kubo:latest
-    COPY ./etc/ipfs/config.sh config.sh
+    COPY ./scripts/init-ipfs.sh config.sh
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
 
-# faucet - builds the faucet binary
-faucet:
+# build-faucet - builds the faucet binary
+build-faucet:
     FROM node:18.7-alpine
     ARG --secret infisicalToken
     ARG cosmosjsVersion=0.28.11
     ARG environment=testnet
     ENV INFISICAL_TOKEN $infisicalToken
-    RUN apk add --no-cache bash curl && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
+
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
     CMD ["infisical", "run", "--command", "cosmos-faucet start"]
@@ -53,3 +45,7 @@ dendrite:
     SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
     SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
     SAVE ARTIFACT /etc/dendrite/dendrite.yaml AS LOCAL dendrite.yaml
+
+# standalone - builds and sets up a standalone Sonr Network
+standalone:
+

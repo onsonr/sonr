@@ -37,7 +37,7 @@ dev:
 
 # deps - downloads dependencies
 deps:
-    COPY go.mod go.sum ./
+    COPY ../go.mod ../go.sum ./
     RUN go mod download
     # Output these back in case go mod download changes them.
     SAVE ARTIFACT go.mod AS LOCAL go.mod
@@ -49,12 +49,12 @@ build:
     ARG version=$EARTHLY_GIT_REFS
     ARG commit=$EARTHLY_BUILD_SHA
 
-    COPY . .
+    COPY ../ .
     RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o bin/sonrd ./cmd/sonrd/main.go
     SAVE ARTIFACT bin/sonrd AS LOCAL bin/sonrd
 
-# runner - builds the docker image
-runner:
+# docker - builds the docker image
+docker:
     ARG tag=latest
     COPY +build/sonrd /usr/local/bin/sonrd
     EXPOSE 26657
@@ -62,41 +62,3 @@ runner:
     EXPOSE 26656
     EXPOSE 9090
     SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
-
-# generate - generates all code from proto files
-generate:
-    LOCALLY
-    RUN make proto-gen
-    FROM +deps
-    COPY . .
-    RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonrhq/identity AS LOCAL api
-    SAVE ARTIFACT proto AS LOCAL proto
-    RUN sh ./scripts/protocgen-docs.sh
-    SAVE ARTIFACT docs AS LOCAL docs
-
-# scripts - Stores the repository scripts in the local cache
-scripts:
-    COPY ./scripts ./src
-    SAVE ARTIFACT src AS LOCAL scripts
-
-# test - runs tests on x/identity and x/service
-test:
-    FROM +deps
-    BUILD identity+test
-    BUILD service+test
-
-# breaking - runs tests on x/identity and x/service with breaking changes
-breaking:
-    FROM +deps
-    BUILD identity+breaking
-    BUILD service+breaking
-
-# rails - builds the required rails to run sonr
-rails:
-    ARG --required tunnelToken
-    ARG --required infisicalToken
-    BUILD deploy+build-ipfs
-    BUILD deploy+build-faucet
-    BUILD deploy+build-dendrite
-    BUILD deploy+build-standalone
