@@ -1,0 +1,28 @@
+version: "3"
+networks:
+  sonr-net: {}
+services:
+  # Matrix Homeserver
+  dendrite:
+    init: true
+    container_name: dendrite
+    hostname: dendrite
+    image: dendrite-runner:latest
+    ports:
+      - 8008:8008 # rest
+      - 8448:8448 # e2e
+    volumes:
+     - /mnt/vol_dendrite:/etc/dendrite
+
+  # Cloudflared Reverse Proxy
+  reverse-proxy:
+   image: cloudflared-runner:latest
+   depends_on:
+     - ipfs
+     - faucet
+     - dendrite
+     - sonrd
+   expose:
+     - 80
+     - 443
+     - 8080

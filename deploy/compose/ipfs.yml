@@ -1,0 +1,29 @@
+version: "3"
+networks:
+  sonr-net: {}
+services:
+  # IPFS Gateway
+  ipfs:
+   container_name: ipfs
+   hostname: ipfs
+   image: ipfs-runner:latest
+   ports:
+     - 4001:4001 # rest
+     - 5001:5001 # p2p
+     - 8080:8080 # gateway
+   volumes:
+     - /mnt/vol_ipfs:/root/.ipfs
+
+
+  # Cloudflared Reverse Proxy
+  reverse-proxy:
+   image: cloudflared-runner:latest
+   depends_on:
+     - ipfs
+     - faucet
+     - dendrite
+     - sonrd
+   expose:
+     - 80
+     - 443
+     - 8080
