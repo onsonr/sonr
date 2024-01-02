@@ -23,7 +23,7 @@
 		"editor.codeActionsOnSave": {
 			"source.organizeImports": "explicit"
 		},
-		"explorer.excludeGitIgnore": true,
+		"explorer.excludeGitIgnore": false,
 		"files.exclude": {
 			"**/.tmp-earthly-out": true,
 			"**/.git": true,
