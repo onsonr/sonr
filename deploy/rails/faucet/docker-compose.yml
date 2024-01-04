@@ -1,0 +1,23 @@
+version: "3"
+networks:
+  tunnel:
+    external: true
+
+services:
+  # Cloudflared Reverse Proxy
+  cloudflared:
+    image: erisamoe/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${FAUCET_TUNNEL_TOKEN}
+    networks:
+      - tunnel
+
+  # Sonr Faucet
+  faucet:
+   container_name: faucet
+   hostname: faucet
+   image: faucet-runner:latest
+   ports:
+     - 3000:3000 # rest

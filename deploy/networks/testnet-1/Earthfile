@@ -5,15 +5,15 @@ RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
     'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
         && apk add infisical
 
-# build-ipfs - builds the ipfs binary
-build-ipfs:
+# import-key - imports the mnemonic into the sonrd keychain
+import-key:
     FROM ipfs/kubo:latest
     COPY ./scripts/init-ipfs.sh config.sh
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
 
-# build-faucet - builds the faucet binary
-build-faucet:
+# build - configures latest sonrd image for specified network
+build:
     FROM node:18.7-alpine
     ARG --secret infisicalToken
     ARG cosmosjsVersion=0.28.11
@@ -45,7 +45,3 @@ dendrite:
     SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
     SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
     SAVE ARTIFACT /etc/dendrite/dendrite.yaml AS LOCAL dendrite.yaml
-
-# standalone - builds and sets up a standalone Sonr Network
-standalone:
-

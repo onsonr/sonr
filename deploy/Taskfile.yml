@@ -1,8 +1,29 @@
 version: '3'
 
 tasks:
-  build: go build -v -o ./app{{exeExt}} .
+  build:
+    cmd: earthly --no-sat +build
 
-  run:
-    - task: build
-    - ./app{{exeExt}} -h localhost -p 8080
+  deploy-ipfs:
+    dir: ./rails/kubo
+    cmds:
+      - task: build
+      - docker stack deploy --prune ipfs
+
+  deploy-faucet:
+    dir: ./rails/faucet
+    cmds:
+      - task: build
+      - docker stack deploy --prune faucet
+
+  deploy-dendrite:
+    dir: ./rails/dendrite
+    cmds:
+      - task: build
+      - docker stack deploy --prune matrix
+
+  deploy-testnet:
+    dir: ./networks/testnet-1
+    cmds:
+      - task: build
+      - docker stack deploy --prune testnet-1

@@ -1,7 +1,19 @@
 version: "3"
 networks:
-  sonr-net: {}
+  tunnel:
+    external: true
+
 services:
+  # Cloudflared Reverse Proxy
+  cloudflared:
+    image: erisamoe/cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${MATRIX_TUNNEL_TOKEN}
+    networks:
+      - tunnel
+
   # Matrix Homeserver
   dendrite:
     init: true
@@ -13,16 +25,5 @@ services:
       - 8448:8448 # e2e
     volumes:
      - /mnt/vol_dendrite:/etc/dendrite
-
-  # Cloudflared Reverse Proxy
-  reverse-proxy:
-   image: cloudflared-runner:latest
-   depends_on:
-     - ipfs
-     - faucet
-     - dendrite
-     - sonrd
-   expose:
-     - 80
-     - 443
-     - 8080
+    networks:
+     - tunnel
