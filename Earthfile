@@ -50,18 +50,8 @@ build:
     ARG commit=$EARTHLY_BUILD_SHA
 
     COPY . .
-    RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o bin/sonrd ./cmd/sonrd/main.go
-    SAVE ARTIFACT bin/sonrd AS LOCAL bin/sonrd
-
-# runner - builds the docker image
-runner:
-    ARG tag=latest
-    COPY +build/sonrd /usr/local/bin/sonrd
-    EXPOSE 26657
-    EXPOSE 1317
-    EXPOSE 26656
-    EXPOSE 9090
-    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
+    RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o /usr/bin/sonrd ./cmd/sonrd/main.go
+    SAVE ARTIFACT /usr/bin/sonrd AS LOCAL bin/sonrd
 
 # generate - generates all code from proto files
 generate:

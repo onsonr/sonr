@@ -1,5 +1,8 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
+
+IMPORT github.com/sonrhq/sonr AS sonr
+
 FROM earthly/earthly:v0.7.23
 RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
     'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
@@ -7,7 +10,7 @@ RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
 
 # import-key - imports the mnemonic into the sonrd keychain
 import-key:
-    FROM ipfs/kubo:latest
+    FROM sonr+build
     COPY ./scripts/init-ipfs.sh config.sh
     EXPOSE 8080 4001 5001 8081
     SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
