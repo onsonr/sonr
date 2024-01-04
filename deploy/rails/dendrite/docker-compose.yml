@@ -24,6 +24,6 @@ services:
       - 8008:8008 # rest
       - 8448:8448 # e2e
     volumes:
-     - /mnt/vol_dendrite:/etc/dendrite
+     - /mnt/disks/matrix_data:/etc/dendrite
     networks:
      - tunnel

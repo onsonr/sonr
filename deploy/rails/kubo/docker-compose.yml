@@ -24,6 +24,6 @@ services:
      - 5001:5001 # p2p
      - 8080:8080 # gateway
    volumes:
-     - /mnt/vol_ipfs:/root/.ipfs
+     - /mnt/disks/ipfs_data:/root/.ipfs
    networks:
     - tunnel
