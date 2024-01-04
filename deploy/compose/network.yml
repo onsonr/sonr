@@ -2,6 +2,19 @@ version: "3"
 networks:
   sonr-net: {}
 services:
+  # Cloudflared Reverse Proxy
+  reverse-proxy:
+   image: cloudflared-runner:latest
+   depends_on:
+     - ipfs
+     - faucet
+     - dendrite
+     - sonrd
+   expose:
+     - 80
+     - 443
+     - 8080
+
   # Sonr Validator
   sonrd:
     init: true
@@ -17,15 +30,10 @@ services:
       - 9090:9090 # grpc
     restart: always
 
-  # Cloudflared Reverse Proxy
-  reverse-proxy:
-   image: cloudflared-runner:latest
-   depends_on:
-     - ipfs
-     - faucet
-     - dendrite
-     - sonrd
-   expose:
-     - 80
-     - 443
-     - 8080
+  # Sonr Faucet
+  faucet:
+   container_name: faucet
+   hostname: faucet
+   image: faucet-runner:latest
+   ports:
+     - 3000:3000 # rest
