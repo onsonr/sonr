@@ -4,5 +4,4 @@ use (
 	.
 	./identity
 	./service
-	./web
 )

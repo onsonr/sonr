@@ -38,6 +38,7 @@ require (
 	github.com/multiformats/go-multibase v0.2.0
 	github.com/multiformats/go-varint v0.0.7
 	github.com/pkg/errors v0.9.1
+	github.com/segmentio/ksuid v1.0.4
 	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonrhq/identity v0.0.4
 	github.com/sonrhq/service v0.0.7

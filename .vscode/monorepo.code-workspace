@@ -12,10 +12,7 @@
 					"path": "..",
 					"name": "🔆 → @sonrhq/sonr"
 				},
-				{
-					"path": "../web",
-					"name": "🌎 → @sonrhq/sonr · web"
-				},
+
 	],
 	"settings": {
 		"editor.formatOnSave": true,
