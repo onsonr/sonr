@@ -4,6 +4,7 @@ bin/
 node_modules/
 package-lock.json
 package.json
+tmp
 
 debug_container.dot
 debug_container.log
