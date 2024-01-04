@@ -11,25 +11,9 @@ permissions:
   contents: write
 
 jobs:
-  deploy-testnet:
-    name: Deploy Testnet for New Version
-    environment: Testnet
-    runs-on: testnet
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-    steps:
-      - uses: actions/checkout@v4
-      - run: task testnet:deploy
-        env:
-          INFISICAL_TOKEN: ${{ secrets.INFISICAL_TOKEN }}
-
   run-goreleaser:
     name: Run GoReleaser
     runs-on: ubuntu-latest
-    environment: Staging
     if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: Checkout
@@ -49,7 +33,6 @@ jobs:
 
   changelog:
     name: Generate Changelog
-    environment: Staging
     runs-on: ubuntu-latest
     if: github.event_name =='release'
     steps:

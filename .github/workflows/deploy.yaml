@@ -1,0 +1,42 @@
+name: Deploy Testnet & Rails
+
+on:
+  push:
+    branches:
+      - deploy/*
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  deploy-testnet:
+    name: Deploy Testnet for New Version
+    environment: Testnet
+    runs-on: gcp-instance-1
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: cd deploy && task deploy-testnet
+
+
+  deploy-rails:
+    name: Deploy Testnet for New Version
+    environment: Rails
+    runs-on: gcp-instance-1
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: cd deploy && task deploy-ipfs
+      - run: cd deploy && task deploy-faucet
+      - run: cd deploy && task deploy-matrix

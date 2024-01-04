@@ -39,7 +39,6 @@ jobs:
   run-tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    environment: Staging
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -56,7 +55,6 @@ jobs:
   build-test:
     name: Build for Target Platforms
     runs-on: ubuntu-latest
-    environment: Staging
     strategy:
       matrix:
         arch: [amd64, arm64]
@@ -82,7 +80,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: [run-tests, build-test]
     if: github.event_name == 'merge_group'
-    environment: Staging
     steps:
       - name: Bump version and push tag
         id: tag_version

@@ -16,7 +16,7 @@ tasks:
       - task: build
       - docker stack deploy --prune faucet
 
-  deploy-dendrite:
+  deploy-matrix:
     dir: ./rails/dendrite
     cmds:
       - task: build
