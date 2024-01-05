@@ -22,6 +22,7 @@ require (
 	cosmossdk.io/tools/confix v0.1.1
 	filippo.io/edwards25519 v1.0.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
+	github.com/a-h/templ v0.2.513
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/btcsuite/btcutil v1.0.2
 	github.com/bwesterb/go-ristretto v1.2.3
@@ -29,17 +30,16 @@ require (
 	github.com/consensys/gnark-crypto v0.12.1
 	github.com/cosmos/cosmos-db v1.0.0
 	github.com/cosmos/cosmos-sdk v0.50.1
-	github.com/cosmos/gogoproto v1.4.11
-	github.com/go-webauthn/webauthn v0.9.4
+	github.com/cosmos/gogoproto v1.4.11 // indirect
+	github.com/go-webauthn/webauthn v0.9.4 // indirect
 	github.com/goccy/go-yaml v1.11.2
 	github.com/gtank/merlin v0.1.1
 	github.com/ipfs/boxo v0.16.0
 	github.com/ipfs/kubo v0.25.0
-	github.com/multiformats/go-multibase v0.2.0
-	github.com/multiformats/go-varint v0.0.7
+	github.com/multiformats/go-multibase v0.2.0 // indirect
+	github.com/multiformats/go-varint v0.0.7 // indirect
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/ksuid v1.0.4
-	github.com/shengdoushi/base58 v1.0.0
 	github.com/sonrhq/identity v0.0.4
 	github.com/sonrhq/service v0.0.7
 	github.com/spf13/cobra v1.8.0
