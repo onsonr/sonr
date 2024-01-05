@@ -8,9 +8,9 @@ IMPORT github.com/sonrhq/identity:main AS identity
 IMPORT github.com/sonrhq/service:main AS service
 WORKDIR /chain
 # ---------------------------------------------------------------------
-
-# Initial Setup
-RUN apk add --update --no-cache \
+# deps - downloads dependencies
+deps:
+    RUN apk add --update --no-cache \
     bash \
     binutils \
     ca-certificates \
@@ -23,11 +23,6 @@ RUN apk add --update --no-cache \
     make \
     openssl \
     util-linux
-
-
-# ---------------------------------------------------------------------
-# deps - downloads dependencies
-deps:
     COPY go.mod go.sum ./
     RUN go mod download
     # Output these back in case go mod download changes them.
