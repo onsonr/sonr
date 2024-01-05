@@ -6,25 +6,25 @@ tasks:
     internal: true
 
   ipfs:
-    dir: ./deploy/rails/kubo
+    dir: ./build/rails/kubo
     cmds:
       - task: build
       - docker stack deploy -c ./docker-compose.yml --prune ipfs
 
   faucet:
-    dir: ./deploy/rails/faucet
+    dir: ./build/rails/faucet
     cmds:
       - task: build
       # - docker stack deploy -c ./docker-compose.yml --prune faucet
 
   matrix:
-    dir: ./deploy/rails/dendrite
+    dir: ./build/rails/dendrite
     cmds:
       - task: build
       - docker stack deploy -c ./docker-compose.yml --prune matrix
 
   testnet:
-    dir: ./deploy/networks/testnet-1
+    dir: ./build/networks/testnet-1
     cmds:
       - task: build
       - docker stack deploy -c ./docker-compose.yml --prune testnet-1
