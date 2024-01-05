@@ -25,7 +25,6 @@ deps:
     util-linux
     COPY go.mod go.sum ./
     RUN go mod download
-    # Output these back in case go mod download changes them.
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
