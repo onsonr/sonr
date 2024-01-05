@@ -7,17 +7,15 @@ services:
   # Cloudflared Reverse Proxy
   cloudflared:
     image: erisamoe/cloudflared
-    restart: unless-stopped
     command: tunnel run
     environment:
-      - TUNNEL_TOKEN=${MATRIX_TUNNEL_TOKEN}
+      - TUNNEL_TOKEN=${SONR_TUNNEL_TOKEN}
     networks:
       - tunnel
 
   # Sonr Validator
   sonrd:
     init: true
-    container_name: sonrd
     hostname: sonrd
     image: sonrd-runner:latest
     command: ["start"]
@@ -28,6 +26,5 @@ services:
       - 26657:26657 # rpc
       - 9090:9090 # grpc
       - 8080:8080 # api/htmx
-    restart: always
     networks:
       - tunnel

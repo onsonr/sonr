@@ -10,4 +10,4 @@ build:
     FROM ipfs/kubo:latest
     COPY ./scripts/init-ipfs.sh config.sh
     EXPOSE 8080 4001 5001 8081
-    SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
+    SAVE IMAGE --push ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest

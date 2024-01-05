@@ -16,4 +16,4 @@ build:
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
     CMD ["infisical", "run", "--command", "cosmos-faucet start"]
-    SAVE IMAGE --push sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest faucet-runner:latest
+    SAVE IMAGE faucet-runner:latest

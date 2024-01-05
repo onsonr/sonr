@@ -1,3 +1,5 @@
+**/*.pem
+**/deploy/**/dendrite.yaml
 .DS_Store
 .tmp/
 bin/

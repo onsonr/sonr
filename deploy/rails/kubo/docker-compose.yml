@@ -7,7 +7,6 @@ services:
   # Cloudflared Reverse Proxy
   cloudflared:
     image: erisamoe/cloudflared
-    restart: unless-stopped
     command: tunnel run
     environment:
       - TUNNEL_TOKEN=${IPFS_TUNNEL_TOKEN}

@@ -6,39 +6,18 @@ RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
         && apk add infisical
 
 
-# dendrite - builds and configures monolithic dendrite matrix homeserver
+# build - builds and configures monolithic dendrite matrix homeserver
 build:
     FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=localhost
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
+    ARG serverName=matrix.sonr.run
+    SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest matrix-runner:latest
 
-    RUN mkdir -p /etc/dendrite
-    IF ["$privateKey" == ""]
-        RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    END
-    IF ["$serverName" == "localhost"]
-        RUN /usr/bin/generate-keys -tls-cert server.crt -tls-key server.key -server-name $serverName
-    END
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI -dir $dirPath > /etc/dendrite/dendrite.yaml
-    EXPOSE 8008
-    EXPOSE 8448
-    SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
+# init - generates private key for matrix homeserver
+init:
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=matrix.sonr.run
+    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
+    RUN /usr/bin/generate-keys -private-key matrix_key.pem
     SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    SAVE ARTIFACT /etc/dendrite/dendrite.yaml AS LOCAL dendrite.yaml
-
-# gen-keys - generates private key and tls cert for matrix homeserver
-gen-tls:
-    FROM alpine:latest
-    ARG serverName=localhost
-
-
-# gen-private-key - generates private key for matrix homeserver
-gen-private-key:
-    FROM alpine:latest
-    ARG privateKey=matrix_key.pem
-
-# gen-config - generates dendrite config file
-gen-config:
-    FROM alpine:latest
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-
+    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
+    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml

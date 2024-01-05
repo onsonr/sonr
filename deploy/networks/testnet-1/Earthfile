@@ -1,50 +1,8 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
 
-IMPORT github.com/sonrhq/sonr AS sonr
-
-FROM earthly/earthly:v0.7.23
-RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
-
-# import-key - imports the mnemonic into the sonrd keychain
-import-key:
-    FROM sonr+build
-    COPY ./scripts/init-ipfs.sh config.sh
-    EXPOSE 8080 4001 5001 8081
-    SAVE IMAGE ghcr.io/sonrhq/ipfs:latest sonrhq/ipfs:latest ipfs-runner:latest
+IMPORT ../../../ as root
 
 # build - configures latest sonrd image for specified network
 build:
-    FROM node:18.7-alpine
-    ARG --secret infisicalToken
-    ARG cosmosjsVersion=0.28.11
-    ARG environment=testnet
-    ENV INFISICAL_TOKEN $infisicalToken
-
-    RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
-    EXPOSE 4500
-    CMD ["infisical", "run", "--command", "cosmos-faucet start"]
-    SAVE IMAGE --push sonrhq/faucet:latest ghcr.io/sonrhq/faucet:latest faucet-runner:latest
-
-# dendrite - builds and configures monolithic dendrite matrix homeserver
-dendrite:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=localhost
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-    ARG dirPath=./
-
-    RUN mkdir -p /etc/dendrite
-    IF ["$privateKey" == ""]
-        RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    END
-    IF ["$serverName" == "localhost"]
-        RUN /usr/bin/generate-keys -tls-cert server.crt -tls-key server.key -server-name $serverName
-    END
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI -dir $dirPath > /etc/dendrite/dendrite.yaml
-    EXPOSE 8008
-    EXPOSE 8448
-    SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest dendrite-runner:latest
-    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    SAVE ARTIFACT /etc/dendrite/dendrite.yaml AS LOCAL dendrite.yaml
+    BUILD root+runner

@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   deploy-testnet:
-    name: Deploy Testnet for New Version
+    name: Deploy Testnet to Production
     environment: Testnet
     runs-on: gcp-instance-1
     env:
@@ -23,11 +23,12 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: cd deploy && task deploy-testnet
-
+      - run: task deploy:testnet
+        env:
+          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
 
   deploy-rails:
-    name: Deploy Testnet for New Version
+    name: Deploy Rails to Production
     environment: Rails
     runs-on: gcp-instance-1
     env:
@@ -37,6 +38,12 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - run: cd deploy && task deploy-ipfs
-      - run: cd deploy && task deploy-faucet
-      - run: cd deploy && task deploy-matrix
+      - run: task deploy:ipfs
+        env:
+          IPFS_TUNNEL_TOKEN: ${{ secrets.IPFS_TUNNEL_TOKEN }}
+      - run: task deploy:matrix
+        env:
+          MATRIX_TUNNEL_TOKEN: ${{ secrets.MATRIX_TUNNEL_TOKEN }}
+      # - run: task deploy:faucet
+      #   env:
+      #     FAUCET_TUNNEL_TOKEN: ${{ secrets.FAUCET_TUNNEL_TOKEN }}

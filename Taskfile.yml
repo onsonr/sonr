@@ -1,0 +1,14 @@
+version: '3'
+
+includes:
+  deploy: ./deploy/Taskfile.yml
+
+tasks:
+  default:
+   cmd: task --list-all
+   silent: true
+
+  init-matrix:
+   dir: ./deploy/rails/dendrite
+   cmds:
+     - earthly --no-sat +init
