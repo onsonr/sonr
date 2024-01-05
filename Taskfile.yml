@@ -12,3 +12,9 @@ tasks:
    dir: ./deploy/rails/dendrite
    cmds:
      - earthly --no-sat +init
+
+  build:
+   cmds:
+    - rm -rf bin/ && mkdir ./bin/
+    - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
+    - rm -rf dist

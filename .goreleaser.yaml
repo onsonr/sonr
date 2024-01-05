@@ -17,8 +17,6 @@ builds:
       - -X main.Version={{ .Version }}
       - -X main.Commit={{ .Commit }}
       - -w -s
-    tags:
-      - netgo
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
