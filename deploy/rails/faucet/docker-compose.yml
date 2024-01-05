@@ -1,7 +1,6 @@
 version: "3"
 networks:
   tunnel:
-    external: true
 
 services:
   # Cloudflared Reverse Proxy
@@ -15,7 +14,6 @@ services:
 
   # Sonr Faucet
   faucet:
-   container_name: faucet
    hostname: faucet
    image: faucet-runner:latest
    ports:

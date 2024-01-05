@@ -1,7 +1,6 @@
 version: "3"
 networks:
   tunnel:
-    external: true
 
 services:
   # Cloudflared Reverse Proxy
@@ -16,7 +15,6 @@ services:
   # Matrix Homeserver
   dendrite:
     init: true
-    container_name: dendrite
     hostname: dendrite
     image: dendrite-runner:latest
     ports:
