@@ -93,17 +93,14 @@ release:
   extra_files:
     - glob: scripts/install.sh
 
-dockers:
-  - image_templates:
-      - "sonrhq/sonrd:latest"
-      - "sonrhq/sonrd:{{ .Tag }}"
-      - "ghcr.io/sonrhq/sonrd:latest"
-      - "ghcr.io/sonrhq/sonrd:{{ .Tag }}"
-    build_flag_templates:
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
+kos:
+  - repository: sonrhq/sonrd
+    tags:
+    - '{{.Version}}'
+    - latest
+    platforms:
+    - linux/amd64
+    - linux/arm64
 
 changelog:
   sort: asc
