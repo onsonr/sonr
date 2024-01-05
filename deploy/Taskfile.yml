@@ -15,7 +15,7 @@ tasks:
     dir: ./deploy/rails/faucet
     cmds:
       - task: build
-      - docker stack deploy -c ./docker-compose.yml --prune faucet
+      # - docker stack deploy -c ./docker-compose.yml --prune faucet
 
   matrix:
     dir: ./deploy/rails/dendrite
