@@ -1,19 +1,20 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
-FROM earthly/earthly:v0.7.23
-RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
+
 
 # build - builds the faucet binary
 build:
     FROM node:18.7-alpine
+    RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
+    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
+        && apk add infisical
     ARG --secret infisicalToken
     ARG cosmosjsVersion=0.28.11
     ARG environment=testnet
     ENV INFISICAL_TOKEN $infisicalToken
 
+
     RUN npm install @cosmjs/faucet@$cosmosjsVersion --global --production
     EXPOSE 4500
     CMD ["infisical", "run", "--command", "cosmos-faucet start"]
-    SAVE IMAGE faucet-runner:latest
+    SAVE IMAGE sonrhq/faucet:latest

@@ -14,9 +14,8 @@ services:
 
    # IPFS Gateway
   ipfs:
-   container_name: ipfs
    hostname: ipfs
-   image: ipfs-runner:latest
+   image: sonrhq/ipfs:latest
    ports:
      - 4001:4001 # rest
      - 5001:5001 # p2p

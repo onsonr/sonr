@@ -16,7 +16,7 @@ services:
   dendrite:
     init: true
     hostname: dendrite
-    image: dendrite-runner:latest
+    image: sonrhq/dendrite:latest
     ports:
       - 8008:8008 # rest
       - 8448:8448 # e2e

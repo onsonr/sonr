@@ -1,16 +1,11 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
-FROM earthly/earthly:v0.7.23
-RUN apk add --no-cache bash curl nodejs npm && curl -1sLf \
-    'https://dl.cloudsmith.io/public/infisical/infisical-cli/setup.alpine.sh' | bash \
-        && apk add infisical
-
 
 # build - builds and configures monolithic dendrite matrix homeserver
 build:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run
-    SAVE IMAGE --push sonrhq/dendrite:latest ghcr.io/sonrhq/dendrite:latest matrix-runner:latest
+    SAVE IMAGE --push sonrhq/dendrite:latest
 
 # init - generates private key for matrix homeserver
 init:

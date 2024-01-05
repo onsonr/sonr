@@ -15,6 +15,6 @@ services:
   # Sonr Faucet
   faucet:
    hostname: faucet
-   image: faucet-runner:latest
+   image: sonrhq/faucet:latest
    ports:
      - 3000:3000 # rest
