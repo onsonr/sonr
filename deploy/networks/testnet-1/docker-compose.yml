@@ -16,7 +16,7 @@ services:
   sonrd:
     init: true
     hostname: sonrd
-    image: sonrd-runner:latest
+    image: sonrhq/sonrd:latest
     command: ["start"]
     volumes:
      - /mnt/disks/sonr_data:/root/.sonr
@@ -24,6 +24,6 @@ services:
       - 1317:1317 # rest
       - 26657:26657 # rpc
       - 9090:9090 # grpc
-      - 8080:8080 # api/htmx
+      - 8000:8080 # api/htmx
     networks:
       - tunnel
