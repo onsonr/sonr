@@ -4,7 +4,7 @@
 		{
 			"type": "shell",
 			"label": "Generate: Common Proto",
-			"command": "sh ./scripts/protogen.sh",
+			"command": "sh ./scripts/protocgen.sh",
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
@@ -27,7 +27,7 @@
 		{
 			"label": "Build: Node Binary",
 			"type": "shell",
-			"command": "earthly --no-sat +build && earthly --no-sat +docker",
+			"command": "earthly --no-sat +docker",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"

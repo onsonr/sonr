@@ -1,0 +1,51 @@
+name: Deploy Testnet & Rails
+
+on:
+  push:
+    branches:
+      - deploy/*
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  deploy-testnet:
+    name: Deploy Testnet to Production
+    environment: Testnet
+    runs-on: gcp-instance-1
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: earthly sat wake builder
+      - run: task deploy:testnet
+        env:
+          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+
+  deploy-rails:
+    name: Deploy Rails to Production
+    environment: Rails
+    runs-on: gcp-instance-1
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+      - run: earthly sat wake builder
+      - run: task deploy:ipfs
+        env:
+          IPFS_TUNNEL_TOKEN: ${{ secrets.IPFS_TUNNEL_TOKEN }}
+      - run: task deploy:matrix
+        env:
+          MATRIX_TUNNEL_TOKEN: ${{ secrets.MATRIX_TUNNEL_TOKEN }}
+      - run: task deploy:faucet
+        env:
+          FAUCET_TUNNEL_TOKEN: ${{ secrets.FAUCET_TUNNEL_TOKEN }}

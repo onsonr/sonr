@@ -1,0 +1,26 @@
+version: "3"
+networks:
+  tunnel:
+
+services:
+  # Cloudflared Reverse Proxy
+  cloudflared:
+    image: erisamoe/cloudflared
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${IPFS_TUNNEL_TOKEN}
+    networks:
+      - tunnel
+
+   # IPFS Gateway
+  ipfs:
+   hostname: ipfs
+   image: sonrhq/ipfs:latest
+   ports:
+     - 4001:4001 # rest
+     - 5001:5001 # p2p
+     - 8080:8080 # gateway
+   volumes:
+     - /mnt/disks/ipfs_data:/root/.ipfs
+   networks:
+    - tunnel

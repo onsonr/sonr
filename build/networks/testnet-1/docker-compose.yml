@@ -1,0 +1,29 @@
+version: "3"
+networks:
+  tunnel:
+
+services:
+  # Cloudflared Reverse Proxy
+  cloudflared:
+    image: erisamoe/cloudflared
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${SONR_TUNNEL_TOKEN}
+    networks:
+      - tunnel
+
+  # Sonr Validator
+  sonrd:
+    init: true
+    hostname: sonrd
+    image: sonrhq/sonrd:latest
+    command: ["start"]
+    volumes:
+     - /mnt/disks/sonr_data:/root/.sonr
+    ports:
+      - 1317:1317 # rest
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+      - 8000:8080 # api/htmx
+    networks:
+      - tunnel

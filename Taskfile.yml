@@ -1,38 +1,14 @@
 version: '3'
-dotenv: ['.env', '{{.ENV}}/.env.', '{{.HOME}}/.env']
+
+includes:
+  deploy: ./build/Taskfile.yml
+
 tasks:
   default:
-    desc: List all tasks
-    cmds:
-      - task --list-all
+   cmd: task --list-all
+   silent: true
 
-  compose:up:
-   desc: Start Local Network
+  init-matrix:
+   dir: ./deploy/rails/dendrite
    cmds:
-    - earthly ./cmd+init --home $HOME/.sonr
-    - docker compose -f ./docker-compose.yml up
-
-  compose:down:
-   desc: Stop Local Network
-   cmds:
-    - docker compose -f ./docker-compose.yml down
-
-  devnet:init:
-   desc: Initialize Production Devnet Env
-   cmds:
-    - ls
-
-  devnet:deploy:
-   desc: Docker Stack Deploy Devnet
-   cmds:
-    - docker stack deploy --compose-file ./deploy/docker-compose.devnet.yml sonr-devnet-0
-
-  testnet:init:
-   desc: Initialize Production Testnet Env
-   cmds:
-    - ls
-
-  testnet:deploy:
-   desc: Docker Stack Deploy Testnet
-   cmds:
-    - docker stack deploy --compose-file ./deploy/docker-compose.testnet.yml sonr-testnet-1
+     - earthly --no-sat +init

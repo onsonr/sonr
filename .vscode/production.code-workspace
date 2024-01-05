@@ -1,18 +1,21 @@
 {
 	"folders": [
 		{
-			"name": "🆔 → @sonrhq/identity",
-			"path": "../identity"
+			"path": "..",
+			"name": "🔆 → @sonrhq/sonr"
 		},
 		{
-			"name": "📦 → @sonrhq/service",
-			"path": "../service"
+			"path": "/mnt/disks/sonr_data",
+			"name": "💿 → #sonr_data"
 		},
-				{
-					"path": "..",
-					"name": "🔆 → @sonrhq/sonr"
-				},
-
+		{
+			"path": "/mnt/disks/matrix_data",
+			"name": "📀 → #matrix_data"
+		},
+		{
+			"path": "/mnt/disks/ipfs_data",
+			"name": "💿 → #ipfs_data"
+		},
 	],
 	"settings": {
 		"editor.formatOnSave": true,
