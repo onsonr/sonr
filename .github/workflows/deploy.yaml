@@ -23,6 +23,7 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
+      - run: earthly sat wake builder
       - run: task deploy:testnet
         env:
           SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
@@ -38,6 +39,7 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
+      - run: earthly sat wake builder
       - run: task deploy:ipfs
         env:
           IPFS_TUNNEL_TOKEN: ${{ secrets.IPFS_TUNNEL_TOKEN }}

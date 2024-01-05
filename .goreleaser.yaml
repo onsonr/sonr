@@ -1,11 +1,12 @@
 project_name: sonrd
 builds:
   # Build - Linux
-  - id: sonrd-linux
+  - id: sonrd
     main: cmd/sonrd/main.go
     binary: sonrd
     goos:
       - linux
+      - darwin
     goarch:
       - amd64
       - arm64
@@ -19,51 +20,15 @@ builds:
     tags:
       - netgo
 
-  # Build - Darwin
-  - id: sonrd-darwin
-    main: cmd/sonrd/main.go
-    binary: sonrd
-    goos:
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X github.com/cosmos/cosmos-sdk/version.Name=sonr
-      - -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd
-      - -X github.com/cosmos/cosmos-sdk/version.Version={{ .Version }}
-      - -X github.com/cosmos/cosmos-sdk/version.Commit={{ .Commit }}
-      - -X github.com/cosmos/cosmos-sdk/version.BuildTags=netgo
-      - -w -s
-    tags:
-      - netgo
-
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
 # ! ||--------------------------------------------------------------------------------||
-universal_binaries:
-  - id: sonrd-darwin-universal
-    ids:
-      - sonrd-darwin
-    replace: false
 archives:
   - id: zipped
     builds:
-      - sonrd-darwin-universal
-      - sonrd-linux
-      - sonrd-darwin
+      - sonrd
     name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
-  - id: binaries
-    builds:
-      - sonrd-darwin-universal
-      - sonrd-linux
-      - sonrd-darwin
-    name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
-    format: binary
 checksum:
   name_template: sha256sum.txt
   algorithm: sha256
@@ -127,6 +92,19 @@ release:
   draft: false
   extra_files:
     - glob: scripts/install.sh
+
+kos:
+  - repository: sonrhq/sonrd
+    tags:
+    - '{{.Version}}'
+    - latest
+    bare: true
+    preserve_import_paths: false
+    platforms:
+    - linux/amd64
+    - linux/arm64
+    - darwin/amd64
+    - darwin/arm64
 
 changelog:
   sort: asc
