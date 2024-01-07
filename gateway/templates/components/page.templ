@@ -1,0 +1,62 @@
+package components
+
+import "strconv"
+
+css border() {
+	border: 1px solid #eeeeee;
+	border-radius: 4px;
+	margin: 10px;
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+templ counts(global, session int) {
+	<form id="countsForm" action="/" method="POST" hx-post="/" hx-select="#countsForm" hx-swap="outerHTML">
+		<div class="columns">
+			<div class={ "column", "has-text-centered", "is-primary", border }>
+				<h1 class="title is-size-1 has-text-centered">{ strconv.Itoa(global) }</h1>
+				<p class="subtitle has-text-centered">Global</p>
+				<div><button class="button is-primary" type="submit" name="global" value="global">+1</button></div>
+			</div>
+			<div class={ "column", "has-text-centered", border }>
+				<h1 class="title is-size-1 has-text-centered">{ strconv.Itoa(session) }</h1>
+				<p class="subtitle has-text-centered">Session</p>
+				<div><button class="button is-secondary" type="submit" name="session" value="session">+1</button></div>
+			</div>
+		</div>
+	</form>
+}
+
+templ Page(global, session int) {
+	<html>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Counts</title>
+			<link rel="stylesheet" href="/assets/css/bulma.min.css"/>
+			<link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png"/>
+			<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png"/>
+			<link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png"/>
+			<link rel="manifest" href="/assets/favicon/site.webmanifest"/>
+			<script src="/assets/js/htmx.min.js"></script>
+		</head>
+		<body class="bg-gray-100">
+			<header class="hero is-primary">
+				<div class="hero-body">
+					<div class="container">
+						<h1 class="title">Counts</h1>
+					</div>
+				</div>
+			</header>
+			<section class="section">
+				<div class="container">
+					<div class="columns is-centered">
+						<div class="column is-half">
+							@counts(global, session)
+						</div>
+					</div>
+				</div>
+			</section>
+		</body>
+	</html>
+}

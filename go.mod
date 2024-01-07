@@ -47,6 +47,8 @@ require (
 	lukechampine.com/blake3 v1.2.1 // indirect
 )
 
+require github.com/go-chi/chi/v5 v5.0.11
+
 require (
 	cosmossdk.io/collections v0.4.0 // indirect
 	cosmossdk.io/orm v1.0.0-beta.3 // indirect
