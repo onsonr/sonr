@@ -25,7 +25,7 @@
 		"**/.project": true,
 		"**/.settings": true,
 		"**/largeFolder": true,
-		"**/**_templ.go": true,
+		"**/**_templ.go": false,
 		"**/pubspec.lock": true,
 		"**pubspec.lock": true,
 		"app.iml": true,
