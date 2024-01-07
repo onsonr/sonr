@@ -3,9 +3,9 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
 
-FROM golang:1.21-alpine3.18
-IMPORT github.com/sonrhq/identity:main AS identity
-IMPORT github.com/sonrhq/service:main AS service
+FROM golang:1.21.5-alpine
+IMPORT ../identity AS identity
+IMPORT ../service AS service
 WORKDIR /chain
 # ---------------------------------------------------------------------
 # deps - downloads dependencies
@@ -25,6 +25,7 @@ deps:
     util-linux
     COPY go.mod go.sum ./
     RUN go mod download
+    RUN go install github.com/a-h/templ/cmd/templ@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
@@ -49,18 +50,6 @@ runner:
     EXPOSE 9090
     SAVE IMAGE --push sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
 
-# generate - generates all code from proto files
-generate:
-    LOCALLY
-    RUN make proto-gen
-    FROM +deps
-    COPY . .
-    RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonrhq/identity AS LOCAL api
-    SAVE ARTIFACT proto AS LOCAL proto
-    RUN sh ./scripts/protocgen-docs.sh
-    SAVE ARTIFACT docs AS LOCAL docs
-
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
@@ -69,6 +58,12 @@ test:
 
 # breaking - runs tests on x/identity and x/service with breaking changes
 breaking:
-    FROM +deps
     BUILD identity+breaking
     BUILD service+breaking
+
+# templates - runs protogen, and templ generate on all modules and root
+templates:
+    LOCALLY
+    RUN templ generate
+    BUILD identity+templates
+    BUILD service+templates

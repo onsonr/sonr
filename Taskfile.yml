@@ -18,3 +18,7 @@ tasks:
     - rm -rf bin/ && mkdir ./bin/
     - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
     - rm -rf dist
+
+  generate:
+   cmds:
+    - earthly --no-sat +templates

@@ -1,8 +1,6 @@
 module github.com/sonrhq/sonr
 
-go 1.21.3
-
-toolchain go1.21.5
+go 1.21.5
 
 replace (
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.7.0
@@ -32,9 +30,8 @@ require (
 	github.com/cosmos/cosmos-sdk v0.50.1
 	github.com/cosmos/gogoproto v1.4.11 // indirect
 	github.com/go-webauthn/webauthn v0.9.4 // indirect
-	github.com/goccy/go-yaml v1.11.2
 	github.com/gtank/merlin v0.1.1
-	github.com/ipfs/boxo v0.16.0
+	github.com/ipfs/boxo v0.16.0 // indirect
 	github.com/ipfs/kubo v0.25.0
 	github.com/multiformats/go-multibase v0.2.0 // indirect
 	github.com/multiformats/go-varint v0.0.7 // indirect
@@ -46,8 +43,8 @@ require (
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
 	golang.org/x/crypto v0.16.0
-	google.golang.org/protobuf v1.31.0
-	lukechampine.com/blake3 v1.2.1
+	google.golang.org/protobuf v1.31.0 // indirect
+	lukechampine.com/blake3 v1.2.1 // indirect
 )
 
 require (
@@ -246,7 +243,6 @@ require (
 	golang.org/x/term v0.15.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/tools v0.16.0 // indirect
-	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	gonum.org/v1/gonum v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20231012201019-e917dd12ba7a // indirect
