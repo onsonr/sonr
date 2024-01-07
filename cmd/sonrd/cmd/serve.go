@@ -18,7 +18,7 @@ func ServeCommand() *cobra.Command {
 	return cmd
 }
 
-func serveGateway(cmd *cobra.Command, args []string) {
+func serveGateway(_ *cobra.Command, _ []string) {
 	// 1. Read config from file
 
 	// 2. Check reachable to enabled services
