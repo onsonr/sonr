@@ -106,6 +106,10 @@ templ sseTest() {
       Contents of this box will be updated in real time
       with every SSE message received from the chatroom.
   </div>
+  <div hx-ext="sse" sse-connect="/events/channel-2" sse-swap="message">
+      Contents of this box will be updated in real time
+      with every SSE message received from the chatroom.
+  </div>
 }
 
 templ form() {
