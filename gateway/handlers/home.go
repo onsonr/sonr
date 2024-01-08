@@ -10,7 +10,7 @@ import (
 type HomeHandler struct {
 }
 
-func (b HomeHandler) ViewHome(w http.ResponseWriter, r *http.Request) {
+func (b HomeHandler) ViewPage(w http.ResponseWriter, r *http.Request) {
 	err := views.Home("test").Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
