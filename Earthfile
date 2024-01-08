@@ -36,13 +36,22 @@ build:
     FROM +deps
     ARG version=$EARTHLY_GIT_REFS
     ARG commit=$EARTHLY_BUILD_SHA
-    ARG out=bin/sonrd
 
     COPY . .
     RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o /usr/bin/sonrd ./cmd/sonrd/main.go
-    SAVE ARTIFACT /usr/bin/sonrd AS LOCAL $out
+    SAVE ARTIFACT /usr/bin/sonrd AS LOCAL bin/sonrd
 
-# runner - builds the docker image
+# docker - builds the binary cmd docker image
+docker:
+    FROM +build
+    ARG tag=latest
+    ARG commit=$EARTHLY_BUILD_SHA
+    ARG version=$EARTHLY_GIT_REFS
+    COPY +build/sonrd sonrd
+    ENTRYPOINT [ "/chain/sonrd" ]
+    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
+
+# runner - builds the runner docker image
 runner:
     FROM gcr.io/distroless/static-debian11
     ARG tag=latest
@@ -51,7 +60,7 @@ runner:
     EXPOSE 1317
     EXPOSE 26656
     EXPOSE 9090
-    SAVE IMAGE --push sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
+    SAVE IMAGE sonrhq/sonrd:$tag-runner ghcr.io/sonrhq/sonrd:$tag-runner sonrd:$tag-runner
 
 # test - runs tests on x/identity and x/service
 test:

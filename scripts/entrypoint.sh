@@ -6,7 +6,7 @@ MONIKER="florence"
 KEYALGO="secp256k1"
 KEYRING="test"
 LOGLEVEL="info"
-R
+
 
 # remove existing daemon
 rm -rf $HOME/.sonr

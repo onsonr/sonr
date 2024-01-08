@@ -3,11 +3,13 @@ package context
 import (
 	"context"
 
+	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/ipfs/kubo/client/rpc"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 type SonrContext struct {
-	// BlockchainClient is the client for the gRPC blockchain endpoint.
 
 	// IPFSClient is the client for the IPFS endpoint.
 	IPFSClient *rpc.HttpApi
@@ -27,4 +29,19 @@ func New(ctx context.Context) (*SonrContext, error) {
 		IPFSClient: ipfsC,
         Context: ctx,
 	}, nil
+}
+
+func (c *SonrContext) getGrpcConn() (*grpc.ClientConn, error) {
+	 // Create a connection to the gRPC server.
+    grpcConn, err := grpc.Dial(
+        "127.0.0.1:9090", // your gRPC server address.
+        grpc.WithTransportCredentials(insecure.NewCredentials()), // The Cosmos SDK doesn't support any transport security mechanism.
+        // This instantiates a general gRPC codec which handles proto bytes. We pass in a nil interface registry
+        // if the request/response types contain interface instead of 'nil' you should pass the application specific codec.
+        grpc.WithDefaultCallOptions(grpc.ForceCodec(codec.NewProtoCodec(nil).GRPCCodec())),
+    )
+    if err != nil {
+        return nil, err
+    }
+	return grpcConn, nil
 }

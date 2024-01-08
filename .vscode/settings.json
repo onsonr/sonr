@@ -1,5 +1,5 @@
 {
-	"explorer.excludeGitIgnore": false,
+	"explorer.excludeGitIgnore": true,
 	"editor.formatOnSave": true,
 	"[templ]": {
 		"editor.defaultFormatter": "a-h.templ"
@@ -25,7 +25,6 @@
 		"**/.project": true,
 		"**/.settings": true,
 		"**/largeFolder": true,
-		"**/**_templ.go": false,
 		"**/pubspec.lock": true,
 		"**pubspec.lock": true,
 		"app.iml": true,
@@ -54,5 +53,6 @@
 		"**/go.work.sum": true,
 		"**/go.sum": true,
 		"**/**.pb.go": true,
+		"**/**_templ.go": true,
 	}
 }

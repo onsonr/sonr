@@ -8,7 +8,7 @@ import (
 
 type MiddlewareOpts func(*Middleware)
 
-func NewMiddleware(next http.Handler, opts ...MiddlewareOpts) http.Handler {
+func SetSessionMiddleWare(next http.Handler, opts ...MiddlewareOpts) http.Handler {
 	mw := Middleware{
 		Next:     next,
 		Secure:   true,

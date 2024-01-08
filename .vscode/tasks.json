@@ -1,41 +1,35 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-			{
-				"label": "Serve",
-				"dependsOn": [
-					"Dev Run: Serve Node",
-					"Dev Run: Serve Gateway"
-				]
+		{
+			"label": "Run: Dev Serve",
+			"options": {
+				"cwd": "${workspaceFolder}"
 			},
-			{
-				"type": "shell",
-				"label": "Dev Run: Serve Node",
-				"command": "task start",
-				"isBackground": true,
-				"options": {
-					"cwd": "${workspaceFolder}"
-				},
-				"icon": {
-					"id": "play-circle",
-					"color": "terminal.ansiWhite"
-				},
-				"detail": "task start",
-				"problemMatcher": [],
-				"presentation": {
-					"echo": true,
-					"reveal": "always",
-					"revealProblems": "onProblem",
-					"focus": true,
-					"panel": "shared",
-					"showReuseMessage": true,
-					"group": "Dev Serve"
-				}
+			"dependsOn": [
+				"Dev: Node",
+				"Dev: Gateway"
+			],
+			"icon": {
+				"id": "play-circle",
+				"color": "terminal.ansiWhite"
 			},
-			{
+			"detail": "task dev",
+			"problemMatcher": [],
+			"presentation": {
+				"clear": true,
+				"close": true,
+				"echo": false,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+			}
+		},
+		{
 			"type": "shell",
-			"label": "Dev Run: Serve Gateway",
-			"command": "task serve",
+			"label": "Dev: Node",
+			"command": "task dev:node",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -44,7 +38,31 @@
 				"id": "play-circle",
 				"color": "terminal.ansiWhite"
 			},
-			"detail": "task serve",
+			"detail": "dev:node",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"group": "Dev Serve"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Dev: Gateway",
+			"command": "task dev:gateway",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "play-circle",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "dev:gateway",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -59,7 +77,7 @@
 		{
 			"label": "Build: Node Binary",
 			"type": "shell",
-			"command": "earthly --no-sat +docker",
+			"command": "task build",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
