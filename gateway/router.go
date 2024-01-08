@@ -26,7 +26,7 @@ func Start() {
         go func() {
             for {
                 s.SendMessage("/events/channel-1", sse.SimpleMessage(time.Now().Format("2006/02/01/ 15:04:05")))
-                time.Sleep(5 * time.Second)
+                time.Sleep(1 * time.Second)
             }
         }()
 
@@ -35,7 +35,7 @@ func Start() {
             for {
                 i++
                 s.SendMessage("/events/channel-2", sse.SimpleMessage(strconv.Itoa(i)))
-                time.Sleep(5 * time.Second)
+                time.Sleep(1 * time.Second)
             }
         }()
     handlers.RegisterGateway(r)
