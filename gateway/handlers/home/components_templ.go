@@ -188,7 +188,7 @@ func navbar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <img class=\"h-8 w-auto\" src=\"https://tailwindui.com/img/logos/mark.svg?color=indigo&amp;shade=400\" alt=\"\"></a></div><div class=\"flex lg:hidden\"><button type=\"button\" class=\"-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-300\"><span class=\"sr-only\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <img class=\"h-8 w-auto\" src=\"https://cdn.sonr.io/mark/primary.svg\" alt=\"Sonr Logo\"></a></div><div class=\"flex lg:hidden\"><button type=\"button\" class=\"-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-300\"><span class=\"sr-only\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -292,7 +292,7 @@ func appbar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <sl-breadcrumb-item><img class=\"h-10 w-auto pr-3\" src=\"https://tailwindui.com/img/logos/mark.svg?color=indigo&amp;shade=400\" alt=\"\"></sl-breadcrumb-item> <sl-breadcrumb-item><sl-dropdown><sl-button class=\"text-stone-500\" variant=\"text\" slot=\"trigger\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span> <sl-breadcrumb-item><img class=\"h-8 w-auto pr-2.5\" src=\"https://cdn.sonr.io/mark/primary.svg\" alt=\"Sonr Logo\"></sl-breadcrumb-item> <sl-breadcrumb-item><sl-dropdown><sl-button class=\"text-stone-500\" variant=\"text\" slot=\"trigger\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -301,7 +301,7 @@ func appbar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-button> <sl-menu><sl-menu-item>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-button> <sl-menu class=\"bg-stone-900 rounded-md\"><sl-menu-item>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -373,7 +373,7 @@ func appbar() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-button> <sl-menu><sl-menu-item>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-button> <sl-menu class=\"bg-stone-900 rounded-md\"><sl-menu-item>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -460,7 +460,7 @@ func tabbar() templ.Component {
 			templ_7745c5c3_Var42 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-tab-group size=\"small\" class=\"py-1 px-0.5\"><sl-tab class=\"text-md\" slot=\"nav\" panel=\"general\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-tab-group size=\"small\" class=\"py-1\"><sl-tab class=\"text-md\" slot=\"nav\" panel=\"general\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

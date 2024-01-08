@@ -55,7 +55,7 @@ templ navbar() {
 			<div class="flex lg:flex-1">
 				<a href="/" target="_self" class="-m-1.5 p-1.5">
 					<span class="sr-only">Your Company</span>
-					<img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=400" alt=""/>
+					<img class="h-8 w-auto" src="https://cdn.sonr.io/mark/primary.svg" alt="Sonr Logo" />
 				</a>
 			</div>
 			<div class="flex lg:hidden">
@@ -87,11 +87,11 @@ templ appbar() {
 	<div class="flex flex-row justify-between px-2 py-1.5 w-full h-10">
 		<sl-breadcrumb class="text-xl font-medium text-gray-100 px-0.5">
 			<span slot="separator" class="text-lg font-medium">/</span>
-			<sl-breadcrumb-item><img class="h-10 w-auto pr-3" src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=400" alt=""/></sl-breadcrumb-item>
+			<sl-breadcrumb-item><img class="h-8 w-auto pr-2.5" src="https://cdn.sonr.io/mark/primary.svg" alt="Sonr Logo"/></sl-breadcrumb-item>
 			<sl-breadcrumb-item>
 				<sl-dropdown>
 					<sl-button class="text-stone-500" variant="text" slot="trigger">Network</sl-button>
-					<sl-menu>
+					<sl-menu class="bg-stone-900 rounded-md">
 						<sl-menu-item>Dropdown Item 1</sl-menu-item>
 						<sl-menu-item>Dropdown Item 2</sl-menu-item>
 						<sl-menu-item>Dropdown Item 3</sl-menu-item>
@@ -113,7 +113,7 @@ templ appbar() {
 			<sl-breadcrumb-item>
 				<sl-dropdown>
 					<sl-button class="text-stone-500" variant="text" slot="trigger" caret>Address</sl-button>
-					<sl-menu>
+					<sl-menu class="bg-stone-900 rounded-md">
 						<sl-menu-item>Dropdown Item 1</sl-menu-item>
 						<sl-menu-item>Dropdown Item 2</sl-menu-item>
 						<sl-menu-item>Dropdown Item 3</sl-menu-item>
@@ -138,7 +138,7 @@ templ appbar() {
 }
 
 templ tabbar() {
-	<sl-tab-group size="small" class="py-1 px-0.5">
+	<sl-tab-group size="small" class="py-1">
 		<sl-tab class="text-md" slot="nav" panel="general">Overview</sl-tab>
 		<sl-tab class="text-md" slot="nav" panel="custom">Assets</sl-tab>
 		<sl-tab class="text-md" slot="nav" panel="advanced">History</sl-tab>
