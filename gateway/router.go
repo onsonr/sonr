@@ -17,6 +17,7 @@ import (
 func Start() {
     r := chi.NewRouter()
 	r.Use(middleware.Compress(10))
+    r.Use(middleware.Logger)
 
 	s := sse.NewServer(nil)
 	defer s.Shutdown()
@@ -37,8 +38,6 @@ func Start() {
                 time.Sleep(5 * time.Second)
             }
         }()
-
-    r.Use(middleware.Logger)
     handlers.RegisterGateway(r)
     identity.RegisterGateway(r)
     service.RegisterGateway(r)
