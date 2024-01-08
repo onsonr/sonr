@@ -31,11 +31,11 @@ tasks:
 
   dev:gateway:
    cmds:
-    - air -c ./build/dev/air-gateway.toml
+    - air -c ./build/local/air-gateway.toml
 
   dev:node:
    cmds:
-    - air -c ./build/dev/air-node.toml
+    - air -c ./build/local/air-node.toml
 
   dev:
    cmd: tmux new-session -d 'task dev:node' \; split-window -h 'task dev:gateway' \; attach
