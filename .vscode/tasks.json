@@ -1,18 +1,50 @@
 {
 	"version": "2.0.0",
 	"tasks": [
-		{
+			{
+				"label": "Serve",
+				"dependsOn": [
+					"Dev Run: Serve Node",
+					"Dev Run: Serve Gateway"
+				]
+			},
+			{
+				"type": "shell",
+				"label": "Dev Run: Serve Node",
+				"command": "task start",
+				"isBackground": true,
+				"options": {
+					"cwd": "${workspaceFolder}"
+				},
+				"icon": {
+					"id": "play-circle",
+					"color": "terminal.ansiWhite"
+				},
+				"detail": "task start",
+				"problemMatcher": [],
+				"presentation": {
+					"echo": true,
+					"reveal": "always",
+					"revealProblems": "onProblem",
+					"focus": true,
+					"panel": "shared",
+					"showReuseMessage": true,
+					"group": "Dev Serve"
+				}
+			},
+			{
 			"type": "shell",
-			"label": "Generate: Common Proto",
-			"command": "sh ./scripts/protocgen.sh",
+			"label": "Dev Run: Serve Gateway",
+			"command": "task serve",
+			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "settings-gear",
+				"id": "play-circle",
 				"color": "terminal.ansiWhite"
 			},
-			"detail": "Build monorepo common protobuf files",
+			"detail": "task serve",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -21,7 +53,7 @@
 				"focus": true,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"group": "root"
+				"group": "Dev Serve"
 			}
 		},
 		{
@@ -46,32 +78,6 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"close": true,
-				"group": "chain"
-			}
-		},
-		{
-			"label": "Run: Local Node",
-			"type": "shell",
-			"command": "make run",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiBlue"
-			},
-			"detail": "Run local chain node",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "dedicated",
-				"clear": true,
-				"showReuseMessage": true,
-				"close": false,
 				"group": "chain"
 			}
 		},

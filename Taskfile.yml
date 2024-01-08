@@ -22,3 +22,12 @@ tasks:
   generate:
    cmds:
     - earthly --no-sat +templates
+
+  serve:
+   cmds:
+    - go install github.com/cosmtrek/air@latest
+    - air -c ./build/dev/air-gateway.toml
+
+  start:
+   cmds:
+    - air -c ./build/dev/air-node.toml

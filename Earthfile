@@ -8,6 +8,7 @@ IMPORT ../identity AS identity
 IMPORT ../service AS service
 WORKDIR /chain
 # ---------------------------------------------------------------------
+
 # deps - downloads dependencies
 deps:
     RUN apk add --update --no-cache \
@@ -26,6 +27,7 @@ deps:
     COPY go.mod go.sum ./
     RUN go mod download
     RUN go install github.com/a-h/templ/cmd/templ@latest
+    RUN go install github.com/cosmtrek/air@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
@@ -34,10 +36,11 @@ build:
     FROM +deps
     ARG version=$EARTHLY_GIT_REFS
     ARG commit=$EARTHLY_BUILD_SHA
+    ARG out=bin/sonrd
 
     COPY . .
     RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o /usr/bin/sonrd ./cmd/sonrd/main.go
-    SAVE ARTIFACT /usr/bin/sonrd AS LOCAL bin/sonrd
+    SAVE ARTIFACT /usr/bin/sonrd AS LOCAL $out
 
 # runner - builds the docker image
 runner:
