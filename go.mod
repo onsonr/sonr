@@ -48,6 +48,7 @@ require (
 )
 
 require (
+	github.com/alexandrevicenzi/go-sse v1.6.0
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/pterm/pterm v0.12.74
 	google.golang.org/grpc v1.60.1

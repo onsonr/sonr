@@ -1,4 +1,4 @@
-package explorer
+package search
 
 import (
 	"github.com/go-chi/chi/v5"

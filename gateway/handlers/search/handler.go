@@ -1,4 +1,4 @@
-package explorer
+package search
 
 import (
 	"net/http"
@@ -7,7 +7,7 @@ type Handler struct {
 }
 
 func (b Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
-	err := Home().Render(r.Context(), w)
+	err := Explorer().Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
