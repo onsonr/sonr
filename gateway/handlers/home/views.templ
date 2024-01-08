@@ -2,13 +2,34 @@ package home
 
 templ Home() {
 	<html class="sl-theme-dark">
-	@head()
+		@head()
 		<body hx-ext="shoelace" class="theme-dark">
-		@navbar()
-		@hero()
-		@sseTest()
-		@form()
-    	@footer()
+			@navbar()
+			@hero()
+			@features()
+			@footer()
+		</body>
+	</html>
+}
+
+templ App() {
+	<html class="sl-theme-dark">
+		@head()
+		<body hx-ext="shoelace" class="theme-dark">
+			@appbar()
+			@tabbar()
+			@footer()
+		</body>
+	</html>
+}
+
+templ Explorer() {
+	<html class="sl-theme-dark">
+		@head()
+		<body hx-ext="shoelace" class="theme-dark">
+			@appbar()
+			@tabbar()
+			@footer()
 		</body>
 	</html>
 }

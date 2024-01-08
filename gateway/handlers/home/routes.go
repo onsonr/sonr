@@ -6,7 +6,9 @@ import (
 
 func Routes() chi.Router {
     r := chi.NewRouter()
-    bookHandler := Handler{}
-    r.Get("/", bookHandler.IndexPage)
+    homeHandler := Handler{}
+    r.Get("/", homeHandler.IndexPage)
+    r.Get("/app", homeHandler.AppPage)
+    r.Get("/explorer", homeHandler.AppPage)
     return r
 }

@@ -1,37 +1,12 @@
-package context
+package modules
 
 import (
-	"context"
-
 	"github.com/cosmos/cosmos-sdk/codec"
-	"github.com/ipfs/kubo/client/rpc"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-type SonrContext struct {
-
-	// IPFSClient is the client for the IPFS endpoint.
-	IPFSClient *rpc.HttpApi
-
-	// MatrixClient is the client for the Matrix endpoint.
-
-	// Context is the context for the request.
-    Context context.Context
-}
-
-func New(ctx context.Context) (*SonrContext, error) {
-	ipfsC, err := rpc.NewLocalApi()
-	if err != nil {
-		return nil, err
-	}
-	return &SonrContext{
-		IPFSClient: ipfsC,
-        Context: ctx,
-	}, nil
-}
-
-func GetGrpcConn() (*grpc.ClientConn, error) {
+func getGrpcConn() (*grpc.ClientConn, error) {
 	 // Create a connection to the gRPC server.
     grpcConn, err := grpc.Dial(
         "127.0.0.1:9090", // your gRPC server address.
