@@ -11,15 +11,20 @@ import (
 	"github.com/sonrhq/identity"
 	"github.com/sonrhq/service"
 
-	"github.com/sonrhq/sonr/gateway/handlers"
+	"github.com/sonrhq/sonr/gateway/handlers/home"
+	"github.com/sonrhq/sonr/gateway/handlers/search"
 )
 
 func Start() {
-    r := chi.NewRouter()
+	r := chi.NewRouter()
 	r.Use(chimdw.Compress(10))
-    r.Use(chimdw.Logger)
-    handlers.RegisterGateway(r)
-    identity.RegisterGateway(r)
-    service.RegisterGateway(r)
-    http.ListenAndServe(":8080", r)
+	r.Use(chimdw.RequestID)
+	r.Use(chimdw.RealIP)
+	r.Use(chimdw.Logger)
+	r.Use(chimdw.Recoverer)
+    r.Mount("/", home.Routes())
+	r.Mount("/search", search.Routes())
+	identity.RegisterGateway(r)
+	service.RegisterGateway(r)
+	http.ListenAndServe(":8080", r)
 }
