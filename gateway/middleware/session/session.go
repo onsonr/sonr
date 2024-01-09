@@ -1,4 +1,4 @@
-package middleware
+package session
 
 import (
 	"net/http"
