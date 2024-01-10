@@ -1,38 +1,33 @@
-package session
+package middleware
 
 import (
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
+	chimdw "github.com/go-chi/chi/v5/middleware"
 	"github.com/segmentio/ksuid"
 )
 
-type MiddlewareOpts func(*Middleware)
+// UseDefaults adds chi provided middleware libraries to the router.
+func UseDefaults(r *chi.Mux) {
+    r.Use(chimdw.Compress(10))
+	r.Use(chimdw.RequestID)
+	r.Use(chimdw.RealIP)
+	r.Use(chimdw.Logger)
+	r.Use(chimdw.Recoverer)
+}
 
-func SetSessionMiddleWare(next http.Handler, opts ...MiddlewareOpts) http.Handler {
-	mw := Middleware{
+
+func Session(next http.Handler) http.Handler {
+	mw := SessionMiddleware{
 		Next:     next,
 		Secure:   true,
 		HTTPOnly: true,
 	}
-	for _, opt := range opts {
-		opt(&mw)
-	}
 	return mw
 }
 
-func WithSecure(secure bool) MiddlewareOpts {
-	return func(m *Middleware) {
-		m.Secure = secure
-	}
-}
-
-func WithHTTPOnly(httpOnly bool) MiddlewareOpts {
-	return func(m *Middleware) {
-		m.HTTPOnly = httpOnly
-	}
-}
-
-type Middleware struct {
+type SessionMiddleware struct {
 	Next     http.Handler
 	Secure   bool
 	HTTPOnly bool
@@ -46,7 +41,7 @@ func ID(r *http.Request) (id string) {
 	return cookie.Value
 }
 
-func (mw Middleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (mw SessionMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// s := sse.NewServer(nil)
 	// defer s.Shutdown()

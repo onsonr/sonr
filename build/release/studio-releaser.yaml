@@ -1,0 +1,114 @@
+project_name: sonr-studio
+builds:
+  # Build - Linux
+  - id: sonrd
+    main: cmd/sonrd/main.go
+    binary: sonrd
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .Commit }}
+      - -w -s
+
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                                Tarball Archives                                ||
+# ! ||--------------------------------------------------------------------------------||
+archives:
+  - id: zipped
+    builds:
+      - sonrd
+    name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+checksum:
+  name_template: sha256sum.txt
+  algorithm: sha256
+
+# ! ||--------------------------------------------------------------------------------||
+# ! ||                              Release and Changelog                             ||
+# ! ||--------------------------------------------------------------------------------||
+release:
+  github:
+    owner: sonrhq
+    name: sonr
+  footer: |
+    ## Installation
+
+    Run the following command to install sonrd:
+
+    ```bash
+    curl -L https://github.com/sonrhq/sonr/releases/latest/download/install.sh | sh
+    ```
+
+    ### ⚡️ Binaries
+
+    Binaries for Linux and Darwin (amd64 and arm64) are available below.
+    Darwin users can also use the same universal binary `sonrd-{{ .Version }}-darwin-all` for both amd64 and arm64.
+
+    ### 🔨 Build from source
+
+    If you prefer to build from source, you can use the following commands:
+
+    ````bash
+    git clone https://github.com/sonrhq/sonr
+    cd core && git checkout v{{ .Version }}
+    make install
+    # Then run sonrd
+    sonrd version
+    # v{{ .Version }}
+    ````
+
+    ### 🐳 Run with Docker
+
+    As an alternative to installing and running sonrd on your system, you may run sonrd in a Docker container.
+    The following Docker images are available in our registry:
+
+    | Image Name                               | Base                                 | Description                       | Registry Source                                     |
+    |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
+    | `sonrhq/faucet:{{ .Version }}`           | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
+
+    Example run:
+
+    ```bash
+    docker run sonr-io/sonrd:{{ .Version }} version
+    # v{{ .Version }}
+    ````
+
+    All the images support `amd64` architectures.
+
+  name_template: "Sonr - v{{.Version}} 🆔"
+  mode: replace
+  draft: false
+  extra_files:
+    - glob: scripts/install.sh
+
+changelog:
+  sort: asc
+  abbrev: -1
+  groups:
+    - title: Features
+      regexp: .*?feat\(.*\):.*$
+      order: 0
+    - title: Documentation
+      regexp: .*?docs\(.*\):.*$
+      order: 1
+    - title: Fixes
+      regexp: .*?fix\(.*\):.*$
+      order: 2
+    - title: Misc
+      regexp: .*?chore\(.*\):.*$
+      order: 3
+    - title: Others
+      order: 999
+
+sboms:
+  - artifacts: archive

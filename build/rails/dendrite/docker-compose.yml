@@ -3,15 +3,6 @@ networks:
   tunnel:
 
 services:
-  # Cloudflared Reverse Proxy
-  cloudflared:
-    image: erisamoe/cloudflared
-    command: tunnel run
-    environment:
-      - TUNNEL_TOKEN=${MATRIX_TUNNEL_TOKEN}
-    networks:
-      - tunnel
-
   # Matrix Homeserver
   dendrite:
     init: true
