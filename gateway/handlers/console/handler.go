@@ -1,10 +1,11 @@
-package home
+package console
 
 import (
 	"net/http"
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 
+	console_ui "github.com/sonrhq/sonr/gateway/handlers/console/ui"
 	"github.com/sonrhq/sonr/pkg/context"
 )
 
@@ -12,21 +13,7 @@ type Handler struct {
 }
 
 func (b Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
-	err := Home().Render(r.Context(), w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func (b Handler) AppPage(w http.ResponseWriter, r *http.Request) {
-	err := App().Render(r.Context(), w)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-func (b Handler) ExplorerPage(w http.ResponseWriter, r *http.Request) {
-	err := Explorer().Render(r.Context(), w)
+	err := console_ui.App().Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

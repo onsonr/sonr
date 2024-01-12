@@ -1,4 +1,4 @@
-package home
+package landing_ui
 
 templ head() {
 	<head>
@@ -77,79 +77,11 @@ templ navbar() {
 				<sl-dialog label="Dialog" class="dialog-focus" hx-get="/dialog-content" hx-swap="outerHTML">
 					Test Content
   				</sl-dialog>
-				<sl-button hx-get="/dialog-content" hx-target="#dialog" hx-swap="outerHTML">Login</sl-button>
+				<sl-button href="/console">Login</sl-button>
 			</div>
 		</nav>
 		@mobilemenu()
 	</header>
-}
-
-templ appbar() {
-	<div class="flex flex-row justify-between px-2 py-1.5 w-full h-10">
-		<sl-breadcrumb class="text-xl font-medium text-gray-100 px-0.5">
-			<span slot="separator" class="text-lg font-medium">/</span>
-			<sl-breadcrumb-item><img class="h-8 w-auto pr-2.5" src="https://cdn.sonr.io/mark/primary.svg" alt="Sonr Logo"/></sl-breadcrumb-item>
-			<sl-breadcrumb-item>
-				<sl-dropdown>
-					<sl-button class="text-stone-500" variant="text" slot="trigger">Network</sl-button>
-					<sl-menu class="bg-stone-900 rounded-md">
-						<sl-menu-item>Dropdown Item 1</sl-menu-item>
-						<sl-menu-item>Dropdown Item 2</sl-menu-item>
-						<sl-menu-item>Dropdown Item 3</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
-						<sl-menu-item disabled>Disabled</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item>
-							Prefix
-							<sl-icon slot="prefix" name="gift"></sl-icon>
-						</sl-menu-item>
-						<sl-menu-item>
-							Suffix Icon
-							<sl-icon slot="suffix" name="heart"></sl-icon>
-						</sl-menu-item>
-					</sl-menu>
-				</sl-dropdown>
-			</sl-breadcrumb-item>
-			<sl-breadcrumb-item>
-				<sl-dropdown>
-					<sl-button class="text-stone-500" variant="text" slot="trigger" caret>Address</sl-button>
-					<sl-menu class="bg-stone-900 rounded-md">
-						<sl-menu-item>Dropdown Item 1</sl-menu-item>
-						<sl-menu-item>Dropdown Item 2</sl-menu-item>
-						<sl-menu-item>Dropdown Item 3</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
-						<sl-menu-item disabled>Disabled</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item>
-							Prefix
-							<sl-icon slot="prefix" name="gift"></sl-icon>
-						</sl-menu-item>
-						<sl-menu-item>
-							Suffix Icon
-							<sl-icon slot="suffix" name="heart"></sl-icon>
-						</sl-menu-item>
-					</sl-menu>
-				</sl-dropdown>
-			</sl-breadcrumb-item>
-		</sl-breadcrumb>
-		<sl-avatar class="pr-2" alt="Your avatar" src="https://images.unsplash.com/"></sl-avatar>
-	</div>
-}
-
-templ tabbar() {
-	<sl-tab-group size="small" class="py-1">
-		<sl-tab class="text-md" slot="nav" panel="general">Overview</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="custom">Assets</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="advanced">History</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="disabled" disabled>Identity</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="disabled" disabled>Service</sl-tab>
-		<sl-tab-panel name="general">This is the general tab panel.</sl-tab-panel>
-		<sl-tab-panel name="custom">This is the custom tab panel.</sl-tab-panel>
-		<sl-tab-panel name="advanced">This is the advanced tab panel.</sl-tab-panel>
-		<sl-tab-panel name="disabled">This is a disabled tab panel.</sl-tab-panel>
-	</sl-tab-group>
 }
 
 templ hero() {

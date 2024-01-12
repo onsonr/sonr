@@ -1,4 +1,4 @@
-package search
+package landing
 
 import (
 	"github.com/go-chi/chi/v5"
@@ -6,7 +6,7 @@ import (
 
 func Routes() chi.Router {
     r := chi.NewRouter()
-    bookHandler := Handler{}
-    r.Get("/", bookHandler.IndexPage)
+    homeHandler := Handler{}
+    r.Get("/", homeHandler.IndexPage)
     return r
 }

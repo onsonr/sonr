@@ -1,13 +1,12 @@
-package search
+package explorer_ui
 
 templ Explorer() {
 	<html class="sl-theme-dark">
-	@head()
+		@head()
 		<body hx-ext="shoelace" class="theme-dark">
-		@navbar()
-		@hero()
-		@form()
-    @footer()
+			@appbar()
+			@tabbar()
+			@footer()
 		</body>
 	</html>
 }
