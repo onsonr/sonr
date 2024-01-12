@@ -51,6 +51,14 @@ docker:
     ENTRYPOINT [ "/chain/sonrd" ]
     SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
 
+# generate - generates all code from proto files
+generate:
+    FROM +deps
+    COPY . .
+    RUN sh ./scripts/protogen-orm.sh
+    SAVE ARTIFACT sonrhq/identity AS LOCAL api/identity
+    SAVE ARTIFACT proto AS LOCAL proto
+
 # runner - builds the runner docker image
 runner:
     FROM gcr.io/distroless/static-debian11
@@ -77,5 +85,3 @@ breaking:
 templates:
     LOCALLY
     RUN templ generate
-    BUILD identity+templates
-    BUILD service+templates
