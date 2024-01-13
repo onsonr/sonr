@@ -1,9 +1,23 @@
 package console_ui
 
 templ assetsPanel() {
+    @balancesHeader()
+
+    <sl-divider></sl-divider>
 	<div class="max-w-7xl mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch py-12 scrollbar-hide">
 	@balancesList()
 	@currentChainStatus()
+	</div>
+}
+
+templ balancesHeader() {
+	<div class="md:flex md:items-center md:justify-between py-16 max-w-7xl h-full mx-auto">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-2xl font-bold leading-7 text-stone-100 sm:truncate sm:text-3xl sm:tracking-tight">Balances</h2>
+		</div>
+		<div class="mt-4 flex md:ml-4 md:mt-0">
+			<button type="button" class="ml-3 inline-flex items-center rounded-md bg-stone-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600">Deposit</button>
+		</div>
 	</div>
 }
 
