@@ -1,9 +1,9 @@
 package console_ui
 
 templ historyPanel() {
-	<div class="w-full h-full max-w-screen mx-8">
+	<div class="w-full h-full max-w-screen px-8 space-y-4">
 	@historyHeader()
-		<div class="flex flex-col">
+		<div class="flex flex-col pt-4 space-y-2">
 			@historyFilterSidebar()
 		</div>
 	</div>
@@ -16,7 +16,7 @@ templ historyFilterSidebar() {
 }
 
 templ historyHeader() {
-	<div class="md:flex md:items-center md:justify-between">
+	<div class="md:flex md:items-center md:justify-between py-16 w-full h-full">
 		<div class="min-w-0 flex-1">
 			<h2 class="text-2xl font-bold leading-7 text-stone-100 sm:truncate sm:text-3xl sm:tracking-tight">History</h2>
 		</div>
