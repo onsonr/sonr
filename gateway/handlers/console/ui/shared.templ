@@ -1,0 +1,74 @@
+package console_ui
+
+templ head() {
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<script src="https://unpkg.com/htmx.org@1.8.4" integrity="sha384-wg5Y/JwF7VxGk4zLsJEcAojRtlVp1FKKdGy1qN+OMtdq72WRvX/EdRdqg/LOhYeV" crossorigin="anonymous"></script>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/dark.css"
+		/>
+		<script src="https://unpkg.com/htmx.org/dist/ext/sse.js"></script>
+		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"></script>
+		<link rel="icon" href="https://cdn.sonr.io/favicon.ico"/>
+		<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+		<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet"/>
+	</head>
+}
+
+templ appbar() {
+	<div class="flex flex-row justify-between px-2 py-1.5 w-full h-10">
+		<sl-breadcrumb class="text-xl font-medium text-stone-100 px-0.5">
+			<span slot="separator" class="text-lg font-medium">/</span>
+			<sl-breadcrumb-item><img class="h-8 w-auto pr-2.5" src="https://cdn.sonr.io/mark/primary.svg" alt="Sonr Logo"/></sl-breadcrumb-item>
+			<sl-breadcrumb-item>
+				<sl-dropdown>
+					<sl-button class="text-stone-500" variant="text" slot="trigger">Network</sl-button>
+					<sl-menu class="bg-stone-900 rounded-md">
+						<sl-menu-item>Dropdown Item 1</sl-menu-item>
+						<sl-menu-item>Dropdown Item 2</sl-menu-item>
+						<sl-menu-item>Dropdown Item 3</sl-menu-item>
+						<sl-divider></sl-divider>
+						<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
+					</sl-menu>
+				</sl-dropdown>
+			</sl-breadcrumb-item>
+		</sl-breadcrumb>
+		<sl-dropdown>
+			<sl-avatar class="pr-2" alt="Your avatar" src="https://images.unsplash.com/" slot="trigger"></sl-avatar>
+			<sl-menu class="bg-stone-900 rounded-md">
+				<sl-menu-item>Dropdown Item 1</sl-menu-item>
+				<sl-menu-item>Dropdown Item 2</sl-menu-item>
+				<sl-menu-item>Dropdown Item 3</sl-menu-item>
+				<sl-divider></sl-divider>
+				<sl-menu-item href="/">
+					Return Home
+					<sl-icon slot="prefix" name="house-door-fill"></sl-icon>
+				</sl-menu-item>
+			</sl-menu>
+		</sl-dropdown>
+	</div>
+}
+
+templ tabbar() {
+	<sl-tab-group size="small" class="py-1">
+		<sl-tab class="text-md" slot="nav" panel="overview">Overview</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="assets">Assets</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="history">History</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="identity" disabled>Identity</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="service" disabled>Service</sl-tab>
+		<sl-tab-panel name="overview">
+			@overviewPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="assets">
+			@assetsPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="history">
+		This is the advanced tab panel.
+		</sl-tab-panel>
+		<sl-tab-panel name="identity">This is a disabled tab panel.</sl-tab-panel>
+		<sl-tab-panel name="service">This is a disabled tab panel.</sl-tab-panel>
+	</sl-tab-group>
+}
