@@ -32,7 +32,7 @@ type SessionMiddleware struct {
 	HTTPOnly bool
 }
 
-func ID(r *http.Request) (id string) {
+func SessionID(r *http.Request) (id string) {
 	cookie, err := r.Cookie("sessionID")
 	if err != nil {
 		return
@@ -61,7 +61,7 @@ func (mw SessionMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	//         }
 	//     }()
 
-	id := ID(r)
+	id := SessionID(r)
 	if id == "" {
 		id = ksuid.New().String()
 		http.SetCookie(w, &http.Cookie{Name: "sessionID", Value: id, Secure: mw.Secure, HttpOnly: mw.HTTPOnly})

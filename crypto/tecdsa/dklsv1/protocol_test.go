@@ -9,8 +9,8 @@ package dklsv1
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/big"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -212,9 +212,9 @@ func TestDkgSignProto(t *testing.T) {
 // Breaking changes must consider downstream production impacts.
 func TestSignColdStart(t *testing.T) {
 	// Decode alice/bob state from file
-	aliceDkg, err := ioutil.ReadFile("testdata/alice-dkls-v1-dkg.bin")
+	aliceDkg, err := os.ReadFile("testdata/alice-dkls-v1-dkg.bin")
 	require.NoError(t, err)
-	bobDkg, err := ioutil.ReadFile("testdata/bob-dkls-v1-dkg.bin")
+	bobDkg, err := os.ReadFile("testdata/bob-dkls-v1-dkg.bin")
 	require.NoError(t, err)
 
 	// The choice of json marshaling is arbitrary, the binary could have been marshaled in other forms as well

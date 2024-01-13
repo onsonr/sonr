@@ -43,28 +43,6 @@ templ appbar() {
 					</sl-menu>
 				</sl-dropdown>
 			</sl-breadcrumb-item>
-			<sl-breadcrumb-item>
-				<sl-dropdown>
-					<sl-button class="text-stone-500" variant="text" slot="trigger" caret>Address</sl-button>
-					<sl-menu class="bg-stone-900 rounded-md">
-						<sl-menu-item>Dropdown Item 1</sl-menu-item>
-						<sl-menu-item>Dropdown Item 2</sl-menu-item>
-						<sl-menu-item>Dropdown Item 3</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
-						<sl-menu-item disabled>Disabled</sl-menu-item>
-						<sl-divider></sl-divider>
-						<sl-menu-item>
-							Prefix
-							<sl-icon slot="prefix" name="gift"></sl-icon>
-						</sl-menu-item>
-						<sl-menu-item>
-							Suffix Icon
-							<sl-icon slot="suffix" name="heart"></sl-icon>
-						</sl-menu-item>
-					</sl-menu>
-				</sl-dropdown>
-			</sl-breadcrumb-item>
 		</sl-breadcrumb>
 		<sl-avatar class="pr-2" alt="Your avatar" src="https://images.unsplash.com/"></sl-avatar>
 	</div>
@@ -85,7 +63,7 @@ templ tabbar() {
 }
 
 templ footer() {
-	<footer>
+	<footer class="absolute bottom-0 left-0 w-full h-16 pt-16">
 		<div class="mx-auto max-w-7xl overflow-hidden px-6 py-20 sm:py-24 lg:px-8">
 			<nav class="-mb-6 columns-2 sm:flex sm:justify-center sm:space-x-12" aria-label="Footer">
 				<div class="pb-6">
