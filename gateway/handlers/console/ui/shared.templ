@@ -53,20 +53,20 @@ templ appbar() {
 }
 
 templ tabbar() {
-	<sl-tab-group size="small" class="py-1">
+	<sl-tab-group size="small" class="py-1 sticky-top">
 		<sl-tab class="text-md" slot="nav" panel="overview">Overview</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="assets">Assets</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="balances">Balances</sl-tab>
 		<sl-tab class="text-md" slot="nav" panel="history">History</sl-tab>
 		<sl-tab class="text-md" slot="nav" panel="identity" disabled>Identity</sl-tab>
-		<sl-tab class="text-md" slot="nav" panel="service" disabled>Service</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="service" disabled>Services</sl-tab>
 		<sl-tab-panel name="overview">
 			@overviewPanel()
 		</sl-tab-panel>
-		<sl-tab-panel name="assets">
+		<sl-tab-panel name="balances">
 			@assetsPanel()
 		</sl-tab-panel>
 		<sl-tab-panel name="history">
-		This is the advanced tab panel.
+		@historyPanel()
 		</sl-tab-panel>
 		<sl-tab-panel name="identity">This is a disabled tab panel.</sl-tab-panel>
 		<sl-tab-panel name="service">This is a disabled tab panel.</sl-tab-panel>

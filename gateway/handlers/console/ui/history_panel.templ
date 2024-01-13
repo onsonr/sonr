@@ -1,4 +1,28 @@
 package console_ui
 
 templ historyPanel() {
+	<div class="w-full h-full max-w-screen mx-8">
+	@historyHeader()
+		<div class="flex flex-col">
+			@historyFilterSidebar()
+		</div>
+	</div>
+}
+
+templ historyFilterSidebar() {
+	<div class="flex shrink-0 h-full w-80 border-r-3 border-stone-400">
+		Filter:
+	</div>
+}
+
+templ historyHeader() {
+	<div class="md:flex md:items-center md:justify-between">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-2xl font-bold leading-7 text-stone-100 sm:truncate sm:text-3xl sm:tracking-tight">History</h2>
+		</div>
+		<div class="mt-4 flex md:ml-4 md:mt-0">
+			<button type="button" class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-stone-900 shadow-sm ring-1 ring-inset ring-stone-300 hover:bg-stone-50">Edit</button>
+			<button type="button" class="ml-3 inline-flex items-center rounded-md bg-stone-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600">Publish</button>
+		</div>
+	</div>
 }
