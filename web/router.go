@@ -5,8 +5,8 @@ import (
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/web/handlers/www/apps/console"
-	landing "github.com/sonrhq/sonr/web/handlers/www/apps/home"
+	"github.com/sonrhq/sonr/web/htmx/console"
+	landing "github.com/sonrhq/sonr/web/htmx/home"
 	"github.com/sonrhq/sonr/web/middleware"
 )
 

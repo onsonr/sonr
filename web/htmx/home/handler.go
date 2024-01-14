@@ -1,4 +1,4 @@
-package console
+package landing
 
 import (
 	"net/http"
@@ -6,13 +6,13 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 
 	"github.com/sonrhq/sonr/pkg/context"
-	console_ui "github.com/sonrhq/sonr/web/handlers/www/apps/console/ui"
+	landing_ui "github.com/sonrhq/sonr/web/htmx/home/ui"
 )
 
 type Handler struct{}
 
 func (b Handler) IndexPage(w http.ResponseWriter, r *http.Request) {
-	err := console_ui.App().Render(r.Context(), w)
+	err := landing_ui.Home().Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
