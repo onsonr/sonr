@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 
 	// _ "github.com/sonrhq/sonr/config"
-	"github.com/sonrhq/sonr/web"
+	"github.com/sonrhq/sonr/app/gateway"
 )
 
 func ServeCommand() *cobra.Command {

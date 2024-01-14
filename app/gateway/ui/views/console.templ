@@ -1,0 +1,38 @@
+package views
+
+import (
+"github.com/sonrhq/sonr/app/gateway/ui/components"
+"github.com/sonrhq/sonr/app/gateway/ui/shared"
+)
+
+templ ConsoleHome() {
+	<html class="sl-theme-dark">
+		@shared.Head()
+		<body hx-ext="shoelace" class="theme-dark scrollbar-hide">
+			@shared.ConsoleNavbar()
+			@ConsoleTabBar()
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+		</body>
+	</html>
+}
+
+templ ConsoleTabBar() {
+	<sl-tab-group size="small" class="py-1 sticky-top">
+		<sl-tab class="text-md" slot="nav" panel="overview">Overview</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="balances">Balances</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="history">History</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="identity" disabled>Identity</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="service" disabled>Services</sl-tab>
+		<sl-tab-panel name="overview">
+			@components.ConsoleOverviewPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="balances">
+			@components.ConsoleAssetsPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="history">
+			@components.ConsoleHistoryPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="identity">This is a disabled tab panel.</sl-tab-panel>
+		<sl-tab-panel name="service">This is a disabled tab panel.</sl-tab-panel>
+	</sl-tab-group>
+}

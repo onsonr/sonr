@@ -7,7 +7,7 @@ node_modules/
 package-lock.json
 package.json
 tmp
-
+**tmp**/
 dist
 bin
 .DS_Store
