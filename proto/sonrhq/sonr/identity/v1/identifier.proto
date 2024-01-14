@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrhq.identity.v1;
+package sonrhq.sonr.identity.v1;
 
 option go_package = "github.com/sonrhq/sonr/x/identity";
 
