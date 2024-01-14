@@ -11,7 +11,7 @@ import (
 func ServeCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "serve",
-		Short:                      "Serves the Sonr Highway Gateway",
+		Short:                      "Serves the Sonr Highway",
 		DisableFlagParsing:         false,
 		SuggestionsMinimumDistance: 2,
 		Run:                        serveGateway,

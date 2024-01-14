@@ -66,21 +66,6 @@ primary_region = "iad"
   port = 80
   force_https = true  # optional
 
-[[mounts]]
-  source = "data"
-  destination = "/data"
-  processes = ["app"]
-
-[[mounts]]
-  source = "data"
-  destination = "/data"
-  processes = ["app"]
-
-[[mounts]]
-  source = "data"
-  destination = "/data"
-  processes = ["app"]
-
 [[vm]]
   cpu_kind = "shared"
   cpus = 1
