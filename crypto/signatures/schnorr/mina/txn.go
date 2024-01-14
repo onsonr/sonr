@@ -11,7 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/btcsuite/btcutil/base58"
+	"github.com/cosmos/btcutil/base58"
 
 	"github.com/sonrhq/sonr/crypto/core/curves"
 )
@@ -138,7 +138,8 @@ func (txn *Transaction) UnmarshalJSON(input []byte) error {
 	if err != nil {
 		return err
 	}
-	if strType == "Payment" {
+	switch strType {
+	case "Payment":
 		b, ok := t.Body[1].(txnBodyPaymentJson)
 		if !ok {
 			return fmt.Errorf("unexpected type")
@@ -155,7 +156,7 @@ func (txn *Transaction) UnmarshalJSON(input []byte) error {
 		}
 		txn.FeePayerPk = feePayerPk
 		txn.ReceiverPk = receiverPk
-	} else if strType == "Stake_delegation" {
+	case "Stake_delegation":
 		bType, ok := t.Body[1].([2]interface{})
 		if !ok {
 			return fmt.Errorf("unexpected type")
@@ -184,7 +185,7 @@ func (txn *Transaction) UnmarshalJSON(input []byte) error {
 		} else {
 			return fmt.Errorf("unexpected type")
 		}
-	} else {
+	default:
 		return fmt.Errorf("unexpected type")
 	}
 	txn.Memo = string(memo[2 : 2+memo[1]])
