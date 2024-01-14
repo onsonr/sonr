@@ -8,12 +8,11 @@ import (
 )
 
 type SonrContext interface {
-	IPFSClient() *rpc.HttpApi
+	// IPFSClient() *rpc.HttpApi
 	GrpcConn() *grpc.ClientConn
 }
 
-type context struct {
-}
+type context struct{}
 
 func Get() SonrContext {
 	return &context{}
@@ -35,6 +34,7 @@ func (c *context) GrpcConn() *grpc.ClientConn {
 }
 
 func (c *context) IPFSClient() *rpc.HttpApi {
+	// The `IPFSClient()` function is a method of the `context` struct that returns an instance of the `rpc.HttpApi` type.
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
 		panic(err)
