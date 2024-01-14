@@ -47,14 +47,14 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     <th>Deps</th>
   </tr>
   <tr>
-    <th><code><a href="https://github.com/sonrhq/identity">x/identity</a></code></th>
+    <th><code><a href="https://github.com/sonrhq/sonr/x/identity">x/identity</a></code></th>
     <th colspan=4>
     The Sonr Identity module is responsible for managing DID based <br />
     accounts using the MPC Protocol - <a href="https://sonr.io/whitepaper">Docs</a>
     </th>
     <th>
-      <a href="https://github.com/sonrhq/identity/actions/workflows/ci.yml?query=branch%3Amaster++">
-        <img src="https://github.com/sonrhq/identity/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
+      <a href="https://github.com/sonrhq/sonr/x/identity/actions/workflows/ci.yml?query=branch%3Amaster++">
+        <img src="https://github.com/sonrhq/sonr/x/identity/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
       </a>
     </th>
     <th>
@@ -87,14 +87,14 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     </th>
   </tr>
   <tr>
-    <th><code><a href="https://github.com/sonrhq/service">x/service</a></code></th>
+    <th><code><a href="https://github.com/sonrhq/sonr/x/service">x/service</a></code></th>
     <th colspan=4>
     The Service module is responsible for DAO Application Service <br />
     Configurations, and Passkey authentication - <a href="https://sonr.io/whitepaper">Docs</a>
     </th>
     <th>
-      <a href="https://github.com/sonrhq/service/actions/workflows/ci.yml?query=branch%3Amaster++">
-        <img src="https://github.com/sonrhq/service/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
+      <a href="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml?query=branch%3Amaster++">
+        <img src="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
       </a>
     </th>
     <th colspan=2>

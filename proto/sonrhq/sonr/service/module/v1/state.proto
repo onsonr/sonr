@@ -1,0 +1,169 @@
+syntax = "proto3";
+
+package sonrhq.service.module.v1;
+
+import "cosmos/orm/v1/orm.proto";
+import "cosmos/orm/v1alpha1/schema.proto";
+
+// Module is the app config object of the module.
+// Learn more: https://docs.cosmos.network/main/building-modules/depinject
+message State {
+  option (cosmos.orm.v1alpha1.module_schema) = {
+    schema_file : {id : 1 proto_file_name : "service/module/v1/module.proto"}
+  };
+}
+
+// ServicePermissions is the specified permissions the application has with the
+// user's account.
+enum ServicePermissions {
+  // SERVICE_PERMISSIONS_BASE - off chain visibility
+  SERVICE_PERMISSIONS_BASE = 0;
+  // SERVICE_PERMISSIONS_READ - read access
+  SERVICE_PERMISSIONS_READ = 1;
+  // SERVICE_PERMISSIONS_WRITE - write access
+  SERVICE_PERMISSIONS_WRITE = 2;
+  // SERVICE_PERMISSIONS_OWN - ownership
+  SERVICE_PERMISSIONS_OWN = 3;
+}
+
+// ServiceRecord is the balance of an account.
+message ServiceRecord {
+  option (cosmos.orm.v1.table) = {
+    id : 1
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "origin" unique : true}
+    index : {id : 2 fields : "owner"}
+    index : {id : 3 fields : "name,owner" unique : true}
+    index : {id : 4 fields : "origin,owner" unique : true}
+  };
+
+  uint64 id = 1;
+  string origin = 2;
+  string name = 3;
+  string description = 4;
+  string owner = 5;
+  ServicePermissions permissions = 6;
+}
+
+// UserProfile is the total supply of the module.
+message UserProfile {
+  option (cosmos.orm.v1.table) = {
+    id : 2
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "origin"}
+    index : {id : 2 fields : "origin,handle" unique : true}
+  };
+
+  uint64 id = 1;
+  string origin = 2;
+  string handle = 3;
+  repeated uint64 linked_accounts = 4;
+  repeated uint64 linked_credentials = 5;
+}
+
+// Resource is the total supply of the module.
+message Resource {
+  option (cosmos.orm.v1.table) = {
+    id : 3
+    primary_key : {fields : "did,cid"}
+    index : {id : 1 fields : "cid" unique : true}
+    index : {id : 2 fields : "origin"}
+    index : {id : 3 fields : "origin,cid" unique : true}
+    index : {id : 4 fields : "owner"}
+    index : {id : 5 fields : "owner,cid" unique : true}
+    index : {id : 6 fields : "owner,origin,cid" unique : true}
+  };
+
+  // DID of the resource (i.e: did:sonr:abc1234/Qm1234)
+  string did = 1;
+
+  // CID of the resource (i.e: Qm1234)
+  string cid = 2;
+
+  // CID type of the resource (i.e: ipfs)
+  string cid_type = 3;
+
+  // Origin is the domain of the resource (i.e: "sonr.io")
+  string origin = 4;
+
+  // Owner is the UserProfile DID of the owner of the resource (i.e:
+  // did:sonr:abc1234)
+  string owner = 5;
+}
+
+// Property is the total supply of the module.
+message Property {
+  option (cosmos.orm.v1.table) = {
+    id : 4
+    primary_key : {fields : "did"}
+    index : {id : 1 fields : "origin,owner,key" unique : true}
+    index : {id : 2 fields : "owner,key"}
+    index : {id : 3 fields : "origin,key"}
+    index : {id : 4 fields : "origin,owner"}
+    index : {id : 5 fields : "owner"}
+    index : {id : 6 fields : "schema,key" unique : true}
+    index : {id : 7 fields : "schema,owner,key" unique : true}
+  };
+  // Did of the property (i.e: did:sonr:abc1234#name)
+  string did = 1;
+
+  // Key is the fragment of the property (i.e: name)
+  string key = 2;
+
+  // Value is the encrypted text of the property (i.e: "John Doe")
+  bytes value = 3;
+
+  // Origin is the domain of the property (i.e: "sonr.io")
+  string origin = 4;
+
+  // Schema is the schema of the property (i.e: "https://schema.org/name")
+  string schema = 5;
+
+  // Owner is the UserProfile DID of the owner of the property (i.e:
+  // did:sonr:abc1234)
+  string owner = 6;
+}
+
+// BaseParams is the total supply of the module.
+message BaseParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 5
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// ReadParams is the total supply of the module.
+message ReadParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 6
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// WriteParams is the total supply of the module.
+message WriteParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 7
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// OwnParams is the total supply of the module.
+message OwnParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 8
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
