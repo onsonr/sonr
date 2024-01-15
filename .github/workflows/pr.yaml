@@ -48,8 +48,10 @@ jobs:
       - uses: earthly/actions-setup@v1
         with:
           version: v0.7.10
-      - uses: actions/checkout@v4
-      - run: earthly --sat=tester +test
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.5'
+      - run: go test -v ./...
 
   build-test:
     name: Build for Target Platforms
@@ -66,7 +68,7 @@ jobs:
         uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: '1.21.5'
         env:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
