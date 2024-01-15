@@ -6,8 +6,8 @@ import (
 	"github.com/asynkron/protoactor-go/actor"
 
 	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
-	"github.com/sonrhq/sonr/x/identity/internal/shares"
-	"github.com/sonrhq/sonr/x/identity/internal/vfs"
+	"github.com/sonrhq/sonr/internal/shares"
+	"github.com/sonrhq/sonr/internal/vfs"
 )
 
 // Keychain is a local temp file system which spawns shares as proto actors

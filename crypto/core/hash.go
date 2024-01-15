@@ -71,7 +71,7 @@ func getParams(curve elliptic.Curve) (*Params, error) {
 			L:                 48,
 		}, nil
 	default:
-		return nil, fmt.Errorf("Not implemented: %s", curve.Params().Name)
+		return nil, fmt.Errorf("not implemented: %s", curve.Params().Name)
 	}
 }
 
@@ -126,7 +126,7 @@ func ExpandMessageXmd(f func() hash.Hash, msg, DST []byte, lenInBytes int) ([]by
 	// step 1
 	ell := int(math.Ceil(float64(lenInBytes) / float64(f().Size())))
 
-	//step 2
+	// step 2
 	if ell > 255 {
 		return nil, fmt.Errorf("ell > 255")
 	}

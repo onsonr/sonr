@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/sonr/x/identity/internal/keychain"
+	"github.com/sonrhq/sonr/internal/keychain"
 )
 
 func TestNewKeychain(t *testing.T) {
