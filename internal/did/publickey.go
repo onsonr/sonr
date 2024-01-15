@@ -1,4 +1,4 @@
-package coins
+package did
 
 import (
 	"github.com/okx/go-wallet-sdk/coins/cosmos"

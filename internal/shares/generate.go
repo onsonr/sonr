@@ -6,10 +6,10 @@ import (
 
 	"github.com/asynkron/protoactor-go/actor"
 
+	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
 	"github.com/sonrhq/sonr/crypto/core/curves"
 	"github.com/sonrhq/sonr/crypto/core/protocol"
 	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
 )
 
 type privateGen struct {
@@ -64,11 +64,11 @@ func (s *publicGen) Receive(context actor.Context) {
 
 func Generate(rootDir string, coinType modulev1.CoinType) (*actor.PID, *actor.PID, error) {
 	c := defaultOptions()
-	pub, err := ctx.SpawnNamed(actor.PropsFromProducer(c.ApplyPublicGen()), "public")
+	pub, err := ctx.SpawnNamed(c.ApplyPublicGen(), "public")
 	if err != nil {
 		return nil, nil, err
 	}
-	priv, err := ctx.SpawnNamed(actor.PropsFromProducer(c.ApplyPrivateGen(pub)), "private")
+	priv, err := ctx.SpawnNamed(c.ApplyPrivateGen(pub), "private")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -113,7 +113,7 @@ func WithOutputBytes(out []byte) SpawnOption {
 // ! ||-------------------------------------------------------------------------------||
 
 // ApplyPrivateGen applies the spawn options in order to create a private share actor
-func (c *options) ApplyPrivateGen(pubPid *actor.PID) func() actor.Actor {
+func (c *options) ApplyPrivateGen(pubPid *actor.PID) *actor.Props {
 	newFunc := func() actor.Actor {
 		p := &privateGen{
 			aliceDkg: dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
@@ -121,16 +121,16 @@ func (c *options) ApplyPrivateGen(pubPid *actor.PID) func() actor.Actor {
 		}
 		return p
 	}
-	return newFunc
+	return actor.PropsFromProducer(newFunc)
 }
 
 // ApplyPublicGen applies the spawn options in order to create a public share actor
-func (c *options) ApplyPublicGen() func() actor.Actor {
+func (c *options) ApplyPublicGen() *actor.Props {
 	newFunc := func() actor.Actor {
 		p := &publicGen{
 			bobDkg: dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
 		}
 		return p
 	}
-	return newFunc
+	return actor.PropsFromProducer(newFunc)
 }

@@ -1,4 +1,4 @@
-package coins
+package did
 
 import (
 	"fmt"
