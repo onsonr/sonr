@@ -55,4 +55,3 @@ jobs:
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,chore:Chore,init:Setup"
           COMMITTER: "Sonr Mind <team@sonr.io)"
           SUPPRESS_UNSCOPED: true
-          REGENERATE_COUNT: 12
