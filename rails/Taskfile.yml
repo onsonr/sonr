@@ -1,0 +1,30 @@
+version: '3'
+
+tasks:
+  build:
+    cmd: earthly --push --sat=builder +build
+    internal: true
+
+  ipfs:
+    dir: ./deploy/rails/kubo
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune ipfs
+
+  faucet:
+    dir: ./deploy/rails/faucet
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune faucet
+
+  matrix:
+    dir: ./deploy/rails/dendrite
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune matrix
+
+  testnet:
+    dir: ./deploy/network/testnet-1
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune testnet-1

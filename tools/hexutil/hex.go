@@ -1,4 +1,4 @@
-package util
+package hexutil
 
 import (
 	"encoding/hex"
