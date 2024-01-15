@@ -60,25 +60,8 @@ generate:
     RUN sh ./scripts/protocgen-docs.sh
     SAVE ARTIFACT docs AS LOCAL docs
 
-# templates - generates all templates from templates
-templates:
-    LOCALLY
-    RUN templ generate
-
-# lint - lints the protobuf files
-lint:
-    LOCALLY
-    RUN make proto-format
-    RUN make proto-lint
-
 # test - runs all tests
 test:
     FROM +repo
     COPY . .
 	RUN go test -v ./...
-
-# breaking - runs buf change detection
-breaking:
-    FROM +deps
-    COPY . .
-    RUN cd proto && buf breaking --against buf.build/sonrhq/service

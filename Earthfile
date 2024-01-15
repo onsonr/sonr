@@ -4,8 +4,6 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 
 FROM golang:1.21.5-alpine
-IMPORT ../identity AS identity
-IMPORT ../service AS service
 WORKDIR /chain
 # ---------------------------------------------------------------------
 
@@ -73,13 +71,11 @@ runner:
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
-    BUILD identity+test
-    BUILD service+test
+    RUN go test -v ./...
 
 # breaking - runs tests on x/identity and x/service with breaking changes
 breaking:
-    BUILD identity+breaking
-    BUILD service+breaking
+    RUN cd proto && buf breaking --against buf.build/sonrhq/sonr
 
 # templates - runs protogen, and templ generate on all modules and root
 templates:
