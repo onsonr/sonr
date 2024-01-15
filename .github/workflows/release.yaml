@@ -15,11 +15,6 @@ jobs:
     name: Deploy Testnet to Production
     environment: Testnet
     runs-on: gcp-instance-1
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
       - run: earthly sat wake builder
@@ -31,11 +26,6 @@ jobs:
     name: Deploy Rails to Production
     environment: Rails
     runs-on: gcp-instance-1
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
       - run: earthly sat wake builder
@@ -48,7 +38,6 @@ jobs:
       - run: task deploy:faucet
         env:
           FAUCET_TUNNEL_TOKEN: ${{ secrets.FAUCET_TUNNEL_TOKEN }}
-
 
   changelog:
     name: Generate Changelog
@@ -64,6 +53,6 @@ jobs:
           PATH: "CHANGELOG.md"
           COMMIT_MESSAGE: "docs: update release notes"
           TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,chore:Chore,init:Setup"
-          COMMITTER: "Sonr Mind <ai@sonr.io)"
+          COMMITTER: "Sonr Mind <team@sonr.io)"
           SUPPRESS_UNSCOPED: true
           REGENERATE_COUNT: 12
