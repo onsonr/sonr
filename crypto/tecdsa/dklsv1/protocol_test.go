@@ -364,3 +364,57 @@ func refreshV1(t *testing.T, curve *curves.Curve, aliceDkgResultMessage, bobDkgR
 
 	return aliceRefreshResultMessage, bobRefreshResultMessage
 }
+
+func BenchmarkDKGProto(b *testing.B) {
+	curveInstances := []*curves.Curve{
+		curves.K256(),
+		curves.P256(),
+	}
+	for _, curve := range curveInstances {
+		alice := NewAliceDkg(curve, protocol.Version1)
+		bob := NewBobDkg(curve, protocol.Version1)
+		aErr, bErr := runIteratedProtocol(bob, alice)
+
+		b.Run("both alice/bob complete simultaneously", func(t *testing.B) {
+			require.ErrorIs(t, aErr, protocol.ErrProtocolFinished)
+			require.ErrorIs(t, bErr, protocol.ErrProtocolFinished)
+		})
+
+		for i := 0; i < kos.Kappa; i++ {
+			if alice.Alice.Output().SeedOtResult.OneTimePadDecryptionKey[i] != bob.Bob.Output().SeedOtResult.OneTimePadEncryptionKeys[i][alice.Alice.Output().SeedOtResult.RandomChoiceBits[i]] {
+				b.Errorf("oblivious transfer is incorrect at index i=%v", i)
+			}
+		}
+
+		b.Run("Both parties produces identical composite pubkey", func(t *testing.B) {
+			require.True(t, alice.Alice.Output().PublicKey.Equal(bob.Bob.Output().PublicKey))
+		})
+
+		var aliceResult *dkg.AliceOutput
+		var bobResult *dkg.BobOutput
+		b.Run("alice produces valid result", func(t *testing.B) {
+			// Get the result
+			r, err := alice.Result(protocol.Version1)
+
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			aliceResult, err = DecodeAliceDkgResult(r)
+			require.NoError(t, err)
+		})
+		b.Run("bob produces valid result", func(t *testing.B) {
+			// Get the result
+			r, err := bob.Result(protocol.Version1)
+
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			bobResult, err = DecodeBobDkgResult(r)
+			require.NoError(t, err)
+		})
+
+		b.Run("alice/bob agree on pubkey", func(t *testing.B) {
+			require.Equal(t, aliceResult.PublicKey, bobResult.PublicKey)
+		})
+	}
+}
