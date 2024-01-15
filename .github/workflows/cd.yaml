@@ -10,8 +10,6 @@ on:
       - closed
     branches:
       - master
-  release:
-    types: [published]
 
 jobs:
   run-goreleaser:
