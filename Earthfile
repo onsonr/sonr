@@ -71,10 +71,13 @@ runner:
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
+    COPY . .
     RUN go test -v ./...
 
 # breaking - runs tests on x/identity and x/service with breaking changes
 breaking:
+    FROM +deps
+    COPY . .
     RUN cd proto && buf breaking --against buf.build/sonrhq/sonr
 
 # templates - runs protogen, and templ generate on all modules and root
