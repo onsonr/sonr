@@ -45,9 +45,9 @@ jobs:
       FORCE_COLOR: 1
       PR_NUMBER: ${{ github.event.number }}
     steps:
-      - uses: earthly/actions-setup@v1
+      - uses: actions/checkout@v4
         with:
-          version: v0.7.10
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version: '1.21.5'
@@ -64,8 +64,9 @@ jobs:
           - targetos: darwin
             arch: arm64
     steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
           go-version: '1.21.5'
