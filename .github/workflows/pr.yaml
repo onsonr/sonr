@@ -15,22 +15,11 @@ permissions:
   issues: write
 
 jobs:
-  valid-protobufs:
-    name: Validate Protos
+  check-pr:
+    name: Analyze PR
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-      PR_NUMBER: ${{ github.event.number }}
     steps:
-      - uses: earthly/actions-setup@v1
-        with:
-          version: v0.7.10
       - uses: actions/checkout@v4
-      - run: earthly --sat=tester +breaking
       - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"

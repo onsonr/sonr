@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - 'v*'
   pull_request:
     types:
       - closed
@@ -12,20 +10,23 @@ on:
       - master
 
 jobs:
-  run-goreleaser:
+  publish-release:
     name: Publish Release with GoReleaser
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.21.5'
+          go-version: '>=1.21'
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
       - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
