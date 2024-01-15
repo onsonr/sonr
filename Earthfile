@@ -26,6 +26,7 @@ deps:
     RUN go mod download
     RUN go install github.com/a-h/templ/cmd/templ@latest
     RUN go install github.com/cosmtrek/air@latest
+    RUN go install github.com/bufbuild/buf/cmd/buf@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
