@@ -1,13 +1,7 @@
-name: New Pull Request -> Run CI
+name: PR Added to Merge Queue -> Run CI
 
 on:
-  pull_request:
-    types: [opened, reopened, synchronize]
   merge_group:
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
-  cancel-in-progress: true
 
 permissions:
   contents: write
@@ -16,73 +10,71 @@ permissions:
   issues: write
 
 jobs:
-  run-lints:
-    name: Validate Protos
+  run-tests:
+    name: Run Go Tests
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
       FORCE_COLOR: 1
-      PR_NUMBER: ${{ github.event.number }}
     steps:
-      - uses: earthly/actions-setup@v1
-        with:
-          version: v0.7.10
       - uses: actions/checkout@v4
-      - run: earthly --sat=tester +breaking
-      - uses: actions/labeler@v4
         with:
-          repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.5'
+      - run: go test -v ./...
 
-  run-tests:
+  release-build-test:
     name: Run Tests
     runs-on: ubuntu-latest
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-      PR_NUMBER: ${{ github.event.number }}
     steps:
-      - uses: earthly/actions-setup@v1
-        with:
-          version: v0.7.10
       - uses: actions/checkout@v4
-      - run: earthly --sat=tester +test
-
-  build-test:
-    name: Build for Target Platforms
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [amd64, arm64]
-        targetos: [darwin, linux]
-        include:
-          - targetos: darwin
-            arch: arm64
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
-        env:
-          GOOS: ${{ matrix.targetos }}
-          GOARCH: ${{ matrix.arch }}
-      - name: Download Dependencies
-        run: go mod download
-      - run: go build -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/sonrd/main.go
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.5'
+      - run: go test -v ./...
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: build
 
   bump-tag-push:
     name: Bump Tag and Push
     runs-on: ubuntu-latest
-    needs: [run-tests, build-test]
-    if: github.event_name == 'merge_group'
+    needs: [run-tests, release-build-test]
     steps:
       - name: Bump version and push tag
         id: tag_version
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GH_ACTIONS_PAT }}
+
+  release-dry-run:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: [bump-tag-push]
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.5'
+      - run: go test -v ./...
+
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser
+          version: latest
+          args: release --skip=publish
