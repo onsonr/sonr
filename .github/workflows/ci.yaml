@@ -13,7 +13,6 @@ jobs:
   valid-protobufs:
     name: Validate Protos
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
