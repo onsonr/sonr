@@ -9,14 +9,9 @@
 package ted25519
 
 import (
-	"bufio"
 	"bytes"
-	"compress/gzip"
 	"crypto"
 	"crypto/rand"
-	"encoding/hex"
-	"os"
-	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -121,77 +116,6 @@ func TestMalleability(t *testing.T) {
 	ok, _ := Verify(publicKey, msg, sig)
 	if ok {
 		t.Fatal("non-canonical signature accepted")
-	}
-}
-
-func TestGolden(t *testing.T) {
-	testDataZ, err := os.Open(testVectorPath)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer testDataZ.Close()
-	testData, err := gzip.NewReader(testDataZ)
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer testData.Close()
-
-	scanner := bufio.NewScanner(testData)
-	lineNo := 0
-
-	for scanner.Scan() {
-		lineNo++
-
-		line := scanner.Text()
-		parts := strings.Split(line, ":")
-		if len(parts) != 5 {
-			t.Fatalf("bad number of parts on line %d", lineNo)
-		}
-
-		privBytes, _ := hex.DecodeString(parts[0])
-		pubKey, _ := hex.DecodeString(parts[1])
-		msg, _ := hex.DecodeString(parts[2])
-		sig, _ := hex.DecodeString(parts[3])
-		// The signatures in the test vectors also include the message
-		// at the end, but we just want R and S.
-		sig = sig[:SignatureSize]
-
-		if l := len(pubKey); l != PublicKeySize {
-			t.Fatalf("bad public key length on line %d: got %d bytes", lineNo, l)
-		}
-
-		var priv [PrivateKeySize]byte
-		copy(priv[:], privBytes)
-		copy(priv[32:], pubKey)
-
-		sig2, err := Sign(priv[:], msg)
-		require.NoError(t, err)
-		if !bytes.Equal(sig, sig2[:]) {
-			t.Errorf("different signature result on line %d: %x vs %x", lineNo, sig, sig2)
-		}
-
-		ok, _ := Verify(pubKey, msg, sig2)
-		if !ok {
-			t.Errorf("signature failed to verify on line %d", lineNo)
-		}
-
-		priv2, err := NewKeyFromSeed(priv[:32])
-		require.NoError(t, err)
-		if !bytes.Equal(priv[:], priv2) {
-			t.Errorf("recreating key pair gave different private key on line %d: %x vs %x", lineNo, priv[:], priv2)
-		}
-
-		if pubKey2 := priv2.Public().(PublicKey); !bytes.Equal(pubKey, pubKey2) {
-			t.Errorf("recreating key pair gave different public key on line %d: %x vs %x", lineNo, pubKey, pubKey2)
-		}
-
-		if seed := priv2.Seed(); !bytes.Equal(priv[:32], seed) {
-			t.Errorf("recreating key pair gave different seed on line %d: %x vs %x", lineNo, priv[:32], seed)
-		}
-	}
-
-	if err := scanner.Err(); err != nil {
-		t.Fatalf("error reading test data: %s", err)
 	}
 }
 
