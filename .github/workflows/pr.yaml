@@ -1,4 +1,4 @@
-name: New PR -> Run Tests and Lints
+name: New PR -> Tests and Lints
 
 on:
   pull_request:
@@ -15,7 +15,7 @@ permissions:
   issues: write
 
 jobs:
-  run-lints:
+  valid-protobufs:
     name: Validate Protos
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request'
@@ -36,14 +36,15 @@ jobs:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
 
   run-tests:
-    name: Run Tests
+    name: Test on Target
     runs-on: ubuntu-latest
-    env:
-      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
-      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-      FORCE_COLOR: 1
-      PR_NUMBER: ${{ github.event.number }}
+    strategy:
+      matrix:
+        arch: [amd64, arm64]
+        targetos: [darwin, linux]
+        include:
+          - targetos: darwin
+            arch: arm64
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,10 +52,14 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.21.5'
+        env:
+          GOOS: ${{ matrix.targetos }}
+          GOARCH: ${{ matrix.arch }}
+      - run: go mod download
       - run: go test -v ./...
 
   build-test:
-    name: Build for Target Platforms
+    name: Build for Target
     runs-on: ubuntu-latest
     strategy:
       matrix:

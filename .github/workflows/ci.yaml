@@ -1,4 +1,4 @@
-name: PR Added to Merge Queue -> Run CI
+name: Merge Queue += PR -> Run CI
 
 on:
   merge_group:

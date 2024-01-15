@@ -1,4 +1,4 @@
-name: Deploy Network & Generate Changelog
+name: New Release -> Deploy to Production
 
 on:
   release:

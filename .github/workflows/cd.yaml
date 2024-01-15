@@ -1,4 +1,4 @@
-name: PR Merged to Master -> Run CD
+name: Master Branch += PR -> Run CD
 on:
   push:
     branches:
