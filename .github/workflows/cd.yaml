@@ -10,9 +10,10 @@ on:
       - master
 
 jobs:
-  publish-release:
-    name: Publish Release with GoReleaser
+  update-version:
+    name: Bump version and push tag
     runs-on: ubuntu-latest
+    if: github.event.pull_request.merged == true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
@@ -23,6 +24,15 @@ jobs:
         uses: mathieudutour/github-tag-action@v6.1
         with:
           github_token: ${{ secrets.GH_ACTIONS_PAT }}
+
+  publish-release:
+    name: Publish Release with GoReleaser
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.21'
       - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
