@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - 'v*'
   pull_request:
     types:
       - closed
@@ -27,6 +29,7 @@ jobs:
 
   publish-release:
     name: Publish Release with GoReleaser
+    needs: update-version
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
