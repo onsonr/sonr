@@ -37,6 +37,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/types"
 	"github.com/cosmos/cosmos-sdk/x/crisis"
 	genutilcli "github.com/cosmos/cosmos-sdk/x/genutil/client/cli"
+	"github.com/pterm/pterm"
+	"github.com/pterm/pterm/putils"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 
@@ -74,6 +76,9 @@ func NewRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "sonrd",
 		Short: "The Digital Identity Protocol for IBC Connected Blockchains.",
+		Run: func(_ *cobra.Command, _ []string){
+				pterm.DefaultBigText.WithLetters(putils.LettersFromStringWithStyle("SONR", pterm.FgCyan.ToStyle())).Render()
+		},
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
@@ -196,6 +201,7 @@ func initRootCmd(
 		queryCommand(),
 		txCommand(),
 		keys.Commands(),
+		ServeCommand(),
 	)
 }
 

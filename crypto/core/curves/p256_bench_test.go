@@ -448,22 +448,21 @@ func (p *BenchPointP256) Random(reader io.Reader) Point {
 }
 
 func (p *BenchPointP256) Hash(bytes []byte) Point {
-	curve := elliptic.P256().Params()
+	curve := elliptic.P256()
 
-	var domain = []byte("P256_XMD:SHA-256_SSWU_RO_")
+	domain := []byte("P256_XMD:SHA-256_SSWU_RO_")
 	uniformBytes, _ := expandMsgXmd(sha256.New(), bytes, domain, 96)
 
 	u0 := new(big.Int).SetBytes(uniformBytes[:48])
 	u1 := new(big.Int).SetBytes(uniformBytes[48:])
 
-	u0.Mod(u0, curve.P)
-	u1.Mod(u1, curve.P)
+	u0.Mod(u0, curve.Params().P)
+	u1.Mod(u1, curve.Params().P)
 
 	ssParams := p256SswuParams()
 	q0x, q0y := osswu3mod4(u0, ssParams)
 	q1x, q1y := osswu3mod4(u1, ssParams)
 
-	// Since P-256 does not require the isogeny map just add the points
 	x, y := curve.Add(q0x, q0y, q1x, q1y)
 
 	return &BenchPointP256{
@@ -744,7 +743,7 @@ func p256SswuParams() *sswuParams {
 	}
 }
 
-//rhs of the curve equation
+// rhs of the curve equation
 func rhsP256(x *big.Int, params *elliptic.CurveParams) *big.Int {
 	f := NewField(params.P)
 	r := f.NewElement(x)

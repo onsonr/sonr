@@ -9,8 +9,8 @@ package dklsv1
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math/big"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -212,9 +212,9 @@ func TestDkgSignProto(t *testing.T) {
 // Breaking changes must consider downstream production impacts.
 func TestSignColdStart(t *testing.T) {
 	// Decode alice/bob state from file
-	aliceDkg, err := ioutil.ReadFile("testdata/alice-dkls-v1-dkg.bin")
+	aliceDkg, err := os.ReadFile("testdata/alice-dkls-v1-dkg.bin")
 	require.NoError(t, err)
-	bobDkg, err := ioutil.ReadFile("testdata/bob-dkls-v1-dkg.bin")
+	bobDkg, err := os.ReadFile("testdata/bob-dkls-v1-dkg.bin")
 	require.NoError(t, err)
 
 	// The choice of json marshaling is arbitrary, the binary could have been marshaled in other forms as well
@@ -363,4 +363,58 @@ func refreshV1(t *testing.T, curve *curves.Curve, aliceDkgResultMessage, bobDkgR
 	require.NoError(t, err)
 
 	return aliceRefreshResultMessage, bobRefreshResultMessage
+}
+
+func BenchmarkDKGProto(b *testing.B) {
+	curveInstances := []*curves.Curve{
+		curves.K256(),
+		curves.P256(),
+	}
+	for _, curve := range curveInstances {
+		alice := NewAliceDkg(curve, protocol.Version1)
+		bob := NewBobDkg(curve, protocol.Version1)
+		aErr, bErr := runIteratedProtocol(bob, alice)
+
+		b.Run("both alice/bob complete simultaneously", func(t *testing.B) {
+			require.ErrorIs(t, aErr, protocol.ErrProtocolFinished)
+			require.ErrorIs(t, bErr, protocol.ErrProtocolFinished)
+		})
+
+		for i := 0; i < kos.Kappa; i++ {
+			if alice.Alice.Output().SeedOtResult.OneTimePadDecryptionKey[i] != bob.Bob.Output().SeedOtResult.OneTimePadEncryptionKeys[i][alice.Alice.Output().SeedOtResult.RandomChoiceBits[i]] {
+				b.Errorf("oblivious transfer is incorrect at index i=%v", i)
+			}
+		}
+
+		b.Run("Both parties produces identical composite pubkey", func(t *testing.B) {
+			require.True(t, alice.Alice.Output().PublicKey.Equal(bob.Bob.Output().PublicKey))
+		})
+
+		var aliceResult *dkg.AliceOutput
+		var bobResult *dkg.BobOutput
+		b.Run("alice produces valid result", func(t *testing.B) {
+			// Get the result
+			r, err := alice.Result(protocol.Version1)
+
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			aliceResult, err = DecodeAliceDkgResult(r)
+			require.NoError(t, err)
+		})
+		b.Run("bob produces valid result", func(t *testing.B) {
+			// Get the result
+			r, err := bob.Result(protocol.Version1)
+
+			// Test
+			require.NoError(t, err)
+			require.NotNil(t, r)
+			bobResult, err = DecodeBobDkgResult(r)
+			require.NoError(t, err)
+		})
+
+		b.Run("alice/bob agree on pubkey", func(t *testing.B) {
+			require.Equal(t, aliceResult.PublicKey, bobResult.PublicKey)
+		})
+	}
 }

@@ -1,0 +1,33 @@
+package components
+
+
+templ ConsoleAssetsPanel() {
+    @BalancesHeader()
+
+    <sl-divider></sl-divider>
+	<div class="max-w-7xl mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch py-12 scrollbar-hide">
+	@BalancesTable()
+	@ChainStatusList()
+	</div>
+}
+
+
+templ ConsoleHistoryPanel() {
+	<div class="w-full h-full max-w-screen px-8 space-y-4">
+	@HistoryHeader()
+		<div class="flex flex-col pt-4 space-y-2">
+			@HistoryFilterSidebar()
+		</div>
+	</div>
+}
+
+
+
+templ ConsoleOverviewPanel() {
+	<div class="max-w-7xl mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch py-12 scrollbar-hide">
+		@FavoriteAccountsTable()
+		@OverviewAreaChart()
+		@PortfolioPieChart()
+		@ActivityBarChart()
+	</div>
+}

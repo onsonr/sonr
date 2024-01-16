@@ -2,17 +2,43 @@
 	"version": "2.0.0",
 	"tasks": [
 		{
+			"label": "Run: Dev Serve",
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"dependsOn": [
+				"Dev: Node",
+				"Dev: Gateway"
+			],
+			"icon": {
+				"id": "play-circle",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "task dev",
+			"problemMatcher": [],
+			"presentation": {
+				"clear": true,
+				"close": true,
+				"echo": false,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "dedicated",
+			}
+		},
+		{
 			"type": "shell",
-			"label": "Generate: Common Proto",
-			"command": "sh ./scripts/protocgen.sh",
+			"label": "Dev: Node",
+			"command": "task dev:node",
+			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
 			},
 			"icon": {
-				"id": "settings-gear",
+				"id": "play-circle",
 				"color": "terminal.ansiWhite"
 			},
-			"detail": "Build monorepo common protobuf files",
+			"detail": "dev:node",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -21,13 +47,37 @@
 				"focus": true,
 				"panel": "shared",
 				"showReuseMessage": true,
-				"group": "root"
+				"group": "Dev Serve"
+			}
+		},
+		{
+			"type": "shell",
+			"label": "Dev: Gateway",
+			"command": "task dev:gateway",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"icon": {
+				"id": "play-circle",
+				"color": "terminal.ansiWhite"
+			},
+			"detail": "dev:gateway",
+			"problemMatcher": [],
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"revealProblems": "onProblem",
+				"focus": true,
+				"panel": "shared",
+				"showReuseMessage": true,
+				"group": "Dev Serve"
 			}
 		},
 		{
 			"label": "Build: Node Binary",
 			"type": "shell",
-			"command": "earthly --no-sat +docker",
+			"command": "task build",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -46,32 +96,6 @@
 				"panel": "shared",
 				"showReuseMessage": true,
 				"close": true,
-				"group": "chain"
-			}
-		},
-		{
-			"label": "Run: Local Node",
-			"type": "shell",
-			"command": "make run",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiBlue"
-			},
-			"detail": "Run local chain node",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "dedicated",
-				"clear": true,
-				"showReuseMessage": true,
-				"close": false,
 				"group": "chain"
 			}
 		},

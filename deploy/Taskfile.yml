@@ -1,0 +1,9 @@
+version: '3'
+
+tasks:
+
+  testnet:
+    dir: ./deploy/testnet-1
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune testnet-1

@@ -1,14 +1,44 @@
 version: '3'
 
 includes:
-  deploy: ./build/Taskfile.yml
+  deploy: ./deploy/Taskfile.yml
 
 tasks:
   default:
    cmd: task --list-all
    silent: true
 
+  install:
+    cmds:
+      - go install github.com/cosmtrek/air@latest
+      - brew install tmux
+
   init-matrix:
    dir: ./deploy/rails/dendrite
    cmds:
      - earthly --no-sat +init
+
+  build:
+   cmds:
+    - rm -rf bin/ && mkdir ./bin/
+    - templ generate
+    - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
+    - rm -rf dist
+
+  generate:
+   cmds:
+    - earthly --no-sat +templates
+
+  dev:gateway:
+   cmds:
+    - air -c ./build/local/air-gateway.toml
+
+  dev:node:
+   cmds:
+    - air -c ./build/local/air-node.toml
+
+  dev:
+   cmd: tmux new-session -d 'task dev:node' \; split-window -h 'task dev:gateway' \; attach
+
+  grpcui:
+   cmd: grpcui -plaintext localhost:9090

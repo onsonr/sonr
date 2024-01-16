@@ -179,7 +179,7 @@ func sign(signature, privateKey, message []byte) error {
 	if err != nil {
 		return err
 	}
-	_, _ = h.Write(message)
+	_, err = h.Write(message)
 	if err != nil {
 		return err
 	}

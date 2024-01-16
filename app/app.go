@@ -38,10 +38,11 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/mint"         // import for side-effects
 	_ "github.com/cosmos/cosmos-sdk/x/staking"      // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-	identitykeeper "github.com/sonrhq/identity/keeper"
-	_ "github.com/sonrhq/identity/module" // import for side-effects
-	servicekeeper "github.com/sonrhq/service/keeper"
-	_ "github.com/sonrhq/service/module" // import for side-effects
+
+	identitykeeper "github.com/sonrhq/sonr/x/identity/keeper"
+	_ "github.com/sonrhq/sonr/x/identity/module" // import for side-effects
+	servicekeeper "github.com/sonrhq/sonr/x/service/keeper"
+	_ "github.com/sonrhq/sonr/x/service/module" // import for side-effects
 )
 
 // DefaultNodeHome default home directories for the application daemon
@@ -72,8 +73,8 @@ type SonrApp struct {
 	StakingKeeper         *stakingkeeper.Keeper
 	DistrKeeper           distrkeeper.Keeper
 	ConsensusParamsKeeper consensuskeeper.Keeper
-	IdentityKeeper 	  identitykeeper.Keeper
-	ServiceKeeper 		  servicekeeper.Keeper
+	IdentityKeeper        identitykeeper.Keeper
+	ServiceKeeper         servicekeeper.Keeper
 
 	// simulation manager
 	sm *module.SimulationManager

@@ -17,8 +17,6 @@ builds:
       - -X main.Version={{ .Version }}
       - -X main.Commit={{ .Commit }}
       - -w -s
-    tags:
-      - netgo
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
@@ -92,15 +90,6 @@ release:
   draft: false
   extra_files:
     - glob: scripts/install.sh
-
-kos:
-  - repository: sonrhq/sonrd
-    tags:
-    - '{{.Version}}'
-    - latest
-    platforms:
-    - linux/amd64
-    - linux/arm64
 
 changelog:
   sort: asc

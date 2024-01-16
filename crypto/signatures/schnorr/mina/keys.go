@@ -14,7 +14,7 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/btcsuite/btcutil/base58"
+	"github.com/mr-tron/base58"
 	"golang.org/x/crypto/blake2b"
 
 	"github.com/sonrhq/sonr/crypto/core/curves"
@@ -22,9 +22,11 @@ import (
 	"github.com/sonrhq/sonr/crypto/core/curves/native/pasta/fq"
 )
 
-const version = 0xcb
-const nonZeroCurvePointVersion = 0x01
-const isCompressed = 0x01
+const (
+	version                  = 0xcb
+	nonZeroCurvePointVersion = 0x01
+	isCompressed             = 0x01
+)
 
 // PublicKey is the verification key
 type PublicKey struct {
@@ -33,7 +35,6 @@ type PublicKey struct {
 
 // GenerateAddress converts the public key to an address
 func (pk PublicKey) GenerateAddress() string {
-
 	var payload [40]byte
 	payload[0] = version
 	payload[1] = nonZeroCurvePointVersion
@@ -50,7 +51,10 @@ func (pk PublicKey) GenerateAddress() string {
 
 // ParseAddress converts a given string into a public key returning an error on failure
 func (pk *PublicKey) ParseAddress(b58 string) error {
-	buffer := base58.Decode(b58)
+	buffer, err := base58.Decode(b58)
+	if err != nil {
+		return err
+	}
 	if len(buffer) != 40 {
 		return fmt.Errorf("invalid byte sequence")
 	}

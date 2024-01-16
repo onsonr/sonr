@@ -1,12 +1,10 @@
 {
-	"explorer.excludeGitIgnore": false,
+	"explorer.excludeGitIgnore": true,
 	"editor.formatOnSave": true,
 	"[templ]": {
 		"editor.defaultFormatter": "a-h.templ"
 	},
-	"tailwindCSS.includeLanguages": {
-		"templ": "html"
-	},
+
 	"files.exclude": {
 		"**/.git": true,
 		"Icon": true,
@@ -25,7 +23,6 @@
 		"**/.project": true,
 		"**/.settings": true,
 		"**/largeFolder": true,
-		"**/**_templ.go": true,
 		"**/pubspec.lock": true,
 		"**pubspec.lock": true,
 		"app.iml": true,
@@ -40,19 +37,10 @@
 		"**/SECURITY.md": true,
 		"**/LICENSE": true,
 		".devcontainer": true,
-		"identity": true,
-		"service": true,
-		"web": true,
-		"**/.next": true,
-		"**/.vercel": true,
-		"**/bun.lockb": true,
-		"**/next-env.d.ts": true,
-		"**/postcss.config.js": true,
-		"**/package-lock.json": true,
-		"**/.eslintrc.json": true,
 		"**/go.work": true,
 		"**/go.work.sum": true,
 		"**/go.sum": true,
-		"**/**.pb.go": true,
+		"**/**.pb.go": false,
+		"**/**_templ.go": true,
 	}
 }

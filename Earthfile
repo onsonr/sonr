@@ -3,11 +3,10 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
 
-FROM golang:1.21-alpine3.18
-IMPORT github.com/sonrhq/identity:main AS identity
-IMPORT github.com/sonrhq/service:main AS service
+FROM golang:1.21.5-alpine
 WORKDIR /chain
 # ---------------------------------------------------------------------
+
 # deps - downloads dependencies
 deps:
     RUN apk add --update --no-cache \
@@ -25,6 +24,9 @@ deps:
     util-linux
     COPY go.mod go.sum ./
     RUN go mod download
+    RUN go install github.com/a-h/templ/cmd/templ@latest
+    RUN go install github.com/cosmtrek/air@latest
+    RUN go install github.com/bufbuild/buf/cmd/buf@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
@@ -38,7 +40,25 @@ build:
     RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o /usr/bin/sonrd ./cmd/sonrd/main.go
     SAVE ARTIFACT /usr/bin/sonrd AS LOCAL bin/sonrd
 
-# runner - builds the docker image
+# docker - builds the binary cmd docker image
+docker:
+    FROM +build
+    ARG tag=latest
+    ARG commit=$EARTHLY_BUILD_SHA
+    ARG version=$EARTHLY_GIT_REFS
+    COPY +build/sonrd sonrd
+    ENTRYPOINT [ "/chain/sonrd" ]
+    SAVE IMAGE sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
+
+# generate - generates all code from proto files
+generate:
+    FROM +deps
+    COPY . .
+    RUN sh ./scripts/protogen-orm.sh
+    SAVE ARTIFACT sonrhq/identity AS LOCAL api/identity
+    SAVE ARTIFACT proto AS LOCAL proto
+
+# runner - builds the runner docker image
 runner:
     FROM gcr.io/distroless/static-debian11
     ARG tag=latest
@@ -47,28 +67,21 @@ runner:
     EXPOSE 1317
     EXPOSE 26656
     EXPOSE 9090
-    SAVE IMAGE --push sonrhq/sonrd:$tag ghcr.io/sonrhq/sonrd:$tag sonrd:$tag
-
-# generate - generates all code from proto files
-generate:
-    LOCALLY
-    RUN make proto-gen
-    FROM +deps
-    COPY . .
-    RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonrhq/identity AS LOCAL api
-    SAVE ARTIFACT proto AS LOCAL proto
-    RUN sh ./scripts/protocgen-docs.sh
-    SAVE ARTIFACT docs AS LOCAL docs
+    SAVE IMAGE sonrhq/sonrd:$tag-runner ghcr.io/sonrhq/sonrd:$tag-runner sonrd:$tag-runner
 
 # test - runs tests on x/identity and x/service
 test:
     FROM +deps
-    BUILD identity+test
-    BUILD service+test
+    COPY . .
+    RUN go test -v ./...
 
 # breaking - runs tests on x/identity and x/service with breaking changes
 breaking:
     FROM +deps
-    BUILD identity+breaking
-    BUILD service+breaking
+    COPY . .
+    RUN cd proto && buf breaking --against buf.build/sonrhq/sonr
+
+# templates - runs protogen, and templ generate on all modules and root
+templates:
+    LOCALLY
+    RUN templ generate

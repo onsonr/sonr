@@ -1,51 +1,32 @@
-name: New Release / Prad Pushed to Origin -> Run CD
-
+name: Master Branch += PR -> Run CD
 on:
-  release:
-    types: [published]
   push:
-    tags:
-      - '*'
-
-permissions:
-  contents: write
+    branches:
+      - master
+  pull_request:
+    types:
+      - closed
+    branches:
+      - master
 
 jobs:
-  run-goreleaser:
-    name: Run GoReleaser
+  publish-release:
+    name: Publish Release with GoReleaser
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Go
-        uses: actions/setup-go@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+          go-version: '>=1.21'
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
+      - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser
           version: latest
-          args: release --clean
+          args: release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
-
-  changelog:
-    name: Generate Changelog
-    runs-on: ubuntu-latest
-    if: github.event_name =='release'
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: BobAnkh/auto-generate-changelog@v1.2.5
-        with:
-          REPO_NAME: sonrhq/sonr
-          ACCESS_TOKEN: ${{secrets.GH_ACTIONS_PAT}}
-          PATH: "CHANGELOG.md"
-          COMMIT_MESSAGE: "docs: update release notes"
-          TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,chore:Chore,init:Setup"
-          COMMITTER: "Sonr Mind <ai@sonr.io)"
-          SUPPRESS_UNSCOPED: true
-          REGENERATE_COUNT: 12

@@ -119,7 +119,7 @@ func generateSharableKey() (PublicKey, []byte, error) {
 // GenerateSharedKey generates a random key, splits it, and returns the public key, shares, and VSS commitments.
 func GenerateSharedKey(config *ShareConfiguration) (PublicKey, []*KeyShare, Commitments, error) {
 	pub, priv, err := generateSharableKey()
-	//pub, priv, err := ed25519.GenerateKey(nil)
+	// pub, priv, err := ed25519.GenerateKey(nil)
 	if err != nil {
 		return nil, nil, nil, err
 	}
@@ -151,11 +151,11 @@ func split(secret []byte, config *ShareConfiguration) ([]curves.Point, []*v1.Sha
 	field := curves.NewField(curves.Ed25519Order())
 	shamir, err := v1.NewShamir(config.T, config.N, field)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Error in NewShamir")
+		return nil, nil, fmt.Errorf("error in NewShamir")
 	}
 	shares, poly, err := shamir.GetSharesAndPolynomial(secret)
 	if err != nil {
-		return nil, nil, fmt.Errorf("Error in GetSharesAndPolynomial")
+		return nil, nil, fmt.Errorf("error in GetSharesAndPolynomial")
 	}
 
 	// Generate the verifiable commitments to the polynomial for the shares
@@ -168,7 +168,7 @@ func split(secret []byte, config *ShareConfiguration) ([]curves.Point, []*v1.Sha
 		copy(reverseInput[:], reverseC)
 		cScalar, err := new(curves.ScalarEd25519).SetBytesCanonical(reverseInput[:])
 		if err != nil {
-			return nil, nil, fmt.Errorf("Error in SetBytesCanonical reverseC")
+			return nil, nil, fmt.Errorf("error in SetBytesCanonical reverseC")
 		}
 		v := curves.ED25519().Point.Generator().Mul(cScalar)
 		verifiers[i] = v
@@ -218,7 +218,7 @@ func (share *KeyShare) VerifyVSS(commitments Commitments, config *ShareConfigura
 		copy(iBytes[:], i.Bytes()[:])
 		iScalar, err := new(curves.ScalarEd25519).SetBytesCanonical(iBytes[:])
 		if err != nil {
-			return false, fmt.Errorf("Error in SetBytesCanonical iBytes")
+			return false, fmt.Errorf("error in SetBytesCanonical iBytes")
 		}
 		c := commitments[j].Mul(iScalar)
 
