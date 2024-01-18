@@ -66,6 +66,7 @@ message Account {
   bytes public_key = 4;
   string network = 5;
   string address = 6;
+  string ipns = 7;
 }
 
 // Blockchain is the configuration table for connected blockchains
@@ -87,25 +88,6 @@ message Blockchain {
   string channel_id = 8;
 }
 
-// Credential is the total supply of the module.
-message Credential {
-  option (cosmos.orm.v1.table) = {
-    id : 2
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "handle"}
-    index : {id : 2 fields : "origin,handle" unique : true}
-    index : {id : 3 fields : "credential_id" unique : true}
-    index : {id : 4 fields : "public_key" unique : true}
-  };
-
-  uint64 id = 1;
-  string handle = 2;
-  repeated string transport = 3;
-  bytes public_key = 4;
-  string attestation_type = 5;
-  bytes credential_id = 6;
-  string origin = 7;
-}
 
 // Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
 // authorizer to the underlying wallet interface.

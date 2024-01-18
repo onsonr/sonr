@@ -61,67 +61,24 @@ message UserProfile {
   repeated uint64 linked_credentials = 5;
 }
 
-// Resource is the total supply of the module.
-message Resource {
+// Credential is the total supply of the module.
+message Credential {
   option (cosmos.orm.v1.table) = {
-    id : 3
-    primary_key : {fields : "did,cid"}
-    index : {id : 1 fields : "cid" unique : true}
-    index : {id : 2 fields : "origin"}
-    index : {id : 3 fields : "origin,cid" unique : true}
-    index : {id : 4 fields : "owner"}
-    index : {id : 5 fields : "owner,cid" unique : true}
-    index : {id : 6 fields : "owner,origin,cid" unique : true}
+    id : 2
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "handle"}
+    index : {id : 2 fields : "origin,handle" unique : true}
+    index : {id : 3 fields : "credential_id" unique : true}
+    index : {id : 4 fields : "public_key" unique : true}
   };
 
-  // DID of the resource (i.e: did:sonr:abc1234/Qm1234)
-  string did = 1;
-
-  // CID of the resource (i.e: Qm1234)
-  string cid = 2;
-
-  // CID type of the resource (i.e: ipfs)
-  string cid_type = 3;
-
-  // Origin is the domain of the resource (i.e: "sonr.io")
-  string origin = 4;
-
-  // Owner is the UserProfile DID of the owner of the resource (i.e:
-  // did:sonr:abc1234)
-  string owner = 5;
-}
-
-// Property is the total supply of the module.
-message Property {
-  option (cosmos.orm.v1.table) = {
-    id : 4
-    primary_key : {fields : "did"}
-    index : {id : 1 fields : "origin,owner,key" unique : true}
-    index : {id : 2 fields : "owner,key"}
-    index : {id : 3 fields : "origin,key"}
-    index : {id : 4 fields : "origin,owner"}
-    index : {id : 5 fields : "owner"}
-    index : {id : 6 fields : "schema,key" unique : true}
-    index : {id : 7 fields : "schema,owner,key" unique : true}
-  };
-  // Did of the property (i.e: did:sonr:abc1234#name)
-  string did = 1;
-
-  // Key is the fragment of the property (i.e: name)
-  string key = 2;
-
-  // Value is the encrypted text of the property (i.e: "John Doe")
-  bytes value = 3;
-
-  // Origin is the domain of the property (i.e: "sonr.io")
-  string origin = 4;
-
-  // Schema is the schema of the property (i.e: "https://schema.org/name")
-  string schema = 5;
-
-  // Owner is the UserProfile DID of the owner of the property (i.e:
-  // did:sonr:abc1234)
-  string owner = 6;
+  uint64 id = 1;
+  string handle = 2;
+  repeated string transport = 3;
+  bytes public_key = 4;
+  string attestation_type = 5;
+  bytes credential_id = 6;
+  string origin = 7;
 }
 
 // BaseParams is the total supply of the module.

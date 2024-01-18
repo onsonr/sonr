@@ -21,21 +21,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetAccount_FullMethodName                  = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount"
-	StateQueryService_GetAccountByAddress_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
-	StateQueryService_GetAccountByPublicKey_FullMethodName       = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
-	StateQueryService_ListAccount_FullMethodName                 = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount"
-	StateQueryService_GetBlockchain_FullMethodName               = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain"
-	StateQueryService_GetBlockchainByChainId_FullMethodName      = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
-	StateQueryService_GetBlockchainByName_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
-	StateQueryService_ListBlockchain_FullMethodName              = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain"
-	StateQueryService_GetCredential_FullMethodName               = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetCredential"
-	StateQueryService_GetCredentialByOriginHandle_FullMethodName = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetCredentialByOriginHandle"
-	StateQueryService_GetCredentialByCredentialId_FullMethodName = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetCredentialByCredentialId"
-	StateQueryService_GetCredentialByPublicKey_FullMethodName    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetCredentialByPublicKey"
-	StateQueryService_ListCredential_FullMethodName              = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListCredential"
-	StateQueryService_GetIdentifier_FullMethodName               = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetIdentifier"
-	StateQueryService_ListIdentifier_FullMethodName              = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListIdentifier"
+	StateQueryService_GetAccount_FullMethodName             = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount"
+	StateQueryService_GetAccountByAddress_FullMethodName    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
+	StateQueryService_GetAccountByPublicKey_FullMethodName  = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
+	StateQueryService_ListAccount_FullMethodName            = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount"
+	StateQueryService_GetBlockchain_FullMethodName          = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain"
+	StateQueryService_GetBlockchainByChainId_FullMethodName = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
+	StateQueryService_GetBlockchainByName_FullMethodName    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
+	StateQueryService_ListBlockchain_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain"
+	StateQueryService_GetIdentifier_FullMethodName          = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetIdentifier"
+	StateQueryService_ListIdentifier_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListIdentifier"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -58,16 +53,6 @@ type StateQueryServiceClient interface {
 	GetBlockchainByName(ctx context.Context, in *GetBlockchainByNameRequest, opts ...grpc.CallOption) (*GetBlockchainByNameResponse, error)
 	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
 	ListBlockchain(ctx context.Context, in *ListBlockchainRequest, opts ...grpc.CallOption) (*ListBlockchainResponse, error)
-	// Get queries the Credential table by its primary key.
-	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
-	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
-	GetCredentialByOriginHandle(ctx context.Context, in *GetCredentialByOriginHandleRequest, opts ...grpc.CallOption) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error)
-	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
-	ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error)
 	// Get queries the Identifier table by its primary key.
 	GetIdentifier(ctx context.Context, in *GetIdentifierRequest, opts ...grpc.CallOption) (*GetIdentifierResponse, error)
 	// ListIdentifier queries the Identifier table using prefix and range queries against defined indexes.
@@ -154,51 +139,6 @@ func (c *stateQueryServiceClient) ListBlockchain(ctx context.Context, in *ListBl
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error) {
-	out := new(GetCredentialResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredential_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetCredentialByOriginHandle(ctx context.Context, in *GetCredentialByOriginHandleRequest, opts ...grpc.CallOption) (*GetCredentialByOriginHandleResponse, error) {
-	out := new(GetCredentialByOriginHandleResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByOriginHandle_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error) {
-	out := new(GetCredentialByCredentialIdResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByCredentialId_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error) {
-	out := new(GetCredentialByPublicKeyResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByPublicKey_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error) {
-	out := new(ListCredentialResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListCredential_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *stateQueryServiceClient) GetIdentifier(ctx context.Context, in *GetIdentifierRequest, opts ...grpc.CallOption) (*GetIdentifierResponse, error) {
 	out := new(GetIdentifierResponse)
 	err := c.cc.Invoke(ctx, StateQueryService_GetIdentifier_FullMethodName, in, out, opts...)
@@ -237,16 +177,6 @@ type StateQueryServiceServer interface {
 	GetBlockchainByName(context.Context, *GetBlockchainByNameRequest) (*GetBlockchainByNameResponse, error)
 	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
 	ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error)
-	// Get queries the Credential table by its primary key.
-	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
-	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
-	GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error)
-	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
-	ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error)
 	// Get queries the Identifier table by its primary key.
 	GetIdentifier(context.Context, *GetIdentifierRequest) (*GetIdentifierResponse, error)
 	// ListIdentifier queries the Identifier table using prefix and range queries against defined indexes.
@@ -281,21 +211,6 @@ func (UnimplementedStateQueryServiceServer) GetBlockchainByName(context.Context,
 }
 func (UnimplementedStateQueryServiceServer) ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListBlockchain not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredential not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByOriginHandle not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByCredentialId not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByPublicKey not implemented")
-}
-func (UnimplementedStateQueryServiceServer) ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListCredential not implemented")
 }
 func (UnimplementedStateQueryServiceServer) GetIdentifier(context.Context, *GetIdentifierRequest) (*GetIdentifierResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetIdentifier not implemented")
@@ -460,96 +375,6 @@ func _StateQueryService_ListBlockchain_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredential(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetCredential_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredential(ctx, req.(*GetCredentialRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetCredentialByOriginHandle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByOriginHandleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByOriginHandle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByOriginHandle_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByOriginHandle(ctx, req.(*GetCredentialByOriginHandleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetCredentialByCredentialId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByCredentialIdRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByCredentialId_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, req.(*GetCredentialByCredentialIdRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetCredentialByPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByPublicKeyRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByPublicKey_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, req.(*GetCredentialByPublicKeyRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_ListCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListCredentialRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListCredential(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_ListCredential_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListCredential(ctx, req.(*ListCredentialRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _StateQueryService_GetIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetIdentifierRequest)
 	if err := dec(in); err != nil {
@@ -624,26 +449,6 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListBlockchain",
 			Handler:    _StateQueryService_ListBlockchain_Handler,
-		},
-		{
-			MethodName: "GetCredential",
-			Handler:    _StateQueryService_GetCredential_Handler,
-		},
-		{
-			MethodName: "GetCredentialByOriginHandle",
-			Handler:    _StateQueryService_GetCredentialByOriginHandle_Handler,
-		},
-		{
-			MethodName: "GetCredentialByCredentialId",
-			Handler:    _StateQueryService_GetCredentialByCredentialId_Handler,
-		},
-		{
-			MethodName: "GetCredentialByPublicKey",
-			Handler:    _StateQueryService_GetCredentialByPublicKey_Handler,
-		},
-		{
-			MethodName: "ListCredential",
-			Handler:    _StateQueryService_ListCredential_Handler,
 		},
 		{
 			MethodName: "GetIdentifier",
