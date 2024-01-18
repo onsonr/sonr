@@ -62,7 +62,7 @@ generate:
     FROM +deps
     COPY . .
     RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonrhq/sonr AS LOCAL api
+    SAVE ARTIFACT sonr AS LOCAL api
     SAVE ARTIFACT proto AS LOCAL proto
 
 # runner - builds the runner docker image

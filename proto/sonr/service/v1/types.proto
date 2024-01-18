@@ -1,5 +1,5 @@
 syntax = "proto3";
-package sonrhq.sonr.service.v1;
+package sonr.service.v1;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";

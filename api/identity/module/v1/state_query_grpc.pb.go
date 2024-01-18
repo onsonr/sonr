@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/sonr/identity/module/v1/state_query.proto
+// source: sonr/identity/module/v1/state_query.proto
 
 package modulev1
 
@@ -21,16 +21,16 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetAccount_FullMethodName             = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount"
-	StateQueryService_GetAccountByAddress_FullMethodName    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
-	StateQueryService_GetAccountByPublicKey_FullMethodName  = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
-	StateQueryService_ListAccount_FullMethodName            = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount"
-	StateQueryService_GetBlockchain_FullMethodName          = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain"
-	StateQueryService_GetBlockchainByChainId_FullMethodName = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
-	StateQueryService_GetBlockchainByName_FullMethodName    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
-	StateQueryService_ListBlockchain_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain"
-	StateQueryService_GetIdentifier_FullMethodName          = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetIdentifier"
-	StateQueryService_ListIdentifier_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListIdentifier"
+	StateQueryService_GetAccount_FullMethodName             = "/sonr.identity.module.v1.StateQueryService/GetAccount"
+	StateQueryService_GetAccountByAddress_FullMethodName    = "/sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
+	StateQueryService_GetAccountByPublicKey_FullMethodName  = "/sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
+	StateQueryService_ListAccount_FullMethodName            = "/sonr.identity.module.v1.StateQueryService/ListAccount"
+	StateQueryService_GetBlockchain_FullMethodName          = "/sonr.identity.module.v1.StateQueryService/GetBlockchain"
+	StateQueryService_GetBlockchainByChainId_FullMethodName = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
+	StateQueryService_GetBlockchainByName_FullMethodName    = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
+	StateQueryService_ListBlockchain_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/ListBlockchain"
+	StateQueryService_GetIdentifier_FullMethodName          = "/sonr.identity.module.v1.StateQueryService/GetIdentifier"
+	StateQueryService_ListIdentifier_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/ListIdentifier"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -415,7 +415,7 @@ func _StateQueryService_ListIdentifier_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StateQueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.sonr.identity.module.v1.StateQueryService",
+	ServiceName: "sonr.identity.module.v1.StateQueryService",
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -460,5 +460,5 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/sonr/identity/module/v1/state_query.proto",
+	Metadata: "sonr/identity/module/v1/state_query.proto",
 }

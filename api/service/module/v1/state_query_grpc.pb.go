@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/sonr/service/module/v1/state_query.proto
+// source: sonr/service/module/v1/state_query.proto
 
 package modulev1
 
@@ -21,20 +21,20 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetServiceRecord_FullMethodName              = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecord"
-	StateQueryService_GetServiceRecordByOrigin_FullMethodName      = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
-	StateQueryService_GetServiceRecordByNameOwner_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByNameOwner"
-	StateQueryService_GetServiceRecordByOriginOwner_FullMethodName = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByOriginOwner"
-	StateQueryService_ListServiceRecord_FullMethodName             = "/sonrhq.sonr.service.module.v1.StateQueryService/ListServiceRecord"
-	StateQueryService_GetCredential_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredential"
-	StateQueryService_GetCredentialByOriginHandle_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
-	StateQueryService_GetCredentialByCredentialId_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredentialByCredentialId"
-	StateQueryService_GetCredentialByPublicKey_FullMethodName      = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredentialByPublicKey"
-	StateQueryService_ListCredential_FullMethodName                = "/sonrhq.sonr.service.module.v1.StateQueryService/ListCredential"
-	StateQueryService_GetBaseParams_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetBaseParams"
-	StateQueryService_GetReadParams_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetReadParams"
-	StateQueryService_GetWriteParams_FullMethodName                = "/sonrhq.sonr.service.module.v1.StateQueryService/GetWriteParams"
-	StateQueryService_GetOwnParams_FullMethodName                  = "/sonrhq.sonr.service.module.v1.StateQueryService/GetOwnParams"
+	StateQueryService_GetServiceRecord_FullMethodName              = "/sonr.service.module.v1.StateQueryService/GetServiceRecord"
+	StateQueryService_GetServiceRecordByOrigin_FullMethodName      = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
+	StateQueryService_GetServiceRecordByNameOwner_FullMethodName   = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByNameOwner"
+	StateQueryService_GetServiceRecordByOriginOwner_FullMethodName = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOriginOwner"
+	StateQueryService_ListServiceRecord_FullMethodName             = "/sonr.service.module.v1.StateQueryService/ListServiceRecord"
+	StateQueryService_GetCredential_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/GetCredential"
+	StateQueryService_GetCredentialByOriginHandle_FullMethodName   = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
+	StateQueryService_GetCredentialByCredentialId_FullMethodName   = "/sonr.service.module.v1.StateQueryService/GetCredentialByCredentialId"
+	StateQueryService_GetCredentialByPublicKey_FullMethodName      = "/sonr.service.module.v1.StateQueryService/GetCredentialByPublicKey"
+	StateQueryService_ListCredential_FullMethodName                = "/sonr.service.module.v1.StateQueryService/ListCredential"
+	StateQueryService_GetBaseParams_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/GetBaseParams"
+	StateQueryService_GetReadParams_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/GetReadParams"
+	StateQueryService_GetWriteParams_FullMethodName                = "/sonr.service.module.v1.StateQueryService/GetWriteParams"
+	StateQueryService_GetOwnParams_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetOwnParams"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -555,7 +555,7 @@ func _StateQueryService_GetOwnParams_Handler(srv interface{}, ctx context.Contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StateQueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.sonr.service.module.v1.StateQueryService",
+	ServiceName: "sonr.service.module.v1.StateQueryService",
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -616,5 +616,5 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/sonr/service/module/v1/state_query.proto",
+	Metadata: "sonr/service/module/v1/state_query.proto",
 }
