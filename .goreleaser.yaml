@@ -110,5 +110,31 @@ changelog:
     - title: Others
       order: 999
 
-sboms:
-  - artifacts: archive
+# .goreleaser.yaml
+brews:
+  -
+    # Folder inside the repository to put the formula.
+    folder: Formula
+
+    # Caveats for the user of your binary.
+    caveats: "How to use this binary"
+
+    # Your app's homepage.
+    homepage: "https://sonrhq.com"
+
+    # Your app's description.
+    #
+    # Templates: allowed
+    description: "Sonr Binary Node"
+
+    # SPDX identifier of your app's license.
+    license: "OpenGLV3"
+
+    # Repository to push the generated files to.
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      # Optionally a token can be provided, if it differs from the token
+      # provided to GoReleaser
+      # Templates: allowed
+      token: "{{ .Env.GITHUB_TOKEN }}"
