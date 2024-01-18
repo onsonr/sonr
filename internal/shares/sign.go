@@ -1,119 +1,85 @@
 package shares
 
-import (
-	"fmt"
+// func signV1(curve *curves.Curve, aliceDkgResultMessage *protocol.Message, bobDkgResultMessage *protocol.Message) {
+// 	// New DklsSign
+// 	msg := []byte("As soon as you trust yourself, you will know how to live.")
+// 	aliceSign, err := NewAliceSign(curve, sha3.New256(), msg, aliceDkgResultMessage, protocol.Version1)
+// 	require.NoError(t, err)
+// 	bobSign, err := NewBobSign(curve, sha3.New256(), msg, bobDkgResultMessage, protocol.Version1)
+// 	require.NoError(t, err)
 
-	"github.com/asynkron/protoactor-go/actor"
-	"github.com/sonrhq/sonr/crypto/core/protocol"
-	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
-	"golang.org/x/crypto/sha3"
-)
+// 	// Sign
+// 	var aErr error
+// 	var bErr error
+// 	t.Run("sign", func(t *testing.T) {
+// 		aErr, bErr = require.ErrorIs(t, aErr, protocol.ErrProtocolFinished)
+// 		require.ErrorIs(t, bErr, protocol.ErrProtocolFinished)
+// 	})
+// 	// Don't continue to verifying results if sign didn't run to completion.
+// 	require.ErrorIs(t, aErr, protocol.ErrProtocolFinished)
+// 	require.ErrorIs(t, bErr, protocol.ErrProtocolFinished)
 
-type privateSign struct {
-	aliceDkg  *dklsv1.AliceDkg
-	aliceSign *dklsv1.AliceSign
-	bobPID    *actor.PID
-}
+// 	// Output
+// 	var result *curves.EcdsaSignature
+// 	t.Run("bob produces result of correct type", func(t *testing.T) {
+// 		resultMessage, err := bobSign.Result(protocol.Version1)
+// 		require.NoError(t, err)
+// 		result, err = DecodeSignature(resultMessage)
+// 		require.NoError(t, err)
+// 	})
+// 	require.NotNil(t, result)
 
-func (s *privateSign) Receive(context actor.Context) {
-	switch msg := context.Message().(type) {
-	case *protocol.Message:
-		res, err := s.aliceSign.Next(msg)
-		if err == protocol.ErrProtocolFinished {
-			msg, err := s.aliceSign.Result(protocol.Version1)
-			if err != nil {
-				context.Respond(err)
-			}
-			context.Respond(msg)
-		}
-		if err != nil {
-			context.Respond(err)
-		}
-		ctx.Send(s.bobPID, res)
-	}
-}
+// 	aliceDkg, err := DecodeAliceDkgResult(aliceDkgResultMessage)
+// 	require.NoError(t, err)
 
-type publicSign struct {
-	bobDkg   *dklsv1.BobDkg
-	bobSign  *dklsv1.BobSign
-	alicePID *actor.PID
-}
+// 	t.Run("valid signature", func(t *testing.T) {
+// 		hash := sha3.New256()
+// 		_, err = hash.Write(msg)
+// 		require.NoError(t, err)
+// 		digest := hash.Sum(nil)
+// 		unCompressedAffinePublicKey := aliceDkg.PublicKey.ToAffineUncompressed()
+// 		require.Equal(t, 65, len(unCompressedAffinePublicKey))
+// 		x := new(big.Int).SetBytes(unCompressedAffinePublicKey[1:33])
+// 		y := new(big.Int).SetBytes(unCompressedAffinePublicKey[33:])
+// 		ecCurve, err := curve.ToEllipticCurve()
+// 		require.NoError(t, err)
+// 		publicKey := &curves.EcPoint{
+// 			Curve: ecCurve,
+// 			X:     x,
+// 			Y:     y,
+// 		}
+// 		require.True(t,
+// 			curves.VerifyEcdsa(publicKey,
+// 				digest[:],
+// 				result,
+// 			),
+// 			"signature failed verification",
+// 		)
+// 	})
+// }
 
-func (s *publicSign) Receive(context actor.Context) {
-	switch msg := context.Message().(type) {
-	case *protocol.Message:
-		res, err := s.bobSign.Next(msg)
-		if err == protocol.ErrProtocolFinished {
-			msg, err := s.bobSign.Result(protocol.Version1)
-			if err != nil {
-				context.Respond(err)
-			}
-			sig, err := dklsv1.DecodeSignature(msg)
-			if err != nil {
-				context.Respond(err)
-			}
-			context.Respond(sig)
-		}
-		if err != nil {
-			context.Respond(err)
-		}
-		ctx.Send(s.alicePID, res)
-	}
-}
+// func refreshV1(t *testing.T, curve *curves.Curve, aliceDkgResultMessage, bobDkgResultMessage *protocol.Message) (aliceRefreshResultMessage, bobRefreshResultMessage *protocol.Message) {
+// 	t.Helper()
+// 	aliceRefresh, err := NewAliceRefresh(curve, aliceDkgResultMessage, protocol.Version1)
+// 	require.NoError(t, err)
+// 	bobRefresh, err := NewBobRefresh(curve, bobDkgResultMessage, protocol.Version1)
+// 	require.NoError(t, err)
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                            Sign Actor configuration                            ||
-// ! ||--------------------------------------------------------------------------------||
+// 	aErr, bErr := runIteratedProtocol(aliceRefresh, bobRefresh)
+// 	require.ErrorIs(t, aErr, protocol.ErrProtocolFinished)
+// 	require.ErrorIs(t, bErr, protocol.ErrProtocolFinished)
 
-// ApplyPrivateGen applies the spawn options in order to create a private share actor
-func (c *options) ApplyPrivateSign(msg []byte, opts ...SpawnOption) func() actor.Actor {
-	for _, o := range opts {
-		o(c)
-	}
-	newFunc := func() actor.Actor {
-		p := &privateSign{
-			aliceDkg: dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-		}
-		return p
-	}
-	signAlice, err := dklsv1.NewAliceSign(K_DEFAULT_MPC_CURVE, sha3.New256(), msg, c.DecodedMessage, protocol.Version1)
-	if err != nil {
-		fmt.Println(err)
-		return newFunc
-	}
-	loadFunc := func() actor.Actor {
-		p := &privateSign{
-			aliceDkg:  dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-			aliceSign: signAlice,
-		}
-		return p
-	}
-	return loadFunc
-}
+// 	aliceRefreshResultMessage, err = aliceRefresh.Result(protocol.Version1)
+// 	require.NoError(t, err)
+// 	require.NotNil(t, aliceRefreshResultMessage)
+// 	_, err = DecodeAliceRefreshResult(aliceRefreshResultMessage)
+// 	require.NoError(t, err)
 
-// ApplyPublicGen applies the spawn options in order to create a public share actor
-func (c *options) ApplyPublicSign(msg []byte, opts ...SpawnOption) func() actor.Actor {
-	for _, o := range opts {
-		o(c)
-	}
-	newFunc := func() actor.Actor {
-		p := &publicSign{
-			bobDkg: dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-		}
-		return p
-	}
-	signBob, err := dklsv1.NewBobSign(K_DEFAULT_MPC_CURVE, sha3.New256(), msg, c.DecodedMessage, protocol.Version1)
-	if err != nil {
-		fmt.Println(err)
-		return newFunc
-	}
+// 	bobRefreshResultMessage, err = bobRefresh.Result(protocol.Version1)
+// 	require.NoError(t, err)
+// 	require.NotNil(t, bobRefreshResultMessage)
+// 	_, err = DecodeBobRefreshResult(bobRefreshResultMessage)
+// 	require.NoError(t, err)
 
-	loadFunc := func() actor.Actor {
-		p := &publicSign{
-			bobDkg:  dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-			bobSign: signBob,
-		}
-		return p
-	}
-	return loadFunc
-}
+// 	return aliceRefreshResultMessage, bobRefreshResultMessage
+// }

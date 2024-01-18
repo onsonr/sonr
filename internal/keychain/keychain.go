@@ -1,6 +1,7 @@
 package keychain
 
 import (
+	"encoding/hex"
 	"fmt"
 	"os"
 
@@ -16,8 +17,8 @@ type Keychain struct {
 	RootDir      string
 	Wallets      *vfs.Wallets
 	Credentials  *vfs.Credentials
-	PrivSharePID *actor.PID
-	PubSharePID  *actor.PID
+	privSharePID *actor.PID
+	pubSharePID  *actor.PID
 }
 
 // New takes request context and root directory and returns a new Keychain
@@ -28,15 +29,14 @@ func New() (*Keychain, error) {
 	if err != nil {
 		return nil, err
 	}
-	privId, pubId, err := shares.Generate(rootDir, modulev1.CoinType_COIN_TYPE_SONR)
+	pubKey, addr, err := shares.Generate(rootDir, modulev1.CoinType_COIN_TYPE_SONR)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println(privId, pubId)
+	fmt.Println("Address:", addr)
+	fmt.Println("Public Key:", hex.EncodeToString(pubKey))
 	kc := &Keychain{
-		RootDir:      rootDir,
-		PrivSharePID: privId,
-		PubSharePID:  pubId,
+		RootDir: rootDir,
 	}
 	return kc, nil
 }

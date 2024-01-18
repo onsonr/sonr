@@ -3,134 +3,75 @@ package shares
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/asynkron/protoactor-go/actor"
+	"os"
+	"path"
 
 	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
 	"github.com/sonrhq/sonr/crypto/core/curves"
 	"github.com/sonrhq/sonr/crypto/core/protocol"
 	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
+	"github.com/sonrhq/sonr/pkg/did"
 )
 
-type privateGen struct {
-	aliceDkg *dklsv1.AliceDkg
-	bobPID   *actor.PID
-}
-
-func (s *privateGen) Receive(context actor.Context) {
-	switch msg := context.Message().(type) {
-	case *protocol.Message:
-		res, err := s.aliceDkg.Next(msg)
-		if err == protocol.ErrProtocolFinished {
-			msg, err := s.aliceDkg.Result(protocol.Version1)
-			if err != nil {
-				context.Respond(err)
-			}
-			context.Respond(msg)
-		}
-		if err != nil {
-			context.Respond(err)
-		}
-		ctx.Send(s.bobPID, res)
-	}
-}
-
-type publicGen struct {
-	bobDkg   *dklsv1.BobDkg
-	alicePID *actor.PID
-}
-
-func (s *publicGen) Receive(context actor.Context) {
-	switch msg := context.Message().(type) {
-	case *protocol.Message:
-		res, err := s.bobDkg.Next(msg)
-		if err == protocol.ErrProtocolFinished {
-			msg, err := s.bobDkg.Result(protocol.Version1)
-			if err != nil {
-				context.Respond(err)
-			}
-			context.Respond(msg)
-		}
-		if err != nil {
-			context.Respond(err)
-		}
-		context.Send(context.Sender(), res)
-	}
-}
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                   Actor Spawn                                  ||
-// ! ||--------------------------------------------------------------------------------||
-
-func Generate(rootDir string, coinType modulev1.CoinType) (*actor.PID, *actor.PID, error) {
-	c := defaultOptions()
-	pub, err := ctx.SpawnNamed(c.ApplyPublicGen(), "public")
-	if err != nil {
-		return nil, nil, err
-	}
-	priv, err := ctx.SpawnNamed(c.ApplyPrivateGen(pub), "private")
-	if err != nil {
-		return nil, nil, err
-	}
-	return priv, pub, nil
-}
-
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                               Spawn Configuration                              ||
-// ! ||--------------------------------------------------------------------------------||
-var ctx = actor.NewActorSystem().Root
-
 // K_DEFAULT_MPC_CURVE is the default curve for the controller.
-var K_DEFAULT_MPC_CURVE = curves.K256()
+var K_DEFAULT_MPC_CURVE = curves.P256()
 
-type SpawnOption func(c *options)
-
-type options struct {
-	DecodedMessage *protocol.Message
-	Message        []byte
-}
-
-// defaultOptions returns the default options for the private share actor
-func defaultOptions() *options {
-	return &options{}
-}
-
-// Attempts to decode the output bytes into a protocol.Message
-func WithOutputBytes(out []byte) SpawnOption {
-	return func(c *options) {
-		decodedMsg := &protocol.Message{}
-		err := json.Unmarshal(out, decodedMsg)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		c.DecodedMessage = decodedMsg
+func Generate(rootDir string, coinType modulev1.CoinType) ([]byte, string, error) {
+	bob := dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
+	alice := dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
+	err := checkIteratorErrors(runIteratedProtocol(bob, alice))
+	if err != nil {
+		return nil, "", err
 	}
+	aliceRes, err := alice.Result(protocol.Version1)
+	if err != nil {
+		return nil, "", err
+	}
+	bobRes, err := bob.Result(protocol.Version1)
+	if err != nil {
+		return nil, "", err
+	}
+	aliceOut, err := dklsv1.DecodeAliceDkgResult(aliceRes)
+	if err != nil {
+		return nil, "", err
+	}
+	pub := aliceOut.PublicKey.ToAffineCompressed()
+	addr, err := did.GetAddressByPublicKey(pub, coinType)
+	if err != nil {
+		return nil, "", err
+	}
+	err = os.MkdirAll(path.Join(rootDir, ".keyshares"), os.ModePerm)
+	if err != nil {
+		return nil, "", err
+	}
+	err = writeSharesToDisk(rootDir, coinType, addr, bobRes, aliceRes)
+	if err != nil {
+		return nil, "", err
+	}
+	return pub, addr, nil
 }
 
-// ! ||-------------------------------------------------------------------------------||
-// ! ||                            Gen Actor configuration                            ||
-// ! ||-------------------------------------------------------------------------------||
-
-// ApplyPrivateGen applies the spawn options in order to create a private share actor
-func (c *options) ApplyPrivateGen(pubPid *actor.PID) *actor.Props {
-	newFunc := func() actor.Actor {
-		p := &privateGen{
-			aliceDkg: dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-			bobPID:   pubPid,
-		}
-		return p
+func writeSharesToDisk(rootDir string, coinType modulev1.CoinType, address string, bobOut *protocol.Message, aliceOut *protocol.Message) error {
+	pathPrefix := fmt.Sprintf("%s%s", did.GetCoinTypeDIDMethod(coinType), address)
+	outBz, err := json.Marshal(aliceOut)
+	if err != nil {
+		return err
 	}
-	return actor.PropsFromProducer(newFunc)
-}
-
-// ApplyPublicGen applies the spawn options in order to create a public share actor
-func (c *options) ApplyPublicGen() *actor.Props {
-	newFunc := func() actor.Actor {
-		p := &publicGen{
-			bobDkg: dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1),
-		}
-		return p
+	alicePath := path.Join(rootDir, ".keyshares", fmt.Sprintf("%s.privshare", pathPrefix))
+	err = os.WriteFile(alicePath, outBz, os.ModePerm)
+	if err != nil {
+		return err
 	}
-	return actor.PropsFromProducer(newFunc)
+	fmt.Printf("Keyshare written to disk: %s", alicePath)
+	outBz, err = json.Marshal(bobOut)
+	if err != nil {
+		return err
+	}
+	bobPath := path.Join(rootDir, ".keyshares", fmt.Sprintf("%s.pubshare", pathPrefix))
+	err = os.WriteFile(bobPath, outBz, os.ModePerm)
+	if err != nil {
+		return err
+	}
+	fmt.Printf("Keyshare written to disk: %s", bobPath)
+	return nil
 }
