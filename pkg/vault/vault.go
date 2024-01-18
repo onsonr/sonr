@@ -30,7 +30,7 @@ type Vault struct {
 
 func New(ctx context.Context) (*Vault, error) {
 	c := getIpfsClient()
-	kc, err := keychain.New()
+	kc, err := keychain.New(ctx)
 	if err != nil {
 		return nil, err
 	}
