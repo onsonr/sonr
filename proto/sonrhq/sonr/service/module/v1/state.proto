@@ -45,22 +45,6 @@ message ServiceRecord {
   ServicePermissions permissions = 6;
 }
 
-// UserProfile is the total supply of the module.
-message UserProfile {
-  option (cosmos.orm.v1.table) = {
-    id : 2
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "origin"}
-    index : {id : 2 fields : "origin,handle" unique : true}
-  };
-
-  uint64 id = 1;
-  string origin = 2;
-  string handle = 3;
-  repeated uint64 linked_accounts = 4;
-  repeated uint64 linked_credentials = 5;
-}
-
 // Credential is the total supply of the module.
 message Credential {
   option (cosmos.orm.v1.table) = {

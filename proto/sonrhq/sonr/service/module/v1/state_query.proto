@@ -17,12 +17,6 @@ service StateQueryService {
   rpc GetServiceRecordByOriginOwner(GetServiceRecordByOriginOwnerRequest) returns (GetServiceRecordByOriginOwnerResponse) {}
   // ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
   rpc ListServiceRecord(ListServiceRecordRequest) returns (ListServiceRecordResponse) {}
-  // Get queries the UserProfile table by its primary key.
-  rpc GetUserProfile(GetUserProfileRequest) returns (GetUserProfileResponse) {}
-  // GetUserProfileByOriginHandle queries the UserProfile table by its OriginHandle index
-  rpc GetUserProfileByOriginHandle(GetUserProfileByOriginHandleRequest) returns (GetUserProfileByOriginHandleResponse) {}
-  // ListUserProfile queries the UserProfile table using prefix and range queries against defined indexes.
-  rpc ListUserProfile(ListUserProfileRequest) returns (ListUserProfileResponse) {}
   // Get queries the Credential table by its primary key.
   rpc GetCredential(GetCredentialRequest) returns (GetCredentialResponse) {}
   // GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -168,95 +162,6 @@ message ListServiceRecordRequest {
 message ListServiceRecordResponse {
   // values are the results of the query.
   repeated ServiceRecord values = 1;
-  // pagination is the pagination response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// GetUserProfileRequest is the StateQuery/GetUserProfileRequest request type.
-message GetUserProfileRequest {
-  // id specifies the value of the id field in the primary key.
-  uint64 id = 1;
-}
-
-// GetUserProfileResponse is the StateQuery/GetUserProfileResponse response type.
-message GetUserProfileResponse {
-  // value is the response value.
-  UserProfile value = 1;
-}
-
-// GetUserProfileByOriginHandleRequest is the StateQuery/GetUserProfileByOriginHandleRequest request type.
-message GetUserProfileByOriginHandleRequest {
-  string origin = 1;
-  string handle = 2;
-}
-
-// GetUserProfileByOriginHandleResponse is the StateQuery/GetUserProfileByOriginHandleResponse response type.
-message GetUserProfileByOriginHandleResponse {
-  UserProfile value = 1;
-}
-
-// ListUserProfileRequest is the StateQuery/ListUserProfileRequest request type.
-message ListUserProfileRequest {
-  // IndexKey specifies the value of an index key to use in prefix and range queries.
-  message IndexKey {
-    // key specifies the index key value.
-    oneof key {
-      // id specifies the value of the Id index key to use in the query.
-      Id id = 1;
-      // origin specifies the value of the Origin index key to use in the query.
-      Origin origin = 2;
-      // origin_handle specifies the value of the OriginHandle index key to use in the query.
-      OriginHandle origin_handle = 3;
-    }
-    
-    message Id {
-      // id is the value of the id field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional uint64 id = 1;
-    }
-    
-    message Origin {
-      // origin is the value of the origin field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string origin = 1;
-    }
-    
-    message OriginHandle {
-      // origin is the value of the origin field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string origin = 1;
-      // handle is the value of the handle field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string handle = 2;
-    }
-  }
-  
-  // query specifies the type of query - either a prefix or range query.
-  oneof query {
-    // prefix_query specifies the index key value to use for the prefix query.
-    IndexKey prefix_query = 1;
-    // range_query specifies the index key from/to values to use for the range query.
-    RangeQuery range_query = 2;
-  }
-  // pagination specifies optional pagination parameters.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
-  
-  // RangeQuery specifies the from/to index keys for a range query.
-  message RangeQuery {
-    // from is the index key to use for the start of the range query.
-    // To query from the start of an index, specify an index key for that index with empty values.
-    IndexKey from = 1;
-    // to is the index key to use for the end of the range query.
-    // The index key type MUST be the same as the index key type used for from.
-    // To query from to the end of an index it can be omitted.
-    IndexKey to = 2;
-  }
-}
-
-// ListUserProfileResponse is the StateQuery/ListUserProfileResponse response type.
-message ListUserProfileResponse {
-  // values are the results of the query.
-  repeated UserProfile values = 1;
   // pagination is the pagination response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

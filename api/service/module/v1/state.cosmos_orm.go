@@ -268,186 +268,6 @@ func NewServiceRecordTable(db ormtable.Schema) (ServiceRecordTable, error) {
 	return serviceRecordTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
-type UserProfileTable interface {
-	Insert(ctx context.Context, userProfile *UserProfile) error
-	InsertReturningId(ctx context.Context, userProfile *UserProfile) (uint64, error)
-	LastInsertedSequence(ctx context.Context) (uint64, error)
-	Update(ctx context.Context, userProfile *UserProfile) error
-	Save(ctx context.Context, userProfile *UserProfile) error
-	Delete(ctx context.Context, userProfile *UserProfile) error
-	Has(ctx context.Context, id uint64) (found bool, err error)
-	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id uint64) (*UserProfile, error)
-	HasByOriginHandle(ctx context.Context, origin string, handle string) (found bool, err error)
-	// GetByOriginHandle returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginHandle(ctx context.Context, origin string, handle string) (*UserProfile, error)
-	List(ctx context.Context, prefixKey UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error)
-	ListRange(ctx context.Context, from, to UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error)
-	DeleteBy(ctx context.Context, prefixKey UserProfileIndexKey) error
-	DeleteRange(ctx context.Context, from, to UserProfileIndexKey) error
-
-	doNotImplement()
-}
-
-type UserProfileIterator struct {
-	ormtable.Iterator
-}
-
-func (i UserProfileIterator) Value() (*UserProfile, error) {
-	var userProfile UserProfile
-	err := i.UnmarshalMessage(&userProfile)
-	return &userProfile, err
-}
-
-type UserProfileIndexKey interface {
-	id() uint32
-	values() []interface{}
-	userProfileIndexKey()
-}
-
-// primary key starting index..
-type UserProfilePrimaryKey = UserProfileIdIndexKey
-
-type UserProfileIdIndexKey struct {
-	vs []interface{}
-}
-
-func (x UserProfileIdIndexKey) id() uint32            { return 0 }
-func (x UserProfileIdIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileIdIndexKey) userProfileIndexKey()  {}
-
-func (this UserProfileIdIndexKey) WithId(id uint64) UserProfileIdIndexKey {
-	this.vs = []interface{}{id}
-	return this
-}
-
-type UserProfileOriginIndexKey struct {
-	vs []interface{}
-}
-
-func (x UserProfileOriginIndexKey) id() uint32            { return 1 }
-func (x UserProfileOriginIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileOriginIndexKey) userProfileIndexKey()  {}
-
-func (this UserProfileOriginIndexKey) WithOrigin(origin string) UserProfileOriginIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-type UserProfileOriginHandleIndexKey struct {
-	vs []interface{}
-}
-
-func (x UserProfileOriginHandleIndexKey) id() uint32            { return 2 }
-func (x UserProfileOriginHandleIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileOriginHandleIndexKey) userProfileIndexKey()  {}
-
-func (this UserProfileOriginHandleIndexKey) WithOrigin(origin string) UserProfileOriginHandleIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this UserProfileOriginHandleIndexKey) WithOriginHandle(origin string, handle string) UserProfileOriginHandleIndexKey {
-	this.vs = []interface{}{origin, handle}
-	return this
-}
-
-type userProfileTable struct {
-	table ormtable.AutoIncrementTable
-}
-
-func (this userProfileTable) Insert(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Insert(ctx, userProfile)
-}
-
-func (this userProfileTable) Update(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Update(ctx, userProfile)
-}
-
-func (this userProfileTable) Save(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Save(ctx, userProfile)
-}
-
-func (this userProfileTable) Delete(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Delete(ctx, userProfile)
-}
-
-func (this userProfileTable) InsertReturningId(ctx context.Context, userProfile *UserProfile) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, userProfile)
-}
-
-func (this userProfileTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
-	return this.table.LastInsertedSequence(ctx)
-}
-
-func (this userProfileTable) Has(ctx context.Context, id uint64) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, id)
-}
-
-func (this userProfileTable) Get(ctx context.Context, id uint64) (*UserProfile, error) {
-	var userProfile UserProfile
-	found, err := this.table.PrimaryKey().Get(ctx, &userProfile, id)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &userProfile, nil
-}
-
-func (this userProfileTable) HasByOriginHandle(ctx context.Context, origin string, handle string) (found bool, err error) {
-	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-		handle,
-	)
-}
-
-func (this userProfileTable) GetByOriginHandle(ctx context.Context, origin string, handle string) (*UserProfile, error) {
-	var userProfile UserProfile
-	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &userProfile,
-		origin,
-		handle,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &userProfile, nil
-}
-
-func (this userProfileTable) List(ctx context.Context, prefixKey UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error) {
-	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return UserProfileIterator{it}, err
-}
-
-func (this userProfileTable) ListRange(ctx context.Context, from, to UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error) {
-	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return UserProfileIterator{it}, err
-}
-
-func (this userProfileTable) DeleteBy(ctx context.Context, prefixKey UserProfileIndexKey) error {
-	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
-}
-
-func (this userProfileTable) DeleteRange(ctx context.Context, from, to UserProfileIndexKey) error {
-	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
-}
-
-func (this userProfileTable) doNotImplement() {}
-
-var _ UserProfileTable = userProfileTable{}
-
-func NewUserProfileTable(db ormtable.Schema) (UserProfileTable, error) {
-	table := db.GetTable(&UserProfile{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&UserProfile{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return userProfileTable{table.(ormtable.AutoIncrementTable)}, nil
-}
-
 type CredentialTable interface {
 	Insert(ctx context.Context, credential *Credential) error
 	InsertReturningId(ctx context.Context, credential *Credential) (uint64, error)
@@ -822,7 +642,6 @@ func NewOwnParamsTable(db ormtable.Schema) (OwnParamsTable, error) {
 
 type StateStore interface {
 	ServiceRecordTable() ServiceRecordTable
-	UserProfileTable() UserProfileTable
 	CredentialTable() CredentialTable
 	BaseParamsTable() BaseParamsTable
 	ReadParamsTable() ReadParamsTable
@@ -834,7 +653,6 @@ type StateStore interface {
 
 type stateStore struct {
 	serviceRecord ServiceRecordTable
-	userProfile   UserProfileTable
 	credential    CredentialTable
 	baseParams    BaseParamsTable
 	readParams    ReadParamsTable
@@ -844,10 +662,6 @@ type stateStore struct {
 
 func (x stateStore) ServiceRecordTable() ServiceRecordTable {
 	return x.serviceRecord
-}
-
-func (x stateStore) UserProfileTable() UserProfileTable {
-	return x.userProfile
 }
 
 func (x stateStore) CredentialTable() CredentialTable {
@@ -880,11 +694,6 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
-	userProfileTable, err := NewUserProfileTable(db)
-	if err != nil {
-		return nil, err
-	}
-
 	credentialTable, err := NewCredentialTable(db)
 	if err != nil {
 		return nil, err
@@ -912,7 +721,6 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 
 	return stateStore{
 		serviceRecordTable,
-		userProfileTable,
 		credentialTable,
 		baseParamsTable,
 		readParamsTable,

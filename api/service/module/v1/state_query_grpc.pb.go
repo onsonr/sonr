@@ -26,9 +26,6 @@ const (
 	StateQueryService_GetServiceRecordByNameOwner_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByNameOwner"
 	StateQueryService_GetServiceRecordByOriginOwner_FullMethodName = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByOriginOwner"
 	StateQueryService_ListServiceRecord_FullMethodName             = "/sonrhq.sonr.service.module.v1.StateQueryService/ListServiceRecord"
-	StateQueryService_GetUserProfile_FullMethodName                = "/sonrhq.sonr.service.module.v1.StateQueryService/GetUserProfile"
-	StateQueryService_GetUserProfileByOriginHandle_FullMethodName  = "/sonrhq.sonr.service.module.v1.StateQueryService/GetUserProfileByOriginHandle"
-	StateQueryService_ListUserProfile_FullMethodName               = "/sonrhq.sonr.service.module.v1.StateQueryService/ListUserProfile"
 	StateQueryService_GetCredential_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredential"
 	StateQueryService_GetCredentialByOriginHandle_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
 	StateQueryService_GetCredentialByCredentialId_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetCredentialByCredentialId"
@@ -54,12 +51,6 @@ type StateQueryServiceClient interface {
 	GetServiceRecordByOriginOwner(ctx context.Context, in *GetServiceRecordByOriginOwnerRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginOwnerResponse, error)
 	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
 	ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error)
-	// Get queries the UserProfile table by its primary key.
-	GetUserProfile(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error)
-	// GetUserProfileByOriginHandle queries the UserProfile table by its OriginHandle index
-	GetUserProfileByOriginHandle(ctx context.Context, in *GetUserProfileByOriginHandleRequest, opts ...grpc.CallOption) (*GetUserProfileByOriginHandleResponse, error)
-	// ListUserProfile queries the UserProfile table using prefix and range queries against defined indexes.
-	ListUserProfile(ctx context.Context, in *ListUserProfileRequest, opts ...grpc.CallOption) (*ListUserProfileResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -127,33 +118,6 @@ func (c *stateQueryServiceClient) GetServiceRecordByOriginOwner(ctx context.Cont
 func (c *stateQueryServiceClient) ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error) {
 	out := new(ListServiceRecordResponse)
 	err := c.cc.Invoke(ctx, StateQueryService_ListServiceRecord_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetUserProfile(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*GetUserProfileResponse, error) {
-	out := new(GetUserProfileResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetUserProfile_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetUserProfileByOriginHandle(ctx context.Context, in *GetUserProfileByOriginHandleRequest, opts ...grpc.CallOption) (*GetUserProfileByOriginHandleResponse, error) {
-	out := new(GetUserProfileByOriginHandleResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetUserProfileByOriginHandle_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) ListUserProfile(ctx context.Context, in *ListUserProfileRequest, opts ...grpc.CallOption) (*ListUserProfileResponse, error) {
-	out := new(ListUserProfileResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListUserProfile_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -255,12 +219,6 @@ type StateQueryServiceServer interface {
 	GetServiceRecordByOriginOwner(context.Context, *GetServiceRecordByOriginOwnerRequest) (*GetServiceRecordByOriginOwnerResponse, error)
 	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
 	ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error)
-	// Get queries the UserProfile table by its primary key.
-	GetUserProfile(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error)
-	// GetUserProfileByOriginHandle queries the UserProfile table by its OriginHandle index
-	GetUserProfileByOriginHandle(context.Context, *GetUserProfileByOriginHandleRequest) (*GetUserProfileByOriginHandleResponse, error)
-	// ListUserProfile queries the UserProfile table using prefix and range queries against defined indexes.
-	ListUserProfile(context.Context, *ListUserProfileRequest) (*ListUserProfileResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -300,15 +258,6 @@ func (UnimplementedStateQueryServiceServer) GetServiceRecordByOriginOwner(contex
 }
 func (UnimplementedStateQueryServiceServer) ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListServiceRecord not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetUserProfile(context.Context, *GetUserProfileRequest) (*GetUserProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserProfile not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetUserProfileByOriginHandle(context.Context, *GetUserProfileByOriginHandleRequest) (*GetUserProfileByOriginHandleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserProfileByOriginHandle not implemented")
-}
-func (UnimplementedStateQueryServiceServer) ListUserProfile(context.Context, *ListUserProfileRequest) (*ListUserProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListUserProfile not implemented")
 }
 func (UnimplementedStateQueryServiceServer) GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCredential not implemented")
@@ -436,60 +385,6 @@ func _StateQueryService_ListServiceRecord_Handler(srv interface{}, ctx context.C
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StateQueryServiceServer).ListServiceRecord(ctx, req.(*ListServiceRecordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserProfileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetUserProfile(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetUserProfile_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetUserProfile(ctx, req.(*GetUserProfileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetUserProfileByOriginHandle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserProfileByOriginHandleRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetUserProfileByOriginHandle(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetUserProfileByOriginHandle_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetUserProfileByOriginHandle(ctx, req.(*GetUserProfileByOriginHandleRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_ListUserProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListUserProfileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListUserProfile(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_ListUserProfile_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListUserProfile(ctx, req.(*ListUserProfileRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -682,18 +577,6 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListServiceRecord",
 			Handler:    _StateQueryService_ListServiceRecord_Handler,
-		},
-		{
-			MethodName: "GetUserProfile",
-			Handler:    _StateQueryService_GetUserProfile_Handler,
-		},
-		{
-			MethodName: "GetUserProfileByOriginHandle",
-			Handler:    _StateQueryService_GetUserProfileByOriginHandle_Handler,
-		},
-		{
-			MethodName: "ListUserProfile",
-			Handler:    _StateQueryService_ListUserProfile_Handler,
 		},
 		{
 			MethodName: "GetCredential",
