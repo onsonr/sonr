@@ -7,32 +7,32 @@ import (
 )
 
 // GetCoinTypeDIDMethod returns the DID method for a given coin type
-func GetCoinTypeDIDMethod(coinType modulev1.CoinType) (string, error) {
+func GetCoinTypeDIDMethod(coinType modulev1.CoinType) string {
 	switch coinType {
 	case modulev1.CoinType_COIN_TYPE_ATOM:
-		return "did:atom:", nil
+		return "did:atom:"
 	case modulev1.CoinType_COIN_TYPE_AXELAR:
-		return "did:axlr:", nil
+		return "did:axlr:"
 	case modulev1.CoinType_COIN_TYPE_BITCOIN:
-		return "did:btcr:", nil
+		return "did:btcr:"
 	case modulev1.CoinType_COIN_TYPE_ETHEREUM:
-		return "did:ethr:", nil
+		return "did:ethr:"
 	case modulev1.CoinType_COIN_TYPE_EVMOS:
-		return "did:evmos:", nil
+		return "did:evmos:"
 	case modulev1.CoinType_COIN_TYPE_FILECOIN:
-		return "did:filr:", nil
+		return "did:filr:"
 	case modulev1.CoinType_COIN_TYPE_JUNO:
-		return "did:juno:", nil
+		return "did:juno:"
 	case modulev1.CoinType_COIN_TYPE_OSMO:
-		return "did:osmos:", nil
+		return "did:osmos:"
 	case modulev1.CoinType_COIN_TYPE_SOLANA:
-		return "did:sol:", nil
+		return "did:sol:"
 	case modulev1.CoinType_COIN_TYPE_SONR:
-		return "did:sonr:", nil
+		return "did:sonr:"
 	case modulev1.CoinType_COIN_TYPE_STARGAZE:
-		return "did:starz:", nil
+		return "did:starz:"
 	default:
-		return "", fmt.Errorf("unsupported coin type")
+		return "did:unspecified:"
 	}
 }
 
@@ -63,5 +63,35 @@ func GetDIDMethodCoinType(didMethod string) (modulev1.CoinType, error) {
 		return modulev1.CoinType_COIN_TYPE_STARGAZE, nil
 	default:
 		return modulev1.CoinType_COIN_TYPE_UNSPECIFIED, fmt.Errorf("unsupported DID method")
+	}
+}
+
+// GetCoinTypeHRP returns the HRP for a given coin type
+func GetCoinTypeHRP(coinType modulev1.CoinType) string {
+	switch coinType {
+	case modulev1.CoinType_COIN_TYPE_ATOM:
+		return "cosmos"
+	case modulev1.CoinType_COIN_TYPE_AXELAR:
+		return "axelar"
+	case modulev1.CoinType_COIN_TYPE_BITCOIN:
+		return "bc"
+	case modulev1.CoinType_COIN_TYPE_ETHEREUM:
+		return "eth"
+	case modulev1.CoinType_COIN_TYPE_EVMOS:
+		return "evmos"
+	case modulev1.CoinType_COIN_TYPE_FILECOIN:
+		return "fil"
+	case modulev1.CoinType_COIN_TYPE_JUNO:
+		return "juno"
+	case modulev1.CoinType_COIN_TYPE_OSMO:
+		return "osmo"
+	case modulev1.CoinType_COIN_TYPE_SOLANA:
+		return "sol"
+	case modulev1.CoinType_COIN_TYPE_SONR:
+		return "idx"
+	case modulev1.CoinType_COIN_TYPE_STARGAZE:
+		return "starz"
+	default:
+		return "0x"
 	}
 }

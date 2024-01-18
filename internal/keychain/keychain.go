@@ -1,6 +1,7 @@
 package keychain
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/asynkron/protoactor-go/actor"
@@ -31,6 +32,7 @@ func New() (*Keychain, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println(privId, pubId)
 	kc := &Keychain{
 		RootDir:      rootDir,
 		PrivSharePID: privId,

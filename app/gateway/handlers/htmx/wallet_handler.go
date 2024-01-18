@@ -6,9 +6,9 @@ import (
 	"github.com/sonrhq/sonr/app/gateway/ui/views"
 )
 
-type DashboardHandler struct{}
+type WalletHandler struct{}
 
-func (b DashboardHandler) IndexPage(w http.ResponseWriter, r *http.Request) {
+func (b WalletHandler) IndexPage(w http.ResponseWriter, r *http.Request) {
 	err := views.AccountHome().Render(r.Context(), w)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
