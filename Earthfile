@@ -32,6 +32,7 @@ deps:
     RUN go install github.com/kollalabs/protoc-gen-openapi@latest
     RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
 	RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+    RUN go install github.com/wailsapp/wails/v2/cmd/wails@latest
     RUN go install github.com/a-h/templ/cmd/templ@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum

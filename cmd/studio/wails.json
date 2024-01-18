@@ -1,0 +1,32 @@
+{
+	"name": "Sonr Studio",
+	"assetdir": "./frontend",
+	"wailsjsdir": "./frontend/js",
+	"frontend:build": "",
+	"frontend:install": "",
+	"frontend:dev": "",
+	"frontend:dev:watcher": "",
+	"version": "2",
+	"Path": "",
+	"BuildDir": "",
+	"outputfilename": "Sonr Studio",
+	"OutputType": "",
+	"Platform": "",
+	"runNonNativeBuildHooks": false,
+	"postBuildHooks": null,
+	"Author": {
+		"name": "Sonr Inc.",
+		"email": "team@sonr.io"
+	},
+	"Info": {
+		"companyName": "Sonr Inc.",
+		"productName": "Sonr Studio",
+		"productVersion": "0.1.0",
+		"copyright": "(c) 2024 Sonr Inc.",
+		"comments": "A delightful desktop app with a fast and secure DX for Sonr blockchain services."
+	},
+	"debounceMS": 500,
+	"devserverurl": "http://localhost:34115",
+	"appargs": "",
+	"nsisType": ""
+}
