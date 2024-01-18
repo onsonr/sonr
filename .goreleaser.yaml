@@ -45,6 +45,7 @@ brews:
 
 kos:
   - repository: ghcr.io/sonrhq/sonrd
+    main: ./cmd/sonrd
     tags:
     - '{{.Version}}'
     - latest
