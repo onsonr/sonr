@@ -1,7 +1,6 @@
 package shares
 
 import (
-	"encoding/json"
 	"fmt"
 
 	"github.com/sonrhq/sonr/crypto/core/protocol"
@@ -27,10 +26,10 @@ func runIteratedProtocol(firstParty protocol.Iterator, secondParty protocol.Iter
 			return aErr
 		}
 	}
-	return checkIteratorErrors(aErr, bErr)
+	return checkProtocolErrors(aErr, bErr)
 }
 
-func checkIteratorErrors(aErr, bErr error) error {
+func checkProtocolErrors(aErr, bErr error) error {
 	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
 		return nil
 	}
@@ -44,14 +43,4 @@ func checkIteratorErrors(aErr, bErr error) error {
 		return fmt.Errorf("bob failed: %v", bErr)
 	}
 	return nil
-}
-
-func UnmarshalProtocolMessage(out []byte) (*protocol.Message, error) {
-	msg := &protocol.Message{}
-	err := json.Unmarshal(out, msg)
-	if err != nil {
-		fmt.Println(err)
-		return nil, err
-	}
-	return msg, nil
 }

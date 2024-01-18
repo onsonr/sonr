@@ -40,7 +40,6 @@ func New(ctx context.Context) (*Vault, error) {
 	}
 
 	return &Vault{
-		localPath:   kc.RootDir,
 		Key:         key,
 		SonrAddress: kc.Address,
 		SonrPubKey:  kc.PublicKey,

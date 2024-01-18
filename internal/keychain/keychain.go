@@ -3,7 +3,6 @@ package keychain
 import (
 	"context"
 	"fmt"
-	"os"
 
 	"github.com/asynkron/protoactor-go/actor"
 	"github.com/ipfs/kubo/client/rpc"
@@ -15,7 +14,6 @@ import (
 
 // Keychain is a local temp file system which spawns shares as proto actors
 type Keychain struct {
-	RootDir      string
 	Wallets      []*modulev1.Account
 	Address      string
 	PublicKey    []byte
@@ -28,11 +26,7 @@ type Keychain struct {
 // 1. It requires an initial credential id to be passed as a value within the accumulator object
 
 func New(ctx context.Context) (*Keychain, error) {
-	rootDir, err := os.MkdirTemp("", "sonr-keychain")
-	if err != nil {
-		return nil, err
-	}
-	dir, pubKey, addr, err := shares.Generate(rootDir, modulev1.CoinType_COIN_TYPE_SONR)
+	dir, pubKey, addr, err := shares.Generate(modulev1.CoinType_COIN_TYPE_SONR)
 	if err != nil {
 		return nil, err
 	}
@@ -57,16 +51,10 @@ func New(ctx context.Context) (*Keychain, error) {
 	kc := &Keychain{
 		Address:   addr,
 		PublicKey: pubKey,
-		RootDir:   rootDir,
 		peerID:    key.ID(),
 	}
 
 	return kc, nil
-}
-
-// Burn removes the root directory of the keychain
-func (kc *Keychain) Burn() error {
-	return os.RemoveAll(kc.RootDir)
 }
 
 func getIpfsClient() *rpc.HttpApi {

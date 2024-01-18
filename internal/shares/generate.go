@@ -3,7 +3,6 @@ package shares
 import (
 	"encoding/json"
 	"fmt"
-	"os"
 	"path"
 
 	"github.com/ipfs/boxo/files"
@@ -18,7 +17,7 @@ import (
 // K_DEFAULT_MPC_CURVE is the default curve for the controller.
 var K_DEFAULT_MPC_CURVE = curves.P256()
 
-func Generate(rootDir string, coinType modulev1.CoinType) (files.Directory, []byte, string, error) {
+func Generate(coinType modulev1.CoinType) (files.Directory, []byte, string, error) {
 	bob := dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
 	err := runIteratedProtocol(bob, alice)
@@ -39,10 +38,6 @@ func Generate(rootDir string, coinType modulev1.CoinType) (files.Directory, []by
 	}
 	pub := aliceOut.PublicKey.ToAffineCompressed()
 	addr, err := did.GetAddressByPublicKey(pub, coinType)
-	if err != nil {
-		return nil, nil, "", err
-	}
-	err = os.MkdirAll(path.Join(rootDir, ".keyshares"), os.ModePerm)
 	if err != nil {
 		return nil, nil, "", err
 	}
