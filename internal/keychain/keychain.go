@@ -1,8 +1,6 @@
 package keychain
 
 import (
-	"encoding/hex"
-	"fmt"
 	"os"
 
 	"github.com/asynkron/protoactor-go/actor"
@@ -17,6 +15,8 @@ type Keychain struct {
 	RootDir      string
 	Wallets      *vfs.Wallets
 	Credentials  *vfs.Credentials
+	Address      string
+	PublicKey    []byte
 	privSharePID *actor.PID
 	pubSharePID  *actor.PID
 }
@@ -33,10 +33,10 @@ func New() (*Keychain, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Address:", addr)
-	fmt.Println("Public Key:", hex.EncodeToString(pubKey))
 	kc := &Keychain{
-		RootDir: rootDir,
+		Address:   addr,
+		PublicKey: pubKey,
+		RootDir:   rootDir,
 	}
 	return kc, nil
 }
