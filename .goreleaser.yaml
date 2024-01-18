@@ -1,6 +1,6 @@
 project_name: sonrd
 builds:
-  # Build - Linux
+  # Build Sonr Daemon
   - id: sonrd
     main: cmd/sonrd/main.go
     binary: sonrd

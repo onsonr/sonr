@@ -8,7 +8,7 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	util "github.com/sonrhq/sonr/tools/hexutil"
+	util "github.com/sonrhq/sonr/pkg/hexutil"
 )
 
 type ABI struct {

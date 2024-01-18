@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/service/module/v1/state_query.proto
+// source: sonrhq/sonr/service/module/v1/state_query.proto
 
 package modulev1
 
@@ -21,29 +21,29 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetServiceRecord_FullMethodName              = "/sonrhq.service.module.v1.StateQueryService/GetServiceRecord"
-	StateQueryService_GetServiceRecordByOrigin_FullMethodName      = "/sonrhq.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
-	StateQueryService_GetServiceRecordByNameOwner_FullMethodName   = "/sonrhq.service.module.v1.StateQueryService/GetServiceRecordByNameOwner"
-	StateQueryService_GetServiceRecordByOriginOwner_FullMethodName = "/sonrhq.service.module.v1.StateQueryService/GetServiceRecordByOriginOwner"
-	StateQueryService_ListServiceRecord_FullMethodName             = "/sonrhq.service.module.v1.StateQueryService/ListServiceRecord"
-	StateQueryService_GetUserProfile_FullMethodName                = "/sonrhq.service.module.v1.StateQueryService/GetUserProfile"
-	StateQueryService_GetUserProfileByOriginHandle_FullMethodName  = "/sonrhq.service.module.v1.StateQueryService/GetUserProfileByOriginHandle"
-	StateQueryService_ListUserProfile_FullMethodName               = "/sonrhq.service.module.v1.StateQueryService/ListUserProfile"
-	StateQueryService_GetResource_FullMethodName                   = "/sonrhq.service.module.v1.StateQueryService/GetResource"
-	StateQueryService_GetResourceByCid_FullMethodName              = "/sonrhq.service.module.v1.StateQueryService/GetResourceByCid"
-	StateQueryService_GetResourceByOriginCid_FullMethodName        = "/sonrhq.service.module.v1.StateQueryService/GetResourceByOriginCid"
-	StateQueryService_GetResourceByOwnerCid_FullMethodName         = "/sonrhq.service.module.v1.StateQueryService/GetResourceByOwnerCid"
-	StateQueryService_GetResourceByOwnerOriginCid_FullMethodName   = "/sonrhq.service.module.v1.StateQueryService/GetResourceByOwnerOriginCid"
-	StateQueryService_ListResource_FullMethodName                  = "/sonrhq.service.module.v1.StateQueryService/ListResource"
-	StateQueryService_GetProperty_FullMethodName                   = "/sonrhq.service.module.v1.StateQueryService/GetProperty"
-	StateQueryService_GetPropertyByOriginOwnerKey_FullMethodName   = "/sonrhq.service.module.v1.StateQueryService/GetPropertyByOriginOwnerKey"
-	StateQueryService_GetPropertyBySchemaKey_FullMethodName        = "/sonrhq.service.module.v1.StateQueryService/GetPropertyBySchemaKey"
-	StateQueryService_GetPropertyBySchemaOwnerKey_FullMethodName   = "/sonrhq.service.module.v1.StateQueryService/GetPropertyBySchemaOwnerKey"
-	StateQueryService_ListProperty_FullMethodName                  = "/sonrhq.service.module.v1.StateQueryService/ListProperty"
-	StateQueryService_GetBaseParams_FullMethodName                 = "/sonrhq.service.module.v1.StateQueryService/GetBaseParams"
-	StateQueryService_GetReadParams_FullMethodName                 = "/sonrhq.service.module.v1.StateQueryService/GetReadParams"
-	StateQueryService_GetWriteParams_FullMethodName                = "/sonrhq.service.module.v1.StateQueryService/GetWriteParams"
-	StateQueryService_GetOwnParams_FullMethodName                  = "/sonrhq.service.module.v1.StateQueryService/GetOwnParams"
+	StateQueryService_GetServiceRecord_FullMethodName              = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecord"
+	StateQueryService_GetServiceRecordByOrigin_FullMethodName      = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
+	StateQueryService_GetServiceRecordByNameOwner_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByNameOwner"
+	StateQueryService_GetServiceRecordByOriginOwner_FullMethodName = "/sonrhq.sonr.service.module.v1.StateQueryService/GetServiceRecordByOriginOwner"
+	StateQueryService_ListServiceRecord_FullMethodName             = "/sonrhq.sonr.service.module.v1.StateQueryService/ListServiceRecord"
+	StateQueryService_GetUserProfile_FullMethodName                = "/sonrhq.sonr.service.module.v1.StateQueryService/GetUserProfile"
+	StateQueryService_GetUserProfileByOriginHandle_FullMethodName  = "/sonrhq.sonr.service.module.v1.StateQueryService/GetUserProfileByOriginHandle"
+	StateQueryService_ListUserProfile_FullMethodName               = "/sonrhq.sonr.service.module.v1.StateQueryService/ListUserProfile"
+	StateQueryService_GetResource_FullMethodName                   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetResource"
+	StateQueryService_GetResourceByCid_FullMethodName              = "/sonrhq.sonr.service.module.v1.StateQueryService/GetResourceByCid"
+	StateQueryService_GetResourceByOriginCid_FullMethodName        = "/sonrhq.sonr.service.module.v1.StateQueryService/GetResourceByOriginCid"
+	StateQueryService_GetResourceByOwnerCid_FullMethodName         = "/sonrhq.sonr.service.module.v1.StateQueryService/GetResourceByOwnerCid"
+	StateQueryService_GetResourceByOwnerOriginCid_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetResourceByOwnerOriginCid"
+	StateQueryService_ListResource_FullMethodName                  = "/sonrhq.sonr.service.module.v1.StateQueryService/ListResource"
+	StateQueryService_GetProperty_FullMethodName                   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetProperty"
+	StateQueryService_GetPropertyByOriginOwnerKey_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetPropertyByOriginOwnerKey"
+	StateQueryService_GetPropertyBySchemaKey_FullMethodName        = "/sonrhq.sonr.service.module.v1.StateQueryService/GetPropertyBySchemaKey"
+	StateQueryService_GetPropertyBySchemaOwnerKey_FullMethodName   = "/sonrhq.sonr.service.module.v1.StateQueryService/GetPropertyBySchemaOwnerKey"
+	StateQueryService_ListProperty_FullMethodName                  = "/sonrhq.sonr.service.module.v1.StateQueryService/ListProperty"
+	StateQueryService_GetBaseParams_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetBaseParams"
+	StateQueryService_GetReadParams_FullMethodName                 = "/sonrhq.sonr.service.module.v1.StateQueryService/GetReadParams"
+	StateQueryService_GetWriteParams_FullMethodName                = "/sonrhq.sonr.service.module.v1.StateQueryService/GetWriteParams"
+	StateQueryService_GetOwnParams_FullMethodName                  = "/sonrhq.sonr.service.module.v1.StateQueryService/GetOwnParams"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -870,7 +870,7 @@ func _StateQueryService_GetOwnParams_Handler(srv interface{}, ctx context.Contex
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StateQueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.service.module.v1.StateQueryService",
+	ServiceName: "sonrhq.sonr.service.module.v1.StateQueryService",
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -967,5 +967,5 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/service/module/v1/state_query.proto",
+	Metadata: "sonrhq/sonr/service/module/v1/state_query.proto",
 }

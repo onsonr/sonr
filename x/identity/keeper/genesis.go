@@ -14,7 +14,7 @@ var identitySchema = &ormv1alpha1.ModuleSchemaDescriptor{
 	SchemaFile: []*ormv1alpha1.ModuleSchemaDescriptor_FileEntry{
 		{
 			Id:            1,
-			ProtoFileName: modulev1.File_sonrhq_identity_module_v1_state_proto.Path(),
+			ProtoFileName: modulev1.File_sonrhq_sonr_identity_module_v1_state_proto.Path(),
 		},
 	},
 }

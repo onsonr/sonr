@@ -55,19 +55,17 @@ message State {
 message Account {
   option (cosmos.orm.v1.table) = {
     id : 1
-    primary_key : {fields : "index" auto_increment : true}
+    primary_key : {fields : "sequence" auto_increment : true}
     index : {id : 1 fields : "address" unique : true}
     index : {id : 2 fields : "public_key" unique : true}
   };
 
-  uint64 index = 1;
-  uint64 sequence = 2;
-  string address = 3;
-  string controller = 4;
-  CoinType coin_type = 5;
-  bytes public_key = 6;
-  bytes peer_id = 7;
-  string network = 8;
+  uint64 sequence = 1;
+  string controller = 2;
+  CoinType coin_type = 3;
+  bytes public_key = 4;
+  string network = 5;
+  string address = 6;
 }
 
 // Blockchain is the configuration table for connected blockchains
