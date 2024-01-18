@@ -13,13 +13,12 @@ import (
 )
 
 var (
-  // Commit is set by the compiler via -ldflags.
-  Commit = "unset"
+	// Commit is set by the compiler via -ldflags.
+	Commit = "unset"
 
-  // Version is set by the compiler via -ldflags.
-  Version = "unset"
+	// Version is set by the compiler via -ldflags.
+	Version = "unset"
 )
-
 
 // init sets the version flags.
 func init() {
