@@ -35,6 +35,13 @@ jobs:
         include:
           - targetos: darwin
             arch: arm64
+          - targetos: linux
+            arch: amd64
+        exclude:
+          - targetos: darwin
+            arch: amd64
+          - targetos: linux
+            arch: arm64
     steps:
       - uses: actions/checkout@v4
         with:
@@ -64,6 +71,13 @@ jobs:
         targetos: [darwin, linux]
         include:
           - targetos: darwin
+            arch: arm64
+          - targetos: linux
+            arch: amd64
+        exclude:
+          - targetos: darwin
+            arch: amd64
+          - targetos: linux
             arch: arm64
     steps:
       - uses: actions/checkout@v4
