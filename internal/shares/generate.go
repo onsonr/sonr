@@ -19,7 +19,7 @@ var K_DEFAULT_MPC_CURVE = curves.P256()
 func Generate(rootDir string, coinType modulev1.CoinType) ([]byte, string, error) {
 	bob := dklsv1.NewBobDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(K_DEFAULT_MPC_CURVE, protocol.Version1)
-	err := checkIteratorErrors(runIteratedProtocol(bob, alice))
+	err := runIteratedProtocol(bob, alice)
 	if err != nil {
 		return nil, "", err
 	}
