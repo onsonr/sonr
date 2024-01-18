@@ -2,10 +2,11 @@ package keychain
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/asynkron/protoactor-go/actor"
+	"github.com/ipfs/boxo/ipns"
 	"github.com/ipfs/kubo/client/rpc"
+	"github.com/ipfs/kubo/core/coreiface/options"
 	"github.com/libp2p/go-libp2p/core/peer"
 
 	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
@@ -20,6 +21,7 @@ type Keychain struct {
 	privSharePID *actor.PID
 	pubSharePID  *actor.PID
 	peerID       peer.ID
+	ipnsName     ipns.Name
 }
 
 // New takes request context and root directory and returns a new Keychain
@@ -31,29 +33,24 @@ func New(ctx context.Context) (*Keychain, error) {
 		return nil, err
 	}
 	ic := getIpfsClient()
-	key, err := ic.Key().Generate(ctx, addr)
+	key, err := ic.Key().Generate(ctx, addr, options.Key.Type(options.Ed25519Key))
 	if err != nil {
 		return nil, err
 	}
-	path, err := ic.Unixfs().Add(ctx, dir)
+	path, err := ic.Unixfs().Add(context.Background(), dir)
 	if err != nil {
 		return nil, err
 	}
-	err = ic.Pin().Add(ctx, path)
+	ipns, err := ic.Name().Publish(context.Background(), path, options.Name.Key(key.ID().String()))
 	if err != nil {
 		return nil, err
 	}
-	ipns, err := ic.Name().Publish(ctx, path)
-	if err != nil {
-		return nil, err
-	}
-	fmt.Println(ipns)
 	kc := &Keychain{
 		Address:   addr,
 		PublicKey: pubKey,
 		peerID:    key.ID(),
+		ipnsName:  ipns,
 	}
-
 	return kc, nil
 }
 

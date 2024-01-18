@@ -5,6 +5,7 @@ import (
 
 	"github.com/ipfs/kubo/client/rpc"
 	iface "github.com/ipfs/kubo/core/coreiface"
+	"github.com/ipfs/kubo/core/coreiface/options"
 	"github.com/libp2p/go-libp2p/core/peer"
 
 	"github.com/sonrhq/sonr/internal/keychain"
@@ -34,7 +35,7 @@ func New(ctx context.Context) (*Vault, error) {
 	if err != nil {
 		return nil, err
 	}
-	key, err := c.Key().Generate(ctx, kc.Address)
+	key, err := c.Key().Generate(ctx, kc.Address, options.Key.Type(options.Ed25519Key))
 	if err != nil {
 		return nil, err
 	}
