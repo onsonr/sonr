@@ -16,6 +16,7 @@ func Start() {
 
 	r.Mount(routes.LandingEndpoints())
 	r.Mount(routes.ConsoleEndpoints())
-
+	r.Mount(routes.APIEndpoints())
+	r.Mount(routes.SSEEndpoints())
 	http.ListenAndServe(":8080", r)
 }

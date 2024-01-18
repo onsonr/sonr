@@ -28,7 +28,7 @@ func WalletEndpoints() (string, chi.Router) {
 	return "/wallet", r
 }
 
-func ModuleEndpoints() (string, chi.Router) {
+func APIEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
 	bankHandler := modulesapi.BankHandler{}
 	govHandler := modulesapi.GovHandler{}
