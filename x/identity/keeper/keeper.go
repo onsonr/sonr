@@ -11,6 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	"github.com/sonrhq/sonr/pkg/vault"
 	"github.com/sonrhq/sonr/x/identity"
 )
 
@@ -81,6 +82,14 @@ func (k Keeper) DeriveAccount(ctx context.Context, id string) error {
 
 // GenerateIdentity generates a new Identity.
 func (k Keeper) GenerateIdentity(ctx context.Context) error {
+	cnt, err := vault.NewController(ctx)
+	if err != nil {
+		return err
+	}
+	err = k.db.ControllerTable().Insert(ctx, cnt)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

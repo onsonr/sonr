@@ -14,7 +14,7 @@ var serviceSchema = &ormv1alpha1.ModuleSchemaDescriptor{
 	SchemaFile: []*ormv1alpha1.ModuleSchemaDescriptor_FileEntry{
 		{
 			Id:            1,
-			ProtoFileName: modulev1.File_sonrhq_service_module_v1_state_proto.Path(),
+			ProtoFileName: modulev1.File_sonr_service_module_v1_state_proto.Path(),
 		},
 	},
 }
@@ -23,6 +23,17 @@ var serviceSchema = &ormv1alpha1.ModuleSchemaDescriptor{
 func (k *Keeper) InitGenesis(ctx context.Context, data *service.GenesisState) error {
 	// Set the params
 	if err := k.Params.Set(ctx, data.Params); err != nil {
+		return err
+	}
+
+	err := k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
+		Id:          0,
+		Origin:      "localhost",
+		Name:        "Sonr LocalAuth",
+		Description: "Sonr authentication service",
+		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
+	})
+	if err != nil {
 		return err
 	}
 

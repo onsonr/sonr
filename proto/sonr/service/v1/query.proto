@@ -1,0 +1,26 @@
+syntax = "proto3";
+package sonr.service.v1;
+
+option go_package = "github.com/sonrhq/sonr/x/service";
+import "sonr/service/v1/types.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  // Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sonrhq/service/v1/params";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}

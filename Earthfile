@@ -20,13 +20,20 @@ deps:
     git \
     grep \
     make \
+    nodejs \
+    npm \
     openssl \
     util-linux
     COPY go.mod go.sum ./
     RUN go mod download
+    RUN npm install -g swagger-combine
+    RUN npm install @bufbuild/buf
+    FROM ghcr.io/cosmos/proto-builder:0.14.0
+    RUN go install github.com/kollalabs/protoc-gen-openapi@latest
+    RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
+	RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+    RUN go install github.com/wailsapp/wails/v2/cmd/wails@latest
     RUN go install github.com/a-h/templ/cmd/templ@latest
-    RUN go install github.com/cosmtrek/air@latest
-    RUN go install github.com/bufbuild/buf/cmd/buf@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
@@ -55,7 +62,7 @@ generate:
     FROM +deps
     COPY . .
     RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonrhq/identity AS LOCAL api/identity
+    SAVE ARTIFACT sonr AS LOCAL api
     SAVE ARTIFACT proto AS LOCAL proto
 
 # runner - builds the runner docker image

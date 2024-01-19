@@ -13,12 +13,9 @@ tasks:
       - go install github.com/cosmtrek/air@latest
       - brew install tmux
 
-  init-matrix:
-   dir: ./deploy/rails/dendrite
-   cmds:
-     - earthly --no-sat +init
-
   build:
+   aliases:
+     - "b"
    cmds:
     - rm -rf bin/ && mkdir ./bin/
     - templ generate
@@ -26,18 +23,31 @@ tasks:
     - rm -rf dist
 
   generate:
+   aliases:
+      - "gen"
+      - "g"
    cmds:
+    - earthly --no-sat +generate
     - earthly --no-sat +templates
+    - go mod tidy
 
   dev:gateway:
+   aliases:
+     - "devg"
+     - "dg"
    cmds:
     - air -c ./deploy/local/air-gateway.toml
 
   dev:node:
+   aliases:
+     - "devn"
+     - "dn"
    cmds:
     - air -c ./deploy/local/air-node.toml
 
   dev:
+   aliases:
+     - "d"
    cmd: tmux new-session -d 'task dev:node' \; split-window -h 'task dev:gateway' \; attach
 
   grpcui:

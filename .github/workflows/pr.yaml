@@ -26,6 +26,7 @@ jobs:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
 
   run-tests:
+    environment: Staging
     name: Test on Target
     runs-on: ubuntu-latest
     strategy:
@@ -34,6 +35,13 @@ jobs:
         targetos: [darwin, linux]
         include:
           - targetos: darwin
+            arch: arm64
+          - targetos: linux
+            arch: amd64
+        exclude:
+          - targetos: darwin
+            arch: amd64
+          - targetos: linux
             arch: arm64
     steps:
       - uses: actions/checkout@v4
@@ -56,6 +64,7 @@ jobs:
       - run: go test -v ./...
 
   build-test:
+    environment: Staging
     name: Build for Target
     runs-on: ubuntu-latest
     strategy:
@@ -64,6 +73,13 @@ jobs:
         targetos: [darwin, linux]
         include:
           - targetos: darwin
+            arch: arm64
+          - targetos: linux
+            arch: amd64
+        exclude:
+          - targetos: darwin
+            arch: amd64
+          - targetos: linux
             arch: arm64
     steps:
       - uses: actions/checkout@v4

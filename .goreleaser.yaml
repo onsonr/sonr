@@ -1,6 +1,6 @@
 project_name: sonrd
 builds:
-  # Build - Linux
+  # Build Sonr Daemon
   - id: sonrd
     main: cmd/sonrd/main.go
     binary: sonrd
@@ -30,6 +30,30 @@ archives:
 checksum:
   name_template: sha256sum.txt
   algorithm: sha256
+
+brews:
+  -
+    folder: Formula
+    caveats: "How to use this binary"
+    homepage: "https://sonrhq.com"
+    description: "Sonr Binary Node"
+    license: "OpenGLV3"
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
+
+kos:
+  - repository: ghcr.io/sonrhq/sonrd
+    main: ./cmd/sonrd
+    tags:
+    - '{{.Version}}'
+    - latest
+    bare: true
+    preserve_import_paths: false
+    platforms:
+    - linux/amd64
+    - linux/arm64
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
@@ -72,20 +96,20 @@ release:
 
     | Image Name                               | Base                                 | Description                       | Registry Source                                     |
     |------------------------------------------|--------------------------------------|-----------------------------------|-----------------------------------------------------|
-    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonr-io/sonrd](https://ghcr.io/sonr-io/sonrd:latest) |
-    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonr-io/sonrd-standalone](https://ghcr.io/sonr-io/sonrd:latest-standalone) |
+    | `sonrhq/sonrd:{{ .Version }}`            | `distroless/static-debian11`         | Default image based on Distroless | [ghcr.io/sonrhq/sonrd](https://ghcr.io/sonrhq/sonrd:latest) |
+    | `sonrhq/sonrd:{{ .Version }}-standalone` | `distroless/static-debian11`         | Standalone testing node image     | [ghcr.io/sonrhq/sonrd-standalone](https://ghcr.io/sonrhq/sonrd:latest-standalone) |
     | `sonrhq/faucet:{{ .Version }}`           | `distroless/static-debian11`         | Development environment faucet    | [ghcr.io/sonr-io/sonr-faucet](https://ghcr.io/sonr-io/sonr-faucet:latest) |
 
     Example run:
 
     ```bash
-    docker run sonr-io/sonrd:{{ .Version }} version
+    docker run sonrhq/sonrd:{{ .Version }} version
     # v{{ .Version }}
     ````
 
     All the images support `amd64` architectures.
 
-  name_template: "Sonr - v{{.Version}} 🆔"
+  name_template: "Sonr 🆔 | v{{.Version}}"
   mode: replace
   draft: false
   extra_files:
@@ -110,5 +134,3 @@ changelog:
     - title: Others
       order: 999
 
-sboms:
-  - artifacts: archive
