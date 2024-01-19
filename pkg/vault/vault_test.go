@@ -19,6 +19,7 @@ func TestNewVault(t *testing.T) {
 	require.NotEmpty(t, v.Key)
 	t.Logf("PeerID: %s", v.PeerID)
 	t.Logf("SonrAddress: %s", v.SonrAddress)
+	t.Logf("IPNS: %s", v.IPNS)
 }
 
 func checkLocalIPFSConn() bool {
