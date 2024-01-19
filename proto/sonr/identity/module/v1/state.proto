@@ -66,7 +66,6 @@ message Account {
   bytes public_key = 4;
   string network = 5;
   string address = 6;
-  string ipns = 7;
 }
 
 // Blockchain is the configuration table for connected blockchains
@@ -91,13 +90,34 @@ message Blockchain {
 
 // Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
 // authorizer to the underlying wallet interface.
-message Identifier {
+message Accumulator {
   option (cosmos.orm.v1.table) = {
     id : 4
     primary_key : {fields : "index" auto_increment : true}
+    index : {id : 1 fields : "controller,key" unique : true}
   };
 
   uint64 index = 1;
-  string method = 2;
-  string identifier = 3;
+  string controller = 2;
+  string key = 3;
+  string value = 4;
+}
+
+// Controller is the root sonr controller table which contains all sub-identities.
+message Controller {
+  option (cosmos.orm.v1.table) = {
+    id: 2
+    primary_key : {fields : "sequence" auto_increment : true}
+    index : {id : 1 fields : "address" unique : true}
+    index : {id : 2 fields : "public_key" unique : true}
+    index : {id : 3 fields : "peer_id" unique : true}
+  };
+
+  uint64 sequence = 1;
+  string peer_id = 2;
+  string address = 3;
+  bytes public_key = 4;
+  bytes accumulator_key = 5;
+  string network = 6;
+  string chain_id = 7;
 }

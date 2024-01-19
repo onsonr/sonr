@@ -23,3 +23,15 @@ func checkLocalIPFSConn() bool {
 	_, err := rpc.NewLocalApi()
 	return err == nil
 }
+
+func BenchmarkNewKeychain(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		kc, err := keychain.New(context.Background())
+		if err != nil {
+			b.Fail()
+		}
+		if len(kc.Address) == 0 {
+			b.Fail()
+		}
+	}
+}

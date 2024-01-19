@@ -22,12 +22,12 @@ type ServiceRecordTable interface {
 	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
 	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error)
-	HasByNameOwner(ctx context.Context, name string, owner string) (found bool, err error)
-	// GetByNameOwner returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByNameOwner(ctx context.Context, name string, owner string) (*ServiceRecord, error)
-	HasByOriginOwner(ctx context.Context, origin string, owner string) (found bool, err error)
-	// GetByOriginOwner returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginOwner(ctx context.Context, origin string, owner string) (*ServiceRecord, error)
+	HasByNameController(ctx context.Context, name string, controller string) (found bool, err error)
+	// GetByNameController returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByNameController(ctx context.Context, name string, controller string) (*ServiceRecord, error)
+	HasByOriginController(ctx context.Context, origin string, controller string) (found bool, err error)
+	// GetByOriginController returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByOriginController(ctx context.Context, origin string, controller string) (*ServiceRecord, error)
 	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
@@ -81,52 +81,52 @@ func (this ServiceRecordOriginIndexKey) WithOrigin(origin string) ServiceRecordO
 	return this
 }
 
-type ServiceRecordOwnerIndexKey struct {
+type ServiceRecordControllerIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordOwnerIndexKey) id() uint32             { return 2 }
-func (x ServiceRecordOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOwnerIndexKey) serviceRecordIndexKey() {}
+func (x ServiceRecordControllerIndexKey) id() uint32             { return 2 }
+func (x ServiceRecordControllerIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordControllerIndexKey) serviceRecordIndexKey() {}
 
-func (this ServiceRecordOwnerIndexKey) WithOwner(owner string) ServiceRecordOwnerIndexKey {
-	this.vs = []interface{}{owner}
+func (this ServiceRecordControllerIndexKey) WithController(controller string) ServiceRecordControllerIndexKey {
+	this.vs = []interface{}{controller}
 	return this
 }
 
-type ServiceRecordNameOwnerIndexKey struct {
+type ServiceRecordNameControllerIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordNameOwnerIndexKey) id() uint32             { return 3 }
-func (x ServiceRecordNameOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordNameOwnerIndexKey) serviceRecordIndexKey() {}
+func (x ServiceRecordNameControllerIndexKey) id() uint32             { return 3 }
+func (x ServiceRecordNameControllerIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordNameControllerIndexKey) serviceRecordIndexKey() {}
 
-func (this ServiceRecordNameOwnerIndexKey) WithName(name string) ServiceRecordNameOwnerIndexKey {
+func (this ServiceRecordNameControllerIndexKey) WithName(name string) ServiceRecordNameControllerIndexKey {
 	this.vs = []interface{}{name}
 	return this
 }
 
-func (this ServiceRecordNameOwnerIndexKey) WithNameOwner(name string, owner string) ServiceRecordNameOwnerIndexKey {
-	this.vs = []interface{}{name, owner}
+func (this ServiceRecordNameControllerIndexKey) WithNameController(name string, controller string) ServiceRecordNameControllerIndexKey {
+	this.vs = []interface{}{name, controller}
 	return this
 }
 
-type ServiceRecordOriginOwnerIndexKey struct {
+type ServiceRecordOriginControllerIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordOriginOwnerIndexKey) id() uint32             { return 4 }
-func (x ServiceRecordOriginOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOriginOwnerIndexKey) serviceRecordIndexKey() {}
+func (x ServiceRecordOriginControllerIndexKey) id() uint32             { return 4 }
+func (x ServiceRecordOriginControllerIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordOriginControllerIndexKey) serviceRecordIndexKey() {}
 
-func (this ServiceRecordOriginOwnerIndexKey) WithOrigin(origin string) ServiceRecordOriginOwnerIndexKey {
+func (this ServiceRecordOriginControllerIndexKey) WithOrigin(origin string) ServiceRecordOriginControllerIndexKey {
 	this.vs = []interface{}{origin}
 	return this
 }
 
-func (this ServiceRecordOriginOwnerIndexKey) WithOriginOwner(origin string, owner string) ServiceRecordOriginOwnerIndexKey {
-	this.vs = []interface{}{origin, owner}
+func (this ServiceRecordOriginControllerIndexKey) WithOriginController(origin string, controller string) ServiceRecordOriginControllerIndexKey {
+	this.vs = []interface{}{origin, controller}
 	return this
 }
 
@@ -194,18 +194,18 @@ func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (
 	return &serviceRecord, nil
 }
 
-func (this serviceRecordTable) HasByNameOwner(ctx context.Context, name string, owner string) (found bool, err error) {
+func (this serviceRecordTable) HasByNameController(ctx context.Context, name string, controller string) (found bool, err error) {
 	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
 		name,
-		owner,
+		controller,
 	)
 }
 
-func (this serviceRecordTable) GetByNameOwner(ctx context.Context, name string, owner string) (*ServiceRecord, error) {
+func (this serviceRecordTable) GetByNameController(ctx context.Context, name string, controller string) (*ServiceRecord, error) {
 	var serviceRecord ServiceRecord
 	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
 		name,
-		owner,
+		controller,
 	)
 	if err != nil {
 		return nil, err
@@ -216,18 +216,18 @@ func (this serviceRecordTable) GetByNameOwner(ctx context.Context, name string, 
 	return &serviceRecord, nil
 }
 
-func (this serviceRecordTable) HasByOriginOwner(ctx context.Context, origin string, owner string) (found bool, err error) {
+func (this serviceRecordTable) HasByOriginController(ctx context.Context, origin string, controller string) (found bool, err error) {
 	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
 		origin,
-		owner,
+		controller,
 	)
 }
 
-func (this serviceRecordTable) GetByOriginOwner(ctx context.Context, origin string, owner string) (*ServiceRecord, error) {
+func (this serviceRecordTable) GetByOriginController(ctx context.Context, origin string, controller string) (*ServiceRecord, error) {
 	var serviceRecord ServiceRecord
 	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
 		origin,
-		owner,
+		controller,
 	)
 	if err != nil {
 		return nil, err

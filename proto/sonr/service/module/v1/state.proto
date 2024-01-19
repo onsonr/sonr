@@ -32,16 +32,16 @@ message ServiceRecord {
     id : 1
     primary_key : {fields : "id" auto_increment : true}
     index : {id : 1 fields : "origin" unique : true}
-    index : {id : 2 fields : "owner"}
-    index : {id : 3 fields : "name,owner" unique : true}
-    index : {id : 4 fields : "origin,owner" unique : true}
+    index : {id : 2 fields : "controller"}
+    index : {id : 3 fields : "name,controller" unique : true}
+    index : {id : 4 fields : "origin,controller" unique : true}
   };
 
   uint64 id = 1;
   string origin = 2;
   string name = 3;
   string description = 4;
-  string owner = 5;
+  string controller = 5;
   ServicePermissions permissions = 6;
 }
 

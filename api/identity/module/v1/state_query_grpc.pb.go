@@ -21,16 +21,22 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetAccount_FullMethodName             = "/sonr.identity.module.v1.StateQueryService/GetAccount"
-	StateQueryService_GetAccountByAddress_FullMethodName    = "/sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
-	StateQueryService_GetAccountByPublicKey_FullMethodName  = "/sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
-	StateQueryService_ListAccount_FullMethodName            = "/sonr.identity.module.v1.StateQueryService/ListAccount"
-	StateQueryService_GetBlockchain_FullMethodName          = "/sonr.identity.module.v1.StateQueryService/GetBlockchain"
-	StateQueryService_GetBlockchainByChainId_FullMethodName = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
-	StateQueryService_GetBlockchainByName_FullMethodName    = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
-	StateQueryService_ListBlockchain_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/ListBlockchain"
-	StateQueryService_GetIdentifier_FullMethodName          = "/sonr.identity.module.v1.StateQueryService/GetIdentifier"
-	StateQueryService_ListIdentifier_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/ListIdentifier"
+	StateQueryService_GetAccount_FullMethodName                    = "/sonr.identity.module.v1.StateQueryService/GetAccount"
+	StateQueryService_GetAccountByAddress_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
+	StateQueryService_GetAccountByPublicKey_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
+	StateQueryService_ListAccount_FullMethodName                   = "/sonr.identity.module.v1.StateQueryService/ListAccount"
+	StateQueryService_GetBlockchain_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetBlockchain"
+	StateQueryService_GetBlockchainByChainId_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
+	StateQueryService_GetBlockchainByName_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
+	StateQueryService_ListBlockchain_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListBlockchain"
+	StateQueryService_GetAccumulator_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/GetAccumulator"
+	StateQueryService_GetAccumulatorByControllerKey_FullMethodName = "/sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey"
+	StateQueryService_ListAccumulator_FullMethodName               = "/sonr.identity.module.v1.StateQueryService/ListAccumulator"
+	StateQueryService_GetController_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetController"
+	StateQueryService_GetControllerByAddress_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetControllerByAddress"
+	StateQueryService_GetControllerByPublicKey_FullMethodName      = "/sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey"
+	StateQueryService_GetControllerByPeerId_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetControllerByPeerId"
+	StateQueryService_ListController_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListController"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -53,10 +59,22 @@ type StateQueryServiceClient interface {
 	GetBlockchainByName(ctx context.Context, in *GetBlockchainByNameRequest, opts ...grpc.CallOption) (*GetBlockchainByNameResponse, error)
 	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
 	ListBlockchain(ctx context.Context, in *ListBlockchainRequest, opts ...grpc.CallOption) (*ListBlockchainResponse, error)
-	// Get queries the Identifier table by its primary key.
-	GetIdentifier(ctx context.Context, in *GetIdentifierRequest, opts ...grpc.CallOption) (*GetIdentifierResponse, error)
-	// ListIdentifier queries the Identifier table using prefix and range queries against defined indexes.
-	ListIdentifier(ctx context.Context, in *ListIdentifierRequest, opts ...grpc.CallOption) (*ListIdentifierResponse, error)
+	// Get queries the Accumulator table by its primary key.
+	GetAccumulator(ctx context.Context, in *GetAccumulatorRequest, opts ...grpc.CallOption) (*GetAccumulatorResponse, error)
+	// GetAccumulatorByControllerKey queries the Accumulator table by its ControllerKey index
+	GetAccumulatorByControllerKey(ctx context.Context, in *GetAccumulatorByControllerKeyRequest, opts ...grpc.CallOption) (*GetAccumulatorByControllerKeyResponse, error)
+	// ListAccumulator queries the Accumulator table using prefix and range queries against defined indexes.
+	ListAccumulator(ctx context.Context, in *ListAccumulatorRequest, opts ...grpc.CallOption) (*ListAccumulatorResponse, error)
+	// Get queries the Controller table by its primary key.
+	GetController(ctx context.Context, in *GetControllerRequest, opts ...grpc.CallOption) (*GetControllerResponse, error)
+	// GetControllerByAddress queries the Controller table by its Address index
+	GetControllerByAddress(ctx context.Context, in *GetControllerByAddressRequest, opts ...grpc.CallOption) (*GetControllerByAddressResponse, error)
+	// GetControllerByPublicKey queries the Controller table by its PublicKey index
+	GetControllerByPublicKey(ctx context.Context, in *GetControllerByPublicKeyRequest, opts ...grpc.CallOption) (*GetControllerByPublicKeyResponse, error)
+	// GetControllerByPeerId queries the Controller table by its PeerId index
+	GetControllerByPeerId(ctx context.Context, in *GetControllerByPeerIdRequest, opts ...grpc.CallOption) (*GetControllerByPeerIdResponse, error)
+	// ListController queries the Controller table using prefix and range queries against defined indexes.
+	ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error)
 }
 
 type stateQueryServiceClient struct {
@@ -139,18 +157,72 @@ func (c *stateQueryServiceClient) ListBlockchain(ctx context.Context, in *ListBl
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetIdentifier(ctx context.Context, in *GetIdentifierRequest, opts ...grpc.CallOption) (*GetIdentifierResponse, error) {
-	out := new(GetIdentifierResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetIdentifier_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetAccumulator(ctx context.Context, in *GetAccumulatorRequest, opts ...grpc.CallOption) (*GetAccumulatorResponse, error) {
+	out := new(GetAccumulatorResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetAccumulator_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListIdentifier(ctx context.Context, in *ListIdentifierRequest, opts ...grpc.CallOption) (*ListIdentifierResponse, error) {
-	out := new(ListIdentifierResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListIdentifier_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetAccumulatorByControllerKey(ctx context.Context, in *GetAccumulatorByControllerKeyRequest, opts ...grpc.CallOption) (*GetAccumulatorByControllerKeyResponse, error) {
+	out := new(GetAccumulatorByControllerKeyResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetAccumulatorByControllerKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) ListAccumulator(ctx context.Context, in *ListAccumulatorRequest, opts ...grpc.CallOption) (*ListAccumulatorResponse, error) {
+	out := new(ListAccumulatorResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListAccumulator_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetController(ctx context.Context, in *GetControllerRequest, opts ...grpc.CallOption) (*GetControllerResponse, error) {
+	out := new(GetControllerResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetController_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetControllerByAddress(ctx context.Context, in *GetControllerByAddressRequest, opts ...grpc.CallOption) (*GetControllerByAddressResponse, error) {
+	out := new(GetControllerByAddressResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByAddress_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetControllerByPublicKey(ctx context.Context, in *GetControllerByPublicKeyRequest, opts ...grpc.CallOption) (*GetControllerByPublicKeyResponse, error) {
+	out := new(GetControllerByPublicKeyResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByPublicKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetControllerByPeerId(ctx context.Context, in *GetControllerByPeerIdRequest, opts ...grpc.CallOption) (*GetControllerByPeerIdResponse, error) {
+	out := new(GetControllerByPeerIdResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByPeerId_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error) {
+	out := new(ListControllerResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListController_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -177,10 +249,22 @@ type StateQueryServiceServer interface {
 	GetBlockchainByName(context.Context, *GetBlockchainByNameRequest) (*GetBlockchainByNameResponse, error)
 	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
 	ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error)
-	// Get queries the Identifier table by its primary key.
-	GetIdentifier(context.Context, *GetIdentifierRequest) (*GetIdentifierResponse, error)
-	// ListIdentifier queries the Identifier table using prefix and range queries against defined indexes.
-	ListIdentifier(context.Context, *ListIdentifierRequest) (*ListIdentifierResponse, error)
+	// Get queries the Accumulator table by its primary key.
+	GetAccumulator(context.Context, *GetAccumulatorRequest) (*GetAccumulatorResponse, error)
+	// GetAccumulatorByControllerKey queries the Accumulator table by its ControllerKey index
+	GetAccumulatorByControllerKey(context.Context, *GetAccumulatorByControllerKeyRequest) (*GetAccumulatorByControllerKeyResponse, error)
+	// ListAccumulator queries the Accumulator table using prefix and range queries against defined indexes.
+	ListAccumulator(context.Context, *ListAccumulatorRequest) (*ListAccumulatorResponse, error)
+	// Get queries the Controller table by its primary key.
+	GetController(context.Context, *GetControllerRequest) (*GetControllerResponse, error)
+	// GetControllerByAddress queries the Controller table by its Address index
+	GetControllerByAddress(context.Context, *GetControllerByAddressRequest) (*GetControllerByAddressResponse, error)
+	// GetControllerByPublicKey queries the Controller table by its PublicKey index
+	GetControllerByPublicKey(context.Context, *GetControllerByPublicKeyRequest) (*GetControllerByPublicKeyResponse, error)
+	// GetControllerByPeerId queries the Controller table by its PeerId index
+	GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error)
+	// ListController queries the Controller table using prefix and range queries against defined indexes.
+	ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error)
 	mustEmbedUnimplementedStateQueryServiceServer()
 }
 
@@ -212,11 +296,29 @@ func (UnimplementedStateQueryServiceServer) GetBlockchainByName(context.Context,
 func (UnimplementedStateQueryServiceServer) ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListBlockchain not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetIdentifier(context.Context, *GetIdentifierRequest) (*GetIdentifierResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetIdentifier not implemented")
+func (UnimplementedStateQueryServiceServer) GetAccumulator(context.Context, *GetAccumulatorRequest) (*GetAccumulatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccumulator not implemented")
 }
-func (UnimplementedStateQueryServiceServer) ListIdentifier(context.Context, *ListIdentifierRequest) (*ListIdentifierResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListIdentifier not implemented")
+func (UnimplementedStateQueryServiceServer) GetAccumulatorByControllerKey(context.Context, *GetAccumulatorByControllerKeyRequest) (*GetAccumulatorByControllerKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccumulatorByControllerKey not implemented")
+}
+func (UnimplementedStateQueryServiceServer) ListAccumulator(context.Context, *ListAccumulatorRequest) (*ListAccumulatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAccumulator not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetController(context.Context, *GetControllerRequest) (*GetControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetController not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByAddress(context.Context, *GetControllerByAddressRequest) (*GetControllerByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByAddress not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByPublicKey(context.Context, *GetControllerByPublicKeyRequest) (*GetControllerByPublicKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByPublicKey not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByPeerId not implemented")
+}
+func (UnimplementedStateQueryServiceServer) ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListController not implemented")
 }
 func (UnimplementedStateQueryServiceServer) mustEmbedUnimplementedStateQueryServiceServer() {}
 
@@ -375,38 +477,146 @@ func _StateQueryService_ListBlockchain_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetIdentifierRequest)
+func _StateQueryService_GetAccumulator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccumulatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetIdentifier(ctx, in)
+		return srv.(StateQueryServiceServer).GetAccumulator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetIdentifier_FullMethodName,
+		FullMethod: StateQueryService_GetAccumulator_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetIdentifier(ctx, req.(*GetIdentifierRequest))
+		return srv.(StateQueryServiceServer).GetAccumulator(ctx, req.(*GetAccumulatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListIdentifierRequest)
+func _StateQueryService_GetAccumulatorByControllerKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccumulatorByControllerKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListIdentifier(ctx, in)
+		return srv.(StateQueryServiceServer).GetAccumulatorByControllerKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_ListIdentifier_FullMethodName,
+		FullMethod: StateQueryService_GetAccumulatorByControllerKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListIdentifier(ctx, req.(*ListIdentifierRequest))
+		return srv.(StateQueryServiceServer).GetAccumulatorByControllerKey(ctx, req.(*GetAccumulatorByControllerKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_ListAccumulator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAccumulatorRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).ListAccumulator(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_ListAccumulator_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).ListAccumulator(ctx, req.(*ListAccumulatorRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetController_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetController(ctx, req.(*GetControllerRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetControllerByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByAddressRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByAddress(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByAddress_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByAddress(ctx, req.(*GetControllerByAddressRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetControllerByPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByPublicKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByPublicKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByPublicKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByPublicKey(ctx, req.(*GetControllerByPublicKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetControllerByPeerId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByPeerIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByPeerId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByPeerId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByPeerId(ctx, req.(*GetControllerByPeerIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_ListController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).ListController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_ListController_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).ListController(ctx, req.(*ListControllerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -451,12 +661,36 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StateQueryService_ListBlockchain_Handler,
 		},
 		{
-			MethodName: "GetIdentifier",
-			Handler:    _StateQueryService_GetIdentifier_Handler,
+			MethodName: "GetAccumulator",
+			Handler:    _StateQueryService_GetAccumulator_Handler,
 		},
 		{
-			MethodName: "ListIdentifier",
-			Handler:    _StateQueryService_ListIdentifier_Handler,
+			MethodName: "GetAccumulatorByControllerKey",
+			Handler:    _StateQueryService_GetAccumulatorByControllerKey_Handler,
+		},
+		{
+			MethodName: "ListAccumulator",
+			Handler:    _StateQueryService_ListAccumulator_Handler,
+		},
+		{
+			MethodName: "GetController",
+			Handler:    _StateQueryService_GetController_Handler,
+		},
+		{
+			MethodName: "GetControllerByAddress",
+			Handler:    _StateQueryService_GetControllerByAddress_Handler,
+		},
+		{
+			MethodName: "GetControllerByPublicKey",
+			Handler:    _StateQueryService_GetControllerByPublicKey_Handler,
+		},
+		{
+			MethodName: "GetControllerByPeerId",
+			Handler:    _StateQueryService_GetControllerByPeerId_Handler,
+		},
+		{
+			MethodName: "ListController",
+			Handler:    _StateQueryService_ListController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

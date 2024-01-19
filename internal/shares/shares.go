@@ -1,15 +1,15 @@
 package shares
 
 import (
-	"encoding/json"
 	"fmt"
-	"path"
 
 	"github.com/ipfs/boxo/files"
+	"golang.org/x/crypto/sha3"
 
 	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
 	"github.com/sonrhq/sonr/crypto/core/curves"
 	"github.com/sonrhq/sonr/crypto/core/protocol"
+	"github.com/sonrhq/sonr/crypto/signatures/ecdsa"
 	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
 	"github.com/sonrhq/sonr/pkg/did"
 )
@@ -36,7 +36,7 @@ func Generate(coinType modulev1.CoinType) (files.Directory, []byte, string, erro
 	if err != nil {
 		return nil, nil, "", err
 	}
-	pub := aliceOut.PublicKey.ToAffineCompressed()
+	pub := aliceOut.PublicKey.ToAffineUncompressed()
 	addr, err := did.GetAddressByPublicKey(pub, coinType)
 	if err != nil {
 		return nil, nil, "", err
@@ -48,24 +48,21 @@ func Generate(coinType modulev1.CoinType) (files.Directory, []byte, string, erro
 	return dir, pub, addr, nil
 }
 
-func writeSharesToDisk(coinType modulev1.CoinType, address string, bobOut *protocol.Message, aliceOut *protocol.Message) (files.Directory, error) {
-	pathPrefix := fmt.Sprintf("%s%s", did.GetCoinTypeDIDMethod(coinType), address)
-	outBz, err := json.Marshal(aliceOut)
+// VerifySignature verifies a signature with a PublicKey and a message
+func VerifySignature(pubKey []byte, msg []byte, sigBz []byte) (bool, error) {
+	pp, err := buildEcPoint(pubKey)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
-	aliceFile := files.NewBytesFile(outBz)
-	alicePath := path.Join(".keyshares", fmt.Sprintf("%s.privshare", pathPrefix))
-
-	outBz, err = json.Marshal(bobOut)
+	sig, err := ecdsa.DeserializeSecp256k1Signature(sigBz)
 	if err != nil {
-		return nil, err
+		return false, fmt.Errorf("error deserializing signature: %v", err)
 	}
-	bobFile := files.NewBytesFile(outBz)
-	bobPath := path.Join(".keyshares", fmt.Sprintf("%s.pubshare", pathPrefix))
-	dir := files.NewMapDirectory(map[string]files.Node{
-		bobPath:   bobFile,
-		alicePath: aliceFile,
-	})
-	return dir, nil
+	hash := sha3.New256()
+	_, err = hash.Write(msg)
+	if err != nil {
+		return false, fmt.Errorf("error hashing message: %v", err)
+	}
+	digest := hash.Sum(nil)
+	return curves.VerifyEcdsa(pp, digest[:], sig), nil
 }

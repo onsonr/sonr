@@ -11,10 +11,10 @@ service StateQueryService {
   rpc GetServiceRecord(GetServiceRecordRequest) returns (GetServiceRecordResponse) {}
   // GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
   rpc GetServiceRecordByOrigin(GetServiceRecordByOriginRequest) returns (GetServiceRecordByOriginResponse) {}
-  // GetServiceRecordByNameOwner queries the ServiceRecord table by its NameOwner index
-  rpc GetServiceRecordByNameOwner(GetServiceRecordByNameOwnerRequest) returns (GetServiceRecordByNameOwnerResponse) {}
-  // GetServiceRecordByOriginOwner queries the ServiceRecord table by its OriginOwner index
-  rpc GetServiceRecordByOriginOwner(GetServiceRecordByOriginOwnerRequest) returns (GetServiceRecordByOriginOwnerResponse) {}
+  // GetServiceRecordByNameController queries the ServiceRecord table by its NameController index
+  rpc GetServiceRecordByNameController(GetServiceRecordByNameControllerRequest) returns (GetServiceRecordByNameControllerResponse) {}
+  // GetServiceRecordByOriginController queries the ServiceRecord table by its OriginController index
+  rpc GetServiceRecordByOriginController(GetServiceRecordByOriginControllerRequest) returns (GetServiceRecordByOriginControllerResponse) {}
   // ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
   rpc ListServiceRecord(ListServiceRecordRequest) returns (ListServiceRecordResponse) {}
   // Get queries the Credential table by its primary key.
@@ -59,25 +59,25 @@ message GetServiceRecordByOriginResponse {
   ServiceRecord value = 1;
 }
 
-// GetServiceRecordByNameOwnerRequest is the StateQuery/GetServiceRecordByNameOwnerRequest request type.
-message GetServiceRecordByNameOwnerRequest {
+// GetServiceRecordByNameControllerRequest is the StateQuery/GetServiceRecordByNameControllerRequest request type.
+message GetServiceRecordByNameControllerRequest {
   string name = 1;
-  string owner = 2;
+  string controller = 2;
 }
 
-// GetServiceRecordByNameOwnerResponse is the StateQuery/GetServiceRecordByNameOwnerResponse response type.
-message GetServiceRecordByNameOwnerResponse {
+// GetServiceRecordByNameControllerResponse is the StateQuery/GetServiceRecordByNameControllerResponse response type.
+message GetServiceRecordByNameControllerResponse {
   ServiceRecord value = 1;
 }
 
-// GetServiceRecordByOriginOwnerRequest is the StateQuery/GetServiceRecordByOriginOwnerRequest request type.
-message GetServiceRecordByOriginOwnerRequest {
+// GetServiceRecordByOriginControllerRequest is the StateQuery/GetServiceRecordByOriginControllerRequest request type.
+message GetServiceRecordByOriginControllerRequest {
   string origin = 1;
-  string owner = 2;
+  string controller = 2;
 }
 
-// GetServiceRecordByOriginOwnerResponse is the StateQuery/GetServiceRecordByOriginOwnerResponse response type.
-message GetServiceRecordByOriginOwnerResponse {
+// GetServiceRecordByOriginControllerResponse is the StateQuery/GetServiceRecordByOriginControllerResponse response type.
+message GetServiceRecordByOriginControllerResponse {
   ServiceRecord value = 1;
 }
 
@@ -91,12 +91,12 @@ message ListServiceRecordRequest {
       Id id = 1;
       // origin specifies the value of the Origin index key to use in the query.
       Origin origin = 2;
-      // owner specifies the value of the Owner index key to use in the query.
-      Owner owner = 3;
-      // name_owner specifies the value of the NameOwner index key to use in the query.
-      NameOwner name_owner = 4;
-      // origin_owner specifies the value of the OriginOwner index key to use in the query.
-      OriginOwner origin_owner = 5;
+      // controller specifies the value of the Controller index key to use in the query.
+      Controller controller = 3;
+      // name_controller specifies the value of the NameController index key to use in the query.
+      NameController name_controller = 4;
+      // origin_controller specifies the value of the OriginController index key to use in the query.
+      OriginController origin_controller = 5;
     }
     
     message Id {
@@ -111,28 +111,28 @@ message ListServiceRecordRequest {
       optional string origin = 1;
     }
     
-    message Owner {
-      // owner is the value of the owner field in the index.
+    message Controller {
+      // controller is the value of the controller field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string owner = 1;
+      optional string controller = 1;
     }
     
-    message NameOwner {
+    message NameController {
       // name is the value of the name field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
       optional string name = 1;
-      // owner is the value of the owner field in the index.
+      // controller is the value of the controller field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string owner = 2;
+      optional string controller = 2;
     }
     
-    message OriginOwner {
+    message OriginController {
       // origin is the value of the origin field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
       optional string origin = 1;
-      // owner is the value of the owner field in the index.
+      // controller is the value of the controller field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string owner = 2;
+      optional string controller = 2;
     }
   }
   

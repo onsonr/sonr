@@ -401,142 +401,419 @@ func NewBlockchainTable(db ormtable.Schema) (BlockchainTable, error) {
 	return blockchainTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
-type IdentifierTable interface {
-	Insert(ctx context.Context, identifier *Identifier) error
-	InsertReturningIndex(ctx context.Context, identifier *Identifier) (uint64, error)
+type AccumulatorTable interface {
+	Insert(ctx context.Context, accumulator *Accumulator) error
+	InsertReturningIndex(ctx context.Context, accumulator *Accumulator) (uint64, error)
 	LastInsertedSequence(ctx context.Context) (uint64, error)
-	Update(ctx context.Context, identifier *Identifier) error
-	Save(ctx context.Context, identifier *Identifier) error
-	Delete(ctx context.Context, identifier *Identifier) error
+	Update(ctx context.Context, accumulator *Accumulator) error
+	Save(ctx context.Context, accumulator *Accumulator) error
+	Delete(ctx context.Context, accumulator *Accumulator) error
 	Has(ctx context.Context, index uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, index uint64) (*Identifier, error)
-	List(ctx context.Context, prefixKey IdentifierIndexKey, opts ...ormlist.Option) (IdentifierIterator, error)
-	ListRange(ctx context.Context, from, to IdentifierIndexKey, opts ...ormlist.Option) (IdentifierIterator, error)
-	DeleteBy(ctx context.Context, prefixKey IdentifierIndexKey) error
-	DeleteRange(ctx context.Context, from, to IdentifierIndexKey) error
+	Get(ctx context.Context, index uint64) (*Accumulator, error)
+	HasByControllerKey(ctx context.Context, controller string, key string) (found bool, err error)
+	// GetByControllerKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerKey(ctx context.Context, controller string, key string) (*Accumulator, error)
+	List(ctx context.Context, prefixKey AccumulatorIndexKey, opts ...ormlist.Option) (AccumulatorIterator, error)
+	ListRange(ctx context.Context, from, to AccumulatorIndexKey, opts ...ormlist.Option) (AccumulatorIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AccumulatorIndexKey) error
+	DeleteRange(ctx context.Context, from, to AccumulatorIndexKey) error
 
 	doNotImplement()
 }
 
-type IdentifierIterator struct {
+type AccumulatorIterator struct {
 	ormtable.Iterator
 }
 
-func (i IdentifierIterator) Value() (*Identifier, error) {
-	var identifier Identifier
-	err := i.UnmarshalMessage(&identifier)
-	return &identifier, err
+func (i AccumulatorIterator) Value() (*Accumulator, error) {
+	var accumulator Accumulator
+	err := i.UnmarshalMessage(&accumulator)
+	return &accumulator, err
 }
 
-type IdentifierIndexKey interface {
+type AccumulatorIndexKey interface {
 	id() uint32
 	values() []interface{}
-	identifierIndexKey()
+	accumulatorIndexKey()
 }
 
 // primary key starting index..
-type IdentifierPrimaryKey = IdentifierIndexIndexKey
+type AccumulatorPrimaryKey = AccumulatorIndexIndexKey
 
-type IdentifierIndexIndexKey struct {
+type AccumulatorIndexIndexKey struct {
 	vs []interface{}
 }
 
-func (x IdentifierIndexIndexKey) id() uint32            { return 0 }
-func (x IdentifierIndexIndexKey) values() []interface{} { return x.vs }
-func (x IdentifierIndexIndexKey) identifierIndexKey()   {}
+func (x AccumulatorIndexIndexKey) id() uint32            { return 0 }
+func (x AccumulatorIndexIndexKey) values() []interface{} { return x.vs }
+func (x AccumulatorIndexIndexKey) accumulatorIndexKey()  {}
 
-func (this IdentifierIndexIndexKey) WithIndex(index uint64) IdentifierIndexIndexKey {
+func (this AccumulatorIndexIndexKey) WithIndex(index uint64) AccumulatorIndexIndexKey {
 	this.vs = []interface{}{index}
 	return this
 }
 
-type identifierTable struct {
+type AccumulatorControllerKeyIndexKey struct {
+	vs []interface{}
+}
+
+func (x AccumulatorControllerKeyIndexKey) id() uint32            { return 1 }
+func (x AccumulatorControllerKeyIndexKey) values() []interface{} { return x.vs }
+func (x AccumulatorControllerKeyIndexKey) accumulatorIndexKey()  {}
+
+func (this AccumulatorControllerKeyIndexKey) WithController(controller string) AccumulatorControllerKeyIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this AccumulatorControllerKeyIndexKey) WithControllerKey(controller string, key string) AccumulatorControllerKeyIndexKey {
+	this.vs = []interface{}{controller, key}
+	return this
+}
+
+type accumulatorTable struct {
 	table ormtable.AutoIncrementTable
 }
 
-func (this identifierTable) Insert(ctx context.Context, identifier *Identifier) error {
-	return this.table.Insert(ctx, identifier)
+func (this accumulatorTable) Insert(ctx context.Context, accumulator *Accumulator) error {
+	return this.table.Insert(ctx, accumulator)
 }
 
-func (this identifierTable) Update(ctx context.Context, identifier *Identifier) error {
-	return this.table.Update(ctx, identifier)
+func (this accumulatorTable) Update(ctx context.Context, accumulator *Accumulator) error {
+	return this.table.Update(ctx, accumulator)
 }
 
-func (this identifierTable) Save(ctx context.Context, identifier *Identifier) error {
-	return this.table.Save(ctx, identifier)
+func (this accumulatorTable) Save(ctx context.Context, accumulator *Accumulator) error {
+	return this.table.Save(ctx, accumulator)
 }
 
-func (this identifierTable) Delete(ctx context.Context, identifier *Identifier) error {
-	return this.table.Delete(ctx, identifier)
+func (this accumulatorTable) Delete(ctx context.Context, accumulator *Accumulator) error {
+	return this.table.Delete(ctx, accumulator)
 }
 
-func (this identifierTable) InsertReturningIndex(ctx context.Context, identifier *Identifier) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, identifier)
+func (this accumulatorTable) InsertReturningIndex(ctx context.Context, accumulator *Accumulator) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, accumulator)
 }
 
-func (this identifierTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+func (this accumulatorTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
 	return this.table.LastInsertedSequence(ctx)
 }
 
-func (this identifierTable) Has(ctx context.Context, index uint64) (found bool, err error) {
+func (this accumulatorTable) Has(ctx context.Context, index uint64) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, index)
 }
 
-func (this identifierTable) Get(ctx context.Context, index uint64) (*Identifier, error) {
-	var identifier Identifier
-	found, err := this.table.PrimaryKey().Get(ctx, &identifier, index)
+func (this accumulatorTable) Get(ctx context.Context, index uint64) (*Accumulator, error) {
+	var accumulator Accumulator
+	found, err := this.table.PrimaryKey().Get(ctx, &accumulator, index)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &identifier, nil
+	return &accumulator, nil
 }
 
-func (this identifierTable) List(ctx context.Context, prefixKey IdentifierIndexKey, opts ...ormlist.Option) (IdentifierIterator, error) {
+func (this accumulatorTable) HasByControllerKey(ctx context.Context, controller string, key string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		key,
+	)
+}
+
+func (this accumulatorTable) GetByControllerKey(ctx context.Context, controller string, key string) (*Accumulator, error) {
+	var accumulator Accumulator
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &accumulator,
+		controller,
+		key,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &accumulator, nil
+}
+
+func (this accumulatorTable) List(ctx context.Context, prefixKey AccumulatorIndexKey, opts ...ormlist.Option) (AccumulatorIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return IdentifierIterator{it}, err
+	return AccumulatorIterator{it}, err
 }
 
-func (this identifierTable) ListRange(ctx context.Context, from, to IdentifierIndexKey, opts ...ormlist.Option) (IdentifierIterator, error) {
+func (this accumulatorTable) ListRange(ctx context.Context, from, to AccumulatorIndexKey, opts ...ormlist.Option) (AccumulatorIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return IdentifierIterator{it}, err
+	return AccumulatorIterator{it}, err
 }
 
-func (this identifierTable) DeleteBy(ctx context.Context, prefixKey IdentifierIndexKey) error {
+func (this accumulatorTable) DeleteBy(ctx context.Context, prefixKey AccumulatorIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this identifierTable) DeleteRange(ctx context.Context, from, to IdentifierIndexKey) error {
+func (this accumulatorTable) DeleteRange(ctx context.Context, from, to AccumulatorIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this identifierTable) doNotImplement() {}
+func (this accumulatorTable) doNotImplement() {}
 
-var _ IdentifierTable = identifierTable{}
+var _ AccumulatorTable = accumulatorTable{}
 
-func NewIdentifierTable(db ormtable.Schema) (IdentifierTable, error) {
-	table := db.GetTable(&Identifier{})
+func NewAccumulatorTable(db ormtable.Schema) (AccumulatorTable, error) {
+	table := db.GetTable(&Accumulator{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Identifier{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Accumulator{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return identifierTable{table.(ormtable.AutoIncrementTable)}, nil
+	return accumulatorTable{table.(ormtable.AutoIncrementTable)}, nil
+}
+
+type ControllerTable interface {
+	Insert(ctx context.Context, controller *Controller) error
+	InsertReturningSequence(ctx context.Context, controller *Controller) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
+	Update(ctx context.Context, controller *Controller) error
+	Save(ctx context.Context, controller *Controller) error
+	Delete(ctx context.Context, controller *Controller) error
+	Has(ctx context.Context, sequence uint64) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, sequence uint64) (*Controller, error)
+	HasByAddress(ctx context.Context, address string) (found bool, err error)
+	// GetByAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAddress(ctx context.Context, address string) (*Controller, error)
+	HasByPublicKey(ctx context.Context, public_key []byte) (found bool, err error)
+	// GetByPublicKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByPublicKey(ctx context.Context, public_key []byte) (*Controller, error)
+	HasByPeerId(ctx context.Context, peer_id string) (found bool, err error)
+	// GetByPeerId returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByPeerId(ctx context.Context, peer_id string) (*Controller, error)
+	List(ctx context.Context, prefixKey ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
+	ListRange(ctx context.Context, from, to ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ControllerIndexKey) error
+	DeleteRange(ctx context.Context, from, to ControllerIndexKey) error
+
+	doNotImplement()
+}
+
+type ControllerIterator struct {
+	ormtable.Iterator
+}
+
+func (i ControllerIterator) Value() (*Controller, error) {
+	var controller Controller
+	err := i.UnmarshalMessage(&controller)
+	return &controller, err
+}
+
+type ControllerIndexKey interface {
+	id() uint32
+	values() []interface{}
+	controllerIndexKey()
+}
+
+// primary key starting index..
+type ControllerPrimaryKey = ControllerSequenceIndexKey
+
+type ControllerSequenceIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerSequenceIndexKey) id() uint32            { return 0 }
+func (x ControllerSequenceIndexKey) values() []interface{} { return x.vs }
+func (x ControllerSequenceIndexKey) controllerIndexKey()   {}
+
+func (this ControllerSequenceIndexKey) WithSequence(sequence uint64) ControllerSequenceIndexKey {
+	this.vs = []interface{}{sequence}
+	return this
+}
+
+type ControllerAddressIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerAddressIndexKey) id() uint32            { return 1 }
+func (x ControllerAddressIndexKey) values() []interface{} { return x.vs }
+func (x ControllerAddressIndexKey) controllerIndexKey()   {}
+
+func (this ControllerAddressIndexKey) WithAddress(address string) ControllerAddressIndexKey {
+	this.vs = []interface{}{address}
+	return this
+}
+
+type ControllerPublicKeyIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerPublicKeyIndexKey) id() uint32            { return 2 }
+func (x ControllerPublicKeyIndexKey) values() []interface{} { return x.vs }
+func (x ControllerPublicKeyIndexKey) controllerIndexKey()   {}
+
+func (this ControllerPublicKeyIndexKey) WithPublicKey(public_key []byte) ControllerPublicKeyIndexKey {
+	this.vs = []interface{}{public_key}
+	return this
+}
+
+type ControllerPeerIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerPeerIdIndexKey) id() uint32            { return 3 }
+func (x ControllerPeerIdIndexKey) values() []interface{} { return x.vs }
+func (x ControllerPeerIdIndexKey) controllerIndexKey()   {}
+
+func (this ControllerPeerIdIndexKey) WithPeerId(peer_id string) ControllerPeerIdIndexKey {
+	this.vs = []interface{}{peer_id}
+	return this
+}
+
+type controllerTable struct {
+	table ormtable.AutoIncrementTable
+}
+
+func (this controllerTable) Insert(ctx context.Context, controller *Controller) error {
+	return this.table.Insert(ctx, controller)
+}
+
+func (this controllerTable) Update(ctx context.Context, controller *Controller) error {
+	return this.table.Update(ctx, controller)
+}
+
+func (this controllerTable) Save(ctx context.Context, controller *Controller) error {
+	return this.table.Save(ctx, controller)
+}
+
+func (this controllerTable) Delete(ctx context.Context, controller *Controller) error {
+	return this.table.Delete(ctx, controller)
+}
+
+func (this controllerTable) InsertReturningSequence(ctx context.Context, controller *Controller) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, controller)
+}
+
+func (this controllerTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
+}
+
+func (this controllerTable) Has(ctx context.Context, sequence uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, sequence)
+}
+
+func (this controllerTable) Get(ctx context.Context, sequence uint64) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.PrimaryKey().Get(ctx, &controller, sequence)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByAddress(ctx context.Context, address string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		address,
+	)
+}
+
+func (this controllerTable) GetByAddress(ctx context.Context, address string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &controller,
+		address,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByPublicKey(ctx context.Context, public_key []byte) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		public_key,
+	)
+}
+
+func (this controllerTable) GetByPublicKey(ctx context.Context, public_key []byte) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &controller,
+		public_key,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByPeerId(ctx context.Context, peer_id string) (found bool, err error) {
+	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
+		peer_id,
+	)
+}
+
+func (this controllerTable) GetByPeerId(ctx context.Context, peer_id string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &controller,
+		peer_id,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) List(ctx context.Context, prefixKey ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return ControllerIterator{it}, err
+}
+
+func (this controllerTable) ListRange(ctx context.Context, from, to ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return ControllerIterator{it}, err
+}
+
+func (this controllerTable) DeleteBy(ctx context.Context, prefixKey ControllerIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this controllerTable) DeleteRange(ctx context.Context, from, to ControllerIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this controllerTable) doNotImplement() {}
+
+var _ ControllerTable = controllerTable{}
+
+func NewControllerTable(db ormtable.Schema) (ControllerTable, error) {
+	table := db.GetTable(&Controller{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Controller{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return controllerTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 type StateStore interface {
 	AccountTable() AccountTable
 	BlockchainTable() BlockchainTable
-	IdentifierTable() IdentifierTable
+	AccumulatorTable() AccumulatorTable
+	ControllerTable() ControllerTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	account    AccountTable
-	blockchain BlockchainTable
-	identifier IdentifierTable
+	account     AccountTable
+	blockchain  BlockchainTable
+	accumulator AccumulatorTable
+	controller  ControllerTable
 }
 
 func (x stateStore) AccountTable() AccountTable {
@@ -547,8 +824,12 @@ func (x stateStore) BlockchainTable() BlockchainTable {
 	return x.blockchain
 }
 
-func (x stateStore) IdentifierTable() IdentifierTable {
-	return x.identifier
+func (x stateStore) AccumulatorTable() AccumulatorTable {
+	return x.accumulator
+}
+
+func (x stateStore) ControllerTable() ControllerTable {
+	return x.controller
 }
 
 func (stateStore) doNotImplement() {}
@@ -566,7 +847,12 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
-	identifierTable, err := NewIdentifierTable(db)
+	accumulatorTable, err := NewAccumulatorTable(db)
+	if err != nil {
+		return nil, err
+	}
+
+	controllerTable, err := NewControllerTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -574,6 +860,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	return stateStore{
 		accountTable,
 		blockchainTable,
-		identifierTable,
+		accumulatorTable,
+		controllerTable,
 	}, nil
 }

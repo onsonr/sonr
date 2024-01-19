@@ -25,7 +25,6 @@ type Vault struct {
 	localPath   string
 	Key         iface.Key
 	SonrAddress string
-	SonrPubKey  []byte
 	PeerID      peer.ID
 }
 
@@ -43,7 +42,6 @@ func New(ctx context.Context) (*Vault, error) {
 	return &Vault{
 		Key:         key,
 		SonrAddress: kc.Address,
-		SonrPubKey:  kc.PublicKey,
 		PeerID:      key.ID(),
 	}, nil
 }
