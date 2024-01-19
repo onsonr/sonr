@@ -1,7 +1,7 @@
 package keychain_test
 
 import (
-	"fmt"
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -10,8 +10,19 @@ import (
 )
 
 func TestNewKeychain(t *testing.T) {
-	kc, err := keychain.New()
+	kc, err := keychain.New(context.Background())
 	require.NoError(t, err)
-	fmt.Println(kc.RootDir)
-	kc.Burn()
+	require.NotEmpty(t, kc.Address)
+}
+
+func BenchmarkNewKeychain(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		kc, err := keychain.New(context.Background())
+		if err != nil {
+			b.Fail()
+		}
+		if len(kc.Address) == 0 {
+			b.Fail()
+		}
+	}
 }

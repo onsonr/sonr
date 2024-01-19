@@ -1,1 +1,1 @@
-package modules_api
+package modulesapi

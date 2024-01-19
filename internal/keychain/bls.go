@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/mr-tron/base58"
+
 	"github.com/sonrhq/sonr/crypto/accumulator"
 	"github.com/sonrhq/sonr/crypto/core/curves"
 )

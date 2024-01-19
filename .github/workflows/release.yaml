@@ -24,20 +24,14 @@ jobs:
 
   deploy-rails:
     name: Deploy Rails to Production
-    environment: Rails
+    environment: Testnet
     runs-on: gcp-instance-1
     steps:
       - uses: actions/checkout@v4
       - run: earthly sat wake builder
       - run: task deploy:ipfs
-        env:
-          IPFS_TUNNEL_TOKEN: ${{ secrets.IPFS_TUNNEL_TOKEN }}
       - run: task deploy:matrix
-        env:
-          MATRIX_TUNNEL_TOKEN: ${{ secrets.MATRIX_TUNNEL_TOKEN }}
       - run: task deploy:faucet
-        env:
-          FAUCET_TUNNEL_TOKEN: ${{ secrets.FAUCET_TUNNEL_TOKEN }}
 
   changelog:
     name: Generate Changelog

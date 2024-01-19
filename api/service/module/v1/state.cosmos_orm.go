@@ -19,15 +19,6 @@ type ServiceRecordTable interface {
 	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id uint64) (*ServiceRecord, error)
-	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
-	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error)
-	HasByNameOwner(ctx context.Context, name string, owner string) (found bool, err error)
-	// GetByNameOwner returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByNameOwner(ctx context.Context, name string, owner string) (*ServiceRecord, error)
-	HasByOriginOwner(ctx context.Context, origin string, owner string) (found bool, err error)
-	// GetByOriginOwner returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginOwner(ctx context.Context, origin string, owner string) (*ServiceRecord, error)
 	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
@@ -81,52 +72,16 @@ func (this ServiceRecordOriginIndexKey) WithOrigin(origin string) ServiceRecordO
 	return this
 }
 
-type ServiceRecordOwnerIndexKey struct {
+type ServiceRecordControllerIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordOwnerIndexKey) id() uint32             { return 2 }
-func (x ServiceRecordOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOwnerIndexKey) serviceRecordIndexKey() {}
+func (x ServiceRecordControllerIndexKey) id() uint32             { return 2 }
+func (x ServiceRecordControllerIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordControllerIndexKey) serviceRecordIndexKey() {}
 
-func (this ServiceRecordOwnerIndexKey) WithOwner(owner string) ServiceRecordOwnerIndexKey {
-	this.vs = []interface{}{owner}
-	return this
-}
-
-type ServiceRecordNameOwnerIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceRecordNameOwnerIndexKey) id() uint32             { return 3 }
-func (x ServiceRecordNameOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordNameOwnerIndexKey) serviceRecordIndexKey() {}
-
-func (this ServiceRecordNameOwnerIndexKey) WithName(name string) ServiceRecordNameOwnerIndexKey {
-	this.vs = []interface{}{name}
-	return this
-}
-
-func (this ServiceRecordNameOwnerIndexKey) WithNameOwner(name string, owner string) ServiceRecordNameOwnerIndexKey {
-	this.vs = []interface{}{name, owner}
-	return this
-}
-
-type ServiceRecordOriginOwnerIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceRecordOriginOwnerIndexKey) id() uint32             { return 4 }
-func (x ServiceRecordOriginOwnerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOriginOwnerIndexKey) serviceRecordIndexKey() {}
-
-func (this ServiceRecordOriginOwnerIndexKey) WithOrigin(origin string) ServiceRecordOriginOwnerIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this ServiceRecordOriginOwnerIndexKey) WithOriginOwner(origin string, owner string) ServiceRecordOriginOwnerIndexKey {
-	this.vs = []interface{}{origin, owner}
+func (this ServiceRecordControllerIndexKey) WithController(controller string) ServiceRecordControllerIndexKey {
+	this.vs = []interface{}{controller}
 	return this
 }
 
@@ -174,70 +129,6 @@ func (this serviceRecordTable) Get(ctx context.Context, id uint64) (*ServiceReco
 	return &serviceRecord, nil
 }
 
-func (this serviceRecordTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-	)
-}
-
-func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		origin,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
-func (this serviceRecordTable) HasByNameOwner(ctx context.Context, name string, owner string) (found bool, err error) {
-	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
-		name,
-		owner,
-	)
-}
-
-func (this serviceRecordTable) GetByNameOwner(ctx context.Context, name string, owner string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		name,
-		owner,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
-func (this serviceRecordTable) HasByOriginOwner(ctx context.Context, origin string, owner string) (found bool, err error) {
-	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-		owner,
-	)
-}
-
-func (this serviceRecordTable) GetByOriginOwner(ctx context.Context, origin string, owner string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		origin,
-		owner,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
 func (this serviceRecordTable) List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
 	return ServiceRecordIterator{it}, err
@@ -268,144 +159,176 @@ func NewServiceRecordTable(db ormtable.Schema) (ServiceRecordTable, error) {
 	return serviceRecordTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
-type UserProfileTable interface {
-	Insert(ctx context.Context, userProfile *UserProfile) error
-	InsertReturningId(ctx context.Context, userProfile *UserProfile) (uint64, error)
+type CredentialTable interface {
+	Insert(ctx context.Context, credential *Credential) error
+	InsertReturningId(ctx context.Context, credential *Credential) (uint64, error)
 	LastInsertedSequence(ctx context.Context) (uint64, error)
-	Update(ctx context.Context, userProfile *UserProfile) error
-	Save(ctx context.Context, userProfile *UserProfile) error
-	Delete(ctx context.Context, userProfile *UserProfile) error
+	Update(ctx context.Context, credential *Credential) error
+	Save(ctx context.Context, credential *Credential) error
+	Delete(ctx context.Context, credential *Credential) error
 	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id uint64) (*UserProfile, error)
+	Get(ctx context.Context, id uint64) (*Credential, error)
 	HasByOriginHandle(ctx context.Context, origin string, handle string) (found bool, err error)
 	// GetByOriginHandle returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginHandle(ctx context.Context, origin string, handle string) (*UserProfile, error)
-	List(ctx context.Context, prefixKey UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error)
-	ListRange(ctx context.Context, from, to UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error)
-	DeleteBy(ctx context.Context, prefixKey UserProfileIndexKey) error
-	DeleteRange(ctx context.Context, from, to UserProfileIndexKey) error
+	GetByOriginHandle(ctx context.Context, origin string, handle string) (*Credential, error)
+	HasByCredentialId(ctx context.Context, credential_id []byte) (found bool, err error)
+	// GetByCredentialId returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByCredentialId(ctx context.Context, credential_id []byte) (*Credential, error)
+	HasByPublicKey(ctx context.Context, public_key []byte) (found bool, err error)
+	// GetByPublicKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByPublicKey(ctx context.Context, public_key []byte) (*Credential, error)
+	List(ctx context.Context, prefixKey CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error)
+	ListRange(ctx context.Context, from, to CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error)
+	DeleteBy(ctx context.Context, prefixKey CredentialIndexKey) error
+	DeleteRange(ctx context.Context, from, to CredentialIndexKey) error
 
 	doNotImplement()
 }
 
-type UserProfileIterator struct {
+type CredentialIterator struct {
 	ormtable.Iterator
 }
 
-func (i UserProfileIterator) Value() (*UserProfile, error) {
-	var userProfile UserProfile
-	err := i.UnmarshalMessage(&userProfile)
-	return &userProfile, err
+func (i CredentialIterator) Value() (*Credential, error) {
+	var credential Credential
+	err := i.UnmarshalMessage(&credential)
+	return &credential, err
 }
 
-type UserProfileIndexKey interface {
+type CredentialIndexKey interface {
 	id() uint32
 	values() []interface{}
-	userProfileIndexKey()
+	credentialIndexKey()
 }
 
 // primary key starting index..
-type UserProfilePrimaryKey = UserProfileIdIndexKey
+type CredentialPrimaryKey = CredentialIdIndexKey
 
-type UserProfileIdIndexKey struct {
+type CredentialIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x UserProfileIdIndexKey) id() uint32            { return 0 }
-func (x UserProfileIdIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileIdIndexKey) userProfileIndexKey()  {}
+func (x CredentialIdIndexKey) id() uint32            { return 0 }
+func (x CredentialIdIndexKey) values() []interface{} { return x.vs }
+func (x CredentialIdIndexKey) credentialIndexKey()   {}
 
-func (this UserProfileIdIndexKey) WithId(id uint64) UserProfileIdIndexKey {
+func (this CredentialIdIndexKey) WithId(id uint64) CredentialIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type UserProfileOriginIndexKey struct {
+type CredentialHandleIndexKey struct {
 	vs []interface{}
 }
 
-func (x UserProfileOriginIndexKey) id() uint32            { return 1 }
-func (x UserProfileOriginIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileOriginIndexKey) userProfileIndexKey()  {}
+func (x CredentialHandleIndexKey) id() uint32            { return 1 }
+func (x CredentialHandleIndexKey) values() []interface{} { return x.vs }
+func (x CredentialHandleIndexKey) credentialIndexKey()   {}
 
-func (this UserProfileOriginIndexKey) WithOrigin(origin string) UserProfileOriginIndexKey {
+func (this CredentialHandleIndexKey) WithHandle(handle string) CredentialHandleIndexKey {
+	this.vs = []interface{}{handle}
+	return this
+}
+
+type CredentialOriginHandleIndexKey struct {
+	vs []interface{}
+}
+
+func (x CredentialOriginHandleIndexKey) id() uint32            { return 2 }
+func (x CredentialOriginHandleIndexKey) values() []interface{} { return x.vs }
+func (x CredentialOriginHandleIndexKey) credentialIndexKey()   {}
+
+func (this CredentialOriginHandleIndexKey) WithOrigin(origin string) CredentialOriginHandleIndexKey {
 	this.vs = []interface{}{origin}
 	return this
 }
 
-type UserProfileOriginHandleIndexKey struct {
-	vs []interface{}
-}
-
-func (x UserProfileOriginHandleIndexKey) id() uint32            { return 2 }
-func (x UserProfileOriginHandleIndexKey) values() []interface{} { return x.vs }
-func (x UserProfileOriginHandleIndexKey) userProfileIndexKey()  {}
-
-func (this UserProfileOriginHandleIndexKey) WithOrigin(origin string) UserProfileOriginHandleIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this UserProfileOriginHandleIndexKey) WithOriginHandle(origin string, handle string) UserProfileOriginHandleIndexKey {
+func (this CredentialOriginHandleIndexKey) WithOriginHandle(origin string, handle string) CredentialOriginHandleIndexKey {
 	this.vs = []interface{}{origin, handle}
 	return this
 }
 
-type userProfileTable struct {
+type CredentialCredentialIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x CredentialCredentialIdIndexKey) id() uint32            { return 3 }
+func (x CredentialCredentialIdIndexKey) values() []interface{} { return x.vs }
+func (x CredentialCredentialIdIndexKey) credentialIndexKey()   {}
+
+func (this CredentialCredentialIdIndexKey) WithCredentialId(credential_id []byte) CredentialCredentialIdIndexKey {
+	this.vs = []interface{}{credential_id}
+	return this
+}
+
+type CredentialPublicKeyIndexKey struct {
+	vs []interface{}
+}
+
+func (x CredentialPublicKeyIndexKey) id() uint32            { return 4 }
+func (x CredentialPublicKeyIndexKey) values() []interface{} { return x.vs }
+func (x CredentialPublicKeyIndexKey) credentialIndexKey()   {}
+
+func (this CredentialPublicKeyIndexKey) WithPublicKey(public_key []byte) CredentialPublicKeyIndexKey {
+	this.vs = []interface{}{public_key}
+	return this
+}
+
+type credentialTable struct {
 	table ormtable.AutoIncrementTable
 }
 
-func (this userProfileTable) Insert(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Insert(ctx, userProfile)
+func (this credentialTable) Insert(ctx context.Context, credential *Credential) error {
+	return this.table.Insert(ctx, credential)
 }
 
-func (this userProfileTable) Update(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Update(ctx, userProfile)
+func (this credentialTable) Update(ctx context.Context, credential *Credential) error {
+	return this.table.Update(ctx, credential)
 }
 
-func (this userProfileTable) Save(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Save(ctx, userProfile)
+func (this credentialTable) Save(ctx context.Context, credential *Credential) error {
+	return this.table.Save(ctx, credential)
 }
 
-func (this userProfileTable) Delete(ctx context.Context, userProfile *UserProfile) error {
-	return this.table.Delete(ctx, userProfile)
+func (this credentialTable) Delete(ctx context.Context, credential *Credential) error {
+	return this.table.Delete(ctx, credential)
 }
 
-func (this userProfileTable) InsertReturningId(ctx context.Context, userProfile *UserProfile) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, userProfile)
+func (this credentialTable) InsertReturningId(ctx context.Context, credential *Credential) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, credential)
 }
 
-func (this userProfileTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+func (this credentialTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
 	return this.table.LastInsertedSequence(ctx)
 }
 
-func (this userProfileTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+func (this credentialTable) Has(ctx context.Context, id uint64) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this userProfileTable) Get(ctx context.Context, id uint64) (*UserProfile, error) {
-	var userProfile UserProfile
-	found, err := this.table.PrimaryKey().Get(ctx, &userProfile, id)
+func (this credentialTable) Get(ctx context.Context, id uint64) (*Credential, error) {
+	var credential Credential
+	found, err := this.table.PrimaryKey().Get(ctx, &credential, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &userProfile, nil
+	return &credential, nil
 }
 
-func (this userProfileTable) HasByOriginHandle(ctx context.Context, origin string, handle string) (found bool, err error) {
+func (this credentialTable) HasByOriginHandle(ctx context.Context, origin string, handle string) (found bool, err error) {
 	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
 		origin,
 		handle,
 	)
 }
 
-func (this userProfileTable) GetByOriginHandle(ctx context.Context, origin string, handle string) (*UserProfile, error) {
-	var userProfile UserProfile
-	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &userProfile,
+func (this credentialTable) GetByOriginHandle(ctx context.Context, origin string, handle string) (*Credential, error) {
+	var credential Credential
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &credential,
 		origin,
 		handle,
 	)
@@ -415,270 +338,19 @@ func (this userProfileTable) GetByOriginHandle(ctx context.Context, origin strin
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &userProfile, nil
+	return &credential, nil
 }
 
-func (this userProfileTable) List(ctx context.Context, prefixKey UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error) {
-	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return UserProfileIterator{it}, err
-}
-
-func (this userProfileTable) ListRange(ctx context.Context, from, to UserProfileIndexKey, opts ...ormlist.Option) (UserProfileIterator, error) {
-	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return UserProfileIterator{it}, err
-}
-
-func (this userProfileTable) DeleteBy(ctx context.Context, prefixKey UserProfileIndexKey) error {
-	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
-}
-
-func (this userProfileTable) DeleteRange(ctx context.Context, from, to UserProfileIndexKey) error {
-	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
-}
-
-func (this userProfileTable) doNotImplement() {}
-
-var _ UserProfileTable = userProfileTable{}
-
-func NewUserProfileTable(db ormtable.Schema) (UserProfileTable, error) {
-	table := db.GetTable(&UserProfile{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&UserProfile{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return userProfileTable{table.(ormtable.AutoIncrementTable)}, nil
-}
-
-type ResourceTable interface {
-	Insert(ctx context.Context, resource *Resource) error
-	Update(ctx context.Context, resource *Resource) error
-	Save(ctx context.Context, resource *Resource) error
-	Delete(ctx context.Context, resource *Resource) error
-	Has(ctx context.Context, did string, cid string) (found bool, err error)
-	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, did string, cid string) (*Resource, error)
-	HasByCid(ctx context.Context, cid string) (found bool, err error)
-	// GetByCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByCid(ctx context.Context, cid string) (*Resource, error)
-	HasByOriginCid(ctx context.Context, origin string, cid string) (found bool, err error)
-	// GetByOriginCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginCid(ctx context.Context, origin string, cid string) (*Resource, error)
-	HasByOwnerCid(ctx context.Context, owner string, cid string) (found bool, err error)
-	// GetByOwnerCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOwnerCid(ctx context.Context, owner string, cid string) (*Resource, error)
-	HasByOwnerOriginCid(ctx context.Context, owner string, origin string, cid string) (found bool, err error)
-	// GetByOwnerOriginCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOwnerOriginCid(ctx context.Context, owner string, origin string, cid string) (*Resource, error)
-	List(ctx context.Context, prefixKey ResourceIndexKey, opts ...ormlist.Option) (ResourceIterator, error)
-	ListRange(ctx context.Context, from, to ResourceIndexKey, opts ...ormlist.Option) (ResourceIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ResourceIndexKey) error
-	DeleteRange(ctx context.Context, from, to ResourceIndexKey) error
-
-	doNotImplement()
-}
-
-type ResourceIterator struct {
-	ormtable.Iterator
-}
-
-func (i ResourceIterator) Value() (*Resource, error) {
-	var resource Resource
-	err := i.UnmarshalMessage(&resource)
-	return &resource, err
-}
-
-type ResourceIndexKey interface {
-	id() uint32
-	values() []interface{}
-	resourceIndexKey()
-}
-
-// primary key starting index..
-type ResourcePrimaryKey = ResourceDidCidIndexKey
-
-type ResourceDidCidIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceDidCidIndexKey) id() uint32            { return 0 }
-func (x ResourceDidCidIndexKey) values() []interface{} { return x.vs }
-func (x ResourceDidCidIndexKey) resourceIndexKey()     {}
-
-func (this ResourceDidCidIndexKey) WithDid(did string) ResourceDidCidIndexKey {
-	this.vs = []interface{}{did}
-	return this
-}
-
-func (this ResourceDidCidIndexKey) WithDidCid(did string, cid string) ResourceDidCidIndexKey {
-	this.vs = []interface{}{did, cid}
-	return this
-}
-
-type ResourceCidIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceCidIndexKey) id() uint32            { return 1 }
-func (x ResourceCidIndexKey) values() []interface{} { return x.vs }
-func (x ResourceCidIndexKey) resourceIndexKey()     {}
-
-func (this ResourceCidIndexKey) WithCid(cid string) ResourceCidIndexKey {
-	this.vs = []interface{}{cid}
-	return this
-}
-
-type ResourceOriginIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceOriginIndexKey) id() uint32            { return 2 }
-func (x ResourceOriginIndexKey) values() []interface{} { return x.vs }
-func (x ResourceOriginIndexKey) resourceIndexKey()     {}
-
-func (this ResourceOriginIndexKey) WithOrigin(origin string) ResourceOriginIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-type ResourceOriginCidIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceOriginCidIndexKey) id() uint32            { return 3 }
-func (x ResourceOriginCidIndexKey) values() []interface{} { return x.vs }
-func (x ResourceOriginCidIndexKey) resourceIndexKey()     {}
-
-func (this ResourceOriginCidIndexKey) WithOrigin(origin string) ResourceOriginCidIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this ResourceOriginCidIndexKey) WithOriginCid(origin string, cid string) ResourceOriginCidIndexKey {
-	this.vs = []interface{}{origin, cid}
-	return this
-}
-
-type ResourceOwnerIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceOwnerIndexKey) id() uint32            { return 4 }
-func (x ResourceOwnerIndexKey) values() []interface{} { return x.vs }
-func (x ResourceOwnerIndexKey) resourceIndexKey()     {}
-
-func (this ResourceOwnerIndexKey) WithOwner(owner string) ResourceOwnerIndexKey {
-	this.vs = []interface{}{owner}
-	return this
-}
-
-type ResourceOwnerCidIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceOwnerCidIndexKey) id() uint32            { return 5 }
-func (x ResourceOwnerCidIndexKey) values() []interface{} { return x.vs }
-func (x ResourceOwnerCidIndexKey) resourceIndexKey()     {}
-
-func (this ResourceOwnerCidIndexKey) WithOwner(owner string) ResourceOwnerCidIndexKey {
-	this.vs = []interface{}{owner}
-	return this
-}
-
-func (this ResourceOwnerCidIndexKey) WithOwnerCid(owner string, cid string) ResourceOwnerCidIndexKey {
-	this.vs = []interface{}{owner, cid}
-	return this
-}
-
-type ResourceOwnerOriginCidIndexKey struct {
-	vs []interface{}
-}
-
-func (x ResourceOwnerOriginCidIndexKey) id() uint32            { return 6 }
-func (x ResourceOwnerOriginCidIndexKey) values() []interface{} { return x.vs }
-func (x ResourceOwnerOriginCidIndexKey) resourceIndexKey()     {}
-
-func (this ResourceOwnerOriginCidIndexKey) WithOwner(owner string) ResourceOwnerOriginCidIndexKey {
-	this.vs = []interface{}{owner}
-	return this
-}
-
-func (this ResourceOwnerOriginCidIndexKey) WithOwnerOrigin(owner string, origin string) ResourceOwnerOriginCidIndexKey {
-	this.vs = []interface{}{owner, origin}
-	return this
-}
-
-func (this ResourceOwnerOriginCidIndexKey) WithOwnerOriginCid(owner string, origin string, cid string) ResourceOwnerOriginCidIndexKey {
-	this.vs = []interface{}{owner, origin, cid}
-	return this
-}
-
-type resourceTable struct {
-	table ormtable.Table
-}
-
-func (this resourceTable) Insert(ctx context.Context, resource *Resource) error {
-	return this.table.Insert(ctx, resource)
-}
-
-func (this resourceTable) Update(ctx context.Context, resource *Resource) error {
-	return this.table.Update(ctx, resource)
-}
-
-func (this resourceTable) Save(ctx context.Context, resource *Resource) error {
-	return this.table.Save(ctx, resource)
-}
-
-func (this resourceTable) Delete(ctx context.Context, resource *Resource) error {
-	return this.table.Delete(ctx, resource)
-}
-
-func (this resourceTable) Has(ctx context.Context, did string, cid string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, did, cid)
-}
-
-func (this resourceTable) Get(ctx context.Context, did string, cid string) (*Resource, error) {
-	var resource Resource
-	found, err := this.table.PrimaryKey().Get(ctx, &resource, did, cid)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &resource, nil
-}
-
-func (this resourceTable) HasByCid(ctx context.Context, cid string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		cid,
-	)
-}
-
-func (this resourceTable) GetByCid(ctx context.Context, cid string) (*Resource, error) {
-	var resource Resource
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &resource,
-		cid,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &resource, nil
-}
-
-func (this resourceTable) HasByOriginCid(ctx context.Context, origin string, cid string) (found bool, err error) {
+func (this credentialTable) HasByCredentialId(ctx context.Context, credential_id []byte) (found bool, err error) {
 	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-		cid,
+		credential_id,
 	)
 }
 
-func (this resourceTable) GetByOriginCid(ctx context.Context, origin string, cid string) (*Resource, error) {
-	var resource Resource
-	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &resource,
-		origin,
-		cid,
+func (this credentialTable) GetByCredentialId(ctx context.Context, credential_id []byte) (*Credential, error) {
+	var credential Credential
+	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &credential,
+		credential_id,
 	)
 	if err != nil {
 		return nil, err
@@ -686,21 +358,19 @@ func (this resourceTable) GetByOriginCid(ctx context.Context, origin string, cid
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &resource, nil
+	return &credential, nil
 }
 
-func (this resourceTable) HasByOwnerCid(ctx context.Context, owner string, cid string) (found bool, err error) {
-	return this.table.GetIndexByID(5).(ormtable.UniqueIndex).Has(ctx,
-		owner,
-		cid,
+func (this credentialTable) HasByPublicKey(ctx context.Context, public_key []byte) (found bool, err error) {
+	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
+		public_key,
 	)
 }
 
-func (this resourceTable) GetByOwnerCid(ctx context.Context, owner string, cid string) (*Resource, error) {
-	var resource Resource
-	found, err := this.table.GetIndexByID(5).(ormtable.UniqueIndex).Get(ctx, &resource,
-		owner,
-		cid,
+func (this credentialTable) GetByPublicKey(ctx context.Context, public_key []byte) (*Credential, error) {
+	var credential Credential
+	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &credential,
+		public_key,
 	)
 	if err != nil {
 		return nil, err
@@ -708,300 +378,165 @@ func (this resourceTable) GetByOwnerCid(ctx context.Context, owner string, cid s
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &resource, nil
+	return &credential, nil
 }
 
-func (this resourceTable) HasByOwnerOriginCid(ctx context.Context, owner string, origin string, cid string) (found bool, err error) {
-	return this.table.GetIndexByID(6).(ormtable.UniqueIndex).Has(ctx,
-		owner,
-		origin,
-		cid,
-	)
-}
-
-func (this resourceTable) GetByOwnerOriginCid(ctx context.Context, owner string, origin string, cid string) (*Resource, error) {
-	var resource Resource
-	found, err := this.table.GetIndexByID(6).(ormtable.UniqueIndex).Get(ctx, &resource,
-		owner,
-		origin,
-		cid,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &resource, nil
-}
-
-func (this resourceTable) List(ctx context.Context, prefixKey ResourceIndexKey, opts ...ormlist.Option) (ResourceIterator, error) {
+func (this credentialTable) List(ctx context.Context, prefixKey CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ResourceIterator{it}, err
+	return CredentialIterator{it}, err
 }
 
-func (this resourceTable) ListRange(ctx context.Context, from, to ResourceIndexKey, opts ...ormlist.Option) (ResourceIterator, error) {
+func (this credentialTable) ListRange(ctx context.Context, from, to CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ResourceIterator{it}, err
+	return CredentialIterator{it}, err
 }
 
-func (this resourceTable) DeleteBy(ctx context.Context, prefixKey ResourceIndexKey) error {
+func (this credentialTable) DeleteBy(ctx context.Context, prefixKey CredentialIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this resourceTable) DeleteRange(ctx context.Context, from, to ResourceIndexKey) error {
+func (this credentialTable) DeleteRange(ctx context.Context, from, to CredentialIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this resourceTable) doNotImplement() {}
+func (this credentialTable) doNotImplement() {}
 
-var _ ResourceTable = resourceTable{}
+var _ CredentialTable = credentialTable{}
 
-func NewResourceTable(db ormtable.Schema) (ResourceTable, error) {
-	table := db.GetTable(&Resource{})
+func NewCredentialTable(db ormtable.Schema) (CredentialTable, error) {
+	table := db.GetTable(&Credential{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Resource{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Credential{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return resourceTable{table}, nil
+	return credentialTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
-type PropertyTable interface {
-	Insert(ctx context.Context, property *Property) error
-	Update(ctx context.Context, property *Property) error
-	Save(ctx context.Context, property *Property) error
-	Delete(ctx context.Context, property *Property) error
-	Has(ctx context.Context, did string) (found bool, err error)
+type WitnessTable interface {
+	Insert(ctx context.Context, witness *Witness) error
+	InsertReturningIndex(ctx context.Context, witness *Witness) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
+	Update(ctx context.Context, witness *Witness) error
+	Save(ctx context.Context, witness *Witness) error
+	Delete(ctx context.Context, witness *Witness) error
+	Has(ctx context.Context, index uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, did string) (*Property, error)
-	HasByOriginOwnerKey(ctx context.Context, origin string, owner string, key string) (found bool, err error)
-	// GetByOriginOwnerKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginOwnerKey(ctx context.Context, origin string, owner string, key string) (*Property, error)
-	HasBySchemaKey(ctx context.Context, schema string, key string) (found bool, err error)
-	// GetBySchemaKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySchemaKey(ctx context.Context, schema string, key string) (*Property, error)
-	HasBySchemaOwnerKey(ctx context.Context, schema string, owner string, key string) (found bool, err error)
-	// GetBySchemaOwnerKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySchemaOwnerKey(ctx context.Context, schema string, owner string, key string) (*Property, error)
-	List(ctx context.Context, prefixKey PropertyIndexKey, opts ...ormlist.Option) (PropertyIterator, error)
-	ListRange(ctx context.Context, from, to PropertyIndexKey, opts ...ormlist.Option) (PropertyIterator, error)
-	DeleteBy(ctx context.Context, prefixKey PropertyIndexKey) error
-	DeleteRange(ctx context.Context, from, to PropertyIndexKey) error
+	Get(ctx context.Context, index uint64) (*Witness, error)
+	HasByOriginKey(ctx context.Context, origin string, key string) (found bool, err error)
+	// GetByOriginKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByOriginKey(ctx context.Context, origin string, key string) (*Witness, error)
+	List(ctx context.Context, prefixKey WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error)
+	ListRange(ctx context.Context, from, to WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error)
+	DeleteBy(ctx context.Context, prefixKey WitnessIndexKey) error
+	DeleteRange(ctx context.Context, from, to WitnessIndexKey) error
 
 	doNotImplement()
 }
 
-type PropertyIterator struct {
+type WitnessIterator struct {
 	ormtable.Iterator
 }
 
-func (i PropertyIterator) Value() (*Property, error) {
-	var property Property
-	err := i.UnmarshalMessage(&property)
-	return &property, err
+func (i WitnessIterator) Value() (*Witness, error) {
+	var witness Witness
+	err := i.UnmarshalMessage(&witness)
+	return &witness, err
 }
 
-type PropertyIndexKey interface {
+type WitnessIndexKey interface {
 	id() uint32
 	values() []interface{}
-	propertyIndexKey()
+	witnessIndexKey()
 }
 
 // primary key starting index..
-type PropertyPrimaryKey = PropertyDidIndexKey
+type WitnessPrimaryKey = WitnessIndexIndexKey
 
-type PropertyDidIndexKey struct {
+type WitnessIndexIndexKey struct {
 	vs []interface{}
 }
 
-func (x PropertyDidIndexKey) id() uint32            { return 0 }
-func (x PropertyDidIndexKey) values() []interface{} { return x.vs }
-func (x PropertyDidIndexKey) propertyIndexKey()     {}
+func (x WitnessIndexIndexKey) id() uint32            { return 0 }
+func (x WitnessIndexIndexKey) values() []interface{} { return x.vs }
+func (x WitnessIndexIndexKey) witnessIndexKey()      {}
 
-func (this PropertyDidIndexKey) WithDid(did string) PropertyDidIndexKey {
-	this.vs = []interface{}{did}
+func (this WitnessIndexIndexKey) WithIndex(index uint64) WitnessIndexIndexKey {
+	this.vs = []interface{}{index}
 	return this
 }
 
-type PropertyOriginOwnerKeyIndexKey struct {
+type WitnessOriginKeyIndexKey struct {
 	vs []interface{}
 }
 
-func (x PropertyOriginOwnerKeyIndexKey) id() uint32            { return 1 }
-func (x PropertyOriginOwnerKeyIndexKey) values() []interface{} { return x.vs }
-func (x PropertyOriginOwnerKeyIndexKey) propertyIndexKey()     {}
+func (x WitnessOriginKeyIndexKey) id() uint32            { return 1 }
+func (x WitnessOriginKeyIndexKey) values() []interface{} { return x.vs }
+func (x WitnessOriginKeyIndexKey) witnessIndexKey()      {}
 
-func (this PropertyOriginOwnerKeyIndexKey) WithOrigin(origin string) PropertyOriginOwnerKeyIndexKey {
+func (this WitnessOriginKeyIndexKey) WithOrigin(origin string) WitnessOriginKeyIndexKey {
 	this.vs = []interface{}{origin}
 	return this
 }
 
-func (this PropertyOriginOwnerKeyIndexKey) WithOriginOwner(origin string, owner string) PropertyOriginOwnerKeyIndexKey {
-	this.vs = []interface{}{origin, owner}
-	return this
-}
-
-func (this PropertyOriginOwnerKeyIndexKey) WithOriginOwnerKey(origin string, owner string, key string) PropertyOriginOwnerKeyIndexKey {
-	this.vs = []interface{}{origin, owner, key}
-	return this
-}
-
-type PropertyOwnerKeyIndexKey struct {
-	vs []interface{}
-}
-
-func (x PropertyOwnerKeyIndexKey) id() uint32            { return 2 }
-func (x PropertyOwnerKeyIndexKey) values() []interface{} { return x.vs }
-func (x PropertyOwnerKeyIndexKey) propertyIndexKey()     {}
-
-func (this PropertyOwnerKeyIndexKey) WithOwner(owner string) PropertyOwnerKeyIndexKey {
-	this.vs = []interface{}{owner}
-	return this
-}
-
-func (this PropertyOwnerKeyIndexKey) WithOwnerKey(owner string, key string) PropertyOwnerKeyIndexKey {
-	this.vs = []interface{}{owner, key}
-	return this
-}
-
-type PropertyOriginKeyIndexKey struct {
-	vs []interface{}
-}
-
-func (x PropertyOriginKeyIndexKey) id() uint32            { return 3 }
-func (x PropertyOriginKeyIndexKey) values() []interface{} { return x.vs }
-func (x PropertyOriginKeyIndexKey) propertyIndexKey()     {}
-
-func (this PropertyOriginKeyIndexKey) WithOrigin(origin string) PropertyOriginKeyIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this PropertyOriginKeyIndexKey) WithOriginKey(origin string, key string) PropertyOriginKeyIndexKey {
+func (this WitnessOriginKeyIndexKey) WithOriginKey(origin string, key string) WitnessOriginKeyIndexKey {
 	this.vs = []interface{}{origin, key}
 	return this
 }
 
-type PropertyOriginOwnerIndexKey struct {
-	vs []interface{}
+type witnessTable struct {
+	table ormtable.AutoIncrementTable
 }
 
-func (x PropertyOriginOwnerIndexKey) id() uint32            { return 4 }
-func (x PropertyOriginOwnerIndexKey) values() []interface{} { return x.vs }
-func (x PropertyOriginOwnerIndexKey) propertyIndexKey()     {}
-
-func (this PropertyOriginOwnerIndexKey) WithOrigin(origin string) PropertyOriginOwnerIndexKey {
-	this.vs = []interface{}{origin}
-	return this
+func (this witnessTable) Insert(ctx context.Context, witness *Witness) error {
+	return this.table.Insert(ctx, witness)
 }
 
-func (this PropertyOriginOwnerIndexKey) WithOriginOwner(origin string, owner string) PropertyOriginOwnerIndexKey {
-	this.vs = []interface{}{origin, owner}
-	return this
+func (this witnessTable) Update(ctx context.Context, witness *Witness) error {
+	return this.table.Update(ctx, witness)
 }
 
-type PropertyOwnerIndexKey struct {
-	vs []interface{}
+func (this witnessTable) Save(ctx context.Context, witness *Witness) error {
+	return this.table.Save(ctx, witness)
 }
 
-func (x PropertyOwnerIndexKey) id() uint32            { return 5 }
-func (x PropertyOwnerIndexKey) values() []interface{} { return x.vs }
-func (x PropertyOwnerIndexKey) propertyIndexKey()     {}
-
-func (this PropertyOwnerIndexKey) WithOwner(owner string) PropertyOwnerIndexKey {
-	this.vs = []interface{}{owner}
-	return this
+func (this witnessTable) Delete(ctx context.Context, witness *Witness) error {
+	return this.table.Delete(ctx, witness)
 }
 
-type PropertySchemaKeyIndexKey struct {
-	vs []interface{}
+func (this witnessTable) InsertReturningIndex(ctx context.Context, witness *Witness) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, witness)
 }
 
-func (x PropertySchemaKeyIndexKey) id() uint32            { return 6 }
-func (x PropertySchemaKeyIndexKey) values() []interface{} { return x.vs }
-func (x PropertySchemaKeyIndexKey) propertyIndexKey()     {}
-
-func (this PropertySchemaKeyIndexKey) WithSchema(schema string) PropertySchemaKeyIndexKey {
-	this.vs = []interface{}{schema}
-	return this
+func (this witnessTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
 }
 
-func (this PropertySchemaKeyIndexKey) WithSchemaKey(schema string, key string) PropertySchemaKeyIndexKey {
-	this.vs = []interface{}{schema, key}
-	return this
+func (this witnessTable) Has(ctx context.Context, index uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, index)
 }
 
-type PropertySchemaOwnerKeyIndexKey struct {
-	vs []interface{}
-}
-
-func (x PropertySchemaOwnerKeyIndexKey) id() uint32            { return 7 }
-func (x PropertySchemaOwnerKeyIndexKey) values() []interface{} { return x.vs }
-func (x PropertySchemaOwnerKeyIndexKey) propertyIndexKey()     {}
-
-func (this PropertySchemaOwnerKeyIndexKey) WithSchema(schema string) PropertySchemaOwnerKeyIndexKey {
-	this.vs = []interface{}{schema}
-	return this
-}
-
-func (this PropertySchemaOwnerKeyIndexKey) WithSchemaOwner(schema string, owner string) PropertySchemaOwnerKeyIndexKey {
-	this.vs = []interface{}{schema, owner}
-	return this
-}
-
-func (this PropertySchemaOwnerKeyIndexKey) WithSchemaOwnerKey(schema string, owner string, key string) PropertySchemaOwnerKeyIndexKey {
-	this.vs = []interface{}{schema, owner, key}
-	return this
-}
-
-type propertyTable struct {
-	table ormtable.Table
-}
-
-func (this propertyTable) Insert(ctx context.Context, property *Property) error {
-	return this.table.Insert(ctx, property)
-}
-
-func (this propertyTable) Update(ctx context.Context, property *Property) error {
-	return this.table.Update(ctx, property)
-}
-
-func (this propertyTable) Save(ctx context.Context, property *Property) error {
-	return this.table.Save(ctx, property)
-}
-
-func (this propertyTable) Delete(ctx context.Context, property *Property) error {
-	return this.table.Delete(ctx, property)
-}
-
-func (this propertyTable) Has(ctx context.Context, did string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, did)
-}
-
-func (this propertyTable) Get(ctx context.Context, did string) (*Property, error) {
-	var property Property
-	found, err := this.table.PrimaryKey().Get(ctx, &property, did)
+func (this witnessTable) Get(ctx context.Context, index uint64) (*Witness, error) {
+	var witness Witness
+	found, err := this.table.PrimaryKey().Get(ctx, &witness, index)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &property, nil
+	return &witness, nil
 }
 
-func (this propertyTable) HasByOriginOwnerKey(ctx context.Context, origin string, owner string, key string) (found bool, err error) {
+func (this witnessTable) HasByOriginKey(ctx context.Context, origin string, key string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
 		origin,
-		owner,
 		key,
 	)
 }
 
-func (this propertyTable) GetByOriginOwnerKey(ctx context.Context, origin string, owner string, key string) (*Property, error) {
-	var property Property
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &property,
+func (this witnessTable) GetByOriginKey(ctx context.Context, origin string, key string) (*Witness, error) {
+	var witness Witness
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &witness,
 		origin,
-		owner,
 		key,
 	)
 	if err != nil {
@@ -1010,83 +545,37 @@ func (this propertyTable) GetByOriginOwnerKey(ctx context.Context, origin string
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &property, nil
+	return &witness, nil
 }
 
-func (this propertyTable) HasBySchemaKey(ctx context.Context, schema string, key string) (found bool, err error) {
-	return this.table.GetIndexByID(6).(ormtable.UniqueIndex).Has(ctx,
-		schema,
-		key,
-	)
-}
-
-func (this propertyTable) GetBySchemaKey(ctx context.Context, schema string, key string) (*Property, error) {
-	var property Property
-	found, err := this.table.GetIndexByID(6).(ormtable.UniqueIndex).Get(ctx, &property,
-		schema,
-		key,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &property, nil
-}
-
-func (this propertyTable) HasBySchemaOwnerKey(ctx context.Context, schema string, owner string, key string) (found bool, err error) {
-	return this.table.GetIndexByID(7).(ormtable.UniqueIndex).Has(ctx,
-		schema,
-		owner,
-		key,
-	)
-}
-
-func (this propertyTable) GetBySchemaOwnerKey(ctx context.Context, schema string, owner string, key string) (*Property, error) {
-	var property Property
-	found, err := this.table.GetIndexByID(7).(ormtable.UniqueIndex).Get(ctx, &property,
-		schema,
-		owner,
-		key,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &property, nil
-}
-
-func (this propertyTable) List(ctx context.Context, prefixKey PropertyIndexKey, opts ...ormlist.Option) (PropertyIterator, error) {
+func (this witnessTable) List(ctx context.Context, prefixKey WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return PropertyIterator{it}, err
+	return WitnessIterator{it}, err
 }
 
-func (this propertyTable) ListRange(ctx context.Context, from, to PropertyIndexKey, opts ...ormlist.Option) (PropertyIterator, error) {
+func (this witnessTable) ListRange(ctx context.Context, from, to WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return PropertyIterator{it}, err
+	return WitnessIterator{it}, err
 }
 
-func (this propertyTable) DeleteBy(ctx context.Context, prefixKey PropertyIndexKey) error {
+func (this witnessTable) DeleteBy(ctx context.Context, prefixKey WitnessIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this propertyTable) DeleteRange(ctx context.Context, from, to PropertyIndexKey) error {
+func (this witnessTable) DeleteRange(ctx context.Context, from, to WitnessIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this propertyTable) doNotImplement() {}
+func (this witnessTable) doNotImplement() {}
 
-var _ PropertyTable = propertyTable{}
+var _ WitnessTable = witnessTable{}
 
-func NewPropertyTable(db ormtable.Schema) (PropertyTable, error) {
-	table := db.GetTable(&Property{})
+func NewWitnessTable(db ormtable.Schema) (WitnessTable, error) {
+	table := db.GetTable(&Witness{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Property{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Witness{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return propertyTable{table}, nil
+	return witnessTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 // singleton store
@@ -1211,9 +700,8 @@ func NewOwnParamsTable(db ormtable.Schema) (OwnParamsTable, error) {
 
 type StateStore interface {
 	ServiceRecordTable() ServiceRecordTable
-	UserProfileTable() UserProfileTable
-	ResourceTable() ResourceTable
-	PropertyTable() PropertyTable
+	CredentialTable() CredentialTable
+	WitnessTable() WitnessTable
 	BaseParamsTable() BaseParamsTable
 	ReadParamsTable() ReadParamsTable
 	WriteParamsTable() WriteParamsTable
@@ -1224,9 +712,8 @@ type StateStore interface {
 
 type stateStore struct {
 	serviceRecord ServiceRecordTable
-	userProfile   UserProfileTable
-	resource      ResourceTable
-	property      PropertyTable
+	credential    CredentialTable
+	witness       WitnessTable
 	baseParams    BaseParamsTable
 	readParams    ReadParamsTable
 	writeParams   WriteParamsTable
@@ -1237,16 +724,12 @@ func (x stateStore) ServiceRecordTable() ServiceRecordTable {
 	return x.serviceRecord
 }
 
-func (x stateStore) UserProfileTable() UserProfileTable {
-	return x.userProfile
+func (x stateStore) CredentialTable() CredentialTable {
+	return x.credential
 }
 
-func (x stateStore) ResourceTable() ResourceTable {
-	return x.resource
-}
-
-func (x stateStore) PropertyTable() PropertyTable {
-	return x.property
+func (x stateStore) WitnessTable() WitnessTable {
+	return x.witness
 }
 
 func (x stateStore) BaseParamsTable() BaseParamsTable {
@@ -1275,17 +758,12 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
-	userProfileTable, err := NewUserProfileTable(db)
+	credentialTable, err := NewCredentialTable(db)
 	if err != nil {
 		return nil, err
 	}
 
-	resourceTable, err := NewResourceTable(db)
-	if err != nil {
-		return nil, err
-	}
-
-	propertyTable, err := NewPropertyTable(db)
+	witnessTable, err := NewWitnessTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -1312,9 +790,8 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 
 	return stateStore{
 		serviceRecordTable,
-		userProfileTable,
-		resourceTable,
-		propertyTable,
+		credentialTable,
+		witnessTable,
 		baseParamsTable,
 		readParamsTable,
 		writeParamsTable,

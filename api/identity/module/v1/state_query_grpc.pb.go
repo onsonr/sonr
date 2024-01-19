@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/identity/module/v1/state_query.proto
+// source: sonr/identity/module/v1/state_query.proto
 
 package modulev1
 
@@ -21,20 +21,23 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetAccount_FullMethodName                  = "/sonrhq.identity.module.v1.StateQueryService/GetAccount"
-	StateQueryService_GetAccountByAddress_FullMethodName         = "/sonrhq.identity.module.v1.StateQueryService/GetAccountByAddress"
-	StateQueryService_GetAccountByPublicKey_FullMethodName       = "/sonrhq.identity.module.v1.StateQueryService/GetAccountByPublicKey"
-	StateQueryService_ListAccount_FullMethodName                 = "/sonrhq.identity.module.v1.StateQueryService/ListAccount"
-	StateQueryService_GetCredential_FullMethodName               = "/sonrhq.identity.module.v1.StateQueryService/GetCredential"
-	StateQueryService_GetCredentialByOriginHandle_FullMethodName = "/sonrhq.identity.module.v1.StateQueryService/GetCredentialByOriginHandle"
-	StateQueryService_GetCredentialByCredentialId_FullMethodName = "/sonrhq.identity.module.v1.StateQueryService/GetCredentialByCredentialId"
-	StateQueryService_GetCredentialByPublicKey_FullMethodName    = "/sonrhq.identity.module.v1.StateQueryService/GetCredentialByPublicKey"
-	StateQueryService_ListCredential_FullMethodName              = "/sonrhq.identity.module.v1.StateQueryService/ListCredential"
-	StateQueryService_GetInterchain_FullMethodName               = "/sonrhq.identity.module.v1.StateQueryService/GetInterchain"
-	StateQueryService_GetInterchainByChainId_FullMethodName      = "/sonrhq.identity.module.v1.StateQueryService/GetInterchainByChainId"
-	StateQueryService_GetInterchainByChainCode_FullMethodName    = "/sonrhq.identity.module.v1.StateQueryService/GetInterchainByChainCode"
-	StateQueryService_GetInterchainByName_FullMethodName         = "/sonrhq.identity.module.v1.StateQueryService/GetInterchainByName"
-	StateQueryService_ListInterchain_FullMethodName              = "/sonrhq.identity.module.v1.StateQueryService/ListInterchain"
+	StateQueryService_GetAccount_FullMethodName                    = "/sonr.identity.module.v1.StateQueryService/GetAccount"
+	StateQueryService_GetAccountByAddress_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
+	StateQueryService_GetAccountByPublicKey_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
+	StateQueryService_ListAccount_FullMethodName                   = "/sonr.identity.module.v1.StateQueryService/ListAccount"
+	StateQueryService_GetBlockchain_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetBlockchain"
+	StateQueryService_GetBlockchainByChainId_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
+	StateQueryService_GetBlockchainByName_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
+	StateQueryService_ListBlockchain_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListBlockchain"
+	StateQueryService_GetAccumulator_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/GetAccumulator"
+	StateQueryService_GetAccumulatorByControllerKey_FullMethodName = "/sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey"
+	StateQueryService_ListAccumulator_FullMethodName               = "/sonr.identity.module.v1.StateQueryService/ListAccumulator"
+	StateQueryService_GetController_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetController"
+	StateQueryService_GetControllerByAddress_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetControllerByAddress"
+	StateQueryService_GetControllerByPublicKey_FullMethodName      = "/sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey"
+	StateQueryService_GetControllerByPeerId_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetControllerByPeerId"
+	StateQueryService_GetControllerByIpns_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetControllerByIpns"
+	StateQueryService_ListController_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListController"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -49,26 +52,32 @@ type StateQueryServiceClient interface {
 	GetAccountByPublicKey(ctx context.Context, in *GetAccountByPublicKeyRequest, opts ...grpc.CallOption) (*GetAccountByPublicKeyResponse, error)
 	// ListAccount queries the Account table using prefix and range queries against defined indexes.
 	ListAccount(ctx context.Context, in *ListAccountRequest, opts ...grpc.CallOption) (*ListAccountResponse, error)
-	// Get queries the Credential table by its primary key.
-	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
-	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
-	GetCredentialByOriginHandle(ctx context.Context, in *GetCredentialByOriginHandleRequest, opts ...grpc.CallOption) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error)
-	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
-	ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error)
-	// Get queries the Interchain table by its primary key.
-	GetInterchain(ctx context.Context, in *GetInterchainRequest, opts ...grpc.CallOption) (*GetInterchainResponse, error)
-	// GetInterchainByChainId queries the Interchain table by its ChainId index
-	GetInterchainByChainId(ctx context.Context, in *GetInterchainByChainIdRequest, opts ...grpc.CallOption) (*GetInterchainByChainIdResponse, error)
-	// GetInterchainByChainCode queries the Interchain table by its ChainCode index
-	GetInterchainByChainCode(ctx context.Context, in *GetInterchainByChainCodeRequest, opts ...grpc.CallOption) (*GetInterchainByChainCodeResponse, error)
-	// GetInterchainByName queries the Interchain table by its Name index
-	GetInterchainByName(ctx context.Context, in *GetInterchainByNameRequest, opts ...grpc.CallOption) (*GetInterchainByNameResponse, error)
-	// ListInterchain queries the Interchain table using prefix and range queries against defined indexes.
-	ListInterchain(ctx context.Context, in *ListInterchainRequest, opts ...grpc.CallOption) (*ListInterchainResponse, error)
+	// Get queries the Blockchain table by its primary key.
+	GetBlockchain(ctx context.Context, in *GetBlockchainRequest, opts ...grpc.CallOption) (*GetBlockchainResponse, error)
+	// GetBlockchainByChainId queries the Blockchain table by its ChainId index
+	GetBlockchainByChainId(ctx context.Context, in *GetBlockchainByChainIdRequest, opts ...grpc.CallOption) (*GetBlockchainByChainIdResponse, error)
+	// GetBlockchainByName queries the Blockchain table by its Name index
+	GetBlockchainByName(ctx context.Context, in *GetBlockchainByNameRequest, opts ...grpc.CallOption) (*GetBlockchainByNameResponse, error)
+	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
+	ListBlockchain(ctx context.Context, in *ListBlockchainRequest, opts ...grpc.CallOption) (*ListBlockchainResponse, error)
+	// Get queries the Accumulator table by its primary key.
+	GetAccumulator(ctx context.Context, in *GetAccumulatorRequest, opts ...grpc.CallOption) (*GetAccumulatorResponse, error)
+	// GetAccumulatorByControllerKey queries the Accumulator table by its ControllerKey index
+	GetAccumulatorByControllerKey(ctx context.Context, in *GetAccumulatorByControllerKeyRequest, opts ...grpc.CallOption) (*GetAccumulatorByControllerKeyResponse, error)
+	// ListAccumulator queries the Accumulator table using prefix and range queries against defined indexes.
+	ListAccumulator(ctx context.Context, in *ListAccumulatorRequest, opts ...grpc.CallOption) (*ListAccumulatorResponse, error)
+	// Get queries the Controller table by its primary key.
+	GetController(ctx context.Context, in *GetControllerRequest, opts ...grpc.CallOption) (*GetControllerResponse, error)
+	// GetControllerByAddress queries the Controller table by its Address index
+	GetControllerByAddress(ctx context.Context, in *GetControllerByAddressRequest, opts ...grpc.CallOption) (*GetControllerByAddressResponse, error)
+	// GetControllerByPublicKey queries the Controller table by its PublicKey index
+	GetControllerByPublicKey(ctx context.Context, in *GetControllerByPublicKeyRequest, opts ...grpc.CallOption) (*GetControllerByPublicKeyResponse, error)
+	// GetControllerByPeerId queries the Controller table by its PeerId index
+	GetControllerByPeerId(ctx context.Context, in *GetControllerByPeerIdRequest, opts ...grpc.CallOption) (*GetControllerByPeerIdResponse, error)
+	// GetControllerByIpns queries the Controller table by its Ipns index
+	GetControllerByIpns(ctx context.Context, in *GetControllerByIpnsRequest, opts ...grpc.CallOption) (*GetControllerByIpnsResponse, error)
+	// ListController queries the Controller table using prefix and range queries against defined indexes.
+	ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error)
 }
 
 type stateQueryServiceClient struct {
@@ -115,90 +124,117 @@ func (c *stateQueryServiceClient) ListAccount(ctx context.Context, in *ListAccou
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error) {
-	out := new(GetCredentialResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredential_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetBlockchain(ctx context.Context, in *GetBlockchainRequest, opts ...grpc.CallOption) (*GetBlockchainResponse, error) {
+	out := new(GetBlockchainResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetBlockchain_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredentialByOriginHandle(ctx context.Context, in *GetCredentialByOriginHandleRequest, opts ...grpc.CallOption) (*GetCredentialByOriginHandleResponse, error) {
-	out := new(GetCredentialByOriginHandleResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByOriginHandle_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetBlockchainByChainId(ctx context.Context, in *GetBlockchainByChainIdRequest, opts ...grpc.CallOption) (*GetBlockchainByChainIdResponse, error) {
+	out := new(GetBlockchainByChainIdResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetBlockchainByChainId_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error) {
-	out := new(GetCredentialByCredentialIdResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByCredentialId_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetBlockchainByName(ctx context.Context, in *GetBlockchainByNameRequest, opts ...grpc.CallOption) (*GetBlockchainByNameResponse, error) {
+	out := new(GetBlockchainByNameResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetBlockchainByName_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error) {
-	out := new(GetCredentialByPublicKeyResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByPublicKey_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) ListBlockchain(ctx context.Context, in *ListBlockchainRequest, opts ...grpc.CallOption) (*ListBlockchainResponse, error) {
+	out := new(ListBlockchainResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListBlockchain_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error) {
-	out := new(ListCredentialResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListCredential_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetAccumulator(ctx context.Context, in *GetAccumulatorRequest, opts ...grpc.CallOption) (*GetAccumulatorResponse, error) {
+	out := new(GetAccumulatorResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetAccumulator_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetInterchain(ctx context.Context, in *GetInterchainRequest, opts ...grpc.CallOption) (*GetInterchainResponse, error) {
-	out := new(GetInterchainResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetInterchain_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetAccumulatorByControllerKey(ctx context.Context, in *GetAccumulatorByControllerKeyRequest, opts ...grpc.CallOption) (*GetAccumulatorByControllerKeyResponse, error) {
+	out := new(GetAccumulatorByControllerKeyResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetAccumulatorByControllerKey_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetInterchainByChainId(ctx context.Context, in *GetInterchainByChainIdRequest, opts ...grpc.CallOption) (*GetInterchainByChainIdResponse, error) {
-	out := new(GetInterchainByChainIdResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetInterchainByChainId_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) ListAccumulator(ctx context.Context, in *ListAccumulatorRequest, opts ...grpc.CallOption) (*ListAccumulatorResponse, error) {
+	out := new(ListAccumulatorResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListAccumulator_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetInterchainByChainCode(ctx context.Context, in *GetInterchainByChainCodeRequest, opts ...grpc.CallOption) (*GetInterchainByChainCodeResponse, error) {
-	out := new(GetInterchainByChainCodeResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetInterchainByChainCode_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetController(ctx context.Context, in *GetControllerRequest, opts ...grpc.CallOption) (*GetControllerResponse, error) {
+	out := new(GetControllerResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetController_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetInterchainByName(ctx context.Context, in *GetInterchainByNameRequest, opts ...grpc.CallOption) (*GetInterchainByNameResponse, error) {
-	out := new(GetInterchainByNameResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetInterchainByName_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetControllerByAddress(ctx context.Context, in *GetControllerByAddressRequest, opts ...grpc.CallOption) (*GetControllerByAddressResponse, error) {
+	out := new(GetControllerByAddressResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByAddress_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListInterchain(ctx context.Context, in *ListInterchainRequest, opts ...grpc.CallOption) (*ListInterchainResponse, error) {
-	out := new(ListInterchainResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListInterchain_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetControllerByPublicKey(ctx context.Context, in *GetControllerByPublicKeyRequest, opts ...grpc.CallOption) (*GetControllerByPublicKeyResponse, error) {
+	out := new(GetControllerByPublicKeyResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByPublicKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetControllerByPeerId(ctx context.Context, in *GetControllerByPeerIdRequest, opts ...grpc.CallOption) (*GetControllerByPeerIdResponse, error) {
+	out := new(GetControllerByPeerIdResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByPeerId_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetControllerByIpns(ctx context.Context, in *GetControllerByIpnsRequest, opts ...grpc.CallOption) (*GetControllerByIpnsResponse, error) {
+	out := new(GetControllerByIpnsResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByIpns_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error) {
+	out := new(ListControllerResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListController_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -217,26 +253,32 @@ type StateQueryServiceServer interface {
 	GetAccountByPublicKey(context.Context, *GetAccountByPublicKeyRequest) (*GetAccountByPublicKeyResponse, error)
 	// ListAccount queries the Account table using prefix and range queries against defined indexes.
 	ListAccount(context.Context, *ListAccountRequest) (*ListAccountResponse, error)
-	// Get queries the Credential table by its primary key.
-	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
-	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
-	GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error)
-	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
-	ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error)
-	// Get queries the Interchain table by its primary key.
-	GetInterchain(context.Context, *GetInterchainRequest) (*GetInterchainResponse, error)
-	// GetInterchainByChainId queries the Interchain table by its ChainId index
-	GetInterchainByChainId(context.Context, *GetInterchainByChainIdRequest) (*GetInterchainByChainIdResponse, error)
-	// GetInterchainByChainCode queries the Interchain table by its ChainCode index
-	GetInterchainByChainCode(context.Context, *GetInterchainByChainCodeRequest) (*GetInterchainByChainCodeResponse, error)
-	// GetInterchainByName queries the Interchain table by its Name index
-	GetInterchainByName(context.Context, *GetInterchainByNameRequest) (*GetInterchainByNameResponse, error)
-	// ListInterchain queries the Interchain table using prefix and range queries against defined indexes.
-	ListInterchain(context.Context, *ListInterchainRequest) (*ListInterchainResponse, error)
+	// Get queries the Blockchain table by its primary key.
+	GetBlockchain(context.Context, *GetBlockchainRequest) (*GetBlockchainResponse, error)
+	// GetBlockchainByChainId queries the Blockchain table by its ChainId index
+	GetBlockchainByChainId(context.Context, *GetBlockchainByChainIdRequest) (*GetBlockchainByChainIdResponse, error)
+	// GetBlockchainByName queries the Blockchain table by its Name index
+	GetBlockchainByName(context.Context, *GetBlockchainByNameRequest) (*GetBlockchainByNameResponse, error)
+	// ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.
+	ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error)
+	// Get queries the Accumulator table by its primary key.
+	GetAccumulator(context.Context, *GetAccumulatorRequest) (*GetAccumulatorResponse, error)
+	// GetAccumulatorByControllerKey queries the Accumulator table by its ControllerKey index
+	GetAccumulatorByControllerKey(context.Context, *GetAccumulatorByControllerKeyRequest) (*GetAccumulatorByControllerKeyResponse, error)
+	// ListAccumulator queries the Accumulator table using prefix and range queries against defined indexes.
+	ListAccumulator(context.Context, *ListAccumulatorRequest) (*ListAccumulatorResponse, error)
+	// Get queries the Controller table by its primary key.
+	GetController(context.Context, *GetControllerRequest) (*GetControllerResponse, error)
+	// GetControllerByAddress queries the Controller table by its Address index
+	GetControllerByAddress(context.Context, *GetControllerByAddressRequest) (*GetControllerByAddressResponse, error)
+	// GetControllerByPublicKey queries the Controller table by its PublicKey index
+	GetControllerByPublicKey(context.Context, *GetControllerByPublicKeyRequest) (*GetControllerByPublicKeyResponse, error)
+	// GetControllerByPeerId queries the Controller table by its PeerId index
+	GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error)
+	// GetControllerByIpns queries the Controller table by its Ipns index
+	GetControllerByIpns(context.Context, *GetControllerByIpnsRequest) (*GetControllerByIpnsResponse, error)
+	// ListController queries the Controller table using prefix and range queries against defined indexes.
+	ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error)
 	mustEmbedUnimplementedStateQueryServiceServer()
 }
 
@@ -256,35 +298,44 @@ func (UnimplementedStateQueryServiceServer) GetAccountByPublicKey(context.Contex
 func (UnimplementedStateQueryServiceServer) ListAccount(context.Context, *ListAccountRequest) (*ListAccountResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListAccount not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredential not implemented")
+func (UnimplementedStateQueryServiceServer) GetBlockchain(context.Context, *GetBlockchainRequest) (*GetBlockchainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBlockchain not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByOriginHandle not implemented")
+func (UnimplementedStateQueryServiceServer) GetBlockchainByChainId(context.Context, *GetBlockchainByChainIdRequest) (*GetBlockchainByChainIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBlockchainByChainId not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByCredentialId not implemented")
+func (UnimplementedStateQueryServiceServer) GetBlockchainByName(context.Context, *GetBlockchainByNameRequest) (*GetBlockchainByNameResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetBlockchainByName not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByPublicKey not implemented")
+func (UnimplementedStateQueryServiceServer) ListBlockchain(context.Context, *ListBlockchainRequest) (*ListBlockchainResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListBlockchain not implemented")
 }
-func (UnimplementedStateQueryServiceServer) ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListCredential not implemented")
+func (UnimplementedStateQueryServiceServer) GetAccumulator(context.Context, *GetAccumulatorRequest) (*GetAccumulatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccumulator not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetInterchain(context.Context, *GetInterchainRequest) (*GetInterchainResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetInterchain not implemented")
+func (UnimplementedStateQueryServiceServer) GetAccumulatorByControllerKey(context.Context, *GetAccumulatorByControllerKeyRequest) (*GetAccumulatorByControllerKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAccumulatorByControllerKey not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetInterchainByChainId(context.Context, *GetInterchainByChainIdRequest) (*GetInterchainByChainIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetInterchainByChainId not implemented")
+func (UnimplementedStateQueryServiceServer) ListAccumulator(context.Context, *ListAccumulatorRequest) (*ListAccumulatorResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAccumulator not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetInterchainByChainCode(context.Context, *GetInterchainByChainCodeRequest) (*GetInterchainByChainCodeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetInterchainByChainCode not implemented")
+func (UnimplementedStateQueryServiceServer) GetController(context.Context, *GetControllerRequest) (*GetControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetController not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetInterchainByName(context.Context, *GetInterchainByNameRequest) (*GetInterchainByNameResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetInterchainByName not implemented")
+func (UnimplementedStateQueryServiceServer) GetControllerByAddress(context.Context, *GetControllerByAddressRequest) (*GetControllerByAddressResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByAddress not implemented")
 }
-func (UnimplementedStateQueryServiceServer) ListInterchain(context.Context, *ListInterchainRequest) (*ListInterchainResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListInterchain not implemented")
+func (UnimplementedStateQueryServiceServer) GetControllerByPublicKey(context.Context, *GetControllerByPublicKeyRequest) (*GetControllerByPublicKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByPublicKey not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByPeerId not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByIpns(context.Context, *GetControllerByIpnsRequest) (*GetControllerByIpnsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByIpns not implemented")
+}
+func (UnimplementedStateQueryServiceServer) ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListController not implemented")
 }
 func (UnimplementedStateQueryServiceServer) mustEmbedUnimplementedStateQueryServiceServer() {}
 
@@ -371,182 +422,236 @@ func _StateQueryService_ListAccount_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialRequest)
+func _StateQueryService_GetBlockchain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBlockchainRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredential(ctx, in)
+		return srv.(StateQueryServiceServer).GetBlockchain(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredential_FullMethodName,
+		FullMethod: StateQueryService_GetBlockchain_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredential(ctx, req.(*GetCredentialRequest))
+		return srv.(StateQueryServiceServer).GetBlockchain(ctx, req.(*GetBlockchainRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredentialByOriginHandle_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByOriginHandleRequest)
+func _StateQueryService_GetBlockchainByChainId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBlockchainByChainIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByOriginHandle(ctx, in)
+		return srv.(StateQueryServiceServer).GetBlockchainByChainId(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByOriginHandle_FullMethodName,
+		FullMethod: StateQueryService_GetBlockchainByChainId_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByOriginHandle(ctx, req.(*GetCredentialByOriginHandleRequest))
+		return srv.(StateQueryServiceServer).GetBlockchainByChainId(ctx, req.(*GetBlockchainByChainIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredentialByCredentialId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByCredentialIdRequest)
+func _StateQueryService_GetBlockchainByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetBlockchainByNameRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, in)
+		return srv.(StateQueryServiceServer).GetBlockchainByName(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByCredentialId_FullMethodName,
+		FullMethod: StateQueryService_GetBlockchainByName_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, req.(*GetCredentialByCredentialIdRequest))
+		return srv.(StateQueryServiceServer).GetBlockchainByName(ctx, req.(*GetBlockchainByNameRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredentialByPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByPublicKeyRequest)
+func _StateQueryService_ListBlockchain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListBlockchainRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, in)
+		return srv.(StateQueryServiceServer).ListBlockchain(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByPublicKey_FullMethodName,
+		FullMethod: StateQueryService_ListBlockchain_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, req.(*GetCredentialByPublicKeyRequest))
+		return srv.(StateQueryServiceServer).ListBlockchain(ctx, req.(*ListBlockchainRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListCredentialRequest)
+func _StateQueryService_GetAccumulator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccumulatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListCredential(ctx, in)
+		return srv.(StateQueryServiceServer).GetAccumulator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_ListCredential_FullMethodName,
+		FullMethod: StateQueryService_GetAccumulator_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListCredential(ctx, req.(*ListCredentialRequest))
+		return srv.(StateQueryServiceServer).GetAccumulator(ctx, req.(*GetAccumulatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetInterchain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetInterchainRequest)
+func _StateQueryService_GetAccumulatorByControllerKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAccumulatorByControllerKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetInterchain(ctx, in)
+		return srv.(StateQueryServiceServer).GetAccumulatorByControllerKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetInterchain_FullMethodName,
+		FullMethod: StateQueryService_GetAccumulatorByControllerKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetInterchain(ctx, req.(*GetInterchainRequest))
+		return srv.(StateQueryServiceServer).GetAccumulatorByControllerKey(ctx, req.(*GetAccumulatorByControllerKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetInterchainByChainId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetInterchainByChainIdRequest)
+func _StateQueryService_ListAccumulator_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAccumulatorRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetInterchainByChainId(ctx, in)
+		return srv.(StateQueryServiceServer).ListAccumulator(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetInterchainByChainId_FullMethodName,
+		FullMethod: StateQueryService_ListAccumulator_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetInterchainByChainId(ctx, req.(*GetInterchainByChainIdRequest))
+		return srv.(StateQueryServiceServer).ListAccumulator(ctx, req.(*ListAccumulatorRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetInterchainByChainCode_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetInterchainByChainCodeRequest)
+func _StateQueryService_GetController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetInterchainByChainCode(ctx, in)
+		return srv.(StateQueryServiceServer).GetController(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetInterchainByChainCode_FullMethodName,
+		FullMethod: StateQueryService_GetController_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetInterchainByChainCode(ctx, req.(*GetInterchainByChainCodeRequest))
+		return srv.(StateQueryServiceServer).GetController(ctx, req.(*GetControllerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetInterchainByName_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetInterchainByNameRequest)
+func _StateQueryService_GetControllerByAddress_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByAddressRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetInterchainByName(ctx, in)
+		return srv.(StateQueryServiceServer).GetControllerByAddress(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetInterchainByName_FullMethodName,
+		FullMethod: StateQueryService_GetControllerByAddress_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetInterchainByName(ctx, req.(*GetInterchainByNameRequest))
+		return srv.(StateQueryServiceServer).GetControllerByAddress(ctx, req.(*GetControllerByAddressRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListInterchain_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListInterchainRequest)
+func _StateQueryService_GetControllerByPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByPublicKeyRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListInterchain(ctx, in)
+		return srv.(StateQueryServiceServer).GetControllerByPublicKey(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_ListInterchain_FullMethodName,
+		FullMethod: StateQueryService_GetControllerByPublicKey_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListInterchain(ctx, req.(*ListInterchainRequest))
+		return srv.(StateQueryServiceServer).GetControllerByPublicKey(ctx, req.(*GetControllerByPublicKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetControllerByPeerId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByPeerIdRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByPeerId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByPeerId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByPeerId(ctx, req.(*GetControllerByPeerIdRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetControllerByIpns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByIpnsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByIpns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByIpns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByIpns(ctx, req.(*GetControllerByIpnsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_ListController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListControllerRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).ListController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_ListController_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).ListController(ctx, req.(*ListControllerRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -555,7 +660,7 @@ func _StateQueryService_ListInterchain_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StateQueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.identity.module.v1.StateQueryService",
+	ServiceName: "sonr.identity.module.v1.StateQueryService",
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -575,46 +680,58 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StateQueryService_ListAccount_Handler,
 		},
 		{
-			MethodName: "GetCredential",
-			Handler:    _StateQueryService_GetCredential_Handler,
+			MethodName: "GetBlockchain",
+			Handler:    _StateQueryService_GetBlockchain_Handler,
 		},
 		{
-			MethodName: "GetCredentialByOriginHandle",
-			Handler:    _StateQueryService_GetCredentialByOriginHandle_Handler,
+			MethodName: "GetBlockchainByChainId",
+			Handler:    _StateQueryService_GetBlockchainByChainId_Handler,
 		},
 		{
-			MethodName: "GetCredentialByCredentialId",
-			Handler:    _StateQueryService_GetCredentialByCredentialId_Handler,
+			MethodName: "GetBlockchainByName",
+			Handler:    _StateQueryService_GetBlockchainByName_Handler,
 		},
 		{
-			MethodName: "GetCredentialByPublicKey",
-			Handler:    _StateQueryService_GetCredentialByPublicKey_Handler,
+			MethodName: "ListBlockchain",
+			Handler:    _StateQueryService_ListBlockchain_Handler,
 		},
 		{
-			MethodName: "ListCredential",
-			Handler:    _StateQueryService_ListCredential_Handler,
+			MethodName: "GetAccumulator",
+			Handler:    _StateQueryService_GetAccumulator_Handler,
 		},
 		{
-			MethodName: "GetInterchain",
-			Handler:    _StateQueryService_GetInterchain_Handler,
+			MethodName: "GetAccumulatorByControllerKey",
+			Handler:    _StateQueryService_GetAccumulatorByControllerKey_Handler,
 		},
 		{
-			MethodName: "GetInterchainByChainId",
-			Handler:    _StateQueryService_GetInterchainByChainId_Handler,
+			MethodName: "ListAccumulator",
+			Handler:    _StateQueryService_ListAccumulator_Handler,
 		},
 		{
-			MethodName: "GetInterchainByChainCode",
-			Handler:    _StateQueryService_GetInterchainByChainCode_Handler,
+			MethodName: "GetController",
+			Handler:    _StateQueryService_GetController_Handler,
 		},
 		{
-			MethodName: "GetInterchainByName",
-			Handler:    _StateQueryService_GetInterchainByName_Handler,
+			MethodName: "GetControllerByAddress",
+			Handler:    _StateQueryService_GetControllerByAddress_Handler,
 		},
 		{
-			MethodName: "ListInterchain",
-			Handler:    _StateQueryService_ListInterchain_Handler,
+			MethodName: "GetControllerByPublicKey",
+			Handler:    _StateQueryService_GetControllerByPublicKey_Handler,
+		},
+		{
+			MethodName: "GetControllerByPeerId",
+			Handler:    _StateQueryService_GetControllerByPeerId_Handler,
+		},
+		{
+			MethodName: "GetControllerByIpns",
+			Handler:    _StateQueryService_GetControllerByIpns_Handler,
+		},
+		{
+			MethodName: "ListController",
+			Handler:    _StateQueryService_ListController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/identity/module/v1/state_query.proto",
+	Metadata: "sonr/identity/module/v1/state_query.proto",
 }
