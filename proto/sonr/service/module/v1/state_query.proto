@@ -11,10 +11,6 @@ service StateQueryService {
   rpc GetServiceRecord(GetServiceRecordRequest) returns (GetServiceRecordResponse) {}
   // GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
   rpc GetServiceRecordByOrigin(GetServiceRecordByOriginRequest) returns (GetServiceRecordByOriginResponse) {}
-  // GetServiceRecordByNameController queries the ServiceRecord table by its NameController index
-  rpc GetServiceRecordByNameController(GetServiceRecordByNameControllerRequest) returns (GetServiceRecordByNameControllerResponse) {}
-  // GetServiceRecordByOriginController queries the ServiceRecord table by its OriginController index
-  rpc GetServiceRecordByOriginController(GetServiceRecordByOriginControllerRequest) returns (GetServiceRecordByOriginControllerResponse) {}
   // ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
   rpc ListServiceRecord(ListServiceRecordRequest) returns (ListServiceRecordResponse) {}
   // Get queries the Credential table by its primary key.
@@ -65,28 +61,6 @@ message GetServiceRecordByOriginResponse {
   ServiceRecord value = 1;
 }
 
-// GetServiceRecordByNameControllerRequest is the StateQuery/GetServiceRecordByNameControllerRequest request type.
-message GetServiceRecordByNameControllerRequest {
-  string name = 1;
-  string controller = 2;
-}
-
-// GetServiceRecordByNameControllerResponse is the StateQuery/GetServiceRecordByNameControllerResponse response type.
-message GetServiceRecordByNameControllerResponse {
-  ServiceRecord value = 1;
-}
-
-// GetServiceRecordByOriginControllerRequest is the StateQuery/GetServiceRecordByOriginControllerRequest request type.
-message GetServiceRecordByOriginControllerRequest {
-  string origin = 1;
-  string controller = 2;
-}
-
-// GetServiceRecordByOriginControllerResponse is the StateQuery/GetServiceRecordByOriginControllerResponse response type.
-message GetServiceRecordByOriginControllerResponse {
-  ServiceRecord value = 1;
-}
-
 // ListServiceRecordRequest is the StateQuery/ListServiceRecordRequest request type.
 message ListServiceRecordRequest {
   // IndexKey specifies the value of an index key to use in prefix and range queries.
@@ -99,10 +73,6 @@ message ListServiceRecordRequest {
       Origin origin = 2;
       // controller specifies the value of the Controller index key to use in the query.
       Controller controller = 3;
-      // name_controller specifies the value of the NameController index key to use in the query.
-      NameController name_controller = 4;
-      // origin_controller specifies the value of the OriginController index key to use in the query.
-      OriginController origin_controller = 5;
     }
     
     message Id {
@@ -121,24 +91,6 @@ message ListServiceRecordRequest {
       // controller is the value of the controller field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
       optional string controller = 1;
-    }
-    
-    message NameController {
-      // name is the value of the name field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string name = 1;
-      // controller is the value of the controller field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string controller = 2;
-    }
-    
-    message OriginController {
-      // origin is the value of the origin field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string origin = 1;
-      // controller is the value of the controller field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string controller = 2;
     }
   }
   

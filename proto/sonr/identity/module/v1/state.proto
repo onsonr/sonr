@@ -66,6 +66,7 @@ message Account {
   bytes public_key = 4;
   string network = 5;
   string address = 6;
+  string chain_id = 7;
 }
 
 // Blockchain is the configuration table for connected blockchains
@@ -111,13 +112,15 @@ message Controller {
     index : {id : 1 fields : "address" unique : true}
     index : {id : 2 fields : "public_key" unique : true}
     index : {id : 3 fields : "peer_id" unique : true}
+    index : {id : 4 fields : "ipns" unique : true}
   };
 
   uint64 sequence = 1;
   string peer_id = 2;
   string address = 3;
   bytes public_key = 4;
-  bytes accumulator_key = 5;
-  string network = 6;
-  string chain_id = 7;
+  string ipns = 5;
+  bytes accumulator_key = 6;
+  string network = 7;
+  string chain_id = 8;
 }

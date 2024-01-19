@@ -22,12 +22,6 @@ type ServiceRecordTable interface {
 	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
 	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error)
-	HasByNameController(ctx context.Context, name string, controller string) (found bool, err error)
-	// GetByNameController returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByNameController(ctx context.Context, name string, controller string) (*ServiceRecord, error)
-	HasByOriginController(ctx context.Context, origin string, controller string) (found bool, err error)
-	// GetByOriginController returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginController(ctx context.Context, origin string, controller string) (*ServiceRecord, error)
 	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
@@ -94,42 +88,6 @@ func (this ServiceRecordControllerIndexKey) WithController(controller string) Se
 	return this
 }
 
-type ServiceRecordNameControllerIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceRecordNameControllerIndexKey) id() uint32             { return 3 }
-func (x ServiceRecordNameControllerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordNameControllerIndexKey) serviceRecordIndexKey() {}
-
-func (this ServiceRecordNameControllerIndexKey) WithName(name string) ServiceRecordNameControllerIndexKey {
-	this.vs = []interface{}{name}
-	return this
-}
-
-func (this ServiceRecordNameControllerIndexKey) WithNameController(name string, controller string) ServiceRecordNameControllerIndexKey {
-	this.vs = []interface{}{name, controller}
-	return this
-}
-
-type ServiceRecordOriginControllerIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceRecordOriginControllerIndexKey) id() uint32             { return 4 }
-func (x ServiceRecordOriginControllerIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOriginControllerIndexKey) serviceRecordIndexKey() {}
-
-func (this ServiceRecordOriginControllerIndexKey) WithOrigin(origin string) ServiceRecordOriginControllerIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-func (this ServiceRecordOriginControllerIndexKey) WithOriginController(origin string, controller string) ServiceRecordOriginControllerIndexKey {
-	this.vs = []interface{}{origin, controller}
-	return this
-}
-
 type serviceRecordTable struct {
 	table ormtable.AutoIncrementTable
 }
@@ -184,50 +142,6 @@ func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (
 	var serviceRecord ServiceRecord
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
 		origin,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
-func (this serviceRecordTable) HasByNameController(ctx context.Context, name string, controller string) (found bool, err error) {
-	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
-		name,
-		controller,
-	)
-}
-
-func (this serviceRecordTable) GetByNameController(ctx context.Context, name string, controller string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		name,
-		controller,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
-func (this serviceRecordTable) HasByOriginController(ctx context.Context, origin string, controller string) (found bool, err error) {
-	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-		controller,
-	)
-}
-
-func (this serviceRecordTable) GetByOriginController(ctx context.Context, origin string, controller string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		origin,
-		controller,
 	)
 	if err != nil {
 		return nil, err

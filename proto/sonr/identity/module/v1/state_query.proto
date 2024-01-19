@@ -37,6 +37,8 @@ service StateQueryService {
   rpc GetControllerByPublicKey(GetControllerByPublicKeyRequest) returns (GetControllerByPublicKeyResponse) {}
   // GetControllerByPeerId queries the Controller table by its PeerId index
   rpc GetControllerByPeerId(GetControllerByPeerIdRequest) returns (GetControllerByPeerIdResponse) {}
+  // GetControllerByIpns queries the Controller table by its Ipns index
+  rpc GetControllerByIpns(GetControllerByIpnsRequest) returns (GetControllerByIpnsResponse) {}
   // ListController queries the Controller table using prefix and range queries against defined indexes.
   rpc ListController(ListControllerRequest) returns (ListControllerResponse) {}
 }
@@ -354,6 +356,16 @@ message GetControllerByPeerIdResponse {
   Controller value = 1;
 }
 
+// GetControllerByIpnsRequest is the StateQuery/GetControllerByIpnsRequest request type.
+message GetControllerByIpnsRequest {
+  string ipns = 1;
+}
+
+// GetControllerByIpnsResponse is the StateQuery/GetControllerByIpnsResponse response type.
+message GetControllerByIpnsResponse {
+  Controller value = 1;
+}
+
 // ListControllerRequest is the StateQuery/ListControllerRequest request type.
 message ListControllerRequest {
   // IndexKey specifies the value of an index key to use in prefix and range queries.
@@ -368,6 +380,8 @@ message ListControllerRequest {
       PublicKey public_key = 3;
       // peer_id specifies the value of the PeerId index key to use in the query.
       PeerId peer_id = 4;
+      // ipns specifies the value of the Ipns index key to use in the query.
+      Ipns ipns = 5;
     }
     
     message Sequence {
@@ -392,6 +406,12 @@ message ListControllerRequest {
       // peer_id is the value of the peer_id field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
       optional string peer_id = 1;
+    }
+    
+    message Ipns {
+      // ipns is the value of the ipns field in the index.
+      // It can be omitted to query for all valid values of that field in this segment of the index.
+      optional string ipns = 1;
     }
   }
   

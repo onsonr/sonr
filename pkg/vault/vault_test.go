@@ -10,16 +10,13 @@ import (
 	"github.com/sonrhq/sonr/pkg/vault"
 )
 
-func TestNewVault(t *testing.T) {
+func TestNewController(t *testing.T) {
 	if !checkLocalIPFSConn() {
 		t.Skip("Skipping test due to no local IPFS connection")
 	}
-	v, err := vault.New(context.Background())
+	v, err := vault.NewController(context.Background())
 	require.NoError(t, err)
-	require.NotEmpty(t, v.Key)
-	t.Logf("PeerID: %s", v.PeerID)
-	t.Logf("SonrAddress: %s", v.SonrAddress)
-	t.Logf("IPNS: %s", v.IPNS)
+	t.Logf("Controller: %s", v.String())
 }
 
 func checkLocalIPFSConn() bool {

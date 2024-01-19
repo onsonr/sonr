@@ -36,6 +36,7 @@ const (
 	StateQueryService_GetControllerByAddress_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetControllerByAddress"
 	StateQueryService_GetControllerByPublicKey_FullMethodName      = "/sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey"
 	StateQueryService_GetControllerByPeerId_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetControllerByPeerId"
+	StateQueryService_GetControllerByIpns_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetControllerByIpns"
 	StateQueryService_ListController_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListController"
 )
 
@@ -73,6 +74,8 @@ type StateQueryServiceClient interface {
 	GetControllerByPublicKey(ctx context.Context, in *GetControllerByPublicKeyRequest, opts ...grpc.CallOption) (*GetControllerByPublicKeyResponse, error)
 	// GetControllerByPeerId queries the Controller table by its PeerId index
 	GetControllerByPeerId(ctx context.Context, in *GetControllerByPeerIdRequest, opts ...grpc.CallOption) (*GetControllerByPeerIdResponse, error)
+	// GetControllerByIpns queries the Controller table by its Ipns index
+	GetControllerByIpns(ctx context.Context, in *GetControllerByIpnsRequest, opts ...grpc.CallOption) (*GetControllerByIpnsResponse, error)
 	// ListController queries the Controller table using prefix and range queries against defined indexes.
 	ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error)
 }
@@ -220,6 +223,15 @@ func (c *stateQueryServiceClient) GetControllerByPeerId(ctx context.Context, in 
 	return out, nil
 }
 
+func (c *stateQueryServiceClient) GetControllerByIpns(ctx context.Context, in *GetControllerByIpnsRequest, opts ...grpc.CallOption) (*GetControllerByIpnsResponse, error) {
+	out := new(GetControllerByIpnsResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetControllerByIpns_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *stateQueryServiceClient) ListController(ctx context.Context, in *ListControllerRequest, opts ...grpc.CallOption) (*ListControllerResponse, error) {
 	out := new(ListControllerResponse)
 	err := c.cc.Invoke(ctx, StateQueryService_ListController_FullMethodName, in, out, opts...)
@@ -263,6 +275,8 @@ type StateQueryServiceServer interface {
 	GetControllerByPublicKey(context.Context, *GetControllerByPublicKeyRequest) (*GetControllerByPublicKeyResponse, error)
 	// GetControllerByPeerId queries the Controller table by its PeerId index
 	GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error)
+	// GetControllerByIpns queries the Controller table by its Ipns index
+	GetControllerByIpns(context.Context, *GetControllerByIpnsRequest) (*GetControllerByIpnsResponse, error)
 	// ListController queries the Controller table using prefix and range queries against defined indexes.
 	ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error)
 	mustEmbedUnimplementedStateQueryServiceServer()
@@ -316,6 +330,9 @@ func (UnimplementedStateQueryServiceServer) GetControllerByPublicKey(context.Con
 }
 func (UnimplementedStateQueryServiceServer) GetControllerByPeerId(context.Context, *GetControllerByPeerIdRequest) (*GetControllerByPeerIdResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByPeerId not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetControllerByIpns(context.Context, *GetControllerByIpnsRequest) (*GetControllerByIpnsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetControllerByIpns not implemented")
 }
 func (UnimplementedStateQueryServiceServer) ListController(context.Context, *ListControllerRequest) (*ListControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListController not implemented")
@@ -603,6 +620,24 @@ func _StateQueryService_GetControllerByPeerId_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StateQueryService_GetControllerByIpns_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetControllerByIpnsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetControllerByIpns(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetControllerByIpns_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetControllerByIpns(ctx, req.(*GetControllerByIpnsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _StateQueryService_ListController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListControllerRequest)
 	if err := dec(in); err != nil {
@@ -687,6 +722,10 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetControllerByPeerId",
 			Handler:    _StateQueryService_GetControllerByPeerId_Handler,
+		},
+		{
+			MethodName: "GetControllerByIpns",
+			Handler:    _StateQueryService_GetControllerByIpns_Handler,
 		},
 		{
 			MethodName: "ListController",

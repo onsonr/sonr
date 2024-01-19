@@ -3,12 +3,10 @@ package vault
 import (
 	"context"
 
-	"github.com/ipfs/boxo/ipns"
 	"github.com/ipfs/kubo/client/rpc"
-	iface "github.com/ipfs/kubo/core/coreiface"
 	"github.com/ipfs/kubo/core/coreiface/options"
-	"github.com/libp2p/go-libp2p/core/peer"
 
+	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/keychain"
 )
 
@@ -22,15 +20,7 @@ func getIpfsClient() *rpc.HttpApi {
 	return ipfsC
 }
 
-type Vault struct {
-	localPath   string
-	Key         iface.Key
-	SonrAddress string
-	PeerID      peer.ID
-	IPNS        ipns.Name
-}
-
-func New(ctx context.Context) (*Vault, error) {
+func NewController(ctx context.Context) (*modulev1.Controller, error) {
 	c := getIpfsClient()
 	kc, err := keychain.New(ctx)
 	if err != nil {
@@ -48,10 +38,11 @@ func New(ctx context.Context) (*Vault, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Vault{
-		Key:         key,
-		SonrAddress: kc.Address,
-		PeerID:      key.ID(),
-		IPNS:        name,
-	}, nil
+	cnt := &modulev1.Controller{
+		Address:   kc.Address,
+		PeerId:    key.ID().String(),
+		PublicKey: kc.PublicKey,
+		Ipns:      name.String(),
+	}
+	return cnt, nil
 }

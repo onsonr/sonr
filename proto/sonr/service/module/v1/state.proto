@@ -33,8 +33,6 @@ message ServiceRecord {
     primary_key : {fields : "id" auto_increment : true}
     index : {id : 1 fields : "origin" unique : true}
     index : {id : 2 fields : "controller"}
-    index : {id : 3 fields : "name,controller" unique : true}
-    index : {id : 4 fields : "origin,controller" unique : true}
   };
 
   uint64 id = 1;

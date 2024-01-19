@@ -587,6 +587,9 @@ type ControllerTable interface {
 	HasByPeerId(ctx context.Context, peer_id string) (found bool, err error)
 	// GetByPeerId returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetByPeerId(ctx context.Context, peer_id string) (*Controller, error)
+	HasByIpns(ctx context.Context, ipns string) (found bool, err error)
+	// GetByIpns returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByIpns(ctx context.Context, ipns string) (*Controller, error)
 	List(ctx context.Context, prefixKey ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	ListRange(ctx context.Context, from, to ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ControllerIndexKey) error
@@ -663,6 +666,19 @@ func (x ControllerPeerIdIndexKey) controllerIndexKey()   {}
 
 func (this ControllerPeerIdIndexKey) WithPeerId(peer_id string) ControllerPeerIdIndexKey {
 	this.vs = []interface{}{peer_id}
+	return this
+}
+
+type ControllerIpnsIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerIpnsIndexKey) id() uint32            { return 4 }
+func (x ControllerIpnsIndexKey) values() []interface{} { return x.vs }
+func (x ControllerIpnsIndexKey) controllerIndexKey()   {}
+
+func (this ControllerIpnsIndexKey) WithIpns(ipns string) ControllerIpnsIndexKey {
+	this.vs = []interface{}{ipns}
 	return this
 }
 
@@ -760,6 +776,26 @@ func (this controllerTable) GetByPeerId(ctx context.Context, peer_id string) (*C
 	var controller Controller
 	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &controller,
 		peer_id,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByIpns(ctx context.Context, ipns string) (found bool, err error) {
+	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
+		ipns,
+	)
+}
+
+func (this controllerTable) GetByIpns(ctx context.Context, ipns string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &controller,
+		ipns,
 	)
 	if err != nil {
 		return nil, err
