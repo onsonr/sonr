@@ -19,9 +19,6 @@ type ServiceRecordTable interface {
 	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id uint64) (*ServiceRecord, error)
-	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
-	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error)
 	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
@@ -123,26 +120,6 @@ func (this serviceRecordTable) Has(ctx context.Context, id uint64) (found bool, 
 func (this serviceRecordTable) Get(ctx context.Context, id uint64) (*ServiceRecord, error) {
 	var serviceRecord ServiceRecord
 	found, err := this.table.PrimaryKey().Get(ctx, &serviceRecord, id)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &serviceRecord, nil
-}
-
-func (this serviceRecordTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-	)
-}
-
-func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
-		origin,
-	)
 	if err != nil {
 		return nil, err
 	}

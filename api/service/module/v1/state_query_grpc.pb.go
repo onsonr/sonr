@@ -22,7 +22,6 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	StateQueryService_GetServiceRecord_FullMethodName            = "/sonr.service.module.v1.StateQueryService/GetServiceRecord"
-	StateQueryService_GetServiceRecordByOrigin_FullMethodName    = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
 	StateQueryService_ListServiceRecord_FullMethodName           = "/sonr.service.module.v1.StateQueryService/ListServiceRecord"
 	StateQueryService_GetCredential_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetCredential"
 	StateQueryService_GetCredentialByOriginHandle_FullMethodName = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
@@ -44,8 +43,6 @@ const (
 type StateQueryServiceClient interface {
 	// Get queries the ServiceRecord table by its primary key.
 	GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error)
 	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
 	ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error)
 	// Get queries the Credential table by its primary key.
@@ -85,15 +82,6 @@ func NewStateQueryServiceClient(cc grpc.ClientConnInterface) StateQueryServiceCl
 func (c *stateQueryServiceClient) GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error) {
 	out := new(GetServiceRecordResponse)
 	err := c.cc.Invoke(ctx, StateQueryService_GetServiceRecord_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *stateQueryServiceClient) GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error) {
-	out := new(GetServiceRecordByOriginResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetServiceRecordByOrigin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -223,8 +211,6 @@ func (c *stateQueryServiceClient) GetOwnParams(ctx context.Context, in *GetOwnPa
 type StateQueryServiceServer interface {
 	// Get queries the ServiceRecord table by its primary key.
 	GetServiceRecord(context.Context, *GetServiceRecordRequest) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(context.Context, *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error)
 	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
 	ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error)
 	// Get queries the Credential table by its primary key.
@@ -260,9 +246,6 @@ type UnimplementedStateQueryServiceServer struct {
 
 func (UnimplementedStateQueryServiceServer) GetServiceRecord(context.Context, *GetServiceRecordRequest) (*GetServiceRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecord not implemented")
-}
-func (UnimplementedStateQueryServiceServer) GetServiceRecordByOrigin(context.Context, *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecordByOrigin not implemented")
 }
 func (UnimplementedStateQueryServiceServer) ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListServiceRecord not implemented")
@@ -330,24 +313,6 @@ func _StateQueryService_GetServiceRecord_Handler(srv interface{}, ctx context.Co
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(StateQueryServiceServer).GetServiceRecord(ctx, req.(*GetServiceRecordRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _StateQueryService_GetServiceRecordByOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServiceRecordByOriginRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: StateQueryService_GetServiceRecordByOrigin_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, req.(*GetServiceRecordByOriginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -596,10 +561,6 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetServiceRecord",
 			Handler:    _StateQueryService_GetServiceRecord_Handler,
-		},
-		{
-			MethodName: "GetServiceRecordByOrigin",
-			Handler:    _StateQueryService_GetServiceRecordByOrigin_Handler,
 		},
 		{
 			MethodName: "ListServiceRecord",
