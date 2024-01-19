@@ -65,10 +65,26 @@ message Credential {
   string origin = 7;
 }
 
+
+// Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
+// authorizer to the underlying wallet interface.
+message Witness {
+  option (cosmos.orm.v1.table) = {
+    id : 3
+    primary_key : {fields : "index" auto_increment : true}
+    index : {id : 1 fields : "origin,key" unique : true}
+  };
+
+  uint64 index = 1;
+  string origin = 2;
+  string key = 3;
+  string value = 4;
+}
+
 // BaseParams is the total supply of the module.
 message BaseParams {
   option (cosmos.orm.v1.singleton) = {
-    id : 5
+    id : 4
   };
   ServicePermissions permissions = 1;
   string resident_key = 2;
@@ -79,7 +95,7 @@ message BaseParams {
 // ReadParams is the total supply of the module.
 message ReadParams {
   option (cosmos.orm.v1.singleton) = {
-    id : 6
+    id : 5
   };
   ServicePermissions permissions = 1;
   string resident_key = 2;
@@ -90,7 +106,7 @@ message ReadParams {
 // WriteParams is the total supply of the module.
 message WriteParams {
   option (cosmos.orm.v1.singleton) = {
-    id : 7
+    id : 6
   };
   ServicePermissions permissions = 1;
   string resident_key = 2;
@@ -101,7 +117,7 @@ message WriteParams {
 // OwnParams is the total supply of the module.
 message OwnParams {
   option (cosmos.orm.v1.singleton) = {
-    id : 8
+    id : 7
   };
   ServicePermissions permissions = 1;
   string resident_key = 2;

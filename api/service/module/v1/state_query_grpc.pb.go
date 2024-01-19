@@ -31,6 +31,9 @@ const (
 	StateQueryService_GetCredentialByCredentialId_FullMethodName        = "/sonr.service.module.v1.StateQueryService/GetCredentialByCredentialId"
 	StateQueryService_GetCredentialByPublicKey_FullMethodName           = "/sonr.service.module.v1.StateQueryService/GetCredentialByPublicKey"
 	StateQueryService_ListCredential_FullMethodName                     = "/sonr.service.module.v1.StateQueryService/ListCredential"
+	StateQueryService_GetWitness_FullMethodName                         = "/sonr.service.module.v1.StateQueryService/GetWitness"
+	StateQueryService_GetWitnessByOriginKey_FullMethodName              = "/sonr.service.module.v1.StateQueryService/GetWitnessByOriginKey"
+	StateQueryService_ListWitness_FullMethodName                        = "/sonr.service.module.v1.StateQueryService/ListWitness"
 	StateQueryService_GetBaseParams_FullMethodName                      = "/sonr.service.module.v1.StateQueryService/GetBaseParams"
 	StateQueryService_GetReadParams_FullMethodName                      = "/sonr.service.module.v1.StateQueryService/GetReadParams"
 	StateQueryService_GetWriteParams_FullMethodName                     = "/sonr.service.module.v1.StateQueryService/GetWriteParams"
@@ -61,6 +64,12 @@ type StateQueryServiceClient interface {
 	GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error)
 	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
 	ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error)
+	// Get queries the Witness table by its primary key.
+	GetWitness(ctx context.Context, in *GetWitnessRequest, opts ...grpc.CallOption) (*GetWitnessResponse, error)
+	// GetWitnessByOriginKey queries the Witness table by its OriginKey index
+	GetWitnessByOriginKey(ctx context.Context, in *GetWitnessByOriginKeyRequest, opts ...grpc.CallOption) (*GetWitnessByOriginKeyResponse, error)
+	// ListWitness queries the Witness table using prefix and range queries against defined indexes.
+	ListWitness(ctx context.Context, in *ListWitnessRequest, opts ...grpc.CallOption) (*ListWitnessResponse, error)
 	// GetBaseParams queries the BaseParams singleton.
 	GetBaseParams(ctx context.Context, in *GetBaseParamsRequest, opts ...grpc.CallOption) (*GetBaseParamsResponse, error)
 	// GetReadParams queries the ReadParams singleton.
@@ -169,6 +178,33 @@ func (c *stateQueryServiceClient) ListCredential(ctx context.Context, in *ListCr
 	return out, nil
 }
 
+func (c *stateQueryServiceClient) GetWitness(ctx context.Context, in *GetWitnessRequest, opts ...grpc.CallOption) (*GetWitnessResponse, error) {
+	out := new(GetWitnessResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetWitness_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) GetWitnessByOriginKey(ctx context.Context, in *GetWitnessByOriginKeyRequest, opts ...grpc.CallOption) (*GetWitnessByOriginKeyResponse, error) {
+	out := new(GetWitnessByOriginKeyResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetWitnessByOriginKey_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *stateQueryServiceClient) ListWitness(ctx context.Context, in *ListWitnessRequest, opts ...grpc.CallOption) (*ListWitnessResponse, error) {
+	out := new(ListWitnessResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListWitness_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *stateQueryServiceClient) GetBaseParams(ctx context.Context, in *GetBaseParamsRequest, opts ...grpc.CallOption) (*GetBaseParamsResponse, error) {
 	out := new(GetBaseParamsResponse)
 	err := c.cc.Invoke(ctx, StateQueryService_GetBaseParams_FullMethodName, in, out, opts...)
@@ -229,6 +265,12 @@ type StateQueryServiceServer interface {
 	GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error)
 	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
 	ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error)
+	// Get queries the Witness table by its primary key.
+	GetWitness(context.Context, *GetWitnessRequest) (*GetWitnessResponse, error)
+	// GetWitnessByOriginKey queries the Witness table by its OriginKey index
+	GetWitnessByOriginKey(context.Context, *GetWitnessByOriginKeyRequest) (*GetWitnessByOriginKeyResponse, error)
+	// ListWitness queries the Witness table using prefix and range queries against defined indexes.
+	ListWitness(context.Context, *ListWitnessRequest) (*ListWitnessResponse, error)
 	// GetBaseParams queries the BaseParams singleton.
 	GetBaseParams(context.Context, *GetBaseParamsRequest) (*GetBaseParamsResponse, error)
 	// GetReadParams queries the ReadParams singleton.
@@ -273,6 +315,15 @@ func (UnimplementedStateQueryServiceServer) GetCredentialByPublicKey(context.Con
 }
 func (UnimplementedStateQueryServiceServer) ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCredential not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetWitness(context.Context, *GetWitnessRequest) (*GetWitnessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWitness not implemented")
+}
+func (UnimplementedStateQueryServiceServer) GetWitnessByOriginKey(context.Context, *GetWitnessByOriginKeyRequest) (*GetWitnessByOriginKeyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWitnessByOriginKey not implemented")
+}
+func (UnimplementedStateQueryServiceServer) ListWitness(context.Context, *ListWitnessRequest) (*ListWitnessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListWitness not implemented")
 }
 func (UnimplementedStateQueryServiceServer) GetBaseParams(context.Context, *GetBaseParamsRequest) (*GetBaseParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBaseParams not implemented")
@@ -479,6 +530,60 @@ func _StateQueryService_ListCredential_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
+func _StateQueryService_GetWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWitnessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetWitness(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetWitness_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetWitness(ctx, req.(*GetWitnessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_GetWitnessByOriginKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWitnessByOriginKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).GetWitnessByOriginKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_GetWitnessByOriginKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).GetWitnessByOriginKey(ctx, req.(*GetWitnessByOriginKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _StateQueryService_ListWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListWitnessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(StateQueryServiceServer).ListWitness(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: StateQueryService_ListWitness_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(StateQueryServiceServer).ListWitness(ctx, req.(*ListWitnessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _StateQueryService_GetBaseParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetBaseParamsRequest)
 	if err := dec(in); err != nil {
@@ -597,6 +702,18 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ListCredential",
 			Handler:    _StateQueryService_ListCredential_Handler,
+		},
+		{
+			MethodName: "GetWitness",
+			Handler:    _StateQueryService_GetWitness_Handler,
+		},
+		{
+			MethodName: "GetWitnessByOriginKey",
+			Handler:    _StateQueryService_GetWitnessByOriginKey_Handler,
+		},
+		{
+			MethodName: "ListWitness",
+			Handler:    _StateQueryService_ListWitness_Handler,
 		},
 		{
 			MethodName: "GetBaseParams",

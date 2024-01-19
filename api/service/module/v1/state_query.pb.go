@@ -1125,6 +1125,361 @@ func (x *ListCredentialResponse) GetPagination() *v1beta1.PageResponse {
 	return nil
 }
 
+// GetWitnessRequest is the StateQuery/GetWitnessRequest request type.
+type GetWitnessRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// index specifies the value of the index field in the primary key.
+	Index uint64 `protobuf:"varint,1,opt,name=index,proto3" json:"index,omitempty"`
+}
+
+func (x *GetWitnessRequest) Reset() {
+	*x = GetWitnessRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[20]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetWitnessRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetWitnessRequest) ProtoMessage() {}
+
+func (x *GetWitnessRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[20]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetWitnessRequest.ProtoReflect.Descriptor instead.
+func (*GetWitnessRequest) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetWitnessRequest) GetIndex() uint64 {
+	if x != nil {
+		return x.Index
+	}
+	return 0
+}
+
+// GetWitnessResponse is the StateQuery/GetWitnessResponse response type.
+type GetWitnessResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// value is the response value.
+	Value *Witness `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *GetWitnessResponse) Reset() {
+	*x = GetWitnessResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[21]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetWitnessResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetWitnessResponse) ProtoMessage() {}
+
+func (x *GetWitnessResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[21]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetWitnessResponse.ProtoReflect.Descriptor instead.
+func (*GetWitnessResponse) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *GetWitnessResponse) GetValue() *Witness {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+// GetWitnessByOriginKeyRequest is the StateQuery/GetWitnessByOriginKeyRequest request type.
+type GetWitnessByOriginKeyRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Key    string `protobuf:"bytes,2,opt,name=key,proto3" json:"key,omitempty"`
+}
+
+func (x *GetWitnessByOriginKeyRequest) Reset() {
+	*x = GetWitnessByOriginKeyRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[22]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetWitnessByOriginKeyRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetWitnessByOriginKeyRequest) ProtoMessage() {}
+
+func (x *GetWitnessByOriginKeyRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[22]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetWitnessByOriginKeyRequest.ProtoReflect.Descriptor instead.
+func (*GetWitnessByOriginKeyRequest) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetWitnessByOriginKeyRequest) GetOrigin() string {
+	if x != nil {
+		return x.Origin
+	}
+	return ""
+}
+
+func (x *GetWitnessByOriginKeyRequest) GetKey() string {
+	if x != nil {
+		return x.Key
+	}
+	return ""
+}
+
+// GetWitnessByOriginKeyResponse is the StateQuery/GetWitnessByOriginKeyResponse response type.
+type GetWitnessByOriginKeyResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Value *Witness `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+}
+
+func (x *GetWitnessByOriginKeyResponse) Reset() {
+	*x = GetWitnessByOriginKeyResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[23]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetWitnessByOriginKeyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetWitnessByOriginKeyResponse) ProtoMessage() {}
+
+func (x *GetWitnessByOriginKeyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[23]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetWitnessByOriginKeyResponse.ProtoReflect.Descriptor instead.
+func (*GetWitnessByOriginKeyResponse) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetWitnessByOriginKeyResponse) GetValue() *Witness {
+	if x != nil {
+		return x.Value
+	}
+	return nil
+}
+
+// ListWitnessRequest is the StateQuery/ListWitnessRequest request type.
+type ListWitnessRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// query specifies the type of query - either a prefix or range query.
+	//
+	// Types that are assignable to Query:
+	//
+	//	*ListWitnessRequest_PrefixQuery
+	//	*ListWitnessRequest_RangeQuery_
+	Query isListWitnessRequest_Query `protobuf_oneof:"query"`
+	// pagination specifies optional pagination parameters.
+	Pagination *v1beta1.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (x *ListWitnessRequest) Reset() {
+	*x = ListWitnessRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[24]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessRequest) ProtoMessage() {}
+
+func (x *ListWitnessRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[24]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessRequest.ProtoReflect.Descriptor instead.
+func (*ListWitnessRequest) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24}
+}
+
+func (m *ListWitnessRequest) GetQuery() isListWitnessRequest_Query {
+	if m != nil {
+		return m.Query
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest) GetPrefixQuery() *ListWitnessRequest_IndexKey {
+	if x, ok := x.GetQuery().(*ListWitnessRequest_PrefixQuery); ok {
+		return x.PrefixQuery
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest) GetRangeQuery() *ListWitnessRequest_RangeQuery {
+	if x, ok := x.GetQuery().(*ListWitnessRequest_RangeQuery_); ok {
+		return x.RangeQuery
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest) GetPagination() *v1beta1.PageRequest {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
+type isListWitnessRequest_Query interface {
+	isListWitnessRequest_Query()
+}
+
+type ListWitnessRequest_PrefixQuery struct {
+	// prefix_query specifies the index key value to use for the prefix query.
+	PrefixQuery *ListWitnessRequest_IndexKey `protobuf:"bytes,1,opt,name=prefix_query,json=prefixQuery,proto3,oneof"`
+}
+
+type ListWitnessRequest_RangeQuery_ struct {
+	// range_query specifies the index key from/to values to use for the range query.
+	RangeQuery *ListWitnessRequest_RangeQuery `protobuf:"bytes,2,opt,name=range_query,json=rangeQuery,proto3,oneof"`
+}
+
+func (*ListWitnessRequest_PrefixQuery) isListWitnessRequest_Query() {}
+
+func (*ListWitnessRequest_RangeQuery_) isListWitnessRequest_Query() {}
+
+// ListWitnessResponse is the StateQuery/ListWitnessResponse response type.
+type ListWitnessResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// values are the results of the query.
+	Values []*Witness `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+	// pagination is the pagination response.
+	Pagination *v1beta1.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
+}
+
+func (x *ListWitnessResponse) Reset() {
+	*x = ListWitnessResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[25]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessResponse) ProtoMessage() {}
+
+func (x *ListWitnessResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[25]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessResponse.ProtoReflect.Descriptor instead.
+func (*ListWitnessResponse) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *ListWitnessResponse) GetValues() []*Witness {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+func (x *ListWitnessResponse) GetPagination() *v1beta1.PageResponse {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
 // GetBaseParamsRequest is the StateQuery/GetBaseParamsRequest request type.
 type GetBaseParamsRequest struct {
 	state         protoimpl.MessageState
@@ -1135,7 +1490,7 @@ type GetBaseParamsRequest struct {
 func (x *GetBaseParamsRequest) Reset() {
 	*x = GetBaseParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[20]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[26]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1148,7 +1503,7 @@ func (x *GetBaseParamsRequest) String() string {
 func (*GetBaseParamsRequest) ProtoMessage() {}
 
 func (x *GetBaseParamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[20]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[26]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1161,7 +1516,7 @@ func (x *GetBaseParamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBaseParamsRequest.ProtoReflect.Descriptor instead.
 func (*GetBaseParamsRequest) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{20}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{26}
 }
 
 // GetBaseParamsResponse is the StateQuery/GetBaseParamsResponse request type.
@@ -1176,7 +1531,7 @@ type GetBaseParamsResponse struct {
 func (x *GetBaseParamsResponse) Reset() {
 	*x = GetBaseParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[21]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[27]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1189,7 +1544,7 @@ func (x *GetBaseParamsResponse) String() string {
 func (*GetBaseParamsResponse) ProtoMessage() {}
 
 func (x *GetBaseParamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[21]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[27]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1202,7 +1557,7 @@ func (x *GetBaseParamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetBaseParamsResponse.ProtoReflect.Descriptor instead.
 func (*GetBaseParamsResponse) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{21}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{27}
 }
 
 func (x *GetBaseParamsResponse) GetValue() *BaseParams {
@@ -1222,7 +1577,7 @@ type GetReadParamsRequest struct {
 func (x *GetReadParamsRequest) Reset() {
 	*x = GetReadParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[22]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[28]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1235,7 +1590,7 @@ func (x *GetReadParamsRequest) String() string {
 func (*GetReadParamsRequest) ProtoMessage() {}
 
 func (x *GetReadParamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[22]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[28]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1248,7 +1603,7 @@ func (x *GetReadParamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetReadParamsRequest.ProtoReflect.Descriptor instead.
 func (*GetReadParamsRequest) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{22}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{28}
 }
 
 // GetReadParamsResponse is the StateQuery/GetReadParamsResponse request type.
@@ -1263,7 +1618,7 @@ type GetReadParamsResponse struct {
 func (x *GetReadParamsResponse) Reset() {
 	*x = GetReadParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[23]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[29]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1276,7 +1631,7 @@ func (x *GetReadParamsResponse) String() string {
 func (*GetReadParamsResponse) ProtoMessage() {}
 
 func (x *GetReadParamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[23]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[29]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1289,7 +1644,7 @@ func (x *GetReadParamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetReadParamsResponse.ProtoReflect.Descriptor instead.
 func (*GetReadParamsResponse) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{23}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{29}
 }
 
 func (x *GetReadParamsResponse) GetValue() *ReadParams {
@@ -1309,7 +1664,7 @@ type GetWriteParamsRequest struct {
 func (x *GetWriteParamsRequest) Reset() {
 	*x = GetWriteParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[24]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[30]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1322,7 +1677,7 @@ func (x *GetWriteParamsRequest) String() string {
 func (*GetWriteParamsRequest) ProtoMessage() {}
 
 func (x *GetWriteParamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[24]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[30]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1335,7 +1690,7 @@ func (x *GetWriteParamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWriteParamsRequest.ProtoReflect.Descriptor instead.
 func (*GetWriteParamsRequest) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{30}
 }
 
 // GetWriteParamsResponse is the StateQuery/GetWriteParamsResponse request type.
@@ -1350,7 +1705,7 @@ type GetWriteParamsResponse struct {
 func (x *GetWriteParamsResponse) Reset() {
 	*x = GetWriteParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[25]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[31]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1363,7 +1718,7 @@ func (x *GetWriteParamsResponse) String() string {
 func (*GetWriteParamsResponse) ProtoMessage() {}
 
 func (x *GetWriteParamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[25]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[31]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1376,7 +1731,7 @@ func (x *GetWriteParamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetWriteParamsResponse.ProtoReflect.Descriptor instead.
 func (*GetWriteParamsResponse) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{25}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{31}
 }
 
 func (x *GetWriteParamsResponse) GetValue() *WriteParams {
@@ -1396,7 +1751,7 @@ type GetOwnParamsRequest struct {
 func (x *GetOwnParamsRequest) Reset() {
 	*x = GetOwnParamsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[26]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[32]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1409,7 +1764,7 @@ func (x *GetOwnParamsRequest) String() string {
 func (*GetOwnParamsRequest) ProtoMessage() {}
 
 func (x *GetOwnParamsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[26]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[32]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1422,7 +1777,7 @@ func (x *GetOwnParamsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOwnParamsRequest.ProtoReflect.Descriptor instead.
 func (*GetOwnParamsRequest) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{26}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{32}
 }
 
 // GetOwnParamsResponse is the StateQuery/GetOwnParamsResponse request type.
@@ -1437,7 +1792,7 @@ type GetOwnParamsResponse struct {
 func (x *GetOwnParamsResponse) Reset() {
 	*x = GetOwnParamsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[27]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[33]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1450,7 +1805,7 @@ func (x *GetOwnParamsResponse) String() string {
 func (*GetOwnParamsResponse) ProtoMessage() {}
 
 func (x *GetOwnParamsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[27]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[33]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1463,7 +1818,7 @@ func (x *GetOwnParamsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetOwnParamsResponse.ProtoReflect.Descriptor instead.
 func (*GetOwnParamsResponse) Descriptor() ([]byte, []int) {
-	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{27}
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{33}
 }
 
 func (x *GetOwnParamsResponse) GetValue() *OwnParams {
@@ -1494,7 +1849,7 @@ type ListServiceRecordRequest_IndexKey struct {
 func (x *ListServiceRecordRequest_IndexKey) Reset() {
 	*x = ListServiceRecordRequest_IndexKey{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[28]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[34]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1507,7 +1862,7 @@ func (x *ListServiceRecordRequest_IndexKey) String() string {
 func (*ListServiceRecordRequest_IndexKey) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[28]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[34]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1623,7 +1978,7 @@ type ListServiceRecordRequest_RangeQuery struct {
 func (x *ListServiceRecordRequest_RangeQuery) Reset() {
 	*x = ListServiceRecordRequest_RangeQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[29]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[35]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1636,7 +1991,7 @@ func (x *ListServiceRecordRequest_RangeQuery) String() string {
 func (*ListServiceRecordRequest_RangeQuery) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_RangeQuery) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[29]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[35]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1679,7 +2034,7 @@ type ListServiceRecordRequest_IndexKey_Id struct {
 func (x *ListServiceRecordRequest_IndexKey_Id) Reset() {
 	*x = ListServiceRecordRequest_IndexKey_Id{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[30]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[36]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1692,7 +2047,7 @@ func (x *ListServiceRecordRequest_IndexKey_Id) String() string {
 func (*ListServiceRecordRequest_IndexKey_Id) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey_Id) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[30]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[36]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1728,7 +2083,7 @@ type ListServiceRecordRequest_IndexKey_Origin struct {
 func (x *ListServiceRecordRequest_IndexKey_Origin) Reset() {
 	*x = ListServiceRecordRequest_IndexKey_Origin{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[31]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[37]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1741,7 +2096,7 @@ func (x *ListServiceRecordRequest_IndexKey_Origin) String() string {
 func (*ListServiceRecordRequest_IndexKey_Origin) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey_Origin) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[31]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[37]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1777,7 +2132,7 @@ type ListServiceRecordRequest_IndexKey_Controller struct {
 func (x *ListServiceRecordRequest_IndexKey_Controller) Reset() {
 	*x = ListServiceRecordRequest_IndexKey_Controller{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[32]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[38]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1790,7 +2145,7 @@ func (x *ListServiceRecordRequest_IndexKey_Controller) String() string {
 func (*ListServiceRecordRequest_IndexKey_Controller) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey_Controller) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[32]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[38]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1829,7 +2184,7 @@ type ListServiceRecordRequest_IndexKey_NameController struct {
 func (x *ListServiceRecordRequest_IndexKey_NameController) Reset() {
 	*x = ListServiceRecordRequest_IndexKey_NameController{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[33]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[39]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1842,7 +2197,7 @@ func (x *ListServiceRecordRequest_IndexKey_NameController) String() string {
 func (*ListServiceRecordRequest_IndexKey_NameController) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey_NameController) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[33]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[39]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1888,7 +2243,7 @@ type ListServiceRecordRequest_IndexKey_OriginController struct {
 func (x *ListServiceRecordRequest_IndexKey_OriginController) Reset() {
 	*x = ListServiceRecordRequest_IndexKey_OriginController{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[34]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[40]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1901,7 +2256,7 @@ func (x *ListServiceRecordRequest_IndexKey_OriginController) String() string {
 func (*ListServiceRecordRequest_IndexKey_OriginController) ProtoMessage() {}
 
 func (x *ListServiceRecordRequest_IndexKey_OriginController) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[34]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[40]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1952,7 +2307,7 @@ type ListCredentialRequest_IndexKey struct {
 func (x *ListCredentialRequest_IndexKey) Reset() {
 	*x = ListCredentialRequest_IndexKey{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[35]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[41]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -1965,7 +2320,7 @@ func (x *ListCredentialRequest_IndexKey) String() string {
 func (*ListCredentialRequest_IndexKey) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[35]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[41]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2080,7 +2435,7 @@ type ListCredentialRequest_RangeQuery struct {
 func (x *ListCredentialRequest_RangeQuery) Reset() {
 	*x = ListCredentialRequest_RangeQuery{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[36]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[42]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2093,7 +2448,7 @@ func (x *ListCredentialRequest_RangeQuery) String() string {
 func (*ListCredentialRequest_RangeQuery) ProtoMessage() {}
 
 func (x *ListCredentialRequest_RangeQuery) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[36]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[42]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2136,7 +2491,7 @@ type ListCredentialRequest_IndexKey_Id struct {
 func (x *ListCredentialRequest_IndexKey_Id) Reset() {
 	*x = ListCredentialRequest_IndexKey_Id{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[37]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[43]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2149,7 +2504,7 @@ func (x *ListCredentialRequest_IndexKey_Id) String() string {
 func (*ListCredentialRequest_IndexKey_Id) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey_Id) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[37]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[43]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2185,7 +2540,7 @@ type ListCredentialRequest_IndexKey_Handle struct {
 func (x *ListCredentialRequest_IndexKey_Handle) Reset() {
 	*x = ListCredentialRequest_IndexKey_Handle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[38]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[44]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2198,7 +2553,7 @@ func (x *ListCredentialRequest_IndexKey_Handle) String() string {
 func (*ListCredentialRequest_IndexKey_Handle) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey_Handle) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[38]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[44]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2237,7 +2592,7 @@ type ListCredentialRequest_IndexKey_OriginHandle struct {
 func (x *ListCredentialRequest_IndexKey_OriginHandle) Reset() {
 	*x = ListCredentialRequest_IndexKey_OriginHandle{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[39]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[45]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2250,7 +2605,7 @@ func (x *ListCredentialRequest_IndexKey_OriginHandle) String() string {
 func (*ListCredentialRequest_IndexKey_OriginHandle) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey_OriginHandle) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[39]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[45]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2293,7 +2648,7 @@ type ListCredentialRequest_IndexKey_CredentialId struct {
 func (x *ListCredentialRequest_IndexKey_CredentialId) Reset() {
 	*x = ListCredentialRequest_IndexKey_CredentialId{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[40]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[46]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2306,7 +2661,7 @@ func (x *ListCredentialRequest_IndexKey_CredentialId) String() string {
 func (*ListCredentialRequest_IndexKey_CredentialId) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey_CredentialId) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[40]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[46]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2342,7 +2697,7 @@ type ListCredentialRequest_IndexKey_PublicKey struct {
 func (x *ListCredentialRequest_IndexKey_PublicKey) Reset() {
 	*x = ListCredentialRequest_IndexKey_PublicKey{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[41]
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[47]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2355,7 +2710,7 @@ func (x *ListCredentialRequest_IndexKey_PublicKey) String() string {
 func (*ListCredentialRequest_IndexKey_PublicKey) ProtoMessage() {}
 
 func (x *ListCredentialRequest_IndexKey_PublicKey) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[41]
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[47]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2376,6 +2731,261 @@ func (x *ListCredentialRequest_IndexKey_PublicKey) GetPublicKey() []byte {
 		return x.PublicKey
 	}
 	return nil
+}
+
+// IndexKey specifies the value of an index key to use in prefix and range queries.
+type ListWitnessRequest_IndexKey struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// key specifies the index key value.
+	//
+	// Types that are assignable to Key:
+	//
+	//	*ListWitnessRequest_IndexKey_Index_
+	//	*ListWitnessRequest_IndexKey_OriginKey_
+	Key isListWitnessRequest_IndexKey_Key `protobuf_oneof:"key"`
+}
+
+func (x *ListWitnessRequest_IndexKey) Reset() {
+	*x = ListWitnessRequest_IndexKey{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[48]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessRequest_IndexKey) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessRequest_IndexKey) ProtoMessage() {}
+
+func (x *ListWitnessRequest_IndexKey) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[48]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessRequest_IndexKey.ProtoReflect.Descriptor instead.
+func (*ListWitnessRequest_IndexKey) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24, 0}
+}
+
+func (m *ListWitnessRequest_IndexKey) GetKey() isListWitnessRequest_IndexKey_Key {
+	if m != nil {
+		return m.Key
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest_IndexKey) GetIndex() *ListWitnessRequest_IndexKey_Index {
+	if x, ok := x.GetKey().(*ListWitnessRequest_IndexKey_Index_); ok {
+		return x.Index
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest_IndexKey) GetOriginKey() *ListWitnessRequest_IndexKey_OriginKey {
+	if x, ok := x.GetKey().(*ListWitnessRequest_IndexKey_OriginKey_); ok {
+		return x.OriginKey
+	}
+	return nil
+}
+
+type isListWitnessRequest_IndexKey_Key interface {
+	isListWitnessRequest_IndexKey_Key()
+}
+
+type ListWitnessRequest_IndexKey_Index_ struct {
+	// index specifies the value of the Index index key to use in the query.
+	Index *ListWitnessRequest_IndexKey_Index `protobuf:"bytes,1,opt,name=index,proto3,oneof"`
+}
+
+type ListWitnessRequest_IndexKey_OriginKey_ struct {
+	// origin_key specifies the value of the OriginKey index key to use in the query.
+	OriginKey *ListWitnessRequest_IndexKey_OriginKey `protobuf:"bytes,2,opt,name=origin_key,json=originKey,proto3,oneof"`
+}
+
+func (*ListWitnessRequest_IndexKey_Index_) isListWitnessRequest_IndexKey_Key() {}
+
+func (*ListWitnessRequest_IndexKey_OriginKey_) isListWitnessRequest_IndexKey_Key() {}
+
+// RangeQuery specifies the from/to index keys for a range query.
+type ListWitnessRequest_RangeQuery struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// from is the index key to use for the start of the range query.
+	// To query from the start of an index, specify an index key for that index with empty values.
+	From *ListWitnessRequest_IndexKey `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	// to is the index key to use for the end of the range query.
+	// The index key type MUST be the same as the index key type used for from.
+	// To query from to the end of an index it can be omitted.
+	To *ListWitnessRequest_IndexKey `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+}
+
+func (x *ListWitnessRequest_RangeQuery) Reset() {
+	*x = ListWitnessRequest_RangeQuery{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[49]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessRequest_RangeQuery) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessRequest_RangeQuery) ProtoMessage() {}
+
+func (x *ListWitnessRequest_RangeQuery) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[49]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessRequest_RangeQuery.ProtoReflect.Descriptor instead.
+func (*ListWitnessRequest_RangeQuery) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24, 1}
+}
+
+func (x *ListWitnessRequest_RangeQuery) GetFrom() *ListWitnessRequest_IndexKey {
+	if x != nil {
+		return x.From
+	}
+	return nil
+}
+
+func (x *ListWitnessRequest_RangeQuery) GetTo() *ListWitnessRequest_IndexKey {
+	if x != nil {
+		return x.To
+	}
+	return nil
+}
+
+type ListWitnessRequest_IndexKey_Index struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// index is the value of the index field in the index.
+	// It can be omitted to query for all valid values of that field in this segment of the index.
+	Index *uint64 `protobuf:"varint,1,opt,name=index,proto3,oneof" json:"index,omitempty"`
+}
+
+func (x *ListWitnessRequest_IndexKey_Index) Reset() {
+	*x = ListWitnessRequest_IndexKey_Index{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[50]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessRequest_IndexKey_Index) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessRequest_IndexKey_Index) ProtoMessage() {}
+
+func (x *ListWitnessRequest_IndexKey_Index) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[50]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessRequest_IndexKey_Index.ProtoReflect.Descriptor instead.
+func (*ListWitnessRequest_IndexKey_Index) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24, 0, 0}
+}
+
+func (x *ListWitnessRequest_IndexKey_Index) GetIndex() uint64 {
+	if x != nil && x.Index != nil {
+		return *x.Index
+	}
+	return 0
+}
+
+type ListWitnessRequest_IndexKey_OriginKey struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// origin is the value of the origin field in the index.
+	// It can be omitted to query for all valid values of that field in this segment of the index.
+	Origin *string `protobuf:"bytes,1,opt,name=origin,proto3,oneof" json:"origin,omitempty"`
+	// key is the value of the key field in the index.
+	// It can be omitted to query for all valid values of that field in this segment of the index.
+	Key *string `protobuf:"bytes,2,opt,name=key,proto3,oneof" json:"key,omitempty"`
+}
+
+func (x *ListWitnessRequest_IndexKey_OriginKey) Reset() {
+	*x = ListWitnessRequest_IndexKey_OriginKey{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[51]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListWitnessRequest_IndexKey_OriginKey) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListWitnessRequest_IndexKey_OriginKey) ProtoMessage() {}
+
+func (x *ListWitnessRequest_IndexKey_OriginKey) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_module_v1_state_query_proto_msgTypes[51]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListWitnessRequest_IndexKey_OriginKey.ProtoReflect.Descriptor instead.
+func (*ListWitnessRequest_IndexKey_OriginKey) Descriptor() ([]byte, []int) {
+	return file_sonr_service_module_v1_state_query_proto_rawDescGZIP(), []int{24, 0, 1}
+}
+
+func (x *ListWitnessRequest_IndexKey_OriginKey) GetOrigin() string {
+	if x != nil && x.Origin != nil {
+		return *x.Origin
+	}
+	return ""
+}
+
+func (x *ListWitnessRequest_IndexKey_OriginKey) GetKey() string {
+	if x != nil && x.Key != nil {
+		return *x.Key
+	}
+	return ""
 }
 
 var File_sonr_service_module_v1_state_query_proto protoreflect.FileDescriptor
@@ -2659,123 +3269,220 @@ var file_sonr_service_module_v1_state_query_proto_rawDesc = []byte{
 	0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73,
 	0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e,
 	0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x52, 0x0a, 0x70, 0x61,
-	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x42,
-	0x61, 0x73, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x22, 0x51, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x42, 0x61, 0x73, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e,
+	0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x29, 0x0a, 0x11, 0x47, 0x65, 0x74, 0x57,
+	0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x14, 0x0a,
+	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e,
+	0x64, 0x65, 0x78, 0x22, 0x4b, 0x0a, 0x12, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73,
+	0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e,
 	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76,
-	0x31, 0x2e, 0x42, 0x61, 0x73, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x52, 0x65, 0x61, 0x64, 0x50, 0x61,
-	0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x51, 0x0a, 0x15, 0x47,
-	0x65, 0x74, 0x52, 0x65, 0x61, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x61,
-	0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x17,
-	0x0a, 0x15, 0x47, 0x65, 0x74, 0x57, 0x72, 0x69, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x53, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x57, 0x72,
-	0x69, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x12, 0x39, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x23, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
-	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x57, 0x72, 0x69, 0x74, 0x65, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x15, 0x0a, 0x13,
-	0x47, 0x65, 0x74, 0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x22, 0x4f, 0x0a, 0x14, 0x47, 0x65, 0x74, 0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x37, 0x0a, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x21, 0x2e, 0x73, 0x6f, 0x6e,
+	0x31, 0x2e, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x22, 0x48, 0x0a, 0x1c, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x42, 0x79,
+	0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x22, 0x56, 0x0a, 0x1d, 0x47, 0x65,
+	0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e,
+	0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x35, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73, 0x6f, 0x6e,
 	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
-	0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x32, 0xdf, 0x0e, 0x0a, 0x11, 0x53, 0x74, 0x61, 0x74, 0x65, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x77, 0x0a, 0x10, 0x47, 0x65,
-	0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x2f,
-	0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f,
-	0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
-	0x30, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d,
-	0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x12, 0x8f, 0x01, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e,
-	0x12, 0x37, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
-	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67,
-	0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x38, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
+	0x2e, 0x76, 0x31, 0x2e, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x22, 0xff, 0x05, 0x0a, 0x12, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65,
+	0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x58, 0x0a, 0x0c, 0x70, 0x72, 0x65,
+	0x66, 0x69, 0x78, 0x5f, 0x71, 0x75, 0x65, 0x72, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x33, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d,
+	0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74,
+	0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x49, 0x6e, 0x64, 0x65,
+	0x78, 0x4b, 0x65, 0x79, 0x48, 0x00, 0x52, 0x0b, 0x70, 0x72, 0x65, 0x66, 0x69, 0x78, 0x51, 0x75,
+	0x65, 0x72, 0x79, 0x12, 0x58, 0x0a, 0x0b, 0x72, 0x61, 0x6e, 0x67, 0x65, 0x5f, 0x71, 0x75, 0x65,
+	0x72, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x35, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76,
+	0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x2e, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x48,
+	0x00, 0x52, 0x0a, 0x72, 0x61, 0x6e, 0x67, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x46, 0x0a,
+	0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x26, 0x2e, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e,
+	0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31, 0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61,
+	0x67, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x1a, 0xc6, 0x02, 0x0a, 0x08, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x4b,
+	0x65, 0x79, 0x12, 0x51, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x39, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57,
+	0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x49, 0x6e,
+	0x64, 0x65, 0x78, 0x4b, 0x65, 0x79, 0x2e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x48, 0x00, 0x52, 0x05,
+	0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x5e, 0x0a, 0x0a, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f,
+	0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x3d, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
 	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e,
-	0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0xa7, 0x01, 0x0a, 0x20, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65,
-	0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x3f, 0x2e, 0x73, 0x6f, 0x6e,
-	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
-	0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x40, 0x2e, 0x73, 0x6f,
+	0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x4b, 0x65, 0x79, 0x2e, 0x4f,
+	0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b, 0x65, 0x79, 0x48, 0x00, 0x52, 0x09, 0x6f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x4b, 0x65, 0x79, 0x1a, 0x2c, 0x0a, 0x05, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x19,
+	0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x48, 0x00, 0x52,
+	0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x88, 0x01, 0x01, 0x42, 0x08, 0x0a, 0x06, 0x5f, 0x69, 0x6e,
+	0x64, 0x65, 0x78, 0x1a, 0x52, 0x0a, 0x09, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b, 0x65, 0x79,
+	0x12, 0x1b, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x48, 0x00, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x88, 0x01, 0x01, 0x12, 0x15, 0x0a,
+	0x03, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x48, 0x01, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x88, 0x01, 0x01, 0x42, 0x09, 0x0a, 0x07, 0x5f, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x42,
+	0x06, 0x0a, 0x04, 0x5f, 0x6b, 0x65, 0x79, 0x42, 0x05, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x1a, 0x9a,
+	0x01, 0x0a, 0x0a, 0x52, 0x61, 0x6e, 0x67, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x47, 0x0a,
+	0x04, 0x66, 0x72, 0x6f, 0x6d, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x33, 0x2e, 0x73, 0x6f,
 	0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c,
-	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52,
-	0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0xad, 0x01, 0x0a, 0x22, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x43, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x41, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
+	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x4b, 0x65, 0x79,
+	0x52, 0x04, 0x66, 0x72, 0x6f, 0x6d, 0x12, 0x43, 0x0a, 0x02, 0x74, 0x6f, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x0b, 0x32, 0x33, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74,
+	0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x49,
+	0x6e, 0x64, 0x65, 0x78, 0x4b, 0x65, 0x79, 0x52, 0x02, 0x74, 0x6f, 0x42, 0x07, 0x0a, 0x05, 0x71,
+	0x75, 0x65, 0x72, 0x79, 0x22, 0x97, 0x01, 0x0a, 0x13, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74,
+	0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x37, 0x0a, 0x06,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x73,
+	0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75,
+	0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x06, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x73, 0x12, 0x47, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x27, 0x2e, 0x63, 0x6f, 0x73, 0x6d,
+	0x6f, 0x73, 0x2e, 0x62, 0x61, 0x73, 0x65, 0x2e, 0x71, 0x75, 0x65, 0x72, 0x79, 0x2e, 0x76, 0x31,
+	0x62, 0x65, 0x74, 0x61, 0x31, 0x2e, 0x50, 0x61, 0x67, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x73, 0x65, 0x52, 0x0a, 0x70, 0x61, 0x67, 0x69, 0x6e, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x16,
+	0x0a, 0x14, 0x47, 0x65, 0x74, 0x42, 0x61, 0x73, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x51, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x42, 0x61, 0x73,
+	0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x38, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22,
+	0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f,
+	0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x42, 0x61, 0x73, 0x65, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x16, 0x0a, 0x14, 0x47, 0x65, 0x74,
+	0x52, 0x65, 0x61, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x22, 0x51, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x52, 0x65, 0x61, 0x64, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x38, 0x0a, 0x05, 0x76, 0x61,
+	0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x22, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
+	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e,
+	0x76, 0x31, 0x2e, 0x52, 0x65, 0x61, 0x64, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x22, 0x17, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x57, 0x72, 0x69, 0x74, 0x65,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x53, 0x0a,
+	0x16, 0x47, 0x65, 0x74, 0x57, 0x72, 0x69, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x39, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x23, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e,
+	0x57, 0x72, 0x69, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x22, 0x15, 0x0a, 0x13, 0x47, 0x65, 0x74, 0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x4f, 0x0a, 0x14, 0x47, 0x65, 0x74,
+	0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x37, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
+	0x32, 0x21, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4f, 0x77, 0x6e, 0x50, 0x61, 0x72,
+	0x61, 0x6d, 0x73, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x32, 0xb9, 0x11, 0x0a, 0x11, 0x53,
+	0x74, 0x61, 0x74, 0x65, 0x51, 0x75, 0x65, 0x72, 0x79, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x12, 0x77, 0x0a, 0x10, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65,
+	0x63, 0x6f, 0x72, 0x64, 0x12, 0x2f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65,
+	0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x30, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47,
+	0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x8f, 0x01, 0x0a, 0x18, 0x47, 0x65,
+	0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79,
+	0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x37, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
 	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e,
 	0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64,
-	0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x42, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
-	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e,
-	0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63,
-	0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12,
-	0x7a, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65,
-	0x63, 0x6f, 0x72, 0x64, 0x12, 0x30, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69,
-	0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52,
-	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x31, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e,
-	0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72,
-	0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x6e, 0x0a, 0x0d, 0x47,
-	0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x12, 0x2c, 0x2e, 0x73,
+	0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x38, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d,
+	0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69,
+	0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0xa7, 0x01, 0x0a, 0x20,
+	0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64,
+	0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
+	0x12, 0x3f, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d, 0x65,
+	0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x1a, 0x40, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4e, 0x61, 0x6d,
+	0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0xad, 0x01, 0x0a, 0x22, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x41, 0x2e, 0x73,
+	0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75,
+	0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x43, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a,
+	0x42, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d,
+	0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x53, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69,
+	0x6e, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x7a, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x30, 0x2e, 0x73, 0x6f, 0x6e,
+	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
+	0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52,
+	0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x31, 0x2e, 0x73,
+	0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75,
+	0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x6e, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x12, 0x2c, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43,
+	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
+	0x1a, 0x2d, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e,
+	0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65,
+	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
+	0x00, 0x12, 0x98, 0x01, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
+	0x69, 0x61, 0x6c, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x48, 0x61, 0x6e, 0x64, 0x6c,
+	0x65, 0x12, 0x3a, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72,
+	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e,
+	0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x3b, 0x2e,
+	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64,
+	0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x48, 0x61, 0x6e, 0x64,
+	0x6c, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x98, 0x01, 0x0a,
+	0x1b, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79,
+	0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x3a, 0x2e, 0x73,
 	0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75,
 	0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2d, 0x2e, 0x73, 0x6f, 0x6e,
-	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
-	0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61,
-	0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x98, 0x01, 0x0a, 0x1b,
-	0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x4f,
-	0x72, 0x69, 0x67, 0x69, 0x6e, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x12, 0x3a, 0x2e, 0x73, 0x6f,
+	0x69, 0x61, 0x6c, 0x42, 0x79, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49,
+	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x3b, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76,
+	0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42,
+	0x79, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x64, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x8f, 0x01, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x43,
+	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x50, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x4b, 0x65, 0x79, 0x12, 0x37, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76,
+	0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65,
+	0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x50, 0x75, 0x62,
+	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x38, 0x2e,
+	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64,
+	0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x71, 0x0a, 0x0e, 0x4c, 0x69, 0x73,
+	0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x12, 0x2d, 0x2e, 0x73, 0x6f,
 	0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c,
-	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
-	0x61, 0x6c, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x3b, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73,
+	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
+	0x69, 0x61, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x73, 0x6f, 0x6e,
+	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
+	0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x65, 0x0a, 0x0a,
+	0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x12, 0x29, 0x2e, 0x73, 0x6f, 0x6e,
+	0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65,
+	0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2a, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72,
+	0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47,
+	0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x22, 0x00, 0x12, 0x86, 0x01, 0x0a, 0x15, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65,
+	0x73, 0x73, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b, 0x65, 0x79, 0x12, 0x34, 0x2e,
+	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64,
+	0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73,
+	0x73, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x35, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69,
+	0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74,
+	0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x42, 0x79, 0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x4b,
+	0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x68, 0x0a, 0x0b,
+	0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x12, 0x2a, 0x2e, 0x73, 0x6f,
+	0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c,
+	0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x2b, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31,
-	0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79,
-	0x4f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x52, 0x65, 0x73, 0x70,
-	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x98, 0x01, 0x0a, 0x1b, 0x47, 0x65, 0x74, 0x43, 0x72,
-	0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e,
-	0x74, 0x69, 0x61, 0x6c, 0x49, 0x64, 0x12, 0x3a, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e,
-	0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x43,
-	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x1a, 0x3b, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43,
-	0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x49, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22,
-	0x00, 0x12, 0x8f, 0x01, 0x0a, 0x18, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x42, 0x79, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x37,
-	0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f,
-	0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
-	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x38, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31,
-	0x2e, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x42, 0x79,
-	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
-	0x65, 0x22, 0x00, 0x12, 0x71, 0x0a, 0x0e, 0x4c, 0x69, 0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x12, 0x2d, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c,
-	0x69, 0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2e, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x69,
-	0x73, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x65, 0x73, 0x70,
+	0x2e, 0x4c, 0x69, 0x73, 0x74, 0x57, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x52, 0x65, 0x73, 0x70,
 	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x00, 0x12, 0x6e, 0x0a, 0x0d, 0x47, 0x65, 0x74, 0x42, 0x61, 0x73,
 	0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x2c, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73,
 	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x6d, 0x6f, 0x64, 0x75, 0x6c, 0x65, 0x2e, 0x76, 0x31,
@@ -2834,7 +3541,7 @@ func file_sonr_service_module_v1_state_query_proto_rawDescGZIP() []byte {
 	return file_sonr_service_module_v1_state_query_proto_rawDescData
 }
 
-var file_sonr_service_module_v1_state_query_proto_msgTypes = make([]protoimpl.MessageInfo, 42)
+var file_sonr_service_module_v1_state_query_proto_msgTypes = make([]protoimpl.MessageInfo, 52)
 var file_sonr_service_module_v1_state_query_proto_goTypes = []interface{}{
 	(*GetServiceRecordRequest)(nil),                            // 0: sonr.service.module.v1.GetServiceRecordRequest
 	(*GetServiceRecordResponse)(nil),                           // 1: sonr.service.module.v1.GetServiceRecordResponse
@@ -2856,107 +3563,135 @@ var file_sonr_service_module_v1_state_query_proto_goTypes = []interface{}{
 	(*GetCredentialByPublicKeyResponse)(nil),                   // 17: sonr.service.module.v1.GetCredentialByPublicKeyResponse
 	(*ListCredentialRequest)(nil),                              // 18: sonr.service.module.v1.ListCredentialRequest
 	(*ListCredentialResponse)(nil),                             // 19: sonr.service.module.v1.ListCredentialResponse
-	(*GetBaseParamsRequest)(nil),                               // 20: sonr.service.module.v1.GetBaseParamsRequest
-	(*GetBaseParamsResponse)(nil),                              // 21: sonr.service.module.v1.GetBaseParamsResponse
-	(*GetReadParamsRequest)(nil),                               // 22: sonr.service.module.v1.GetReadParamsRequest
-	(*GetReadParamsResponse)(nil),                              // 23: sonr.service.module.v1.GetReadParamsResponse
-	(*GetWriteParamsRequest)(nil),                              // 24: sonr.service.module.v1.GetWriteParamsRequest
-	(*GetWriteParamsResponse)(nil),                             // 25: sonr.service.module.v1.GetWriteParamsResponse
-	(*GetOwnParamsRequest)(nil),                                // 26: sonr.service.module.v1.GetOwnParamsRequest
-	(*GetOwnParamsResponse)(nil),                               // 27: sonr.service.module.v1.GetOwnParamsResponse
-	(*ListServiceRecordRequest_IndexKey)(nil),                  // 28: sonr.service.module.v1.ListServiceRecordRequest.IndexKey
-	(*ListServiceRecordRequest_RangeQuery)(nil),                // 29: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery
-	(*ListServiceRecordRequest_IndexKey_Id)(nil),               // 30: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Id
-	(*ListServiceRecordRequest_IndexKey_Origin)(nil),           // 31: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Origin
-	(*ListServiceRecordRequest_IndexKey_Controller)(nil),       // 32: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Controller
-	(*ListServiceRecordRequest_IndexKey_NameController)(nil),   // 33: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.NameController
-	(*ListServiceRecordRequest_IndexKey_OriginController)(nil), // 34: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.OriginController
-	(*ListCredentialRequest_IndexKey)(nil),                     // 35: sonr.service.module.v1.ListCredentialRequest.IndexKey
-	(*ListCredentialRequest_RangeQuery)(nil),                   // 36: sonr.service.module.v1.ListCredentialRequest.RangeQuery
-	(*ListCredentialRequest_IndexKey_Id)(nil),                  // 37: sonr.service.module.v1.ListCredentialRequest.IndexKey.Id
-	(*ListCredentialRequest_IndexKey_Handle)(nil),              // 38: sonr.service.module.v1.ListCredentialRequest.IndexKey.Handle
-	(*ListCredentialRequest_IndexKey_OriginHandle)(nil),        // 39: sonr.service.module.v1.ListCredentialRequest.IndexKey.OriginHandle
-	(*ListCredentialRequest_IndexKey_CredentialId)(nil),        // 40: sonr.service.module.v1.ListCredentialRequest.IndexKey.CredentialId
-	(*ListCredentialRequest_IndexKey_PublicKey)(nil),           // 41: sonr.service.module.v1.ListCredentialRequest.IndexKey.PublicKey
-	(*ServiceRecord)(nil),                                      // 42: sonr.service.module.v1.ServiceRecord
-	(*v1beta1.PageRequest)(nil),                                // 43: cosmos.base.query.v1beta1.PageRequest
-	(*v1beta1.PageResponse)(nil),                               // 44: cosmos.base.query.v1beta1.PageResponse
-	(*Credential)(nil),                                         // 45: sonr.service.module.v1.Credential
-	(*BaseParams)(nil),                                         // 46: sonr.service.module.v1.BaseParams
-	(*ReadParams)(nil),                                         // 47: sonr.service.module.v1.ReadParams
-	(*WriteParams)(nil),                                        // 48: sonr.service.module.v1.WriteParams
-	(*OwnParams)(nil),                                          // 49: sonr.service.module.v1.OwnParams
+	(*GetWitnessRequest)(nil),                                  // 20: sonr.service.module.v1.GetWitnessRequest
+	(*GetWitnessResponse)(nil),                                 // 21: sonr.service.module.v1.GetWitnessResponse
+	(*GetWitnessByOriginKeyRequest)(nil),                       // 22: sonr.service.module.v1.GetWitnessByOriginKeyRequest
+	(*GetWitnessByOriginKeyResponse)(nil),                      // 23: sonr.service.module.v1.GetWitnessByOriginKeyResponse
+	(*ListWitnessRequest)(nil),                                 // 24: sonr.service.module.v1.ListWitnessRequest
+	(*ListWitnessResponse)(nil),                                // 25: sonr.service.module.v1.ListWitnessResponse
+	(*GetBaseParamsRequest)(nil),                               // 26: sonr.service.module.v1.GetBaseParamsRequest
+	(*GetBaseParamsResponse)(nil),                              // 27: sonr.service.module.v1.GetBaseParamsResponse
+	(*GetReadParamsRequest)(nil),                               // 28: sonr.service.module.v1.GetReadParamsRequest
+	(*GetReadParamsResponse)(nil),                              // 29: sonr.service.module.v1.GetReadParamsResponse
+	(*GetWriteParamsRequest)(nil),                              // 30: sonr.service.module.v1.GetWriteParamsRequest
+	(*GetWriteParamsResponse)(nil),                             // 31: sonr.service.module.v1.GetWriteParamsResponse
+	(*GetOwnParamsRequest)(nil),                                // 32: sonr.service.module.v1.GetOwnParamsRequest
+	(*GetOwnParamsResponse)(nil),                               // 33: sonr.service.module.v1.GetOwnParamsResponse
+	(*ListServiceRecordRequest_IndexKey)(nil),                  // 34: sonr.service.module.v1.ListServiceRecordRequest.IndexKey
+	(*ListServiceRecordRequest_RangeQuery)(nil),                // 35: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery
+	(*ListServiceRecordRequest_IndexKey_Id)(nil),               // 36: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Id
+	(*ListServiceRecordRequest_IndexKey_Origin)(nil),           // 37: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Origin
+	(*ListServiceRecordRequest_IndexKey_Controller)(nil),       // 38: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Controller
+	(*ListServiceRecordRequest_IndexKey_NameController)(nil),   // 39: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.NameController
+	(*ListServiceRecordRequest_IndexKey_OriginController)(nil), // 40: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.OriginController
+	(*ListCredentialRequest_IndexKey)(nil),                     // 41: sonr.service.module.v1.ListCredentialRequest.IndexKey
+	(*ListCredentialRequest_RangeQuery)(nil),                   // 42: sonr.service.module.v1.ListCredentialRequest.RangeQuery
+	(*ListCredentialRequest_IndexKey_Id)(nil),                  // 43: sonr.service.module.v1.ListCredentialRequest.IndexKey.Id
+	(*ListCredentialRequest_IndexKey_Handle)(nil),              // 44: sonr.service.module.v1.ListCredentialRequest.IndexKey.Handle
+	(*ListCredentialRequest_IndexKey_OriginHandle)(nil),        // 45: sonr.service.module.v1.ListCredentialRequest.IndexKey.OriginHandle
+	(*ListCredentialRequest_IndexKey_CredentialId)(nil),        // 46: sonr.service.module.v1.ListCredentialRequest.IndexKey.CredentialId
+	(*ListCredentialRequest_IndexKey_PublicKey)(nil),           // 47: sonr.service.module.v1.ListCredentialRequest.IndexKey.PublicKey
+	(*ListWitnessRequest_IndexKey)(nil),                        // 48: sonr.service.module.v1.ListWitnessRequest.IndexKey
+	(*ListWitnessRequest_RangeQuery)(nil),                      // 49: sonr.service.module.v1.ListWitnessRequest.RangeQuery
+	(*ListWitnessRequest_IndexKey_Index)(nil),                  // 50: sonr.service.module.v1.ListWitnessRequest.IndexKey.Index
+	(*ListWitnessRequest_IndexKey_OriginKey)(nil),              // 51: sonr.service.module.v1.ListWitnessRequest.IndexKey.OriginKey
+	(*ServiceRecord)(nil),                                      // 52: sonr.service.module.v1.ServiceRecord
+	(*v1beta1.PageRequest)(nil),                                // 53: cosmos.base.query.v1beta1.PageRequest
+	(*v1beta1.PageResponse)(nil),                               // 54: cosmos.base.query.v1beta1.PageResponse
+	(*Credential)(nil),                                         // 55: sonr.service.module.v1.Credential
+	(*Witness)(nil),                                            // 56: sonr.service.module.v1.Witness
+	(*BaseParams)(nil),                                         // 57: sonr.service.module.v1.BaseParams
+	(*ReadParams)(nil),                                         // 58: sonr.service.module.v1.ReadParams
+	(*WriteParams)(nil),                                        // 59: sonr.service.module.v1.WriteParams
+	(*OwnParams)(nil),                                          // 60: sonr.service.module.v1.OwnParams
 }
 var file_sonr_service_module_v1_state_query_proto_depIdxs = []int32{
-	42, // 0: sonr.service.module.v1.GetServiceRecordResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
-	42, // 1: sonr.service.module.v1.GetServiceRecordByOriginResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
-	42, // 2: sonr.service.module.v1.GetServiceRecordByNameControllerResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
-	42, // 3: sonr.service.module.v1.GetServiceRecordByOriginControllerResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
-	28, // 4: sonr.service.module.v1.ListServiceRecordRequest.prefix_query:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
-	29, // 5: sonr.service.module.v1.ListServiceRecordRequest.range_query:type_name -> sonr.service.module.v1.ListServiceRecordRequest.RangeQuery
-	43, // 6: sonr.service.module.v1.ListServiceRecordRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	42, // 7: sonr.service.module.v1.ListServiceRecordResponse.values:type_name -> sonr.service.module.v1.ServiceRecord
-	44, // 8: sonr.service.module.v1.ListServiceRecordResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	45, // 9: sonr.service.module.v1.GetCredentialResponse.value:type_name -> sonr.service.module.v1.Credential
-	45, // 10: sonr.service.module.v1.GetCredentialByOriginHandleResponse.value:type_name -> sonr.service.module.v1.Credential
-	45, // 11: sonr.service.module.v1.GetCredentialByCredentialIdResponse.value:type_name -> sonr.service.module.v1.Credential
-	45, // 12: sonr.service.module.v1.GetCredentialByPublicKeyResponse.value:type_name -> sonr.service.module.v1.Credential
-	35, // 13: sonr.service.module.v1.ListCredentialRequest.prefix_query:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
-	36, // 14: sonr.service.module.v1.ListCredentialRequest.range_query:type_name -> sonr.service.module.v1.ListCredentialRequest.RangeQuery
-	43, // 15: sonr.service.module.v1.ListCredentialRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
-	45, // 16: sonr.service.module.v1.ListCredentialResponse.values:type_name -> sonr.service.module.v1.Credential
-	44, // 17: sonr.service.module.v1.ListCredentialResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
-	46, // 18: sonr.service.module.v1.GetBaseParamsResponse.value:type_name -> sonr.service.module.v1.BaseParams
-	47, // 19: sonr.service.module.v1.GetReadParamsResponse.value:type_name -> sonr.service.module.v1.ReadParams
-	48, // 20: sonr.service.module.v1.GetWriteParamsResponse.value:type_name -> sonr.service.module.v1.WriteParams
-	49, // 21: sonr.service.module.v1.GetOwnParamsResponse.value:type_name -> sonr.service.module.v1.OwnParams
-	30, // 22: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.id:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Id
-	31, // 23: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.origin:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Origin
-	32, // 24: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Controller
-	33, // 25: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.name_controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.NameController
-	34, // 26: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.origin_controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.OriginController
-	28, // 27: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery.from:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
-	28, // 28: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery.to:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
-	37, // 29: sonr.service.module.v1.ListCredentialRequest.IndexKey.id:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.Id
-	38, // 30: sonr.service.module.v1.ListCredentialRequest.IndexKey.handle:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.Handle
-	39, // 31: sonr.service.module.v1.ListCredentialRequest.IndexKey.origin_handle:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.OriginHandle
-	40, // 32: sonr.service.module.v1.ListCredentialRequest.IndexKey.credential_id:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.CredentialId
-	41, // 33: sonr.service.module.v1.ListCredentialRequest.IndexKey.public_key:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.PublicKey
-	35, // 34: sonr.service.module.v1.ListCredentialRequest.RangeQuery.from:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
-	35, // 35: sonr.service.module.v1.ListCredentialRequest.RangeQuery.to:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
-	0,  // 36: sonr.service.module.v1.StateQueryService.GetServiceRecord:input_type -> sonr.service.module.v1.GetServiceRecordRequest
-	2,  // 37: sonr.service.module.v1.StateQueryService.GetServiceRecordByOrigin:input_type -> sonr.service.module.v1.GetServiceRecordByOriginRequest
-	4,  // 38: sonr.service.module.v1.StateQueryService.GetServiceRecordByNameController:input_type -> sonr.service.module.v1.GetServiceRecordByNameControllerRequest
-	6,  // 39: sonr.service.module.v1.StateQueryService.GetServiceRecordByOriginController:input_type -> sonr.service.module.v1.GetServiceRecordByOriginControllerRequest
-	8,  // 40: sonr.service.module.v1.StateQueryService.ListServiceRecord:input_type -> sonr.service.module.v1.ListServiceRecordRequest
-	10, // 41: sonr.service.module.v1.StateQueryService.GetCredential:input_type -> sonr.service.module.v1.GetCredentialRequest
-	12, // 42: sonr.service.module.v1.StateQueryService.GetCredentialByOriginHandle:input_type -> sonr.service.module.v1.GetCredentialByOriginHandleRequest
-	14, // 43: sonr.service.module.v1.StateQueryService.GetCredentialByCredentialId:input_type -> sonr.service.module.v1.GetCredentialByCredentialIdRequest
-	16, // 44: sonr.service.module.v1.StateQueryService.GetCredentialByPublicKey:input_type -> sonr.service.module.v1.GetCredentialByPublicKeyRequest
-	18, // 45: sonr.service.module.v1.StateQueryService.ListCredential:input_type -> sonr.service.module.v1.ListCredentialRequest
-	20, // 46: sonr.service.module.v1.StateQueryService.GetBaseParams:input_type -> sonr.service.module.v1.GetBaseParamsRequest
-	22, // 47: sonr.service.module.v1.StateQueryService.GetReadParams:input_type -> sonr.service.module.v1.GetReadParamsRequest
-	24, // 48: sonr.service.module.v1.StateQueryService.GetWriteParams:input_type -> sonr.service.module.v1.GetWriteParamsRequest
-	26, // 49: sonr.service.module.v1.StateQueryService.GetOwnParams:input_type -> sonr.service.module.v1.GetOwnParamsRequest
-	1,  // 50: sonr.service.module.v1.StateQueryService.GetServiceRecord:output_type -> sonr.service.module.v1.GetServiceRecordResponse
-	3,  // 51: sonr.service.module.v1.StateQueryService.GetServiceRecordByOrigin:output_type -> sonr.service.module.v1.GetServiceRecordByOriginResponse
-	5,  // 52: sonr.service.module.v1.StateQueryService.GetServiceRecordByNameController:output_type -> sonr.service.module.v1.GetServiceRecordByNameControllerResponse
-	7,  // 53: sonr.service.module.v1.StateQueryService.GetServiceRecordByOriginController:output_type -> sonr.service.module.v1.GetServiceRecordByOriginControllerResponse
-	9,  // 54: sonr.service.module.v1.StateQueryService.ListServiceRecord:output_type -> sonr.service.module.v1.ListServiceRecordResponse
-	11, // 55: sonr.service.module.v1.StateQueryService.GetCredential:output_type -> sonr.service.module.v1.GetCredentialResponse
-	13, // 56: sonr.service.module.v1.StateQueryService.GetCredentialByOriginHandle:output_type -> sonr.service.module.v1.GetCredentialByOriginHandleResponse
-	15, // 57: sonr.service.module.v1.StateQueryService.GetCredentialByCredentialId:output_type -> sonr.service.module.v1.GetCredentialByCredentialIdResponse
-	17, // 58: sonr.service.module.v1.StateQueryService.GetCredentialByPublicKey:output_type -> sonr.service.module.v1.GetCredentialByPublicKeyResponse
-	19, // 59: sonr.service.module.v1.StateQueryService.ListCredential:output_type -> sonr.service.module.v1.ListCredentialResponse
-	21, // 60: sonr.service.module.v1.StateQueryService.GetBaseParams:output_type -> sonr.service.module.v1.GetBaseParamsResponse
-	23, // 61: sonr.service.module.v1.StateQueryService.GetReadParams:output_type -> sonr.service.module.v1.GetReadParamsResponse
-	25, // 62: sonr.service.module.v1.StateQueryService.GetWriteParams:output_type -> sonr.service.module.v1.GetWriteParamsResponse
-	27, // 63: sonr.service.module.v1.StateQueryService.GetOwnParams:output_type -> sonr.service.module.v1.GetOwnParamsResponse
-	50, // [50:64] is the sub-list for method output_type
-	36, // [36:50] is the sub-list for method input_type
-	36, // [36:36] is the sub-list for extension type_name
-	36, // [36:36] is the sub-list for extension extendee
-	0,  // [0:36] is the sub-list for field type_name
+	52, // 0: sonr.service.module.v1.GetServiceRecordResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
+	52, // 1: sonr.service.module.v1.GetServiceRecordByOriginResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
+	52, // 2: sonr.service.module.v1.GetServiceRecordByNameControllerResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
+	52, // 3: sonr.service.module.v1.GetServiceRecordByOriginControllerResponse.value:type_name -> sonr.service.module.v1.ServiceRecord
+	34, // 4: sonr.service.module.v1.ListServiceRecordRequest.prefix_query:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
+	35, // 5: sonr.service.module.v1.ListServiceRecordRequest.range_query:type_name -> sonr.service.module.v1.ListServiceRecordRequest.RangeQuery
+	53, // 6: sonr.service.module.v1.ListServiceRecordRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	52, // 7: sonr.service.module.v1.ListServiceRecordResponse.values:type_name -> sonr.service.module.v1.ServiceRecord
+	54, // 8: sonr.service.module.v1.ListServiceRecordResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	55, // 9: sonr.service.module.v1.GetCredentialResponse.value:type_name -> sonr.service.module.v1.Credential
+	55, // 10: sonr.service.module.v1.GetCredentialByOriginHandleResponse.value:type_name -> sonr.service.module.v1.Credential
+	55, // 11: sonr.service.module.v1.GetCredentialByCredentialIdResponse.value:type_name -> sonr.service.module.v1.Credential
+	55, // 12: sonr.service.module.v1.GetCredentialByPublicKeyResponse.value:type_name -> sonr.service.module.v1.Credential
+	41, // 13: sonr.service.module.v1.ListCredentialRequest.prefix_query:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
+	42, // 14: sonr.service.module.v1.ListCredentialRequest.range_query:type_name -> sonr.service.module.v1.ListCredentialRequest.RangeQuery
+	53, // 15: sonr.service.module.v1.ListCredentialRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	55, // 16: sonr.service.module.v1.ListCredentialResponse.values:type_name -> sonr.service.module.v1.Credential
+	54, // 17: sonr.service.module.v1.ListCredentialResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	56, // 18: sonr.service.module.v1.GetWitnessResponse.value:type_name -> sonr.service.module.v1.Witness
+	56, // 19: sonr.service.module.v1.GetWitnessByOriginKeyResponse.value:type_name -> sonr.service.module.v1.Witness
+	48, // 20: sonr.service.module.v1.ListWitnessRequest.prefix_query:type_name -> sonr.service.module.v1.ListWitnessRequest.IndexKey
+	49, // 21: sonr.service.module.v1.ListWitnessRequest.range_query:type_name -> sonr.service.module.v1.ListWitnessRequest.RangeQuery
+	53, // 22: sonr.service.module.v1.ListWitnessRequest.pagination:type_name -> cosmos.base.query.v1beta1.PageRequest
+	56, // 23: sonr.service.module.v1.ListWitnessResponse.values:type_name -> sonr.service.module.v1.Witness
+	54, // 24: sonr.service.module.v1.ListWitnessResponse.pagination:type_name -> cosmos.base.query.v1beta1.PageResponse
+	57, // 25: sonr.service.module.v1.GetBaseParamsResponse.value:type_name -> sonr.service.module.v1.BaseParams
+	58, // 26: sonr.service.module.v1.GetReadParamsResponse.value:type_name -> sonr.service.module.v1.ReadParams
+	59, // 27: sonr.service.module.v1.GetWriteParamsResponse.value:type_name -> sonr.service.module.v1.WriteParams
+	60, // 28: sonr.service.module.v1.GetOwnParamsResponse.value:type_name -> sonr.service.module.v1.OwnParams
+	36, // 29: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.id:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Id
+	37, // 30: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.origin:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Origin
+	38, // 31: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Controller
+	39, // 32: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.name_controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.NameController
+	40, // 33: sonr.service.module.v1.ListServiceRecordRequest.IndexKey.origin_controller:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey.OriginController
+	34, // 34: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery.from:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
+	34, // 35: sonr.service.module.v1.ListServiceRecordRequest.RangeQuery.to:type_name -> sonr.service.module.v1.ListServiceRecordRequest.IndexKey
+	43, // 36: sonr.service.module.v1.ListCredentialRequest.IndexKey.id:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.Id
+	44, // 37: sonr.service.module.v1.ListCredentialRequest.IndexKey.handle:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.Handle
+	45, // 38: sonr.service.module.v1.ListCredentialRequest.IndexKey.origin_handle:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.OriginHandle
+	46, // 39: sonr.service.module.v1.ListCredentialRequest.IndexKey.credential_id:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.CredentialId
+	47, // 40: sonr.service.module.v1.ListCredentialRequest.IndexKey.public_key:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey.PublicKey
+	41, // 41: sonr.service.module.v1.ListCredentialRequest.RangeQuery.from:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
+	41, // 42: sonr.service.module.v1.ListCredentialRequest.RangeQuery.to:type_name -> sonr.service.module.v1.ListCredentialRequest.IndexKey
+	50, // 43: sonr.service.module.v1.ListWitnessRequest.IndexKey.index:type_name -> sonr.service.module.v1.ListWitnessRequest.IndexKey.Index
+	51, // 44: sonr.service.module.v1.ListWitnessRequest.IndexKey.origin_key:type_name -> sonr.service.module.v1.ListWitnessRequest.IndexKey.OriginKey
+	48, // 45: sonr.service.module.v1.ListWitnessRequest.RangeQuery.from:type_name -> sonr.service.module.v1.ListWitnessRequest.IndexKey
+	48, // 46: sonr.service.module.v1.ListWitnessRequest.RangeQuery.to:type_name -> sonr.service.module.v1.ListWitnessRequest.IndexKey
+	0,  // 47: sonr.service.module.v1.StateQueryService.GetServiceRecord:input_type -> sonr.service.module.v1.GetServiceRecordRequest
+	2,  // 48: sonr.service.module.v1.StateQueryService.GetServiceRecordByOrigin:input_type -> sonr.service.module.v1.GetServiceRecordByOriginRequest
+	4,  // 49: sonr.service.module.v1.StateQueryService.GetServiceRecordByNameController:input_type -> sonr.service.module.v1.GetServiceRecordByNameControllerRequest
+	6,  // 50: sonr.service.module.v1.StateQueryService.GetServiceRecordByOriginController:input_type -> sonr.service.module.v1.GetServiceRecordByOriginControllerRequest
+	8,  // 51: sonr.service.module.v1.StateQueryService.ListServiceRecord:input_type -> sonr.service.module.v1.ListServiceRecordRequest
+	10, // 52: sonr.service.module.v1.StateQueryService.GetCredential:input_type -> sonr.service.module.v1.GetCredentialRequest
+	12, // 53: sonr.service.module.v1.StateQueryService.GetCredentialByOriginHandle:input_type -> sonr.service.module.v1.GetCredentialByOriginHandleRequest
+	14, // 54: sonr.service.module.v1.StateQueryService.GetCredentialByCredentialId:input_type -> sonr.service.module.v1.GetCredentialByCredentialIdRequest
+	16, // 55: sonr.service.module.v1.StateQueryService.GetCredentialByPublicKey:input_type -> sonr.service.module.v1.GetCredentialByPublicKeyRequest
+	18, // 56: sonr.service.module.v1.StateQueryService.ListCredential:input_type -> sonr.service.module.v1.ListCredentialRequest
+	20, // 57: sonr.service.module.v1.StateQueryService.GetWitness:input_type -> sonr.service.module.v1.GetWitnessRequest
+	22, // 58: sonr.service.module.v1.StateQueryService.GetWitnessByOriginKey:input_type -> sonr.service.module.v1.GetWitnessByOriginKeyRequest
+	24, // 59: sonr.service.module.v1.StateQueryService.ListWitness:input_type -> sonr.service.module.v1.ListWitnessRequest
+	26, // 60: sonr.service.module.v1.StateQueryService.GetBaseParams:input_type -> sonr.service.module.v1.GetBaseParamsRequest
+	28, // 61: sonr.service.module.v1.StateQueryService.GetReadParams:input_type -> sonr.service.module.v1.GetReadParamsRequest
+	30, // 62: sonr.service.module.v1.StateQueryService.GetWriteParams:input_type -> sonr.service.module.v1.GetWriteParamsRequest
+	32, // 63: sonr.service.module.v1.StateQueryService.GetOwnParams:input_type -> sonr.service.module.v1.GetOwnParamsRequest
+	1,  // 64: sonr.service.module.v1.StateQueryService.GetServiceRecord:output_type -> sonr.service.module.v1.GetServiceRecordResponse
+	3,  // 65: sonr.service.module.v1.StateQueryService.GetServiceRecordByOrigin:output_type -> sonr.service.module.v1.GetServiceRecordByOriginResponse
+	5,  // 66: sonr.service.module.v1.StateQueryService.GetServiceRecordByNameController:output_type -> sonr.service.module.v1.GetServiceRecordByNameControllerResponse
+	7,  // 67: sonr.service.module.v1.StateQueryService.GetServiceRecordByOriginController:output_type -> sonr.service.module.v1.GetServiceRecordByOriginControllerResponse
+	9,  // 68: sonr.service.module.v1.StateQueryService.ListServiceRecord:output_type -> sonr.service.module.v1.ListServiceRecordResponse
+	11, // 69: sonr.service.module.v1.StateQueryService.GetCredential:output_type -> sonr.service.module.v1.GetCredentialResponse
+	13, // 70: sonr.service.module.v1.StateQueryService.GetCredentialByOriginHandle:output_type -> sonr.service.module.v1.GetCredentialByOriginHandleResponse
+	15, // 71: sonr.service.module.v1.StateQueryService.GetCredentialByCredentialId:output_type -> sonr.service.module.v1.GetCredentialByCredentialIdResponse
+	17, // 72: sonr.service.module.v1.StateQueryService.GetCredentialByPublicKey:output_type -> sonr.service.module.v1.GetCredentialByPublicKeyResponse
+	19, // 73: sonr.service.module.v1.StateQueryService.ListCredential:output_type -> sonr.service.module.v1.ListCredentialResponse
+	21, // 74: sonr.service.module.v1.StateQueryService.GetWitness:output_type -> sonr.service.module.v1.GetWitnessResponse
+	23, // 75: sonr.service.module.v1.StateQueryService.GetWitnessByOriginKey:output_type -> sonr.service.module.v1.GetWitnessByOriginKeyResponse
+	25, // 76: sonr.service.module.v1.StateQueryService.ListWitness:output_type -> sonr.service.module.v1.ListWitnessResponse
+	27, // 77: sonr.service.module.v1.StateQueryService.GetBaseParams:output_type -> sonr.service.module.v1.GetBaseParamsResponse
+	29, // 78: sonr.service.module.v1.StateQueryService.GetReadParams:output_type -> sonr.service.module.v1.GetReadParamsResponse
+	31, // 79: sonr.service.module.v1.StateQueryService.GetWriteParams:output_type -> sonr.service.module.v1.GetWriteParamsResponse
+	33, // 80: sonr.service.module.v1.StateQueryService.GetOwnParams:output_type -> sonr.service.module.v1.GetOwnParamsResponse
+	64, // [64:81] is the sub-list for method output_type
+	47, // [47:64] is the sub-list for method input_type
+	47, // [47:47] is the sub-list for extension type_name
+	47, // [47:47] is the sub-list for extension extendee
+	0,  // [0:47] is the sub-list for field type_name
 }
 
 func init() { file_sonr_service_module_v1_state_query_proto_init() }
@@ -3207,7 +3942,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[20].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetBaseParamsRequest); i {
+			switch v := v.(*GetWitnessRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3219,7 +3954,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[21].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetBaseParamsResponse); i {
+			switch v := v.(*GetWitnessResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3231,7 +3966,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[22].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetReadParamsRequest); i {
+			switch v := v.(*GetWitnessByOriginKeyRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3243,7 +3978,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[23].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetReadParamsResponse); i {
+			switch v := v.(*GetWitnessByOriginKeyResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3255,7 +3990,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[24].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetWriteParamsRequest); i {
+			switch v := v.(*ListWitnessRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3267,7 +4002,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[25].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetWriteParamsResponse); i {
+			switch v := v.(*ListWitnessResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3279,7 +4014,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[26].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetOwnParamsRequest); i {
+			switch v := v.(*GetBaseParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3291,7 +4026,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[27].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetOwnParamsResponse); i {
+			switch v := v.(*GetBaseParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3303,7 +4038,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[28].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey); i {
+			switch v := v.(*GetReadParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3315,7 +4050,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[29].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_RangeQuery); i {
+			switch v := v.(*GetReadParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3327,7 +4062,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[30].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey_Id); i {
+			switch v := v.(*GetWriteParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3339,7 +4074,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[31].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey_Origin); i {
+			switch v := v.(*GetWriteParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3351,7 +4086,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[32].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey_Controller); i {
+			switch v := v.(*GetOwnParamsRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3363,7 +4098,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[33].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey_NameController); i {
+			switch v := v.(*GetOwnParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3375,7 +4110,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[34].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListServiceRecordRequest_IndexKey_OriginController); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3387,7 +4122,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[35].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_IndexKey); i {
+			switch v := v.(*ListServiceRecordRequest_RangeQuery); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3399,7 +4134,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[36].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_RangeQuery); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey_Id); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3411,7 +4146,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[37].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_IndexKey_Id); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey_Origin); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3423,7 +4158,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[38].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_IndexKey_Handle); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey_Controller); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3435,7 +4170,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[39].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_IndexKey_OriginHandle); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey_NameController); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3447,7 +4182,7 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[40].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ListCredentialRequest_IndexKey_CredentialId); i {
+			switch v := v.(*ListServiceRecordRequest_IndexKey_OriginController); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3459,7 +4194,127 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 			}
 		}
 		file_sonr_service_module_v1_state_query_proto_msgTypes[41].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_IndexKey); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[42].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_RangeQuery); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[43].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_IndexKey_Id); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[44].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_IndexKey_Handle); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[45].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_IndexKey_OriginHandle); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[46].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListCredentialRequest_IndexKey_CredentialId); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[47].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ListCredentialRequest_IndexKey_PublicKey); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[48].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListWitnessRequest_IndexKey); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[49].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListWitnessRequest_RangeQuery); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[50].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListWitnessRequest_IndexKey_Index); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_module_v1_state_query_proto_msgTypes[51].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListWitnessRequest_IndexKey_OriginKey); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3479,37 +4334,47 @@ func file_sonr_service_module_v1_state_query_proto_init() {
 		(*ListCredentialRequest_PrefixQuery)(nil),
 		(*ListCredentialRequest_RangeQuery_)(nil),
 	}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[28].OneofWrappers = []interface{}{
+	file_sonr_service_module_v1_state_query_proto_msgTypes[24].OneofWrappers = []interface{}{
+		(*ListWitnessRequest_PrefixQuery)(nil),
+		(*ListWitnessRequest_RangeQuery_)(nil),
+	}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[34].OneofWrappers = []interface{}{
 		(*ListServiceRecordRequest_IndexKey_Id_)(nil),
 		(*ListServiceRecordRequest_IndexKey_Origin_)(nil),
 		(*ListServiceRecordRequest_IndexKey_Controller_)(nil),
 		(*ListServiceRecordRequest_IndexKey_NameController_)(nil),
 		(*ListServiceRecordRequest_IndexKey_OriginController_)(nil),
 	}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[30].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[31].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[32].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[33].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[34].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[35].OneofWrappers = []interface{}{
+	file_sonr_service_module_v1_state_query_proto_msgTypes[36].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[37].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[38].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[39].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[40].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[41].OneofWrappers = []interface{}{
 		(*ListCredentialRequest_IndexKey_Id_)(nil),
 		(*ListCredentialRequest_IndexKey_Handle_)(nil),
 		(*ListCredentialRequest_IndexKey_OriginHandle_)(nil),
 		(*ListCredentialRequest_IndexKey_CredentialId_)(nil),
 		(*ListCredentialRequest_IndexKey_PublicKey_)(nil),
 	}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[37].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[38].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[39].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[40].OneofWrappers = []interface{}{}
-	file_sonr_service_module_v1_state_query_proto_msgTypes[41].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[43].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[44].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[45].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[46].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[47].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[48].OneofWrappers = []interface{}{
+		(*ListWitnessRequest_IndexKey_Index_)(nil),
+		(*ListWitnessRequest_IndexKey_OriginKey_)(nil),
+	}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[50].OneofWrappers = []interface{}{}
+	file_sonr_service_module_v1_state_query_proto_msgTypes[51].OneofWrappers = []interface{}{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_sonr_service_module_v1_state_query_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   42,
+			NumMessages:   52,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -520,6 +520,173 @@ func NewCredentialTable(db ormtable.Schema) (CredentialTable, error) {
 	return credentialTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
+type WitnessTable interface {
+	Insert(ctx context.Context, witness *Witness) error
+	InsertReturningIndex(ctx context.Context, witness *Witness) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
+	Update(ctx context.Context, witness *Witness) error
+	Save(ctx context.Context, witness *Witness) error
+	Delete(ctx context.Context, witness *Witness) error
+	Has(ctx context.Context, index uint64) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, index uint64) (*Witness, error)
+	HasByOriginKey(ctx context.Context, origin string, key string) (found bool, err error)
+	// GetByOriginKey returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByOriginKey(ctx context.Context, origin string, key string) (*Witness, error)
+	List(ctx context.Context, prefixKey WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error)
+	ListRange(ctx context.Context, from, to WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error)
+	DeleteBy(ctx context.Context, prefixKey WitnessIndexKey) error
+	DeleteRange(ctx context.Context, from, to WitnessIndexKey) error
+
+	doNotImplement()
+}
+
+type WitnessIterator struct {
+	ormtable.Iterator
+}
+
+func (i WitnessIterator) Value() (*Witness, error) {
+	var witness Witness
+	err := i.UnmarshalMessage(&witness)
+	return &witness, err
+}
+
+type WitnessIndexKey interface {
+	id() uint32
+	values() []interface{}
+	witnessIndexKey()
+}
+
+// primary key starting index..
+type WitnessPrimaryKey = WitnessIndexIndexKey
+
+type WitnessIndexIndexKey struct {
+	vs []interface{}
+}
+
+func (x WitnessIndexIndexKey) id() uint32            { return 0 }
+func (x WitnessIndexIndexKey) values() []interface{} { return x.vs }
+func (x WitnessIndexIndexKey) witnessIndexKey()      {}
+
+func (this WitnessIndexIndexKey) WithIndex(index uint64) WitnessIndexIndexKey {
+	this.vs = []interface{}{index}
+	return this
+}
+
+type WitnessOriginKeyIndexKey struct {
+	vs []interface{}
+}
+
+func (x WitnessOriginKeyIndexKey) id() uint32            { return 1 }
+func (x WitnessOriginKeyIndexKey) values() []interface{} { return x.vs }
+func (x WitnessOriginKeyIndexKey) witnessIndexKey()      {}
+
+func (this WitnessOriginKeyIndexKey) WithOrigin(origin string) WitnessOriginKeyIndexKey {
+	this.vs = []interface{}{origin}
+	return this
+}
+
+func (this WitnessOriginKeyIndexKey) WithOriginKey(origin string, key string) WitnessOriginKeyIndexKey {
+	this.vs = []interface{}{origin, key}
+	return this
+}
+
+type witnessTable struct {
+	table ormtable.AutoIncrementTable
+}
+
+func (this witnessTable) Insert(ctx context.Context, witness *Witness) error {
+	return this.table.Insert(ctx, witness)
+}
+
+func (this witnessTable) Update(ctx context.Context, witness *Witness) error {
+	return this.table.Update(ctx, witness)
+}
+
+func (this witnessTable) Save(ctx context.Context, witness *Witness) error {
+	return this.table.Save(ctx, witness)
+}
+
+func (this witnessTable) Delete(ctx context.Context, witness *Witness) error {
+	return this.table.Delete(ctx, witness)
+}
+
+func (this witnessTable) InsertReturningIndex(ctx context.Context, witness *Witness) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, witness)
+}
+
+func (this witnessTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
+}
+
+func (this witnessTable) Has(ctx context.Context, index uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, index)
+}
+
+func (this witnessTable) Get(ctx context.Context, index uint64) (*Witness, error) {
+	var witness Witness
+	found, err := this.table.PrimaryKey().Get(ctx, &witness, index)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &witness, nil
+}
+
+func (this witnessTable) HasByOriginKey(ctx context.Context, origin string, key string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		origin,
+		key,
+	)
+}
+
+func (this witnessTable) GetByOriginKey(ctx context.Context, origin string, key string) (*Witness, error) {
+	var witness Witness
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &witness,
+		origin,
+		key,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &witness, nil
+}
+
+func (this witnessTable) List(ctx context.Context, prefixKey WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return WitnessIterator{it}, err
+}
+
+func (this witnessTable) ListRange(ctx context.Context, from, to WitnessIndexKey, opts ...ormlist.Option) (WitnessIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return WitnessIterator{it}, err
+}
+
+func (this witnessTable) DeleteBy(ctx context.Context, prefixKey WitnessIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this witnessTable) DeleteRange(ctx context.Context, from, to WitnessIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this witnessTable) doNotImplement() {}
+
+var _ WitnessTable = witnessTable{}
+
+func NewWitnessTable(db ormtable.Schema) (WitnessTable, error) {
+	table := db.GetTable(&Witness{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Witness{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return witnessTable{table.(ormtable.AutoIncrementTable)}, nil
+}
+
 // singleton store
 type BaseParamsTable interface {
 	Get(ctx context.Context) (*BaseParams, error)
@@ -643,6 +810,7 @@ func NewOwnParamsTable(db ormtable.Schema) (OwnParamsTable, error) {
 type StateStore interface {
 	ServiceRecordTable() ServiceRecordTable
 	CredentialTable() CredentialTable
+	WitnessTable() WitnessTable
 	BaseParamsTable() BaseParamsTable
 	ReadParamsTable() ReadParamsTable
 	WriteParamsTable() WriteParamsTable
@@ -654,6 +822,7 @@ type StateStore interface {
 type stateStore struct {
 	serviceRecord ServiceRecordTable
 	credential    CredentialTable
+	witness       WitnessTable
 	baseParams    BaseParamsTable
 	readParams    ReadParamsTable
 	writeParams   WriteParamsTable
@@ -666,6 +835,10 @@ func (x stateStore) ServiceRecordTable() ServiceRecordTable {
 
 func (x stateStore) CredentialTable() CredentialTable {
 	return x.credential
+}
+
+func (x stateStore) WitnessTable() WitnessTable {
+	return x.witness
 }
 
 func (x stateStore) BaseParamsTable() BaseParamsTable {
@@ -699,6 +872,11 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
+	witnessTable, err := NewWitnessTable(db)
+	if err != nil {
+		return nil, err
+	}
+
 	baseParamsTable, err := NewBaseParamsTable(db)
 	if err != nil {
 		return nil, err
@@ -722,6 +900,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	return stateStore{
 		serviceRecordTable,
 		credentialTable,
+		witnessTable,
 		baseParamsTable,
 		readParamsTable,
 		writeParamsTable,

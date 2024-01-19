@@ -27,6 +27,12 @@ service StateQueryService {
   rpc GetCredentialByPublicKey(GetCredentialByPublicKeyRequest) returns (GetCredentialByPublicKeyResponse) {}
   // ListCredential queries the Credential table using prefix and range queries against defined indexes.
   rpc ListCredential(ListCredentialRequest) returns (ListCredentialResponse) {}
+  // Get queries the Witness table by its primary key.
+  rpc GetWitness(GetWitnessRequest) returns (GetWitnessResponse) {}
+  // GetWitnessByOriginKey queries the Witness table by its OriginKey index
+  rpc GetWitnessByOriginKey(GetWitnessByOriginKeyRequest) returns (GetWitnessByOriginKeyResponse) {}
+  // ListWitness queries the Witness table using prefix and range queries against defined indexes.
+  rpc ListWitness(ListWitnessRequest) returns (ListWitnessResponse) {}
   // GetBaseParams queries the BaseParams singleton.
   rpc GetBaseParams(GetBaseParamsRequest) returns (GetBaseParamsResponse) {}
   // GetReadParams queries the ReadParams singleton.
@@ -287,6 +293,87 @@ message ListCredentialRequest {
 message ListCredentialResponse {
   // values are the results of the query.
   repeated Credential values = 1;
+  // pagination is the pagination response.
+  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+}
+
+// GetWitnessRequest is the StateQuery/GetWitnessRequest request type.
+message GetWitnessRequest {
+  // index specifies the value of the index field in the primary key.
+  uint64 index = 1;
+}
+
+// GetWitnessResponse is the StateQuery/GetWitnessResponse response type.
+message GetWitnessResponse {
+  // value is the response value.
+  Witness value = 1;
+}
+
+// GetWitnessByOriginKeyRequest is the StateQuery/GetWitnessByOriginKeyRequest request type.
+message GetWitnessByOriginKeyRequest {
+  string origin = 1;
+  string key = 2;
+}
+
+// GetWitnessByOriginKeyResponse is the StateQuery/GetWitnessByOriginKeyResponse response type.
+message GetWitnessByOriginKeyResponse {
+  Witness value = 1;
+}
+
+// ListWitnessRequest is the StateQuery/ListWitnessRequest request type.
+message ListWitnessRequest {
+  // IndexKey specifies the value of an index key to use in prefix and range queries.
+  message IndexKey {
+    // key specifies the index key value.
+    oneof key {
+      // index specifies the value of the Index index key to use in the query.
+      Index index = 1;
+      // origin_key specifies the value of the OriginKey index key to use in the query.
+      OriginKey origin_key = 2;
+    }
+    
+    message Index {
+      // index is the value of the index field in the index.
+      // It can be omitted to query for all valid values of that field in this segment of the index.
+      optional uint64 index = 1;
+    }
+    
+    message OriginKey {
+      // origin is the value of the origin field in the index.
+      // It can be omitted to query for all valid values of that field in this segment of the index.
+      optional string origin = 1;
+      // key is the value of the key field in the index.
+      // It can be omitted to query for all valid values of that field in this segment of the index.
+      optional string key = 2;
+    }
+  }
+  
+  // query specifies the type of query - either a prefix or range query.
+  oneof query {
+    // prefix_query specifies the index key value to use for the prefix query.
+    IndexKey prefix_query = 1;
+    // range_query specifies the index key from/to values to use for the range query.
+    RangeQuery range_query = 2;
+  }
+  // pagination specifies optional pagination parameters.
+  cosmos.base.query.v1beta1.PageRequest pagination = 3;
+  
+  // RangeQuery specifies the from/to index keys for a range query.
+  message RangeQuery {
+    // from is the index key to use for the start of the range query.
+    // To query from the start of an index, specify an index key for that index with empty values.
+    IndexKey from = 1;
+    // to is the index key to use for the end of the range query.
+    // The index key type MUST be the same as the index key type used for from.
+    // To query from to the end of an index it can be omitted.
+    IndexKey to = 2;
+  }
+}
+
+// ListWitnessResponse is the StateQuery/ListWitnessResponse response type.
+message ListWitnessResponse {
+  // values are the results of the query.
+  repeated Witness values = 1;
   // pagination is the pagination response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
