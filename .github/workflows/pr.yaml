@@ -26,6 +26,7 @@ jobs:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
 
   run-tests:
+    environment: Staging
     name: Test on Target
     runs-on: ubuntu-latest
     strategy:
@@ -63,6 +64,7 @@ jobs:
       - run: go test -v ./...
 
   build-test:
+    environment: Staging
     name: Build for Target
     runs-on: ubuntu-latest
     strategy:

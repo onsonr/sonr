@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   valid-protobufs:
+    environment: Staging
     name: Validate Protos
     runs-on: ubuntu-latest
     env:
@@ -26,6 +27,7 @@ jobs:
       - run: earthly --sat=tester +breaking
 
   release-build-test:
+    environment: Staging
     name: Run Go Build Test
     needs: [valid-protobufs]
     runs-on: ubuntu-latest
