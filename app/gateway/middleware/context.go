@@ -16,20 +16,6 @@ import (
 	servicev1 "github.com/sonrhq/sonr/api/service/v1"
 )
 
-type GRPCConn = *grpc.ClientConn
-
-type CometClient = cmtservice.ServiceClient
-
-type BankClient = bankv1beta1.QueryClient
-
-type GovClient = govv1.QueryClient
-
-type IdentityClient = identityv1.QueryClient
-
-type ServiceClient = servicev1.QueryClient
-
-type StakingClient = stakingv1beta1.QueryClient
-
 func Context(next http.Handler) http.Handler {
 	mw := ControllerMiddleware{
 		Next:     next,
@@ -72,6 +58,24 @@ func IPFSClient(r *http.Request) *rpc.HttpApi {
 func (mw ContextMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mw.Next.ServeHTTP(w, r)
 }
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                      Helper GRPC Client Wrapper Functions                      ||
+// ! ||--------------------------------------------------------------------------------||
+
+type GRPCConn = *grpc.ClientConn
+
+type CometClient = cmtservice.ServiceClient
+
+type BankClient = bankv1beta1.QueryClient
+
+type GovClient = govv1.QueryClient
+
+type IdentityClient = identityv1.QueryClient
+
+type ServiceClient = servicev1.QueryClient
+
+type StakingClient = stakingv1beta1.QueryClient
 
 func NewBankClient(conn GRPCConn) BankClient {
 	return bankv1beta1.NewQueryClient(conn)
