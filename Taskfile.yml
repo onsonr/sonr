@@ -2,6 +2,7 @@ version: '3'
 
 includes:
   deploy: ./deploy/Taskfile.yml
+  proto: ./proto/Taskfile.yml
 
 tasks:
   default:
@@ -29,6 +30,10 @@ tasks:
    cmds:
     - earthly --no-sat +generate
     - earthly --no-sat +templates
+    - task: proto:gogo-gen
+    - rm -rf sonr
+    - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
+    - rm -rf github.com
     - go mod tidy
 
   dev:gateway:
