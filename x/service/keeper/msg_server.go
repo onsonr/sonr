@@ -39,3 +39,18 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *service.MsgUpdatePara
 
 	return &service.MsgUpdateParamsResponse{}, nil
 }
+
+// CreateRecord params is defining the handler for the MsgCreateRecord message.
+func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateRecord) (*service.MsgCreateRecordResponse, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+// UpdateRecord params is defining the handler for the MsgUpdateRecord message.
+func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateRecord) (*service.MsgUpdateRecordResponse, error) {
+	return nil, fmt.Errorf("not implemented")
+}
+
+// DeleteRecord params is defining the handler for the MsgDeleteRecord message.
+func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteRecord) (*service.MsgDeleteRecordResponse, error) {
+	return nil, fmt.Errorf("not implemented")
+}
