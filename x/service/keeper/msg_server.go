@@ -43,12 +43,25 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *service.MsgUpdatePara
 
 // CreateRecord params is defining the handler for the MsgCreateRecord message.
 func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateRecord) (*service.MsgCreateRecordResponse, error) {
+	// Get permissions from int32
+	if msg.Owner == "" {
+		return nil, fmt.Errorf("owner cannot be empty")
+	}
+
+	if msg.Name == "" {
+		return nil, fmt.Errorf("name cannot be empty")
+	}
+
+	if msg.Origin == "" {
+		return nil, fmt.Errorf("origin cannot be empty")
+	}
+
 	err := ms.k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
 		Controller:  msg.Owner,
-		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
+		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
 		return nil, err
@@ -58,7 +71,28 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 
 // UpdateRecord params is defining the handler for the MsgUpdateRecord message.
 func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateRecord) (*service.MsgUpdateRecordResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	rec, err := ms.k.db.ServiceRecordTable().Get(ctx, msg.RecordId)
+	if err != nil {
+		return nil, err
+	}
+	if rec == nil {
+		return nil, fmt.Errorf("record does not exist")
+	}
+	if rec.Controller != msg.Owner {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Owner, rec.Controller)
+	}
+	err = ms.k.db.ServiceRecordTable().Update(ctx, &modulev1.ServiceRecord{
+		Id:          msg.RecordId,
+		Name:        msg.Name,
+		Origin:      msg.Origin,
+		Description: msg.Description,
+		Controller:  msg.Owner,
+		Permissions: getPermissionsFromInt32(msg.Permissions),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &service.MsgUpdateRecordResponse{}, nil
 }
 
 // DeleteRecord params is defining the handler for the MsgDeleteRecord message.
@@ -78,4 +112,20 @@ func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteReco
 		return nil, err
 	}
 	return &service.MsgDeleteRecordResponse{}, nil
+}
+
+// getPermissionsFromInt32 converts an int32 to a ServicePermissions enum.
+func getPermissionsFromInt32(value int32) modulev1.ServicePermissions {
+	switch value {
+	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE):
+		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE
+	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ):
+		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ
+	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE):
+		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE
+	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN):
+		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN
+	default:
+		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE
+	}
 }

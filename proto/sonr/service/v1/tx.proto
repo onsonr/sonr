@@ -42,6 +42,9 @@ message MsgCreateRecord {
 
   // origin is the origin of the record
   string origin = 4;
+
+  // permissions in int32 format
+  int32 permissions = 5;
 }
 
 // MsgCreateRecordResponse defines the Msg/CreateRecord response type.
@@ -57,6 +60,18 @@ message MsgUpdateRecord {
 
   // record_id is the id of the record to update
   uint64 record_id = 2;
+
+  // name is the name of the record
+  string name = 3;
+
+  // description is the description of the record
+  string description = 4;
+
+  // origin is the origin of the record
+  string origin = 5;
+
+  // permissions in int32 format
+  int32 permissions = 6;
 }
 
 // MsgUpdateRecordResponse defines the Msg/UpdateRecord response type.
