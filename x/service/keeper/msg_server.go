@@ -63,6 +63,19 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 
 // DeleteRecord params is defining the handler for the MsgDeleteRecord message.
 func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteRecord) (*service.MsgDeleteRecordResponse, error) {
-	ms.k.db.ServiceRecordTable().Get(ctx, msg.RecordId)
-	return nil, fmt.Errorf("not implemented")
+	rec, err := ms.k.db.ServiceRecordTable().Get(ctx, msg.RecordId)
+	if err != nil {
+		return nil, err
+	}
+	if rec == nil {
+		return nil, fmt.Errorf("record does not exist")
+	}
+	if rec.Controller != msg.Owner {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Owner, rec.Controller)
+	}
+
+	if err := ms.k.db.ServiceRecordTable().Delete(ctx, rec); err != nil {
+		return nil, err
+	}
+	return &service.MsgDeleteRecordResponse{}, nil
 }
