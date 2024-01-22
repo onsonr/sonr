@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	modulev1 "github.com/sonrhq/sonr/api/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -42,7 +43,17 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *service.MsgUpdatePara
 
 // CreateRecord params is defining the handler for the MsgCreateRecord message.
 func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateRecord) (*service.MsgCreateRecordResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	err := ms.k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
+		Name:        msg.Name,
+		Origin:      msg.Origin,
+		Description: msg.Description,
+		Controller:  msg.Owner,
+		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return &service.MsgCreateRecordResponse{}, nil
 }
 
 // UpdateRecord params is defining the handler for the MsgUpdateRecord message.
@@ -52,5 +63,6 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 
 // DeleteRecord params is defining the handler for the MsgDeleteRecord message.
 func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteRecord) (*service.MsgDeleteRecordResponse, error) {
+	ms.k.db.ServiceRecordTable().Get(ctx, msg.RecordId)
 	return nil, fmt.Errorf("not implemented")
 }
