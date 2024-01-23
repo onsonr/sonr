@@ -2,13 +2,15 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 	"errors"
-	"fmt"
 
 	"cosmossdk.io/collections"
+	"github.com/go-webauthn/webauthn/protocol"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
+	"github.com/sonrhq/sonr/pkg/webapis"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -39,5 +41,20 @@ func (qs queryServer) Params(ctx context.Context, req *service.QueryParamsReques
 
 // Credentials defines the handler for the Query/Credentials RPC method.
 func (qs queryServer) Credentials(ctx context.Context, req *service.QueryCredentialsRequest) (*service.QueryCredentialsResponse, error) {
-	return nil, fmt.Errorf("not implemented")
+	rec, err := qs.k.db.ServiceRecordTable().GetByOrigin(ctx, req.Origin)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	if rec == nil {
+		return nil, status.Error(codes.NotFound, "record not found")
+	}
+	opts := webapis.GetPublicKeyCredentialCreationOptions(rec, protocol.UserEntity{})
+	creationOptsBz, err := json.Marshal(opts)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	return &service.QueryCredentialsResponse{
+		AttestationOptions: string(creationOptsBz),
+		Origin:             rec.Origin,
+	}, nil
 }
