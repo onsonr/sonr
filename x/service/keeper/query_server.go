@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"cosmossdk.io/collections"
 	"google.golang.org/grpc/codes"
@@ -34,4 +35,9 @@ func (qs queryServer) Params(ctx context.Context, req *service.QueryParamsReques
 	}
 
 	return &service.QueryParamsResponse{Params: params}, nil
+}
+
+// Credentials defines the handler for the Query/Credentials RPC method.
+func (qs queryServer) Credentials(ctx context.Context, req *service.QueryCredentialsRequest) (*service.QueryCredentialsResponse, error) {
+	return nil, fmt.Errorf("not implemented")
 }
