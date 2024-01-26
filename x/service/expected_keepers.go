@@ -9,16 +9,16 @@ import (
 
 // IdentityKeeper is the expected interface for the identity keeper.
 type IdentityKeeper interface {
-    // LinkCredential links a credential to an identity.
+	// LinkCredential links a credential to an identity.
 	GenerateIdentity(ctx context.Context) error
-    LinkCredential(ctx context.Context, identityID string) error
-	LinkPersona(ctx context.Context, identityID string) error
-	RevokeAccount(ctx context.Context, identityID string) error
-	RevokeIdentity(ctx context.Context, identityID string) error
-	SignWithAccount(ctx context.Context, identityID string) error
-	UnlinkCredential(ctx context.Context, identityID string) error
-	UnlinkPersona(ctx context.Context, identityID string) error
-	VerifyAccountSignature(ctx context.Context, identityID string) error
+	// LinkCredential(ctx context.Context, identityID string) error
+	// LinkPersona(ctx context.Context, identityID string) error
+	// RevokeAccount(ctx context.Context, identityID string) error
+	// RevokeIdentity(ctx context.Context, identityID string) error
+	// SignWithAccount(ctx context.Context, identityID string) error
+	// UnlinkCredential(ctx context.Context, identityID string) error
+	// UnlinkPersona(ctx context.Context, identityID string) error
+	// VerifyAccountSignature(ctx context.Context, identityID string) error
 }
 
 type GroupKeeper interface {
@@ -39,6 +39,6 @@ type GroupKeeper interface {
 
 // BankKeeper defines the expected interface needed to retrieve account balances.
 type BankKeeper interface {
-SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
+	SpendableCoins(ctx context.Context, addr sdk.AccAddress) sdk.Coins
 	// Methods imported from bank should be defined here
 }

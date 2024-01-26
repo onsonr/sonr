@@ -26,16 +26,13 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *service.GenesisState) er
 		return err
 	}
 
-	err := k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
+	k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
 		Id:          0,
 		Origin:      "localhost",
 		Name:        "Sonr LocalAuth",
 		Description: "Sonr authentication service",
 		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
 	})
-	if err != nil {
-		return err
-	}
 
 	// Set default permissions for the base, read, write and own modules
 	k.db.BaseParamsTable().Save(ctx, &modulev1.BaseParams{

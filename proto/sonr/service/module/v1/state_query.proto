@@ -9,6 +9,8 @@ import "sonr/service/module/v1/state.proto";
 service StateQueryService {
   // Get queries the ServiceRecord table by its primary key.
   rpc GetServiceRecord(GetServiceRecordRequest) returns (GetServiceRecordResponse) {}
+  // GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
+  rpc GetServiceRecordByOrigin(GetServiceRecordByOriginRequest) returns (GetServiceRecordByOriginResponse) {}
   // ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
   rpc ListServiceRecord(ListServiceRecordRequest) returns (ListServiceRecordResponse) {}
   // Get queries the Credential table by its primary key.
@@ -46,6 +48,16 @@ message GetServiceRecordRequest {
 // GetServiceRecordResponse is the StateQuery/GetServiceRecordResponse response type.
 message GetServiceRecordResponse {
   // value is the response value.
+  ServiceRecord value = 1;
+}
+
+// GetServiceRecordByOriginRequest is the StateQuery/GetServiceRecordByOriginRequest request type.
+message GetServiceRecordByOriginRequest {
+  string origin = 1;
+}
+
+// GetServiceRecordByOriginResponse is the StateQuery/GetServiceRecordByOriginResponse response type.
+message GetServiceRecordByOriginResponse {
   ServiceRecord value = 1;
 }
 

@@ -31,7 +31,7 @@ message ServiceRecord {
   option (cosmos.orm.v1.table) = {
     id : 1
     primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "origin"}
+    index : {id : 1 fields : "origin" unique : true}
     index : {id : 2 fields : "controller"}
   };
 
