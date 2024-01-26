@@ -27,7 +27,7 @@ jobs:
 
   run-tests:
     environment: Staging
-    name: Test on Target
+    name: Test All Go Packages
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
