@@ -7,28 +7,29 @@ import (
 	modulesapi "github.com/sonrhq/sonr/app/gateway/handlers/modules"
 )
 
-func LandingEndpoints() (string, chi.Router) {
-	r := chi.NewRouter()
-	homeHandler := htmx.LandingHandler{}
-	r.Get("/", homeHandler.IndexPage)
-	return "/", r
+// Mount all routes to the router
+func Mount(r chi.Router) {
+	r.Mount(consoleEndpoints())
+	r.Mount(walletEndpoints())
+	r.Mount(apiEndpoints())
+	r.Mount(sseEndpoints())
 }
 
-func ConsoleEndpoints() (string, chi.Router) {
+func consoleEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
 	consoleHandler := htmx.ConsoleHandler{}
 	r.Get("/", consoleHandler.IndexPage)
-	return "/console", r
+	return "/", r
 }
 
-func WalletEndpoints() (string, chi.Router) {
+func walletEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
 	dashHandler := htmx.WalletHandler{}
 	r.Get("/", dashHandler.IndexPage)
 	return "/wallet", r
 }
 
-func APIEndpoints() (string, chi.Router) {
+func apiEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
 	bankHandler := modulesapi.BankHandler{}
 	govHandler := modulesapi.GovHandler{}
@@ -69,7 +70,7 @@ func APIEndpoints() (string, chi.Router) {
 	return "/api", r
 }
 
-func SSEEndpoints() (string, chi.Router) {
+func sseEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
 	// moduleHandler := htmx.ModuleHandler{}
 	// r.Get("/", moduleHandler.IndexPage)

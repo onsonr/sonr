@@ -1,102 +1,146 @@
 package components
 
+templ ActivityListItem() {
+}
+
+templ AccountListItem() {
+}
+
+templ AssetListItem() {
+}
+
+templ ValidatorListItem() {
+	<li class="py-3 sm:py-4">
+		<div class="flex items-center">
+			<div class="flex-shrink-0">
+				<img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"/>
+			</div>
+			<div class="flex-1 min-w-0 ms-4">
+				<p class="text-sm font-medium text-stone-900 truncate dark:text-white">
+					Neil Sims
+				</p>
+				<p class="text-sm text-stone-500 truncate dark:text-stone-400">
+					email@windster.com
+				</p>
+			</div>
+			<div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
+				$320
+			</div>
+		</div>
+	</li>
+}
+
+templ ConnectedServiceListItem() {
+}
+
+templ TransactionListItem() {
+	<tr class="bg-white border-b dark:bg-stone-900 dark:border-stone-700 hover:bg-stone-50 dark:hover:bg-stone-800">
+		<td class="w-4 p-4">
+			<div class="flex items-center">
+				<input id="checkbox-table-search-1" type="checkbox" class="w-4 h-4 text-sky-600 bg-stone-100 border-stone-300 rounded focus:ring-sky-500 dark:focus:ring-sky-600 dark:ring-offset-stone-800 dark:focus:ring-offset-stone-800 focus:ring-2 dark:bg-stone-700 dark:border-stone-600"/>
+				<label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+			</div>
+		</td>
+		<th scope="row" class="flex items-center px-6 py-4 text-stone-900 whitespace-nowrap dark:text-white">
+			<img class="w-10 h-10 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Jese image"/>
+			<div class="ps-3">
+				<div class="text-base font-semibold">Neil Sims</div>
+				<div class="font-normal text-stone-500">neil.sims@flowbite.com</div>
+			</div>
+		</th>
+		<td class="px-6 py-4">
+			React Developer
+		</td>
+		<td class="px-6 py-4">
+			<div class="flex items-center">
+				<div class="h-2.5 w-2.5 rounded-full bg-green-500 me-2"></div> Online
+			</div>
+		</td>
+		<td class="px-6 py-4">
+			<a href="#" class="font-medium text-sky-600 dark:text-sky-500 hover:underline">Edit user</a>
+		</td>
+	</tr>
+}
+
 templ ChainStatusList() {
 	<div class="col-span-1 space-y-4">
-        <div class="w-full max-w-md p-4 bg-white border border-stone-200 rounded-lg shadow sm:p-8 dark:bg-stone-900 dark:border-stone-700">
-            <div class="flex items-center justify-between mb-4">
-                <h5 class="text-xl font-bold leading-none text-stone-900 dark:text-white">Latest Customers</h5>
-                <a href="#" class="text-sm font-medium text-sky-600 hover:underline dark:text-sky-500">
-                    View all
-                </a>
-        </div>
-        <div class="flow-root">
-                <ul role="list" class="divide-y divide-stone-200 dark:divide-stone-700">
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image" />
-                            </div>
-                            <div class="flex-1 min-w-0 ms-4">
-                                <p class="text-sm font-medium text-stone-900 truncate dark:text-white">
-                                    Neil Sims
-                                </p>
-                                <p class="text-sm text-stone-500 truncate dark:text-stone-400">
-                                    email@windster.com
-                                </p>
-                            </div>
-                            <div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
-                                $320
-                            </div>
-                        </div>
-                    </li>
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center ">
-                            <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" />
-                            </div>
-                            <div class="flex-1 min-w-0 ms-4">
-                                <p class="text-sm font-medium text-stone-900 truncate dark:text-white">
-                                    Bonnie Green
-                                </p>
-                                <p class="text-sm text-stone-500 truncate dark:text-stone-400">
-                                    email@windster.com
-                                </p>
-                            </div>
-                            <div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
-                                $3467
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="w-full max-w-md p-4 bg-white border border-stone-200 rounded-lg shadow sm:p-8 dark:bg-stone-900 dark:border-stone-700">
-            <div class="flex items-center justify-between mb-4">
-                <h5 class="text-xl font-bold leading-none text-stone-900 dark:text-white">Latest Customers</h5>
-                <a href="#" class="text-sm font-medium text-sky-600 hover:underline dark:text-sky-500">
-                    View all
-                </a>
-        </div>
-        <div class="flow-root">
-                <ul role="list" class="divide-y divide-stone-200 dark:divide-stone-700">
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image" />
-                            </div>
-                            <div class="flex-1 min-w-0 ms-4">
-                                <p class="text-sm font-medium text-stone-900 truncate dark:text-white">
-                                    Neil Sims
-                                </p>
-                                <p class="text-sm text-stone-500 truncate dark:text-stone-400">
-                                    email@windster.com
-                                </p>
-                            </div>
-                            <div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
-                                $320
-                            </div>
-                        </div>
-                    </li>
-                    <li class="py-3 sm:py-4">
-                        <div class="flex items-center ">
-                            <div class="flex-shrink-0">
-                                <img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image" />
-                            </div>
-                            <div class="flex-1 min-w-0 ms-4">
-                                <p class="text-sm font-medium text-stone-900 truncate dark:text-white">
-                                    Bonnie Green
-                                </p>
-                                <p class="text-sm text-stone-500 truncate dark:text-stone-400">
-                                    email@windster.com
-                                </p>
-                            </div>
-                            <div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
-                                $3467
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-        </div>
+		<div class="w-full max-w-md p-4 bg-white border border-stone-200 rounded-lg shadow sm:p-8 dark:bg-stone-900 dark:border-stone-700">
+			<div class="flex items-center justify-between mb-4">
+				<h5 class="text-xl font-bold leading-none text-stone-900 dark:text-white">Latest Customers</h5>
+				<a href="#" class="text-sm font-medium text-sky-600 hover:underline dark:text-sky-500">
+					View all
+				</a>
+			</div>
+			<div class="flow-root">
+				<ul role="list" class="divide-y divide-stone-200 dark:divide-stone-700">
+					<li class="py-3 sm:py-4">
+						<div class="flex items-center">
+							<div class="flex-shrink-0">
+								<img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-1.jpg" alt="Neil image"/>
+							</div>
+							<div class="flex-1 min-w-0 ms-4">
+								<p class="text-sm font-medium text-stone-900 truncate dark:text-white">
+									Neil Sims
+								</p>
+								<p class="text-sm text-stone-500 truncate dark:text-stone-400">
+									email@windster.com
+								</p>
+							</div>
+							<div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
+								$320
+							</div>
+						</div>
+					</li>
+					<li class="py-3 sm:py-4">
+						<div class="flex items-center ">
+							<div class="flex-shrink-0">
+								<img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image"/>
+							</div>
+							<div class="flex-1 min-w-0 ms-4">
+								<p class="text-sm font-medium text-stone-900 truncate dark:text-white">
+									Bonnie Green
+								</p>
+								<p class="text-sm text-stone-500 truncate dark:text-stone-400">
+									email@windster.com
+								</p>
+							</div>
+							<div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
+								$3467
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="w-full max-w-md p-4 bg-white border border-stone-200 rounded-lg shadow sm:p-8 dark:bg-stone-900 dark:border-stone-700">
+			<div class="flex items-center justify-between mb-4">
+				<h5 class="text-xl font-bold leading-none text-stone-900 dark:text-white">Latest Customers</h5>
+				<a href="#" class="text-sm font-medium text-sky-600 hover:underline dark:text-sky-500">
+					View all
+				</a>
+			</div>
+			<div class="flow-root">
+				<ul role="list" class="divide-y divide-stone-200 dark:divide-stone-700">
+					<li class="py-3 sm:py-4">
+						<div class="flex items-center ">
+							<div class="flex-shrink-0">
+								<img class="w-8 h-8 rounded-full" src="/docs/images/people/profile-picture-3.jpg" alt="Bonnie image"/>
+							</div>
+							<div class="flex-1 min-w-0 ms-4">
+								<p class="text-sm font-medium text-stone-900 truncate dark:text-white">
+									Bonnie Green
+								</p>
+								<p class="text-sm text-stone-500 truncate dark:text-stone-400">
+									email@windster.com
+								</p>
+							</div>
+							<div class="inline-flex items-center text-base font-semibold text-stone-900 dark:text-white">
+								$3467
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+		</div>
 	</div>
 }

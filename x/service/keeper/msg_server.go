@@ -44,7 +44,7 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *service.MsgUpdatePara
 // CreateRecord params is defining the handler for the MsgCreateRecord message.
 func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateRecord) (*service.MsgCreateRecordResponse, error) {
 	// Get permissions from int32
-	if msg.Owner == "" {
+	if msg.Authority == "" {
 		return nil, fmt.Errorf("owner cannot be empty")
 	}
 
@@ -60,7 +60,7 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Controller:  msg.Owner,
+		Controller:  msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -78,15 +78,15 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 	if rec == nil {
 		return nil, fmt.Errorf("record does not exist")
 	}
-	if rec.Controller != msg.Owner {
-		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Owner, rec.Controller)
+	if rec.Controller != msg.Authority {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Controller)
 	}
 	err = ms.k.db.ServiceRecordTable().Update(ctx, &modulev1.ServiceRecord{
 		Id:          msg.RecordId,
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Controller:  msg.Owner,
+		Controller:  msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -104,8 +104,8 @@ func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteReco
 	if rec == nil {
 		return nil, fmt.Errorf("record does not exist")
 	}
-	if rec.Controller != msg.Owner {
-		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Owner, rec.Controller)
+	if rec.Controller != msg.Authority {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Controller)
 	}
 
 	if err := ms.k.db.ServiceRecordTable().Delete(ctx, rec); err != nil {

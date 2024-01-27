@@ -32,7 +32,7 @@ message MsgCreateRecord {
   option (amino.name) = "sonrhq/service/MsgCreateRecord";
 
   // owner is the address of the owner of the record
-  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // name is the name of the record
   string name = 2;
@@ -56,7 +56,7 @@ message MsgUpdateRecord {
   option (amino.name) = "sonrhq/service/MsgUpdateRecord";
 
   // owner is the address of the owner of the record
-  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // record_id is the id of the record to update
   uint64 record_id = 2;
@@ -83,7 +83,7 @@ message MsgDeleteRecord {
   option (amino.name) = "sonrhq/service/MsgDeleteRecord";
 
   // owner is the address of the owner of the record
-  string owner = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
   // record_id is the id of the record to delete
   uint64 record_id = 2;

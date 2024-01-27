@@ -13,10 +13,6 @@ func Start() {
 	r := chi.NewRouter()
 	middleware.UseDefaults(r)
 	r.Use(middleware.Session)
-
-	r.Mount(routes.LandingEndpoints())
-	r.Mount(routes.ConsoleEndpoints())
-	r.Mount(routes.APIEndpoints())
-	r.Mount(routes.SSEEndpoints())
+	routes.Mount(r)
 	http.ListenAndServe(":8080", r)
 }
