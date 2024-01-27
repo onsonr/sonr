@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/orm/model/ormdb"
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/pkg/vault"
 	"github.com/sonrhq/sonr/x/identity"
 )

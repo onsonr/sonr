@@ -3,7 +3,7 @@ package module
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 
-	servicev1 "github.com/sonrhq/sonr/api/service/v1"
+	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

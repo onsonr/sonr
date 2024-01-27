@@ -50,8 +50,8 @@ modules:
       "@type": cosmos.tx.config.v1.Config
   - name: identity
     config:
-      "@type": sonr.identity.module.v1.Module
+      "@type": sonrhq.sonr.identity.module.v1.Module
   - name: service
     config:
-      "@type": sonr.service.module.v1.Module
+      "@type": sonrhq.sonr.service.module.v1.Module
 

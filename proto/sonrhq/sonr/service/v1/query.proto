@@ -1,0 +1,56 @@
+syntax = "proto3";
+package sonrhq.sonr.service.v1;
+
+option go_package = "github.com/sonrhq/sonr/x/service";
+import "sonrhq/sonr/service/v1/types.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  // Params returns the module parameters.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/sonrhq/service/v1/params";
+  }
+
+  // Credentials queries the credentials of a service.
+  rpc Credentials(QueryCredentialsRequest) returns (QueryCredentialsResponse) {
+    option (google.api.http).get = "/sonrhq/service/v1/credentials/{origin}/{identifier}";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryCredentialsRequest is the request type for the Query/Credentials RPC method.
+message QueryCredentialsRequest {
+  // address is the address of the credentials to query.
+  string origin = 1;
+
+  // identifier is the owner of the credentials to query.
+  string identifier = 2;
+
+  // type is the type of the credentials to query.
+  ParamsType params_type = 3;
+}
+
+// QueryCredentialsResponse is the response type for the Query/Credentials RPC method.
+message QueryCredentialsResponse {
+  // attestation_options is the attestation options of the credentials.
+  string attestation_options = 1;
+
+  // assertion_options is the assertion options of the credentials.
+  string assertion_options = 2;
+
+  // origin is the service record of the origin of the credentials.
+  string origin = 3;
+}
+

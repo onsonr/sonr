@@ -5,10 +5,10 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	"github.com/sonrhq/sonr/crypto/core/curves"
-	"github.com/sonrhq/sonr/crypto/core/protocol"
-	"github.com/sonrhq/sonr/crypto/signatures/ecdsa"
-	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
+	"github.com/sonrhq/sonr/pkg/crypto/core/curves"
+	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
+	"github.com/sonrhq/sonr/pkg/crypto/signatures/ecdsa"
+	"github.com/sonrhq/sonr/pkg/crypto/tecdsa/dklsv1"
 )
 
 // K_DEFAULT_MPC_CURVE is the default curve for the controller.

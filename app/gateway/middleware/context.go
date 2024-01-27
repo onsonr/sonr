@@ -12,8 +12,8 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 
-	identityv1 "github.com/sonrhq/sonr/api/identity/v1"
-	servicev1 "github.com/sonrhq/sonr/api/service/v1"
+	identityv1 "github.com/sonrhq/sonr/api/sonr/identity/v1"
+	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
 )
 
 func Context(next http.Handler) http.Handler {

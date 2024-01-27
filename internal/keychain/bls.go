@@ -7,8 +7,8 @@ import (
 
 	"github.com/mr-tron/base58"
 
-	"github.com/sonrhq/sonr/crypto/accumulator"
-	"github.com/sonrhq/sonr/crypto/core/curves"
+	"github.com/sonrhq/sonr/pkg/crypto/accumulator"
+	"github.com/sonrhq/sonr/pkg/crypto/core/curves"
 )
 
 // SecretKey is the secret key for the BLS scheme

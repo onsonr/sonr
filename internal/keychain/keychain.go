@@ -8,9 +8,9 @@ import (
 
 	"github.com/ipfs/boxo/files"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
-	"github.com/sonrhq/sonr/crypto/core/protocol"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/shares"
+	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
 	"github.com/sonrhq/sonr/pkg/did"
 )
 

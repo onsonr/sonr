@@ -6,9 +6,9 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	"github.com/sonrhq/sonr/crypto/core/curves"
-	"github.com/sonrhq/sonr/crypto/core/protocol"
-	"github.com/sonrhq/sonr/crypto/tecdsa/dklsv1"
+	"github.com/sonrhq/sonr/pkg/crypto/core/curves"
+	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
+	"github.com/sonrhq/sonr/pkg/crypto/tecdsa/dklsv1"
 )
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

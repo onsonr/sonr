@@ -87,7 +87,7 @@ generate:
     FROM +deps
     COPY . .
     RUN sh ./scripts/protogen-orm.sh
-    SAVE ARTIFACT sonr AS LOCAL api
+    SAVE ARTIFACT sonrhq AS LOCAL api
     SAVE ARTIFACT proto AS LOCAL proto
     LOCALLY
     RUN templ generate

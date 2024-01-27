@@ -5,7 +5,7 @@ import (
 
 	"github.com/okx/go-wallet-sdk/coins/cosmos"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 )
 
 func GetAddressByPublicKey(pubKey []byte, coinType modulev1.CoinType) (string, error) {

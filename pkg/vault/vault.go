@@ -6,7 +6,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/keychain"
 )
 
