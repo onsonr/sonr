@@ -29,7 +29,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/crypto v0.17.0
+	golang.org/x/crypto v0.18.0
 	google.golang.org/protobuf v1.31.0
 )
 
@@ -54,6 +54,7 @@ require (
 	github.com/ipfs/kubo v0.25.0
 	github.com/okx/go-wallet-sdk/coins/cosmos v0.0.0-20231215072905-c7160519f225
 	github.com/wailsapp/wails/v2 v2.7.1
+	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 )
 
@@ -276,12 +277,12 @@ require (
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.16.0 // indirect
+	golang.org/x/tools v0.17.0 // indirect
 	gonum.org/v1/gonum v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231030173426-d783a09b4405 // indirect
