@@ -1,12 +1,12 @@
-package gateway
+package highway
 
 import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/app/gateway/middleware"
-	"github.com/sonrhq/sonr/app/gateway/routes"
+	"github.com/sonrhq/sonr/app/highway/middleware"
+	"github.com/sonrhq/sonr/app/highway/routes"
 )
 
 func Start() {

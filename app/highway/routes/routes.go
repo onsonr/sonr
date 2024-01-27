@@ -3,8 +3,8 @@ package routes
 import (
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/app/gateway/handlers/htmx"
-	modulesapi "github.com/sonrhq/sonr/app/gateway/handlers/modules"
+	"github.com/sonrhq/sonr/app/highway/handlers/htmx"
+	modulesapi "github.com/sonrhq/sonr/app/highway/handlers/modules"
 )
 
 // Mount all routes to the router

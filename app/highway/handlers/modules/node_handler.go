@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/app/gateway/middleware"
+	"github.com/sonrhq/sonr/app/highway/middleware"
 )
 
 type NodeHandler struct{}

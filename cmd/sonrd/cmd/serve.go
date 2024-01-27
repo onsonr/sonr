@@ -5,7 +5,7 @@ import (
 	"github.com/spf13/cobra"
 
 	// _ "github.com/sonrhq/sonr/config"
-	"github.com/sonrhq/sonr/app/gateway"
+	"github.com/sonrhq/sonr/app/highway"
 )
 
 func ServeCommand() *cobra.Command {
@@ -27,7 +27,7 @@ func serveGateway(_ *cobra.Command, _ []string) {
 	// 3. Start Gateway router as system service
 
 	pterm.DefaultHeader.Printf(persistentHeader)
-	gateway.Start()
+	highway.Start()
 }
 
 const persistentHeader = `

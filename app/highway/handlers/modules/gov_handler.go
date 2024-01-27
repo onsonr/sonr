@@ -8,7 +8,7 @@ import (
 	govv1 "cosmossdk.io/api/cosmos/gov/v1"
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/app/gateway/middleware"
+	"github.com/sonrhq/sonr/app/highway/middleware"
 )
 
 type GovHandler struct{}

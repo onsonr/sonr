@@ -11,8 +11,8 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/app/gateway/ui/components"
-	"github.com/sonrhq/sonr/app/gateway/ui/shared"
+	"github.com/sonrhq/sonr/app/highway/ui/components"
+	"github.com/sonrhq/sonr/app/highway/ui/shared"
 )
 
 func ConsoleHome() templ.Component {

@@ -3,7 +3,7 @@ package htmx
 import (
 	"net/http"
 
-	"github.com/sonrhq/sonr/app/gateway/ui/views"
+	"github.com/sonrhq/sonr/app/highway/ui/views"
 )
 
 type ConsoleHandler struct{}

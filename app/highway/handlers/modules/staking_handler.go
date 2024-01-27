@@ -8,7 +8,7 @@ import (
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
 	"github.com/go-chi/chi/v5"
 
-	"github.com/sonrhq/sonr/app/gateway/middleware"
+	"github.com/sonrhq/sonr/app/highway/middleware"
 )
 
 type StakingHandler struct{}
