@@ -9,8 +9,10 @@ import (
 )
 
 const (
-	CoinUnit = "sonr"
+	// CoinUnit is the coin unit
+	CoinUnit = "usnr"
 
+	// DefaultBondDenom is the default bond denom
 	DefaultBondDenom = CoinUnit
 
 	// Bech32PrefixAccAddr defines the Bech32 prefix of an account's address.
@@ -35,6 +37,7 @@ func init() {
 	RegisterDenoms()
 }
 
+// RegisterDenoms registers the coin unit
 func RegisterDenoms() {
 	err := sdk.RegisterDenom(CoinUnit, math.LegacyOneDec())
 	if err != nil {
@@ -42,6 +45,7 @@ func RegisterDenoms() {
 	}
 }
 
+// SetAddressPrefixes sets the address prefixes
 func SetAddressPrefixes() {
 	config := sdk.GetConfig()
 	config.SetBech32PrefixForAccount(Bech32PrefixAccAddr, Bech32PrefixAccPub)

@@ -17,6 +17,7 @@ func UseDefaults(r *chi.Mux) {
 	r.Use(chimdw.Recoverer)
 }
 
+// Session wraps the provided http.Handler with a SessionMiddleware instance.
 func Session(next http.Handler) http.Handler {
 	mw := SessionMiddleware{
 		Next:     next,
@@ -26,12 +27,14 @@ func Session(next http.Handler) http.Handler {
 	return mw
 }
 
+// SessionMiddleware defines a middleware with context helpers like secure, HTTPOnly flags.
 type SessionMiddleware struct {
 	Next     http.Handler
 	Secure   bool
 	HTTPOnly bool
 }
 
+// SessionID returns the address of the user from the session cookie.
 func SessionID(r *http.Request) (id string) {
 	cookie, err := r.Cookie("sessionID")
 	if err != nil {
@@ -40,6 +43,7 @@ func SessionID(r *http.Request) (id string) {
 	return cookie.Value
 }
 
+// ServeHTTP implements the http.Handler interface.
 func (mw SessionMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// s := sse.NewServer(nil)
 	// defer s.Shutdown()

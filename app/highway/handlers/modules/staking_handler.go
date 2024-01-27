@@ -11,8 +11,10 @@ import (
 	"github.com/sonrhq/sonr/app/highway/middleware"
 )
 
+// StakingHandler is a handler for the staking module
 type StakingHandler struct{}
 
+// GetDelegation returns a delegation
 func (h StakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
@@ -32,6 +34,7 @@ func (h StakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
 	w.Write(rBz)
 }
 
+// GetUnbondingDelegation returns an unbonding delegation
 func (h StakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
@@ -51,6 +54,7 @@ func (h StakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Re
 	w.Write(rBz)
 }
 
+// GetDelegatorDelegations returns all delegations for a delegator
 func (h StakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorDelegations(r.Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
@@ -68,6 +72,7 @@ func (h StakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.R
 	w.Write(rBz)
 }
 
+// GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
 func (h StakingHandler) GetDelegatorUnbondingDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorUnbondingDelegations(r.Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
@@ -85,6 +90,7 @@ func (h StakingHandler) GetDelegatorUnbondingDelegations(w http.ResponseWriter, 
 	w.Write(rBz)
 }
 
+// GetRedelegations returns all redelegations for a delegator
 func (h StakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	srcValidatorAddr := chi.URLParam(r, "srcValidatorAddr")
@@ -106,6 +112,7 @@ func (h StakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request)
 	w.Write(rBz)
 }
 
+// GetValidator returns a validator
 func (h StakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Validator(r.Context(), &stakingv1beta1.QueryValidatorRequest{
@@ -123,6 +130,7 @@ func (h StakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
 	w.Write(rBz)
 }
 
+// GetValidators returns all validators
 func (h StakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Validators(r.Context(), &stakingv1beta1.QueryValidatorsRequest{})
 	if err != nil {
@@ -137,6 +145,7 @@ func (h StakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
 	w.Write(rBz)
 }
 
+// GetValidatorDelegations returns all delegations for a validator
 func (h StakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).ValidatorDelegations(r.Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
@@ -154,6 +163,7 @@ func (h StakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.R
 	w.Write(rBz)
 }
 
+// GetDelegatorValidators returns all validators for a delegator
 func (h StakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorValidators(r.Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
@@ -171,6 +181,7 @@ func (h StakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Re
 	w.Write(rBz)
 }
 
+// GetHistoricalInfo returns historical info
 func (h StakingHandler) GetHistoricalInfo(w http.ResponseWriter, r *http.Request) {
 	heightStr := chi.URLParam(r, "height")
 	height, _ := strconv.ParseInt(heightStr, 10, 64)

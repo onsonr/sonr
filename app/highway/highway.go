@@ -9,6 +9,7 @@ import (
 	"github.com/sonrhq/sonr/app/highway/routes"
 )
 
+// Start starts the highway server
 func Start() {
 	r := chi.NewRouter()
 	middleware.UseDefaults(r)
