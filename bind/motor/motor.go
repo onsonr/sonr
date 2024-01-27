@@ -1,6 +1,3 @@
-//go:build motor
-// +build motor
-
 package motor
 
 import (
