@@ -1,0 +1,183 @@
+{
+  "name": "Sonr Docs",
+  "logo": {
+    "light": "/static/images/logo.svg",
+    "dark": "/static/images/logo-dark.svg"
+  },
+  "favicon": "/static/images/favicon.png",
+  "api": {
+    "baseUrl": "http://159.65.236.177:1317"
+  },
+  "colors": {
+    "primary": "#1792FF",
+    "light": "#1792FF",
+    "dark": "#1792FF",
+    "ultraLight": "#DEDDE4",
+    "ultraDark": "#4F4A60",
+    "background": {
+      "dark": "#0E0C14"
+    },
+    "anchors": {
+      "from": "#1792FF",
+      "to": "#0053B5"
+    }
+  },
+  "topbarCtaButton": {
+    "type": "github",
+    "url": "https://github.com/sonrhq/sonr"
+  },
+  "anchors": [
+    {
+      "name": "Community",
+      "icon": "discord",
+      "url": "https://snr.la/dev-chat"
+    },
+    {
+      "name": "Research",
+      "icon": "microscope",
+      "url": "https://snr.la/research"
+    },
+    {
+      "name": "GitHub",
+      "icon": "github",
+      "url": "https://snr.la/gh"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "Learn the Basics",
+      "pages": [
+        "introduction/welcome",
+        "introduction/technology",
+        "introduction/faq"
+      ]
+    },
+    {
+      "group": "Build Apps",
+      "pages": [
+        "build-apps/quick-start",
+        {
+          "group": "Installation",
+          "pages": [
+            "build-apps/install/flutter",
+            "build-apps/install/typescript"
+          ]
+        },
+        {
+          "group": "Usage Guides",
+          "pages": [
+            "build-apps/guides/did-method",
+            "build-apps/guides/creating-accounts"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Run Nodes",
+      "pages": [
+        "run-nodes/blockchain",
+        {
+          "group": "Setup Locally",
+          "pages": [
+            "run-nodes/local/initialization",
+            "run-nodes/local/configure-validator"
+          ]
+        },
+        {
+          "group": "Token Economics",
+          "pages": [
+            "run-nodes/token/design",
+            {
+              "group": "Fundamentals",
+              "pages": [
+                "run-nodes/token/fundamentals/payments",
+                "run-nodes/token/fundamentals/staking",
+                "run-nodes/token/fundamentals/governance",
+                "run-nodes/token/fundamentals/rewards"
+              ]
+            },
+            "run-nodes/token/supply"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        {
+          "group": "Accounts",
+          "pages": [
+            "api-reference/accounts/overview",
+            "api-reference/accounts/api/1",
+            "api-reference/accounts/api/2",
+            "api-reference/accounts/api/3"
+          ]
+        },
+        {
+          "group": "Bank",
+          "pages": [
+            "api-reference/bank/overview",
+            "api-reference/bank/api/1",
+            "api-reference/bank/api/2",
+            "api-reference/bank/api/3",
+            "api-reference/bank/api/4",
+            "api-reference/bank/api/5",
+            "api-reference/bank/api/6"
+          ]
+        },
+        {
+          "group": "Identity",
+          "pages": [
+            "api-reference/identity/overview",
+            "api-reference/identity/api/1",
+            "api-reference/identity/api/2",
+            "api-reference/identity/api/3",
+            "api-reference/identity/api/4",
+            "api-reference/identity/api/5",
+            "api-reference/identity/api/6",
+            "api-reference/identity/api/7",
+            "api-reference/identity/api/8",
+            {
+              "group": "WebAuthn API",
+              "pages": [
+                "api-reference/identity/api/9",
+                "api-reference/identity/api/10",
+                "api-reference/identity/api/11",
+                "api-reference/identity/api/12"
+              ]
+            }
+          ]
+        },
+        {
+          "group": "Tendermint",
+          "pages": [
+            "api-reference/tendermint/overview",
+            "api-reference/tendermint/api/1",
+            "api-reference/tendermint/api/2",
+            "api-reference/tendermint/api/3",
+            "api-reference/tendermint/api/4",
+            "api-reference/tendermint/api/5",
+            "api-reference/tendermint/api/6",
+            "api-reference/tendermint/api/9",
+            "api-reference/tendermint/api/10",
+            "api-reference/tendermint/api/7",
+            "api-reference/tendermint/api/8"
+          ]
+        }
+      ]
+    }
+  ],
+  "footerSocials": {
+    "discord": "https://snr.la/dev-chat",
+    "github": "https://snr.la/gh-sonr",
+    "twitter": "https://snr.la/tw",
+    "youtube": "https://snr.la/yt",
+    "website": "https://snr.la/h"
+  },
+  "backgroundImage": "/static/images/background.png",
+  "analytics": {
+    "ga4": {
+      "measurementId": "G-FY0WZBSGH8"
+    }
+  }
+}
