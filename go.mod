@@ -49,6 +49,8 @@ require (
 )
 
 require (
+	github.com/ecies/go/v2 v2.0.9
+	github.com/ethereum/go-ethereum v1.13.5
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/ipfs/boxo v0.16.0
 	github.com/ipfs/kubo v0.25.0
@@ -56,6 +58,7 @@ require (
 	github.com/wailsapp/wails/v2 v2.7.1
 	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
+	lukechampine.com/blake3 v1.2.1
 )
 
 require (
@@ -104,9 +107,7 @@ require (
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
-	github.com/ecies/go/v2 v2.0.9 // indirect
 	github.com/emicklei/dot v1.6.0 // indirect
-	github.com/ethereum/go-ethereum v1.13.5 // indirect
 	github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
@@ -291,7 +292,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.1 // indirect
-	lukechampine.com/blake3 v1.2.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 	pgregory.net/rapid v1.1.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect

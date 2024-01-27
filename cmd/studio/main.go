@@ -5,7 +5,7 @@ import (
 
 	"github.com/wailsapp/wails/v2"
 
-	"github.com/sonrhq/sonr/internal/desktop"
+	desktop "github.com/sonrhq/sonr/config/studio"
 )
 
 func main() {
