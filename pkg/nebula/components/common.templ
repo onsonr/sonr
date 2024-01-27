@@ -17,3 +17,11 @@ templ Head() {
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.css" rel="stylesheet"/>
 	</head>
 }
+
+
+templ Toast(msg string) {
+  <sl-alert variant="primary" duration="3000" closable>
+    <sl-icon slot="icon" name="info-circle"></sl-icon>
+    {msg}
+  </sl-alert>
+}

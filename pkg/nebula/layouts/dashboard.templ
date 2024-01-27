@@ -1,1 +1,129 @@
 package layouts
+
+import "github.com/sonrhq/sonr/pkg/nebula/components"
+
+
+templ consoleHeader() {
+	<nav class="max-w-screen h-16">
+		<div class="w-full relative flex flex-row items-center justify-between">
+			<div class="relative left-6">
+				<sl-breadcrumb class="text-xl font-medium text-stone-100 px-0.5">
+					<span slot="separator" class="text-lg font-medium">/</span>
+					<sl-breadcrumb-item><img class="h-8 w-auto pr-2.5" src="https://cdn.sonr.io/mark/primary.svg" alt="Sonr Logo"/></sl-breadcrumb-item>
+					<sl-breadcrumb-item>
+						<sl-dropdown>
+							<sl-tag size="medium" slot="trigger" class="font-mono" pill>idx12345abcdef</sl-tag>
+							<sl-menu class="bg-stone-900 rounded-md">
+								<sl-menu-item>Dropdown Item 1</sl-menu-item>
+								<sl-menu-item>Dropdown Item 2</sl-menu-item>
+								<sl-menu-item>Dropdown Item 3</sl-menu-item>
+								<sl-divider></sl-divider>
+								<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
+							</sl-menu>
+						</sl-dropdown>
+					</sl-breadcrumb-item>
+				</sl-breadcrumb>
+			</div>
+			<div class="relative right-8">
+				<sl-dropdown>
+					<sl-avatar class="w-8 h-8" alt="Your avatar" src="https://images.unsplash.com/" slot="trigger"></sl-avatar>
+					<sl-menu class="bg-stone-900 rounded-md">
+						<sl-menu-item>Dropdown Item 1</sl-menu-item>
+						<sl-menu-item>Dropdown Item 2</sl-menu-item>
+						<sl-menu-item>Dropdown Item 3</sl-menu-item>
+						<sl-divider></sl-divider>
+						<sl-menu-item href="/">
+							Return Home
+							<sl-icon slot="prefix" name="house-door-fill"></sl-icon>
+						</sl-menu-item>
+					</sl-menu>
+				</sl-dropdown>
+			</div>
+		</div>
+	</nav>
+}
+templ balancesHeader() {
+	<div class="md:flex md:items-center md:justify-between py-16 max-w-7xl h-full mx-auto">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-2xl font-bold leading-7 text-stone-100 sm:truncate sm:text-3xl sm:tracking-tight">Balances</h2>
+		</div>
+		<div class="mt-4 flex md:ml-4 md:mt-0">
+			<button type="button" class="ml-3 inline-flex items-center rounded-md bg-stone-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600">Deposit</button>
+		</div>
+	</div>
+}
+
+templ historyHeader() {
+	<div class="md:flex md:items-center md:justify-between py-16 w-full h-full">
+		<div class="min-w-0 flex-1">
+			<h2 class="text-2xl font-bold leading-7 text-stone-100 sm:truncate sm:text-3xl sm:tracking-tight">History</h2>
+		</div>
+		<div class="mt-4 flex md:ml-4 md:mt-0">
+			<button type="button" class="inline-flex items-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-stone-900 shadow-sm ring-1 ring-inset ring-stone-300 hover:bg-stone-50">Edit</button>
+			<button type="button" class="ml-3 inline-flex items-center rounded-md bg-stone-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-600">Publish</button>
+		</div>
+	</div>
+}
+
+
+templ consoleAssetsPanel() {
+	@balancesHeader()
+	<sl-divider></sl-divider>
+	<div class="max-w-7xl mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch py-12 scrollbar-hide">
+		@components.BalancesTable()
+		@components.ChainStatusList()
+	</div>
+}
+
+templ consoleHistoryPanel() {
+	<div class="w-full h-full max-w-screen px-8 space-y-4">
+		@historyHeader()
+		<div class="flex flex-col pt-4 space-y-2">
+			<div class="flex shrink-0 h-full w-80 border-r-3 border-stone-400">
+				Filter:
+			</div>
+		</div>
+	</div>
+}
+
+
+templ consoleOverviewPanel() {
+	<div class="max-w-7xl mx-auto grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 items-stretch py-12 scrollbar-hide">
+		@components.FavoriteAccountsTable()
+		@components.OverviewAreaChart()
+		@components.PortfolioPieChart()
+		@components.ActivityBarChart()
+	</div>
+}
+
+templ consoleTabBar() {
+	<sl-tab-group size="small" class="py-1 sticky-top">
+		<sl-tab class="text-md" slot="nav" panel="overview">Overview</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="balances">Balances</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="history">History</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="identity" disabled>Identity</sl-tab>
+		<sl-tab class="text-md" slot="nav" panel="service" disabled>Services</sl-tab>
+		<sl-tab-panel name="overview">
+			@consoleOverviewPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="balances">
+			@consoleAssetsPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="history">
+			@consoleHistoryPanel()
+		</sl-tab-panel>
+		<sl-tab-panel name="identity">This is a disabled tab panel.</sl-tab-panel>
+		<sl-tab-panel name="service">This is a disabled tab panel.</sl-tab-panel>
+	</sl-tab-group>
+}
+
+templ ConsoleHome() {
+	<html class="sl-theme-dark">
+		@components.Head()
+		<body hx-ext="shoelace" class="theme-dark scrollbar-hide">
+			@consoleHeader()
+			@consoleTabBar()
+			<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.1/flowbite.min.js"></script>
+		</body>
+	</html>
+}

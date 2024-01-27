@@ -24,8 +24,8 @@ func consoleEndpoints() (string, chi.Router) {
 
 func walletEndpoints() (string, chi.Router) {
 	r := chi.NewRouter()
-	dashHandler := htmx.WalletHandler{}
-	r.Get("/", dashHandler.IndexPage)
+	// dashHandler := htmx.WalletHandler{}
+	// r.Get("/", dashHandler.IndexPage)
 	return "/wallet", r
 }
 
