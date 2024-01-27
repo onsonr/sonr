@@ -1,4 +1,4 @@
-package keychain_test
+package wallet_test
 
 import (
 	"context"
@@ -6,18 +6,18 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/sonr/internal/keychain"
+	"github.com/sonrhq/sonr/internal/wallet"
 )
 
 func TestNewKeychain(t *testing.T) {
-	kc, err := keychain.New(context.Background())
+	kc, err := wallet.New(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, kc.Address)
 }
 
 func BenchmarkNewKeychain(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		kc, err := keychain.New(context.Background())
+		kc, err := wallet.New(context.Background())
 		if err != nil {
 			b.Fail()
 		}

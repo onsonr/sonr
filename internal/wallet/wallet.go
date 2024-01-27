@@ -1,4 +1,4 @@
-package keychain
+package wallet
 
 import (
 	"context"
@@ -14,9 +14,9 @@ import (
 	"github.com/sonrhq/sonr/pkg/did"
 )
 
-// Keychain is a local temp file system which spawns shares as proto actors
-type Keychain struct {
-	Wallets   []*modulev1.Account
+// Wallet is a local temp file system which spawns shares as proto actors
+type Wallet struct {
+	Accounts  []*modulev1.Account
 	Address   string
 	PublicKey []byte
 	Directory files.Directory
@@ -25,7 +25,7 @@ type Keychain struct {
 // New takes request context and root directory and returns a new Keychain
 // 1. It requires an initial credential id to be passed as a value within the accumulator object
 
-func New(ctx context.Context) (*Keychain, error) {
+func New(ctx context.Context) (*Wallet, error) {
 	pub, aliceOut, bobOut, err := kss.Generate()
 	if err != nil {
 		return nil, err
@@ -39,7 +39,7 @@ func New(ctx context.Context) (*Keychain, error) {
 	if err != nil {
 		return nil, err
 	}
-	kc := &Keychain{
+	kc := &Wallet{
 		Address:   addr,
 		PublicKey: pub,
 		Directory: dir,

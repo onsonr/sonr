@@ -7,12 +7,12 @@ import (
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	snrctx "github.com/sonrhq/sonr/internal/context"
-	"github.com/sonrhq/sonr/internal/keychain"
+	"github.com/sonrhq/sonr/internal/wallet"
 )
 
 func NewController(ctx context.Context) (*modulev1.Controller, error) {
 	c := snrctx.GetIpfsClient()
-	kc, err := keychain.New(ctx)
+	kc, err := wallet.New(ctx)
 	if err != nil {
 		return nil, err
 	}
