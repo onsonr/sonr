@@ -9,7 +9,7 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
-	"github.com/sonrhq/sonr/internal/shares"
+	"github.com/sonrhq/sonr/internal/kss"
 	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
 	"github.com/sonrhq/sonr/pkg/did"
 )
@@ -26,7 +26,7 @@ type Keychain struct {
 // 1. It requires an initial credential id to be passed as a value within the accumulator object
 
 func New(ctx context.Context) (*Keychain, error) {
-	pub, aliceOut, bobOut, err := shares.Generate()
+	pub, aliceOut, bobOut, err := kss.Generate()
 	if err != nil {
 		return nil, err
 	}
