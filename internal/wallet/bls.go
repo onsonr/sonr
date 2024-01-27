@@ -1,4 +1,4 @@
-package keychain
+package wallet
 
 import (
 	"encoding/hex"

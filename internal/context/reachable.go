@@ -1,4 +1,4 @@
-package netutil
+package snrctx
 
 import (
 	"fmt"

@@ -1,16 +1,16 @@
-package keychain_test
+package wallet_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/sonrhq/sonr/internal/keychain"
+	"github.com/sonrhq/sonr/internal/wallet"
 )
 
 func TestAccumulatorWitness(t *testing.T) {
 	// Create a new accumulator
-	secKey, err := keychain.NewSecretKey(keychain.RandomSeed())
+	secKey, err := wallet.NewSecretKey(wallet.RandomSeed())
 	require.NoError(t, err)
 	pubKey, err := secKey.PublicKey()
 	require.NoError(t, err)
