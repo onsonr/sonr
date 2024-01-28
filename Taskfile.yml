@@ -60,3 +60,13 @@ tasks:
      - "dxn"
    cmds:
      - task: deploy:local-node
+
+  gen-changelog:
+    vars:
+      VERSION:
+        sh: git describe --tags $(git rev-list --tags --max-count=1 | tail -n 1)
+      PREVIOUS_VERSION:
+        sh: git describe --tags $(git rev-list --tags --max-count=2 | tail -n 1)
+      PROMPT: "Create a short technical changelog only describing the changes that are relevant to the end user based off the changes between the last two tags. Categorize by Feature, Improvement, Clean Up, and Bug Fix."
+    cmds:
+      - git log {{.PREVIOUS_VERSION}}...{{.VERSION}} | mods {{.PROMPT}} -f | tee RELEASE_NOTES.md
