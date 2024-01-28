@@ -1,6 +1,11 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 
 project_name: sonrd
+before:
+  # Templates for the commands to be ran.
+  hooks:
+    - task gen-changelog
+
 builds:
   # Build Sonr Daemon
   - id: sonrd
@@ -98,3 +103,8 @@ changelog:
     - title: Others
       order: 999
 
+nightly:
+  name_template: 'nightly-{{ .Now.Format "2006-01-02" }}'
+  tag_name: nightly
+  publish_release: true
+  keep_single_release: true
