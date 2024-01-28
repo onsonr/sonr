@@ -10,14 +10,14 @@ import (
 )
 
 func TestNewKeychain(t *testing.T) {
-	kc, err := wallet.New(context.Background())
+	_, kc, err := wallet.New(context.Background())
 	require.NoError(t, err)
 	require.NotEmpty(t, kc.Address)
 }
 
 func BenchmarkNewKeychain(b *testing.B) {
 	for i := 0; i < b.N; i++ {
-		kc, err := wallet.New(context.Background())
+		_, kc, err := wallet.New(context.Background())
 		if err != nil {
 			b.Fail()
 		}
@@ -25,4 +25,19 @@ func BenchmarkNewKeychain(b *testing.B) {
 			b.Fail()
 		}
 	}
+}
+
+func TestNewWalletEncryptDecrypt(t *testing.T) {
+	associatedData := []byte("associated data")
+	dir, kc, err := wallet.New(context.Background())
+	require.NoError(t, err)
+	require.NotEmpty(t, kc.Address)
+
+	encrypted, err := kc.Encrypt(dir, associatedData)
+	require.NoError(t, err)
+	require.NotEmpty(t, encrypted)
+
+	decrypted, err := kc.Decrypt(encrypted, associatedData)
+	require.NoError(t, err)
+	require.NotEmpty(t, decrypted)
 }

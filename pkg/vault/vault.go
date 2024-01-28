@@ -10,9 +10,10 @@ import (
 	"github.com/sonrhq/sonr/internal/wallet"
 )
 
-func NewController(ctx context.Context) (*modulev1.Controller, error) {
+// Create takes request context and root directory and returns a new Root Identity Controller
+func Create(ctx context.Context) (*modulev1.Controller, error) {
 	c := snrctx.GetIpfsClient()
-	kc, err := wallet.New(ctx)
+	dir, kc, err := wallet.New(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -20,7 +21,15 @@ func NewController(ctx context.Context) (*modulev1.Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	path, err := c.Unixfs().Add(context.Background(), kc.Directory)
+	keyIDAssociatedBytes, err := key.ID().MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	encDir, err := kc.Encrypt(dir, keyIDAssociatedBytes)
+	if err != nil {
+		return nil, err
+	}
+	path, err := c.Unixfs().Add(context.Background(), encDir)
 	if err != nil {
 		return nil, err
 	}

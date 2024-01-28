@@ -4,47 +4,109 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"path"
 
 	"github.com/ipfs/boxo/files"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/kss"
 	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
+	"github.com/sonrhq/sonr/pkg/crypto/daed"
 	"github.com/sonrhq/sonr/pkg/did"
 )
+
+var keyHandle *keyset.Handle
+
+func init() {
+	kh, err := daed.NewKeyHandle()
+	if err != nil {
+		panic(err)
+	}
+	keyHandle = kh
+}
 
 // Wallet is a local temp file system which spawns shares as proto actors
 type Wallet struct {
 	Accounts  []*modulev1.Account
 	Address   string
 	PublicKey []byte
-	Directory files.Directory
 }
 
 // New takes request context and root directory and returns a new Keychain
 // 1. It requires an initial credential id to be passed as a value within the accumulator object
-
-func New(ctx context.Context) (*Wallet, error) {
+func New(ctx context.Context) (files.Directory, *Wallet, error) {
 	pub, aliceOut, bobOut, err := kss.Generate()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	ct := modulev1.CoinType_COIN_TYPE_SONR
 	addr, err := did.GetAddressByPublicKey(pub, ct)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	dir, err := writeSharesToDisk(ct, addr, bobOut, aliceOut)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	kc := &Wallet{
 		Address:   addr,
 		PublicKey: pub,
-		Directory: dir,
 	}
-	return kc, nil
+	return dir, kc, nil
+}
+
+// Encrypt takes a keyset handle and uses DAED to encrypt a message
+func (kc *Wallet) Encrypt(dir files.Directory, associatedData []byte) (files.Directory, error) {
+	it := dir.Entries()
+
+	mapDir := make(map[string]files.Node)
+	addFile := func(name string, file files.File) {
+		mapDir[name] = file
+	}
+
+	for ok := it.Next(); ok; ok = it.Next() {
+		// Encrypt each file
+		file := files.FileFromEntry(it)
+		oldBytes, err := io.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+		newBytes, err := daed.Encrypt(keyHandle, oldBytes, associatedData)
+		if err != nil {
+			return nil, err
+		}
+		newFile := files.NewBytesFile(newBytes)
+		addFile(it.Name(), newFile)
+	}
+	return files.NewMapDirectory(mapDir), nil
+}
+
+// Decrypt takes a keyset handle and uses DAED to decrypt a message
+func (kc *Wallet) Decrypt(dir files.Directory, associatedData []byte) (files.Directory, error) {
+	it := dir.Entries()
+
+	mapDir := make(map[string]files.Node)
+	addFile := func(name string, file files.File) {
+		mapDir[name] = file
+	}
+
+	for ok := it.Next(); ok; ok = it.Next() {
+		// Decrypt each file
+		file := files.FileFromEntry(it)
+		oldBytes, err := io.ReadAll(file)
+		if err != nil {
+			return nil, err
+		}
+		newBytes, err := daed.Decrypt(keyHandle, oldBytes, associatedData)
+		if err != nil {
+			return nil, err
+		}
+		newFile := files.NewBytesFile(newBytes)
+		addFile(it.Name(), newFile)
+	}
+	return files.NewMapDirectory(mapDir), nil
 }
 
 func writeSharesToDisk(coinType modulev1.CoinType, address string, bobOut *protocol.Message, aliceOut *protocol.Message) (files.Directory, error) {

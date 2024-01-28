@@ -82,7 +82,7 @@ func (k Keeper) DeriveAccount(ctx context.Context, id string) error {
 
 // GenerateIdentity generates a new Identity.
 func (k Keeper) GenerateIdentity(ctx context.Context) error {
-	cnt, err := vault.NewController(ctx)
+	cnt, err := vault.Create(ctx)
 	if err != nil {
 		return err
 	}
