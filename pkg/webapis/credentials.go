@@ -6,7 +6,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 
-	modulev1 "github.com/sonrhq/sonr/api/service/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 )
 
 func GetPublicKeyCredentialCreationOptions(record *modulev1.ServiceRecord, entity protocol.UserEntity) protocol.PublicKeyCredentialCreationOptions {

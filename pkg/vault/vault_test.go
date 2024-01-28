@@ -14,7 +14,7 @@ func TestNewController(t *testing.T) {
 	if !checkLocalIPFSConn() {
 		t.Skip("Skipping test due to no local IPFS connection")
 	}
-	v, err := vault.NewController(context.Background())
+	v, err := vault.Create(context.Background())
 	require.NoError(t, err)
 	t.Logf("Controller: %s", v.String())
 }

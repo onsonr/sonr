@@ -3,7 +3,7 @@ package did
 import (
 	"fmt"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 )
 
 // GetCoinTypeDIDMethod returns the DID method for a given coin type

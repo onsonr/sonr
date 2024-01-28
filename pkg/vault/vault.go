@@ -3,26 +3,17 @@ package vault
 import (
 	"context"
 
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
-	"github.com/sonrhq/sonr/internal/keychain"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
+	snrctx "github.com/sonrhq/sonr/internal/context"
+	"github.com/sonrhq/sonr/internal/wallet"
 )
 
-func getIpfsClient() *rpc.HttpApi {
-	// The `IPFSClient()` function is a method of the `context` struct that returns an instance of the `rpc.HttpApi` type.
-	ipfsC, err := rpc.NewLocalApi()
-	if err != nil {
-		panic(err)
-	}
-
-	return ipfsC
-}
-
-func NewController(ctx context.Context) (*modulev1.Controller, error) {
-	c := getIpfsClient()
-	kc, err := keychain.New(ctx)
+// Create takes request context and root directory and returns a new Root Identity Controller
+func Create(ctx context.Context) (*modulev1.Controller, error) {
+	c := snrctx.GetIpfsClient()
+	dir, kc, err := wallet.New(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +21,15 @@ func NewController(ctx context.Context) (*modulev1.Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	path, err := c.Unixfs().Add(context.Background(), kc.Directory)
+	keyIDAssociatedBytes, err := key.ID().MarshalBinary()
+	if err != nil {
+		return nil, err
+	}
+	encDir, err := kc.Encrypt(dir, keyIDAssociatedBytes)
+	if err != nil {
+		return nil, err
+	}
+	path, err := c.Unixfs().Add(context.Background(), encDir)
 	if err != nil {
 		return nil, err
 	}

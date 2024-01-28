@@ -10,7 +10,7 @@ import (
 	"cosmossdk.io/orm/model/ormtable"
 	"github.com/cosmos/cosmos-sdk/codec"
 
-	modulev1 "github.com/sonrhq/sonr/api/service/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 

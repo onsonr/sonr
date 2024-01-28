@@ -5,7 +5,7 @@ import (
 
 	ormv1alpha1 "cosmossdk.io/api/cosmos/orm/v1alpha1"
 
-	modulev1 "github.com/sonrhq/sonr/api/service/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -14,7 +14,7 @@ var serviceSchema = &ormv1alpha1.ModuleSchemaDescriptor{
 	SchemaFile: []*ormv1alpha1.ModuleSchemaDescriptor_FileEntry{
 		{
 			Id:            1,
-			ProtoFileName: modulev1.File_sonr_service_module_v1_state_proto.Path(),
+			ProtoFileName: modulev1.File_sonrhq_sonr_service_module_v1_state_proto.Path(),
 		},
 	},
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	modulev1 "github.com/sonrhq/sonr/api/identity/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/x/identity"
 	"github.com/sonrhq/sonr/x/identity/keeper"
 )

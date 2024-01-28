@@ -1,8 +1,0 @@
-VERSION 0.7
-PROJECT sonrhq/testnet-1
-
-IMPORT ../../../ as root
-
-# build - configures latest sonrd image for specified network
-build:
-    BUILD root+runner

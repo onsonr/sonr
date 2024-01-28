@@ -29,7 +29,7 @@ require (
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.17.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/crypto v0.17.0
+	golang.org/x/crypto v0.18.0
 	google.golang.org/protobuf v1.31.0
 )
 
@@ -49,12 +49,17 @@ require (
 )
 
 require (
+	github.com/ecies/go/v2 v2.0.9
+	github.com/ethereum/go-ethereum v1.13.5
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/ipfs/boxo v0.16.0
 	github.com/ipfs/kubo v0.25.0
 	github.com/okx/go-wallet-sdk/coins/cosmos v0.0.0-20231215072905-c7160519f225
+	github.com/tink-crypto/tink-go/v2 v2.1.0
 	github.com/wailsapp/wails/v2 v2.7.1
+	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
+	lukechampine.com/blake3 v1.2.1
 )
 
 require (
@@ -104,7 +109,6 @@ require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/dvsekhvalnov/jose2go v1.5.0 // indirect
 	github.com/emicklei/dot v1.6.0 // indirect
-	github.com/ethereum/go-ethereum v1.12.2 // indirect
 	github.com/facebookgo/atomicfile v0.0.0-20151019160806-2de1f203e7d5 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/felixge/httpsnoop v1.0.3 // indirect
@@ -276,12 +280,12 @@ require (
 	go4.org v0.0.0-20230225012048-214862532bf5 // indirect
 	golang.org/x/exp v0.0.0-20231127185646-65229373498e // indirect
 	golang.org/x/mod v0.14.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
-	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/term v0.15.0 // indirect
+	golang.org/x/net v0.20.0 // indirect
+	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
+	golang.org/x/term v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
-	golang.org/x/tools v0.16.0 // indirect
+	golang.org/x/tools v0.17.0 // indirect
 	gonum.org/v1/gonum v0.14.0 // indirect
 	google.golang.org/genproto v0.0.0-20231016165738-49dd2c1f3d0b // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20231030173426-d783a09b4405 // indirect
@@ -289,7 +293,6 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.1 // indirect
-	lukechampine.com/blake3 v1.2.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 	pgregory.net/rapid v1.1.0 // indirect
 	rsc.io/tmplfunc v0.0.3 // indirect

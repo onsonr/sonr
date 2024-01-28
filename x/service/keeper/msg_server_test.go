@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	modulev1 "github.com/sonrhq/sonr/api/service/module/v1"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -69,7 +69,7 @@ func TestCreateRecord(t *testing.T) {
 		{
 			name: "create with empty owner",
 			request: &service.MsgCreateRecord{
-				Owner:       "",
+				Authority:   "",
 				Name:        "test record",
 				Origin:      "test origin",
 				Permissions: int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE),
@@ -105,7 +105,7 @@ func TestUpdateRecord(t *testing.T) {
 			name: "update non-existent record",
 			request: &service.MsgUpdateRecord{
 				RecordId:    0,
-				Owner:       f.addrs[0].String(),
+				Authority:   f.addrs[0].String(),
 				Name:        "updated name",
 				Origin:      "updated origin",
 				Permissions: int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE),

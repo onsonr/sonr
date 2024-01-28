@@ -23,37 +23,40 @@ tasks:
     - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
     - rm -rf dist
 
+  build-docker:
+    aliases:
+      - "bd"
+    cmds:
+      - earthly +docker
+      - mv ./cmd/studio/build/bin ./bin
+
+  build-studio:
+    aliases:
+      - "bs"
+    cmds:
+      - earthly +studio
+      - mv ./cmd/studio/build/bin ./bin
+
   generate:
    aliases:
       - "gen"
       - "g"
    cmds:
     - earthly --no-sat +generate
-    - earthly --no-sat +templates
     - task: proto:gogo-gen
-    - rm -rf sonr
+    - rm -rf sonrhq
     - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
     - rm -rf github.com
     - go mod tidy
 
-  dev:gateway:
+  dev-api:
    aliases:
-     - "devg"
-     - "dg"
+     - "dxa"
    cmds:
-    - air -c ./deploy/local/air-gateway.toml
+   - task: deploy:local-gateway
 
-  dev:node:
+  dev-node:
    aliases:
-     - "devn"
-     - "dn"
+     - "dxn"
    cmds:
-    - air -c ./deploy/local/air-node.toml
-
-  dev:
-   aliases:
-     - "d"
-   cmd: tmux new-session -d 'task dev:node' \; split-window -h 'task dev:gateway' \; attach
-
-  grpcui:
-   cmd: grpcui -plaintext localhost:9090
+     - task: deploy:local-node

@@ -29,7 +29,7 @@
 		{
 			"type": "shell",
 			"label": "Dev: Node",
-			"command": "task dev:node",
+			"command": "task dev-node",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -38,7 +38,7 @@
 				"id": "play-circle",
 				"color": "terminal.ansiWhite"
 			},
-			"detail": "dev:node",
+			"detail": "task dev:node",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
@@ -53,7 +53,7 @@
 		{
 			"type": "shell",
 			"label": "Dev: Gateway",
-			"command": "task dev:gateway",
+			"command": "task dev-api",
 			"isBackground": true,
 			"options": {
 				"cwd": "${workspaceFolder}"
@@ -62,7 +62,7 @@
 				"id": "play-circle",
 				"color": "terminal.ansiWhite"
 			},
-			"detail": "dev:gateway",
+			"detail": "task dev:gateway",
 			"problemMatcher": [],
 			"presentation": {
 				"echo": true,
