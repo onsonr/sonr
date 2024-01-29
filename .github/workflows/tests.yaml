@@ -91,6 +91,15 @@ jobs:
           key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
           restore-keys: |
             ${{ runner.os }}-go-
-      - name: Download Dependencies
-        run: go mod download
-      - run: go build -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/sonrd/main.go
+      - name: Detect Changed Packages
+        id: changed
+        run: |
+          echo "CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^.*\.go$' | xargs -n 1 dirname | uniq)" >> $GITHUB_ENV
+      - name: Build if Go files changed
+        run: |
+          if [ -z "${CHANGED_PACKAGES}" ]; then
+            echo "No Go files changed, skipping build."
+          else
+              go mod download
+              go build -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/sonrd/main.go
+          fi
