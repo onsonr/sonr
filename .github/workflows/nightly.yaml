@@ -11,15 +11,19 @@ permissions:
   issues: write
 
 jobs:
-  goreleaser:
+  publish-nightly:
     name: Publish Go Release
-    runs-on: ubuntu-latest
-    if: startsWith(github.ref,'refs/tags')
+    runs-on: ubuntu-super
+    environment: Staging
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
           go-version: '>=1.21'
+      - name: Install Dependencies
+        run: |
+          go install github.com/charmbracelet/mods@latest
+          go install github.com/go-task/task/v3/cmd/task@latest
       - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser-pro
@@ -28,3 +32,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
