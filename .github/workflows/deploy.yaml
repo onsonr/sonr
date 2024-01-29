@@ -1,4 +1,4 @@
-name: New Release ↳ Deploy
+name: New Release 🡒 Deploy
 
 on:
   release:
