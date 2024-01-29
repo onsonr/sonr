@@ -1,8 +1,8 @@
-name: Release Nightly Builds
+name: Daily 🡒 Release Nightly
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 2 * * *'
 
 permissions:
   contents: write
@@ -11,8 +11,7 @@ permissions:
   issues: write
 
 jobs:
-  publish-nightly:
-    name: Publish Go Release
+  release-nightly:
     runs-on: ubuntu-latest
     environment: Staging
     steps:
