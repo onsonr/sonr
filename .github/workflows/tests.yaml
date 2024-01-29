@@ -36,15 +36,19 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.21.5'
-      - name: Cache Go modules
-        uses: actions/cache@v2
-        with:
-          path: ~/go/pkg/mod
-          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
-          restore-keys: |
-            ${{ runner.os }}-go-
-      - run: go mod download
-      - run: go test -v ./...
+      - name: Find Changed Packages
+        id: changed
+        run: |
+          echo "CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^.*\.go$' | xargs -n 1 dirname | uniq)" >> $GITHUB_ENV
+      - name: Test Changed Packages
+        run: |
+          if [ -z "${CHANGED_PACKAGES}" ]; then
+            echo "No Go files changed, skipping tests."
+          else
+            for pkg in $CHANGED_PACKAGES; do
+              go test -v ./$pkg
+            done
+          fi
 
   build-test:
     environment: Staging

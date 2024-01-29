@@ -76,14 +76,13 @@ func NewRootCmd() *cobra.Command {
 	rootCmd := &cobra.Command{
 		Use:   "sonrd",
 		Short: "The Digital Identity Protocol for IBC Connected Blockchains.",
-		Run: func(_ *cobra.Command, _ []string){
-				pterm.DefaultBigText.WithLetters(putils.LettersFromStringWithStyle("SONR", pterm.FgCyan.ToStyle())).Render()
+		Run: func(_ *cobra.Command, _ []string) {
+			pterm.DefaultBigText.WithLetters(putils.LettersFromStringWithStyle("SONR", pterm.FgCyan.ToStyle())).Render()
 		},
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
 			// set the default command outputs
 			cmd.SetOut(cmd.OutOrStdout())
 			cmd.SetErr(cmd.ErrOrStderr())
-
 
 			clientCtx = clientCtx.WithCmdContext(cmd.Context())
 			clientCtx, err := client.ReadPersistentCommandFlags(clientCtx, cmd.Flags())
