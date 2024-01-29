@@ -1,51 +1,33 @@
-name: New Release -> Deploy to Production
-
+name: Master Branch += PR -> Run CD
 on:
-  release:
-    types: [published]
-
-permissions:
-  contents: write
-  packages: write
-  pull-requests: write
-  issues: write
+  push:
+    tags:
+      - 'v*'
 
 jobs:
-  deploy-testnet:
-    name: Deploy Testnet to Production
-    environment: Testnet
-    runs-on: gcp-instance-1
+  publish-release:
+    name: Publish Go Release
+    runs-on: ubuntu-super
+    environment: Staging
+    if: startsWith(github.ref,'refs/tags')
     steps:
       - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:testnet
+      -
+        uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.21'
+      -
+        name: Install Dependencies
+        run: |
+          go install github.com/charmbracelet/mods@latest
+          go install github.com/go-task/task/v3/cmd/task@latest
+      -
+        uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: release
         env:
-          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
-
-  deploy-rails:
-    name: Deploy Rails to Production
-    environment: Testnet
-    runs-on: gcp-instance-1
-    steps:
-      - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:ipfs
-      - run: task deploy:matrix
-      - run: task deploy:faucet
-
-  changelog:
-    name: Generate Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: BobAnkh/auto-generate-changelog@v1.2.5
-        with:
-          REPO_NAME: sonrhq/sonr
-          ACCESS_TOKEN: ${{secrets.GH_ACTIONS_PAT}}
-          PATH: "CHANGELOG.md"
-          COMMIT_MESSAGE: "docs: update release notes"
-          TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,chore:Chore,init:Setup"
-          COMMITTER: "Sonr Mind <team@sonr.io)"
-          SUPPRESS_UNSCOPED: true
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
