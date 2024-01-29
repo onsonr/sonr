@@ -1,4 +1,4 @@
-name: Master Branch += PR -> Run CD
+name: New Tag -▶ Publish Release
 on:
   push:
     tags:

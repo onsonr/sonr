@@ -1,4 +1,4 @@
-name: New Release -> Deploy to Production
+name: New Release -▶ Deploy
 
 on:
   release:

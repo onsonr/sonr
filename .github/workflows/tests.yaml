@@ -1,4 +1,4 @@
-name: New PR -> Tests and Lints
+name: New PR -▶ Validate and Test
 
 on:
   pull_request:

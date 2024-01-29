@@ -1,4 +1,4 @@
-name: Release Nightly Builds
+name: Daily -▶ Release Nightly
 
 on:
   schedule:
