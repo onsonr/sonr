@@ -1,4 +1,4 @@
-name: Daily  ▶  Release Nightly
+name: Daily ↳ Release Nightly
 
 on:
   schedule:

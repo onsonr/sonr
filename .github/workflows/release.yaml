@@ -1,4 +1,4 @@
-name: New Tag  ▶  Publish Release
+name: New Tag ↳ Publish Release
 on:
   push:
     tags:
