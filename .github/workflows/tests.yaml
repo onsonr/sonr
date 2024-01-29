@@ -48,7 +48,7 @@ jobs:
             done
           fi
 
-  test-builds:
+  test-build:
     environment: Staging
     runs-on: ubuntu-latest
     strategy:
