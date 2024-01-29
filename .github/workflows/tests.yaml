@@ -3,6 +3,7 @@ name: Opened PR 🡒 Validate and Test
 on:
   pull_request:
     types: [opened, reopened, synchronize]
+  merge_group:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
