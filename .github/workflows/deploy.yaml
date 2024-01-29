@@ -1,4 +1,4 @@
-name: New Release -▶ Deploy
+name: New Release  ▶  Deploy
 
 on:
   release:
@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   deploy-testnet:
-    name: Deploy Testnet to Production
     environment: Testnet
     runs-on: gcp-instance-1
     steps:
@@ -21,31 +20,3 @@ jobs:
       - run: task deploy:testnet
         env:
           SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
-
-  deploy-rails:
-    name: Deploy Rails to Production
-    environment: Testnet
-    runs-on: gcp-instance-1
-    steps:
-      - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:ipfs
-      - run: task deploy:matrix
-      - run: task deploy:faucet
-
-  changelog:
-    name: Generate Changelog
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: BobAnkh/auto-generate-changelog@v1.2.5
-        with:
-          REPO_NAME: sonrhq/sonr
-          ACCESS_TOKEN: ${{secrets.GH_ACTIONS_PAT}}
-          PATH: "CHANGELOG.md"
-          COMMIT_MESSAGE: "docs: update release notes"
-          TYPE: "feat:Feature,fix:Bug Fixes,docs:Documentation,refactor:Refactor,test:Tests,chore:Chore,init:Setup"
-          COMMITTER: "Sonr Mind <team@sonr.io)"
-          SUPPRESS_UNSCOPED: true

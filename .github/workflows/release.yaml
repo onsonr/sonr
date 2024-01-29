@@ -1,12 +1,11 @@
-name: New Tag -▶ Publish Release
+name: New Tag  ▶  Publish Release
 on:
   push:
     tags:
       - 'v*'
 
 jobs:
-  publish-release:
-    name: Publish Go Release
+  release-publish:
     runs-on: ubuntu-latest
     environment: Staging
     if: startsWith(github.ref,'refs/tags')

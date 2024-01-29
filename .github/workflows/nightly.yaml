@@ -1,4 +1,4 @@
-name: Daily -▶ Release Nightly
+name: Daily  ▶  Release Nightly
 
 on:
   schedule:
@@ -11,8 +11,7 @@ permissions:
   issues: write
 
 jobs:
-  publish-nightly:
-    name: Publish Go Release
+  release-nightly:
     runs-on: ubuntu-latest
     environment: Staging
     steps:
