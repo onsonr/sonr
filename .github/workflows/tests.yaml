@@ -28,7 +28,7 @@ jobs:
   run-tests:
     environment: Staging
     name: Test All Go Packages
-    runs-on: ubuntu-super
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
@@ -42,7 +42,7 @@ jobs:
   build-test:
     environment: Staging
     name: Build for Target
-    runs-on: ubuntu-super
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [amd64, arm64]

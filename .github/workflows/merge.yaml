@@ -30,7 +30,7 @@ jobs:
     environment: Staging
     name: Run Go Build Test
     needs: [valid-protobufs]
-    runs-on: ubuntu-super
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
