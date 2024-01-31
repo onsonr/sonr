@@ -49,17 +49,18 @@ tasks:
     - rm -rf github.com
     - go mod tidy
 
-  dev-api:
-   aliases:
-     - "dxa"
-   cmds:
-   - task: deploy:local-gateway
+  dev-up:
+    internal: true
+    cmds:
+      - tmux new-session -d -s dev 'task dev-node'
+      - tmux split-window -h 'task dev-api'
+      - tmux -2 attach-session -d
 
-  dev-node:
-   aliases:
-     - "dxn"
-   cmds:
-     - task: deploy:local-node
+  dev-down:
+    internal: true
+    ignore_error: true
+    cmds:
+      - tmux kill-session -t dev
 
   gen-changelog:
     vars:
@@ -69,3 +70,16 @@ tasks:
         sh: git describe --tags $(git rev-list --tags --max-count=2 | tail -n 1)
       PROMPT: "Create a short technical changelog only describing the changes that are relevant to the end user based off the changes between the last two tags. Categorize by Feature, Improvement, Clean Up, and Bug Fix."
     cmd: git log {{.PREVIOUS_VERSION}}...{{.VERSION}} | mods {{.PROMPT}} -f | tee RELEASE_NOTES.md
+
+  dev-node:
+   aliases:
+     - "dxn"
+   cmds:
+     - task: deploy:local-node
+
+  dev-api:
+   internal: true
+   aliases:
+     - "dxa"
+   cmds:
+   - task: deploy:local-gateway
