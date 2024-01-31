@@ -22,6 +22,16 @@
       "to": "#0053B5"
     }
   },
+  "tabs": [
+    {
+      "name": "Wiki",
+      "url": "wiki"
+    },
+    {
+      "name": "Research",
+      "url": "research"
+    }
+  ],
   "topbarCtaButton": {
     "type": "github",
     "url": "https://github.com/sonrhq/sonr"
@@ -30,18 +40,12 @@
     {
       "name": "Community",
       "icon": "discord",
-      "url": "https://snr.la/dev-chat"
+      "url": "https://snr.im/discord"
     },
-    {
-      "name": "Research",
-      "icon": "microscope",
-      "url": "https://snr.la/research"
-    },
-    {
-      "name": "GitHub",
-      "icon": "github",
-      "url": "https://snr.la/gh"
-    }
+{
+  "name": "Blog",
+  "url": "https://your-website.com/blog"
+}
   ],
   "navigation": [
     {
@@ -168,11 +172,11 @@
     }
   ],
   "footerSocials": {
-    "discord": "https://snr.la/dev-chat",
-    "github": "https://snr.la/gh-sonr",
-    "twitter": "https://snr.la/tw",
-    "youtube": "https://snr.la/yt",
-    "website": "https://snr.la/h"
+    "discord": "https://snr.im/discord",
+    "github": "https://github.com/sonrhq",
+    "twitter": "https://twitter.com/sonr_io",
+    "youtube": "https://youtube.com/@sonrhq",
+    "website": "https://sonrhq.com"
   },
   "backgroundImage": "/static/images/background.png",
   "analytics": {
