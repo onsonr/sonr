@@ -1,8 +1,7 @@
-name: New Tag 🡒 Publish Release
+name: Every 3 Weeks on WED 🡒 Publish Release
 on:
-  push:
-    tags:
-      - 'v*'
+  schedule:
+    - cron: '0 0 8-14,22-28 * 3'
 
 jobs:
   release-publish:

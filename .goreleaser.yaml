@@ -1,11 +1,6 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 
 project_name: sonrd
-before:
-  # Templates for the commands to be ran.
-  hooks:
-    - task gen-changelog
-
 builds:
   # Build Sonr Daemon
   - id: sonrd
@@ -70,10 +65,6 @@ release:
     owner: sonrhq
     name: sonr
 
-  header:
-    from_file:
-      path: ./RELEASE_NOTES.md
-
   footer:
     from_file:
       path: ./.github/assets/release-footer.md
@@ -97,7 +88,7 @@ changelog:
     - title: Fixes
       regexp: .*?fix:.*$
       order: 2
-    - title: Misc
+    - title: Clean Up
       regexp: .*?chore:.*$
       order: 3
     - title: Others
