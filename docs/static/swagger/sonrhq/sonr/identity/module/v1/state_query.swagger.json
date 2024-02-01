@@ -1,0 +1,1463 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sonrhq/sonr/identity/module/v1/state_query.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "StateQueryService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount": {
+      "post": {
+        "summary": "Get queries the Account table by its primary key.",
+        "operationId": "StateQueryService_GetAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetAccountRequest is the StateQuery/GetAccountRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress": {
+      "post": {
+        "summary": "GetAccountByAddress queries the Account table by its Address index",
+        "operationId": "StateQueryService_GetAccountByAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountByAddressResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetAccountByAddressRequest is the StateQuery/GetAccountByAddressRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountByAddressRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey": {
+      "post": {
+        "summary": "GetAccountByPublicKey queries the Account table by its PublicKey index",
+        "operationId": "StateQueryService_GetAccountByPublicKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountByPublicKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetAccountByPublicKeyRequest is the StateQuery/GetAccountByPublicKeyRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccountByPublicKeyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulator": {
+      "post": {
+        "summary": "Get queries the Accumulator table by its primary key.",
+        "operationId": "StateQueryService_GetAccumulator",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccumulatorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetAccumulatorRequest is the StateQuery/GetAccumulatorRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccumulatorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey": {
+      "post": {
+        "summary": "GetAccumulatorByControllerKey queries the Accumulator table by its ControllerKey index",
+        "operationId": "StateQueryService_GetAccumulatorByControllerKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccumulatorByControllerKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetAccumulatorByControllerKeyRequest is the StateQuery/GetAccumulatorByControllerKeyRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetAccumulatorByControllerKeyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain": {
+      "post": {
+        "summary": "Get queries the Blockchain table by its primary key.",
+        "operationId": "StateQueryService_GetBlockchain",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetBlockchainRequest is the StateQuery/GetBlockchainRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId": {
+      "post": {
+        "summary": "GetBlockchainByChainId queries the Blockchain table by its ChainId index",
+        "operationId": "StateQueryService_GetBlockchainByChainId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainByChainIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetBlockchainByChainIdRequest is the StateQuery/GetBlockchainByChainIdRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainByChainIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName": {
+      "post": {
+        "summary": "GetBlockchainByName queries the Blockchain table by its Name index",
+        "operationId": "StateQueryService_GetBlockchainByName",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainByNameResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetBlockchainByNameRequest is the StateQuery/GetBlockchainByNameRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetBlockchainByNameRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetController": {
+      "post": {
+        "summary": "Get queries the Controller table by its primary key.",
+        "operationId": "StateQueryService_GetController",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetControllerRequest is the StateQuery/GetControllerRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByAddress": {
+      "post": {
+        "summary": "GetControllerByAddress queries the Controller table by its Address index",
+        "operationId": "StateQueryService_GetControllerByAddress",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByAddressResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetControllerByAddressRequest is the StateQuery/GetControllerByAddressRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByAddressRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByIpns": {
+      "post": {
+        "summary": "GetControllerByIpns queries the Controller table by its Ipns index",
+        "operationId": "StateQueryService_GetControllerByIpns",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByIpnsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetControllerByIpnsRequest is the StateQuery/GetControllerByIpnsRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByIpnsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPeerId": {
+      "post": {
+        "summary": "GetControllerByPeerId queries the Controller table by its PeerId index",
+        "operationId": "StateQueryService_GetControllerByPeerId",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByPeerIdResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetControllerByPeerIdRequest is the StateQuery/GetControllerByPeerIdRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByPeerIdRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey": {
+      "post": {
+        "summary": "GetControllerByPublicKey queries the Controller table by its PublicKey index",
+        "operationId": "StateQueryService_GetControllerByPublicKey",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByPublicKeyResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "GetControllerByPublicKeyRequest is the StateQuery/GetControllerByPublicKeyRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.GetControllerByPublicKeyRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount": {
+      "post": {
+        "summary": "ListAccount queries the Account table using prefix and range queries against defined indexes.",
+        "operationId": "StateQueryService_ListAccount",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ListAccountRequest is the StateQuery/ListAccountRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccumulator": {
+      "post": {
+        "summary": "ListAccumulator queries the Accumulator table using prefix and range queries against defined indexes.",
+        "operationId": "StateQueryService_ListAccumulator",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ListAccumulatorRequest is the StateQuery/ListAccumulatorRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain": {
+      "post": {
+        "summary": "ListBlockchain queries the Blockchain table using prefix and range queries against defined indexes.",
+        "operationId": "StateQueryService_ListBlockchain",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ListBlockchainRequest is the StateQuery/ListBlockchainRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    },
+    "/sonrhq.sonr.identity.module.v1.StateQueryService/ListController": {
+      "post": {
+        "summary": "ListController queries the Controller table using prefix and range queries against defined indexes.",
+        "operationId": "StateQueryService_ListController",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "ListControllerRequest is the StateQuery/ListControllerRequest request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest"
+            }
+          }
+        ],
+        "tags": [
+          "StateQueryService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "cosmos.base.query.v1beta1.PageRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string",
+          "format": "byte",
+          "description": "key is a value returned in PageResponse.next_key to begin\nquerying the next page most efficiently. Only one of offset or key\nshould be set."
+        },
+        "offset": {
+          "type": "string",
+          "format": "uint64",
+          "description": "offset is a numeric offset that can be used when key is unavailable.\nIt is less efficient than using key. Only one of offset or key should\nbe set."
+        },
+        "limit": {
+          "type": "string",
+          "format": "uint64",
+          "description": "limit is the total number of results to be returned in the result page.\nIf left empty it will default to a value to be set by each app."
+        },
+        "count_total": {
+          "type": "boolean",
+          "description": "count_total is set to true  to indicate that the result set should include\na count of the total number of items available for pagination in UIs.\ncount_total is only respected when offset is used. It is ignored when key\nis set."
+        },
+        "reverse": {
+          "type": "boolean",
+          "description": "reverse is set to true if results are to be returned in the descending order.\n\nSince: cosmos-sdk 0.43"
+        }
+      },
+      "description": "message SomeRequest {\n         Foo some_parameter = 1;\n         PageRequest pagination = 2;\n }",
+      "title": "PageRequest is to be embedded in gRPC request messages for efficient\npagination. Ex:"
+    },
+    "cosmos.base.query.v1beta1.PageResponse": {
+      "type": "object",
+      "properties": {
+        "next_key": {
+          "type": "string",
+          "format": "byte",
+          "description": "next_key is the key to be passed to PageRequest.key to\nquery the next page most efficiently. It will be empty if\nthere are no more results."
+        },
+        "total": {
+          "type": "string",
+          "format": "uint64",
+          "title": "total is total number of results available if PageRequest.count_total\nwas set, its value is undefined otherwise"
+        }
+      },
+      "description": "PageResponse is to be embedded in gRPC response messages where the\ncorresponding request message has used PageRequest.\n\n message SomeResponse {\n         repeated Bar results = 1;\n         PageResponse page = 2;\n }"
+    },
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "google.rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.Account": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "controller": {
+          "type": "string"
+        },
+        "coin_type": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.CoinType"
+        },
+        "public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "network": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "chain_id": {
+          "type": "string"
+        }
+      },
+      "description": "Account is the root sonr account table which contains all sub-identities."
+    },
+    "sonrhq.sonr.identity.module.v1.Accumulator": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "controller": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        },
+        "value": {
+          "type": "string"
+        }
+      },
+      "description": "Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as\nauthorizer to the underlying wallet interface."
+    },
+    "sonrhq.sonr.identity.module.v1.Blockchain": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "chain_id": {
+          "type": "string"
+        },
+        "chain_code": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "hrp": {
+          "type": "string"
+        },
+        "did_method": {
+          "type": "string"
+        },
+        "denoms": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "channel_id": {
+          "type": "string"
+        }
+      },
+      "title": "Blockchain is the configuration table for connected blockchains"
+    },
+    "sonrhq.sonr.identity.module.v1.CoinType": {
+      "type": "string",
+      "enum": [
+        "COIN_TYPE_UNSPECIFIED",
+        "COIN_TYPE_ATOM",
+        "COIN_TYPE_AXELAR",
+        "COIN_TYPE_BITCOIN",
+        "COIN_TYPE_ETHEREUM",
+        "COIN_TYPE_EVMOS",
+        "COIN_TYPE_FILECOIN",
+        "COIN_TYPE_JUNO",
+        "COIN_TYPE_OSMO",
+        "COIN_TYPE_SOLANA",
+        "COIN_TYPE_SONR",
+        "COIN_TYPE_STARGAZE"
+      ],
+      "default": "COIN_TYPE_UNSPECIFIED",
+      "description": "CoinType is the BIP-0044 coin type for each supported coin.\n\n - COIN_TYPE_UNSPECIFIED: Bitcoins coin type is 0\n - COIN_TYPE_ATOM: Testnet coin type is 1\n - COIN_TYPE_AXELAR: Litecoin coin type is 2\n - COIN_TYPE_BITCOIN: Dogecoin coin type is 3\n - COIN_TYPE_ETHEREUM: Ethereum coin type is 60\n - COIN_TYPE_EVMOS: Sonr coin type is 703\n - COIN_TYPE_FILECOIN: Cosmos coin type is 118\n - COIN_TYPE_JUNO: Filecoin coin type is 461\n - COIN_TYPE_OSMO: Handshake coin type is 5353\n - COIN_TYPE_SOLANA: Solana coin type is 501\n - COIN_TYPE_SONR: Ripple coin type is 144\n - COIN_TYPE_STARGAZE: Stargaze coin type is 1001"
+    },
+    "sonrhq.sonr.identity.module.v1.Controller": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64"
+        },
+        "peer_id": {
+          "type": "string"
+        },
+        "address": {
+          "type": "string"
+        },
+        "public_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "ipns": {
+          "type": "string"
+        },
+        "accumulator_key": {
+          "type": "string",
+          "format": "byte"
+        },
+        "network": {
+          "type": "string"
+        },
+        "chain_id": {
+          "type": "string"
+        }
+      },
+      "description": "Controller is the root sonr controller table which contains all sub-identities."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountByAddressRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      },
+      "description": "GetAccountByAddressRequest is the StateQuery/GetAccountByAddressRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountByAddressResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Account"
+        }
+      },
+      "description": "GetAccountByAddressResponse is the StateQuery/GetAccountByAddressResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountByPublicKeyRequest": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "description": "GetAccountByPublicKeyRequest is the StateQuery/GetAccountByPublicKeyRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountByPublicKeyResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Account"
+        }
+      },
+      "description": "GetAccountByPublicKeyResponse is the StateQuery/GetAccountByPublicKeyResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountRequest": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64",
+          "description": "sequence specifies the value of the sequence field in the primary key."
+        }
+      },
+      "description": "GetAccountRequest is the StateQuery/GetAccountRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccountResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Account",
+          "description": "value is the response value."
+        }
+      },
+      "description": "GetAccountResponse is the StateQuery/GetAccountResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccumulatorByControllerKeyRequest": {
+      "type": "object",
+      "properties": {
+        "controller": {
+          "type": "string"
+        },
+        "key": {
+          "type": "string"
+        }
+      },
+      "description": "GetAccumulatorByControllerKeyRequest is the StateQuery/GetAccumulatorByControllerKeyRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccumulatorByControllerKeyResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Accumulator"
+        }
+      },
+      "description": "GetAccumulatorByControllerKeyResponse is the StateQuery/GetAccumulatorByControllerKeyResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccumulatorRequest": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64",
+          "description": "index specifies the value of the index field in the primary key."
+        }
+      },
+      "description": "GetAccumulatorRequest is the StateQuery/GetAccumulatorRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetAccumulatorResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Accumulator",
+          "description": "value is the response value."
+        }
+      },
+      "description": "GetAccumulatorResponse is the StateQuery/GetAccumulatorResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainByChainIdRequest": {
+      "type": "object",
+      "properties": {
+        "chain_id": {
+          "type": "string"
+        }
+      },
+      "description": "GetBlockchainByChainIdRequest is the StateQuery/GetBlockchainByChainIdRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainByChainIdResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Blockchain"
+        }
+      },
+      "description": "GetBlockchainByChainIdResponse is the StateQuery/GetBlockchainByChainIdResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainByNameRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "description": "GetBlockchainByNameRequest is the StateQuery/GetBlockchainByNameRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainByNameResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Blockchain"
+        }
+      },
+      "description": "GetBlockchainByNameResponse is the StateQuery/GetBlockchainByNameResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainRequest": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64",
+          "description": "index specifies the value of the index field in the primary key."
+        }
+      },
+      "description": "GetBlockchainRequest is the StateQuery/GetBlockchainRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetBlockchainResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Blockchain",
+          "description": "value is the response value."
+        }
+      },
+      "description": "GetBlockchainResponse is the StateQuery/GetBlockchainResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByAddressRequest": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        }
+      },
+      "description": "GetControllerByAddressRequest is the StateQuery/GetControllerByAddressRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByAddressResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller"
+        }
+      },
+      "description": "GetControllerByAddressResponse is the StateQuery/GetControllerByAddressResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByIpnsRequest": {
+      "type": "object",
+      "properties": {
+        "ipns": {
+          "type": "string"
+        }
+      },
+      "description": "GetControllerByIpnsRequest is the StateQuery/GetControllerByIpnsRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByIpnsResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller"
+        }
+      },
+      "description": "GetControllerByIpnsResponse is the StateQuery/GetControllerByIpnsResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByPeerIdRequest": {
+      "type": "object",
+      "properties": {
+        "peer_id": {
+          "type": "string"
+        }
+      },
+      "description": "GetControllerByPeerIdRequest is the StateQuery/GetControllerByPeerIdRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByPeerIdResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller"
+        }
+      },
+      "description": "GetControllerByPeerIdResponse is the StateQuery/GetControllerByPeerIdResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByPublicKeyRequest": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte"
+        }
+      },
+      "description": "GetControllerByPublicKeyRequest is the StateQuery/GetControllerByPublicKeyRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerByPublicKeyResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller"
+        }
+      },
+      "description": "GetControllerByPublicKeyResponse is the StateQuery/GetControllerByPublicKeyResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerRequest": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64",
+          "description": "sequence specifies the value of the sequence field in the primary key."
+        }
+      },
+      "description": "GetControllerRequest is the StateQuery/GetControllerRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.GetControllerResponse": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller",
+          "description": "value is the response value."
+        }
+      },
+      "description": "GetControllerResponse is the StateQuery/GetControllerResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest": {
+      "type": "object",
+      "properties": {
+        "prefix_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey",
+          "description": "prefix_query specifies the index key value to use for the prefix query."
+        },
+        "range_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.RangeQuery",
+          "description": "range_query specifies the index key from/to values to use for the range query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
+          "description": "pagination specifies optional pagination parameters."
+        }
+      },
+      "description": "ListAccountRequest is the StateQuery/ListAccountRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.Sequence",
+          "description": "sequence specifies the value of the Sequence index key to use in the query."
+        },
+        "address": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.Address",
+          "description": "address specifies the value of the Address index key to use in the query."
+        },
+        "public_key": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.PublicKey",
+          "description": "public_key specifies the value of the PublicKey index key to use in the query."
+        }
+      },
+      "description": "IndexKey specifies the value of an index key to use in prefix and range queries."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.Address": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "address is the value of the address field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.PublicKey": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "description": "public_key is the value of the public_key field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey.Sequence": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64",
+          "description": "sequence is the value of the sequence field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountRequest.RangeQuery": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey",
+          "description": "from is the index key to use for the start of the range query.\nTo query from the start of an index, specify an index key for that index with empty values."
+        },
+        "to": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccountRequest.IndexKey",
+          "description": "to is the index key to use for the end of the range query.\nThe index key type MUST be the same as the index key type used for from.\nTo query from to the end of an index it can be omitted."
+        }
+      },
+      "description": "RangeQuery specifies the from/to index keys for a range query."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccountResponse": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Account"
+          },
+          "description": "values are the results of the query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+          "description": "pagination is the pagination response."
+        }
+      },
+      "description": "ListAccountResponse is the StateQuery/ListAccountResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorRequest": {
+      "type": "object",
+      "properties": {
+        "prefix_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey",
+          "description": "prefix_query specifies the index key value to use for the prefix query."
+        },
+        "range_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.RangeQuery",
+          "description": "range_query specifies the index key from/to values to use for the range query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
+          "description": "pagination specifies optional pagination parameters."
+        }
+      },
+      "description": "ListAccumulatorRequest is the StateQuery/ListAccumulatorRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey.Index",
+          "description": "index specifies the value of the Index index key to use in the query."
+        },
+        "controller_key": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey.ControllerKey",
+          "description": "controller_key specifies the value of the ControllerKey index key to use in the query."
+        }
+      },
+      "description": "IndexKey specifies the value of an index key to use in prefix and range queries."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey.ControllerKey": {
+      "type": "object",
+      "properties": {
+        "controller": {
+          "type": "string",
+          "description": "controller is the value of the controller field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        },
+        "key": {
+          "type": "string",
+          "description": "key is the value of the key field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey.Index": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64",
+          "description": "index is the value of the index field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.RangeQuery": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey",
+          "description": "from is the index key to use for the start of the range query.\nTo query from the start of an index, specify an index key for that index with empty values."
+        },
+        "to": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListAccumulatorRequest.IndexKey",
+          "description": "to is the index key to use for the end of the range query.\nThe index key type MUST be the same as the index key type used for from.\nTo query from to the end of an index it can be omitted."
+        }
+      },
+      "description": "RangeQuery specifies the from/to index keys for a range query."
+    },
+    "sonrhq.sonr.identity.module.v1.ListAccumulatorResponse": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Accumulator"
+          },
+          "description": "values are the results of the query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+          "description": "pagination is the pagination response."
+        }
+      },
+      "description": "ListAccumulatorResponse is the StateQuery/ListAccumulatorResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest": {
+      "type": "object",
+      "properties": {
+        "prefix_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey",
+          "description": "prefix_query specifies the index key value to use for the prefix query."
+        },
+        "range_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.RangeQuery",
+          "description": "range_query specifies the index key from/to values to use for the range query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
+          "description": "pagination specifies optional pagination parameters."
+        }
+      },
+      "description": "ListBlockchainRequest is the StateQuery/ListBlockchainRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.Index",
+          "description": "index specifies the value of the Index index key to use in the query."
+        },
+        "chain_id": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.ChainId",
+          "description": "chain_id specifies the value of the ChainId index key to use in the query."
+        },
+        "name": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.Name",
+          "description": "name specifies the value of the Name index key to use in the query."
+        }
+      },
+      "description": "IndexKey specifies the value of an index key to use in prefix and range queries."
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.ChainId": {
+      "type": "object",
+      "properties": {
+        "chain_id": {
+          "type": "string",
+          "description": "chain_id is the value of the chain_id field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.Index": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "format": "uint64",
+          "description": "index is the value of the index field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey.Name": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "name is the value of the name field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainRequest.RangeQuery": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey",
+          "description": "from is the index key to use for the start of the range query.\nTo query from the start of an index, specify an index key for that index with empty values."
+        },
+        "to": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListBlockchainRequest.IndexKey",
+          "description": "to is the index key to use for the end of the range query.\nThe index key type MUST be the same as the index key type used for from.\nTo query from to the end of an index it can be omitted."
+        }
+      },
+      "description": "RangeQuery specifies the from/to index keys for a range query."
+    },
+    "sonrhq.sonr.identity.module.v1.ListBlockchainResponse": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Blockchain"
+          },
+          "description": "values are the results of the query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+          "description": "pagination is the pagination response."
+        }
+      },
+      "description": "ListBlockchainResponse is the StateQuery/ListBlockchainResponse response type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest": {
+      "type": "object",
+      "properties": {
+        "prefix_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey",
+          "description": "prefix_query specifies the index key value to use for the prefix query."
+        },
+        "range_query": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.RangeQuery",
+          "description": "range_query specifies the index key from/to values to use for the range query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageRequest",
+          "description": "pagination specifies optional pagination parameters."
+        }
+      },
+      "description": "ListControllerRequest is the StateQuery/ListControllerRequest request type."
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Sequence",
+          "description": "sequence specifies the value of the Sequence index key to use in the query."
+        },
+        "address": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Address",
+          "description": "address specifies the value of the Address index key to use in the query."
+        },
+        "public_key": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.PublicKey",
+          "description": "public_key specifies the value of the PublicKey index key to use in the query."
+        },
+        "peer_id": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.PeerId",
+          "description": "peer_id specifies the value of the PeerId index key to use in the query."
+        },
+        "ipns": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Ipns",
+          "description": "ipns specifies the value of the Ipns index key to use in the query."
+        }
+      },
+      "description": "IndexKey specifies the value of an index key to use in prefix and range queries."
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Address": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "address is the value of the address field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Ipns": {
+      "type": "object",
+      "properties": {
+        "ipns": {
+          "type": "string",
+          "description": "ipns is the value of the ipns field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.PeerId": {
+      "type": "object",
+      "properties": {
+        "peer_id": {
+          "type": "string",
+          "description": "peer_id is the value of the peer_id field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.PublicKey": {
+      "type": "object",
+      "properties": {
+        "public_key": {
+          "type": "string",
+          "format": "byte",
+          "description": "public_key is the value of the public_key field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey.Sequence": {
+      "type": "object",
+      "properties": {
+        "sequence": {
+          "type": "string",
+          "format": "uint64",
+          "description": "sequence is the value of the sequence field in the index.\nIt can be omitted to query for all valid values of that field in this segment of the index."
+        }
+      }
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerRequest.RangeQuery": {
+      "type": "object",
+      "properties": {
+        "from": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey",
+          "description": "from is the index key to use for the start of the range query.\nTo query from the start of an index, specify an index key for that index with empty values."
+        },
+        "to": {
+          "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.ListControllerRequest.IndexKey",
+          "description": "to is the index key to use for the end of the range query.\nThe index key type MUST be the same as the index key type used for from.\nTo query from to the end of an index it can be omitted."
+        }
+      },
+      "description": "RangeQuery specifies the from/to index keys for a range query."
+    },
+    "sonrhq.sonr.identity.module.v1.ListControllerResponse": {
+      "type": "object",
+      "properties": {
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/sonrhq.sonr.identity.module.v1.Controller"
+          },
+          "description": "values are the results of the query."
+        },
+        "pagination": {
+          "$ref": "#/definitions/cosmos.base.query.v1beta1.PageResponse",
+          "description": "pagination is the pagination response."
+        }
+      },
+      "description": "ListControllerResponse is the StateQuery/ListControllerResponse response type."
+    }
+  }
+}

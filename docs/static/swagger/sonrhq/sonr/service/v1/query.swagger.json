@@ -1,0 +1,168 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sonrhq/sonr/service/v1/query.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Query"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/sonrhq/service/v1/credentials/{origin}/{identifier}": {
+      "get": {
+        "summary": "Credentials queries the credentials of a service.",
+        "operationId": "Query_Credentials",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.QueryCredentialsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "origin",
+            "description": "address is the address of the credentials to query.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "identifier",
+            "description": "identifier is the owner of the credentials to query.",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "params_type",
+            "description": "type is the type of the credentials to query.\n\n - PARAMS_TYPE_UNSPECIFIED: PARAMS_TYPE_UNSPECIFIED is the default parameter type\n - PARAMS_TYPE_ATTESTATION: PARAMS_TYPE_ATTESTATION is for the attestation params\n - PARAMS_TYPE_ASSERTION: PARAMS_TYPE_ASSERTION is for the assertion params",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "enum": [
+              "PARAMS_TYPE_UNSPECIFIED",
+              "PARAMS_TYPE_ATTESTATION",
+              "PARAMS_TYPE_ASSERTION"
+            ],
+            "default": "PARAMS_TYPE_UNSPECIFIED"
+          }
+        ],
+        "tags": [
+          "Query"
+        ]
+      }
+    },
+    "/sonrhq/service/v1/params": {
+      "get": {
+        "summary": "Params returns the module parameters.",
+        "operationId": "Query_Params",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.QueryParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "tags": [
+          "Query"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "google.rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "sonrhq.sonr.service.v1.Params": {
+      "type": "object",
+      "description": "Params defines the parameters of the module."
+    },
+    "sonrhq.sonr.service.v1.ParamsType": {
+      "type": "string",
+      "enum": [
+        "PARAMS_TYPE_UNSPECIFIED",
+        "PARAMS_TYPE_ATTESTATION",
+        "PARAMS_TYPE_ASSERTION"
+      ],
+      "default": "PARAMS_TYPE_UNSPECIFIED",
+      "description": "- PARAMS_TYPE_UNSPECIFIED: PARAMS_TYPE_UNSPECIFIED is the default parameter type\n - PARAMS_TYPE_ATTESTATION: PARAMS_TYPE_ATTESTATION is for the attestation params\n - PARAMS_TYPE_ASSERTION: PARAMS_TYPE_ASSERTION is for the assertion params",
+      "title": "ParamsType defines the type of params"
+    },
+    "sonrhq.sonr.service.v1.QueryCredentialsResponse": {
+      "type": "object",
+      "properties": {
+        "attestation_options": {
+          "type": "string",
+          "description": "attestation_options is the attestation options of the credentials."
+        },
+        "assertion_options": {
+          "type": "string",
+          "description": "assertion_options is the assertion options of the credentials."
+        },
+        "origin": {
+          "type": "string",
+          "description": "origin is the service record of the origin of the credentials."
+        }
+      },
+      "description": "QueryCredentialsResponse is the response type for the Query/Credentials RPC method."
+    },
+    "sonrhq.sonr.service.v1.QueryParamsResponse": {
+      "type": "object",
+      "properties": {
+        "params": {
+          "$ref": "#/definitions/sonrhq.sonr.service.v1.Params",
+          "description": "params defines the parameters of the module."
+        }
+      },
+      "description": "QueryParamsResponse is the response type for the Query/Params RPC method."
+    }
+  }
+}

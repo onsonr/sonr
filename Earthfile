@@ -31,52 +31,10 @@ deps:
     RUN go install github.com/kollalabs/protoc-gen-openapi@latest
     RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
 	RUN go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
-    RUN go install github.com/wailsapp/wails/v2/cmd/wails@latest
     RUN go install github.com/a-h/templ/cmd/templ@latest
+    RUN go install github.com/go-task/task/v3/cmd/task@latest
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
-
-
-# test - runs tests on x/identity and x/service
-test:
-    FROM +deps
-    COPY . .
-    RUN go test -v ./...
-
-# -----------------
-# [BUILD Commands]
-# -----------------
-
-# build-daemon - builds binary
-daemon:
-    FROM +deps
-    WORKDIR /app
-    COPY . .
-    ARG version=$EARTHLY_GIT_REFS
-    ARG commit=$EARTHLY_BUILD_SHA
-
-    COPY . .
-    RUN  go build -ldflags "-X main.Version=$version -X main.Commit=$commit" -o sonrd ./cmd/sonrd/main.go
-    SAVE ARTIFACT sonrd AS LOCAL bin/sonrd
-
-# build-daemon - builds binary
-studio:
-    LOCALLY
-    RUN  cd ./cmd/studio && wails build
-
-# docker-daemon - builds the binary cmd docker image
-docker:
-    FROM +daemon
-    ARG tag=latest
-    ARG commit=$EARTHLY_BUILD_SHA
-    ARG version=$EARTHLY_GIT_REFS
-    COPY +daemon/sonrd sonrd
-    ENTRYPOINT [ "/app/sonrd" ]
-    EXPOSE 26657
-    EXPOSE 1317
-    EXPOSE 26656
-    EXPOSE 9090
-    SAVE IMAGE sonrhq/sonrd:$tag sonrd:$tag
 
 # -------------------
 # [PROTOBUF Commands]
@@ -86,11 +44,9 @@ docker:
 generate:
     FROM +deps
     COPY . .
-    RUN sh ./scripts/protogen-orm.sh
+    RUN task gen:proto-orm
     SAVE ARTIFACT sonrhq AS LOCAL api
     SAVE ARTIFACT proto AS LOCAL proto
-    LOCALLY
-    RUN templ generate
 
 
 # breaking - runs tests on x/identity and x/service with breaking changes
@@ -98,3 +54,19 @@ breaking:
     FROM +deps
     COPY . .
     RUN cd proto && buf breaking --against buf.build/sonrhq/sonr
+
+# build - builds and configures monolithic dendrite matrix homeserver
+build:
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=matrix.sonr.run
+    SAVE IMAGE --push sonrhq/dendrite:latest
+
+# init - generates private key for matrix homeserver
+init:
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=matrix.sonr.run
+    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
+    RUN /usr/bin/generate-keys -private-key matrix_key.pem
+    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
+    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
+    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml

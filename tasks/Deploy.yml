@@ -1,0 +1,23 @@
+version: "3"
+
+tasks:
+  plan:
+    desc: "Plan the infrastructure"
+    dir: ./deploy
+    cmds:
+      - terraform init
+      - terraform plan
+
+  apply:
+    desc: "Apply the infrastructure"
+    dir: ./deploy
+    cmds:
+      - terraform init
+      - terraform apply -auto-approve
+
+  destroy:
+    desc: "Destroy the infrastructure"
+    dir: ./deploy
+    cmds:
+      - terraform init
+      - terraform destroy -auto-approve

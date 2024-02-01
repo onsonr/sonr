@@ -1,0 +1,23 @@
+version: "3"
+
+tasks:
+  testnet:
+    dir: ./deploy/networks/testnet-1
+    cmds:
+      - task: build
+      - docker stack deploy -c ./docker-compose.yml --prune testnet-1
+
+  local-gateway:
+    cmd: air -c ./deploy/networks/local/air-gateway.toml
+
+  local-node:
+    cmd: air -c ./deploy/networks/local/air-node.toml
+
+  changelog:
+    vars:
+      VERSION:
+        sh: git describe --tags $(git rev-list --tags --max-count=1 | tail -n 1)
+      PREVIOUS_VERSION:
+        sh: git describe --tags $(git rev-list --tags --max-count=2 | tail -n 1)
+      PROMPT: "Create a short technical changelog only describing the changes that are relevant to the end user based off the changes between the last two tags. Categorize by Feature, Improvement, Clean Up, and Bug Fix."
+    cmd: git log {{.PREVIOUS_VERSION}}...{{.VERSION}} | mods {{.PROMPT}} -f | tee RELEASE_NOTES.md
