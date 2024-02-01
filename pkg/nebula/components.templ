@@ -1,0 +1,216 @@
+package nebula
+
+// Accordian is a component that displays a summary and content that can be expanded or collapsed.
+templ Accordian(summary, content string) {
+	<sl-details summary={ summary }>
+		{ content }
+	</sl-details>
+}
+
+// Alert is a component that displays a brief, important message to the user.
+templ Alert() {
+}
+
+// AlertDialog is a component that displays a modal dialog.
+templ AlertDialog() {
+}
+
+// AspectRatio is a component that maintains a fixed aspect ratio.
+templ AspectRatio() {
+}
+
+// Avatar is a component that represents a user or entity.
+templ Avatar() {
+}
+
+// Badge is a component that displays a small amount of information.
+templ Badge() {
+}
+
+// Breadcrumb is a component that displays the current location within a navigation hierarchy.
+templ Breadcrumb() {
+}
+
+// Button is a component that triggers an action.
+templ Button() {
+}
+
+// ButtonGroup is a component that groups buttons together.
+templ ButtonGroup() {
+}
+
+// Card is a component that groups related content.
+templ Card() {
+}
+
+// Carousel is a component that displays a collection of images or other content in a carousel.
+templ Carousel() {
+}
+
+// Checkbox is a component that allows the user to select multiple options from a set.
+templ Checkbox() {
+}
+
+// Combobox is a component that allows the user to select one option from a set.
+templ Combobox() {
+}
+
+// CommandMenu is a component that displays a list of commands.
+templ CommandMenu() {
+}
+
+// ContextMenu is a component that displays a list of commands in a popup menu.
+templ ContextMenu() {
+}
+
+// DataTable is a component that displays tabular data.
+templ DataTable() {
+}
+
+// DatePicker is a component that allows the user to select a date.
+templ DatePicker() {
+}
+
+// Dialog is a component that displays a modal dialog.
+templ Dialog() {
+}
+
+// Divider is a component that separates content.
+templ Divider() {
+}
+
+// Drawer is a component that slides in from the edge of the screen.
+templ Drawer() {
+}
+
+// DropdownMenu is a component that displays a list of options.
+templ DropdownMenu() {
+}
+
+// Form is a component that groups related input fields.
+templ Form() {
+}
+
+// HoverCard is a component that displays additional information when an element is hovered.
+templ HoverCard() {
+}
+
+// Input is a component that allows the user to enter data.
+templ Input() {
+}
+
+// Label is a component that displays a brief, important message to the user.
+templ Label() {
+}
+
+// Menubar is a visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
+templ Menubar() {
+	<div class="button-group-toolbar">
+		<sl-button-group label="History">
+			<sl-tooltip content="Undo">
+				<sl-button><sl-icon name="arrow-counterclockwise" label="Undo"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Redo">
+				<sl-button><sl-icon name="arrow-clockwise" label="Redo"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+		<sl-button-group label="Formatting">
+			<sl-tooltip content="Bold">
+				<sl-button><sl-icon name="type-bold" label="Bold"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Italic">
+				<sl-button><sl-icon name="type-italic" label="Italic"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Underline">
+				<sl-button><sl-icon name="type-underline" label="Underline"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+		<sl-button-group label="Alignment">
+			<sl-tooltip content="Align Left">
+				<sl-button><sl-icon name="justify-left" label="Align Left"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Align Center">
+				<sl-button><sl-icon name="justify" label="Align Center"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Align Right">
+				<sl-button><sl-icon name="justify-right" label="Align Right"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+	</div>
+	<style>
+  .button-group-toolbar sl-button-group:not(:last-of-type) {
+    margin-right: var(--sl-spacing-x-small);
+  }
+</style>
+}
+
+// NavigationMenu is a component that displays a list of navigation links.
+templ NavigationMenu() {
+}
+
+// Pagination is a component that allows the user to navigate through pages of content.
+templ Pagination() {
+}
+
+// Popover is a component that displays additional information when an element is clicked.
+templ Popover() {
+}
+
+// Progress is a component that displays the progress of a task.
+templ Progress() {
+}
+
+// RadioGroup is a component that allows the user to select one option from a set.
+templ RadioGroup() {
+}
+
+templ Resizable() {
+}
+
+templ ScrollArea() {
+}
+
+templ Select() {
+}
+
+templ Separator() {
+}
+
+templ Sheet() {
+}
+
+templ Skeleton() {
+}
+
+templ Slider() {
+}
+
+templ Sonner() {
+}
+
+templ Switch() {
+}
+
+templ Table() {
+}
+
+templ Tabs() {
+}
+
+templ Tag() {
+}
+
+templ Textarea() {
+}
+
+templ Toast() {
+}
+
+templ Toggle() {
+}
+
+templ ToggleGroup() {
+}
+
+templ Tooltip() {
+}

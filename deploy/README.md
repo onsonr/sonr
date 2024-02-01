@@ -17,7 +17,7 @@ The entire process is controlled via GitHub Actions with Worflow dispatch. Autom
 
 ## Architecture
 
-![Architecture](./.github/assets/infra.png)
+![Architecture](../.github/assets/infra.png)
 
 ## Contributing
 
