@@ -1,5 +1,5 @@
 {
-	"explorer.excludeGitIgnore": false,
+	"explorer.excludeGitIgnore": true,
 	"editor.formatOnSave": true,
 	"[templ]": {
 		"editor.defaultFormatter": "a-h.templ"
@@ -43,7 +43,6 @@
 		"**/**_templ.go": true,
 	},
 	"yaml.schemas": {
-		"file:///Users/pradn/.vscode/extensions/docsmsft.docs-yaml-1.0.1/dist/toc.schema.json": "/toc\\.yml/i",
 		"https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml"
 	}
 }

@@ -21,3 +21,9 @@ tasks:
     cmds:
       - terraform init
       - terraform destroy -auto-approve
+
+  pack:
+    desc: "Pack all the services"
+    dir: ./deploy
+    cmds:
+      - packer build prod-testnet.pkr.hcl

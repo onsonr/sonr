@@ -7,12 +7,6 @@ tasks:
       - task: build
       - docker stack deploy -c ./docker-compose.yml --prune testnet-1
 
-  local-gateway:
-    cmd: air -c ./deploy/networks/local/air-gateway.toml
-
-  local-node:
-    cmd: air -c ./deploy/networks/local/air-node.toml
-
   changelog:
     vars:
       VERSION:
