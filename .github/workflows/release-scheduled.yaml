@@ -1,7 +1,7 @@
 name: Every 3 Weeks on WED 🡒 Publish Release
 on:
   schedule:
-    - cron: '0 0 8-14,22-28 * 3'
+    - cron: '0 0 1-10,20-30 * 4'
 
 jobs:
   release-publish:
@@ -10,6 +10,14 @@ jobs:
     if: startsWith(github.ref,'refs/tags')
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Checkout latest release tag
+        run: |
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          git checkout $LATEST_TAG
+
       -
         uses: actions/setup-go@v5
         with:
