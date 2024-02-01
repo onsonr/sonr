@@ -2,9 +2,6 @@ name: Every 3 Weeks on WED 🡒 Publish Release
 on:
   schedule:
     - cron: '0 0 8-14,22-28 * 3'
-  push:
-    tags:
-      - '*v'
 
 jobs:
   release-publish:
