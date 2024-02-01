@@ -1,6 +1,6 @@
 # Add 'repo' label to any root file changes
 Repo:
-  - "*"
+  - ".github/**/*"
   - ".gitignore"
   - ".vscode/**"
   - ".devcontainer/**"
@@ -16,26 +16,25 @@ Community:
   - Taskfile.yml
 
 Config:
-  - app/**/*
   - config/**/*
-  - Makefile
-  - proto/buf*
-  - go.mod
-  - go.sum
+
+Documentation:
+  - docs/**/*
 
 Docker:
   - ".dockerignore"
   - "Dockerfile"
   - "docker-compose.yml"
 
-Feature:
-  - internal/**/*
-  - x/**/*
-  - tools/**/*
+Major:
+  - networks/testnet-2/**/*
+  - networks/mainnet-1/**/*
 
-Breaking Changes:
+Minor:
   - proto/**/*
   - types/**/*
+  - internal/**/*
+  - x/**/*
 
 Patch:
   - "go.mod"
