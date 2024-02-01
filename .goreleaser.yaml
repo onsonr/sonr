@@ -30,22 +30,20 @@ builds:
     goarch:
       - amd64
       - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X main.Version={{ .Version }}
-      - -X main.Commit={{ .Commit }}
-      - -w -s
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
 # ! ||--------------------------------------------------------------------------------||
 archives:
-  - id: zipped
+  - id: sonrd
     builds:
       - sonrd
-    name_template: "{{.ProjectName}}-{{ .Os }}-{{ .Arch }}"
+    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+  - id: hway
+    builds:
+      - hway
+    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
 checksum:
   name_template: sha256sum.txt
@@ -56,23 +54,26 @@ brews:
     caveats: "How to use this binary"
     homepage: "https://sonrhq.com"
     description: "Sonr Binary Node"
+    ids:
+      - "sonrd"
+    license: "OpenGLV3"
+    name: "sonrd"
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
+  - folder: Formula
+    ids:
+      - "hway"
+    caveats: "How to use this binary"
+    homepage: "https://sonrhq.com"
+    name: "hway"
+    description: "Hway Binary Node"
     license: "OpenGLV3"
     repository:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
-
-kos:
-  - repository: ghcr.io/sonrhq/sonrd
-    main: ./cmd/sonrd
-    tags:
-      - "{{.Version}}"
-      - latest
-    bare: true
-    preserve_import_paths: false
-    platforms:
-      - linux/amd64
-      - linux/arm64
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
@@ -86,7 +87,7 @@ release:
     from_file:
       path: ./.github/assets/release-footer.md
 
-  name_template: "Sonr 🆔 | v{{.Version}}"
+  name_template: '🆔 Release {{ .Now.Format "2006.01.23" }}'
   mode: replace
   draft: false
   extra_files:
@@ -112,7 +113,7 @@ changelog:
       order: 999
 
 nightly:
-  name_template: 'nightly-{{ .Now.Format "2006-01-02" }}'
+  name_template: '🌙 Nightly {{ .Now.Format "2006.01.23" }}'
   tag_name: nightly
   publish_release: true
   keep_single_release: true
