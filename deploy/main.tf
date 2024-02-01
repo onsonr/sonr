@@ -1,5 +1,5 @@
 resource "aws_instance" "testnet_1" {
-  ami           = "ami-0c7217cdde317cfec"
+  ami           = "ami-0bda289ea2d9fc54c"
   instance_type = "t2.xlarge"
   subnet_id     = "subnet-0510c361d200223ae"
 
@@ -12,11 +12,7 @@ resource "aws_instance" "testnet_1" {
   }
   provisioner "remote-exec" {
     inline = [
-      "apt-get update",
-      "apt-get install -y wget",
-      "wget https://dist.ipfs.tech/kubo/v0.26.0/kubo_v0.26.0_linux-amd64.tar.gz",
-      "tar -xvf kubo_v0.26.0_linux-amd64.tar.gz",
-      "cd kubo && bash ./install.sh"
+      "earthly github.com/sonrhq/sonr+build",
     ]
   }
 }

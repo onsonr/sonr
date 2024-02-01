@@ -8,8 +8,8 @@ packer {
 }
 
 source "amazon-ebs" "ubuntu" {
-  ami_name      = "sonr-linux-aws"
-  instance_type = "t2.micro"
+  ami_name      = "sonr-ubuntu-aws"
+  instance_type = "t2.xlarge"
   region        = "us-east-1"
   subnet_id     = "subnet-0510c361d200223ae"
   source_ami_filter {
@@ -26,24 +26,28 @@ source "amazon-ebs" "ubuntu" {
 
 
 build {
-  name = "sonr-testnet"
+  name = "sonr-base-vm"
   sources = [
     "source.amazon-ebs.ubuntu"
   ]
+
+  # Install Docker
   provisioner "shell" {
-    environment_vars = [
-      "FOO=hello world",
-    ]
     inline = [
       "sudo apt-get update",
       "sudo apt-get install -y wget ca-certificates curl",
       "sudo curl -fsSL https://get.docker.com -o get-docker.sh",
       "sudo sh get-docker.sh",
       "rm get-docker.sh",
+    ]
+  }
 
-      "wget https://dist.ipfs.tech/kubo/v0.26.0/kubo_v0.26.0_linux-amd64.tar.gz",
-      "tar -xvf kubo_v0.26.0_linux-amd64.tar.gz",
-      "cd kubo && sudo bash ./install.sh"
+  # Install Earthly
+  provisioner "shell" {
+    inline = [
+      "sudo wget https://github.com/earthly/earthly/releases/latest/download/earthly-linux-amd64 -O /usr/local/bin/earthly",
+      "sudo chmod +x /usr/local/bin/earthly",
+      "sudo /usr/local/bin/earthly bootstrap",
     ]
   }
 }
