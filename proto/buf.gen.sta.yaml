@@ -6,7 +6,7 @@
 version: v1
 plugins:
   - name: openapiv2
-    out: .
+    out: ../docs/static/swagger
     opt:
       - logtostderr=true
       - openapi_naming_strategy=simple

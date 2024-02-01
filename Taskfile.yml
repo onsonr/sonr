@@ -1,85 +1,39 @@
-version: '3'
+version: "3"
 
 includes:
-  deploy: ./deploy/Taskfile.yml
-  proto: ./proto/Taskfile.yml
+  deploy: ./tasks/Deploy.yml
+  dev: ./tasks/Dev.yml
+  gen: ./tasks/Gen.yml
+  test: ./tasks/Test.yml
 
 tasks:
-  default:
-   cmd: task --list-all
-   silent: true
-
-  install:
-    cmds:
-      - go install github.com/cosmtrek/air@latest
-      - brew install tmux
-
   build:
-   aliases:
-     - "b"
-   cmds:
-    - rm -rf bin/ && mkdir ./bin/
-    - templ generate
-    - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
-    - rm -rf dist
-
-  build-docker:
-    aliases:
-      - "bd"
+    desc: "Builds the project for current platform"
     cmds:
-      - earthly +docker
-      - mv ./cmd/studio/build/bin ./bin
-
-  build-studio:
-    aliases:
-      - "bs"
-    cmds:
-      - earthly +studio
-      - mv ./cmd/studio/build/bin ./bin
+      - rm -rf bin/ && mkdir ./bin/
+      - templ generate
+      - goreleaser build --id sonrd --single-target --clean --snapshot -o ./bin/sonrd
+      - rm -rf dist
 
   generate:
-   aliases:
-      - "gen"
-      - "g"
-   cmds:
-    - earthly --no-sat +generate
-    - task: proto:gogo-gen
-    - rm -rf sonrhq
-    - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
-    - rm -rf github.com
-    - go mod tidy
+    desc: "Generate Templ and Proto files"
+    cmds:
+      - task: gen:proto
+      - task: gen:swagger
+      - task: gen:templ
 
   dev-up:
-    internal: true
     cmds:
-      - tmux new-session -d -s dev 'task dev-node'
-      - tmux split-window -h 'task dev-api'
+      - tmux new-session -d -s dev 'task dev:node'
+      - tmux split-window -h 'task dev:gateway'
       - tmux -2 attach-session -d
 
   dev-down:
-    internal: true
     ignore_error: true
     cmds:
       - tmux kill-session -t dev
 
-  gen-changelog:
-    vars:
-      VERSION:
-        sh: git describe --tags $(git rev-list --tags --max-count=1 | tail -n 1)
-      PREVIOUS_VERSION:
-        sh: git describe --tags $(git rev-list --tags --max-count=2 | tail -n 1)
-      PROMPT: "Create a short technical changelog only describing the changes that are relevant to the end user based off the changes between the last two tags. Categorize by Feature, Improvement, Clean Up, and Bug Fix."
-    cmd: git log {{.PREVIOUS_VERSION}}...{{.VERSION}} | mods {{.PROMPT}} -f | tee RELEASE_NOTES.md
-
-  dev-node:
-   aliases:
-     - "dxn"
-   cmds:
-     - task: deploy:local-node
-
-  dev-api:
-   internal: true
-   aliases:
-     - "dxa"
-   cmds:
-   - task: deploy:local-gateway
+  test-essential:
+    desc: "Run essential tests"
+    cmds:
+      - task: test

@@ -1,0 +1,22 @@
+version: "3"
+
+tasks:
+  setup:
+    desc: "Setup the development environment"
+    cmds:
+      - go install github.com/cosmtrek/air@latest
+      - go install github.com/kollalabs/protoc-gen-openapi@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+      - go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - brew install tmux
+      - brew install earthly
+      - brew install buf
+
+  gateway:
+    cmd: air -c ./networks/local/air-gateway.toml
+
+  node:
+    cmd: air -c ./networks/local/air-node.toml

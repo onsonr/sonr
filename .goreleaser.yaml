@@ -20,6 +20,24 @@ builds:
       - -X main.Commit={{ .Commit }}
       - -w -s
 
+  # Build Highway Daemon
+  - id: hway
+    main: cmd/hway/main.go
+    binary: hway
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .Commit }}
+      - -w -s
+
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
 # ! ||--------------------------------------------------------------------------------||
@@ -34,8 +52,7 @@ checksum:
   algorithm: sha256
 
 brews:
-  -
-    folder: Formula
+  - folder: Formula
     caveats: "How to use this binary"
     homepage: "https://sonrhq.com"
     description: "Sonr Binary Node"
@@ -49,13 +66,13 @@ kos:
   - repository: ghcr.io/sonrhq/sonrd
     main: ./cmd/sonrd
     tags:
-    - '{{.Version}}'
-    - latest
+      - "{{.Version}}"
+      - latest
     bare: true
     preserve_import_paths: false
     platforms:
-    - linux/amd64
-    - linux/arm64
+      - linux/amd64
+      - linux/arm64
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
@@ -73,7 +90,7 @@ release:
   mode: replace
   draft: false
   extra_files:
-    - glob: scripts/install.sh
+    - glob: .github/assets/install.sh
 
 changelog:
   sort: asc

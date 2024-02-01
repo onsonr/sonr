@@ -1,0 +1,294 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "sonrhq/sonr/service/v1/tx.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "Msg"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/sonrhq.sonr.service.v1.Msg/CreateRecord": {
+      "post": {
+        "summary": "CreateRecord creates a new record",
+        "operationId": "Msg_CreateRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgCreateRecordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "MsgCreateRecord is the Msg/CreateRecord request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgCreateRecord"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/sonrhq.sonr.service.v1.Msg/DeleteRecord": {
+      "post": {
+        "summary": "DeleteRecord deletes a record",
+        "operationId": "Msg_DeleteRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgDeleteRecordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "MsgDeleteRecord is the Msg/DeleteRecord request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgDeleteRecord"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/sonrhq.sonr.service.v1.Msg/UpdateParams": {
+      "post": {
+        "summary": "UpdateParams updates the module parameters.",
+        "operationId": "Msg_UpdateParams",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgUpdateParamsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "MsgUpdateParams is the Msg/UpdateParams request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgUpdateParams"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    },
+    "/sonrhq.sonr.service.v1.Msg/UpdateRecord": {
+      "post": {
+        "summary": "UpdateRecord updates a record",
+        "operationId": "Msg_UpdateRecord",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgUpdateRecordResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "description": "MsgUpdateRecord is the Msg/UpdateRecord request type.",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/sonrhq.sonr.service.v1.MsgUpdateRecord"
+            }
+          }
+        ],
+        "tags": [
+          "Msg"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "google.rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "sonrhq.sonr.service.v1.MsgCreateRecord": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "title": "owner is the address of the owner of the record"
+        },
+        "name": {
+          "type": "string",
+          "title": "name is the name of the record"
+        },
+        "description": {
+          "type": "string",
+          "title": "description is the description of the record"
+        },
+        "origin": {
+          "type": "string",
+          "title": "origin is the origin of the record"
+        },
+        "permissions": {
+          "type": "integer",
+          "format": "int32",
+          "title": "permissions in int32 format"
+        }
+      },
+      "description": "MsgCreateRecord is the Msg/CreateRecord request type."
+    },
+    "sonrhq.sonr.service.v1.MsgCreateRecordResponse": {
+      "type": "object",
+      "description": "MsgCreateRecordResponse defines the Msg/CreateRecord response type."
+    },
+    "sonrhq.sonr.service.v1.MsgDeleteRecord": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "title": "owner is the address of the owner of the record"
+        },
+        "record_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "record_id is the id of the record to delete"
+        }
+      },
+      "description": "MsgDeleteRecord is the Msg/DeleteRecord request type."
+    },
+    "sonrhq.sonr.service.v1.MsgDeleteRecordResponse": {
+      "type": "object",
+      "description": "MsgDeleteRecordResponse defines the Msg/DeleteRecord response type."
+    },
+    "sonrhq.sonr.service.v1.MsgUpdateParams": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "description": "authority is the address that controls the module\nNOTE: Defaults to the governance module unless overwritten."
+        },
+        "params": {
+          "$ref": "#/definitions/sonrhq.sonr.service.v1.Params",
+          "description": "params defines the module parameters to update.\nNOTE: All parameters must be supplied."
+        }
+      },
+      "description": "MsgUpdateParams is the Msg/UpdateParams request type."
+    },
+    "sonrhq.sonr.service.v1.MsgUpdateParamsResponse": {
+      "type": "object",
+      "description": "MsgUpdateParamsResponse defines the response structure for executing a\nMsgUpdateParams message."
+    },
+    "sonrhq.sonr.service.v1.MsgUpdateRecord": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "title": "owner is the address of the owner of the record"
+        },
+        "record_id": {
+          "type": "string",
+          "format": "uint64",
+          "title": "record_id is the id of the record to update"
+        },
+        "name": {
+          "type": "string",
+          "title": "name is the name of the record"
+        },
+        "description": {
+          "type": "string",
+          "title": "description is the description of the record"
+        },
+        "origin": {
+          "type": "string",
+          "title": "origin is the origin of the record"
+        },
+        "permissions": {
+          "type": "integer",
+          "format": "int32",
+          "title": "permissions in int32 format"
+        }
+      },
+      "description": "MsgUpdateRecord is the Msg/UpdateRecord request type."
+    },
+    "sonrhq.sonr.service.v1.MsgUpdateRecordResponse": {
+      "type": "object",
+      "description": "MsgUpdateRecordResponse defines the Msg/UpdateRecord response type."
+    },
+    "sonrhq.sonr.service.v1.Params": {
+      "type": "object",
+      "description": "Params defines the parameters of the module."
+    }
+  }
+}
