@@ -7,7 +7,7 @@ import (
 	"github.com/pterm/pterm"
 
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
-	"github.com/sonrhq/sonr/pkg/highway/routes"
+	"github.com/sonrhq/sonr/pkg/highway/routers"
 )
 
 // Start starts the highway server
@@ -16,7 +16,8 @@ func Start() {
 	r := chi.NewRouter()
 	middleware.UseDefaults(r)
 	r.Use(middleware.Session)
-	routes.Mount(r)
+	routers.MountAPI(r)
+	routers.MountSSE(r)
 	http.ListenAndServe(":8000", r)
 }
 

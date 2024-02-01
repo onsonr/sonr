@@ -1,0 +1,69 @@
+name: Merge Queue 🡒 Dry-Run Release
+
+on:
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  buf-validate:
+    environment: Staging
+    runs-on: ubuntu-latest
+    env:
+      EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      FORCE_COLOR: 1
+    steps:
+      - uses: earthly/actions-setup@v1
+        with:
+          version: v0.7.10
+      - uses: actions/checkout@v4
+      - run: earthly --no-sat +breaking
+
+  release-dryrun:
+    environment: Staging
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.21.5'
+      -
+        name: Install Dependencies
+        run: |
+          go install github.com/charmbracelet/mods@latest
+          go install github.com/go-task/task/v3/cmd/task@latest
+      - uses: goreleaser/goreleaser-action@v5
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: release --snapshot --skip-publish --fail-fast
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+
+  semver-bump:
+    runs-on: ubuntu-latest
+    needs: [release-dryrun, buf-validate]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '>=1.21'
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
