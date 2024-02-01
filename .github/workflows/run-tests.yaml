@@ -28,13 +28,10 @@ jobs:
       - uses: actions/labeler@v4
         with:
           repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
-      - uses: actions/setup-go@v5
+      - uses: bufbuild/buf-setup-action@v1
+      - uses: bufbuild/buf-breaking-action@v1
         with:
-          go-version: '1.21.5'
-      - name: Test Go code
-        run: |
-          go install github.com/go-task/task/v3/cmd/task@latest
-          task test:proto-breaking
+          against: 'https://github.com/sonrhq/sonr.git#branch=master'
 
   test-go:
     environment: Staging
