@@ -43,19 +43,10 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.21.5'
-      - name: Find Changed Packages
-        id: changed
+      - name: Test Go code
         run: |
-          echo "CHANGED_PACKAGES=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^.*\.go$' | xargs -n 1 dirname | uniq)" >> $GITHUB_ENV
-      - name: Test Changed Packages
-        run: |
-          if [ -z "${CHANGED_PACKAGES}" ]; then
-            echo "No Go files changed, skipping tests."
-          else
-            for pkg in $CHANGED_PACKAGES; do
-              go test -v ./$pkg
-            done
-          fi
+          go install github.com/go-task/task/v3/cmd/task@latest
+          task test-essential
 
   test-build:
     environment: Staging

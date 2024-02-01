@@ -26,4 +26,4 @@ tasks:
     desc: "Pack all the services"
     dir: ./deploy
     cmds:
-      - packer build prod-testnet.pkr.hcl
+      - packer build sonr.pkr.hcl

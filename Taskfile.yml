@@ -4,6 +4,7 @@ includes:
   deploy: ./tasks/Deploy.yml
   dev: ./tasks/Dev.yml
   gen: ./tasks/Gen.yml
+  test: ./tasks/Test.yml
 
 tasks:
   build:
@@ -31,3 +32,8 @@ tasks:
     ignore_error: true
     cmds:
       - tmux kill-session -t dev
+
+  test-essential:
+    desc: "Run essential tests"
+    cmds:
+      - task: test

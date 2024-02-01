@@ -3,17 +3,12 @@ version: "3"
 tasks:
   proto:
     cmds:
-      - earthly --no-sat +generate
+      - task: proto-orm
       - task: proto-gogo
       - rm -rf sonrhq
       - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
       - rm -rf github.com
       - go mod tidy
-
-  swagger:
-    dir: ./proto
-    cmds:
-      - buf generate --template buf.gen.swagger.yaml
 
   proto-gogo:
     dir: ./proto
@@ -22,15 +17,29 @@ tasks:
 
   proto-orm:
     dir: ./proto
-    cmd: |
-      echo "Generating orm code"
-      proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
-      for dir in $proto_dirs; do
-        for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
-            buf generate --template buf.gen.proto.yaml
-            buf generate --template buf.gen.yaml
+    cmds:
+      - |
+        echo "Generating orm code"
+        proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+        for dir in $proto_dirs; do
+          for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
+              buf generate --template buf.gen.proto.yaml
+              buf generate --template buf.gen.yaml
+          done
         done
-      done
+      - task: proto-orm-post
+
+  proto-orm-post:
+    internal: true
+    cmds:
+      - rm -rf api
+      - mv sonrhq ./api
+      - go mod tidy
+
+  swagger:
+    dir: ./proto
+    cmds:
+      - buf generate --template buf.gen.sta.yaml
 
   templ:
     cmd: templ generate

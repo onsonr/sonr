@@ -36,7 +36,11 @@ build {
     ]
     inline = [
       "sudo apt-get update",
-      "sudo apt-get install -y wget",
+      "sudo apt-get install -y wget ca-certificates curl",
+      "sudo curl -fsSL https://get.docker.com -o get-docker.sh",
+      "sudo sh get-docker.sh",
+      "rm get-docker.sh",
+
       "wget https://dist.ipfs.tech/kubo/v0.26.0/kubo_v0.26.0_linux-amd64.tar.gz",
       "tar -xvf kubo_v0.26.0_linux-amd64.tar.gz",
       "cd kubo && sudo bash ./install.sh"

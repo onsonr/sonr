@@ -1,15 +1,77 @@
 version: "3"
 
 tasks:
-  crypto-all:
-    summary: Test all crypto packages
-    dir: ./pkg/crypto
+  default:
     cmds:
-      - task: build
-      - docker stack deploy -c ./docker-compose.yml --prune testnet-1
+      - task: crypto-accumulator
+      - task: crypto-daed
+      - task: crypto-ecies
+      - task: crypto-sharing
+      - task: crypto-signatures
+      - task: crypto-tecdsa
+      - task: highway
+      - task: module-identity
+      - task: module-service
+      - task: motor
+      - task: nebula
+      - task: vault
 
-  local-gateway:
-    cmd: air -c ./deploy/networks/local/air-gateway.toml
+  crypto-accumulator:
+    dir: ./pkg/crypto/accumulator
+    cmds:
+      - go test -v ./...
 
-  local-node:
-    cmd: air -c ./deploy/networks/local/air-node.toml
+  crypto-daed:
+    dir: ./pkg/crypto/daed
+    cmds:
+      - go test -v ./...
+
+  crypto-ecies:
+    dir: ./pkg/crypto/ecies
+    cmds:
+      - go test -v ./...
+
+  crypto-sharing:
+    dir: ./pkg/crypto/sharing
+    cmds:
+      - go test -v ./...
+
+  crypto-signatures:
+    dir: ./pkg/crypto/signatures
+    cmds:
+      - go test -v ./...
+
+  crypto-tecdsa:
+    dir: ./pkg/crypto/tecdsa
+    cmds:
+      - go test -v ./...
+
+  highway:
+    dir: ./pkg/highway
+    cmds:
+      - go test -v ./...
+
+  module-identity:
+    dir: ./x/identity
+    cmds:
+      - go test -v ./...
+
+  module-service:
+    dir: ./x/service
+    cmds:
+      - go test -v ./...
+
+  motor:
+    dir: ./pkg/motor
+    cmds:
+      - go test -v ./...
+
+  nebula:
+    dir: ./pkg/nebula
+    cmds:
+      - go test -v ./...
+
+  vault:
+    dir: ./pkg/vault
+    cmds:
+      - go test -v ./...

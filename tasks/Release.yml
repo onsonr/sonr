@@ -1,12 +1,6 @@
 version: "3"
 
 tasks:
-  testnet:
-    dir: ./deploy/networks/testnet-1
-    cmds:
-      - task: build
-      - docker stack deploy -c ./docker-compose.yml --prune testnet-1
-
   changelog:
     vars:
       VERSION:

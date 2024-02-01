@@ -1,0 +1,22 @@
+version: "3"
+
+tasks:
+  ipfs:
+    dir: ./deploy
+    cmds:
+      - earthly +ipfs --domain=ipfs.sonr.dev
+
+  matrix:
+    dir: ./deploy
+    cmds:
+      - earthly +matrix --domain=matrix.sonr.dev
+
+  cosmoscan:
+    dir: ./deploy
+    cmds:
+      - earthly +cosmoscan --rpcAddress=http://rpc.sonr.dev:443 --apiAddress=http://api.sonr.dev:443
+
+  faucet:
+    dir: ./deploy
+    cmds:
+      - earthly +faucet --rpcAddress=http://rpc.sonr.dev:443 --apiAddress=http://api.sonr.dev:443 --mnemonic="your mnemonic here"
