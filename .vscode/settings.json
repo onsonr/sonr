@@ -43,6 +43,8 @@
 		"**/**_templ.go": true,
 	},
 	"yaml.schemas": {
-		"https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml"
+		"file:///Users/pradn/.vscode/extensions/docsmsft.docs-yaml-1.0.1/dist/toc.schema.json": "/toc\\.yml/i",
+		"https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml",
+		"https://json.schemastore.org/pull-request-labeler.json": "file:///Users/pradn/Developer/sonr/.github/labeler.yml"
 	}
 }
