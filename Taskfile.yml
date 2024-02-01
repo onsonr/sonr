@@ -11,8 +11,7 @@ tasks:
     desc: "Builds the project for current platform"
     cmds:
       - rm -rf bin/ && mkdir ./bin/
-      - templ generate
-      - goreleaser build --id sonrd --single-target --clean --snapshot -o ./bin/sonrd
+      - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
       - rm -rf dist
 
   generate:

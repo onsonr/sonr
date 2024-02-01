@@ -3,7 +3,7 @@ tmp_dir = "tmp"
 
 [build]
   bin = "./bin/sonrd"
-  cmd = "task build"
+  cmd = "templ generate && task build"
   delay = 1000
   exclude_dir = ["static", "tmp", "vendor", "scripts", ".github", ".vscode", "bind", "build", "dist"]
   exclude_file = []
