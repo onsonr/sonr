@@ -25,9 +25,6 @@ jobs:
       FORCE_COLOR: 1
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/labeler@v4
-        with:
-          repo-token: "${{ secrets.GH_ACTIONS_PAT }}"
       - uses: bufbuild/buf-setup-action@v1
       - uses: bufbuild/buf-breaking-action@v1
         with:
