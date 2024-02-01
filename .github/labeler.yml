@@ -36,8 +36,6 @@ Feature:
 Breaking Changes:
   - proto/**/*
   - types/**/*
-  - Earthfile
-  - .github/**/*
 
 Patch:
   - "go.mod"
