@@ -16,9 +16,7 @@ tasks:
       - brew install buf
 
   gateway:
-    internal: true
     cmd: air -c ./networks/local/air-gateway.toml
 
   node:
-    internal: true
     cmd: air -c ./networks/local/air-node.toml

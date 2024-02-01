@@ -74,19 +74,6 @@ kos:
       - linux/amd64
       - linux/arm64
 
-  - repository: ghcr.io/sonrhq/hway
-    main: ./cmd/hway
-    tags:
-      - "{{.Version}}"
-      - latest
-    bare: true
-    preserve_import_paths: false
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      - darwin/amd64
-      - darwin/arm64
-
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
