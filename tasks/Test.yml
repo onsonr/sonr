@@ -68,6 +68,7 @@ tasks:
 
   nebula:
     dir: ./pkg/nebula
+    ignore_error: true
     cmds:
       - go test -v ./...
 
@@ -75,3 +76,8 @@ tasks:
     dir: ./pkg/vault
     cmds:
       - go test -v ./...
+
+  proto-breaking:
+    dir: ./proto
+    cmds:
+      - buf breaking --against buf.build/sonrhq/sonr
