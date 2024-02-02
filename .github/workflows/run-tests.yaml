@@ -72,12 +72,9 @@ jobs:
           GOOS: ${{ matrix.targetos }}
           GOARCH: ${{ matrix.arch }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
-        with:
-          # either 'goreleaser' (default) or 'goreleaser-pro'
-          distribution: goreleaser
-          version: latest
-          args: goreleaser build --id=sonrd --single-target --clean --snapshot
+        run: |
+          go mod download
+          go build -o ./bin/sonrd-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/sonrd/main.go
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
