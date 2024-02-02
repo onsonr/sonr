@@ -1,4 +1,4 @@
-name: Merge Queue 🡒 Dry-Run Release
+name: Handle Merge Queue
 
 on:
   merge_group:

@@ -1,4 +1,4 @@
-name: Opened PR 🡒 Validate and Test
+name: Run Tests
 
 on:
   pull_request:

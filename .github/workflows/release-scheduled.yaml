@@ -1,4 +1,4 @@
-name: Every 3 Weeks on WED 🡒 Publish Release
+name: Release Scheduled
 on:
   schedule:
     - cron: '0 0 1-10,20-30 * 4'
