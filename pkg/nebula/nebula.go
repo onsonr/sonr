@@ -17,9 +17,13 @@ func ServeAssets(r chi.Router) {
 	r.Handle("/assets", http.FileServer(http.FS(assets)))
 }
 
+// TODO: Create Props and Slots interfaces
+
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                            Aliases to UI Components                            ||
 // ! ||--------------------------------------------------------------------------------||
+
+// TODO: Create Remaining UI Components
 
 // Accordian is an alias to the UI component.
 var Accordian = ui.Accordian
@@ -29,6 +33,9 @@ var AlertDialog = ui.AlertDialog
 
 // Alert is an alias to the UI component.
 var Alert = ui.Alert
+
+// Avatar is an alias to the UI component.
+var Avatar = ui.Avatar
 
 // Badge is an alias to the UI component.
 var Badge = ui.Badge
