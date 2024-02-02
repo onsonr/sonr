@@ -1,6 +1,8 @@
 name: "Triage Issues"
 on:
   push:
+    branches-ignore:
+      - master
   issues:
     types: [opened, edited]
 
@@ -28,3 +30,28 @@ jobs:
       - uses: austenstone/openai-issue-labeler@v2
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
+
+  enhance-commits:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Setup Node.js Environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: di-sukharev/opencommit@github-action-v1.0.4
+        with:
+          GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+        env:
+          OCO_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OCO_OPENAI_MAX_TOKENS: 500
+          OCO_OPENAI_BASE_PATH: ''
+          OCO_DESCRIPTION: false
+          OCO_EMOJI: false
+          OCO_MODEL: gpt-3.5-turbo-16k
+          OCO_LANGUAGE: en
+          OCO_PROMPT_MODULE: conventional-commit
