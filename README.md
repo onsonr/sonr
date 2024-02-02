@@ -46,18 +46,12 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
   <tr>
     <th>Module</th>
     <th colspan=4>Description</th>
-    <th>Status</th>
   </tr>
   <tr>
     <th><code><a href="https://github.com/sonrhq/sonr/x/identity">x/identity</a></code></th>
     <th colspan=4>
     The Sonr Identity module is responsible for managing DID based <br />
     accounts using the MPC Protocol - <a href="https://sonr.io/whitepaper">Docs</a>
-    </th>
-    <th>
-      <a href="https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml">
-        <img src="https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml/badge.svg" alt="CI Pipeline">
-      </a>
     </th>
   </tr>
   <tr>
@@ -66,22 +60,12 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     The Oracle module is responsible for managing Staking delegations <br />
     rewards, and token transfers - <a href="https://sonr.io/whitepaper">Docs</a>
     </th>
-    <th>
-      <center>
-      🚧
-      </center>
-    </th>
   </tr>
   <tr>
     <th><code><a href="https://github.com/sonrhq/sonr/x/service">x/service</a></code></th>
     <th colspan=4>
     The Service module is responsible for DAO Application Service <br />
     Configurations, and Passkey authentication - <a href="https://sonr.io/whitepaper">Docs</a>
-    </th>
-    <th>
-      <a href="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml?query=branch%3Amaster++">
-        <img src="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
-      </a>
     </th>
   </tr>
 </table>
