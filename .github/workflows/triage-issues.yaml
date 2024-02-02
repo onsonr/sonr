@@ -22,6 +22,7 @@ jobs:
 
   label-issues:
     runs-on: "ubuntu-latest"
+    if: contains(github.event_name, 'issues')
     steps:
       - uses: "actions/checkout@v3"
       - uses: austenstone/openai-issue-labeler@v2
