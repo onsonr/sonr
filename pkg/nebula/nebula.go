@@ -4,27 +4,31 @@ import (
 	"embed"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
-
 	"github.com/sonrhq/sonr/pkg/nebula/ui"
 )
 
-//go:embed assets
+// TODO: Add CDN package for Shoelace as go-embed
+//	labels: HTMX/Frontend,Plane,Github
+//	milestone: 24
+
+//go:embed assets/*
 var assets embed.FS
 
 // ServeAssets serves the assets from the embed.FS including stylesheets, images, and javascript files.
-func ServeAssets(r chi.Router) {
-	r.Handle("/assets", http.FileServer(http.FS(assets)))
+func ServeAssets() (pattern string, handler http.Handler) {
+	return "/*", http.FileServer(http.FS(assets))
 }
 
 // TODO: Create Props and Slots interfaces
+//	labels: HTMX/Frontend,Plane,Github
 //	milestone: 24
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                            Aliases to UI Components                            ||
 // ! ||--------------------------------------------------------------------------------||
 
-// TODO: Create Remaining UI Components
+// TODO: Implement Remaining UI Components from Shoelace
+//	labels: HTMX/Frontend,Plane,Github
 //	milestone: 24
 
 // Accordian is an alias to the UI component.
