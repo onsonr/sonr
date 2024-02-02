@@ -1,7 +1,22 @@
 package nebula
 
-templ RootLayout() {
+templ RootLayout(page, sidebar templ.Component) {
+	<html>
+		<div class="w-full h-full">
+			<div class="flex h-full">
+				@sidebar
+				<div class="flex-1 h-full">
+					@page
+				</div>
+			</div>
+		</div>
+	</html>
 }
 
-templ Sidebar() {
+templ Sidebar(buttons []templ.Component) {
+	<div class="w-56 h-full flex-col space-y-4">
+		for _, item := range buttons {
+			@item
+		}
+	</div>
 }

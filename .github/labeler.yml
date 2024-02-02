@@ -1,41 +1,48 @@
-# Add 'repo' label to any root file changes
-Repo:
-  - ".github/**/*"
-  - ".gitignore"
-  - ".vscode/**"
-  - ".devcontainer/**"
-
-Community:
-  - "CODE_OF_CONDUCT.md"
-  - "CONTRIBUTING.md"
-  - "LICENSE"
-  - "SECURITY.md"
-  - "README.md"
-  - docs/**/*
-  - DEVELOPERS.md
-  - Taskfile.yml
-
-Config:
-  - config/**/*
-
-Documentation:
-  - docs/**/*
-
-Docker:
-  - ".dockerignore"
-  - "Dockerfile"
-  - "docker-compose.yml"
-
-Major:
-  - networks/testnet-2/**/*
-  - networks/mainnet-1/**/*
-
-Minor:
-  - proto/**/*
-  - types/**/*
-  - internal/**/*
-  - x/**/*
-
-Patch:
-  - "go.mod"
-  - "go.sum"
+# Number of labels to fetch (optional). Defaults to 100
+numLabels: 40
+# These labels will not be used even if the issue contains them (optional).
+# Pass a blank array if no labels are to be excluded.
+# excludeLabels: []
+excludeLabels:
+  - Epic
+  - Major
+  - Minor
+  - Patch
+# custom configuration to override default behaviour
+# control explicitly what gets added and when
+custom:
+  - location: title
+    keywords:
+      - "service"
+      - "identity"
+      - "implement"
+      - "methods"
+    labels:
+      - Feature
+  - location: title
+    keywords:
+      - "fix"
+    labels:
+      - Bug
+  - location: title
+    keywords:
+      - "docs"
+      - "documentation"
+      - "write"
+    labels:
+      - Docs
+  - location: title
+    keywords:
+      - "enhance"
+      - "optimize"
+      - "improve"
+    labels:
+      - Enhancement
+  - location: title
+    keywords:
+      - "chore"
+      - "task"
+      - "cleanup"
+      - "test"
+    labels:
+      - Chore
