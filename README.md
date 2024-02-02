@@ -1,28 +1,31 @@
-<div style="text-align: center;">
+#
 
 [![Sonr Logo Banner](.github/assets/core-cover.png)](https://sonr.io)
 
-</div>
-<div style="text-align: left;">
+<div style="text-align: center;">
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/sonr.svg)](https://pkg.go.dev/github.com/sonrhq/sonr)
-![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Dev%20Chat)
-[![GitHub all releases](https://img.shields.io/github/downloads/sonrhq/sonr/total)](https://github.com/sonrhq/sonr/releases/latest)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/sonrhq/sonr)
+![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/sonrhq/sonr)
+[![Static Badge](https://img.shields.io/badge/homepage-sonr.io-blue?style=flat-square)](https://sonr.io)
+![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Discord%20Chat)
+
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/sonr)](https://goreportcard.com/report/github.com/sonrhq/sonr)
-[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
-[![Test sonrd](https://github.com/sonrhq/sonr/actions/workflows/tests.yml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/tests.yml)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonr-io_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
-![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/sonr_io?style=social&logo=twitter)
+[![Run Tests](https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml)
+[![Merge Queue](https://github.com/sonrhq/sonr/actions/workflows/merge-queue.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/merge-queue.yaml)
+
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sonrhq_sonr)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
+
 </div>
 
 ---
 
-# `sonrhq/sonr`
-
-Sonr is an ibc-enabled blockchain for decentralized identity.
+__*Sonr is an ibc-enabled blockchain for decentralized identity*__.
 
 - [x] Passkey based User Accounts. [__Docs__](https://sonr.io/docs/guides/database)
-- [x] DKLS-MPC Powered Wallets _(No seed phrases)_. [__Docs__](https://sonr.io/docs/guides/auth)
+- [x] DKLS-MPC Powered Wallets *(No seed phrases)*. [__Docs__](https://sonr.io/docs/guides/auth)
 - [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
   - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
   - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
@@ -35,7 +38,7 @@ Sonr is an ibc-enabled blockchain for decentralized identity.
 - [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
 - [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
 
-## How it works
+## Features
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
 
@@ -44,7 +47,6 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     <th>Module</th>
     <th colspan=4>Description</th>
     <th>Status</th>
-    <th>Deps</th>
   </tr>
   <tr>
     <th><code><a href="https://github.com/sonrhq/sonr/x/identity">x/identity</a></code></th>
@@ -53,16 +55,9 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     accounts using the MPC Protocol - <a href="https://sonr.io/whitepaper">Docs</a>
     </th>
     <th>
-      <a href="https://github.com/sonrhq/sonr/x/identity/actions/workflows/ci.yml?query=branch%3Amaster++">
-        <img src="https://github.com/sonrhq/sonr/x/identity/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
+      <a href="https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml">
+        <img src="https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml/badge.svg" alt="CI Pipeline">
       </a>
-    </th>
-    <th>
-      <code>x/auth</code>
-      <br />
-      <code>x/ibcaccounts</code>
-      <br />
-      <code>x/slashing</code>
     </th>
   </tr>
   <tr>
@@ -76,15 +71,6 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
       🚧
       </center>
     </th>
-    <th colspan=2>
-      <code>x/bank</code>
-      <br />
-      <code>x/distribution</code>
-      <br />
-      <code>x/ibctransfer</code>
-      <br />
-      <code>x/staking</code>
-    </th>
   </tr>
   <tr>
     <th><code><a href="https://github.com/sonrhq/sonr/x/service">x/service</a></code></th>
@@ -96,13 +82,6 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
       <a href="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml?query=branch%3Amaster++">
         <img src="https://github.com/sonrhq/sonr/x/service/actions/workflows/ci.yml/badge.svg?branch=master" alt="CI Pipeline">
       </a>
-    </th>
-    <th colspan=2>
-      <code>x/group</code>
-      <br />
-      <code>x/identity</code>
-      <br />
-      <code>x/wasm</code>
     </th>
   </tr>
 </table>
