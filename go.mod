@@ -48,16 +48,15 @@ require (
 )
 
 require (
+	github.com/a-h/templ v0.2.543
 	github.com/ecies/go/v2 v2.0.9
 	github.com/ethereum/go-ethereum v1.13.5
-	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/ipfs/boxo v0.16.0
 	github.com/ipfs/kubo v0.25.0
 	github.com/mitchellh/mapstructure v1.5.0
 	github.com/okx/go-wallet-sdk/coins/cosmos v0.0.0-20231215072905-c7160519f225
 	github.com/tink-crypto/tink-go/v2 v2.1.0
 	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	lukechampine.com/blake3 v1.2.1
 )
 
@@ -70,7 +69,6 @@ require (
 	github.com/99designs/keyring v1.2.1 // indirect
 	github.com/DataDog/datadog-go v3.2.0+incompatible // indirect
 	github.com/DataDog/zstd v1.5.5 // indirect
-	github.com/a-h/templ v0.2.543 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816 // indirect
 	github.com/bits-and-blooms/bitset v1.8.0 // indirect

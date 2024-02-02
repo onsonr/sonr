@@ -4,8 +4,10 @@ project_name: sonrd
 before:
   # Templates for the commands to be ran.
   hooks:
+    - go mod download
     - go install github.com/a-h/templ/cmd/templ@latest
     - templ generate
+
 builds:
   # Build Sonr Daemon
   - id: sonrd

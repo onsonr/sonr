@@ -1,0 +1,42 @@
+package ui
+
+// Menubar is a visually persistent menu common in desktop applications that provides quick access to a consistent set of commands.
+templ Menubar() {
+	<div class="button-group-toolbar">
+		<sl-button-group label="History">
+			<sl-tooltip content="Undo">
+				<sl-button><sl-icon name="arrow-counterclockwise" label="Undo"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Redo">
+				<sl-button><sl-icon name="arrow-clockwise" label="Redo"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+		<sl-button-group label="Formatting">
+			<sl-tooltip content="Bold">
+				<sl-button><sl-icon name="type-bold" label="Bold"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Italic">
+				<sl-button><sl-icon name="type-italic" label="Italic"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Underline">
+				<sl-button><sl-icon name="type-underline" label="Underline"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+		<sl-button-group label="Alignment">
+			<sl-tooltip content="Align Left">
+				<sl-button><sl-icon name="justify-left" label="Align Left"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Align Center">
+				<sl-button><sl-icon name="justify" label="Align Center"></sl-icon></sl-button>
+			</sl-tooltip>
+			<sl-tooltip content="Align Right">
+				<sl-button><sl-icon name="justify-right" label="Align Right"></sl-icon></sl-button>
+			</sl-tooltip>
+		</sl-button-group>
+	</div>
+	<style>
+  .button-group-toolbar sl-button-group:not(:last-of-type) {
+    margin-right: var(--sl-spacing-x-small);
+  }
+</style>
+}

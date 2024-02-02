@@ -14,6 +14,12 @@ tasks:
       - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
       - rm -rf dist
 
+  build-ci:
+    desc: "Builds the project for all platforms"
+    cmds:
+      - go
+      - goreleaser build --id=sonrd --single-target --clean --snapshot
+
   generate:
     desc: "Generate Templ and Proto files"
     cmds:

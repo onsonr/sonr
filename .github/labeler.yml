@@ -1,48 +1,59 @@
-# Number of labels to fetch (optional). Defaults to 100
-numLabels: 40
-# These labels will not be used even if the issue contains them (optional).
-# Pass a blank array if no labels are to be excluded.
-# excludeLabels: []
-excludeLabels:
-  - Epic
-  - Major
-  - Minor
-  - Patch
-# custom configuration to override default behaviour
-# control explicitly what gets added and when
-custom:
-  - location: title
-    keywords:
-      - "service"
-      - "identity"
-      - "implement"
-      - "methods"
-    labels:
-      - Feature
-  - location: title
-    keywords:
-      - "fix"
-    labels:
-      - Bug
-  - location: title
-    keywords:
-      - "docs"
-      - "documentation"
-      - "write"
-    labels:
-      - Docs
-  - location: title
-    keywords:
-      - "enhance"
-      - "optimize"
-      - "improve"
-    labels:
-      - Enhancement
-  - location: title
-    keywords:
-      - "chore"
-      - "task"
-      - "cleanup"
-      - "test"
-    labels:
-      - Chore
+Crypto:
+  - "pkg/crypto/**/*"
+
+# Add 'label2' to any file changes within 'example2' folder
+Highway:
+  - "pkg/highway/**/*"
+  - "cmd/highway/**/*"
+  - "internal/context/**/*"
+  - "internal/orm/**/*"
+
+# Complex: Add 'area/core' label to any change within the 'core' package
+Identity:
+  - "pkg/vault/**/*"
+  - "proto/sonrhq/sonr/identity/**/*"
+  - "x/identity/**/*"
+  - "pkg/crypto/daed/**/*"
+  - "pkg/crypto/ecies/**/*"
+  - "pkg/crypto/tecdsa/**/*"
+  - "internal/wallet/**/*"
+
+Service:
+  - "pkg/webauth/**/*"
+  - "pkg/crypto/accumulator/**/*"
+  - "proto/sonrhq/sonr/service/**/*"
+  - "x/service/**/*"
+
+Config:
+  - config/**/*
+  - ".github/**/*"
+  - ".gitignore"
+  - ".vscode/**"
+  - ".devcontainer/**"
+  - "go.mod"
+  - "go.sum"
+  - Taskfile.yml
+  - "Makefile"
+
+Documentation:
+  - docs/**/*
+  - "CODE_OF_CONDUCT.md"
+  - "CONTRIBUTING.md"
+  - "LICENSE"
+  - "SECURITY.md"
+  - DEVELOPERS.md
+  - "**/README.md"
+
+Deployment:
+  - ".dockerignore"
+  - "Dockerfile"
+  - "docker-compose.yml"
+  - ".goreleaser.yml"
+  - networks/testnet-*/**
+  - networks/mainnet-*/**
+  - networks/devnet-*/**
+  - deploy/**/*
+
+UI-UX:
+  - "pkg/nebula/**/*"
+  - "**/*.templ"

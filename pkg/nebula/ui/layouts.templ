@@ -1,7 +1,10 @@
-package nebula
+package ui
 
 templ RootLayout(page, sidebar templ.Component) {
 	<html>
+		<head>
+			<script src="/assets/js/htmx.min.js"></script>
+		</head>
 		<div class="w-full h-full">
 			<div class="flex h-full">
 				@sidebar

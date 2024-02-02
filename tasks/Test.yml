@@ -16,6 +16,15 @@ tasks:
       - task: nebula
       - task: vault
 
+  crypto:
+    cmds:
+      - task: crypto-accumulator
+      - task: crypto-daed
+      - task: crypto-ecies
+      - task: crypto-sharing
+      - task: crypto-signatures
+      - task: crypto-tecdsa
+
   crypto-accumulator:
     dir: ./pkg/crypto/accumulator
     cmds:
@@ -68,7 +77,6 @@ tasks:
 
   nebula:
     dir: ./pkg/nebula
-    ignore_error: true
     cmds:
       - go test -v ./...
 
