@@ -16,3 +16,9 @@ jobs:
         uses: "alstr/todo-to-issue-action@v4"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+      - uses: github/issue-labeler@v3.3
+        with:
+          configuration-path: .github/issue-labeler.yml
+          enable-versioned-regex: 0
+          sync-labels: 1
+          repo-token: ${{ secrets.GH_ACTIONS_PAT }}
