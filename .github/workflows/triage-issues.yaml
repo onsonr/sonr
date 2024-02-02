@@ -24,7 +24,6 @@ jobs:
     runs-on: "ubuntu-latest"
     steps:
       - uses: "actions/checkout@v3"
-      - uses: satoryu/labeling-by-gpt@main
+      - uses: austenstone/openai-issue-labeler@v2
         with:
           openai-api-key: ${{ secrets.OPENAI_API_KEY }}
-          github-token: ${{ secrets.GH_ACTIONS_PAT }}
