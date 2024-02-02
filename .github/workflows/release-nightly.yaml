@@ -1,4 +1,4 @@
-name: Daily 🡒 Release Nightly
+name: Release Nightly
 
 on:
   schedule:
