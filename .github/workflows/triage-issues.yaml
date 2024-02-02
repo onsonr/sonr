@@ -19,6 +19,7 @@ jobs:
         uses: "alstr/todo-to-issue-action@v4"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
+          LABEL: "Github"
 
   label-issues:
     runs-on: "ubuntu-latest"
