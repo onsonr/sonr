@@ -10,8 +10,6 @@ import "context"
 import "io"
 import "bytes"
 
-// TODO: Create AspectRatio is a component that maintains a fixed aspect ratio.
-
 // AspectRatio is a component that maintains a fixed aspect ratio.
 func AspectRatio() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
