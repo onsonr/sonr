@@ -18,12 +18,14 @@ func ServeAssets(r chi.Router) {
 }
 
 // TODO: Create Props and Slots interfaces
+//	milestone: 24
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                            Aliases to UI Components                            ||
 // ! ||--------------------------------------------------------------------------------||
 
 // TODO: Create Remaining UI Components
+//	milestone: 24
 
 // Accordian is an alias to the UI component.
 var Accordian = ui.Accordian
