@@ -19,5 +19,6 @@ jobs:
       - uses: github/issue-labeler@v3.3
         with:
           configuration-path: .github/issue-labeler.yml
+          not-before: 2023-12-15T02:54:32Z
           enable-versioned-regex: 0
           repo-token: ${{ secrets.GH_ACTIONS_PAT }}
