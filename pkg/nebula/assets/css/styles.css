@@ -137,17 +137,17 @@
   --sl-color-cyan-950: oklch(18.16% 0.041 180);
 
   /* Sky */
-  --sl-color-sky-50: oklch(98.83% 0.005 210);
-  --sl-color-sky-100: oklch(96.29% 0.017 210);
-  --sl-color-sky-200: oklch(91.41% 0.042 210);
-  --sl-color-sky-300: oklch(84.57% 0.078 210);
-  --sl-color-sky-400: oklch(77.73% 0.114 210);
-  --sl-color-sky-500: oklch(70.9% 0.152 210);
-  --sl-color-sky-600: oklch(59.57% 0.136 210);
-  --sl-color-sky-700: oklch(50.78% 0.116 210);
-  --sl-color-sky-800: oklch(39.84% 0.091 210);
-  --sl-color-sky-900: oklch(29.1% 0.066 210);
-  --sl-color-sky-950: oklch(18.16% 0.041 210);
+  --sl-color-sky-50: oklch(96.72% 0.022 221.81);
+  --sl-color-sky-100: oklch(94.35% 0.03889775392508119 221.11458008256847);
+  --sl-color-sky-200: oklch(89.08% 0.075 221.94);
+  --sl-color-sky-300: oklch(84.08% 0.10755838593679394 224.29001556952124);
+  --sl-color-sky-400: oklch(79.9% 0.13289632700334897 226.65483851463966);
+  --sl-color-sky-500: oklch(76.36% 0.1498448078550191 230.5684052920258);
+  --sl-color-sky-600: oklch(67.92% 0.14 233.08);
+  --sl-color-sky-700: oklch(54.84% 0.113 232.99);
+  --sl-color-sky-800: oklch(41.17% 0.08365291236653223 231.66136719771345);
+  --sl-color-sky-900: oklch(26.24% 0.051 228.1);
+  --sl-color-sky-950: oklch(17.25% 0.031 218.53);
 
   /* Blue */
   --sl-color-blue-50: oklch(98.83% 0.005 240);
