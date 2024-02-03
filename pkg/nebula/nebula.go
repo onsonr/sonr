@@ -11,7 +11,7 @@ import (
 //	labels: HTMX/Frontend,Plane,Github
 //	milestone: 24
 
-//go:embed assets/*
+//go:embed assets
 var assets embed.FS
 
 // ServeAssets serves the assets from the embed.FS including stylesheets, images, and javascript files.
@@ -23,9 +23,9 @@ func ServeAssets() (pattern string, handler http.Handler) {
 //	labels: HTMX/Frontend,Plane,Github
 //	milestone: 24
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                            Aliases to UI Components                            ||
-// ! ||--------------------------------------------------------------------------------||
+// ! ||------------------------------------------------------------------------------||
+// ! ||                            Aliases to UI Elements                            ||
+// ! ||------------------------------------------------------------------------------||
 
 // TODO: Implement Remaining UI Components from Shoelace
 //	labels: HTMX/Frontend,Plane,Github
