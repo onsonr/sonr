@@ -9,12 +9,8 @@
       "name": "Query"
     }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/sonrhq/service/v1/credentials/{origin}/{identifier}": {
       "get": {
@@ -63,9 +59,7 @@
             "default": "PARAMS_TYPE_UNSPECIFIED"
           }
         ],
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     },
     "/sonrhq/service/v1/params": {
@@ -86,9 +80,7 @@
             }
           }
         },
-        "tags": [
-          "Query"
-        ]
+        "tags": ["Query"]
       }
     }
   },

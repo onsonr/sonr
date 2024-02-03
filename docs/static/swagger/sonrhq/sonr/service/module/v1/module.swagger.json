@@ -4,12 +4,8 @@
     "title": "sonrhq/sonr/service/module/v1/module.proto",
     "version": "version not set"
   },
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {},
   "definitions": {
     "google.protobuf.Any": {

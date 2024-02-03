@@ -59,7 +59,6 @@ func IPFSClient(r *http.Request) *rpc.HttpApi {
 	return ipfsC
 }
 
-
 // ServeHTTP calls the next middleware handler.
 func (mw ContextMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	mw.Next.ServeHTTP(w, r)

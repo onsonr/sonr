@@ -1,6 +1,5 @@
 # Paillier Cryptosystem
 
-
 Package paillier contains [Paillier's cryptosystem (1999)](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.112.4035&rep=rep1&type=pdf).
 All routines here from pseudocode §2.5. Fig 1: The Paillier Cryptosystem.
 

@@ -9,12 +9,8 @@
       "name": "Msg"
     }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/sonrhq.sonr.service.v1.Msg/CreateRecord": {
       "post": {
@@ -45,9 +41,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     },
     "/sonrhq.sonr.service.v1.Msg/DeleteRecord": {
@@ -79,9 +73,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     },
     "/sonrhq.sonr.service.v1.Msg/UpdateParams": {
@@ -113,9 +105,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     },
     "/sonrhq.sonr.service.v1.Msg/UpdateRecord": {
@@ -147,9 +137,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     }
   },

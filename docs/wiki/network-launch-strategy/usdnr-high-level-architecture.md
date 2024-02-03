@@ -13,27 +13,27 @@ description: An experimental strategy for establishing a native USD backed token
 ## Workflow
 
 1. **Initialization**:
-   * User initializes a transaction on an app that's registered with Sonr.
-   * Payment Handler API kicks in, using the Service Worker to intercept the transaction.
+   - User initializes a transaction on an app that's registered with Sonr.
+   - Payment Handler API kicks in, using the Service Worker to intercept the transaction.
 2. **Authentication & Authorization**:
-   * User gets authenticated via WebAuthn.
-   * Service Record is queried to check if the user has the necessary permissions for a stablecoin operation.
+   - User gets authenticated via WebAuthn.
+   - Service Record is queried to check if the user has the necessary permissions for a stablecoin operation.
 3. **Transaction Handling**:
-   * Payment Handler API constructs a stablecoin transaction (mint, transfer, etc.).
-   * Transaction is sent to the Universal Stablecoin Module in `x/service`.
+   - Payment Handler API constructs a stablecoin transaction (mint, transfer, etc.).
+   - Transaction is sent to the Universal Stablecoin Module in `x/service`.
 4. **State Update & Validation**:
-   * `x/service` validates the transaction against the Service Record.
-   * If valid, the stablecoin balance in the Service Record is updated.
+   - `x/service` validates the transaction against the Service Record.
+   - If valid, the stablecoin balance in the Service Record is updated.
 5. **Completion**:
-   * Payment Handler API receives a transaction receipt.
-   * The user is notified, and the Service Worker updates the app's frontend accordingly.
+   - Payment Handler API receives a transaction receipt.
+   - The user is notified, and the Service Worker updates the app's frontend accordingly.
 6. **Record-keeping**:
-   * All stablecoin transactions are logged in the Service Record for audit and analytics.
+   - All stablecoin transactions are logged in the Service Record for audit and analytics.
 7. **IBC Handling** (Optional):
-   * If the stablecoin needs to be sent to another chain, IBC packets get constructed and sent.
+   - If the stablecoin needs to be sent to another chain, IBC packets get constructed and sent.
 8. **Monitoring & Auditing**:
-   * Metrics are sent to a monitoring service for real-time tracking.
-   * Periodic audits to ensure security and compliance.
+   - Metrics are sent to a monitoring service for real-time tracking.
+   - Periodic audits to ensure security and compliance.
 
 By using the Payment Handler API, you can create a seamless user experience that abstracts away the complexity of blockchain transactions. This approach also enables you to tap into existing web payment ecosystems, potentially driving faster adoption.
 
@@ -50,24 +50,24 @@ To issue a stablecoin that serves as a decentralized, secure, and efficient medi
 #### Phases
 
 1. **Development & Testing**
-   * Extend `x/service` to add the stablecoin module.
-   * Update Service Records schema.
-   * Integrate Payment Handler API.
+   - Extend `x/service` to add the stablecoin module.
+   - Update Service Records schema.
+   - Integrate Payment Handler API.
 2. **Security Audit**
-   * Conduct a comprehensive security audit to identify vulnerabilities.
-   * Address any issues found to ensure robustness.
+   - Conduct a comprehensive security audit to identify vulnerabilities.
+   - Address any issues found to ensure robustness.
 3. **Private Sale (Testnet)**
-   * Invite-only sale to a select group of early adopters.
-   * Gauge the system's performance and iron out any issues.
+   - Invite-only sale to a select group of early adopters.
+   - Gauge the system's performance and iron out any issues.
 4. **Public Launch**
-   * Full-scale launch of the stablecoin.
-   * Roll out to all users and apps within the Sonr ecosystem.
+   - Full-scale launch of the stablecoin.
+   - Roll out to all users and apps within the Sonr ecosystem.
 5. **Monitoring & Analytics**
-   * Real-time tracking of transactions, usage, and performance.
-   * Periodic audits for security and compliance.
+   - Real-time tracking of transactions, usage, and performance.
+   - Periodic audits for security and compliance.
 6. **Partnerships & Ecosystem Growth**
-   * Integrate with other platforms and services via IBC or other interoperability protocols.
-   * Incentive programs for developers to integrate the stablecoin into their services.
+   - Integrate with other platforms and services via IBC or other interoperability protocols.
+   - Incentive programs for developers to integrate the stablecoin into their services.
 
 #### Key Metrics
 

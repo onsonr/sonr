@@ -147,11 +147,11 @@ func (f Field) ElementFromBytes(bytes []byte) *Element {
 // for the input bytes is: {0, 1, 2, 3, 4}. What is the distribution of the output values produced
 // by this function?
 //
-//   ReducedElementFromBytes(0) => 0
-//   ReducedElementFromBytes(1) => 1
-//   ReducedElementFromBytes(2) => 2
-//   ReducedElementFromBytes(3) => 0
-//   ReducedElementFromBytes(4) => 1
+//	ReducedElementFromBytes(0) => 0
+//	ReducedElementFromBytes(1) => 1
+//	ReducedElementFromBytes(2) => 2
+//	ReducedElementFromBytes(3) => 0
+//	ReducedElementFromBytes(4) => 1
 //
 // For a value space V and random value v, a uniform distribution is defined as P[V = v] = 1/|V|
 // where |V| is to the order of the field. Using the results from above, we see that P[v = 0] = 2/5,

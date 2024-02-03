@@ -22,19 +22,19 @@
 
 ---
 
-__*Sonr is an ibc-enabled blockchain for decentralized identity*__.
+**_Sonr is an ibc-enabled blockchain for decentralized identity_**.
 
-- [x] Passkey based User Accounts. [__Docs__](https://sonr.io/docs/guides/database)
-- [x] DKLS-MPC Powered Wallets *(No seed phrases)*. [__Docs__](https://sonr.io/docs/guides/auth)
-- [x] IPFS Database and Storage. [__Docs__](https://sonr.io/docs/guides/storage)
-  - [x] Redis. [__Docs__](https://sonr.io/docs/guides/api#rest-api-overview)
-  - [x] MySQL. [__Docs__](https://sonr.io/docs/guides/api#graphql-api-overview)
+- [x] Passkey based User Accounts. [**Docs**](https://sonr.io/docs/guides/database)
+- [x] DKLS-MPC Powered Wallets _(No seed phrases)_. [**Docs**](https://sonr.io/docs/guides/auth)
+- [x] IPFS Database and Storage. [**Docs**](https://sonr.io/docs/guides/storage)
+  - [x] Redis. [**Docs**](https://sonr.io/docs/guides/api#rest-api-overview)
+  - [x] MySQL. [**Docs**](https://sonr.io/docs/guides/api#graphql-api-overview)
   - [ ] Matrix chat. [Status](https://github.com/sonrhq/sonr/issues/783)
 - [x] IBC Integrations.
   - [ ] Nomic. [Status](https://github.com/sonrhq/sonr/issues/784)
   - [ ] Evmos. [Status](https://github.com/sonrhq/sonr/issues/785)
   - [ ] Osmosis. [Status](https://github.com/sonrhq/sonr/issues/786)
-- [x] Smart Contracts. [__Docs__](https://sonr.io/docs/guides/storage)
+- [x] Smart Contracts. [**Docs**](https://sonr.io/docs/guides/storage)
 - [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
 - [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
 
@@ -86,10 +86,10 @@ It's recommended to install the following tools:
 
 ## Status
 
-- [X] __Alpha__: Closed testing.
-- [X] __Private Devnet__: May have kinks. [See projects](https://sonr.io/dashboard).
-- [ ] __Public Testnet__: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
-- [ ] __Mainnet__: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
+- [x] **Alpha**: Closed testing.
+- [x] **Private Devnet**: May have kinks. [See projects](https://sonr.io/dashboard).
+- [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
+- [ ] **Mainnet**: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
 We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/sonrhq/sonr/releases) of this repo to get notified of major updates.
 
@@ -114,10 +114,10 @@ See [additional details](https://sonr.io/whitepaper) on these components in the 
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- __Protocol Labs__: For IPFS & Libp2p.
-- __Interchain Foundation__: For Cosmos & IBC.
-- __Tim Berners-Lee__: For the Internet.
-- __Satoshi Nakamoto__: For Bitcoin.
-- __Steve Jobs__: For Taste.
+- **Protocol Labs**: For IPFS & Libp2p.
+- **Interchain Foundation**: For Cosmos & IBC.
+- **Tim Berners-Lee**: For the Internet.
+- **Satoshi Nakamoto**: For Bitcoin.
+- **Steve Jobs**: For Taste.
 
 Thank you for your support and inspiration!

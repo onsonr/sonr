@@ -23,7 +23,7 @@ jobs:
           LABEL: "Plane"
           CLOSE_ISSUES: true
           AUTO_ASSIGN: true
-          IDENTIFIERS: [{"name": "TODO", "labels": ["Github", "Plane"]}]
+          IDENTIFIERS: [{ "name": "TODO", "labels": ["Github", "Plane"] }]
 
   label-issues:
     runs-on: "ubuntu-latest"
@@ -42,7 +42,7 @@ jobs:
       - name: Setup Node.js Environment
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: "16"
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
@@ -52,7 +52,7 @@ jobs:
         env:
           OCO_OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OCO_OPENAI_MAX_TOKENS: 500
-          OCO_OPENAI_BASE_PATH: ''
+          OCO_OPENAI_BASE_PATH: ""
           OCO_DESCRIPTION: false
           OCO_EMOJI: false
           OCO_MODEL: gpt-3.5-turbo-16k

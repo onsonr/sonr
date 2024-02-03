@@ -8,12 +8,12 @@ This document highlights the overall cryptographic mechanisms, token economy, an
 
 ### Network & Protocol
 
-* **Libp2p —** For client communication with validator nodes
-* **IPFS/FIL —** For persistent replicated storage
+- **Libp2p —** For client communication with validator nodes
+- **IPFS/FIL —** For persistent replicated storage
 
 ### Clients
 
-* **WebAuthn** — For universal client key generation with native device biometrics
+- **WebAuthn** — For universal client key generation with native device biometrics
 
 ### Blockchain
 
@@ -31,9 +31,9 @@ On Sonr we will be leveraging a **delegate stake** mechanism in order to **optim
 
 With this being said, there are some challenges in implementing staking:
 
-* The token must already have value
-* Allocating power or influence via staking gives major edge to wealthy users
-* They are frequently subject to gaming and coordination problems
+- The token must already have value
+- Allocating power or influence via staking gives major edge to wealthy users
+- They are frequently subject to gaming and coordination problems
 
 However there is substantial benefit in incorporating a staking mechanism, with the following criteria met we can create a sustainable design:
 
@@ -78,7 +78,7 @@ These components are then utilized to develop the core modules which facilitate 
 | Encrypted IPFS Storage with ECIES Asymmetric Key Encryption. | MPC Wallet Generation, DID Resolution and control, Interchain Accounts | Service Record management and registration, DNS Resolution and Record Verification | Token BuyBacks, Price Feed, and IBC Swaps |
 | IBC Disabled (Private Module)                                | IBC Enabled                                                            | IBC Enabled                                                                        | IBC Enabled                               |
 
-***
+---
 
 ## `x/identity` — Decentralized Identity
 
@@ -90,17 +90,17 @@ The generic representation of an account on the Sonr Blockchain. Each `Identific
 
 During resolution each associated `VerificationMethod` is sourced from the Module’s store with the correct corresponding key-prefix for the relationship. This results in forming the fully populated `DIDDocument` which the client receives.
 
-* Implements base `types.AccountI` implementation
-* Utilized as Interchain Account for cross chain transfers
-* Lighter data structure for faster query resolution in `n(1)` time
+- Implements base `types.AccountI` implementation
+- Utilized as Interchain Account for cross chain transfers
+- Lighter data structure for faster query resolution in `n(1)` time
 
 **Protobuf Definition — Stored On-Chain**
 
 ```protobuf
 message Identification {
-  string id = 1; 
-  string owner = 2; 
-  string primary_alias = 3; 
+  string id = 1;
+  string owner = 2;
+  string primary_alias = 3;
   repeated string authentication = 4;
   repeated string assertion_method = 5;
   repeated string capability_invocation = 6;
@@ -115,8 +115,8 @@ message Identification {
 
 The fully resolved document which contains all Verification Relationships associated with a user. This structure is not fully stored on chain in order to reduce the store size for the module.
 
-* This document complies with the W3C specification for decentralized identifier resolution, construction, and storage.
-* This makes Sonr’s DIDDocument’s network agnostic and resolvable in any network capable environment
+- This document complies with the W3C specification for decentralized identifier resolution, construction, and storage.
+- This makes Sonr’s DIDDocument’s network agnostic and resolvable in any network capable environment
 
 **Protobuf Definition — Constructed during Query**
 
@@ -139,19 +139,19 @@ message DIDDocument {
 
 A VerificationMethod represents a verification method that can be used to authenticate the DID subject or perform other cryptographic operations.
 
-* Utilized for constructing Credential Descriptors
-* Used to identify blockchain wallets and accounts which belong to an identification
+- Utilized for constructing Credential Descriptors
+- Used to identify blockchain wallets and accounts which belong to an identification
 
 \*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\*\***Protobuf Definition — Embedded into a `VerificationRelationship`**
 
 ```protobuf
 message VerificationMethod {
-  string id = 1; 
-  string type = 2; 
-  string controller = 3; 
-  string public_key_jwk = 4; 
-  string public_key_multibase = 5; 
-  string blockchain_account_id = 6; 
+  string id = 1;
+  string type = 2;
+  string controller = 3;
+  string public_key_jwk = 4;
+  string public_key_multibase = 5;
+  string blockchain_account_id = 6;
   string metadata = 7;
 }
 ```
@@ -160,17 +160,17 @@ message VerificationMethod {
 
 The representation material for proving ownership over a set of cryptographic keys. Verification relationship’s represent a relationship between a verification method and a specific verification purpose (e.g., authentication, assertion, etc.).
 
-* Implements base `types.AccountI` implementation
-* Utilized as Interchain Account for cross chain transfers
-* Lighter data structure for faster query resolution in `n(1)` time
+- Implements base `types.AccountI` implementation
+- Utilized as Interchain Account for cross chain transfers
+- Lighter data structure for faster query resolution in `n(1)` time
 
 **Protobuf Definition — Stored On-Chain**
 
 ```protobuf
 message VerificationRelationship {
-  VerificationMethod verification_method = 1; 
-  string reference = 2; 
-  string type = 3; 
+  VerificationMethod verification_method = 1;
+  string reference = 2;
+  string type = 3;
   string owner = 4;
 }
 ```
@@ -207,7 +207,7 @@ The security and confidentiality of these keyshares are of paramount importance 
 
 When a keyshare is generated in Sonr's system, it is encrypted and stored in an IPFS vault. This vault is then "pinned," meaning it is marked for preservation and can be retrieved reliably from the IPFS network. This approach combines the benefits of MPC's secure computation with IPFS's resilient storage to create a robust security model for managing digital identities and wallets.
 
-***
+---
 
 ## `x/service` — Application Services
 
@@ -292,7 +292,7 @@ The proof and the challenge are then sent back to the user. The user verifies th
 
 The challenge is kept private, providing privacy to the user's authentication activity. Simultaneously, the deterministic nature of the VRF ensures that any disputes can be resolved, as anyone can use the proof and the validator's public key to confirm the challenge's correctness.
 
-***
+---
 
 ## `rails:highway` — Secure Vaults
 

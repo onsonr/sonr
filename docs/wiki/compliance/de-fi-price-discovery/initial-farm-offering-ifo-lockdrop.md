@@ -9,7 +9,7 @@ description: >-
 
 High APRs are often used to attract liquidity/TVL this way, but sustainability of this model is often questionable, and should hence be used with care/only to bootstrap the protocol.
 
-***
+---
 
 ## Adoption Rate
 

@@ -5,21 +5,17 @@
     "ghcr.io/withfig/features/fig:1": {},
     "ghcr.io/devcontainers/features/go:1": {},
     "ghcr.io/earthly/devcontainer-features/earthly:1": {
-      "bootstrap": true
-    }
+      "bootstrap": true,
+    },
   },
   "hostRequirements": {
-    "cpus": 12
+    "cpus": 12,
   },
   "waitFor": "initializeCommand",
-  "postAttachCommand": [
-    
-  ],
+  "postAttachCommand": [],
   "customizations": {
     "codespaces": {
-      "openFiles": [
-        "README.md"
-      ]
+      "openFiles": ["README.md"],
     },
     "vscode": {
       "extensions": [
@@ -39,27 +35,19 @@
         "Postman.postman-for-vscode",
         "CiberTurtle.sharp-icons",
         "zxh404.vscode-proto3",
-        "SeyyedKhandon.firacode"
-      ]
-    }
+        "SeyyedKhandon.firacode",
+      ],
+    },
   },
   "portsAttributes": {
     "4001": {
       "label": "IceFire DB",
-      "onAutoForward": "ignore"
+      "onAutoForward": "ignore",
     },
     "6001": {
       "label": "IceFire Redis Proxy",
-      "onAutoForward": "ignore"
-    }
+      "onAutoForward": "ignore",
+    },
   },
-  "forwardPorts": [
-    1317,
-    4001,
-    "localhost:6001",
-    8080,
-    9090,
-    26656,
-    26657
-  ]
+  "forwardPorts": [1317, 4001, "localhost:6001", 8080, 9090, 26656, 26657],
 }

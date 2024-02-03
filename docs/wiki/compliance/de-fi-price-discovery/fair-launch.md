@@ -8,7 +8,7 @@ description: >-
 
 Instead, tokens are released to the public in a manner that does not favor any particular party by utilizing third party tolls/mechanisms such as StreamSwap.
 
-***
+---
 
 ## Adoption Rate
 

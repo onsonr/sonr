@@ -8,11 +8,11 @@ description: >-
 
 ## O**bjective**
 
-* Alleviate decentralized organization management with on-chain implementation
-* Enforce Compliance with WebAuthn Relaying Party Specification for consistency
-* Enable Domain Origin support with DNS TXT Record Verification
+- Alleviate decentralized organization management with on-chain implementation
+- Enforce Compliance with WebAuthn Relaying Party Specification for consistency
+- Enable Domain Origin support with DNS TXT Record Verification
 
-***
+---
 
 ## Solution
 
@@ -22,21 +22,23 @@ description: >-
 
 #### Traditional & Handshake (HNS) DNS Verification
 
-***
+---
 
 ## Definitions
 
-*   `DIDCommMessaging`
+- `DIDCommMessaging`
 
-    Description of the new term
-*   `Relaying Party`
+  Description of the new term
 
-    Description of the new term
-*   `Permissions`
+- `Relaying Party`
 
-    Description of the new term
+  Description of the new term
 
-***
+- `Permissions`
+
+  Description of the new term
+
+---
 
 ## Sequence Methods
 
@@ -44,17 +46,17 @@ description: >-
 
 The Blockchain creates an on-chain multisig using the `x/group` module and sets the delegator as the owner.
 
-* During Testnet; this is alleviated by requests to the Faucet airdrop
-* Stake **$SNR 500** to unlock elevated developer permissions (i.e. Creating scoped Personal Access Tokens, Registering Service Records, etc.)
+- During Testnet; this is alleviated by requests to the Faucet airdrop
+- Stake **$SNR 500** to unlock elevated developer permissions (i.e. Creating scoped Personal Access Tokens, Registering Service Records, etc.)
 
 #### 2. Configuring a Service
 
 Upon successful authentication a New record of the event is stored on chain with an encrypted fingerprint and the account which was authenticated.
 
-* Permission scope for app determined by utilized Network features
-* Validator initializes record with parameters for functioning as a Relaying party and the minimum user identifier requirements
+- Permission scope for app determined by utilized Network features
+- Validator initializes record with parameters for functioning as a Relaying party and the minimum user identifier requirements
 
-***
+---
 
 ## Economic Impact
 
@@ -78,11 +80,11 @@ Upon successful authentication a New record of the event is stored on chain with
 | Persisting a Username    | USNR 200,000,000   | 30 Days       |
 | Elevate Developer Access | USNR 500,000,000   | 12 Months     |
 
-***
+---
 
 ## Implementation
 
-***
+---
 
 ## Status
 
@@ -92,9 +94,9 @@ This proposal is **under development** by the core Sonr Team.
 | ----------------- | ------- |
 | Target Completion | Q4 2023 |
 
-***
+---
 
 ## References
 
-* [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
-* [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)
+- [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
+- [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)

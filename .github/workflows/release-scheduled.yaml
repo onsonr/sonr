@@ -1,7 +1,7 @@
 name: Release Scheduled
 on:
   schedule:
-    - cron: '0 0 1-10,20-30 * 4'
+    - cron: "0 0 1-10,20-30 * 4"
 
 jobs:
   release-publish:
@@ -18,17 +18,14 @@ jobs:
           LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
           git checkout $LATEST_TAG
 
-      -
-        uses: actions/setup-go@v5
+      - uses: actions/setup-go@v5
         with:
-          go-version: '>=1.21'
-      -
-        name: Install Dependencies
+          go-version: ">=1.21"
+      - name: Install Dependencies
         run: |
           go install github.com/charmbracelet/mods@latest
           go install github.com/go-task/task/v3/cmd/task@latest
-      -
-        uses: goreleaser/goreleaser-action@v5
+      - uses: goreleaser/goreleaser-action@v5
         with:
           distribution: goreleaser-pro
           version: latest
