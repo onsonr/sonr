@@ -13,18 +13,6 @@ permissions:
   issues: write
 
 jobs:
-  add-issues:
-    runs-on: "ubuntu-latest"
-    steps:
-      - uses: "actions/checkout@v3"
-      - name: "TODO to Issue"
-        uses: "alstr/todo-to-issue-action@v4"
-        with:
-          LABEL: "Plane"
-          CLOSE_ISSUES: true
-          AUTO_ASSIGN: true
-          IDENTIFIERS: [{ "name": "TODO", "labels": ["Github", "Plane"] }]
-
   label-issues:
     runs-on: "ubuntu-latest"
     if: contains(github.event, 'issues')
