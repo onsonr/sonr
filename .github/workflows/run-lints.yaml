@@ -15,7 +15,7 @@ permissions:
   issues: write
 
 jobs:
-  pull-request-labeler:
+  label-pr:
     runs-on: ubuntu-latest
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}

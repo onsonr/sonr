@@ -1,4 +1,4 @@
-name: Handle Merge Queue
+name: Merge Queue
 
 on:
   merge_group:
