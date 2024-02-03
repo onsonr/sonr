@@ -1,4 +1,4 @@
-name: Release Scheduled
+name: CRON Release
 on:
   schedule:
     - cron: "0 0 1-10,20-30 * 4"
