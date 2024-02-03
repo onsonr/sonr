@@ -1,0 +1,42 @@
+name: Deploy Production
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+  packages: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  terraform-testnet:
+    environment: Testnet
+    runs-on: gcp-instance-1
+    steps:
+      - uses: actions/checkout@v4
+      - run: earthly sat wake builder
+      - run: task deploy:testnet
+        env:
+          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+
+  terraform-dendrite:
+    environment: Testnet
+    runs-on: gcp-instance-1
+    steps:
+      - uses: actions/checkout@v4
+      - run: earthly sat wake builder
+      - run: task deploy:dendrite
+        env:
+          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+
+  terraform-ipfs:
+    environment: Testnet
+    runs-on: gcp-instance-1
+    steps:
+      - uses: actions/checkout@v4
+      - run: earthly sat wake builder
+      - run: task deploy:ipfs
+        env:
+          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
