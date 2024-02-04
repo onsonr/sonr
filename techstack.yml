@@ -1,0 +1,1754 @@
+repo_name: sonrhq/sonr
+report_id: 976b4404005ca5ba94460a636f9efe36
+version: 0.1
+repo_type: Public
+timestamp: '2024-02-04T10:26:08+00:00'
+requested_by: prnk28
+provider: github
+branch: master
+detected_tools_count: 124
+tools:
+- name: CSS 3
+  description: The latest evolution of the Cascading Style Sheets language
+  website_url: https://developer.mozilla.org/en-US/docs/Web/CSS/CSS3
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/6727/css.png
+  detection_source_url: https://github.com/sonrhq/sonr
+  detection_source: Repo Metadata
+- name: Go Ethereum
+  description: Open source platform to write and distribute decentralized applications
+  website_url: https://geth.ethereum.org/
+  license: LGPL-3.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/9003/DOnqq1OM_400x400.jpg
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+- name: Golang
+  description: An open source programming language that makes it easy to build simple,
+    reliable, and efficient software
+  website_url: http://golang.org/
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1005/O6AczwfV_400x400.png
+  detection_source_url: https://github.com/sonrhq/sonr
+  detection_source: Repo Metadata
+- name: JavaScript
+  description: Lightweight, interpreted, object-oriented language with first-class
+    functions
+  website_url: https://developer.mozilla.org/en-US/docs/Web/JavaScript
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1209/javascript.jpeg
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/pkg/nebula/assets/js/htmx.min.js
+  detection_source: pkg/nebula/assets/js/htmx.min.js
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: Rust
+  description: A safe, concurrent, practical language
+  website_url: http://www.rust-lang.org/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/1070/v7txhrjp9pdqrkdtxxp0.png
+  detection_source_url: https://github.com/sonrhq/sonr
+  detection_source: Repo Metadata
+- name: SQL
+  description: It is a domain-specific language used in programming
+  website_url: https://en.wikipedia.org/wiki/SQL
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/2271/default_068d33483bba6b81ee13fbd4dc7aab9780896a54.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/networks/testnet-1/schema.sql
+  detection_source: networks/testnet-1/schema.sql
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-16 23:20:00.000000000 Z
+- name: Protobuf
+  description: Google's data interchange format
+  website_url: https://developers.google.com/protocol-buffers/
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Serialization Frameworks
+  image_url: https://img.stackshare.io/service/4393/ma2jqJKH_400x400.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: gRPC
+  description: A high performance, open-source universal RPC framework
+  website_url: https://grpc.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Remote Procedure Call (RPC)
+  image_url: https://img.stackshare.io/service/4670/default_d811b0ac72205af84aca21f967594338580be913.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: Codecov
+  description: Hosted coverage reports with awesome features to enhance your CI workflow
+  website_url: https://codecov.io/
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Code Coverage
+  image_url: https://img.stackshare.io/service/2673/Codecov_Mark_Circle_Pink.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/codecov.yml
+  detection_source: codecov.yml
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-11-16 16:38:45.000000000 Z
+- name: Datadog
+  description: Unify logs, metrics, and traces from across your distributed infrastructure.
+  website_url: https://www.datadoghq.com/lpg/?utm_source=Advertisement&utm_medium=StackShare&utm_campaign=StackShare-Other
+  open_source: false
+  hosted_saas: true
+  category: Monitoring
+  sub_category: Performance Monitoring
+  image_url: https://img.stackshare.io/service/669/default_34b3b9b42d07c33ac47ecdff75dd6f4f82aa70ee.jpg
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: Git
+  description: Fast, scalable, distributed revision control system
+  website_url: http://git-scm.com/
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Version Control System
+  image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/sonrhq/sonr
+  detection_source: Repo Metadata
+- name: GitHub Actions
+  description: Automate your workflow from idea to production
+  website_url: https://github.com/features/actions
+  open_source: false
+  hosted_saas: true
+  category: Build, Test, Deploy
+  sub_category: Continuous Integration
+  image_url: https://img.stackshare.io/service/11563/actions.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/.github/workflows/deploy.yaml
+  detection_source: ".github/workflows/deploy.yaml"
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: Kubernetes
+  description: Manage a cluster of Linux containers as a single system to accelerate
+    Dev and simplify Ops
+  website_url: http://kubernetes.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Container Tools
+  image_url: https://img.stackshare.io/service/1885/21_d3cvM.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: OpenCensus
+  description: A single distribution of libraries that automatically collect traces
+    and send them to any backend
+  website_url: https://opencensus.io/
+  open_source: false
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Performance Monitoring
+  image_url: https://img.stackshare.io/service/10794/EpBd2Xrw_400x400.jpg
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: Prometheus
+  description: An open-source service monitoring system and time series database,
+    developed by SoundCloud
+  website_url: http://prometheus.io/
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Monitoring
+  sub_category: Monitoring Tools
+  image_url: https://img.stackshare.io/service/2501/default_3cf1b307194b26782be5cb209d30360580ae5b3c.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+- name: Testify
+  description: A toolkit with common assertions and mocks that plays nicely with the
+    standard library
+  website_url: https://github.com/stretchr/testify
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Go Testing
+  image_url: https://img.stackshare.io/service/8695/stretchr.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: Visual Studio Code
+  description: Build and debug modern web and cloud applications, by Microsoft
+  website_url: https://code.visualstudio.com/
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Build, Test, Deploy
+  sub_category: Text Editor
+  image_url: https://img.stackshare.io/service/4202/Visual_Studio_Code_logo.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/.vscode/tasks.json
+  detection_source: ".vscode/tasks.json"
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: Shell
+  description: A shell is a text-based terminal, used for manipulating programs and
+    files. Shell scripts typically manage program execution.
+  website_url: https://en.wikipedia.org/wiki/Shell_script
+  open_source: false
+  hosted_saas: false
+  category: Languages & Frameworks
+  sub_category: Languages
+  image_url: https://img.stackshare.io/service/4631/default_c2062d40130562bdc836c13dbca02d318205a962.png
+  detection_source_url: https://github.com/sonrhq/sonr
+  detection_source: Repo Metadata
+- name: afero
+  description: A FileSystem Abstraction System for Go
+  package_url: https://pkg.go.dev/github.com/spf13/afero
+  version: 1.1.2
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: atomicfile
+  description: Package atomicfile provides an atomically written/replaced file
+  package_url: https://pkg.go.dev/github.com/facebookgo/atomicfile
+  version: 0.0.0
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: btcd
+  description: An alternative full node bitcoin implementation written in Go
+  package_url: https://pkg.go.dev/github.com/btcsuite/btcd
+  version: 0.20.1
+  license: ISC
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-19 19:11:31.000000000 Z
+- name: btree
+  description: Package btree implements in-memory B-Trees of arbitrary degree
+  package_url: https://pkg.go.dev/github.com/google/btree
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: cast
+  description: Safe and easy casting from one type to another in Go
+  package_url: https://pkg.go.dev/github.com/spf13/cast
+  version: 1.3.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: cespare/xxhash
+  description: A Go implementation of the 64-bit xxHash algorithm
+  package_url: https://pkg.go.dev/github.com/cespare/xxhash
+  version: 1.1.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: chainhash
+  description: An alternative full node bitcoin implementation written in Go
+  package_url: https://pkg.go.dev/github.com/btcsuite/btcd/chaincfg/chainhash
+  version: 1.0.0
+  license: ISC
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: client_model
+  description: Data model artifacts for Prometheus
+  package_url: https://pkg.go.dev/github.com/prometheus/client_model
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: cobra
+  description: A Commander for modern Go CLI interactions
+  package_url: https://pkg.go.dev/github.com/spf13/cobra
+  version: 0.0.3
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: color
+  description: Color package for Go
+  package_url: https://pkg.go.dev/github.com/fatih/color
+  version: 1.7.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: common
+  description: Go libraries shared across Prometheus components and libraries
+  package_url: https://pkg.go.dev/github.com/prometheus/common
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: compress
+  description: Optimized compression packages
+  package_url: https://pkg.go.dev/github.com/klauspost/compress
+  version: 1.4.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: cors
+  description: Go net/http configurable handler to handle CORS requests
+  package_url: https://pkg.go.dev/github.com/rs/cors
+  version: 1.7.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: crypto
+  description: Go supplementary cryptography libraries
+  package_url: https://pkg.go.dev/golang.org/x/crypto
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+  vulnerabilities:
+  - name: Improper Verification of Cryptographic Signature in golang.org/x/crypto
+    cve_id: CVE-2020-9283
+    cve_url: https://github.com/advisories/GHSA-ffhg-7mh4-33c4
+    detected_date: Aug 22
+    severity: moderate
+    first_patched: 0.0.0-20200220183623-bac4c82f6975
+- name: datadog-go
+  description: Go client library for datadog
+  package_url: https://pkg.go.dev/github.com/DataDog/datadog-go
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: dbus
+  description: Native Go bindings for D-Bus
+  package_url: https://pkg.go.dev/github.com/godbus/dbus
+  version: 0.0.0
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: dns
+  description: DNS library in Go
+  package_url: https://pkg.go.dev/github.com/miekg/dns
+  version: 1.0.14
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+  vulnerabilities:
+  - name: Insecure generation of random numbers
+    cve_id: CVE-2019-19794
+    cve_url: https://github.com/advisories/GHSA-44r7-7p62-q3fr
+    detected_date: Aug 22
+    severity: moderate
+    first_patched: 1.1.25
+- name: easyjson
+  description: Fast JSON serializer for golang
+  package_url: https://pkg.go.dev/github.com/mailru/easyjson
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: errors
+  description: Simple error handling primitives
+  package_url: https://pkg.go.dev/github.com/pkg/errors
+  version: 0.8.0
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: errwrap
+  description: Errwrap is a Go
+  package_url: https://pkg.go.dev/github.com/hashicorp/errwrap
+  version: 1.0.0
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: exp
+  description: Experimental and deprecated packages
+  package_url: https://pkg.go.dev/golang.org/x/exp
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: fsnotify
+  description: Cross-platform file system notifications for Go
+  package_url: https://pkg.go.dev/github.com/fsnotify/fsnotify
+  version: 1.4.7
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: glog
+  description: Leveled execution logs for Go
+  package_url: https://pkg.go.dev/github.com/golang/glog
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-amino
+  description: Protobuf3 with Interface support - Designed for blockchains
+  package_url: https://pkg.go.dev/github.com/tendermint/go-amino
+  version: 0.16.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: go-block-format
+  package_url: https://pkg.go.dev/github.com/ipfs/go-block-format
+  version: 0.2.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-colorable
+  description: Go-colorable Colorable writer for windows
+  package_url: https://pkg.go.dev/github.com/mattn/go-colorable
+  version: 0.0.9
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-deadlock
+  description: Online deadlock detection in go
+  package_url: https://pkg.go.dev/github.com/sasha-s/go-deadlock
+  version: 0.3.1
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-difflib
+  description: Partial port of Python difflib package to Go
+  package_url: https://pkg.go.dev/github.com/pmezard/go-difflib
+  version: 1.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: go-ethereum
+  description: Official Go implementation of the Ethereum protocol
+  package_url: https://pkg.go.dev/github.com/ethereum/go-ethereum
+  version: 1.10.26
+  license: LGPL-3.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+- name: go-farm
+  description: 'Go-farm: a pure-Go farmhash implementation'
+  package_url: https://pkg.go.dev/github.com/dgryski/go-farm
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-hclog
+  description: A common logging package for HashiCorp tools
+  package_url: https://pkg.go.dev/github.com/hashicorp/go-hclog
+  version: 0.9.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-homedir
+  description: Go library for detecting and expanding the user's home directory without
+    cgo
+  package_url: https://pkg.go.dev/github.com/mitchellh/go-homedir
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-humanize
+  description: Go Humans!
+  package_url: https://pkg.go.dev/github.com/dustin/go-humanize
+  version: 0.0.0
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-immutable-radix
+  description: An immutable radix tree implementation in Golang
+  package_url: https://pkg.go.dev/github.com/hashicorp/go-immutable-radix
+  version: 1.0.0
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-isatty
+  description: Package isatty implements interface to isatty
+  package_url: https://pkg.go.dev/github.com/mattn/go-isatty
+  version: 0.0.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-libp2p
+  description: Libp2p implementation in Go
+  package_url: https://pkg.go.dev/github.com/libp2p/go-libp2p
+  version: 0.32.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: go-libp2p-kad-dht
+  description: A Kademlia DHT implementation on go-libp2p
+  package_url: https://pkg.go.dev/github.com/libp2p/go-libp2p-kad-dht
+  version: 0.24.4
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: go-metrics
+  description: Go port of Coda Hale's Metrics library
+  package_url: https://pkg.go.dev/github.com/rcrowley/go-metrics
+  version: 0.0.0
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-multibase
+  description: Implementation of multibase parser in go
+  package_url: https://pkg.go.dev/github.com/multiformats/go-multibase
+  version: 0.2.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-multierror
+  description: A Go
+  package_url: https://pkg.go.dev/github.com/hashicorp/go-multierror
+  version: 1.0.0
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-plugin
+  description: Golang plugin system over RPC
+  package_url: https://pkg.go.dev/github.com/hashicorp/go-plugin
+  version: 1.5.2
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: go-runewidth
+  description: Go-runewidth Provides functions to get fixed width of the character
+    or string
+  package_url: https://pkg.go.dev/github.com/mattn/go-runewidth
+  version: 0.0.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: go-spew
+  description: Implements a deep pretty printer for Go data structures to aid in debugging
+  package_url: https://pkg.go.dev/github.com/davecgh/go-spew
+  version: 0.0.0
+  license: ISC
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: go-testing-interface
+  description: Go
+  package_url: https://pkg.go.dev/github.com/mitchellh/go-testing-interface
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: gogo/protobuf
+  description: Protocol Buffers for Go with Gadgets
+  package_url: https://pkg.go.dev/github.com/gogo/protobuf
+  version: 1.1.1
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+  vulnerabilities:
+  - name: Improper Input Validation in GoGo Protobuf
+    cve_id: CVE-2021-3121
+    cve_url: https://github.com/advisories/GHSA-c3h9-896r-86jm
+    detected_date: Mar 30
+    severity: high
+    first_patched: 1.3.2
+- name: goid
+  description: Goid Demo of how to programatically retrieve the current goroutine's
+    ID
+  package_url: https://pkg.go.dev/github.com/petermattis/goid
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: golang-lru
+  description: Golang LRU cache
+  package_url: https://pkg.go.dev/github.com/hashicorp/golang-lru
+  version: 0.5.0
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: goleveldb
+  description: LevelDB key/value database in Go
+  package_url: https://pkg.go.dev/github.com/syndtr/goleveldb
+  version: 1.0.1
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: google/uuid
+  description: 'Go package for UUIDs based on RFC 4122 and DCE 1.1: Authentication
+    and Security Services'
+  package_url: https://pkg.go.dev/github.com/google/uuid
+  version: 1.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: gopacket
+  description: Provides packet processing capabilities for Go
+  package_url: https://pkg.go.dev/github.com/google/gopacket
+  version: 1.1.19
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: goprocess
+  description: Goprocess - like Context, but with good close semantics
+  package_url: https://pkg.go.dev/github.com/jbenet/goprocess
+  version: 0.1.4
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: gotenv
+  description: Load environment variables dynamically in Go
+  package_url: https://pkg.go.dev/github.com/subosito/gotenv
+  version: 1.6.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: handlers
+  description: "A collection of useful middleware for Go HTTP services &amp; web applications
+    \U0001F6C3"
+  package_url: https://pkg.go.dev/github.com/gorilla/handlers
+  version: 1.5.1
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: hcl
+  description: HCL is the HashiCorp configuration language
+  package_url: https://pkg.go.dev/github.com/hashicorp/hcl
+  version: 1.0.0
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: httpsnoop
+  description: Package httpsnoop provides an easy way to capture http related metrics
+  package_url: https://pkg.go.dev/github.com/felixge/httpsnoop
+  version: 1.0.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: ini.v1
+  description: Package ini provides INI file read and write functionality in Go
+  package_url: https://pkg.go.dev/gopkg.in/ini.v1
+  version: 1.67.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: ipfs/go-datastore
+  description: Key-value datastore interfaces
+  package_url: https://pkg.go.dev/github.com/ipfs/go-datastore
+  version: 0.5.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: ipfs/go-log
+  description: A logging library used by go-ipfs
+  package_url: https://pkg.go.dev/github.com/ipfs/go-log
+  version: 1.0.5
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: jose2go
+  description: Golang
+  package_url: https://pkg.go.dev/github.com/dvsekhvalnov/jose2go
+  version: 1.5.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: jsonpointer
+  description: Fork of gojsonpointer with support for structs
+  package_url: https://pkg.go.dev/github.com/go-openapi/jsonpointer
+  version: 0.19.3
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: jsonreference
+  description: Fork of gojsonreference with support for structs
+  package_url: https://pkg.go.dev/github.com/go-openapi/jsonreference
+  version: 0.20.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: kit
+  description: A standard library for microservices
+  package_url: https://pkg.go.dev/github.com/go-kit/kit
+  version: 0.8.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: kr/text
+  description: Miscellaneous functions for formatting text
+  package_url: https://pkg.go.dev/github.com/kr/text
+  version: 0.1.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: ksuid
+  description: K-Sortable Globally Unique IDs
+  package_url: https://pkg.go.dev/github.com/segmentio/ksuid
+  version: 1.0.4
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: ledger-cosmos-go
+  description: Ledger-cosmos-go This project is work in progress
+  package_url: https://pkg.go.dev/github.com/cosmos/ledger-cosmos-go
+  version: 0.13.3
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: levigo
+  description: Levigo is a Go wrapper for LevelDB
+  package_url: https://pkg.go.dev/github.com/jmhodges/levigo
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: logfmt
+  description: Package logfmt marshals and unmarshals logfmt messages
+  package_url: https://pkg.go.dev/github.com/go-logfmt/logfmt
+  version: 0.3.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: logr
+  description: A simple logging interface for Go
+  package_url: https://pkg.go.dev/github.com/go-logr/logr
+  version: 1.2.2
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-05 07:54:10.000000000 Z
+- name: mapstructure
+  description: Go library for decoding generic map values into native Go structures
+  package_url: https://pkg.go.dev/github.com/mitchellh/mapstructure
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-01 06:32:43.000000000 Z
+- name: mobile
+  description: Go on Mobile
+  package_url: https://pkg.go.dev/golang.org/x/mobile
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+- name: mock
+  description: GoMock is a mocking framework for the Go programming language
+  package_url: https://pkg.go.dev/github.com/golang/mock
+  version: 1.1.1
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: mousetrap
+  description: Detect starting from Windows explorer
+  package_url: https://pkg.go.dev/github.com/inconshreveable/mousetrap
+  version: 1.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: multiformats/go-multiaddr
+  description: Composable and future-proof network addresses
+  package_url: https://pkg.go.dev/github.com/multiformats/go-multiaddr
+  version: 0.2.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: multiformats/go-multihash
+  description: Multihash implementation in Go
+  package_url: https://pkg.go.dev/github.com/multiformats/go-multihash
+  version: 0.0.8
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: murmur3
+  description: Native MurmurHash3 Go implementation
+  package_url: https://pkg.go.dev/github.com/spaolacci/murmur3
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: mux
+  description: "A powerful HTTP router and URL matcher for building Go web servers
+    with \U0001F98D"
+  package_url: https://pkg.go.dev/github.com/gorilla/mux
+  version: 1.6.2
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: net
+  description: Go supplementary network libraries
+  package_url: https://pkg.go.dev/golang.org/x/net
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: opentracing-go
+  description: OpenTracing API for Go
+  package_url: https://pkg.go.dev/github.com/opentracing/opentracing-go
+  version: 1.0.2
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: perks
+  description: Effective Computation of Things
+  package_url: https://pkg.go.dev/github.com/beorn7/perks
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: pflag
+  description: Drop-in replacement for Go's flag package
+  package_url: https://pkg.go.dev/github.com/spf13/pflag
+  version: 1.0.1
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: pq
+  description: Pure Go Postgres driver for database/sql
+  package_url: https://pkg.go.dev/github.com/lib/pq
+  version: 1.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: pretty
+  description: Pretty printing for Go values
+  package_url: https://pkg.go.dev/github.com/kr/pretty
+  version: 0.1.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: procfs
+  description: Procfs provides functions to retrieve system
+  package_url: https://pkg.go.dev/github.com/prometheus/procfs
+  version: 0.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: properties
+  description: Java properties scanner for Go
+  package_url: https://pkg.go.dev/github.com/magiconair/properties
+  version: 1.8.0
+  license: BSD-2-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: proto
+  description: Go support for Google's protocol buffers
+  package_url: https://pkg.go.dev/github.com/golang/protobuf/proto
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.mod
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: readline
+  description: Readline is a pure go
+  package_url: https://pkg.go.dev/github.com/chzyer/readline
+  version: 0.0.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: ristretto
+  description: A high performance memory-bound Go cache
+  package_url: https://pkg.go.dev/github.com/dgraph-io/ristretto
+  version: 0.0.3
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: run
+  description: A universal mechanism to manage goroutine lifecycles
+  package_url: https://pkg.go.dev/github.com/oklog/run
+  version: 1.0.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: sentry-go
+  description: Official Sentry SDK for Go
+  package_url: https://pkg.go.dev/github.com/getsentry/sentry-go
+  version: 0.25.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: sha256-simd
+  description: Accelerate SHA256 computations in pure Go using AVX512 and AVX2 for
+    Intel and ARM64 for ARM
+  package_url: https://pkg.go.dev/github.com/minio/sha256-simd
+  version: 0.1.1
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: snappy
+  description: The Snappy compression format in the Go programming language
+  package_url: https://pkg.go.dev/github.com/golang/snappy
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: speakeasy
+  description: Cross-platform Golang helpers for reading password input without cgo
+  package_url: https://pkg.go.dev/github.com/bgentry/speakeasy
+  version: 0.1.0
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: spec
+  description: Openapi specification object model
+  package_url: https://pkg.go.dev/github.com/go-openapi/spec
+  version: 0.20.6
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: swag
+  description: Goodie bag in use in the go-openapi projects
+  package_url: https://pkg.go.dev/github.com/go-openapi/swag
+  version: 0.19.5
+  license: Apache-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: swaggo/swag
+  description: Automatically generate RESTful API documentation with Swagger 2.0 for
+    Go
+  package_url: https://pkg.go.dev/github.com/swaggo/swag
+  version: 1.16.3
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-02-04 03:03:38.000000000 Z
+- name: sys
+  description: Go packages for low-level interaction with the operating system
+  package_url: https://pkg.go.dev/golang.org/x/sys
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: text
+  description: Go text processing support
+  package_url: https://pkg.go.dev/golang.org/x/text
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: tidwall/btree
+  description: B-Tree implementation for Go
+  package_url: https://pkg.go.dev/github.com/tidwall/btree
+  version: 1.7.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-16 00:07:20.000000000 Z
+- name: tools
+  description: Go Tools
+  package_url: https://pkg.go.dev/golang.org/x/tools
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2024-01-28 01:53:00.000000000 Z
+- name: viper
+  description: Go configuration with fangs
+  package_url: https://pkg.go.dev/github.com/spf13/viper
+  version: 1.3.2
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: websocket
+  description: A fast
+  package_url: https://pkg.go.dev/github.com/gorilla/websocket
+  version: 0.0.0
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+  vulnerabilities:
+  - name: Integer overflow in github.com/gorilla/websocket
+    cve_id: CVE-2020-27813
+    cve_url: https://github.com/advisories/GHSA-3xh2-74w9-5vxm
+    detected_date: Aug 22
+    severity: high
+    first_patched: 1.4.1
+- name: yaml.v2
+  description: YAML support for the Go language
+  package_url: https://pkg.go.dev/gopkg.in/yaml.v2
+  version: 2.0.0
+  license: LGPL-3.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-15 22:54:44.000000000 Z
+  vulnerabilities:
+  - name: Excessive Platform Resource Consumption within a Loop in Kubernetes
+    cve_id: CVE-2019-11254
+    cve_url: https://github.com/advisories/GHSA-wxc4-f4m6-wwqv
+    detected_date: Jan 28
+    severity: moderate
+    first_patched: 2.2.8
+- name: yamux
+  description: Golang connection multiplexing library
+  package_url: https://pkg.go.dev/github.com/hashicorp/yamux
+  version: 0.1.1
+  license: MPL-2.0
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: zap
+  description: Blazing fast, structured, leveled logging in Go
+  package_url: https://pkg.go.dev/go.uber.org/zap
+  version: 1.9.1
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
+- name: zerolog
+  description: Zero Allocation JSON Logger
+  package_url: https://pkg.go.dev/github.com/rs/zerolog
+  version: 1.31.0
+  license: MIT
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-18 07:21:27.000000000 Z
+- name: zstd
+  description: Zstd wrapper for Go
+  package_url: https://pkg.go.dev/github.com/DataDog/zstd
+  version: 1.4.5
+  license: Other
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: Go Modules Packages
+  image_url: https://img.stackshare.io/package/go-packages/image.png
+  detection_source_url: https://github.com/sonrhq/sonr/blob/master/go.sum
+  detection_source: go.mod
+  last_updated_by: Prad Nukala
+  last_updated_on: 2023-12-04 16:12:20.000000000 Z
