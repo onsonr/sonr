@@ -5,8 +5,7 @@ before:
   # Templates for the commands to be ran.
   hooks:
     - go mod download
-    - go install github.com/a-h/templ/cmd/templ@latest
-    - templ generate
+    - task gen:templ
 
 builds:
   # Build Sonr Daemon

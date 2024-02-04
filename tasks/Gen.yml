@@ -42,4 +42,6 @@ tasks:
       - buf generate --template buf.gen.sta.yaml
 
   templ:
-    cmd: templ generate
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - templ generate
