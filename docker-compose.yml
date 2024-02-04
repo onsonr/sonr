@@ -16,3 +16,25 @@ services:
       - 26657:26657 # rpc
       - 9090:9090 # grpc
       - 8000:8080 # api/htmx
+      # Postgres service
+  postgres:
+    image: postgres:latest
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydatabase
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+    networks:
+      - tunnel
+
+  # IPFS node
+  ipfs:
+    image: ipfs/kubo:latest
+    command: ["daemon"]
+    ports:
+      - 4001:4001 # swarm
+      - 5001:5001 # api
+      - 8080:8080 # gateway
+    networks:
+      - tunnel

@@ -4,7 +4,7 @@ import (
 	"embed"
 	"net/http"
 
-	"github.com/sonrhq/sonr/pkg/nebula/ui"
+	"github.com/sonrhq/sonr/pkg/nebula/components/ui"
 )
 
 // TODO: Add CDN package for Shoelace as go-embed

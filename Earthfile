@@ -28,12 +28,13 @@ deps:
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
+
 # -------------------
-# [PROTOBUF Commands]
+# [Network Services]
 # -------------------
 
 
-# init - generates private key for matrix homeserver
+# cosmoscan - runs generic cosmos blockchain scanner to insert into postgres
 cosmoscan:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run
@@ -44,7 +45,7 @@ cosmoscan:
     SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
 
 
-# init - generates private key for matrix homeserver
+# faucet - runs the flavored cosmos faucet
 faucet:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run
@@ -55,7 +56,7 @@ faucet:
     SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
 
 
-# init - generates private key for matrix homeserver
+# ipfs - builds the flavored ipfs gateway
 ipfs:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run
@@ -66,7 +67,7 @@ ipfs:
     SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
 
 
-# build - builds and configures monolithic dendrite matrix homeserver
+# matrix - builds the flavored dendrite monolith
 matrix:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run

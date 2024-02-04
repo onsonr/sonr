@@ -10,7 +10,7 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/sonrhq/sonr/pkg/nebula/ui"
+import "github.com/sonrhq/sonr/pkg/nebula/components/ui"
 
 func RootLayout(page, sidebar templ.Component) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {

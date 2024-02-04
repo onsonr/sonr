@@ -12,7 +12,7 @@ tmp
 dist
 bin
 .DS_Store
-
+data
 .env*
 
 # Binaries for programs and plugins
