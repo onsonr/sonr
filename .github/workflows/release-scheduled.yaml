@@ -1,13 +1,12 @@
 name: Release Scheduled
 on:
-  schedule:
-    - cron: "0 0 1-10,20-30 * 4"
+  schedule: 
+    - cron: '0 0 1-8,21-28 * 4'
 
 jobs:
   release-publish:
     runs-on: ubuntu-latest
     environment: Staging
-    if: startsWith(github.ref,'refs/tags')
     steps:
       - uses: actions/checkout@v4
         with:
