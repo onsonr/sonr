@@ -9,12 +9,8 @@
       "name": "StateQueryService"
     }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount": {
       "post": {
@@ -45,9 +41,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress": {
@@ -79,9 +73,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey": {
@@ -113,9 +105,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulator": {
@@ -147,9 +137,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey": {
@@ -181,9 +169,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain": {
@@ -215,9 +201,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId": {
@@ -249,9 +233,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName": {
@@ -283,9 +265,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetController": {
@@ -317,9 +297,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByAddress": {
@@ -351,9 +329,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByIpns": {
@@ -385,9 +361,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPeerId": {
@@ -419,9 +393,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey": {
@@ -453,9 +425,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount": {
@@ -487,9 +457,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccumulator": {
@@ -521,9 +489,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain": {
@@ -555,9 +521,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     },
     "/sonrhq.sonr.identity.module.v1.StateQueryService/ListController": {
@@ -589,9 +553,7 @@
             }
           }
         ],
-        "tags": [
-          "StateQueryService"
-        ]
+        "tags": ["StateQueryService"]
       }
     }
   },

@@ -8,7 +8,7 @@ description: >-
 
 LBPs are a special kind of balancer pool where the token is paired with a stablecoin or another token with high liquidity (e.g. ETH, ATOM, OSMO) with a high initial weight on the project token that reduces over time. Therefore the initial price of the token is very high and algorithmically decreases over time. This mechanism aims to discourage front-running and whale manipulation, while providing fair and open price discovery.
 
-***
+---
 
 ## Adoption Rate
 

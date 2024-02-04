@@ -4,8 +4,8 @@ Another key point is the implementation of decentralized decision-making within 
 
 Token holders vote on various matters, including parameter upgrades, protocol updates, and the addition of new features which can include critical changes to token economics or revenue models (such as fees and their distribution) that are crucial to the network’s trajectory.Additionally, the community typically also votes on fund deployment from funds that are controlled by the community, such as the community pool or the strategic reserves. Funding is commonly allocated to development teams, grants programs, and independent projects within the community. A growing number of protocols attempt to increase the decentralization of development efforts by:
 
-* deploying funds to an increasing amount of entities through proposals from different developer teams or entities over time
-* doing so through a transparent governance process that includes the network’s community in the decision-making process
+- deploying funds to an increasing amount of entities through proposals from different developer teams or entities over time
+- doing so through a transparent governance process that includes the network’s community in the decision-making process
 
 Besides funds that are directly controlled by token holders, blockchain networks generally have a foundation with a treasury for grants. This treasury is often spent in a more centralized fashion, in order to fund core development, marketing, and work.
 

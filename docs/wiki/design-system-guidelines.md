@@ -10,7 +10,7 @@ description: >-
 
 ## Meet Nebula
 
-***
+---
 
 ### **🟢 Simple**
 
@@ -24,9 +24,9 @@ Provide more opportunities for access
 
 Lean towards over-explaining rather than assuming tech knowledge
 
-***
+---
 
 ## **Next Steps**
 
-* Merge Beam Figma library components with the Nebula v0.01 file
-* Further develop [guidelines](https://www.notion.so/9bbeef098b804019ac18186de4e52153?pvs=21) for use in community development/outreach
+- Merge Beam Figma library components with the Nebula v0.01 file
+- Further develop [guidelines](https://www.notion.so/9bbeef098b804019ac18186de4e52153?pvs=21) for use in community development/outreach

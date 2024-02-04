@@ -10,7 +10,8 @@ modules:
       end_blockers: [staking, group]
       # NOTE: The genutils module must occur after staking so that pools are properly initialized with tokens from genesis accounts.
       # NOTE: The genutils module must also occur after auth so that it can access the params from auth.
-      init_genesis: [auth, bank, distribution, staking, group, genutil, identity, service]
+      init_genesis:
+        [auth, bank, distribution, staking, group, genutil, identity, service]
       override_store_keys:
         - module_name: auth
           kv_store_key: acc
@@ -54,4 +55,3 @@ modules:
   - name: service
     config:
       "@type": sonrhq.sonr.service.module.v1.Module
-

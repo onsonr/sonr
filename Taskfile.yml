@@ -36,3 +36,8 @@ tasks:
     desc: "Run essential tests"
     cmds:
       - task: test
+
+  lint:
+    desc: "Run linters"
+    cmds:
+      - task: trunk fmt --all

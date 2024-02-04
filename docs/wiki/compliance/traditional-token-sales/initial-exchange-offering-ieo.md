@@ -8,7 +8,7 @@ description: >-
 
 Unlike ICOs, where the project team conducts the sale themselves, in an IEO, the exchange acts as the intermediary and conducts the token sale on behalf of the project. This provides more security for investors, as the exchange typically vets the projects before listing, reducing the risk of scams to some extent.
 
-***
+---
 
 ## **Adoption Rate**
 

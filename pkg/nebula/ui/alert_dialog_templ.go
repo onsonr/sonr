@@ -10,8 +10,6 @@ import "context"
 import "io"
 import "bytes"
 
-// TODO: Create AlertDialog component
-
 // AlertDialog is a component that displays a message to the user and has a single button to dismiss it.
 func AlertDialog() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {

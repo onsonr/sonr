@@ -8,9 +8,9 @@ When it comes to US legislation regulatory frameworks for tokens, there are thre
 
 The first stage was in 2017 when the HOWEY test was first applied to tokens. The HOWEY test is a simple three-criteria test:The three prongs are:
 
-* (1) an investment of money - This criterion involves determining whether an asset involves an investment of money. If there is no investment of money, then the asset cannot be a security.
-* (2) in a common enterprise - This criterion involves determining whether investors' fortunes are linked together with the fortunes of the promoter or other investors. If they are, then it is likely a common enterprise.
-* (3) with an expectation of profits predominantly from the efforts of others. - This criterion involves determining whether there is an expectation of profits from the investment. If there is, then the asset may be a security.
+- (1) an investment of money - This criterion involves determining whether an asset involves an investment of money. If there is no investment of money, then the asset cannot be a security.
+- (2) in a common enterprise - This criterion involves determining whether investors' fortunes are linked together with the fortunes of the promoter or other investors. If they are, then it is likely a common enterprise.
+- (3) with an expectation of profits predominantly from the efforts of others. - This criterion involves determining whether there is an expectation of profits from the investment. If there is, then the asset may be a security.
 
 This ruling set an important precedent for how token projects would be evaluated under U.S. securities law, and it has since been used as a guide for subsequent investigations and regulatory actions.
 
@@ -26,17 +26,17 @@ In 2018, regulators added a new criterion to determine whether tokens qualify as
 
 The way tokens are distributed refers to the process by which they are offered and sold to investors could be a violation of securities laws. Examples are:
 
-* if the token is sold through an initial coin offering (ICO) that is not registered with the SEC
-* if the distribution of tokens is limited to a small group of investors who have the ability to control the market price of the token, this could be considered a violation of securities laws
+- if the token is sold through an initial coin offering (ICO) that is not registered with the SEC
+- if the distribution of tokens is limited to a small group of investors who have the ability to control the market price of the token, this could be considered a violation of securities laws
 
 #### **Marketing:**
 
 In regards to how tokens are marketed it includes promoting the tokens through advertisements, social media, or other marketing channels, and making false or misleading statements this could also be a violation of securities laws: Examples are:
 
-* If a company markets a token as having a specific use case or function, but fails to deliver on those promises, this could also be considered a violation of securities laws.
-* If an issuer provides false or incomplete information about the token sale, such as the number of tokens being offered, the price of the tokens, or the total amount of funds that will be raised through the sale.
-* Making statements about the potential value or future performance of the token. For instance, if a company markets a token as a surefire investment opportunity that will generate high returns, without providing adequate disclosure about the risks involved, this could be a violation of securities laws.
-* If the marketing suggests that the tokens are expected to appreciate in value or generate a profit and are marketed in this way, that suggests that investors are expecting to make a profit from the efforts of others, which is one of the key criteria in the Howey Test.
+- If a company markets a token as having a specific use case or function, but fails to deliver on those promises, this could also be considered a violation of securities laws.
+- If an issuer provides false or incomplete information about the token sale, such as the number of tokens being offered, the price of the tokens, or the total amount of funds that will be raised through the sale.
+- Making statements about the potential value or future performance of the token. For instance, if a company markets a token as a surefire investment opportunity that will generate high returns, without providing adequate disclosure about the risks involved, this could be a violation of securities laws.
+- If the marketing suggests that the tokens are expected to appreciate in value or generate a profit and are marketed in this way, that suggests that investors are expecting to make a profit from the efforts of others, which is one of the key criteria in the Howey Test.
 
 ### **Criteria 3: Secondary Trading**
 

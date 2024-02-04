@@ -1,0 +1,52 @@
+name: Feature Request
+description: Suggest a new idea for this project
+title: "[Idea]: "
+labels: ["Idea", "Community"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to suggest a new idea for this project!
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Which component of Sonr does this idea relate to?
+      multiple: true
+      options:
+        - Identity
+        - Service
+        - IPFS Gateway/Vault
+        - Cryptography/Security
+        - IBC/Cross-Chain
+        - Nebula UI
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Idea Description
+      description: "Create a clear and concise description of the idea. What problem does it solve? How does it improve the project?"
+      value: |
+
+
+        ...
+      render: bash
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/sonrhq/sonr/blob/master/CODE_OF_CONDUCT.md)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true

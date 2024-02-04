@@ -4,15 +4,15 @@
 
 Add relevant information and links in under 4 sentences to give clarity to the challenge this proposal is fixing.
 
-***
+---
 
 ## O**bjective**
 
-* Insert goal #1
-* Insert goal #2
-* Insert goal #3
+- Insert goal #1
+- Insert goal #2
+- Insert goal #3
 
-***
+---
 
 ## Solution
 
@@ -26,21 +26,23 @@ More on detail number one.
 
 More on detail number two.
 
-***
+---
 
 ## Definitions
 
-*   `UCAN`
+- `UCAN`
 
-    Description of the new term
-*   `CID`
+  Description of the new term
 
-    Description of the new term
-*   `IPLD`
+- `CID`
 
-    Description of the new term
+  Description of the new term
 
-***
+- `IPLD`
+
+  Description of the new term
+
+---
 
 ## Sequence Methods
 
@@ -48,7 +50,7 @@ More on detail number two.
 
 More information on sequence method one
 
-***
+---
 
 ## Economic Impact
 
@@ -72,11 +74,11 @@ More information on sequence method one
 | Persisting a Username    | USNR 200,000,000   | 30 Days       |
 | Elevate Developer Access | USNR 500,000,000   | 12 Months     |
 
-***
+---
 
 ## Implementation
 
-***
+---
 
 ## Status
 
@@ -86,9 +88,9 @@ This proposal is **under development** by the core Sonr Team.
 | ----------------- | ------- |
 | Target Completion | Q4 2023 |
 
-***
+---
 
 ## References
 
-* [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
-* [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)
+- [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
+- [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)

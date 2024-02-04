@@ -72,14 +72,18 @@ func fiat_pasta_fp_subborrowx_u64(x uint64, y uint64, carry fiat_pasta_fp_uint1)
 // The function fiat_pasta_fp_cmovznz_u64 is a single-word conditional move.
 //
 // Postconditions:
-//   out1 = (if arg1 = 0 then arg2 else arg3)
+//
+//	out1 = (if arg1 = 0 then arg2 else arg3)
 //
 // Input Bounds:
-//   arg1: [0x0 ~> 0x1]
-//   arg2: [0x0 ~> 0xffffffffffffffff]
-//   arg3: [0x0 ~> 0xffffffffffffffff]
+//
+//	arg1: [0x0 ~> 0x1]
+//	arg2: [0x0 ~> 0xffffffffffffffff]
+//	arg3: [0x0 ~> 0xffffffffffffffff]
+//
 // Output Bounds:
-//   out1: [0x0 ~> 0xffffffffffffffff]
+//
+//	out1: [0x0 ~> 0xffffffffffffffff]
 func fiat_pasta_fp_cmovznz_u64(out1 *uint64, arg1 fiat_pasta_fp_uint1, arg2 uint64, arg3 uint64) {
 	x1 := arg1
 	x2 := (uint64((fiat_pasta_fp_int1(0x0) - fiat_pasta_fp_int1(x1))) & 0xffffffffffffffff)
@@ -90,12 +94,14 @@ func fiat_pasta_fp_cmovznz_u64(out1 *uint64, arg1 fiat_pasta_fp_uint1, arg2 uint
 // The function fiat_pasta_fp_mul multiplies two field elements in the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-//   0 ≤ eval arg2 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//	0 ≤ eval arg2 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_mul(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element, arg2 *fiat_pasta_fp_montgomery_domain_field_element) {
 	x1 := arg1[1]
 	x2 := arg1[2]
@@ -384,11 +390,13 @@ func fiat_pasta_fp_mul(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1
 // The function fiat_pasta_fp_square squares a field element in the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_square(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element) {
 	x1 := arg1[1]
 	x2 := arg1[2]
@@ -677,12 +685,14 @@ func fiat_pasta_fp_square(out1 *fiat_pasta_fp_montgomery_domain_field_element, a
 // The function fiat_pasta_fp_add adds two field elements in the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-//   0 ≤ eval arg2 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//	0 ≤ eval arg2 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_add(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element, arg2 *fiat_pasta_fp_montgomery_domain_field_element) {
 	var x1 uint64
 	var x2 fiat_pasta_fp_uint1
@@ -727,12 +737,14 @@ func fiat_pasta_fp_add(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1
 // The function fiat_pasta_fp_sub subtracts two field elements in the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-//   0 ≤ eval arg2 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//	0 ≤ eval arg2 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_sub(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element, arg2 *fiat_pasta_fp_montgomery_domain_field_element) {
 	var x1 uint64
 	var x2 fiat_pasta_fp_uint1
@@ -768,11 +780,13 @@ func fiat_pasta_fp_sub(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1
 // The function fiat_pasta_fp_opp negates a field element in the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = -eval (from_montgomery arg1) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = -eval (from_montgomery arg1) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_opp(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element) {
 	var x1 uint64
 	var x2 fiat_pasta_fp_uint1
@@ -808,11 +822,13 @@ func fiat_pasta_fp_opp(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1
 // The function fiat_pasta_fp_from_montgomery translates a field element out of the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-// Postconditions:
-//   eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^4) mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//
+// Postconditions:
+//
+//	eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^4) mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_from_montgomery(out1 *fiat_pasta_fp_non_montgomery_domain_field_element, arg1 *fiat_pasta_fp_montgomery_domain_field_element) {
 	x1 := arg1[0]
 	var x2 uint64
@@ -962,11 +978,13 @@ func fiat_pasta_fp_from_montgomery(out1 *fiat_pasta_fp_non_montgomery_domain_fie
 // The function fiat_pasta_fp_to_montgomery translates a field element into the Montgomery domain.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
-// Postconditions:
-//   eval (from_montgomery out1) mod m = eval arg1 mod m
-//   0 ≤ eval out1 < m
 //
+//	0 ≤ eval arg1 < m
+//
+// Postconditions:
+//
+//	eval (from_montgomery out1) mod m = eval arg1 mod m
+//	0 ≤ eval out1 < m
 func fiat_pasta_fp_to_montgomery(out1 *fiat_pasta_fp_montgomery_domain_field_element, arg1 *fiat_pasta_fp_non_montgomery_domain_field_element) {
 	x1 := arg1[1]
 	x2 := arg1[2]
@@ -1224,14 +1242,18 @@ func fiat_pasta_fp_to_montgomery(out1 *fiat_pasta_fp_montgomery_domain_field_ele
 // The function fiat_pasta_fp_selectznz is a multi-limb conditional select.
 //
 // Postconditions:
-//   eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
+//
+//	eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
 //
 // Input Bounds:
-//   arg1: [0x0 ~> 0x1]
-//   arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
-//   arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+//
+//	arg1: [0x0 ~> 0x1]
+//	arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+//	arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+//
 // Output Bounds:
-//   out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+//
+//	out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
 func fiat_pasta_fp_selectznz(out1 *[4]uint64, arg1 fiat_pasta_fp_uint1, arg2 *[4]uint64, arg3 *[4]uint64) {
 	var x1 uint64
 	fiat_pasta_fp_cmovznz_u64(&x1, arg1, arg2[0], arg3[0])
@@ -1250,14 +1272,20 @@ func fiat_pasta_fp_selectznz(out1 *[4]uint64, arg1 fiat_pasta_fp_uint1, arg2 *[4
 // The function fiat_pasta_fp_to_bytes serializes a field element NOT in the Montgomery domain to bytes in little-endian order.
 //
 // Preconditions:
-//   0 ≤ eval arg1 < m
+//
+//	0 ≤ eval arg1 < m
+//
 // Postconditions:
-//   out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..31]
+//
+//	out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..31]
 //
 // Input Bounds:
-//   arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x7fffffffffffffff]]
+//
+//	arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x7fffffffffffffff]]
+//
 // Output Bounds:
-//   out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x7f]]
+//
+//	out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x7f]]
 func fiat_pasta_fp_to_bytes(out1 *[32]uint8, arg1 *[4]uint64) {
 	x1 := arg1[3]
 	x2 := arg1[2]
@@ -1356,15 +1384,21 @@ func fiat_pasta_fp_to_bytes(out1 *[32]uint8, arg1 *[4]uint64) {
 // The function fiat_pasta_fp_from_bytes deserializes a field element NOT in the Montgomery domain from bytes in little-endian order.
 //
 // Preconditions:
-//   0 ≤ bytes_eval arg1 < m
+//
+//	0 ≤ bytes_eval arg1 < m
+//
 // Postconditions:
-//   eval out1 mod m = bytes_eval arg1 mod m
-//   0 ≤ eval out1 < m
+//
+//	eval out1 mod m = bytes_eval arg1 mod m
+//	0 ≤ eval out1 < m
 //
 // Input Bounds:
-//   arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x7f]]
+//
+//	arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x7f]]
+//
 // Output Bounds:
-//   out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x7fffffffffffffff]]
+//
+//	out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x7fffffffffffffff]]
 func fiat_pasta_fp_from_bytes(out1 *[4]uint64, arg1 *[32]uint8) {
 	x1 := (uint64(arg1[31]) << 56)
 	x2 := (uint64(arg1[30]) << 48)

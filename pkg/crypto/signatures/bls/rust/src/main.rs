@@ -5,29 +5,23 @@
 //
 
 use bls_sigs_ref::BLSSignaturePop;
-use miracl_core::{
-    bls12381::{
-        big::BIG, ecp::ECP, ecp2::ECP2, rom::MODULUS,
-    }
-};
+use miracl_core::bls12381::{big::BIG, ecp::ECP, ecp2::ECP2, rom::MODULUS};
 use pairing_plus::{
-    CurveProjective,
-    bls12_381::{
-        Fr, G1, G2,
-    },
+    bls12_381::{Fr, G1, G2},
     hash_to_field::BaseFromRO,
     serdes::SerDes,
+    CurveProjective,
 };
 use rand::prelude::*;
-use serious::Encoding;
 use serde::Deserialize;
+use serious::Encoding;
 use sha2::digest::generic_array::GenericArray;
-use structopt::StructOpt;
 use std::{
     fs::File,
-    io::{self, Read, Cursor},
+    io::{self, Cursor, Read},
     path::PathBuf,
 };
+use structopt::StructOpt;
 
 fn main() {
     let args = CliArgs::from_args();
@@ -35,7 +29,7 @@ fn main() {
     match args {
         CliArgs::Generate { number } => generate(number),
         CliArgs::PublicKey { keys } => pubkey(keys),
-        CliArgs::Sign { number , data} => sign(number, data),
+        CliArgs::Sign { number, data } => sign(number, data),
         CliArgs::Verify { keys } => verify(keys),
     }
 }
@@ -45,7 +39,6 @@ fn generate(number: usize) {
     print!("[");
     let mut sep = "";
     for _ in 0..number {
-
         let mut buf = [0u8; 48];
         rng.fill_bytes(&mut buf);
         // let mut sk = buf;
@@ -164,7 +157,7 @@ fn _uncompress_g1(d: &[u8]) -> Result<ECP, String> {
             Err("Expected point at infinity but found another point".to_string())
         } else {
             Ok(ECP::new())
-        }
+        };
     }
 
     let s = d[0] & 0x20;
@@ -191,7 +184,7 @@ fn _uncompress_g2(d: &[u8]) -> Result<ECP2, String> {
             Err("Expected point at infinity but found another point".to_string())
         } else {
             Ok(ECP2::new())
-        }
+        };
     }
 
     let s = d[0] & 0x20;
@@ -224,8 +217,14 @@ fn sign(number: usize, data: String) {
 
         print!("{}{{", sep);
         print!(r#""data":"{}","#, data);
-        print!(r#""public_key":"{}","#, Encoding::encode(pubkey, Encoding::LowHex).into_string());
-        print!(r#""signature":"{}""#, Encoding::encode(sig, Encoding::LowHex).into_string());
+        print!(
+            r#""public_key":"{}","#,
+            Encoding::encode(pubkey, Encoding::LowHex).into_string()
+        );
+        print!(
+            r#""signature":"{}""#,
+            Encoding::encode(sig, Encoding::LowHex).into_string()
+        );
         print!("}}");
         sep = ",";
     }
@@ -271,32 +270,24 @@ enum CliArgs {
     Verify {
         #[structopt(name = "KEYS")]
         keys: String,
-    }
+    },
 }
 
 #[derive(Deserialize)]
 struct VerifyRequest {
     data: String,
     public_key: String,
-    signature: String
+    signature: String,
 }
 
 fn read_input(value: &str) -> Result<Vec<u8>, String> {
     if !value.is_empty() {
         match get_file(value) {
-            Some(file) => {
-                match File::open(file.as_path()) {
-                    Ok(mut f) => {
-                        Ok(read_stream(&mut f))
-                    },
-                    Err(_) => {
-                        Err(format!("Unable to read file {}", file.to_str().unwrap()))
-                    }
-                }
-            }
-            None => {
-                Ok(value.as_bytes().to_vec())
-            }
+            Some(file) => match File::open(file.as_path()) {
+                Ok(mut f) => Ok(read_stream(&mut f)),
+                Err(_) => Err(format!("Unable to read file {}", file.to_str().unwrap())),
+            },
+            None => Ok(value.as_bytes().to_vec()),
         }
     } else {
         let mut f = io::stdin();
@@ -348,7 +339,6 @@ fn get_file(name: &str) -> Option<PathBuf> {
         None
     }
 }
-
 
 // fn from_encoding(src: &str) -> Result<Encoding, std::io::Error> {
 //    Encoding::parse(src).map_err(|e| std::io::Error::new(std::io::ErrorKind::InvalidInput, e))

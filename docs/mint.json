@@ -42,10 +42,10 @@
       "icon": "discord",
       "url": "https://snr.im/discord"
     },
-{
-  "name": "Blog",
-  "url": "https://your-website.com/blog"
-}
+    {
+      "name": "Blog",
+      "url": "https://your-website.com/blog"
+    }
   ],
   "navigation": [
     {

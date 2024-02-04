@@ -1,16 +1,16 @@
-Aswagger: '2.0'
+Aswagger: "2.0"
 info:
   title: HTTP API Console
-  name: ''
-  description: ''
+  name: ""
+  description: ""
 paths:
   /cosmos/auth/v1beta1/accounts:
     get:
       summary: Accounts returns all the existing accounts
-      description: 'Since: cosmos-sdk 0.43'
+      description: "Since: cosmos-sdk 0.43"
       operationId: CosmosAuthV1Beta1Accounts
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -20,7 +20,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -231,7 +231,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -465,7 +465,7 @@ paths:
       summary: Account returns account details based on address.
       operationId: CosmosAuthV1Beta1Account
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -473,7 +473,7 @@ paths:
               account:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -657,7 +657,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -838,17 +838,17 @@ paths:
   /cosmos/auth/v1beta1/address_by_id/{id}:
     get:
       summary: AccountAddressByID returns account address based on account number.
-      description: 'Since: cosmos-sdk 0.46.2'
+      description: "Since: cosmos-sdk 0.46.2"
       operationId: CosmosAuthV1Beta1AccountAddressByID
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
             properties:
               account_address:
                 type: string
-            description: 'Since: cosmos-sdk 0.46.2'
+            description: "Since: cosmos-sdk 0.46.2"
             title: >-
               QueryAccountAddressByIDResponse is the response type for
               AccountAddressByID rpc method
@@ -867,7 +867,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -1052,10 +1052,10 @@ paths:
   /cosmos/auth/v1beta1/bech32:
     get:
       summary: Bech32Prefix queries bech32Prefix
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthV1Beta1Bech32Prefix
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -1083,7 +1083,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -1258,10 +1258,10 @@ paths:
   /cosmos/auth/v1beta1/bech32/{address_bytes}:
     get:
       summary: AddressBytesToString converts Account Address bytes to string
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthV1Beta1AddressBytesToString
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -1289,7 +1289,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -1470,10 +1470,10 @@ paths:
   /cosmos/auth/v1beta1/bech32/{address_string}:
     get:
       summary: AddressStringToBytes converts Address string to bytes
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthV1Beta1AddressStringToBytes
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -1502,7 +1502,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -1682,10 +1682,10 @@ paths:
   /cosmos/auth/v1beta1/module_accounts:
     get:
       summary: ModuleAccounts returns all the existing module accounts.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthV1Beta1ModuleAccounts
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -1695,7 +1695,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -1886,7 +1886,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -2063,7 +2063,7 @@ paths:
       summary: Params queries all parameters.
       operationId: CosmosAuthV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -2105,7 +2105,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -2282,7 +2282,7 @@ paths:
       summary: Returns list of `Authorization`, granted to the grantee by the granter.
       operationId: CosmosAuthzV1Beta1Grants
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -2295,7 +2295,7 @@ paths:
                     authorization:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -2521,7 +2521,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -2768,10 +2768,10 @@ paths:
   /cosmos/authz/v1beta1/grants/grantee/{grantee}:
     get:
       summary: GranteeGrants returns a list of `GrantAuthorization` by grantee.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthzV1Beta1GranteeGrants
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -2788,7 +2788,7 @@ paths:
                     authorization:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -3006,7 +3006,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -3242,10 +3242,10 @@ paths:
   /cosmos/authz/v1beta1/grants/granter/{granter}:
     get:
       summary: GranterGrants returns list of `GrantAuthorization`, granted by granter.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosAuthzV1Beta1GranterGrants
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -3262,7 +3262,7 @@ paths:
                     authorization:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -3480,7 +3480,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -3718,7 +3718,7 @@ paths:
       summary: AllBalances queries the balance of all coins for a single account.
       operationId: CosmosBankV1Beta1AllBalances
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -3780,7 +3780,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -3852,7 +3852,7 @@ paths:
       summary: Balance queries the balance of a single coin for a single account.
       operationId: CosmosBankV1Beta1Balance
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -3890,7 +3890,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -3913,10 +3913,10 @@ paths:
         token
 
         denomination.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosBankV1Beta1DenomOwners
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -3997,7 +3997,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4073,7 +4073,7 @@ paths:
         denominations.
       operationId: CosmosBankV1Beta1DenomsMetadata
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4136,8 +4136,8 @@ paths:
                         displayed in clients.
                     name:
                       type: string
-                      description: 'Since: cosmos-sdk 0.43'
-                      title: 'name defines the name of the token (eg: Cosmos Atom)'
+                      description: "Since: cosmos-sdk 0.43"
+                      title: "name defines the name of the token (eg: Cosmos Atom)"
                     symbol:
                       type: string
                       description: >-
@@ -4211,7 +4211,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4278,7 +4278,7 @@ paths:
       summary: DenomsMetadata queries the client metadata of a given coin denomination.
       operationId: CosmosBankV1Beta1DenomMetadata
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4339,8 +4339,8 @@ paths:
                       displayed in clients.
                   name:
                     type: string
-                    description: 'Since: cosmos-sdk 0.43'
-                    title: 'name defines the name of the token (eg: Cosmos Atom)'
+                    description: "Since: cosmos-sdk 0.43"
+                    title: "name defines the name of the token (eg: Cosmos Atom)"
                   symbol:
                     type: string
                     description: >-
@@ -4392,7 +4392,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4408,7 +4408,7 @@ paths:
       summary: Params queries the parameters of x/bank module.
       operationId: CosmosBankV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4451,7 +4451,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -4461,10 +4461,10 @@ paths:
       summary: |-
         SpendableBalances queries the spenable balance of all coins for a single
         account.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosBankV1Beta1SpendableBalances
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4529,7 +4529,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4601,7 +4601,7 @@ paths:
       summary: TotalSupply queries the total supply of all coins.
       operationId: CosmosBankV1Beta1TotalSupply
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4666,7 +4666,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4733,7 +4733,7 @@ paths:
       summary: SupplyOf queries the supply of a single coin.
       operationId: CosmosBankV1Beta1SupplyOf
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4771,7 +4771,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -4791,10 +4791,10 @@ paths:
 
         contain a valid and supported path, including app, custom, p2p, and
         store.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosBaseTendermintV1Beta1ABCIQuery
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -4886,7 +4886,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -5082,7 +5082,7 @@ paths:
       summary: GetLatestBlock returns the latest block.
       operationId: CosmosBaseTendermintV1Beta1GetLatestBlock
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -5105,7 +5105,7 @@ paths:
                     title: PartsetHeader
                 title: BlockID
               block:
-                title: 'Deprecated: please use `sdk_block` instead'
+                title: "Deprecated: please use `sdk_block` instead"
                 type: object
                 properties:
                   header:
@@ -5669,7 +5669,7 @@ paths:
                       Commit contains the evidence that a block was committed by
                       a set of validators.
               sdk_block:
-                title: 'Since: cosmos-sdk 0.47'
+                title: "Since: cosmos-sdk 0.47"
                 type: object
                 properties:
                   header:
@@ -6266,7 +6266,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -6443,7 +6443,7 @@ paths:
       summary: GetBlockByHeight queries block for given height.
       operationId: CosmosBaseTendermintV1Beta1GetBlockByHeight
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -6466,7 +6466,7 @@ paths:
                     title: PartsetHeader
                 title: BlockID
               block:
-                title: 'Deprecated: please use `sdk_block` instead'
+                title: "Deprecated: please use `sdk_block` instead"
                 type: object
                 properties:
                   header:
@@ -7030,7 +7030,7 @@ paths:
                       Commit contains the evidence that a block was committed by
                       a set of validators.
               sdk_block:
-                title: 'Since: cosmos-sdk 0.47'
+                title: "Since: cosmos-sdk 0.47"
                 type: object
                 properties:
                   header:
@@ -7627,7 +7627,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -7810,7 +7810,7 @@ paths:
       summary: GetNodeInfo queries the current node info.
       operationId: CosmosBaseTendermintV1Beta1GetNodeInfo
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -7882,7 +7882,7 @@ paths:
                       title: Module is the type for VersionInfo
                   cosmos_sdk_version:
                     type: string
-                    title: 'Since: cosmos-sdk 0.43'
+                    title: "Since: cosmos-sdk 0.43"
                 description: VersionInfo is the type for the GetNodeInfoResponse message.
             description: >-
               GetNodeInfoResponse is the response type for the Query/GetNodeInfo
@@ -7904,7 +7904,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -8081,7 +8081,7 @@ paths:
       summary: GetSyncing queries node syncing.
       operationId: CosmosBaseTendermintV1Beta1GetSyncing
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -8106,7 +8106,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -8283,7 +8283,7 @@ paths:
       summary: GetLatestValidatorSet queries latest validator-set.
       operationId: CosmosBaseTendermintV1Beta1GetLatestValidatorSet
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -8301,7 +8301,7 @@ paths:
                     pub_key:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -8517,7 +8517,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -8751,7 +8751,7 @@ paths:
       summary: GetValidatorSetByHeight queries validator-set at a given height.
       operationId: CosmosBaseTendermintV1Beta1GetValidatorSetByHeight
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -8769,7 +8769,7 @@ paths:
                     pub_key:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -8985,7 +8985,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -9224,7 +9224,7 @@ paths:
       summary: CommunityPool queries the community pool coins.
       operationId: CosmosDistributionV1Beta1CommunityPool
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9268,7 +9268,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -9280,7 +9280,7 @@ paths:
         validator.
       operationId: CosmosDistributionV1Beta1DelegationTotalRewards
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9351,7 +9351,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9367,7 +9367,7 @@ paths:
       summary: DelegationRewards queries the total rewards accrued by a delegation.
       operationId: CosmosDistributionV1Beta1DelegationRewards
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9409,7 +9409,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9430,7 +9430,7 @@ paths:
       summary: DelegatorValidators queries the validators of a delegator.
       operationId: CosmosDistributionV1Beta1DelegatorValidators
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9460,7 +9460,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9476,7 +9476,7 @@ paths:
       summary: DelegatorWithdrawAddress queries withdraw address of a delegator.
       operationId: CosmosDistributionV1Beta1DelegatorWithdrawAddress
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9502,7 +9502,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9518,7 +9518,7 @@ paths:
       summary: Params queries params of the distribution module.
       operationId: CosmosDistributionV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9553,7 +9553,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -9563,7 +9563,7 @@ paths:
       summary: ValidatorCommission queries accumulated commission for a validator.
       operationId: CosmosDistributionV1Beta1ValidatorCommission
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9608,7 +9608,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9624,7 +9624,7 @@ paths:
       summary: ValidatorOutstandingRewards queries rewards of a validator address.
       operationId: CosmosDistributionV1Beta1ValidatorOutstandingRewards
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9676,7 +9676,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9692,7 +9692,7 @@ paths:
       summary: ValidatorSlashes queries slash events of a validator.
       operationId: CosmosDistributionV1Beta1ValidatorSlashes
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9755,7 +9755,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -9843,7 +9843,7 @@ paths:
       summary: AllEvidence queries all evidence.
       operationId: CosmosEvidenceV1Beta1AllEvidence
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -9853,7 +9853,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -10063,7 +10063,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -10297,7 +10297,7 @@ paths:
       summary: Evidence queries evidence based on evidence hash.
       operationId: CosmosEvidenceV1Beta1Evidence
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -10305,7 +10305,7 @@ paths:
               evidence:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -10489,7 +10489,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -10673,7 +10673,7 @@ paths:
       summary: Allowance returns fee granted to the grantee by the granter.
       operationId: CosmosFeegrantV1Beta1Allowance
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -10698,7 +10698,7 @@ paths:
                       allowance.
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -10778,7 +10778,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -10970,7 +10970,7 @@ paths:
       summary: Allowances returns all the grants for address.
       operationId: CosmosFeegrantV1Beta1Allowances
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -10996,7 +10996,7 @@ paths:
                         allowance.
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -11096,7 +11096,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -11332,10 +11332,10 @@ paths:
   /cosmos/feegrant/v1beta1/issued/{granter}:
     get:
       summary: AllowancesByGranter returns all the grants given by an address
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosFeegrantV1Beta1AllowancesByGranter
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -11361,7 +11361,7 @@ paths:
                         allowance.
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -11464,7 +11464,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -11702,7 +11702,7 @@ paths:
       summary: Params queries all parameters of the gov module.
       operationId: CosmosGovV1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -11781,7 +11781,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -11968,7 +11968,7 @@ paths:
       summary: Proposals queries all proposals based on given status.
       operationId: CosmosGovV1Proposals
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -11986,7 +11986,7 @@ paths:
                       items:
                         type: object
                         properties:
-                          '@type':
+                          "@type":
                             type: string
                             description: >-
                               A URL/resource name that uniquely identifies the
@@ -12279,7 +12279,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -12549,7 +12549,7 @@ paths:
       summary: Proposal queries proposal details based on ProposalID.
       operationId: CosmosGovV1Proposal
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -12565,7 +12565,7 @@ paths:
                     items:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -12836,7 +12836,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -13020,7 +13020,7 @@ paths:
       summary: Deposits queries all deposits of a single proposal.
       operationId: CosmosGovV1Deposits
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -13095,7 +13095,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -13337,7 +13337,7 @@ paths:
         depositAddr.
       operationId: CosmosGovV1Deposit
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -13390,7 +13390,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -13579,7 +13579,7 @@ paths:
       summary: TallyResult queries the tally of a proposal vote.
       operationId: CosmosGovV1TallyResult
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -13614,7 +13614,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -13798,7 +13798,7 @@ paths:
       summary: Votes queries votes of a given proposal.
       operationId: CosmosGovV1Votes
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -13889,7 +13889,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -14129,7 +14129,7 @@ paths:
       summary: Vote queries voted information based on proposalID, voterAddr.
       operationId: CosmosGovV1Vote
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -14198,7 +14198,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -14387,7 +14387,7 @@ paths:
       summary: Params queries all parameters of the gov module.
       operationId: CosmosGovV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -14469,7 +14469,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -14656,7 +14656,7 @@ paths:
       summary: Proposals queries all proposals based on given status.
       operationId: CosmosGovV1Beta1Proposals
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -14672,7 +14672,7 @@ paths:
                     content:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -14880,11 +14880,11 @@ paths:
                         proposal's voting period has ended.
                       type: object
                       properties:
-                        'yes':
+                        "yes":
                           type: string
                         abstain:
                           type: string
-                        'no':
+                        "no":
                           type: string
                         no_with_veto:
                           type: string
@@ -14960,7 +14960,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -15230,7 +15230,7 @@ paths:
       summary: Proposal queries proposal details based on ProposalID.
       operationId: CosmosGovV1Beta1Proposal
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -15244,7 +15244,7 @@ paths:
                   content:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -15450,11 +15450,11 @@ paths:
                       proposal's voting period has ended.
                     type: object
                     properties:
-                      'yes':
+                      "yes":
                         type: string
                       abstain:
                         type: string
-                      'no':
+                      "no":
                         type: string
                       no_with_veto:
                         type: string
@@ -15508,7 +15508,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -15692,7 +15692,7 @@ paths:
       summary: Deposits queries all deposits of a single proposal.
       operationId: CosmosGovV1Beta1Deposits
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -15767,7 +15767,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -16009,7 +16009,7 @@ paths:
         depositAddr.
       operationId: CosmosGovV1Beta1Deposit
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -16062,7 +16062,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -16251,7 +16251,7 @@ paths:
       summary: TallyResult queries the tally of a proposal vote.
       operationId: CosmosGovV1Beta1TallyResult
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -16260,11 +16260,11 @@ paths:
                 description: tally defines the requested tally.
                 type: object
                 properties:
-                  'yes':
+                  "yes":
                     type: string
                   abstain:
                     type: string
-                  'no':
+                  "no":
                     type: string
                   no_with_veto:
                     type: string
@@ -16286,7 +16286,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -16470,7 +16470,7 @@ paths:
       summary: Votes queries votes of a given proposal.
       operationId: CosmosGovV1Beta1Votes
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -16534,7 +16534,7 @@ paths:
 
 
                           Since: cosmos-sdk 0.43
-                      title: 'Since: cosmos-sdk 0.43'
+                      title: "Since: cosmos-sdk 0.43"
                   description: >-
                     Vote defines a vote on a governance proposal.
 
@@ -16578,7 +16578,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -16818,7 +16818,7 @@ paths:
       summary: Vote queries voted information based on proposalID, voterAddr.
       operationId: CosmosGovV1Beta1Vote
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -16880,7 +16880,7 @@ paths:
 
 
                         Since: cosmos-sdk 0.43
-                    title: 'Since: cosmos-sdk 0.43'
+                    title: "Since: cosmos-sdk 0.43"
                 description: >-
                   Vote defines a vote on a governance proposal.
 
@@ -16904,7 +16904,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -17093,7 +17093,7 @@ paths:
       summary: GroupInfo queries group info based on group id.
       operationId: CosmosGroupV1GroupInfo
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -17154,7 +17154,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -17338,7 +17338,7 @@ paths:
       summary: GroupMembers queries members of a group
       operationId: CosmosGroupV1GroupMembers
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -17416,7 +17416,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -17656,7 +17656,7 @@ paths:
       summary: GroupsByAdmin queries group policies by admin address.
       operationId: CosmosGroupV1GroupPoliciesByAdmin
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -17692,7 +17692,7 @@ paths:
                     decision_policy:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -17913,7 +17913,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -18152,7 +18152,7 @@ paths:
       summary: GroupPoliciesByGroup queries group policies by group id.
       operationId: CosmosGroupV1GroupPoliciesByGroup
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -18188,7 +18188,7 @@ paths:
                     decision_policy:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -18409,7 +18409,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -18651,7 +18651,7 @@ paths:
         group policy.
       operationId: CosmosGroupV1GroupPolicyInfo
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -18685,7 +18685,7 @@ paths:
                   decision_policy:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -18882,7 +18882,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -19065,7 +19065,7 @@ paths:
       summary: GroupsByAdmin queries groups by admin address.
       operationId: CosmosGroupV1GroupsByAdmin
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -19152,7 +19152,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -19391,7 +19391,7 @@ paths:
       summary: GroupsByMember queries groups by member address.
       operationId: CosmosGroupV1GroupsByMember
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -19478,7 +19478,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -19717,7 +19717,7 @@ paths:
       summary: Proposal queries a proposal based on proposal id.
       operationId: CosmosGroupV1Proposal
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -19844,7 +19844,7 @@ paths:
                     items:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -20035,7 +20035,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -20229,7 +20229,7 @@ paths:
         proposal itself.
       operationId: CosmosGroupV1TallyResult
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -20266,7 +20266,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -20452,7 +20452,7 @@ paths:
         group policy.
       operationId: CosmosGroupV1ProposalsByGroupPolicy
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -20580,7 +20580,7 @@ paths:
                       items:
                         type: object
                         properties:
-                          '@type':
+                          "@type":
                             type: string
                             description: >-
                               A URL/resource name that uniquely identifies the
@@ -20804,7 +20804,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -21045,7 +21045,7 @@ paths:
       summary: VoteByProposalVoter queries a vote by proposal id and voter.
       operationId: CosmosGroupV1VoteByProposalVoter
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -21098,7 +21098,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -21287,7 +21287,7 @@ paths:
       summary: VotesByProposal queries a vote by proposal.
       operationId: CosmosGroupV1VotesByProposal
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -21364,7 +21364,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -21604,7 +21604,7 @@ paths:
       summary: VotesByVoter queries a vote by voter.
       operationId: CosmosGroupV1VotesByVoter
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -21679,7 +21679,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -21918,7 +21918,7 @@ paths:
       summary: AnnualProvisions current minting annual provisions value.
       operationId: CosmosMintV1Beta1AnnualProvisions
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -21947,7 +21947,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -21957,7 +21957,7 @@ paths:
       summary: Inflation returns the current minting inflation value.
       operationId: CosmosMintV1Beta1Inflation
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -21986,7 +21986,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -21996,7 +21996,7 @@ paths:
       summary: Params returns the total set of minting parameters.
       operationId: CosmosMintV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -22042,7 +22042,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -22054,7 +22054,7 @@ paths:
         same as balanceOf in ERC721
       operationId: CosmosNftV1Beta1Balance
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -22080,7 +22080,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -22266,7 +22266,7 @@ paths:
       summary: Classes queries all NFT classes
       operationId: CosmosNftV1Beta1Classes
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -22311,7 +22311,7 @@ paths:
                     data:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -22533,7 +22533,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -22767,7 +22767,7 @@ paths:
       summary: Class queries an NFT class based on its id
       operationId: CosmosNftV1Beta1Class
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -22808,7 +22808,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -23000,7 +23000,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -23186,7 +23186,7 @@ paths:
         ERC721Enumerable
       operationId: CosmosNftV1Beta1NFTs
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -23213,7 +23213,7 @@ paths:
                     data:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -23433,7 +23433,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -23675,7 +23675,7 @@ paths:
       summary: NFT queries an NFT based on its class and id.
       operationId: CosmosNftV1Beta1NFT
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -23700,7 +23700,7 @@ paths:
                   data:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -23888,7 +23888,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -24076,7 +24076,7 @@ paths:
         ownerOf in ERC721
       operationId: CosmosNftV1Beta1Owner
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24101,7 +24101,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -24289,7 +24289,7 @@ paths:
         totalSupply of ERC721.
       operationId: CosmosNftV1Beta1Supply
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24315,7 +24315,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -24499,7 +24499,7 @@ paths:
         key.
       operationId: CosmosParamsV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24532,7 +24532,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -24553,10 +24553,10 @@ paths:
       summary: >-
         Subspaces queries for all registered subspaces and all keys for a
         subspace.
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosParamsV1Beta1Subspaces
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24603,7 +24603,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -24613,7 +24613,7 @@ paths:
       summary: Params queries the parameters of slashing module
       operationId: CosmosSlashingV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24656,7 +24656,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -24666,7 +24666,7 @@ paths:
       summary: SigningInfos queries signing info of all validators
       operationId: CosmosSlashingV1Beta1SigningInfos
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24772,7 +24772,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -24839,7 +24839,7 @@ paths:
       summary: SigningInfo queries the signing info of given cons address
       operationId: CosmosSlashingV1Beta1SigningInfo
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -24917,7 +24917,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -24935,7 +24935,7 @@ paths:
         address.
       operationId: CosmosStakingV1Beta1DelegatorDelegations
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -25030,7 +25030,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -25269,7 +25269,7 @@ paths:
       summary: Redelegations queries redelegations of given address.
       operationId: CosmosStakingV1Beta1Redelegations
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -25429,7 +25429,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -25682,7 +25682,7 @@ paths:
         delegator address.
       operationId: CosmosStakingV1Beta1DelegatorUnbondingDelegations
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -25780,7 +25780,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -26021,7 +26021,7 @@ paths:
         address.
       operationId: CosmosStakingV1Beta1DelegatorValidators
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -26039,7 +26039,7 @@ paths:
                     consensus_pubkey:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -26377,7 +26377,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -26618,7 +26618,7 @@ paths:
         pair.
       operationId: CosmosStakingV1Beta1DelegatorValidator
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -26634,7 +26634,7 @@ paths:
                   consensus_pubkey:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -26949,7 +26949,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -27137,7 +27137,7 @@ paths:
       summary: HistoricalInfo queries the historical info for given height.
       operationId: CosmosStakingV1Beta1HistoricalInfo
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -27247,7 +27247,7 @@ paths:
                         consensus_pubkey:
                           type: object
                           properties:
-                            '@type':
+                            "@type":
                               type: string
                               description: >-
                                 A URL/resource name that uniquely identifies the
@@ -27569,7 +27569,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -27753,7 +27753,7 @@ paths:
       summary: Parameters queries the staking parameters.
       operationId: CosmosStakingV1Beta1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -27807,7 +27807,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -27984,7 +27984,7 @@ paths:
       summary: Pool queries the pool info.
       operationId: CosmosStakingV1Beta1Pool
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -28013,7 +28013,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -28190,7 +28190,7 @@ paths:
       summary: Validators queries all validators that match the given status.
       operationId: CosmosStakingV1Beta1Validators
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -28208,7 +28208,7 @@ paths:
                     consensus_pubkey:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -28546,7 +28546,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -28785,7 +28785,7 @@ paths:
       summary: Validator queries validator info for given validator address.
       operationId: CosmosStakingV1Beta1Validator
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -28801,7 +28801,7 @@ paths:
                   consensus_pubkey:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -29116,7 +29116,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -29299,7 +29299,7 @@ paths:
       summary: ValidatorDelegations queries delegate info for given validator.
       operationId: CosmosStakingV1Beta1ValidatorDelegations
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -29391,7 +29391,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -29630,7 +29630,7 @@ paths:
       summary: Delegation queries delegate info for given validator delegator pair.
       operationId: CosmosStakingV1Beta1Delegation
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -29701,7 +29701,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -29891,7 +29891,7 @@ paths:
         pair.
       operationId: CosmosStakingV1Beta1UnbondingDelegation
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -29966,7 +29966,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -30156,7 +30156,7 @@ paths:
         validator.
       operationId: CosmosStakingV1Beta1ValidatorUnbondingDelegations
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -30254,7 +30254,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -30493,7 +30493,7 @@ paths:
       summary: Simulate simulates executing a transaction for estimating gas usage.
       operationId: CosmosTxV1Beta1Simulate
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -30577,7 +30577,7 @@ paths:
                     items:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -30773,7 +30773,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -30951,7 +30951,7 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.SimulateRequest'
+            $ref: "#/definitions/cosmos.tx.v1beta1.SimulateRequest"
       tags:
         - Service
   /cosmos/tx/v1beta1/txs:
@@ -30959,10 +30959,10 @@ paths:
       summary: GetTxsEvent fetches txs by event.
       operationId: CosmosTxV1Beta1GetTxsEvent
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetTxsEventResponse'
+            $ref: "#/definitions/cosmos.tx.v1beta1.GetTxsEventResponse"
         default:
           description: An unexpected error response.
           schema:
@@ -30978,7 +30978,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -31250,7 +31250,7 @@ paths:
       summary: BroadcastTx broadcast transaction.
       operationId: CosmosTxV1Beta1BroadcastTx
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -31344,7 +31344,7 @@ paths:
                   tx:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -31594,7 +31594,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -31809,13 +31809,13 @@ paths:
   /cosmos/tx/v1beta1/txs/block/{height}:
     get:
       summary: GetBlockWithTxs fetches a block with decoded txs.
-      description: 'Since: cosmos-sdk 0.45.2'
+      description: "Since: cosmos-sdk 0.45.2"
       operationId: CosmosTxV1Beta1GetBlockWithTxs
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetBlockWithTxsResponse'
+            $ref: "#/definitions/cosmos.tx.v1beta1.GetBlockWithTxsResponse"
         default:
           description: An unexpected error response.
           schema:
@@ -31831,7 +31831,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -32071,10 +32071,10 @@ paths:
       summary: GetTx fetches a tx by hash.
       operationId: CosmosTxV1Beta1GetTx
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
-            $ref: '#/definitions/cosmos.tx.v1beta1.GetTxResponse'
+            $ref: "#/definitions/cosmos.tx.v1beta1.GetTxResponse"
         default:
           description: An unexpected error response.
           schema:
@@ -32090,7 +32090,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -32273,7 +32273,7 @@ paths:
       summary: AppliedPlan queries a previously applied upgrade plan by its name.
       operationId: CosmosUpgradeV1Beta1AppliedPlan
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -32302,7 +32302,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -32483,17 +32483,17 @@ paths:
   /cosmos/upgrade/v1beta1/authority:
     get:
       summary: Returns the account with authority to conduct upgrades
-      description: 'Since: cosmos-sdk 0.46'
+      description: "Since: cosmos-sdk 0.46"
       operationId: CosmosUpgradeV1Beta1Authority
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
             properties:
               address:
                 type: string
-            description: 'Since: cosmos-sdk 0.46'
+            description: "Since: cosmos-sdk 0.46"
             title: QueryAuthorityResponse is the response type for Query/Authority
         default:
           description: An unexpected error response.
@@ -32510,7 +32510,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -32687,7 +32687,7 @@ paths:
       summary: CurrentPlan queries the current upgrade plan.
       operationId: CosmosUpgradeV1Beta1CurrentPlan
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -32745,7 +32745,7 @@ paths:
                   upgraded_client_state:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -32935,7 +32935,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -33110,10 +33110,10 @@ paths:
   /cosmos/upgrade/v1beta1/module_versions:
     get:
       summary: ModuleVersions queries the list of module versions from state.
-      description: 'Since: cosmos-sdk 0.43'
+      description: "Since: cosmos-sdk 0.43"
       operationId: CosmosUpgradeV1Beta1ModuleVersions
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33160,7 +33160,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -33357,7 +33357,7 @@ paths:
         (https://github.com/cosmos/ibc-go/blob/2c880a22e9f9cc75f62b527ca94aa75ce1106001/proto/ibc/core/client/v1/query.proto#L54)
       operationId: CosmosUpgradeV1Beta1UpgradedConsensusState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33365,7 +33365,7 @@ paths:
               upgraded_consensus_state:
                 type: string
                 format: byte
-                title: 'Since: cosmos-sdk 0.43'
+                title: "Since: cosmos-sdk 0.43"
             description: >-
               QueryUpgradedConsensusStateResponse is the response type for the
               Query/UpgradedConsensusState
@@ -33386,7 +33386,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -33574,7 +33574,7 @@ paths:
         owner address on a given connection
       operationId: IbcApplicationsInterchainAccountsControllerV1InterchainAccount
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33599,7 +33599,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -33618,7 +33618,7 @@ paths:
       summary: Params queries all parameters of the ICA controller submodule.
       operationId: IbcApplicationsInterchainAccountsControllerV1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33650,7 +33650,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -33660,7 +33660,7 @@ paths:
       summary: Params queries all parameters of the ICA host submodule.
       operationId: IbcApplicationsInterchainAccountsHostV1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33697,7 +33697,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -33709,7 +33709,7 @@ paths:
         channel id.
       operationId: IbcApplicationsTransferV1EscrowAddress
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33735,7 +33735,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -33923,7 +33923,7 @@ paths:
       summary: DenomHash queries a denomination hash information.
       operationId: IbcApplicationsTransferV1DenomHash
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -33951,7 +33951,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -34134,7 +34134,7 @@ paths:
       summary: DenomTraces queries all denomination traces.
       operationId: IbcApplicationsTransferV1DenomTraces
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -34199,7 +34199,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -34433,7 +34433,7 @@ paths:
       summary: DenomTrace queries a denomination trace information.
       operationId: IbcApplicationsTransferV1DenomTrace
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -34476,7 +34476,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -34661,7 +34661,7 @@ paths:
       summary: Params queries all parameters of the ibc-transfer module.
       operationId: IbcApplicationsTransferV1Params
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -34702,7 +34702,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -34879,7 +34879,7 @@ paths:
       summary: Channels queries all the IBC channels of a chain.
       operationId: IbcCoreChannelV1Channels
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -35040,7 +35040,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -35274,7 +35274,7 @@ paths:
       summary: Channel queries an IBC Channel.
       operationId: IbcCoreChannelV1Channel
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -35409,7 +35409,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -35601,7 +35601,7 @@ paths:
         with the provided channel identifiers.
       operationId: IbcCoreChannelV1ChannelClientState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -35616,7 +35616,7 @@ paths:
                   client_state:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -35843,7 +35843,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -36033,7 +36033,7 @@ paths:
         associated with the provided channel identifiers.
       operationId: IbcCoreChannelV1ChannelConsensusState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -36041,7 +36041,7 @@ paths:
               consensus_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -36262,7 +36262,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -36464,7 +36464,7 @@ paths:
         channel.
       operationId: IbcCoreChannelV1NextSequenceReceive
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -36524,7 +36524,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -36716,7 +36716,7 @@ paths:
         with a channel.
       operationId: IbcCoreChannelV1PacketAcknowledgements
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -36826,7 +36826,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -37079,7 +37079,7 @@ paths:
       summary: PacketAcknowledgement queries a stored packet acknowledgement hash.
       operationId: IbcCoreChannelV1PacketAcknowledgement
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -37143,7 +37143,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -37339,7 +37339,7 @@ paths:
         with a channel.
       operationId: IbcCoreChannelV1PacketCommitments
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -37449,7 +37449,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -37697,7 +37697,7 @@ paths:
         with a channel and sequences.
       operationId: IbcCoreChannelV1UnreceivedAcks
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -37755,7 +37755,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -37957,7 +37957,7 @@ paths:
         channel and sequences.
       operationId: IbcCoreChannelV1UnreceivedPackets
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -38015,7 +38015,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -38213,7 +38213,7 @@ paths:
       summary: PacketCommitment queries a stored packet commitment hash.
       operationId: IbcCoreChannelV1PacketCommitment
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -38278,7 +38278,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -38476,7 +38476,7 @@ paths:
         queried chain
       operationId: IbcCoreChannelV1PacketReceipt
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -38540,7 +38540,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -38736,7 +38736,7 @@ paths:
         end.
       operationId: IbcCoreChannelV1ConnectionChannels
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -38897,7 +38897,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -39136,7 +39136,7 @@ paths:
       summary: ClientParams queries all parameters of the ibc client.
       operationId: IbcCoreClientV1ClientParams
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -39172,7 +39172,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -39349,7 +39349,7 @@ paths:
       summary: ClientStates queries all the IBC light clients of a chain.
       operationId: IbcCoreClientV1ClientStates
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -39365,7 +39365,7 @@ paths:
                     client_state:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -39593,7 +39593,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -39827,7 +39827,7 @@ paths:
       summary: ClientState queries an IBC light client.
       operationId: IbcCoreClientV1ClientState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -39835,7 +39835,7 @@ paths:
               client_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -40058,7 +40058,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -40241,7 +40241,7 @@ paths:
       summary: Status queries the status of an IBC client.
       operationId: IbcCoreClientV1ClientStatus
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -40268,7 +40268,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -40453,7 +40453,7 @@ paths:
         client.
       operationId: IbcCoreClientV1ConsensusStates
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -40495,7 +40495,7 @@ paths:
                     consensus_state:
                       type: object
                       properties:
-                        '@type':
+                        "@type":
                           type: string
                           description: >-
                             A URL/resource name that uniquely identifies the
@@ -40721,7 +40721,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -40962,7 +40962,7 @@ paths:
         associated with a given client.
       operationId: IbcCoreClientV1ConsensusStateHeights
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -41052,7 +41052,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -41295,7 +41295,7 @@ paths:
         a given height.
       operationId: IbcCoreClientV1ConsensusState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -41303,7 +41303,7 @@ paths:
               consensus_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -41531,7 +41531,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -41735,7 +41735,7 @@ paths:
       summary: UpgradedClientState queries an Upgraded IBC light client.
       operationId: IbcCoreClientV1UpgradedClientState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -41743,7 +41743,7 @@ paths:
               upgraded_client_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -41928,7 +41928,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -42105,7 +42105,7 @@ paths:
       summary: UpgradedConsensusState queries an Upgraded IBC consensus state.
       operationId: IbcCoreClientV1UpgradedConsensusState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -42113,7 +42113,7 @@ paths:
               upgraded_consensus_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -42298,7 +42298,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -42477,7 +42477,7 @@ paths:
         state.
       operationId: IbcCoreConnectionV1ClientConnections
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -42538,7 +42538,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -42721,7 +42721,7 @@ paths:
       summary: Connections queries all the IBC connections of a chain.
       operationId: IbcCoreConnectionV1Connections
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -42891,7 +42891,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -43125,7 +43125,7 @@ paths:
       summary: Connection queries an IBC connection end.
       operationId: IbcCoreConnectionV1Connection
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -43279,7 +43279,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -43464,7 +43464,7 @@ paths:
         connection.
       operationId: IbcCoreConnectionV1ConnectionClientState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -43479,7 +43479,7 @@ paths:
                   client_state:
                     type: object
                     properties:
-                      '@type':
+                      "@type":
                         type: string
                         description: >-
                           A URL/resource name that uniquely identifies the type
@@ -43706,7 +43706,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -43891,7 +43891,7 @@ paths:
         connection.
       operationId: IbcCoreConnectionV1ConnectionConsensusState
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -43899,7 +43899,7 @@ paths:
               consensus_state:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -44120,7 +44120,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -44313,7 +44313,7 @@ paths:
       summary: Queries a DIDDocument for the matching AlsoKnownAs
       operationId: SonrioSonrIdentityQueryByAlsoKnownAs
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -45236,7 +45236,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -45251,7 +45251,7 @@ paths:
       summary: Queries a list of DidDocument items.
       operationId: SonrioSonrIdentityDidAll
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -46207,7 +46207,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -46274,7 +46274,7 @@ paths:
       summary: Queries a DidDocument by index.
       operationId: SonrioSonrIdentityDid
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -47197,7 +47197,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -47212,7 +47212,7 @@ paths:
       summary: Queries a DIDDocument for the matching key
       operationId: SonrioSonrIdentityQueryByKeyID
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -48135,7 +48135,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -48150,7 +48150,7 @@ paths:
       summary: Queries a list of DIDDocument for the matching method
       operationId: SonrioSonrIdentityQueryByMethod
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -49106,7 +49106,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -49177,7 +49177,7 @@ paths:
       summary: Queries a list of QueryByNetwork items.
       operationId: SonrioSonrIdentityQueryByNetwork
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -50133,7 +50133,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -50148,7 +50148,7 @@ paths:
       summary: Parameters queries the parameters of the module.
       operationId: SonrioSonrIdentityParams
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -50193,7 +50193,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       tags:
@@ -50203,7 +50203,7 @@ paths:
       summary: Queries a DIDDocument for the matching service
       operationId: SonrioSonrIdentityQueryByService
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -51126,7 +51126,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -51141,7 +51141,7 @@ paths:
       summary: Request a Webauthn credential registration returns a VM and Credential
       operationId: SonrioSonrIdentityWebauthnLoginBegin
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -51164,7 +51164,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -51179,7 +51179,7 @@ paths:
       summary: Queries a list of VerifyWebauthnCredential items.
       operationId: SonrioSonrIdentityWebauthnLoginFinish
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -52102,7 +52102,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -52121,7 +52121,7 @@ paths:
       summary: Request a Webauthn credential registration returns a VM and Credential
       operationId: SonrioSonrIdentityWebauthnRegistrationBegin
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -52144,7 +52144,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -52159,7 +52159,7 @@ paths:
       summary: Queries a list of VerifyWebauthnCredential items.
       operationId: SonrioSonrIdentityWebauthnRegistrationFinish
       responses:
-        '200':
+        "200":
           description: A successful response.
           schema:
             type: object
@@ -52257,7 +52257,7 @@ paths:
                 items:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                   additionalProperties: {}
       parameters:
@@ -52331,7 +52331,7 @@ definitions:
     properties:
       account_address:
         type: string
-    description: 'Since: cosmos-sdk 0.46.2'
+    description: "Since: cosmos-sdk 0.46.2"
     title: >-
       QueryAccountAddressByIDResponse is the response type for
       AccountAddressByID rpc method
@@ -52341,7 +52341,7 @@ definitions:
       account:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -52506,7 +52506,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -52697,7 +52697,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -52963,7 +52963,7 @@ definitions:
   google.protobuf.Any:
     type: object
     properties:
-      '@type':
+      "@type":
         type: string
         description: >-
           A URL/resource name that uniquely identifies the type of the
@@ -53126,7 +53126,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -53289,7 +53289,7 @@ definitions:
       authorization:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -53466,7 +53466,7 @@ definitions:
       authorization:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -53658,7 +53658,7 @@ definitions:
             authorization:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -53868,7 +53868,7 @@ definitions:
             authorization:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -54074,7 +54074,7 @@ definitions:
             authorization:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -54398,8 +54398,8 @@ definitions:
           displayed in clients.
       name:
         type: string
-        description: 'Since: cosmos-sdk 0.43'
-        title: 'name defines the name of the token (eg: Cosmos Atom)'
+        description: "Since: cosmos-sdk 0.43"
+        title: "name defines the name of the token (eg: Cosmos Atom)"
       symbol:
         type: string
         description: >-
@@ -54591,8 +54591,8 @@ definitions:
               displayed in clients.
           name:
             type: string
-            description: 'Since: cosmos-sdk 0.43'
-            title: 'name defines the name of the token (eg: Cosmos Atom)'
+            description: "Since: cosmos-sdk 0.43"
+            title: "name defines the name of the token (eg: Cosmos Atom)"
           symbol:
             type: string
             description: >-
@@ -54747,8 +54747,8 @@ definitions:
                 displayed in clients.
             name:
               type: string
-              description: 'Since: cosmos-sdk 0.43'
-              title: 'name defines the name of the token (eg: Cosmos Atom)'
+              description: "Since: cosmos-sdk 0.43"
+              title: "name defines the name of the token (eg: Cosmos Atom)"
             symbol:
               type: string
               description: >-
@@ -55612,7 +55612,7 @@ definitions:
             title: PartsetHeader
         title: BlockID
       block:
-        title: 'Deprecated: please use `sdk_block` instead'
+        title: "Deprecated: please use `sdk_block` instead"
         type: object
         properties:
           header:
@@ -56165,7 +56165,7 @@ definitions:
               Commit contains the evidence that a block was committed by a set
               of validators.
       sdk_block:
-        title: 'Since: cosmos-sdk 0.47'
+        title: "Since: cosmos-sdk 0.47"
         type: object
         properties:
           header:
@@ -56755,7 +56755,7 @@ definitions:
             title: PartsetHeader
         title: BlockID
       block:
-        title: 'Deprecated: please use `sdk_block` instead'
+        title: "Deprecated: please use `sdk_block` instead"
         type: object
         properties:
           header:
@@ -57308,7 +57308,7 @@ definitions:
               Commit contains the evidence that a block was committed by a set
               of validators.
       sdk_block:
-        title: 'Since: cosmos-sdk 0.47'
+        title: "Since: cosmos-sdk 0.47"
         type: object
         properties:
           header:
@@ -57893,7 +57893,7 @@ definitions:
             pub_key:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -58156,7 +58156,7 @@ definitions:
               title: Module is the type for VersionInfo
           cosmos_sdk_version:
             type: string
-            title: 'Since: cosmos-sdk 0.43'
+            title: "Since: cosmos-sdk 0.43"
         description: VersionInfo is the type for the GetNodeInfoResponse message.
     description: |-
       GetNodeInfoResponse is the response type for the Query/GetNodeInfo RPC
@@ -58185,7 +58185,7 @@ definitions:
             pub_key:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -58552,7 +58552,7 @@ definitions:
       pub_key:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -58745,7 +58745,7 @@ definitions:
           title: Module is the type for VersionInfo
       cosmos_sdk_version:
         type: string
-        title: 'Since: cosmos-sdk 0.43'
+        title: "Since: cosmos-sdk 0.43"
     description: VersionInfo is the type for the GetNodeInfoResponse message.
   tendermint.crypto.PublicKey:
     type: object
@@ -61289,7 +61289,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-        title: 'Since: cosmos-sdk 0.46'
+        title: "Since: cosmos-sdk 0.46"
     description: >-
       MsgWithdrawDelegatorRewardResponse defines the Msg/WithdrawDelegatorReward
       response type.
@@ -61310,7 +61310,7 @@ definitions:
 
             NOTE: The amount field is an Int which implements the custom method
             signatures required by gogoproto.
-        title: 'Since: cosmos-sdk 0.46'
+        title: "Since: cosmos-sdk 0.46"
     description: >-
       MsgWithdrawValidatorCommissionResponse defines the
       Msg/WithdrawValidatorCommission response type.
@@ -61626,7 +61626,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -61814,7 +61814,7 @@ definitions:
       evidence:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -61988,7 +61988,7 @@ definitions:
         description: allowance can be any of basic, periodic, allowed fee allowance.
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -62073,7 +62073,7 @@ definitions:
             description: allowance can be any of basic, periodic, allowed fee allowance.
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -62155,7 +62155,7 @@ definitions:
               description: allowance can be any of basic, periodic, allowed fee allowance.
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -62262,7 +62262,7 @@ definitions:
               description: allowance can be any of basic, periodic, allowed fee allowance.
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -62426,7 +62426,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -62841,7 +62841,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -63099,7 +63099,7 @@ definitions:
               items:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -63689,7 +63689,7 @@ definitions:
       content:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -63874,11 +63874,11 @@ definitions:
           proposal's voting period has ended.
         type: object
         properties:
-          'yes':
+          "yes":
             type: string
           abstain:
             type: string
-          'no':
+          "no":
             type: string
           no_with_veto:
             type: string
@@ -64099,7 +64099,7 @@ definitions:
           content:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -64293,11 +64293,11 @@ definitions:
               proposal's voting period has ended.
             type: object
             properties:
-              'yes':
+              "yes":
                 type: string
               abstain:
                 type: string
-              'no':
+              "no":
                 type: string
               no_with_veto:
                 type: string
@@ -64348,7 +64348,7 @@ definitions:
             content:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -64547,11 +64547,11 @@ definitions:
                 proposal's voting period has ended.
               type: object
               properties:
-                'yes':
+                "yes":
                   type: string
                 abstain:
                   type: string
-                'no':
+                "no":
                   type: string
                 no_with_veto:
                   type: string
@@ -64614,11 +64614,11 @@ definitions:
         description: tally defines the requested tally.
         type: object
         properties:
-          'yes':
+          "yes":
             type: string
           abstain:
             type: string
-          'no':
+          "no":
             type: string
           no_with_veto:
             type: string
@@ -64682,7 +64682,7 @@ definitions:
                 WeightedVoteOption defines a unit of vote for vote split.
 
                 Since: cosmos-sdk 0.43
-            title: 'Since: cosmos-sdk 0.43'
+            title: "Since: cosmos-sdk 0.43"
         description: |-
           Vote defines a vote on a governance proposal.
           A Vote consists of a proposal ID, the voter, and the vote option.
@@ -64746,7 +64746,7 @@ definitions:
                   WeightedVoteOption defines a unit of vote for vote split.
 
                   Since: cosmos-sdk 0.43
-              title: 'Since: cosmos-sdk 0.43'
+              title: "Since: cosmos-sdk 0.43"
           description: |-
             Vote defines a vote on a governance proposal.
             A Vote consists of a proposal ID, the voter, and the vote option.
@@ -64796,11 +64796,11 @@ definitions:
   cosmos.gov.v1beta1.TallyResult:
     type: object
     properties:
-      'yes':
+      "yes":
         type: string
       abstain:
         type: string
-      'no':
+      "no":
         type: string
       no_with_veto:
         type: string
@@ -64859,7 +64859,7 @@ definitions:
             WeightedVoteOption defines a unit of vote for vote split.
 
             Since: cosmos-sdk 0.43
-        title: 'Since: cosmos-sdk 0.43'
+        title: "Since: cosmos-sdk 0.43"
     description: |-
       Vote defines a vote on a governance proposal.
       A Vote consists of a proposal ID, the voter, and the vote option.
@@ -65018,7 +65018,7 @@ definitions:
       decision_policy:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -65409,7 +65409,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -65745,7 +65745,7 @@ definitions:
             decision_policy:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -65975,7 +65975,7 @@ definitions:
             decision_policy:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -66205,7 +66205,7 @@ definitions:
           decision_policy:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -66623,7 +66623,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -66913,7 +66913,7 @@ definitions:
               items:
                 type: object
                 properties:
-                  '@type':
+                  "@type":
                     type: string
                     description: >-
                       A URL/resource name that uniquely identifies the type of
@@ -67440,7 +67440,7 @@ definitions:
       data:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -67619,7 +67619,7 @@ definitions:
       data:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -67815,7 +67815,7 @@ definitions:
           data:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -68015,7 +68015,7 @@ definitions:
             data:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -68231,7 +68231,7 @@ definitions:
           data:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -68419,7 +68419,7 @@ definitions:
             data:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -69158,7 +69158,7 @@ definitions:
             consensus_pubkey:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -69458,7 +69458,7 @@ definitions:
     description: MsgBeginRedelegateResponse defines the Msg/BeginRedelegate response type.
   cosmos.staking.v1beta1.MsgCancelUnbondingDelegationResponse:
     type: object
-    description: 'Since: cosmos-sdk 0.46'
+    description: "Since: cosmos-sdk 0.46"
     title: MsgCancelUnbondingDelegationResponse
   cosmos.staking.v1beta1.MsgCreateValidatorResponse:
     type: object
@@ -69734,7 +69734,7 @@ definitions:
           consensus_pubkey:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -70028,7 +70028,7 @@ definitions:
             consensus_pubkey:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -70438,7 +70438,7 @@ definitions:
                 consensus_pubkey:
                   type: object
                   properties:
-                    '@type':
+                    "@type":
                       type: string
                       description: >-
                         A URL/resource name that uniquely identifies the type of
@@ -71055,7 +71055,7 @@ definitions:
           consensus_pubkey:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -71422,7 +71422,7 @@ definitions:
             consensus_pubkey:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -72021,7 +72021,7 @@ definitions:
       consensus_pubkey:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -72409,7 +72409,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -72677,7 +72677,7 @@ definitions:
       tx:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -72956,7 +72956,7 @@ definitions:
       signer_infos:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.SignerInfo'
+          $ref: "#/definitions/cosmos.tx.v1beta1.SignerInfo"
         description: >-
           signer_infos defines the signing modes for the required signers. The
           number
@@ -73205,7 +73205,7 @@ definitions:
           tx:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -73488,7 +73488,7 @@ definitions:
       txs:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+          $ref: "#/definitions/cosmos.tx.v1beta1.Tx"
         description: txs are the transactions in the block.
       block_id:
         type: object
@@ -74088,7 +74088,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: "#/definitions/cosmos.tx.v1beta1.Tx"
         description: tx is the queried transaction.
       tx_response:
         type: object
@@ -74177,7 +74177,7 @@ definitions:
           tx:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -74404,7 +74404,7 @@ definitions:
       txs:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+          $ref: "#/definitions/cosmos.tx.v1beta1.Tx"
         description: txs is the list of queried transactions.
       tx_responses:
         type: array
@@ -74495,7 +74495,7 @@ definitions:
             tx:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -74825,7 +74825,7 @@ definitions:
 
               Since: cosmos-sdk 0.45.2
       multi:
-        $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo.Multi'
+        $ref: "#/definitions/cosmos.tx.v1beta1.ModeInfo.Multi"
         title: multi represents a nested multisig signer
     description: ModeInfo describes the signing mode of a single or nested multisig signer.
   cosmos.tx.v1beta1.ModeInfo.Multi:
@@ -74853,7 +74853,7 @@ definitions:
       mode_infos:
         type: array
         items:
-          $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo'
+          $ref: "#/definitions/cosmos.tx.v1beta1.ModeInfo"
         title: |-
           mode_infos is the corresponding modes of the signers of the multisig
           which could include nested multisig public keys
@@ -74950,7 +74950,7 @@ definitions:
       public_key:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -75105,7 +75105,7 @@ definitions:
                 "value": "1.212s"
               }
       mode_info:
-        $ref: '#/definitions/cosmos.tx.v1beta1.ModeInfo'
+        $ref: "#/definitions/cosmos.tx.v1beta1.ModeInfo"
         title: |-
           mode_info describes the signing mode of the signer and is a nested
           structure to support nested multisig pubkey's
@@ -75126,7 +75126,7 @@ definitions:
     type: object
     properties:
       tx:
-        $ref: '#/definitions/cosmos.tx.v1beta1.Tx'
+        $ref: "#/definitions/cosmos.tx.v1beta1.Tx"
         description: |-
           tx is the transaction to simulate.
           Deprecated. Send raw tx bytes instead.
@@ -75222,7 +75222,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -75432,7 +75432,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -75636,7 +75636,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -75813,7 +75813,7 @@ definitions:
             items:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -75987,7 +75987,7 @@ definitions:
               and can't be handled, they will be ignored
         description: TxBody is the body of a transaction that all signers sign over.
       auth_info:
-        $ref: '#/definitions/cosmos.tx.v1beta1.AuthInfo'
+        $ref: "#/definitions/cosmos.tx.v1beta1.AuthInfo"
         title: |-
           auth_info is the authorization related content of the transaction,
           specifically signers, signer modes and fee
@@ -76013,7 +76013,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -76207,7 +76207,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -76376,7 +76376,7 @@ definitions:
         items:
           type: object
           properties:
-            '@type':
+            "@type":
               type: string
               description: >-
                 A URL/resource name that uniquely identifies the type of the
@@ -76654,7 +76654,7 @@ definitions:
       upgraded_client_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -76828,7 +76828,7 @@ definitions:
     properties:
       address:
         type: string
-    description: 'Since: cosmos-sdk 0.46'
+    description: "Since: cosmos-sdk 0.46"
     title: QueryAuthorityResponse is the response type for Query/Authority
   cosmos.upgrade.v1beta1.QueryCurrentPlanResponse:
     type: object
@@ -76885,7 +76885,7 @@ definitions:
           upgraded_client_state:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -77086,7 +77086,7 @@ definitions:
       upgraded_consensus_state:
         type: string
         format: byte
-        title: 'Since: cosmos-sdk 0.43'
+        title: "Since: cosmos-sdk 0.43"
     description: >-
       QueryUpgradedConsensusStateResponse is the response type for the
       Query/UpgradedConsensusState
@@ -77743,7 +77743,7 @@ definitions:
           client_state:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -77948,7 +77948,7 @@ definitions:
       consensus_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -79001,7 +79001,7 @@ definitions:
       client_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -79193,7 +79193,7 @@ definitions:
       consensus_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -79399,7 +79399,7 @@ definitions:
       client_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -79607,7 +79607,7 @@ definitions:
             client_state:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -79897,7 +79897,7 @@ definitions:
       consensus_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -80137,7 +80137,7 @@ definitions:
             consensus_state:
               type: object
               properties:
-                '@type':
+                "@type":
                   type: string
                   description: >-
                     A URL/resource name that uniquely identifies the type of the
@@ -80344,7 +80344,7 @@ definitions:
       upgraded_client_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -80508,7 +80508,7 @@ definitions:
       upgraded_consensus_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the
@@ -80951,7 +80951,7 @@ definitions:
           client_state:
             type: object
             properties:
-              '@type':
+              "@type":
                 type: string
                 description: >-
                   A URL/resource name that uniquely identifies the type of the
@@ -81156,7 +81156,7 @@ definitions:
       consensus_state:
         type: object
         properties:
-          '@type':
+          "@type":
             type: string
             description: >-
               A URL/resource name that uniquely identifies the type of the

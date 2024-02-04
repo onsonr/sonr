@@ -1,12 +1,17 @@
-package ui
+package components
+
+import "github.com/sonrhq/sonr/pkg/nebula/ui"
 
 templ RootLayout(page, sidebar templ.Component) {
 	<html>
 		<head>
 			<script src="/assets/js/htmx.min.js"></script>
+			<link rel="stylesheet" href="/assets/css/styles.css"/>
+			<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.13.1/cdn/shoelace-autoloader.js"></script>
 		</head>
 		<div class="w-full h-full">
 			<div class="flex h-full">
+				@ui.Button()
 				@sidebar
 				<div class="flex-1 h-full">
 					@page

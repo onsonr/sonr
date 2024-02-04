@@ -9,7 +9,7 @@ description: >-
 
 This way other users can buy the tokens from lockdrop participants right away by depositing the stablecoin receiving the price depending on the balance of the pool. When the initial LBA phase is over, the final price of the native token is determined by the ratio of native coins to stablecoins and various auction participants receive (locked and vesting) LP shares pro-rata on their deposits. If there is sufficient participation in the LBA, there will be immediate and deep liquidation at the market price.
 
-***
+---
 
 ## Adoption Rate
 

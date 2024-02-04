@@ -8,7 +8,7 @@ description: >-
 
 These security tokens represent ownership of assets, profit-sharing rights, or other financial instruments, and they are subject to securities regulations in various jurisdictions. Unlike utility tokens offered in ICOs, security tokens have legal backing, making them a more regulated and compliant way to raise funds for blockchain projects.
 
-***
+---
 
 ## **Adoption Rate**
 

@@ -1,129 +1,126 @@
 {
-	"version": "2.0.0",
-	"tasks": [
-		{
-			"label": "Run: Dev Serve",
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"dependsOn": [
-				"Dev: Node",
-				"Dev: Gateway"
-			],
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiWhite"
-			},
-			"detail": "task dev",
-			"problemMatcher": [],
-			"presentation": {
-				"clear": true,
-				"close": true,
-				"echo": false,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "dedicated",
-			}
-		},
-		{
-			"type": "shell",
-			"label": "Dev: Node",
-			"command": "task dev-node",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiWhite"
-			},
-			"detail": "task dev:node",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"group": "Dev Serve"
-			}
-		},
-		{
-			"type": "shell",
-			"label": "Dev: Gateway",
-			"command": "task dev-api",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiWhite"
-			},
-			"detail": "task dev:gateway",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"group": "Dev Serve"
-			}
-		},
-		{
-			"label": "Build: Node Binary",
-			"type": "shell",
-			"command": "task build",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "rocket",
-				"color": "terminal.ansiBlue"
-			},
-			"detail": "Build binary with earthly",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "always",
-				"revealProblems": "onProblem",
-				"focus": true,
-				"panel": "shared",
-				"showReuseMessage": true,
-				"close": true,
-				"group": "chain"
-			}
-		},
-		{
-			"label": "Open: gRPC UI Local Node",
-			"type": "shell",
-			"command": "grpcui -plaintext localhost:9090",
-			"isBackground": true,
-			"options": {
-				"cwd": "${workspaceFolder}"
-			},
-			"icon": {
-				"id": "play-circle",
-				"color": "terminal.ansiBlue"
-			},
-			"detail": "Run local chain node",
-			"problemMatcher": [],
-			"presentation": {
-				"echo": true,
-				"reveal": "silent",
-				"revealProblems": "onProblem",
-				"focus": false,
-				"panel": "shared",
-				"clear": true,
-				"showReuseMessage": true,
-				"close": true,
-				"group": "chain"
-			}
-		},
-	]
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run: Dev Serve",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["Dev: Node", "Dev: Gateway"],
+      "icon": {
+        "id": "play-circle",
+        "color": "terminal.ansiWhite"
+      },
+      "detail": "task dev",
+      "problemMatcher": [],
+      "presentation": {
+        "clear": true,
+        "close": true,
+        "echo": false,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "focus": true,
+        "panel": "dedicated"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Dev: Node",
+      "command": "task dev-node",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "icon": {
+        "id": "play-circle",
+        "color": "terminal.ansiWhite"
+      },
+      "detail": "task dev:node",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "group": "Dev Serve"
+      }
+    },
+    {
+      "type": "shell",
+      "label": "Dev: Gateway",
+      "command": "task dev-api",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "icon": {
+        "id": "play-circle",
+        "color": "terminal.ansiWhite"
+      },
+      "detail": "task dev:gateway",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "group": "Dev Serve"
+      }
+    },
+    {
+      "label": "Build: Node Binary",
+      "type": "shell",
+      "command": "task build",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "icon": {
+        "id": "rocket",
+        "color": "terminal.ansiBlue"
+      },
+      "detail": "Build binary with earthly",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "revealProblems": "onProblem",
+        "focus": true,
+        "panel": "shared",
+        "showReuseMessage": true,
+        "close": true,
+        "group": "chain"
+      }
+    },
+    {
+      "label": "Open: gRPC UI Local Node",
+      "type": "shell",
+      "command": "grpcui -plaintext localhost:9090",
+      "isBackground": true,
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "icon": {
+        "id": "play-circle",
+        "color": "terminal.ansiBlue"
+      },
+      "detail": "Run local chain node",
+      "problemMatcher": [],
+      "presentation": {
+        "echo": true,
+        "reveal": "silent",
+        "revealProblems": "onProblem",
+        "focus": false,
+        "panel": "shared",
+        "clear": true,
+        "showReuseMessage": true,
+        "close": true,
+        "group": "chain"
+      }
+    }
+  ]
 }

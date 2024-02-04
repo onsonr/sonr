@@ -1,0 +1,49 @@
+name: Story Task
+description: A task that is part of a larger story for Core Team members
+labels: ["Github", "Plane"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        > [!IMPORTANT]
+        > This form is for filing a task that is part of a larger story for Core Team members. If you are a community member, please use the Feature Request.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type
+      description: What type of task is this?
+      multiple: true
+      options:
+        - Bug
+        - Feature
+        - Chore
+        - Improvement
+        - Refactor
+        - Documentation
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Module
+      description: Which overall module does this task belong to?
+      options:
+        - label: Dev Ops
+        - label: Identity Module
+        - label: Nebula UI
+        - label: Nitro Matrix
+        - label: Oracle Module
+        - label: Service Module
+          required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: What is the priority of this task?
+      multiple: true
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
