@@ -15,6 +15,7 @@ func UseDefaults(r *chi.Mux) {
 	r.Use(chimdw.RealIP)
 	r.Use(chimdw.Logger)
 	r.Use(chimdw.Recoverer)
+	r.Use(Session)
 }
 
 // Session wraps the provided http.Handler with a SessionMiddleware instance.

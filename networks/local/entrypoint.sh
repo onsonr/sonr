@@ -7,7 +7,6 @@ KEYALGO="secp256k1"
 KEYRING="test"
 LOGLEVEL="info"
 
-
 # remove existing daemon
 rm -rf $HOME/.sonr
 

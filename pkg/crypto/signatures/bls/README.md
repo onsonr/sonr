@@ -11,8 +11,8 @@ which are designed to handle rogue-key attacks differently. These three are:
 - **Message Augmentation** handles rogue key attacks by prepending the public key to the message during signing which ensures that all messages are distinct for different public keys.
 - **Proof of Possession** handles rogue key attacks by validating public keys in a separate step called a proof of possession. This allows for faster aggregate verification.
 
-Pairing-friendly curves have two generator-groups &#x1D53E;<sub>1</sub>, &#x1D53E;<sub>2</sub>. 
-Data in &#x1D53E;<sub>2</sub> is twice the size of &#x1D53E;<sub>1</sub> and operations are slower. 
+Pairing-friendly curves have two generator-groups &#x1D53E;<sub>1</sub>, &#x1D53E;<sub>2</sub>.
+Data in &#x1D53E;<sub>2</sub> is twice the size of &#x1D53E;<sub>1</sub> and operations are slower.
 BLS signatures require signatures and public keys to be in opposite groups i.e. signatures in &#x1D53E;<sub>1</sub> and public keys in &#x1D53E;<sub>2</sub> or
 signatures in &#x1D53E;<sub>2</sub> and public keys in &#x1D53E;<sub>1</sub>. This means one of two things:
 
@@ -36,7 +36,7 @@ a BLS signing instance:
 
 Also implemented is Threshold BLS as described in section 3.2 of [B03](https://www.cc.gatech.edu/~aboldyre/papers/bold.pdf).
 
-- ThresholdKeygen(parts, threshold int) -> ([]*SecretKeyShare, error)
+- ThresholdKeygen(parts, threshold int) -> ([]\*SecretKeyShare, error)
 - PartialSign(share *SecretKeyShare, msg []byte) -> *PartialSignature
 - CombineSigs(*PartialSignature...) -> *Signature
 
@@ -89,7 +89,7 @@ the value and now can impersonate the key holder.
 
 Malformed public keys and signatures result in invalid addresses and no ability to withdraw funds.
 
-To check for these problems, We tested millions of keys/signatures (vs say thousands or hundreds) to prove that 
+To check for these problems, We tested millions of keys/signatures (vs say thousands or hundreds) to prove that
 
 1. The odds of producing an invalid key/signature is already theoretically low 2<sup>-255</sup>
 1. The results of running millions of checks shows that nothing bad happened in 10M attempts

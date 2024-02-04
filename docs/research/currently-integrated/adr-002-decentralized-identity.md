@@ -12,11 +12,11 @@ Sonr aims to set a new standard in digital identity by aligning with W3C specifi
 
 ## O**bjective**
 
-* Enforce Compliance by implementing Decentralized Identifiers from W3C
-* Prevent Applications and Services from associating 3rd-party identification with wallets
-* Eliminate cumbersome onboarding by removing seed-phrases
+- Enforce Compliance by implementing Decentralized Identifiers from W3C
+- Prevent Applications and Services from associating 3rd-party identification with wallets
+- Eliminate cumbersome onboarding by removing seed-phrases
 
-***
+---
 
 ## Solution
 
@@ -30,27 +30,31 @@ The multi-party computation feature aims to enhance the security and privacy of 
 
 The interblockchain communication or IBC, enables the exchange of information and data between different blockchain networks. When using the Cosmos SDK, this functionality is offered out of the box. Resulting in interoperability and seamless integration between different IBC Protocol enabled blockchains.
 
-***
+---
 
 ## Definitions
 
-*   `**Decentralized Identifier (DID)**`
+- `**Decentralized Identifier (DID)**`
 
-    A globally unique identifier that enables verifiable, self-sovereign digital identities. DIDs are fully under the control of the DID subject, independent from any centralized registry, identity provider, or certificate authority.
-*   `**DID Method**`
+  A globally unique identifier that enables verifiable, self-sovereign digital identities. DIDs are fully under the control of the DID subject, independent from any centralized registry, identity provider, or certificate authority.
 
-    Specifies the syntax and procedures for specific DID schemes. It defines how to read, write and resolve DIDs for a particular blockchain or storage network.
-*   `**DID Document**`
+- `**DID Method**`
 
-    A JSON-LD document that describes the DID, including its public keys, authentication protocols, and service endpoints for interaction.
-*   `**DID Controller**`
+  Specifies the syntax and procedures for specific DID schemes. It defines how to read, write and resolve DIDs for a particular blockchain or storage network.
 
-    An entity that has the capability to make changes to a DID Document, essentially having control over the DID.
-*   `**DID Resolver**`
+- `**DID Document**`
 
-    A system function that takes a DID as input and produces a DID Document as output, essentially translating the identifier into a form that the system can process.
+  A JSON-LD document that describes the DID, including its public keys, authentication protocols, and service endpoints for interaction.
 
-***
+- `**DID Controller**`
+
+  An entity that has the capability to make changes to a DID Document, essentially having control over the DID.
+
+- `**DID Resolver**`
+
+  A system function that takes a DID as input and produces a DID Document as output, essentially translating the identifier into a form that the system can process.
+
+---
 
 ## Sequence Methods
 
@@ -58,28 +62,28 @@ The interblockchain communication or IBC, enables the exchange of information an
 
 More information on sequence method one
 
-* More information on sequence method one
-* More information on sequence method one
+- More information on sequence method one
+- More information on sequence method one
 
 #### 2. Service-Proxied Registration
 
-![Service-Proxied Registration Diagram.svg](https://prod-files-secure.s3.us-west-2.amazonaws.com/b4e83706-0f19-4f5e-9020-40fcf1b9dda3/6b2a62a6-dbf2-42fd-a54f-57917c052986/Service-Proxied\_Registration\_Diagram.svg)
+![Service-Proxied Registration Diagram.svg](https://prod-files-secure.s3.us-west-2.amazonaws.com/b4e83706-0f19-4f5e-9020-40fcf1b9dda3/6b2a62a6-dbf2-42fd-a54f-57917c052986/Service-Proxied_Registration_Diagram.svg)
 
 More information on sequence method one.
 
-* More information on sequence method one
-* More information on sequence method one
+- More information on sequence method one
+- More information on sequence method one
 
 #### 3. Resolving Decentralized Identifiers
 
-![Resolution Process Diagram.svg](https://prod-files-secure.s3.us-west-2.amazonaws.com/b4e83706-0f19-4f5e-9020-40fcf1b9dda3/c50528ef-1374-408e-8bb0-8a41c1b4bc2e/Resolution\_Process\_Diagram.svg)
+![Resolution Process Diagram.svg](https://prod-files-secure.s3.us-west-2.amazonaws.com/b4e83706-0f19-4f5e-9020-40fcf1b9dda3/c50528ef-1374-408e-8bb0-8a41c1b4bc2e/Resolution_Process_Diagram.svg)
 
 More information on sequence method one
 
-* More information on sequence method one
-* More information on sequence method one
+- More information on sequence method one
+- More information on sequence method one
 
-***
+---
 
 ### Keyshare Mapping
 
@@ -106,7 +110,7 @@ More information on sequence method one
 | Persisting a Username    | USNR 200,000,000   | 30 Days       |
 | Elevate Developer Access | USNR 500,000,000   | 12 Months     |
 
-***
+---
 
 ## Implementation
 
@@ -120,7 +124,7 @@ More information on sequence method one
 
 ### Multi-Party Computation
 
-***
+---
 
 ## Status
 
@@ -130,8 +134,8 @@ This proposal is **under development** by the core Sonr Team.
 | ----------------- | ------- |
 | Target Completion | Q4 2023 |
 
-***
+---
 
 ## References
 
-* [Decentralized Identifiers by W3C](https://www.w3.org/TR/did-core/)
+- [Decentralized Identifiers by W3C](https://www.w3.org/TR/did-core/)

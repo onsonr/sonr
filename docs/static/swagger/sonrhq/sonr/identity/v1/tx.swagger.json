@@ -9,12 +9,8 @@
       "name": "Msg"
     }
   ],
-  "consumes": [
-    "application/json"
-  ],
-  "produces": [
-    "application/json"
-  ],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
   "paths": {
     "/sonrhq.sonr.identity.v1.Msg/IncrementCounter": {
       "post": {
@@ -45,9 +41,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     },
     "/sonrhq.sonr.identity.v1.Msg/UpdateParams": {
@@ -79,9 +73,7 @@
             }
           }
         ],
-        "tags": [
-          "Msg"
-        ]
+        "tags": ["Msg"]
       }
     }
   },

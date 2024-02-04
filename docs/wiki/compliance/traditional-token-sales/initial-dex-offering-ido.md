@@ -9,7 +9,7 @@ description: >-
 
 IDOs have gained popularity due to the increasing use of decentralized finance (DeFi) protocols and platforms. Projects conducting IDOs on DEXs offer their tokens directly to the DeFi community, and the fundraising process is typically more accessible and decentralized.
 
-***
+---
 
 ## **Adoption Rate**
 

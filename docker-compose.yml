@@ -10,7 +10,7 @@ services:
     image: sonrhq/sonrd:latest
     command: ["start"]
     volumes:
-     - /mnt/disks/sonr_data:/root/.sonr
+      - /mnt/disks/sonr_data:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc

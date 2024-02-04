@@ -4,15 +4,15 @@
 
 Blockchain voting has shown to be done by very few actors in a decentralized system. This proposal is to create clear guidelines for the voting powers, responsibilities, checks and balances involved in the Sonr regulatory process.
 
-***
+---
 
 ## O**bjective**
 
-* Insert goal #1
-* Insert goal #2
-* Insert goal #3
+- Insert goal #1
+- Insert goal #2
+- Insert goal #3
 
-***
+---
 
 ## Solution
 
@@ -26,23 +26,26 @@ More on detail number one.
 
 More on detail number two.
 
-***
+---
 
 ## Definitions
 
-*   `Libp2p`
+- `Libp2p`
 
-    Description of the new term
-*   `Pinecone`
+  Description of the new term
 
-    Description of the new term
-*   `Framework Binding`
+- `Pinecone`
 
-    Description of the new term
-* `Protobufs`
-* `WebTransport`
+  Description of the new term
 
-***
+- `Framework Binding`
+
+  Description of the new term
+
+- `Protobufs`
+- `WebTransport`
+
+---
 
 ## Sequence Methods
 
@@ -50,7 +53,7 @@ More on detail number two.
 
 More information on sequence method one
 
-***
+---
 
 ## Implementation
 
@@ -58,7 +61,7 @@ More information on sequence method one
 
 Mapping the distributed governance ecosystem in Sonr reveals a balanced interplay of responsibilities among stakeholders.
 
-***
+---
 
 ## Status
 
@@ -68,9 +71,9 @@ This proposal is **under development** by the core Sonr Team.
 | ----------------- | ------- |
 | Target Completion | Q4 2023 |
 
-***
+---
 
 ## References
 
-* [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
-* [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)
+- [Sonr ADR-001: Decentralized Identity System](https://www.notion.so/ADR-002-Decentralized-Identity-Specification-01102d0fa712448b8893fe1bdc689d1e?pvs=21)
+- [Sonr ADR-003: Decentralized Network-Relaying Services](https://www.notion.so/ADR-003-Authoritative-Application-Records-9b579f508d14454bbe995c9dc430c345?pvs=21)

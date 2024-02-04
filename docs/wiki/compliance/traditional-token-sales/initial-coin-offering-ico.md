@@ -8,7 +8,7 @@ description: >-
 
 It involves the issuance and sale of new cryptocurrency tokens to the public in exchange for existing cryptocurrencies like Bitcoin or Ethereum, or sometimes even fiat currency. ICOs were prevalent during the 2017-2018 crypto boom, but regulatory concerns and a high number of scams led to a decline in their popularity.
 
-***
+---
 
 ## **Adoption Rate**
 

@@ -1,87 +1,87 @@
 {
-	"explorer.excludeGitIgnore": true,
-	"editor.formatOnSave": true,
-	"[templ]": {
-		"editor.defaultFormatter": "a-h.templ"
-	},
-	"files.exclude": {
-		"**/.git": true,
-		"Icon": true,
-		"**/.svn": true,
-		"**/.hg": true,
-		"**/CVS": true,
-		"**/.DS_Store": true,
-		"**/Thumbs.db": true,
-		"!**/.git/hooks": true,
-		".dart_tool": true,
-		"**/.classpath": true,
-		"**/.factorypath": true,
-		"**/.flutter-plugins": true,
-		"**/.flutter-plugins-dependencies": true,
-		"**/.packages": true,
-		"**/.project": true,
-		"**/.settings": true,
-		"**/largeFolder": true,
-		"**/pubspec.lock": true,
-		"**pubspec.lock": true,
-		"app.iml": true,
-		"Contents.json": true,
-		"**/.trunk/*out/": true,
-		"**/.trunk/*actions/": true,
-		"**/.trunk/*logs/": true,
-		"**/.trunk/*plugins/": true,
-		"**/node_modules": true,
-		"**/CODE_OF_CONDUCT.md": true,
-		"**/codecov.yml": true,
-		"**/SECURITY.md": true,
-		"**/LICENSE": true,
-		".devcontainer": true,
-		"**/go.work": true,
-		"**/go.work.sum": true,
-		"**/go.sum": true,
-		"**/**.pb.go": false,
-		"**/**_templ.go": true,
-	},
-	"yaml.schemas": {
-		"https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml",
-		"https://json.schemastore.org/pull-request-labeler.json": "file:///Users/pradn/Developer/sonr/.github/labeler.yml"
-	},
-	"better-comments.tags": [
-		{
-			"tag": "!",
-			"color": "#FF2D00",
-			"strikethrough": false,
-			"underline": false,
-			"backgroundColor": "transparent",
-			"bold": false,
-			"italic": false
-		},
-		{
-			"tag": "?",
-			"color": "#3498DB",
-			"strikethrough": false,
-			"underline": false,
-			"backgroundColor": "transparent",
-			"bold": false,
-			"italic": false
-		},
-		{
-			"tag": "//",
-			"color": "#474747",
-			"strikethrough": true,
-			"underline": false,
-			"backgroundColor": "transparent",
-			"bold": false,
-			"italic": false
-		},
-		{
-			"tag": "*",
-			"color": "#98C379",
-			"strikethrough": false,
-			"underline": false,
-			"backgroundColor": "transparent",
-			"bold": false,
-			"italic": false
-		}
-	]
+  "explorer.excludeGitIgnore": true,
+  "editor.formatOnSave": true,
+  "[templ]": {
+    "editor.defaultFormatter": "a-h.templ"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "Icon": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true,
+    "!**/.git/hooks": true,
+    ".dart_tool": true,
+    "**/.classpath": true,
+    "**/.factorypath": true,
+    "**/.flutter-plugins": true,
+    "**/.flutter-plugins-dependencies": true,
+    "**/.packages": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/largeFolder": true,
+    "**/pubspec.lock": true,
+    "**pubspec.lock": true,
+    "app.iml": true,
+    "Contents.json": true,
+    "**/.trunk/*out/": true,
+    "**/.trunk/*actions/": true,
+    "**/.trunk/*logs/": true,
+    "**/.trunk/*plugins/": true,
+    "**/node_modules": true,
+    "**/CODE_OF_CONDUCT.md": true,
+    "**/codecov.yml": true,
+    "**/SECURITY.md": true,
+    "**/LICENSE": true,
+    ".devcontainer": true,
+    "**/go.work": true,
+    "**/go.work.sum": true,
+    "**/go.sum": true,
+    "**/**.pb.go": false,
+    "**/**_templ.go": true
+  },
+  "yaml.schemas": {
+    "https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml",
+    "https://json.schemastore.org/pull-request-labeler.json": "file:///Users/pradn/Developer/sonr/.github/labeler.yml"
+  },
+  "better-comments.tags": [
+    {
+      "tag": "!",
+      "color": "#FF2D00",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "?",
+      "color": "#3498DB",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "//",
+      "color": "#474747",
+      "strikethrough": true,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    },
+    {
+      "tag": "*",
+      "color": "#98C379",
+      "strikethrough": false,
+      "underline": false,
+      "backgroundColor": "transparent",
+      "bold": false,
+      "italic": false
+    }
+  ]
 }

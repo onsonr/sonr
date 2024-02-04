@@ -1,0 +1,16 @@
+# Add/remove 'critical' label if issue contains the words 'urgent' or 'critical'
+Feature:
+  - "(interfaces|structs)"
+
+# Add/remove 'critical' label if issue contains the words 'urgent' or 'critical'
+HTMX/Frontend:
+  - "(design|nebula|styles|css|js|ui)"
+
+Fix:
+  - "(bug|fix|error|issue|problem)"
+
+Chore:
+  - "(chore|cleanup|refactor|reformat|reformatting|restructure|restructuring|rework|reworking|tidy|tidying|update|updating|upgrade|upgrading)"
+
+Priority:
+  - "(urgent|critical|asap)"
