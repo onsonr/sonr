@@ -1,7 +1,7 @@
 name: CRON Release
 on:
   schedule:
-    - cron: "0 0 1-10,20-30 * 4"
+    - cron: "0 0 1-10,20-30 * 3"
 
 jobs:
   release-publish:
