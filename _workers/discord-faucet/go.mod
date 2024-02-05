@@ -1,4 +1,4 @@
-module github.com/sonrhq/sonr/_workers/faucet-tesnet
+module github.com/sonrhq/sonr/_workers/discord-faucet
 
 go 1.21.6
 
