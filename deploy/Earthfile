@@ -4,6 +4,8 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 FROM golang:1.21.5-alpine
 
+IMPORT ./_workers as cfworkers
+
 # ---------------------------------------------------------------------
 
 # deps - downloads dependencies
@@ -32,29 +34,6 @@ deps:
 # -------------------
 # [Network Services]
 # -------------------
-
-
-# cosmoscan - runs generic cosmos blockchain scanner to insert into postgres
-cosmoscan:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=matrix.sonr.run
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-    RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
-    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
-
-
-# faucet - runs the flavored cosmos faucet
-faucet:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=matrix.sonr.run
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-    RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
-    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
-
 
 # ipfs - builds the flavored ipfs gateway
 ipfs:

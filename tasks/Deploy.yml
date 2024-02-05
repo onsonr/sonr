@@ -22,8 +22,32 @@ tasks:
       - terraform init
       - terraform destroy -auto-approve
 
+  workers:
+    desc: "Deploy Cloudflare workers"
+    cmds:
+      - task: workers-cosmscan
+      - task: workers-highway
+      - task: workers-faucet
+
+  workers-cosmscan:
+    internal: true
+    dir: _workers/cosmscan-indexer
+    cmds:
+      - earthly +deploy
+
+  workers-highway:
+    internal: true
+    dir: _workers/faucet-testnet
+    cmds:
+      - earthly +deploy
+
+  workers-faucet:
+    internal: true
+    dir: _workers/faucet-testnet
+    cmds:
+      - earthly +deploy
+
   pack:
-    desc: "Pack all the services"
     dir: ./deploy
     cmds:
       - packer build base.pkr.hcl

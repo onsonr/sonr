@@ -1,6 +1,7 @@
 version: "3"
 
 includes:
+  build: ./tasks/Build.yml
   deploy: ./tasks/Deploy.yml
   dev: ./tasks/Dev.yml
   gen: ./tasks/Gen.yml

@@ -2,17 +2,35 @@ version: "3"
 
 tasks:
   ipfs:
+    dir: deploy
     cmds:
       - earthly +ipfs --domain=ipfs.sonr.dev
 
   matrix:
+    dir: deploy
     cmds:
       - earthly +matrix --domain=matrix.sonr.dev
 
-  cosmoscan:
+  cosmscan:
+    internal: true
+    dir: _workers/cosmscan-indexer
     cmds:
-      - earthly +cosmoscan --rpcAddress=http://rpc.sonr.dev:443 --apiAddress=http://api.sonr.dev:443
+      - earthly +build
 
   faucet:
+    internal: true
+    dir: _workers/faucet-testnet
     cmds:
-      - earthly +faucet --rpcAddress=http://rpc.sonr.dev:443 --apiAddress=http://api.sonr.dev:443 --mnemonic="your mnemonic here"
+      - earthly +build
+
+  highway:
+    internal: true
+    dir: _workers/highway-proxy
+    cmds:
+      - earthly +build
+
+  workers:
+    cmds:
+      - task: cosmscan
+      - task: faucet
+      - task: highway

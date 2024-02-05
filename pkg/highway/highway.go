@@ -22,6 +22,16 @@ func Start() {
 	http.ListenAndServe(":8000", r)
 }
 
+// Handler returns the router
+func Handler() chi.Router {
+	r := chi.NewRouter()
+	middleware.UseDefaults(r)
+	routers.MountAPI(r)
+	routers.MountSSE(r)
+	routers.MountNebula(r)
+	return r
+}
+
 // PersistentHeader is the header that is printed on start
 const PersistentHeader = `
 Sonr Highway

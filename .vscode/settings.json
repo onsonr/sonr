@@ -1,5 +1,5 @@
 {
-  "explorer.excludeGitIgnore": false,
+  "explorer.excludeGitIgnore": true,
   "editor.formatOnSave": true,
   "[templ]": {
     "editor.defaultFormatter": "a-h.templ"
@@ -83,5 +83,6 @@
       "bold": false,
       "italic": false
     }
-  ]
+  ],
+  "explorer.sortOrderLexicographicOptions": "unicode"
 }

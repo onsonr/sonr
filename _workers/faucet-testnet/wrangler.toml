@@ -1,0 +1,14 @@
+name = "cosmscan-indexer"
+main = "./build/worker.mjs"
+compatibility_date = "2022-06-30"
+
+account_id = "eb37925850388bca807b7fab964c12bb" # Replace with your Account ID.
+workers_dev = true
+
+
+[build]
+command = "earthly +build"
+
+[[r2_buckets]]
+binding = 'BUCKET'  # can be any valid JavaScript variable name
+bucket_name = 'images'

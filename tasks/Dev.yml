@@ -13,9 +13,26 @@ tasks:
       - brew install tmux
       - brew install earthly
       - brew install buf
+      - brew tap tinygo-org/tools
+      - brew install tinygo
 
   gateway:
     cmd: air -c ./networks/local/air-gateway.toml
 
   node:
     cmd: air -c ./networks/local/air-node.toml
+
+  cosmscan:
+    desc: "Run the CosmScan indexer with Wrangler"
+    dir: _workers/cosmscan-indexer
+    cmd: earthly +dev
+
+  highway:
+    desc: "Run the Highway worker with Wrangler"
+    dir: _workers/faucet-testnet
+    cmd: earthly +dev
+
+  faucet:
+    desc: "Run the Faucet worker with Wrangler"
+    dir: _workers/faucet-testnet
+    cmd: earthly +dev

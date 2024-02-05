@@ -1,0 +1,8 @@
+go 1.21.6
+
+use (
+	.
+	./_workers/cosmscan-indexer
+	./_workers/faucet-testnet
+	./_workers/highway-proxy
+)
