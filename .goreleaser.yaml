@@ -94,6 +94,47 @@ brews:
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
 
+kos:
+  - repository: ghcr.io/sonrhq/sonrd
+    id: sonrd-ghcr
+    build: sonrd
+    main: ./cmd/sonrd/...
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - repository: sonrhq/sonrd
+    id: sonrd-hub
+    build: sonrd
+    main: ./cmd/sonrd/...
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - repository: ghcr.io/sonrhq/hway
+    main: ./cmd/hway/...
+    id: hway-ghcr
+    build: hway
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - repository: sonrhq/hway
+    main: ./cmd/hway/...
+    id: hway-hub
+    build: hway
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
