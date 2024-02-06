@@ -1,6 +1,14 @@
 version: "3"
 
 tasks:
+  default:
+    desc: "Builds the project for current platform"
+    cmds:
+      - templ generate
+      - rm -rf bin/ && mkdir ./bin/
+      - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
+      - rm -rf dist
+
   ipfs:
     dir: deploy
     cmds:

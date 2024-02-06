@@ -8,13 +8,6 @@ includes:
   test: ./tasks/Test.yml
 
 tasks:
-  build:
-    desc: "Builds the project for current platform"
-    cmds:
-      - rm -rf bin/ && mkdir ./bin/
-      - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
-      - rm -rf dist
-
   generate:
     desc: "Generate Templ and Proto files"
     cmds:

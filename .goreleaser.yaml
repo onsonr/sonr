@@ -5,7 +5,6 @@ before:
   # Templates for the commands to be ran.
   hooks:
     - go mod download
-    - task gen:templ
 
 builds:
   # Build Sonr Daemon
