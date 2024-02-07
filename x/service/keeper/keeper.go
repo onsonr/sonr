@@ -14,6 +14,7 @@ import (
 	"github.com/sonrhq/sonr/x/service"
 )
 
+// Keeper defines the module's keeper.
 type Keeper struct {
 	cdc          codec.BinaryCodec
 	addressCodec address.Codec
