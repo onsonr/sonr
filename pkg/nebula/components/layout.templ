@@ -1,7 +1,5 @@
 package components
 
-import "github.com/sonrhq/sonr/pkg/nebula/components/ui"
-
 templ RootLayout(page, sidebar templ.Component) {
 	<html>
 		<head>
@@ -11,7 +9,6 @@ templ RootLayout(page, sidebar templ.Component) {
 		</head>
 		<div class="w-full h-full">
 			<div class="flex h-full">
-				@ui.Button()
 				@sidebar
 				<div class="flex-1 h-full">
 					@page

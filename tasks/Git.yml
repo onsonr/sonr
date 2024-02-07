@@ -1,0 +1,36 @@
+version: "3"
+
+tasks:
+  default:
+    desc: "Builds the project for current platform"
+    cmds:
+      - templ generate
+      - rm -rf bin/ && mkdir ./bin/
+      - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
+      - rm -rf dist
+
+  commit:
+    cmds:
+      - earthly +ipfs --domain=ipfs.sonr.dev
+
+  matrix:
+    cmds:
+      - earthly +matrix --domain=matrix.sonr.dev
+
+  cosmscan:
+    cmds:
+      - earthly +build
+
+  faucet:
+    cmds:
+      - earthly +build
+
+  highway:
+    cmds:
+      - earthly +build
+
+  workers:
+    cmds:
+      - task: cosmscan
+      - task: faucet
+      - task: highway
