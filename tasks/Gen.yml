@@ -23,7 +23,7 @@ tasks:
         proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
         for dir in $proto_dirs; do
           for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
-              buf generate --template buf.gen.proto.yaml
+              buf generate --template buf.gen.orm.yaml
               buf generate --template buf.gen.yaml
           done
         done
@@ -35,6 +35,11 @@ tasks:
       - rm -rf api
       - mv sonrhq ./api
       - go mod tidy
+
+  proto-doc:
+    dir: ./proto
+    cmds:
+      - buf generate --template buf.gen.doc.yaml --path sonrhq
 
   swagger:
     dir: ./proto

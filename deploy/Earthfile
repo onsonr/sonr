@@ -1,10 +1,6 @@
-# sonrhq/chain: Earthfile
-# ---------------------------------------------------------------------
 VERSION 0.7
 PROJECT sonrhq/testnet-1
 FROM golang:1.21.5-alpine
-
-IMPORT ./_workers as cfworkers
 
 # ---------------------------------------------------------------------
 

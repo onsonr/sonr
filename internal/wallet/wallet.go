@@ -13,14 +13,14 @@ import (
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/wallet/kss"
 	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
-	"github.com/sonrhq/sonr/pkg/crypto/daed"
+	"github.com/sonrhq/sonr/pkg/crypto/daead"
 	"github.com/sonrhq/sonr/pkg/did"
 )
 
 var keyHandle *keyset.Handle
 
 func init() {
-	kh, err := daed.NewKeyHandle()
+	kh, err := daead.NewKeyHandle()
 	if err != nil {
 		panic(err)
 	}
@@ -73,7 +73,7 @@ func (kc *Wallet) Encrypt(dir files.Directory, associatedData []byte) (files.Dir
 		if err != nil {
 			return nil, err
 		}
-		newBytes, err := daed.Encrypt(keyHandle, oldBytes, associatedData)
+		newBytes, err := daead.Encrypt(keyHandle, oldBytes, associatedData)
 		if err != nil {
 			return nil, err
 		}
@@ -99,7 +99,7 @@ func (kc *Wallet) Decrypt(dir files.Directory, associatedData []byte) (files.Dir
 		if err != nil {
 			return nil, err
 		}
-		newBytes, err := daed.Decrypt(keyHandle, oldBytes, associatedData)
+		newBytes, err := daead.Decrypt(keyHandle, oldBytes, associatedData)
 		if err != nil {
 			return nil, err
 		}

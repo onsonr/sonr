@@ -1,15 +1,15 @@
-package daed_test
+package daead_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/sonrhq/sonr/pkg/crypto/daed"
+	"github.com/sonrhq/sonr/pkg/crypto/daead"
 )
 
 func TestNewKeyset(t *testing.T) {
-	kh, err := daed.NewKeyHandle()
+	kh, err := daead.NewKeyHandle()
 	assert.NoError(t, err)
 	assert.NotNil(t, kh)
 }
@@ -17,15 +17,15 @@ func TestNewKeyset(t *testing.T) {
 func TestEncryptDecrypt(t *testing.T) {
 	msg := []byte("hello world")
 	associatedData := []byte("associated data")
-	kh, err := daed.NewKeyHandle()
+	kh, err := daead.NewKeyHandle()
 	assert.NoError(t, err)
 	assert.NotNil(t, kh)
 
-	ciphertext, err := daed.Encrypt(kh, msg, associatedData)
+	ciphertext, err := daead.Encrypt(kh, msg, associatedData)
 	assert.NoError(t, err)
 	assert.NotNil(t, ciphertext)
 
-	plaintext, err := daed.Decrypt(kh, ciphertext, associatedData)
+	plaintext, err := daead.Decrypt(kh, ciphertext, associatedData)
 	assert.NoError(t, err)
 	assert.NotNil(t, plaintext)
 

@@ -1,4 +1,4 @@
-package daed
+package daead
 
 import (
 	"github.com/tink-crypto/tink-go/v2/daead"

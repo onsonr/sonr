@@ -12,7 +12,7 @@ tasks:
     desc: "Generate Templ and Proto files"
     cmds:
       - task: gen:proto
-      - task: gen:swagger
+      - task: gen:proto-doc
       - task: gen:templ
 
   dev-up:
