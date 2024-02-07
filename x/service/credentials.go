@@ -1,4 +1,4 @@
-package webauth
+package service
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 )
 
+// GetPublicKeyCredentialCreationOptions returns the PublicKeyCredentialCreationOptions for the given service record and user entity.
 func GetPublicKeyCredentialCreationOptions(record *modulev1.ServiceRecord, entity protocol.UserEntity) protocol.PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
 		RelyingParty: protocol.RelyingPartyEntity{
@@ -25,6 +26,7 @@ func GetPublicKeyCredentialCreationOptions(record *modulev1.ServiceRecord, entit
 	}
 }
 
+// GetPublicKeyCredentialRequestOptions returns the PublicKeyCredentialRequestOptions for the given service record and credentials.
 func GetPublicKeyCredentialRequestOptions(record *modulev1.ServiceRecord, creds []protocol.CredentialDescriptor) protocol.PublicKeyCredentialRequestOptions {
 	return protocol.PublicKeyCredentialRequestOptions{
 		Challenge:          GenerateChallenge(),
