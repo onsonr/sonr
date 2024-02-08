@@ -33,13 +33,15 @@ tasks:
     internal: true
     cmds:
       - rm -rf api
-      - mv sonrhq ./api
+      - mkdir -p ./api/sonr
+      - cp -R -v ./sonr/* ./api/sonr
+      - rm -rf sonr
       - go mod tidy
 
   proto-doc:
     dir: ./proto
     cmds:
-      - buf generate --template buf.gen.doc.yaml --path sonrhq
+      - buf generate --template buf.gen.doc.yaml --path sonr
 
   swagger:
     dir: ./proto

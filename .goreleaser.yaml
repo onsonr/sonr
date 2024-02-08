@@ -28,27 +28,6 @@ builds:
       - -X main.Commit={{ .Commit }}
       - -w -s
 
-  # Build Highway Daemon
-  - id: hway
-    main: cmd/hway/main.go
-    binary: hway
-    ignore:
-      - goos: linux
-        goarch: arm64
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X main.Version={{ .Version }}
-      - -X main.Commit={{ .Commit }}
-      - -w -s
-
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
 # ! ||--------------------------------------------------------------------------------||
@@ -56,11 +35,6 @@ archives:
   - id: sonrd
     builds:
       - sonrd
-    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
-    format: tar.gz
-  - id: hway
-    builds:
-      - hway
     name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
 checksum:
@@ -76,18 +50,6 @@ brews:
       - "sonrd"
     license: "OpenGLV3"
     name: "sonrd"
-    repository:
-      owner: sonrhq
-      name: homebrew-tap
-      token: "{{ .Env.GITHUB_TOKEN }}"
-  - folder: Formula
-    ids:
-      - "hway"
-    caveats: "How to use this binary"
-    homepage: "https://sonrhq.com"
-    name: "hway"
-    description: "Hway Binary Node"
-    license: "OpenGLV3"
     repository:
       owner: sonrhq
       name: homebrew-tap
@@ -108,26 +70,6 @@ kos:
     id: sonrd-hub
     build: sonrd
     main: ./cmd/sonrd/...
-    tags:
-      - "{{.Version}}"
-      - latest
-    platforms:
-      - linux/amd64
-      - linux/arm64
-  - repository: ghcr.io/sonrhq/hway
-    main: ./cmd/hway/...
-    id: hway-ghcr
-    build: hway
-    tags:
-      - "{{.Version}}"
-      - latest
-    platforms:
-      - linux/amd64
-      - linux/arm64
-  - repository: sonrhq/hway
-    main: ./cmd/hway/...
-    id: hway-hub
-    build: hway
     tags:
       - "{{.Version}}"
       - latest

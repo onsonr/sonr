@@ -1,12 +1,12 @@
 syntax = "proto3";
-package sonrhq.sonr.identity.v1;
+package sonr.identity.v1;
 
 option go_package = "github.com/sonrhq/sonr/x/identity";
 
 import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-import "sonrhq/sonr/identity/v1/types.proto";
+import "sonr/identity/v1/types.proto";
 import "cosmos_proto/cosmos.proto";
 
 // Msg defines the module Msg service.

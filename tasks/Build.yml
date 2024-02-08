@@ -6,7 +6,7 @@ tasks:
     cmds:
       - templ generate
       - rm -rf bin/ && mkdir ./bin/
-      - goreleaser build --id=sonrd --single-target --clean --snapshot -o ./bin/sonrd
+      - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
       - rm -rf dist
 
   ipfs:

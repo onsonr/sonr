@@ -1,7 +1,6 @@
 syntax = "proto3";
 
-package sonrhq.sonr.identity.module.v1;
-
+package sonr.service.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 
@@ -9,9 +8,8 @@ import "cosmos/app/v1alpha1/module.proto";
 // Learn more: https://docs.cosmos.network/main/building-modules/depinject
 message Module {
   option (cosmos.app.v1alpha1.module) = {
-    go_import : "github.com/sonrhq/sonr/x/identity"
+    go_import : "github.com/sonrhq/sonr/x/service"
   };
-
   // authority defines the custom module authority.
   // if not set, defaults to the governance module.
   string authority = 1;
