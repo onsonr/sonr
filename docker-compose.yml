@@ -8,7 +8,7 @@ services:
     init: true
     hostname: sonrd
     image: sonrhq/sonrd:latest
-    command: ["start"]
+    entrypoint: ["sh", "./networks/local/entrypoint.sh"]
     volumes:
       - /mnt/disks/sonr_data:/root/.sonr
     ports:
@@ -16,7 +16,8 @@ services:
       - 26657:26657 # rpc
       - 9090:9090 # grpc
       - 8000:8080 # api/htmx
-      # Postgres service
+
+  # Postgres service
   postgres:
     image: postgres:latest
     environment:

@@ -38,36 +38,9 @@ type ContextMiddleware struct {
 	HTTPOnly bool
 }
 
-// IPFSGateway returns the address of the user from the session cookie.
-func IPFSGateway(r *http.Request) (nodeGrpcAddress string) {
-	cookie, err := r.Cookie("ipfsGateway")
-	if err != nil {
-		return
-	}
-	return cookie.Value
-}
-
-// MatrixConnection returns the address of the user from the session cookie.
-func MatrixConnection(r *http.Request) (nodeGrpcAddress string) {
-	cookie, err := r.Cookie("matrixConnection")
-	if err != nil {
-		return
-	}
-	return cookie.Value
-}
-
-// NodeGrpcAddress returns the address of the user from the session cookie.
-func NodeGrpcAddress(r *http.Request) (nodeGrpcAddress string) {
-	cookie, err := r.Cookie("nodeGrpcAddress")
-	if err != nil {
-		return
-	}
-	return cookie.Value
-}
-
 // ServeHTTP calls the next middleware handler.
 func (mw ContextMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	id := NodeGrpcAddress(r)
+	id := nodeGrpcAddress(r)
 	if id == "" {
 		c, err := config.LoadConfig()
 		if err != nil {
@@ -98,7 +71,6 @@ func IPFSClient(r *http.Request, w http.ResponseWriter) *rpc.HttpApi {
 // BankClient returns a new bank client.
 func BankClient(r *http.Request, w http.ResponseWriter) bankv1beta1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return bankv1beta1.NewQueryClient(cc)
 	}
 	return nil
@@ -107,7 +79,6 @@ func BankClient(r *http.Request, w http.ResponseWriter) bankv1beta1.QueryClient 
 // CometClient returns a new comet client.
 func CometClient(r *http.Request, w http.ResponseWriter) cmtcservice.ServiceClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return cmtcservice.NewServiceClient(cc)
 	}
 	return nil
@@ -116,7 +87,6 @@ func CometClient(r *http.Request, w http.ResponseWriter) cmtcservice.ServiceClie
 // GovClient creates a new gov client.
 func GovClient(r *http.Request, w http.ResponseWriter) govv1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return govv1.NewQueryClient(cc)
 	}
 	return nil
@@ -125,7 +95,6 @@ func GovClient(r *http.Request, w http.ResponseWriter) govv1.QueryClient {
 // IdentityClient creates a new identity client.
 func IdentityClient(r *http.Request, w http.ResponseWriter) identityv1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return identityv1.NewQueryClient(cc)
 	}
 	return nil
@@ -134,7 +103,6 @@ func IdentityClient(r *http.Request, w http.ResponseWriter) identityv1.QueryClie
 // ServiceClient creates a new service client.
 func ServiceClient(r *http.Request, w http.ResponseWriter) servicev1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return servicev1.NewQueryClient(cc)
 	}
 	return nil
@@ -143,7 +111,6 @@ func ServiceClient(r *http.Request, w http.ResponseWriter) servicev1.QueryClient
 // StakingClient creates a new staking client.
 func StakingClient(r *http.Request, w http.ResponseWriter) stakingv1beta1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
-		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return stakingv1beta1.NewQueryClient(cc)
 	}
 	return nil
@@ -153,7 +120,7 @@ func StakingClient(r *http.Request, w http.ResponseWriter) stakingv1beta1.QueryC
 // ! ||                      Helper GRPC Client Wrapper Functions                      ||
 // ! ||--------------------------------------------------------------------------------||
 
-// GrpcClientConn creates a gRPC client connection.
+// grpcClientConn creates a gRPC client connection.
 func grpcClientConn(r *http.Request, w http.ResponseWriter) *grpc.ClientConn {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
@@ -164,8 +131,35 @@ func grpcClientConn(r *http.Request, w http.ResponseWriter) *grpc.ClientConn {
 		grpc.WithDefaultCallOptions(grpc.ForceCodec(codec.NewProtoCodec(nil).GRPCCodec())),
 	)
 	if err != nil {
-		InternalServerError(w, err)
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return nil
 	}
 	return grpcConn
+}
+
+// ipfsGateway returns the address of the user from the session cookie.
+func ipfsGateway(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("ipfsGateway")
+	if err != nil {
+		return
+	}
+	return cookie.Value
+}
+
+// matrixConnection returns the address of the user from the session cookie.
+func matrixConnection(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("matrixConnection")
+	if err != nil {
+		return
+	}
+	return cookie.Value
+}
+
+// nodeGrpcAddress returns the address of the user from the session cookie.
+func nodeGrpcAddress(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("nodeGrpcAddress")
+	if err != nil {
+		return
+	}
+	return cookie.Value
 }

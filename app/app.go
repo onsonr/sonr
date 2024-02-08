@@ -194,8 +194,7 @@ func (app *SonrApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
-// RegisterAPIRoutes registers all application module routes with the provided
-// API server.
+// RegisterAPIRoutes registers all application module routes with the provided API server.
 func (app *SonrApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	app.App.RegisterAPIRoutes(apiSvr, apiConfig)
 	// register swagger API in app.go so that other applications can override easily
