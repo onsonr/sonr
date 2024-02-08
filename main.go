@@ -12,5 +12,5 @@ package main
 //	@license.name	GNU Affero General Public License v3.0
 //	@license.url	https://www.gnu.org/licenses/agpl-3.0.html
 
-//	@host		beta.sonr.io
-//	@BasePath	/v1
+//	@host		snr.zone
+//	@BasePath	/api
