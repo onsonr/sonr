@@ -18,7 +18,6 @@ func Start() {
 	middleware.UseDefaults(r)
 	routers.MountAPI(r)
 	routers.MountSSE(r)
-	routers.MountNebula(r)
 	http.ListenAndServe(":8000", r)
 }
 
@@ -28,7 +27,6 @@ func Handler() chi.Router {
 	middleware.UseDefaults(r)
 	routers.MountAPI(r)
 	routers.MountSSE(r)
-	routers.MountNebula(r)
 	return r
 }
 

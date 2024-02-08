@@ -1,8 +1,0 @@
-go 1.21.6
-
-use (
-	.
-	./_workers/cosmscan-indexer
-	./_workers/discord-faucet
-	./_workers/highway-proxy
-)
