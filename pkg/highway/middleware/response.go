@@ -2,8 +2,20 @@ package middleware
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+
+	"github.com/a-h/templ"
 )
+
+// HTMXResponse writes a Templ component to the http.ResponseWriter
+func HTMXResponse(view templ.Component) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		if err := view.Render(r.Context(), w); err != nil {
+			RenderError(w, err)
+		}
+	}
+}
 
 // JSONResponse writes a JSON response to the http.ResponseWriter
 func JSONResponse(w http.ResponseWriter, body any) {
@@ -25,6 +37,11 @@ func InternalServerError(w http.ResponseWriter, err error) {
 // BadRequest writes a bad request error to the http.ResponseWriter
 func BadRequest(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusBadRequest)
+}
+
+// RenderError writes a render error to the http.ResponseWriter
+func RenderError(w http.ResponseWriter, err error) {
+	http.Error(w, fmt.Sprintf("Failed to render HTMX: %e", err), http.StatusInternalServerError)
 }
 
 // NotFound writes a not found error to the http.ResponseWriter

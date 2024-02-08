@@ -1,0 +1,34 @@
+# sonrhq/chain: Earthfile
+# ---------------------------------------------------------------------
+VERSION 0.7
+PROJECT sonrhq/testnet-1
+
+# deps
+deps:
+    FROM tinygo/tinygo:0.30.0
+    COPY go.mod go.sum ./
+    RUN go mod download
+    SAVE ARTIFACT go.mod AS LOCAL go.mod
+    SAVE ARTIFACT go.sum AS LOCAL go.sum
+
+# assets
+assets:
+    FROM +deps
+    COPY . .
+    RUN go run github.com/syumai/workers/cmd/workers-assets-gen@v0.23.1
+
+# build
+build:
+    FROM +assets
+    RUN tinygo build -o ./build/app.wasm -target wasm -no-debug ./...
+    SAVE ARTIFACT build AS LOCAL build
+
+# dev
+dev:
+    LOCALLY
+    RUN wrangler dev
+
+# deploy
+deploy:
+    LOCALLY
+    RUN wrangler deploy

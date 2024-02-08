@@ -36,7 +36,7 @@ type SessionMiddleware struct {
 }
 
 // SessionID returns the address of the user from the session cookie.
-func SessionID(r *http.Request) (id string) {
+func SessionID(r *http.Request) (sessionID string) {
 	cookie, err := r.Cookie("sessionID")
 	if err != nil {
 		return

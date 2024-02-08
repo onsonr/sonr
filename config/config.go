@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/mitchellh/mapstructure"
 	"github.com/spf13/viper"
 )
 
@@ -25,49 +24,50 @@ import (
 type SonrdConfig struct {
 	ChainID        string `mapstructure:"chain_id" json:"chain_id"`
 	HighwayEnabled bool   `mapstructure:"highway_enabled" json:"highway_enabled"`
+	IPFSConnection string `mapstructure:"ipfs_connection" json:"ipfs_connection"`
+	IPFSGateway    string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
 }
 
 // HighwayConfig represents the highway configuration
 type HighwayConfig struct {
-	NodeGRPCAddress  string `mapstructure:"node_grpc_address" json:"node_grpc_address"`
 	ChainID          string `mapstructure:"chain_id" json:"chain_id"`
+	IPFSGateway      string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
+	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
+	NodeGRPCAddress  string `mapstructure:"node_grpc_address" json:"node_grpc_address"`
 	ValidatorAddress string `mapstructure:"validator_address" json:"validator_address"`
 }
 
 // NitroConfig represents the nitro configuration
 type NitroConfig struct {
-	MatrixHost   string `mapstructure:"matrix_host" json:"matrix_host"`
-	SharedSecret string `mapstructure:"shared_secret" json:"shared_secret"`
+	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
+	SharedSecret     string `mapstructure:"shared_secret" json:"shared_secret"`
 }
 
 // Config is the configuration for the application
 type Config struct {
-	Name            string        `mapstructure:"name" json:"name"`
-	Version         string        `mapstructure:"version" json:"version"`
-	Description     string        `mapstructure:"description" json:"description"`
-	DefaultNodeHome string        `mapstructure:"default_node_home" json:"default_node_home"`
-	Sonrd           SonrdConfig   `mapstructure:"sonrd" json:"sonrd"`
-	Highway         HighwayConfig `mapstructure:"highway" json:"highway"`
-	Nitro           NitroConfig   `mapstructure:"nitro" json:"nitro"`
+	Name     string        `mapstructure:"name" json:"name"`
+	Version  string        `mapstructure:"version" json:"version"`
+	NodeHome string        `mapstructure:"default_node_home" json:"default_node_home"`
+	Sonrd    SonrdConfig   `mapstructure:"sonrd" json:"sonrd"`
+	Highway  HighwayConfig `mapstructure:"highway" json:"highway"`
+	Nitro    NitroConfig   `mapstructure:"nitro" json:"nitro"`
 }
 
 // LoadConfig loads the configuration from the file
 func LoadConfig() (*Config, error) {
-	v := viper.New()
-	v.SetConfigName("config")
-	v.AddConfigPath(".")
-	v.SetConfigType("yaml")
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.SetConfigType("json")
 
-	if err := v.ReadInConfig(); err != nil {
+	err := viper.ReadInConfig()
+	if err != nil {
 		return nil, err
 	}
 
 	var config Config
-	if err := v.Unmarshal(&config, func(dc *mapstructure.DecoderConfig) {
-		dc.TagName = "mapstructure"
-	}); err != nil {
+	err = viper.Unmarshal(&config)
+	if err != nil {
 		return nil, err
 	}
-
 	return &config, nil
 }

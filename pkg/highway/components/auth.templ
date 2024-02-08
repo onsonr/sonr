@@ -1,1 +1,8 @@
-package components
+package ui
+
+templ AuthModal() {
+	<sl-dialog label="Dialog" open>
+		<sl-input autofocus placeholder="I will have focus when the dialog is opened"></sl-input>
+		<sl-button slot="footer" variant="primary">Close</sl-button>
+	</sl-dialog>
+}

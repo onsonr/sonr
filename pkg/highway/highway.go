@@ -19,7 +19,7 @@ Sonr Highway
 `
 
 // Start starts the highway server
-func Start() {
+func Start() error {
 	pterm.DefaultHeader.Printf(PersistentHeader)
 	r := chi.NewRouter()
 	middleware.UseDefaults(r)
@@ -28,7 +28,9 @@ func Start() {
 	handlers.StakingAPI.RegisterRoutes(r)
 	handlers.CometAPI.RegisterRoutes(r)
 	handlers.ServiceAPI.RegisterRoutes(r)
-	http.ListenAndServe(":8000", r)
+	handlers.RegisterPages(r)
+	handlers.RegisterModals(r)
+	return http.ListenAndServe(":8000", r)
 }
 
 // Handler returns the router

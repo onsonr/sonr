@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"net/http"
 
 	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"
@@ -14,6 +15,7 @@ import (
 
 	identityv1 "github.com/sonrhq/sonr/api/sonr/identity/v1"
 	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
+	"github.com/sonrhq/sonr/config"
 )
 
 // GRPCConn is a gRPC client connection.
@@ -21,7 +23,7 @@ type GRPCConn = *grpc.ClientConn
 
 // Context returns an http.Handler middleware that sets default middleware options.
 func Context(next http.Handler) http.Handler {
-	mw := ControllerMiddleware{
+	mw := ContextMiddleware{
 		Next:     next,
 		Secure:   true,
 		HTTPOnly: true,
@@ -35,6 +37,52 @@ type ContextMiddleware struct {
 	Secure   bool
 	HTTPOnly bool
 }
+
+// IPFSGateway returns the address of the user from the session cookie.
+func IPFSGateway(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("ipfsGateway")
+	if err != nil {
+		return
+	}
+	return cookie.Value
+}
+
+// MatrixConnection returns the address of the user from the session cookie.
+func MatrixConnection(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("matrixConnection")
+	if err != nil {
+		return
+	}
+	return cookie.Value
+}
+
+// NodeGrpcAddress returns the address of the user from the session cookie.
+func NodeGrpcAddress(r *http.Request) (nodeGrpcAddress string) {
+	cookie, err := r.Cookie("nodeGrpcAddress")
+	if err != nil {
+		return
+	}
+	return cookie.Value
+}
+
+// ServeHTTP calls the next middleware handler.
+func (mw ContextMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	id := NodeGrpcAddress(r)
+	if id == "" {
+		c, err := config.LoadConfig()
+		if err != nil {
+			return
+		}
+		http.SetCookie(w, &http.Cookie{Name: "ipfsGateway", Value: c.Highway.IPFSGateway, Secure: mw.Secure, HttpOnly: mw.HTTPOnly})
+		http.SetCookie(w, &http.Cookie{Name: "matrixConnection", Value: c.Highway.MatrixConnection, Secure: mw.Secure, HttpOnly: mw.HTTPOnly})
+		http.SetCookie(w, &http.Cookie{Name: "nodeGrpcAddress", Value: c.Highway.NodeGRPCAddress, Secure: mw.Secure, HttpOnly: mw.HTTPOnly})
+	}
+	mw.Next.ServeHTTP(w, r)
+}
+
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                            Grpc Client Module Proxy                            ||
+// ! ||--------------------------------------------------------------------------------||
 
 // IPFSClient creates an IPFS HTTP client.
 func IPFSClient(r *http.Request, w http.ResponseWriter) *rpc.HttpApi {
@@ -50,6 +98,7 @@ func IPFSClient(r *http.Request, w http.ResponseWriter) *rpc.HttpApi {
 // BankClient returns a new bank client.
 func BankClient(r *http.Request, w http.ResponseWriter) bankv1beta1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return bankv1beta1.NewQueryClient(cc)
 	}
 	return nil
@@ -58,6 +107,7 @@ func BankClient(r *http.Request, w http.ResponseWriter) bankv1beta1.QueryClient 
 // CometClient returns a new comet client.
 func CometClient(r *http.Request, w http.ResponseWriter) cmtcservice.ServiceClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return cmtcservice.NewServiceClient(cc)
 	}
 	return nil
@@ -66,6 +116,7 @@ func CometClient(r *http.Request, w http.ResponseWriter) cmtcservice.ServiceClie
 // GovClient creates a new gov client.
 func GovClient(r *http.Request, w http.ResponseWriter) govv1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return govv1.NewQueryClient(cc)
 	}
 	return nil
@@ -74,6 +125,7 @@ func GovClient(r *http.Request, w http.ResponseWriter) govv1.QueryClient {
 // IdentityClient creates a new identity client.
 func IdentityClient(r *http.Request, w http.ResponseWriter) identityv1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return identityv1.NewQueryClient(cc)
 	}
 	return nil
@@ -82,6 +134,7 @@ func IdentityClient(r *http.Request, w http.ResponseWriter) identityv1.QueryClie
 // ServiceClient creates a new service client.
 func ServiceClient(r *http.Request, w http.ResponseWriter) servicev1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return servicev1.NewQueryClient(cc)
 	}
 	return nil
@@ -90,14 +143,10 @@ func ServiceClient(r *http.Request, w http.ResponseWriter) servicev1.QueryClient
 // StakingClient creates a new staking client.
 func StakingClient(r *http.Request, w http.ResponseWriter) stakingv1beta1.QueryClient {
 	if cc := grpcClientConn(r, w); cc != nil {
+		InternalServerError(w, fmt.Errorf("grpc client connection failed"))
 		return stakingv1beta1.NewQueryClient(cc)
 	}
 	return nil
-}
-
-// ServeHTTP calls the next middleware handler.
-func (mw ContextMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	mw.Next.ServeHTTP(w, r)
 }
 
 // ! ||--------------------------------------------------------------------------------||
