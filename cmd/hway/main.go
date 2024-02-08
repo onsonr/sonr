@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/sonrhq/sonr/pkg/highway"
+	hway "github.com/sonrhq/sonr/pkg/highway"
 )
 
 func main() {
-	highway.Start()
+	hway.Start()
 }

@@ -2,6 +2,8 @@ VERSION 0.7
 PROJECT sonrhq/testnet-1
 FROM golang:1.21.5-alpine
 
+WORKDIR /app
+
 # ---------------------------------------------------------------------
 
 # deps - downloads dependencies
@@ -17,8 +19,6 @@ deps:
     git \
     grep \
     make \
-    nodejs \
-    npm \
     openssl \
     util-linux
     COPY go.mod go.sum ./
@@ -33,27 +33,29 @@ deps:
 
 # build - builds the flavored ipfs gateway
 build:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=matrix.sonr.run
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-    RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
-    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
-
+    FROM +deps
+    COPY . .
+    RUN go build -o /app/sonrd ./cmd/sonrd
+    SAVE ARTIFACT /app/sonrd AS LOCAL bin/sonrd
 
 # build-hway - builds the Sonr Highway
 build-hway:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=matrix.sonr.run
-    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
-    RUN /usr/bin/generate-keys -private-key matrix_key.pem
-    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
-    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
-    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
+    FROM +deps
+    COPY . .
+    RUN go build -o /app/hway ./cmd/hway
+    SAVE ARTIFACT /app/hway AS LOCAL bin/hway
 
-# matrix - builds the flavored dendrite monolith
-matrix:
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=matrix.sonr.run
-    SAVE IMAGE --push sonrhq/dendrite:latest
+# docker - builds the docker image
+docker:
+    FROM alpine:3.14
+    COPY +build/sonrd /usr/local/bin/sonrd
+    ENTRYPOINT ["/usr/local/bin/sonrd"]
+    SAVE IMAGE sonrd:latest
+
+# docker-hway - builds the docker image
+docker-hway:
+    FROM alpine:3.14
+    COPY +build-hway/hway /usr/local/bin/hway
+    ENTRYPOINT ["/usr/local/bin/hway"]
+    EXPOSE 8000
+    SAVE IMAGE hway:latest
