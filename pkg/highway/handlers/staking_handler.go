@@ -11,6 +11,10 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  API Endpoints                                 ||
+// ! ||--------------------------------------------------------------------------------||
+
 // StakingHandler is a handler for the staking module
 var StakingHandler = stakingHandler{}
 

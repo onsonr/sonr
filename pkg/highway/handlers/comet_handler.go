@@ -11,14 +11,18 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
-// NodeHandler is a handler for the node module
-var NodeHandler = nodeHandler{}
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  API Endpoints                                 ||
+// ! ||--------------------------------------------------------------------------------||
 
-// nodeHandler is a handler for the node module
-type nodeHandler struct{}
+// CometHandler is a handler for the node module
+var CometHandler = cometHandler{}
+
+// cometHandler is a handler for the node module
+type cometHandler struct{}
 
 // GetLatestBlock returns the latest block
-func (h nodeHandler) GetLatestBlock(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetLatestBlock(w http.ResponseWriter, r *http.Request) {
 	res, err := middleware.CometClient(r, w).GetLatestBlock(r.Context(), &cmtservice.GetLatestBlockRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -33,7 +37,7 @@ func (h nodeHandler) GetLatestBlock(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetNodeInfo returns the node info
-func (h nodeHandler) GetNodeInfo(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetNodeInfo(w http.ResponseWriter, r *http.Request) {
 	res, err := middleware.CometClient(r, w).GetNodeInfo(r.Context(), &cmtservice.GetNodeInfoRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -48,7 +52,7 @@ func (h nodeHandler) GetNodeInfo(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetSyncing returns the syncing status
-func (h nodeHandler) GetSyncing(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetSyncing(w http.ResponseWriter, r *http.Request) {
 	res, err := middleware.CometClient(r, w).GetSyncing(r.Context(), &cmtservice.GetSyncingRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -63,7 +67,7 @@ func (h nodeHandler) GetSyncing(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetBlockByHeight returns a block by height
-func (h nodeHandler) GetBlockByHeight(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetBlockByHeight(w http.ResponseWriter, r *http.Request) {
 	heightStr := chi.URLParam(r, "height")
 	i, _ := strconv.ParseInt(heightStr, 10, 64)
 	res, err := middleware.CometClient(r, w).GetBlockByHeight(r.Context(), &cmtservice.GetBlockByHeightRequest{Height: i})
@@ -80,7 +84,7 @@ func (h nodeHandler) GetBlockByHeight(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetLatestValidatorSet returns the latest validator set
-func (h nodeHandler) GetLatestValidatorSet(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetLatestValidatorSet(w http.ResponseWriter, r *http.Request) {
 	res, err := middleware.CometClient(r, w).GetLatestValidatorSet(r.Context(), &cmtservice.GetLatestValidatorSetRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -95,7 +99,7 @@ func (h nodeHandler) GetLatestValidatorSet(w http.ResponseWriter, r *http.Reques
 }
 
 // GetValidatorSetByHeight returns a validator set by height
-func (h nodeHandler) GetValidatorSetByHeight(w http.ResponseWriter, r *http.Request) {
+func (h cometHandler) GetValidatorSetByHeight(w http.ResponseWriter, r *http.Request) {
 	heightStr := chi.URLParam(r, "height")
 	i, _ := strconv.ParseInt(heightStr, 10, 64)
 	res, err := middleware.CometClient(r, w).GetValidatorSetByHeight(r.Context(), &cmtservice.GetValidatorSetByHeightRequest{Height: i})
@@ -112,7 +116,7 @@ func (h nodeHandler) GetValidatorSetByHeight(w http.ResponseWriter, r *http.Requ
 }
 
 // RegisterRoutes registers the node routes
-func (h nodeHandler) RegisterRoutes(r chi.Router) {
+func (h cometHandler) RegisterRoutes(r chi.Router) {
 	r.Get("/block", h.GetLatestBlock)
 	r.Get("/block/{height}", h.GetBlockByHeight)
 	r.Get("/health", h.GetNodeInfo)

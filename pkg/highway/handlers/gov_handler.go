@@ -11,6 +11,10 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  API Endpoints                                 ||
+// ! ||--------------------------------------------------------------------------------||
+
 // GovHandler is a handler for the gov module
 var GovHandler = govHandler{}
 

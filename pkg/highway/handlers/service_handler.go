@@ -13,6 +13,10 @@ import (
 	"github.com/sonrhq/sonr/x/service"
 )
 
+// ! ||--------------------------------------------------------------------------------||
+// ! ||                                  API Endpoints                                 ||
+// ! ||--------------------------------------------------------------------------------||
+
 // ServiceHandler is a handler for the staking module
 var ServiceHandler = serviceHandler{}
 
