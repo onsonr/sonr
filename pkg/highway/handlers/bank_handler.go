@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"encoding/json"
@@ -14,14 +14,14 @@ import (
 // ! ||                                  API Endpoints                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// BankHandler is a handler for the bank module
-var BankHandler = bankHandler{}
+// BankAPI is a handler for the bank module
+var BankAPI = bankAPI{}
 
-// bankHandler is a handler for the bank module
-type bankHandler struct{}
+// bankAPI is a handler for the bank module
+type bankAPI struct{}
 
 // GetAllBalances returns all balances for an address
-func (h bankHandler) GetAllBalances(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetAllBalances(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	resp, err := middleware.BankClient(r, w).AllBalances(r.Context(), &types.QueryAllBalancesRequest{
 		Address: address,
@@ -39,7 +39,7 @@ func (h bankHandler) GetAllBalances(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetBalance returns a balance for an address and denom
-func (h bankHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetBalance(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	denom := chi.URLParam(r, "denom")
 	resp, err := middleware.BankClient(r, w).Balance(r.Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
@@ -56,7 +56,7 @@ func (h bankHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetTotalSupply returns the total supply
-func (h bankHandler) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
 	resp, err := middleware.BankClient(r, w).TotalSupply(r.Context(), &types.QueryTotalSupplyRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -71,7 +71,7 @@ func (h bankHandler) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetSupplyOf returns the supply of a denom
-func (h bankHandler) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
 	denom := chi.URLParam(r, "denom")
 	resp, err := middleware.BankClient(r, w).SupplyOf(r.Context(), &types.QuerySupplyOfRequest{Denom: denom})
 	if err != nil {
@@ -87,7 +87,7 @@ func (h bankHandler) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetSpendableBalances returns the spendable balances for an address
-func (h bankHandler) GetSpendableBalances(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetSpendableBalances(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	resp, err := middleware.BankClient(r, w).SpendableBalances(r.Context(), &types.QuerySpendableBalancesRequest{Address: address})
 	if err != nil {
@@ -103,7 +103,7 @@ func (h bankHandler) GetSpendableBalances(w http.ResponseWriter, r *http.Request
 }
 
 // GetSpendableBalancesByDenom returns the spendable balances for an address and denom
-func (h bankHandler) GetSpendableBalancesByDenom(w http.ResponseWriter, r *http.Request) {
+func (h bankAPI) GetSpendableBalancesByDenom(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	denom := chi.URLParam(r, "denom")
 	resp, err := middleware.BankClient(r, w).SpendableBalanceByDenom(r.Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
@@ -120,7 +120,7 @@ func (h bankHandler) GetSpendableBalancesByDenom(w http.ResponseWriter, r *http.
 }
 
 // RegisterRoutes registers the bank routes
-func (h bankHandler) RegisterRoutes(r chi.Router) {
+func (h bankAPI) RegisterRoutes(r chi.Router) {
 	r.Get("/balance/{address}", h.GetAllBalances)
 	r.Get("/balance/{address}/spendable", h.GetSpendableBalances)
 	r.Get("/balance/{address}/{denom}", h.GetBalance)

@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"encoding/json"
@@ -15,14 +15,14 @@ import (
 // ! ||                                  API Endpoints                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// StakingHandler is a handler for the staking module
-var StakingHandler = stakingHandler{}
+// StakingAPI is a handler for the staking module
+var StakingAPI = stakingAPI{}
 
-// stakingHandler is a handler for the staking module
-type stakingHandler struct{}
+// stakingAPI is a handler for the staking module
+type stakingAPI struct{}
 
 // GetDelegation returns a delegation
-func (h stakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.StakingClient(r, w).Delegation(r.Context(), &stakingv1beta1.QueryDelegationRequest{
@@ -42,7 +42,7 @@ func (h stakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetUnbondingDelegation returns an unbonding delegation
-func (h stakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetUnbondingDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.StakingClient(r, w).UnbondingDelegation(r.Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
@@ -62,7 +62,7 @@ func (h stakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Re
 }
 
 // GetDelegatorDelegations returns all delegations for a delegator
-func (h stakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetDelegatorDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.StakingClient(r, w).DelegatorDelegations(r.Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
@@ -80,7 +80,7 @@ func (h stakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.R
 }
 
 // GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
-func (h stakingHandler) GetDelegatorUnbondingDelegations(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetDelegatorUnbondingDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.StakingClient(r, w).DelegatorUnbondingDelegations(r.Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
@@ -98,7 +98,7 @@ func (h stakingHandler) GetDelegatorUnbondingDelegations(w http.ResponseWriter, 
 }
 
 // GetRedelegations returns all redelegations for a delegator
-func (h stakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetRedelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	srcValidatorAddr := chi.URLParam(r, "srcValidatorAddr")
 	dstValidatorAddr := chi.URLParam(r, "dstValidatorAddr")
@@ -120,7 +120,7 @@ func (h stakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request)
 }
 
 // GetValidator returns a validator
-func (h stakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetValidator(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.StakingClient(r, w).Validator(r.Context(), &stakingv1beta1.QueryValidatorRequest{
 		ValidatorAddr: validatorAddr,
@@ -138,7 +138,7 @@ func (h stakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetValidators returns all validators
-func (h stakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetValidators(w http.ResponseWriter, r *http.Request) {
 	resp, err := middleware.StakingClient(r, w).Validators(r.Context(), &stakingv1beta1.QueryValidatorsRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -153,7 +153,7 @@ func (h stakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetValidatorDelegations returns all delegations for a validator
-func (h stakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetValidatorDelegations(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
 	resp, err := middleware.StakingClient(r, w).ValidatorDelegations(r.Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
 		ValidatorAddr: validatorAddr,
@@ -171,7 +171,7 @@ func (h stakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.R
 }
 
 // GetDelegatorValidators returns all validators for a delegator
-func (h stakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetDelegatorValidators(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	resp, err := middleware.StakingClient(r, w).DelegatorValidators(r.Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
 		DelegatorAddr: delegatorAddr,
@@ -189,7 +189,7 @@ func (h stakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Re
 }
 
 // GetHistoricalInfo returns historical info
-func (h stakingHandler) GetHistoricalInfo(w http.ResponseWriter, r *http.Request) {
+func (h stakingAPI) GetHistoricalInfo(w http.ResponseWriter, r *http.Request) {
 	heightStr := chi.URLParam(r, "height")
 	height, _ := strconv.ParseInt(heightStr, 10, 64)
 	resp, err := middleware.StakingClient(r, w).HistoricalInfo(r.Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
@@ -208,7 +208,7 @@ func (h stakingHandler) GetHistoricalInfo(w http.ResponseWriter, r *http.Request
 }
 
 // RegisterRoutes registers the staking routes
-func (h stakingHandler) RegisterRoutes(r chi.Router) {
+func (h stakingAPI) RegisterRoutes(r chi.Router) {
 	r.Get("/delegators/{delegatorAddr}", h.GetDelegatorDelegations)
 	r.Get("/delegators/{delegatorAddr}/unbonding", h.GetDelegatorUnbondingDelegations)
 	r.Get("/delegators/{delegatorAddr}/validators", h.GetDelegatorValidators)

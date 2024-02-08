@@ -1,11 +1,11 @@
-package api
+package handlers
 
 // ! ||--------------------------------------------------------------------------------||
 // ! ||                                  API Endpoints                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// IdentityHandler is a handler for the staking module
-var IdentityHandler = identityHandler{}
+// IdentityA is a handler for the staking module
+var IdentityAPI = identityAPI{}
 
-// identityHandler is a handler for the staking module
-type identityHandler struct{}
+// identityAPI is a handler for the staking module
+type identityAPI struct{}

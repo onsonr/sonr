@@ -1,4 +1,4 @@
-package api
+package handlers
 
 import (
 	"encoding/json"
@@ -17,14 +17,14 @@ import (
 // ! ||                                  API Endpoints                                 ||
 // ! ||--------------------------------------------------------------------------------||
 
-// ServiceHandler is a handler for the staking module
-var ServiceHandler = serviceHandler{}
+// ServiceAPI is a handler for the staking module
+var ServiceAPI = serviceAPI{}
 
-// serviceHandler is a handler for the staking module
-type serviceHandler struct{}
+// serviceAPI is a handler for the staking module
+type serviceAPI struct{}
 
 // QueryOrigin returns the service for the origin host
-func (h serviceHandler) QueryOrigin(w http.ResponseWriter, r *http.Request) {
+func (h serviceAPI) QueryOrigin(w http.ResponseWriter, r *http.Request) {
 	origin := chi.URLParam(r, "origin")
 	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
@@ -35,7 +35,7 @@ func (h serviceHandler) QueryOrigin(w http.ResponseWriter, r *http.Request) {
 }
 
 // StartRegistration returns credential creation options for the origin host
-func (h serviceHandler) StartRegistration(w http.ResponseWriter, r *http.Request) {
+func (h serviceAPI) StartRegistration(w http.ResponseWriter, r *http.Request) {
 	handleStr := chi.URLParam(r, "handle")
 	origin := chi.URLParam(r, "origin")
 	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
@@ -56,7 +56,7 @@ func (h serviceHandler) StartRegistration(w http.ResponseWriter, r *http.Request
 }
 
 // FinishRegistration returns the result of the credential creation
-func (h serviceHandler) FinishRegistration(w http.ResponseWriter, r *http.Request) {
+func (h serviceAPI) FinishRegistration(w http.ResponseWriter, r *http.Request) {
 	origin := chi.URLParam(r, "origin")
 	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
@@ -77,7 +77,7 @@ func (h serviceHandler) FinishRegistration(w http.ResponseWriter, r *http.Reques
 }
 
 // StartLogin returns credential request options for the origin host
-func (h serviceHandler) StartLogin(w http.ResponseWriter, r *http.Request) {
+func (h serviceAPI) StartLogin(w http.ResponseWriter, r *http.Request) {
 	origin := chi.URLParam(r, "origin")
 	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
@@ -89,7 +89,7 @@ func (h serviceHandler) StartLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 // FinishLogin returns the result of the credential request
-func (h serviceHandler) FinishLogin(w http.ResponseWriter, r *http.Request) {
+func (h serviceAPI) FinishLogin(w http.ResponseWriter, r *http.Request) {
 	origin := chi.URLParam(r, "origin")
 	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
@@ -108,7 +108,7 @@ func (h serviceHandler) FinishLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 // RegisterRoutes registers the node routes
-func (h serviceHandler) RegisterRoutes(r chi.Router) {
+func (h serviceAPI) RegisterRoutes(r chi.Router) {
 	r.Get("/service/{origin}", h.StartLogin)
 	r.Get("/service/{origin}/login/{handle}/start", h.StartLogin)
 	r.Post("/service/{origin}/login/{handle}/finish", h.FinishLogin)
