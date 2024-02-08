@@ -7,12 +7,12 @@ import (
 	"github.com/pterm/pterm"
 )
 
-func persistentBanner(port int, address string) string {
+func persistentBanner(address string) string {
 	return fmt.Sprintf(`
 Sonr Highway
-· Gateway: http://%s:%d
+· Gateway: http://%s
 · Node RPC: http://localhost:26657
-`, address, port)
+`, address)
 }
 
 // HighwayOption is a function that sets some option on the HighwayOptions
@@ -30,18 +30,21 @@ type HighwayOptions struct {
 	EnableBanner bool `json:"enable_banner"`
 }
 
+func (o *HighwayOptions) listenAddress() string {
+	return fmt.Sprintf("%s:%d", o.Host, o.GatewayPort)
+}
+
 // PrintBanner prints the banner
 func (o *HighwayOptions) PrintBanner() {
-	if !o.EnableBanner {
-		pterm.DefaultHeader.Printf(persistentBanner(o.GatewayPort, o.Host))
+	if o.EnableBanner {
+		pterm.DefaultHeader.Printf(persistentBanner(o.listenAddress()))
 	}
 }
 
 // Serve starts the highway server
 func (o *HighwayOptions) Serve(handler http.Handler) error {
-	addr := fmt.Sprintf("%s:%d", o.Host, o.GatewayPort)
 	o.PrintBanner()
-	return http.ListenAndServe(addr, handler)
+	return http.ListenAndServe(o.listenAddress(), handler)
 }
 
 // NewHighwayOptions returns a new HighwayOptions

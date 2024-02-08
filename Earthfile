@@ -34,6 +34,10 @@ deps:
 # build - builds the flavored ipfs gateway
 build:
     FROM +deps
+    ARG goos=linux
+    ARG goarch=amd64
+    ENV GOOS=$goos
+    ENV GOARCH=$goarch
     COPY . .
     RUN go build -o /app/sonrd ./cmd/sonrd
     SAVE ARTIFACT /app/sonrd AS LOCAL bin/sonrd
@@ -41,6 +45,10 @@ build:
 # build-hway - builds the Sonr Highway
 build-hway:
     FROM +deps
+    ARG goos=linux
+    ARG goarch=amd64
+    ENV GOOS=$goos
+    ENV GOARCH=$goarch
     COPY . .
     RUN go build -o /app/hway ./cmd/hway
     SAVE ARTIFACT /app/hway AS LOCAL bin/hway

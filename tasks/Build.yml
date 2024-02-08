@@ -6,7 +6,7 @@ tasks:
     cmds:
       - templ generate
       - rm -rf bin/ && mkdir ./bin/
-      - goreleaser build --single-target --clean --snapshot -o ./bin/sonrd
+      - earthly +build --goos=darwin --goarch=arm64
       - rm -rf dist
 
   ipfs:
