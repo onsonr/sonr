@@ -10,7 +10,6 @@ import (
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
-	"github.com/sonrhq/sonr/pkg/webauth"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -50,7 +49,7 @@ func (qs queryServer) Credentials(ctx context.Context, req *service.QueryCredent
 	}
 
 	if req.ParamsType == service.ParamsType_PARAMS_TYPE_ATTESTATION {
-		opts := webauth.GetPublicKeyCredentialCreationOptions(rec, protocol.UserEntity{})
+		opts := service.GetPublicKeyCredentialCreationOptions(rec, protocol.UserEntity{})
 		creationOptsBz, err := json.Marshal(opts)
 		if err != nil {
 			return nil, status.Error(codes.Internal, err.Error())
@@ -62,7 +61,7 @@ func (qs queryServer) Credentials(ctx context.Context, req *service.QueryCredent
 	}
 
 	if req.ParamsType == service.ParamsType_PARAMS_TYPE_ASSERTION {
-		opts := webauth.GetPublicKeyCredentialRequestOptions(rec, []protocol.CredentialDescriptor{})
+		opts := service.GetPublicKeyCredentialRequestOptions(rec, []protocol.CredentialDescriptor{})
 		requestOptsBz, err := json.Marshal(opts)
 		if err != nil {
 			return nil, status.Error(codes.Internal, err.Error())

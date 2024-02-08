@@ -1,0 +1,29 @@
+syntax = "proto3";
+package sonr.service.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/sonrhq/sonr/x/service";
+
+// Params defines the parameters of the module.
+message Params { option (amino.name) = "sonrhq/service/Params"; }
+
+// GenesisState is the state that must be provided at genesis.
+message GenesisState {
+  // params defines all the parameters of the module.
+  Params params = 2
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// ParamsType defines the type of params
+enum ParamsType {
+  // PARAMS_TYPE_UNSPECIFIED is the default parameter type
+  PARAMS_TYPE_UNSPECIFIED = 0;
+
+  // PARAMS_TYPE_ATTESTATION is for the attestation params
+  PARAMS_TYPE_ATTESTATION = 1;
+
+  // PARAMS_TYPE_ASSERTION is for the assertion params
+  PARAMS_TYPE_ASSERTION = 2;
+}

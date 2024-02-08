@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+package sonr.service.module.v1;
+
+import "cosmos/orm/v1/orm.proto";
+import "cosmos/orm/v1alpha1/schema.proto";
+
+// Module is the app config object of the module.
+// Learn more: https://docs.cosmos.network/main/building-modules/depinject
+message State {
+  option (cosmos.orm.v1alpha1.module_schema) = {
+    schema_file : {id : 1 proto_file_name : "service/module/v1/module.proto"}
+  };
+}
+
+// ServicePermissions is the specified permissions the application has with the
+// user's account.
+enum ServicePermissions {
+  // SERVICE_PERMISSIONS_BASE - off chain visibility
+  SERVICE_PERMISSIONS_BASE = 0;
+  // SERVICE_PERMISSIONS_READ - read access
+  SERVICE_PERMISSIONS_READ = 1;
+  // SERVICE_PERMISSIONS_WRITE - write access
+  SERVICE_PERMISSIONS_WRITE = 2;
+  // SERVICE_PERMISSIONS_OWN - ownership
+  SERVICE_PERMISSIONS_OWN = 3;
+}
+
+// ServiceRecord is the balance of an account.
+message ServiceRecord {
+  option (cosmos.orm.v1.table) = {
+    id : 1
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "origin" unique : true}
+    index : {id : 2 fields : "controller"}
+  };
+
+  uint64 id = 1;
+  string origin = 2;
+  string name = 3;
+  string description = 4;
+  string controller = 5;
+  ServicePermissions permissions = 6;
+}
+
+// Credential is the total supply of the module.
+message Credential {
+  option (cosmos.orm.v1.table) = {
+    id : 2
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "handle"}
+    index : {id : 2 fields : "origin,handle" unique : true}
+    index : {id : 3 fields : "credential_id" unique : true}
+    index : {id : 4 fields : "public_key" unique : true}
+  };
+
+  uint64 id = 1;
+  string handle = 2;
+  repeated string transport = 3;
+  bytes public_key = 4;
+  string attestation_type = 5;
+  bytes credential_id = 6;
+  string origin = 7;
+}
+
+
+// Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
+// authorizer to the underlying wallet interface.
+message Witness {
+  option (cosmos.orm.v1.table) = {
+    id : 3
+    primary_key : {fields : "index" auto_increment : true}
+    index : {id : 1 fields : "origin,key" unique : true}
+  };
+
+  uint64 index = 1;
+  string origin = 2;
+  string key = 3;
+  string value = 4;
+}
+
+// BaseParams is the total supply of the module.
+message BaseParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 4
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// ReadParams is the total supply of the module.
+message ReadParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 5
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// WriteParams is the total supply of the module.
+message WriteParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 6
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}
+
+// OwnParams is the total supply of the module.
+message OwnParams {
+  option (cosmos.orm.v1.singleton) = {
+    id : 7
+  };
+  ServicePermissions permissions = 1;
+  string resident_key = 2;
+  int32 algorithm = 3;
+  string authentication_attachment = 4;
+}

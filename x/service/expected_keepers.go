@@ -21,6 +21,7 @@ type IdentityKeeper interface {
 	// VerifyAccountSignature(ctx context.Context, identityID string) error
 }
 
+// GroupKeeper is the expected interface for the group keeper.
 type GroupKeeper interface {
 	CreateGroupWithPolicy(goCtx context.Context, req *group.MsgCreateGroupWithPolicy) (*group.MsgCreateGroupWithPolicyResponse, error)
 	GroupMembers(goCtx context.Context, request *group.QueryGroupMembersRequest) (*group.QueryGroupMembersResponse, error)

@@ -23,7 +23,7 @@ tasks:
         proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
         for dir in $proto_dirs; do
           for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
-              buf generate --template buf.gen.proto.yaml
+              buf generate --template buf.gen.orm.yaml
               buf generate --template buf.gen.yaml
           done
         done
@@ -33,8 +33,15 @@ tasks:
     internal: true
     cmds:
       - rm -rf api
-      - mv sonrhq ./api
+      - mkdir -p ./api/sonr
+      - cp -R -v ./sonr/* ./api/sonr
+      - rm -rf sonr
       - go mod tidy
+
+  proto-doc:
+    dir: ./proto
+    cmds:
+      - buf generate --template buf.gen.doc.yaml --path sonr
 
   swagger:
     dir: ./proto
@@ -42,4 +49,6 @@ tasks:
       - buf generate --template buf.gen.sta.yaml
 
   templ:
-    cmd: templ generate
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - templ generate

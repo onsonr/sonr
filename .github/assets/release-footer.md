@@ -3,8 +3,7 @@
 > [!NOTE]
 >
 > ```bash
-> # Run the following command to install sonrd
-> curl -L <https://github.com/sonrhq/sonr/releases/latest/download/install.sh> | sh
+> wget https://github.com/sonrhq/sonr/releases/latest/download/install.sh
 > ```
 
 Binaries for Linux and Darwin (amd64 and arm64) are available below.

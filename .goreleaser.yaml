@@ -5,8 +5,6 @@ before:
   # Templates for the commands to be ran.
   hooks:
     - go mod download
-    - go install github.com/a-h/templ/cmd/templ@latest
-    - templ generate
 
 builds:
   # Build Sonr Daemon
@@ -19,6 +17,9 @@ builds:
     goarch:
       - amd64
       - arm64
+    ignore:
+      - goos: linux
+        goarch: arm64
     flags:
       - -mod=readonly
       - -trimpath
@@ -27,17 +28,6 @@ builds:
       - -X main.Commit={{ .Commit }}
       - -w -s
 
-  # Build Highway Daemon
-  - id: hway
-    main: cmd/hway/main.go
-    binary: hway
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                                Tarball Archives                                ||
 # ! ||--------------------------------------------------------------------------------||
@@ -45,11 +35,6 @@ archives:
   - id: sonrd
     builds:
       - sonrd
-    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
-    format: tar.gz
-  - id: hway
-    builds:
-      - hway
     name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
 checksum:
@@ -69,19 +54,28 @@ brews:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
-  - folder: Formula
-    ids:
-      - "hway"
-    caveats: "How to use this binary"
-    homepage: "https://sonrhq.com"
-    name: "hway"
-    description: "Hway Binary Node"
-    license: "OpenGLV3"
-    repository:
-      owner: sonrhq
-      name: homebrew-tap
-      token: "{{ .Env.GITHUB_TOKEN }}"
 
+kos:
+  - repository: ghcr.io/sonrhq/sonrd
+    id: sonrd-ghcr
+    build: sonrd
+    main: ./cmd/sonrd/...
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
+  - repository: sonrhq/sonrd
+    id: sonrd-hub
+    build: sonrd
+    main: ./cmd/sonrd/...
+    tags:
+      - "{{.Version}}"
+      - latest
+    platforms:
+      - linux/amd64
+      - linux/arm64
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
@@ -94,7 +88,7 @@ release:
     from_file:
       path: ./.github/assets/release-footer.md
 
-  name_template: '🆔 Release {{ .Now.Format "2006.01.23" }}'
+  name_template: '🆔 Release {{ .Now.Format "2006.01.02" }}'
   mode: replace
   draft: false
   extra_files:

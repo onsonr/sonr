@@ -21,7 +21,7 @@ type stakingHandler struct{}
 func (h stakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Delegation(r.Context(), &stakingv1beta1.QueryDelegationRequest{
+	resp, err := middleware.StakingClient(r, w).Delegation(r.Context(), &stakingv1beta1.QueryDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
@@ -41,7 +41,7 @@ func (h stakingHandler) GetDelegation(w http.ResponseWriter, r *http.Request) {
 func (h stakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).UnbondingDelegation(r.Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
+	resp, err := middleware.StakingClient(r, w).UnbondingDelegation(r.Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
@@ -60,7 +60,7 @@ func (h stakingHandler) GetUnbondingDelegation(w http.ResponseWriter, r *http.Re
 // GetDelegatorDelegations returns all delegations for a delegator
 func (h stakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorDelegations(r.Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
+	resp, err := middleware.StakingClient(r, w).DelegatorDelegations(r.Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -78,7 +78,7 @@ func (h stakingHandler) GetDelegatorDelegations(w http.ResponseWriter, r *http.R
 // GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
 func (h stakingHandler) GetDelegatorUnbondingDelegations(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorUnbondingDelegations(r.Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
+	resp, err := middleware.StakingClient(r, w).DelegatorUnbondingDelegations(r.Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -98,7 +98,7 @@ func (h stakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request)
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
 	srcValidatorAddr := chi.URLParam(r, "srcValidatorAddr")
 	dstValidatorAddr := chi.URLParam(r, "dstValidatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Redelegations(r.Context(), &stakingv1beta1.QueryRedelegationsRequest{
+	resp, err := middleware.StakingClient(r, w).Redelegations(r.Context(), &stakingv1beta1.QueryRedelegationsRequest{
 		DelegatorAddr:    delegatorAddr,
 		SrcValidatorAddr: srcValidatorAddr,
 		DstValidatorAddr: dstValidatorAddr,
@@ -118,7 +118,7 @@ func (h stakingHandler) GetRedelegations(w http.ResponseWriter, r *http.Request)
 // GetValidator returns a validator
 func (h stakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Validator(r.Context(), &stakingv1beta1.QueryValidatorRequest{
+	resp, err := middleware.StakingClient(r, w).Validator(r.Context(), &stakingv1beta1.QueryValidatorRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
@@ -135,7 +135,7 @@ func (h stakingHandler) GetValidator(w http.ResponseWriter, r *http.Request) {
 
 // GetValidators returns all validators
 func (h stakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).Validators(r.Context(), &stakingv1beta1.QueryValidatorsRequest{})
+	resp, err := middleware.StakingClient(r, w).Validators(r.Context(), &stakingv1beta1.QueryValidatorsRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -151,7 +151,7 @@ func (h stakingHandler) GetValidators(w http.ResponseWriter, r *http.Request) {
 // GetValidatorDelegations returns all delegations for a validator
 func (h stakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.Request) {
 	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).ValidatorDelegations(r.Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
+	resp, err := middleware.StakingClient(r, w).ValidatorDelegations(r.Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
@@ -169,7 +169,7 @@ func (h stakingHandler) GetValidatorDelegations(w http.ResponseWriter, r *http.R
 // GetDelegatorValidators returns all validators for a delegator
 func (h stakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Request) {
 	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).DelegatorValidators(r.Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
+	resp, err := middleware.StakingClient(r, w).DelegatorValidators(r.Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -188,7 +188,7 @@ func (h stakingHandler) GetDelegatorValidators(w http.ResponseWriter, r *http.Re
 func (h stakingHandler) GetHistoricalInfo(w http.ResponseWriter, r *http.Request) {
 	heightStr := chi.URLParam(r, "height")
 	height, _ := strconv.ParseInt(heightStr, 10, 64)
-	resp, err := middleware.NewStakingClient(middleware.GrpcClientConn(r)).HistoricalInfo(r.Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
+	resp, err := middleware.StakingClient(r, w).HistoricalInfo(r.Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
 		Height: height,
 	})
 	if err != nil {

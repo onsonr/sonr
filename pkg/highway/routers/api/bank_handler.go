@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	bankv1beta1 "cosmossdk.io/api/cosmos/bank/v1beta1"
+	types "cosmossdk.io/api/cosmos/bank/v1beta1"
 	"github.com/go-chi/chi/v5"
 
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
@@ -19,7 +19,7 @@ type bankHandler struct{}
 // GetAllBalances returns all balances for an address
 func (h bankHandler) GetAllBalances(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).AllBalances(r.Context(), &bankv1beta1.QueryAllBalancesRequest{
+	resp, err := middleware.BankClient(r, w).AllBalances(r.Context(), &types.QueryAllBalancesRequest{
 		Address: address,
 	})
 	if err != nil {
@@ -38,7 +38,7 @@ func (h bankHandler) GetAllBalances(w http.ResponseWriter, r *http.Request) {
 func (h bankHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).Balance(r.Context(), &bankv1beta1.QueryBalanceRequest{Address: address, Denom: denom})
+	resp, err := middleware.BankClient(r, w).Balance(r.Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -53,7 +53,7 @@ func (h bankHandler) GetBalance(w http.ResponseWriter, r *http.Request) {
 
 // GetTotalSupply returns the total supply
 func (h bankHandler) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).TotalSupply(r.Context(), &bankv1beta1.QueryTotalSupplyRequest{})
+	resp, err := middleware.BankClient(r, w).TotalSupply(r.Context(), &types.QueryTotalSupplyRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -69,7 +69,7 @@ func (h bankHandler) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
 // GetSupplyOf returns the supply of a denom
 func (h bankHandler) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
 	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).SupplyOf(r.Context(), &bankv1beta1.QuerySupplyOfRequest{Denom: denom})
+	resp, err := middleware.BankClient(r, w).SupplyOf(r.Context(), &types.QuerySupplyOfRequest{Denom: denom})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -85,7 +85,7 @@ func (h bankHandler) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
 // GetSpendableBalances returns the spendable balances for an address
 func (h bankHandler) GetSpendableBalances(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).SpendableBalances(r.Context(), &bankv1beta1.QuerySpendableBalancesRequest{Address: address})
+	resp, err := middleware.BankClient(r, w).SpendableBalances(r.Context(), &types.QuerySpendableBalancesRequest{Address: address})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -102,7 +102,7 @@ func (h bankHandler) GetSpendableBalances(w http.ResponseWriter, r *http.Request
 func (h bankHandler) GetSpendableBalancesByDenom(w http.ResponseWriter, r *http.Request) {
 	address := chi.URLParam(r, "address")
 	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.NewBankClient(middleware.GrpcClientConn(r)).SpendableBalanceByDenom(r.Context(), &bankv1beta1.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
+	resp, err := middleware.BankClient(r, w).SpendableBalanceByDenom(r.Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return

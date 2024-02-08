@@ -4,7 +4,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/sonr/identity/module/v1/state_query.proto
+// source: sonr/identity/module/v1/state_query.proto
 
 package modulev1
 
@@ -21,23 +21,23 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetAccount_FullMethodName                    = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccount"
-	StateQueryService_GetAccountByAddress_FullMethodName           = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
-	StateQueryService_GetAccountByPublicKey_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
-	StateQueryService_ListAccount_FullMethodName                   = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccount"
-	StateQueryService_GetBlockchain_FullMethodName                 = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchain"
-	StateQueryService_GetBlockchainByChainId_FullMethodName        = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
-	StateQueryService_GetBlockchainByName_FullMethodName           = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
-	StateQueryService_ListBlockchain_FullMethodName                = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListBlockchain"
-	StateQueryService_GetAccumulator_FullMethodName                = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulator"
-	StateQueryService_GetAccumulatorByControllerKey_FullMethodName = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey"
-	StateQueryService_ListAccumulator_FullMethodName               = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListAccumulator"
-	StateQueryService_GetController_FullMethodName                 = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetController"
-	StateQueryService_GetControllerByAddress_FullMethodName        = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByAddress"
-	StateQueryService_GetControllerByPublicKey_FullMethodName      = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey"
-	StateQueryService_GetControllerByPeerId_FullMethodName         = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByPeerId"
-	StateQueryService_GetControllerByIpns_FullMethodName           = "/sonrhq.sonr.identity.module.v1.StateQueryService/GetControllerByIpns"
-	StateQueryService_ListController_FullMethodName                = "/sonrhq.sonr.identity.module.v1.StateQueryService/ListController"
+	StateQueryService_GetAccount_FullMethodName                    = "/sonr.identity.module.v1.StateQueryService/GetAccount"
+	StateQueryService_GetAccountByAddress_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetAccountByAddress"
+	StateQueryService_GetAccountByPublicKey_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetAccountByPublicKey"
+	StateQueryService_ListAccount_FullMethodName                   = "/sonr.identity.module.v1.StateQueryService/ListAccount"
+	StateQueryService_GetBlockchain_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetBlockchain"
+	StateQueryService_GetBlockchainByChainId_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByChainId"
+	StateQueryService_GetBlockchainByName_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetBlockchainByName"
+	StateQueryService_ListBlockchain_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListBlockchain"
+	StateQueryService_GetAccumulator_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/GetAccumulator"
+	StateQueryService_GetAccumulatorByControllerKey_FullMethodName = "/sonr.identity.module.v1.StateQueryService/GetAccumulatorByControllerKey"
+	StateQueryService_ListAccumulator_FullMethodName               = "/sonr.identity.module.v1.StateQueryService/ListAccumulator"
+	StateQueryService_GetController_FullMethodName                 = "/sonr.identity.module.v1.StateQueryService/GetController"
+	StateQueryService_GetControllerByAddress_FullMethodName        = "/sonr.identity.module.v1.StateQueryService/GetControllerByAddress"
+	StateQueryService_GetControllerByPublicKey_FullMethodName      = "/sonr.identity.module.v1.StateQueryService/GetControllerByPublicKey"
+	StateQueryService_GetControllerByPeerId_FullMethodName         = "/sonr.identity.module.v1.StateQueryService/GetControllerByPeerId"
+	StateQueryService_GetControllerByIpns_FullMethodName           = "/sonr.identity.module.v1.StateQueryService/GetControllerByIpns"
+	StateQueryService_ListController_FullMethodName                = "/sonr.identity.module.v1.StateQueryService/ListController"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -660,7 +660,7 @@ func _StateQueryService_ListController_Handler(srv interface{}, ctx context.Cont
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var StateQueryService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.sonr.identity.module.v1.StateQueryService",
+	ServiceName: "sonr.identity.module.v1.StateQueryService",
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -733,5 +733,5 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/sonr/identity/module/v1/state_query.proto",
+	Metadata: "sonr/identity/module/v1/state_query.proto",
 }

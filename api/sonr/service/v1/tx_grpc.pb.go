@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/sonr/service/v1/tx.proto
+// source: sonr/service/v1/tx.proto
 
 package servicev1
 
@@ -19,10 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_CreateRecord_FullMethodName = "/sonrhq.sonr.service.v1.Msg/CreateRecord"
-	Msg_UpdateRecord_FullMethodName = "/sonrhq.sonr.service.v1.Msg/UpdateRecord"
-	Msg_DeleteRecord_FullMethodName = "/sonrhq.sonr.service.v1.Msg/DeleteRecord"
-	Msg_UpdateParams_FullMethodName = "/sonrhq.sonr.service.v1.Msg/UpdateParams"
+	Msg_CreateRecord_FullMethodName    = "/sonr.service.v1.Msg/CreateRecord"
+	Msg_UpdateRecord_FullMethodName    = "/sonr.service.v1.Msg/UpdateRecord"
+	Msg_DeleteRecord_FullMethodName    = "/sonr.service.v1.Msg/DeleteRecord"
+	Msg_UpdateParams_FullMethodName    = "/sonr.service.v1.Msg/UpdateParams"
+	Msg_RegisterAccount_FullMethodName = "/sonr.service.v1.Msg/RegisterAccount"
+	Msg_LoginAccount_FullMethodName    = "/sonr.service.v1.Msg/LoginAccount"
 )
 
 // MsgClient is the client API for Msg service.
@@ -37,6 +39,10 @@ type MsgClient interface {
 	DeleteRecord(ctx context.Context, in *MsgDeleteRecord, opts ...grpc.CallOption) (*MsgDeleteRecordResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// RegisterAccount registers an account by using the x/identity module
+	RegisterAccount(ctx context.Context, in *MsgRegisterAccount, opts ...grpc.CallOption) (*MsgRegisterAccountResponse, error)
+	// LoginAccount logs in an account by using the x/identity module
+	LoginAccount(ctx context.Context, in *MsgLoginAccount, opts ...grpc.CallOption) (*MsgLoginAccountResponse, error)
 }
 
 type msgClient struct {
@@ -83,6 +89,24 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) RegisterAccount(ctx context.Context, in *MsgRegisterAccount, opts ...grpc.CallOption) (*MsgRegisterAccountResponse, error) {
+	out := new(MsgRegisterAccountResponse)
+	err := c.cc.Invoke(ctx, Msg_RegisterAccount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) LoginAccount(ctx context.Context, in *MsgLoginAccount, opts ...grpc.CallOption) (*MsgLoginAccountResponse, error) {
+	out := new(MsgLoginAccountResponse)
+	err := c.cc.Invoke(ctx, Msg_LoginAccount_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
@@ -95,6 +119,10 @@ type MsgServer interface {
 	DeleteRecord(context.Context, *MsgDeleteRecord) (*MsgDeleteRecordResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// RegisterAccount registers an account by using the x/identity module
+	RegisterAccount(context.Context, *MsgRegisterAccount) (*MsgRegisterAccountResponse, error)
+	// LoginAccount logs in an account by using the x/identity module
+	LoginAccount(context.Context, *MsgLoginAccount) (*MsgLoginAccountResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -113,6 +141,12 @@ func (UnimplementedMsgServer) DeleteRecord(context.Context, *MsgDeleteRecord) (*
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (UnimplementedMsgServer) RegisterAccount(context.Context, *MsgRegisterAccount) (*MsgRegisterAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterAccount not implemented")
+}
+func (UnimplementedMsgServer) LoginAccount(context.Context, *MsgLoginAccount) (*MsgLoginAccountResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginAccount not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -199,11 +233,47 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_RegisterAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).RegisterAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_RegisterAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).RegisterAccount(ctx, req.(*MsgRegisterAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_LoginAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLoginAccount)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LoginAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_LoginAccount_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LoginAccount(ctx, req.(*MsgLoginAccount))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Msg_ServiceDesc is the grpc.ServiceDesc for Msg service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.sonr.service.v1.Msg",
+	ServiceName: "sonr.service.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -222,7 +292,15 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
 		},
+		{
+			MethodName: "RegisterAccount",
+			Handler:    _Msg_RegisterAccount_Handler,
+		},
+		{
+			MethodName: "LoginAccount",
+			Handler:    _Msg_LoginAccount_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/sonr/service/v1/tx.proto",
+	Metadata: "sonr/service/v1/tx.proto",
 }

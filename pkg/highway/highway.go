@@ -11,6 +11,13 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/routers"
 )
 
+// PersistentHeader is the header that is printed on start
+const PersistentHeader = `
+Sonr Highway
+· Gateway: http://localhost:8000
+· Node RPC: http://localhost:26657
+`
+
 // Start starts the highway server
 func Start() {
 	pterm.DefaultHeader.Printf(PersistentHeader)
@@ -18,13 +25,14 @@ func Start() {
 	middleware.UseDefaults(r)
 	routers.MountAPI(r)
 	routers.MountSSE(r)
-	routers.MountNebula(r)
 	http.ListenAndServe(":8000", r)
 }
 
-// PersistentHeader is the header that is printed on start
-const PersistentHeader = `
-Sonr Highway
-· Gateway: http://localhost:8000
-· Node RPC: http://localhost:26657
-`
+// Handler returns the router
+func Handler() chi.Router {
+	r := chi.NewRouter()
+	middleware.UseDefaults(r)
+	routers.MountAPI(r)
+	routers.MountSSE(r)
+	return r
+}

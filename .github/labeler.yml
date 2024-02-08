@@ -1,15 +1,15 @@
-Crypto:
+"@crypto":
   - "pkg/crypto/**/*"
 
 # Add 'label2' to any file changes within 'example2' folder
-Highway:
+"@highway":
   - "pkg/highway/**/*"
   - "cmd/highway/**/*"
   - "internal/context/**/*"
   - "internal/orm/**/*"
 
 # Complex: Add 'area/core' label to any change within the 'core' package
-Identity:
+"@identity":
   - "pkg/vault/**/*"
   - "proto/sonrhq/sonr/identity/**/*"
   - "x/identity/**/*"
@@ -18,13 +18,13 @@ Identity:
   - "pkg/crypto/tecdsa/**/*"
   - "internal/wallet/**/*"
 
-Service:
+"@service":
   - "pkg/webauth/**/*"
   - "pkg/crypto/accumulator/**/*"
   - "proto/sonrhq/sonr/service/**/*"
   - "x/service/**/*"
 
-Config:
+"@config":
   - config/**/*
   - ".github/**/*"
   - ".gitignore"
@@ -35,7 +35,7 @@ Config:
   - Taskfile.yml
   - "Makefile"
 
-Documentation:
+"@documentation":
   - docs/**/*
   - "CODE_OF_CONDUCT.md"
   - "CONTRIBUTING.md"
@@ -44,7 +44,7 @@ Documentation:
   - DEVELOPERS.md
   - "**/README.md"
 
-Deployment:
+"@deployment":
   - ".dockerignore"
   - "Dockerfile"
   - "docker-compose.yml"
@@ -54,6 +54,6 @@ Deployment:
   - networks/devnet-*/**
   - deploy/**/*
 
-UI-UX:
+"@design":
   - "pkg/nebula/**/*"
   - "**/*.templ"

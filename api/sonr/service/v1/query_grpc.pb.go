@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             (unknown)
-// source: sonrhq/sonr/service/v1/query.proto
+// source: sonr/service/v1/query.proto
 
 package servicev1
 
@@ -19,8 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName      = "/sonrhq.sonr.service.v1.Query/Params"
-	Query_Credentials_FullMethodName = "/sonrhq.sonr.service.v1.Query/Credentials"
+	Query_Params_FullMethodName      = "/sonr.service.v1.Query/Params"
+	Query_Credentials_FullMethodName = "/sonr.service.v1.Query/Credentials"
+	Query_Service_FullMethodName     = "/sonr.service.v1.Query/Service"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,6 +32,8 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Credentials queries the credentials of a service.
 	Credentials(ctx context.Context, in *QueryCredentialsRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
+	// Service returns the service record of a service.
+	Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
 }
 
 type queryClient struct {
@@ -59,6 +62,15 @@ func (c *queryClient) Credentials(ctx context.Context, in *QueryCredentialsReque
 	return out, nil
 }
 
+func (c *queryClient) Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
+	out := new(QueryServiceResponse)
+	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -67,6 +79,8 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Credentials queries the credentials of a service.
 	Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error)
+	// Service returns the service record of a service.
+	Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -79,6 +93,9 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Credentials not implemented")
+}
+func (UnimplementedQueryServer) Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -129,11 +146,29 @@ func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryServiceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Service(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Service_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Service(ctx, req.(*QueryServiceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Query_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "sonrhq.sonr.service.v1.Query",
+	ServiceName: "sonr.service.v1.Query",
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -144,7 +179,11 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "Credentials",
 			Handler:    _Query_Credentials_Handler,
 		},
+		{
+			MethodName: "Service",
+			Handler:    _Query_Service_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "sonrhq/sonr/service/v1/query.proto",
+	Metadata: "sonr/service/v1/query.proto",
 }

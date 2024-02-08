@@ -1,0 +1,16 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/sonrhq/sonr/api/sonr
+    override:
+      buf.build/cosmos/cosmos-sdk: cosmossdk.io/api
+      buf.build/sonrhq/sonr: github.com/sonrhq/sonr/api/sonr
+    except:
+      - buf.build/googleapis/googleapis
+      - buf.build/cosmos/gogo-proto
+      - buf.build/cosmos/cosmos-proto
+plugins:
+  - name: go-cosmos-orm-proto
+    out: ..
+    opt: paths=source_relative
