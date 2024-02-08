@@ -1,4 +1,4 @@
-# Production Infrastructure
+# Sonr Rails
 
 This directory contains Terraform code to deploy the entire Sonr infrastructure on AWS/GCP/Azure. This includes the following services:
 
@@ -8,12 +8,13 @@ This directory contains Terraform code to deploy the entire Sonr infrastructure 
 
 ## Prerequisites
 
-- [Terraform](https://www.terraform.io/downloads.html)
+- [NixPKGS](https://nixos.org/download.html)
 - [Task](https://taskfile.dev/#/installation)
+- [Earthly](https://earthly.dev/get-earthly)
 
 ## Architecture
 
-![Architecture](../.github/assets/infra.png)
+![Architecture](../.github/assets/rails.png)
 
 ## Contributing
 

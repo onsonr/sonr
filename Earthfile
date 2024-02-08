@@ -31,8 +31,8 @@ deps:
 # [Network Services]
 # -------------------
 
-# ipfs - builds the flavored ipfs gateway
-ipfs:
+# build - builds the flavored ipfs gateway
+build:
     FROM matrixdotorg/dendrite-monolith:latest
     ARG serverName=matrix.sonr.run
     ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
@@ -41,6 +41,16 @@ ipfs:
     RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
     SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
 
+
+# build-hway - builds the Sonr Highway
+build-hway:
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=matrix.sonr.run
+    ARG psqlConnURI=postgres://postgres:pwd@postgres:5432/postgres?sslmode=disable
+    RUN /usr/bin/generate-keys -private-key matrix_key.pem
+    SAVE ARTIFACT matrix_key.pem AS LOCAL matrix_key.pem
+    RUN /usr/bin/generate-config -server $serverName -db $psqlConnURI > dendrite.yaml
+    SAVE ARTIFACT dendrite.yaml AS LOCAL dendrite.yaml
 
 # matrix - builds the flavored dendrite monolith
 matrix:
