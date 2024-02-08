@@ -1,0 +1,14 @@
+{
+	"sonrd": {
+		"chain_id": "sonr-testnet-1"
+	},
+	"highway": {
+		"node_grpc_address": "localhost:9090",
+		"chain_id": "sonr-testnet-1",
+		"validator_address": "cosmosvaloper1xv3j7yylfwz4e9v3u8h60x5shy7y58m3y2q5qk"
+	},
+	"nitro": {
+		"matrix_host": "http://localhost:3000",
+		"shared_secret": "secret"
+	}
+}

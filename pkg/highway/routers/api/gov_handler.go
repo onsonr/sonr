@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	govv1 "cosmossdk.io/api/cosmos/gov/v1"
+	types "cosmossdk.io/api/cosmos/gov/v1"
 	"github.com/go-chi/chi/v5"
 
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
@@ -19,7 +19,7 @@ type govHandler struct{}
 
 // GetConstitution returns the constitution
 func (h govHandler) GetConstitution(w http.ResponseWriter, r *http.Request) {
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Constitution(r.Context(), &govv1.QueryConstitutionRequest{})
+	res, err := middleware.GovClient(r, w).Constitution(r.Context(), &types.QueryConstitutionRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -36,7 +36,7 @@ func (h govHandler) GetConstitution(w http.ResponseWriter, r *http.Request) {
 func (h govHandler) GetProposal(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Proposal(r.Context(), &govv1.QueryProposalRequest{ProposalId: i})
+	res, err := middleware.GovClient(r, w).Proposal(r.Context(), &types.QueryProposalRequest{ProposalId: i})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -51,7 +51,7 @@ func (h govHandler) GetProposal(w http.ResponseWriter, r *http.Request) {
 
 // GetProposals returns all proposals
 func (h govHandler) GetProposals(w http.ResponseWriter, r *http.Request) {
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Proposals(r.Context(), &govv1.QueryProposalsRequest{})
+	res, err := middleware.GovClient(r, w).Proposals(r.Context(), &types.QueryProposalsRequest{})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -69,7 +69,7 @@ func (h govHandler) GetVote(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	voterStr := chi.URLParam(r, "voter")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Vote(r.Context(), &govv1.QueryVoteRequest{ProposalId: i, Voter: voterStr})
+	res, err := middleware.GovClient(r, w).Vote(r.Context(), &types.QueryVoteRequest{ProposalId: i, Voter: voterStr})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -86,7 +86,7 @@ func (h govHandler) GetVote(w http.ResponseWriter, r *http.Request) {
 func (h govHandler) GetVotes(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Votes(r.Context(), &govv1.QueryVotesRequest{ProposalId: i})
+	res, err := middleware.GovClient(r, w).Votes(r.Context(), &types.QueryVotesRequest{ProposalId: i})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -104,7 +104,7 @@ func (h govHandler) GetDeposit(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	depositorStr := chi.URLParam(r, "depositor")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Deposit(r.Context(), &govv1.QueryDepositRequest{ProposalId: i, Depositor: depositorStr})
+	res, err := middleware.GovClient(r, w).Deposit(r.Context(), &types.QueryDepositRequest{ProposalId: i, Depositor: depositorStr})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -121,7 +121,7 @@ func (h govHandler) GetDeposit(w http.ResponseWriter, r *http.Request) {
 func (h govHandler) GetDeposits(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).Deposits(r.Context(), &govv1.QueryDepositsRequest{ProposalId: i})
+	res, err := middleware.GovClient(r, w).Deposits(r.Context(), &types.QueryDepositsRequest{ProposalId: i})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -138,7 +138,7 @@ func (h govHandler) GetDeposits(w http.ResponseWriter, r *http.Request) {
 func (h govHandler) GetTally(w http.ResponseWriter, r *http.Request) {
 	proposalIDStr := chi.URLParam(r, "proposalId")
 	i, _ := strconv.ParseUint(proposalIDStr, 10, 64)
-	res, err := middleware.NewGovClient(middleware.GrpcClientConn(r)).TallyResult(r.Context(), &govv1.QueryTallyResultRequest{ProposalId: i})
+	res, err := middleware.GovClient(r, w).TallyResult(r.Context(), &types.QueryTallyResultRequest{ProposalId: i})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
