@@ -1,6 +1,6 @@
 # Production Infrastructure
 
-This repository contains Terraform code to deploy the entire Sonr infrastructure on AWS/GCP/Azure. This includes the following services:
+This directory contains Terraform code to deploy the entire Sonr infrastructure on AWS/GCP/Azure. This includes the following services:
 
 - Sonr Website
 - Sonr Network (Testnet, Devnet, Mainnet)
@@ -10,10 +10,6 @@ This repository contains Terraform code to deploy the entire Sonr infrastructure
 
 - [Terraform](https://www.terraform.io/downloads.html)
 - [Task](https://taskfile.dev/#/installation)
-
-## Usage
-
-The entire process is controlled via GitHub Actions with Worflow dispatch. Automated deployment is not enabled for security reasons. Local provisioning is possible using the provided `Taskfile.yml`.
 
 ## Architecture
 

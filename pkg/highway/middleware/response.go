@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 
@@ -25,6 +26,11 @@ func InternalServerError(w http.ResponseWriter, err error) {
 // BadRequest writes a bad request error to the http.ResponseWriter
 func BadRequest(w http.ResponseWriter, err error) {
 	http.Error(w, err.Error(), http.StatusBadRequest)
+}
+
+// RenderError writes a render error to the http.ResponseWriter
+func RenderError(w http.ResponseWriter, err error) {
+	http.Error(w, fmt.Sprintf("Failed to render HTMX: %e", err), http.StatusInternalServerError)
 }
 
 // NotFound writes a not found error to the http.ResponseWriter

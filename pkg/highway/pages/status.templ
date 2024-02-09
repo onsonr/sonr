@@ -1,0 +1,12 @@
+package pages
+
+import ui "github.com/sonrhq/sonr/pkg/highway/components"
+
+templ StatusPage() {
+	@ui.RootLayout() {
+		<div class="w-full h-full">
+			<sl-button id="login-button" size="medium" pill>Medium</sl-button>
+			@card()
+		</div>
+	}
+}

@@ -16,6 +16,7 @@ func UseDefaults(r *chi.Mux) {
 	r.Use(chimdw.Logger)
 	r.Use(chimdw.Recoverer)
 	r.Use(Session)
+	r.Use(HTMX)
 }
 
 // Session wraps the provided http.Handler with a SessionMiddleware instance.
@@ -36,7 +37,7 @@ type SessionMiddleware struct {
 }
 
 // SessionID returns the address of the user from the session cookie.
-func SessionID(r *http.Request) (id string) {
+func SessionID(r *http.Request) (sessionID string) {
 	cookie, err := r.Cookie("sessionID")
 	if err != nil {
 		return
