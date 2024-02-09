@@ -4,18 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"github.com/a-h/templ"
 )
-
-// HTMXResponse writes a Templ component to the http.ResponseWriter
-func HTMXResponse(view templ.Component) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		if err := view.Render(r.Context(), w); err != nil {
-			RenderError(w, err)
-		}
-	}
-}
 
 // JSONResponse writes a JSON response to the http.ResponseWriter
 func JSONResponse(w http.ResponseWriter, body any) {

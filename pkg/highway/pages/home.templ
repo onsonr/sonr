@@ -39,7 +39,7 @@ templ card() {
 templ HomePage() {
 	@ui.RootLayout() {
 		<div class="w-full h-full">
-			<div hx-get="/login" hx-swap="afterend" hx-target="#login-button">
+			<div hx-get="/login" hx-push-url="true" hx-swap="afterend" hx-target="#login-button">
 				<sl-button id="login-button" size="medium" pill>Medium</sl-button>
 			</div>
 			<div id="card">
