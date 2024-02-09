@@ -14,17 +14,6 @@ tasks:
     cmds:
       - earthly +ipfs --domain=ipfs.sonr.dev
 
-  matrix:
-    dir: deploy
-    cmds:
-      - earthly +matrix --domain=matrix.sonr.dev
-
-  cosmscan:
-    internal: true
-    dir: _workers/cosmscan-indexer
-    cmds:
-      - earthly +build
-
   faucet:
     internal: true
     dir: _workers/faucet-testnet
@@ -42,3 +31,11 @@ tasks:
       - task: cosmscan
       - task: faucet
       - task: highway
+
+  devcontainer:
+    cmds:
+      - docker run -it --rm
+        -v /tmp/envbuilder:/workspaces
+        -e GIT_URL=https://github.com/sonrhq/devcontainer
+        -e INIT_SCRIPT=bash 
+        ghcr.io/coder/envbuilder
