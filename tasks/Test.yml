@@ -13,7 +13,6 @@ tasks:
       - task: module-identity
       - task: module-service
       - task: motor
-      - task: nebula
       - task: vault
 
   crypto:
@@ -72,11 +71,6 @@ tasks:
 
   motor:
     dir: ./pkg/motor
-    cmds:
-      - go test -v ./...
-
-  nebula:
-    dir: ./pkg/nebula
     cmds:
       - go test -v ./...
 
