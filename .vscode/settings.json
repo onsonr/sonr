@@ -6,8 +6,6 @@
   },
   "files.exclude": {
     "!**/.git/hooks": true,
-    ".dart_tool": true,
-    ".devcontainer": true,
     "**/.classpath": true,
     "**/.DS_Store": true,
     "**/.factorypath": true,
@@ -34,14 +32,12 @@
     "**/go.work.sum": true,
     "**/largeFolder": true,
     "**/LICENSE": true,
-    "**/node_modules": true,
     "**/pubspec.lock": true,
     "**/SECURITY.md": true,
     "**/Thumbs.db": true,
     "**pubspec.lock": true,
     "app.iml": true,
     "Contents.json": true,
-    "Icon": true
   },
   "yaml.schemas": {
     "https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml",

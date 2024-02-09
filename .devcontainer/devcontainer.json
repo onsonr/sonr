@@ -1,53 +1,5 @@
 {
-  "image": "mcr.microsoft.com/devcontainers/universal:2",
-  "features": {
-    "ghcr.io/akhildevelops/devcontainer-features/apt:0": {},
-    "ghcr.io/withfig/features/fig:1": {},
-    "ghcr.io/devcontainers/features/go:1": {},
-    "ghcr.io/earthly/devcontainer-features/earthly:1": {
-      "bootstrap": true,
-    },
-  },
-  "hostRequirements": {
-    "cpus": 12,
-  },
-  "waitFor": "initializeCommand",
-  "postAttachCommand": [],
-  "customizations": {
-    "codespaces": {
-      "openFiles": ["README.md"],
-    },
-    "vscode": {
-      "extensions": [
-        "ms-vscode.atom-keybindings",
-        "atommaterial.a-file-icon-vscode",
-        "formulahendry.auto-rename-tag",
-        "neotan.vscode-auto-restart-typescript-eslint-servers",
-        "SanchitVerma.block-comments",
-        "GitHub.copilot",
-        "lisrec.hide-config",
-        "chrisbibby.hide-node-modules",
-        "chrisbibby.hide-git-ignored",
-        "ms-vscode.makefile-tools",
-        "bierner.markdown-preview-github-styles",
-        "monokai.theme-monokai-pro-vscode",
-        "RaillyHugo.one-hunter",
-        "Postman.postman-for-vscode",
-        "CiberTurtle.sharp-icons",
-        "zxh404.vscode-proto3",
-        "SeyyedKhandon.firacode",
-      ],
-    },
-  },
-  "portsAttributes": {
-    "4001": {
-      "label": "IceFire DB",
-      "onAutoForward": "ignore",
-    },
-    "6001": {
-      "label": "IceFire Redis Proxy",
-      "onAutoForward": "ignore",
-    },
-  },
-  "forwardPorts": [1317, 4001, "localhost:6001", 8080, 9090, 26656, 26657],
+  "build": {
+    "dockerfile": "Dockerfile"
+  }
 }
