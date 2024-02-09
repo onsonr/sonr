@@ -23,7 +23,15 @@ func AuthModal() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Dialog\" open><sl-input autofocus placeholder=\"I will have focus when the dialog is opened\"></sl-input> <sl-button slot=\"footer\" variant=\"primary\">Close</sl-button></sl-dialog>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Dialog\" open>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = authLoginScreen().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-dialog>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -47,7 +55,7 @@ func authRegistrationScreen() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-button variant=\"primary\">Close</sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-input autofocus placeholder=\"I will have focus when the dialog is opened\"></sl-input> <sl-button slot=\"footer\" variant=\"primary\">Close</sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -71,7 +79,7 @@ func authLoginScreen() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-button variant=\"primary\">Close</sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-input autofocus placeholder=\"I will have focus when the dialog is opened\"></sl-input> <sl-button slot=\"footer\" hx-get=\"/\" hx-push-url=\"true\" hx-swap=\"afterend\" variant=\"primary\">Close</sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -95,7 +103,7 @@ func authPermissionsScreen() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-button variant=\"primary\">Close</sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-input autofocus placeholder=\"I will have focus when the dialog is opened\"></sl-input> <sl-button slot=\"footer\" variant=\"primary\">Close</sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -119,7 +127,7 @@ func authRecoveryScreen() templ.Component {
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-button variant=\"primary\">Close</sl-button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"registration-screen\"><sl-input autofocus placeholder=\"I will have focus when the dialog is opened\"></sl-input> <sl-button slot=\"footer\" variant=\"primary\">Close</sl-button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
