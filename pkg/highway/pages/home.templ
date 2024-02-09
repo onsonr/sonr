@@ -2,6 +2,43 @@ package pages
 
 import ui "github.com/sonrhq/sonr/pkg/highway/components"
 
+templ HomePage() {
+	@ui.RootLayout() {
+		<div class="w-full h-full">
+			<div hx-get="/login" hx-push-url="true" hx-swap="afterend" hx-target="#login-button">
+				<sl-button id="login-button" size="medium" pill>Medium</sl-button>
+			</div>
+			<div id="card">
+				@card()
+			</div>
+		</div>
+	}
+}
+
+templ navbar() {
+	<div></div>
+}
+
+templ hero() {
+	<div></div>
+}
+
+templ features() {
+	<div></div>
+}
+
+templ about() {
+	<div></div>
+}
+
+templ faq() {
+	<div></div>
+}
+
+templ cta() {
+	<div></div>
+}
+
 templ card() {
 	<sl-card class="card-overview">
 		<img
@@ -34,17 +71,4 @@ templ card() {
     align-items: center;
   }
 </style>
-}
-
-templ HomePage() {
-	@ui.RootLayout() {
-		<div class="w-full h-full">
-			<div hx-get="/login" hx-push-url="true" hx-swap="afterend" hx-target="#login-button">
-				<sl-button id="login-button" size="medium" pill>Medium</sl-button>
-			</div>
-			<div id="card">
-				@card()
-			</div>
-		</div>
-	}
 }
