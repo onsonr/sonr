@@ -7,7 +7,7 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 	"github.com/sonrhq/sonr/pkg/highway/pages"
 )
-
+	
 // MountHTMX mounts the HTMX routes
 func MountHTMX(or chi.Router) {
 	r := chi.NewRouter()
