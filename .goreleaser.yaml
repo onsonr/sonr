@@ -54,6 +54,13 @@ brews:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
+nfpms:
+  - id: sonrd
+    description: "Sonr Binary Node"
+    homepage: "https://sonrhq.com"
+    license: "OpenGLV3"
+    formats:
+      - deb
 
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
