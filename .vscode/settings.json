@@ -28,6 +28,8 @@
     "**/codecov.yml": true,
     "**/CVS": true,
     "**/go.sum": true,
+    "**/SECURITY.md": true,
+    "**/LICENSE": true,
     "**/go.work": true,
     "**/go.work.sum": true,
     "**/largeFolder": true,
