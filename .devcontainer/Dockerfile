@@ -1,4 +1,4 @@
-FROM ubuntu:jammy
+FROM ubuntu
 
 # Install dev tools
 RUN apt-get update
