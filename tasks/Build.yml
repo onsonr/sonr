@@ -33,9 +33,10 @@ tasks:
       - task: highway
 
   devcontainer:
+    desc: "Builds the project for current platform"
     cmds:
       - docker run -it --rm
-        -v /tmp/envbuilder:/workspaces
-        -e GIT_URL=https://github.com/sonrhq/devcontainer
-        -e INIT_SCRIPT=bash 
+        -v ./tmp/envbuilder:/workspaces
+        -e GIT_URL=https://github.com/sonrhq/sonr
+        -e INIT_SCRIPT=zsh
         ghcr.io/coder/envbuilder

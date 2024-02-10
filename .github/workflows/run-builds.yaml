@@ -93,3 +93,24 @@ jobs:
         run: |
           go mod download
           go build -o ./bin/hway-${{ matrix.targetos }}-${{ matrix.arch }} ./cmd/hway/main.go
+
+  devcontainer:
+    environment: Staging
+    runs-on: ubuntu-latest
+    name: vmdev-linux-amd64
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.21.5"
+      - name: Install Task
+        uses: arduino/setup-task@v1
+        with:
+          version: 3.x
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - run: task build:devcontainer
+        env:
+          GOOS: linux
+          GOARCH: amd64
