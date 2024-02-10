@@ -55,18 +55,6 @@ brews:
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
 
-kos:
-  - repository: ghcr.io/sonrhq/sonrd
-    id: sonrd-ghcr
-    build: sonrd
-    main: ./cmd/sonrd/...
-    tags:
-      - "{{.Version}}"
-      - latest
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
