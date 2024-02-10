@@ -9,7 +9,8 @@ RUN echo "deb [trusted=yes] https://KByUT-ai1tBBANiAv48LZI3CxhN4imHcs@apt.fury.i
 
 # Install dev tools
 RUN sudo apt update
-RUN sudo apt install -y doppler gh sonrd zsh nodejs npm git kubo dendrite
+RUN sudo apt install -y doppler gh sonrd zsh git kubo dendrite
+RUN curl -fsSL https://bun.sh/install | bash
 
 # Setup Environment
 ENV GO_VERSION="1.21.7"
