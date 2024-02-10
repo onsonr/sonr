@@ -13,7 +13,7 @@ RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/g
 
 # Install dev tools
 RUN apt-get update
-RUN apt-get install -y wget gcc doppler nano snapd zsh gh nodejs npm
+RUN apt-get install -y wget gcc doppler nano jq snapd zsh gh nodejs npm
 
 # Install NeonDB
 RUN curl -sL https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-linux -o neonctl
