@@ -66,16 +66,7 @@ kos:
     platforms:
       - linux/amd64
       - linux/arm64
-  - repository: sonrhq/sonrd
-    id: sonrd-hub
-    build: sonrd
-    main: ./cmd/sonrd/...
-    tags:
-      - "{{.Version}}"
-      - latest
-    platforms:
-      - linux/amd64
-      - linux/arm64
+      
 # ! ||--------------------------------------------------------------------------------||
 # ! ||                              Release and Changelog                             ||
 # ! ||--------------------------------------------------------------------------------||
