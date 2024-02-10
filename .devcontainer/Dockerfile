@@ -29,9 +29,10 @@ ENV GOPATH /go
 ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
 RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
-# Install Node Tools
+# Install NPM Tools
 RUN npm install -g @go-task/cli
 RUN npm install -g @bufbuild/buf
+
 
 # Install Dep (IPFS)
 RUN wget "https://dist.ipfs.tech/kubo/v0.26.0/kubo_v0.26.0_linux-amd64.tar.gz"
@@ -49,3 +50,6 @@ RUN git clone https://github.com/sindresorhus/pure.git "$HOME/.zsh/pure"
 RUN echo "fpath+=$HOME/.zsh/pure" >> "$HOME/.zshrc"
 RUN echo "autoload -U promptinit; promptinit" >> "$HOME/.zshrc"
 RUN echo "prompt pure" >> "$HOME/.zshrc"
+
+# Install Sonr
+RUN cd /usr/local && curl -L https://sonr.sh | sh
