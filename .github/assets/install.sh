@@ -26,7 +26,7 @@ parse_args() {
   #BINDIR is ./usr/local/bin unless set be ENV
   # over-ridden by flag below
 
-  BINDIR=${BINDIR:-/usr/local/bin}
+  BINDIR=${BINDIR:-./bin}
   while getopts "b:dh?x" arg; do
     case "$arg" in
     b) BINDIR="$OPTARG" ;;
