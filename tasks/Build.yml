@@ -36,7 +36,6 @@ tasks:
     desc: "Builds the project for current platform"
     cmds:
       - docker run -it --rm
-        --platform linux/amd64
         -v ./tmp/envbuilder:/workspaces
         -e GIT_URL=https://github.com/sonrhq/sonr
         -e INIT_SCRIPT=zsh
