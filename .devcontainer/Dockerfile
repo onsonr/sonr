@@ -2,7 +2,7 @@ FROM ubuntu
 
 # Install dev tools
 RUN apt-get update
-RUN apt-get install -y wget gcc nano jq snapd zsh nodejs npm curl
+RUN apt-get install -y wget gcc nano jq snapd zsh nodejs npm curl sudo gnupg file build-essential procps
 
 # Setup Environment
 ENV GO_VERSION="1.21.7"
@@ -22,7 +22,15 @@ RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
 
 # Install basic tools
 RUN apt-get update
-RUN apt-get install apt-transport-https ca-certificates wget gcc nano jq snapd zsh nodejs npm git gnupg file sudo build-essential procps -y
+RUN apt-get install apt-transport-https ca-certificates zsh nodejs npm git -y
+
+# Install Doppler/GH
+RUN curl -sLf --retry 3 --tlsv1.2 --proto "=https" 'https://packages.doppler.com/public/cli/gpg.DE2A7741A397C129.key'  | sudo gpg --dearmor -o /usr/share/keyrings/doppler-archive-keyring.gpg
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg
+RUN echo "deb [signed-by=/usr/share/keyrings/doppler-archive-keyring.gpg] https://packages.doppler.com/public/cli/deb/debian any-version main" | sudo tee /etc/apt/sources.list.d/doppler-cli.list
+RUN sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg
+RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+RUN apt-get install gh doppler
 
 # Install NeonDB
 RUN curl -sL https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-linux -o neonctl
