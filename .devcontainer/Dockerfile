@@ -1,5 +1,9 @@
 FROM ubuntu:jammy
 
+# Install dev tools
+RUN apt-get update
+RUN apt-get install -y wget gcc nano jq snapd zsh nodejs npm
+
 # Setup Environment
 ENV GO_VERSION="1.21.7"
 ENV ARCH=amd64
