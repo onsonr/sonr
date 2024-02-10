@@ -16,7 +16,6 @@ RUN curl -fsSL https://bun.sh/install | bash
 ENV GO_VERSION="1.21.7"
 ENV ARCH=amd64
 ENV OS=linux
-ENV BINDIR=/usr/local/bin
 
 # Install Go
 RUN wget -P /tmp "https://dl.google.com/go/go${GO_VERSION}.${OS}-${ARCH}.tar.gz"
