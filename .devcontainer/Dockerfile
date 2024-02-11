@@ -3,7 +3,7 @@ FROM sonrhq/ubuntu-go:1.22.0
 
 # update and install dependencies
 RUN apt-get update && apt-get install -y \
-	ipfs \
+	kubo \
 	dendrite \
 	unzip
 
