@@ -2,8 +2,8 @@ package highway
 
 import (
 	"fmt"
-	"net/http"
 
+	"github.com/labstack/echo/v4"
 	"github.com/pterm/pterm"
 )
 
@@ -42,16 +42,16 @@ func (o *HighwayOptions) PrintBanner() {
 }
 
 // Serve starts the highway server
-func (o *HighwayOptions) Serve(handler http.Handler) error {
+func (o *HighwayOptions) Serve(e *echo.Echo) {
 	o.PrintBanner()
-	return http.ListenAndServe(o.listenAddress(), handler)
+	e.Logger.Fatal(e.Start(o.listenAddress()))
 }
 
 // NewHighwayOptions returns a new HighwayOptions
 func NewHighwayOptions() *HighwayOptions {
 	return &HighwayOptions{
 		GatewayPort:  8000,
-		Host:         "localhost",
+		Host:         "0.0.0.0",
 		EnableBanner: true,
 	}
 }

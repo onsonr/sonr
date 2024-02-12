@@ -35,3 +35,8 @@ tasks:
     desc: "Run linters"
     cmds:
       - task: trunk fmt --all
+
+  compose-up:
+    cmds:
+      - earthly +docker
+      - docker-compose up
