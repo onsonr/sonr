@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/labstack/echo/v4"
 
 	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
@@ -24,94 +24,90 @@ var ServiceAPI = serviceAPI{}
 type serviceAPI struct{}
 
 // QueryOrigin returns the service for the origin host
-func (h serviceAPI) QueryOrigin(w http.ResponseWriter, r *http.Request) {
-	origin := chi.URLParam(r, "origin")
-	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
+func (h serviceAPI) QueryOrigin(c echo.Context) error {
+	origin := c.Param("origin")
+	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
-		middleware.NotFound(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	middleware.JSONResponse(w, resp.Service)
+	rBz, err := json.Marshal(resp)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // StartRegistration returns credential creation options for the origin host
-func (h serviceAPI) StartRegistration(w http.ResponseWriter, r *http.Request) {
-	handleStr := chi.URLParam(r, "handle")
-	origin := chi.URLParam(r, "origin")
-	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
+func (h serviceAPI) StartRegistration(c echo.Context) error {
+	handleStr := c.Param("handle")
+	origin := c.Param("origin")
+	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
-		middleware.NotFound(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	c, err := vault.Create(r.Context())
+	vc, err := vault.Create(c.Request().Context())
 	if err != nil {
-		middleware.InternalServerError(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	opts := service.GetPublicKeyCredentialCreationOptions(resp.Service, protocol.UserEntity{
 		DisplayName: handleStr,
-		ID:          []byte(c.Address),
+		ID:          []byte(vc.Address),
 	})
-	middleware.JSONResponse(w, opts)
+	return c.JSON(http.StatusOK, opts)
 }
 
 // FinishRegistration returns the result of the credential creation
-func (h serviceAPI) FinishRegistration(w http.ResponseWriter, r *http.Request) {
-	origin := chi.URLParam(r, "origin")
-	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
+func (h serviceAPI) FinishRegistration(c echo.Context) error {
+	origin := c.Param("origin")
+	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
-		middleware.NotFound(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	var credential protocol.PublicKeyCredential
-	if err := json.NewDecoder(r.Body).Decode(&credential); err != nil {
-		middleware.BadRequest(w, err)
-		return
+	if err := json.NewDecoder(c.Request().Body).Decode(&credential); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	_, err = service.FinishRegistration(r.Context(), resp.Service, credential)
+	res, err := service.FinishRegistration(c.Request().Context(), resp.Service, credential)
 	if err != nil {
-		middleware.BadRequest(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	w.WriteHeader(http.StatusOK)
+	return c.JSON(http.StatusOK, res)
 }
 
 // StartLogin returns credential request options for the origin host
-func (h serviceAPI) StartLogin(w http.ResponseWriter, r *http.Request) {
-	origin := chi.URLParam(r, "origin")
-	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
+func (h serviceAPI) StartLogin(c echo.Context) error {
+	origin := c.Param("origin")
+	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
-		middleware.NotFound(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	opts := service.GetPublicKeyCredentialRequestOptions(resp.Service, []protocol.CredentialDescriptor{})
-	middleware.JSONResponse(w, opts)
+	return c.JSON(http.StatusOK, opts)
 }
 
 // FinishLogin returns the result of the credential request
-func (h serviceAPI) FinishLogin(w http.ResponseWriter, r *http.Request) {
-	origin := chi.URLParam(r, "origin")
-	resp, err := middleware.ServiceClient(r, w).Service(r.Context(), &servicev1.QueryServiceRequest{Origin: origin})
+func (h serviceAPI) FinishLogin(c echo.Context) error {
+	origin := c.Param("origin")
+	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
 	if err != nil {
-		middleware.NotFound(w, err)
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	var credential protocol.PublicKeyCredential
-	if err := json.NewDecoder(r.Body).Decode(&credential); err != nil {
-		return
+	if err := json.NewDecoder(c.Request().Body).Decode(&credential); err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	_, err = service.FinishLogin(r.Context(), resp.Service, credential)
+	res, err := service.FinishLogin(c.Request().Context(), resp.Service, credential)
 	if err != nil {
-		return
+		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	w.WriteHeader(http.StatusOK)
+	return c.JSON(http.StatusOK, res)
 }
 
 // RegisterRoutes registers the node routes
-func (h serviceAPI) RegisterRoutes(r chi.Router) {
-	r.Get("/service/{origin}", h.StartLogin)
-	r.Get("/service/{origin}/login/{handle}/start", h.StartLogin)
-	r.Post("/service/{origin}/login/{handle}/finish", h.FinishLogin)
-	r.Get("/service/{origin}/register/{handle}/start", h.StartRegistration)
-	r.Post("/service/{origin}/register/{handle}/finish", h.FinishRegistration)
+func (h serviceAPI) RegisterRoutes(e *echo.Echo) {
+	e.GET("/service/:origin", h.QueryOrigin)
+	e.GET("/service/:origin/login/:username/start", h.StartLogin)
+	e.POST("/service/:origin/login/:username/finish", h.FinishLogin)
+	e.GET("/service/:origin/register/:username/start", h.StartRegistration)
+	e.POST("/service/:origin/register/:username/finish", h.FinishRegistration)
 }

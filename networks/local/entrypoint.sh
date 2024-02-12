@@ -6,9 +6,11 @@ MONIKER="florence"
 KEYALGO="secp256k1"
 KEYRING="test"
 LOGLEVEL="info"
+HOME="./data"
 
 # remove existing daemon
 rm -rf $HOME/.sonr
+mkdir -p $HOME/.sonr
 
 # if $KEY exists it should be deleted
 echo "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry" | sonrd keys add $KEY --keyring-backend $KEYRING --algo $KEYALGO --recover

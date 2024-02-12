@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
-	"github.com/go-chi/chi/v5"
+	"github.com/labstack/echo/v4"
 
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
@@ -22,201 +22,181 @@ var StakingAPI = stakingAPI{}
 type stakingAPI struct{}
 
 // GetDelegation returns a delegation
-func (h stakingAPI) GetDelegation(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.StakingClient(r, w).Delegation(r.Context(), &stakingv1beta1.QueryDelegationRequest{
+func (h stakingAPI) GetDelegation(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	validatorAddr := c.Param("validatorAddr")
+	resp, err := middleware.StakingClient(c).Delegation(c.Request().Context(), &stakingv1beta1.QueryDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetUnbondingDelegation returns an unbonding delegation
-func (h stakingAPI) GetUnbondingDelegation(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.StakingClient(r, w).UnbondingDelegation(r.Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
+func (h stakingAPI) GetUnbondingDelegation(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	validatorAddr := c.Param("validatorAddr")
+	resp, err := middleware.StakingClient(c).UnbondingDelegation(c.Request().Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetDelegatorDelegations returns all delegations for a delegator
-func (h stakingAPI) GetDelegatorDelegations(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.StakingClient(r, w).DelegatorDelegations(r.Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
+func (h stakingAPI) GetDelegatorDelegations(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	resp, err := middleware.StakingClient(c).DelegatorDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
-func (h stakingAPI) GetDelegatorUnbondingDelegations(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.StakingClient(r, w).DelegatorUnbondingDelegations(r.Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
+func (h stakingAPI) GetDelegatorUnbondingDelegations(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	resp, err := middleware.StakingClient(c).DelegatorUnbondingDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetRedelegations returns all redelegations for a delegator
-func (h stakingAPI) GetRedelegations(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	srcValidatorAddr := chi.URLParam(r, "srcValidatorAddr")
-	dstValidatorAddr := chi.URLParam(r, "dstValidatorAddr")
-	resp, err := middleware.StakingClient(r, w).Redelegations(r.Context(), &stakingv1beta1.QueryRedelegationsRequest{
+func (h stakingAPI) GetRedelegations(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	srcValidatorAddr := c.Param("srcValidatorAddr")
+	dstValidatorAddr := c.Param("dstValidatorAddr")
+	resp, err := middleware.StakingClient(c).Redelegations(c.Request().Context(), &stakingv1beta1.QueryRedelegationsRequest{
 		DelegatorAddr:    delegatorAddr,
 		SrcValidatorAddr: srcValidatorAddr,
 		DstValidatorAddr: dstValidatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetValidator returns a validator
-func (h stakingAPI) GetValidator(w http.ResponseWriter, r *http.Request) {
-	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.StakingClient(r, w).Validator(r.Context(), &stakingv1beta1.QueryValidatorRequest{
+func (h stakingAPI) GetValidator(c echo.Context) error {
+	validatorAddr := c.Param("validatorAddr")
+	resp, err := middleware.StakingClient(c).Validator(c.Request().Context(), &stakingv1beta1.QueryValidatorRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetValidators returns all validators
-func (h stakingAPI) GetValidators(w http.ResponseWriter, r *http.Request) {
-	resp, err := middleware.StakingClient(r, w).Validators(r.Context(), &stakingv1beta1.QueryValidatorsRequest{})
+func (h stakingAPI) GetValidators(c echo.Context) error {
+	resp, err := middleware.StakingClient(c).Validators(c.Request().Context(), &stakingv1beta1.QueryValidatorsRequest{})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetValidatorDelegations returns all delegations for a validator
-func (h stakingAPI) GetValidatorDelegations(w http.ResponseWriter, r *http.Request) {
-	validatorAddr := chi.URLParam(r, "validatorAddr")
-	resp, err := middleware.StakingClient(r, w).ValidatorDelegations(r.Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
+func (h stakingAPI) GetValidatorDelegations(c echo.Context) error {
+	validatorAddr := c.Param("validatorAddr")
+	resp, err := middleware.StakingClient(c).ValidatorDelegations(c.Request().Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetDelegatorValidators returns all validators for a delegator
-func (h stakingAPI) GetDelegatorValidators(w http.ResponseWriter, r *http.Request) {
-	delegatorAddr := chi.URLParam(r, "delegatorAddr")
-	resp, err := middleware.StakingClient(r, w).DelegatorValidators(r.Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
+func (h stakingAPI) GetDelegatorValidators(c echo.Context) error {
+	delegatorAddr := c.Param("delegatorAddr")
+	resp, err := middleware.StakingClient(c).DelegatorValidators(c.Request().Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetHistoricalInfo returns historical info
-func (h stakingAPI) GetHistoricalInfo(w http.ResponseWriter, r *http.Request) {
-	heightStr := chi.URLParam(r, "height")
+func (h stakingAPI) GetHistoricalInfo(c echo.Context) error {
+	heightStr := c.Param("height")
 	height, _ := strconv.ParseInt(heightStr, 10, 64)
-	resp, err := middleware.StakingClient(r, w).HistoricalInfo(r.Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
+	resp, err := middleware.StakingClient(c).HistoricalInfo(c.Request().Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
 		Height: height,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // RegisterRoutes registers the staking routes
-func (h stakingAPI) RegisterRoutes(r chi.Router) {
-	r.Get("/delegators/{delegatorAddr}", h.GetDelegatorDelegations)
-	r.Get("/delegators/{delegatorAddr}/unbonding", h.GetDelegatorUnbondingDelegations)
-	r.Get("/delegators/{delegatorAddr}/validators", h.GetDelegatorValidators)
-	r.Get("/delegators/{delegatorAddr}/validators/{validatorAddr}", h.GetDelegation)
-	r.Get("/delegators/{delegatorAddr}/validators/{validatorAddr}/unbonding", h.GetUnbondingDelegation)
-	r.Get("/delegators/{delegatorAddr}/validators/{srcValidatorAddr}/redelegate/{dstValidatorAddr}", h.GetRedelegations)
-	r.Get("/history/{height}", h.GetHistoricalInfo)
-	r.Get("/validators", h.GetValidators)
-	r.Get("/validators/{validatorAddr}", h.GetValidator)
-	r.Get("/validators/{validatorAddr}/delegations", h.GetValidatorDelegations)
+func (h stakingAPI) RegisterRoutes(e *echo.Echo) {
+	e.GET("/delegators/:delegatorAddr", h.GetDelegatorDelegations)
+	e.GET("/delegators/:delegatorAddr/unbonding", h.GetDelegatorUnbondingDelegations)
+	e.GET("/delegators/:delegatorAddr/validators", h.GetDelegatorValidators)
+	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr", h.GetDelegation)
+	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr/unbonding", h.GetUnbondingDelegation)
+	e.GET("/delegators/:delegatorAddr/validators/:srcValidatorAddr/redelegate/:dstValidatorAddr", h.GetRedelegations)
+	e.GET("/history/{height}", h.GetHistoricalInfo)
+	e.GET("/staking", h.GetValidators)
+	e.GET("/staking/:validatorAddr", h.GetValidator)
+	e.GET("/staking/:validatorAddr/delegations", h.GetValidatorDelegations)
 }

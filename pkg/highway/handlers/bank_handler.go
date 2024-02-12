@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	types "cosmossdk.io/api/cosmos/bank/v1beta1"
-	"github.com/go-chi/chi/v5"
+	"github.com/labstack/echo/v4"
 
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
@@ -21,110 +21,98 @@ var BankAPI = bankAPI{}
 type bankAPI struct{}
 
 // GetAllBalances returns all balances for an address
-func (h bankAPI) GetAllBalances(w http.ResponseWriter, r *http.Request) {
-	address := chi.URLParam(r, "address")
-	resp, err := middleware.BankClient(r, w).AllBalances(r.Context(), &types.QueryAllBalancesRequest{
+func (h bankAPI) GetAllBalances(c echo.Context) error {
+	address := c.Param("address")
+	resp, err := middleware.BankClient(c).AllBalances(c.Request().Context(), &types.QueryAllBalancesRequest{
 		Address: address,
 	})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetBalance returns a balance for an address and denom
-func (h bankAPI) GetBalance(w http.ResponseWriter, r *http.Request) {
-	address := chi.URLParam(r, "address")
-	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.BankClient(r, w).Balance(r.Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
+func (h bankAPI) GetBalance(c echo.Context) error {
+	address := c.Param("address")
+	denom := c.Param("denom")
+	resp, err := middleware.BankClient(c).Balance(c.Request().Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetTotalSupply returns the total supply
-func (h bankAPI) GetTotalSupply(w http.ResponseWriter, r *http.Request) {
-	resp, err := middleware.BankClient(r, w).TotalSupply(r.Context(), &types.QueryTotalSupplyRequest{})
+func (h bankAPI) GetTotalSupply(c echo.Context) error {
+	resp, err := middleware.BankClient(c).TotalSupply(c.Request().Context(), &types.QueryTotalSupplyRequest{})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetSupplyOf returns the supply of a denom
-func (h bankAPI) GetSupplyOf(w http.ResponseWriter, r *http.Request) {
-	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.BankClient(r, w).SupplyOf(r.Context(), &types.QuerySupplyOfRequest{Denom: denom})
+func (h bankAPI) GetSupplyOf(c echo.Context) error {
+	denom := c.Param("denom")
+	resp, err := middleware.BankClient(c).SupplyOf(c.Request().Context(), &types.QuerySupplyOfRequest{Denom: denom})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetSpendableBalances returns the spendable balances for an address
-func (h bankAPI) GetSpendableBalances(w http.ResponseWriter, r *http.Request) {
-	address := chi.URLParam(r, "address")
-	resp, err := middleware.BankClient(r, w).SpendableBalances(r.Context(), &types.QuerySpendableBalancesRequest{Address: address})
+func (h bankAPI) GetSpendableBalances(c echo.Context) error {
+	address := c.Param("address")
+	resp, err := middleware.BankClient(c).SpendableBalances(c.Request().Context(), &types.QuerySpendableBalancesRequest{Address: address})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // GetSpendableBalancesByDenom returns the spendable balances for an address and denom
-func (h bankAPI) GetSpendableBalancesByDenom(w http.ResponseWriter, r *http.Request) {
-	address := chi.URLParam(r, "address")
-	denom := chi.URLParam(r, "denom")
-	resp, err := middleware.BankClient(r, w).SpendableBalanceByDenom(r.Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
+func (h bankAPI) GetSpendableBalancesByDenom(c echo.Context) error {
+	address := c.Param("address")
+	denom := c.Param("denom")
+	resp, err := middleware.BankClient(c).SpendableBalanceByDenom(c.Request().Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	rBz, err := json.Marshal(resp)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	w.Write(rBz)
+	return c.JSON(http.StatusOK, rBz)
 }
 
 // RegisterRoutes registers the bank routes
-func (h bankAPI) RegisterRoutes(r chi.Router) {
-	r.Get("/balance/{address}", h.GetAllBalances)
-	r.Get("/balance/{address}/spendable", h.GetSpendableBalances)
-	r.Get("/balance/{address}/{denom}", h.GetBalance)
-	r.Get("/balance/{address}/{denom}/spendable", h.GetSpendableBalancesByDenom)
-	r.Get("/supply", h.GetTotalSupply)
-	r.Get("/supply/{denom}", h.GetSupplyOf)
+func (h bankAPI) RegisterRoutes(e *echo.Echo) {
+	e.GET("/balance/:address", h.GetAllBalances)
+	e.GET("/balance/:address/spendable", h.GetSpendableBalances)
+	e.GET("/balance/:address/:denom", h.GetBalance)
+	e.GET("/balance/:address/:denom/spendable", h.GetSpendableBalancesByDenom)
+	e.GET("/supply", h.GetTotalSupply)
+	e.GET("/supply/:denom", h.GetSupplyOf)
 }

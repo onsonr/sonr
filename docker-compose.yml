@@ -1,33 +1,29 @@
 version: "3"
-networks:
-  tunnel:
-
 services:
   # Sonr Validator
   sonrd:
     init: true
-    hostname: sonrd
-    image: sonrhq/sonrd:latest
-    entrypoint: ["sh", "./networks/local/entrypoint.sh"]
+    container_name: sonrd
+    image: sonrd:latest
+    entrypoint: ["sh", "entrypoint.sh"]
     volumes:
-      - /mnt/disks/sonr_data:/root/.sonr
+      - $HOME/.sonr:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
       - 9090:9090 # grpc
-      - 8000:8080 # api/htmx
-
-  # Postgres service
-  postgres:
-    image: postgres:latest
-    environment:
-      - POSTGRES_USER=myuser
-      - POSTGRES_PASSWORD=mypassword
-      - POSTGRES_DB=mydatabase
-    volumes:
-      - ./data/postgres:/var/lib/postgresql/data
     networks:
-      - tunnel
+      - default
+
+  # Sonr Validator
+  highway:
+    init: true
+    image: sonrd:latest
+    entrypoint: ["sonrd", "serve"]
+    ports:
+      - 8000:8000 # api/htmx
+    networks:
+      - default
 
   # IPFS node
   ipfs:
@@ -38,4 +34,7 @@ services:
       - 5001:5001 # api
       - 8080:8080 # gateway
     networks:
-      - tunnel
+      - default
+
+networks:
+  default:
