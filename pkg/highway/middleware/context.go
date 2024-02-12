@@ -119,7 +119,7 @@ func StakingClient(e echo.Context) stakingv1beta1.QueryClient {
 func grpcClientConn(e echo.Context) *grpc.ClientConn {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
-		"localhost:9090", // your gRPC server address.
+		"sonrd:9090", // your gRPC server address.
 		grpc.WithTransportCredentials(insecure.NewCredentials()), // The Cosmos SDK doesn't support any transport security mechanism.
 		// This instantiates a general gRPC codec which handles proto bytes. We pass in a nil interface registry
 		// if the request/response types contain interface instead of 'nil' you should pass the application specific codec.

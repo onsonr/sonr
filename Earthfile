@@ -46,5 +46,6 @@ build:
 docker:
     FROM alpine:3.14
     COPY +build/sonrd /usr/local/bin/sonrd
-    ENTRYPOINT ["/usr/local/bin/sonrd"]
+    COPY ./networks/local/entrypoint.sh ./entrypoint.sh
+    RUN chmod +x /usr/local/bin/sonrd
     SAVE IMAGE sonrd:latest

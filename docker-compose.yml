@@ -3,10 +3,11 @@ services:
   # Sonr Validator
   sonrd:
     init: true
+    container_name: sonrd
     image: sonrd:latest
-    entrypoint: ["sonrd", "start", "--minimum-gas-prices", "0.025usnr"]
+    entrypoint: ["sh", "entrypoint.sh"]
     volumes:
-      - ./data:/root/.sonr
+      - $HOME/.sonr:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -37,5 +38,3 @@ services:
 
 networks:
   default:
-    external:
-      name: sonr

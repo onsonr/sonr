@@ -105,9 +105,9 @@ func (h serviceAPI) FinishLogin(c echo.Context) error {
 
 // RegisterRoutes registers the node routes
 func (h serviceAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/service/{origin}", h.StartLogin)
-	e.GET("/service/{origin}/login/{handle}/start", h.StartLogin)
-	e.POST("/service/{origin}/login/{handle}/finish", h.FinishLogin)
-	e.GET("/service/{origin}/register/{handle}/start", h.StartRegistration)
-	e.POST("/service/{origin}/register/{handle}/finish", h.FinishRegistration)
+	e.GET("/service/:origin", h.QueryOrigin)
+	e.GET("/service/:origin/login/:username/start", h.StartLogin)
+	e.POST("/service/:origin/login/:username/finish", h.FinishLogin)
+	e.GET("/service/:origin/register/:username/start", h.StartRegistration)
+	e.POST("/service/:origin/register/:username/finish", h.FinishRegistration)
 }
