@@ -3,7 +3,7 @@ package config_test
 import (
 	"testing"
 
-	"github.com/sonrhq/sonr/config"
+	"github.com/sonrhq/sonr/pkg/config"
 )
 
 func TestOpen(t *testing.T) {
