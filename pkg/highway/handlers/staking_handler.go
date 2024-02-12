@@ -196,7 +196,7 @@ func (h stakingAPI) RegisterRoutes(e *echo.Echo) {
 	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr/unbonding", h.GetUnbondingDelegation)
 	e.GET("/delegators/:delegatorAddr/validators/:srcValidatorAddr/redelegate/:dstValidatorAddr", h.GetRedelegations)
 	e.GET("/history/{height}", h.GetHistoricalInfo)
-	e.GET("/validators", h.GetValidators)
-	e.GET("/validators/:validatorAddr", h.GetValidator)
-	e.GET("/validators/:validatorAddr/delegations", h.GetValidatorDelegations)
+	e.GET("/staking", h.GetValidators)
+	e.GET("/staking/:validatorAddr", h.GetValidator)
+	e.GET("/staking/:validatorAddr/delegations", h.GetValidatorDelegations)
 }

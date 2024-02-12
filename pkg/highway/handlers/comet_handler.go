@@ -109,6 +109,6 @@ func (h cometAPI) RegisterRoutes(e *echo.Echo) {
 	e.GET("/block/:height", h.GetBlockByHeight)
 	e.GET("/health", h.GetNodeInfo)
 	e.GET("/syncing", h.GetSyncing)
-	e.GET("/validatorsets/latest", h.GetLatestValidatorSet)
-	e.GET("/validatorsets/:height", h.GetValidatorSetByHeight)
+	e.GET("/validators", h.GetLatestValidatorSet)
+	e.GET("/validators/:height", h.GetValidatorSetByHeight)
 }
