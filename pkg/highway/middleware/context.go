@@ -15,7 +15,7 @@ import (
 
 	identityv1 "github.com/sonrhq/sonr/api/sonr/identity/v1"
 	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
-	"github.com/sonrhq/sonr/config"
+	"github.com/sonrhq/sonr/pkg/config"
 )
 
 // GRPCConn is a gRPC client connection.
