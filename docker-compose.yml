@@ -11,6 +11,8 @@ services:
       - 1317:1317 # rest
       - 26657:26657 # rpc
       - 9090:9090 # grpc
+    networks:
+      - default
 
   # Sonr Validator
   highway:
@@ -19,6 +21,8 @@ services:
     entrypoint: ["sonrd", "serve"]
     ports:
       - 8000:8000 # api/htmx
+    networks:
+      - default
 
   # IPFS node
   ipfs:
@@ -28,3 +32,10 @@ services:
       - 4001:4001 # swarm
       - 5001:5001 # api
       - 8080:8080 # gateway
+    networks:
+      - default
+
+networks:
+  default:
+    external:
+      name: sonr
