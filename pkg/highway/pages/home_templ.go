@@ -31,7 +31,7 @@ func HomePage() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-full\"><div hx-get=\"/login\" hx-push-url=\"true\" hx-swap=\"afterend\" hx-target=\"#login-button\"><sl-button id=\"login-button\" size=\"medium\" pill>Medium</sl-button></div><div id=\"card\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-full\"><div class=\"py-4 px-3\"><sl-button id=\"login-button\" size=\"medium\" pill>Medium</sl-button></div><div hx-get=\"/login\" hx-push-url=\"true\" hx-swap=\"afterend\" hx-target=\"#login-button\"><sl-button id=\"login-button\" size=\"medium\" pill>Medium</sl-button></div><div id=\"card\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

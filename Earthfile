@@ -42,28 +42,9 @@ build:
     RUN go build -o /app/sonrd ./cmd/sonrd
     SAVE ARTIFACT /app/sonrd AS LOCAL bin/sonrd
 
-# build-hway - builds the Sonr Highway
-build-hway:
-    FROM +deps
-    ARG goos=linux
-    ARG goarch=amd64
-    ENV GOOS=$goos
-    ENV GOARCH=$goarch
-    COPY . .
-    RUN go build -o /app/hway ./cmd/hway
-    SAVE ARTIFACT /app/hway AS LOCAL bin/hway
-
 # docker - builds the docker image
 docker:
     FROM alpine:3.14
     COPY +build/sonrd /usr/local/bin/sonrd
     ENTRYPOINT ["/usr/local/bin/sonrd"]
     SAVE IMAGE sonrd:latest
-
-# docker-hway - builds the docker image
-docker-hway:
-    FROM alpine:3.14
-    COPY +build-hway/hway /usr/local/bin/hway
-    ENTRYPOINT ["/usr/local/bin/hway"]
-    EXPOSE 8000
-    SAVE IMAGE hway:latest

@@ -16,11 +16,8 @@ tasks:
       - brew tap tinygo-org/tools
       - brew install tinygo
 
-  gateway:
-    cmd: air -c ./networks/local/air-gateway.toml
-
-  node:
-    cmd: air -c ./networks/local/air-node.toml
+  default:
+    cmd: air -c ./networks/local/air.toml
 
   cosmscan:
     desc: "Run the CosmScan indexer with Wrangler"

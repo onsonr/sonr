@@ -4,9 +4,9 @@ services:
   sonrd:
     init: true
     image: sonrd:latest
-    entrypoint: ["sonrd", "start"]
+    entrypoint: ["sonrd", "start", "--minimum-gas-prices", "0.025usnr"]
     volumes:
-      - /data/.sonr:/root/.sonr
+      - ./data:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc

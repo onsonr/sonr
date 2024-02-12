@@ -5,6 +5,9 @@ import ui "github.com/sonrhq/sonr/pkg/highway/components"
 templ HomePage() {
 	@ui.RootLayout() {
 		<div class="w-full h-full">
+			<div class="py-4 px-3">
+				<sl-button id="login-button" size="medium" pill>Medium</sl-button>
+			</div>
 			<div hx-get="/login" hx-push-url="true" hx-swap="afterend" hx-target="#login-button">
 				<sl-button id="login-button" size="medium" pill>Medium</sl-button>
 			</div>

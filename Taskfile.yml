@@ -15,12 +15,6 @@ tasks:
       - task: gen:proto-doc
       - task: gen:templ
 
-  dev-up:
-    cmds:
-      - tmux new-session -d -s dev 'task dev:node'
-      - tmux split-window -h 'task dev:gateway'
-      - tmux -2 attach-session -d
-
   dev-down:
     ignore_error: true
     cmds:
@@ -38,5 +32,12 @@ tasks:
 
   compose-up:
     cmds:
+      - task: compose-down
+      - templ generate
       - earthly +docker
-      - docker-compose up
+      - docker compose up
+
+  compose-down:
+    ignore_error: true
+    cmds:
+      - docker compose down
