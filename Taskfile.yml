@@ -29,7 +29,8 @@ tasks:
     cmds:
       - task: compose-down
       - templ generate
-      - earthly +docker
+      - task: build:current
+      - task: build:dockerfile
       - docker compose up --abort-on-container-exit
 
   compose-down:

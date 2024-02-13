@@ -12,7 +12,7 @@ tasks:
   current:
     desc: "Builds the project for current platform"
     cmds:
-      - goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd
+      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd
 
   dockerfile:
     desc: "Builds the project for current platform"

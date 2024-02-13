@@ -1,26 +1,21 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
+
 FROM golang:1.21.5-alpine
-
-RUN apk add --update --no-cache \
-bash \
-binutils \
-ca-certificates \
-coreutils \
-curl \
-git \
-make
-
 WORKDIR /app
 
-# ---------------------------------------------------------------------
-# -------------------
-# [Network Services]
-# -------------------
+# install dependencies
+deps:
+    FROM +base
+    RUN apk add --no-cache git
+    COPY go.mod go.sum ./
+    RUN go mod download
+    SAVE ARTIFACT go.mod AS LOCAL go.mod
+    SAVE ARTIFACT go.sum AS LOCAL go.sum
 
 # build - builds the flavored ipfs gateway
 build:
-    FROM +base
+    FROM +deps
     ARG goos=linux
     ARG goarch=amd64
     ENV GOOS=$goos
@@ -31,6 +26,7 @@ build:
 
 # docker - builds the docker image
 docker:
+    FROM +build
     COPY +build/sonrd /usr/local/bin/sonrd
     COPY ./networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
