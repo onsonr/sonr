@@ -15,11 +15,6 @@ tasks:
       - task: gen:proto-doc
       - task: gen:templ
 
-  dev-down:
-    ignore_error: true
-    cmds:
-      - tmux kill-session -t dev
-
   test-essential:
     desc: "Run essential tests"
     cmds:
@@ -35,7 +30,7 @@ tasks:
       - task: compose-down
       - templ generate
       - earthly +docker
-      - docker compose up
+      - docker compose up --abort-on-container-exit
 
   compose-down:
     ignore_error: true

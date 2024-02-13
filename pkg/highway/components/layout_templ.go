@@ -24,7 +24,7 @@ func RootLayout() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><script src=\"https://cdn.tailwindcss.com\"></script><script src=\"https://cdn.sonr.build/htmx.min.js\"></script><link rel=\"stylesheet\" media=\"(prefers-color-scheme:light)\" href=\"https://cdn.sonr.build/themes/light.css\"><link rel=\"stylesheet\" media=\"(prefers-color-scheme:dark)\" href=\"https://cdn.sonr.build/themes/dark.css\" onload=\"document.documentElement.classList.add(&#39;sl-theme-dark&#39;);\"><script type=\"module\" src=\"https://cdn.sonr.build/shoelace-autoloader.js\"></script><script type=\"module\" src=\"https://cdn.sonr.build/shoelace.js\"></script></head><div class=\"w-full h-full\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><script src=\"https://cdn.tailwindcss.com\"></script><script src=\"https://cdn.sonr.build/htmx.min.js\"></script><link rel=\"stylesheet\" media=\"(prefers-color-scheme:light)\" href=\"https://cdn.sonr.build/themes/light.css\"><link rel=\"stylesheet\" media=\"(prefers-color-scheme:dark)\" href=\"https://cdn.sonr.build/themes/dark.css\" onload=\"document.documentElement.classList.add(&#39;sl-theme-dark&#39;);\"><script type=\"module\" src=\"https://cdn.sonr.build/shoelace-autoloader.js\"></script><script type=\"module\" src=\"https://cdn.sonr.build/shoelace.js\"></script></head><main>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -32,7 +32,7 @@ func RootLayout() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</main></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

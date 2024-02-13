@@ -6,8 +6,18 @@ tasks:
     cmds:
       - templ generate
       - rm -rf bin/ && mkdir ./bin/
-      - earthly +build --goos=darwin --goarch=arm64
+      - go build -o ./bin/sonrd ./cmd/sonrd
       - rm -rf dist
+
+  current:
+    desc: "Builds the project for current platform"
+    cmds:
+      - goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd
+
+  dockerfile:
+    desc: "Builds the project for current platform"
+    cmds:
+      - docker build -t sonrd:latest -f ./Dockerfile .
 
   ipfs:
     dir: deploy
