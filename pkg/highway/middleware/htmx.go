@@ -37,3 +37,5 @@ func ShowTempl(cmp templ.Component) echo.HandlerFunc {
 		return c.HTML(http.StatusOK, string(html))
 	}
 }
+
+

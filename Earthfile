@@ -31,3 +31,13 @@ docker:
     COPY ./networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
     SAVE IMAGE sonrd:latest
+
+# matrix-config - builds the matrix configuration
+matrix-config:
+    LOCALLY
+    RUN mkdir -p ./tmp/config
+
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=localhost
+    COPY ./networks/local/matrix-config.yaml ./matrix-config.yaml
+    SAVE ARTIFACT matrix-config.yaml AS LOCAL matrix-config.yaml

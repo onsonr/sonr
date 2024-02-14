@@ -36,5 +36,19 @@ services:
     networks:
       - default
 
+  # monolith:
+  #   image: matrixdotorg/dendrite-monolith:latest
+  #   restart: unless-stopped
+  #   hostname: monolith
+  #   container_name: monolith
+  #   ports:
+  #     - 8008:8008
+  #     - 8448:8448
+  #   volumes:
+  #     - ./tmp/config:/etc/dendrite
+  #     - dendrite_media:/var/dendrite/media
+  #     - dendrite_jetstream:/var/dendrite/jetstream
+  #     - dendrite_search_index:/var/dendrite/searchindex
+
 networks:
   default:
