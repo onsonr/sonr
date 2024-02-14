@@ -3,7 +3,7 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/sonrhq/sonr/pkg/highway/components/pages"
+	"github.com/sonrhq/sonr/pkg/highway/components/layouts"
 	 "github.com/sonrhq/sonr/pkg/highway/components/modals"
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
@@ -16,9 +16,9 @@ func MountHTMX(or *echo.Echo) {
 
 // RegisterPages registers the page routes
 func registerPages(e *echo.Echo) {
-	e.GET("/", middleware.ShowTempl(pages.RegisterPage()))
-	e.GET("/console", middleware.ShowTempl(pages.ConsolePage()))
-	e.GET("/explorer", middleware.ShowTempl(pages.ExplorerPage()))
+	e.GET("/", middleware.ShowTempl(layouts.RegisterPage()))
+	e.GET("/console", middleware.ShowTempl(layouts.ConsolePage()))
+	e.GET("/explorer", middleware.ShowTempl(layouts.ExplorerPage()))
 }
 
 // RegisterModals registers the modal routes

@@ -1,0 +1,38 @@
+package layouts
+
+import (
+	"github.com/sonrhq/sonr/pkg/highway/components/views"
+	"github.com/sonrhq/sonr/pkg/highway/components/ui"
+)
+
+templ ConsolePage() {
+	@chatPanel()
+}
+
+templ dashboardPanel() {
+	@Index() {
+		@sidebar()
+	}
+}
+
+templ chatPanel() {
+	@Index() {
+		@sidebar()
+		@views.ConversationsList()
+		@views.ChatView()
+	}
+}
+
+templ sidebar() {
+	@ui.Sidebar() {
+		@ui.SidebarGroup() {
+			@ui.SidebarItem("Home", "house", "/")
+			@ui.SidebarItem("Chat", "chat", "/chat")
+			@ui.SidebarItem("Wallet", "wallet", "/dex")
+		}
+		@ui.SidebarGroup() {
+			@ui.SidebarItem("Identities", "person-badge", "/")
+			@ui.SidebarItem("Services", "hdd-rack", "/chat")
+		}
+	}
+}

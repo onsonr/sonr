@@ -1,0 +1,39 @@
+package views
+
+templ ChatView() {
+	<div class="w-full h-screen bg-stone-950"></div>
+}
+
+templ ChatMessage() {
+	<sl-dialog label="Dialog" open>
+		<sl-input autofocus placeholder="I will have focus when the dialog is opened"></sl-input>
+		<sl-button slot="footer" variant="primary">Close</sl-button>
+	</sl-dialog>
+}
+
+templ ConversationsHeader() {
+	<div class="grid grid-cols-2 h-fit px-4 py-5 gap-y-3">
+		<div class="col-span-2">
+			<div class="flex flex-row justify-between">
+				<h1 class=" text-stone-100/90 text-2xl font-semibold">Chats</h1>
+				<sl-icon-button size="large" name="plus-circle" label="Settings"></sl-icon-button>
+			</div>
+		</div>
+		<div class="col-span-2">
+			<sl-input placeholder="Search Conversations" size="medium">
+				<sl-icon name="search" slot="prefix"></sl-icon>
+			</sl-input>
+		</div>
+	</div>
+}
+
+templ ConversationItem() {
+	<sl-input autofocus placeholder="I will have focus when the dialog is opened"></sl-input>
+	<sl-button slot="footer" variant="primary">Close</sl-button>
+}
+
+templ ConversationsList() {
+	<div class="h-screen w-[420px] border-r-[0.5px] border-stone-700/80 bg-stone-900 py-3 gap-y-1 px-2">
+		@ConversationsHeader()
+	</div>
+}

@@ -1,7 +1,7 @@
 package layouts
 
-// RootLayout is a component that renders the root layout of the application
-templ Root() {
+// Index is a component that renders the root layout of the application
+templ Index() {
 	<html>
 		<head>
 			<meta charset="UTF-8"/>
@@ -9,7 +9,6 @@ templ Root() {
 			// <script src="//unpkg.com/alpinejs" defer></script>;
 			<script src="https://cdn.tailwindcss.com"></script>
 			<script src="https://cdn.sonr.build/htmx.min.js"></script>
-			<script src="https://unpkg.com/hyperscript.org@0.9.12"></script>
 			<link
 				rel="stylesheet"
 				media="(prefers-color-scheme:light)"
@@ -24,7 +23,7 @@ templ Root() {
 			<script type="module" src="https://cdn.sonr.build/shoelace-autoloader.js"></script>
 			<script type="module" src="https://cdn.sonr.build/shoelace.js"></script>
 		</head>
-		<main class="w-full h-full">
+		<main class="w-full h-full flex flex-row">
 			{ children... }
 		</main>
 	</html>

@@ -1,0 +1,33 @@
+package ui
+
+
+// Sidebar is a component that renders a sidebar
+templ Sidebar() {
+	<div class="max-h-screen">
+		<div class="w-fit h-screen flex-col space-y-3 py-4 justify-center align-center border-r-[0.5px] border-stone-700/80">
+			<div class="px-3 pb-2 border-b-[0.5px] border-stone-700/80 h-[52px]">
+				@Logo()
+			</div>
+			{ children... }
+			<div class="absolute bottom-0 py-1 pt-4 border-t-[0.5px] border-stone-700/80 px-3 flex-col items-center justify-center w-fit">
+				@SidebarItem("Account", "person-circle", "/account")
+				@SidebarItem("Settings", "gear", "/settings")
+			</div>
+		</div>
+	</div>
+}
+
+templ SidebarGroup() {
+	<div class="py-1 border-b-[0.5px] border-stone-700/70 px-3 flex-col items-center justify-center">
+		{ children... }
+	</div>
+}
+
+templ SidebarItem(label string, icon string, href string) {
+	<sl-tooltip content={ label } placement="right-start">
+		<div class="p-1 bg-stone-800 rounded-md">
+			<sl-icon-button name={ icon } label={ label }></sl-icon-button>
+		</div>
+		<sl-divider></sl-divider>
+	</sl-tooltip>
+}
