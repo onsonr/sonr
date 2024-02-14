@@ -16,7 +16,7 @@ func MountHTMX(or *echo.Echo) {
 
 // RegisterPages registers the page routes
 func registerPages(e *echo.Echo) {
-	e.GET("/", middleware.ShowTempl(pages.HomePage()))
+	e.GET("/", middleware.ShowTempl(pages.AuthPage()))
 	e.GET("/console", middleware.ShowTempl(pages.ConsolePage()))
 	e.GET("/explorer", middleware.ShowTempl(pages.ExplorerPage()))
 }
