@@ -31,15 +31,15 @@ func HomePage() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"w-full antialiased\"><div class=\"mx-auto max-w-7xl max-h-screen no-scrollbar\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"w-full antialiased\"><div class=\"mx-auto max-w-7xl max-h-screen no-scrollbar\"><div class=\"container w-full h-full flex flex-col justify-center items-center\"><div class=\"mx-auto items-center justify-between\"><div class=\"w-full h-full\"><sl-card class=\"card-overview container px-4 py-6 max-w-2xl\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = hero().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = welcomeView().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></section>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</sl-card></div></div></div></div></section>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -59,7 +59,7 @@ func HomePage() templ.Component {
 	})
 }
 
-func hero() templ.Component {
+func welcomeView() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -72,135 +72,7 @@ func hero() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"container w-full h-full flex flex-col justify-center items-center\"><div class=\"mx-auto items-center justify-between\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = card().Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
-}
-
-func features() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
-		if !templ_7745c5c3_IsBuffer {
-			templ_7745c5c3_Buffer = templ.GetBuffer()
-			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var4 == nil {
-			templ_7745c5c3_Var4 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
-}
-
-func about() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
-		if !templ_7745c5c3_IsBuffer {
-			templ_7745c5c3_Buffer = templ.GetBuffer()
-			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var5 == nil {
-			templ_7745c5c3_Var5 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
-}
-
-func faq() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
-		if !templ_7745c5c3_IsBuffer {
-			templ_7745c5c3_Buffer = templ.GetBuffer()
-			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
-}
-
-func cta() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
-		if !templ_7745c5c3_IsBuffer {
-			templ_7745c5c3_Buffer = templ.GetBuffer()
-			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if !templ_7745c5c3_IsBuffer {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
-		}
-		return templ_7745c5c3_Err
-	})
-}
-
-func card() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
-		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
-		if !templ_7745c5c3_IsBuffer {
-			templ_7745c5c3_Buffer = templ.GetBuffer()
-			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
-		}
-		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var8 == nil {
-			templ_7745c5c3_Var8 = templ.NopComponent
-		}
-		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-full\"><sl-card class=\"card-overview container px-4 py-6 max-w-2xl\"><div class=\"flex flex-col w-full justify-center items-center space-y-2 gap-1 py-5 mx-auto text-center max-w-[25vw]\"><div class=\"w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3\"></div><sl-divider style=\"--spacing: 0.6rem;\"></sl-divider><h1 class=\"text-3xl font-semibold\">Register</h1><p class=\"text-stone-500 text-md\">Start your blockchain journey by creating a Sonr identity to protect your account.</p></div><sl-divider class=\"bg-stone-500\" style=\"--spacing: 1rem;\"></sl-divider><div class=\"max-w-[28vw] mx-auto\"><form class=\"inline-validation justify-center items-center align-middle pb-2.5\"><sl-input name=\"email\" placeholder=\"sjobs@apple.com\" size=\"large\" autocomplete=\"username webauthn\" pill required><sl-icon class=\"text-stone-200\" slot=\"prefix\" name=\"envelope\"></sl-icon> <sl-icon-button class=\"text-sky-400\" name=\"lock\" label=\"Create Credential\" slot=\"suffix\"></sl-icon-button></sl-input><div id=\"name-error\" aria-live=\"polite\" hidden></div></form><sl-divider class=\"bg-stone-500\" style=\"--spacing: 0.2rem;\"></sl-divider></div><script type=\"module\">\n  const form = document.querySelector('.inline-validation');\n  const nameError = document.querySelector('#name-error');\n\n  // Wait for controls to be defined before attaching form listeners\n  await Promise.all([\n    customElements.whenDefined('sl-button'),\n    customElements.whenDefined('sl-input')\n  ]).then(() => {\n    // A form control is invalid\n    form.addEventListener(\n      'sl-invalid',\n      event => {\n        // Suppress the browser's constraint validation message\n        event.preventDefault();\n\n        nameError.textContent = `Error: ${event.target.validationMessage}`;\n        nameError.hidden = false;\n\n        event.target.focus();\n      },\n      { capture: true } // you must use capture since sl-invalid doesn't bubble!\n    );\n\n    // Handle form submit\n    form.addEventListener('submit', event => {\n      event.preventDefault();\n      nameError.hidden = true;\n      nameError.textContent = '';\n      setTimeout(() => alert('All fields are valid'), 50);\n    });\n\n    // Handle form reset\n    form.addEventListener('reset', event => {\n      nameError.hidden = true;\n      nameError.textContent = '';\n    });\n  });\n</script><style>\n  #name-error {\n    font-size: var(--sl-input-help-text-font-size-medium);\n    color: var(--sl-color-danger-700);\n  }\n\n  #name-error ~ sl-button {\n    margin-top: var(--sl-spacing-medium);\n  }\n\n  .inline-validation sl-input {\n    display: block;\n  }\n\n  /* user invalid styles */\n  .inline-validation sl-input[data-user-invalid]::part(base) {\n    border-color: var(--sl-color-danger-600);\n  }\n\n  .inline-validation [data-user-invalid]::part(form-control-label),\n  .inline-validation [data-user-invalid]::part(form-control-help-text) {\n    color: var(--sl-color-danger-700);\n  }\n\n  .inline-validation sl-input:focus-within[data-user-invalid]::part(base) {\n    border-color: var(--sl-color-danger-600);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-color-danger-300);\n  }\n\n  /* User valid styles */\n  .inline-validation sl-input[data-user-valid]::part(base) {\n    border-color: var(--sl-color-success-600);\n  }\n\n  .inline-validation [data-user-valid]::part(form-control-label),\n  .inline-validation [data-user-valid]::part(form-control-help-text) {\n\tpaddingLeft: 0.5rem;\n    color: var(--sl-color-success-700);\n  }\n\n  .inline-validation sl-input:focus-within[data-user-valid]::part(base) {\n    border-color: var(--sl-color-success-600);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-color-success-300);\n  }\n</style><div slot=\"footer\" class=\"justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5\"><sl-tooltip content=\"Need Help?\" placement=\"bottom\"><sl-icon-button name=\"life-preserver\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Documentation\" placement=\"bottom\"><sl-icon-button name=\"book-half\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Start Recovery\" placement=\"bottom\"><sl-icon-button name=\"tools\" label=\"Settings\"></sl-icon-button></sl-tooltip></div></sl-card><style>\n  .card-overview {\n    min-width: 24vw;\n\tmin-height: 56vh;\n\tmax-width: 36vw;\n\tmax-height: 72vh;\n  }\n\n  .card-overview small {\n    color: var(--sl-color-neutral-700);\n  }\n\n  .card-overview [slot='footer'] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n  }\n</style></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col w-full justify-center items-center space-y-2 gap-1 py-5 mx-auto text-center max-w-[25vw]\"><div class=\"w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3\"></div><sl-divider style=\"--spacing: 0.6rem;\"></sl-divider><h1 class=\"text-3xl font-semibold\">Register</h1><p class=\"text-stone-500 text-md\">Start your blockchain journey by creating a Sonr identity to protect your account.</p></div><sl-divider class=\"bg-stone-500\" style=\"--spacing: 1rem;\"></sl-divider><div class=\"max-w-[28vw] mx-auto\"><form class=\"inline-validation justify-center items-center align-middle pb-2.5\"><sl-input name=\"email\" placeholder=\"sjobs@apple.com\" size=\"large\" autocomplete=\"username webauthn\" pill required><sl-icon class=\"text-stone-200\" slot=\"prefix\" name=\"envelope\"></sl-icon> <sl-icon-button class=\"text-sky-400\" name=\"lock\" label=\"Create Credential\" slot=\"suffix\"></sl-icon-button></sl-input><div id=\"name-error\" aria-live=\"polite\" hidden></div></form><sl-divider class=\"bg-stone-500\" style=\"--spacing: 0.2rem;\"></sl-divider></div><script type=\"module\">\n  const form = document.querySelector('.inline-validation');\n  const nameError = document.querySelector('#name-error');\n\n  // Wait for controls to be defined before attaching form listeners\n  await Promise.all([\n    customElements.whenDefined('sl-button'),\n    customElements.whenDefined('sl-input')\n  ]).then(() => {\n    // A form control is invalid\n    form.addEventListener(\n      'sl-invalid',\n      event => {\n        // Suppress the browser's constraint validation message\n        event.preventDefault();\n\n        nameError.textContent = `Error: ${event.target.validationMessage}`;\n        nameError.hidden = false;\n\n        event.target.focus();\n      },\n      { capture: true } // you must use capture since sl-invalid doesn't bubble!\n    );\n\n    // Handle form submit\n    form.addEventListener('submit', event => {\n      event.preventDefault();\n      nameError.hidden = true;\n      nameError.textContent = '';\n      setTimeout(() => alert('All fields are valid'), 50);\n    });\n\n    // Handle form reset\n    form.addEventListener('reset', event => {\n      nameError.hidden = true;\n      nameError.textContent = '';\n    });\n  });\n</script><style>\n  #name-error {\n    font-size: var(--sl-input-help-text-font-size-medium);\n    color: var(--sl-color-danger-700);\n  }\n\n  #name-error ~ sl-button {\n    margin-top: var(--sl-spacing-medium);\n  }\n\n  .inline-validation sl-input {\n    display: block;\n  }\n\n  /* user invalid styles */\n  .inline-validation sl-input[data-user-invalid]::part(base) {\n    border-color: var(--sl-color-danger-600);\n  }\n\n  .inline-validation [data-user-invalid]::part(form-control-label),\n  .inline-validation [data-user-invalid]::part(form-control-help-text) {\n    color: var(--sl-color-danger-700);\n  }\n\n  .inline-validation sl-input:focus-within[data-user-invalid]::part(base) {\n    border-color: var(--sl-color-danger-600);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-color-danger-300);\n  }\n\n  /* User valid styles */\n  .inline-validation sl-input[data-user-valid]::part(base) {\n    border-color: var(--sl-color-success-600);\n  }\n\n  .inline-validation [data-user-valid]::part(form-control-label),\n  .inline-validation [data-user-valid]::part(form-control-help-text) {\n\tpaddingLeft: 0.5rem;\n    color: var(--sl-color-success-700);\n  }\n\n  .inline-validation sl-input:focus-within[data-user-valid]::part(base) {\n    border-color: var(--sl-color-success-600);\n    box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-color-success-300);\n  }\n</style><div slot=\"footer\" class=\"justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5\"><sl-tooltip content=\"Need Help?\" placement=\"bottom\"><sl-icon-button name=\"life-preserver\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Documentation\" placement=\"bottom\"><sl-icon-button name=\"book-half\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Start Recovery\" placement=\"bottom\"><sl-icon-button name=\"tools\" label=\"Settings\"></sl-icon-button></sl-tooltip></div><style>\n  .card-overview {\n    min-width: 24vw;\n\tmin-height: 56vh;\n\tmax-width: 36vw;\n\tmax-height: 72vh;\n  }\n\n  .card-overview small {\n    color: var(--sl-color-neutral-700);\n  }\n\n  .card-overview [slot='footer'] {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n  }\n</style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -6,66 +6,48 @@ templ HomePage() {
 	@ui.RootLayout() {
 		<section class="w-full antialiased">
 			<div class="mx-auto max-w-7xl max-h-screen no-scrollbar">
-				@hero()
+				<div class="container w-full h-full flex flex-col justify-center items-center">
+					<div class="mx-auto items-center justify-between">
+						<div class="w-full h-full">
+							<sl-card class="card-overview container px-4 py-6 max-w-2xl">
+								@welcomeView()
+							</sl-card>
+						</div>
+					</div>
+				</div>
 			</div>
 		</section>
 	}
 }
 
-templ hero() {
-	<div class="container w-full h-full flex flex-col justify-center items-center">
-		<div class="mx-auto items-center justify-between">
-			@card()
-		</div>
+templ welcomeView() {
+	<div class="flex flex-col w-full justify-center items-center space-y-2 gap-1 py-5 mx-auto text-center max-w-[25vw]">
+		<div class="w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3"></div>
+		<sl-divider style="--spacing: 0.6rem;"></sl-divider>
+		<h1 class="text-3xl font-semibold">Register</h1>
+		<p class="text-stone-500 text-md">
+			Start your blockchain journey by creating a Sonr identity to protect your account.
+		</p>
 	</div>
-}
-
-templ features() {
-	<div></div>
-}
-
-templ about() {
-	<div></div>
-}
-
-templ faq() {
-	<div></div>
-}
-
-templ cta() {
-	<div></div>
-}
-
-templ card() {
-	<div class="w-full h-full">
-		<sl-card class="card-overview container px-4 py-6 max-w-2xl">
-			<div class="flex flex-col w-full justify-center items-center space-y-2 gap-1 py-5 mx-auto text-center max-w-[25vw]">
-				<div class="w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3"></div>
-				<sl-divider style="--spacing: 0.6rem;"></sl-divider>
-				<h1 class="text-3xl font-semibold">Register</h1>
-				<p class="text-stone-500 text-md">
-					Start your blockchain journey by creating a Sonr identity to protect your account.
-				</p>
-			</div>
-			<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
-			<div class="max-w-[28vw] mx-auto">
-				<form class="inline-validation justify-center items-center align-middle pb-2.5">
-					<sl-input
-						name="email"
-						placeholder="sjobs@apple.com"
-						size="large"
-						autocomplete="username webauthn"
-						pill
-						required
-					>
-						<sl-icon class="text-stone-200" slot="prefix" name="envelope"></sl-icon>
-						<sl-icon-button class="text-sky-400" name="lock" label="Create Credential" slot="suffix"></sl-icon-button>
-					</sl-input>
-					<div id="name-error" aria-live="polite" hidden></div>
-				</form>
-				<sl-divider class="bg-stone-500" style="--spacing: 0.2rem;"></sl-divider>
-			</div>
-			<script type="module">
+	<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
+	<div class="max-w-[28vw] mx-auto">
+		<form class="inline-validation justify-center items-center align-middle pb-2.5">
+			<sl-input
+				name="email"
+				placeholder="sjobs@apple.com"
+				size="large"
+				autocomplete="username webauthn"
+				pill
+				required
+			>
+				<sl-icon class="text-stone-200" slot="prefix" name="envelope"></sl-icon>
+				<sl-icon-button class="text-sky-400" name="lock" label="Create Credential" slot="suffix"></sl-icon-button>
+			</sl-input>
+			<div id="name-error" aria-live="polite" hidden></div>
+		</form>
+		<sl-divider class="bg-stone-500" style="--spacing: 0.2rem;"></sl-divider>
+	</div>
+	<script type="module">
   const form = document.querySelector('.inline-validation');
   const nameError = document.querySelector('#name-error');
 
@@ -104,7 +86,7 @@ templ card() {
     });
   });
 </script>
-			<style>
+	<style>
   #name-error {
     font-size: var(--sl-input-help-text-font-size-medium);
     color: var(--sl-color-danger-700);
@@ -149,19 +131,18 @@ templ card() {
     box-shadow: 0 0 0 var(--sl-focus-ring-width) var(--sl-color-success-300);
   }
 </style>
-			<div slot="footer" class="justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5">
-				<sl-tooltip content="Need Help?" placement="bottom">
-					<sl-icon-button name="life-preserver" label="Settings"></sl-icon-button>
-				</sl-tooltip>
-				<sl-tooltip content="Documentation" placement="bottom">
-					<sl-icon-button name="book-half" label="Settings"></sl-icon-button>
-				</sl-tooltip>
-				<sl-tooltip content="Start Recovery" placement="bottom">
-					<sl-icon-button name="tools" label="Settings"></sl-icon-button>
-				</sl-tooltip>
-			</div>
-		</sl-card>
-		<style>
+	<div slot="footer" class="justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5">
+		<sl-tooltip content="Need Help?" placement="bottom">
+			<sl-icon-button name="life-preserver" label="Settings"></sl-icon-button>
+		</sl-tooltip>
+		<sl-tooltip content="Documentation" placement="bottom">
+			<sl-icon-button name="book-half" label="Settings"></sl-icon-button>
+		</sl-tooltip>
+		<sl-tooltip content="Start Recovery" placement="bottom">
+			<sl-icon-button name="tools" label="Settings"></sl-icon-button>
+		</sl-tooltip>
+	</div>
+	<style>
   .card-overview {
     min-width: 24vw;
 	min-height: 56vh;
@@ -179,5 +160,4 @@ templ card() {
     align-items: center;
   }
 </style>
-	</div>
 }
