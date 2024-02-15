@@ -3,7 +3,6 @@ version: "3"
 tasks:
   default:
     cmds:
-      - task: crypto-accumulator
       - task: crypto-daed
       - task: crypto-ecies
       - task: crypto-sharing
@@ -17,7 +16,6 @@ tasks:
 
   crypto:
     cmds:
-      - task: crypto-accumulator
       - task: crypto-daed
       - task: crypto-ecies
       - task: crypto-sharing

@@ -5,36 +5,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
-
-	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 )
-
-// GetPublicKeyCredentialCreationOptions returns the PublicKeyCredentialCreationOptions for the given service record and user entity.
-func GetPublicKeyCredentialCreationOptions(record *modulev1.ServiceRecord, entity protocol.UserEntity) protocol.PublicKeyCredentialCreationOptions {
-	return protocol.PublicKeyCredentialCreationOptions{
-		RelyingParty: protocol.RelyingPartyEntity{
-			ID: record.Origin,
-		},
-		Challenge: GenerateChallenge(),
-		AuthenticatorSelection: protocol.AuthenticatorSelection{
-			AuthenticatorAttachment: protocol.CrossPlatform,
-			UserVerification:        protocol.VerificationPreferred,
-			ResidentKey:             protocol.ResidentKeyRequirementPreferred,
-		},
-		Attestation: protocol.PreferIndirectAttestation,
-		User:        entity,
-	}
-}
-
-// GetPublicKeyCredentialRequestOptions returns the PublicKeyCredentialRequestOptions for the given service record and credentials.
-func GetPublicKeyCredentialRequestOptions(record *modulev1.ServiceRecord, creds []protocol.CredentialDescriptor) protocol.PublicKeyCredentialRequestOptions {
-	return protocol.PublicKeyCredentialRequestOptions{
-		Challenge:          GenerateChallenge(),
-		UserVerification:   protocol.VerificationPreferred,
-		RelyingPartyID:     record.Origin,
-		AllowedCredentials: creds,
-	}
-}
 
 // GenerateChallenge generates a new challenge for the registration/authentication process.
 func GenerateChallenge() protocol.URLEncodedBase64 {

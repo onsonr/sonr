@@ -26,37 +26,48 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *service.GenesisState) er
 		return err
 	}
 
-	k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
+	if err := k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
 		Id:          0,
 		Origin:      "localhost",
 		Name:        "Sonr LocalAuth",
 		Description: "Sonr authentication service",
 		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
-	})
+	}); err != nil {
+		return err
+	}
 
 	// Set default permissions for the base, read, write and own modules
-	k.db.BaseParamsTable().Save(ctx, &modulev1.BaseParams{
+	if err := k.db.BaseParamsTable().Save(ctx, &modulev1.BaseParams{
 		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE,
 		Algorithm:                -7,
 		AuthenticationAttachment: "platform",
-	})
-	k.db.ReadParamsTable().Save(ctx, &modulev1.ReadParams{
+	}); err != nil {
+		return err
+	}
+
+	if err := k.db.ReadParamsTable().Save(ctx, &modulev1.ReadParams{
 		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ,
 		Algorithm:                -7,
 		AuthenticationAttachment: "platform",
-	})
-	k.db.WriteParamsTable().Save(ctx, &modulev1.WriteParams{
+	}); err != nil {
+		return err
+	}
+	if err := k.db.WriteParamsTable().Save(ctx, &modulev1.WriteParams{
 		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE,
 		Algorithm:                -8,
 		ResidentKey:              "preferred",
 		AuthenticationAttachment: "cross-platform",
-	})
-	k.db.OwnParamsTable().Save(ctx, &modulev1.OwnParams{
+	}); err != nil {
+		return err
+	}
+	if err := k.db.OwnParamsTable().Save(ctx, &modulev1.OwnParams{
 		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
 		Algorithm:                -8,
 		ResidentKey:              "preferred",
 		AuthenticationAttachment: "cross-platform",
-	})
+	}); err != nil {
+		return err
+	}
 	return nil
 }
 

@@ -1,35 +1,17 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
-FROM golang:1.21.5-alpine
 
+FROM golang:1.21.5-alpine
 WORKDIR /app
 
-# ---------------------------------------------------------------------
-
-# deps - downloads dependencies
+# install dependencies
 deps:
-    RUN apk add --update --no-cache \
-    bash \
-    binutils \
-    ca-certificates \
-    coreutils \
-    curl \
-    findutils \
-    g++ \
-    git \
-    grep \
-    make \
-    openssl \
-    util-linux
+    FROM +base
+    RUN apk add --no-cache git
     COPY go.mod go.sum ./
     RUN go mod download
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
-
-
-# -------------------
-# [Network Services]
-# -------------------
 
 # build - builds the flavored ipfs gateway
 build:
@@ -44,8 +26,18 @@ build:
 
 # docker - builds the docker image
 docker:
-    FROM alpine:3.14
+    FROM +build
     COPY +build/sonrd /usr/local/bin/sonrd
     COPY ./networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
     SAVE IMAGE sonrd:latest
+
+# matrix-config - builds the matrix configuration
+matrix-config:
+    LOCALLY
+    RUN mkdir -p ./tmp/config
+
+    FROM matrixdotorg/dendrite-monolith:latest
+    ARG serverName=localhost
+    COPY ./networks/local/matrix-config.yaml ./matrix-config.yaml
+    SAVE ARTIFACT matrix-config.yaml AS LOCAL matrix-config.yaml

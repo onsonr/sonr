@@ -49,7 +49,7 @@ message Credential {
     id : 2
     primary_key : {fields : "id" auto_increment : true}
     index : {id : 1 fields : "handle"}
-    index : {id : 2 fields : "origin,handle" unique : true}
+    index : {id : 2 fields : "origin,handle" unique: true}
     index : {id : 3 fields : "credential_id" unique : true}
     index : {id : 4 fields : "public_key" unique : true}
   };

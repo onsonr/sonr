@@ -1,0 +1,28 @@
+//nolint
+package layouts
+
+import "github.com/sonrhq/sonr/pkg/highway/components/views"
+
+templ LoginPage() {
+	@Index() {
+		<section class="flex flex-col h-screen justify-center items-center mx-auto">
+			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
+				<sl-card class={ "container px-2 py-4 max-w-xl" }>
+					@views.LoginView()
+				</sl-card>
+			</div>
+		</section>
+	}
+}
+
+templ RegisterPage() {
+	@Index() {
+		<section class="flex flex-col h-screen justify-center items-center mx-auto">
+			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
+				<sl-card class={ "container px-2 py-4 max-w-xl" }>
+					@views.RegisterView()
+				</sl-card>
+			</div>
+		</section>
+	}
+}

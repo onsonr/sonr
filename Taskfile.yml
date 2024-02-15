@@ -5,6 +5,7 @@ includes:
   deploy: ./tasks/Deploy.yml
   dev: ./tasks/Dev.yml
   gen: ./tasks/Gen.yml
+  release: ./tasks/Release.yml
   test: ./tasks/Test.yml
 
 tasks:
@@ -14,11 +15,6 @@ tasks:
       - task: gen:proto
       - task: gen:proto-doc
       - task: gen:templ
-
-  dev-down:
-    ignore_error: true
-    cmds:
-      - tmux kill-session -t dev
 
   test-essential:
     desc: "Run essential tests"
@@ -34,8 +30,9 @@ tasks:
     cmds:
       - task: compose-down
       - templ generate
-      - earthly +docker
-      - docker compose up
+      - task: build:current
+      - task: build:dockerfile
+      - docker compose up --abort-on-container-exit
 
   compose-down:
     ignore_error: true

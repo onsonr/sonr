@@ -114,6 +114,14 @@ func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteReco
 	return &service.MsgDeleteRecordResponse{}, nil
 }
 
+func (ms msgServer) LoginAccount(ctx context.Context, msg *service.MsgLoginAccount) (*service.MsgLoginAccountResponse, error) {
+	return nil, nil
+}
+
+func (ms msgServer) RegisterAccount(ctx context.Context, msg *service.MsgRegisterAccount) (*service.MsgRegisterAccountResponse, error) {
+	return nil, nil
+}
+
 // getPermissionsFromInt32 converts an int32 to a ServicePermissions enum.
 func getPermissionsFromInt32(value int32) modulev1.ServicePermissions {
 	switch value {

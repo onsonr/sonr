@@ -19,7 +19,7 @@ services:
   highway:
     init: true
     image: sonrd:latest
-    entrypoint: ["sonrd", "serve"]
+    entrypoint: ["sonrd", "hway"]
     ports:
       - 8000:8000 # api/htmx
     networks:
@@ -35,6 +35,21 @@ services:
       - 8080:8080 # gateway
     networks:
       - default
+
+  # monolith:
+  #   init: true
+  #   image: matrixdotorg/dendrite-monolith:latest
+  #   restart: always
+  #   hostname: monolith
+  #   container_name: monolith
+  #   ports:
+  #     - 8008:8008
+  #     - 8448:8448
+  #   volumes:
+  #     - ./tmp/config:/etc/dendrite
+  #     - ./tmp/dendrite_media:/var/dendrite/media
+  #     - ./tmp/dendrite_jetstream:/var/dendrite/jetstream
+  #     - ./tmp/dendrite_search_index:/var/dendrite/searchindex
 
 networks:
   default:
