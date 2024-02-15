@@ -1,0 +1,23 @@
+package pages
+
+import (
+	"github.com/labstack/echo/v4"
+
+	"github.com/sonrhq/sonr/pkg/highway/components/layouts"
+	"github.com/sonrhq/sonr/pkg/highway/shared"
+	"github.com/sonrhq/sonr/pkg/highway/components/views"
+)
+
+templ authView() {
+	@layouts.RegisterPage()
+}
+
+func Index(c echo.Context) error {
+	cmp := authView()
+	return shared.RenderPage(c, cmp)
+}
+
+func NotFound(c echo.Context) error {
+	errView := views.Error404View()
+	return shared.RenderPage(c, errView)
+}

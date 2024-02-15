@@ -1,9 +1,5 @@
 package handlers
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // IdentityAPI is a handler for the staking module
 var IdentityAPI = identityAPI{}
 

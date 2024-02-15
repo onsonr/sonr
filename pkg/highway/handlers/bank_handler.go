@@ -10,10 +10,6 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // BankAPI is a handler for the bank module
 var BankAPI = bankAPI{}
 

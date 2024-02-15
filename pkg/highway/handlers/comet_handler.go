@@ -11,10 +11,6 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // CometAPI is a handler for the node module
 var CometAPI = cometAPI{}
 

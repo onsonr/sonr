@@ -21,10 +21,9 @@ func Start(opts ...HighwayOption) {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 	middleware.UseDefaults(e)
-	routes.RegisterAPIRoutes(e)
-	routes.RegisterPages(e)
-	routes.RegisterModals(e)
-	routes.RegisterUtilityPages(e)
+	routes.RegisterCosmosAPI(e)
+	routes.RegisterSonrAPI(e)
+	routes.RegisterHTMXPages(e)
 
 	// Serve the router
 	cnfg.PrintBanner()

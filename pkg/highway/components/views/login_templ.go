@@ -106,7 +106,7 @@ func loginFooter() templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"footer\" class=\"justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5 flex\"><sl-tooltip content=\"Need Help?\" placement=\"bottom\"><sl-icon-button name=\"life-preserver\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Documentation\" placement=\"bottom\"><sl-icon-button name=\"book-half\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Start Recovery\" placement=\"bottom\"><sl-icon-button name=\"tools\" label=\"Settings\"></sl-icon-button></sl-tooltip></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"footer\" class=\"justify-between items-center w-full max-w-[12vw] mx-auto opacity-75 py-1.5 flex\"><sl-tooltip content=\"Need Help?\" placement=\"top\"><sl-icon-button name=\"life-preserver\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Documentation\" placement=\"top\"><sl-icon-button name=\"book-half\" label=\"Settings\"></sl-icon-button></sl-tooltip> <sl-tooltip content=\"Start Recovery\" placement=\"top\"><sl-icon-button name=\"tools\" label=\"Settings\"></sl-icon-button></sl-tooltip></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

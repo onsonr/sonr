@@ -50,7 +50,6 @@ func UseDefaults(e *echo.Echo) {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-	e.Use(HTMX)
 }
 
 // IPFSClient creates an IPFS HTTP client.

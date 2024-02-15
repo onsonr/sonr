@@ -25,7 +25,7 @@
     "**/.trunk/*logs/": true,
     "**/.trunk/*out/": true,
     "**/.trunk/*plugins/": true,
-    "**/**_templ.go": true,
+    "**/*_templ.go": true,
     "**/**.md": true,
     "**/**.pb.go": false,
     "**/CODE_OF_CONDUCT.md": true,
