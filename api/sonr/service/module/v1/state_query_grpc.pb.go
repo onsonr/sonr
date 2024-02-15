@@ -21,9 +21,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetServiceRecord_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetServiceRecord"
-	StateQueryService_GetServiceRecordByOrigin_FullMethodName       = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
-	StateQueryService_ListServiceRecord_FullMethodName              = "/sonr.service.module.v1.StateQueryService/ListServiceRecord"
+	StateQueryService_GetService_FullMethodName                     = "/sonr.service.module.v1.StateQueryService/GetService"
+	StateQueryService_GetServiceByOrigin_FullMethodName             = "/sonr.service.module.v1.StateQueryService/GetServiceByOrigin"
+	StateQueryService_ListService_FullMethodName                    = "/sonr.service.module.v1.StateQueryService/ListService"
 	StateQueryService_GetCredential_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetCredential"
 	StateQueryService_GetCredentialByOriginHandle_FullMethodName    = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
 	StateQueryService_GetCredentialById_FullMethodName              = "/sonr.service.module.v1.StateQueryService/GetCredentialById"
@@ -42,12 +42,12 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type StateQueryServiceClient interface {
-	// Get queries the ServiceRecord table by its primary key.
-	GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error)
-	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
-	ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error)
+	// Get queries the Service table by its primary key.
+	GetService(ctx context.Context, in *GetServiceRequest, opts ...grpc.CallOption) (*GetServiceResponse, error)
+	// GetServiceByOrigin queries the Service table by its Origin index
+	GetServiceByOrigin(ctx context.Context, in *GetServiceByOriginRequest, opts ...grpc.CallOption) (*GetServiceByOriginResponse, error)
+	// ListService queries the Service table using prefix and range queries against defined indexes.
+	ListService(ctx context.Context, in *ListServiceRequest, opts ...grpc.CallOption) (*ListServiceResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -82,27 +82,27 @@ func NewStateQueryServiceClient(cc grpc.ClientConnInterface) StateQueryServiceCl
 	return &stateQueryServiceClient{cc}
 }
 
-func (c *stateQueryServiceClient) GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error) {
-	out := new(GetServiceRecordResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetServiceRecord_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetService(ctx context.Context, in *GetServiceRequest, opts ...grpc.CallOption) (*GetServiceResponse, error) {
+	out := new(GetServiceResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetService_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error) {
-	out := new(GetServiceRecordByOriginResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetServiceRecordByOrigin_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetServiceByOrigin(ctx context.Context, in *GetServiceByOriginRequest, opts ...grpc.CallOption) (*GetServiceByOriginResponse, error) {
+	out := new(GetServiceByOriginResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetServiceByOrigin_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error) {
-	out := new(ListServiceRecordResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListServiceRecord_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) ListService(ctx context.Context, in *ListServiceRequest, opts ...grpc.CallOption) (*ListServiceResponse, error) {
+	out := new(ListServiceResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListService_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -221,12 +221,12 @@ func (c *stateQueryServiceClient) GetOwnParams(ctx context.Context, in *GetOwnPa
 // All implementations must embed UnimplementedStateQueryServiceServer
 // for forward compatibility
 type StateQueryServiceServer interface {
-	// Get queries the ServiceRecord table by its primary key.
-	GetServiceRecord(context.Context, *GetServiceRecordRequest) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(context.Context, *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error)
-	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
-	ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error)
+	// Get queries the Service table by its primary key.
+	GetService(context.Context, *GetServiceRequest) (*GetServiceResponse, error)
+	// GetServiceByOrigin queries the Service table by its Origin index
+	GetServiceByOrigin(context.Context, *GetServiceByOriginRequest) (*GetServiceByOriginResponse, error)
+	// ListService queries the Service table using prefix and range queries against defined indexes.
+	ListService(context.Context, *ListServiceRequest) (*ListServiceResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -258,14 +258,14 @@ type StateQueryServiceServer interface {
 type UnimplementedStateQueryServiceServer struct {
 }
 
-func (UnimplementedStateQueryServiceServer) GetServiceRecord(context.Context, *GetServiceRecordRequest) (*GetServiceRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecord not implemented")
+func (UnimplementedStateQueryServiceServer) GetService(context.Context, *GetServiceRequest) (*GetServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetService not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetServiceRecordByOrigin(context.Context, *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecordByOrigin not implemented")
+func (UnimplementedStateQueryServiceServer) GetServiceByOrigin(context.Context, *GetServiceByOriginRequest) (*GetServiceByOriginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServiceByOrigin not implemented")
 }
-func (UnimplementedStateQueryServiceServer) ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListServiceRecord not implemented")
+func (UnimplementedStateQueryServiceServer) ListService(context.Context, *ListServiceRequest) (*ListServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListService not implemented")
 }
 func (UnimplementedStateQueryServiceServer) GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCredential not implemented")
@@ -316,56 +316,56 @@ func RegisterStateQueryServiceServer(s grpc.ServiceRegistrar, srv StateQueryServ
 	s.RegisterService(&StateQueryService_ServiceDesc, srv)
 }
 
-func _StateQueryService_GetServiceRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServiceRecordRequest)
+func _StateQueryService_GetService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetServiceRecord(ctx, in)
+		return srv.(StateQueryServiceServer).GetService(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetServiceRecord_FullMethodName,
+		FullMethod: StateQueryService_GetService_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetServiceRecord(ctx, req.(*GetServiceRecordRequest))
+		return srv.(StateQueryServiceServer).GetService(ctx, req.(*GetServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetServiceRecordByOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServiceRecordByOriginRequest)
+func _StateQueryService_GetServiceByOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServiceByOriginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, in)
+		return srv.(StateQueryServiceServer).GetServiceByOrigin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetServiceRecordByOrigin_FullMethodName,
+		FullMethod: StateQueryService_GetServiceByOrigin_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, req.(*GetServiceRecordByOriginRequest))
+		return srv.(StateQueryServiceServer).GetServiceByOrigin(ctx, req.(*GetServiceByOriginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListServiceRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListServiceRecordRequest)
+func _StateQueryService_ListService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListServiceRecord(ctx, in)
+		return srv.(StateQueryServiceServer).ListService(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_ListServiceRecord_FullMethodName,
+		FullMethod: StateQueryService_ListService_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListServiceRecord(ctx, req.(*ListServiceRecordRequest))
+		return srv.(StateQueryServiceServer).ListService(ctx, req.(*ListServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -594,16 +594,16 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetServiceRecord",
-			Handler:    _StateQueryService_GetServiceRecord_Handler,
+			MethodName: "GetService",
+			Handler:    _StateQueryService_GetService_Handler,
 		},
 		{
-			MethodName: "GetServiceRecordByOrigin",
-			Handler:    _StateQueryService_GetServiceRecordByOrigin_Handler,
+			MethodName: "GetServiceByOrigin",
+			Handler:    _StateQueryService_GetServiceByOrigin_Handler,
 		},
 		{
-			MethodName: "ListServiceRecord",
-			Handler:    _StateQueryService_ListServiceRecord_Handler,
+			MethodName: "ListService",
+			Handler:    _StateQueryService_ListService_Handler,
 		},
 		{
 			MethodName: "GetCredential",

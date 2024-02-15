@@ -5,8 +5,6 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	grpc "google.golang.org/grpc"
-
-	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 )
 
 // CredentialDescriptor is a descriptor for a credential
@@ -18,14 +16,11 @@ type PublicKeyCredentialCreationOptions = protocol.PublicKeyCredentialCreationOp
 // PublicKeyCredentialRequestOptions is the options for requesting a public key credential
 type PublicKeyCredentialRequestOptions = protocol.PublicKeyCredentialRequestOptions
 
-// ServiceRecord is a record of a service
-type ServiceRecord = modulev1.ServiceRecord
-
 // UserEntity is the entity of a user
 type UserEntity = protocol.UserEntity
 
 // GetCredentialCreationOptions returns the PublicKeyCredentialCreationOptions for the given service record and user entity.
-func GetCredentialCreationOptions(record *modulev1.ServiceRecord, entity protocol.UserEntity) PublicKeyCredentialCreationOptions {
+func GetCredentialCreationOptions(record *ServiceRecord, entity protocol.UserEntity) PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
 		RelyingParty: protocol.RelyingPartyEntity{
 			ID: record.Origin,
@@ -42,7 +37,7 @@ func GetCredentialCreationOptions(record *modulev1.ServiceRecord, entity protoco
 }
 
 // GetCredentialRequestOptions returns the PublicKeyCredentialRequestOptions for the given service record and credentials.
-func GetCredentialRequestOptions(record *modulev1.ServiceRecord, creds []CredentialDescriptor) PublicKeyCredentialRequestOptions {
+func GetCredentialRequestOptions(record *ServiceRecord, creds []CredentialDescriptor) PublicKeyCredentialRequestOptions {
 	return protocol.PublicKeyCredentialRequestOptions{
 		Challenge:          GenerateChallenge(),
 		UserVerification:   protocol.VerificationPreferred,
@@ -62,11 +57,18 @@ func GetCredentialsByHandle(conn *grpc.ClientConn, handle, origin string) ([]Cre
 
 // GetRecordByOrigin returns the service record for the given origin
 func GetRecordByOrigin(conn *grpc.ClientConn, origin string) (*ServiceRecord, error) {
-	res, err := getStateServiceClient(conn).GetServiceRecordByOrigin(context.Background(), NewQueryServiceRequest(origin))
+	res, err := getQueryServiceClient(conn).ServiceRecord(context.Background(), NewQueryServiceRequest(origin))
 	if err != nil {
 		return nil, err
 	}
-	return res.GetValue(), nil
+	srv := res.GetServiceRecord()
+	return &ServiceRecord{
+		Origin:      srv.Origin,
+		Name:        srv.Name,
+		Description: srv.Description,
+		Permissions: srv.Permissions,
+		Authority:   srv.Authority,
+	}, nil
 }
 
 // GetUserEntity returns the user entity for the given address and username

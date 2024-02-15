@@ -9,138 +9,138 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type ServiceRecordTable interface {
-	Insert(ctx context.Context, serviceRecord *ServiceRecord) error
-	InsertReturningId(ctx context.Context, serviceRecord *ServiceRecord) (uint64, error)
+type ServiceTable interface {
+	Insert(ctx context.Context, service *Service) error
+	InsertReturningId(ctx context.Context, service *Service) (uint64, error)
 	LastInsertedSequence(ctx context.Context) (uint64, error)
-	Update(ctx context.Context, serviceRecord *ServiceRecord) error
-	Save(ctx context.Context, serviceRecord *ServiceRecord) error
-	Delete(ctx context.Context, serviceRecord *ServiceRecord) error
+	Update(ctx context.Context, service *Service) error
+	Save(ctx context.Context, service *Service) error
+	Delete(ctx context.Context, service *Service) error
 	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id uint64) (*ServiceRecord, error)
+	Get(ctx context.Context, id uint64) (*Service, error)
 	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
 	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error)
-	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
-	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
-	DeleteRange(ctx context.Context, from, to ServiceRecordIndexKey) error
+	GetByOrigin(ctx context.Context, origin string) (*Service, error)
+	List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
+	ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error
+	DeleteRange(ctx context.Context, from, to ServiceIndexKey) error
 
 	doNotImplement()
 }
 
-type ServiceRecordIterator struct {
+type ServiceIterator struct {
 	ormtable.Iterator
 }
 
-func (i ServiceRecordIterator) Value() (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	err := i.UnmarshalMessage(&serviceRecord)
-	return &serviceRecord, err
+func (i ServiceIterator) Value() (*Service, error) {
+	var service Service
+	err := i.UnmarshalMessage(&service)
+	return &service, err
 }
 
-type ServiceRecordIndexKey interface {
+type ServiceIndexKey interface {
 	id() uint32
 	values() []interface{}
-	serviceRecordIndexKey()
+	serviceIndexKey()
 }
 
 // primary key starting index..
-type ServiceRecordPrimaryKey = ServiceRecordIdIndexKey
+type ServicePrimaryKey = ServiceIdIndexKey
 
-type ServiceRecordIdIndexKey struct {
+type ServiceIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordIdIndexKey) id() uint32             { return 0 }
-func (x ServiceRecordIdIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordIdIndexKey) serviceRecordIndexKey() {}
+func (x ServiceIdIndexKey) id() uint32            { return 0 }
+func (x ServiceIdIndexKey) values() []interface{} { return x.vs }
+func (x ServiceIdIndexKey) serviceIndexKey()      {}
 
-func (this ServiceRecordIdIndexKey) WithId(id uint64) ServiceRecordIdIndexKey {
+func (this ServiceIdIndexKey) WithId(id uint64) ServiceIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type ServiceRecordOriginIndexKey struct {
+type ServiceOriginIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordOriginIndexKey) id() uint32             { return 1 }
-func (x ServiceRecordOriginIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordOriginIndexKey) serviceRecordIndexKey() {}
+func (x ServiceOriginIndexKey) id() uint32            { return 1 }
+func (x ServiceOriginIndexKey) values() []interface{} { return x.vs }
+func (x ServiceOriginIndexKey) serviceIndexKey()      {}
 
-func (this ServiceRecordOriginIndexKey) WithOrigin(origin string) ServiceRecordOriginIndexKey {
+func (this ServiceOriginIndexKey) WithOrigin(origin string) ServiceOriginIndexKey {
 	this.vs = []interface{}{origin}
 	return this
 }
 
-type ServiceRecordAuthorityIndexKey struct {
+type ServiceAuthorityIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceRecordAuthorityIndexKey) id() uint32             { return 2 }
-func (x ServiceRecordAuthorityIndexKey) values() []interface{}  { return x.vs }
-func (x ServiceRecordAuthorityIndexKey) serviceRecordIndexKey() {}
+func (x ServiceAuthorityIndexKey) id() uint32            { return 2 }
+func (x ServiceAuthorityIndexKey) values() []interface{} { return x.vs }
+func (x ServiceAuthorityIndexKey) serviceIndexKey()      {}
 
-func (this ServiceRecordAuthorityIndexKey) WithAuthority(authority string) ServiceRecordAuthorityIndexKey {
+func (this ServiceAuthorityIndexKey) WithAuthority(authority string) ServiceAuthorityIndexKey {
 	this.vs = []interface{}{authority}
 	return this
 }
 
-type serviceRecordTable struct {
+type serviceTable struct {
 	table ormtable.AutoIncrementTable
 }
 
-func (this serviceRecordTable) Insert(ctx context.Context, serviceRecord *ServiceRecord) error {
-	return this.table.Insert(ctx, serviceRecord)
+func (this serviceTable) Insert(ctx context.Context, service *Service) error {
+	return this.table.Insert(ctx, service)
 }
 
-func (this serviceRecordTable) Update(ctx context.Context, serviceRecord *ServiceRecord) error {
-	return this.table.Update(ctx, serviceRecord)
+func (this serviceTable) Update(ctx context.Context, service *Service) error {
+	return this.table.Update(ctx, service)
 }
 
-func (this serviceRecordTable) Save(ctx context.Context, serviceRecord *ServiceRecord) error {
-	return this.table.Save(ctx, serviceRecord)
+func (this serviceTable) Save(ctx context.Context, service *Service) error {
+	return this.table.Save(ctx, service)
 }
 
-func (this serviceRecordTable) Delete(ctx context.Context, serviceRecord *ServiceRecord) error {
-	return this.table.Delete(ctx, serviceRecord)
+func (this serviceTable) Delete(ctx context.Context, service *Service) error {
+	return this.table.Delete(ctx, service)
 }
 
-func (this serviceRecordTable) InsertReturningId(ctx context.Context, serviceRecord *ServiceRecord) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, serviceRecord)
+func (this serviceTable) InsertReturningId(ctx context.Context, service *Service) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, service)
 }
 
-func (this serviceRecordTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+func (this serviceTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
 	return this.table.LastInsertedSequence(ctx)
 }
 
-func (this serviceRecordTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+func (this serviceTable) Has(ctx context.Context, id uint64) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this serviceRecordTable) Get(ctx context.Context, id uint64) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.PrimaryKey().Get(ctx, &serviceRecord, id)
+func (this serviceTable) Get(ctx context.Context, id uint64) (*Service, error) {
+	var service Service
+	found, err := this.table.PrimaryKey().Get(ctx, &service, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &serviceRecord, nil
+	return &service, nil
 }
 
-func (this serviceRecordTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
+func (this serviceTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
 		origin,
 	)
 }
 
-func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (*ServiceRecord, error) {
-	var serviceRecord ServiceRecord
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
+func (this serviceTable) GetByOrigin(ctx context.Context, origin string) (*Service, error) {
+	var service Service
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &service,
 		origin,
 	)
 	if err != nil {
@@ -149,37 +149,37 @@ func (this serviceRecordTable) GetByOrigin(ctx context.Context, origin string) (
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &serviceRecord, nil
+	return &service, nil
 }
 
-func (this serviceRecordTable) List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error) {
+func (this serviceTable) List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ServiceRecordIterator{it}, err
+	return ServiceIterator{it}, err
 }
 
-func (this serviceRecordTable) ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error) {
+func (this serviceTable) ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ServiceRecordIterator{it}, err
+	return ServiceIterator{it}, err
 }
 
-func (this serviceRecordTable) DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error {
+func (this serviceTable) DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this serviceRecordTable) DeleteRange(ctx context.Context, from, to ServiceRecordIndexKey) error {
+func (this serviceTable) DeleteRange(ctx context.Context, from, to ServiceIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this serviceRecordTable) doNotImplement() {}
+func (this serviceTable) doNotImplement() {}
 
-var _ ServiceRecordTable = serviceRecordTable{}
+var _ ServiceTable = serviceTable{}
 
-func NewServiceRecordTable(db ormtable.Schema) (ServiceRecordTable, error) {
-	table := db.GetTable(&ServiceRecord{})
+func NewServiceTable(db ormtable.Schema) (ServiceTable, error) {
+	table := db.GetTable(&Service{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&ServiceRecord{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Service{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return serviceRecordTable{table.(ormtable.AutoIncrementTable)}, nil
+	return serviceTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 type CredentialTable interface {
@@ -729,7 +729,7 @@ func NewOwnParamsTable(db ormtable.Schema) (OwnParamsTable, error) {
 }
 
 type StateStore interface {
-	ServiceRecordTable() ServiceRecordTable
+	ServiceTable() ServiceTable
 	CredentialTable() CredentialTable
 	UserTable() UserTable
 	BaseParamsTable() BaseParamsTable
@@ -741,17 +741,17 @@ type StateStore interface {
 }
 
 type stateStore struct {
-	serviceRecord ServiceRecordTable
-	credential    CredentialTable
-	user          UserTable
-	baseParams    BaseParamsTable
-	readParams    ReadParamsTable
-	writeParams   WriteParamsTable
-	ownParams     OwnParamsTable
+	service     ServiceTable
+	credential  CredentialTable
+	user        UserTable
+	baseParams  BaseParamsTable
+	readParams  ReadParamsTable
+	writeParams WriteParamsTable
+	ownParams   OwnParamsTable
 }
 
-func (x stateStore) ServiceRecordTable() ServiceRecordTable {
-	return x.serviceRecord
+func (x stateStore) ServiceTable() ServiceTable {
+	return x.service
 }
 
 func (x stateStore) CredentialTable() CredentialTable {
@@ -783,7 +783,7 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	serviceRecordTable, err := NewServiceRecordTable(db)
+	serviceTable, err := NewServiceTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -819,7 +819,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	}
 
 	return stateStore{
-		serviceRecordTable,
+		serviceTable,
 		credentialTable,
 		userTable,
 		baseParamsTable,

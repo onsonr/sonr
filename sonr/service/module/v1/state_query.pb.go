@@ -28,24 +28,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// GetServiceRecordRequest is the StateQuery/GetServiceRecordRequest request type.
-type GetServiceRecordRequest struct {
+// GetServiceRequest is the StateQuery/GetServiceRequest request type.
+type GetServiceRequest struct {
 	// id specifies the value of the id field in the primary key.
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 }
 
-func (m *GetServiceRecordRequest) Reset()         { *m = GetServiceRecordRequest{} }
-func (m *GetServiceRecordRequest) String() string { return proto.CompactTextString(m) }
-func (*GetServiceRecordRequest) ProtoMessage()    {}
-func (*GetServiceRecordRequest) Descriptor() ([]byte, []int) {
+func (m *GetServiceRequest) Reset()         { *m = GetServiceRequest{} }
+func (m *GetServiceRequest) String() string { return proto.CompactTextString(m) }
+func (*GetServiceRequest) ProtoMessage()    {}
+func (*GetServiceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{0}
 }
-func (m *GetServiceRecordRequest) XXX_Unmarshal(b []byte) error {
+func (m *GetServiceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetServiceRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetServiceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetServiceRecordRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetServiceRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -55,43 +55,43 @@ func (m *GetServiceRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *GetServiceRecordRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetServiceRecordRequest.Merge(m, src)
+func (m *GetServiceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetServiceRequest.Merge(m, src)
 }
-func (m *GetServiceRecordRequest) XXX_Size() int {
+func (m *GetServiceRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetServiceRecordRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetServiceRecordRequest.DiscardUnknown(m)
+func (m *GetServiceRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetServiceRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetServiceRecordRequest proto.InternalMessageInfo
+var xxx_messageInfo_GetServiceRequest proto.InternalMessageInfo
 
-func (m *GetServiceRecordRequest) GetId() uint64 {
+func (m *GetServiceRequest) GetId() uint64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-// GetServiceRecordResponse is the StateQuery/GetServiceRecordResponse response type.
-type GetServiceRecordResponse struct {
+// GetServiceResponse is the StateQuery/GetServiceResponse response type.
+type GetServiceResponse struct {
 	// value is the response value.
-	Value *ServiceRecord `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+	Value *Service `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
-func (m *GetServiceRecordResponse) Reset()         { *m = GetServiceRecordResponse{} }
-func (m *GetServiceRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*GetServiceRecordResponse) ProtoMessage()    {}
-func (*GetServiceRecordResponse) Descriptor() ([]byte, []int) {
+func (m *GetServiceResponse) Reset()         { *m = GetServiceResponse{} }
+func (m *GetServiceResponse) String() string { return proto.CompactTextString(m) }
+func (*GetServiceResponse) ProtoMessage()    {}
+func (*GetServiceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{1}
 }
-func (m *GetServiceRecordResponse) XXX_Unmarshal(b []byte) error {
+func (m *GetServiceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetServiceRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetServiceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetServiceRecordResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetServiceResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -101,42 +101,42 @@ func (m *GetServiceRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *GetServiceRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetServiceRecordResponse.Merge(m, src)
+func (m *GetServiceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetServiceResponse.Merge(m, src)
 }
-func (m *GetServiceRecordResponse) XXX_Size() int {
+func (m *GetServiceResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetServiceRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetServiceRecordResponse.DiscardUnknown(m)
+func (m *GetServiceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetServiceResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetServiceRecordResponse proto.InternalMessageInfo
+var xxx_messageInfo_GetServiceResponse proto.InternalMessageInfo
 
-func (m *GetServiceRecordResponse) GetValue() *ServiceRecord {
+func (m *GetServiceResponse) GetValue() *Service {
 	if m != nil {
 		return m.Value
 	}
 	return nil
 }
 
-// GetServiceRecordByOriginRequest is the StateQuery/GetServiceRecordByOriginRequest request type.
-type GetServiceRecordByOriginRequest struct {
+// GetServiceByOriginRequest is the StateQuery/GetServiceByOriginRequest request type.
+type GetServiceByOriginRequest struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
-func (m *GetServiceRecordByOriginRequest) Reset()         { *m = GetServiceRecordByOriginRequest{} }
-func (m *GetServiceRecordByOriginRequest) String() string { return proto.CompactTextString(m) }
-func (*GetServiceRecordByOriginRequest) ProtoMessage()    {}
-func (*GetServiceRecordByOriginRequest) Descriptor() ([]byte, []int) {
+func (m *GetServiceByOriginRequest) Reset()         { *m = GetServiceByOriginRequest{} }
+func (m *GetServiceByOriginRequest) String() string { return proto.CompactTextString(m) }
+func (*GetServiceByOriginRequest) ProtoMessage()    {}
+func (*GetServiceByOriginRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{2}
 }
-func (m *GetServiceRecordByOriginRequest) XXX_Unmarshal(b []byte) error {
+func (m *GetServiceByOriginRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetServiceRecordByOriginRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetServiceByOriginRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetServiceRecordByOriginRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetServiceByOriginRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -146,42 +146,42 @@ func (m *GetServiceRecordByOriginRequest) XXX_Marshal(b []byte, deterministic bo
 		return b[:n], nil
 	}
 }
-func (m *GetServiceRecordByOriginRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetServiceRecordByOriginRequest.Merge(m, src)
+func (m *GetServiceByOriginRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetServiceByOriginRequest.Merge(m, src)
 }
-func (m *GetServiceRecordByOriginRequest) XXX_Size() int {
+func (m *GetServiceByOriginRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetServiceRecordByOriginRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetServiceRecordByOriginRequest.DiscardUnknown(m)
+func (m *GetServiceByOriginRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetServiceByOriginRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetServiceRecordByOriginRequest proto.InternalMessageInfo
+var xxx_messageInfo_GetServiceByOriginRequest proto.InternalMessageInfo
 
-func (m *GetServiceRecordByOriginRequest) GetOrigin() string {
+func (m *GetServiceByOriginRequest) GetOrigin() string {
 	if m != nil {
 		return m.Origin
 	}
 	return ""
 }
 
-// GetServiceRecordByOriginResponse is the StateQuery/GetServiceRecordByOriginResponse response type.
-type GetServiceRecordByOriginResponse struct {
-	Value *ServiceRecord `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
+// GetServiceByOriginResponse is the StateQuery/GetServiceByOriginResponse response type.
+type GetServiceByOriginResponse struct {
+	Value *Service `protobuf:"bytes,1,opt,name=value,proto3" json:"value,omitempty"`
 }
 
-func (m *GetServiceRecordByOriginResponse) Reset()         { *m = GetServiceRecordByOriginResponse{} }
-func (m *GetServiceRecordByOriginResponse) String() string { return proto.CompactTextString(m) }
-func (*GetServiceRecordByOriginResponse) ProtoMessage()    {}
-func (*GetServiceRecordByOriginResponse) Descriptor() ([]byte, []int) {
+func (m *GetServiceByOriginResponse) Reset()         { *m = GetServiceByOriginResponse{} }
+func (m *GetServiceByOriginResponse) String() string { return proto.CompactTextString(m) }
+func (*GetServiceByOriginResponse) ProtoMessage()    {}
+func (*GetServiceByOriginResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{3}
 }
-func (m *GetServiceRecordByOriginResponse) XXX_Unmarshal(b []byte) error {
+func (m *GetServiceByOriginResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *GetServiceRecordByOriginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *GetServiceByOriginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_GetServiceRecordByOriginResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_GetServiceByOriginResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -191,49 +191,49 @@ func (m *GetServiceRecordByOriginResponse) XXX_Marshal(b []byte, deterministic b
 		return b[:n], nil
 	}
 }
-func (m *GetServiceRecordByOriginResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_GetServiceRecordByOriginResponse.Merge(m, src)
+func (m *GetServiceByOriginResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GetServiceByOriginResponse.Merge(m, src)
 }
-func (m *GetServiceRecordByOriginResponse) XXX_Size() int {
+func (m *GetServiceByOriginResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *GetServiceRecordByOriginResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_GetServiceRecordByOriginResponse.DiscardUnknown(m)
+func (m *GetServiceByOriginResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_GetServiceByOriginResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_GetServiceRecordByOriginResponse proto.InternalMessageInfo
+var xxx_messageInfo_GetServiceByOriginResponse proto.InternalMessageInfo
 
-func (m *GetServiceRecordByOriginResponse) GetValue() *ServiceRecord {
+func (m *GetServiceByOriginResponse) GetValue() *Service {
 	if m != nil {
 		return m.Value
 	}
 	return nil
 }
 
-// ListServiceRecordRequest is the StateQuery/ListServiceRecordRequest request type.
-type ListServiceRecordRequest struct {
+// ListServiceRequest is the StateQuery/ListServiceRequest request type.
+type ListServiceRequest struct {
 	// query specifies the type of query - either a prefix or range query.
 	//
 	// Types that are valid to be assigned to Query:
-	//	*ListServiceRecordRequest_PrefixQuery
-	//	*ListServiceRecordRequest_RangeQuery_
-	Query isListServiceRecordRequest_Query `protobuf_oneof:"query"`
+	//	*ListServiceRequest_PrefixQuery
+	//	*ListServiceRequest_RangeQuery_
+	Query isListServiceRequest_Query `protobuf_oneof:"query"`
 	// pagination specifies optional pagination parameters.
 	Pagination *query.PageRequest `protobuf:"bytes,3,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *ListServiceRecordRequest) Reset()         { *m = ListServiceRecordRequest{} }
-func (m *ListServiceRecordRequest) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordRequest) ProtoMessage()    {}
-func (*ListServiceRecordRequest) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest) Reset()         { *m = ListServiceRequest{} }
+func (m *ListServiceRequest) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest) ProtoMessage()    {}
+func (*ListServiceRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4}
 }
-func (m *ListServiceRecordRequest) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -243,56 +243,56 @@ func (m *ListServiceRecordRequest) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest.Merge(m, src)
+func (m *ListServiceRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest.Merge(m, src)
 }
-func (m *ListServiceRecordRequest) XXX_Size() int {
+func (m *ListServiceRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest.DiscardUnknown(m)
+func (m *ListServiceRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest proto.InternalMessageInfo
 
-type isListServiceRecordRequest_Query interface {
-	isListServiceRecordRequest_Query()
+type isListServiceRequest_Query interface {
+	isListServiceRequest_Query()
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
 
-type ListServiceRecordRequest_PrefixQuery struct {
-	PrefixQuery *ListServiceRecordRequest_IndexKey `protobuf:"bytes,1,opt,name=prefix_query,json=prefixQuery,proto3,oneof" json:"prefix_query,omitempty"`
+type ListServiceRequest_PrefixQuery struct {
+	PrefixQuery *ListServiceRequest_IndexKey `protobuf:"bytes,1,opt,name=prefix_query,json=prefixQuery,proto3,oneof" json:"prefix_query,omitempty"`
 }
-type ListServiceRecordRequest_RangeQuery_ struct {
-	RangeQuery *ListServiceRecordRequest_RangeQuery `protobuf:"bytes,2,opt,name=range_query,json=rangeQuery,proto3,oneof" json:"range_query,omitempty"`
+type ListServiceRequest_RangeQuery_ struct {
+	RangeQuery *ListServiceRequest_RangeQuery `protobuf:"bytes,2,opt,name=range_query,json=rangeQuery,proto3,oneof" json:"range_query,omitempty"`
 }
 
-func (*ListServiceRecordRequest_PrefixQuery) isListServiceRecordRequest_Query() {}
-func (*ListServiceRecordRequest_RangeQuery_) isListServiceRecordRequest_Query() {}
+func (*ListServiceRequest_PrefixQuery) isListServiceRequest_Query() {}
+func (*ListServiceRequest_RangeQuery_) isListServiceRequest_Query() {}
 
-func (m *ListServiceRecordRequest) GetQuery() isListServiceRecordRequest_Query {
+func (m *ListServiceRequest) GetQuery() isListServiceRequest_Query {
 	if m != nil {
 		return m.Query
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest) GetPrefixQuery() *ListServiceRecordRequest_IndexKey {
-	if x, ok := m.GetQuery().(*ListServiceRecordRequest_PrefixQuery); ok {
+func (m *ListServiceRequest) GetPrefixQuery() *ListServiceRequest_IndexKey {
+	if x, ok := m.GetQuery().(*ListServiceRequest_PrefixQuery); ok {
 		return x.PrefixQuery
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest) GetRangeQuery() *ListServiceRecordRequest_RangeQuery {
-	if x, ok := m.GetQuery().(*ListServiceRecordRequest_RangeQuery_); ok {
+func (m *ListServiceRequest) GetRangeQuery() *ListServiceRequest_RangeQuery {
+	if x, ok := m.GetQuery().(*ListServiceRequest_RangeQuery_); ok {
 		return x.RangeQuery
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest) GetPagination() *query.PageRequest {
+func (m *ListServiceRequest) GetPagination() *query.PageRequest {
 	if m != nil {
 		return m.Pagination
 	}
@@ -300,36 +300,36 @@ func (m *ListServiceRecordRequest) GetPagination() *query.PageRequest {
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
-func (*ListServiceRecordRequest) XXX_OneofWrappers() []interface{} {
+func (*ListServiceRequest) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
-		(*ListServiceRecordRequest_PrefixQuery)(nil),
-		(*ListServiceRecordRequest_RangeQuery_)(nil),
+		(*ListServiceRequest_PrefixQuery)(nil),
+		(*ListServiceRequest_RangeQuery_)(nil),
 	}
 }
 
 // IndexKey specifies the value of an index key to use in prefix and range queries.
-type ListServiceRecordRequest_IndexKey struct {
+type ListServiceRequest_IndexKey struct {
 	// key specifies the index key value.
 	//
 	// Types that are valid to be assigned to Key:
-	//	*ListServiceRecordRequest_IndexKey_Id_
-	//	*ListServiceRecordRequest_IndexKey_Origin_
-	//	*ListServiceRecordRequest_IndexKey_Authority_
-	Key isListServiceRecordRequest_IndexKey_Key `protobuf_oneof:"key"`
+	//	*ListServiceRequest_IndexKey_Id_
+	//	*ListServiceRequest_IndexKey_Origin_
+	//	*ListServiceRequest_IndexKey_Authority_
+	Key isListServiceRequest_IndexKey_Key `protobuf_oneof:"key"`
 }
 
-func (m *ListServiceRecordRequest_IndexKey) Reset()         { *m = ListServiceRecordRequest_IndexKey{} }
-func (m *ListServiceRecordRequest_IndexKey) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordRequest_IndexKey) ProtoMessage()    {}
-func (*ListServiceRecordRequest_IndexKey) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest_IndexKey) Reset()         { *m = ListServiceRequest_IndexKey{} }
+func (m *ListServiceRequest_IndexKey) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest_IndexKey) ProtoMessage()    {}
+func (*ListServiceRequest_IndexKey) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4, 0}
 }
-func (m *ListServiceRecordRequest_IndexKey) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest_IndexKey) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest_IndexKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest_IndexKey) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest_IndexKey.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest_IndexKey.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -339,93 +339,93 @@ func (m *ListServiceRecordRequest_IndexKey) XXX_Marshal(b []byte, deterministic 
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest_IndexKey) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey.Merge(m, src)
+func (m *ListServiceRequest_IndexKey) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest_IndexKey.Merge(m, src)
 }
-func (m *ListServiceRecordRequest_IndexKey) XXX_Size() int {
+func (m *ListServiceRequest_IndexKey) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest_IndexKey) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey.DiscardUnknown(m)
+func (m *ListServiceRequest_IndexKey) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest_IndexKey.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest_IndexKey proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest_IndexKey proto.InternalMessageInfo
 
-type isListServiceRecordRequest_IndexKey_Key interface {
-	isListServiceRecordRequest_IndexKey_Key()
+type isListServiceRequest_IndexKey_Key interface {
+	isListServiceRequest_IndexKey_Key()
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
 
-type ListServiceRecordRequest_IndexKey_Id_ struct {
-	Id *ListServiceRecordRequest_IndexKey_Id `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
+type ListServiceRequest_IndexKey_Id_ struct {
+	Id *ListServiceRequest_IndexKey_Id `protobuf:"bytes,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 }
-type ListServiceRecordRequest_IndexKey_Origin_ struct {
-	Origin *ListServiceRecordRequest_IndexKey_Origin `protobuf:"bytes,2,opt,name=origin,proto3,oneof" json:"origin,omitempty"`
+type ListServiceRequest_IndexKey_Origin_ struct {
+	Origin *ListServiceRequest_IndexKey_Origin `protobuf:"bytes,2,opt,name=origin,proto3,oneof" json:"origin,omitempty"`
 }
-type ListServiceRecordRequest_IndexKey_Authority_ struct {
-	Authority *ListServiceRecordRequest_IndexKey_Authority `protobuf:"bytes,3,opt,name=authority,proto3,oneof" json:"authority,omitempty"`
+type ListServiceRequest_IndexKey_Authority_ struct {
+	Authority *ListServiceRequest_IndexKey_Authority `protobuf:"bytes,3,opt,name=authority,proto3,oneof" json:"authority,omitempty"`
 }
 
-func (*ListServiceRecordRequest_IndexKey_Id_) isListServiceRecordRequest_IndexKey_Key()        {}
-func (*ListServiceRecordRequest_IndexKey_Origin_) isListServiceRecordRequest_IndexKey_Key()    {}
-func (*ListServiceRecordRequest_IndexKey_Authority_) isListServiceRecordRequest_IndexKey_Key() {}
+func (*ListServiceRequest_IndexKey_Id_) isListServiceRequest_IndexKey_Key()        {}
+func (*ListServiceRequest_IndexKey_Origin_) isListServiceRequest_IndexKey_Key()    {}
+func (*ListServiceRequest_IndexKey_Authority_) isListServiceRequest_IndexKey_Key() {}
 
-func (m *ListServiceRecordRequest_IndexKey) GetKey() isListServiceRecordRequest_IndexKey_Key {
+func (m *ListServiceRequest_IndexKey) GetKey() isListServiceRequest_IndexKey_Key {
 	if m != nil {
 		return m.Key
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey) GetId() *ListServiceRecordRequest_IndexKey_Id {
-	if x, ok := m.GetKey().(*ListServiceRecordRequest_IndexKey_Id_); ok {
+func (m *ListServiceRequest_IndexKey) GetId() *ListServiceRequest_IndexKey_Id {
+	if x, ok := m.GetKey().(*ListServiceRequest_IndexKey_Id_); ok {
 		return x.Id
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey) GetOrigin() *ListServiceRecordRequest_IndexKey_Origin {
-	if x, ok := m.GetKey().(*ListServiceRecordRequest_IndexKey_Origin_); ok {
+func (m *ListServiceRequest_IndexKey) GetOrigin() *ListServiceRequest_IndexKey_Origin {
+	if x, ok := m.GetKey().(*ListServiceRequest_IndexKey_Origin_); ok {
 		return x.Origin
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey) GetAuthority() *ListServiceRecordRequest_IndexKey_Authority {
-	if x, ok := m.GetKey().(*ListServiceRecordRequest_IndexKey_Authority_); ok {
+func (m *ListServiceRequest_IndexKey) GetAuthority() *ListServiceRequest_IndexKey_Authority {
+	if x, ok := m.GetKey().(*ListServiceRequest_IndexKey_Authority_); ok {
 		return x.Authority
 	}
 	return nil
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
-func (*ListServiceRecordRequest_IndexKey) XXX_OneofWrappers() []interface{} {
+func (*ListServiceRequest_IndexKey) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
-		(*ListServiceRecordRequest_IndexKey_Id_)(nil),
-		(*ListServiceRecordRequest_IndexKey_Origin_)(nil),
-		(*ListServiceRecordRequest_IndexKey_Authority_)(nil),
+		(*ListServiceRequest_IndexKey_Id_)(nil),
+		(*ListServiceRequest_IndexKey_Origin_)(nil),
+		(*ListServiceRequest_IndexKey_Authority_)(nil),
 	}
 }
 
-type ListServiceRecordRequest_IndexKey_Id struct {
+type ListServiceRequest_IndexKey_Id struct {
 	// Types that are valid to be assigned to XId:
-	//	*ListServiceRecordRequest_IndexKey_Id_Id
-	XId isListServiceRecordRequest_IndexKey_Id_XId `protobuf_oneof:"_id"`
+	//	*ListServiceRequest_IndexKey_Id_Id
+	XId isListServiceRequest_IndexKey_Id_XId `protobuf_oneof:"_id"`
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id) Reset()         { *m = ListServiceRecordRequest_IndexKey_Id{} }
-func (m *ListServiceRecordRequest_IndexKey_Id) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordRequest_IndexKey_Id) ProtoMessage()    {}
-func (*ListServiceRecordRequest_IndexKey_Id) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest_IndexKey_Id) Reset()         { *m = ListServiceRequest_IndexKey_Id{} }
+func (m *ListServiceRequest_IndexKey_Id) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest_IndexKey_Id) ProtoMessage()    {}
+func (*ListServiceRequest_IndexKey_Id) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4, 0, 0}
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest_IndexKey_Id) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest_IndexKey_Id) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest_IndexKey_Id.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest_IndexKey_Id.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -435,71 +435,69 @@ func (m *ListServiceRecordRequest_IndexKey_Id) XXX_Marshal(b []byte, determinist
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Id.Merge(m, src)
+func (m *ListServiceRequest_IndexKey_Id) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Id.Merge(m, src)
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) XXX_Size() int {
+func (m *ListServiceRequest_IndexKey_Id) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Id.DiscardUnknown(m)
+func (m *ListServiceRequest_IndexKey_Id) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Id.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest_IndexKey_Id proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest_IndexKey_Id proto.InternalMessageInfo
 
-type isListServiceRecordRequest_IndexKey_Id_XId interface {
-	isListServiceRecordRequest_IndexKey_Id_XId()
+type isListServiceRequest_IndexKey_Id_XId interface {
+	isListServiceRequest_IndexKey_Id_XId()
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
 
-type ListServiceRecordRequest_IndexKey_Id_Id struct {
+type ListServiceRequest_IndexKey_Id_Id struct {
 	Id uint64 `protobuf:"varint,1,opt,name=id,proto3,oneof" json:"id,omitempty"`
 }
 
-func (*ListServiceRecordRequest_IndexKey_Id_Id) isListServiceRecordRequest_IndexKey_Id_XId() {}
+func (*ListServiceRequest_IndexKey_Id_Id) isListServiceRequest_IndexKey_Id_XId() {}
 
-func (m *ListServiceRecordRequest_IndexKey_Id) GetXId() isListServiceRecordRequest_IndexKey_Id_XId {
+func (m *ListServiceRequest_IndexKey_Id) GetXId() isListServiceRequest_IndexKey_Id_XId {
 	if m != nil {
 		return m.XId
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id) GetId() uint64 {
-	if x, ok := m.GetXId().(*ListServiceRecordRequest_IndexKey_Id_Id); ok {
+func (m *ListServiceRequest_IndexKey_Id) GetId() uint64 {
+	if x, ok := m.GetXId().(*ListServiceRequest_IndexKey_Id_Id); ok {
 		return x.Id
 	}
 	return 0
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
-func (*ListServiceRecordRequest_IndexKey_Id) XXX_OneofWrappers() []interface{} {
+func (*ListServiceRequest_IndexKey_Id) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
-		(*ListServiceRecordRequest_IndexKey_Id_Id)(nil),
+		(*ListServiceRequest_IndexKey_Id_Id)(nil),
 	}
 }
 
-type ListServiceRecordRequest_IndexKey_Origin struct {
+type ListServiceRequest_IndexKey_Origin struct {
 	// Types that are valid to be assigned to XOrigin:
-	//	*ListServiceRecordRequest_IndexKey_Origin_Origin
-	XOrigin isListServiceRecordRequest_IndexKey_Origin_XOrigin `protobuf_oneof:"_origin"`
+	//	*ListServiceRequest_IndexKey_Origin_Origin
+	XOrigin isListServiceRequest_IndexKey_Origin_XOrigin `protobuf_oneof:"_origin"`
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin) Reset() {
-	*m = ListServiceRecordRequest_IndexKey_Origin{}
-}
-func (m *ListServiceRecordRequest_IndexKey_Origin) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordRequest_IndexKey_Origin) ProtoMessage()    {}
-func (*ListServiceRecordRequest_IndexKey_Origin) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest_IndexKey_Origin) Reset()         { *m = ListServiceRequest_IndexKey_Origin{} }
+func (m *ListServiceRequest_IndexKey_Origin) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest_IndexKey_Origin) ProtoMessage()    {}
+func (*ListServiceRequest_IndexKey_Origin) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4, 0, 1}
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest_IndexKey_Origin) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest_IndexKey_Origin) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest_IndexKey_Origin.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest_IndexKey_Origin.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -509,74 +507,69 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_Marshal(b []byte, determi
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Origin.Merge(m, src)
+func (m *ListServiceRequest_IndexKey_Origin) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Origin.Merge(m, src)
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_Size() int {
+func (m *ListServiceRequest_IndexKey_Origin) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Origin.DiscardUnknown(m)
+func (m *ListServiceRequest_IndexKey_Origin) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Origin.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest_IndexKey_Origin proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest_IndexKey_Origin proto.InternalMessageInfo
 
-type isListServiceRecordRequest_IndexKey_Origin_XOrigin interface {
-	isListServiceRecordRequest_IndexKey_Origin_XOrigin()
+type isListServiceRequest_IndexKey_Origin_XOrigin interface {
+	isListServiceRequest_IndexKey_Origin_XOrigin()
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
 
-type ListServiceRecordRequest_IndexKey_Origin_Origin struct {
+type ListServiceRequest_IndexKey_Origin_Origin struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3,oneof" json:"origin,omitempty"`
 }
 
-func (*ListServiceRecordRequest_IndexKey_Origin_Origin) isListServiceRecordRequest_IndexKey_Origin_XOrigin() {
-}
+func (*ListServiceRequest_IndexKey_Origin_Origin) isListServiceRequest_IndexKey_Origin_XOrigin() {}
 
-func (m *ListServiceRecordRequest_IndexKey_Origin) GetXOrigin() isListServiceRecordRequest_IndexKey_Origin_XOrigin {
+func (m *ListServiceRequest_IndexKey_Origin) GetXOrigin() isListServiceRequest_IndexKey_Origin_XOrigin {
 	if m != nil {
 		return m.XOrigin
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin) GetOrigin() string {
-	if x, ok := m.GetXOrigin().(*ListServiceRecordRequest_IndexKey_Origin_Origin); ok {
+func (m *ListServiceRequest_IndexKey_Origin) GetOrigin() string {
+	if x, ok := m.GetXOrigin().(*ListServiceRequest_IndexKey_Origin_Origin); ok {
 		return x.Origin
 	}
 	return ""
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
-func (*ListServiceRecordRequest_IndexKey_Origin) XXX_OneofWrappers() []interface{} {
+func (*ListServiceRequest_IndexKey_Origin) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
-		(*ListServiceRecordRequest_IndexKey_Origin_Origin)(nil),
+		(*ListServiceRequest_IndexKey_Origin_Origin)(nil),
 	}
 }
 
-type ListServiceRecordRequest_IndexKey_Authority struct {
+type ListServiceRequest_IndexKey_Authority struct {
 	// Types that are valid to be assigned to XAuthority:
-	//	*ListServiceRecordRequest_IndexKey_Authority_Authority
-	XAuthority isListServiceRecordRequest_IndexKey_Authority_XAuthority `protobuf_oneof:"_authority"`
+	//	*ListServiceRequest_IndexKey_Authority_Authority
+	XAuthority isListServiceRequest_IndexKey_Authority_XAuthority `protobuf_oneof:"_authority"`
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority) Reset() {
-	*m = ListServiceRecordRequest_IndexKey_Authority{}
-}
-func (m *ListServiceRecordRequest_IndexKey_Authority) String() string {
-	return proto.CompactTextString(m)
-}
-func (*ListServiceRecordRequest_IndexKey_Authority) ProtoMessage() {}
-func (*ListServiceRecordRequest_IndexKey_Authority) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest_IndexKey_Authority) Reset()         { *m = ListServiceRequest_IndexKey_Authority{} }
+func (m *ListServiceRequest_IndexKey_Authority) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest_IndexKey_Authority) ProtoMessage()    {}
+func (*ListServiceRequest_IndexKey_Authority) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4, 0, 2}
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest_IndexKey_Authority) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest_IndexKey_Authority) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest_IndexKey_Authority.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest_IndexKey_Authority.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -586,75 +579,75 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_Marshal(b []byte, dete
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Authority.Merge(m, src)
+func (m *ListServiceRequest_IndexKey_Authority) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Authority.Merge(m, src)
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_Size() int {
+func (m *ListServiceRequest_IndexKey_Authority) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest_IndexKey_Authority.DiscardUnknown(m)
+func (m *ListServiceRequest_IndexKey_Authority) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest_IndexKey_Authority.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest_IndexKey_Authority proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest_IndexKey_Authority proto.InternalMessageInfo
 
-type isListServiceRecordRequest_IndexKey_Authority_XAuthority interface {
-	isListServiceRecordRequest_IndexKey_Authority_XAuthority()
+type isListServiceRequest_IndexKey_Authority_XAuthority interface {
+	isListServiceRequest_IndexKey_Authority_XAuthority()
 	MarshalTo([]byte) (int, error)
 	Size() int
 }
 
-type ListServiceRecordRequest_IndexKey_Authority_Authority struct {
+type ListServiceRequest_IndexKey_Authority_Authority struct {
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3,oneof" json:"authority,omitempty"`
 }
 
-func (*ListServiceRecordRequest_IndexKey_Authority_Authority) isListServiceRecordRequest_IndexKey_Authority_XAuthority() {
+func (*ListServiceRequest_IndexKey_Authority_Authority) isListServiceRequest_IndexKey_Authority_XAuthority() {
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority) GetXAuthority() isListServiceRecordRequest_IndexKey_Authority_XAuthority {
+func (m *ListServiceRequest_IndexKey_Authority) GetXAuthority() isListServiceRequest_IndexKey_Authority_XAuthority {
 	if m != nil {
 		return m.XAuthority
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority) GetAuthority() string {
-	if x, ok := m.GetXAuthority().(*ListServiceRecordRequest_IndexKey_Authority_Authority); ok {
+func (m *ListServiceRequest_IndexKey_Authority) GetAuthority() string {
+	if x, ok := m.GetXAuthority().(*ListServiceRequest_IndexKey_Authority_Authority); ok {
 		return x.Authority
 	}
 	return ""
 }
 
 // XXX_OneofWrappers is for the internal use of the proto package.
-func (*ListServiceRecordRequest_IndexKey_Authority) XXX_OneofWrappers() []interface{} {
+func (*ListServiceRequest_IndexKey_Authority) XXX_OneofWrappers() []interface{} {
 	return []interface{}{
-		(*ListServiceRecordRequest_IndexKey_Authority_Authority)(nil),
+		(*ListServiceRequest_IndexKey_Authority_Authority)(nil),
 	}
 }
 
 // RangeQuery specifies the from/to index keys for a range query.
-type ListServiceRecordRequest_RangeQuery struct {
+type ListServiceRequest_RangeQuery struct {
 	// from is the index key to use for the start of the range query.
 	// To query from the start of an index, specify an index key for that index with empty values.
-	From *ListServiceRecordRequest_IndexKey `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
+	From *ListServiceRequest_IndexKey `protobuf:"bytes,1,opt,name=from,proto3" json:"from,omitempty"`
 	// to is the index key to use for the end of the range query.
 	// The index key type MUST be the same as the index key type used for from.
 	// To query from to the end of an index it can be omitted.
-	To *ListServiceRecordRequest_IndexKey `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
+	To *ListServiceRequest_IndexKey `protobuf:"bytes,2,opt,name=to,proto3" json:"to,omitempty"`
 }
 
-func (m *ListServiceRecordRequest_RangeQuery) Reset()         { *m = ListServiceRecordRequest_RangeQuery{} }
-func (m *ListServiceRecordRequest_RangeQuery) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordRequest_RangeQuery) ProtoMessage()    {}
-func (*ListServiceRecordRequest_RangeQuery) Descriptor() ([]byte, []int) {
+func (m *ListServiceRequest_RangeQuery) Reset()         { *m = ListServiceRequest_RangeQuery{} }
+func (m *ListServiceRequest_RangeQuery) String() string { return proto.CompactTextString(m) }
+func (*ListServiceRequest_RangeQuery) ProtoMessage()    {}
+func (*ListServiceRequest_RangeQuery) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{4, 1}
 }
-func (m *ListServiceRecordRequest_RangeQuery) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceRequest_RangeQuery) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordRequest_RangeQuery) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceRequest_RangeQuery) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordRequest_RangeQuery.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceRequest_RangeQuery.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -664,52 +657,52 @@ func (m *ListServiceRecordRequest_RangeQuery) XXX_Marshal(b []byte, deterministi
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordRequest_RangeQuery) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordRequest_RangeQuery.Merge(m, src)
+func (m *ListServiceRequest_RangeQuery) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceRequest_RangeQuery.Merge(m, src)
 }
-func (m *ListServiceRecordRequest_RangeQuery) XXX_Size() int {
+func (m *ListServiceRequest_RangeQuery) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordRequest_RangeQuery) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordRequest_RangeQuery.DiscardUnknown(m)
+func (m *ListServiceRequest_RangeQuery) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceRequest_RangeQuery.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordRequest_RangeQuery proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceRequest_RangeQuery proto.InternalMessageInfo
 
-func (m *ListServiceRecordRequest_RangeQuery) GetFrom() *ListServiceRecordRequest_IndexKey {
+func (m *ListServiceRequest_RangeQuery) GetFrom() *ListServiceRequest_IndexKey {
 	if m != nil {
 		return m.From
 	}
 	return nil
 }
 
-func (m *ListServiceRecordRequest_RangeQuery) GetTo() *ListServiceRecordRequest_IndexKey {
+func (m *ListServiceRequest_RangeQuery) GetTo() *ListServiceRequest_IndexKey {
 	if m != nil {
 		return m.To
 	}
 	return nil
 }
 
-// ListServiceRecordResponse is the StateQuery/ListServiceRecordResponse response type.
-type ListServiceRecordResponse struct {
+// ListServiceResponse is the StateQuery/ListServiceResponse response type.
+type ListServiceResponse struct {
 	// values are the results of the query.
-	Values []*ServiceRecord `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+	Values []*Service `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
 	// pagination is the pagination response.
 	Pagination *query.PageResponse `protobuf:"bytes,2,opt,name=pagination,proto3" json:"pagination,omitempty"`
 }
 
-func (m *ListServiceRecordResponse) Reset()         { *m = ListServiceRecordResponse{} }
-func (m *ListServiceRecordResponse) String() string { return proto.CompactTextString(m) }
-func (*ListServiceRecordResponse) ProtoMessage()    {}
-func (*ListServiceRecordResponse) Descriptor() ([]byte, []int) {
+func (m *ListServiceResponse) Reset()         { *m = ListServiceResponse{} }
+func (m *ListServiceResponse) String() string { return proto.CompactTextString(m) }
+func (*ListServiceResponse) ProtoMessage()    {}
+func (*ListServiceResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_8dd66349cf3c9e5a, []int{5}
 }
-func (m *ListServiceRecordResponse) XXX_Unmarshal(b []byte) error {
+func (m *ListServiceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *ListServiceRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ListServiceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_ListServiceRecordResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ListServiceResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -719,26 +712,26 @@ func (m *ListServiceRecordResponse) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *ListServiceRecordResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_ListServiceRecordResponse.Merge(m, src)
+func (m *ListServiceResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ListServiceResponse.Merge(m, src)
 }
-func (m *ListServiceRecordResponse) XXX_Size() int {
+func (m *ListServiceResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *ListServiceRecordResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_ListServiceRecordResponse.DiscardUnknown(m)
+func (m *ListServiceResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_ListServiceResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_ListServiceRecordResponse proto.InternalMessageInfo
+var xxx_messageInfo_ListServiceResponse proto.InternalMessageInfo
 
-func (m *ListServiceRecordResponse) GetValues() []*ServiceRecord {
+func (m *ListServiceResponse) GetValues() []*Service {
 	if m != nil {
 		return m.Values
 	}
 	return nil
 }
 
-func (m *ListServiceRecordResponse) GetPagination() *query.PageResponse {
+func (m *ListServiceResponse) GetPagination() *query.PageResponse {
 	if m != nil {
 		return m.Pagination
 	}
@@ -2895,17 +2888,17 @@ func (m *GetOwnParamsResponse) GetValue() *OwnParams {
 }
 
 func init() {
-	proto.RegisterType((*GetServiceRecordRequest)(nil), "sonr.service.module.v1.GetServiceRecordRequest")
-	proto.RegisterType((*GetServiceRecordResponse)(nil), "sonr.service.module.v1.GetServiceRecordResponse")
-	proto.RegisterType((*GetServiceRecordByOriginRequest)(nil), "sonr.service.module.v1.GetServiceRecordByOriginRequest")
-	proto.RegisterType((*GetServiceRecordByOriginResponse)(nil), "sonr.service.module.v1.GetServiceRecordByOriginResponse")
-	proto.RegisterType((*ListServiceRecordRequest)(nil), "sonr.service.module.v1.ListServiceRecordRequest")
-	proto.RegisterType((*ListServiceRecordRequest_IndexKey)(nil), "sonr.service.module.v1.ListServiceRecordRequest.IndexKey")
-	proto.RegisterType((*ListServiceRecordRequest_IndexKey_Id)(nil), "sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Id")
-	proto.RegisterType((*ListServiceRecordRequest_IndexKey_Origin)(nil), "sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Origin")
-	proto.RegisterType((*ListServiceRecordRequest_IndexKey_Authority)(nil), "sonr.service.module.v1.ListServiceRecordRequest.IndexKey.Authority")
-	proto.RegisterType((*ListServiceRecordRequest_RangeQuery)(nil), "sonr.service.module.v1.ListServiceRecordRequest.RangeQuery")
-	proto.RegisterType((*ListServiceRecordResponse)(nil), "sonr.service.module.v1.ListServiceRecordResponse")
+	proto.RegisterType((*GetServiceRequest)(nil), "sonr.service.module.v1.GetServiceRequest")
+	proto.RegisterType((*GetServiceResponse)(nil), "sonr.service.module.v1.GetServiceResponse")
+	proto.RegisterType((*GetServiceByOriginRequest)(nil), "sonr.service.module.v1.GetServiceByOriginRequest")
+	proto.RegisterType((*GetServiceByOriginResponse)(nil), "sonr.service.module.v1.GetServiceByOriginResponse")
+	proto.RegisterType((*ListServiceRequest)(nil), "sonr.service.module.v1.ListServiceRequest")
+	proto.RegisterType((*ListServiceRequest_IndexKey)(nil), "sonr.service.module.v1.ListServiceRequest.IndexKey")
+	proto.RegisterType((*ListServiceRequest_IndexKey_Id)(nil), "sonr.service.module.v1.ListServiceRequest.IndexKey.Id")
+	proto.RegisterType((*ListServiceRequest_IndexKey_Origin)(nil), "sonr.service.module.v1.ListServiceRequest.IndexKey.Origin")
+	proto.RegisterType((*ListServiceRequest_IndexKey_Authority)(nil), "sonr.service.module.v1.ListServiceRequest.IndexKey.Authority")
+	proto.RegisterType((*ListServiceRequest_RangeQuery)(nil), "sonr.service.module.v1.ListServiceRequest.RangeQuery")
+	proto.RegisterType((*ListServiceResponse)(nil), "sonr.service.module.v1.ListServiceResponse")
 	proto.RegisterType((*GetCredentialRequest)(nil), "sonr.service.module.v1.GetCredentialRequest")
 	proto.RegisterType((*GetCredentialResponse)(nil), "sonr.service.module.v1.GetCredentialResponse")
 	proto.RegisterType((*GetCredentialByOriginHandleRequest)(nil), "sonr.service.module.v1.GetCredentialByOriginHandleRequest")
@@ -2948,101 +2941,100 @@ func init() {
 }
 
 var fileDescriptor_8dd66349cf3c9e5a = []byte{
-	// 1494 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x59, 0x5f, 0x73, 0x14, 0x45,
-	0x10, 0xdf, 0xbd, 0x70, 0x97, 0x5c, 0xdf, 0x91, 0xc0, 0x00, 0xe1, 0x58, 0xa8, 0x23, 0x2c, 0x45,
-	0x40, 0x84, 0xbd, 0xe4, 0xb4, 0x24, 0xfc, 0x53, 0x0c, 0x4a, 0xee, 0x44, 0x05, 0x36, 0xc6, 0x54,
-	0x89, 0x70, 0xb5, 0xc9, 0x0d, 0x61, 0x21, 0xd9, 0x0d, 0xbb, 0x9b, 0x40, 0xfc, 0x04, 0x56, 0xf9,
-	0xa0, 0x56, 0xf1, 0xa0, 0x0f, 0x56, 0x69, 0x59, 0xe5, 0x27, 0xf0, 0x43, 0xe8, 0x1b, 0xbe, 0xf9,
-	0x68, 0xc1, 0x9b, 0x9f, 0xc2, 0xda, 0x99, 0xd9, 0xdd, 0xd9, 0xbf, 0xb7, 0x77, 0x17, 0xca, 0xb7,
-	0x9b, 0x49, 0xf7, 0xaf, 0xbb, 0x67, 0xba, 0xfb, 0xd7, 0xb3, 0x81, 0x33, 0xb6, 0x69, 0x58, 0x0d,
-	0x1b, 0x5b, 0xdb, 0xfa, 0x2a, 0x6e, 0x6c, 0x98, 0xdd, 0xad, 0x75, 0xdc, 0xd8, 0x9e, 0x6d, 0xd8,
-	0x8e, 0xe6, 0xe0, 0xce, 0x93, 0x2d, 0x6c, 0xed, 0x28, 0x9b, 0x96, 0xe9, 0x98, 0x68, 0xd2, 0x95,
-	0x54, 0x98, 0xa4, 0x42, 0x25, 0x95, 0xed, 0x59, 0xe9, 0xec, 0xaa, 0x69, 0x6f, 0x98, 0x76, 0x63,
-	0x45, 0xb3, 0x71, 0x83, 0x28, 0x34, 0xb6, 0x67, 0x57, 0xb0, 0xa3, 0xcd, 0x36, 0x36, 0xb5, 0x35,
-	0xdd, 0xd0, 0x1c, 0xdd, 0x34, 0x28, 0x86, 0x24, 0x67, 0x59, 0xa3, 0x32, 0xf2, 0x1b, 0x70, 0x78,
-	0x01, 0x3b, 0x8b, 0x54, 0x46, 0xc5, 0xab, 0xa6, 0xd5, 0x55, 0xf1, 0x93, 0x2d, 0x6c, 0x3b, 0x68,
-	0x1c, 0x0a, 0x7a, 0xb7, 0x26, 0x4e, 0x89, 0x67, 0xf6, 0xa8, 0x05, 0xbd, 0x2b, 0x2f, 0x43, 0x2d,
-	0x2e, 0x6a, 0x6f, 0x9a, 0x86, 0x8d, 0xd1, 0x65, 0x28, 0x6e, 0x6b, 0xeb, 0x5b, 0x98, 0x88, 0x57,
-	0x9a, 0xa7, 0x94, 0x64, 0xf7, 0x95, 0xb0, 0x36, 0xd5, 0x91, 0x2f, 0xc2, 0xf1, 0x28, 0xf0, 0xfc,
-	0xce, 0x2d, 0x4b, 0x5f, 0xd3, 0x0d, 0xcf, 0x97, 0x49, 0x28, 0x99, 0x64, 0x83, 0x18, 0x28, 0xab,
-	0x6c, 0x25, 0x77, 0x60, 0x2a, 0x5d, 0x75, 0x37, 0x7c, 0xfb, 0x66, 0x14, 0x6a, 0x1f, 0xeb, 0x76,
-	0xf2, 0x09, 0xdd, 0x87, 0xea, 0xa6, 0x85, 0x1f, 0xe8, 0xcf, 0xe8, 0xd5, 0x31, 0x03, 0x17, 0xd3,
-	0x0c, 0xa4, 0xe1, 0x28, 0x6d, 0xa3, 0x8b, 0x9f, 0xdd, 0xc4, 0x3b, 0x2d, 0x41, 0xad, 0x50, 0xc0,
-	0x3b, 0x2e, 0x1e, 0xba, 0x0f, 0x15, 0x4b, 0x33, 0xd6, 0x58, 0x66, 0xd4, 0x0a, 0x04, 0xfe, 0x72,
-	0xdf, 0xf0, 0xaa, 0x8b, 0x41, 0x10, 0x5b, 0x82, 0x0a, 0x96, 0xbf, 0x42, 0x37, 0x00, 0x82, 0xa4,
-	0xa9, 0x8d, 0x10, 0xf8, 0x69, 0x85, 0x66, 0x98, 0xe2, 0x66, 0x98, 0x42, 0x53, 0x92, 0x65, 0x98,
-	0x72, 0x5b, 0x5b, 0xc3, 0x0c, 0x54, 0xe5, 0x34, 0xa5, 0xdf, 0x47, 0x60, 0xcc, 0x8b, 0x01, 0x7d,
-	0xea, 0xa7, 0x4d, 0xa5, 0x79, 0x65, 0xe0, 0xa3, 0x50, 0xda, 0xdd, 0x96, 0xe0, 0xa6, 0x1d, 0xfa,
-	0xc2, 0xbf, 0x7a, 0x1a, 0xff, 0xb5, 0xc1, 0x31, 0x69, 0x62, 0xb4, 0x04, 0x2f, 0x7d, 0xd0, 0x2a,
-	0x94, 0xb5, 0x2d, 0xe7, 0xa1, 0x69, 0xe9, 0xce, 0x0e, 0x8b, 0xff, 0xfa, 0xe0, 0xf0, 0xef, 0x7b,
-	0x50, 0x2d, 0x41, 0x0d, 0x70, 0xa5, 0x29, 0x28, 0xb4, 0xbb, 0xe8, 0x40, 0x50, 0x4d, 0x34, 0xb0,
-	0xaf, 0x45, 0x71, 0xbe, 0x08, 0x23, 0x1d, 0xbd, 0x2b, 0xcd, 0x40, 0x89, 0xba, 0x86, 0x8e, 0x86,
-	0xf3, 0x3c, 0x70, 0xd5, 0x95, 0x2e, 0xc3, 0x68, 0x87, 0xae, 0xa4, 0x2b, 0x50, 0xf6, 0xad, 0xa1,
-	0x13, 0x7c, 0x14, 0x9e, 0x5e, 0xb0, 0xe5, 0xaa, 0x56, 0x01, 0x3a, 0xfe, 0x86, 0x6b, 0xf6, 0x31,
-	0xde, 0x91, 0x7e, 0x13, 0x01, 0x82, 0xdc, 0x40, 0x9f, 0xc0, 0x9e, 0x07, 0x96, 0xb9, 0x31, 0x74,
-	0x16, 0xab, 0x04, 0x06, 0xb5, 0xa1, 0xe0, 0x98, 0xec, 0xce, 0x86, 0x00, 0x2b, 0x38, 0xe6, 0xfc,
-	0x28, 0x14, 0x49, 0x22, 0xca, 0xbf, 0x8a, 0x70, 0x24, 0x41, 0x85, 0x15, 0xfa, 0x55, 0x28, 0x91,
-	0xa2, 0xb5, 0x6b, 0xe2, 0xd4, 0x48, 0xfe, 0x4a, 0x67, 0x4a, 0x68, 0x21, 0x54, 0x0d, 0xd4, 0xf1,
-	0xd3, 0x3d, 0xab, 0x81, 0xda, 0xe6, 0xcb, 0x41, 0x6e, 0xc2, 0xc1, 0x05, 0xec, 0x5c, 0xb7, 0x70,
-	0x17, 0x1b, 0x8e, 0xae, 0xad, 0x7b, 0xed, 0x42, 0x82, 0x31, 0xdb, 0xfd, 0x69, 0xac, 0x62, 0xd6,
-	0x56, 0xfd, 0xb5, 0x7c, 0x07, 0x0e, 0x45, 0x74, 0x58, 0x50, 0x73, 0xe1, 0xee, 0x25, 0xa7, 0xc5,
-	0xc4, 0xa9, 0xb2, 0xd6, 0xf5, 0x19, 0xc8, 0x21, 0x48, 0xaf, 0x31, 0xb6, 0x34, 0xa3, 0xbb, 0x8e,
-	0x7b, 0x74, 0x56, 0x77, 0xff, 0x21, 0x11, 0x24, 0x27, 0x51, 0x56, 0xd9, 0x4a, 0xee, 0xc0, 0xc9,
-	0x4c, 0xd4, 0xa1, 0xdd, 0x3e, 0x4b, 0x68, 0x86, 0x37, 0xd0, 0x4e, 0xa0, 0xa4, 0x2a, 0xa1, 0xa4,
-	0x25, 0x38, 0x92, 0x20, 0x3b, 0xb4, 0x0b, 0xf7, 0xe0, 0x54, 0x62, 0x8c, 0x7e, 0xc9, 0xf5, 0x3a,
-	0xbc, 0x63, 0x7c, 0x45, 0xd2, 0xf3, 0x0b, 0x36, 0xe4, 0x15, 0x98, 0xee, 0x05, 0x3f, 0x74, 0x08,
-	0x3f, 0x02, 0x1c, 0x72, 0x2b, 0x25, 0x9e, 0x85, 0x77, 0x13, 0x49, 0xeb, 0x9d, 0xac, 0x0a, 0x8d,
-	0x81, 0xa4, 0x32, 0xd6, 0xdd, 0x24, 0xc6, 0x9a, 0xeb, 0x0f, 0xfb, 0xb5, 0xd3, 0xd5, 0x5f, 0x25,
-	0x8e, 0xae, 0xee, 0x45, 0x8a, 0xb2, 0xd2, 0x7c, 0x6f, 0xb0, 0xa3, 0x50, 0x16, 0x19, 0x4c, 0x4b,
-	0x08, 0xea, 0x1a, 0x2d, 0x87, 0xca, 0xa8, 0xd2, 0xbc, 0x3a, 0x20, 0x38, 0x2d, 0x2f, 0x97, 0x0f,
-	0x28, 0x1c, 0x7a, 0x04, 0x7b, 0x69, 0xb2, 0x75, 0x18, 0x7e, 0x0e, 0xfa, 0xca, 0xc0, 0xe7, 0x8b,
-	0xb8, 0x25, 0xa8, 0x55, 0x93, 0x5b, 0xa3, 0x9b, 0xa4, 0xec, 0xf6, 0xf4, 0x6e, 0xe5, 0x19, 0x06,
-	0x7c, 0x3e, 0xb7, 0x61, 0x1f, 0x73, 0x3c, 0x28, 0x91, 0x22, 0x81, 0xbe, 0x31, 0x94, 0xef, 0x3c,
-	0xfb, 0x4e, 0x98, 0xe1, 0x2d, 0x69, 0x0e, 0xc6, 0xbc, 0xeb, 0x41, 0xc7, 0xa3, 0x6d, 0x98, 0xbf,
-	0x30, 0x97, 0x2c, 0x2b, 0x50, 0xee, 0x78, 0x6b, 0x97, 0x9b, 0xd9, 0x29, 0x1c, 0xf5, 0xaf, 0xd2,
-	0xe7, 0x66, 0xba, 0xf6, 0xb8, 0x99, 0xae, 0xa4, 0xfb, 0x50, 0xe5, 0x4f, 0x33, 0x93, 0xd3, 0x39,
-	0x50, 0xd2, 0x26, 0x5a, 0x62, 0x14, 0x94, 0x8a, 0xf2, 0xf8, 0xd1, 0x79, 0xa2, 0x1a, 0x9b, 0x27,
-	0x1e, 0xc1, 0x44, 0xe4, 0x4c, 0xb2, 0x9d, 0x38, 0x11, 0x6b, 0x57, 0x2d, 0x31, 0x32, 0x40, 0x70,
-	0xae, 0x24, 0xce, 0x12, 0x3f, 0x87, 0x67, 0x89, 0x8f, 0x42, 0xb3, 0xc4, 0x80, 0xcd, 0x85, 0x0d,
-	0x12, 0x37, 0xb8, 0x41, 0x62, 0x50, 0xa4, 0xd0, 0x14, 0xf1, 0x93, 0x08, 0x93, 0x51, 0x79, 0xd6,
-	0x70, 0x2f, 0x45, 0x46, 0x88, 0x3c, 0x1d, 0x77, 0xd7, 0xe7, 0x87, 0x69, 0x18, 0x5f, 0xc0, 0xce,
-	0x92, 0x8d, 0x2d, 0xaf, 0x67, 0x1f, 0x84, 0xa2, 0xee, 0x86, 0xc2, 0xc6, 0x06, 0xba, 0x90, 0x3f,
-	0x84, 0x09, 0x5f, 0x8e, 0xf9, 0xdf, 0x0c, 0x13, 0xc6, 0xb1, 0x34, 0xf7, 0x89, 0x12, 0xa3, 0x8a,
-	0x65, 0xf2, 0xfc, 0x72, 0x77, 0x76, 0x99, 0xe7, 0x3e, 0x27, 0x8f, 0xb3, 0x14, 0xe0, 0x21, 0x1c,
-	0x7e, 0x5e, 0x82, 0x09, 0xf7, 0xfe, 0xf8, 0x13, 0x5a, 0x4a, 0x64, 0xb5, 0x99, 0xac, 0x74, 0xe1,
-	0xd4, 0x53, 0xf9, 0x6c, 0x29, 0x89, 0xcf, 0x9a, 0x79, 0x51, 0x5f, 0x3b, 0x93, 0xfd, 0x5b, 0x08,
-	0x3d, 0xbc, 0xb8, 0x24, 0xe9, 0x51, 0x2a, 0x49, 0xb1, 0xd3, 0x1f, 0x2d, 0x81, 0xa5, 0x17, 0xda,
-	0x48, 0x68, 0xd4, 0x39, 0x9e, 0x60, 0x89, 0xd0, 0x39, 0x5a, 0xf4, 0x39, 0x28, 0x12, 0x71, 0x74,
-	0x24, 0x94, 0xec, 0xbe, 0x3f, 0x6e, 0x17, 0x1a, 0x83, 0x52, 0x87, 0x2c, 0xfe, 0x8f, 0x16, 0xf7,
-	0x3c, 0xdc, 0xe2, 0x3e, 0x08, 0xb5, 0xb8, 0xbe, 0x33, 0x8d, 0x35, 0xb7, 0x6b, 0x5c, 0x73, 0xeb,
-	0x1f, 0x23, 0xd4, 0xd6, 0xbe, 0x17, 0x61, 0x5f, 0x20, 0xc9, 0xea, 0xeb, 0xed, 0x48, 0x43, 0xcb,
-	0x2e, 0xb0, 0x5d, 0x6f, 0x65, 0x93, 0xe4, 0x29, 0x34, 0xaf, 0xd9, 0xf8, 0xb6, 0x66, 0x69, 0x1b,
-	0x36, 0x8b, 0x80, 0x3d, 0x77, 0xf8, 0xfd, 0x3e, 0x27, 0x5e, 0x4e, 0x95, 0x75, 0x05, 0x6a, 0x4a,
-	0xc5, 0x5a, 0x37, 0xc9, 0x14, 0xbf, 0xdf, 0xa7, 0x29, 0x4e, 0x95, 0x99, 0x3a, 0x4c, 0x20, 0x97,
-	0x2d, 0xdd, 0x89, 0x84, 0xb5, 0x08, 0x93, 0xd1, 0x3f, 0x30, 0x63, 0x17, 0xc3, 0xc6, 0x4e, 0xa6,
-	0x19, 0xe3, 0x75, 0x99, 0xb5, 0x43, 0x70, 0x60, 0x01, 0x3b, 0xb7, 0x9e, 0x1a, 0x61, 0x5b, 0xb7,
-	0x48, 0xbc, 0xdc, 0x36, 0xb3, 0x74, 0x21, 0x6c, 0xe9, 0x44, 0x9a, 0xa5, 0x40, 0x93, 0xca, 0x37,
-	0xff, 0x1c, 0x87, 0xfd, 0x8b, 0x8e, 0xe6, 0xd0, 0xfc, 0x66, 0x6f, 0x64, 0xf4, 0x14, 0xf6, 0x45,
-	0xbf, 0xb0, 0xa1, 0x46, 0x1a, 0x66, 0xca, 0xa7, 0x44, 0x69, 0x26, 0xbf, 0x02, 0x8d, 0x42, 0x16,
-	0xd0, 0xb7, 0x62, 0xfc, 0x7b, 0xa3, 0xc7, 0x23, 0xe8, 0x42, 0x5e, 0xc0, 0xc8, 0x87, 0x44, 0x69,
-	0xae, 0x7f, 0x45, 0xdf, 0xa3, 0xaf, 0x60, 0x7f, 0xec, 0xe3, 0x03, 0x9a, 0xe9, 0xf7, 0xd3, 0x86,
-	0x34, 0xdb, 0x87, 0x86, 0x6f, 0xdb, 0x80, 0xbd, 0xa1, 0x37, 0x23, 0x3a, 0x97, 0x11, 0x48, 0x6c,
-	0x10, 0x92, 0xce, 0xe7, 0x94, 0xf6, 0xed, 0xfd, 0x20, 0xc2, 0xd1, 0x8c, 0x77, 0x3e, 0xba, 0x94,
-	0x0b, 0x30, 0xf1, 0x93, 0x83, 0x74, 0x79, 0x20, 0x5d, 0xfe, 0x1a, 0x62, 0x8f, 0x7e, 0x34, 0x93,
-	0x13, 0xb3, 0xdd, 0xfb, 0x1a, 0x52, 0xbf, 0x28, 0xc8, 0x02, 0xfa, 0x45, 0x84, 0x7a, 0xf6, 0xdb,
-	0x1d, 0x5d, 0xed, 0x2b, 0xba, 0xe8, 0xa8, 0x25, 0xbd, 0x3b, 0xa8, 0xba, 0xef, 0xe3, 0x13, 0x18,
-	0x0f, 0x4f, 0xb7, 0xe8, 0x7c, 0x5f, 0x53, 0xb3, 0xa4, 0xe4, 0x15, 0xf7, 0x4d, 0x7e, 0x09, 0xa3,
-	0x6c, 0xd2, 0x43, 0xd3, 0x19, 0xfe, 0x73, 0x1c, 0x26, 0x9d, 0xee, 0x29, 0x17, 0xed, 0x04, 0x89,
-	0x83, 0x64, 0x66, 0x27, 0xc8, 0x9a, 0x69, 0x33, 0x3b, 0x41, 0xe6, 0xcc, 0x2a, 0x0b, 0xa8, 0x03,
-	0x63, 0x1e, 0xd3, 0xa2, 0xd3, 0x39, 0x59, 0x5b, 0x3a, 0xd3, 0x5b, 0x30, 0x52, 0xee, 0x01, 0xc9,
-	0x65, 0x96, 0x7b, 0x8c, 0x5e, 0x33, 0xcb, 0x3d, 0x4e, 0xba, 0xbe, 0xbd, 0x80, 0xe9, 0x32, 0xed,
-	0xc5, 0x38, 0x36, 0xd3, 0x5e, 0x9c, 0x79, 0x69, 0x8e, 0x86, 0x89, 0x12, 0x65, 0x41, 0xc4, 0x99,
-	0x36, 0x3d, 0x47, 0x93, 0xf9, 0x57, 0x16, 0xd0, 0x63, 0xa8, 0xf2, 0x7c, 0x89, 0xde, 0xcc, 0x40,
-	0x88, 0x92, 0xad, 0x74, 0x2e, 0x9f, 0xb0, 0x67, 0x6c, 0xbe, 0xf6, 0xc7, 0xcb, 0xba, 0xf8, 0xe2,
-	0x65, 0x5d, 0xfc, 0xe7, 0x65, 0x5d, 0xfc, 0xee, 0x55, 0x5d, 0x78, 0xf1, 0xaa, 0x2e, 0xfc, 0xfd,
-	0xaa, 0x2e, 0xac, 0x94, 0xc8, 0xff, 0xdd, 0xde, 0xfa, 0x2f, 0x00, 0x00, 0xff, 0xff, 0x02, 0x9d,
-	0x82, 0x34, 0x0b, 0x1c, 0x00, 0x00,
+	// 1486 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x59, 0xdd, 0x6f, 0xd4, 0x46,
+	0x10, 0xb7, 0x2f, 0xe4, 0x48, 0xe6, 0x8e, 0x04, 0x16, 0x48, 0x83, 0x41, 0x47, 0x30, 0x6a, 0xa0,
+	0x01, 0x7c, 0xe4, 0x28, 0x25, 0xd0, 0xd2, 0xd2, 0xd0, 0x12, 0xa7, 0x54, 0x05, 0x1c, 0x52, 0x90,
+	0x28, 0x3d, 0x39, 0xdc, 0x12, 0x0c, 0x89, 0x1d, 0x6c, 0x27, 0x25, 0x95, 0xfa, 0xde, 0xb7, 0x7e,
+	0x08, 0xa9, 0x1f, 0x52, 0xa5, 0xb6, 0x7f, 0x4d, 0x1f, 0xe9, 0x5b, 0xa5, 0xbe, 0x54, 0xf0, 0xd6,
+	0xbf, 0xa2, 0xf2, 0xee, 0x7a, 0xbd, 0xfe, 0x38, 0x9f, 0x7d, 0x07, 0xea, 0xdb, 0xed, 0x66, 0xe6,
+	0x37, 0x33, 0xbb, 0x33, 0xf3, 0x1b, 0x6f, 0xe0, 0xb8, 0xe7, 0xd8, 0x6e, 0xd3, 0xc3, 0xee, 0x96,
+	0x75, 0x0f, 0x37, 0xd7, 0x9d, 0xce, 0xe6, 0x1a, 0x6e, 0x6e, 0xcd, 0x36, 0x3d, 0xdf, 0xf4, 0x71,
+	0xfb, 0xf1, 0x26, 0x76, 0xb7, 0xb5, 0x0d, 0xd7, 0xf1, 0x1d, 0x34, 0x11, 0x48, 0x6a, 0x4c, 0x52,
+	0xa3, 0x92, 0xda, 0xd6, 0xac, 0x32, 0x73, 0xcf, 0xf1, 0xd6, 0x1d, 0xaf, 0xb9, 0x62, 0x7a, 0xb8,
+	0x49, 0x14, 0x9a, 0x5b, 0xb3, 0x2b, 0xd8, 0x37, 0x67, 0x9b, 0x1b, 0xe6, 0xaa, 0x65, 0x9b, 0xbe,
+	0xe5, 0xd8, 0x14, 0x43, 0x51, 0xf3, 0xac, 0x51, 0x19, 0xf5, 0x28, 0xec, 0x59, 0xc0, 0xfe, 0x12,
+	0x95, 0x31, 0xf0, 0xe3, 0x4d, 0xec, 0xf9, 0x68, 0x0c, 0x2a, 0x56, 0x67, 0x52, 0x9e, 0x92, 0x8f,
+	0xef, 0x30, 0x2a, 0x56, 0x47, 0xbd, 0x0a, 0x48, 0x14, 0xf2, 0x36, 0x1c, 0xdb, 0xc3, 0xe8, 0x2c,
+	0x0c, 0x6f, 0x99, 0x6b, 0x9b, 0x98, 0x08, 0xd6, 0x5a, 0x87, 0xb5, 0x6c, 0x97, 0xb5, 0x50, 0x8f,
+	0x4a, 0xab, 0x67, 0xe0, 0x40, 0x04, 0x36, 0xbf, 0x7d, 0xcd, 0xb5, 0x56, 0x2d, 0x3b, 0xb4, 0x3c,
+	0x01, 0x55, 0x87, 0x6c, 0x10, 0xd0, 0x51, 0x83, 0xad, 0xd4, 0x25, 0x50, 0xb2, 0x94, 0x06, 0xf3,
+	0xe4, 0xef, 0x2a, 0xa0, 0x8f, 0x2d, 0x2f, 0x19, 0xfd, 0x6d, 0xa8, 0x6f, 0xb8, 0xf8, 0xbe, 0xf5,
+	0x84, 0x5e, 0x08, 0x03, 0x3d, 0xd3, 0x0d, 0x34, 0x8d, 0xa0, 0x2d, 0xda, 0x1d, 0xfc, 0xe4, 0x2a,
+	0xde, 0xd6, 0x25, 0xa3, 0x46, 0xa1, 0x6e, 0x04, 0x48, 0xe8, 0x36, 0xd4, 0x5c, 0xd3, 0x5e, 0x65,
+	0x37, 0x3d, 0x59, 0x21, 0xc0, 0x67, 0x4b, 0x00, 0x1b, 0x81, 0x36, 0xc1, 0xd2, 0x25, 0x03, 0x5c,
+	0xbe, 0x42, 0x57, 0x00, 0xa2, 0xeb, 0x9f, 0x1c, 0x22, 0xc0, 0xd3, 0x1a, 0xcd, 0x15, 0x2d, 0xc8,
+	0x15, 0x8d, 0x26, 0x17, 0xcb, 0x15, 0xed, 0xba, 0xb9, 0x1a, 0x82, 0x1a, 0x82, 0xa6, 0xf2, 0xfb,
+	0x10, 0x8c, 0x84, 0xde, 0x23, 0x9d, 0xa7, 0x41, 0xad, 0xf5, 0x56, 0x1f, 0xe1, 0x6b, 0x8b, 0x1d,
+	0x5d, 0x0a, 0x12, 0x08, 0xdd, 0xe4, 0xd7, 0x4a, 0x63, 0xbe, 0xd0, 0x0f, 0x1a, 0xbd, 0x74, 0x5d,
+	0x0a, 0x93, 0x02, 0xdd, 0x85, 0x51, 0x73, 0xd3, 0x7f, 0xe0, 0xb8, 0x96, 0xbf, 0xcd, 0x62, 0xbe,
+	0xd8, 0x0f, 0xf0, 0xfb, 0x21, 0x88, 0x2e, 0x19, 0x11, 0xa2, 0x32, 0x05, 0x95, 0xc5, 0x0e, 0xda,
+	0x1b, 0xd5, 0x02, 0x0d, 0xe6, 0x6b, 0x59, 0x9e, 0x1f, 0x86, 0xa1, 0xb6, 0xd5, 0x51, 0x4e, 0x43,
+	0x95, 0x3a, 0x85, 0x0e, 0xc6, 0xf3, 0x36, 0x72, 0x32, 0x90, 0x1e, 0x85, 0x9d, 0x6d, 0xba, 0x52,
+	0xde, 0x81, 0x51, 0x6e, 0x0d, 0x1d, 0x11, 0xfd, 0x0f, 0xf5, 0xa2, 0xad, 0x40, 0xb5, 0x0e, 0xd0,
+	0xe6, 0x1b, 0x81, 0xd9, 0x47, 0x78, 0x5b, 0xf9, 0x59, 0x06, 0x88, 0x32, 0x01, 0x2d, 0xc0, 0x8e,
+	0xfb, 0xae, 0xb3, 0x3e, 0x40, 0x9e, 0x1a, 0x04, 0x00, 0x5d, 0x86, 0x8a, 0xef, 0xb0, 0x1b, 0xea,
+	0x0b, 0xa6, 0xe2, 0x3b, 0xf3, 0x3b, 0x61, 0x98, 0xa4, 0x9a, 0xfa, 0x83, 0x0c, 0x7b, 0x63, 0xc2,
+	0xac, 0x58, 0xcf, 0x41, 0x95, 0x94, 0x9f, 0x37, 0x29, 0x4f, 0x0d, 0x15, 0xa9, 0x56, 0x26, 0x8e,
+	0x16, 0x62, 0x39, 0x4e, 0xdd, 0x3c, 0xd6, 0x33, 0xc7, 0xa9, 0x55, 0x31, 0xc9, 0xd5, 0x16, 0xec,
+	0x5b, 0xc0, 0xfe, 0x65, 0x17, 0x77, 0xb0, 0xed, 0x5b, 0xe6, 0x5a, 0x58, 0xf8, 0x0a, 0x8c, 0x78,
+	0xc1, 0x4f, 0xfb, 0x1e, 0x66, 0xcd, 0x8f, 0xaf, 0xd5, 0x1b, 0xb0, 0x3f, 0xa1, 0xc3, 0xc2, 0x99,
+	0x8b, 0xf7, 0x1e, 0xb5, 0x5b, 0x34, 0x82, 0x2a, 0x6b, 0x3f, 0x37, 0x41, 0x8d, 0x41, 0x86, 0x6d,
+	0x4d, 0x37, 0xed, 0xce, 0x1a, 0xee, 0xd1, 0x11, 0x83, 0xfd, 0x07, 0x44, 0x90, 0x9c, 0xc4, 0xa8,
+	0xc1, 0x56, 0x6a, 0x1b, 0x8e, 0xe6, 0xa2, 0x0e, 0xec, 0xf6, 0x0c, 0x4c, 0x26, 0x0c, 0x2c, 0x76,
+	0xd2, 0xc4, 0x51, 0x27, 0xc4, 0xb1, 0x4c, 0x7a, 0x7d, 0x52, 0x76, 0x60, 0x17, 0xee, 0xc2, 0xeb,
+	0x99, 0x31, 0xf2, 0xd2, 0xea, 0x75, 0x78, 0x87, 0xc4, 0xca, 0xa3, 0xe7, 0x17, 0x6d, 0xa8, 0x2b,
+	0x30, 0xdd, 0x0b, 0x7e, 0xe0, 0x10, 0x7e, 0x02, 0xd8, 0x1f, 0x54, 0x47, 0x3a, 0x0b, 0xef, 0x64,
+	0xd2, 0x4f, 0x6e, 0xff, 0x4d, 0x81, 0x74, 0x65, 0xa0, 0x3b, 0x59, 0x0c, 0x34, 0x57, 0x0e, 0xfb,
+	0x95, 0x93, 0xd0, 0x9f, 0x55, 0x81, 0x84, 0xee, 0x26, 0x8a, 0xb2, 0xd6, 0x7a, 0xaf, 0xbf, 0xa3,
+	0xd0, 0x96, 0x18, 0x8c, 0x2e, 0x45, 0x75, 0x8d, 0x6e, 0xc5, 0xca, 0xa8, 0x07, 0x81, 0xe4, 0x80,
+	0xd3, 0xf2, 0x0a, 0xfa, 0x3e, 0x85, 0x43, 0x0f, 0x61, 0x17, 0x4d, 0xb6, 0x36, 0xc3, 0xa7, 0xe7,
+	0x71, 0xb9, 0x4f, 0x7c, 0xb1, 0x88, 0x75, 0xc9, 0xa8, 0x3b, 0xc2, 0x1a, 0x5d, 0x25, 0x65, 0xb7,
+	0x83, 0x18, 0x38, 0xdf, 0xa7, 0x01, 0xce, 0xd5, 0x1e, 0xec, 0x66, 0x8e, 0x47, 0x25, 0x32, 0x4c,
+	0xa0, 0xaf, 0x0c, 0xe4, 0xbb, 0xc8, 0xb2, 0xe3, 0x4e, 0x7c, 0x4b, 0x99, 0x83, 0x91, 0xf0, 0x7a,
+	0xd0, 0xe1, 0x64, 0x1b, 0x16, 0x2f, 0x2c, 0x20, 0xc5, 0x1a, 0x8c, 0xb6, 0xc3, 0x75, 0xc0, 0xc1,
+	0xec, 0x14, 0x0e, 0xf2, 0xab, 0xe4, 0x1c, 0x4c, 0xd7, 0x21, 0x07, 0xd3, 0x95, 0xf2, 0x39, 0xd4,
+	0xc5, 0xd3, 0xcc, 0xe5, 0x6e, 0x01, 0x94, 0xb4, 0x09, 0x5d, 0x4e, 0x82, 0x52, 0x51, 0x11, 0x3f,
+	0x39, 0x37, 0xd4, 0x53, 0x73, 0xc3, 0x43, 0x18, 0x4f, 0x9c, 0x49, 0xbe, 0x13, 0x47, 0x52, 0xed,
+	0x4a, 0x97, 0x13, 0x83, 0x82, 0xe0, 0x4a, 0xe6, 0xcc, 0xf0, 0x6b, 0x7c, 0x66, 0xf8, 0x28, 0x36,
+	0x33, 0xf4, 0xd9, 0x5c, 0xd8, 0xd8, 0x70, 0x45, 0x18, 0x1b, 0xfa, 0x45, 0x8a, 0x4d, 0x0e, 0xbf,
+	0xc8, 0x30, 0x91, 0x94, 0x67, 0x0d, 0xf7, 0x42, 0x62, 0x78, 0x28, 0xd2, 0x71, 0x5f, 0xfa, 0xfc,
+	0x30, 0x0d, 0x63, 0x0b, 0xd8, 0x5f, 0xf6, 0xb0, 0x1b, 0xf6, 0xec, 0x7d, 0x30, 0x6c, 0x05, 0xa1,
+	0xb0, 0xb1, 0x81, 0x2e, 0xd4, 0x0f, 0x61, 0x9c, 0xcb, 0x31, 0xff, 0x5b, 0x71, 0xc2, 0x38, 0xd4,
+	0xcd, 0x7d, 0xa2, 0xc4, 0xa8, 0xe2, 0x16, 0x1c, 0x66, 0x30, 0x2f, 0x99, 0xe7, 0x3e, 0x85, 0xa9,
+	0xee, 0xc0, 0x03, 0x38, 0xfc, 0xb4, 0x0a, 0xe3, 0xc1, 0xfd, 0x89, 0x27, 0xb4, 0x9c, 0xc9, 0x6a,
+	0xa7, 0xf3, 0xd2, 0x45, 0x50, 0xef, 0xca, 0x67, 0xcb, 0x59, 0x7c, 0xd6, 0x2a, 0x8a, 0xfa, 0xca,
+	0x99, 0xec, 0xdf, 0x8a, 0xc0, 0x64, 0x9f, 0x88, 0x49, 0xd2, 0xa3, 0x54, 0xb2, 0x62, 0xa7, 0x3f,
+	0x74, 0x89, 0xa5, 0x17, 0x5a, 0xcf, 0x68, 0xd4, 0xf4, 0x00, 0x2e, 0x95, 0x86, 0x2e, 0xd0, 0xa2,
+	0x4f, 0xc2, 0x30, 0x11, 0x47, 0x07, 0x62, 0xc9, 0xce, 0xfd, 0x09, 0xba, 0xd0, 0x08, 0x54, 0xdb,
+	0x64, 0xf1, 0x7f, 0xb4, 0xb8, 0xa7, 0xf1, 0x16, 0xf7, 0x41, 0xac, 0xc5, 0x95, 0xce, 0x34, 0xd6,
+	0xdc, 0x2e, 0x09, 0xcd, 0xad, 0x3c, 0x46, 0xac, 0xad, 0x7d, 0x27, 0xc3, 0xee, 0x48, 0x92, 0xd5,
+	0xd7, 0x9b, 0x89, 0x86, 0x96, 0x5f, 0x60, 0x2f, 0xbd, 0x95, 0x4d, 0x90, 0x4f, 0xa1, 0x79, 0xd3,
+	0xc3, 0xd7, 0x4d, 0xd7, 0x5c, 0xf7, 0x58, 0x04, 0xec, 0x73, 0x47, 0xdc, 0x2f, 0x39, 0xf1, 0x0a,
+	0xaa, 0xac, 0x2b, 0x50, 0x53, 0x06, 0x36, 0x3b, 0x59, 0xa6, 0xc4, 0xfd, 0x92, 0xa6, 0x04, 0x55,
+	0x66, 0xea, 0x35, 0x02, 0x79, 0xcb, 0xb5, 0xfc, 0x44, 0x58, 0x4b, 0x30, 0x91, 0xfc, 0x03, 0x33,
+	0x76, 0x3e, 0x6e, 0xec, 0x68, 0x37, 0x63, 0xa2, 0x2e, 0xb3, 0xb6, 0x1f, 0xf6, 0x2e, 0x60, 0xff,
+	0xda, 0x17, 0x76, 0xdc, 0xd6, 0x35, 0x12, 0xaf, 0xb0, 0xcd, 0xbf, 0x7f, 0x63, 0x96, 0x8e, 0x74,
+	0xb3, 0x14, 0x69, 0x52, 0xf9, 0xd6, 0xf7, 0x63, 0xb0, 0x67, 0xc9, 0x37, 0x7d, 0x9a, 0xdf, 0xec,
+	0xeb, 0x18, 0x61, 0x80, 0xe8, 0x65, 0x0c, 0xbd, 0xd1, 0x0d, 0x2d, 0xf5, 0xc8, 0xa7, 0xcc, 0x14,
+	0x11, 0xa5, 0x3e, 0xab, 0x12, 0xfa, 0x4a, 0x7c, 0x02, 0x0c, 0xe9, 0x02, 0xcd, 0xf6, 0xc6, 0x48,
+	0xbc, 0xf0, 0x29, 0xad, 0x32, 0x2a, 0xdc, 0xfc, 0x03, 0xa8, 0x09, 0x6f, 0x09, 0x68, 0xa6, 0xf8,
+	0xeb, 0x84, 0x72, 0xa2, 0x90, 0x2c, 0xb7, 0x64, 0xc3, 0xae, 0xd8, 0xc7, 0x1f, 0x3a, 0x99, 0xe3,
+	0x70, 0x6a, 0xa2, 0x51, 0x4e, 0x15, 0x94, 0xe6, 0xf6, 0x7e, 0x94, 0xe1, 0x60, 0xce, 0x07, 0x3b,
+	0xba, 0x50, 0x08, 0x30, 0xf3, 0xed, 0x40, 0x79, 0xbb, 0x2f, 0x5d, 0xee, 0xda, 0x97, 0xe4, 0x6d,
+	0x38, 0xfe, 0xf5, 0x8e, 0x4e, 0x17, 0xc4, 0xe4, 0x8f, 0x02, 0xca, 0x6c, 0x09, 0x0d, 0x6e, 0xfb,
+	0x37, 0x19, 0x1a, 0xf9, 0x1f, 0xe1, 0xe8, 0x62, 0xa9, 0xe8, 0x92, 0x33, 0x93, 0xf2, 0x6e, 0xbf,
+	0xea, 0xdc, 0xc7, 0xc7, 0x30, 0x16, 0x1f, 0x53, 0xd1, 0xa9, 0x52, 0xe3, 0xaf, 0xa2, 0x15, 0x15,
+	0xe7, 0x26, 0x3f, 0x83, 0x9d, 0x6c, 0x64, 0x43, 0xd3, 0x39, 0xfe, 0x0b, 0x64, 0xa4, 0x1c, 0xeb,
+	0x29, 0xc7, 0xd1, 0xbf, 0x91, 0xc9, 0xdb, 0x4e, 0xe6, 0x44, 0x88, 0xce, 0xf5, 0xc0, 0xe9, 0x7a,
+	0xd0, 0x73, 0xe5, 0x15, 0xb9, 0x47, 0x6d, 0x18, 0x09, 0x29, 0x13, 0x1d, 0x2b, 0x48, 0xbf, 0xca,
+	0xf1, 0xde, 0x82, 0x89, 0x72, 0x8f, 0xd8, 0x2a, 0xb7, 0xdc, 0x53, 0x3c, 0x99, 0x5b, 0xee, 0x69,
+	0xf6, 0xe4, 0xf6, 0x22, 0xca, 0xca, 0xb5, 0x97, 0x22, 0xcb, 0x5c, 0x7b, 0x69, 0x0a, 0xa5, 0x39,
+	0x1a, 0x67, 0x3c, 0x94, 0x07, 0x91, 0xa6, 0xcc, 0xee, 0x39, 0x9a, 0x4d, 0xa4, 0xaa, 0x84, 0x1e,
+	0x41, 0x5d, 0x24, 0x3e, 0x74, 0x22, 0x07, 0x21, 0xc9, 0x9a, 0xca, 0xc9, 0x62, 0xc2, 0xa1, 0xb1,
+	0xf9, 0xc9, 0x3f, 0x9e, 0x37, 0xe4, 0x67, 0xcf, 0x1b, 0xf2, 0x3f, 0xcf, 0x1b, 0xf2, 0xb7, 0x2f,
+	0x1a, 0xd2, 0xb3, 0x17, 0x0d, 0xe9, 0xaf, 0x17, 0x0d, 0x69, 0xa5, 0x4a, 0xfe, 0xc1, 0x75, 0xe6,
+	0xbf, 0x00, 0x00, 0x00, 0xff, 0xff, 0xc4, 0x50, 0xe5, 0x1b, 0x74, 0x1b, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -3057,12 +3049,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type StateQueryServiceClient interface {
-	// Get queries the ServiceRecord table by its primary key.
-	GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error)
-	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
-	ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error)
+	// Get queries the Service table by its primary key.
+	GetService(ctx context.Context, in *GetServiceRequest, opts ...grpc.CallOption) (*GetServiceResponse, error)
+	// GetServiceByOrigin queries the Service table by its Origin index
+	GetServiceByOrigin(ctx context.Context, in *GetServiceByOriginRequest, opts ...grpc.CallOption) (*GetServiceByOriginResponse, error)
+	// ListService queries the Service table using prefix and range queries against defined indexes.
+	ListService(ctx context.Context, in *ListServiceRequest, opts ...grpc.CallOption) (*ListServiceResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -3097,27 +3089,27 @@ func NewStateQueryServiceClient(cc grpc1.ClientConn) StateQueryServiceClient {
 	return &stateQueryServiceClient{cc}
 }
 
-func (c *stateQueryServiceClient) GetServiceRecord(ctx context.Context, in *GetServiceRecordRequest, opts ...grpc.CallOption) (*GetServiceRecordResponse, error) {
-	out := new(GetServiceRecordResponse)
-	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/GetServiceRecord", in, out, opts...)
+func (c *stateQueryServiceClient) GetService(ctx context.Context, in *GetServiceRequest, opts ...grpc.CallOption) (*GetServiceResponse, error) {
+	out := new(GetServiceResponse)
+	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/GetService", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetServiceRecordByOrigin(ctx context.Context, in *GetServiceRecordByOriginRequest, opts ...grpc.CallOption) (*GetServiceRecordByOriginResponse, error) {
-	out := new(GetServiceRecordByOriginResponse)
-	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin", in, out, opts...)
+func (c *stateQueryServiceClient) GetServiceByOrigin(ctx context.Context, in *GetServiceByOriginRequest, opts ...grpc.CallOption) (*GetServiceByOriginResponse, error) {
+	out := new(GetServiceByOriginResponse)
+	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/GetServiceByOrigin", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListServiceRecord(ctx context.Context, in *ListServiceRecordRequest, opts ...grpc.CallOption) (*ListServiceRecordResponse, error) {
-	out := new(ListServiceRecordResponse)
-	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/ListServiceRecord", in, out, opts...)
+func (c *stateQueryServiceClient) ListService(ctx context.Context, in *ListServiceRequest, opts ...grpc.CallOption) (*ListServiceResponse, error) {
+	out := new(ListServiceResponse)
+	err := c.cc.Invoke(ctx, "/sonr.service.module.v1.StateQueryService/ListService", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -3234,12 +3226,12 @@ func (c *stateQueryServiceClient) GetOwnParams(ctx context.Context, in *GetOwnPa
 
 // StateQueryServiceServer is the server API for StateQueryService service.
 type StateQueryServiceServer interface {
-	// Get queries the ServiceRecord table by its primary key.
-	GetServiceRecord(context.Context, *GetServiceRecordRequest) (*GetServiceRecordResponse, error)
-	// GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-	GetServiceRecordByOrigin(context.Context, *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error)
-	// ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
-	ListServiceRecord(context.Context, *ListServiceRecordRequest) (*ListServiceRecordResponse, error)
+	// Get queries the Service table by its primary key.
+	GetService(context.Context, *GetServiceRequest) (*GetServiceResponse, error)
+	// GetServiceByOrigin queries the Service table by its Origin index
+	GetServiceByOrigin(context.Context, *GetServiceByOriginRequest) (*GetServiceByOriginResponse, error)
+	// ListService queries the Service table using prefix and range queries against defined indexes.
+	ListService(context.Context, *ListServiceRequest) (*ListServiceResponse, error)
 	// Get queries the Credential table by its primary key.
 	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -3270,14 +3262,14 @@ type StateQueryServiceServer interface {
 type UnimplementedStateQueryServiceServer struct {
 }
 
-func (*UnimplementedStateQueryServiceServer) GetServiceRecord(ctx context.Context, req *GetServiceRecordRequest) (*GetServiceRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecord not implemented")
+func (*UnimplementedStateQueryServiceServer) GetService(ctx context.Context, req *GetServiceRequest) (*GetServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetService not implemented")
 }
-func (*UnimplementedStateQueryServiceServer) GetServiceRecordByOrigin(ctx context.Context, req *GetServiceRecordByOriginRequest) (*GetServiceRecordByOriginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetServiceRecordByOrigin not implemented")
+func (*UnimplementedStateQueryServiceServer) GetServiceByOrigin(ctx context.Context, req *GetServiceByOriginRequest) (*GetServiceByOriginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetServiceByOrigin not implemented")
 }
-func (*UnimplementedStateQueryServiceServer) ListServiceRecord(ctx context.Context, req *ListServiceRecordRequest) (*ListServiceRecordResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListServiceRecord not implemented")
+func (*UnimplementedStateQueryServiceServer) ListService(ctx context.Context, req *ListServiceRequest) (*ListServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListService not implemented")
 }
 func (*UnimplementedStateQueryServiceServer) GetCredential(ctx context.Context, req *GetCredentialRequest) (*GetCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCredential not implemented")
@@ -3320,56 +3312,56 @@ func RegisterStateQueryServiceServer(s grpc1.Server, srv StateQueryServiceServer
 	s.RegisterService(&_StateQueryService_serviceDesc, srv)
 }
 
-func _StateQueryService_GetServiceRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServiceRecordRequest)
+func _StateQueryService_GetService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetServiceRecord(ctx, in)
+		return srv.(StateQueryServiceServer).GetService(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.service.module.v1.StateQueryService/GetServiceRecord",
+		FullMethod: "/sonr.service.module.v1.StateQueryService/GetService",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetServiceRecord(ctx, req.(*GetServiceRecordRequest))
+		return srv.(StateQueryServiceServer).GetService(ctx, req.(*GetServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetServiceRecordByOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetServiceRecordByOriginRequest)
+func _StateQueryService_GetServiceByOrigin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetServiceByOriginRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, in)
+		return srv.(StateQueryServiceServer).GetServiceByOrigin(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin",
+		FullMethod: "/sonr.service.module.v1.StateQueryService/GetServiceByOrigin",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetServiceRecordByOrigin(ctx, req.(*GetServiceRecordByOriginRequest))
+		return srv.(StateQueryServiceServer).GetServiceByOrigin(ctx, req.(*GetServiceByOriginRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListServiceRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListServiceRecordRequest)
+func _StateQueryService_ListService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListServiceRecord(ctx, in)
+		return srv.(StateQueryServiceServer).ListService(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.service.module.v1.StateQueryService/ListServiceRecord",
+		FullMethod: "/sonr.service.module.v1.StateQueryService/ListService",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListServiceRecord(ctx, req.(*ListServiceRecordRequest))
+		return srv.(StateQueryServiceServer).ListService(ctx, req.(*ListServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -3595,16 +3587,16 @@ var _StateQueryService_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*StateQueryServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetServiceRecord",
-			Handler:    _StateQueryService_GetServiceRecord_Handler,
+			MethodName: "GetService",
+			Handler:    _StateQueryService_GetService_Handler,
 		},
 		{
-			MethodName: "GetServiceRecordByOrigin",
-			Handler:    _StateQueryService_GetServiceRecordByOrigin_Handler,
+			MethodName: "GetServiceByOrigin",
+			Handler:    _StateQueryService_GetServiceByOrigin_Handler,
 		},
 		{
-			MethodName: "ListServiceRecord",
-			Handler:    _StateQueryService_ListServiceRecord_Handler,
+			MethodName: "ListService",
+			Handler:    _StateQueryService_ListService_Handler,
 		},
 		{
 			MethodName: "GetCredential",
@@ -3659,7 +3651,7 @@ var _StateQueryService_serviceDesc = grpc.ServiceDesc{
 	Metadata: "sonr/service/module/v1/state_query.proto",
 }
 
-func (m *GetServiceRecordRequest) Marshal() (dAtA []byte, err error) {
+func (m *GetServiceRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3669,12 +3661,12 @@ func (m *GetServiceRecordRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetServiceRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetServiceRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetServiceRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetServiceRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3687,7 +3679,7 @@ func (m *GetServiceRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *GetServiceRecordResponse) Marshal() (dAtA []byte, err error) {
+func (m *GetServiceResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3697,12 +3689,12 @@ func (m *GetServiceRecordResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetServiceRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetServiceResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetServiceRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3722,7 +3714,7 @@ func (m *GetServiceRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *GetServiceRecordByOriginRequest) Marshal() (dAtA []byte, err error) {
+func (m *GetServiceByOriginRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3732,12 +3724,12 @@ func (m *GetServiceRecordByOriginRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetServiceRecordByOriginRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetServiceByOriginRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetServiceRecordByOriginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetServiceByOriginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3752,7 +3744,7 @@ func (m *GetServiceRecordByOriginRequest) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *GetServiceRecordByOriginResponse) Marshal() (dAtA []byte, err error) {
+func (m *GetServiceByOriginResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3762,12 +3754,12 @@ func (m *GetServiceRecordByOriginResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *GetServiceRecordByOriginResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *GetServiceByOriginResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *GetServiceRecordByOriginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *GetServiceByOriginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3787,7 +3779,7 @@ func (m *GetServiceRecordByOriginResponse) MarshalToSizedBuffer(dAtA []byte) (in
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3797,12 +3789,12 @@ func (m *ListServiceRecordRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3831,12 +3823,12 @@ func (m *ListServiceRecordRequest) MarshalToSizedBuffer(dAtA []byte) (int, error
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest_PrefixQuery) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_PrefixQuery) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_PrefixQuery) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_PrefixQuery) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	if m.PrefixQuery != nil {
 		{
@@ -3852,12 +3844,12 @@ func (m *ListServiceRecordRequest_PrefixQuery) MarshalToSizedBuffer(dAtA []byte)
 	}
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_RangeQuery_) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_RangeQuery_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_RangeQuery_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_RangeQuery_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	if m.RangeQuery != nil {
 		{
@@ -3873,7 +3865,7 @@ func (m *ListServiceRecordRequest_RangeQuery_) MarshalToSizedBuffer(dAtA []byte)
 	}
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest_IndexKey) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3883,12 +3875,12 @@ func (m *ListServiceRecordRequest_IndexKey) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -3905,12 +3897,12 @@ func (m *ListServiceRecordRequest_IndexKey) MarshalToSizedBuffer(dAtA []byte) (i
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	if m.Id != nil {
 		{
@@ -3926,12 +3918,12 @@ func (m *ListServiceRecordRequest_IndexKey_Id_) MarshalToSizedBuffer(dAtA []byte
 	}
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin_) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	if m.Origin != nil {
 		{
@@ -3947,12 +3939,12 @@ func (m *ListServiceRecordRequest_IndexKey_Origin_) MarshalToSizedBuffer(dAtA []
 	}
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority_) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority_) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority_) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	if m.Authority != nil {
 		{
@@ -3968,7 +3960,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority_) MarshalToSizedBuffer(dAtA
 	}
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest_IndexKey_Id) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -3978,12 +3970,12 @@ func (m *ListServiceRecordRequest_IndexKey_Id) Marshal() (dAtA []byte, err error
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4000,19 +3992,19 @@ func (m *ListServiceRecordRequest_IndexKey_Id) MarshalToSizedBuffer(dAtA []byte)
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_Id) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id_Id) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_Id) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Id_Id) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	i = encodeVarintStateQuery(dAtA, i, uint64(m.Id))
 	i--
 	dAtA[i] = 0x8
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest_IndexKey_Origin) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -4022,12 +4014,12 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) Marshal() (dAtA []byte, err e
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4044,12 +4036,12 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) MarshalToSizedBuffer(dAtA []b
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin_Origin) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin_Origin) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin_Origin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Origin_Origin) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	i -= len(m.Origin)
 	copy(dAtA[i:], m.Origin)
@@ -4058,7 +4050,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin_Origin) MarshalToSizedBuffer(d
 	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest_IndexKey_Authority) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -4068,12 +4060,12 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) Marshal() (dAtA []byte, er
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4090,12 +4082,12 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) MarshalToSizedBuffer(dAtA 
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority_Authority) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority_Authority) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority_Authority) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_IndexKey_Authority_Authority) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	i -= len(m.Authority)
 	copy(dAtA[i:], m.Authority)
@@ -4104,7 +4096,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority_Authority) MarshalToSizedBu
 	dAtA[i] = 0xa
 	return len(dAtA) - i, nil
 }
-func (m *ListServiceRecordRequest_RangeQuery) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceRequest_RangeQuery) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -4114,12 +4106,12 @@ func (m *ListServiceRecordRequest_RangeQuery) Marshal() (dAtA []byte, err error)
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordRequest_RangeQuery) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_RangeQuery) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordRequest_RangeQuery) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceRequest_RangeQuery) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -4151,7 +4143,7 @@ func (m *ListServiceRecordRequest_RangeQuery) MarshalToSizedBuffer(dAtA []byte) 
 	return len(dAtA) - i, nil
 }
 
-func (m *ListServiceRecordResponse) Marshal() (dAtA []byte, err error) {
+func (m *ListServiceResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -4161,12 +4153,12 @@ func (m *ListServiceRecordResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *ListServiceRecordResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *ListServiceResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *ListServiceRecordResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *ListServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -5814,7 +5806,7 @@ func encodeVarintStateQuery(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *GetServiceRecordRequest) Size() (n int) {
+func (m *GetServiceRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5826,7 +5818,7 @@ func (m *GetServiceRecordRequest) Size() (n int) {
 	return n
 }
 
-func (m *GetServiceRecordResponse) Size() (n int) {
+func (m *GetServiceResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5839,7 +5831,7 @@ func (m *GetServiceRecordResponse) Size() (n int) {
 	return n
 }
 
-func (m *GetServiceRecordByOriginRequest) Size() (n int) {
+func (m *GetServiceByOriginRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5852,7 +5844,7 @@ func (m *GetServiceRecordByOriginRequest) Size() (n int) {
 	return n
 }
 
-func (m *GetServiceRecordByOriginResponse) Size() (n int) {
+func (m *GetServiceByOriginResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5865,7 +5857,7 @@ func (m *GetServiceRecordByOriginResponse) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest) Size() (n int) {
+func (m *ListServiceRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5881,7 +5873,7 @@ func (m *ListServiceRecordRequest) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest_PrefixQuery) Size() (n int) {
+func (m *ListServiceRequest_PrefixQuery) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5893,7 +5885,7 @@ func (m *ListServiceRecordRequest_PrefixQuery) Size() (n int) {
 	}
 	return n
 }
-func (m *ListServiceRecordRequest_RangeQuery_) Size() (n int) {
+func (m *ListServiceRequest_RangeQuery_) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5905,7 +5897,7 @@ func (m *ListServiceRecordRequest_RangeQuery_) Size() (n int) {
 	}
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey) Size() (n int) {
+func (m *ListServiceRequest_IndexKey) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5917,7 +5909,7 @@ func (m *ListServiceRecordRequest_IndexKey) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Id_) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5929,7 +5921,7 @@ func (m *ListServiceRecordRequest_IndexKey_Id_) Size() (n int) {
 	}
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin_) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Origin_) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5941,7 +5933,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin_) Size() (n int) {
 	}
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority_) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Authority_) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5953,7 +5945,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority_) Size() (n int) {
 	}
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Id) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5965,7 +5957,7 @@ func (m *ListServiceRecordRequest_IndexKey_Id) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Id_Id) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Id_Id) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5974,7 +5966,7 @@ func (m *ListServiceRecordRequest_IndexKey_Id_Id) Size() (n int) {
 	n += 1 + sovStateQuery(uint64(m.Id))
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Origin) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5986,7 +5978,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Origin_Origin) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Origin_Origin) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -5996,7 +5988,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin_Origin) Size() (n int) {
 	n += 1 + l + sovStateQuery(uint64(l))
 	return n
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Authority) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -6008,7 +6000,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordRequest_IndexKey_Authority_Authority) Size() (n int) {
+func (m *ListServiceRequest_IndexKey_Authority_Authority) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -6018,7 +6010,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority_Authority) Size() (n int) {
 	n += 1 + l + sovStateQuery(uint64(l))
 	return n
 }
-func (m *ListServiceRecordRequest_RangeQuery) Size() (n int) {
+func (m *ListServiceRequest_RangeQuery) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -6035,7 +6027,7 @@ func (m *ListServiceRecordRequest_RangeQuery) Size() (n int) {
 	return n
 }
 
-func (m *ListServiceRecordResponse) Size() (n int) {
+func (m *ListServiceResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -6767,7 +6759,7 @@ func sovStateQuery(x uint64) (n int) {
 func sozStateQuery(x uint64) (n int) {
 	return sovStateQuery(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *GetServiceRecordRequest) Unmarshal(dAtA []byte) error {
+func (m *GetServiceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6790,10 +6782,10 @@ func (m *GetServiceRecordRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetServiceRecordRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetServiceRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetServiceRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetServiceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6836,7 +6828,7 @@ func (m *GetServiceRecordRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetServiceRecordResponse) Unmarshal(dAtA []byte) error {
+func (m *GetServiceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6859,10 +6851,10 @@ func (m *GetServiceRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetServiceRecordResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetServiceResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetServiceRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetServiceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -6895,7 +6887,7 @@ func (m *GetServiceRecordResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Value == nil {
-				m.Value = &ServiceRecord{}
+				m.Value = &Service{}
 			}
 			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -6922,7 +6914,7 @@ func (m *GetServiceRecordResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetServiceRecordByOriginRequest) Unmarshal(dAtA []byte) error {
+func (m *GetServiceByOriginRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -6945,10 +6937,10 @@ func (m *GetServiceRecordByOriginRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetServiceRecordByOriginRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetServiceByOriginRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetServiceRecordByOriginRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetServiceByOriginRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7004,7 +6996,7 @@ func (m *GetServiceRecordByOriginRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *GetServiceRecordByOriginResponse) Unmarshal(dAtA []byte) error {
+func (m *GetServiceByOriginResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7027,10 +7019,10 @@ func (m *GetServiceRecordByOriginResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: GetServiceRecordByOriginResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: GetServiceByOriginResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: GetServiceRecordByOriginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: GetServiceByOriginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7063,7 +7055,7 @@ func (m *GetServiceRecordByOriginResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.Value == nil {
-				m.Value = &ServiceRecord{}
+				m.Value = &Service{}
 			}
 			if err := m.Value.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -7090,7 +7082,7 @@ func (m *GetServiceRecordByOriginResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7113,10 +7105,10 @@ func (m *ListServiceRecordRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ListServiceRecordRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: ListServiceRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ListServiceRecordRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ListServiceRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7148,11 +7140,11 @@ func (m *ListServiceRecordRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &ListServiceRecordRequest_IndexKey{}
+			v := &ListServiceRequest_IndexKey{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Query = &ListServiceRecordRequest_PrefixQuery{v}
+			m.Query = &ListServiceRequest_PrefixQuery{v}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -7183,11 +7175,11 @@ func (m *ListServiceRecordRequest) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &ListServiceRecordRequest_RangeQuery{}
+			v := &ListServiceRequest_RangeQuery{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Query = &ListServiceRecordRequest_RangeQuery_{v}
+			m.Query = &ListServiceRequest_RangeQuery_{v}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -7246,7 +7238,7 @@ func (m *ListServiceRecordRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest_IndexKey) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest_IndexKey) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7304,11 +7296,11 @@ func (m *ListServiceRecordRequest_IndexKey) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &ListServiceRecordRequest_IndexKey_Id{}
+			v := &ListServiceRequest_IndexKey_Id{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Key = &ListServiceRecordRequest_IndexKey_Id_{v}
+			m.Key = &ListServiceRequest_IndexKey_Id_{v}
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
@@ -7339,11 +7331,11 @@ func (m *ListServiceRecordRequest_IndexKey) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &ListServiceRecordRequest_IndexKey_Origin{}
+			v := &ListServiceRequest_IndexKey_Origin{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Key = &ListServiceRecordRequest_IndexKey_Origin_{v}
+			m.Key = &ListServiceRequest_IndexKey_Origin_{v}
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
@@ -7374,11 +7366,11 @@ func (m *ListServiceRecordRequest_IndexKey) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			v := &ListServiceRecordRequest_IndexKey_Authority{}
+			v := &ListServiceRequest_IndexKey_Authority{}
 			if err := v.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			m.Key = &ListServiceRecordRequest_IndexKey_Authority_{v}
+			m.Key = &ListServiceRequest_IndexKey_Authority_{v}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7401,7 +7393,7 @@ func (m *ListServiceRecordRequest_IndexKey) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Id) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest_IndexKey_Id) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7449,7 +7441,7 @@ func (m *ListServiceRecordRequest_IndexKey_Id) Unmarshal(dAtA []byte) error {
 					break
 				}
 			}
-			m.XId = &ListServiceRecordRequest_IndexKey_Id_Id{v}
+			m.XId = &ListServiceRequest_IndexKey_Id_Id{v}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipStateQuery(dAtA[iNdEx:])
@@ -7471,7 +7463,7 @@ func (m *ListServiceRecordRequest_IndexKey_Id) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Origin) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest_IndexKey_Origin) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7530,7 +7522,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) Unmarshal(dAtA []byte) error 
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XOrigin = &ListServiceRecordRequest_IndexKey_Origin_Origin{string(dAtA[iNdEx:postIndex])}
+			m.XOrigin = &ListServiceRequest_IndexKey_Origin_Origin{string(dAtA[iNdEx:postIndex])}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7553,7 +7545,7 @@ func (m *ListServiceRecordRequest_IndexKey_Origin) Unmarshal(dAtA []byte) error 
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest_IndexKey_Authority) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest_IndexKey_Authority) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7612,7 +7604,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) Unmarshal(dAtA []byte) err
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.XAuthority = &ListServiceRecordRequest_IndexKey_Authority_Authority{string(dAtA[iNdEx:postIndex])}
+			m.XAuthority = &ListServiceRequest_IndexKey_Authority_Authority{string(dAtA[iNdEx:postIndex])}
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -7635,7 +7627,7 @@ func (m *ListServiceRecordRequest_IndexKey_Authority) Unmarshal(dAtA []byte) err
 	}
 	return nil
 }
-func (m *ListServiceRecordRequest_RangeQuery) Unmarshal(dAtA []byte) error {
+func (m *ListServiceRequest_RangeQuery) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7694,7 +7686,7 @@ func (m *ListServiceRecordRequest_RangeQuery) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.From == nil {
-				m.From = &ListServiceRecordRequest_IndexKey{}
+				m.From = &ListServiceRequest_IndexKey{}
 			}
 			if err := m.From.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -7730,7 +7722,7 @@ func (m *ListServiceRecordRequest_RangeQuery) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			if m.To == nil {
-				m.To = &ListServiceRecordRequest_IndexKey{}
+				m.To = &ListServiceRequest_IndexKey{}
 			}
 			if err := m.To.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
@@ -7757,7 +7749,7 @@ func (m *ListServiceRecordRequest_RangeQuery) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *ListServiceRecordResponse) Unmarshal(dAtA []byte) error {
+func (m *ListServiceResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -7780,10 +7772,10 @@ func (m *ListServiceRecordResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: ListServiceRecordResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: ListServiceResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: ListServiceRecordResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: ListServiceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -7815,7 +7807,7 @@ func (m *ListServiceRecordResponse) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Values = append(m.Values, &ServiceRecord{})
+			m.Values = append(m.Values, &Service{})
 			if err := m.Values[len(m.Values)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
