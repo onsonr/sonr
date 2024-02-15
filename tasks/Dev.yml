@@ -26,7 +26,6 @@ tasks:
 
   highway:
     desc: "Run the Highway worker with Wrangler"
-    dir: _workers/faucet-testnet
     cmd: earthly +dev
 
   faucet:
