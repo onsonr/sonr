@@ -17,18 +17,18 @@ service StateQueryService {
   rpc GetCredential(GetCredentialRequest) returns (GetCredentialResponse) {}
   // GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
   rpc GetCredentialByOriginHandle(GetCredentialByOriginHandleRequest) returns (GetCredentialByOriginHandleResponse) {}
-  // GetCredentialByCredentialId queries the Credential table by its CredentialId index
-  rpc GetCredentialByCredentialId(GetCredentialByCredentialIdRequest) returns (GetCredentialByCredentialIdResponse) {}
-  // GetCredentialByPublicKey queries the Credential table by its PublicKey index
-  rpc GetCredentialByPublicKey(GetCredentialByPublicKeyRequest) returns (GetCredentialByPublicKeyResponse) {}
+  // GetCredentialById queries the Credential table by its Id index
+  rpc GetCredentialById(GetCredentialByIdRequest) returns (GetCredentialByIdResponse) {}
+  // GetCredentialByOriginAuthority queries the Credential table by its OriginAuthority index
+  rpc GetCredentialByOriginAuthority(GetCredentialByOriginAuthorityRequest) returns (GetCredentialByOriginAuthorityResponse) {}
   // ListCredential queries the Credential table using prefix and range queries against defined indexes.
   rpc ListCredential(ListCredentialRequest) returns (ListCredentialResponse) {}
-  // Get queries the Witness table by its primary key.
-  rpc GetWitness(GetWitnessRequest) returns (GetWitnessResponse) {}
-  // GetWitnessByOriginKey queries the Witness table by its OriginKey index
-  rpc GetWitnessByOriginKey(GetWitnessByOriginKeyRequest) returns (GetWitnessByOriginKeyResponse) {}
-  // ListWitness queries the Witness table using prefix and range queries against defined indexes.
-  rpc ListWitness(ListWitnessRequest) returns (ListWitnessResponse) {}
+  // Get queries the User table by its primary key.
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  // GetUserByOriginAuthority queries the User table by its OriginAuthority index
+  rpc GetUserByOriginAuthority(GetUserByOriginAuthorityRequest) returns (GetUserByOriginAuthorityResponse) {}
+  // ListUser queries the User table using prefix and range queries against defined indexes.
+  rpc ListUser(ListUserRequest) returns (ListUserResponse) {}
   // GetBaseParams queries the BaseParams singleton.
   rpc GetBaseParams(GetBaseParamsRequest) returns (GetBaseParamsResponse) {}
   // GetReadParams queries the ReadParams singleton.
@@ -71,8 +71,8 @@ message ListServiceRecordRequest {
       Id id = 1;
       // origin specifies the value of the Origin index key to use in the query.
       Origin origin = 2;
-      // controller specifies the value of the Controller index key to use in the query.
-      Controller controller = 3;
+      // authority specifies the value of the Authority index key to use in the query.
+      Authority authority = 3;
     }
     
     message Id {
@@ -87,10 +87,10 @@ message ListServiceRecordRequest {
       optional string origin = 1;
     }
     
-    message Controller {
-      // controller is the value of the controller field in the index.
+    message Authority {
+      // authority is the value of the authority field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string controller = 1;
+      optional string authority = 1;
     }
   }
   
@@ -126,8 +126,8 @@ message ListServiceRecordResponse {
 
 // GetCredentialRequest is the StateQuery/GetCredentialRequest request type.
 message GetCredentialRequest {
-  // id specifies the value of the id field in the primary key.
-  uint64 id = 1;
+  // sequence specifies the value of the sequence field in the primary key.
+  uint64 sequence = 1;
 }
 
 // GetCredentialResponse is the StateQuery/GetCredentialResponse response type.
@@ -147,23 +147,24 @@ message GetCredentialByOriginHandleResponse {
   Credential value = 1;
 }
 
-// GetCredentialByCredentialIdRequest is the StateQuery/GetCredentialByCredentialIdRequest request type.
-message GetCredentialByCredentialIdRequest {
-  bytes credential_id = 1;
+// GetCredentialByIdRequest is the StateQuery/GetCredentialByIdRequest request type.
+message GetCredentialByIdRequest {
+  bytes id = 1;
 }
 
-// GetCredentialByCredentialIdResponse is the StateQuery/GetCredentialByCredentialIdResponse response type.
-message GetCredentialByCredentialIdResponse {
+// GetCredentialByIdResponse is the StateQuery/GetCredentialByIdResponse response type.
+message GetCredentialByIdResponse {
   Credential value = 1;
 }
 
-// GetCredentialByPublicKeyRequest is the StateQuery/GetCredentialByPublicKeyRequest request type.
-message GetCredentialByPublicKeyRequest {
-  bytes public_key = 1;
+// GetCredentialByOriginAuthorityRequest is the StateQuery/GetCredentialByOriginAuthorityRequest request type.
+message GetCredentialByOriginAuthorityRequest {
+  string origin = 1;
+  string authority = 2;
 }
 
-// GetCredentialByPublicKeyResponse is the StateQuery/GetCredentialByPublicKeyResponse response type.
-message GetCredentialByPublicKeyResponse {
+// GetCredentialByOriginAuthorityResponse is the StateQuery/GetCredentialByOriginAuthorityResponse response type.
+message GetCredentialByOriginAuthorityResponse {
   Credential value = 1;
 }
 
@@ -173,22 +174,22 @@ message ListCredentialRequest {
   message IndexKey {
     // key specifies the index key value.
     oneof key {
-      // id specifies the value of the Id index key to use in the query.
-      Id id = 1;
+      // sequence specifies the value of the Sequence index key to use in the query.
+      Sequence sequence = 1;
       // handle specifies the value of the Handle index key to use in the query.
       Handle handle = 2;
       // origin_handle specifies the value of the OriginHandle index key to use in the query.
       OriginHandle origin_handle = 3;
-      // credential_id specifies the value of the CredentialId index key to use in the query.
-      CredentialId credential_id = 4;
-      // public_key specifies the value of the PublicKey index key to use in the query.
-      PublicKey public_key = 5;
+      // id specifies the value of the Id index key to use in the query.
+      Id id = 4;
+      // origin_authority specifies the value of the OriginAuthority index key to use in the query.
+      OriginAuthority origin_authority = 5;
     }
     
-    message Id {
-      // id is the value of the id field in the index.
+    message Sequence {
+      // sequence is the value of the sequence field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional uint64 id = 1;
+      optional uint64 sequence = 1;
     }
     
     message Handle {
@@ -206,16 +207,19 @@ message ListCredentialRequest {
       optional string handle = 2;
     }
     
-    message CredentialId {
-      // credential_id is the value of the credential_id field in the index.
+    message Id {
+      // id is the value of the id field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional bytes credential_id = 1;
+      optional bytes id = 1;
     }
     
-    message PublicKey {
-      // public_key is the value of the public_key field in the index.
+    message OriginAuthority {
+      // origin is the value of the origin field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional bytes public_key = 1;
+      optional string origin = 1;
+      // authority is the value of the authority field in the index.
+      // It can be omitted to query for all valid values of that field in this segment of the index.
+      optional string authority = 2;
     }
   }
   
@@ -249,39 +253,39 @@ message ListCredentialResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// GetWitnessRequest is the StateQuery/GetWitnessRequest request type.
-message GetWitnessRequest {
+// GetUserRequest is the StateQuery/GetUserRequest request type.
+message GetUserRequest {
   // index specifies the value of the index field in the primary key.
   uint64 index = 1;
 }
 
-// GetWitnessResponse is the StateQuery/GetWitnessResponse response type.
-message GetWitnessResponse {
+// GetUserResponse is the StateQuery/GetUserResponse response type.
+message GetUserResponse {
   // value is the response value.
-  Witness value = 1;
+  User value = 1;
 }
 
-// GetWitnessByOriginKeyRequest is the StateQuery/GetWitnessByOriginKeyRequest request type.
-message GetWitnessByOriginKeyRequest {
+// GetUserByOriginAuthorityRequest is the StateQuery/GetUserByOriginAuthorityRequest request type.
+message GetUserByOriginAuthorityRequest {
   string origin = 1;
-  string key = 2;
+  string authority = 2;
 }
 
-// GetWitnessByOriginKeyResponse is the StateQuery/GetWitnessByOriginKeyResponse response type.
-message GetWitnessByOriginKeyResponse {
-  Witness value = 1;
+// GetUserByOriginAuthorityResponse is the StateQuery/GetUserByOriginAuthorityResponse response type.
+message GetUserByOriginAuthorityResponse {
+  User value = 1;
 }
 
-// ListWitnessRequest is the StateQuery/ListWitnessRequest request type.
-message ListWitnessRequest {
+// ListUserRequest is the StateQuery/ListUserRequest request type.
+message ListUserRequest {
   // IndexKey specifies the value of an index key to use in prefix and range queries.
   message IndexKey {
     // key specifies the index key value.
     oneof key {
       // index specifies the value of the Index index key to use in the query.
       Index index = 1;
-      // origin_key specifies the value of the OriginKey index key to use in the query.
-      OriginKey origin_key = 2;
+      // origin_authority specifies the value of the OriginAuthority index key to use in the query.
+      OriginAuthority origin_authority = 2;
     }
     
     message Index {
@@ -290,13 +294,13 @@ message ListWitnessRequest {
       optional uint64 index = 1;
     }
     
-    message OriginKey {
+    message OriginAuthority {
       // origin is the value of the origin field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
       optional string origin = 1;
-      // key is the value of the key field in the index.
+      // authority is the value of the authority field in the index.
       // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string key = 2;
+      optional string authority = 2;
     }
   }
   
@@ -322,10 +326,10 @@ message ListWitnessRequest {
   }
 }
 
-// ListWitnessResponse is the StateQuery/ListWitnessResponse response type.
-message ListWitnessResponse {
+// ListUserResponse is the StateQuery/ListUserResponse response type.
+message ListUserResponse {
   // values are the results of the query.
-  repeated Witness values = 1;
+  repeated User values = 1;
   // pagination is the pagination response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

@@ -21,21 +21,21 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	StateQueryService_GetServiceRecord_FullMethodName            = "/sonr.service.module.v1.StateQueryService/GetServiceRecord"
-	StateQueryService_GetServiceRecordByOrigin_FullMethodName    = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
-	StateQueryService_ListServiceRecord_FullMethodName           = "/sonr.service.module.v1.StateQueryService/ListServiceRecord"
-	StateQueryService_GetCredential_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetCredential"
-	StateQueryService_GetCredentialByOriginHandle_FullMethodName = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
-	StateQueryService_GetCredentialByCredentialId_FullMethodName = "/sonr.service.module.v1.StateQueryService/GetCredentialByCredentialId"
-	StateQueryService_GetCredentialByPublicKey_FullMethodName    = "/sonr.service.module.v1.StateQueryService/GetCredentialByPublicKey"
-	StateQueryService_ListCredential_FullMethodName              = "/sonr.service.module.v1.StateQueryService/ListCredential"
-	StateQueryService_GetWitness_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetWitness"
-	StateQueryService_GetWitnessByOriginKey_FullMethodName       = "/sonr.service.module.v1.StateQueryService/GetWitnessByOriginKey"
-	StateQueryService_ListWitness_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/ListWitness"
-	StateQueryService_GetBaseParams_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetBaseParams"
-	StateQueryService_GetReadParams_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetReadParams"
-	StateQueryService_GetWriteParams_FullMethodName              = "/sonr.service.module.v1.StateQueryService/GetWriteParams"
-	StateQueryService_GetOwnParams_FullMethodName                = "/sonr.service.module.v1.StateQueryService/GetOwnParams"
+	StateQueryService_GetServiceRecord_FullMethodName               = "/sonr.service.module.v1.StateQueryService/GetServiceRecord"
+	StateQueryService_GetServiceRecordByOrigin_FullMethodName       = "/sonr.service.module.v1.StateQueryService/GetServiceRecordByOrigin"
+	StateQueryService_ListServiceRecord_FullMethodName              = "/sonr.service.module.v1.StateQueryService/ListServiceRecord"
+	StateQueryService_GetCredential_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetCredential"
+	StateQueryService_GetCredentialByOriginHandle_FullMethodName    = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginHandle"
+	StateQueryService_GetCredentialById_FullMethodName              = "/sonr.service.module.v1.StateQueryService/GetCredentialById"
+	StateQueryService_GetCredentialByOriginAuthority_FullMethodName = "/sonr.service.module.v1.StateQueryService/GetCredentialByOriginAuthority"
+	StateQueryService_ListCredential_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/ListCredential"
+	StateQueryService_GetUser_FullMethodName                        = "/sonr.service.module.v1.StateQueryService/GetUser"
+	StateQueryService_GetUserByOriginAuthority_FullMethodName       = "/sonr.service.module.v1.StateQueryService/GetUserByOriginAuthority"
+	StateQueryService_ListUser_FullMethodName                       = "/sonr.service.module.v1.StateQueryService/ListUser"
+	StateQueryService_GetBaseParams_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetBaseParams"
+	StateQueryService_GetReadParams_FullMethodName                  = "/sonr.service.module.v1.StateQueryService/GetReadParams"
+	StateQueryService_GetWriteParams_FullMethodName                 = "/sonr.service.module.v1.StateQueryService/GetWriteParams"
+	StateQueryService_GetOwnParams_FullMethodName                   = "/sonr.service.module.v1.StateQueryService/GetOwnParams"
 )
 
 // StateQueryServiceClient is the client API for StateQueryService service.
@@ -52,18 +52,18 @@ type StateQueryServiceClient interface {
 	GetCredential(ctx context.Context, in *GetCredentialRequest, opts ...grpc.CallOption) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
 	GetCredentialByOriginHandle(ctx context.Context, in *GetCredentialByOriginHandleRequest, opts ...grpc.CallOption) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error)
+	// GetCredentialById queries the Credential table by its Id index
+	GetCredentialById(ctx context.Context, in *GetCredentialByIdRequest, opts ...grpc.CallOption) (*GetCredentialByIdResponse, error)
+	// GetCredentialByOriginAuthority queries the Credential table by its OriginAuthority index
+	GetCredentialByOriginAuthority(ctx context.Context, in *GetCredentialByOriginAuthorityRequest, opts ...grpc.CallOption) (*GetCredentialByOriginAuthorityResponse, error)
 	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
 	ListCredential(ctx context.Context, in *ListCredentialRequest, opts ...grpc.CallOption) (*ListCredentialResponse, error)
-	// Get queries the Witness table by its primary key.
-	GetWitness(ctx context.Context, in *GetWitnessRequest, opts ...grpc.CallOption) (*GetWitnessResponse, error)
-	// GetWitnessByOriginKey queries the Witness table by its OriginKey index
-	GetWitnessByOriginKey(ctx context.Context, in *GetWitnessByOriginKeyRequest, opts ...grpc.CallOption) (*GetWitnessByOriginKeyResponse, error)
-	// ListWitness queries the Witness table using prefix and range queries against defined indexes.
-	ListWitness(ctx context.Context, in *ListWitnessRequest, opts ...grpc.CallOption) (*ListWitnessResponse, error)
+	// Get queries the User table by its primary key.
+	GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error)
+	// GetUserByOriginAuthority queries the User table by its OriginAuthority index
+	GetUserByOriginAuthority(ctx context.Context, in *GetUserByOriginAuthorityRequest, opts ...grpc.CallOption) (*GetUserByOriginAuthorityResponse, error)
+	// ListUser queries the User table using prefix and range queries against defined indexes.
+	ListUser(ctx context.Context, in *ListUserRequest, opts ...grpc.CallOption) (*ListUserResponse, error)
 	// GetBaseParams queries the BaseParams singleton.
 	GetBaseParams(ctx context.Context, in *GetBaseParamsRequest, opts ...grpc.CallOption) (*GetBaseParamsResponse, error)
 	// GetReadParams queries the ReadParams singleton.
@@ -127,18 +127,18 @@ func (c *stateQueryServiceClient) GetCredentialByOriginHandle(ctx context.Contex
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredentialByCredentialId(ctx context.Context, in *GetCredentialByCredentialIdRequest, opts ...grpc.CallOption) (*GetCredentialByCredentialIdResponse, error) {
-	out := new(GetCredentialByCredentialIdResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByCredentialId_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetCredentialById(ctx context.Context, in *GetCredentialByIdRequest, opts ...grpc.CallOption) (*GetCredentialByIdResponse, error) {
+	out := new(GetCredentialByIdResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialById_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetCredentialByPublicKey(ctx context.Context, in *GetCredentialByPublicKeyRequest, opts ...grpc.CallOption) (*GetCredentialByPublicKeyResponse, error) {
-	out := new(GetCredentialByPublicKeyResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByPublicKey_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetCredentialByOriginAuthority(ctx context.Context, in *GetCredentialByOriginAuthorityRequest, opts ...grpc.CallOption) (*GetCredentialByOriginAuthorityResponse, error) {
+	out := new(GetCredentialByOriginAuthorityResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetCredentialByOriginAuthority_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -154,27 +154,27 @@ func (c *stateQueryServiceClient) ListCredential(ctx context.Context, in *ListCr
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetWitness(ctx context.Context, in *GetWitnessRequest, opts ...grpc.CallOption) (*GetWitnessResponse, error) {
-	out := new(GetWitnessResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetWitness_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetUser(ctx context.Context, in *GetUserRequest, opts ...grpc.CallOption) (*GetUserResponse, error) {
+	out := new(GetUserResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) GetWitnessByOriginKey(ctx context.Context, in *GetWitnessByOriginKeyRequest, opts ...grpc.CallOption) (*GetWitnessByOriginKeyResponse, error) {
-	out := new(GetWitnessByOriginKeyResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_GetWitnessByOriginKey_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) GetUserByOriginAuthority(ctx context.Context, in *GetUserByOriginAuthorityRequest, opts ...grpc.CallOption) (*GetUserByOriginAuthorityResponse, error) {
+	out := new(GetUserByOriginAuthorityResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_GetUserByOriginAuthority_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *stateQueryServiceClient) ListWitness(ctx context.Context, in *ListWitnessRequest, opts ...grpc.CallOption) (*ListWitnessResponse, error) {
-	out := new(ListWitnessResponse)
-	err := c.cc.Invoke(ctx, StateQueryService_ListWitness_FullMethodName, in, out, opts...)
+func (c *stateQueryServiceClient) ListUser(ctx context.Context, in *ListUserRequest, opts ...grpc.CallOption) (*ListUserResponse, error) {
+	out := new(ListUserResponse)
+	err := c.cc.Invoke(ctx, StateQueryService_ListUser_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -231,18 +231,18 @@ type StateQueryServiceServer interface {
 	GetCredential(context.Context, *GetCredentialRequest) (*GetCredentialResponse, error)
 	// GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
 	GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error)
-	// GetCredentialByCredentialId queries the Credential table by its CredentialId index
-	GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error)
-	// GetCredentialByPublicKey queries the Credential table by its PublicKey index
-	GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error)
+	// GetCredentialById queries the Credential table by its Id index
+	GetCredentialById(context.Context, *GetCredentialByIdRequest) (*GetCredentialByIdResponse, error)
+	// GetCredentialByOriginAuthority queries the Credential table by its OriginAuthority index
+	GetCredentialByOriginAuthority(context.Context, *GetCredentialByOriginAuthorityRequest) (*GetCredentialByOriginAuthorityResponse, error)
 	// ListCredential queries the Credential table using prefix and range queries against defined indexes.
 	ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error)
-	// Get queries the Witness table by its primary key.
-	GetWitness(context.Context, *GetWitnessRequest) (*GetWitnessResponse, error)
-	// GetWitnessByOriginKey queries the Witness table by its OriginKey index
-	GetWitnessByOriginKey(context.Context, *GetWitnessByOriginKeyRequest) (*GetWitnessByOriginKeyResponse, error)
-	// ListWitness queries the Witness table using prefix and range queries against defined indexes.
-	ListWitness(context.Context, *ListWitnessRequest) (*ListWitnessResponse, error)
+	// Get queries the User table by its primary key.
+	GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error)
+	// GetUserByOriginAuthority queries the User table by its OriginAuthority index
+	GetUserByOriginAuthority(context.Context, *GetUserByOriginAuthorityRequest) (*GetUserByOriginAuthorityResponse, error)
+	// ListUser queries the User table using prefix and range queries against defined indexes.
+	ListUser(context.Context, *ListUserRequest) (*ListUserResponse, error)
 	// GetBaseParams queries the BaseParams singleton.
 	GetBaseParams(context.Context, *GetBaseParamsRequest) (*GetBaseParamsResponse, error)
 	// GetReadParams queries the ReadParams singleton.
@@ -273,23 +273,23 @@ func (UnimplementedStateQueryServiceServer) GetCredential(context.Context, *GetC
 func (UnimplementedStateQueryServiceServer) GetCredentialByOriginHandle(context.Context, *GetCredentialByOriginHandleRequest) (*GetCredentialByOriginHandleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByOriginHandle not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredentialByCredentialId(context.Context, *GetCredentialByCredentialIdRequest) (*GetCredentialByCredentialIdResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByCredentialId not implemented")
+func (UnimplementedStateQueryServiceServer) GetCredentialById(context.Context, *GetCredentialByIdRequest) (*GetCredentialByIdResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialById not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetCredentialByPublicKey(context.Context, *GetCredentialByPublicKeyRequest) (*GetCredentialByPublicKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByPublicKey not implemented")
+func (UnimplementedStateQueryServiceServer) GetCredentialByOriginAuthority(context.Context, *GetCredentialByOriginAuthorityRequest) (*GetCredentialByOriginAuthorityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCredentialByOriginAuthority not implemented")
 }
 func (UnimplementedStateQueryServiceServer) ListCredential(context.Context, *ListCredentialRequest) (*ListCredentialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListCredential not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetWitness(context.Context, *GetWitnessRequest) (*GetWitnessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetWitness not implemented")
+func (UnimplementedStateQueryServiceServer) GetUser(context.Context, *GetUserRequest) (*GetUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedStateQueryServiceServer) GetWitnessByOriginKey(context.Context, *GetWitnessByOriginKeyRequest) (*GetWitnessByOriginKeyResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetWitnessByOriginKey not implemented")
+func (UnimplementedStateQueryServiceServer) GetUserByOriginAuthority(context.Context, *GetUserByOriginAuthorityRequest) (*GetUserByOriginAuthorityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserByOriginAuthority not implemented")
 }
-func (UnimplementedStateQueryServiceServer) ListWitness(context.Context, *ListWitnessRequest) (*ListWitnessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListWitness not implemented")
+func (UnimplementedStateQueryServiceServer) ListUser(context.Context, *ListUserRequest) (*ListUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListUser not implemented")
 }
 func (UnimplementedStateQueryServiceServer) GetBaseParams(context.Context, *GetBaseParamsRequest) (*GetBaseParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetBaseParams not implemented")
@@ -406,38 +406,38 @@ func _StateQueryService_GetCredentialByOriginHandle_Handler(srv interface{}, ctx
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredentialByCredentialId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByCredentialIdRequest)
+func _StateQueryService_GetCredentialById_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCredentialByIdRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, in)
+		return srv.(StateQueryServiceServer).GetCredentialById(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByCredentialId_FullMethodName,
+		FullMethod: StateQueryService_GetCredentialById_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByCredentialId(ctx, req.(*GetCredentialByCredentialIdRequest))
+		return srv.(StateQueryServiceServer).GetCredentialById(ctx, req.(*GetCredentialByIdRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetCredentialByPublicKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCredentialByPublicKeyRequest)
+func _StateQueryService_GetCredentialByOriginAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCredentialByOriginAuthorityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, in)
+		return srv.(StateQueryServiceServer).GetCredentialByOriginAuthority(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetCredentialByPublicKey_FullMethodName,
+		FullMethod: StateQueryService_GetCredentialByOriginAuthority_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetCredentialByPublicKey(ctx, req.(*GetCredentialByPublicKeyRequest))
+		return srv.(StateQueryServiceServer).GetCredentialByOriginAuthority(ctx, req.(*GetCredentialByOriginAuthorityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -460,56 +460,56 @@ func _StateQueryService_ListCredential_Handler(srv interface{}, ctx context.Cont
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetWitnessRequest)
+func _StateQueryService_GetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetWitness(ctx, in)
+		return srv.(StateQueryServiceServer).GetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetWitness_FullMethodName,
+		FullMethod: StateQueryService_GetUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetWitness(ctx, req.(*GetWitnessRequest))
+		return srv.(StateQueryServiceServer).GetUser(ctx, req.(*GetUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_GetWitnessByOriginKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetWitnessByOriginKeyRequest)
+func _StateQueryService_GetUserByOriginAuthority_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserByOriginAuthorityRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).GetWitnessByOriginKey(ctx, in)
+		return srv.(StateQueryServiceServer).GetUserByOriginAuthority(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_GetWitnessByOriginKey_FullMethodName,
+		FullMethod: StateQueryService_GetUserByOriginAuthority_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).GetWitnessByOriginKey(ctx, req.(*GetWitnessByOriginKeyRequest))
+		return srv.(StateQueryServiceServer).GetUserByOriginAuthority(ctx, req.(*GetUserByOriginAuthorityRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _StateQueryService_ListWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListWitnessRequest)
+func _StateQueryService_ListUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(StateQueryServiceServer).ListWitness(ctx, in)
+		return srv.(StateQueryServiceServer).ListUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: StateQueryService_ListWitness_FullMethodName,
+		FullMethod: StateQueryService_ListUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(StateQueryServiceServer).ListWitness(ctx, req.(*ListWitnessRequest))
+		return srv.(StateQueryServiceServer).ListUser(ctx, req.(*ListUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -614,28 +614,28 @@ var StateQueryService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _StateQueryService_GetCredentialByOriginHandle_Handler,
 		},
 		{
-			MethodName: "GetCredentialByCredentialId",
-			Handler:    _StateQueryService_GetCredentialByCredentialId_Handler,
+			MethodName: "GetCredentialById",
+			Handler:    _StateQueryService_GetCredentialById_Handler,
 		},
 		{
-			MethodName: "GetCredentialByPublicKey",
-			Handler:    _StateQueryService_GetCredentialByPublicKey_Handler,
+			MethodName: "GetCredentialByOriginAuthority",
+			Handler:    _StateQueryService_GetCredentialByOriginAuthority_Handler,
 		},
 		{
 			MethodName: "ListCredential",
 			Handler:    _StateQueryService_ListCredential_Handler,
 		},
 		{
-			MethodName: "GetWitness",
-			Handler:    _StateQueryService_GetWitness_Handler,
+			MethodName: "GetUser",
+			Handler:    _StateQueryService_GetUser_Handler,
 		},
 		{
-			MethodName: "GetWitnessByOriginKey",
-			Handler:    _StateQueryService_GetWitnessByOriginKey_Handler,
+			MethodName: "GetUserByOriginAuthority",
+			Handler:    _StateQueryService_GetUserByOriginAuthority_Handler,
 		},
 		{
-			MethodName: "ListWitness",
-			Handler:    _StateQueryService_ListWitness_Handler,
+			MethodName: "ListUser",
+			Handler:    _StateQueryService_ListUser_Handler,
 		},
 		{
 			MethodName: "GetBaseParams",

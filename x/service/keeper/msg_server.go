@@ -60,7 +60,7 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Controller:  msg.Authority,
+		Authority:  msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -78,15 +78,15 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 	if rec == nil {
 		return nil, fmt.Errorf("record does not exist")
 	}
-	if rec.Controller != msg.Authority {
-		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Controller)
+	if rec.Authority != msg.Authority {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Authority)
 	}
 	err = ms.k.db.ServiceRecordTable().Update(ctx, &modulev1.ServiceRecord{
 		Id:          msg.RecordId,
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Controller:  msg.Authority,
+		Authority:  msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -104,8 +104,8 @@ func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteReco
 	if rec == nil {
 		return nil, fmt.Errorf("record does not exist")
 	}
-	if rec.Controller != msg.Authority {
-		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Controller)
+	if rec.Authority != msg.Authority {
+		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Authority)
 	}
 
 	if err := ms.k.db.ServiceRecordTable().Delete(ctx, rec); err != nil {

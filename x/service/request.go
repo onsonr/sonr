@@ -13,7 +13,7 @@ func ConvertCredentialToDescriptor(credential *modulev1.Credential) CredentialDe
 	}
 	return CredentialDescriptor{
 		Type:            "public-key",
-		CredentialID:    credential.CredentialId,
+		CredentialID:    credential.Id,
 		Transport:       transports,
 		AttestationType: credential.AttestationType,
 	}
