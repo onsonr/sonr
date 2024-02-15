@@ -7,12 +7,12 @@ import "sonr/service/module/v1/state.proto";
 
 // StateQueryService queries the state of the tables specified by sonr/service/module/v1/state.proto.
 service StateQueryService {
-  // Get queries the ServiceRecord table by its primary key.
-  rpc GetServiceRecord(GetServiceRecordRequest) returns (GetServiceRecordResponse) {}
-  // GetServiceRecordByOrigin queries the ServiceRecord table by its Origin index
-  rpc GetServiceRecordByOrigin(GetServiceRecordByOriginRequest) returns (GetServiceRecordByOriginResponse) {}
-  // ListServiceRecord queries the ServiceRecord table using prefix and range queries against defined indexes.
-  rpc ListServiceRecord(ListServiceRecordRequest) returns (ListServiceRecordResponse) {}
+  // Get queries the Service table by its primary key.
+  rpc GetService(GetServiceRequest) returns (GetServiceResponse) {}
+  // GetServiceByOrigin queries the Service table by its Origin index
+  rpc GetServiceByOrigin(GetServiceByOriginRequest) returns (GetServiceByOriginResponse) {}
+  // ListService queries the Service table using prefix and range queries against defined indexes.
+  rpc ListService(ListServiceRequest) returns (ListServiceResponse) {}
   // Get queries the Credential table by its primary key.
   rpc GetCredential(GetCredentialRequest) returns (GetCredentialResponse) {}
   // GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -39,30 +39,30 @@ service StateQueryService {
   rpc GetOwnParams(GetOwnParamsRequest) returns (GetOwnParamsResponse) {}
 }
 
-// GetServiceRecordRequest is the StateQuery/GetServiceRecordRequest request type.
-message GetServiceRecordRequest {
+// GetServiceRequest is the StateQuery/GetServiceRequest request type.
+message GetServiceRequest {
   // id specifies the value of the id field in the primary key.
   uint64 id = 1;
 }
 
-// GetServiceRecordResponse is the StateQuery/GetServiceRecordResponse response type.
-message GetServiceRecordResponse {
+// GetServiceResponse is the StateQuery/GetServiceResponse response type.
+message GetServiceResponse {
   // value is the response value.
-  ServiceRecord value = 1;
+  Service value = 1;
 }
 
-// GetServiceRecordByOriginRequest is the StateQuery/GetServiceRecordByOriginRequest request type.
-message GetServiceRecordByOriginRequest {
+// GetServiceByOriginRequest is the StateQuery/GetServiceByOriginRequest request type.
+message GetServiceByOriginRequest {
   string origin = 1;
 }
 
-// GetServiceRecordByOriginResponse is the StateQuery/GetServiceRecordByOriginResponse response type.
-message GetServiceRecordByOriginResponse {
-  ServiceRecord value = 1;
+// GetServiceByOriginResponse is the StateQuery/GetServiceByOriginResponse response type.
+message GetServiceByOriginResponse {
+  Service value = 1;
 }
 
-// ListServiceRecordRequest is the StateQuery/ListServiceRecordRequest request type.
-message ListServiceRecordRequest {
+// ListServiceRequest is the StateQuery/ListServiceRequest request type.
+message ListServiceRequest {
   // IndexKey specifies the value of an index key to use in prefix and range queries.
   message IndexKey {
     // key specifies the index key value.
@@ -116,10 +116,10 @@ message ListServiceRecordRequest {
   }
 }
 
-// ListServiceRecordResponse is the StateQuery/ListServiceRecordResponse response type.
-message ListServiceRecordResponse {
+// ListServiceResponse is the StateQuery/ListServiceResponse response type.
+message ListServiceResponse {
   // values are the results of the query.
-  repeated ServiceRecord values = 1;
+  repeated Service values = 1;
   // pagination is the pagination response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }

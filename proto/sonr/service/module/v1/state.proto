@@ -26,8 +26,8 @@ enum ServicePermissions {
   SERVICE_PERMISSIONS_OWN = 3;
 }
 
-// ServiceRecord is the balance of an account.
-message ServiceRecord {
+// Service is the balance of an account.
+message Service {
   option (cosmos.orm.v1.table) = {
     id : 1
     primary_key : {fields : "id" auto_increment : true}
