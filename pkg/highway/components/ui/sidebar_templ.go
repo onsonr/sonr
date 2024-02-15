@@ -167,7 +167,7 @@ func SidebarItem(label string, icon templ.Component, href string) templ.Componen
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" placement=\"right-start\"><div class=\"p-2.5 bg-stone-200 dark:bg-stone-800 rounded-md\"><div label=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" placement=\"right-start\"><div class=\"p-2.5 hover:bg-stone-200 hover:dark:bg-stone-800 rounded-md\"><div label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -175,7 +175,7 @@ func SidebarItem(label string, icon templ.Component, href string) templ.Componen
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"text-md text-stone-800 dark:text-stone-200 cursor-pointer\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"text-md hover:text-stone-800 hover:dark:text-stone-200 cursor-pointer\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

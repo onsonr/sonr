@@ -3,7 +3,7 @@ package views
 import "github.com/sonrhq/sonr/pkg/highway/components/ui"
 
 templ RegisterView() {
-	@loginHeader()
+	@registerHeader()
 	<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
 	<div class="max-w-[400px] mx-auto">
 		<form class={ "justify-center items-center align-middle pb-2.5" }>
@@ -22,7 +22,7 @@ templ RegisterView() {
 		</form>
 	</div>
 	<sl-divider class="bg-stone-600" style="--spacing: 1rem;"></sl-divider>
-	@loginFooter()
+	@registerFooter()
 }
 
 templ registerHeader() {

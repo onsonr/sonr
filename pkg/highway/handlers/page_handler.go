@@ -5,6 +5,7 @@ import (
 
 	"github.com/sonrhq/sonr/pkg/highway/components/layouts"
 	"github.com/sonrhq/sonr/pkg/highway/components/modals"
+	"github.com/sonrhq/sonr/pkg/highway/components/views"
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
@@ -25,4 +26,9 @@ func registerPages(e *echo.Echo) {
 func registerModals(e *echo.Echo) {
 	e.GET("/login", middleware.ShowTempl(modals.LoginModal()))
 	e.GET("/wallet", middleware.ShowTempl(modals.WalletModal()))
+}
+
+// registerUtilityPages registers the utility page routes
+func registerUtilityPages(e *echo.Echo) {
+	e.GET("/*", middleware.ShowTempl(views.Error404View()))
 }
