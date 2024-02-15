@@ -13,6 +13,11 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/sonrhq/service/v1/params";
   }
+
+  // ServiceRecord returns the service record for a given origin.
+  rpc ServiceRecord(QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
+    option (google.api.http).get = "/sonrhq/service/v1/service_record/{origin}";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -22,5 +27,18 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryServiceRecordRequest is the request type for the Query/ServiceRecord RPC method.
+message QueryServiceRecordRequest {
+  // origin defines the origin of the service.
+  string origin = 1;
+}
+
+// QueryServiceRecordResponse is the response type for the Query/ServiceRecord RPC method.
+message QueryServiceRecordResponse {
+  // service_record defines the service record for a given origin.
+  ServiceRecord service_record = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
