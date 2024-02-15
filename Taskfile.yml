@@ -5,6 +5,7 @@ includes:
   deploy: ./tasks/Deploy.yml
   dev: ./tasks/Dev.yml
   gen: ./tasks/Gen.yml
+  release: ./tasks/Release.yml
   test: ./tasks/Test.yml
 
 tasks:
