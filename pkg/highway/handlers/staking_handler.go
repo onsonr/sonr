@@ -11,10 +11,6 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // StakingAPI is a handler for the staking module
 var StakingAPI = stakingAPI{}
 
@@ -185,18 +181,4 @@ func (h stakingAPI) GetHistoricalInfo(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, rBz)
-}
-
-// RegisterRoutes registers the staking routes
-func (h stakingAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/delegators/:delegatorAddr", h.GetDelegatorDelegations)
-	e.GET("/delegators/:delegatorAddr/unbonding", h.GetDelegatorUnbondingDelegations)
-	e.GET("/delegators/:delegatorAddr/validators", h.GetDelegatorValidators)
-	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr", h.GetDelegation)
-	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr/unbonding", h.GetUnbondingDelegation)
-	e.GET("/delegators/:delegatorAddr/validators/:srcValidatorAddr/redelegate/:dstValidatorAddr", h.GetRedelegations)
-	e.GET("/history/{height}", h.GetHistoricalInfo)
-	e.GET("/staking", h.GetValidators)
-	e.GET("/staking/:validatorAddr", h.GetValidator)
-	e.GET("/staking/:validatorAddr/delegations", h.GetValidatorDelegations)
 }

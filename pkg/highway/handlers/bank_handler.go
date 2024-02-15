@@ -106,13 +106,3 @@ func (h bankAPI) GetSpendableBalancesByDenom(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, rBz)
 }
-
-// RegisterRoutes registers the bank routes
-func (h bankAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/balance/:address", h.GetAllBalances)
-	e.GET("/balance/:address/spendable", h.GetSpendableBalances)
-	e.GET("/balance/:address/:denom", h.GetBalance)
-	e.GET("/balance/:address/:denom/spendable", h.GetSpendableBalancesByDenom)
-	e.GET("/supply", h.GetTotalSupply)
-	e.GET("/supply/:denom", h.GetSupplyOf)
-}

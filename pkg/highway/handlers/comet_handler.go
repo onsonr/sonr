@@ -102,13 +102,3 @@ func (h cometAPI) GetValidatorSetByHeight(e echo.Context) error {
 	}
 	return e.JSON(http.StatusOK, rBz)
 }
-
-// RegisterRoutes registers the node routes
-func (h cometAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/block", h.GetLatestBlock)
-	e.GET("/block/:height", h.GetBlockByHeight)
-	e.GET("/health", h.GetNodeInfo)
-	e.GET("/syncing", h.GetSyncing)
-	e.GET("/validators", h.GetLatestValidatorSet)
-	e.GET("/validators/:height", h.GetValidatorSetByHeight)
-}

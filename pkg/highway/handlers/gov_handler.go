@@ -11,10 +11,6 @@ import (
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // GovAPI is a handler for the gov module
 var GovAPI = govAPI{}
 
@@ -137,16 +133,4 @@ func (h govAPI) GetTally(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
 	return c.JSON(http.StatusOK, rBz)
-}
-
-// RegisterRoutes registers the gov routes
-func (h govAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/constitution", h.GetConstitution)
-	e.GET("/proposals", h.GetProposals)
-	e.GET("/proposals/:proposalId", h.GetProposal)
-	e.GET("/proposals/:proposalId/deposits", h.GetDeposits)
-	e.GET("/proposals/:proposalId/deposits/:depositor", h.GetDeposit)
-	e.GET("/proposals/:proposalId/tally", h.GetTally)
-	e.GET("/proposals/:proposalId/votes", h.GetVotes)
-	e.GET("/proposals/:proposalId/votes/:voter", h.GetVote)
 }

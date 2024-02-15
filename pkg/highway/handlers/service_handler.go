@@ -12,10 +12,6 @@ import (
 	"github.com/sonrhq/sonr/x/service"
 )
 
-// ! ||--------------------------------------------------------------------------------||
-// ! ||                                  API Endpoints                                 ||
-// ! ||--------------------------------------------------------------------------------||
-
 // ServiceAPI is a handler for the staking module
 var ServiceAPI = serviceAPI{}
 
@@ -94,13 +90,4 @@ func (h serviceAPI) FinishLogin(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, resp)
-}
-
-// RegisterRoutes registers the node routes
-func (h serviceAPI) RegisterRoutes(e *echo.Echo) {
-	e.GET("/service/:origin", h.QueryOrigin)
-	e.GET("/service/:origin/login/:username/start", h.StartLogin)
-	e.POST("/service/:origin/login/:username/finish", h.FinishLogin)
-	e.GET("/service/:origin/register/:username/start", h.StartRegistration)
-	e.POST("/service/:origin/register/:username/finish", h.FinishRegistration)
 }
