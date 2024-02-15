@@ -7,7 +7,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
-	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 	"github.com/sonrhq/sonr/pkg/vault"
 	"github.com/sonrhq/sonr/x/service"
@@ -26,7 +25,7 @@ type serviceAPI struct{}
 // QueryOrigin returns the service for the origin host
 func (h serviceAPI) QueryOrigin(c echo.Context) error {
 	origin := c.Param("origin")
-	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
+	resp, err := service.GetRecordByOrigin(middleware.GrpcClientConn(c), origin)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -41,7 +40,7 @@ func (h serviceAPI) QueryOrigin(c echo.Context) error {
 func (h serviceAPI) StartRegistration(c echo.Context) error {
 	handleStr := c.Param("handle")
 	origin := c.Param("origin")
-	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
+	resp, err := service.GetRecordByOrigin(middleware.GrpcClientConn(c), origin)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -49,7 +48,7 @@ func (h serviceAPI) StartRegistration(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	opts := service.GetPublicKeyCredentialCreationOptions(resp.Service, protocol.UserEntity{
+	opts := service.GetCredentialCreationOptions(resp, protocol.UserEntity{
 		DisplayName: handleStr,
 		ID:          []byte(vc.Address),
 	})
@@ -59,7 +58,7 @@ func (h serviceAPI) StartRegistration(c echo.Context) error {
 // FinishRegistration returns the result of the credential creation
 func (h serviceAPI) FinishRegistration(c echo.Context) error {
 	origin := c.Param("origin")
-	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
+	resp, err := service.GetRecordByOrigin(middleware.GrpcClientConn(c), origin)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -67,28 +66,25 @@ func (h serviceAPI) FinishRegistration(c echo.Context) error {
 	if err := json.NewDecoder(c.Request().Body).Decode(&credential); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	res, err := service.FinishRegistration(c.Request().Context(), resp.Service, credential)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, res)
+
+	return c.JSON(http.StatusOK, resp)
 }
 
 // StartLogin returns credential request options for the origin host
 func (h serviceAPI) StartLogin(c echo.Context) error {
 	origin := c.Param("origin")
-	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
+	resp, err := service.GetRecordByOrigin(middleware.GrpcClientConn(c), origin)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	opts := service.GetPublicKeyCredentialRequestOptions(resp.Service, []protocol.CredentialDescriptor{})
+	opts := service.GetCredentialRequestOptions(resp, []protocol.CredentialDescriptor{})
 	return c.JSON(http.StatusOK, opts)
 }
 
 // FinishLogin returns the result of the credential request
 func (h serviceAPI) FinishLogin(c echo.Context) error {
 	origin := c.Param("origin")
-	resp, err := middleware.ServiceClient(c).Service(c.Request().Context(), &servicev1.QueryServiceRequest{Origin: origin})
+	resp, err := service.GetRecordByOrigin(middleware.GrpcClientConn(c), origin)
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
@@ -96,11 +92,8 @@ func (h serviceAPI) FinishLogin(c echo.Context) error {
 	if err := json.NewDecoder(c.Request().Body).Decode(&credential); err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	res, err := service.FinishLogin(c.Request().Context(), resp.Service, credential)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, res)
+
+	return c.JSON(http.StatusOK, resp)
 }
 
 // RegisterRoutes registers the node routes

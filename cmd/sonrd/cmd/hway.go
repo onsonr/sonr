@@ -10,7 +10,7 @@ import (
 // ServeCommand returns the serve command
 func ServeCommand() *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                        "serve",
+		Use:                        "hway",
 		Short:                      "Serves the Sonr Highway",
 		DisableFlagParsing:         false,
 		SuggestionsMinimumDistance: 2,

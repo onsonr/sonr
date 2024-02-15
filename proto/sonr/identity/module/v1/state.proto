@@ -1,6 +1,5 @@
 syntax = "proto3";
 package sonr.identity.module.v1;
-
 import "cosmos/orm/v1/orm.proto";
 import "cosmos/orm/v1alpha1/schema.proto";
 

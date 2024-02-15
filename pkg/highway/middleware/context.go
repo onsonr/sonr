@@ -65,7 +65,7 @@ func IPFSClient(e echo.Context) *rpc.HttpApi {
 
 // BankClient returns a new bank client.
 func BankClient(e echo.Context) bankv1beta1.QueryClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return bankv1beta1.NewQueryClient(cc)
 	}
 	return nil
@@ -73,7 +73,7 @@ func BankClient(e echo.Context) bankv1beta1.QueryClient {
 
 // CometClient returns a new comet client.
 func CometClient(e echo.Context) cmtcservice.ServiceClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return cmtcservice.NewServiceClient(cc)
 	}
 	return nil
@@ -81,7 +81,7 @@ func CometClient(e echo.Context) cmtcservice.ServiceClient {
 
 // GovClient creates a new gov client.
 func GovClient(e echo.Context) govv1.QueryClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return govv1.NewQueryClient(cc)
 	}
 	return nil
@@ -89,7 +89,7 @@ func GovClient(e echo.Context) govv1.QueryClient {
 
 // IdentityClient creates a new identity client.
 func IdentityClient(e echo.Context) identityv1.QueryClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return identityv1.NewQueryClient(cc)
 	}
 	return nil
@@ -97,7 +97,7 @@ func IdentityClient(e echo.Context) identityv1.QueryClient {
 
 // ServiceClient creates a new service client.
 func ServiceClient(e echo.Context) servicev1.QueryClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return servicev1.NewQueryClient(cc)
 	}
 	return nil
@@ -105,7 +105,7 @@ func ServiceClient(e echo.Context) servicev1.QueryClient {
 
 // StakingClient creates a new staking client.
 func StakingClient(e echo.Context) stakingv1beta1.QueryClient {
-	if cc := grpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc != nil {
 		return stakingv1beta1.NewQueryClient(cc)
 	}
 	return nil
@@ -115,8 +115,8 @@ func StakingClient(e echo.Context) stakingv1beta1.QueryClient {
 // ! ||                      Helper GRPC Client Wrapper Functions                      ||
 // ! ||--------------------------------------------------------------------------------||
 
-// grpcClientConn creates a gRPC client connection.
-func grpcClientConn(e echo.Context) *grpc.ClientConn {
+// GrpcClientConn creates a gRPC client connection.
+func GrpcClientConn(e echo.Context) *grpc.ClientConn {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.Dial(
 		"sonrd:9090", // your gRPC server address.

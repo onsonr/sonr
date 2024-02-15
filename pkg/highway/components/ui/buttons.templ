@@ -1,0 +1,56 @@
+package ui
+
+templ PasskeyButton() {
+	<div slot="suffix" onclick={ createCredential() } class="cursor-pointer">
+		@PasskeyIcon()
+	</div>
+}
+
+script createCredential() {
+	const publicKeyCredentialCreationOptions = {
+		challenge: Uint8Array.from(
+			"randomStringFromServer", c => c.charCodeAt(0)),
+		rp: {
+			name: "Duo Security",
+			id: "localhost",
+		},
+		user: {
+			id: Uint8Array.from(
+				"UZSL85T9AFC", c => c.charCodeAt(0)),
+			name: "lee@webauthn.guide",
+			displayName: "Lee",
+		},
+		pubKeyCredParams: [{alg: -7, type: "public-key"}],
+		authenticatorSelection: {
+			authenticatorAttachment: "cross-platform",
+		},
+		timeout: 60000,
+		attestation: "direct"
+	};
+
+	const credential = navigator.credentials.create({
+		publicKey: publicKeyCredentialCreationOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
+}
+
+script getCredential() {
+	const publicKeyCredentialRequestOptions = {
+		challenge: Uint8Array.from(
+			"randomStringFromServer", c => c.charCodeAt(0)),
+		allowCredentials: [{
+			id: Uint8Array.from(
+				credentialId, c => c.charCodeAt(0)),
+			type: 'public-key',
+			transports: ['usb', 'ble', 'nfc'],
+		}],
+		timeout: 60000,
+	}
+
+	const assertion = navigator.credentials.get({
+		publicKey: publicKeyCredentialRequestOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
+}

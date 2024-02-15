@@ -1,3 +1,4 @@
+//nolint
 package layouts
 
 import (
@@ -26,13 +27,18 @@ templ chatPanel() {
 templ sidebar() {
 	@ui.Sidebar() {
 		@ui.SidebarGroup() {
-			@ui.SidebarItem("Home", "house", "/")
-			@ui.SidebarItem("Chat", "chat", "/chat")
-			@ui.SidebarItem("Wallet", "wallet", "/dex")
+			@ui.SidebarItem("Home", ui.HomeIcon(), "/")
+			@ui.SidebarItem("Chat", ui.BubbleChatIcon(), "/chat")
+			@ui.SidebarItem("Wallet", ui.CryptoWalletIcon(), "/dex")
 		}
 		@ui.SidebarGroup() {
-			@ui.SidebarItem("Identities", "person-badge", "/")
-			@ui.SidebarItem("Services", "hdd-rack", "/chat")
+			@ui.SidebarItem("Services", ui.GlobeIcon(), "/chat")
+			@ui.SidebarItem("Identities", ui.ValidUserIcon(), "/")
+		}
+		@ui.SidebarGroup() {
+			@ui.SidebarItem("Governance", ui.TreasuryIcon(), "/chat")
+			@ui.SidebarItem("Validators", ui.ValidatorIcon(), "/")
+			@ui.SidebarItem("Network Activity", ui.ActivityIcon(), "/")
 		}
 	}
 }

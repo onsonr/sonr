@@ -3,7 +3,8 @@ version: "3"
 tasks:
   proto:
     cmds:
-      - task: proto-orm
+      - task: proto-orm-svx
+      - task: proto-orm-idx
       - task: proto-gogo
       - rm -rf sonrhq
       - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
@@ -15,15 +16,29 @@ tasks:
     cmds:
       - buf generate --template buf.gen.gogo.yaml
 
-  proto-orm:
+  proto-orm-idx:
     dir: ./proto
     cmds:
       - |
-        echo "Generating orm code"
-        proto_dirs=$(find . -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+        echo "Generating identity orm code"
+        proto_dirs=$(find ./sonr/identity -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
         for dir in $proto_dirs; do
           for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
-              buf generate --template buf.gen.orm.yaml
+              buf generate --template buf.gen.orm.idx.yaml
+              buf generate --template buf.gen.yaml
+          done
+        done
+      - task: proto-orm-post
+
+  proto-orm-svx:
+    dir: ./proto
+    cmds:
+      - |
+        echo "Generating service orm code"
+        proto_dirs=$(find ./sonr/service -path -prune -o -name '*.proto' -print0 | xargs -0 -n1 dirname | sort | uniq)
+        for dir in $proto_dirs; do
+          for file in $(find "${dir}" -maxdepth 1 -name 'state.proto'); do
+              buf generate --template buf.gen.orm.svx.yaml
               buf generate --template buf.gen.yaml
           done
         done

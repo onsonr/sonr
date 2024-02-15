@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/sonrhq/sonr/pkg/highway/components/layouts"
-	 "github.com/sonrhq/sonr/pkg/highway/components/modals"
+	"github.com/sonrhq/sonr/pkg/highway/components/modals"
 	"github.com/sonrhq/sonr/pkg/highway/middleware"
 )
 

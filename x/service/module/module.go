@@ -75,7 +75,6 @@ func (AppModule) ConsensusVersion() uint64 { return ConsensusVersion }
 func (am AppModule) RegisterServices(cfg module.Configurator) {
 	service.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
 	service.RegisterQueryServer(cfg.QueryServer(), keeper.NewQueryServerImpl(am.keeper))
-
 	// Register in place module state migration migrations
 	// m := keeper.NewMigrator(am.keeper)
 	// if err := cfg.RegisterMigration(service.ModuleName, 1, m.Migrate1to2); err != nil {
