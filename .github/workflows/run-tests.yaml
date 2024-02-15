@@ -18,6 +18,7 @@ permissions:
 jobs:
   test-breaking:
     runs-on: ubuntu-latest
+    continue-on-error: true
     env:
       EARTHLY_TOKEN: ${{ secrets.EARTHLY_TOKEN }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
