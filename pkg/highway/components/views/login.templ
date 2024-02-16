@@ -1,6 +1,6 @@
 package views
 
-import "github.com/sonrhq/sonr/pkg/highway/components/ui"
+import "github.com/sonrhq/sonr/pkg/highway/components/elements"
 
 templ LoginView() {
 	@loginHeader()
@@ -16,7 +16,7 @@ templ LoginView() {
 				required
 			>
 				<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
-				@ui.PasskeyButton()
+				@elements.PasskeyButton()
 			</sl-input>
 			<div id="name-error" aria-live="polite" hidden></div>
 		</form>

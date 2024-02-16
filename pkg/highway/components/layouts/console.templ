@@ -3,7 +3,7 @@ package layouts
 
 import (
 	"github.com/sonrhq/sonr/pkg/highway/components/views"
-	"github.com/sonrhq/sonr/pkg/highway/components/ui"
+	"github.com/sonrhq/sonr/pkg/highway/components/elements"
 )
 
 templ ConsolePage() {
@@ -25,20 +25,20 @@ templ chatPanel() {
 }
 
 templ sidebar() {
-	@ui.Sidebar() {
-		@ui.SidebarGroup() {
-			@ui.SidebarItem("Home", ui.HomeIcon(), "/")
-			@ui.SidebarItem("Chat", ui.BubbleChatIcon(), "/chat")
-			@ui.SidebarItem("Wallet", ui.CryptoWalletIcon(), "/dex")
+	@elements.Sidebar() {
+		@elements.SidebarGroup() {
+			@elements.SidebarItem("Home", elements.HomeIcon(), "/")
+			@elements.SidebarItem("Chat", elements.BubbleChatIcon(), "/chat")
+			@elements.SidebarItem("Wallet", elements.CryptoWalletIcon(), "/dex")
 		}
-		@ui.SidebarGroup() {
-			@ui.SidebarItem("Services", ui.GlobeIcon(), "/chat")
-			@ui.SidebarItem("Identities", ui.ValidUserIcon(), "/")
+		@elements.SidebarGroup() {
+			@elements.SidebarItem("Services", elements.GlobeIcon(), "/chat")
+			@elements.SidebarItem("Identities", elements.ValidUserIcon(), "/")
 		}
-		@ui.SidebarGroup() {
-			@ui.SidebarItem("Governance", ui.TreasuryIcon(), "/chat")
-			@ui.SidebarItem("Validators", ui.ValidatorIcon(), "/")
-			@ui.SidebarItem("Network Activity", ui.ActivityIcon(), "/")
+		@elements.SidebarGroup() {
+			@elements.SidebarItem("Governance", elements.TreasuryIcon(), "/chat")
+			@elements.SidebarItem("Validators", elements.ValidatorIcon(), "/")
+			@elements.SidebarItem("Network Activity", elements.ActivityIcon(), "/")
 		}
 	}
 }

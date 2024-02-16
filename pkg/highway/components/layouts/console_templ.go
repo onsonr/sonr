@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/pkg/highway/components/ui"
+	"github.com/sonrhq/sonr/pkg/highway/components/elements"
 	"github.com/sonrhq/sonr/pkg/highway/components/views"
 )
 
@@ -158,7 +158,7 @@ func sidebar() templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Home", ui.HomeIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Home", elements.HomeIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -166,7 +166,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Chat", ui.BubbleChatIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Chat", elements.BubbleChatIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -174,7 +174,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Wallet", ui.CryptoWalletIcon(), "/dex").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Wallet", elements.CryptoWalletIcon(), "/dex").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -183,7 +183,7 @@ func sidebar() templ.Component {
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = ui.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = elements.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -197,7 +197,7 @@ func sidebar() templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Services", ui.GlobeIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Services", elements.GlobeIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -205,7 +205,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Identities", ui.ValidUserIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Identities", elements.ValidUserIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -214,7 +214,7 @@ func sidebar() templ.Component {
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = ui.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = elements.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -228,7 +228,7 @@ func sidebar() templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Governance", ui.TreasuryIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Governance", elements.TreasuryIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -236,7 +236,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Validators", ui.ValidatorIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Validators", elements.ValidatorIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -244,7 +244,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = ui.SidebarItem("Network Activity", ui.ActivityIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.SidebarItem("Network Activity", elements.ActivityIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -253,7 +253,7 @@ func sidebar() templ.Component {
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = ui.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = elements.SidebarGroup().Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -262,7 +262,7 @@ func sidebar() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = ui.Sidebar().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = elements.Sidebar().Render(templ.WithChildren(ctx, templ_7745c5c3_Var7), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
