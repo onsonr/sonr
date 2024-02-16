@@ -23,11 +23,7 @@ func (h cometAPI) GetLatestBlock(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return e.JSON(http.StatusOK, rBz)
+	return e.JSON(http.StatusOK, res)
 }
 
 // GetNodeInfo returns the node info
@@ -49,11 +45,7 @@ func (h cometAPI) GetSyncing(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return e.JSON(http.StatusOK, rBz)
+	return e.JSON(http.StatusOK, res)
 }
 
 // GetBlockByHeight returns a block by height
@@ -64,11 +56,7 @@ func (h cometAPI) GetBlockByHeight(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return e.JSON(http.StatusOK, rBz)
+	return e.JSON(http.StatusOK, res)
 }
 
 // GetLatestValidatorSet returns the latest validator set
@@ -77,11 +65,7 @@ func (h cometAPI) GetLatestValidatorSet(e echo.Context) error {
 	if err != nil {
 		return e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return e.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return e.JSON(http.StatusOK, rBz)
+	return e.JSON(http.StatusOK, res)
 }
 
 // GetValidatorSetByHeight returns a validator set by height
@@ -92,9 +76,5 @@ func (h cometAPI) GetValidatorSetByHeight(e echo.Context) error {
 	if err != nil {
 		e.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		e.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return e.JSON(http.StatusOK, rBz)
+	return e.JSON(http.StatusOK, res)
 }

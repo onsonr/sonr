@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	types "cosmossdk.io/api/cosmos/bank/v1beta1"
@@ -25,11 +24,7 @@ func (h bankAPI) GetAllBalances(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetBalance returns a balance for an address and denom
@@ -40,11 +35,7 @@ func (h bankAPI) GetBalance(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetTotalSupply returns the total supply
@@ -53,11 +44,7 @@ func (h bankAPI) GetTotalSupply(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetSupplyOf returns the supply of a denom
@@ -67,11 +54,7 @@ func (h bankAPI) GetSupplyOf(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetSpendableBalances returns the spendable balances for an address
@@ -81,11 +64,7 @@ func (h bankAPI) GetSpendableBalances(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetSpendableBalancesByDenom returns the spendable balances for an address and denom
@@ -96,9 +75,5 @@ func (h bankAPI) GetSpendableBalancesByDenom(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }

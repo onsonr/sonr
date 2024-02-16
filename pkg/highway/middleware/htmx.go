@@ -13,7 +13,7 @@ type HeaderKey string
 // HTMXHeaderKey is the key for the htmx request header
 const HTMXHeaderKey HeaderKey = "htmx-request-header"
 
-func HTMX(next echo.HandlerFunc) echo.HandlerFunc {
+func UseHTMX(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		hxh := htmx.HxRequestHeaderFromRequest(c.Request())

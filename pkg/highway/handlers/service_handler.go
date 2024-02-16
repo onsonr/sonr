@@ -25,11 +25,7 @@ func (h serviceAPI) QueryOrigin(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // StartRegistration returns credential creation options for the origin host

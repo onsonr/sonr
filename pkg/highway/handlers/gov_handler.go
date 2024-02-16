@@ -38,11 +38,7 @@ func (h govAPI) GetProposal(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }
 
 // GetProposals returns all proposals
@@ -51,11 +47,7 @@ func (h govAPI) GetProposals(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }
 
 // GetVote returns a vote
@@ -67,11 +59,7 @@ func (h govAPI) GetVote(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }
 
 // GetVotes returns all votes for a proposal
@@ -82,11 +70,7 @@ func (h govAPI) GetVotes(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }
 
 // GetDeposit returns a deposit
@@ -113,11 +97,7 @@ func (h govAPI) GetDeposits(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }
 
 // GetTally returns the tally for a proposal
@@ -128,9 +108,5 @@ func (h govAPI) GetTally(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(res)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, res)
 }

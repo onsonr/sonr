@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -28,11 +27,7 @@ func (h stakingAPI) GetDelegation(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetUnbondingDelegation returns an unbonding delegation
@@ -46,11 +41,7 @@ func (h stakingAPI) GetUnbondingDelegation(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetDelegatorDelegations returns all delegations for a delegator
@@ -62,11 +53,7 @@ func (h stakingAPI) GetDelegatorDelegations(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
@@ -78,11 +65,7 @@ func (h stakingAPI) GetDelegatorUnbondingDelegations(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetRedelegations returns all redelegations for a delegator
@@ -98,11 +81,7 @@ func (h stakingAPI) GetRedelegations(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetValidator returns a validator
@@ -114,11 +93,7 @@ func (h stakingAPI) GetValidator(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetValidators returns all validators
@@ -127,11 +102,7 @@ func (h stakingAPI) GetValidators(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetValidatorDelegations returns all delegations for a validator
@@ -143,11 +114,7 @@ func (h stakingAPI) GetValidatorDelegations(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetDelegatorValidators returns all validators for a delegator
@@ -159,11 +126,7 @@ func (h stakingAPI) GetDelegatorValidators(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }
 
 // GetHistoricalInfo returns historical info
@@ -176,9 +139,5 @@ func (h stakingAPI) GetHistoricalInfo(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	rBz, err := json.Marshal(resp)
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err.Error())
-	}
-	return c.JSON(http.StatusOK, rBz)
+	return c.JSON(http.StatusOK, resp)
 }

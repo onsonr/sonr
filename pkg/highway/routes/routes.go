@@ -56,7 +56,7 @@ func RegisterSonrAPI(e *echo.Echo) {
 
 // RegisterHTMXPages registers the page routes for HTMX
 func RegisterHTMXPages(e *echo.Echo) {
-	e.GET("/", pages.Index, middleware.HTMX)
-	e.GET("/console", pages.Console, middleware.HTMX)
-	e.GET("/404", shared.ShowTempl(views.Error404View()), middleware.HTMX)
+	e.GET("/", pages.Index, middleware.UseHTMX)
+	e.GET("/console", pages.Console, middleware.UseHTMX)
+	e.GET("/404", shared.ShowTempl(views.Error404View()), middleware.UseHTMX)
 }
