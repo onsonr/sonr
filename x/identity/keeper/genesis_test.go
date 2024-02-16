@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/sonrhq/sonr/x/identity"
 	"github.com/stretchr/testify/require"
+
+	"github.com/sonrhq/sonr/x/identity"
 )
 
 func TestInitGenesis(t *testing.T) {
@@ -35,7 +36,7 @@ func TestInitGenesis(t *testing.T) {
 func TestExportGenesis(t *testing.T) {
 	fixture := initFixture(t)
 
-	_, err := fixture.msgServer.IncrementCounter(fixture.ctx, &identity.MsgIncrementCounter{
+	_, err := fixture.msgServer.InitializeIdentity(fixture.ctx, &identity.MsgInitializeIdentity{
 		Sender: fixture.addrs[0].String(),
 	})
 	require.NoError(t, err)

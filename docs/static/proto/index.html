@@ -248,11 +248,11 @@
             <ul>
               
                 <li>
-                  <a href="#sonr.identity.v1.MsgIncrementCounter"><span class="badge">M</span>MsgIncrementCounter</a>
+                  <a href="#sonr.identity.v1.MsgInitializeIdentity"><span class="badge">M</span>MsgInitializeIdentity</a>
                 </li>
               
                 <li>
-                  <a href="#sonr.identity.v1.MsgIncrementCounterResponse"><span class="badge">M</span>MsgIncrementCounterResponse</a>
+                  <a href="#sonr.identity.v1.MsgInitializeIdentityResponse"><span class="badge">M</span>MsgInitializeIdentityResponse</a>
                 </li>
               
                 <li>
@@ -583,8 +583,8 @@
       <p></p>
 
       
-        <h3 id="sonr.identity.v1.MsgIncrementCounter">MsgIncrementCounter</h3>
-        <p>MsgIncrementCounter defines the Msg/IncrementCounter request type.</p>
+        <h3 id="sonr.identity.v1.MsgInitializeIdentity">MsgInitializeIdentity</h3>
+        <p>MsgInitializeIdentity defines the Msg/IncrementCounter request type.</p>
 
         
           <table class="field-table">
@@ -600,6 +600,55 @@
                   <td><p>sender is the message sender. </p></td>
                 </tr>
               
+                <tr>
+                  <td>peer_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>peer_id is the peer id of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>address</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>address is the address of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>public_key</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>public_key is the public key of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>ipns</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>ipns is the ipns of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>accumulator_key</td>
+                  <td><a href="#bytes">bytes</a></td>
+                  <td></td>
+                  <td><p>accumulator_key is the accumulator key of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>network</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>network is the network of the identity. </p></td>
+                </tr>
+              
+                <tr>
+                  <td>chain_id</td>
+                  <td><a href="#string">string</a></td>
+                  <td></td>
+                  <td><p>chain_id is the chain id of the identity. </p></td>
+                </tr>
+              
             </tbody>
           </table>
 
@@ -607,8 +656,8 @@
 
         
       
-        <h3 id="sonr.identity.v1.MsgIncrementCounterResponse">MsgIncrementCounterResponse</h3>
-        <p>MsgIncrementCounterResponse defines the Msg/IncrementCounter response type.</p>
+        <h3 id="sonr.identity.v1.MsgInitializeIdentityResponse">MsgInitializeIdentityResponse</h3>
+        <p>MsgInitializeIdentityResponse defines the Msg/InitializeIdentity response type.</p>
 
         
 
@@ -669,9 +718,9 @@ NOTE: All parameters must be supplied. </p></td>
           <tbody>
             
               <tr>
-                <td>IncrementCounter</td>
-                <td><a href="#sonr.identity.v1.MsgIncrementCounter">MsgIncrementCounter</a></td>
-                <td><a href="#sonr.identity.v1.MsgIncrementCounterResponse">MsgIncrementCounterResponse</a></td>
+                <td>InitializeIdentity</td>
+                <td><a href="#sonr.identity.v1.MsgInitializeIdentity">MsgInitializeIdentity</a></td>
+                <td><a href="#sonr.identity.v1.MsgInitializeIdentityResponse">MsgInitializeIdentityResponse</a></td>
                 <td><p>IncrementCounter increments the counter.</p></td>
               </tr>
             
