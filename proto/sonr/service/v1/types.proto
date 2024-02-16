@@ -46,3 +46,25 @@ message ServiceRecord {
   // Origin is the DNS resolvable address of the service
   string origin = 5;
 }
+
+// WebauthnCredential is the representation of a webauthn credential in the format of a CredentialDescriptor
+message WebauthnCredential {
+  // Assertion Type is the type of the credential
+  string assertion_type = 1;
+
+  // Id is the id of the credential
+  bytes id = 2;
+
+  // handle is the handle of the credential
+  string handle = 3;
+
+  // transports is the list of transports supported by the credential
+  repeated string transports = 4;
+
+  // origin is the origin of the credential
+  string origin = 5;
+
+  // Authority is the address of the owner of the credential
+  string authority = 6;
+}
+

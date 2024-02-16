@@ -48,11 +48,11 @@ func GetCredentialRequestOptions(record *ServiceRecord, creds []CredentialDescri
 
 // GetCredentialsByHandle returns the credentials for the given handle
 func GetCredentialsByHandle(conn *grpc.ClientConn, handle, origin string) ([]CredentialDescriptor, error) {
-	res, err := getStateServiceClient(conn).GetCredentialByOriginHandle(context.Background(), NewQueryCredentialsRequest(origin, handle))
+	res, err := getQueryServiceClient(conn).WebauthnCredential(context.Background(), NewQueryWebauthnRecord(origin, handle))
 	if err != nil {
 		return nil, err
 	}
-	return []CredentialDescriptor{ConvertCredentialToDescriptor(res.GetValue())}, nil
+	return ExtractCredentialDescriptors(res.GetWebauthnCredential()), nil
 }
 
 // GetRecordByOrigin returns the service record for the given origin

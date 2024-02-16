@@ -18,6 +18,11 @@ service Query {
   rpc ServiceRecord(QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
     option (google.api.http).get = "/sonrhq/service/v1/service_record/{origin}";
   }
+
+  // WebauthnCredential returns the webauthn credential for a given origin.
+  rpc WebauthnCredential(QueryWebauthnCredentialRequest) returns (QueryWebauthnCredentialResponse) {
+    option (google.api.http).get = "/sonrhq/service/v1/webauthn_credential/{origin}/{handle}";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -40,5 +45,21 @@ message QueryServiceRecordRequest {
 message QueryServiceRecordResponse {
   // service_record defines the service record for a given origin.
   ServiceRecord service_record = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+// QueryWebauthnCredentialRequest is the request type for the Query/WebauthnCredential RPC method.
+message QueryWebauthnCredentialRequest {
+  // origin defines the origin of the service.
+  string origin = 1;
+
+  // handle defines the handle of the webauthn credential.
+  string handle = 2;
+}
+
+// QueryWebauthnCredentialResponse is the response type for the Query/WebauthnCredential RPC method.
+message QueryWebauthnCredentialResponse {
+  // webauthn_credential defines the webauthn credential for a given origin.
+  repeated WebauthnCredential webauthn_credential = 1
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }

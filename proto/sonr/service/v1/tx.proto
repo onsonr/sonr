@@ -132,6 +132,9 @@ message MsgRegisterAccount {
 
   // handle is the handle of the account
   string handle = 3;
+
+  // AttestationResponse is the response from the attestation
+  string attestation_response = 4;
 }
 
 // MsgRegisterAccountResponse defines the response structure for executing a Register request.
@@ -151,6 +154,9 @@ message MsgLoginAccount {
 
   // handle is the handle of the account
   string handle = 3;
+
+  // AssertionResponse is the response from the assertion
+  string assertion_response = 4;
 }
 
 // MsgLoginAccountResponse defines the response structure for executing a Login request.
