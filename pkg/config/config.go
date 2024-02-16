@@ -37,10 +37,11 @@ type HighwayConfig struct {
 	ValidatorAddress string `mapstructure:"validator_address" json:"validator_address"`
 }
 
-// NitroConfig represents the nitro configuration
-type NitroConfig struct {
-	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
-	SharedSecret     string `mapstructure:"shared_secret" json:"shared_secret"`
+// MatrixConfig represents the nitro configuration
+type MatrixConfig struct {
+	Server                        string `mapstructure:"matrix_connection" json:"matrix_connection"`
+	EventsServiceRegistrationPath string `mapstructure:"events_service_registration_path" json:"events_service_registration_path"`
+	ChatServiceRegistrationPath   string `mapstructure:"chat_service_registration_path" json:"chat_service_registration_path"`
 }
 
 // Config is the configuration for the application
@@ -50,7 +51,7 @@ type Config struct {
 	NodeHome string        `mapstructure:"default_node_home" json:"default_node_home"`
 	Sonrd    SonrdConfig   `mapstructure:"sonrd" json:"sonrd"`
 	Highway  HighwayConfig `mapstructure:"highway" json:"highway"`
-	Nitro    NitroConfig   `mapstructure:"nitro" json:"nitro"`
+	Matrix   MatrixConfig  `mapstructure:"nitro" json:"nitro"`
 }
 
 // LoadConfig loads the configuration from the file

@@ -8,6 +8,7 @@ node_modules/
 package-lock.json
 package.json
 tmp
+./pkg/config/static
 **tmp**/
 dist
 bin
