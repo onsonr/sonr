@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/pkg/highway/components/ui"
+	"github.com/sonrhq/sonr/pkg/highway/components/elements"
 )
 
 func RegisterView() templ.Component {
@@ -52,7 +52,7 @@ func RegisterView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ui.PasskeyButton().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = elements.PasskeyButton().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
