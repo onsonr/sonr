@@ -40,6 +40,10 @@ func RegisterCosmosAPI(e *echo.Echo) {
 	e.GET("/supply", handlers.BankAPI.GetTotalSupply)
 	e.GET("/supply/:denom", handlers.BankAPI.GetSupplyOf)
 	e.GET("/syncing", handlers.CometAPI.GetSyncing)
+	e.POST("/tx/broadcast", handlers.TxAPI.BroadcastTx)
+	e.GET("/tx/:txHash", handlers.TxAPI.GetTx)
+	e.GET("/tx/block/:height", handlers.TxAPI.GetBlockWithTxs)
+	e.POST("/tx/simulate", handlers.TxAPI.SimulateTx)
 	e.GET("/validators", handlers.CometAPI.GetLatestValidatorSet)
 	e.GET("/validators/:height", handlers.CometAPI.GetValidatorSetByHeight)
 }

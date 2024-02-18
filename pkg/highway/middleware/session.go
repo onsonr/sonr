@@ -6,6 +6,7 @@ import (
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
 	cmtcservice "github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	"github.com/cosmos/cosmos-sdk/codec"
+	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/gorilla/sessions"
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo-contrib/session"
@@ -106,6 +107,13 @@ func ServiceClient(e echo.Context) servicev1.QueryClient {
 func StakingClient(e echo.Context) stakingv1beta1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return stakingv1beta1.NewQueryClient(cc)
+	}
+	return nil
+}
+
+func TxClient(e echo.Context) tx.ServiceClient {
+	if cc := GrpcClientConn(e); cc != nil {
+		return tx.NewServiceClient(cc)
 	}
 	return nil
 }
