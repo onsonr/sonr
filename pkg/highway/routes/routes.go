@@ -40,10 +40,6 @@ func RegisterCosmosAPI(e *echo.Echo) {
 	e.GET("/supply", handlers.BankAPI.GetTotalSupply)
 	e.GET("/supply/:denom", handlers.BankAPI.GetSupplyOf)
 	e.GET("/syncing", handlers.CometAPI.GetSyncing)
-	e.POST("/tx/broadcast", handlers.TxAPI.BroadcastTx)
-	e.GET("/tx/:txHash", handlers.TxAPI.GetTx)
-	e.GET("/tx/block/:height", handlers.TxAPI.GetBlockWithTxs)
-	e.POST("/tx/simulate", handlers.TxAPI.SimulateTx)
 	e.GET("/validators", handlers.CometAPI.GetLatestValidatorSet)
 	e.GET("/validators/:height", handlers.CometAPI.GetValidatorSetByHeight)
 }
@@ -56,6 +52,10 @@ func RegisterSonrAPI(e *echo.Echo) {
 	e.POST("/service/:origin/login/:username/finish", handlers.ServiceAPI.FinishLogin)
 	e.GET("/service/:origin/register/:username/start", handlers.ServiceAPI.StartRegistration)
 	e.POST("/service/:origin/register/:username/finish", handlers.ServiceAPI.FinishRegistration)
+	e.GET("/tx/:txHash", handlers.TxAPI.GetTx)
+	e.GET("/tx/block/:height", handlers.TxAPI.GetBlockWithTxs)
+	e.POST("/tx/broadcast", handlers.TxAPI.BroadcastTx)
+	e.POST("/tx/simulate", handlers.TxAPI.SimulateTx)
 }
 
 // RegisterHTMXPages registers the page routes for HTMX
