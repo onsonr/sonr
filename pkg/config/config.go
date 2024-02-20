@@ -22,7 +22,6 @@ import (
 
 // SonrdConfig represents the sonrd configuration
 type SonrdConfig struct {
-	ChainID        string `mapstructure:"chain_id" json:"chain_id"`
 	HighwayEnabled bool   `mapstructure:"highway_enabled" json:"highway_enabled"`
 	IPFSConnection string `mapstructure:"ipfs_connection" json:"ipfs_connection"`
 	IPFSGateway    string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
@@ -30,7 +29,6 @@ type SonrdConfig struct {
 
 // HighwayConfig represents the highway configuration
 type HighwayConfig struct {
-	ChainID          string `mapstructure:"chain_id" json:"chain_id"`
 	IPFSGateway      string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
 	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
 	NodeGRPCAddress  string `mapstructure:"node_grpc_address" json:"node_grpc_address"`

@@ -112,7 +112,7 @@ func StakingClient(e echo.Context) stakingv1beta1.QueryClient {
 }
 
 func TxClient(e echo.Context) tx.ServiceClient {
-	if cc := GrpcClientConn(e); cc != nil {
+	if cc := GrpcClientConn(e); cc   != nil {
 		return tx.NewServiceClient(cc)
 	}
 	return nil
