@@ -5,8 +5,7 @@ import (
 
 	"github.com/sonrhq/sonr/pkg/ui/components"
 	"github.com/sonrhq/sonr/pkg/shared"
-	"github.com/sonrhq/sonr/pkg/ui/views/auth"
-	"github.com/sonrhq/sonr/pkg/ui/views/errors"
+	"github.com/sonrhq/sonr/pkg/ui/views"
 )
 
 templ authRegisterView() {
@@ -14,7 +13,7 @@ templ authRegisterView() {
 		<section class="flex flex-col h-screen justify-center items-center mx-auto">
 			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
 				<sl-card class={ "container px-2 py-4 max-w-xl" }>
-					@views_auth.RegisterView()
+					@views.RegisterView()
 				</sl-card>
 			</div>
 		</section>
@@ -26,7 +25,7 @@ templ authLoginView() {
 		<section class="flex flex-col h-screen justify-center items-center mx-auto">
 			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
 				<sl-card class={ "container px-2 py-4 max-w-xl" }>
-					@views_auth.LoginView()
+					@views.LoginView()
 				</sl-card>
 			</div>
 		</section>
@@ -39,6 +38,6 @@ func Index(c echo.Context) error {
 }
 
 func Error(c echo.Context) error {
-	errView := views_errors.Error404View()
+	errView := views.Error404View()
 	return shared.RenderPage(c, errView)
 }

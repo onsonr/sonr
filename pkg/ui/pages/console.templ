@@ -2,7 +2,7 @@ package pages
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/ui/views/console"
+	"github.com/sonrhq/sonr/pkg/ui/views"
 	"github.com/sonrhq/sonr/pkg/ui/components"
 	"github.com/sonrhq/sonr/pkg/shared"
 )
@@ -17,7 +17,7 @@ templ chatPanel() {
 	@components.RootLayout() {
 		@sidebar()
 		@components.ConversationsList()
-		@views_console.ChatView()
+		@views.ChatView()
 	}
 }
 
