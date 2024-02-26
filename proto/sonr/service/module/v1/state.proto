@@ -30,17 +30,15 @@ enum ServicePermissions {
 message Service {
   option (cosmos.orm.v1.table) = {
     id : 1
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "origin" unique : true}
+    primary_key : {fields : "origin"}
     index : {id : 2 fields : "authority"}
   };
 
-  uint64 id = 1;
-  string origin = 2;
-  string name = 3;
-  string description = 4;
-  string authority = 5;
-  ServicePermissions permissions = 6;
+  string origin = 1;
+  string name = 2;
+  string description = 3;
+  string authority = 4;
+  ServicePermissions permissions = 5;
 }
 
 // Credential is the total supply of the module.

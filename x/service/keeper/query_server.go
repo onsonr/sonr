@@ -38,12 +38,8 @@ func (qs queryServer) Params(ctx context.Context, req *service.QueryParamsReques
 
 // ServiceRecord defines the handler for the Query/ServiceRecord RPC method.
 func (qs queryServer) ServiceRecord(ctx context.Context, req *service.QueryServiceRecordRequest) (*service.QueryServiceRecordResponse, error) {
-	record, err := qs.k.db.ServiceTable().GetByOrigin(ctx, req.Origin)
+	record, err := qs.k.db.ServiceTable().Get(ctx, req.Origin)
 	if err != nil {
-		if errors.Is(err, collections.ErrNotFound) {
-			return &service.QueryServiceRecordResponse{}, nil
-		}
-
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	srv := service.ServiceRecord{
@@ -60,10 +56,6 @@ func (qs queryServer) ServiceRecord(ctx context.Context, req *service.QueryServi
 func (qs queryServer) WebauthnCredential(ctx context.Context, req *service.QueryWebauthnCredentialRequest) (*service.QueryWebauthnCredentialResponse, error) {
 	cred, err := qs.k.db.CredentialTable().GetByOriginHandle(ctx, req.Origin, req.Handle)
 	if err != nil {
-		if errors.Is(err, collections.ErrNotFound) {
-			return &service.QueryWebauthnCredentialResponse{}, nil
-		}
-
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 	crd := service.WebauthnCredential{

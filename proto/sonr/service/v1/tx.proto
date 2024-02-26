@@ -91,8 +91,8 @@ message MsgDeleteRecord {
   // owner is the address of the owner of the record
   string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
 
-  // record_id is the id of the record to delete
-  uint64 record_id = 2;
+  // origin is the id of the record to delete
+  string origin = 2;
 }
 
 // MsgDeleteRecordResponse defines the Msg/DeleteRecord response type.

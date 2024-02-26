@@ -11,17 +11,12 @@ import (
 
 type ServiceTable interface {
 	Insert(ctx context.Context, service *Service) error
-	InsertReturningId(ctx context.Context, service *Service) (uint64, error)
-	LastInsertedSequence(ctx context.Context) (uint64, error)
 	Update(ctx context.Context, service *Service) error
 	Save(ctx context.Context, service *Service) error
 	Delete(ctx context.Context, service *Service) error
-	Has(ctx context.Context, id uint64) (found bool, err error)
+	Has(ctx context.Context, origin string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id uint64) (*Service, error)
-	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
-	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOrigin(ctx context.Context, origin string) (*Service, error)
+	Get(ctx context.Context, origin string) (*Service, error)
 	List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
 	ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error
@@ -47,26 +42,13 @@ type ServiceIndexKey interface {
 }
 
 // primary key starting index..
-type ServicePrimaryKey = ServiceIdIndexKey
-
-type ServiceIdIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceIdIndexKey) id() uint32            { return 0 }
-func (x ServiceIdIndexKey) values() []interface{} { return x.vs }
-func (x ServiceIdIndexKey) serviceIndexKey()      {}
-
-func (this ServiceIdIndexKey) WithId(id uint64) ServiceIdIndexKey {
-	this.vs = []interface{}{id}
-	return this
-}
+type ServicePrimaryKey = ServiceOriginIndexKey
 
 type ServiceOriginIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceOriginIndexKey) id() uint32            { return 1 }
+func (x ServiceOriginIndexKey) id() uint32            { return 0 }
 func (x ServiceOriginIndexKey) values() []interface{} { return x.vs }
 func (x ServiceOriginIndexKey) serviceIndexKey()      {}
 
@@ -89,7 +71,7 @@ func (this ServiceAuthorityIndexKey) WithAuthority(authority string) ServiceAuth
 }
 
 type serviceTable struct {
-	table ormtable.AutoIncrementTable
+	table ormtable.Table
 }
 
 func (this serviceTable) Insert(ctx context.Context, service *Service) error {
@@ -108,41 +90,13 @@ func (this serviceTable) Delete(ctx context.Context, service *Service) error {
 	return this.table.Delete(ctx, service)
 }
 
-func (this serviceTable) InsertReturningId(ctx context.Context, service *Service) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, service)
+func (this serviceTable) Has(ctx context.Context, origin string) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, origin)
 }
 
-func (this serviceTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
-	return this.table.LastInsertedSequence(ctx)
-}
-
-func (this serviceTable) Has(ctx context.Context, id uint64) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, id)
-}
-
-func (this serviceTable) Get(ctx context.Context, id uint64) (*Service, error) {
+func (this serviceTable) Get(ctx context.Context, origin string) (*Service, error) {
 	var service Service
-	found, err := this.table.PrimaryKey().Get(ctx, &service, id)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &service, nil
-}
-
-func (this serviceTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		origin,
-	)
-}
-
-func (this serviceTable) GetByOrigin(ctx context.Context, origin string) (*Service, error) {
-	var service Service
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &service,
-		origin,
-	)
+	found, err := this.table.PrimaryKey().Get(ctx, &service, origin)
 	if err != nil {
 		return nil, err
 	}
@@ -179,7 +133,7 @@ func NewServiceTable(db ormtable.Schema) (ServiceTable, error) {
 	if table == nil {
 		return nil, ormerrors.TableNotFound.Wrap(string((&Service{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return serviceTable{table.(ormtable.AutoIncrementTable)}, nil
+	return serviceTable{table}, nil
 }
 
 type CredentialTable interface {

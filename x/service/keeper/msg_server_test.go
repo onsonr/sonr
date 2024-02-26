@@ -140,7 +140,7 @@ func TestDeleteRecord(t *testing.T) {
 		{
 			name: "delete non-existent record",
 			request: &service.MsgDeleteRecord{
-				RecordId: 0,
+				Origin: "0",
 			},
 			expectErrMsg: "not found",
 		},

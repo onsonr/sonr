@@ -60,7 +60,7 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Authority:  msg.Authority,
+		Authority:   msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -71,7 +71,7 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 
 // UpdateRecord params is defining the handler for the MsgUpdateRecord message.
 func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateRecord) (*service.MsgUpdateRecordResponse, error) {
-	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.RecordId)
+	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.Origin)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,10 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Authority)
 	}
 	err = ms.k.db.ServiceTable().Update(ctx, &modulev1.Service{
-		Id:          msg.RecordId,
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
-		Authority:  msg.Authority,
+		Authority:   msg.Authority,
 		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
@@ -97,7 +96,7 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 
 // DeleteRecord params is defining the handler for the MsgDeleteRecord message.
 func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteRecord) (*service.MsgDeleteRecordResponse, error) {
-	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.RecordId)
+	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.Origin)
 	if err != nil {
 		return nil, err
 	}
