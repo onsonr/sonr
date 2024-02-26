@@ -11,9 +11,9 @@ import (
 	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
+	"github.com/sonrhq/sonr/crypto/core/protocol"
+	"github.com/sonrhq/sonr/crypto/daead"
 	"github.com/sonrhq/sonr/internal/wallet/kss"
-	"github.com/sonrhq/sonr/pkg/crypto/core/protocol"
-	"github.com/sonrhq/sonr/pkg/crypto/daead"
 	"github.com/sonrhq/sonr/pkg/did"
 )
 

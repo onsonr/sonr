@@ -8,22 +8,14 @@ delay = 1000
 exclude_dir = [
   "static",
   "tmp",
-  "vendor",
-  "scripts",
-  ".github",
-  ".vscode",
-  "bind",
-  "build",
-  "dist",
-  "tasks",
-  ".*",
+  "data",
 ]
 exclude_file = []
 exclude_regex = [".*_templ.go", ".*_test.go", "*.md", "*.yml", "*.yaml", "*.json", "*.xml", "*.sh", "*.toml", "*.lock", "*.bak", "*.orig", "*.patch", "*.swp"]
 exclude_unchanged = false
 follow_symlink = false
 full_bin = "./bin/sonrd serve"
-include_dir = ["pkg/highway", "cmd/*", "internal/*", "pkg/**/*", "app/*", "x/*"]
+include_dir = ["pkg", "cmd/*", "internal/*", "x", "app"]
 include_ext = ["go", "tpl", "tmpl", "templ", "html"]
 kill_delay = "5s"
 log = ".tmp/build-errors.log"

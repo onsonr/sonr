@@ -1,0 +1,31 @@
+package views_console
+
+import (
+	"github.com/sonrhq/sonr/pkg/ui/components"
+)
+
+templ DexChart() {
+	<sl-dialog label="Dialog" open>
+		<sl-input autofocus placeholder="I will have focus when the dialog is opened"></sl-input>
+		<sl-button slot="footer" variant="primary">Close</sl-button>
+	</sl-dialog>
+}
+
+templ DexOverview() {
+	<sl-dialog label="Dialog" open>
+		<sl-input autofocus placeholder="I will have focus when the dialog is opened"></sl-input>
+		<sl-button slot="footer" variant="primary">Close</sl-button>
+	</sl-dialog>
+}
+
+templ ChatView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip">
+		@components.ChatHeader()
+		@components.ConversationView()
+		@components.ChatFooter()
+	</div>
+}
+
+templ DashView() {
+	<div class="w-full h-screen bg-stone-950"></div>
+}

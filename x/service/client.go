@@ -19,6 +19,15 @@ type PublicKeyCredentialRequestOptions = protocol.PublicKeyCredentialRequestOpti
 // UserEntity is the entity of a user
 type UserEntity = protocol.UserEntity
 
+// GetCredentialsByHandle returns the credentials for the given handle
+func GetCredentialsByHandle(conn *grpc.ClientConn, handle, origin string) ([]CredentialDescriptor, error) {
+	res, err := getQueryServiceClient(conn).WebauthnCredential(context.Background(), NewQueryWebauthnRecord(origin, handle))
+	if err != nil {
+		return nil, err
+	}
+	return ExtractCredentialDescriptors(res.GetWebauthnCredential()), nil
+}
+
 // GetCredentialCreationOptions returns the PublicKeyCredentialCreationOptions for the given service record and user entity.
 func GetCredentialCreationOptions(record *ServiceRecord, entity protocol.UserEntity) PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
@@ -44,15 +53,6 @@ func GetCredentialRequestOptions(record *ServiceRecord, creds []CredentialDescri
 		RelyingPartyID:     record.Origin,
 		AllowedCredentials: creds,
 	}
-}
-
-// GetCredentialsByHandle returns the credentials for the given handle
-func GetCredentialsByHandle(conn *grpc.ClientConn, handle, origin string) ([]CredentialDescriptor, error) {
-	res, err := getQueryServiceClient(conn).WebauthnCredential(context.Background(), NewQueryWebauthnRecord(origin, handle))
-	if err != nil {
-		return nil, err
-	}
-	return ExtractCredentialDescriptors(res.GetWebauthnCredential()), nil
 }
 
 // GetRecordByOrigin returns the service record for the given origin

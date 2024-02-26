@@ -46,9 +46,6 @@ message MsgInitializeIdentity {
 
   // network is the network of the identity.
   string network = 7;
-
-  // chain_id is the chain id of the identity.
-  string chain_id = 8;
 }
 
 // MsgInitializeIdentityResponse defines the Msg/InitializeIdentity response type.
