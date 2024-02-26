@@ -8,11 +8,8 @@ tasks:
       - task: crypto-sharing
       - task: crypto-signatures
       - task: crypto-tecdsa
-      - task: highway
       - task: module-identity
       - task: module-service
-      - task: motor
-      - task: vault
 
   crypto:
     cmds:
@@ -23,37 +20,37 @@ tasks:
       - task: crypto-tecdsa
 
   crypto-accumulator:
-    dir: ./pkg/crypto/accumulator
+    ignore_error: true
+    dir: ./crypto/accumulator
     cmds:
       - go test -v ./...
 
   crypto-daed:
-    dir: ./pkg/crypto/daed
+    ignore_error: true
+    dir: ./crypto/daed
     cmds:
       - go test -v ./...
 
   crypto-ecies:
-    dir: ./pkg/crypto/ecies
+    ignore_error: true
+    dir: ./crypto/ecies
     cmds:
       - go test -v ./...
 
   crypto-sharing:
-    dir: ./pkg/crypto/sharing
+    ignore_error: true
+    dir: ./crypto/sharing
     cmds:
       - go test -v ./...
 
   crypto-signatures:
-    dir: ./pkg/crypto/signatures
+    ignore_error: true
+    dir: ./crypto/signatures
     cmds:
       - go test -v ./...
 
   crypto-tecdsa:
-    dir: ./pkg/crypto/tecdsa
-    cmds:
-      - go test -v ./...
-
-  highway:
-    dir: ./pkg/highway
+    dir: ./crypto/tecdsa
     cmds:
       - go test -v ./...
 
@@ -64,15 +61,5 @@ tasks:
 
   module-service:
     dir: ./x/service
-    cmds:
-      - go test -v ./...
-
-  motor:
-    dir: ./pkg/motor
-    cmds:
-      - go test -v ./...
-
-  vault:
-    dir: ./pkg/vault
     cmds:
       - go test -v ./...

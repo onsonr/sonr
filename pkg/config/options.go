@@ -37,7 +37,7 @@ func (o *HighwayOptions) ListenAddress() string {
 // PrintBanner prints the banner
 func (o *HighwayOptions) PrintBanner() {
 	if o.EnableBanner {
-		pterm.DefaultHeader.Printf(persistentBanner(o.ListenAddress()))
+		pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.GatewayPort)))
 	}
 }
 
