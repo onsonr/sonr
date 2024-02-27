@@ -57,7 +57,8 @@ func RegisterSonrAPI(e *echo.Echo) {
 }
 
 // RegisterHTMXPages registers the page routes for HTMX
-func RegisterHTMXPages(e *echo.Echo) {
+func RegisterHTMXPages(e *echo.Echo, assetsDir string) {
+	e.Static("/assets", assetsDir)
 	e.GET("/", pages.Index, middleware.UseHTMX)
 	e.GET("/console", pages.Console, middleware.UseHTMX)
 	e.GET("/404", pages.Error, middleware.UseHTMX)

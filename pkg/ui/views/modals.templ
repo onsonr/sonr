@@ -6,14 +6,14 @@ templ DepositModal() {
 	</sl-dialog>
 }
 
-templ SwapModal() {
-	<sl-dialog label="Swap Tokens" open>
+templ SwapModal(isOpen bool) {
+	<sl-dialog label="Swap Tokens" open?={ isOpen }>
 		Hello world
 	</sl-dialog>
 }
 
-templ ShareModal() {
-	<sl-dialog label="Share Menu..." open>
+templ ShareModal(open bool) {
+	<sl-dialog label="Share Menu..." open?={ open }>
 		Hello world
 	</sl-dialog>
 }

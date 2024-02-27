@@ -17,7 +17,6 @@ func UseHTMX(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 		hxh := htmx.HxRequestHeaderFromRequest(c.Request())
-
 		ctx = context.WithValue(ctx, HTMXHeaderKey, hxh)
 		c.SetRequest(c.Request().WithContext(ctx))
 		return next(c)

@@ -34,7 +34,7 @@ func DepositModal() templ.Component {
 	})
 }
 
-func SwapModal() templ.Component {
+func SwapModal(isOpen bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -47,7 +47,17 @@ func SwapModal() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Swap Tokens\" open>Hello world</sl-dialog>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Swap Tokens\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if isOpen {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" open")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(">Hello world</sl-dialog>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -58,7 +68,7 @@ func SwapModal() templ.Component {
 	})
 }
 
-func ShareModal() templ.Component {
+func ShareModal(open bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -71,7 +81,17 @@ func ShareModal() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Share Menu...\" open>Hello world</sl-dialog>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-dialog label=\"Share Menu...\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if open {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" open")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(">Hello world</sl-dialog>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

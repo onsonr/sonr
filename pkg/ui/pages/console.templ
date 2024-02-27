@@ -16,7 +16,7 @@ templ dashboardPanel() {
 templ chatPanel() {
 	@components.RootLayout() {
 		@sidebar()
-		@components.ConversationsList()
+		@views.ConversationsView()
 		@views.ChatView()
 	}
 }
@@ -26,16 +26,14 @@ templ sidebar() {
 		@components.SidebarGroup() {
 			@components.SidebarItem("Home", components.HomeIcon(), "/")
 			@components.SidebarItem("Chat", components.BubbleChatIcon(), "/chat")
-			@components.SidebarItem("Wallet", components.CryptoWalletIcon(), "/dex")
+			@components.SidebarItem("Wallet", components.CryptoWalletIcon(), "/wallet")
 		}
 		@components.SidebarGroup() {
-			@components.SidebarItem("Services", components.GlobeIcon(), "/chat")
-			@components.SidebarItem("Identities", components.ValidUserIcon(), "/")
+			@components.SidebarItem("Network Activity", components.ActivityIcon(), "/status")
+			@components.SidebarItem("Governance", components.ValidatorIcon(), "/governance")
 		}
 		@components.SidebarGroup() {
-			@components.SidebarItem("Governance", components.TreasuryIcon(), "/chat")
-			@components.SidebarItem("Validators", components.ValidatorIcon(), "/")
-			@components.SidebarItem("Network Activity", components.ActivityIcon(), "/")
+			@components.SidebarItem("Developer", components.CodeIcon(), "/console")
 		}
 	}
 }

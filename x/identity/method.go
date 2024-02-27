@@ -1,4 +1,4 @@
-package did
+package identity
 
 import (
 	"fmt"

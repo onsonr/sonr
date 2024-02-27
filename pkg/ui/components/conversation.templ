@@ -1,0 +1,84 @@
+package components
+
+templ ConversationItem() {
+	<div class="p-4 flex flex-row items-center">
+		<sl-avatar label="User avatar"></sl-avatar>
+		<div class="flex flex-col ml-3">
+			<h1 class="text-stone-900/90 dark:text-stone-100/90 text-lg font-semibold">User Name</h1>
+			<p class="text-stone-900/79 dark:text-stone-200/70 text-sm">Last message</p>
+		</div>
+		<div class="flex flex-col ml-auto">
+			<sl-badge>3</sl-badge>
+		</div>
+	</div>
+}
+
+func ChatMessage(props ...ChatMessageOption) templ.Component {
+	p := defaultChatMessageProps()
+	for _, o := range props {
+		o(&p)
+	}
+	if p.IsIncoming {
+		return incomingChatMessage(p.Message)
+	}
+	return outgoingChatMessage(p.Message)
+}
+
+type chatMessageProps struct {
+	IsIncoming bool
+	Message    string
+}
+
+type ChatMessageOption func(*chatMessageProps)
+
+func WithIncoming() chatMessageProps {
+	return chatMessageProps{
+		IsIncoming: true,
+		Message:    "Hello, how are you?",
+	}
+}
+
+func WithIncomingMessage(message string) ChatMessageOption {
+	return func(p *chatMessageProps) {
+		p.IsIncoming = true
+		p.Message = message
+	}
+}
+
+func WithOutgoingMessage(message string) ChatMessageOption {
+	return func(p *chatMessageProps) {
+		p.IsIncoming = false
+		p.Message = message
+	}
+}
+
+func defaultChatMessageProps() chatMessageProps {
+	return chatMessageProps{
+		IsIncoming: false,
+		Message:    "Hello, how are you?",
+	}
+}
+
+templ incomingChatMessage(message string) {
+	<div class="grid grid-cols-5 p-3">
+		<div class="col-span-3">
+			<div class="flex flex-row justify-start w-full">
+				<div class="p-2 rounded-xl rounded-br-xs bg-stone-500 w-fit">
+					<p class="text-stone-50/90">{ message }</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ outgoingChatMessage(message string) {
+	<div class="grid grid-cols-5 p-3">
+		<div class="col-start-3 col-span-3">
+			<div class="flex flex-row justify-end w-full">
+				<div class="p-2 rounded-xl rounded-br-xs bg-sky-500 w-fit">
+					<p class="text-stone-50/90">{ message }</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}

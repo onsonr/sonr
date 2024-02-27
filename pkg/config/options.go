@@ -2,10 +2,13 @@ package config
 
 import (
 	"fmt"
+	"path"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
+
+	"github.com/sonrhq/sonr/app"
 )
 
 func persistentBanner(address string) string {
@@ -25,9 +28,7 @@ func (o *HighwayConfig) ListenAddress() string {
 
 // PrintBanner prints the banner
 func (o *HighwayConfig) PrintBanner() {
-	if o.EnableBanner {
-		pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.GatewayPort)))
-	}
+	pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.GatewayPort)))
 }
 
 // Serve starts the highway server
@@ -39,9 +40,9 @@ func (o *HighwayConfig) Serve(e *echo.Echo) {
 // CreateHwayConfig returns a new HighwayOptions
 func CreateHwayConfig() *HighwayConfig {
 	return &HighwayConfig{
-		GatewayPort:  8000,
-		Host:         "0.0.0.0",
-		EnableBanner: true,
+		GatewayPort: 8000,
+		Host:        "0.0.0.0",
+		Assets:      path.Join(app.DefaultNodeHome, "public"),
 	}
 }
 
@@ -85,9 +86,9 @@ func WithHost(host string) HighwayOption {
 	}
 }
 
-// WithEnableBanner sets the EnableBanner
-func WithEnableBanner(enable bool) HighwayOption {
+// WithAssetsDirectory sets the Assets
+func WithAssetsDirectory(assets string) HighwayOption {
 	return func(o *HighwayConfig) {
-		o.EnableBanner = enable
+		o.Assets = assets
 	}
 }

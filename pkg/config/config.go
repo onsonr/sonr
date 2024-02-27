@@ -47,8 +47,8 @@ type HighwayConfig struct {
 	// Host is the host that the gateway listens on
 	Host string `json:"host"`
 
-	// EnableBanner enables the banner
-	EnableBanner bool `json:"enable_banner"`
+	// Assets is the path to the assets
+	Assets string `json:"assets"`
 }
 
 // MatrixConfig represents the nitro configuration

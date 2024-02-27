@@ -14,7 +14,7 @@ import (
 	"github.com/sonrhq/sonr/crypto/core/protocol"
 	"github.com/sonrhq/sonr/crypto/daead"
 	"github.com/sonrhq/sonr/internal/wallet/kss"
-	"github.com/sonrhq/sonr/pkg/did"
+	did "github.com/sonrhq/sonr/x/identity"
 )
 
 var keyHandle *keyset.Handle

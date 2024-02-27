@@ -83,7 +83,7 @@ func chatPanel() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = components.ConversationsList().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = views.ConversationsView().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -152,7 +152,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.SidebarItem("Wallet", components.CryptoWalletIcon(), "/dex").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.SidebarItem("Wallet", components.CryptoWalletIcon(), "/wallet").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -175,7 +175,7 @@ func sidebar() templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = components.SidebarItem("Services", components.GlobeIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.SidebarItem("Network Activity", components.ActivityIcon(), "/status").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -183,7 +183,7 @@ func sidebar() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = components.SidebarItem("Identities", components.ValidUserIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.SidebarItem("Governance", components.ValidatorIcon(), "/governance").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -206,23 +206,7 @@ func sidebar() templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = components.SidebarItem("Governance", components.TreasuryIcon(), "/chat").Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = components.SidebarItem("Validators", components.ValidatorIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = components.SidebarItem("Network Activity", components.ActivityIcon(), "/").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = components.SidebarItem("Developer", components.CodeIcon(), "/console").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
