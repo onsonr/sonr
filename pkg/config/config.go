@@ -29,10 +29,26 @@ type SonrdConfig struct {
 
 // HighwayConfig represents the highway configuration
 type HighwayConfig struct {
-	IPFSGateway      string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
-	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
-	NodeGRPCAddress  string `mapstructure:"node_grpc_address" json:"node_grpc_address"`
-	ValidatorAddress string `mapstructure:"validator_address" json:"validator_address"`
+	// ValidatorHost is the host of the validator
+	ValidatorHost string `mapstructure:"validator_address" json:"validator_address"`
+
+	// ValidatorRPC is the port of the validator for rpc
+	ValidatorRPC int `mapstructure:"validator_rpc_port" json:"validator_rpc_port"`
+
+	// ValidatorWS is the port of the validator for websocket
+	ValidatorWS int `mapstructure:"validator_ws_port" json:"validator_ws_port"`
+
+	// ValidatorGRPC is the port of the validator for grpc
+	ValidatorGRPC int `mapstructure:"validator_grpc_port" json:"validator_grpc_port"`
+
+	// GatewayPort is the port that the gateway listens on
+	GatewayPort int `json:"gateway_port"`
+
+	// Host is the host that the gateway listens on
+	Host string `json:"host"`
+
+	// EnableBanner enables the banner
+	EnableBanner bool `json:"enable_banner"`
 }
 
 // MatrixConfig represents the nitro configuration

@@ -10,8 +10,8 @@ import (
 	"github.com/sonrhq/sonr/pkg/routes"
 )
 
-// ServeCommand returns the serve command
-func ServeCommand() *cobra.Command {
+// HwayCommand returns the serve command for the Sonr Highway
+func HwayCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "hway",
 		Short:                      "Serves the Sonr Highway",
@@ -19,15 +19,18 @@ func ServeCommand() *cobra.Command {
 		SuggestionsMinimumDistance: 2,
 		Run:                        serveAction,
 	}
+	cmd.Flags().String("hway-host", "0.0.0.0", "host")
+	cmd.Flags().Int("hway-port", 8000, "port")
+	cmd.Flags().String("hway-psql", "postgresql://sonr:sonr@localhost:5432/sonr?sslmode=disable", "psql connection string")
+	cmd.Flags().String("val-host", "sonrd", "validator host")
+	cmd.Flags().Int("val-rpc", 26657, "validator rpc port")
+	cmd.Flags().Int("val-grpc", 9090, "validator grpc port")
 	return cmd
 }
 
-func serveAction(_ *cobra.Command, _ []string) {
-	// 1. Read config from file
-	// 2. Check reachable to enabled services
-	// 3. Start Gateway router as system service
-	// Set the default options
-	cnfg := config.NewHighwayOptions()
+func serveAction(c *cobra.Command, _ []string) {
+	cnfg := config.CreateHwayConfig()
+	cnfg.ReadFlags(c)
 
 	// Create the router
 	e := echo.New()

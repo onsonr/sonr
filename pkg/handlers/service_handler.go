@@ -8,7 +8,6 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/sonrhq/sonr/pkg/middleware"
-	"github.com/sonrhq/sonr/pkg/vault"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -47,13 +46,9 @@ func (h serviceAPI) StartRegistration(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
-	vc, err := vault.Create(c.Request().Context())
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
 	opts := service.GetCredentialCreationOptions(resp, protocol.UserEntity{
 		DisplayName: handleStr,
-		ID:          []byte(vc.Address),
+		ID:          []byte("vc.Address"),
 	})
 	return c.JSON(http.StatusOK, opts)
 }

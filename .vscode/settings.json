@@ -94,5 +94,5 @@
   "search.quickOpen.includeSymbols": true,
   "breadcrumbs.symbolSortOrder": "type",
   "terraform.languageServer.ignoreSingleFileWarning": true,
-  "helium-icon-theme.showWelcomeMessage": false
+
 }
