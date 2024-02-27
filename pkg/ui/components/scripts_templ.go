@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 
 func createCredential(rpName, rpId, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_createCredential_c37e`,
-		Function: `function __templ_createCredential_c37e(rpName, rpId, challenge){const publicKeyCredentialCreationOptions = {
+		Name: `__templ_createCredential_e419`,
+		Function: `function __templ_createCredential_e419(rpName, rpId, challenge){const publicKeyCredentialCreationOptions = {
 		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		rp: {
 			name: rpName,
@@ -30,23 +30,21 @@ func createCredential(rpName, rpId, challenge string) templ.ComponentScript {
 		attestation: "direct"
 	};
 
-	const credential = navigator.credentials.create({
+	const credential = await navigator.credentials.create({
 		publicKey: publicKeyCredentialCreationOptions
-	}).then((credential) => {
-		console.log(credential);
 	});
+	console.log(credential);
 }`,
-		Call:       templ.SafeScript(`__templ_createCredential_c37e`, rpName, rpId, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_createCredential_c37e`, rpName, rpId, challenge),
+		Call:       templ.SafeScript(`__templ_createCredential_e419`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_createCredential_e419`, rpName, rpId, challenge),
 	}
 }
 
 func getCredential(rpName, rpId, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_getCredential_8569`,
-		Function: `function __templ_getCredential_8569(rpName, rpId, challenge){const publicKeyCredentialRequestOptions = {
-		challenge: Uint8Array.from(
-			"randomStringFromServer", c => c.charCodeAt(0)),
+		Name: `__templ_getCredential_ff50`,
+		Function: `function __templ_getCredential_ff50(rpName, rpId, challenge){const publicKeyCredentialRequestOptions = {
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		allowCredentials: [{
 			id: Uint8Array.from(
 				credentialId, c => c.charCodeAt(0)),
@@ -56,13 +54,12 @@ func getCredential(rpName, rpId, challenge string) templ.ComponentScript {
 		timeout: 60000,
 	}
 
-	const assertion = navigator.credentials.get({
+	const assertion = await navigator.credentials.get({
 		publicKey: publicKeyCredentialRequestOptions
-	}).then((credential) => {
-		console.log(credential);
 	});
+	console.log(assertion);
 }`,
-		Call:       templ.SafeScript(`__templ_getCredential_8569`, rpName, rpId, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_getCredential_8569`, rpName, rpId, challenge),
+		Call:       templ.SafeScript(`__templ_getCredential_ff50`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_getCredential_ff50`, rpName, rpId, challenge),
 	}
 }

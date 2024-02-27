@@ -21,17 +21,15 @@ script createCredential(rpName, rpId, challenge string) {
 		attestation: "direct"
 	};
 
-	const credential = navigator.credentials.create({
+	const credential = await navigator.credentials.create({
 		publicKey: publicKeyCredentialCreationOptions
-	}).then((credential) => {
-		console.log(credential);
 	});
+	console.log(credential);
 }
 
 script getCredential(rpName, rpId, challenge string) {
 	const publicKeyCredentialRequestOptions = {
-		challenge: Uint8Array.from(
-			"randomStringFromServer", c => c.charCodeAt(0)),
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		allowCredentials: [{
 			id: Uint8Array.from(
 				credentialId, c => c.charCodeAt(0)),
@@ -41,9 +39,8 @@ script getCredential(rpName, rpId, challenge string) {
 		timeout: 60000,
 	}
 
-	const assertion = navigator.credentials.get({
+	const assertion = await navigator.credentials.get({
 		publicKey: publicKeyCredentialRequestOptions
-	}).then((credential) => {
-		console.log(credential);
 	});
+	console.log(assertion);
 }
