@@ -36,9 +36,13 @@ func serveAction(c *cobra.Command, _ []string) {
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 	middleware.UseDefaults(e)
+
+	// Register the routes
 	routes.RegisterCosmosAPI(e)
 	routes.RegisterSonrAPI(e)
-	routes.RegisterHTMXPages(e, cnfg.Assets)
+	routes.RegisterStaticAssets(e, cnfg.Assets)
+	routes.RegisterHTMXPages(e)
+	routes.RegisterHTMXModals(e)
 
 	// Serve the router
 	cnfg.PrintBanner()

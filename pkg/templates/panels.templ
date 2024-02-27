@@ -1,0 +1,60 @@
+package templates
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/sonrhq/sonr/pkg/components"
+)
+
+templ DashboardSidebar(c echo.Context) {
+	@components.Sidebar() {
+		@components.SidebarGroup() {
+			@components.SidebarItem("Home", "speedometer", "/home", c.Request().URL.Path == "/home")
+			@components.SidebarItem("Chat", "chat", "/chat", c.Request().URL.Path == "/chat")
+			@components.SidebarItem("Wallet", "wallet2", "/wallet", c.Request().URL.Path == "/wallet")
+		}
+		@components.SidebarGroup() {
+			@components.SidebarItem("Status", "activity", "/status", c.Request().URL.Path == "/status")
+			@components.SidebarItem("Governance", "box", "/governance", c.Request().URL.Path == "/governance")
+		}
+		@components.SidebarGroup() {
+			@components.SidebarItem("Console", "code-slash", "/console", c.Request().URL.Path == "/console")
+		}
+	}
+}
+
+templ ChatPanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		@ConversationsView()
+		@ChatView()
+	}
+}
+
+templ ConsolePanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-700"></div>
+	}
+}
+
+templ GovernancePanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-300"></div>
+	}
+}
+
+templ HomePanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-400"></div>
+	}
+}
+
+templ StatusPanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-500"></div>
+	}
+}
+
+templ WalletPanel(c echo.Context) {
+	@components.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-600"></div>
+	}
+}

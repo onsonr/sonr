@@ -5,7 +5,6 @@ import (
 
 	"github.com/sonrhq/sonr/pkg/handlers"
 	"github.com/sonrhq/sonr/pkg/middleware"
-	"github.com/sonrhq/sonr/pkg/pages"
 )
 
 // RegisterCosmosAPI registers the Cosmos API routes
@@ -56,15 +55,27 @@ func RegisterSonrAPI(e *echo.Echo) {
 	e.POST("/tx/simulate", handlers.TxAPI.SimulateTx)
 }
 
-// RegisterHTMXPages registers the page routes for HTMX
-func RegisterHTMXPages(e *echo.Echo, assetsDir string) {
+// RegisterStaticAssets registers the static asset routes
+func RegisterStaticAssets(e *echo.Echo, assetsDir string) {
 	e.Static("/*", assetsDir)
-	e.GET("/", pages.Index, middleware.UseHTMX)
-	e.GET("/_panels/home", pages.Home, middleware.UseHTMX)
-	e.GET("/_panels/chat", pages.Chat, middleware.UseHTMX)
-	e.GET("/_panels/wallet", pages.Wallet, middleware.UseHTMX)
-	e.GET("/_panels/status", pages.Status, middleware.UseHTMX)
-	e.GET("/_panels/governance", pages.Governance, middleware.UseHTMX)
-	e.GET("/_panels/console", pages.Console, middleware.UseHTMX)
-	e.GET("/error-404", pages.Error, middleware.UseHTMX)
+}
+
+// RegisterHTMXPages registers the page routes for HTMX
+func RegisterHTMXPages(e *echo.Echo) {
+	e.GET("/", handlers.Pages.Index, middleware.UseHTMX)
+	e.GET("/_panels/home", handlers.Pages.Home, middleware.UseHTMX)
+	e.GET("/_panels/chat", handlers.Pages.Chat, middleware.UseHTMX)
+	e.GET("/_panels/wallet", handlers.Pages.Wallet, middleware.UseHTMX)
+	e.GET("/_panels/status", handlers.Pages.Status, middleware.UseHTMX)
+	e.GET("/_panels/governance", handlers.Pages.Governance, middleware.UseHTMX)
+	e.GET("/_panels/console", handlers.Pages.Console, middleware.UseHTMX)
+	e.GET("/error-404", handlers.Pages.Error, middleware.UseHTMX)
+}
+
+// RegisterHTMXModals registers the modal routes for HTMX
+func RegisterHTMXModals(e *echo.Echo) {
+	e.GET("/swap", handlers.Modals.Swap, middleware.UseHTMX)
+	e.GET("/deposit", handlers.Modals.Deposit, middleware.UseHTMX)
+	e.GET("/settings", handlers.Modals.Settings, middleware.UseHTMX)
+	e.GET("/share", handlers.Modals.Share, middleware.UseHTMX)
 }
