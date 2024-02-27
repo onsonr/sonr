@@ -78,7 +78,7 @@ release:
   mode: replace
   draft: false
   extra_files:
-    - glob: .github/assets/install.sh
+    - glob: ./assets/public/scripts/install.sh
 
 changelog:
   sort: asc
