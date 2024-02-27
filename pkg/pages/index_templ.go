@@ -147,10 +147,10 @@ func authLoginView() templ.Component {
 
 func Index(c echo.Context) error {
 	cmp := authRegisterView()
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Error(c echo.Context) error {
 	errView := views.Error404View()
-	return shared.RenderPage(c, errView)
+	return shared.Render(c, errView)
 }

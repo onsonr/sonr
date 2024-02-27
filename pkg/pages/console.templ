@@ -9,32 +9,32 @@ import (
 
 func Home(c echo.Context) error {
 	cmp := homePanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Console(c echo.Context) error {
 	cmp := consolePanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Chat(c echo.Context) error {
 	cmp := chatPanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Wallet(c echo.Context) error {
 	cmp := walletPanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Status(c echo.Context) error {
 	cmp := statusPanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 func Governance(c echo.Context) error {
 	cmp := governancePanel(c)
-	return shared.RenderPage(c, cmp)
+	return shared.Render(c, cmp)
 }
 
 templ sidebar(c echo.Context) {

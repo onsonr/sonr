@@ -1,6 +1,8 @@
 package shared
 
 import (
+	"net/http"
+
 	"github.com/a-h/templ"
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/labstack/echo/v4"
@@ -8,8 +10,10 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-// RenderPage renders a templ.Component
-func RenderPage(c echo.Context, cmp templ.Component) error {
+// Render renders a templ.Component
+func Render(c echo.Context, cmp templ.Component) error {
+	c.Response().Writer.WriteHeader(http.StatusOK)
+	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
 	return cmp.Render(c.Request().Context(), c.Response())
 }
 
