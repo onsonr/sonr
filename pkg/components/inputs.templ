@@ -5,7 +5,7 @@ import (
 )
 
 templ PasskeyButton(record service.ServiceRecord) {
-	<div slot="suffix" onclick={ createCredential(record.Name, record.Origin, service.GenerateChallenge().String()) } class="cursor-pointer">
+	<div slot="suffix" onclick={ CreateCredential(record.Name, record.Origin, service.GenerateChallenge().String()) } class="cursor-pointer">
 		@PasskeyIcon()
 	</div>
 }

@@ -7,10 +7,10 @@ package components
 
 import "github.com/a-h/templ"
 
-func createCredential(rpName, rpId, challenge string) templ.ComponentScript {
+func CreateCredential(rpName, rpId, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_createCredential_c37e`,
-		Function: `function __templ_createCredential_c37e(rpName, rpId, challenge){const publicKeyCredentialCreationOptions = {
+		Name: `__templ_CreateCredential_c37e`,
+		Function: `function __templ_CreateCredential_c37e(rpName, rpId, challenge){const publicKeyCredentialCreationOptions = {
 		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		rp: {
 			name: rpName,
@@ -36,15 +36,15 @@ func createCredential(rpName, rpId, challenge string) templ.ComponentScript {
 		console.log(credential);
 	});
 }`,
-		Call:       templ.SafeScript(`__templ_createCredential_c37e`, rpName, rpId, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_createCredential_c37e`, rpName, rpId, challenge),
+		Call:       templ.SafeScript(`__templ_CreateCredential_c37e`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_CreateCredential_c37e`, rpName, rpId, challenge),
 	}
 }
 
-func getCredential(rpName, rpId, challenge string) templ.ComponentScript {
+func GetCredential(rpName, rpId, challenge string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_getCredential_2344`,
-		Function: `function __templ_getCredential_2344(rpName, rpId, challenge){const publicKeyCredentialRequestOptions = {
+		Name: `__templ_GetCredential_2344`,
+		Function: `function __templ_GetCredential_2344(rpName, rpId, challenge){const publicKeyCredentialRequestOptions = {
 		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		allowCredentials: [{
 			id: Uint8Array.from(
@@ -61,7 +61,7 @@ func getCredential(rpName, rpId, challenge string) templ.ComponentScript {
 		console.log(credential);
 	});
 }`,
-		Call:       templ.SafeScript(`__templ_getCredential_2344`, rpName, rpId, challenge),
-		CallInline: templ.SafeScriptInline(`__templ_getCredential_2344`, rpName, rpId, challenge),
+		Call:       templ.SafeScript(`__templ_GetCredential_2344`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_GetCredential_2344`, rpName, rpId, challenge),
 	}
 }

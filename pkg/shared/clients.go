@@ -12,16 +12,16 @@ import (
 	servicev1 "github.com/sonrhq/sonr/api/sonr/service/v1"
 )
 
-type client struct {
+type clients struct {
 	echo.Context
 }
 
-func Client(e echo.Context) *client {
-	return &client{e}
+func Clients(e echo.Context) *clients {
+	return &clients{e}
 }
 
 // BankClient returns a new bank client.
-func (e *client) Bank() bankv1beta1.QueryClient {
+func (e *clients) Bank() bankv1beta1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return bankv1beta1.NewQueryClient(cc)
 	}
@@ -29,7 +29,7 @@ func (e *client) Bank() bankv1beta1.QueryClient {
 }
 
 // CometClient returns a new comet client.
-func (e *client) Comet() cmtcservice.ServiceClient {
+func (e *clients) Comet() cmtcservice.ServiceClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return cmtcservice.NewServiceClient(cc)
 	}
@@ -37,7 +37,7 @@ func (e *client) Comet() cmtcservice.ServiceClient {
 }
 
 // GovClient creates a new gov client.
-func (e *client) Gov() govv1.QueryClient {
+func (e *clients) Gov() govv1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return govv1.NewQueryClient(cc)
 	}
@@ -45,7 +45,7 @@ func (e *client) Gov() govv1.QueryClient {
 }
 
 // IdentityClient creates a new identity client.
-func (e *client) Identity() identityv1.QueryClient {
+func (e *clients) Identity() identityv1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return identityv1.NewQueryClient(cc)
 	}
@@ -53,7 +53,7 @@ func (e *client) Identity() identityv1.QueryClient {
 }
 
 // ServiceClient creates a new service client.
-func (e *client) Service() servicev1.QueryClient {
+func (e *clients) Service() servicev1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return servicev1.NewQueryClient(cc)
 	}
@@ -61,7 +61,7 @@ func (e *client) Service() servicev1.QueryClient {
 }
 
 // StakingClient creates a new staking client.
-func (e *client) Staking() stakingv1beta1.QueryClient {
+func (e *clients) Staking() stakingv1beta1.QueryClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return stakingv1beta1.NewQueryClient(cc)
 	}
@@ -69,7 +69,7 @@ func (e *client) Staking() stakingv1beta1.QueryClient {
 }
 
 // TxClient creates a new transaction client.
-func (e *client) Tx() tx.ServiceClient {
+func (e *clients) Tx() tx.ServiceClient {
 	if cc := GrpcClientConn(e); cc != nil {
 		return tx.NewServiceClient(cc)
 	}

@@ -27,7 +27,7 @@ func PasskeyButton(record service.ServiceRecord) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, createCredential(record.Name, record.Origin, service.GenerateChallenge().String()))
+		templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, CreateCredential(record.Name, record.Origin, service.GenerateChallenge().String()))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -35,7 +35,7 @@ func PasskeyButton(record service.ServiceRecord) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 templ.ComponentScript = createCredential(record.Name, record.Origin, service.GenerateChallenge().String())
+		var templ_7745c5c3_Var2 templ.ComponentScript = CreateCredential(record.Name, record.Origin, service.GenerateChallenge().String())
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2.Call)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

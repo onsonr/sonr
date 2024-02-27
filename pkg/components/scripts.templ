@@ -1,6 +1,6 @@
 package components
 
-script createCredential(rpName, rpId, challenge string) {
+script CreateCredential(rpName, rpId, challenge string) {
 	const publicKeyCredentialCreationOptions = {
 		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		rp: {
@@ -28,7 +28,7 @@ script createCredential(rpName, rpId, challenge string) {
 	});
 }
 
-script getCredential(rpName, rpId, challenge string) {
+script GetCredential(rpName, rpId, challenge string) {
 	const publicKeyCredentialRequestOptions = {
 		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
 		allowCredentials: [{
