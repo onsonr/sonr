@@ -1,6 +1,6 @@
 #
 
-[![Sonr Logo Banner](.github/assets/core-cover.png)](https://sonr.io)
+[![Sonr Logo Banner](./assets/public/github/core-cover.png)](https://sonr.io)
 
 <div style="text-align: center;">
 
@@ -97,7 +97,7 @@ We are currently in transitioning to Public Testnet. Watch [releases](https://gi
 
 Sonr is a [blockchain node](https://sonr.io/dashboard) which you can run locally, or use to join our testnet. You can sign up and start using Sonr without installing anything using our [dashboard](https://sonr.io/dashboard).
 
-![Architecture](.github/assets/architecture.svg)
+![Architecture](.assets/public/github/architecture.svg)
 
 See [additional details](https://sonr.io/whitepaper) on these components in the whitepaper.
 

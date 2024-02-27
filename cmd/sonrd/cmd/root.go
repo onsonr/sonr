@@ -119,8 +119,6 @@ func NewRootCmd() *cobra.Command {
 			// overwrite the sonrmum gas price from the app configuration
 			srvCfg := serverconfig.DefaultConfig()
 			srvCfg.MinGasPrices = "0snr"
-			srvCfg.API.Enable = true
-			srvCfg.API.Swagger = true
 			srvCfg.GRPC.Address = "0.0.0.0:9090"
 
 			// overwrite the block timeout
@@ -200,7 +198,7 @@ func initRootCmd(
 		queryCommand(),
 		txCommand(),
 		keys.Commands(),
-		ServeCommand(),
+		HwayCommand(),
 	)
 }
 

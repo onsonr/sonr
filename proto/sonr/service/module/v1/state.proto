@@ -26,57 +26,56 @@ enum ServicePermissions {
   SERVICE_PERMISSIONS_OWN = 3;
 }
 
-// ServiceRecord is the balance of an account.
-message ServiceRecord {
+// Service is the balance of an account.
+message Service {
   option (cosmos.orm.v1.table) = {
     id : 1
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "origin" unique : true}
-    index : {id : 2 fields : "controller"}
+    primary_key : {fields : "origin"}
+    index : {id : 2 fields : "authority"}
   };
 
-  uint64 id = 1;
-  string origin = 2;
-  string name = 3;
-  string description = 4;
-  string controller = 5;
-  ServicePermissions permissions = 6;
+  string origin = 1;
+  string name = 2;
+  string description = 3;
+  string authority = 4;
+  ServicePermissions permissions = 5;
 }
 
 // Credential is the total supply of the module.
 message Credential {
   option (cosmos.orm.v1.table) = {
     id : 2
-    primary_key : {fields : "id" auto_increment : true}
+    primary_key : {fields : "sequence" auto_increment : true}
     index : {id : 1 fields : "handle"}
     index : {id : 2 fields : "origin,handle" unique: true}
-    index : {id : 3 fields : "credential_id" unique : true}
-    index : {id : 4 fields : "public_key" unique : true}
+    index : {id : 3 fields : "id" unique : true}
+    index : {id : 4 fields : "origin,authority" unique : true}
   };
 
-  uint64 id = 1;
+  uint64 sequence = 1;
   string handle = 2;
   repeated string transport = 3;
-  bytes public_key = 4;
+  string authority = 4;
   string attestation_type = 5;
-  bytes credential_id = 6;
+  bytes id = 6;
   string origin = 7;
 }
 
 
 // Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
 // authorizer to the underlying wallet interface.
-message Witness {
+message User {
   option (cosmos.orm.v1.table) = {
     id : 3
     primary_key : {fields : "index" auto_increment : true}
-    index : {id : 1 fields : "origin,key" unique : true}
+    index : {id : 1 fields : "origin,authority" unique : true}
   };
 
   uint64 index = 1;
   string origin = 2;
   string key = 3;
   string value = 4;
+  string authority = 5;
 }
 
 // BaseParams is the total supply of the module.

@@ -1,13 +1,13 @@
 package keeper
 
 import (
+	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/orm/model/ormdb"
-	"cosmossdk.io/orm/model/ormtable"
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
@@ -30,10 +30,8 @@ type Keeper struct {
 	groupKeeper    service.GroupKeeper
 
 	// state management
-	ormtable.Schema
 	CollSchema collections.Schema
 	Params     collections.Item[service.Params]
-	Counter    collections.Map[string, uint64]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -60,7 +58,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		addressCodec:   addressCodec,
 		authority:      authority,
 		Params:         collections.NewItem(sb, service.ParamsKey, "params", codec.CollValue[service.Params](cdc)),
-		Counter:        collections.NewMap(sb, service.CounterKey, "counter", collections.StringKey, collections.Uint64Value),
 		db:             store,
 		identityKeeper: identityKeeper,
 		bankKeeper:     bankKeeper,
@@ -79,4 +76,51 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 // GetAuthority returns the module's authority.
 func (k Keeper) GetAuthority() string {
 	return k.authority
+}
+
+// setupInitialRecords sets up the initial records.
+func (k Keeper) setupInitialRecords(ctx context.Context) error {
+	err := k.db.ServiceTable().Save(ctx, &modulev1.Service{
+		Origin:      "localhost",
+		Name:        "Sonr LocalAuth",
+		Description: "Sonr authentication service",
+		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
+	})
+	if err != nil {
+		return err
+	}
+
+	// Set default permissions for the base, read, write and own modules
+	if err := k.db.BaseParamsTable().Save(ctx, &modulev1.BaseParams{
+		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE,
+		Algorithm:                -7,
+		AuthenticationAttachment: "platform",
+	}); err != nil {
+		return err
+	}
+
+	if err := k.db.ReadParamsTable().Save(ctx, &modulev1.ReadParams{
+		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ,
+		Algorithm:                -7,
+		AuthenticationAttachment: "platform",
+	}); err != nil {
+		return err
+	}
+	if err := k.db.WriteParamsTable().Save(ctx, &modulev1.WriteParams{
+		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE,
+		Algorithm:                -8,
+		ResidentKey:              "preferred",
+		AuthenticationAttachment: "cross-platform",
+	}); err != nil {
+		return err
+	}
+	if err := k.db.OwnParamsTable().Save(ctx, &modulev1.OwnParams{
+		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
+		Algorithm:                -8,
+		ResidentKey:              "preferred",
+		AuthenticationAttachment: "cross-platform",
+	}); err != nil {
+		return err
+	}
+	return nil
 }

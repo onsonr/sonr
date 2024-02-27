@@ -1,0 +1,44 @@
+package pages
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/sonrhq/sonr/pkg/ui/views"
+	"github.com/sonrhq/sonr/pkg/ui/components"
+	"github.com/sonrhq/sonr/pkg/shared"
+)
+
+templ dashboardPanel() {
+	@components.RootLayout() {
+		@sidebar()
+	}
+}
+
+templ chatPanel() {
+	@components.RootLayout() {
+		@sidebar()
+		@views.ConversationsView()
+		@views.ChatView()
+	}
+}
+
+templ sidebar() {
+	@components.Sidebar() {
+		@components.SidebarGroup() {
+			@components.SidebarItem("Home", components.HomeIcon(), "/")
+			@components.SidebarItem("Chat", components.BubbleChatIcon(), "/chat")
+			@components.SidebarItem("Wallet", components.CryptoWalletIcon(), "/wallet")
+		}
+		@components.SidebarGroup() {
+			@components.SidebarItem("Network Activity", components.ActivityIcon(), "/status")
+			@components.SidebarItem("Governance", components.ValidatorIcon(), "/governance")
+		}
+		@components.SidebarGroup() {
+			@components.SidebarItem("Developer", components.CodeIcon(), "/console")
+		}
+	}
+}
+
+func Console(c echo.Context) error {
+	cmp := chatPanel()
+	return shared.RenderPage(c, cmp)
+}

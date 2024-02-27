@@ -1,0 +1,70 @@
+package components
+
+// RootLayout is a component that renders the root layout of the application
+templ RootLayout() {
+	<html>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://cdn.sonr.build/htmx.min.js"></script>
+			<link
+				rel="stylesheet"
+				media="(prefers-color-scheme:light)"
+				href="/assets/css/light.css"
+			/>
+			<link
+				rel="stylesheet"
+				media="(prefers-color-scheme:dark)"
+				href="/assets/css/dark.css"
+				onload="document.documentElement.classList.add('sl-theme-dark');"
+			/>
+			<script type="module" src="https://cdn.sonr.build/shoelace-autoloader.js"></script>
+			<script type="module" src="https://cdn.sonr.build/shoelace.js"></script>
+			<style>[x-cloak]{display:none}</style>
+			<script src="https://unpkg.com/alpinejs" defer></script>
+		</head>
+		<main class="w-full h-full flex flex-row">
+			{ children... }
+		</main>
+	</html>
+}
+
+// Sidebar is a component that renders a sidebar
+templ Sidebar() {
+	<div class="max-h-screen flex flex-col justify-between">
+		<div class="w-fit h-full flex-col space-y-3 py-4 justify-center align-center border-r-[0.5px] border-stone-700/80">
+			<div class="px-3 pb-2 border-b-[0.5px] border-stone-700/80 h-[52px]">
+				@SonrLogo()
+			</div>
+			{ children... }
+		</div>
+		@SidebarFooter() {
+			@SidebarItem("Account", AccountIcon(), "/account")
+			@SidebarItem("Settings", SettingsIcon(), "/settings")
+		}
+	</div>
+}
+
+templ SidebarFooter() {
+	<div class="py-1 pt-4 border-t-[0.5px] border-stone-700/70 px-3 flex-col items-center justify-center border-r-[0.5px]">
+		{ children... }
+	</div>
+}
+
+templ SidebarGroup() {
+	<div class="py-1 border-b-[0.5px] border-stone-700/70 px-3 flex-col items-center justify-center">
+		{ children... }
+	</div>
+}
+
+templ SidebarItem(label string, icon templ.Component, href string) {
+	<sl-tooltip content={ label } placement="right-start">
+		<div class="p-2.5 hover:bg-stone-200 hover:dark:bg-stone-800 rounded-md">
+			<div label={ label } class="text-md hover:text-stone-800 hover:dark:text-stone-200 cursor-pointer">
+				@icon
+			</div>
+		</div>
+		<sl-divider></sl-divider>
+	</sl-tooltip>
+}

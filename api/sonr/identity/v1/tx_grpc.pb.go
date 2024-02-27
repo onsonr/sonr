@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_IncrementCounter_FullMethodName = "/sonr.identity.v1.Msg/IncrementCounter"
-	Msg_UpdateParams_FullMethodName     = "/sonr.identity.v1.Msg/UpdateParams"
+	Msg_InitializeIdentity_FullMethodName = "/sonr.identity.v1.Msg/InitializeIdentity"
+	Msg_UpdateParams_FullMethodName       = "/sonr.identity.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -28,7 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
 	// IncrementCounter increments the counter.
-	IncrementCounter(ctx context.Context, in *MsgIncrementCounter, opts ...grpc.CallOption) (*MsgIncrementCounterResponse, error)
+	InitializeIdentity(ctx context.Context, in *MsgInitializeIdentity, opts ...grpc.CallOption) (*MsgInitializeIdentityResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -41,9 +41,9 @@ func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) IncrementCounter(ctx context.Context, in *MsgIncrementCounter, opts ...grpc.CallOption) (*MsgIncrementCounterResponse, error) {
-	out := new(MsgIncrementCounterResponse)
-	err := c.cc.Invoke(ctx, Msg_IncrementCounter_FullMethodName, in, out, opts...)
+func (c *msgClient) InitializeIdentity(ctx context.Context, in *MsgInitializeIdentity, opts ...grpc.CallOption) (*MsgInitializeIdentityResponse, error) {
+	out := new(MsgInitializeIdentityResponse)
+	err := c.cc.Invoke(ctx, Msg_InitializeIdentity_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +64,7 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 // for forward compatibility
 type MsgServer interface {
 	// IncrementCounter increments the counter.
-	IncrementCounter(context.Context, *MsgIncrementCounter) (*MsgIncrementCounterResponse, error)
+	InitializeIdentity(context.Context, *MsgInitializeIdentity) (*MsgInitializeIdentityResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -74,8 +74,8 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) IncrementCounter(context.Context, *MsgIncrementCounter) (*MsgIncrementCounterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementCounter not implemented")
+func (UnimplementedMsgServer) InitializeIdentity(context.Context, *MsgInitializeIdentity) (*MsgInitializeIdentityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InitializeIdentity not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -93,20 +93,20 @@ func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
 }
 
-func _Msg_IncrementCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgIncrementCounter)
+func _Msg_InitializeIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgInitializeIdentity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).IncrementCounter(ctx, in)
+		return srv.(MsgServer).InitializeIdentity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_IncrementCounter_FullMethodName,
+		FullMethod: Msg_InitializeIdentity_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).IncrementCounter(ctx, req.(*MsgIncrementCounter))
+		return srv.(MsgServer).InitializeIdentity(ctx, req.(*MsgInitializeIdentity))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -137,8 +137,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "IncrementCounter",
-			Handler:    _Msg_IncrementCounter_Handler,
+			MethodName: "InitializeIdentity",
+			Handler:    _Msg_InitializeIdentity_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

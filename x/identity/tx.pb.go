@@ -31,24 +31,36 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgIncrementCounter defines the Msg/IncrementCounter request type.
-type MsgIncrementCounter struct {
+// MsgInitializeIdentity defines the Msg/IncrementCounter request type.
+type MsgInitializeIdentity struct {
 	// sender is the message sender.
 	Sender string `protobuf:"bytes,1,opt,name=sender,proto3" json:"sender,omitempty"`
+	// peer_id is the peer id of the identity.
+	PeerId string `protobuf:"bytes,2,opt,name=peer_id,json=peerId,proto3" json:"peer_id,omitempty"`
+	// address is the address of the identity.
+	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	// public_key is the public key of the identity.
+	PublicKey []byte `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// ipns is the ipns of the identity.
+	Ipns string `protobuf:"bytes,5,opt,name=ipns,proto3" json:"ipns,omitempty"`
+	// accumulator_key is the accumulator key of the identity.
+	AccumulatorKey []byte `protobuf:"bytes,6,opt,name=accumulator_key,json=accumulatorKey,proto3" json:"accumulator_key,omitempty"`
+	// network is the network of the identity.
+	Network string `protobuf:"bytes,7,opt,name=network,proto3" json:"network,omitempty"`
 }
 
-func (m *MsgIncrementCounter) Reset()         { *m = MsgIncrementCounter{} }
-func (m *MsgIncrementCounter) String() string { return proto.CompactTextString(m) }
-func (*MsgIncrementCounter) ProtoMessage()    {}
-func (*MsgIncrementCounter) Descriptor() ([]byte, []int) {
+func (m *MsgInitializeIdentity) Reset()         { *m = MsgInitializeIdentity{} }
+func (m *MsgInitializeIdentity) String() string { return proto.CompactTextString(m) }
+func (*MsgInitializeIdentity) ProtoMessage()    {}
+func (*MsgInitializeIdentity) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6a41cb36d5341d1c, []int{0}
 }
-func (m *MsgIncrementCounter) XXX_Unmarshal(b []byte) error {
+func (m *MsgInitializeIdentity) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgIncrementCounter) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgInitializeIdentity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgIncrementCounter.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgInitializeIdentity.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,41 +70,83 @@ func (m *MsgIncrementCounter) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *MsgIncrementCounter) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgIncrementCounter.Merge(m, src)
+func (m *MsgInitializeIdentity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgInitializeIdentity.Merge(m, src)
 }
-func (m *MsgIncrementCounter) XXX_Size() int {
+func (m *MsgInitializeIdentity) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgIncrementCounter) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgIncrementCounter.DiscardUnknown(m)
+func (m *MsgInitializeIdentity) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgInitializeIdentity.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgIncrementCounter proto.InternalMessageInfo
+var xxx_messageInfo_MsgInitializeIdentity proto.InternalMessageInfo
 
-func (m *MsgIncrementCounter) GetSender() string {
+func (m *MsgInitializeIdentity) GetSender() string {
 	if m != nil {
 		return m.Sender
 	}
 	return ""
 }
 
-// MsgIncrementCounterResponse defines the Msg/IncrementCounter response type.
-type MsgIncrementCounterResponse struct {
+func (m *MsgInitializeIdentity) GetPeerId() string {
+	if m != nil {
+		return m.PeerId
+	}
+	return ""
 }
 
-func (m *MsgIncrementCounterResponse) Reset()         { *m = MsgIncrementCounterResponse{} }
-func (m *MsgIncrementCounterResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgIncrementCounterResponse) ProtoMessage()    {}
-func (*MsgIncrementCounterResponse) Descriptor() ([]byte, []int) {
+func (m *MsgInitializeIdentity) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *MsgInitializeIdentity) GetPublicKey() []byte {
+	if m != nil {
+		return m.PublicKey
+	}
+	return nil
+}
+
+func (m *MsgInitializeIdentity) GetIpns() string {
+	if m != nil {
+		return m.Ipns
+	}
+	return ""
+}
+
+func (m *MsgInitializeIdentity) GetAccumulatorKey() []byte {
+	if m != nil {
+		return m.AccumulatorKey
+	}
+	return nil
+}
+
+func (m *MsgInitializeIdentity) GetNetwork() string {
+	if m != nil {
+		return m.Network
+	}
+	return ""
+}
+
+// MsgInitializeIdentityResponse defines the Msg/InitializeIdentity response type.
+type MsgInitializeIdentityResponse struct {
+}
+
+func (m *MsgInitializeIdentityResponse) Reset()         { *m = MsgInitializeIdentityResponse{} }
+func (m *MsgInitializeIdentityResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgInitializeIdentityResponse) ProtoMessage()    {}
+func (*MsgInitializeIdentityResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_6a41cb36d5341d1c, []int{1}
 }
-func (m *MsgIncrementCounterResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgInitializeIdentityResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgIncrementCounterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgInitializeIdentityResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgIncrementCounterResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgInitializeIdentityResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -102,17 +156,17 @@ func (m *MsgIncrementCounterResponse) XXX_Marshal(b []byte, deterministic bool) 
 		return b[:n], nil
 	}
 }
-func (m *MsgIncrementCounterResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgIncrementCounterResponse.Merge(m, src)
+func (m *MsgInitializeIdentityResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgInitializeIdentityResponse.Merge(m, src)
 }
-func (m *MsgIncrementCounterResponse) XXX_Size() int {
+func (m *MsgInitializeIdentityResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgIncrementCounterResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgIncrementCounterResponse.DiscardUnknown(m)
+func (m *MsgInitializeIdentityResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgInitializeIdentityResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgIncrementCounterResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgInitializeIdentityResponse proto.InternalMessageInfo
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 type MsgUpdateParams struct {
@@ -210,8 +264,8 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgIncrementCounter)(nil), "sonr.identity.v1.MsgIncrementCounter")
-	proto.RegisterType((*MsgIncrementCounterResponse)(nil), "sonr.identity.v1.MsgIncrementCounterResponse")
+	proto.RegisterType((*MsgInitializeIdentity)(nil), "sonr.identity.v1.MsgInitializeIdentity")
+	proto.RegisterType((*MsgInitializeIdentityResponse)(nil), "sonr.identity.v1.MsgInitializeIdentityResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "sonr.identity.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "sonr.identity.v1.MsgUpdateParamsResponse")
 }
@@ -219,34 +273,40 @@ func init() {
 func init() { proto.RegisterFile("sonr/identity/v1/tx.proto", fileDescriptor_6a41cb36d5341d1c) }
 
 var fileDescriptor_6a41cb36d5341d1c = []byte{
-	// 423 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0x2c, 0xce, 0xcf, 0x2b,
-	0xd2, 0xcf, 0x4c, 0x49, 0xcd, 0x2b, 0xc9, 0x2c, 0xa9, 0xd4, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x12, 0x00, 0x49, 0xe9, 0xc1, 0xa4, 0xf4, 0xca, 0x0c, 0xa5,
-	0xc4, 0x93, 0xf3, 0x8b, 0x73, 0xf3, 0x8b, 0xf5, 0x73, 0x8b, 0xd3, 0x41, 0x2a, 0x73, 0x8b, 0xd3,
-	0x21, 0x4a, 0xa5, 0x44, 0xd2, 0xf3, 0xd3, 0xf3, 0xc1, 0x4c, 0x7d, 0x10, 0x0b, 0x2a, 0x2a, 0x98,
-	0x98, 0x9b, 0x99, 0x97, 0xaf, 0x0f, 0x26, 0xa1, 0x42, 0x32, 0x98, 0xd6, 0x55, 0x16, 0xa4, 0x16,
-	0x43, 0x65, 0x25, 0x21, 0xe6, 0xc7, 0x43, 0x4c, 0x82, 0x70, 0x20, 0x52, 0x4a, 0x35, 0x5c, 0xc2,
-	0xbe, 0xc5, 0xe9, 0x9e, 0x79, 0xc9, 0x45, 0xa9, 0xb9, 0xa9, 0x79, 0x25, 0xce, 0xf9, 0xa5, 0x79,
-	0x25, 0xa9, 0x45, 0x42, 0x06, 0x5c, 0x6c, 0xc5, 0xa9, 0x79, 0x29, 0xa9, 0x45, 0x12, 0x8c, 0x0a,
-	0x8c, 0x1a, 0x9c, 0x4e, 0x12, 0x97, 0xb6, 0xe8, 0x8a, 0x40, 0x35, 0x3a, 0xa6, 0xa4, 0x14, 0xa5,
-	0x16, 0x17, 0x07, 0x97, 0x14, 0x65, 0xe6, 0xa5, 0x07, 0x41, 0xd5, 0x59, 0x19, 0x37, 0x3d, 0xdf,
-	0xa0, 0x05, 0xe5, 0x74, 0x3d, 0xdf, 0xa0, 0xa5, 0x0c, 0x72, 0x51, 0x46, 0x21, 0xc2, 0x4d, 0x58,
-	0xac, 0x51, 0x92, 0xe5, 0x92, 0xc6, 0x22, 0x1c, 0x94, 0x5a, 0x5c, 0x90, 0x9f, 0x57, 0x9c, 0xaa,
-	0xb4, 0x8b, 0x91, 0x8b, 0xdf, 0xb7, 0x38, 0x3d, 0xb4, 0x20, 0x25, 0xb1, 0x24, 0x35, 0x20, 0xb1,
-	0x28, 0x31, 0xb7, 0x58, 0xc8, 0x8c, 0x8b, 0x33, 0xb1, 0xb4, 0x24, 0x23, 0xbf, 0x28, 0xb3, 0xa4,
-	0x92, 0xa0, 0xe3, 0x10, 0x4a, 0x85, 0xac, 0xb9, 0xd8, 0x0a, 0xc0, 0x26, 0x48, 0x30, 0x29, 0x30,
-	0x6a, 0x70, 0x1b, 0x49, 0xe8, 0xa1, 0x47, 0x83, 0x1e, 0xc4, 0x06, 0x27, 0xce, 0x13, 0xf7, 0xe4,
-	0x19, 0x56, 0x3c, 0xdf, 0xa0, 0xc5, 0x18, 0x04, 0xd5, 0x62, 0x65, 0x04, 0xf2, 0x1c, 0xc2, 0x30,
-	0x90, 0xff, 0xe4, 0xb1, 0xf8, 0x0f, 0xd9, 0xa1, 0x4a, 0x92, 0x5c, 0xe2, 0x68, 0x42, 0x30, 0x7f,
-	0x19, 0x5d, 0x61, 0xe4, 0x62, 0xf6, 0x2d, 0x4e, 0x17, 0xca, 0xe0, 0x12, 0xc0, 0x08, 0x79, 0x55,
-	0x4c, 0x77, 0x61, 0x09, 0x22, 0x29, 0x5d, 0xa2, 0x94, 0xc1, 0x6c, 0x14, 0x8a, 0xe1, 0xe2, 0x41,
-	0x09, 0x45, 0x45, 0xac, 0xda, 0x91, 0x95, 0x48, 0x69, 0x12, 0x54, 0x02, 0x33, 0x5d, 0x8a, 0xb5,
-	0x01, 0x14, 0x5a, 0x4e, 0xd6, 0x27, 0x1e, 0xc9, 0x31, 0x5e, 0x78, 0x24, 0xc7, 0xf8, 0xe0, 0x91,
-	0x1c, 0xe3, 0x84, 0xc7, 0x72, 0x0c, 0x17, 0x1e, 0xcb, 0x31, 0xdc, 0x78, 0x2c, 0xc7, 0x10, 0xa5,
-	0x98, 0x9e, 0x59, 0x92, 0x51, 0x9a, 0xa4, 0x97, 0x9c, 0x9f, 0xab, 0x0f, 0x0d, 0x37, 0x70, 0x82,
-	0xad, 0x80, 0x07, 0x5f, 0x12, 0x1b, 0x38, 0x3d, 0x1a, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x7a,
-	0x2b, 0x9a, 0x4d, 0x39, 0x03, 0x00, 0x00,
+	// 521 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x53, 0x4f, 0x6b, 0x13, 0x41,
+	0x14, 0xcf, 0xf6, 0x4f, 0x42, 0xc6, 0x62, 0x75, 0xa8, 0x74, 0x12, 0xec, 0xa6, 0x0d, 0x48, 0x6b,
+	0xc0, 0x5d, 0x1b, 0xd1, 0x43, 0x7b, 0x32, 0xb7, 0x20, 0x01, 0x89, 0x78, 0x11, 0x21, 0x6c, 0x76,
+	0x87, 0xcd, 0xd0, 0xec, 0xcc, 0x3a, 0x33, 0x5b, 0xbb, 0x9e, 0xc4, 0xa3, 0x27, 0x3f, 0x86, 0xde,
+	0x72, 0xf0, 0xe4, 0x27, 0xe8, 0xb1, 0x78, 0x12, 0x0f, 0x22, 0xc9, 0x21, 0x5f, 0x43, 0x66, 0x76,
+	0xd6, 0xc4, 0x76, 0xa1, 0x5e, 0x96, 0x79, 0xef, 0xf7, 0xe7, 0xcd, 0xfb, 0xb1, 0x03, 0x6a, 0x82,
+	0x51, 0xee, 0x92, 0x00, 0x53, 0x49, 0x64, 0xea, 0x9e, 0x1e, 0xba, 0xf2, 0xcc, 0x89, 0x39, 0x93,
+	0x0c, 0xde, 0x52, 0x90, 0x93, 0x43, 0xce, 0xe9, 0x61, 0x7d, 0xdb, 0x67, 0x22, 0x62, 0xc2, 0x8d,
+	0x44, 0xa8, 0x98, 0x91, 0x08, 0x33, 0x6a, 0x7d, 0x2b, 0x64, 0x21, 0xd3, 0x47, 0x57, 0x9d, 0x4c,
+	0xf7, 0xb6, 0x17, 0x11, 0xca, 0x5c, 0xfd, 0x35, 0xad, 0xbb, 0x57, 0xc7, 0xa5, 0x31, 0x16, 0x06,
+	0xad, 0x65, 0xfe, 0x83, 0xcc, 0x29, 0x2b, 0x32, 0xa8, 0xf9, 0x65, 0x05, 0xdc, 0xe9, 0x89, 0xb0,
+	0x4b, 0x89, 0x24, 0xde, 0x98, 0xbc, 0xc3, 0x5d, 0xe3, 0x01, 0x1f, 0x82, 0xb2, 0xc0, 0x34, 0xc0,
+	0x1c, 0x59, 0xbb, 0xd6, 0x41, 0xb5, 0x83, 0xbe, 0x7f, 0x7d, 0xb0, 0x65, 0xb4, 0x4f, 0x83, 0x80,
+	0x63, 0x21, 0x5e, 0x48, 0x4e, 0x68, 0xd8, 0x37, 0x3c, 0xb8, 0x0d, 0x2a, 0x31, 0xc6, 0x7c, 0x40,
+	0x02, 0xb4, 0xa2, 0x24, 0xfd, 0xb2, 0x2a, 0xbb, 0x01, 0x44, 0xa0, 0xe2, 0x65, 0x0a, 0xb4, 0xaa,
+	0x81, 0xbc, 0x84, 0x3b, 0x00, 0xc4, 0xc9, 0x70, 0x4c, 0xfc, 0xc1, 0x09, 0x4e, 0xd1, 0xda, 0xae,
+	0x75, 0xb0, 0xd1, 0xaf, 0x66, 0x9d, 0x67, 0x38, 0x85, 0x10, 0xac, 0x91, 0x98, 0x0a, 0xb4, 0xae,
+	0x55, 0xfa, 0x0c, 0xf7, 0xc1, 0xa6, 0xe7, 0xfb, 0x49, 0x94, 0x8c, 0x3d, 0xc9, 0xb8, 0xd6, 0x95,
+	0xb5, 0xee, 0xe6, 0x52, 0x5b, 0x89, 0x11, 0xa8, 0x50, 0x2c, 0xdf, 0x32, 0x7e, 0x82, 0x2a, 0xd9,
+	0x54, 0x53, 0x1e, 0x3d, 0xfe, 0x30, 0x9f, 0xb4, 0xcc, 0xad, 0x3f, 0xce, 0x27, 0xad, 0x7b, 0x2a,
+	0xbd, 0xd1, 0x9b, 0x45, 0x7e, 0x85, 0x89, 0x34, 0x1b, 0x60, 0xa7, 0x10, 0xe8, 0x63, 0x11, 0x33,
+	0x2a, 0x70, 0xf3, 0x9b, 0x05, 0x36, 0x7b, 0x22, 0x7c, 0x19, 0x07, 0x9e, 0xc4, 0xcf, 0x3d, 0xee,
+	0x45, 0x02, 0x3e, 0x01, 0x55, 0x2f, 0x91, 0x23, 0xc6, 0x89, 0x4c, 0xaf, 0x4d, 0x72, 0x41, 0x85,
+	0xc7, 0xa0, 0x1c, 0x6b, 0x07, 0x9d, 0xe5, 0x8d, 0x36, 0x72, 0x2e, 0xff, 0x36, 0x4e, 0x36, 0xa1,
+	0x53, 0x3d, 0xff, 0xd5, 0x28, 0x7d, 0x9e, 0x4f, 0x5a, 0x56, 0xdf, 0x48, 0x8e, 0xda, 0x6a, 0xc1,
+	0x85, 0x99, 0xda, 0xb1, 0x51, 0xb0, 0xe3, 0xf2, 0x45, 0x9b, 0x35, 0xb0, 0x7d, 0xa9, 0x95, 0xef,
+	0xd5, 0xfe, 0x69, 0x81, 0xd5, 0x9e, 0x08, 0x21, 0x05, 0xb0, 0xe0, 0x47, 0xd9, 0xbf, 0x7a, 0xb3,
+	0xc2, 0x98, 0xea, 0xee, 0x7f, 0x12, 0xf3, 0xb9, 0xf0, 0x35, 0xd8, 0xf8, 0x27, 0xcb, 0xbd, 0x42,
+	0x83, 0x65, 0x4a, 0xfd, 0xfe, 0xb5, 0x94, 0xdc, 0xbd, 0xbe, 0xfe, 0x5e, 0x65, 0xd6, 0x39, 0x3e,
+	0x9f, 0xda, 0xd6, 0xc5, 0xd4, 0xb6, 0x7e, 0x4f, 0x6d, 0xeb, 0xd3, 0xcc, 0x2e, 0x5d, 0xcc, 0xec,
+	0xd2, 0x8f, 0x99, 0x5d, 0x7a, 0xb5, 0x17, 0x12, 0x39, 0x4a, 0x86, 0x8e, 0xcf, 0x22, 0xd7, 0xa4,
+	0xa7, 0x9f, 0xd9, 0xd9, 0xdf, 0x10, 0x87, 0x65, 0xfd, 0x8a, 0x1e, 0xfd, 0x09, 0x00, 0x00, 0xff,
+	0xff, 0xbc, 0x98, 0xd7, 0x90, 0xef, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -262,7 +322,7 @@ const _ = grpc.SupportPackageIsVersion4
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
 	// IncrementCounter increments the counter.
-	IncrementCounter(ctx context.Context, in *MsgIncrementCounter, opts ...grpc.CallOption) (*MsgIncrementCounterResponse, error)
+	InitializeIdentity(ctx context.Context, in *MsgInitializeIdentity, opts ...grpc.CallOption) (*MsgInitializeIdentityResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -275,9 +335,9 @@ func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
 }
 
-func (c *msgClient) IncrementCounter(ctx context.Context, in *MsgIncrementCounter, opts ...grpc.CallOption) (*MsgIncrementCounterResponse, error) {
-	out := new(MsgIncrementCounterResponse)
-	err := c.cc.Invoke(ctx, "/sonr.identity.v1.Msg/IncrementCounter", in, out, opts...)
+func (c *msgClient) InitializeIdentity(ctx context.Context, in *MsgInitializeIdentity, opts ...grpc.CallOption) (*MsgInitializeIdentityResponse, error) {
+	out := new(MsgInitializeIdentityResponse)
+	err := c.cc.Invoke(ctx, "/sonr.identity.v1.Msg/InitializeIdentity", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -296,7 +356,7 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// IncrementCounter increments the counter.
-	IncrementCounter(context.Context, *MsgIncrementCounter) (*MsgIncrementCounterResponse, error)
+	InitializeIdentity(context.Context, *MsgInitializeIdentity) (*MsgInitializeIdentityResponse, error)
 	// UpdateParams updates the module parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 }
@@ -305,8 +365,8 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) IncrementCounter(ctx context.Context, req *MsgIncrementCounter) (*MsgIncrementCounterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method IncrementCounter not implemented")
+func (*UnimplementedMsgServer) InitializeIdentity(ctx context.Context, req *MsgInitializeIdentity) (*MsgInitializeIdentityResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InitializeIdentity not implemented")
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -316,20 +376,20 @@ func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
 }
 
-func _Msg_IncrementCounter_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgIncrementCounter)
+func _Msg_InitializeIdentity_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgInitializeIdentity)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).IncrementCounter(ctx, in)
+		return srv.(MsgServer).InitializeIdentity(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/sonr.identity.v1.Msg/IncrementCounter",
+		FullMethod: "/sonr.identity.v1.Msg/InitializeIdentity",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).IncrementCounter(ctx, req.(*MsgIncrementCounter))
+		return srv.(MsgServer).InitializeIdentity(ctx, req.(*MsgInitializeIdentity))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -357,8 +417,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "IncrementCounter",
-			Handler:    _Msg_IncrementCounter_Handler,
+			MethodName: "InitializeIdentity",
+			Handler:    _Msg_InitializeIdentity_Handler,
 		},
 		{
 			MethodName: "UpdateParams",
@@ -369,7 +429,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "sonr/identity/v1/tx.proto",
 }
 
-func (m *MsgIncrementCounter) Marshal() (dAtA []byte, err error) {
+func (m *MsgInitializeIdentity) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -379,16 +439,58 @@ func (m *MsgIncrementCounter) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgIncrementCounter) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgInitializeIdentity) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgIncrementCounter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgInitializeIdentity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Network) > 0 {
+		i -= len(m.Network)
+		copy(dAtA[i:], m.Network)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Network)))
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.AccumulatorKey) > 0 {
+		i -= len(m.AccumulatorKey)
+		copy(dAtA[i:], m.AccumulatorKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.AccumulatorKey)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Ipns) > 0 {
+		i -= len(m.Ipns)
+		copy(dAtA[i:], m.Ipns)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Ipns)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.PublicKey) > 0 {
+		i -= len(m.PublicKey)
+		copy(dAtA[i:], m.PublicKey)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.PublicKey)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.PeerId) > 0 {
+		i -= len(m.PeerId)
+		copy(dAtA[i:], m.PeerId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.PeerId)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Sender) > 0 {
 		i -= len(m.Sender)
 		copy(dAtA[i:], m.Sender)
@@ -399,7 +501,7 @@ func (m *MsgIncrementCounter) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgIncrementCounterResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgInitializeIdentityResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -409,12 +511,12 @@ func (m *MsgIncrementCounterResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgIncrementCounterResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgInitializeIdentityResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgIncrementCounterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgInitializeIdentityResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -496,7 +598,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgIncrementCounter) Size() (n int) {
+func (m *MsgInitializeIdentity) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -506,10 +608,34 @@ func (m *MsgIncrementCounter) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.PeerId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Address)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.PublicKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Ipns)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.AccumulatorKey)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Network)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgIncrementCounterResponse) Size() (n int) {
+func (m *MsgInitializeIdentityResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -548,7 +674,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgIncrementCounter) Unmarshal(dAtA []byte) error {
+func (m *MsgInitializeIdentity) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -571,10 +697,10 @@ func (m *MsgIncrementCounter) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgIncrementCounter: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgInitializeIdentity: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgIncrementCounter: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgInitializeIdentity: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -609,6 +735,202 @@ func (m *MsgIncrementCounter) Unmarshal(dAtA []byte) error {
 			}
 			m.Sender = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PeerId", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PeerId = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Address = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PublicKey = append(m.PublicKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.PublicKey == nil {
+				m.PublicKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Ipns", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Ipns = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AccumulatorKey", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AccumulatorKey = append(m.AccumulatorKey[:0], dAtA[iNdEx:postIndex]...)
+			if m.AccumulatorKey == nil {
+				m.AccumulatorKey = []byte{}
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Network = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -630,7 +952,7 @@ func (m *MsgIncrementCounter) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgIncrementCounterResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgInitializeIdentityResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -653,10 +975,10 @@ func (m *MsgIncrementCounterResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgIncrementCounterResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgInitializeIdentityResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgIncrementCounterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgInitializeIdentityResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

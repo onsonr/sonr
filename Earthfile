@@ -41,3 +41,14 @@ matrix-config:
     ARG serverName=localhost
     COPY ./networks/local/matrix-config.yaml ./matrix-config.yaml
     SAVE ARTIFACT matrix-config.yaml AS LOCAL matrix-config.yaml
+
+# matrix-local - setups the local matrix server
+matrix-local:
+    LOCALLY
+    RUN git clone https://github.com/matrix-org/dendrite ./tmp/dendrite
+    RUN cd ./tmp/dendrite && go build -o bin/ ./cmd/...
+    RUN ./tmp/dendrite/bin/generate-keys --private-key ./tmp/dendrite/matrix_key.pem
+    RUN ./tmp/dendrite/bin/generate-keys --tls-cert ./tmp/dendrite/server.crt --tls-key ./tmp/dendrite/server.key
+    RUN cp ./tmp/dendrite/dendrite-sample.yaml ./tmp/dendrite/dendrite.yaml
+    RUN ./tmp/dendrite/bin/dendrite --tls-cert ./tmp/dendrite/server.crt --tls-key ./tmp/dendrite/server.key --config ./tmp/dendrite/dendrite.yaml
+

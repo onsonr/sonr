@@ -6,15 +6,16 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/sonrhq/sonr/x/service";
 
-// Params defines the parameters of the module.
-message Params { option (amino.name) = "sonrhq/service/Params"; }
-
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
   // params defines all the parameters of the module.
   Params params = 2
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
+
+
+// Params defines the parameters of the module.
+message Params { option (amino.name) = "sonrhq/service/Params"; }
 
 // ParamsType defines the type of params
 enum ParamsType {
@@ -27,3 +28,43 @@ enum ParamsType {
   // PARAMS_TYPE_ASSERTION is for the assertion params
   PARAMS_TYPE_ASSERTION = 2;
 }
+
+// ServiceRecord is the representation of a sonr enabled service
+message ServiceRecord {
+  // Name is the name of the service
+  string name = 1;
+
+  // Description is the description of the service
+  string description = 2;
+
+  // Authority is the address of the owner of the service
+  string authority = 3;
+
+  // Permissions is the uint32 representation of the permissions of the service
+  uint32 permissions = 4;
+
+  // Origin is the DNS resolvable address of the service
+  string origin = 5;
+}
+
+// WebauthnCredential is the representation of a webauthn credential in the format of a CredentialDescriptor
+message WebauthnCredential {
+  // Assertion Type is the type of the credential
+  string assertion_type = 1;
+
+  // Id is the id of the credential
+  bytes id = 2;
+
+  // handle is the handle of the credential
+  string handle = 3;
+
+  // transports is the list of transports supported by the credential
+  repeated string transports = 4;
+
+  // origin is the origin of the credential
+  string origin = 5;
+
+  // Authority is the address of the owner of the credential
+  string authority = 6;
+}
+

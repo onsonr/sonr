@@ -25,14 +25,13 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *service.GenesisState) er
 	if err := k.Params.Set(ctx, data.Params); err != nil {
 		return err
 	}
-
-	if err := k.db.ServiceRecordTable().Insert(ctx, &modulev1.ServiceRecord{
-		Id:          0,
+	err := k.db.ServiceTable().Save(ctx, &modulev1.Service{
 		Origin:      "localhost",
 		Name:        "Sonr LocalAuth",
 		Description: "Sonr authentication service",
 		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
-	}); err != nil {
+	})
+	if err != nil {
 		return err
 	}
 

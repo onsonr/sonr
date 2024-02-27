@@ -22,7 +22,6 @@ import (
 
 // SonrdConfig represents the sonrd configuration
 type SonrdConfig struct {
-	ChainID        string `mapstructure:"chain_id" json:"chain_id"`
 	HighwayEnabled bool   `mapstructure:"highway_enabled" json:"highway_enabled"`
 	IPFSConnection string `mapstructure:"ipfs_connection" json:"ipfs_connection"`
 	IPFSGateway    string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
@@ -30,17 +29,33 @@ type SonrdConfig struct {
 
 // HighwayConfig represents the highway configuration
 type HighwayConfig struct {
-	ChainID          string `mapstructure:"chain_id" json:"chain_id"`
-	IPFSGateway      string `mapstructure:"ipfs_gateway" json:"ipfs_gateway"`
-	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
-	NodeGRPCAddress  string `mapstructure:"node_grpc_address" json:"node_grpc_address"`
-	ValidatorAddress string `mapstructure:"validator_address" json:"validator_address"`
+	// ValidatorHost is the host of the validator
+	ValidatorHost string `mapstructure:"validator_address" json:"validator_address"`
+
+	// ValidatorRPC is the port of the validator for rpc
+	ValidatorRPC int `mapstructure:"validator_rpc_port" json:"validator_rpc_port"`
+
+	// ValidatorWS is the port of the validator for websocket
+	ValidatorWS int `mapstructure:"validator_ws_port" json:"validator_ws_port"`
+
+	// ValidatorGRPC is the port of the validator for grpc
+	ValidatorGRPC int `mapstructure:"validator_grpc_port" json:"validator_grpc_port"`
+
+	// GatewayPort is the port that the gateway listens on
+	GatewayPort int `json:"gateway_port"`
+
+	// Host is the host that the gateway listens on
+	Host string `json:"host"`
+
+	// Assets is the path to the assets
+	Assets string `json:"assets"`
 }
 
-// NitroConfig represents the nitro configuration
-type NitroConfig struct {
-	MatrixConnection string `mapstructure:"matrix_connection" json:"matrix_connection"`
-	SharedSecret     string `mapstructure:"shared_secret" json:"shared_secret"`
+// MatrixConfig represents the nitro configuration
+type MatrixConfig struct {
+	Server                        string `mapstructure:"matrix_connection" json:"matrix_connection"`
+	EventsServiceRegistrationPath string `mapstructure:"events_service_registration_path" json:"events_service_registration_path"`
+	ChatServiceRegistrationPath   string `mapstructure:"chat_service_registration_path" json:"chat_service_registration_path"`
 }
 
 // Config is the configuration for the application
@@ -50,7 +65,7 @@ type Config struct {
 	NodeHome string        `mapstructure:"default_node_home" json:"default_node_home"`
 	Sonrd    SonrdConfig   `mapstructure:"sonrd" json:"sonrd"`
 	Highway  HighwayConfig `mapstructure:"highway" json:"highway"`
-	Nitro    NitroConfig   `mapstructure:"nitro" json:"nitro"`
+	Matrix   MatrixConfig  `mapstructure:"nitro" json:"nitro"`
 }
 
 // LoadConfig loads the configuration from the file

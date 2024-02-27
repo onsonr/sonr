@@ -1,5 +1,5 @@
 {
-  "explorer.excludeGitIgnore": true,
+  "explorer.excludeGitIgnore": false,
   "editor.formatOnSave": true,
   "[templ]": {
     "editor.defaultFormatter": "a-h.templ"
@@ -25,7 +25,7 @@
     "**/.trunk/*logs/": true,
     "**/.trunk/*out/": true,
     "**/.trunk/*plugins/": true,
-    "**/**_templ.go": true,
+    "**/*_templ.go": true,
     "**/**.md": true,
     "**/**.pb.go": false,
     "**/CODE_OF_CONDUCT.md": true,
@@ -94,5 +94,5 @@
   "search.quickOpen.includeSymbols": true,
   "breadcrumbs.symbolSortOrder": "type",
   "terraform.languageServer.ignoreSingleFileWarning": true,
-  "helium-icon-theme.showWelcomeMessage": false
+
 }
