@@ -1,0 +1,27 @@
+package views
+
+import (
+	"github.com/sonrhq/sonr/pkg/components"
+)
+
+templ LoginView() {
+	@components.LoginHeader()
+	<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
+	<div class="max-w-[400px] mx-auto" _="init transition my opacity to 100% over 3 seconds">
+		<form class={ "justify-center items-center align-middle pb-2.5" }>
+			<sl-input
+				name="email"
+				placeholder="sjobs@apple.com"
+				size="large"
+				autocomplete="username webauthn"
+				pill
+				required
+			>
+				<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+			</sl-input>
+			<div id="name-error" aria-live="polite" hidden></div>
+		</form>
+	</div>
+	<sl-divider class="bg-stone-600" style="--spacing: 1rem;"></sl-divider>
+	@components.LoginFooter()
+}

@@ -1,6 +1,10 @@
 package shared
 
-import "github.com/golang-jwt/jwt/v5"
+import (
+	"time"
+
+	"github.com/golang-jwt/jwt/v5"
+)
 
 // JwtControllerClaims is a custom claims type for the JWT middleware
 type JwtControllerClaims struct {
@@ -10,8 +14,15 @@ type JwtControllerClaims struct {
 	jwt.RegisteredClaims
 }
 
-// JwtSessionClaims is a custom claims type for the JWT middleware
-type JwtSessionClaims struct {
-	Handle string `json:"handle"`
-	jwt.RegisteredClaims
+func NewJWTControllerToken(handle, address, origin string) *jwt.Token {
+	claims := &JwtControllerClaims{
+		Handle:  handle,
+		Address: address,
+		Origin:  origin,
+		RegisteredClaims: jwt.RegisteredClaims{
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * 24)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token
 }

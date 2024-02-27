@@ -5,8 +5,7 @@ import (
 
 	types "cosmossdk.io/api/cosmos/bank/v1beta1"
 	"github.com/labstack/echo/v4"
-
-	"github.com/sonrhq/sonr/pkg/middleware"
+	"github.com/sonrhq/sonr/pkg/shared"
 )
 
 // BankAPI is a handler for the bank module
@@ -18,7 +17,7 @@ type bankAPI struct{}
 // GetAllBalances returns all balances for an address
 func (h bankAPI) GetAllBalances(c echo.Context) error {
 	address := c.Param("address")
-	resp, err := middleware.BankClient(c).AllBalances(c.Request().Context(), &types.QueryAllBalancesRequest{
+	resp, err := shared.Client(c).Bank().AllBalances(c.Request().Context(), &types.QueryAllBalancesRequest{
 		Address: address,
 	})
 	if err != nil {
@@ -31,7 +30,7 @@ func (h bankAPI) GetAllBalances(c echo.Context) error {
 func (h bankAPI) GetBalance(c echo.Context) error {
 	address := c.Param("address")
 	denom := c.Param("denom")
-	resp, err := middleware.BankClient(c).Balance(c.Request().Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
+	resp, err := shared.Client(c).Bank().Balance(c.Request().Context(), &types.QueryBalanceRequest{Address: address, Denom: denom})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -40,7 +39,7 @@ func (h bankAPI) GetBalance(c echo.Context) error {
 
 // GetTotalSupply returns the total supply
 func (h bankAPI) GetTotalSupply(c echo.Context) error {
-	resp, err := middleware.BankClient(c).TotalSupply(c.Request().Context(), &types.QueryTotalSupplyRequest{})
+	resp, err := shared.Client(c).Bank().TotalSupply(c.Request().Context(), &types.QueryTotalSupplyRequest{})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -50,7 +49,7 @@ func (h bankAPI) GetTotalSupply(c echo.Context) error {
 // GetSupplyOf returns the supply of a denom
 func (h bankAPI) GetSupplyOf(c echo.Context) error {
 	denom := c.Param("denom")
-	resp, err := middleware.BankClient(c).SupplyOf(c.Request().Context(), &types.QuerySupplyOfRequest{Denom: denom})
+	resp, err := shared.Client(c).Bank().SupplyOf(c.Request().Context(), &types.QuerySupplyOfRequest{Denom: denom})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -60,7 +59,7 @@ func (h bankAPI) GetSupplyOf(c echo.Context) error {
 // GetSpendableBalances returns the spendable balances for an address
 func (h bankAPI) GetSpendableBalances(c echo.Context) error {
 	address := c.Param("address")
-	resp, err := middleware.BankClient(c).SpendableBalances(c.Request().Context(), &types.QuerySpendableBalancesRequest{Address: address})
+	resp, err := shared.Client(c).Bank().SpendableBalances(c.Request().Context(), &types.QuerySpendableBalancesRequest{Address: address})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -71,7 +70,7 @@ func (h bankAPI) GetSpendableBalances(c echo.Context) error {
 func (h bankAPI) GetSpendableBalancesByDenom(c echo.Context) error {
 	address := c.Param("address")
 	denom := c.Param("denom")
-	resp, err := middleware.BankClient(c).SpendableBalanceByDenom(c.Request().Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
+	resp, err := shared.Client(c).Bank().SpendableBalanceByDenom(c.Request().Context(), &types.QuerySpendableBalanceByDenomRequest{Address: address, Denom: denom})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}

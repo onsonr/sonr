@@ -9,7 +9,7 @@ import (
 
 	"github.com/sonrhq/sonr/app"
 	"github.com/sonrhq/sonr/app/params"
-	"github.com/sonrhq/sonr/cmd/sonrd/cmd"
+	"github.com/sonrhq/sonr/cmd/sonrd/cmds"
 )
 
 var (
@@ -32,7 +32,7 @@ func init() {
 // main is the entry point for the application.
 func main() {
 	params.SetAddressPrefixes()
-	rootCmd := cmd.NewRootCmd()
+	rootCmd := cmds.NewRootCmd()
 	if err := svrcmd.Execute(rootCmd, "SONR", app.DefaultNodeHome); err != nil {
 		fmt.Fprintln(rootCmd.OutOrStderr(), err)
 		os.Exit(1)

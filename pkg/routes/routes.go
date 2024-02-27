@@ -5,7 +5,7 @@ import (
 
 	"github.com/sonrhq/sonr/pkg/handlers"
 	"github.com/sonrhq/sonr/pkg/middleware"
-	"github.com/sonrhq/sonr/pkg/ui/pages"
+	"github.com/sonrhq/sonr/pkg/pages"
 )
 
 // RegisterCosmosAPI registers the Cosmos API routes
@@ -58,8 +58,13 @@ func RegisterSonrAPI(e *echo.Echo) {
 
 // RegisterHTMXPages registers the page routes for HTMX
 func RegisterHTMXPages(e *echo.Echo, assetsDir string) {
-	e.Static("/assets", assetsDir)
+	e.Static("/*", assetsDir)
 	e.GET("/", pages.Index, middleware.UseHTMX)
-	e.GET("/console", pages.Console, middleware.UseHTMX)
-	e.GET("/404", pages.Error, middleware.UseHTMX)
+	e.GET("/_panels/home", pages.Home, middleware.UseHTMX)
+	e.GET("/_panels/chat", pages.Chat, middleware.UseHTMX)
+	e.GET("/_panels/wallet", pages.Wallet, middleware.UseHTMX)
+	e.GET("/_panels/status", pages.Status, middleware.UseHTMX)
+	e.GET("/_panels/governance", pages.Governance, middleware.UseHTMX)
+	e.GET("/_panels/console", pages.Console, middleware.UseHTMX)
+	e.GET("/error-404", pages.Error, middleware.UseHTMX)
 }

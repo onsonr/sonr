@@ -6,8 +6,7 @@ import (
 
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
 	"github.com/labstack/echo/v4"
-
-	"github.com/sonrhq/sonr/pkg/middleware"
+	"github.com/sonrhq/sonr/pkg/shared"
 )
 
 // StakingAPI is a handler for the staking module
@@ -20,7 +19,7 @@ type stakingAPI struct{}
 func (h stakingAPI) GetDelegation(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
 	validatorAddr := c.Param("validatorAddr")
-	resp, err := middleware.StakingClient(c).Delegation(c.Request().Context(), &stakingv1beta1.QueryDelegationRequest{
+	resp, err := shared.Client(c).Staking().Delegation(c.Request().Context(), &stakingv1beta1.QueryDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
@@ -34,7 +33,7 @@ func (h stakingAPI) GetDelegation(c echo.Context) error {
 func (h stakingAPI) GetUnbondingDelegation(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
 	validatorAddr := c.Param("validatorAddr")
-	resp, err := middleware.StakingClient(c).UnbondingDelegation(c.Request().Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
+	resp, err := shared.Client(c).Staking().UnbondingDelegation(c.Request().Context(), &stakingv1beta1.QueryUnbondingDelegationRequest{
 		DelegatorAddr: delegatorAddr,
 		ValidatorAddr: validatorAddr,
 	})
@@ -47,7 +46,7 @@ func (h stakingAPI) GetUnbondingDelegation(c echo.Context) error {
 // GetDelegatorDelegations returns all delegations for a delegator
 func (h stakingAPI) GetDelegatorDelegations(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
-	resp, err := middleware.StakingClient(c).DelegatorDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
+	resp, err := shared.Client(c).Staking().DelegatorDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -59,7 +58,7 @@ func (h stakingAPI) GetDelegatorDelegations(c echo.Context) error {
 // GetDelegatorUnbondingDelegations returns all unbonding delegations for a delegator
 func (h stakingAPI) GetDelegatorUnbondingDelegations(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
-	resp, err := middleware.StakingClient(c).DelegatorUnbondingDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
+	resp, err := shared.Client(c).Staking().DelegatorUnbondingDelegations(c.Request().Context(), &stakingv1beta1.QueryDelegatorUnbondingDelegationsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -73,7 +72,7 @@ func (h stakingAPI) GetRedelegations(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
 	srcValidatorAddr := c.Param("srcValidatorAddr")
 	dstValidatorAddr := c.Param("dstValidatorAddr")
-	resp, err := middleware.StakingClient(c).Redelegations(c.Request().Context(), &stakingv1beta1.QueryRedelegationsRequest{
+	resp, err := shared.Client(c).Staking().Redelegations(c.Request().Context(), &stakingv1beta1.QueryRedelegationsRequest{
 		DelegatorAddr:    delegatorAddr,
 		SrcValidatorAddr: srcValidatorAddr,
 		DstValidatorAddr: dstValidatorAddr,
@@ -87,7 +86,7 @@ func (h stakingAPI) GetRedelegations(c echo.Context) error {
 // GetValidator returns a validator
 func (h stakingAPI) GetValidator(c echo.Context) error {
 	validatorAddr := c.Param("validatorAddr")
-	resp, err := middleware.StakingClient(c).Validator(c.Request().Context(), &stakingv1beta1.QueryValidatorRequest{
+	resp, err := shared.Client(c).Staking().Validator(c.Request().Context(), &stakingv1beta1.QueryValidatorRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
@@ -98,7 +97,7 @@ func (h stakingAPI) GetValidator(c echo.Context) error {
 
 // GetValidators returns all validators
 func (h stakingAPI) GetValidators(c echo.Context) error {
-	resp, err := middleware.StakingClient(c).Validators(c.Request().Context(), &stakingv1beta1.QueryValidatorsRequest{})
+	resp, err := shared.Client(c).Staking().Validators(c.Request().Context(), &stakingv1beta1.QueryValidatorsRequest{})
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -108,7 +107,7 @@ func (h stakingAPI) GetValidators(c echo.Context) error {
 // GetValidatorDelegations returns all delegations for a validator
 func (h stakingAPI) GetValidatorDelegations(c echo.Context) error {
 	validatorAddr := c.Param("validatorAddr")
-	resp, err := middleware.StakingClient(c).ValidatorDelegations(c.Request().Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
+	resp, err := shared.Client(c).Staking().ValidatorDelegations(c.Request().Context(), &stakingv1beta1.QueryValidatorDelegationsRequest{
 		ValidatorAddr: validatorAddr,
 	})
 	if err != nil {
@@ -120,7 +119,7 @@ func (h stakingAPI) GetValidatorDelegations(c echo.Context) error {
 // GetDelegatorValidators returns all validators for a delegator
 func (h stakingAPI) GetDelegatorValidators(c echo.Context) error {
 	delegatorAddr := c.Param("delegatorAddr")
-	resp, err := middleware.StakingClient(c).DelegatorValidators(c.Request().Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
+	resp, err := shared.Client(c).Staking().DelegatorValidators(c.Request().Context(), &stakingv1beta1.QueryDelegatorValidatorsRequest{
 		DelegatorAddr: delegatorAddr,
 	})
 	if err != nil {
@@ -133,7 +132,7 @@ func (h stakingAPI) GetDelegatorValidators(c echo.Context) error {
 func (h stakingAPI) GetHistoricalInfo(c echo.Context) error {
 	heightStr := c.Param("height")
 	height, _ := strconv.ParseInt(heightStr, 10, 64)
-	resp, err := middleware.StakingClient(c).HistoricalInfo(c.Request().Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
+	resp, err := shared.Client(c).Staking().HistoricalInfo(c.Request().Context(), &stakingv1beta1.QueryHistoricalInfoRequest{
 		Height: height,
 	})
 	if err != nil {

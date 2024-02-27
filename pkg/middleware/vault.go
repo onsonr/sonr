@@ -14,14 +14,14 @@ import (
 	"github.com/sonrhq/sonr/pkg/shared"
 )
 
-var Vault = &vault{}
-
-type vault struct {
-	echo.Context
+func Vault(ctx echo.Context) *vault {
+	return &vault{
+		Context: ctx,
+	}
 }
 
 // GenerateKey generates a new key
-func (v *vault) GenerateKey(c echo.Context) error {
+func (c *vault) GenerateKey() error {
 	address := c.Param("address")
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
@@ -35,34 +35,34 @@ func (v *vault) GenerateKey(c echo.Context) error {
 }
 
 // GenerateIdentity generates a new fully scoped Sonr identity
-func (v *vault) GenerateIdentity(c echo.Context) error {
+func (c *vault) GenerateIdentity() (*modulev1.Controller, error) {
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
-		return shared.ErrFailedIPFSClient
+		return nil, shared.ErrFailedIPFSClient
 	}
 	dir, kc, err := wallet.New(c.Request().Context())
 	if err != nil {
-		return err
+		return nil, err
 	}
 	key, err := ipfsC.Key().Generate(context.Background(), kc.Address, options.Key.Type(options.Ed25519Key))
 	if err != nil {
-		return fmt.Errorf("failed to generate key: %w", err)
+		return nil, fmt.Errorf("failed to generate key: %w", err)
 	}
 	keyIDAssociatedBytes, err := key.ID().MarshalBinary()
 	if err != nil {
-		return err
+		return nil, err
 	}
 	encDir, err := kc.Encrypt(dir, keyIDAssociatedBytes)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	path, err := ipfsC.Unixfs().Add(context.Background(), encDir)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	name, err := ipfsC.Name().Publish(context.Background(), path, options.Name.Key(key.ID().String()))
 	if err != nil {
-		return err
+		return nil, err
 	}
 	cnt := &modulev1.Controller{
 		Address:   kc.Address,
@@ -70,11 +70,11 @@ func (v *vault) GenerateIdentity(c echo.Context) error {
 		PublicKey: kc.PublicKey,
 		Ipns:      name.String(),
 	}
-	return c.JSON(200, cnt)
+	return cnt, nil
 }
 
 // PublishFile publishes a file
-func (v *vault) PublishFile(c echo.Context) error {
+func (c *vault) PublishFile() error {
 	keyID := c.Param("keyID")
 	ipfsPath := c.Param("cid")
 	path, err := ipfs_path.NewPath(ipfsPath)
@@ -93,7 +93,7 @@ func (v *vault) PublishFile(c echo.Context) error {
 }
 
 // GetFile gets a file
-func (v *vault) GetFile(c echo.Context) error {
+func (c *vault) GetFile() error {
 	path := c.Param("cid")
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
@@ -108,4 +108,8 @@ func (v *vault) GetFile(c echo.Context) error {
 		return fmt.Errorf("failed to get file: %w", err)
 	}
 	return c.JSON(200, file)
+}
+
+type vault struct {
+	echo.Context
 }

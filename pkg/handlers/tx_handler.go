@@ -6,8 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/labstack/echo/v4"
-
-	"github.com/sonrhq/sonr/pkg/middleware"
+	"github.com/sonrhq/sonr/pkg/shared"
 )
 
 // TxAPI is a handler for the staking module
@@ -19,7 +18,7 @@ type txAPI struct{}
 // GetTx returns a transaction by hash
 func (h txAPI) GetTx(c echo.Context) error {
 	txHash := c.Param("txHash")
-	resp, err := middleware.TxClient(c).GetTx(c.Request().Context(), &tx.GetTxRequest{
+	resp, err := shared.Client(c).Tx().GetTx(c.Request().Context(), &tx.GetTxRequest{
 		Hash: txHash,
 	})
 	if err != nil {
@@ -34,7 +33,7 @@ func (h txAPI) GetBlockWithTxs(c echo.Context) error {
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	resp, err := middleware.TxClient(c).GetBlockWithTxs(c.Request().Context(), &tx.GetBlockWithTxsRequest{
+	resp, err := shared.Client(c).Tx().GetBlockWithTxs(c.Request().Context(), &tx.GetBlockWithTxsRequest{
 		Height: height,
 	})
 	if err != nil {
@@ -49,7 +48,7 @@ func (h txAPI) BroadcastTx(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	resp, err := middleware.TxClient(c).BroadcastTx(c.Request().Context(), &req)
+	resp, err := shared.Client(c).Tx().BroadcastTx(c.Request().Context(), &req)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
@@ -62,7 +61,7 @@ func (h txAPI) SimulateTx(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
-	resp, err := middleware.TxClient(c).Simulate(c.Request().Context(), &req)
+	resp, err := shared.Client(c).Tx().Simulate(c.Request().Context(), &req)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err.Error())
 	}
