@@ -51,6 +51,24 @@ func (c *cookies) GetAddress() string {
 	return cookie.Value
 }
 
+// SetOrigin sets the origin cookie
+func (c *cookies) SetOrigin(origin string) {
+	cookie := new(http.Cookie)
+	cookie.Name = "sonr-origin"
+	cookie.Value = origin
+	cookie.Expires = time.Now().Add(1 * time.Hour)
+	c.SetCookie(cookie)
+}
+
+// GetOrigin gets the origin cookie
+func (c *cookies) GetOrigin() string {
+	cookie, err := c.Cookie("sonr-origin")
+	if err != nil {
+		return ""
+	}
+	return cookie.Value
+}
+
 // GetSessionID gets the session id cookie
 func (c *cookies) GetSessionID() string {
 	cookie, err := c.Cookie("session-id")

@@ -38,15 +38,14 @@ func (qs queryServer) Params(ctx context.Context, req *service.QueryParamsReques
 
 // ServiceRecord defines the handler for the Query/ServiceRecord RPC method.
 func (qs queryServer) ServiceRecord(ctx context.Context, req *service.QueryServiceRecordRequest) (*service.QueryServiceRecordResponse, error) {
-	record, err := qs.k.db.ServiceTable().Get(ctx, req.Origin)
+	record, err := qs.k.Records.Get(ctx, req.Origin)
 	if err != nil {
 		return nil, status.Error(codes.Internal, err.Error())
 	}
-	srv := service.ServiceRecord{
+	srv := service.Record{
 		Origin:      record.Origin,
 		Name:        record.Name,
 		Description: record.Description,
-		Permissions: uint32(record.Permissions.Number()),
 		Authority:   record.Authority,
 	}
 	return &service.QueryServiceRecordResponse{ServiceRecord: srv}, nil

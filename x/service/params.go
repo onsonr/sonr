@@ -12,3 +12,15 @@ func (p Params) Validate() error {
 	// Sanity check goes here.
 	return nil
 }
+
+// DefaultRecords returns default records.
+func DefaultRecords() []Record {
+	return []Record{
+		{
+			Name:        "Sonr Localhost",
+			Origin:      "localhost",
+			Description: "Sonr Localhost Chat App",
+			Authority:   "#",
+		},
+	}
+}

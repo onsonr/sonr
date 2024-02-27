@@ -10,6 +10,12 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+// GRPCConn is a gRPC client connection.
+type GRPCConn = *grpc.ClientConn
+
+// EchoFunc is a function that takes an Echo instance and returns nothing.
+type EchoFunc = func(c echo.Context) error
+
 // Render renders a templ.Component
 func Render(c echo.Context, cmp templ.Component) error {
 	c.Response().Writer.WriteHeader(http.StatusOK)

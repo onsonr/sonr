@@ -7,10 +7,6 @@ import "sonr/service/module/v1/state.proto";
 
 // StateQueryService queries the state of the tables specified by sonr/service/module/v1/state.proto.
 service StateQueryService {
-  // Get queries the Service table by its primary key.
-  rpc GetService(GetServiceRequest) returns (GetServiceResponse) {}
-  // ListService queries the Service table using prefix and range queries against defined indexes.
-  rpc ListService(ListServiceRequest) returns (ListServiceResponse) {}
   // Get queries the Credential table by its primary key.
   rpc GetCredential(GetCredentialRequest) returns (GetCredentialResponse) {}
   // GetCredentialByOriginHandle queries the Credential table by its OriginHandle index
@@ -21,87 +17,12 @@ service StateQueryService {
   rpc GetCredentialByOriginAuthority(GetCredentialByOriginAuthorityRequest) returns (GetCredentialByOriginAuthorityResponse) {}
   // ListCredential queries the Credential table using prefix and range queries against defined indexes.
   rpc ListCredential(ListCredentialRequest) returns (ListCredentialResponse) {}
-  // Get queries the User table by its primary key.
-  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
-  // GetUserByOriginAuthority queries the User table by its OriginAuthority index
-  rpc GetUserByOriginAuthority(GetUserByOriginAuthorityRequest) returns (GetUserByOriginAuthorityResponse) {}
-  // ListUser queries the User table using prefix and range queries against defined indexes.
-  rpc ListUser(ListUserRequest) returns (ListUserResponse) {}
-  // GetBaseParams queries the BaseParams singleton.
-  rpc GetBaseParams(GetBaseParamsRequest) returns (GetBaseParamsResponse) {}
-  // GetReadParams queries the ReadParams singleton.
-  rpc GetReadParams(GetReadParamsRequest) returns (GetReadParamsResponse) {}
-  // GetWriteParams queries the WriteParams singleton.
-  rpc GetWriteParams(GetWriteParamsRequest) returns (GetWriteParamsResponse) {}
-  // GetOwnParams queries the OwnParams singleton.
-  rpc GetOwnParams(GetOwnParamsRequest) returns (GetOwnParamsResponse) {}
-}
-
-// GetServiceRequest is the StateQuery/GetServiceRequest request type.
-message GetServiceRequest {
-  // origin specifies the value of the origin field in the primary key.
-  string origin = 1;
-}
-
-// GetServiceResponse is the StateQuery/GetServiceResponse response type.
-message GetServiceResponse {
-  // value is the response value.
-  Service value = 1;
-}
-
-// ListServiceRequest is the StateQuery/ListServiceRequest request type.
-message ListServiceRequest {
-  // IndexKey specifies the value of an index key to use in prefix and range queries.
-  message IndexKey {
-    // key specifies the index key value.
-    oneof key {
-      // origin specifies the value of the Origin index key to use in the query.
-      Origin origin = 1;
-      // authority specifies the value of the Authority index key to use in the query.
-      Authority authority = 3;
-    }
-    
-    message Origin {
-      // origin is the value of the origin field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string origin = 1;
-    }
-    
-    message Authority {
-      // authority is the value of the authority field in the index.
-      // It can be omitted to query for all valid values of that field in this segment of the index.
-      optional string authority = 1;
-    }
-  }
-  
-  // query specifies the type of query - either a prefix or range query.
-  oneof query {
-    // prefix_query specifies the index key value to use for the prefix query.
-    IndexKey prefix_query = 1;
-    // range_query specifies the index key from/to values to use for the range query.
-    RangeQuery range_query = 2;
-  }
-  // pagination specifies optional pagination parameters.
-  cosmos.base.query.v1beta1.PageRequest pagination = 3;
-  
-  // RangeQuery specifies the from/to index keys for a range query.
-  message RangeQuery {
-    // from is the index key to use for the start of the range query.
-    // To query from the start of an index, specify an index key for that index with empty values.
-    IndexKey from = 1;
-    // to is the index key to use for the end of the range query.
-    // The index key type MUST be the same as the index key type used for from.
-    // To query from to the end of an index it can be omitted.
-    IndexKey to = 2;
-  }
-}
-
-// ListServiceResponse is the StateQuery/ListServiceResponse response type.
-message ListServiceResponse {
-  // values are the results of the query.
-  repeated Service values = 1;
-  // pagination is the pagination response.
-  cosmos.base.query.v1beta1.PageResponse pagination = 2;
+  // Get queries the Profile table by its primary key.
+  rpc GetProfile(GetProfileRequest) returns (GetProfileResponse) {}
+  // GetProfileByOriginAuthority queries the Profile table by its OriginAuthority index
+  rpc GetProfileByOriginAuthority(GetProfileByOriginAuthorityRequest) returns (GetProfileByOriginAuthorityResponse) {}
+  // ListProfile queries the Profile table using prefix and range queries against defined indexes.
+  rpc ListProfile(ListProfileRequest) returns (ListProfileResponse) {}
 }
 
 // GetCredentialRequest is the StateQuery/GetCredentialRequest request type.
@@ -233,31 +154,31 @@ message ListCredentialResponse {
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
 }
 
-// GetUserRequest is the StateQuery/GetUserRequest request type.
-message GetUserRequest {
+// GetProfileRequest is the StateQuery/GetProfileRequest request type.
+message GetProfileRequest {
   // index specifies the value of the index field in the primary key.
   uint64 index = 1;
 }
 
-// GetUserResponse is the StateQuery/GetUserResponse response type.
-message GetUserResponse {
+// GetProfileResponse is the StateQuery/GetProfileResponse response type.
+message GetProfileResponse {
   // value is the response value.
-  User value = 1;
+  Profile value = 1;
 }
 
-// GetUserByOriginAuthorityRequest is the StateQuery/GetUserByOriginAuthorityRequest request type.
-message GetUserByOriginAuthorityRequest {
+// GetProfileByOriginAuthorityRequest is the StateQuery/GetProfileByOriginAuthorityRequest request type.
+message GetProfileByOriginAuthorityRequest {
   string origin = 1;
   string authority = 2;
 }
 
-// GetUserByOriginAuthorityResponse is the StateQuery/GetUserByOriginAuthorityResponse response type.
-message GetUserByOriginAuthorityResponse {
-  User value = 1;
+// GetProfileByOriginAuthorityResponse is the StateQuery/GetProfileByOriginAuthorityResponse response type.
+message GetProfileByOriginAuthorityResponse {
+  Profile value = 1;
 }
 
-// ListUserRequest is the StateQuery/ListUserRequest request type.
-message ListUserRequest {
+// ListProfileRequest is the StateQuery/ListProfileRequest request type.
+message ListProfileRequest {
   // IndexKey specifies the value of an index key to use in prefix and range queries.
   message IndexKey {
     // key specifies the index key value.
@@ -306,47 +227,11 @@ message ListUserRequest {
   }
 }
 
-// ListUserResponse is the StateQuery/ListUserResponse response type.
-message ListUserResponse {
+// ListProfileResponse is the StateQuery/ListProfileResponse response type.
+message ListProfileResponse {
   // values are the results of the query.
-  repeated User values = 1;
+  repeated Profile values = 1;
   // pagination is the pagination response.
   cosmos.base.query.v1beta1.PageResponse pagination = 2;
-}
-
-// GetBaseParamsRequest is the StateQuery/GetBaseParamsRequest request type.
-message GetBaseParamsRequest {
-}
-
-// GetBaseParamsResponse is the StateQuery/GetBaseParamsResponse request type.
-message GetBaseParamsResponse {
-  BaseParams value = 1;
-}
-
-// GetReadParamsRequest is the StateQuery/GetReadParamsRequest request type.
-message GetReadParamsRequest {
-}
-
-// GetReadParamsResponse is the StateQuery/GetReadParamsResponse request type.
-message GetReadParamsResponse {
-  ReadParams value = 1;
-}
-
-// GetWriteParamsRequest is the StateQuery/GetWriteParamsRequest request type.
-message GetWriteParamsRequest {
-}
-
-// GetWriteParamsResponse is the StateQuery/GetWriteParamsResponse request type.
-message GetWriteParamsResponse {
-  WriteParams value = 1;
-}
-
-// GetOwnParamsRequest is the StateQuery/GetOwnParamsRequest request type.
-message GetOwnParamsRequest {
-}
-
-// GetOwnParamsResponse is the StateQuery/GetOwnParamsResponse request type.
-message GetOwnParamsResponse {
-  OwnParams value = 1;
 }
 

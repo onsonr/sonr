@@ -9,133 +9,6 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type ServiceTable interface {
-	Insert(ctx context.Context, service *Service) error
-	Update(ctx context.Context, service *Service) error
-	Save(ctx context.Context, service *Service) error
-	Delete(ctx context.Context, service *Service) error
-	Has(ctx context.Context, origin string) (found bool, err error)
-	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, origin string) (*Service, error)
-	List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
-	ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error
-	DeleteRange(ctx context.Context, from, to ServiceIndexKey) error
-
-	doNotImplement()
-}
-
-type ServiceIterator struct {
-	ormtable.Iterator
-}
-
-func (i ServiceIterator) Value() (*Service, error) {
-	var service Service
-	err := i.UnmarshalMessage(&service)
-	return &service, err
-}
-
-type ServiceIndexKey interface {
-	id() uint32
-	values() []interface{}
-	serviceIndexKey()
-}
-
-// primary key starting index..
-type ServicePrimaryKey = ServiceOriginIndexKey
-
-type ServiceOriginIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceOriginIndexKey) id() uint32            { return 0 }
-func (x ServiceOriginIndexKey) values() []interface{} { return x.vs }
-func (x ServiceOriginIndexKey) serviceIndexKey()      {}
-
-func (this ServiceOriginIndexKey) WithOrigin(origin string) ServiceOriginIndexKey {
-	this.vs = []interface{}{origin}
-	return this
-}
-
-type ServiceAuthorityIndexKey struct {
-	vs []interface{}
-}
-
-func (x ServiceAuthorityIndexKey) id() uint32            { return 2 }
-func (x ServiceAuthorityIndexKey) values() []interface{} { return x.vs }
-func (x ServiceAuthorityIndexKey) serviceIndexKey()      {}
-
-func (this ServiceAuthorityIndexKey) WithAuthority(authority string) ServiceAuthorityIndexKey {
-	this.vs = []interface{}{authority}
-	return this
-}
-
-type serviceTable struct {
-	table ormtable.Table
-}
-
-func (this serviceTable) Insert(ctx context.Context, service *Service) error {
-	return this.table.Insert(ctx, service)
-}
-
-func (this serviceTable) Update(ctx context.Context, service *Service) error {
-	return this.table.Update(ctx, service)
-}
-
-func (this serviceTable) Save(ctx context.Context, service *Service) error {
-	return this.table.Save(ctx, service)
-}
-
-func (this serviceTable) Delete(ctx context.Context, service *Service) error {
-	return this.table.Delete(ctx, service)
-}
-
-func (this serviceTable) Has(ctx context.Context, origin string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, origin)
-}
-
-func (this serviceTable) Get(ctx context.Context, origin string) (*Service, error) {
-	var service Service
-	found, err := this.table.PrimaryKey().Get(ctx, &service, origin)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &service, nil
-}
-
-func (this serviceTable) List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
-	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ServiceIterator{it}, err
-}
-
-func (this serviceTable) ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
-	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ServiceIterator{it}, err
-}
-
-func (this serviceTable) DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error {
-	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
-}
-
-func (this serviceTable) DeleteRange(ctx context.Context, from, to ServiceIndexKey) error {
-	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
-}
-
-func (this serviceTable) doNotImplement() {}
-
-var _ ServiceTable = serviceTable{}
-
-func NewServiceTable(db ormtable.Schema) (ServiceTable, error) {
-	table := db.GetTable(&Service{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Service{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return serviceTable{table}, nil
-}
-
 type CredentialTable interface {
 	Insert(ctx context.Context, credential *Credential) error
 	InsertReturningSequence(ctx context.Context, credential *Credential) (uint64, error)
@@ -395,131 +268,131 @@ func NewCredentialTable(db ormtable.Schema) (CredentialTable, error) {
 	return credentialTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
-type UserTable interface {
-	Insert(ctx context.Context, user *User) error
-	InsertReturningIndex(ctx context.Context, user *User) (uint64, error)
+type ProfileTable interface {
+	Insert(ctx context.Context, profile *Profile) error
+	InsertReturningIndex(ctx context.Context, profile *Profile) (uint64, error)
 	LastInsertedSequence(ctx context.Context) (uint64, error)
-	Update(ctx context.Context, user *User) error
-	Save(ctx context.Context, user *User) error
-	Delete(ctx context.Context, user *User) error
+	Update(ctx context.Context, profile *Profile) error
+	Save(ctx context.Context, profile *Profile) error
+	Delete(ctx context.Context, profile *Profile) error
 	Has(ctx context.Context, index uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, index uint64) (*User, error)
+	Get(ctx context.Context, index uint64) (*Profile, error)
 	HasByOriginAuthority(ctx context.Context, origin string, authority string) (found bool, err error)
 	// GetByOriginAuthority returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOriginAuthority(ctx context.Context, origin string, authority string) (*User, error)
-	List(ctx context.Context, prefixKey UserIndexKey, opts ...ormlist.Option) (UserIterator, error)
-	ListRange(ctx context.Context, from, to UserIndexKey, opts ...ormlist.Option) (UserIterator, error)
-	DeleteBy(ctx context.Context, prefixKey UserIndexKey) error
-	DeleteRange(ctx context.Context, from, to UserIndexKey) error
+	GetByOriginAuthority(ctx context.Context, origin string, authority string) (*Profile, error)
+	List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
+	ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error
+	DeleteRange(ctx context.Context, from, to ProfileIndexKey) error
 
 	doNotImplement()
 }
 
-type UserIterator struct {
+type ProfileIterator struct {
 	ormtable.Iterator
 }
 
-func (i UserIterator) Value() (*User, error) {
-	var user User
-	err := i.UnmarshalMessage(&user)
-	return &user, err
+func (i ProfileIterator) Value() (*Profile, error) {
+	var profile Profile
+	err := i.UnmarshalMessage(&profile)
+	return &profile, err
 }
 
-type UserIndexKey interface {
+type ProfileIndexKey interface {
 	id() uint32
 	values() []interface{}
-	userIndexKey()
+	profileIndexKey()
 }
 
 // primary key starting index..
-type UserPrimaryKey = UserIndexIndexKey
+type ProfilePrimaryKey = ProfileIndexIndexKey
 
-type UserIndexIndexKey struct {
+type ProfileIndexIndexKey struct {
 	vs []interface{}
 }
 
-func (x UserIndexIndexKey) id() uint32            { return 0 }
-func (x UserIndexIndexKey) values() []interface{} { return x.vs }
-func (x UserIndexIndexKey) userIndexKey()         {}
+func (x ProfileIndexIndexKey) id() uint32            { return 0 }
+func (x ProfileIndexIndexKey) values() []interface{} { return x.vs }
+func (x ProfileIndexIndexKey) profileIndexKey()      {}
 
-func (this UserIndexIndexKey) WithIndex(index uint64) UserIndexIndexKey {
+func (this ProfileIndexIndexKey) WithIndex(index uint64) ProfileIndexIndexKey {
 	this.vs = []interface{}{index}
 	return this
 }
 
-type UserOriginAuthorityIndexKey struct {
+type ProfileOriginAuthorityIndexKey struct {
 	vs []interface{}
 }
 
-func (x UserOriginAuthorityIndexKey) id() uint32            { return 1 }
-func (x UserOriginAuthorityIndexKey) values() []interface{} { return x.vs }
-func (x UserOriginAuthorityIndexKey) userIndexKey()         {}
+func (x ProfileOriginAuthorityIndexKey) id() uint32            { return 1 }
+func (x ProfileOriginAuthorityIndexKey) values() []interface{} { return x.vs }
+func (x ProfileOriginAuthorityIndexKey) profileIndexKey()      {}
 
-func (this UserOriginAuthorityIndexKey) WithOrigin(origin string) UserOriginAuthorityIndexKey {
+func (this ProfileOriginAuthorityIndexKey) WithOrigin(origin string) ProfileOriginAuthorityIndexKey {
 	this.vs = []interface{}{origin}
 	return this
 }
 
-func (this UserOriginAuthorityIndexKey) WithOriginAuthority(origin string, authority string) UserOriginAuthorityIndexKey {
+func (this ProfileOriginAuthorityIndexKey) WithOriginAuthority(origin string, authority string) ProfileOriginAuthorityIndexKey {
 	this.vs = []interface{}{origin, authority}
 	return this
 }
 
-type userTable struct {
+type profileTable struct {
 	table ormtable.AutoIncrementTable
 }
 
-func (this userTable) Insert(ctx context.Context, user *User) error {
-	return this.table.Insert(ctx, user)
+func (this profileTable) Insert(ctx context.Context, profile *Profile) error {
+	return this.table.Insert(ctx, profile)
 }
 
-func (this userTable) Update(ctx context.Context, user *User) error {
-	return this.table.Update(ctx, user)
+func (this profileTable) Update(ctx context.Context, profile *Profile) error {
+	return this.table.Update(ctx, profile)
 }
 
-func (this userTable) Save(ctx context.Context, user *User) error {
-	return this.table.Save(ctx, user)
+func (this profileTable) Save(ctx context.Context, profile *Profile) error {
+	return this.table.Save(ctx, profile)
 }
 
-func (this userTable) Delete(ctx context.Context, user *User) error {
-	return this.table.Delete(ctx, user)
+func (this profileTable) Delete(ctx context.Context, profile *Profile) error {
+	return this.table.Delete(ctx, profile)
 }
 
-func (this userTable) InsertReturningIndex(ctx context.Context, user *User) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, user)
+func (this profileTable) InsertReturningIndex(ctx context.Context, profile *Profile) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, profile)
 }
 
-func (this userTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+func (this profileTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
 	return this.table.LastInsertedSequence(ctx)
 }
 
-func (this userTable) Has(ctx context.Context, index uint64) (found bool, err error) {
+func (this profileTable) Has(ctx context.Context, index uint64) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, index)
 }
 
-func (this userTable) Get(ctx context.Context, index uint64) (*User, error) {
-	var user User
-	found, err := this.table.PrimaryKey().Get(ctx, &user, index)
+func (this profileTable) Get(ctx context.Context, index uint64) (*Profile, error) {
+	var profile Profile
+	found, err := this.table.PrimaryKey().Get(ctx, &profile, index)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &user, nil
+	return &profile, nil
 }
 
-func (this userTable) HasByOriginAuthority(ctx context.Context, origin string, authority string) (found bool, err error) {
+func (this profileTable) HasByOriginAuthority(ctx context.Context, origin string, authority string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
 		origin,
 		authority,
 	)
 }
 
-func (this userTable) GetByOriginAuthority(ctx context.Context, origin string, authority string) (*User, error) {
-	var user User
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &user,
+func (this profileTable) GetByOriginAuthority(ctx context.Context, origin string, authority string) (*Profile, error) {
+	var profile Profile
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &profile,
 		origin,
 		authority,
 	)
@@ -529,207 +402,57 @@ func (this userTable) GetByOriginAuthority(ctx context.Context, origin string, a
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &user, nil
+	return &profile, nil
 }
 
-func (this userTable) List(ctx context.Context, prefixKey UserIndexKey, opts ...ormlist.Option) (UserIterator, error) {
+func (this profileTable) List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return UserIterator{it}, err
+	return ProfileIterator{it}, err
 }
 
-func (this userTable) ListRange(ctx context.Context, from, to UserIndexKey, opts ...ormlist.Option) (UserIterator, error) {
+func (this profileTable) ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return UserIterator{it}, err
+	return ProfileIterator{it}, err
 }
 
-func (this userTable) DeleteBy(ctx context.Context, prefixKey UserIndexKey) error {
+func (this profileTable) DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this userTable) DeleteRange(ctx context.Context, from, to UserIndexKey) error {
+func (this profileTable) DeleteRange(ctx context.Context, from, to ProfileIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this userTable) doNotImplement() {}
+func (this profileTable) doNotImplement() {}
 
-var _ UserTable = userTable{}
+var _ ProfileTable = profileTable{}
 
-func NewUserTable(db ormtable.Schema) (UserTable, error) {
-	table := db.GetTable(&User{})
+func NewProfileTable(db ormtable.Schema) (ProfileTable, error) {
+	table := db.GetTable(&Profile{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&User{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Profile{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return userTable{table.(ormtable.AutoIncrementTable)}, nil
-}
-
-// singleton store
-type BaseParamsTable interface {
-	Get(ctx context.Context) (*BaseParams, error)
-	Save(ctx context.Context, baseParams *BaseParams) error
-}
-
-type baseParamsTable struct {
-	table ormtable.Table
-}
-
-var _ BaseParamsTable = baseParamsTable{}
-
-func (x baseParamsTable) Get(ctx context.Context) (*BaseParams, error) {
-	baseParams := &BaseParams{}
-	_, err := x.table.Get(ctx, baseParams)
-	return baseParams, err
-}
-
-func (x baseParamsTable) Save(ctx context.Context, baseParams *BaseParams) error {
-	return x.table.Save(ctx, baseParams)
-}
-
-func NewBaseParamsTable(db ormtable.Schema) (BaseParamsTable, error) {
-	table := db.GetTable(&BaseParams{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&BaseParams{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return &baseParamsTable{table}, nil
-}
-
-// singleton store
-type ReadParamsTable interface {
-	Get(ctx context.Context) (*ReadParams, error)
-	Save(ctx context.Context, readParams *ReadParams) error
-}
-
-type readParamsTable struct {
-	table ormtable.Table
-}
-
-var _ ReadParamsTable = readParamsTable{}
-
-func (x readParamsTable) Get(ctx context.Context) (*ReadParams, error) {
-	readParams := &ReadParams{}
-	_, err := x.table.Get(ctx, readParams)
-	return readParams, err
-}
-
-func (x readParamsTable) Save(ctx context.Context, readParams *ReadParams) error {
-	return x.table.Save(ctx, readParams)
-}
-
-func NewReadParamsTable(db ormtable.Schema) (ReadParamsTable, error) {
-	table := db.GetTable(&ReadParams{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&ReadParams{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return &readParamsTable{table}, nil
-}
-
-// singleton store
-type WriteParamsTable interface {
-	Get(ctx context.Context) (*WriteParams, error)
-	Save(ctx context.Context, writeParams *WriteParams) error
-}
-
-type writeParamsTable struct {
-	table ormtable.Table
-}
-
-var _ WriteParamsTable = writeParamsTable{}
-
-func (x writeParamsTable) Get(ctx context.Context) (*WriteParams, error) {
-	writeParams := &WriteParams{}
-	_, err := x.table.Get(ctx, writeParams)
-	return writeParams, err
-}
-
-func (x writeParamsTable) Save(ctx context.Context, writeParams *WriteParams) error {
-	return x.table.Save(ctx, writeParams)
-}
-
-func NewWriteParamsTable(db ormtable.Schema) (WriteParamsTable, error) {
-	table := db.GetTable(&WriteParams{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&WriteParams{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return &writeParamsTable{table}, nil
-}
-
-// singleton store
-type OwnParamsTable interface {
-	Get(ctx context.Context) (*OwnParams, error)
-	Save(ctx context.Context, ownParams *OwnParams) error
-}
-
-type ownParamsTable struct {
-	table ormtable.Table
-}
-
-var _ OwnParamsTable = ownParamsTable{}
-
-func (x ownParamsTable) Get(ctx context.Context) (*OwnParams, error) {
-	ownParams := &OwnParams{}
-	_, err := x.table.Get(ctx, ownParams)
-	return ownParams, err
-}
-
-func (x ownParamsTable) Save(ctx context.Context, ownParams *OwnParams) error {
-	return x.table.Save(ctx, ownParams)
-}
-
-func NewOwnParamsTable(db ormtable.Schema) (OwnParamsTable, error) {
-	table := db.GetTable(&OwnParams{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&OwnParams{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return &ownParamsTable{table}, nil
+	return profileTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 type StateStore interface {
-	ServiceTable() ServiceTable
 	CredentialTable() CredentialTable
-	UserTable() UserTable
-	BaseParamsTable() BaseParamsTable
-	ReadParamsTable() ReadParamsTable
-	WriteParamsTable() WriteParamsTable
-	OwnParamsTable() OwnParamsTable
+	ProfileTable() ProfileTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	service     ServiceTable
-	credential  CredentialTable
-	user        UserTable
-	baseParams  BaseParamsTable
-	readParams  ReadParamsTable
-	writeParams WriteParamsTable
-	ownParams   OwnParamsTable
-}
-
-func (x stateStore) ServiceTable() ServiceTable {
-	return x.service
+	credential CredentialTable
+	profile    ProfileTable
 }
 
 func (x stateStore) CredentialTable() CredentialTable {
 	return x.credential
 }
 
-func (x stateStore) UserTable() UserTable {
-	return x.user
-}
-
-func (x stateStore) BaseParamsTable() BaseParamsTable {
-	return x.baseParams
-}
-
-func (x stateStore) ReadParamsTable() ReadParamsTable {
-	return x.readParams
-}
-
-func (x stateStore) WriteParamsTable() WriteParamsTable {
-	return x.writeParams
-}
-
-func (x stateStore) OwnParamsTable() OwnParamsTable {
-	return x.ownParams
+func (x stateStore) ProfileTable() ProfileTable {
+	return x.profile
 }
 
 func (stateStore) doNotImplement() {}
@@ -737,48 +460,18 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	serviceTable, err := NewServiceTable(db)
-	if err != nil {
-		return nil, err
-	}
-
 	credentialTable, err := NewCredentialTable(db)
 	if err != nil {
 		return nil, err
 	}
 
-	userTable, err := NewUserTable(db)
-	if err != nil {
-		return nil, err
-	}
-
-	baseParamsTable, err := NewBaseParamsTable(db)
-	if err != nil {
-		return nil, err
-	}
-
-	readParamsTable, err := NewReadParamsTable(db)
-	if err != nil {
-		return nil, err
-	}
-
-	writeParamsTable, err := NewWriteParamsTable(db)
-	if err != nil {
-		return nil, err
-	}
-
-	ownParamsTable, err := NewOwnParamsTable(db)
+	profileTable, err := NewProfileTable(db)
 	if err != nil {
 		return nil, err
 	}
 
 	return stateStore{
-		serviceTable,
 		credentialTable,
-		userTable,
-		baseParamsTable,
-		readParamsTable,
-		writeParamsTable,
-		ownParamsTable,
+		profileTable,
 	}, nil
 }

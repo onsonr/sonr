@@ -1,7 +1,6 @@
 package keeper
 
 import (
-	"context"
 	"fmt"
 
 	"cosmossdk.io/collections"
@@ -32,6 +31,7 @@ type Keeper struct {
 	// state management
 	CollSchema collections.Schema
 	Params     collections.Item[service.Params]
+	Records    collections.Map[string, service.Record]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -76,51 +76,4 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 // GetAuthority returns the module's authority.
 func (k Keeper) GetAuthority() string {
 	return k.authority
-}
-
-// setupInitialRecords sets up the initial records.
-func (k Keeper) setupInitialRecords(ctx context.Context) error {
-	err := k.db.ServiceTable().Save(ctx, &modulev1.Service{
-		Origin:      "localhost",
-		Name:        "Sonr LocalAuth",
-		Description: "Sonr authentication service",
-		Permissions: modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
-	})
-	if err != nil {
-		return err
-	}
-
-	// Set default permissions for the base, read, write and own modules
-	if err := k.db.BaseParamsTable().Save(ctx, &modulev1.BaseParams{
-		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE,
-		Algorithm:                -7,
-		AuthenticationAttachment: "platform",
-	}); err != nil {
-		return err
-	}
-
-	if err := k.db.ReadParamsTable().Save(ctx, &modulev1.ReadParams{
-		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ,
-		Algorithm:                -7,
-		AuthenticationAttachment: "platform",
-	}); err != nil {
-		return err
-	}
-	if err := k.db.WriteParamsTable().Save(ctx, &modulev1.WriteParams{
-		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE,
-		Algorithm:                -8,
-		ResidentKey:              "preferred",
-		AuthenticationAttachment: "cross-platform",
-	}); err != nil {
-		return err
-	}
-	if err := k.db.OwnParamsTable().Save(ctx, &modulev1.OwnParams{
-		Permissions:              modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN,
-		Algorithm:                -8,
-		ResidentKey:              "preferred",
-		AuthenticationAttachment: "cross-platform",
-	}); err != nil {
-		return err
-	}
-	return nil
 }

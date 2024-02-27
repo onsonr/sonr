@@ -13,38 +13,10 @@ message State {
   };
 }
 
-// ServicePermissions is the specified permissions the application has with the
-// user's account.
-enum ServicePermissions {
-  // SERVICE_PERMISSIONS_BASE - off chain visibility
-  SERVICE_PERMISSIONS_BASE = 0;
-  // SERVICE_PERMISSIONS_READ - read access
-  SERVICE_PERMISSIONS_READ = 1;
-  // SERVICE_PERMISSIONS_WRITE - write access
-  SERVICE_PERMISSIONS_WRITE = 2;
-  // SERVICE_PERMISSIONS_OWN - ownership
-  SERVICE_PERMISSIONS_OWN = 3;
-}
-
-// Service is the balance of an account.
-message Service {
-  option (cosmos.orm.v1.table) = {
-    id : 1
-    primary_key : {fields : "origin"}
-    index : {id : 2 fields : "authority"}
-  };
-
-  string origin = 1;
-  string name = 2;
-  string description = 3;
-  string authority = 4;
-  ServicePermissions permissions = 5;
-}
-
 // Credential is the total supply of the module.
 message Credential {
   option (cosmos.orm.v1.table) = {
-    id : 2
+    id : 1
     primary_key : {fields : "sequence" auto_increment : true}
     index : {id : 1 fields : "handle"}
     index : {id : 2 fields : "origin,handle" unique: true}
@@ -61,12 +33,10 @@ message Credential {
   string origin = 7;
 }
 
-
-// Identifier is a psuedo-anonomyous representation of a unique id on the Sonr blockchain. Used as
-// authorizer to the underlying wallet interface.
-message User {
+// Service is the balance of an account.
+message Profile {
   option (cosmos.orm.v1.table) = {
-    id : 3
+    id : 2
     primary_key : {fields : "index" auto_increment : true}
     index : {id : 1 fields : "origin,authority" unique : true}
   };
@@ -76,48 +46,4 @@ message User {
   string key = 3;
   string value = 4;
   string authority = 5;
-}
-
-// BaseParams is the total supply of the module.
-message BaseParams {
-  option (cosmos.orm.v1.singleton) = {
-    id : 4
-  };
-  ServicePermissions permissions = 1;
-  string resident_key = 2;
-  int32 algorithm = 3;
-  string authentication_attachment = 4;
-}
-
-// ReadParams is the total supply of the module.
-message ReadParams {
-  option (cosmos.orm.v1.singleton) = {
-    id : 5
-  };
-  ServicePermissions permissions = 1;
-  string resident_key = 2;
-  int32 algorithm = 3;
-  string authentication_attachment = 4;
-}
-
-// WriteParams is the total supply of the module.
-message WriteParams {
-  option (cosmos.orm.v1.singleton) = {
-    id : 6
-  };
-  ServicePermissions permissions = 1;
-  string resident_key = 2;
-  int32 algorithm = 3;
-  string authentication_attachment = 4;
-}
-
-// OwnParams is the total supply of the module.
-message OwnParams {
-  option (cosmos.orm.v1.singleton) = {
-    id : 7
-  };
-  ServicePermissions permissions = 1;
-  string resident_key = 2;
-  int32 algorithm = 3;
-  string authentication_attachment = 4;
 }

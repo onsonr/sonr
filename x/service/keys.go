@@ -14,8 +14,8 @@ var (
 	// ParamsKey is the key for the module parameters
 	ParamsKey = collections.NewPrefix(0)
 
-	// ServiceKey is the key for the module counter
-	ServiceKey = collections.NewPrefix(1)
+	// RecordKey is the key for the module counter
+	RecordKey = collections.NewPrefix(1)
 )
 
 // getQueryServiceClient is a helper function to get a QueryClient
