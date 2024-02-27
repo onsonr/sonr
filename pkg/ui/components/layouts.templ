@@ -60,11 +60,17 @@ templ SidebarGroup() {
 
 templ SidebarItem(label string, icon templ.Component, href string) {
 	<sl-tooltip content={ label } placement="right-start">
-		<div class="p-2.5 hover:bg-stone-200 hover:dark:bg-stone-800 rounded-md">
+		<div class="p-2.5 hover:bg-stone-200 hover:dark:bg-stone-800 rounded-md" hx-get={ href } hx-swap="outerHTML">
 			<div label={ label } class="text-md hover:text-stone-800 hover:dark:text-stone-200 cursor-pointer">
 				@icon
 			</div>
 		</div>
 		<sl-divider></sl-divider>
 	</sl-tooltip>
+}
+
+templ SidebarPanel(id string) {
+	<div id={ id } class="w-full h-full flex flex-col space-y-3 py-4 justify-center align-center">
+		{ children... }
+	</div>
 }

@@ -2,10 +2,16 @@ package shared
 
 import "github.com/golang-jwt/jwt/v5"
 
-// JwtControllerClaims are custom claims extending default ones.
-// See https://github.com/golang-jwt/jwt for more examples
+// JwtControllerClaims is a custom claims type for the JWT middleware
 type JwtControllerClaims struct {
-	Name  string `json:"name"`
-	Admin bool   `json:"admin"`
+	Handle  string `json:"handle"`
+	Address string `json:"address"`
+	Origin  string `json:"origin"`
+	jwt.RegisteredClaims
+}
+
+// JwtSessionClaims is a custom claims type for the JWT middleware
+type JwtSessionClaims struct {
+	Handle string `json:"handle"`
 	jwt.RegisteredClaims
 }
