@@ -6,7 +6,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/middleware/shared"
+	shared "github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 // TxAPI is a handler for the staking module

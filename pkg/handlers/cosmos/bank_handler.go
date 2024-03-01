@@ -5,7 +5,8 @@ import (
 
 	types "cosmossdk.io/api/cosmos/bank/v1beta1"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/middleware/shared"
+
+	shared "github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 // BankAPI is a handler for the bank module

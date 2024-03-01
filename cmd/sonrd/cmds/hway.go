@@ -17,7 +17,7 @@ func HwayCommand() *cobra.Command {
 		Short:                      "Serves the Sonr Highway",
 		DisableFlagParsing:         false,
 		SuggestionsMinimumDistance: 2,
-		Run:                        serveAction,
+		Run:                        serveHighway,
 	}
 	cmd.Flags().String("hway-host", "0.0.0.0", "host")
 	cmd.Flags().Int("hway-port", 8000, "port")
@@ -28,14 +28,19 @@ func HwayCommand() *cobra.Command {
 	return cmd
 }
 
-func serveAction(c *cobra.Command, _ []string) {
-	cnfg := config.CreateHwayConfig()
+func serveHighway(c *cobra.Command, _ []string) {
+	// Create the config
+	cnfg := config.NewHway()
 	cnfg.ReadFlags(c)
 
 	// Create the router
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
 	common.UseDefaults(e)
+	err := common.UseCache(e)
+	if err != nil {
+		e.Logger.Fatal(err)
+	}
 
 	// Register the routes
 	routes.RegisterCosmosAPI(e)

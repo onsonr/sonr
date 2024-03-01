@@ -1,0 +1,41 @@
+package views
+
+import (
+	"github.com/sonrhq/sonr/pkg/components/blocks"
+)
+
+templ LoginExistingView() {
+	@blocks.CardLayout() {
+		@blocks.LoginHeader()
+		<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
+		<form class={ "justify-center items-center align-middle pb-2.5" }>
+			<sl-input
+				name="email"
+				placeholder="sjobs@apple.com"
+				size="large"
+				autocomplete="username webauthn"
+				pill
+				required
+			>
+				<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+			</sl-input>
+			<div id="name-error" aria-live="polite" hidden></div>
+		</form>
+		<sl-divider class="bg-stone-600" style="--spacing: 1rem;"></sl-divider>
+		@blocks.LoginFooter()
+	}
+}
+
+templ LoginRecoveryView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip">
+		@blocks.ChatHeader()
+		<div class="h-full w-full p-2 flex-grow">
+			@blocks.ChatTimestamp()
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+		</div>
+		@blocks.ChatFooter()
+	</div>
+}

@@ -1,0 +1,107 @@
+package views
+
+import (
+	"github.com/sonrhq/sonr/pkg/components/blocks"
+)
+
+templ RegisterWelcomeView() {
+	@blocks.CardLayout() {
+		@blocks.RegisterHeader()
+		<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
+		<div class="max-w-[300px] mx-auto">
+			<form class={ "flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5" }>
+				<sl-input
+					name="email"
+					placeholder="sjobs@apple.com"
+					size="large"
+					autocomplete="username webauthn"
+					required
+				>
+					<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+				</sl-input>
+				<sl-button type="submit" size="large" variant="default">
+					<div class="text-md">
+						@blocks.PasskeyIcon()
+					</div>
+				</sl-button>
+				<div id="name-error" aria-live="polite" hidden></div>
+			</form>
+		</div>
+		<sl-divider class="bg-stone-600" style="--spacing: 1rem;"></sl-divider>
+		@blocks.RegisterFooter()
+	}
+}
+
+templ RegisterIdentifierView() {
+	<form class={ "flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5" }>
+		<sl-input
+			name="email"
+			placeholder="sjobs@apple.com"
+			size="large"
+			autocomplete="username webauthn"
+			required
+		>
+			<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+		</sl-input>
+		<sl-button type="submit" size="large" variant="default">
+			<div class="text-md">
+				@blocks.PasskeyIcon()
+			</div>
+		</sl-button>
+		<div id="name-error" aria-live="polite" hidden></div>
+	</form>
+}
+
+templ RegisterValidateView() {
+	<form class={ "flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5" }>
+		<sl-input
+			name="email"
+			placeholder="sjobs@apple.com"
+			size="large"
+			autocomplete="username webauthn"
+			required
+		>
+			<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+		</sl-input>
+		<sl-button type="submit" size="large" variant="default">
+			<div class="text-md">
+				@blocks.PasskeyIcon()
+			</div>
+		</sl-button>
+		<div id="name-error" aria-live="polite" hidden></div>
+	</form>
+}
+
+templ RegisterCredentialView() {
+	<form class={ "flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5" }>
+		<sl-input
+			name="email"
+			placeholder="sjobs@apple.com"
+			size="large"
+			autocomplete="username webauthn"
+			required
+		>
+			<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+		</sl-input>
+		<sl-button type="submit" size="large" variant="default">
+			<div class="text-md">
+				@blocks.PasskeyIcon()
+			</div>
+		</sl-button>
+		<div id="name-error" aria-live="polite" hidden></div>
+	</form>
+}
+
+templ RegisterFinishView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip">
+		@blocks.ChatHeader()
+		<div class="h-full w-full p-2 flex-grow">
+			@blocks.ChatTimestamp()
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+		</div>
+		@blocks.ChatFooter()
+	</div>
+}

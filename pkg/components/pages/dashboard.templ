@@ -7,7 +7,7 @@ import (
 	"github.com/sonrhq/sonr/pkg/components/views"
 )
 
-templ DashboardSidebar(c echo.Context) {
+templ sidebar(c echo.Context) {
 	@blocks.Sidebar() {
 		@blocks.SidebarGroup() {
 			@blocks.SidebarItem("Home", "speedometer", "/home", c.Request().URL.Path == "/home")
@@ -25,38 +25,38 @@ templ DashboardSidebar(c echo.Context) {
 }
 
 templ Chat(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		@views.ConversationsView()
 		@views.MessagesView()
 	}
 }
 
 templ Console(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		<div class="w-full h-full bg-stone-700"></div>
 	}
 }
 
 templ Governance(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		<div class="w-full h-full bg-stone-300"></div>
 	}
 }
 
 templ Dashboard(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		<div class="w-full h-full bg-stone-400"></div>
 	}
 }
 
 templ Status(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		<div class="w-full h-full bg-stone-500"></div>
 	}
 }
 
 templ Wallet(c echo.Context) {
-	@blocks.SidebarLayout(DashboardSidebar(c)) {
+	@blocks.SidebarLayout(sidebar(c)) {
 		<div class="w-full h-full bg-stone-600"></div>
 	}
 }

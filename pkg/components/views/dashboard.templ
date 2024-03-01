@@ -1,0 +1,19 @@
+package views
+
+import (
+	"github.com/sonrhq/sonr/pkg/components/blocks"
+)
+
+templ DashboardView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip">
+		@blocks.ChatHeader()
+		<div class="h-full w-full p-2 flex-grow">
+			@blocks.ChatTimestamp()
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+			@blocks.ChatMessage()
+			@blocks.ChatMessage(blocks.WithIncomingMessage("Hello, how are you?"))
+		</div>
+		@blocks.ChatFooter()
+	</div>
+}

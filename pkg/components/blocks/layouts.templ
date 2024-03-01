@@ -34,6 +34,19 @@ templ RootLayout() {
 	</html>
 }
 
+// CardLayout is a component that renders a layout with a box in the middle
+templ CardLayout() {
+	@RootLayout() {
+		<section class="flex flex-col h-screen justify-center items-center mx-auto">
+			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
+				<sl-card class={ "container py-4 max-w-lg" }>
+					{ children... }
+				</sl-card>
+			</div>
+		</section>
+	}
+}
+
 // SidebarLayout is a component that renders a layout with a sidebar
 templ SidebarLayout(sidebar templ.Component, classnames ...string) {
 	@RootLayout() {

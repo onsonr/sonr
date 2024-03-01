@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	templates "github.com/sonrhq/sonr/pkg/components/pages"
-	"github.com/sonrhq/sonr/pkg/middleware/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 var Pages = pages{}
@@ -12,12 +12,12 @@ var Pages = pages{}
 type pages struct{}
 
 func (p pages) Index(c echo.Context) error {
-	if !shared.Cookies(c).HasHandle() {
-		return shared.Render(c, templates.Register(c))
+	if !common.Cookies(c).HasHandle() {
+		return common.Render(c, templates.Register(c))
 	}
-	return shared.Render(c, templates.Chat(c))
+	return common.Render(c, templates.Chat(c))
 }
 
 func (p pages) Error(c echo.Context) error {
-	return shared.Render(c, templates.Error404View())
+	return common.Render(c, templates.Error404View())
 }

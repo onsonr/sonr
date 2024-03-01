@@ -6,8 +6,6 @@ import (
 	ipfs_path "github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
-
-	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // PublishFile publishes a file
@@ -20,7 +18,7 @@ func (c *vault) PublishFile() error {
 	}
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
-		return shared.ErrFailedIPFSClient
+		return ErrFailedIPFSClient
 	}
 	name, err := ipfsC.Name().Publish(c.Request().Context(), path, options.Name.Key(keyID))
 	if err != nil {
@@ -34,7 +32,7 @@ func (c *vault) GetFile() error {
 	path := c.Param("cid")
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
-		return shared.ErrFailedIPFSClient
+		return ErrFailedIPFSClient
 	}
 	cid, err := ipfs_path.NewPath(path)
 	if err != nil {

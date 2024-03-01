@@ -49,6 +49,12 @@ type HighwayConfig struct {
 
 	// Assets is the path to the assets
 	Assets string `json:"assets"`
+
+	// PostgresConnection is the connection string for the postgres database
+	PostgresConnection string `json:"postgres_connection"`
+
+	// RedisConnection is the connection string for the redis database
+	RedisConnection string `json:"redis_connection"`
 }
 
 // MatrixConfig represents the nitro configuration

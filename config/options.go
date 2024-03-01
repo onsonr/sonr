@@ -37,8 +37,8 @@ func (o *HighwayConfig) Serve(e *echo.Echo) {
 	e.Logger.Fatal(e.Start(o.ListenAddress()))
 }
 
-// CreateHwayConfig returns a new HighwayOptions
-func CreateHwayConfig() *HighwayConfig {
+// NewHway returns a new HighwayOptions
+func NewHway() *HighwayConfig {
 	return &HighwayConfig{
 		GatewayPort: 8000,
 		Host:        "0.0.0.0",
@@ -58,7 +58,29 @@ func (o *HighwayConfig) ReadFlags(c *cobra.Command) error {
 		return err
 	}
 	o.GatewayPort = port
+
+	psql, err := c.Flags().GetString("hway-psql")
+	if err != nil {
+		return err
+	}
+	o.PostgresConnection = psql
+
+	redis, err := c.Flags().GetString("hway-redis")
+	if err != nil {
+		return err
+	}
+	o.RedisConnection = redis
 	return nil
+}
+
+// HasPostgres returns true if the postgres connection is set
+func (o *HighwayConfig) HasPostgres() bool {
+	return o.PostgresConnection != ""
+}
+
+// HasRedis returns true if the redis connection is set
+func (o *HighwayConfig) HasRedis() bool {
+	return o.RedisConnection != ""
 }
 
 // Validate validates the HighwayOptions
