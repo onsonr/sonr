@@ -6,7 +6,7 @@ import (
 
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // StakingAPI is a handler for the staking module

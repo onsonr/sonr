@@ -3,8 +3,8 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/sonrhq/sonr/pkg/shared"
-	"github.com/sonrhq/sonr/pkg/templates"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
+	templates "github.com/sonrhq/sonr/pkg/components/modals"
 )
 
 var Modals = modals{}

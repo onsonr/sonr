@@ -9,7 +9,7 @@ import (
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/wallet"
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // GenerateKey generates a new key

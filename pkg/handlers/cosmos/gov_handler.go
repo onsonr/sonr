@@ -7,7 +7,7 @@ import (
 
 	types "cosmossdk.io/api/cosmos/gov/v1"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // GovAPI is a handler for the gov module

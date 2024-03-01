@@ -1,0 +1,62 @@
+package pages
+
+import (
+	"github.com/sonrhq/sonr/pkg/components/blocks"
+	// "github.com/sonrhq/sonr/x/service"
+	"github.com/labstack/echo/v4"
+	"github.com/sonrhq/sonr/pkg/components/views"
+)
+
+templ DashboardSidebar(c echo.Context) {
+	@blocks.Sidebar() {
+		@blocks.SidebarGroup() {
+			@blocks.SidebarItem("Home", "speedometer", "/home", c.Request().URL.Path == "/home")
+			@blocks.SidebarItem("Chat", "chat", "/chat", c.Request().URL.Path == "/chat")
+			@blocks.SidebarItem("Wallet", "wallet2", "/wallet", c.Request().URL.Path == "/wallet")
+		}
+		@blocks.SidebarGroup() {
+			@blocks.SidebarItem("Status", "activity", "/status", c.Request().URL.Path == "/status")
+			@blocks.SidebarItem("Governance", "box", "/governance", c.Request().URL.Path == "/governance")
+		}
+		@blocks.SidebarGroup() {
+			@blocks.SidebarItem("Developer", "code-slash", "/console", c.Request().URL.Path == "/console")
+		}
+	}
+}
+
+templ Chat(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		@views.ConversationsView()
+		@views.MessagesView()
+	}
+}
+
+templ Console(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-700"></div>
+	}
+}
+
+templ Governance(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-300"></div>
+	}
+}
+
+templ Dashboard(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-400"></div>
+	}
+}
+
+templ Status(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-500"></div>
+	}
+}
+
+templ Wallet(c echo.Context) {
+	@blocks.SidebarLayout(DashboardSidebar(c)) {
+		<div class="w-full h-full bg-stone-600"></div>
+	}
+}

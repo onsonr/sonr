@@ -1,0 +1,11 @@
+package blocks
+
+import (
+	"github.com/sonrhq/sonr/x/service"
+)
+
+templ PasskeyButton(record service.Record) {
+	<div slot="suffix" onclick={ CreateCredential(record.Name, record.Origin, service.GenerateChallengeString()) } class="cursor-pointer">
+		@PasskeyIcon()
+	</div>
+}

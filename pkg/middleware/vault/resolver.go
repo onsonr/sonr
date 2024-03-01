@@ -7,7 +7,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
 
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // PublishFile publishes a file

@@ -7,7 +7,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 	"github.com/sonrhq/sonr/x/service"
 )
 

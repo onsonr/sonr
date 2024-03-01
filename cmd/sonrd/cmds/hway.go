@@ -40,8 +40,8 @@ func serveAction(c *cobra.Command, _ []string) {
 	// Register the routes
 	routes.RegisterCosmosAPI(e)
 	routes.RegisterSonrAPI(e)
-	routes.RegisterHTMXPages(e, cnfg.Assets)
-	routes.RegisterHTMXModals(e)
+	routes.RegisterPages(e, cnfg.Assets)
+	routes.RegisterModals(e)
 
 	// Serve the router
 	cnfg.PrintBanner()

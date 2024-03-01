@@ -7,7 +7,7 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/client/grpc/cmtservice"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/shared"
+	"github.com/sonrhq/sonr/pkg/middleware/shared"
 )
 
 // CometAPI is a handler for the node module
