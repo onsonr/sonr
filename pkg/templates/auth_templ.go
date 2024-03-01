@@ -124,7 +124,7 @@ func registerView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = components.PasskeyButton(service.ServiceRecord{
+		templ_7745c5c3_Err = components.PasskeyButton(service.Record{
 			Name:   "Sonr Beta",
 			Origin: "localhost",
 		}).Render(ctx, templ_7745c5c3_Buffer)

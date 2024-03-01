@@ -18,15 +18,9 @@ type HeaderKey string
 const HTMXHeaderKey HeaderKey = "htmx-request-header"
 
 // UseDefaults adds chi provided middleware libraries to the router.
-func UseDefaults(e *echo.Echo) {
-	e.Use(middleware.GzipWithConfig(middleware.GzipConfig{
-		Level: 5,
-	}))
-	e.Use(middleware.Decompress())
+func UseDefaults(e *echo.Echo) { 
 	e.Use(middleware.RequestID())
 	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(UseSessionID())
 }
 
 // UseSessionID sets the session id cookie as middleware function
