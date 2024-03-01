@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/sonrhq/sonr/pkg/handlers"
-	"github.com/sonrhq/sonr/pkg/middleware"
+	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 // RegisterCosmosAPI registers the Cosmos API routes
@@ -62,20 +62,20 @@ func RegisterStaticAssets(e *echo.Echo, assetsDir string) {
 
 // RegisterHTMXPages registers the page routes for HTMX
 func RegisterHTMXPages(e *echo.Echo) {
-	e.GET("/", handlers.Pages.Index, middleware.UseHTMX)
-	e.GET("/_panels/home", handlers.Pages.Home, middleware.UseHTMX)
-	e.GET("/_panels/chat", handlers.Pages.Chat, middleware.UseHTMX)
-	e.GET("/_panels/wallet", handlers.Pages.Wallet, middleware.UseHTMX)
-	e.GET("/_panels/status", handlers.Pages.Status, middleware.UseHTMX)
-	e.GET("/_panels/governance", handlers.Pages.Governance, middleware.UseHTMX)
-	e.GET("/_panels/console", handlers.Pages.Console, middleware.UseHTMX)
-	e.GET("/error-404", handlers.Pages.Error, middleware.UseHTMX)
+	e.GET("/", handlers.Pages.Index, common.UseHTMX)
+	e.GET("/_panels/home", handlers.Pages.Home, common.UseHTMX)
+	e.GET("/_panels/chat", handlers.Pages.Chat, common.UseHTMX)
+	e.GET("/_panels/wallet", handlers.Pages.Wallet, common.UseHTMX)
+	e.GET("/_panels/status", handlers.Pages.Status, common.UseHTMX)
+	e.GET("/_panels/governance", handlers.Pages.Governance, common.UseHTMX)
+	e.GET("/_panels/console", handlers.Pages.Console, common.UseHTMX)
+	e.GET("/error-404", handlers.Pages.Error, common.UseHTMX)
 }
 
 // RegisterHTMXModals registers the modal routes for HTMX
 func RegisterHTMXModals(e *echo.Echo) {
-	e.GET("/swap", handlers.Modals.Swap, middleware.UseHTMX)
-	e.GET("/deposit", handlers.Modals.Deposit, middleware.UseHTMX)
-	e.GET("/settings", handlers.Modals.Settings, middleware.UseHTMX)
-	e.GET("/share", handlers.Modals.Share, middleware.UseHTMX)
+	e.GET("/swap", handlers.Modals.Swap, common.UseHTMX)
+	e.GET("/deposit", handlers.Modals.Deposit, common.UseHTMX)
+	e.GET("/settings", handlers.Modals.Settings, common.UseHTMX)
+	e.GET("/share", handlers.Modals.Share, common.UseHTMX)
 }

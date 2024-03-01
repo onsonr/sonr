@@ -1,4 +1,4 @@
-package middleware
+package matrix
 
 import (
 	"github.com/labstack/echo/v4"

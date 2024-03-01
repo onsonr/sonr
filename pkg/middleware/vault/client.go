@@ -1,24 +1,16 @@
-package middleware
+package vault
 
 import (
 	"context"
 	"fmt"
 
-	ipfs_path "github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
-	"github.com/labstack/echo/v4"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
 	"github.com/sonrhq/sonr/internal/wallet"
 	"github.com/sonrhq/sonr/pkg/shared"
 )
-
-func Vault(ctx echo.Context) *vault {
-	return &vault{
-		Context: ctx,
-	}
-}
 
 // GenerateKey generates a new key
 func (c *vault) GenerateKey() error {
@@ -71,45 +63,4 @@ func (c *vault) GenerateIdentity() (*modulev1.Controller, error) {
 		Ipns:      name.String(),
 	}
 	return cnt, nil
-}
-
-// PublishFile publishes a file
-func (c *vault) PublishFile() error {
-	keyID := c.Param("keyID")
-	ipfsPath := c.Param("cid")
-	path, err := ipfs_path.NewPath(ipfsPath)
-	if err != nil {
-		return fmt.Errorf("failed to create path: %w", err)
-	}
-	ipfsC, err := rpc.NewLocalApi()
-	if err != nil {
-		return shared.ErrFailedIPFSClient
-	}
-	name, err := ipfsC.Name().Publish(c.Request().Context(), path, options.Name.Key(keyID))
-	if err != nil {
-		return fmt.Errorf("failed to publish file: %w", err)
-	}
-	return c.JSON(200, name)
-}
-
-// GetFile gets a file
-func (c *vault) GetFile() error {
-	path := c.Param("cid")
-	ipfsC, err := rpc.NewLocalApi()
-	if err != nil {
-		return shared.ErrFailedIPFSClient
-	}
-	cid, err := ipfs_path.NewPath(path)
-	if err != nil {
-		return fmt.Errorf("failed to create path: %w", err)
-	}
-	file, err := ipfsC.Unixfs().Get(c.Request().Context(), cid)
-	if err != nil {
-		return fmt.Errorf("failed to get file: %w", err)
-	}
-	return c.JSON(200, file)
-}
-
-type vault struct {
-	echo.Context
 }

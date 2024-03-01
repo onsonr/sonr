@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/sonrhq/sonr/config"
-	"github.com/sonrhq/sonr/pkg/middleware"
+	"github.com/sonrhq/sonr/pkg/middleware/common"
 	"github.com/sonrhq/sonr/pkg/routes"
 )
 
@@ -35,7 +35,7 @@ func serveAction(c *cobra.Command, _ []string) {
 	// Create the router
 	e := echo.New()
 	e.Logger.SetLevel(log.INFO)
-	middleware.UseDefaults(e)
+	common.UseDefaults(e)
 
 	// Register the routes
 	routes.RegisterCosmosAPI(e)
