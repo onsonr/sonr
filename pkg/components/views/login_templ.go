@@ -67,7 +67,7 @@ func LoginExistingView() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = blocks.CardLayout().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = blocks.CardLayout(blocks.Large).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -140,4 +140,29 @@ func LoginRecoveryView() templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
+}
+
+func GetCredential(rpName, rpId, challenge string) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_GetCredential_2344`,
+		Function: `function __templ_GetCredential_2344(rpName, rpId, challenge){const publicKeyCredentialRequestOptions = {
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
+		allowCredentials: [{
+			id: Uint8Array.from(
+				credentialId, c => c.charCodeAt(0)),
+			type: 'public-key',
+			transports: ['usb', 'ble', 'nfc'],
+		}],
+		timeout: 60000,
+	}
+
+	const assertion = navigator.credentials.get({
+		publicKey: publicKeyCredentialRequestOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
+}`,
+		Call:       templ.SafeScript(`__templ_GetCredential_2344`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_GetCredential_2344`, rpName, rpId, challenge),
+	}
 }

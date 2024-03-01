@@ -12,6 +12,7 @@ import "bytes"
 
 import (
 	"github.com/sonrhq/sonr/pkg/components/blocks"
+	"github.com/sonrhq/sonr/x/service"
 )
 
 func RegisterWelcomeView() templ.Component {
@@ -33,40 +34,7 @@ func RegisterWelcomeView() templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = blocks.RegisterHeader().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <sl-divider class=\"bg-stone-500\" style=\"--spacing: 1rem;\"></sl-divider><div class=\"max-w-[300px] mx-auto\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var3 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
-			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form class=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var3).String()))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><sl-input name=\"email\" placeholder=\"sjobs@apple.com\" size=\"large\" autocomplete=\"username webauthn\" required><sl-icon class=\"text-stone-200\" slot=\"prefix\" name=\"at\"></sl-icon></sl-input> <sl-button type=\"submit\" size=\"large\" variant=\"default\"><div class=\"text-md\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = blocks.PasskeyIcon().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></sl-button><div id=\"name-error\" aria-live=\"polite\" hidden></div></form></div><sl-divider class=\"bg-stone-600\" style=\"--spacing: 1rem;\"></sl-divider>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = blocks.RegisterFooter().Render(ctx, templ_7745c5c3_Buffer)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col w-full justify-center items-center space-y-2 gap-1 mx-auto text-center max-w-lg\"><div class=\"w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3\"></div><sl-divider style=\"--spacing: 0.6rem;\"></sl-divider><h1 class=\"text-3xl font-semibold\">Register Account</h1><p class=\"text-stone-300 text-md text-center py-2 text-relaxed\">Start your <sl-tooltip content=\"Access every IBC enabled blockchain with a secure Interchain Account.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">Crypto Journey</span></sl-tooltip> easily and access DApps <sl-tooltip content=\"End to End encryption from the Validator to the client. Multi-Party Computed Wallets. Secure communication channel over Matrix.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">the Safe Way</span></sl-tooltip> by creating a <sl-tooltip content=\"Decentralized Identity representation on the Sonr Blockchain. Anonymous and Encrypted.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">Sonr Identity</span></sl-tooltip></p></div><sl-divider class=\"bg-stone-500\" style=\"--spacing: 1rem;\"></sl-divider><div class=\"max-w-[300px] mx-auto\"></div><sl-divider class=\"bg-stone-600\" style=\"--spacing: 1rem;\"></sl-divider><div slot=\"footer\" class=\"flex justify-center items-center px-3 gap-x-8\"><sl-button size=\"large\" variant=\"default\">Learn More</sl-button> <sl-button size=\"large\" variant=\"primary\">Get Started</sl-button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -75,7 +43,7 @@ func RegisterWelcomeView() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = blocks.CardLayout().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = blocks.CardLayout(blocks.Medium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -94,13 +62,13 @@ func RegisterIdentifierView() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var4 == nil {
-			templ_7745c5c3_Var4 = templ.NopComponent
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var5 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
+		var templ_7745c5c3_Var4 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -108,7 +76,7 @@ func RegisterIdentifierView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var5).String()))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var4).String()))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -139,13 +107,13 @@ func RegisterValidateView() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
+		templ_7745c5c3_Var5 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var5 == nil {
+			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var7 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
+		var templ_7745c5c3_Var6 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -153,7 +121,7 @@ func RegisterValidateView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var7).String()))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var6).String()))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -184,13 +152,13 @@ func RegisterCredentialView() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var8 == nil {
-			templ_7745c5c3_Var8 = templ.NopComponent
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var9 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
+		var templ_7745c5c3_Var8 = []any{"flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5"}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -198,7 +166,7 @@ func RegisterCredentialView() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var9).String()))
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var8).String()))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -229,9 +197,9 @@ func RegisterFinishView() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var10 == nil {
-			templ_7745c5c3_Var10 = templ.NopComponent
+		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var9 == nil {
+			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip\">")
@@ -271,6 +239,85 @@ func RegisterFinishView() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = blocks.ChatFooter().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if !templ_7745c5c3_IsBuffer {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func CreateCredential(rpName, rpId, challenge string) templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_CreateCredential_c37e`,
+		Function: `function __templ_CreateCredential_c37e(rpName, rpId, challenge){const publicKeyCredentialCreationOptions = {
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
+		rp: {
+			name: rpName,
+			id: rpId,
+		},
+		user: {
+			id: Uint8Array.from(
+				"UZSL85T9AFC", c => c.charCodeAt(0)),
+			name: "lee@webauthn.guide",
+			displayName: "Lee",
+		},
+		pubKeyCredParams: [{alg: -7, type: "public-key"}],
+		authenticatorSelection: {
+			authenticatorAttachment: "cross-platform",
+		},
+		timeout: 60000,
+		attestation: "direct"
+	};
+
+	const credential = navigator.credentials.create({
+		publicKey: publicKeyCredentialCreationOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
+}`,
+		Call:       templ.SafeScript(`__templ_CreateCredential_c37e`, rpName, rpId, challenge),
+		CallInline: templ.SafeScriptInline(`__templ_CreateCredential_c37e`, rpName, rpId, challenge),
+	}
+}
+
+func PasskeyButton(record service.Record) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
+		if !templ_7745c5c3_IsBuffer {
+			templ_7745c5c3_Buffer = templ.GetBuffer()
+			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var10 == nil {
+			templ_7745c5c3_Var10 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templ.RenderScriptItems(ctx, templ_7745c5c3_Buffer, CreateCredential(record.Name, record.Origin, service.GenerateChallengeString()))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div slot=\"suffix\" onclick=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var11 templ.ComponentScript = CreateCredential(record.Name, record.Origin, service.GenerateChallengeString())
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11.Call)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" class=\"cursor-pointer\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = blocks.PasskeyIcon().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

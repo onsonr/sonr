@@ -5,7 +5,7 @@ import (
 )
 
 templ LoginExistingView() {
-	@blocks.CardLayout() {
+	@blocks.CardLayout(blocks.Large) {
 		@blocks.LoginHeader()
 		<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>
 		<form class={ "justify-center items-center align-middle pb-2.5" }>
@@ -38,4 +38,23 @@ templ LoginRecoveryView() {
 		</div>
 		@blocks.ChatFooter()
 	</div>
+}
+
+script GetCredential(rpName, rpId, challenge string) {
+	const publicKeyCredentialRequestOptions = {
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
+		allowCredentials: [{
+			id: Uint8Array.from(
+				credentialId, c => c.charCodeAt(0)),
+			type: 'public-key',
+			transports: ['usb', 'ble', 'nfc'],
+		}],
+		timeout: 60000,
+	}
+
+	const assertion = navigator.credentials.get({
+		publicKey: publicKeyCredentialRequestOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
 }

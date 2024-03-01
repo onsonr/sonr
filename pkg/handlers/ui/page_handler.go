@@ -12,10 +12,13 @@ var Pages = pages{}
 type pages struct{}
 
 func (p pages) Index(c echo.Context) error {
-	if !common.Cookies(c).HasHandle() {
-		return common.Render(c, templates.Register(c))
+	if common.JWT(c).HasController() {
+		return common.Render(c, templates.Chat(c))
 	}
-	return common.Render(c, templates.Chat(c))
+	if common.Cookies(c).HasHandle() {
+		return common.Render(c, templates.Login(c))
+	}
+	return common.Render(c, templates.Register(c))
 }
 
 func (p pages) Error(c echo.Context) error {

@@ -34,12 +34,17 @@ func UseJWTController(address, handle, origin string) echo.MiddlewareFunc {
 	return echojwt.WithConfig(config)
 }
 
-func (j *jwtMdw) GetControllerClaims() (*JwtControllerClaims, error) {
+func (j *jwtMdw) GetController() (*JwtControllerClaims, error) {
 	claims := j.Get("controller").(*jwt.Token).Claims
 	if c, ok := claims.(*JwtControllerClaims); ok {
 		return c, nil
 	}
 	return nil, fmt.Errorf("invalid claims")
+}
+
+func (j *jwtMdw) HasController() bool {
+	_, ok := j.Get("controller").(*jwt.Token)
+	return ok
 }
 
 type jwtMdw struct {

@@ -47,10 +47,6 @@ func RegisterHeader() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col w-full justify-center items-center space-y-2 gap-1 mx-auto text-center max-w-lg\"><div class=\"w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3\"></div><sl-divider style=\"--spacing: 0.6rem;\"></sl-divider><h1 class=\"text-3xl font-semibold\">Register</h1><p class=\"text-stone-300 text-md text-center py-2 text-relaxed\">Begin your <sl-tooltip content=\"Access every IBC enabled blockchain with a secure Interchain Account.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">Crypto Journey</span></sl-tooltip> seamlessly and access decentralized services <sl-tooltip content=\"End to End encryption from the Validator to the client. Multi-Party Computed Wallets. Secure communication channel over Matrix.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">the Safe Way</span></sl-tooltip> by creating a <sl-tooltip content=\"Decentralized Identity representation on the Sonr Blockchain. Anonymous and Encrypted.\" placement=\"top\"><span class=\"font-semibold text-stone-200\">Sonr Identity</span></sl-tooltip></p></div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
 		if !templ_7745c5c3_IsBuffer {
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteTo(templ_7745c5c3_W)
 		}
