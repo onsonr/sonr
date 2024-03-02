@@ -21,20 +21,20 @@ func (p pages) Root(c echo.Context) error {
 		return common.Render(c, chats.Page(c))
 	}
 	if common.Cookies(c).HasHandle() {
-		return common.Render(c, login.PageView(c))
+		return common.Render(c, login.Page(c))
 	}
 	if common.Requests(c).PathIs("/register") {
-		return common.Render(c, register.PageView(c))
+		return common.Render(c, register.Page(c))
 	}
 	return common.Render(c, home.Page(c))
 }
 
 func (p pages) Login(c echo.Context) error {
-	return common.Render(c, login.PageView(c))
+	return common.Render(c, login.Page(c))
 }
 
 func (p pages) Register(c echo.Context) error {
-	return common.Render(c, register.PageView(c))
+	return common.Render(c, register.Page(c))
 }
 
 func (p pages) Home(c echo.Context) error {

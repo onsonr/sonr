@@ -38,7 +38,7 @@ templ PageLayout() {
 	<html lang="en" class="scroll-smooth">
 		<head>
 			<meta charset="utf-8"/>
-			<title>Stellar HTML Demo - Home</title>
+			<title>Sonr HTML Demo - Home</title>
 			<meta name="viewport" content="width=device-width,initial-scale=1"/>
 			<link href="https://cdn.sonr.build/css/vendors/aos.css" rel="stylesheet"/>
 			<link rel="stylesheet" href="https://cdn.sonr.build/css/vendors/swiper-bundle.min.css"/>
@@ -55,44 +55,6 @@ templ PageLayout() {
 			<script src="https://cdn.sonr.build/js/main.js"></script>
 		</body>
 	</html>
-}
-
-// CardSize represents the size of a card in the CardLayout component
-type CardSize int
-
-const (
-	Small CardSize = iota
-	Medium
-	Large
-	Huge
-)
-
-// CardLayout is a component that renders a layout with a box in the middle
-templ CardLayout(size CardSize) {
-	@RootLayout() {
-		<section class="flex flex-col h-screen justify-center items-center mx-auto">
-			<div class="grid place-items-center mx-2 my-20 sm:my-auto">
-				switch size {
-					case Small:
-						<sl-card class={ "container py-4 max-w-sm" }>
-							{ children... }
-						</sl-card>
-					case Medium:
-						<sl-card class={ "container py-4 max-w-md" }>
-							{ children... }
-						</sl-card>
-					case Large:
-						<sl-card class={ "container py-4 max-w-lg" }>
-							{ children... }
-						</sl-card>
-					case Huge:
-						<sl-card class={ "container py-4 max-w-xl" }>
-							{ children... }
-						</sl-card>
-				}
-			</div>
-		</section>
-	}
 }
 
 // SidebarLayout is a component that renders a layout with a sidebar
