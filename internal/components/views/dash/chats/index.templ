@@ -1,0 +1,194 @@
+package chats
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/sonrhq/sonr/internal/components/base"
+	dash "github.com/sonrhq/sonr/internal/components/views/dash"
+)
+
+templ IndexView(c echo.Context) {
+	@base.SidebarLayout(dash.Sidebar(c)) {
+		@conversationsView()
+		@messagesView()
+	}
+}
+
+templ messagesView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip">
+		@ChatHeader()
+		<div class="h-full w-full p-2 flex-grow">
+			@ChatTimestamp()
+			@ChatMessage()
+			@ChatMessage(WithIncomingMessage("Hello, how are you?"))
+			@ChatMessage()
+			@ChatMessage(WithIncomingMessage("Hello, how are you?"))
+		</div>
+		@ChatFooter()
+	</div>
+}
+
+templ conversationsView() {
+	<div class="h-screen w-[420px] border-r-[0.5px] border-stone-700/80 bg-stone-100 dark:bg-stone-900 py-3 gap-y-1 px-2 overflow-clip">
+		@ConversationsHeader()
+		@conversationItemList()
+	</div>
+}
+
+templ conversationItemList() {
+	<div class="h-full w-full overflow-y-auto gap-y-2 flex flex-col">
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+	</div>
+}
+
+templ ChatHeader() {
+	<div class="h-[64px] flex flex-row border-b-[0.5px] border-stone-600 px-4 justify-between items-center py-3">
+		<div class="flex flex-row justify-start items-center">
+			<sl-avatar label="User avatar"></sl-avatar>
+			<h1 class="text-stone-900/90 dark:text-stone-100/90 text-xl font-semibold ml-3">User Name</h1>
+		</div>
+		<sl-dropdown>
+			<sl-icon-button slot="trigger" name="three-dots-vertical" label="Edit" style="font-size: 1.5rem;"></sl-icon-button>
+			<sl-menu>
+				<sl-menu-item>Dropdown Item 1</sl-menu-item>
+				<sl-menu-item>Dropdown Item 2</sl-menu-item>
+				<sl-menu-item>Dropdown Item 3</sl-menu-item>
+				<sl-divider></sl-divider>
+				<sl-menu-item type="checkbox" checked>Checkbox</sl-menu-item>
+				<sl-menu-item disabled>Disabled</sl-menu-item>
+				<sl-menu-item>
+					Prefix
+					<sl-icon slot="prefix" name="gift"></sl-icon>
+				</sl-menu-item>
+				<sl-menu-item>
+					Suffix Icon
+					<sl-icon slot="suffix" name="heart"></sl-icon>
+				</sl-menu-item>
+			</sl-menu>
+		</sl-dropdown>
+	</div>
+}
+
+templ ConversationsHeader() {
+	<div class="grid grid-cols-2 h-fit px-4 py-5 gap-y-3 pb-5">
+		<div class="col-span-2">
+			<div class="flex flex-row justify-between">
+				<h1 class="text-stone-900/90 dark:text-stone-100/90 text-2xl font-semibold">Chats</h1>
+				<sl-icon-button size="large" name="plus-circle" label="Settings"></sl-icon-button>
+			</div>
+		</div>
+		<div class="col-span-2">
+			<sl-input placeholder="Search Conversations" size="medium">
+				<sl-icon name="search" slot="prefix"></sl-icon>
+			</sl-input>
+		</div>
+	</div>
+}
+
+templ ConversationItem() {
+	<div class="p-4 flex flex-row items-center">
+		<sl-avatar label="User avatar"></sl-avatar>
+		<div class="flex flex-col ml-3">
+			<h1 class="text-stone-900/90 dark:text-stone-100/90 text-lg font-semibold">User Name</h1>
+			<p class="text-stone-900/79 dark:text-stone-200/70 text-sm">Last message</p>
+		</div>
+		<div class="flex flex-col ml-auto">
+			<sl-badge>3</sl-badge>
+		</div>
+	</div>
+}
+
+func ChatMessage(props ...ChatMessageOption) templ.Component {
+	p := defaultChatMessageProps()
+	for _, o := range props {
+		o(&p)
+	}
+	if p.IsIncoming {
+		return incomingChatMessage(p.Message)
+	}
+	return outgoingChatMessage(p.Message)
+}
+
+type chatMessageProps struct {
+	IsIncoming bool
+	Message    string
+}
+
+type ChatMessageOption func(*chatMessageProps)
+
+func WithIncoming() chatMessageProps {
+	return chatMessageProps{
+		IsIncoming: true,
+		Message:    "Hello, how are you?",
+	}
+}
+
+func WithIncomingMessage(message string) ChatMessageOption {
+	return func(p *chatMessageProps) {
+		p.IsIncoming = true
+		p.Message = message
+	}
+}
+
+func WithOutgoingMessage(message string) ChatMessageOption {
+	return func(p *chatMessageProps) {
+		p.IsIncoming = false
+		p.Message = message
+	}
+}
+
+func defaultChatMessageProps() chatMessageProps {
+	return chatMessageProps{
+		IsIncoming: false,
+		Message:    "Hello, how are you?",
+	}
+}
+
+templ incomingChatMessage(message string) {
+	<div class="grid grid-cols-5 p-3">
+		<div class="col-span-3">
+			<div class="flex flex-row justify-start w-full">
+				<div class="p-2 rounded-xl rounded-br-xs bg-stone-500 w-fit">
+					<p class="text-stone-50/90">{ message }</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ outgoingChatMessage(message string) {
+	<div class="grid grid-cols-5 p-3">
+		<div class="col-start-3 col-span-3">
+			<div class="flex flex-row justify-end w-full">
+				<div class="p-2 rounded-xl rounded-br-xs bg-sky-500 w-fit">
+					<p class="text-stone-50/90">{ message }</p>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+templ ChatTimestamp() {
+	<div class="grid grid-cols-5 p-3">
+		<div class="col-start-3 col-span-1">
+			<sl-format-date class="text-stone-50/70 text-sm text-center" month="short" day="numeric" year="numeric" hour="numeric" minute="numeric"></sl-format-date>
+			<br/>
+		</div>
+	</div>
+}
+
+templ ChatFooter() {
+	<div class="py-2 flex-shrink">
+		<div class="h-[64px] flex flex-row border-t-[0.5px] border-stone-300 dark:border-stone-600 px-4 justify-between items-center py-3 w-full gap-x-1">
+			<sl-input placeholder="Type a message" size="medium" class="w-full">
+				<sl-icon slot="prefix" name="paperclip"></sl-icon>
+			</sl-input>
+			<sl-icon-button name="send" label="Send" style="font-size: 1.25rem;"></sl-icon-button>
+		</div>
+	</div>
+}

@@ -1,0 +1,24 @@
+package dash
+
+import (
+	"github.com/sonrhq/sonr/internal/components/base"
+	// "github.com/sonrhq/sonr/x/service"
+	"github.com/labstack/echo/v4"
+)
+
+templ Sidebar(c echo.Context) {
+	@base.Sidebar() {
+		@base.SidebarGroup() {
+			@base.SidebarItem("Home", "speedometer", "/home", c.Request().URL.Path == "/home")
+			@base.SidebarItem("Chat", "chat", "/chat", c.Request().URL.Path == "/chat")
+			@base.SidebarItem("Wallet", "wallet2", "/wallet", c.Request().URL.Path == "/wallet")
+		}
+		@base.SidebarGroup() {
+			@base.SidebarItem("Status", "activity", "/status", c.Request().URL.Path == "/status")
+			@base.SidebarItem("Governance", "box", "/governance", c.Request().URL.Path == "/governance")
+		}
+		@base.SidebarGroup() {
+			@base.SidebarItem("Developer", "code-slash", "/console", c.Request().URL.Path == "/console")
+		}
+	}
+}

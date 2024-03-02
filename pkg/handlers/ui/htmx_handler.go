@@ -3,8 +3,11 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	templates "github.com/sonrhq/sonr/pkg/components/pages"
-	"github.com/sonrhq/sonr/pkg/components/views/dash/chats"
+	"github.com/sonrhq/sonr/internal/components/views/auth/login"
+	"github.com/sonrhq/sonr/internal/components/views/auth/register"
+	"github.com/sonrhq/sonr/internal/components/views/dash"
+	"github.com/sonrhq/sonr/internal/components/views/landing/home"
+	"github.com/sonrhq/sonr/internal/components/views/utility"
 	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
@@ -14,17 +17,17 @@ type pages struct{}
 
 func (p pages) Index(c echo.Context) error {
 	if common.JWT(c).HasController() {
-		return common.Render(c, chats.IndexView(c))
+		return common.Render(c, dash.IndexView())
 	}
 	if common.Cookies(c).HasHandle() {
-		return common.Render(c, templates.Login(c))
+		return common.Render(c, login.IndexView())
 	}
 	if common.Requests(c).PathIs("/register") {
-		return common.Render(c, templates.Register(c))
+		return common.Render(c, register.IndexView())
 	}
-	return common.Render(c, templates.Landing(c))
+	return common.Render(c, home.Page(c))
 }
 
 func (p pages) Error(c echo.Context) error {
-	return common.Render(c, templates.Error(c))
+	return common.Render(c, utility.ErrorNotFound(c))
 }
