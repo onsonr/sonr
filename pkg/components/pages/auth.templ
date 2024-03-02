@@ -1,15 +1,16 @@
 package pages
 
 import (
-	"github.com/sonrhq/sonr/pkg/components/views"
+	login "github.com/sonrhq/sonr/pkg/components/views/auth/login"
+	register "github.com/sonrhq/sonr/pkg/components/views/auth/register"
 	// "github.com/sonrhq/sonr/x/service"
 	"github.com/labstack/echo/v4"
 )
 
 templ Login(ctx echo.Context) {
-	@views.LoginExistingView()
+	@login.IndexView()
 }
 
 templ Register(ctx echo.Context) {
-	@views.RegisterWelcomeView()
+	@register.IndexView()
 }

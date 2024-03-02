@@ -1,12 +1,12 @@
-package pages
-
+package dash
 import (
 	blocks "github.com/sonrhq/sonr/pkg/components"
 	// "github.com/sonrhq/sonr/x/service"
 	"github.com/labstack/echo/v4"
 )
 
-templ sidebar(c echo.Context) {
+
+templ Sidebar(c echo.Context) {
 	@blocks.Sidebar() {
 		@blocks.SidebarGroup() {
 			@blocks.SidebarItem("Home", "speedometer", "/home", c.Request().URL.Path == "/home")
@@ -20,11 +20,5 @@ templ sidebar(c echo.Context) {
 		@blocks.SidebarGroup() {
 			@blocks.SidebarItem("Developer", "code-slash", "/console", c.Request().URL.Path == "/console")
 		}
-	}
-}
-
-templ Console(c echo.Context) {
-	@blocks.SidebarLayout(sidebar(c)) {
-		<div class="w-full h-full bg-stone-700"></div>
 	}
 }

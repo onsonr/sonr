@@ -11,7 +11,8 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/pkg/components/views"
+	login "github.com/sonrhq/sonr/pkg/components/views/auth/login"
+	register "github.com/sonrhq/sonr/pkg/components/views/auth/register"
 	// "github.com/sonrhq/sonr/x/service"
 	"github.com/labstack/echo/v4"
 )
@@ -29,7 +30,7 @@ func Login(ctx echo.Context) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = views.LoginExistingView().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = login.IndexView().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -53,7 +54,7 @@ func Register(ctx echo.Context) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = views.RegisterWelcomeView().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = register.IndexView().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

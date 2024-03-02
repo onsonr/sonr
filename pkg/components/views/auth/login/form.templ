@@ -1,0 +1,24 @@
+package login
+
+templ RecoveryView() {
+	<div class="w-full h-screen bg-stone-50 dark:bg-stone-950 flex flex-col overflow-clip"></div>
+}
+
+script GetCredential(rpName, rpId, challenge string) {
+	const publicKeyCredentialRequestOptions = {
+		challenge: Uint8Array.from(challenge, c => c.charCodeAt(0)),
+		allowCredentials: [{
+			id: Uint8Array.from(
+				credentialId, c => c.charCodeAt(0)),
+			type: 'public-key',
+			transports: ['usb', 'ble', 'nfc'],
+		}],
+		timeout: 60000,
+	}
+
+	const assertion = navigator.credentials.get({
+		publicKey: publicKeyCredentialRequestOptions
+	}).then((credential) => {
+		console.log(credential);
+	});
+}

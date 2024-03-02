@@ -12,10 +12,10 @@ import "bytes"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/pkg/components/views/utility"
+	"github.com/sonrhq/sonr/pkg/components/views/landing"
 )
 
-func Error(c echo.Context) templ.Component {
+func Landing(c echo.Context) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -28,7 +28,7 @@ func Error(c echo.Context) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = utility.ErrorNotFound(c).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = landing.Homepage(c).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

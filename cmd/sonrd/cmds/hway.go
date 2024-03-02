@@ -45,8 +45,7 @@ func serveHighway(c *cobra.Command, _ []string) {
 	// Register the routes
 	routes.RegisterCosmosAPI(e)
 	routes.RegisterSonrAPI(e)
-	routes.RegisterPages(e, cnfg.Assets)
-	routes.RegisterModals(e)
+	routes.RegisterUI(e)
 
 	// Serve the router
 	cnfg.PrintBanner()

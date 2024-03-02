@@ -47,6 +47,15 @@ func UseHyperView(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+// Partial renders a templ.Component
+func Partial(cmp templ.Component) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		c.Response().Writer.WriteHeader(http.StatusOK)
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
+		return cmp.Render(c.Request().Context(), c.Response())
+	}
+}
+
 // Render renders a templ.Component
 func Render(c echo.Context, cmp templ.Component) error {
 	c.Response().Writer.WriteHeader(http.StatusOK)

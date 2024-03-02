@@ -1,0 +1,10 @@
+package wallets
+
+import (
+	dash "github.com/sonrhq/sonr/pkg/components/views/dash"
+)
+templ DashboardView() {
+	@blocks.SidebarLayout(dash.Sidebar(c)) {
+		<div class="w-full h-full bg-stone-400"></div>
+	}
+}
