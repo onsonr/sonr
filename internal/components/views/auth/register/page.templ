@@ -2,9 +2,10 @@ package register
 
 import (
 	"github.com/sonrhq/sonr/internal/components/base"
+	"github.com/labstack/echo/v4"
 )
 
-templ IndexView() {
+templ PageView(c echo.Context) {
 	@base.CardLayout(base.Medium) {
 		<div class="flex flex-col w-full justify-center items-center space-y-2 gap-1 mx-auto text-center max-w-lg">
 			<div class="w-28 h-28 rounded-full bg-gradient-to-t from-teal-500 via-cyan-600 to-blue-700 border-2 border-stone-400/90 mt-3"></div>

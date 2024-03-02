@@ -2,9 +2,10 @@ package login
 
 import (
 	"github.com/sonrhq/sonr/internal/components/base"
+	"github.com/labstack/echo/v4"
 )
 
-templ IndexView() {
+templ PageView(c echo.Context) {
 	@base.CardLayout(base.Large) {
 		@loginHeader()
 		<sl-divider class="bg-stone-500" style="--spacing: 1rem;"></sl-divider>

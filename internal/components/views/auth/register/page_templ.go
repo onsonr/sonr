@@ -11,10 +11,11 @@ import "io"
 import "bytes"
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/sonrhq/sonr/internal/components/base"
 )
 
-func IndexView() templ.Component {
+func PageView(c echo.Context) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

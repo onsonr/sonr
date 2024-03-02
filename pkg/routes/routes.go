@@ -58,5 +58,10 @@ func RegisterSonrAPI(e *echo.Echo) {
 
 // RegisterUI registers the page routes for HTMX
 func RegisterUI(e *echo.Echo) {
-	e.GET("*", handlers.Pages.Index, common.UseHTMX)
+	e.GET("/", handlers.Pages.Home, common.UseHTMX)
+	e.GET("/login", handlers.Pages.Login, common.UseHTMX)
+	e.GET("/register", handlers.Pages.Register, common.UseHTMX)
+	e.GET("/chats", handlers.Pages.Chats, common.UseHTMX)
+	e.GET("/changelog", handlers.Pages.Changelog, common.UseHTMX)
+	e.GET("*", handlers.Pages.Root, common.UseHTMX)
 }
