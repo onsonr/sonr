@@ -62,7 +62,6 @@ require (
 	github.com/segmentio/ksuid v1.0.4
 	github.com/swaggo/swag v1.16.3
 	github.com/tink-crypto/tink-go/v2 v2.1.0
-	golang.org/x/mobile v0.0.0-20240112133503-c713f31d574b
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	lukechampine.com/blake3 v1.2.1
 	maunium.net/go/mautrix v0.17.0
