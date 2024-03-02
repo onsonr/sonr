@@ -6,8 +6,11 @@ import (
 	"github.com/sonrhq/sonr/internal/components/views/auth/login"
 	"github.com/sonrhq/sonr/internal/components/views/auth/register"
 	"github.com/sonrhq/sonr/internal/components/views/dash/chats"
+	"github.com/sonrhq/sonr/internal/components/views/landing/about"
 	"github.com/sonrhq/sonr/internal/components/views/landing/changelog"
+	"github.com/sonrhq/sonr/internal/components/views/landing/ecosystem"
 	"github.com/sonrhq/sonr/internal/components/views/landing/home"
+	"github.com/sonrhq/sonr/internal/components/views/landing/research"
 	"github.com/sonrhq/sonr/internal/components/views/utility"
 	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
@@ -51,4 +54,20 @@ func (p pages) Changelog(c echo.Context) error {
 
 func (p pages) Error(c echo.Context) error {
 	return common.Render(c, utility.ErrorNotFound(c))
+}
+
+func (p pages) NotFound(c echo.Context) error {
+	return common.Render(c, utility.ErrorNotFound(c))
+}
+
+func (p pages) Ecosystem(c echo.Context) error {
+	return common.Render(c, ecosystem.Page(c))
+}
+
+func (p pages) About(c echo.Context) error {
+	return common.Render(c, about.Page(c))
+}
+
+func (p pages) Research(c echo.Context) error {
+	return common.Render(c, research.Page(c))
 }
