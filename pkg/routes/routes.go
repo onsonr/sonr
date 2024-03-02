@@ -4,6 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 
 	api "github.com/sonrhq/sonr/pkg/handlers/api"
+	handlers "github.com/sonrhq/sonr/pkg/handlers/ui"
+	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 // RegisterCosmosAPI registers the Cosmos API routes
@@ -52,4 +54,9 @@ func RegisterSonrAPI(e *echo.Echo) {
 	e.GET("/tx/block/:height", api.TxAPI.GetBlockWithTxs)
 	e.POST("/tx/broadcast", api.TxAPI.BroadcastTx)
 	e.POST("/tx/simulate", api.TxAPI.SimulateTx)
+}
+
+// RegisterUI registers the page routes for HTMX
+func RegisterUI(e *echo.Echo) {
+	e.GET("*", handlers.Pages.Index, common.UseHTMX)
 }
