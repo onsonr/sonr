@@ -61,7 +61,7 @@ func PageLayout() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\" class=\"scroll-smooth\"><head><meta charset=\"utf-8\"><title>Sonr HTML Demo - Home</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link href=\"https://cdn.sonr.build/css/vendors/aos.css\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"https://cdn.sonr.build/css/vendors/swiper-bundle.min.css\"><link href=\"https://cdn.sonr.build/style.css\" rel=\"stylesheet\"></head><body class=\"font-inter antialiased bg-slate-900 text-slate-100 tracking-tight\"><!-- Page wrapper --><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\" class=\"scroll-smooth\"><head><meta charset=\"utf-8\"><title>Sonr - The Blockchain Identity Platform</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link href=\"https://cdn.sonr.build/css/vendors/aos.css\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"https://cdn.sonr.build/css/vendors/swiper-bundle.min.css\"><link href=\"https://cdn.sonr.build/style.css\" rel=\"stylesheet\"></head><body class=\"font-inter antialiased bg-slate-900 text-slate-100 tracking-tight\"><!-- Page wrapper --><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
