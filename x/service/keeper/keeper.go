@@ -7,7 +7,6 @@ import (
 	"cosmossdk.io/core/address"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/orm/model/ormdb"
-	"cosmossdk.io/orm/model/ormtable"
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
@@ -30,10 +29,9 @@ type Keeper struct {
 	groupKeeper    service.GroupKeeper
 
 	// state management
-	ormtable.Schema
 	CollSchema collections.Schema
 	Params     collections.Item[service.Params]
-	Counter    collections.Map[string, uint64]
+	Records    collections.Map[string, service.Record]
 }
 
 // NewKeeper creates a new Keeper instance
@@ -60,7 +58,6 @@ func NewKeeper(cdc codec.BinaryCodec, addressCodec address.Codec, storeService s
 		addressCodec:   addressCodec,
 		authority:      authority,
 		Params:         collections.NewItem(sb, service.ParamsKey, "params", codec.CollValue[service.Params](cdc)),
-		Counter:        collections.NewMap(sb, service.CounterKey, "counter", collections.StringKey, collections.Uint64Value),
 		db:             store,
 		identityKeeper: identityKeeper,
 		bankKeeper:     bankKeeper,

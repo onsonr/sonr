@@ -17,7 +17,7 @@ tasks:
       - brew install tinygo
 
   default:
-    cmd: air -c ./networks/local/air.toml
+    cmd: air -c ./assets/networks/local/air.toml
 
   cosmscan:
     desc: "Run the CosmScan indexer with Wrangler"
@@ -26,7 +26,6 @@ tasks:
 
   highway:
     desc: "Run the Highway worker with Wrangler"
-    dir: _workers/faucet-testnet
     cmd: earthly +dev
 
   faucet:

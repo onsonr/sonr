@@ -35,3 +35,35 @@ func (qs queryServer) Params(ctx context.Context, req *service.QueryParamsReques
 
 	return &service.QueryParamsResponse{Params: params}, nil
 }
+
+// ServiceRecord defines the handler for the Query/ServiceRecord RPC method.
+func (qs queryServer) ServiceRecord(ctx context.Context, req *service.QueryServiceRecordRequest) (*service.QueryServiceRecordResponse, error) {
+	record, err := qs.k.Records.Get(ctx, req.Origin)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	srv := service.Record{
+		Origin:      record.Origin,
+		Name:        record.Name,
+		Description: record.Description,
+		Authority:   record.Authority,
+	}
+	return &service.QueryServiceRecordResponse{ServiceRecord: srv}, nil
+}
+
+// WebauthnCredential defines the handler for the Query/WebauthnCredential RPC method.
+func (qs queryServer) WebauthnCredential(ctx context.Context, req *service.QueryWebauthnCredentialRequest) (*service.QueryWebauthnCredentialResponse, error) {
+	cred, err := qs.k.db.CredentialTable().GetByOriginHandle(ctx, req.Origin, req.Handle)
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+	crd := service.WebauthnCredential{
+		Origin:        cred.Origin,
+		Handle:        cred.Handle,
+		Transports:    cred.Transport,
+		AssertionType: cred.AttestationType,
+		Id:            cred.Id,
+		Authority:     cred.Authority,
+	}
+	return &service.QueryWebauthnCredentialResponse{WebauthnCredential: []service.WebauthnCredential{crd}}, nil
+}

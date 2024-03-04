@@ -2,12 +2,11 @@ version: "3"
 services:
   # Sonr Validator
   sonrd:
-    init: true
     container_name: sonrd
     image: sonrd:latest
-    entrypoint: ["sh", "entrypoint.sh"]
+    entrypoint: ["sonrd", "start", "--log_level", "error"]
     volumes:
-      - $HOME/.sonr:/root/.sonr
+      - ./data/.sonr:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -17,9 +16,10 @@ services:
 
   # Sonr Validator
   highway:
-    init: true
     image: sonrd:latest
     entrypoint: ["sonrd", "hway"]
+    volumes:
+      - ./data/.sonr:/root/.sonr
     ports:
       - 8000:8000 # api/htmx
     networks:
@@ -29,6 +29,8 @@ services:
   ipfs:
     image: ipfs/kubo:latest
     command: ["daemon"]
+    volumes:
+      - ./data/.ipfs:/.ipfs
     ports:
       - 4001:4001 # swarm
       - 5001:5001 # api

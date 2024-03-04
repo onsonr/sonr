@@ -1,4 +1,0 @@
-name = "Pkl: Configure your Systems in New Ways"
-attendants = 100
-isInteractive = true
-amountLearned = 13.37

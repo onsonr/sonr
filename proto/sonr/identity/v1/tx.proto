@@ -14,24 +14,42 @@ service Msg {
   option (cosmos.msg.v1.service) = true;
 
   // IncrementCounter increments the counter.
-  rpc IncrementCounter(MsgIncrementCounter)
-      returns (MsgIncrementCounterResponse);
+  rpc InitializeIdentity(MsgInitializeIdentity)
+      returns (MsgInitializeIdentityResponse);
 
   // UpdateParams updates the module parameters.
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
-// MsgIncrementCounter defines the Msg/IncrementCounter request type.
-message MsgIncrementCounter {
+// MsgInitializeIdentity defines the Msg/IncrementCounter request type.
+message MsgInitializeIdentity {
   option (cosmos.msg.v1.signer) = "sender";
-  option (amino.name) = "sonrhq/identity/MsgIncrementCounter";
+  option (amino.name) = "sonrhq/identity/MsgInitializeIdentity";
 
   // sender is the message sender.
   string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // peer_id is the peer id of the identity.
+  string peer_id = 2;
+
+  // address is the address of the identity.
+  string address = 3;
+
+  // public_key is the public key of the identity.
+  bytes public_key = 4;
+
+  // ipns is the ipns of the identity.
+  string ipns = 5;
+
+  // accumulator_key is the accumulator key of the identity.
+  bytes accumulator_key = 6;
+
+  // network is the network of the identity.
+  string network = 7;
 }
 
-// MsgIncrementCounterResponse defines the Msg/IncrementCounter response type.
-message MsgIncrementCounterResponse {}
+// MsgInitializeIdentityResponse defines the Msg/InitializeIdentity response type.
+message MsgInitializeIdentityResponse {}
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
 message MsgUpdateParams {

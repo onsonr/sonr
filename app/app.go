@@ -39,7 +39,6 @@ import (
 	_ "github.com/cosmos/cosmos-sdk/x/staking"      // import for side-effects
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
-	"github.com/sonrhq/sonr/pkg/highway"
 	identitykeeper "github.com/sonrhq/sonr/x/identity/keeper"
 	_ "github.com/sonrhq/sonr/x/identity/module" // import for side-effects
 	servicekeeper "github.com/sonrhq/sonr/x/service/keeper"
@@ -141,7 +140,6 @@ func NewSonrApp(
 	); err != nil {
 		return nil, err
 	}
-	go highway.Start()
 	app.App = appBuilder.Build(db, traceStore, baseAppOptions...)
 
 	// register streaming services

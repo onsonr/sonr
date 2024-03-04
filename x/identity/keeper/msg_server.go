@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"cosmossdk.io/collections"
+
 	"github.com/sonrhq/sonr/x/identity"
 )
 
@@ -22,7 +23,7 @@ func NewMsgServerImpl(keeper Keeper) identity.MsgServer {
 }
 
 // IncrementCounter defines the handler for the MsgIncrementCounter message.
-func (ms msgServer) IncrementCounter(ctx context.Context, msg *identity.MsgIncrementCounter) (*identity.MsgIncrementCounterResponse, error) {
+func (ms msgServer) InitializeIdentity(ctx context.Context, msg *identity.MsgInitializeIdentity) (*identity.MsgInitializeIdentityResponse, error) {
 	if _, err := ms.k.addressCodec.StringToBytes(msg.Sender); err != nil {
 		return nil, fmt.Errorf("invalid sender address: %w", err)
 	}
@@ -38,7 +39,7 @@ func (ms msgServer) IncrementCounter(ctx context.Context, msg *identity.MsgIncre
 		return nil, err
 	}
 
-	return &identity.MsgIncrementCounterResponse{}, nil
+	return &identity.MsgInitializeIdentityResponse{}, nil
 }
 
 // UpdateParams params is defining the handler for the MsgUpdateParams message.

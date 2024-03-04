@@ -75,51 +75,13 @@ func (ParamsType) EnumDescriptor() ([]byte, []int) {
 	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{0}
 }
 
-// Params defines the parameters of the module.
-type Params struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-}
-
-func (x *Params) Reset() {
-	*x = Params{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_v1_types_proto_msgTypes[0]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Params) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Params) ProtoMessage() {}
-
-func (x *Params) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_v1_types_proto_msgTypes[0]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use Params.ProtoReflect.Descriptor instead.
-func (*Params) Descriptor() ([]byte, []int) {
-	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{0}
-}
-
 // GenesisState is the state that must be provided at genesis.
 type GenesisState struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
+	Records []*Record `protobuf:"bytes,1,rep,name=records,proto3" json:"records,omitempty"`
 	// params defines all the parameters of the module.
 	Params *Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params,omitempty"`
 }
@@ -127,7 +89,7 @@ type GenesisState struct {
 func (x *GenesisState) Reset() {
 	*x = GenesisState{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_sonr_service_v1_types_proto_msgTypes[1]
+		mi := &file_sonr_service_v1_types_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -140,7 +102,7 @@ func (x *GenesisState) String() string {
 func (*GenesisState) ProtoMessage() {}
 
 func (x *GenesisState) ProtoReflect() protoreflect.Message {
-	mi := &file_sonr_service_v1_types_proto_msgTypes[1]
+	mi := &file_sonr_service_v1_types_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -153,7 +115,14 @@ func (x *GenesisState) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GenesisState.ProtoReflect.Descriptor instead.
 func (*GenesisState) Descriptor() ([]byte, []int) {
-	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{1}
+	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *GenesisState) GetRecords() []*Record {
+	if x != nil {
+		return x.Records
+	}
+	return nil
 }
 
 func (x *GenesisState) GetParams() *Params {
@@ -161,6 +130,224 @@ func (x *GenesisState) GetParams() *Params {
 		return x.Params
 	}
 	return nil
+}
+
+// Params defines the parameters of the module.
+type Params struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *Params) Reset() {
+	*x = Params{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_v1_types_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Params) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Params) ProtoMessage() {}
+
+func (x *Params) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_v1_types_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Params.ProtoReflect.Descriptor instead.
+func (*Params) Descriptor() ([]byte, []int) {
+	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{1}
+}
+
+// Record is the representation of a sonr enabled service
+type Record struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Name is the name of the service
+	Name string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	// Description is the description of the service
+	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	// Authority is the address of the owner of the service
+	Authority string `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
+	// Permissions is the uint32 representation of the permissions of the service
+	Permissions uint32 `protobuf:"varint,4,opt,name=permissions,proto3" json:"permissions,omitempty"`
+	// Origin is the DNS resolvable address of the service
+	Origin string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin,omitempty"`
+}
+
+func (x *Record) Reset() {
+	*x = Record{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_v1_types_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Record) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Record) ProtoMessage() {}
+
+func (x *Record) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_v1_types_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Record.ProtoReflect.Descriptor instead.
+func (*Record) Descriptor() ([]byte, []int) {
+	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Record) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *Record) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Record) GetAuthority() string {
+	if x != nil {
+		return x.Authority
+	}
+	return ""
+}
+
+func (x *Record) GetPermissions() uint32 {
+	if x != nil {
+		return x.Permissions
+	}
+	return 0
+}
+
+func (x *Record) GetOrigin() string {
+	if x != nil {
+		return x.Origin
+	}
+	return ""
+}
+
+// WebauthnCredential is the representation of a webauthn credential in the format of a CredentialDescriptor
+type WebauthnCredential struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// Assertion Type is the type of the credential
+	AssertionType string `protobuf:"bytes,1,opt,name=assertion_type,json=assertionType,proto3" json:"assertion_type,omitempty"`
+	// Id is the id of the credential
+	Id []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// handle is the handle of the credential
+	Handle string `protobuf:"bytes,3,opt,name=handle,proto3" json:"handle,omitempty"`
+	// transports is the list of transports supported by the credential
+	Transports []string `protobuf:"bytes,4,rep,name=transports,proto3" json:"transports,omitempty"`
+	// origin is the origin of the credential
+	Origin string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin,omitempty"`
+	// Authority is the address of the owner of the credential
+	Authority string `protobuf:"bytes,6,opt,name=authority,proto3" json:"authority,omitempty"`
+}
+
+func (x *WebauthnCredential) Reset() {
+	*x = WebauthnCredential{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_sonr_service_v1_types_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *WebauthnCredential) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WebauthnCredential) ProtoMessage() {}
+
+func (x *WebauthnCredential) ProtoReflect() protoreflect.Message {
+	mi := &file_sonr_service_v1_types_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WebauthnCredential.ProtoReflect.Descriptor instead.
+func (*WebauthnCredential) Descriptor() ([]byte, []int) {
+	return file_sonr_service_v1_types_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *WebauthnCredential) GetAssertionType() string {
+	if x != nil {
+		return x.AssertionType
+	}
+	return ""
+}
+
+func (x *WebauthnCredential) GetId() []byte {
+	if x != nil {
+		return x.Id
+	}
+	return nil
+}
+
+func (x *WebauthnCredential) GetHandle() string {
+	if x != nil {
+		return x.Handle
+	}
+	return ""
+}
+
+func (x *WebauthnCredential) GetTransports() []string {
+	if x != nil {
+		return x.Transports
+	}
+	return nil
+}
+
+func (x *WebauthnCredential) GetOrigin() string {
+	if x != nil {
+		return x.Origin
+	}
+	return ""
+}
+
+func (x *WebauthnCredential) GetAuthority() string {
+	if x != nil {
+		return x.Authority
+	}
+	return ""
 }
 
 var File_sonr_service_v1_types_proto protoreflect.FileDescriptor
@@ -171,14 +358,41 @@ var file_sonr_service_v1_types_proto_rawDesc = []byte{
 	0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x1a, 0x11,
 	0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2f, 0x61, 0x6d, 0x69, 0x6e, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
 	0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67,
-	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x24, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d,
-	0x73, 0x3a, 0x1a, 0x8a, 0xe7, 0xb0, 0x2a, 0x15, 0x73, 0x6f, 0x6e, 0x72, 0x68, 0x71, 0x2f, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x4a, 0x0a,
-	0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3a, 0x0a,
-	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e,
-	0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a,
-	0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x2a, 0x61, 0x0a, 0x0a, 0x50, 0x61, 0x72,
+	0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x88, 0x01, 0x0a, 0x0c, 0x47, 0x65, 0x6e, 0x65,
+	0x73, 0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x3c, 0x0a, 0x07, 0x72, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x73, 0x6f, 0x6e, 0x72,
+	0x2e, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x63, 0x6f,
+	0x72, 0x64, 0x42, 0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x07, 0x72,
+	0x65, 0x63, 0x6f, 0x72, 0x64, 0x73, 0x12, 0x3a, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x17, 0x2e, 0x73, 0x6f, 0x6e, 0x72, 0x2e, 0x73, 0x65,
+	0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42,
+	0x09, 0xc8, 0xde, 0x1f, 0x00, 0xa8, 0xe7, 0xb0, 0x2a, 0x01, 0x52, 0x06, 0x70, 0x61, 0x72, 0x61,
+	0x6d, 0x73, 0x22, 0x24, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x3a, 0x1a, 0x8a, 0xe7,
+	0xb0, 0x2a, 0x15, 0x73, 0x6f, 0x6e, 0x72, 0x68, 0x71, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x2f, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0xb2, 0x01, 0x0a, 0x06, 0x52, 0x65, 0x63,
+	0x6f, 0x72, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72,
+	0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65,
+	0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x75, 0x74,
+	0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x20, 0x0a, 0x0b, 0x70, 0x65, 0x72, 0x6d, 0x69,
+	0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x0b, 0x70, 0x65,
+	0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69,
+	0x6e, 0x3a, 0x1a, 0x8a, 0xe7, 0xb0, 0x2a, 0x15, 0x73, 0x6f, 0x6e, 0x72, 0x68, 0x71, 0x2f, 0x73,
+	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x22, 0xb9, 0x01,
+	0x0a, 0x12, 0x57, 0x65, 0x62, 0x61, 0x75, 0x74, 0x68, 0x6e, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x12, 0x25, 0x0a, 0x0e, 0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x61, 0x73,
+	0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x68,
+	0x61, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x68, 0x61, 0x6e,
+	0x64, 0x6c, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74,
+	0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x74, 0x72, 0x61, 0x6e, 0x73, 0x70, 0x6f,
+	0x72, 0x74, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x05, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x1c, 0x0a, 0x09, 0x61,
+	0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x2a, 0x61, 0x0a, 0x0a, 0x50, 0x61, 0x72,
 	0x61, 0x6d, 0x73, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1b, 0x0a, 0x17, 0x50, 0x41, 0x52, 0x41, 0x4d,
 	0x53, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55, 0x4e, 0x53, 0x50, 0x45, 0x43, 0x49, 0x46, 0x49,
 	0x45, 0x44, 0x10, 0x00, 0x12, 0x1b, 0x0a, 0x17, 0x50, 0x41, 0x52, 0x41, 0x4d, 0x53, 0x5f, 0x54,
@@ -213,19 +427,22 @@ func file_sonr_service_v1_types_proto_rawDescGZIP() []byte {
 }
 
 var file_sonr_service_v1_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_sonr_service_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_sonr_service_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
 var file_sonr_service_v1_types_proto_goTypes = []interface{}{
-	(ParamsType)(0),      // 0: sonr.service.v1.ParamsType
-	(*Params)(nil),       // 1: sonr.service.v1.Params
-	(*GenesisState)(nil), // 2: sonr.service.v1.GenesisState
+	(ParamsType)(0),            // 0: sonr.service.v1.ParamsType
+	(*GenesisState)(nil),       // 1: sonr.service.v1.GenesisState
+	(*Params)(nil),             // 2: sonr.service.v1.Params
+	(*Record)(nil),             // 3: sonr.service.v1.Record
+	(*WebauthnCredential)(nil), // 4: sonr.service.v1.WebauthnCredential
 }
 var file_sonr_service_v1_types_proto_depIdxs = []int32{
-	1, // 0: sonr.service.v1.GenesisState.params:type_name -> sonr.service.v1.Params
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	3, // 0: sonr.service.v1.GenesisState.records:type_name -> sonr.service.v1.Record
+	2, // 1: sonr.service.v1.GenesisState.params:type_name -> sonr.service.v1.Params
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_sonr_service_v1_types_proto_init() }
@@ -235,7 +452,7 @@ func file_sonr_service_v1_types_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_sonr_service_v1_types_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Params); i {
+			switch v := v.(*GenesisState); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -247,7 +464,31 @@ func file_sonr_service_v1_types_proto_init() {
 			}
 		}
 		file_sonr_service_v1_types_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GenesisState); i {
+			switch v := v.(*Params); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_v1_types_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Record); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_sonr_service_v1_types_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*WebauthnCredential); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -265,7 +506,7 @@ func file_sonr_service_v1_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_sonr_service_v1_types_proto_rawDesc,
 			NumEnums:      1,
-			NumMessages:   2,
+			NumMessages:   4,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

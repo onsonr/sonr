@@ -70,15 +70,11 @@ release:
     owner: sonrhq
     name: sonr
 
-  footer:
-    from_file:
-      path: ./.github/assets/release-footer.md
-
   name_template: '🆔 Release {{ .Now.Format "2006.01.02" }}'
   mode: replace
   draft: false
   extra_files:
-    - glob: .github/assets/install.sh
+    - glob: ./assets/public/scripts/install.sh
 
 changelog:
   sort: asc

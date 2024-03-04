@@ -6,7 +6,7 @@ tasks:
       - task: proto-orm-svx
       - task: proto-orm-idx
       - task: proto-gogo
-      - rm -rf sonrhq
+      - rm -rf sonr
       - cp -R -v ./github.com/sonrhq/sonr/x/* ./x
       - rm -rf github.com
       - go mod tidy

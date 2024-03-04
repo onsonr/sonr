@@ -1,9 +1,0 @@
-
-[phases.setup]
-nixPkgs = ['go', 'earthly', 'go-task']
-
-[phases.build]
-cmds = ['yarn run server:build']
-
-[start]
-cmd = 'yarn run server:start'

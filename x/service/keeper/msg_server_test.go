@@ -6,7 +6,6 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -69,10 +68,9 @@ func TestCreateRecord(t *testing.T) {
 		{
 			name: "create with empty owner",
 			request: &service.MsgCreateRecord{
-				Authority:   "",
-				Name:        "test record",
-				Origin:      "test origin",
-				Permissions: int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE),
+				Authority: "",
+				Name:      "test record",
+				Origin:    "test origin",
 			},
 			expectErrMsg: "owner cannot be empty",
 		},
@@ -104,11 +102,10 @@ func TestUpdateRecord(t *testing.T) {
 		{
 			name: "update non-existent record",
 			request: &service.MsgUpdateRecord{
-				RecordId:    0,
-				Authority:   f.addrs[0].String(),
-				Name:        "updated name",
-				Origin:      "updated origin",
-				Permissions: int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE),
+				RecordId:  0,
+				Authority: f.addrs[0].String(),
+				Name:      "updated name",
+				Origin:    "updated origin",
 			},
 			expectErrMsg: "not found",
 		},
@@ -140,7 +137,7 @@ func TestDeleteRecord(t *testing.T) {
 		{
 			name: "delete non-existent record",
 			request: &service.MsgDeleteRecord{
-				RecordId: 0,
+				Origin: "0",
 			},
 			expectErrMsg: "not found",
 		},

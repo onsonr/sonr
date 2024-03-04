@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/sonr.service.v1.Query/Params"
+	Query_Params_FullMethodName             = "/sonr.service.v1.Query/Params"
+	Query_ServiceRecord_FullMethodName      = "/sonr.service.v1.Query/ServiceRecord"
+	Query_WebauthnCredential_FullMethodName = "/sonr.service.v1.Query/WebauthnCredential"
 )
 
 // QueryClient is the client API for Query service.
@@ -28,6 +30,10 @@ const (
 type QueryClient interface {
 	// Params returns the module parameters.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// ServiceRecord returns the service record for a given origin.
+	ServiceRecord(ctx context.Context, in *QueryServiceRecordRequest, opts ...grpc.CallOption) (*QueryServiceRecordResponse, error)
+	// WebauthnCredential returns the webauthn credential for a given origin.
+	WebauthnCredential(ctx context.Context, in *QueryWebauthnCredentialRequest, opts ...grpc.CallOption) (*QueryWebauthnCredentialResponse, error)
 }
 
 type queryClient struct {
@@ -47,12 +53,34 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) ServiceRecord(ctx context.Context, in *QueryServiceRecordRequest, opts ...grpc.CallOption) (*QueryServiceRecordResponse, error) {
+	out := new(QueryServiceRecordResponse)
+	err := c.cc.Invoke(ctx, Query_ServiceRecord_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) WebauthnCredential(ctx context.Context, in *QueryWebauthnCredentialRequest, opts ...grpc.CallOption) (*QueryWebauthnCredentialResponse, error) {
+	out := new(QueryWebauthnCredentialResponse)
+	err := c.cc.Invoke(ctx, Query_WebauthnCredential_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Params returns the module parameters.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// ServiceRecord returns the service record for a given origin.
+	ServiceRecord(context.Context, *QueryServiceRecordRequest) (*QueryServiceRecordResponse, error)
+	// WebauthnCredential returns the webauthn credential for a given origin.
+	WebauthnCredential(context.Context, *QueryWebauthnCredentialRequest) (*QueryWebauthnCredentialResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -62,6 +90,12 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) ServiceRecord(context.Context, *QueryServiceRecordRequest) (*QueryServiceRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ServiceRecord not implemented")
+}
+func (UnimplementedQueryServer) WebauthnCredential(context.Context, *QueryWebauthnCredentialRequest) (*QueryWebauthnCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WebauthnCredential not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -94,6 +128,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_ServiceRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryServiceRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ServiceRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ServiceRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ServiceRecord(ctx, req.(*QueryServiceRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_WebauthnCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWebauthnCredentialRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).WebauthnCredential(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_WebauthnCredential_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).WebauthnCredential(ctx, req.(*QueryWebauthnCredentialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -104,6 +174,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "ServiceRecord",
+			Handler:    _Query_ServiceRecord_Handler,
+		},
+		{
+			MethodName: "WebauthnCredential",
+			Handler:    _Query_WebauthnCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
