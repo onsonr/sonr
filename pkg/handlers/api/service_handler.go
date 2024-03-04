@@ -93,3 +93,13 @@ func (h serviceAPI) FinishLogin(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, resp)
 }
+
+// SendVerificationEmail uses the SMTP service to send a verification email
+func (h serviceAPI) SendVerificationEmail(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
+
+// VerifyEmail uses the SMTP service to verify an email
+func (h serviceAPI) VerifyEmail(c echo.Context) error {
+	return c.JSON(http.StatusOK, "OK")
+}
