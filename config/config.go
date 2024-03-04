@@ -47,14 +47,29 @@ type HighwayConfig struct {
 	// Host is the host that the gateway listens on
 	Host string `json:"host"`
 
-	// Assets is the path to the assets
-	Assets string `json:"assets"`
-
 	// PostgresConnection is the connection string for the postgres database
 	PostgresConnection string `json:"postgres_connection"`
 
 	// RedisConnection is the connection string for the redis database
 	RedisConnection string `json:"redis_connection"`
+
+	// SmtpHost is the host of the smtp server
+	SmtpHost string `json:"smtp_host"`
+
+	// SmtpPort is the port of the smtp server
+	SmtpPort int `json:"smtp_port"`
+
+	// SmtpUser is the user of the smtp server
+	SmtpUser string `json:"smtp_user"`
+
+	// SmtpPassword is the password of the smtp server
+	SmtpPassword string `json:"smtp_password"`
+
+	// SmtpFrom is the from address of the smtp server
+	SmtpFrom string `json:"smtp_from"`
+
+	// SmtpFromName is the from name of the smtp server
+	SmtpFromName string `json:"smtp_from_name"`
 }
 
 // MatrixConfig represents the nitro configuration

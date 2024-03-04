@@ -7,6 +7,11 @@ services:
     entrypoint: ["sonrd", "start", "--log_level", "error"]
     volumes:
       - ./data/.sonr:/root/.sonr
+    environment:
+      - SMTP_HOST=value
+      - SMTP_PORT=value
+      - SMTP_USER=value
+      - SMTP_PASS=value
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -20,6 +25,11 @@ services:
     entrypoint: ["sonrd", "hway"]
     volumes:
       - ./data/.sonr:/root/.sonr
+    environment:
+      - SMTP_HOST=value
+      - SMTP_PORT=value
+      - SMTP_USER=value
+      - SMTP_PASS=value
     ports:
       - 8000:8000 # api/htmx
     networks:

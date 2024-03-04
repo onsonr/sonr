@@ -2,13 +2,12 @@ package config
 
 import (
 	"fmt"
-	"path"
+	"os"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
-
-	"github.com/sonrhq/sonr/app"
 )
 
 func persistentBanner(address string) string {
@@ -40,9 +39,23 @@ func (o *HighwayConfig) Serve(e *echo.Echo) {
 // NewHway returns a new HighwayOptions
 func NewHway() *HighwayConfig {
 	return &HighwayConfig{
-		GatewayPort: 8000,
-		Host:        "0.0.0.0",
-		Assets:      path.Join(app.DefaultNodeHome, "public"),
+		GatewayPort:  8000,
+		Host:         "0.0.0.0",
+		SmtpFrom:     "foundation@sonr.id",
+		SmtpFromName: "Sonr Foundation",
+	}
+}
+
+func (o *HighwayConfig) ReadEnv() {
+	o.SmtpHost = os.Getenv("SMTP_HOST")
+	o.SmtpUser = os.Getenv("SMTP_USER")
+	o.SmtpPassword = os.Getenv("SMTP_PASS")
+	portStr := os.Getenv("SMTP_PORT")
+	if portStr != "" {
+		portInt, err := strconv.Atoi(portStr)
+		if err == nil {
+			o.SmtpPort = portInt
+		}
 	}
 }
 
@@ -70,6 +83,7 @@ func (o *HighwayConfig) ReadFlags(c *cobra.Command) error {
 		return err
 	}
 	o.RedisConnection = redis
+
 	return nil
 }
 
@@ -105,12 +119,5 @@ func WithGatewayPort(port int) HighwayOption {
 func WithHost(host string) HighwayOption {
 	return func(o *HighwayConfig) {
 		o.Host = host
-	}
-}
-
-// WithAssetsDirectory sets the Assets
-func WithAssetsDirectory(assets string) HighwayOption {
-	return func(o *HighwayConfig) {
-		o.Assets = assets
 	}
 }
