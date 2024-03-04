@@ -1,0 +1,124 @@
+package base
+
+import (
+	"strings"
+)
+
+// RootLayout is a component that renders the root layout of the application
+templ RootLayout() {
+	<html>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<script src="https://unpkg.com/alpinejs" defer></script>
+			<script src="https://cdn.tailwindcss.com"></script>
+			<script src="https://cdn.sonr.build/htmx.min.js"></script>
+			<link
+				rel="stylesheet"
+				media="(prefers-color-scheme:light)"
+				href="/css/light.css"
+			/>
+			<link
+				rel="stylesheet"
+				media="(prefers-color-scheme:dark)"
+				href="/css/dark.css"
+				onload="document.documentElement.classList.add('sl-theme-dark');"
+			/>
+			<script type="module" src="https://cdn.sonr.build/shoelace-autoloader.js"></script>
+			<script type="module" src="https://cdn.sonr.build/shoelace.js"></script>
+		</head>
+		<main class="w-full h-full flex flex-row ">
+			{ children... }
+		</main>
+	</html>
+}
+
+// PageLayout is a component that renders the root layout of the application
+templ PageLayout() {
+	<html lang="en" class="scroll-smooth">
+		<head>
+			<meta charset="utf-8"/>
+			<title>Sonr - The Blockchain Identity Platform</title>
+			<meta name="viewport" content="width=device-width,initial-scale=1"/>
+			<link href="https://cdn.sonr.build/css/vendors/aos.css" rel="stylesheet"/>
+			<link rel="stylesheet" href="https://cdn.sonr.build/css/vendors/swiper-bundle.min.css"/>
+			<link href="https://cdn.sonr.build/style.css" rel="stylesheet"/>
+		</head>
+		<body class="font-inter antialiased bg-slate-900 text-slate-100 tracking-tight">
+			<!-- Page wrapper -->
+			<div class="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
+				{ children... }
+			</div>
+			<script src="https://cdn.sonr.build/js/vendors/alpinejs.min.js" defer></script>
+			<script src="https://cdn.sonr.build/js/vendors/aos.js"></script>
+			<script src="https://cdn.sonr.build/js/vendors/swiper-bundle.min.js"></script>
+			<script src="https://cdn.sonr.build/js/main.js"></script>
+		</body>
+	</html>
+}
+
+// SidebarLayout is a component that renders a layout with a sidebar
+templ SidebarLayout(sidebar templ.Component, classnames ...string) {
+	@RootLayout() {
+		@sidebar
+		<div id="Panel" class={ strings.Join(classnames, " ") }>
+			{ children... }
+		</div>
+	}
+}
+
+// Sidebar is a component that renders a sidebar
+templ Sidebar() {
+	<div class="max-h-screen flex flex-col justify-between">
+		<div class="w-fit h-full flex-col space-y-3 py-4 justify-center align-center border-r-[0.5px] border-stone-700/80">
+			<div class="px-4 pb-2 border-b-[0.5px] border-stone-700/80 h-[48px] justify-center">
+				@PasskeyIcon()
+			</div>
+			{ children... }
+		</div>
+		@SidebarFooter() {
+			@SidebarItem("Account", "person-circle", "/account", false)
+			@SidebarItem("Settings", "gear-wide-connected", "/settings", false)
+		}
+	</div>
+}
+
+templ SidebarFooter() {
+	<div class="py-1 pt-4 border-t-[0.5px] border-stone-700/70 px-3 flex-col items-center justify-center border-r-[0.5px]">
+		{ children... }
+	</div>
+}
+
+templ SidebarGroup() {
+	<div class="border-b-[0.5px] border-stone-700/70 px-3 flex-col items-center justify-center">
+		{ children... }
+	</div>
+}
+
+templ SidebarItem(label string, icon string, href string, isActive bool) {
+	<sl-tooltip content={ label } placement="right-start">
+		<div class="p-1.5 hover:bg-stone-200 hover:dark:bg-stone-800 rounded-md">
+			if isActive {
+				<sl-icon-button
+					hx-get={ href }
+					hx-trigger="click"
+					hx-swap="innerHTML"
+					hx-target="#Panel"
+					style="color: var(--sl-color-sky-500);"
+					class="text-md hover:text-stone-800 hover:dark:text-stone-200 cursor-pointer"
+					name={ icon }
+				></sl-icon-button>
+			} else {
+				<sl-icon-button
+					hx-get={ href }
+					hx-trigger="click"
+					hx-swap="innerHTML"
+					hx-target="#Panel"
+					class="text-md hover:text-stone-800 hover:dark:text-stone-200 cursor-pointer"
+					name={ icon }
+				></sl-icon-button>
+			}
+		</div>
+		<sl-divider></sl-divider>
+	</sl-tooltip>
+}

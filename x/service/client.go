@@ -29,7 +29,7 @@ func GetCredentialsByHandle(conn *grpc.ClientConn, handle, origin string) ([]Cre
 }
 
 // GetCredentialCreationOptions returns the PublicKeyCredentialCreationOptions for the given service record and user entity.
-func GetCredentialCreationOptions(record *ServiceRecord, entity protocol.UserEntity) PublicKeyCredentialCreationOptions {
+func GetCredentialCreationOptions(record *Record, entity protocol.UserEntity) PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
 		RelyingParty: protocol.RelyingPartyEntity{
 			ID: record.Origin,
@@ -46,7 +46,7 @@ func GetCredentialCreationOptions(record *ServiceRecord, entity protocol.UserEnt
 }
 
 // GetCredentialRequestOptions returns the PublicKeyCredentialRequestOptions for the given service record and credentials.
-func GetCredentialRequestOptions(record *ServiceRecord, creds []CredentialDescriptor) PublicKeyCredentialRequestOptions {
+func GetCredentialRequestOptions(record *Record, creds []CredentialDescriptor) PublicKeyCredentialRequestOptions {
 	return protocol.PublicKeyCredentialRequestOptions{
 		Challenge:          GenerateChallenge(),
 		UserVerification:   protocol.VerificationPreferred,
@@ -56,13 +56,13 @@ func GetCredentialRequestOptions(record *ServiceRecord, creds []CredentialDescri
 }
 
 // GetRecordByOrigin returns the service record for the given origin
-func GetRecordByOrigin(conn *grpc.ClientConn, origin string) (*ServiceRecord, error) {
+func GetRecordByOrigin(conn *grpc.ClientConn, origin string) (*Record, error) {
 	res, err := getQueryServiceClient(conn).ServiceRecord(context.Background(), NewQueryServiceRequest(origin))
 	if err != nil {
 		return nil, err
 	}
 	srv := res.GetServiceRecord()
-	return &ServiceRecord{
+	return &Record{
 		Origin:      srv.Origin,
 		Name:        srv.Name,
 		Description: srv.Description,

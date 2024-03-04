@@ -16,6 +16,15 @@ func GenerateChallenge() protocol.URLEncodedBase64 {
 	return challenge
 }
 
+// GenerateChallengeString generates a new challenge for the registration/authentication process.
+func GenerateChallengeString() string {
+	challenge, err := protocol.CreateChallenge()
+	if err != nil {
+		panic(err)
+	}
+	return challenge.String()
+}
+
 // GetCOSEAlgorithmIdentifier returns the COSEAlgorithmIdentifier for the given numerical value.
 func GetCOSEAlgorithmIdentifier(val int64) (webauthncose.COSEAlgorithmIdentifier, error) {
 	if val == -7 {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"strings"
 
-	modulev1 "github.com/sonrhq/sonr/api/sonr/service/module/v1"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -55,13 +54,19 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 	if msg.Origin == "" {
 		return nil, fmt.Errorf("origin cannot be empty")
 	}
+	ok, err := ms.k.Records.Has(ctx, msg.Origin)
+	if err != nil {
+		return nil, err
+	}
+	if ok {
+		return nil, fmt.Errorf("record already exists")
+	}
 
-	err := ms.k.db.ServiceTable().Insert(ctx, &modulev1.Service{
+	err = ms.k.Records.Set(ctx, msg.Origin, service.Record{
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
 		Authority:   msg.Authority,
-		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
 		return nil, err
@@ -71,22 +76,19 @@ func (ms msgServer) CreateRecord(ctx context.Context, msg *service.MsgCreateReco
 
 // UpdateRecord params is defining the handler for the MsgUpdateRecord message.
 func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateRecord) (*service.MsgUpdateRecordResponse, error) {
-	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.Origin)
+	rec, err := ms.k.Records.Get(ctx, msg.Origin)
 	if err != nil {
 		return nil, err
-	}
-	if rec == nil {
-		return nil, fmt.Errorf("record does not exist")
 	}
 	if rec.Authority != msg.Authority {
 		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Authority)
 	}
-	err = ms.k.db.ServiceTable().Update(ctx, &modulev1.Service{
+
+	err = ms.k.Records.Set(ctx, msg.Origin, service.Record{
 		Name:        msg.Name,
 		Origin:      msg.Origin,
 		Description: msg.Description,
 		Authority:   msg.Authority,
-		Permissions: getPermissionsFromInt32(msg.Permissions),
 	})
 	if err != nil {
 		return nil, err
@@ -96,18 +98,15 @@ func (ms msgServer) UpdateRecord(ctx context.Context, msg *service.MsgUpdateReco
 
 // DeleteRecord params is defining the handler for the MsgDeleteRecord message.
 func (ms msgServer) DeleteRecord(ctx context.Context, msg *service.MsgDeleteRecord) (*service.MsgDeleteRecordResponse, error) {
-	rec, err := ms.k.db.ServiceTable().Get(ctx, msg.Origin)
+	rec, err := ms.k.Records.Get(ctx, msg.Origin)
 	if err != nil {
 		return nil, err
-	}
-	if rec == nil {
-		return nil, fmt.Errorf("record does not exist")
 	}
 	if rec.Authority != msg.Authority {
 		return nil, fmt.Errorf("unauthorized, record owner does not match the module's authority: got %s, want %s", msg.Authority, rec.Authority)
 	}
-
-	if err := ms.k.db.ServiceTable().Delete(ctx, rec); err != nil {
+	err = ms.k.Records.Remove(ctx, msg.Origin)
+	if err != nil {
 		return nil, err
 	}
 	return &service.MsgDeleteRecordResponse{}, nil
@@ -119,20 +118,4 @@ func (ms msgServer) LoginAccount(ctx context.Context, msg *service.MsgLoginAccou
 
 func (ms msgServer) RegisterAccount(ctx context.Context, msg *service.MsgRegisterAccount) (*service.MsgRegisterAccountResponse, error) {
 	return nil, nil
-}
-
-// getPermissionsFromInt32 converts an int32 to a ServicePermissions enum.
-func getPermissionsFromInt32(value int32) modulev1.ServicePermissions {
-	switch value {
-	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE):
-		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE
-	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ):
-		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_READ
-	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE):
-		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_WRITE
-	case int32(modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN):
-		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_OWN
-	default:
-		return modulev1.ServicePermissions_SERVICE_PERMISSIONS_BASE
-	}
 }

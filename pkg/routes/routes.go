@@ -3,63 +3,68 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/sonrhq/sonr/pkg/handlers"
-	"github.com/sonrhq/sonr/pkg/middleware"
-	"github.com/sonrhq/sonr/pkg/ui/pages"
+	api "github.com/sonrhq/sonr/pkg/handlers/api"
+	handlers "github.com/sonrhq/sonr/pkg/handlers/ui"
+	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 // RegisterCosmosAPI registers the Cosmos API routes
 func RegisterCosmosAPI(e *echo.Echo) {
-	e.GET("/balance/:address", handlers.BankAPI.GetAllBalances)
-	e.GET("/balance/:address/:denom", handlers.BankAPI.GetBalance)
-	e.GET("/balance/:address/:denom/spendable", handlers.BankAPI.GetSpendableBalancesByDenom)
-	e.GET("/balance/:address/spendable", handlers.BankAPI.GetSpendableBalances)
-	e.GET("/block", handlers.CometAPI.GetLatestBlock)
-	e.GET("/block/:height", handlers.CometAPI.GetBlockByHeight)
-	e.GET("/constitution", handlers.GovAPI.GetConstitution)
-	e.GET("/delegators/:delegatorAddr", handlers.StakingAPI.GetDelegatorDelegations)
-	e.GET("/delegators/:delegatorAddr/validators", handlers.StakingAPI.GetDelegatorValidators)
-	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr", handlers.StakingAPI.GetDelegation)
-	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr/unbonding", handlers.StakingAPI.GetUnbondingDelegation)
-	e.GET("/delegators/:delegatorAddr/validators/:srcValidatorAddr/redelegate/:dstValidatorAddr", handlers.StakingAPI.GetRedelegations)
-	e.GET("/delegators/:delegatorAddr/unbonding", handlers.StakingAPI.GetDelegatorUnbondingDelegations)
-	e.GET("/health", handlers.CometAPI.GetNodeInfo)
-	e.GET("/history/{height}", handlers.StakingAPI.GetHistoricalInfo)
-	e.GET("/proposals", handlers.GovAPI.GetProposals)
-	e.GET("/proposals/:proposalId", handlers.GovAPI.GetProposal)
-	e.GET("/proposals/:proposalId/deposits", handlers.GovAPI.GetDeposits)
-	e.GET("/proposals/:proposalId/deposits/:depositor", handlers.GovAPI.GetDeposit)
-	e.GET("/proposals/:proposalId/tally", handlers.GovAPI.GetTally)
-	e.GET("/proposals/:proposalId/votes", handlers.GovAPI.GetVotes)
-	e.GET("/proposals/:proposalId/votes/:voter", handlers.GovAPI.GetVote)
-	e.GET("/staking", handlers.StakingAPI.GetValidators)
-	e.GET("/staking/:validatorAddr", handlers.StakingAPI.GetValidator)
-	e.GET("/staking/:validatorAddr/delegations", handlers.StakingAPI.GetValidatorDelegations)
-	e.GET("/supply", handlers.BankAPI.GetTotalSupply)
-	e.GET("/supply/:denom", handlers.BankAPI.GetSupplyOf)
-	e.GET("/syncing", handlers.CometAPI.GetSyncing)
-	e.GET("/validators", handlers.CometAPI.GetLatestValidatorSet)
-	e.GET("/validators/:height", handlers.CometAPI.GetValidatorSetByHeight)
+	e.GET("/balance/:address", api.BankAPI.GetAllBalances)
+	e.GET("/balance/:address/:denom", api.BankAPI.GetBalance)
+	e.GET("/balance/:address/:denom/spendable", api.BankAPI.GetSpendableBalancesByDenom)
+	e.GET("/balance/:address/spendable", api.BankAPI.GetSpendableBalances)
+	e.GET("/block", api.CometAPI.GetLatestBlock)
+	e.GET("/block/:height", api.CometAPI.GetBlockByHeight)
+	e.GET("/constitution", api.GovAPI.GetConstitution)
+	e.GET("/delegators/:delegatorAddr", api.StakingAPI.GetDelegatorDelegations)
+	e.GET("/delegators/:delegatorAddr/validators", api.StakingAPI.GetDelegatorValidators)
+	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr", api.StakingAPI.GetDelegation)
+	e.GET("/delegators/:delegatorAddr/validators/:validatorAddr/unbonding", api.StakingAPI.GetUnbondingDelegation)
+	e.GET("/delegators/:delegatorAddr/validators/:srcValidatorAddr/redelegate/:dstValidatorAddr", api.StakingAPI.GetRedelegations)
+	e.GET("/delegators/:delegatorAddr/unbonding", api.StakingAPI.GetDelegatorUnbondingDelegations)
+	e.GET("/health", api.CometAPI.GetNodeInfo)
+	e.GET("/history/{height}", api.StakingAPI.GetHistoricalInfo)
+	e.GET("/proposals", api.GovAPI.GetProposals)
+	e.GET("/proposals/:proposalId", api.GovAPI.GetProposal)
+	e.GET("/proposals/:proposalId/deposits", api.GovAPI.GetDeposits)
+	e.GET("/proposals/:proposalId/deposits/:depositor", api.GovAPI.GetDeposit)
+	e.GET("/proposals/:proposalId/tally", api.GovAPI.GetTally)
+	e.GET("/proposals/:proposalId/votes", api.GovAPI.GetVotes)
+	e.GET("/proposals/:proposalId/votes/:voter", api.GovAPI.GetVote)
+	e.GET("/staking", api.StakingAPI.GetValidators)
+	e.GET("/staking/:validatorAddr", api.StakingAPI.GetValidator)
+	e.GET("/staking/:validatorAddr/delegations", api.StakingAPI.GetValidatorDelegations)
+	e.GET("/supply", api.BankAPI.GetTotalSupply)
+	e.GET("/supply/:denom", api.BankAPI.GetSupplyOf)
+	e.GET("/syncing", api.CometAPI.GetSyncing)
+	e.GET("/validators", api.CometAPI.GetLatestValidatorSet)
+	e.GET("/validators/:height", api.CometAPI.GetValidatorSetByHeight)
 }
 
 // RegisterSonrAPI registers the Sonr API routes
 func RegisterSonrAPI(e *echo.Echo) {
-	e.GET("/check/identifier/:id", handlers.AuthAPI.CheckIdentifier)
-	e.GET("/service/:origin", handlers.ServiceAPI.QueryOrigin)
-	e.GET("/service/:origin/login/:username/start", handlers.ServiceAPI.StartLogin)
-	e.POST("/service/:origin/login/:username/finish", handlers.ServiceAPI.FinishLogin)
-	e.GET("/service/:origin/register/:username/start", handlers.ServiceAPI.StartRegistration)
-	e.POST("/service/:origin/register/:username/finish", handlers.ServiceAPI.FinishRegistration)
-	e.GET("/tx/:txHash", handlers.TxAPI.GetTx)
-	e.GET("/tx/block/:height", handlers.TxAPI.GetBlockWithTxs)
-	e.POST("/tx/broadcast", handlers.TxAPI.BroadcastTx)
-	e.POST("/tx/simulate", handlers.TxAPI.SimulateTx)
+	e.GET("/check/identifier/:id", api.AuthAPI.CheckIdentifier)
+	e.GET("/service/:origin", api.ServiceAPI.QueryOrigin)
+	e.GET("/service/:origin/login/:username/start", api.ServiceAPI.StartLogin)
+	e.POST("/service/:origin/login/:username/finish", api.ServiceAPI.FinishLogin)
+	e.GET("/service/:origin/register/:username/start", api.ServiceAPI.StartRegistration)
+	e.POST("/service/:origin/register/:username/finish", api.ServiceAPI.FinishRegistration)
+	e.GET("/tx/:txHash", api.TxAPI.GetTx)
+	e.GET("/tx/block/:height", api.TxAPI.GetBlockWithTxs)
+	e.POST("/tx/broadcast", api.TxAPI.BroadcastTx)
+	e.POST("/tx/simulate", api.TxAPI.SimulateTx)
 }
 
-// RegisterHTMXPages registers the page routes for HTMX
-func RegisterHTMXPages(e *echo.Echo, assetsDir string) {
-	e.Static("/assets", assetsDir)
-	e.GET("/", pages.Index, middleware.UseHTMX)
-	e.GET("/console", pages.Console, middleware.UseHTMX)
-	e.GET("/404", pages.Error, middleware.UseHTMX)
+// RegisterUI registers the page routes for HTMX
+func RegisterUI(e *echo.Echo) {
+	e.GET("/", handlers.Pages.Home, common.UseHTMX)
+	e.GET("/about", handlers.Pages.About, common.UseHTMX)
+	e.GET("/ecosystem", handlers.Pages.Ecosystem, common.UseHTMX)
+	e.GET("/research", handlers.Pages.Research, common.UseHTMX)
+	e.GET("/login", handlers.Pages.Login, common.UseHTMX)
+	e.GET("/register", handlers.Pages.Register, common.UseHTMX)
+	e.GET("/chats", handlers.Pages.Chats, common.UseHTMX)
+	e.GET("/changelog", handlers.Pages.Changelog, common.UseHTMX)
+	e.GET("*", handlers.Pages.Root, common.UseHTMX)
 }

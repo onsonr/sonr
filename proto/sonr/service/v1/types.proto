@@ -8,6 +8,8 @@ option go_package = "github.com/sonrhq/sonr/x/service";
 
 // GenesisState is the state that must be provided at genesis.
 message GenesisState {
+  repeated Record records = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
   // params defines all the parameters of the module.
   Params params = 2
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
@@ -29,8 +31,10 @@ enum ParamsType {
   PARAMS_TYPE_ASSERTION = 2;
 }
 
-// ServiceRecord is the representation of a sonr enabled service
-message ServiceRecord {
+// Record is the representation of a sonr enabled service
+message Record {
+  option (amino.name) = "sonrhq/service/Record";
+
   // Name is the name of the service
   string name = 1;
 
