@@ -5,7 +5,6 @@ CHAINID="sonr-localnet-1"
 MONIKER="florence"
 KEYALGO="secp256k1"
 KEYRING="test"
-LOGLEVEL="info"
 HOME="./data"
 SONR_HOME="$HOME/.sonr"
 
