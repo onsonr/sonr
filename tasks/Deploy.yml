@@ -4,6 +4,7 @@ tasks:
     cmds:
       - mkdir -p ./tmp
       - mkdir -p ./data/dendrite
+      - mkdir -p ./data/redis
       - mkdir -p ./data/.sonr/config
       - doppler secrets get MATRIX_CONFIG --config ops --plain > ./tmp/dendrite-config
       - doppler secrets get NODE_CONFIG_APP --config ops --plain > ./tmp/node-app-config
@@ -26,7 +27,8 @@ tasks:
       - doppler secrets get MATRIX_SERVER_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/matrix_key.pem
       - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.crt
       - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.key
-      - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.crt
+      - doppler secrets get MATRIX_CHAT_SERVICE_CONFIG --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/chat-service.yaml
+      - doppler secrets get MATRIX_EVENT_SERVICE_CONFIG --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/event-service.yaml
       - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.key
 
   sub-configs:
@@ -37,6 +39,11 @@ tasks:
       - doppler secrets substitute ./tmp/node-client-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./data/.sonr/config/client.toml
       - doppler secrets substitute ./tmp/node-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./data/.sonr/config/config.toml
       - rm -rf ./tmp
+
+  import-val-account:
+    internal: true
+    cmds:
+      - doppler secrets get VAL_ACCOUNT --plain --token $DOPPLER_VALIDATOR_TOKEN > ./data/.sonr/config/account.json
 
   init-genesis:
     internal: true

@@ -57,6 +57,17 @@ services:
     networks:
       - default
 
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - default
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     restart: always
