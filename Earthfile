@@ -1,12 +1,12 @@
 VERSION 0.7
 PROJECT sonrhq/testnet-1
 
-FROM golang:1.21.5-alpine
-WORKDIR /app
+
 
 # install dependencies
 deps:
-    FROM +base
+    FROM golang:1.21.5-alpine
+    WORKDIR /app
     RUN apk add --no-cache git
     COPY go.mod go.sum ./
     RUN go mod download
@@ -26,29 +26,16 @@ build:
 
 # docker - builds the docker image
 docker:
-    FROM +build
+    FROM alpine:3.14
     COPY +build/sonrd /usr/local/bin/sonrd
-    COPY ./networks/local/entrypoint.sh ./entrypoint.sh
+    COPY ./assets/networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
     SAVE IMAGE sonrd:latest
 
-# matrix-config - builds the matrix configuration
-matrix-config:
-    LOCALLY
-    RUN mkdir -p ./tmp/config
-
-    FROM matrixdotorg/dendrite-monolith:latest
-    ARG serverName=localhost
-    COPY ./networks/local/matrix-config.yaml ./matrix-config.yaml
-    SAVE ARTIFACT matrix-config.yaml AS LOCAL matrix-config.yaml
-
-# matrix-local - setups the local matrix server
-matrix-local:
-    LOCALLY
-    RUN git clone https://github.com/matrix-org/dendrite ./tmp/dendrite
-    RUN cd ./tmp/dendrite && go build -o bin/ ./cmd/...
-    RUN ./tmp/dendrite/bin/generate-keys --private-key ./tmp/dendrite/matrix_key.pem
-    RUN ./tmp/dendrite/bin/generate-keys --tls-cert ./tmp/dendrite/server.crt --tls-key ./tmp/dendrite/server.key
-    RUN cp ./tmp/dendrite/dendrite-sample.yaml ./tmp/dendrite/dendrite.yaml
-    RUN ./tmp/dendrite/bin/dendrite --tls-cert ./tmp/dendrite/server.crt --tls-key ./tmp/dendrite/server.key --config ./tmp/dendrite/dendrite.yaml
-
+# current - copies local files to the current build
+current:
+    FROM alpine:3.14
+    COPY ./bin/sonrd /usr/local/bin/sonrd
+    COPY ./assets/networks/local/entrypoint.sh ./entrypoint.sh
+    RUN chmod +x /usr/local/bin/sonrd
+    SAVE IMAGE sonrd:latest

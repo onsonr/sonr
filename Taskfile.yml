@@ -1,4 +1,9 @@
 version: "3"
+dotenv:
+  - .env
+  - .env.rails
+  - .env.snt
+  - .env.val
 
 includes:
   build: ./tasks/Build.yml
@@ -27,6 +32,7 @@ tasks:
       - task: trunk fmt --all
 
   compose-up:
+    dir: ./docker
     cmds:
       - task: compose-down
       - templ generate
@@ -35,6 +41,7 @@ tasks:
       - docker compose up --abort-on-container-exit
 
   compose-down:
+    dir: ./docker
     ignore_error: true
     cmds:
       - docker compose down

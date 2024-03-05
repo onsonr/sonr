@@ -32,7 +32,6 @@ func serveHighway(c *cobra.Command, _ []string) {
 	// Create the config
 	cnfg := config.NewHway()
 	cnfg.ReadFlags(c)
-	cnfg.ReadEnv()
 
 	// Create the router
 	e := echo.New()

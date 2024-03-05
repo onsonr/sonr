@@ -17,30 +17,12 @@ tasks:
   dockerfile:
     desc: "Builds the project for current platform"
     cmds:
-      - docker build -t sonrd:latest -f ./Dockerfile .
+      - earthly --no-sat +current
 
-  ipfs:
-    dir: deploy
+  earthly:
+    desc: "Builds the project for current platform"
     cmds:
-      - earthly +ipfs --domain=ipfs.sonr.dev
-
-  faucet:
-    internal: true
-    dir: _workers/faucet-testnet
-    cmds:
-      - earthly +build
-
-  highway:
-    internal: true
-    dir: _workers/highway-proxy
-    cmds:
-      - earthly +build
-
-  workers:
-    cmds:
-      - task: cosmscan
-      - task: faucet
-      - task: highway
+      - earthly --no-sat +docker
 
   devcontainer:
     desc: "Builds the project for current platform"

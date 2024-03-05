@@ -1,7 +1,7 @@
 version: "3"
 
 tasks:
-  setup:
+  install:
     desc: "Setup the development environment"
     cmds:
       - go install github.com/cosmtrek/air@latest
@@ -18,17 +18,3 @@ tasks:
 
   default:
     cmd: air -c ./assets/networks/local/air.toml
-
-  cosmscan:
-    desc: "Run the CosmScan indexer with Wrangler"
-    dir: _workers/cosmscan-indexer
-    cmd: earthly +dev
-
-  highway:
-    desc: "Run the Highway worker with Wrangler"
-    cmd: earthly +dev
-
-  faucet:
-    desc: "Run the Faucet worker with Wrangler"
-    dir: _workers/faucet-testnet
-    cmd: earthly +dev

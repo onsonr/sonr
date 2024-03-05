@@ -44,7 +44,7 @@
     "Contents.json": true
   },
   "yaml.schemas": {
-    "https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/sonr/tasks/*.yml",
+    "https://taskfile.dev/schema.json": "file:///Users/pradn/Developer/Sonr/sonr/tasks/*.yml",
     "https://json.schemastore.org/pull-request-labeler.json": "file:///Users/pradn/Developer/sonr/.github/labeler.yml"
   },
   "better-comments.tags": [

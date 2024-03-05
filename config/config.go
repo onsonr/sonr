@@ -64,12 +64,6 @@ type HighwayConfig struct {
 
 	// SmtpPassword is the password of the smtp server
 	SmtpPassword string `json:"smtp_password"`
-
-	// SmtpFrom is the from address of the smtp server
-	SmtpFrom string `json:"smtp_from"`
-
-	// SmtpFromName is the from name of the smtp server
-	SmtpFromName string `json:"smtp_from_name"`
 }
 
 // MatrixConfig represents the nitro configuration

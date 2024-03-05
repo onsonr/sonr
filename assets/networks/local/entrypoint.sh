@@ -31,5 +31,3 @@ sonrd genesis collect-gentxs
 
 # Run this to ensure everything worked and that the genesis file is setup correctly
 sonrd genesis validate-genesis
-
-sonrd start --log_level="warn"

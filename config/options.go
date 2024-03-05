@@ -2,12 +2,11 @@ package config
 
 import (
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/labstack/echo/v4"
 	"github.com/pterm/pterm"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func persistentBanner(address string) string {
@@ -38,25 +37,17 @@ func (o *HighwayConfig) Serve(e *echo.Echo) {
 
 // NewHway returns a new HighwayOptions
 func NewHway() *HighwayConfig {
-	return &HighwayConfig{
-		GatewayPort:  8000,
-		Host:         "0.0.0.0",
-		SmtpFrom:     "foundation@sonr.id",
-		SmtpFromName: "Sonr Foundation",
+	v := viper.New()
+	v.SetEnvPrefix("HWAY")
+	v.AutomaticEnv()
+	conf := &HighwayConfig{
+		GatewayPort: 8000,
+		Host:        "0.0.0.0",
 	}
-}
-
-func (o *HighwayConfig) ReadEnv() {
-	o.SmtpHost = os.Getenv("SMTP_HOST")
-	o.SmtpUser = os.Getenv("SMTP_USER")
-	o.SmtpPassword = os.Getenv("SMTP_PASS")
-	portStr := os.Getenv("SMTP_PORT")
-	if portStr != "" {
-		portInt, err := strconv.Atoi(portStr)
-		if err == nil {
-			o.SmtpPort = portInt
-		}
+	if err := v.Unmarshal(conf); err != nil {
+		panic(err)
 	}
+	return conf
 }
 
 func (o *HighwayConfig) ReadFlags(c *cobra.Command) error {

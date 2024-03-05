@@ -7,11 +7,6 @@ services:
     entrypoint: ["sonrd", "start", "--log_level", "error"]
     volumes:
       - ./data/.sonr:/root/.sonr
-    environment:
-      - SMTP_HOST=$RESEND_SMTP_HOST
-      - SMTP_PORT=$RESEND_SMTP_PORT
-      - SMTP_USER=$RESEND_SMTP_USER
-      - SMTP_PASS=$RESEND_SMTP_PASS
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -23,13 +18,11 @@ services:
   highway:
     image: sonrd:latest
     entrypoint: ["sonrd", "hway"]
+    container_name: highway
     volumes:
       - ./data/.sonr:/root/.sonr
-    environment:
-      - SMTP_HOST=$RESEND_SMTP_HOST
-      - SMTP_PORT=$RESEND_SMTP_PORT
-      - SMTP_USER=$RESEND_SMTP_USER
-      - SMTP_PASS=$RESEND_SMTP_PASS
+    env_file:
+      - .env.rails
     ports:
       - 8000:8000 # api/htmx
     networks:
@@ -48,20 +41,37 @@ services:
     networks:
       - default
 
-  # monolith:
-  #   init: true
-  #   image: matrixdotorg/dendrite-monolith:latest
-  #   restart: always
-  #   hostname: monolith
-  #   container_name: monolith
-  #   ports:
-  #     - 8008:8008
-  #     - 8448:8448
-  #   volumes:
-  #     - ./tmp/config:/etc/dendrite
-  #     - ./tmp/dendrite_media:/var/dendrite/media
-  #     - ./tmp/dendrite_jetstream:/var/dendrite/jetstream
-  #     - ./tmp/dendrite_search_index:/var/dendrite/searchindex
+  monolith:
+    image: matrixdotorg/dendrite-monolith:latest
+    restart: unless-stopped
+    hostname: monolith
+    container_name: monolith
+    ports:
+      - 8008:8008
+      - 8448:8448
+    volumes:
+      - ./data/dendrite:/etc/dendrite
+      - dendrite_media:/var/dendrite/media
+      - dendrite_jetstream:/var/dendrite/jetstream
+      - dendrite_search_index:/var/dendrite/searchindex
+    networks:
+      - default
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: always
+    container_name: cloudflared
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    networks:
+      - default
+
+volumes:
+  dendrite_postgres_data:
+  dendrite_media:
+  dendrite_jetstream:
+  dendrite_search_index:
 
 networks:
   default:

@@ -1,53 +1,46 @@
 version: "3"
-
 tasks:
-  plan:
-    desc: "Plan the infrastructure"
-    dir: ./deploy
+  setup:
     cmds:
-      - terraform init
-      - terraform plan
+      - mkdir -p ./tmp
+      - mkdir -p ./data/dendrite
+      - mkdir -p ./data/.sonr/config
+      - doppler secrets get MATRIX_CONFIG --config ops --plain > ./tmp/dendrite-config
+      - doppler secrets get NODE_CONFIG_APP --config ops --plain > ./tmp/node-app-config
+      - doppler secrets get NODE_CONFIG_CLIENT --config ops --plain > ./tmp/node-client-config
+      - doppler secrets get NODE_CONFIG_ROOT --config ops --plain > ./tmp/node-config
+      - task: secrets
+      - task: import-keys
+      - task: sub-configs
 
-  apply:
-    desc: "Apply the infrastructure"
-    dir: ./deploy
-    cmds:
-      - terraform init
-      - terraform apply -auto-approve
-
-  destroy:
-    desc: "Destroy the infrastructure"
-    dir: ./deploy
-    cmds:
-      - terraform init
-      - terraform destroy -auto-approve
-
-  workers:
-    desc: "Deploy Cloudflare workers"
-    cmds:
-      - task: workers-cosmscan
-      - task: workers-highway
-      - task: workers-faucet
-
-  workers-cosmscan:
+  secrets:
     internal: true
-    dir: _workers/cosmscan-indexer
     cmds:
-      - earthly +deploy
+      - doppler secrets download --format env --no-file --config rls --token $DOPPLER_RAILS_TOKEN > .env.rails
+      - doppler secrets download --format env --no-file --config snt --token $DOPPLER_SENTRY_TOKEN > .env.snt
+      - doppler secrets download --format env --no-file --config val --token $DOPPLER_VALIDATOR_TOKEN > .env.val
 
-  workers-highway:
+  import-keys:
     internal: true
-    dir: _workers/faucet-testnet
     cmds:
-      - earthly +deploy
+      - doppler secrets get MATRIX_SERVER_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/matrix_key.pem
+      - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.crt
+      - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.key
+      - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.crt
+      - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.key
 
-  workers-faucet:
+  sub-configs:
     internal: true
-    dir: _workers/faucet-testnet
     cmds:
-      - earthly +deploy
+      - doppler secrets substitute ./tmp/dendrite-config --token $DOPPLER_RAILS_TOKEN --config rls > ./data/dendrite/dendrite.yaml
+      - doppler secrets substitute ./tmp/node-app-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./data/.sonr/config/app.toml
+      - doppler secrets substitute ./tmp/node-client-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./data/.sonr/config/client.toml
+      - doppler secrets substitute ./tmp/node-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./data/.sonr/config/config.toml
+      - rm -rf ./tmp
 
-  pack:
-    dir: ./deploy
+  init-genesis:
+    internal: true
     cmds:
-      - packer build base.pkr.hcl
+      - doppler secrets get MATRIX_SERVER_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/matrix_key.pem
+      - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.crt
+      - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./data/dendrite/server.key
