@@ -8,10 +8,10 @@ services:
     volumes:
       - ./data/.sonr:/root/.sonr
     environment:
-      - SMTP_HOST=value
-      - SMTP_PORT=value
-      - SMTP_USER=value
-      - SMTP_PASS=value
+      - SMTP_HOST=$RESEND_SMTP_HOST
+      - SMTP_PORT=$RESEND_SMTP_PORT
+      - SMTP_USER=$RESEND_SMTP_USER
+      - SMTP_PASS=$RESEND_SMTP_PASS
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -26,10 +26,10 @@ services:
     volumes:
       - ./data/.sonr:/root/.sonr
     environment:
-      - SMTP_HOST=value
-      - SMTP_PORT=value
-      - SMTP_USER=value
-      - SMTP_PASS=value
+      - SMTP_HOST=$RESEND_SMTP_HOST
+      - SMTP_PORT=$RESEND_SMTP_PORT
+      - SMTP_USER=$RESEND_SMTP_USER
+      - SMTP_PASS=$RESEND_SMTP_PASS
     ports:
       - 8000:8000 # api/htmx
     networks:

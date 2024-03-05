@@ -7,7 +7,6 @@
   "files.exclude": {
     "!**/.git/hooks": true,
     "**/.classpath": true,
-    "**/.devcontainer": true,
     "**/.DS_Store": true,
     "**/.factorypath": true,
     "**/.flutter-plugins": true,
