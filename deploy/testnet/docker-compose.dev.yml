@@ -2,10 +2,10 @@ version: "3"
 services:
   # Sonr Validator
   sonrd:
-    image: sonrhq/sonrd:latest
-    command: ["start"]
+    image: sonrd:latest
+    entrypoint: ["sonrd", "start"]
     volumes:
-      - ./data/.sonr:/.sonr
+      - ./data/.sonr:/root/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -15,10 +15,10 @@ services:
 
   # Sonr Validator
   highway:
-    image: sonrhq/sonrd:latest
-    command: ["hway"]
+    image: sonrd:latest
+    entrypoint: ["sonrd", "hway"]
     volumes:
-      - ./data/.sonr:/.sonr
+      - ./data/.sonr:/root/.sonr
     env_file:
       - .env.rails
     ports:
@@ -37,20 +37,6 @@ services:
     networks:
       - default
 
-  monolith:
-    image: matrixdotorg/dendrite-monolith:latest
-    restart: unless-stopped
-    ports:
-      - 8008:8008
-      - 8448:8448
-    volumes:
-      - ./data/dendrite:/etc/dendrite
-      - dendrite_media:/var/dendrite/media
-      - dendrite_jetstream:/var/dendrite/jetstream
-      - dendrite_search_index:/var/dendrite/searchindex
-    networks:
-      - default
-
   redis:
     image: redis:6.2-alpine
     restart: always
@@ -61,12 +47,6 @@ services:
       - ./data/redis:/data
     networks:
       - default
-
-volumes:
-  dendrite_postgres_data:
-  dendrite_media:
-  dendrite_jetstream:
-  dendrite_search_index:
 
 networks:
   default:

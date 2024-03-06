@@ -30,4 +30,4 @@ current:
     COPY ./bin/sonrd /usr/local/bin/sonrd
     COPY ./assets/networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
-    SAVE IMAGE sonrhq/sonrd:latest
+    SAVE IMAGE sonrd:latest
