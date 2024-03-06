@@ -31,6 +31,7 @@ kos:
   - repository: sonrhq/sonrd
     id: ko-sonrd
     build: sonrd
+    main: ./cmd/sonrd
     tags:
       - "{{.Version}}"
       - latest
