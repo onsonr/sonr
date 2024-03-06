@@ -24,17 +24,10 @@ build:
     RUN go build -o /app/sonrd ./cmd/sonrd
     SAVE ARTIFACT /app/sonrd AS LOCAL bin/sonrd
 
-# docker - builds the docker image
-docker:
-    FROM alpine:3.14
-    COPY +build/sonrd /usr/local/bin/sonrd
-    RUN chmod +x /usr/local/bin/sonrd
-    SAVE IMAGE sonrd:latest
-
 # current - copies local files to the current build
 current:
     FROM alpine:3.14
     COPY ./bin/sonrd /usr/local/bin/sonrd
     COPY ./assets/networks/local/entrypoint.sh ./entrypoint.sh
     RUN chmod +x /usr/local/bin/sonrd
-    SAVE IMAGE sonrd:latest
+    SAVE IMAGE sonrhq/sonrd:latest
