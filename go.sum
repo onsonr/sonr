@@ -609,6 +609,8 @@ github.com/go-stack/stack v1.8.0/go.mod h1:v0f6uXyyMGvRgIKkXu+yp6POWl0qKG85gN/me
 github.com/go-stack/stack v1.8.1/go.mod h1:dcoOX6HbPZSZptuspn9bctJ+N/CnF5gGygcUP3XYfe4=
 github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572 h1:tfuBGBXKqDEevZMzYi5KSi8KkcZtzBcTgAUUtapy0OI=
 github.com/go-task/slim-sprig v0.0.0-20230315185526-52ccab3ef572/go.mod h1:9Pwr4B2jHnOSGXyyzV8ROjYa2ojvAY6HCGYYfMoC3Ls=
+github.com/go-test/deep v1.1.0 h1:WOcxcdHcvdgThNXjw0t76K42FXTU7HpNQWHpA2HHNlg=
+github.com/go-test/deep v1.1.0/go.mod h1:5C2ZWiW0ErCdrYzpqxLbTX7MG14M9iiw8DgHncVwcsE=
 github.com/go-webauthn/webauthn v0.10.0 h1:yuW2e1tXnRAwAvKrR4q4LQmc6XtCMH639/ypZGhZCwk=
 github.com/go-webauthn/webauthn v0.10.0/go.mod h1:l0NiauXhL6usIKqNLCUM3Qir43GK7ORg8ggold0Uv/Y=
 github.com/go-webauthn/x v0.1.6 h1:QNAX+AWeqRt9loE8mULeWJCqhVG5D/jvdmJ47fIWCkQ=

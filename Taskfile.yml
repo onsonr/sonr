@@ -34,7 +34,7 @@ tasks:
 
   dev:
     desc: "Start development server"
-    cmd: air -c .air.toml
+    cmd: air -c ./deploy/air.toml
 
   generate:
     desc: "Generate Templ and Proto files"

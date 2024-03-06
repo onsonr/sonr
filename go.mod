@@ -62,6 +62,7 @@ require (
 	github.com/segmentio/ksuid v1.0.4
 	github.com/swaggo/swag v1.16.3
 	github.com/tink-crypto/tink-go/v2 v2.1.0
+	github.com/xhit/go-simple-mail/v2 v2.16.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	lukechampine.com/blake3 v1.2.1
 	maunium.net/go/mautrix v0.17.0
@@ -129,6 +130,7 @@ require (
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/spec v0.20.6 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/go-webauthn/x v0.1.6 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
@@ -263,7 +265,6 @@ require (
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/whyrusleeping/go-keyspace v0.0.0-20160322163242-5b898ac5add1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
-	github.com/xhit/go-simple-mail/v2 v2.16.0 // indirect
 	github.com/xo/terminfo v0.0.0-20220910002029-abceb7e1c41e // indirect
 	github.com/zondax/hid v0.9.2 // indirect
 	github.com/zondax/ledger-go v0.14.3 // indirect

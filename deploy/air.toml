@@ -1,0 +1,40 @@
+root = "."
+tmp_dir = "tmp"
+
+[build]
+bin = "./bin/sonrd"
+cmd = "task compose-up"
+delay = 1000
+exclude_dir = [
+  "static",
+  "tmp",
+  "data",
+]
+exclude_file = []
+exclude_regex = [".*_templ.go", ".*_test.go", "*.md", "*.yml", "*.yaml", "*.json", "*.xml", "*.sh", "*.toml", "*.lock", "*.bak", "*.orig", "*.patch", "*.swp"]
+exclude_unchanged = false
+follow_symlink = false
+full_bin = "./bin/sonrd serve"
+include_dir = ["pkg", "cmd/*", "internal", "x", "app"]
+include_ext = ["go", "tpl", "tmpl", "templ", "html"]
+kill_delay = "10s"
+log = ".tmp/build-errors.log"
+send_interrupt = true
+stop_on_error = true
+
+[color]
+app = "violet"
+build = "yellow"
+main = "magenta"
+runner = "green"
+watcher = "cyan"
+
+[log]
+time = false
+
+[misc]
+clean_on_exit = true
+
+[screen]
+clear_on_rebuild = true
+keep_scroll = true

@@ -1,7 +1,9 @@
+# -----------------------------------------------------
+# Purpose - Setting up local development environment
+# -----------------------------------------------------
+
 VERSION 0.7
 PROJECT sonrhq/testnet-1
-
-
 
 # install dependencies
 deps:
