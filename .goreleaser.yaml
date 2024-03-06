@@ -27,10 +27,19 @@ builds:
       - -X main.Version={{ .Version }}
       - -X main.Commit={{ .Commit }}
       - -w -s
+kos:
+  - repository: sonrhq/sonrd
+    tags:
+      - "{{.Version}}"
+      - latest
+    bare: false
+    preserve_import_paths: true
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - darwin/amd64
+      - darwin/arm64
 
-# ! ||--------------------------------------------------------------------------------||
-# ! ||                                Tarball Archives                                ||
-# ! ||--------------------------------------------------------------------------------||
 archives:
   - id: sonrd
     builds:

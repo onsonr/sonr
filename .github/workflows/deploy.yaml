@@ -11,32 +11,23 @@ permissions:
   issues: write
 
 jobs:
-  terraform-testnet:
-    environment: Testnet
-    runs-on: gcp-instance-1
+  deploy-testnet:
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:testnet
-        env:
-          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+      - name: Checkout
+        uses: actions/checkout@v2
 
-  terraform-dendrite:
-    environment: Testnet
-    runs-on: gcp-instance-1
-    steps:
-      - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:dendrite
-        env:
-          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "14"
 
-  terraform-ipfs:
-    environment: Testnet
-    runs-on: gcp-instance-1
-    steps:
-      - uses: actions/checkout@v4
-      - run: earthly sat wake builder
-      - run: task deploy:ipfs
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy to testnet
+        run: npm run deploy-testnet
         env:
-          SONR_TUNNEL_TOKEN: ${{ secrets.SONR_TUNNEL_TOKEN }}
+          INFURA_API_KEY: ${{ secrets.INFURA_API_KEY }}
+          PRIVATE_KEY: ${{ secrets.PRIVATE_KEY }}
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
