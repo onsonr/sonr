@@ -45,7 +45,7 @@ kos:
 
 dockers:
   - image_templates:
-      - "sonrhq/sonrd:{{ .Tag }}"
+      - "sonrhq/sonrd:{{ .Version }}"
       - sonrhq/sonrd:latest
     build_flag_templates:
       - "--pull"
