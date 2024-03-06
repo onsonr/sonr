@@ -17,4 +17,4 @@ tasks:
       - brew install tinygo
 
   default:
-    cmd: air -c ./assets/networks/local/air.toml
+    cmd: air -c .air.toml
