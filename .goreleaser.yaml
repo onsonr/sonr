@@ -45,7 +45,14 @@ kos:
 
 dockers:
   - image_templates:
-      - sonrhq/sonrd
+      - "sonrhq/sonrd:{{ .Tag }}"
+      - sonrhq/sonrd:latest
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
 
 archives:
   - id: sonrd
