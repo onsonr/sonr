@@ -24,9 +24,16 @@ build:
     RUN go build -o /app/sonrd ./cmd/sonrd
     SAVE ARTIFACT /app/sonrd AS LOCAL bin/sonrd
 
-# current - copies local files to the current build
-current:
+# current-node - copies local files to the current build
+current-node:
     FROM alpine:3.14
     COPY ./bin/sonrd /usr/local/bin/sonrd
     RUN chmod +x /usr/local/bin/sonrd
     SAVE IMAGE sonrd:latest
+
+# current-hway - copies local files to the current build
+current-hway:
+    FROM alpine:3.14
+    COPY ./bin/hway /usr/local/bin/hway
+    RUN chmod +x /usr/local/bin/hway
+    SAVE IMAGE hway:latest

@@ -12,17 +12,20 @@ tasks:
   current:
     desc: "Builds the project for current platform"
     cmds:
-      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd
+      - task: node
+      - task: hway
 
-  dockerfile:
+  node:
     desc: "Builds the project for current platform"
     cmds:
-      - earthly --no-sat +current
+      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd --id sonrd
+      - earthly --no-sat +current-node
 
-  earthly:
+  hway:
     desc: "Builds the project for current platform"
     cmds:
-      - earthly --no-sat +docker
+      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/hway --id hway
+      - earthly --no-sat +current-hway
 
   devcontainer:
     desc: "Builds the project for current platform"

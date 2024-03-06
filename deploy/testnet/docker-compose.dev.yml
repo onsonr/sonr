@@ -15,10 +15,8 @@ services:
 
   # Sonr Validator
   highway:
-    image: sonrd:latest
-    entrypoint: ["sonrd", "hway"]
-    volumes:
-      - ./data/.sonr:/root/.sonr
+    image: hway:latest
+    entrypoint: ["hway"]
     env_file:
       - .env.rails
     ports:
