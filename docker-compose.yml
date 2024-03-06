@@ -2,9 +2,8 @@ version: "3"
 services:
   # Sonr Validator
   sonrd:
-    container_name: sonrd
-    image: sonrd:latest
-    entrypoint: ["sonrd", "start"]
+    image: sonrhq/sonrd:latest
+    command: ["start"]
     volumes:
       - ./data/.sonr:/root/.sonr
     ports:
@@ -16,9 +15,8 @@ services:
 
   # Sonr Validator
   highway:
-    image: sonrd:latest
-    entrypoint: ["sonrd", "hway"]
-    container_name: highway
+    image: sonrhq/sonrd:latest
+    command: ["hway"]
     volumes:
       - ./data/.sonr:/root/.sonr
     env_file:
@@ -42,8 +40,6 @@ services:
   monolith:
     image: matrixdotorg/dendrite-monolith:latest
     restart: unless-stopped
-    hostname: monolith
-    container_name: monolith
     ports:
       - 8008:8008
       - 8448:8448
