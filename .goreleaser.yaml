@@ -39,41 +39,12 @@ builds:
       - -X main.Version={{ .Version }}
       - -X main.Commit={{ .Commit }}
       - -w -s
-kos:
-  # GHCR Docker - sonrd
-  - repository: ghcr.io/sonrhq/sonrd
-    id: ko-sonrd
-    build: sonrd
-    main: ./cmd/sonrd
-    tags:
-      - "{{.Version}}"
-      - latest
-    bare: true
-    preserve_import_paths: true
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      - darwin/amd64
-      - darwin/arm64
-  # GHCR Docker - hway
-  - repository: ghcr.io/sonrhq/hway
-    id: ko-hway
-    build: hway
-    main: ./cmd/hway
-    tags:
-      - "{{.Version}}"
-      - latest
-    bare: true
-    preserve_import_paths: true
-    platforms:
-      - linux/amd64
-      - linux/arm64
-      - darwin/amd64
-      - darwin/arm64
 
 dockers:
   # Docker Images - sonrd
   - image_templates:
+      - ghcr.io/sonrhq/sonrd:{{ .Version }}
+      - ghcr.io/sonrhq/sonrd:latest
       - "sonrhq/sonrd:{{ .Version }}"
       - sonrhq/sonrd:latest
     build_flag_templates:
@@ -87,6 +58,8 @@ dockers:
     dockerfile: ./deploy/Dockerfile.node
   # Docker Images - hway
   - image_templates:
+      - ghcr.io/sonrhq/hway:{{ .Version }}
+      - ghcr.io/sonrhq/hway:latest
       - "sonrhq/hway:{{ .Version }}"
       - sonrhq/hway:latest
     build_flag_templates:
