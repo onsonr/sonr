@@ -29,6 +29,7 @@ builds:
       - -w -s
 kos:
   - repository: sonrhq/sonrd
+    main: cmd/sonrd/main.go
     tags:
       - "{{.Version}}"
       - latest
