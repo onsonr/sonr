@@ -29,11 +29,12 @@ builds:
       - -w -s
 kos:
   - repository: sonrhq/sonrd
-    main: cmd/sonrd/main.go
+    id: ko-sonrd
+    build: sonrd
     tags:
       - "{{.Version}}"
       - latest
-    bare: false
+    bare: true
     preserve_import_paths: true
     platforms:
       - linux/amd64
