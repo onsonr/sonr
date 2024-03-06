@@ -28,7 +28,7 @@ builds:
       - -X main.Commit={{ .Commit }}
       - -w -s
 kos:
-  - repository: sonrhq/sonrd
+  - repository: hub.docker.io/sonrhq/sonrd
     id: ko-sonrd
     build: sonrd
     main: ./cmd/sonrd
