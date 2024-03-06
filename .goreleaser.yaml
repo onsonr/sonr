@@ -87,7 +87,7 @@ release:
     owner: sonrhq
     name: sonr
 
-  name_template: '🆔 Release {{ .Now.Format "2006.01.02" }}'
+  name_template: "🆔 Release {{ .Version }}"
   mode: replace
   draft: false
   extra_files:
