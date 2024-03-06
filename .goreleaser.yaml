@@ -15,9 +15,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    ignore:
-      - goos: linux
-        goarch: arm64
     flags:
       - -mod=readonly
       - -trimpath
@@ -35,9 +32,6 @@ builds:
     goarch:
       - amd64
       - arm64
-    ignore:
-      - goos: linux
-        goarch: arm64
     flags:
       - -mod=readonly
       - -trimpath
@@ -90,6 +84,7 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
     ids:
       - sonrd
+    dockerfile: ./deploy/Dockerfile.node
   # Docker Images - hway
   - image_templates:
       - "sonrhq/hway:{{ .Version }}"
@@ -102,15 +97,22 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
     ids:
       - hway
+    dockerfile: ./deploy/Dockerfile.hway
 
 archives:
   # Archives
   - id: sonrd
     builds:
       - sonrd
+    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+  # Archives
+  - id: hway
+    builds:
       - hway
     name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
+
 checksum:
   name_template: sha256sum.txt
   algorithm: sha256
@@ -121,27 +123,28 @@ brews:
     caveats: "Run the Sonr Blockchain Node with `sonrd`"
     homepage: "https://sonr.io"
     description: "Sonr is an ibc-enabled blockchain for decentralized identity."
-    ids:
-      - "sonrd"
     license: "OpenGLV3"
     name: "sonrd"
+    ids:
+      - "sonrd"
     repository:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
   # Homebrew - hway
   - folder: Formula
-    caveats: "Run the Highway Daemon with `hway`"
+    caveats: "Run the Sonr Highway with `hway`"
     homepage: "https://sonr.io"
-    description: "Highway Daemon which serves an API Gateway and runs the Sonr Frontend."
-    ids:
-      - "hway"
+    description: "Highway is a Decentralized Gateway which serves the Sonr Dynamic UI and a gateway to the blockchain API."
     license: "OpenGLV3"
     name: "hway"
+    ids:
+      - "hway"
     repository:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
+
 nfpms:
   # linux debs - sonrd
   - id: sonrd
@@ -151,14 +154,10 @@ nfpms:
     license: "OpenGLV3"
     formats:
       - deb
-  # linux debs - hway
-  - id: hway
-    description: "Highway Daemon which serves an API Gateway and runs the Sonr Frontend."
-    maintainer: "Sonr Inc."
-    homepage: "https://sonr.io"
-    license: "OpenGLV3"
-    formats:
-      - deb
+    builds:
+      - sonrd
+      - hway
+    package_name: "sonr"
 
 release:
   github:
