@@ -29,7 +29,7 @@ jobs:
       - uses: bufbuild/buf-setup-action@v1
       - uses: bufbuild/buf-breaking-action@v1
         with:
-          against: "https://github.com/sonrhq/sonr.git#branch=master"
+          against: buf.build/sonrhq/sonr
 
   test-crypto:
     environment: Staging
