@@ -15,9 +15,3 @@ RUN apt install helix
 RUN curl -sL https://github.com/neondatabase/neonctl/releases/latest/download/neonctl-linux -o neonctl
 RUN chmod +x neonctl
 RUN mv neonctl /usr/local/bin/neonctl
-
-# Add user
-RUN chsh -s /bin/zsh
-RUN useradd -m -s /bin/bash -G sudo coder
-USER coder
-
