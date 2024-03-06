@@ -1,13 +1,11 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
-
-project_name: sonrd
+project_name: sonr
 before:
-  # Templates for the commands to be ran.
   hooks:
     - go mod download
 
 builds:
-  # Build Sonr Daemon
+  # Build - sonrd
   - id: sonrd
     main: cmd/sonrd/main.go
     binary: sonrd
@@ -27,7 +25,28 @@ builds:
       - -X main.Version={{ .Version }}
       - -X main.Commit={{ .Commit }}
       - -w -s
+  # Build - hway
+  - id: hway
+    main: cmd/hway/main.go
+    binary: hway
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: linux
+        goarch: arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .Commit }}
+      - -w -s
 kos:
+  # GHCR Docker - sonrd
   - repository: ghcr.io/sonrhq/sonrd
     id: ko-sonrd
     build: sonrd
@@ -42,8 +61,24 @@ kos:
       - linux/arm64
       - darwin/amd64
       - darwin/arm64
+  # GHCR Docker - hway
+  - repository: ghcr.io/sonrhq/hway
+    id: ko-hway
+    build: hway
+    main: ./cmd/hway
+    tags:
+      - "{{.Version}}"
+      - latest
+    bare: true
+    preserve_import_paths: true
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - darwin/amd64
+      - darwin/arm64
 
 dockers:
+  # Docker Images - sonrd
   - image_templates:
       - "sonrhq/sonrd:{{ .Version }}"
       - sonrhq/sonrd:latest
@@ -53,11 +88,27 @@ dockers:
       - "--label=org.opencontainers.image.title={{.ProjectName}}"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
+    ids:
+      - sonrd
+  # Docker Images - hway
+  - image_templates:
+      - "sonrhq/hway:{{ .Version }}"
+      - sonrhq/hway:latest
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    ids:
+      - hway
 
 archives:
+  # Archives
   - id: sonrd
     builds:
       - sonrd
+      - hway
     name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
 checksum:
@@ -65,10 +116,11 @@ checksum:
   algorithm: sha256
 
 brews:
+  # Homebrew - sonrd
   - folder: Formula
-    caveats: "How to use this binary"
-    homepage: "https://sonrhq.com"
-    description: "Sonr Binary Node"
+    caveats: "Run the Sonr Blockchain Node with `sonrd`"
+    homepage: "https://sonr.io"
+    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
     ids:
       - "sonrd"
     license: "OpenGLV3"
@@ -77,18 +129,37 @@ brews:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
+  # Homebrew - hway
+  - folder: Formula
+    caveats: "Run the Highway Daemon with `hway`"
+    homepage: "https://sonr.io"
+    description: "Highway Daemon which serves an API Gateway and runs the Sonr Frontend."
+    ids:
+      - "hway"
+    license: "OpenGLV3"
+    name: "hway"
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
 nfpms:
+  # linux debs - sonrd
   - id: sonrd
-    description: "Sonr Binary Node"
+    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
+    maintainer: "Sonr Inc."
+    homepage: "https://sonr.io"
+    license: "OpenGLV3"
+    formats:
+      - deb
+  # linux debs - hway
+  - id: hway
+    description: "Highway Daemon which serves an API Gateway and runs the Sonr Frontend."
     maintainer: "Sonr Inc."
     homepage: "https://sonr.io"
     license: "OpenGLV3"
     formats:
       - deb
 
-# ! ||--------------------------------------------------------------------------------||
-# ! ||                              Release and Changelog                             ||
-# ! ||--------------------------------------------------------------------------------||
 release:
   github:
     owner: sonrhq
@@ -118,5 +189,6 @@ changelog:
       order: 3
     - title: Others
       order: 999
+
 furies:
   - account: sonr

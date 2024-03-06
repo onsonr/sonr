@@ -1,19 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"os"
-
-	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/cobra"
 
-	"github.com/sonrhq/sonr/app"
-	"github.com/sonrhq/sonr/app/params"
-	"github.com/sonrhq/sonr/cmd/sonrd/cmds"
-	"github.com/sonrhq/sonr/config"
+	"github.com/sonrhq/sonr/cmd/hway/config"
 	"github.com/sonrhq/sonr/pkg/middleware/common"
 	"github.com/sonrhq/sonr/pkg/routes"
 )
@@ -28,25 +21,14 @@ var (
 
 // init sets the version flags.
 func init() {
-	version.Name = "sonr"
-	version.AppName = "sonrd"
+	version.Name = "highway"
+	version.AppName = "hway"
 	version.Version = Version
 	version.Commit = Commit
-	version.BuildTags = "netgo"
 }
 
 // main is the entry point for the application.
 func main() {
-	params.SetAddressPrefixes()
-	rootCmd := cmds.NewRootCmd()
-	if err := svrcmd.Execute(rootCmd, "SONR", app.DefaultNodeHome); err != nil {
-		fmt.Fprintln(rootCmd.OutOrStderr(), err)
-		os.Exit(1)
-	}
-}
-
-// HwayCommand returns the serve command for the Sonr Highway
-func HwayCommand() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                        "hway",
 		Short:                      "Serves the Sonr Highway",
@@ -60,7 +42,10 @@ func HwayCommand() *cobra.Command {
 	cmd.Flags().String("val-host", "sonrd", "validator host")
 	cmd.Flags().Int("val-rpc", 26657, "validator rpc port")
 	cmd.Flags().Int("val-grpc", 9090, "validator grpc port")
-	return cmd
+	err := cmd.Execute()
+	if err != nil {
+		cmd.PrintErr(err)
+	}
 }
 
 func serveHighway(c *cobra.Command, _ []string) {
