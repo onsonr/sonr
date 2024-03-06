@@ -32,8 +32,6 @@ services:
   ipfs:
     image: ipfs/kubo:latest
     command: ["daemon"]
-    volumes:
-      - ./data/.ipfs:/.ipfs
     ports:
       - 4001:4001 # swarm
       - 5001:5001 # api
