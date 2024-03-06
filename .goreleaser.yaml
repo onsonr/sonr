@@ -91,7 +91,7 @@ release:
   mode: replace
   draft: false
   extra_files:
-    - glob: ./assets/public/scripts/install.sh
+    - glob: ./assets/scripts/install.sh
 
 changelog:
   sort: asc
