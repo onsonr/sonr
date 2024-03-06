@@ -1,7 +1,10 @@
 name: CRON Release
 on:
-  schedule:
-    - cron: "0 0 1-8,21-28 * 3"
+  push:
+    branches:
+      - master
+    tags:
+      - "*v"
 
 jobs:
   release-publish:
@@ -32,4 +35,3 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

@@ -24,11 +24,6 @@ tasks:
     cmds:
       - task: test
 
-  lint:
-    desc: "Run linters"
-    cmds:
-      - task: trunk fmt --all
-
   compose-up:
     dir: ./docker
     cmds:

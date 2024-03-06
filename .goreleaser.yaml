@@ -57,7 +57,8 @@ brews:
 nfpms:
   - id: sonrd
     description: "Sonr Binary Node"
-    homepage: "https://sonrhq.com"
+    maintainer: "Sonr Inc."
+    homepage: "https://sonr.io"
     license: "OpenGLV3"
     formats:
       - deb
