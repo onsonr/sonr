@@ -1,0 +1,69 @@
+version: "3"
+services:
+  # Sonr Validator
+  sonrd:
+    image: sonrhq/sonrd:latest
+    command: ["start"]
+    volumes:
+      - ./data/.sonr:/.sonr
+    ports:
+      - 1317:1317 # rest
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+    networks:
+      - default
+
+  # Sonr Validator
+  highway:
+    image: sonrhq/hway:latest
+    env_file:
+      - .env.rails
+    ports:
+      - 8000:8000 # api/htmx
+    networks:
+      - default
+
+  # IPFS node
+  ipfs:
+    image: ipfs/kubo:latest
+    command: ["daemon"]
+    ports:
+      - 4001:4001 # swarm
+      - 5001:5001 # api
+      - 8080:8080 # gateway
+    networks:
+      - default
+
+  monolith:
+    image: matrixdotorg/dendrite-monolith:latest
+    restart: unless-stopped
+    ports:
+      - 8008:8008
+      - 8448:8448
+    volumes:
+      - ./data/dendrite:/etc/dendrite
+      - dendrite_media:/var/dendrite/media
+      - dendrite_jetstream:/var/dendrite/jetstream
+      - dendrite_search_index:/var/dendrite/searchindex
+    networks:
+      - default
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - default
+
+volumes:
+  dendrite_postgres_data:
+  dendrite_media:
+  dendrite_jetstream:
+  dendrite_search_index:
+
+networks:
+  default:

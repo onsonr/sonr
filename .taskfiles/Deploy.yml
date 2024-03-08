@@ -1,0 +1,52 @@
+version: "3"
+tasks:
+  setup:
+    cmds:
+      - rm -rf ./deploy/testnet/data/.sonr
+      - mkdir -p ./tmp
+      - mkdir -p ./deploy/testnet/data/dendrite
+      - mkdir -p ./deploy/testnet/data/redis
+      - mkdir -p ./deploy/testnet/data/.sonr/config
+      - doppler secrets get MATRIX_CONFIG --config ops --plain > ./tmp/dendrite-config
+      - doppler secrets get NODE_CONFIG_APP --config ops --plain > ./tmp/node-app-config
+      - doppler secrets get NODE_CONFIG_CLIENT --config ops --plain > ./tmp/node-client-config
+      - doppler secrets get NODE_CONFIG_ROOT --config ops --plain > ./tmp/node-config
+      - doppler secrets download --format env --no-file --config rls --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/.env.rails
+      - task: import-keys
+      - doppler run --token $DOPPLER_VALIDATOR_TOKEN --config val --command="task deploy:init-node"
+      - task: sub-node-config
+      - doppler run --token $DOPPLER_VALIDATOR_TOKEN --config val --command="task deploy:collect-gentx"
+      - task: validate-genesis
+      - rm -rf ./tmp
+
+  import-keys:
+    internal: true
+    cmds:
+      - doppler secrets get MATRIX_SERVER_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/matrix_key.pem
+      - doppler secrets get MATRIX_TLS_CRT --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/server.crt
+      - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/server.key
+      - doppler secrets get MATRIX_CHAT_SERVICE_CONFIG --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/chat-service.yaml
+      - doppler secrets get MATRIX_EVENT_SERVICE_CONFIG --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/event-service.yaml
+      - doppler secrets get MATRIX_TLS_KEY --plain --token $DOPPLER_RAILS_TOKEN > ./deploy/testnet/data/dendrite/server.key
+      - doppler secrets substitute ./tmp/dendrite-config --token $DOPPLER_RAILS_TOKEN --config rls > ./deploy/testnet/data/dendrite/dendrite.yaml
+
+  init-node:
+    cmds:
+      - sonrd init $SONRD_MONIKER --chain-id sonr-testnet-1 --home ./deploy/testnet/data/.sonr --default-denom usnr --overwrite
+      - echo $SONRD_MNEMONIC | sonrd keys add $SONRD_KEY --keyring-backend test --home ./deploy/testnet/data/.sonr
+
+  sub-node-config:
+    cmds:
+      - doppler secrets substitute ./tmp/node-app-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./deploy/testnet/data/.sonr/config/app.toml
+      - doppler secrets substitute ./tmp/node-client-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./deploy/testnet/data/.sonr/config/client.toml
+
+  collect-gentx:
+    cmds:
+      - sonrd genesis add-genesis-account $SONRD_KEY 100000000000000000000000000usnr,10000000000000000snr --keyring-backend test --home ./deploy/testnet/data/.sonr
+      - sonrd genesis gentx $SONRD_KEY 1000000000000000000000usnr --keyring-backend test --chain-id sonr-testnet-1 --home ./deploy/testnet/data/.sonr
+      - sonrd genesis collect-gentxs --home ./deploy/testnet/data/.sonr
+
+  validate-genesis:
+    cmds:
+      - doppler secrets substitute ./tmp/node-config --token $DOPPLER_VALIDATOR_TOKEN --config val > ./deploy/testnet/data/.sonr/config/config.toml
+      - sonrd genesis validate-genesis --home ./deploy/testnet/data/.sonr

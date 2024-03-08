@@ -1,13 +1,11 @@
 # yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
-
-project_name: sonrd
+project_name: sonr
 before:
-  # Templates for the commands to be ran.
   hooks:
     - go mod download
 
 builds:
-  # Build Sonr Daemon
+  # Build - sonrd
   - id: sonrd
     main: cmd/sonrd/main.go
     binary: sonrd
@@ -17,9 +15,23 @@ builds:
     goarch:
       - amd64
       - arm64
-    ignore:
-      - goos: linux
-        goarch: arm64
+    flags:
+      - -mod=readonly
+      - -trimpath
+    ldflags:
+      - -X main.Version={{ .Version }}
+      - -X main.Commit={{ .Commit }}
+      - -w -s
+  # Build - hway
+  - id: hway
+    main: cmd/hway/main.go
+    binary: hway
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
     flags:
       - -mod=readonly
       - -trimpath
@@ -28,53 +40,108 @@ builds:
       - -X main.Commit={{ .Commit }}
       - -w -s
 
-# ! ||--------------------------------------------------------------------------------||
-# ! ||                                Tarball Archives                                ||
-# ! ||--------------------------------------------------------------------------------||
+dockers:
+  # Docker Images - sonrd
+  - image_templates:
+      - ghcr.io/sonrhq/sonrd:{{ .Version }}
+      - ghcr.io/sonrhq/sonrd:latest
+      - "sonrhq/sonrd:{{ .Version }}"
+      - sonrhq/sonrd:latest
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    ids:
+      - sonrd
+    dockerfile: ./deploy/Dockerfile.node
+  # Docker Images - hway
+  - image_templates:
+      - ghcr.io/sonrhq/hway:{{ .Version }}
+      - ghcr.io/sonrhq/hway:latest
+      - "sonrhq/hway:{{ .Version }}"
+      - sonrhq/hway:latest
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+    ids:
+      - hway
+    dockerfile: ./deploy/Dockerfile.hway
+
 archives:
+  # Archives
   - id: sonrd
     builds:
       - sonrd
     name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
     format: tar.gz
+  # Archives
+  - id: hway
+    builds:
+      - hway
+    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
+    format: tar.gz
+
 checksum:
   name_template: sha256sum.txt
   algorithm: sha256
 
 brews:
+  # Homebrew - sonrd
   - folder: Formula
-    caveats: "How to use this binary"
-    homepage: "https://sonrhq.com"
-    description: "Sonr Binary Node"
-    ids:
-      - "sonrd"
+    caveats: "Run the Sonr Blockchain Node with `sonrd`"
+    homepage: "https://sonr.io"
+    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
     license: "OpenGLV3"
     name: "sonrd"
+    ids:
+      - "sonrd"
     repository:
       owner: sonrhq
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
+  # Homebrew - hway
+  - folder: Formula
+    caveats: "Run the Sonr Highway with `hway`"
+    homepage: "https://sonr.io"
+    description: "Highway is a Decentralized Gateway which serves the Sonr Dynamic UI and a gateway to the blockchain API."
+    license: "OpenGLV3"
+    name: "hway"
+    ids:
+      - "hway"
+    repository:
+      owner: sonrhq
+      name: homebrew-tap
+      token: "{{ .Env.GITHUB_TOKEN }}"
+
 nfpms:
+  # linux debs - sonrd
   - id: sonrd
-    description: "Sonr Binary Node"
-    homepage: "https://sonrhq.com"
+    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
+    maintainer: "Sonr Inc."
+    homepage: "https://sonr.io"
     license: "OpenGLV3"
     formats:
       - deb
+    builds:
+      - sonrd
+      - hway
+    package_name: "sonr"
 
-# ! ||--------------------------------------------------------------------------------||
-# ! ||                              Release and Changelog                             ||
-# ! ||--------------------------------------------------------------------------------||
 release:
   github:
     owner: sonrhq
     name: sonr
 
-  name_template: '🆔 Release {{ .Now.Format "2006.01.02" }}'
+  name_template: "🆔 Release {{ .Version }}"
   mode: replace
   draft: false
   extra_files:
-    - glob: ./assets/public/scripts/install.sh
+    - glob: ./assets/scripts/install.sh
 
 changelog:
   sort: asc
@@ -95,10 +162,5 @@ changelog:
     - title: Others
       order: 999
 
-nightly:
-  name_template: '🌙 Nightly {{ .Now.Format "2006.01.23" }}'
-  tag_name: nightly
-  publish_release: true
-  keep_single_release: true
 furies:
   - account: sonr

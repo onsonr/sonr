@@ -1,14 +1,41 @@
 version: "3"
+dotenv:
+  - .env
 
 includes:
-  build: ./tasks/Build.yml
-  deploy: ./tasks/Deploy.yml
-  dev: ./tasks/Dev.yml
-  gen: ./tasks/Gen.yml
-  release: ./tasks/Release.yml
-  test: ./tasks/Test.yml
+  build: ./.taskfiles/Build.yml
+  deploy: ./.taskfiles/Deploy.yml
+  gen: ./.taskfiles/Gen.yml
+  release: ./.taskfiles/Release.yml
+  test: ./.taskfiles/Test.yml
 
 tasks:
+  install:
+    desc: "Setup the development environment"
+    cmds:
+      - go install github.com/cosmtrek/air@latest
+      - go install github.com/kollalabs/protoc-gen-openapi@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+      - go install github.com/wailsapp/wails/v2/cmd/wails@latest
+      - go install github.com/a-h/templ/cmd/templ@latest
+
+  compose-up:
+    cmds:
+      - task: compose-down
+      - templ generate
+      - task: build:current
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml up --abort-on-container-exit
+
+  compose-down:
+    ignore_error: true
+    cmds:
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml down
+
+  dev:
+    desc: "Start development server"
+    cmd: air -c ./deploy/air.toml
+
   generate:
     desc: "Generate Templ and Proto files"
     cmds:
@@ -20,21 +47,3 @@ tasks:
     desc: "Run essential tests"
     cmds:
       - task: test
-
-  lint:
-    desc: "Run linters"
-    cmds:
-      - task: trunk fmt --all
-
-  compose-up:
-    cmds:
-      - task: compose-down
-      - templ generate
-      - task: build:current
-      - task: build:dockerfile
-      - docker compose up --abort-on-container-exit
-
-  compose-down:
-    ignore_error: true
-    cmds:
-      - docker compose down

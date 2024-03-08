@@ -47,7 +47,7 @@ require (
 
 require (
 	github.com/SporkHubr/echo-http-cache v0.0.0-20200706100054-1d7ae9f38029
-	github.com/a-h/templ v0.2.543
+	github.com/a-h/templ v0.2.598
 	github.com/donseba/go-htmx v1.6.0
 	github.com/ecies/go/v2 v2.0.9
 	github.com/ethereum/go-ethereum v1.13.5
@@ -62,6 +62,7 @@ require (
 	github.com/segmentio/ksuid v1.0.4
 	github.com/swaggo/swag v1.16.3
 	github.com/tink-crypto/tink-go/v2 v2.1.0
+	github.com/xhit/go-simple-mail/v2 v2.16.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	lukechampine.com/blake3 v1.2.1
 	maunium.net/go/mautrix v0.17.0
@@ -129,6 +130,7 @@ require (
 	github.com/go-openapi/jsonreference v0.20.0 // indirect
 	github.com/go-openapi/spec v0.20.6 // indirect
 	github.com/go-openapi/swag v0.19.15 // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/go-webauthn/x v0.1.6 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
@@ -257,6 +259,7 @@ require (
 	github.com/tidwall/match v1.1.1 // indirect
 	github.com/tidwall/pretty v1.2.0 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
+	github.com/toorop/go-dkim v0.0.0-20201103131630-e1cd1a0a5208 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect

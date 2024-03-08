@@ -1,0 +1,37 @@
+version: "3"
+
+tasks:
+  default:
+    desc: "Builds the project for current platform"
+    cmds:
+      - templ generate
+      - rm -rf bin/ && mkdir ./bin/
+      - go build -o ./bin/sonrd ./cmd/sonrd
+      - rm -rf dist
+
+  current:
+    desc: "Builds the project for current platform"
+    cmds:
+      - task: node
+      - task: hway
+
+  node:
+    desc: "Builds the project for current platform"
+    cmds:
+      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd --id sonrd
+      - earthly --no-sat +current-node
+
+  hway:
+    desc: "Builds the project for current platform"
+    cmds:
+      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/hway --id hway
+      - earthly --no-sat +current-hway
+
+  devcontainer:
+    desc: "Builds the project for current platform"
+    cmds:
+      - docker run -it --rm
+        -v ./tmp/envbuilder:/workspaces
+        -e GIT_URL=https://github.com/sonrhq/sonr
+        -e INIT_SCRIPT=zsh
+        ghcr.io/coder/envbuilder

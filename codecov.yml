@@ -1,4 +1,0 @@
-# Global YAML [lower on hierarchy]
-coverage:
-  round: down
-  precision: 5

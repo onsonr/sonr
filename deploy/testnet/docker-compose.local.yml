@@ -1,0 +1,50 @@
+version: "3"
+services:
+  # Sonr Validator
+  sonrd:
+    image: sonrd:latest
+    entrypoint: ["sonrd", "start"]
+    volumes:
+      - ./data/.sonr:/root/.sonr
+    ports:
+      - 1317:1317 # rest
+      - 26657:26657 # rpc
+      - 9090:9090 # grpc
+    networks:
+      - default
+
+  # Sonr Validator
+  highway:
+    image: hway:latest
+    entrypoint: ["hway"]
+    env_file:
+      - .env.rails
+    ports:
+      - 8000:8000 # api/htmx
+    networks:
+      - default
+
+  # IPFS node
+  ipfs:
+    image: ipfs/kubo:latest
+    command: ["daemon"]
+    ports:
+      - 4001:4001 # swarm
+      - 5001:5001 # api
+      - 8080:8080 # gateway
+    networks:
+      - default
+
+  redis:
+    image: redis:6.2-alpine
+    restart: always
+    command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - default
+
+networks:
+  default:
