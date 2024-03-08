@@ -62,7 +62,10 @@ require (
 	github.com/segmentio/ksuid v1.0.4
 	github.com/swaggo/swag v1.16.3
 	github.com/tink-crypto/tink-go/v2 v2.1.0
+<<<<<<< HEAD
 	github.com/xhit/go-simple-mail/v2 v2.16.0
+=======
+>>>>>>> master
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
 	lukechampine.com/blake3 v1.2.1
 	maunium.net/go/mautrix v0.17.0

@@ -6,7 +6,10 @@ import (
 
 	"github.com/cosmos/cosmos-sdk/types/tx"
 	"github.com/labstack/echo/v4"
+<<<<<<< HEAD:pkg/handlers/tx_handler.go
 
+=======
+>>>>>>> master:pkg/handlers/api/tx_handler.go
 	shared "github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
@@ -18,7 +21,11 @@ type txAPI struct{}
 
 // GetTx returns a transaction by hash
 func (h txAPI) GetTx(c echo.Context) error {
+<<<<<<< HEAD:pkg/handlers/tx_handler.go
 	txHash := c.Param("hash")
+=======
+	txHash := c.Param("txHash")
+>>>>>>> master:pkg/handlers/api/tx_handler.go
 	resp, err := shared.Clients(c).Tx().GetTx(c.Request().Context(), &tx.GetTxRequest{
 		Hash: txHash,
 	})
