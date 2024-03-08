@@ -36,3 +36,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GH_ACTIONS_PAT }}
           GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+          FURY_TOKEN: ${{ secrets.FURY_TOKEN }}
