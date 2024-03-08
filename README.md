@@ -11,8 +11,8 @@
 ![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Discord%20Chat)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/sonr)](https://goreportcard.com/report/github.com/sonrhq/sonr)
-[![Run Tests](https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml)
-[![Merge Queue](https://github.com/sonrhq/sonr/actions/workflows/merge-queue.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/merge-queue.yaml)
+[![Run Tests](https://github.com/sonrhq/sonr/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/tests.yaml)
+[![Merge Queue](https://github.com/sonrhq/sonr/actions/workflows/merge-queue.yaml/badge.svg)](https://github.com/sonrhq/sonr/actions/workflows/build.yaml)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sonrhq_sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
