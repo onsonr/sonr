@@ -6,16 +6,11 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-
-<<<<<<< HEAD:pkg/handlers/service_handler.go
 	// mail "github.com/xhit/go-simple-mail/v2"
 
 	//	"github.com/sonrhq/sonr/internal/components/views/auth/register"
 	"github.com/sonrhq/sonr/pkg/middleware/common"
 	"github.com/sonrhq/sonr/pkg/middleware/vault"
-=======
-	"github.com/sonrhq/sonr/pkg/middleware/common"
->>>>>>> master:pkg/handlers/api/service_handler.go
 	"github.com/sonrhq/sonr/x/service"
 )
 

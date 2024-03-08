@@ -36,21 +36,13 @@ func (o *Highway) Serve(e *echo.Echo) {
 }
 
 // NewHway returns a new HighwayOptions
-<<<<<<<< HEAD:cmd/hway/config/options.go
 func NewHway() *Highway {
 	v := viper.New()
 	v.SetEnvPrefix("HWAY")
 	v.AutomaticEnv()
 	conf := &Highway{
-========
-func NewHway() *HighwayConfig {
-	return &HighwayConfig{
->>>>>>>> master:config/options.go
 		GatewayPort: 8000,
 		Host:        "0.0.0.0",
-	}
-	if err := v.Unmarshal(conf); err != nil {
-		panic(err)
 	}
 	return conf
 }
@@ -79,29 +71,8 @@ func (o *Highway) ReadFlags(c *cobra.Command) error {
 		return err
 	}
 	o.RedisConnection = redis
-<<<<<<<< HEAD:cmd/hway/config/options.go
 
-========
->>>>>>>> master:config/options.go
 	return nil
-}
-
-// HasPostgres returns true if the postgres connection is set
-<<<<<<<< HEAD:cmd/hway/config/options.go
-func (o *Highway) HasPostgres() bool {
-========
-func (o *HighwayConfig) HasPostgres() bool {
->>>>>>>> master:config/options.go
-	return o.PostgresConnection != ""
-}
-
-// HasRedis returns true if the redis connection is set
-<<<<<<<< HEAD:cmd/hway/config/options.go
-func (o *Highway) HasRedis() bool {
-========
-func (o *HighwayConfig) HasRedis() bool {
->>>>>>>> master:config/options.go
-	return o.RedisConnection != ""
 }
 
 // Validate validates the HighwayOptions
