@@ -39,7 +39,7 @@ func main() {
 	cmd.Flags().String("hway-host", "0.0.0.0", "host")
 	cmd.Flags().Int("hway-port", 8000, "port")
 	cmd.Flags().String("hway-psql", "postgresql://sonr:sonr@localhost:5432/sonr?sslmode=disable", "psql connection string")
-	cmd.Flags().String("val-host", "sonrd", "validator host")
+	cmd.Flags().String("val-host", "localhost", "validator host")
 	cmd.Flags().Int("val-rpc", 26657, "validator rpc port")
 	cmd.Flags().Int("val-grpc", 9090, "validator grpc port")
 	err := cmd.Execute()
