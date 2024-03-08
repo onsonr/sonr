@@ -15,10 +15,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Checkout latest release tag
-        run: |
-          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
-          git checkout $LATEST_TAG
+      - name: Bump version and push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.1
+        with:
+          github_token: ${{ secrets.GH_ACTIONS_PAT }}
 
       - uses: actions/setup-go@v5
         with:
