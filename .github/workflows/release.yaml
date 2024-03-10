@@ -1,8 +1,6 @@
 name: CRON Release
 on:
   push:
-    branches:
-      - master
     tags:
       - "*v"
 

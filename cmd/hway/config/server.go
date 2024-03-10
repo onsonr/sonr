@@ -9,31 +9,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-func persistentBanner(address string) string {
-	return fmt.Sprintf(`
-Sonr Highway
-· Gateway: http://%s
-· Node RPC: http://localhost:26657
-`, address)
-}
-
-// HighwayOption is a function that sets some option on the HighwayOptions
-type HighwayOption func(*Highway)
-
-// WithGatewayPort sets the GatewayPort
-func WithGatewayPort(port int) HighwayOption {
-	return func(o *Highway) {
-		o.GatewayPort = port
-	}
-}
-
-// WithHost sets the Host
-func WithHost(host string) HighwayOption {
-	return func(o *Highway) {
-		o.Host = host
-	}
-}
-
 // Highway represents the highway configuration
 type Highway struct {
 	// ValidatorHost is the host of the validator
@@ -156,4 +131,12 @@ func (o *Highway) Validate() error {
 		return fmt.Errorf("host must not be empty")
 	}
 	return nil
+}
+
+func persistentBanner(address string) string {
+	return fmt.Sprintf(`
+Sonr Highway
+· Gateway: http://%s
+· Node RPC: http://localhost:26657
+`, address)
 }
