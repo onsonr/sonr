@@ -1,8 +1,38 @@
 package config
 
 import (
+	"fmt"
+
+	"github.com/labstack/echo/v4"
+	"github.com/pterm/pterm"
+	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
+
+func persistentBanner(address string) string {
+	return fmt.Sprintf(`
+Sonr Highway
+· Gateway: http://%s
+· Node RPC: http://localhost:26657
+`, address)
+}
+
+// HighwayOption is a function that sets some option on the HighwayOptions
+type HighwayOption func(*Highway)
+
+// WithGatewayPort sets the GatewayPort
+func WithGatewayPort(port int) HighwayOption {
+	return func(o *Highway) {
+		o.GatewayPort = port
+	}
+}
+
+// WithHost sets the Host
+func WithHost(host string) HighwayOption {
+	return func(o *Highway) {
+		o.Host = host
+	}
+}
 
 // Highway represents the highway configuration
 type Highway struct {
@@ -60,4 +90,70 @@ func LoadConfig() (*Highway, error) {
 		return nil, err
 	}
 	return &config, nil
+}
+
+// NewHway returns a new HighwayOptions
+func NewHway() *Highway {
+	v := viper.New()
+	v.SetEnvPrefix("HWAY")
+	v.AutomaticEnv()
+	conf := &Highway{
+		GatewayPort: 8000,
+		Host:        "0.0.0.0",
+	}
+	return conf
+}
+
+func (o *Highway) ReadFlags(c *cobra.Command) error {
+	host, err := c.Flags().GetString("hway-host")
+	if err != nil {
+		return err
+	}
+	o.Host = host
+
+	port, err := c.Flags().GetInt("hway-port")
+	if err != nil {
+		return err
+	}
+	o.GatewayPort = port
+
+	psql, err := c.Flags().GetString("hway-psql")
+	if err != nil {
+		return err
+	}
+	o.PostgresConnection = psql
+
+	redis, err := c.Flags().GetString("hway-redis")
+	if err != nil {
+		return err
+	}
+	o.RedisConnection = redis
+
+	return nil
+}
+
+func (o *Highway) ListenAddress() string {
+	return fmt.Sprintf("%s:%d", o.Host, o.GatewayPort)
+}
+
+// PrintBanner prints the banner
+func (o *Highway) PrintBanner() {
+	pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.GatewayPort)))
+}
+
+// Serve starts the highway server
+func (o *Highway) Serve(e *echo.Echo) {
+	o.PrintBanner()
+	e.Logger.Fatal(e.Start(o.ListenAddress()))
+}
+
+// Validate validates the HighwayOptions
+func (o *Highway) Validate() error {
+	if o.GatewayPort < 0 {
+		return fmt.Errorf("gateway port must be greater than 0")
+	}
+	if o.Host == "" {
+		return fmt.Errorf("host must not be empty")
+	}
+	return nil
 }

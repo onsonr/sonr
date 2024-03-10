@@ -22,7 +22,7 @@ var (
 
 // init sets the version flags.
 func init() {
-	version.Name = "sonr"
+	version.Name = "Sonr Node Daemon"
 	version.AppName = "sonrd"
 	version.Version = Version
 	version.Commit = Commit
