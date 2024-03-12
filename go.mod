@@ -46,7 +46,6 @@ require (
 )
 
 require (
-	github.com/SporkHubr/echo-http-cache v0.0.0-20200706100054-1d7ae9f38029
 	github.com/a-h/templ v0.2.598
 	github.com/donseba/go-htmx v1.6.0
 	github.com/ecies/go/v2 v2.0.9
@@ -55,11 +54,15 @@ require (
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.16.0
 	github.com/ipfs/boxo v0.16.0
 	github.com/ipfs/kubo v0.25.0
+	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo-jwt/v4 v4.2.0
 	github.com/labstack/echo/v4 v4.11.4
 	github.com/labstack/gommon v0.4.2
 	github.com/okx/go-wallet-sdk/coins/cosmos v0.0.0-20231215072905-c7160519f225
+	github.com/redis/go-redis/v9 v9.5.1
 	github.com/segmentio/ksuid v1.0.4
+	github.com/shopspring/decimal v1.3.1
+	github.com/steebchen/prisma-client-go v0.35.0
 	github.com/tink-crypto/tink-go/v2 v2.1.0
 	github.com/xhit/go-simple-mail/v2 v2.16.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.3.0
@@ -231,7 +234,6 @@ require (
 	github.com/prometheus/common v0.47.0 // indirect
 	github.com/prometheus/procfs v0.12.0 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	github.com/redis/go-redis/v9 v9.5.1 // indirect
 	github.com/rivo/uniseg v0.4.4 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/cors v1.8.3 // indirect
