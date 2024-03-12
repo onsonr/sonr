@@ -6,11 +6,12 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
+
 	// mail "github.com/xhit/go-simple-mail/v2"
 
 	//	"github.com/sonrhq/sonr/internal/components/views/auth/register"
 	"github.com/sonrhq/sonr/pkg/middleware/common"
-	"github.com/sonrhq/sonr/pkg/middleware/vault"
+	"github.com/sonrhq/sonr/pkg/middleware/plugins"
 	"github.com/sonrhq/sonr/x/service"
 )
 
@@ -100,7 +101,7 @@ func (h serviceAPI) FinishLogin(c echo.Context) error {
 // SendVerificationEmail uses the SMTP service to send a verification email
 func (h serviceAPI) SendVerificationEmail(c echo.Context) error {
 	email := c.Param("email")
-	return vault.Recovery(c).SendConfirmationMail(email, "dawsdfsadf")
+	return plugins.Recovery(c).SendConfirmationMail(email, "dawsdfsadf")
 }
 
 // VerifyEmail uses the SMTP service to verify an email
