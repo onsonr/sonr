@@ -12,19 +12,20 @@ tasks:
   current:
     desc: "Builds the project for current platform"
     cmds:
-      - task: node
+      - task: sonrd
       - task: hway
 
-  node:
+  sonrd:
     desc: "Builds the project for current platform"
     cmds:
-      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/sonrd --id sonrd
+      - GOOS=linux GOARCH=amd64 go build -o ./bin/sonrd ./cmd/sonrd
       - earthly --no-sat +current-node
 
   hway:
     desc: "Builds the project for current platform"
     cmds:
-      - GOOS=linux GOARCH=amd64 goreleaser build --snapshot --rm-dist --single-target -o ./bin/hway --id hway
+      - task: prisma-gen
+      - GOOS=linux GOARCH=amd64 go build -o ./bin/hway ./cmd/hway
       - earthly --no-sat +current-hway
 
   devcontainer:
@@ -35,3 +36,23 @@ tasks:
         -e GIT_URL=https://github.com/sonrhq/sonr
         -e INIT_SCRIPT=zsh
         ghcr.io/coder/envbuilder
+
+  prisma-gen:
+    dir: ./internal/prisma
+    cmd: go run github.com/steebchen/prisma-client-go generate
+
+  prisma-sync:
+    dir: ./internal/prisma
+    cmd: go run github.com/steebchen/prisma-client-go db push
+
+  prisma-pull:
+    dir: ./internal/prisma
+    cmd: go run github.com/steebchen/prisma-client-go db pull
+
+  prisma-dev:
+    dir: ./internal/prisma
+    cmd: go run github.com/steebchen/prisma-client-go migrate dev
+
+  prisma-deploy:
+    dir: ./internal/prisma
+    cmd: go run github.com/steebchen/prisma-client-go migrae deploy

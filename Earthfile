@@ -31,11 +31,11 @@ current-node:
     FROM alpine:3.14
     COPY ./bin/sonrd /usr/local/bin/sonrd
     RUN chmod +x /usr/local/bin/sonrd
-    SAVE IMAGE sonrd:latest
+    SAVE IMAGE sonrhq/sonrd:latest sonrd:latest ghcr.io/sonrhq/sonrd:latest
 
 # current-hway - copies local files to the current build
 current-hway:
     FROM alpine:3.14
     COPY ./bin/hway /usr/local/bin/hway
     RUN chmod +x /usr/local/bin/hway
-    SAVE IMAGE hway:latest
+    SAVE IMAGE sonrhq/hway:latest hway:latest ghcr.io/sonrhq/hway:latest

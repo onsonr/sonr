@@ -58,26 +58,6 @@ tasks:
     cmds:
       - buf generate --template buf.gen.doc.yaml --path sonr
 
-  prisma-gen:
-    dir: ./internal/prisma
-    cmd: go run github.com/steebchen/prisma-client-go generate
-
-  prisma-sync:
-    dir: ./internal/prisma
-    cmd: go run github.com/steebchen/prisma-client-go db push
-
-  prisma-pull:
-    dir: ./internal/prisma
-    cmd: go run github.com/steebchen/prisma-client-go db pull
-
-  prisma-dev:
-    dir: ./internal/prisma
-    cmd: go run github.com/steebchen/prisma-client-go migrate dev
-
-  prisma-deploy:
-    dir: ./internal/prisma
-    cmd: go run github.com/steebchen/prisma-client-go migrae deploy
-
   swagger:
     dir: ./proto
     cmds:

@@ -17,8 +17,8 @@ tasks:
       - go install github.com/kollalabs/protoc-gen-openapi@latest
       - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
       - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
-      - go install github.com/wailsapp/wails/v2/cmd/wails@latest
       - go install github.com/a-h/templ/cmd/templ@latest
+      - go install github.com/go-task/task/v3/cmd/task@latest
 
   compose-up:
     cmds:
