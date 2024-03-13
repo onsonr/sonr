@@ -1,8 +1,11 @@
 package plugins
 
-import "github.com/sonrhq/sonr/internal/prisma/db"
+import (
+	"github.com/labstack/echo/v4"
 
-func New() {
-	client := db.NewClient()
-	client.Connect()
+	"github.com/sonrhq/sonr/internal/prisma"
+)
+
+func UsePrisma(ctx echo.Context) *prisma.Client {
+	return prisma.NewClient()
 }

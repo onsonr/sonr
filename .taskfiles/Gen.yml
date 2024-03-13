@@ -65,9 +65,22 @@ tasks:
 
   templ:
     cmds:
-      - go install github.com/a-h/templ/cmd/templ@latest
       - templ generate
 
   prisma:
-    dir: ./internal/prisma
+    cmds:
+      - task: prisma-hway
+      - task: prisma-indexer
+      - task: prisma-matrix
+
+  prisma-hway:
+    dir: ./internal/prisma/hway
+    cmd: go run github.com/steebchen/prisma-client-go generate
+
+  prisma-indexer:
+    dir: ./internal/prisma/indexer
+    cmd: go run github.com/steebchen/prisma-client-go generate
+
+  prisma-matrix:
+    dir: ./internal/prisma/matrix
     cmd: go run github.com/steebchen/prisma-client-go generate

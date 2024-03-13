@@ -4,28 +4,18 @@ tasks:
   default:
     desc: "Builds the project for current platform"
     cmds:
-      - templ generate
-      - rm -rf bin/ && mkdir ./bin/
-      - go build -o ./bin/sonrd ./cmd/sonrd
-      - rm -rf dist
+      - earthly --no-sat +build
+      - task: sonrd-docker
+      - task: hway-docker
 
-  current:
+  sonrd-docker:
     desc: "Builds the project for current platform"
     cmds:
-      - task: sonrd
-      - task: hway
-
-  sonrd:
-    desc: "Builds the project for current platform"
-    cmds:
-      - GOOS=linux GOARCH=amd64 go build -o ./bin/sonrd ./cmd/sonrd
       - cp ./bin/sonrd ./deploy/
       - docker build -t sonrhq/sonrd:latest -f ./deploy/Dockerfile.node ./deploy
 
-  hway:
+  hway-docker:
     desc: "Builds the project for current platform"
     cmds:
-      - cd ./internal/prisma && go run github.com/steebchen/prisma-client-go generate
-      - GOOS=linux GOARCH=amd64 go build -o ./bin/hway ./cmd/hway
       - cp ./bin/hway ./deploy/
       - docker build -t sonrhq/hway:latest -f ./deploy/Dockerfile.hway ./deploy

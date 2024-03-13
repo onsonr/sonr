@@ -24,7 +24,7 @@ tasks:
     cmds:
       - task: compose-down
       - templ generate
-      - task: build:current
+      - task: build
       - docker compose -f ./deploy/testnet/docker-compose.local.yml up --abort-on-container-exit
 
   compose-down:
