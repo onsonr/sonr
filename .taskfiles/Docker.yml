@@ -4,13 +4,13 @@ tasks:
   sonrd:
     desc: "Builds the project for current platform"
     cmds:
-      - cp ./bin/sonrd ./deploy/
+      - go build -o /deploy/sonrd ./cmd/sonrd
       - docker build -t sonrhq/sonrd:latest -f ./deploy/Dockerfile.node ./deploy
 
   hway:
     desc: "Builds the project for current platform"
     cmds:
-      - cp ./bin/hway ./deploy/
+      - go build -o /deploy/hway ./cmd/hway
       - docker build -t sonrhq/hway:latest -f ./deploy/Dockerfile.hway ./deploy
 
   compose-up:

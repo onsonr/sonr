@@ -32,7 +32,6 @@ tasks:
     desc: "Build the project"
     cmds:
       - task: gen:prisma
-      - earthly --sat=luffy +build
       - task: docker:sonrd
       - task: docker:hway
 
