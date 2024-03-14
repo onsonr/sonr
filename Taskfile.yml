@@ -46,3 +46,8 @@ tasks:
     desc: "Run essential tests"
     cmds:
       - task: test
+
+  release-gcp:
+    desc: "Release the docker images"
+    cmds:
+      - task: build

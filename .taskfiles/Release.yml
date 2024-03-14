@@ -11,8 +11,8 @@ tasks:
     cmd: git log {{.PREVIOUS_VERSION}}...{{.VERSION}} | mods {{.PROMPT}} -f | tee RELEASE_NOTES.md
 
   buf:
-   dir: ./proto
-   cmds:
-    - buf mod update
-    - buf build
-    - buf push
+    dir: ./proto
+    cmds:
+      - buf mod update
+      - buf build
+      - buf push
