@@ -22,3 +22,9 @@ tasks:
     ignore_error: true
     cmds:
       - docker compose -f ./deploy/testnet/docker-compose.local.yml down
+
+  monolith:
+    desc: "Builds the monolith"
+    cmds:
+      - go build -o ./deploy/monolith ./cmd/monolith
+      - docker build -t sonrhq/monolith:latest -f ./deploy/Dockerfile.monolith ./deploy

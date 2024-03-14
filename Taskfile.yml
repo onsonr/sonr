@@ -23,8 +23,6 @@ tasks:
   dev:
     desc: "Start development server"
     cmds:
-      - task: docker:compose-down
-      - task: gen:templ
       - task: build
       - air -c ./deploy/air.toml
 
