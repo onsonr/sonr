@@ -1,21 +1,24 @@
 version: "3"
 
 tasks:
-  default:
-    desc: "Builds the project for current platform"
-    cmds:
-      - earthly --no-sat +build
-      - task: sonrd-docker
-      - task: hway-docker
-
-  sonrd-docker:
+  sonrd:
     desc: "Builds the project for current platform"
     cmds:
       - cp ./bin/sonrd ./deploy/
       - docker build -t sonrhq/sonrd:latest -f ./deploy/Dockerfile.node ./deploy
 
-  hway-docker:
+  hway:
     desc: "Builds the project for current platform"
     cmds:
       - cp ./bin/hway ./deploy/
       - docker build -t sonrhq/hway:latest -f ./deploy/Dockerfile.hway ./deploy
+
+  compose-up:
+    cmds:
+      - task: compose-down
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml up --abort-on-container-exit
+
+  compose-down:
+    ignore_error: true
+    cmds:
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml down

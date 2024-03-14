@@ -96,8 +96,8 @@ func (c *cookies) HasOrigin() bool {
 }
 
 // GetSessionID gets the session id cookie
-func (c *cookies) GetSessionID() string {
-	cookie, err := c.Cookie("session-id")
+func (c *cookies) GetSession() string {
+	cookie, err := c.Cookie("sid")
 	if err != nil {
 		return ""
 	}
@@ -105,8 +105,8 @@ func (c *cookies) GetSessionID() string {
 }
 
 // HasSessionID checks if the session id cookie exists
-func (c *cookies) HasSessionID() bool {
-	cookie, err := c.Cookie("session-id")
+func (c *cookies) HasSession() bool {
+	cookie, err := c.Cookie("sid")
 	if err != nil {
 		return false
 	}

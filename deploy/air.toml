@@ -3,7 +3,7 @@ tmp_dir = "tmp"
 
 [build]
 bin = "./bin/sonrd"
-cmd = "task compose-up"
+cmd = "task docker:compose-up"
 delay = 1000
 exclude_dir = [
   "static",

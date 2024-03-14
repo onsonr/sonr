@@ -10,18 +10,6 @@ deps:
     SAVE ARTIFACT go.mod AS LOCAL go.mod
     SAVE ARTIFACT go.sum AS LOCAL go.sum
 
-# gen: go generate prisma
-gen:
-    FROM +deps
-    COPY . .
-    RUN cd internal/prisma/hway && go run github.com/steebchen/prisma-client-go generate
-    SAVE ARTIFACT internal/prisma/hway/db AS LOCAL internal/prisma/hway/db
-    RUN cd internal/prisma/indexer && go run github.com/steebchen/prisma-client-go generate
-    SAVE ARTIFACT internal/prisma/indexer/db AS LOCAL internal/prisma/indexer/db
-    RUN cd internal/prisma/matrix && go run github.com/steebchen/prisma-client-go generate
-    SAVE ARTIFACT internal/prisma/matrix/db AS LOCAL internal/prisma/matrix/db
-
-
 # build - builds the flavored ipfs gateway
 build:
     BUILD +hway
@@ -29,7 +17,8 @@ build:
 
 # hway - builds the flavored ipfs gateway
 hway:
-    FROM +gen
+    FROM +deps
+    COPY . .
     ARG goos=linux
     ARG goarch=amd64
     ENV GOOS=$goos
@@ -39,7 +28,8 @@ hway:
 
 # sonrd - builds the flavored ipfs gateway
 sonrd:
-    FROM +gen
+    FROM +deps
+    COPY . .
     ARG goos=linux
     ARG goarch=amd64
     ENV GOOS=$goos
