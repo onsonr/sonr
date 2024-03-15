@@ -118,20 +118,6 @@ brews:
       name: homebrew-tap
       token: "{{ .Env.GITHUB_TOKEN }}"
 
-nfpms:
-  # linux debs - sonrd
-  - id: sonrd
-    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
-    maintainer: "Sonr Inc."
-    homepage: "https://sonr.io"
-    license: "OpenGLV3"
-    formats:
-      - deb
-    builds:
-      - sonrd
-      - hway
-    package_name: "sonr"
-
 release:
   github:
     owner: sonrhq
