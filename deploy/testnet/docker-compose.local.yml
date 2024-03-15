@@ -2,10 +2,10 @@ version: "3"
 services:
   # Sonr Validator
   sonrd:
-    image: sonrd:latest
-    entrypoint: ["sonrd", "start"]
+    image: sonrhq/sonrd:latest
+    command: ["start"]
     volumes:
-      - ./data/.sonr:/root/.sonr
+      - ./data/.sonr:/.sonr
     ports:
       - 1317:1317 # rest
       - 26657:26657 # rpc
@@ -15,8 +15,8 @@ services:
 
   # Sonr Validator
   highway:
-    image: hway:latest
-    entrypoint: ["hway"]
+    image: sonrhq/hway:latest
+    command: ["hway"]
     env_file:
       - .env.rails
     ports:
