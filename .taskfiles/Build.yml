@@ -1,0 +1,30 @@
+version: "3"
+
+tasks:
+  all:
+    desc: "Run all build tasks"
+    cmds:
+      - rm -rf ./bin
+      - task: sonrd
+      - task: hway
+      - task: dendrite
+
+  sonrd:
+    cmds:
+      - GOOS=linux GOARCH=amd64 go build -o ./bin/sonrd ./cmd/sonrd
+
+  hway:
+    cmds:
+      - GOOS=linux GOARCH=amd64 go build -o ./bin/hway ./cmd/hway
+
+  dendrite:
+    cmds:
+      - rm -rf ./tmp
+      - git clone https://github.com/matrix-org/dendrite ./tmp/dendrite
+      - cd ./tmp/dendrite && GOOS=linux GOARCH=amd64 go build -o ../../bin ./cmd/...
+      - rm -rf ./bin/dendrite-demo-pinecone
+      - rm -rf ./bin/dendrite-demo-yggdrasil
+      - rm -rf ./bin/dendrite-upgrade-tests
+      - rm -rf ./bin/furl
+      - rm -rf ./bin/resolve-state
+      - rm -rf ./tmp/dendrite

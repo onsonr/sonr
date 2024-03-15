@@ -3,6 +3,7 @@ dotenv:
   - .env
 
 includes:
+  build: .taskfiles/Build.yml
   compose: .taskfiles/Compose.yml
   docker: .taskfiles/Docker.yml
   deploy: .taskfiles/Deploy.yml
@@ -21,11 +22,17 @@ tasks:
       - go install github.com/a-h/templ/cmd/templ@latest
       - go install github.com/go-task/task/v3/cmd/task@latest
 
-  dev:
+  dev:hway:
     desc: "Start development server"
     cmds:
       - task: build
-      - air -c ./deploy/air.toml
+      - air -c ./deploy/air.hway.toml
+
+  dev:node:
+    desc: "Start development server"
+    cmds:
+      - task: build
+      - air -c ./deploy/air.node.toml
 
   build:
     desc: "Build the project"
