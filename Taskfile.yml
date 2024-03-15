@@ -3,6 +3,7 @@ dotenv:
   - .env
 
 includes:
+  compose: .taskfiles/Compose.yml
   docker: .taskfiles/Docker.yml
   deploy: .taskfiles/Deploy.yml
   gen: .taskfiles/Gen.yml

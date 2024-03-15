@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  up:
+    cmds:
+      - task: down
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml up --abort-on-container-exit
+
+  down:
+    ignore_error: true
+    cmds:
+      - docker compose -f ./deploy/testnet/docker-compose.local.yml down
