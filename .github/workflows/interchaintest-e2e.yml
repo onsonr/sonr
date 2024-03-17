@@ -1,0 +1,120 @@
+name: E2E
+
+on:
+  push:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  GO_VERSION: 1.21.0
+  TAR_PATH: /tmp/docker-image.tar
+  IMAGE_NAME: docker-image
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+
+      # Cache go mod cache, used to speedup builds
+      - name: Go Mod Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-mod }}
+          key: ${{ runner.os }}-go-mod-${{ hashFiles('**/go.sum') }}
+
+      # Cache go build cache, used to speedup go test
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Download Go Dependencies
+        run: |
+          go mod download
+          cd interchaintest && go mod download
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and export
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          tags: sonr:local
+          outputs: type=docker,dest=${{ env.TAR_PATH }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.IMAGE_NAME }}
+          path: ${{ env.TAR_PATH }}
+
+  e2e-tests:
+    needs: build-docker
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # names of `make` commands to run tests
+        test:
+          - "ictest-basic"
+          - "ictest-ibc"
+          - "ictest-wasm"
+          - "ictest-packetforward"
+          - "ictest-poa"
+          - "ictest-tokenfactory"
+      fail-fast: false
+
+    steps:
+      - id: go-cache-paths
+        run: |
+          echo "::set-output name=go-build::$(go env GOCACHE)"
+          echo "::set-output name=go-mod::$(go env GOMODCACHE)"
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v4
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: interchaintest/go.sum
+
+      - name: checkout chain
+        uses: actions/checkout@v4
+
+      # Cache go build cache, used to speedup go test
+      - name: Go Build Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.go-cache-paths.outputs.go-build }}
+          key: ${{ runner.os }}-go-build-${{ hashFiles('**/go.sum') }}
+
+      - name: Download Tarball Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ env.IMAGE_NAME }}
+          path: /tmp
+
+      - name: Load Docker Image
+        run: |
+          docker image load -i ${{ env.TAR_PATH }}
+          docker image ls -a
+
+      - name: Run Test
+        run: make ${{ matrix.test }}

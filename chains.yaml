@@ -1,0 +1,11 @@
+# This file is used to create docker images using the heighliner binary.
+# see: https://github.com/strangelove-ventures/heighliner
+
+- name: sonr
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/sonrd
+  build-env:
+    - LEDGER_ENABLED=false
+    - BUILD_TAGS=muslc
