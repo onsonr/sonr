@@ -1,0 +1,65 @@
+version: "3"
+
+tasks:
+  default:
+    cmds:
+      - task: crypto-daed
+      - task: crypto-ecies
+      - task: crypto-sharing
+      - task: crypto-signatures
+      - task: crypto-tecdsa
+      - task: module-identity
+      - task: module-service
+
+  crypto:
+    cmds:
+      - task: crypto-daed
+      - task: crypto-ecies
+      - task: crypto-sharing
+      - task: crypto-signatures
+      - task: crypto-tecdsa
+
+  crypto-accumulator:
+    ignore_error: true
+    dir: ./crypto/accumulator
+    cmds:
+      - go test -v ./...
+
+  crypto-daed:
+    ignore_error: true
+    dir: ./crypto/daed
+    cmds:
+      - go test -v ./...
+
+  crypto-ecies:
+    ignore_error: true
+    dir: ./crypto/ecies
+    cmds:
+      - go test -v ./...
+
+  crypto-sharing:
+    ignore_error: true
+    dir: ./crypto/sharing
+    cmds:
+      - go test -v ./...
+
+  crypto-signatures:
+    ignore_error: true
+    dir: ./crypto/signatures
+    cmds:
+      - go test -v ./...
+
+  crypto-tecdsa:
+    dir: ./crypto/tecdsa
+    cmds:
+      - go test -v ./...
+
+  module-identity:
+    dir: ./x/identity
+    cmds:
+      - go test -v ./...
+
+  module-service:
+    dir: ./x/service
+    cmds:
+      - go test -v ./...

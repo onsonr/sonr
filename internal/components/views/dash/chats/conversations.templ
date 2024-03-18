@@ -1,0 +1,49 @@
+package chats
+
+templ conversationsView() {
+	<div class="h-screen w-[420px] border-r-[0.5px] border-stone-700/80 bg-stone-100 dark:bg-stone-900 py-3 gap-y-1 px-2 overflow-clip">
+		@ConversationsHeader()
+		@conversationItemList()
+	</div>
+}
+
+templ conversationItemList() {
+	<div class="h-full w-full overflow-y-auto gap-y-2 flex flex-col">
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+		@ConversationItem()
+	</div>
+}
+
+templ ConversationsHeader() {
+	<div class="grid grid-cols-2 h-fit px-4 py-5 gap-y-3 pb-5">
+		<div class="col-span-2">
+			<div class="flex flex-row justify-between">
+				<h1 class="text-stone-900/90 dark:text-stone-100/90 text-2xl font-semibold">Chats</h1>
+				<sl-icon-button size="large" name="plus-circle" label="Settings"></sl-icon-button>
+			</div>
+		</div>
+		<div class="col-span-2">
+			<sl-input placeholder="Search Conversations" size="medium">
+				<sl-icon name="search" slot="prefix"></sl-icon>
+			</sl-input>
+		</div>
+	</div>
+}
+
+templ ConversationItem() {
+	<div class="p-4 flex flex-row items-center">
+		<sl-avatar label="User avatar"></sl-avatar>
+		<div class="flex flex-col ml-3">
+			<h1 class="text-stone-900/90 dark:text-stone-100/90 text-lg font-semibold">User Name</h1>
+			<p class="text-stone-900/79 dark:text-stone-200/70 text-sm">Last message</p>
+		</div>
+		<div class="flex flex-col ml-auto">
+			<sl-badge>3</sl-badge>
+		</div>
+	</div>
+}
