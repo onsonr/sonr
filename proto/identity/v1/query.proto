@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package identity.v1;
+
+option go_package = "github.com/didao-org/sonr/x/identity/types";
+
+import "gogoproto/gogo.proto";

@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package service.v1;
+
+option go_package = "github.com/didao-org/sonr/x/service/types";
+
+import "gogoproto/gogo.proto";
+
+// GenesisState defines the middlewares genesis state.
+message GenesisState {}

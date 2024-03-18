@@ -9,7 +9,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -39,7 +38,6 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
@@ -62,7 +60,6 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -134,29 +131,32 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
 	ibcchanneltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
-
 	"github.com/CosmWasm/wasmd/x/wasm"
 	wasmkeeper "github.com/CosmWasm/wasmd/x/wasm/keeper"
 	wasmtypes "github.com/CosmWasm/wasmd/x/wasm/types"
-
 	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
 	tokenfactorybindings "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/bindings"
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
-
 	poa "github.com/strangelove-ventures/poa"
 	poakeeper "github.com/strangelove-ventures/poa/keeper"
 	poamodule "github.com/strangelove-ventures/poa/module"
-
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
 	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
-
 	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	identity "github.com/didao-org/sonr/x/identity"
+	identitykeeper "github.com/didao-org/sonr/x/identity/keeper"
+	identitytypes "github.com/didao-org/sonr/x/identity/types"
+	service "github.com/didao-org/sonr/x/service"
+	servicekeeper "github.com/didao-org/sonr/x/service/keeper"
+	servicetypes "github.com/didao-org/sonr/x/service/types"
+	matrix "github.com/didao-org/sonr/x/matrix"
+	matrixkeeper "github.com/didao-org/sonr/x/matrix/keeper"
+	matrixtypes "github.com/didao-org/sonr/x/matrix/types"
 )
 
 const appName = "sonr"
@@ -268,6 +268,9 @@ type ChainApp struct {
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	ScopedWasmKeeper          capabilitykeeper.ScopedKeeper
+	IdentityKeeper identitykeeper.Keeper
+	ServiceKeeper servicekeeper.Keeper
+	MatrixKeeper matrixkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -372,6 +375,9 @@ func NewChainApp(
 		poa.StoreKey,
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
+		identitytypes.StoreKey,
+		servicetypes.StoreKey,
+		matrixtypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -615,6 +621,27 @@ func NewChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	// Create the matrix Middleware Keeper
+	app.MatrixKeeper = matrixkeeper.NewKeeper(
+		appCodec,
+		app.MsgServiceRouter(),
+		app.IBCKeeper.ChannelKeeper,
+	)
+
+	// Create the service Middleware Keeper
+	app.ServiceKeeper = servicekeeper.NewKeeper(
+		appCodec,
+		app.MsgServiceRouter(),
+		app.IBCKeeper.ChannelKeeper,
+	)
+
+	// Create the identity Middleware Keeper
+	app.IdentityKeeper = identitykeeper.NewKeeper(
+		appCodec,
+		app.MsgServiceRouter(),
+		app.IBCKeeper.ChannelKeeper,
+	)
+
 	// Create the globalfee keeper
 	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(
 		appCodec,
@@ -824,6 +851,12 @@ func NewChainApp(
 		poamodule.NewAppModule(appCodec, app.POAKeeper),
 		globalfee.NewAppModule(appCodec, app.GlobalFeeKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		identity.NewAppModule(app.IdentityKeeper),
+
+		service.NewAppModule(app.ServiceKeeper),
+
+		matrix.NewAppModule(app.MatrixKeeper),
+
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -870,6 +903,9 @@ func NewChainApp(
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		identitytypes.ModuleName,
+		servicetypes.ModuleName,
+		matrixtypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -889,6 +925,9 @@ func NewChainApp(
 		wasmtypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		identitytypes.ModuleName,
+		servicetypes.ModuleName,
+		matrixtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -917,6 +956,9 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		identitytypes.ModuleName,
+		servicetypes.ModuleName,
+		matrixtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1338,6 +1380,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(poa.ModuleName)
 	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
+	paramsKeeper.Subspace(identitytypes.ModuleName)
+	paramsKeeper.Subspace(servicetypes.ModuleName)
+	paramsKeeper.Subspace(matrixtypes.ModuleName)
 
 	return paramsKeeper
 }
