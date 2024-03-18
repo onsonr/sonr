@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	// mail "github.com/xhit/go-simple-mail/v2"
 
-	//	"github.com/didao-org/sonr/internal/components/views/auth/register"
+	//	"github.com/didao-org/sonr/pkg/components/views/auth/register"
 
 	"github.com/didao-org/sonr/pkg/middleware/plugins"
 )

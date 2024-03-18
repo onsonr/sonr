@@ -1,0 +1,73 @@
+package home
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/didao-org/sonr/pkg/components/base"
+	"github.com/didao-org/sonr/pkg/components/views/landing"
+)
+
+templ Page(ctx echo.Context) {
+	@base.PageLayout() {
+		@landing.Navbar()
+		<main class="grow">
+			@heroSection()
+			@logosSection()
+			@introFeaturesSection()
+			@primaryFeaturesSection()
+			@secondaryFeaturesSection()
+			@faqsSection()
+			@ctaSection()
+			@landing.Footer()
+		</main>
+	}
+}
+
+templ logosSection() {
+	<!-- Clients -->
+	<section>
+		<div class="relative max-w-6xl mx-auto px-4 sm:px-6">
+			<!-- Particles animation -->
+			<div class="absolute inset-0 max-w-6xl mx-auto px-4 sm:px-6">
+				<div class="absolute inset-0 -z-10" aria-hidden="true">
+					<canvas data-particle-animation data-particle-quantity="5"></canvas>
+				</div>
+			</div>
+			<div class="py-12 md:py-16">
+				<div class="overflow-hidden">
+					<!-- Carousel built with Swiper.js [https://swiperjs.com/] -->
+					<!-- * Initialized in src/js/main.js -->
+					<!-- * Custom styles in src/css/additional-styles/theme.scss -->
+					<div class="clients-carousel swiper-container relative before:absolute before:inset-0 before:w-32 before:z-10 before:pointer-events-none before:bg-gradient-to-r before:from-slate-900 after:absolute after:inset-0 after:left-auto after:w-32 after:z-10 after:pointer-events-none after:bg-gradient-to-l after:from-slate-900">
+						<div class="swiper-wrapper !ease-linear select-none items-center">
+							<!-- Carousel items -->
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-01.svg" alt="W3C Logo" height="20"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-07.svg" alt="Torch Capital" width="230"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-04.svg" alt="Matrix" width="100"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-06.svg" alt="Outlier Ventures" width="180"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-05.svg" alt="DIF" width="100"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img class="mt-1" src="https://cdn.sonr.build/images/client-03.svg" alt="IBC Protocol" width="160"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img class="mt-2" src="https://cdn.sonr.build/images/client-09.svg" alt="Fido Alliance Logo" width="88"/>
+							</div>
+							<div class="swiper-slide !w-auto">
+								<img src="https://cdn.sonr.build/images/client-02.svg" alt="Shima Capital Logo" width="172"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+}

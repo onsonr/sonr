@@ -3,15 +3,15 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/didao-org/sonr/internal/components/views/auth/login"
-	"github.com/didao-org/sonr/internal/components/views/auth/register"
-	"github.com/didao-org/sonr/internal/components/views/dash/chats"
-	"github.com/didao-org/sonr/internal/components/views/landing/about"
-	"github.com/didao-org/sonr/internal/components/views/landing/changelog"
-	"github.com/didao-org/sonr/internal/components/views/landing/ecosystem"
-	"github.com/didao-org/sonr/internal/components/views/landing/home"
-	"github.com/didao-org/sonr/internal/components/views/landing/research"
-	"github.com/didao-org/sonr/internal/components/views/utility"
+	"github.com/didao-org/sonr/pkg/components/views/auth/login"
+	"github.com/didao-org/sonr/pkg/components/views/auth/register"
+	"github.com/didao-org/sonr/pkg/components/views/dash/chats"
+	"github.com/didao-org/sonr/pkg/components/views/landing/about"
+	"github.com/didao-org/sonr/pkg/components/views/landing/changelog"
+	"github.com/didao-org/sonr/pkg/components/views/landing/ecosystem"
+	"github.com/didao-org/sonr/pkg/components/views/landing/home"
+	"github.com/didao-org/sonr/pkg/components/views/landing/research"
+	"github.com/didao-org/sonr/pkg/components/views/utility"
 	"github.com/didao-org/sonr/pkg/middleware/common"
 )
 

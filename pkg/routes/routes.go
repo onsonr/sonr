@@ -43,13 +43,8 @@ func RegisterCosmosAPI(e *echo.Echo) {
 
 // RegisterSonrAPI registers the Sonr API routes
 func RegisterSonrAPI(e *echo.Echo) {
-	e.GET("/service/:origin", handlers.ServiceAPI.QueryOrigin)
 	e.GET("/service/:origin/email/:email/confirm", handlers.ServiceAPI.VerifyEmail)
 	e.POST("/service/:origin/email/:email/verify", handlers.ServiceAPI.SendVerificationEmail)
-	e.GET("/service/:origin/login/:username/start", handlers.ServiceAPI.StartLogin)
-	e.POST("/service/:origin/login/:username/finish", handlers.ServiceAPI.FinishLogin)
-	e.GET("/service/:origin/register/:username/start", handlers.ServiceAPI.StartRegistration)
-	e.POST("/service/:origin/register/:username/finish", handlers.ServiceAPI.FinishRegistration)
 	e.GET("/tx/:hash", handlers.TxAPI.GetTx)
 	e.GET("/tx/block/:height", handlers.TxAPI.GetBlockWithTxs)
 	e.POST("/tx/broadcast", handlers.TxAPI.BroadcastTx)
