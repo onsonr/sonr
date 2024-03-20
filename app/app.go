@@ -842,7 +842,6 @@ func NewChainApp(
 		globalfee.NewAppModule(appCodec, app.GlobalFeeKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		identity.NewAppModule(app.IdentityKeeper),
-
 		service.NewAppModule(app.ServiceKeeper),
 	)
 
