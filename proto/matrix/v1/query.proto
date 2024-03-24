@@ -1,7 +1,0 @@
-syntax = "proto3";
-
-package matrix.v1;
-
-option go_package = "github.com/didao-org/sonr/x/matrix/types";
-
-import "gogoproto/gogo.proto";
