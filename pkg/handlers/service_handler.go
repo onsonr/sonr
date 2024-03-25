@@ -12,7 +12,7 @@ import (
 	//	"github.com/didao-org/sonr/internal/components/views/auth/register"
 	"github.com/didao-org/sonr/pkg/middleware/common"
 	"github.com/didao-org/sonr/pkg/middleware/plugins"
-	"github.com/sonrhq/sonr/x/service"
+	service "github.com/didao-org/sonr/x/service/types"
 )
 
 // ServiceAPI is a handler for the staking module
@@ -31,16 +31,16 @@ func (h serviceAPI) QueryOrigin(c echo.Context) error {
 	return c.JSON(http.StatusOK, resp)
 }
 
-// QueryCredentials returns the service credentials for a user of the origin host
-func (h serviceAPI) QueryCredentials(c echo.Context) error {
-	origin := c.Param("origin")
-	handle := c.Param("handle")
-	resp, err := service.GetCredentialsByHandle(common.GrpcClientConn(c), handle, origin)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err.Error())
-	}
-	return c.JSON(http.StatusOK, resp)
-}
+// // QueryCredentials returns the service credentials for a user of the origin host
+// func (h serviceAPI) QueryCredentials(c echo.Context) error {
+// 	origin := c.Param("origin")
+// 	handle := c.Param("handle")
+// 	resp, err := service.GetCredentialsByHandle(common.GrpcClientConn(c), handle, origin)
+// 	if err != nil {
+// 		return c.JSON(http.StatusBadRequest, err.Error())
+// 	}
+// 	return c.JSON(http.StatusOK, resp)
+// }
 
 // StartRegistration returns credential creation options for the origin host
 func (h serviceAPI) StartRegistration(c echo.Context) error {

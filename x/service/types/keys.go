@@ -1,5 +1,7 @@
 package types
 
+import grpc "google.golang.org/grpc"
+
 const (
 	// ModuleName defines the name of the middleware.
 	ModuleName = "service"
@@ -13,3 +15,8 @@ const (
 	// QuerierRoute is the querier route for the middleware.
 	QuerierRoute = ModuleName
 )
+
+// getQueryServiceClient is a helper function to get a QueryClient
+func getQueryServiceClient(conn *grpc.ClientConn) QueryClient {
+	return NewQueryClient(conn)
+}

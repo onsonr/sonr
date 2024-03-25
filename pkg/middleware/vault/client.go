@@ -8,7 +8,7 @@ import (
 	"github.com/ipfs/kubo/core/coreiface/options"
 
 	"github.com/didao-org/sonr/internal/wallet"
-	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
+	"github.com/didao-org/sonr/x/identity/types"
 )
 
 // GenerateKey generates a new key
@@ -26,7 +26,7 @@ func (c *vault) GenerateKey() error {
 }
 
 // GenerateIdentity generates a new fully scoped Sonr identity
-func (c *vault) GenerateIdentity() (*modulev1.Controller, error) {
+func (c *vault) GenerateIdentity() (*types.Controller, error) {
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
 		return nil, ErrFailedIPFSClient
@@ -55,7 +55,7 @@ func (c *vault) GenerateIdentity() (*modulev1.Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	cnt := &modulev1.Controller{
+	cnt := &types.Controller{
 		Address:   kc.Address,
 		PeerId:    key.ID().String(),
 		PublicKey: kc.PublicKey,
