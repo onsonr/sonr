@@ -54,9 +54,7 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We have built the above modules to provide a decentralized identity and asset management system.
 
-## Documentation
-
-For full documentation, visit [sonr.io/docs](https://sonr.io/docs). To see how to Contribute, visit [Getting Started](./docs/contribution/DEVELOPERS.md)
+## Usage
 
 It's recommended to install the following tools:
 
