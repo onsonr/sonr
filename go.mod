@@ -47,7 +47,7 @@ require (
 	github.com/a-h/templ v0.2.648
 	github.com/btcsuite/btcd/btcec/v2 v2.3.2
 	github.com/bwesterb/go-ristretto v1.2.3
-	github.com/cometbft/cometbft v0.38.5
+	github.com/cometbft/cometbft v0.38.6
 	github.com/consensys/gnark-crypto v0.12.1
 	github.com/cosmos/btcutil v1.0.5
 	github.com/cosmos/cosmos-db v1.0.2
