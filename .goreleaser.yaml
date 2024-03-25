@@ -26,10 +26,10 @@ builds:
 dockers:
   # Docker Images - hway
   - image_templates:
-      - ghcr.io/sonrhq/hway:{{ .Version }}
-      - ghcr.io/sonrhq/hway:latest
-      - "sonrhq/hway:{{ .Version }}"
-      - sonrhq/hway:latest
+      - ghcr.io/didao-org/hway:{{ .Version }}
+      - ghcr.io/didao-org/hway:latest
+      - "didao/hway:{{ .Version }}"
+      - didao/hway:latest
     build_flag_templates:
       - "--pull"
       - "--label=org.opencontainers.image.created={{.Date}}"
