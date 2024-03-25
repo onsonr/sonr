@@ -1,4 +1,4 @@
-FROM golang:1.21-alpine AS node-builder
+FROM golang:1.22-alpine AS node-builder
 
 SHELL ["/bin/sh", "-ecuxo", "pipefail"]
 
