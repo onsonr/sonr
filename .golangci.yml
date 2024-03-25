@@ -1,0 +1,12 @@
+run:
+  skip-dirs:
+    - api
+    - pkg/ui
+    - x/service
+    - x/identity
+    - **/*.pb.*.go
+    - **/*.pb.*.test.go
+    - **/*.pb.*.mock.go
+    - **/*.pb.*.gw.go
+    - **/*.pb.go
+    - **/*_templ.go
