@@ -63,8 +63,7 @@ It's recommended to install the following tools:
 - [golang](https://golang.org/doc/install)
 - [grpcui](https://github.com/fullstorydev/grpcui)
 - [docker](https://docs.docker.com/get-docker/)
-- [earthly](https://earthly.dev/get-earthly)
-- [buf](https://docs.buf.build/installation)
+- [spawn](https://github.com/rollchains/spawn)
 
 ## Status
 
