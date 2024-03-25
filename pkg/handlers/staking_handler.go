@@ -5,8 +5,9 @@ import (
 	"strconv"
 
 	stakingv1beta1 "cosmossdk.io/api/cosmos/staking/v1beta1"
-	shared "github.com/didao-org/sonr/pkg/middleware/common"
 	"github.com/labstack/echo/v4"
+
+	shared "github.com/didao-org/sonr/pkg/middleware/common"
 )
 
 // StakingAPI is a handler for the staking module

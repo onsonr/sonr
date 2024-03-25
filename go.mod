@@ -77,7 +77,6 @@ require (
 	github.com/pterm/pterm v0.12.74
 	github.com/redis/go-redis/v9 v9.5.1
 	github.com/segmentio/ksuid v1.0.4
-	github.com/sonrhq/sonr v0.16.1
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
@@ -165,6 +164,7 @@ require (
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
+	github.com/go-test/deep v1.1.0 // indirect
 	github.com/go-webauthn/x v0.1.9 // indirect
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
