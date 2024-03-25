@@ -26,11 +26,5 @@ func (qs Querier) ServiceRecord(goCtx context.Context, req *types.QueryServiceRe
 	if err != nil {
 		return nil, err
 	}
-	srv := types.Record{
-		Origin:      record.Origin,
-		Name:        record.Name,
-		Description: record.Description,
-		Authority:   record.Authority,
-	}
-	return &types.QueryServiceRecordResponse{ServiceRecord: srv}, nil
+	return &types.QueryServiceRecordResponse{ServiceRecord: record}, nil
 }

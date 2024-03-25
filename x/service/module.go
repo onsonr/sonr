@@ -103,9 +103,8 @@ func (am AppModule) InitGenesis(
 	cdc codec.JSONCodec,
 	data json.RawMessage,
 ) []abci.ValidatorUpdate {
-	var genesisState types.GenesisState
-	cdc.MustUnmarshalJSON(data, &genesisState)
-	am.keeper.InitGenesis(ctx, genesisState)
+	genesisState := types.DefaultGenesisState()
+	am.keeper.InitGenesis(ctx, *genesisState)
 	return []abci.ValidatorUpdate{}
 }
 
