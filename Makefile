@@ -214,8 +214,9 @@ proto-check-breaking:
 ## --- Testnet Utilities ---
 get-localic:
 	@echo "Installing local-interchain"
-	git clone --branch v8.1.0 https://github.com/strangelove-ventures/interchaintest.git interchaintest-downloader
+	git clone --branch v8.2.0 https://github.com/strangelove-ventures/interchaintest.git interchaintest-downloader
 	cd interchaintest-downloader/local-interchain && make install
+	@echo ✅ local-interchain installed $(shell which local-ic)
 
 is-localic-installed:
 ifeq (,$(shell which local-ic))
@@ -230,7 +231,7 @@ local-image:
 ifeq (,$(shell which heighliner))
 	echo 'heighliner' binary not found. Consider running `make get-heighliner`
 else
-	heighliner build -c sonr --local -f chains.yaml
+	heighliner build -c wasmd --local -f chains.yaml
 endif
 
 .PHONY: get-heighliner local-image is-localic-installed

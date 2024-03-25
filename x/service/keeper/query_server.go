@@ -3,22 +3,25 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
+
 	"github.com/didao-org/sonr/x/service/types"
 )
 
-var _ types.QueryServer = queryServer{}
+var _ types.QueryServer = Querier{}
 
 // NewQueryServerImpl returns an implementation of the module QueryServer.
 func NewQueryServerImpl(k Keeper) types.QueryServer {
-	return queryServer{k}
+	return Querier{k}
 }
 
-type queryServer struct {
+type Querier struct {
 	k Keeper
 }
 
 // ServiceRecord defines the handler for the Query/ServiceRecord RPC method.
-func (qs queryServer) ServiceRecord(ctx context.Context, req *types.QueryServiceRecordRequest) (*types.QueryServiceRecordResponse, error) {
+func (qs Querier) ServiceRecord(goCtx context.Context, req *types.QueryServiceRecordRequest) (*types.QueryServiceRecordResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
 	record, err := qs.k.RecordsMapping.Get(ctx, req.Origin)
 	if err != nil {
 		return nil, err

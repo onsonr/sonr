@@ -3,29 +3,33 @@ dotenv:
   - .env
 
 tasks:
-  deps:
-    desc: "Setup the development environment"
+  grpcui:
+    desc: "Launch grpcui for the node"
     cmds:
-      - go install github.com/cosmtrek/air@latest
-      - go install github.com/kollalabs/protoc-gen-openapi@latest
-      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
-      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
-      - go install github.com/a-h/templ/cmd/templ@latest
-      - go install github.com/go-task/task/v3/cmd/task@latest
+      - go install github.com/fullstorydev/grpcui/cmd/grpcui@latest
+      - grpcui -plaintext localhost:9090
 
-  dev-hway:
-    desc: "Start development server"
+  testnet:
+    desc: "Launch a testnet"
     cmds:
-      - templ generate
-      - air -c ./deploy/air.hway.toml
+      - make sh-testnet
 
-  dev-node:
-    desc: "Start development server"
+  testnet:ibc:
+    desc: "Launch a testnet with IBC enabled"
     cmds:
-      - task: gen:proto
-      - air -c ./deploy/air.node.toml
+      - make testnet
 
-  test-essential:
-    desc: "Run essential tests"
+  docker:
+    desc: "Build and run the docker container"
     cmds:
-      - task: test
+      - make local-image
+
+  proto:
+    desc: "Generate the protobuf files"
+    cmds:
+      - make proto-gen
+
+  hway:run:
+    desc: "Run the hway"
+    cmds:
+      - go run ./cmd/hway/main.go
