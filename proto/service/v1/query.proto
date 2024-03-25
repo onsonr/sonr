@@ -4,4 +4,28 @@ package service.v1;
 
 option go_package = "github.com/didao-org/sonr/x/service/types";
 
+import "service/v1/genesis.proto";
+import "google/api/annotations.proto";
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+
+// Msg defines the module Msg service.
+service Query {
+  // ServiceRecord returns the service record for a given origin.
+  rpc ServiceRecord(QueryServiceRecordRequest) returns (QueryServiceRecordResponse) {
+    option (google.api.http).get = "/service/record/{origin}";
+  }
+}
+
+// QueryServiceRecordRequest is the request type for the Query/ServiceRecord RPC method.
+message QueryServiceRecordRequest {
+  // origin defines the origin of the service.
+  string origin = 1;
+}
+
+// QueryServiceRecordResponse is the response type for the Query/ServiceRecord RPC method.
+message QueryServiceRecordResponse {
+  // service_record defines the service record for a given origin.
+  Record service_record = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
