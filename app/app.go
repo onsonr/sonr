@@ -629,7 +629,7 @@ func NewChainApp(
 	// Create the identity Middleware Keeper
 	app.IdentityKeeper = identitykeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[servicetypes.StoreKey]),
+		runtime.NewKVStoreService(keys[identitytypes.StoreKey]),
 		app.MsgServiceRouter(),
 		app.IBCKeeper.ChannelKeeper,
 	)
