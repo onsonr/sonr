@@ -4,7 +4,32 @@ package service.v1;
 
 option go_package = "github.com/didao-org/sonr/x/service/types";
 
+import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 // GenesisState defines the middlewares genesis state.
-message GenesisState {}
+message GenesisState {
+  repeated Record records = 1
+      [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
+}
+
+
+// Record is the representation of a sonr enabled service
+message Record {
+  option (amino.name) = "service/Record";
+
+  // Name is the name of the service
+  string name = 1;
+
+  // Description is the description of the service
+  string description = 2;
+
+  // Authority is the address of the owner of the service
+  string authority = 3;
+
+  // Permissions is the uint32 representation of the permissions of the service
+  uint32 permissions = 4;
+
+  // Origin is the DNS resolvable address of the service
+  string origin = 5;
+}

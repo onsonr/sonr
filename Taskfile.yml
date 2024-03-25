@@ -2,15 +2,6 @@ version: "3"
 dotenv:
   - .env
 
-includes:
-  build: .taskfiles/Build.yml
-  compose: .taskfiles/Compose.yml
-  docker: .taskfiles/Docker.yml
-  deploy: .taskfiles/Deploy.yml
-  gen: .taskfiles/Gen.yml
-  release: .taskfiles/Release.yml
-  test: .taskfiles/Test.yml
-
 tasks:
   deps:
     desc: "Setup the development environment"

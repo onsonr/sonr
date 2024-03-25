@@ -1,9 +1,9 @@
 package keeper
 
 import (
-	"github.com/didao-org/sonr/x/service/types"
-
 	sdk "github.com/cosmos/cosmos-sdk/types"
+
+	"github.com/didao-org/sonr/x/service/types"
 )
 
 // InitGenesis initializes the middlewares state from a specified GenesisState.

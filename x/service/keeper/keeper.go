@@ -1,18 +1,17 @@
 package keeper
 
 import (
-	"github.com/didao-org/sonr/x/service/types"
-
+	"cosmossdk.io/collections"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-
-	"cosmossdk.io/log"
-
 	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
 	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+
+	"github.com/didao-org/sonr/x/service/types"
 )
 
 // Keeper defines the middleware keeper.
@@ -21,6 +20,8 @@ type Keeper struct {
 	msgServiceRouter *baseapp.MsgServiceRouter
 
 	ics4Wrapper porttypes.ICS4Wrapper
+
+	RecordsMapping collections.Map[string, types.Record]
 }
 
 // NewKeeper creates a new swap Keeper instance.
