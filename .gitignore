@@ -1,2 +1,3 @@
 configs/logs.json
 build/sonrd
+.DS_Store
