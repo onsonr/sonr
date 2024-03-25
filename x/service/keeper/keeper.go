@@ -22,6 +22,7 @@ type Keeper struct {
 
 	ics4Wrapper porttypes.ICS4Wrapper
 
+	Schema         collections.Schema
 	RecordsMapping collections.Map[string, types.Record]
 }
 
@@ -32,11 +33,20 @@ func NewKeeper(
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	ics4Wrapper porttypes.ICS4Wrapper,
 ) Keeper {
-	return Keeper{
+	sb := collections.NewSchemaBuilder(storeService)
+
+	k := Keeper{
 		cdc:              cdc,
 		msgServiceRouter: msgServiceRouter,
 		ics4Wrapper:      ics4Wrapper,
+		RecordsMapping:   collections.NewMap(sb, collections.NewPrefix(1), "records_mapping", collections.StringKey, codec.CollValue[types.Record](cdc)),
 	}
+	schema, err := sb.Build()
+	if err != nil {
+		panic(err)
+	}
+	k.Schema = schema
+	return k
 }
 
 // Logger returns a module-specific logger.
