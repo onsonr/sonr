@@ -4,13 +4,13 @@
 
 <div style="text-align: center;">
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/sonr.svg)](https://pkg.go.dev/github.com/sonrhq/sonr)
+[![Go Reference](https://pkg.go.dev/badge/github.com/didao-org/sonr.svg)](https://pkg.go.dev/github.com/didao-org/sonr)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/didao-org/sonr)
-![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/sonrhq/sonr)
+![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/didao-org/sonr)
 [![Static Badge](https://img.shields.io/badge/homepage-sonr.io-blue?style=flat-square)](https://sonr.io)
 ![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Discord%20Chat)
 
-[![Go Report Card](https://goreportcard.com/badge/github.com/sonrhq/sonr)](https://goreportcard.com/report/github.com/sonrhq/sonr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/didao-org/sonr)](https://goreportcard.com/report/github.com/didao-org/sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 
@@ -25,11 +25,11 @@
 - [x] IPFS Database and Storage. [**Docs**](https://sonr.io/docs/guides/storage)
   - [x] Redis. [**Docs**](https://sonr.io/docs/guides/api#rest-api-overview)
   - [x] MySQL. [**Docs**](https://sonr.io/docs/guides/api#graphql-api-overview)
-  - [ ] Matrix chat. [Status](https://github.com/sonrhq/sonr/issues/783)
+  - [ ] Matrix chat. [Status](https://github.com/didao-org/sonr/issues/783)
 - [x] IBC Integrations.
-  - [ ] Nomic. [Status](https://github.com/sonrhq/sonr/issues/784)
-  - [ ] Evmos. [Status](https://github.com/sonrhq/sonr/issues/785)
-  - [ ] Osmosis. [Status](https://github.com/sonrhq/sonr/issues/786)
+  - [ ] Nomic. [Status](https://github.com/didao-org/sonr/issues/784)
+  - [ ] Evmos. [Status](https://github.com/didao-org/sonr/issues/785)
+  - [ ] Osmosis. [Status](https://github.com/didao-org/sonr/issues/786)
 - [x] Smart Contracts. [**Docs**](https://sonr.io/docs/guides/storage)
 - [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
 - [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
@@ -44,7 +44,7 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     <th colspan=4>Description</th>
   </tr>
   <tr>
-    <th><code><a href="https://github.com/sonrhq/sonr/x/identity">x/identity</a></code></th>
+    <th><code><a href="https://github.com/didao-org/sonr/x/identity">x/identity</a></code></th>
     <th colspan=4>
     The Sonr Identity module is responsible for managing DID based <br />
     accounts using the MPC Protocol - <a href="https://sonr.io/whitepaper">Docs</a>
@@ -58,7 +58,7 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
     </th>
   </tr>
   <tr>
-    <th><code><a href="https://github.com/sonrhq/sonr/x/service">x/service</a></code></th>
+    <th><code><a href="https://github.com/didao-org/sonr/x/service">x/service</a></code></th>
     <th colspan=4>
     The Service module is responsible for DAO Application Service <br />
     Configurations, and Passkey authentication - <a href="https://sonr.io/whitepaper">Docs</a>
@@ -87,7 +87,7 @@ It's recommended to install the following tools:
 - [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
 - [ ] **Mainnet**: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
 
-We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/sonrhq/sonr/releases) of this repo to get notified of major updates.
+We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/didao-org/sonr/releases) of this repo to get notified of major updates.
 
 ## Architecture
 
@@ -101,8 +101,8 @@ See [additional details](https://sonr.io/whitepaper) on these components in the 
 
 ## Community & Support
 
-- [Forum](https://github.com/sonrhq/sonr/discussions)
-- [Issues](https://github.com/sonrhq/sonr/issues)
+- [Forum](https://github.com/didao-org/sonr/discussions)
+- [Issues](https://github.com/didao-org/sonr/issues)
 - [Twitter](https://sonr.io/twitter)
 - [Dev Chat](https://sonr.io/discord)
 
