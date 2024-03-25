@@ -38,6 +38,8 @@ RUN apk add --no-cache curl make bash jq sed
 
 WORKDIR /opt
 
+COPY --from=node-builder /code/scripts /opt/scripts
+
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657
 

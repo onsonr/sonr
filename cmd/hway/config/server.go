@@ -17,17 +17,14 @@ type Highway struct {
 	// ValidatorRPC is the port of the validator for rpc
 	ValidatorRPC int `mapstructure:"validator_rpc_port" json:"validator_rpc_port" yaml:"validator_rpc_port"`
 
-	// ValidatorWS is the port of the validator for websocket
-	ValidatorWS int `mapstructure:"validator_ws_port" json:"validator_ws_port" yaml:"validator_ws_port"`
-
 	// ValidatorGRPC is the port of the validator for grpc
 	ValidatorGRPC int `mapstructure:"validator_grpc_port" json:"validator_grpc_port" yaml:"validator_grpc_port"`
 
-	// GatewayPort is the port that the gateway listens on
-	GatewayPort int `json:"gateway_port" yaml:"gateway_port"`
+	// HighwayPort is the port that the gateway listens on
+	HighwayPort int `json:"gateway_port" yaml:"gateway_port"`
 
-	// Host is the host that the gateway listens on
-	Host string `json:"host" yaml:"host"`
+	// HighwayHost is the host that the gateway listens on
+	HighwayHost string `json:"host" yaml:"host"`
 
 	// PostgresConnection is the connection string for the postgres database
 	PostgresConnection string `json:"postgres_connection" yaml:"postgres_connection"`
@@ -73,8 +70,8 @@ func NewHway() *Highway {
 	v.SetEnvPrefix("HWAY")
 	v.AutomaticEnv()
 	conf := &Highway{
-		GatewayPort: 8000,
-		Host:        "0.0.0.0",
+		HighwayPort: 8000,
+		HighwayHost: "0.0.0.0",
 	}
 	return conf
 }
@@ -84,13 +81,13 @@ func (o *Highway) ReadFlags(c *cobra.Command) error {
 	if err != nil {
 		return err
 	}
-	o.Host = host
+	o.HighwayHost = host
 
 	port, err := c.Flags().GetInt("hway-port")
 	if err != nil {
 		return err
 	}
-	o.GatewayPort = port
+	o.HighwayPort = port
 
 	psql, err := c.Flags().GetString("hway-psql")
 	if err != nil {
@@ -103,17 +100,44 @@ func (o *Highway) ReadFlags(c *cobra.Command) error {
 		return err
 	}
 	o.RedisConnection = redis
+	valHost, err := c.Flags().GetString("val-host")
+	if err != nil {
+		return err
+	}
+	o.ValidatorHost = valHost
 
+	valRpc, err := c.Flags().GetInt("val-rpc")
+	if err != nil {
+		return err
+	}
+	o.ValidatorRPC = valRpc
+
+	valGrpc, err := c.Flags().GetInt("val-grpc")
+	if err != nil {
+		return err
+	}
+	o.ValidatorGRPC = valGrpc
 	return nil
 }
 
+// ListenAddress returns the address that the gateway listens on
 func (o *Highway) ListenAddress() string {
-	return fmt.Sprintf("%s:%d", o.Host, o.GatewayPort)
+	return fmt.Sprintf("%s:%v", o.HighwayHost, o.HighwayPort)
+}
+
+// ValidatorGRPCAddress returns the address of the validator grpc
+func (o *Highway) ValidatorGRPCAddress() string {
+	return fmt.Sprintf("%s:%v", o.ValidatorHost, o.ValidatorGRPC)
+}
+
+// ValidatorRPCAddress returns the address of the validator rpc
+func (o *Highway) ValidatorRPCAddress() string {
+	return fmt.Sprintf("%s:%d", o.ValidatorHost, o.ValidatorRPC)
 }
 
 // PrintBanner prints the banner
 func (o *Highway) PrintBanner() {
-	pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.GatewayPort)))
+	pterm.DefaultHeader.Printf(persistentBanner(fmt.Sprintf("localhost:%d", o.HighwayPort)))
 }
 
 // Serve starts the highway server
@@ -124,10 +148,10 @@ func (o *Highway) Serve(e *echo.Echo) {
 
 // Validate validates the HighwayOptions
 func (o *Highway) Validate() error {
-	if o.GatewayPort < 0 {
+	if o.HighwayPort < 0 {
 		return fmt.Errorf("gateway port must be greater than 0")
 	}
-	if o.Host == "" {
+	if o.HighwayHost == "" {
 		return fmt.Errorf("host must not be empty")
 	}
 	return nil
