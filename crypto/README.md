@@ -2,7 +2,7 @@
 
 | **Important**: Kryptology package Original development by Coinbase - now maintained internally at Sonr.
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/sonr/pkg/crypto.svg)](https://pkg.go.dev/github.com/sonrhq/sonr/pkg/crypto)
+[![Go Reference](https://pkg.go.dev/badge/github.com/didao-org/sonr/pkg/crypto.svg)](https://pkg.go.dev/github.com/didao-org/sonr/pkg/crypto)
 
 Coinbase's advanced cryptography library used for Sonr's internal cryptographic operations.
 
@@ -11,13 +11,13 @@ Coinbase's advanced cryptography library used for Sonr's internal cryptographic 
 Use the latest version of this library:
 
 ```$xslt
-go get github.com/sonrhq/sonr/pkg/crypto
+go get github.com/didao-org/sonr/pkg/crypto
 ```
 
 Pin a specific release of this library:
 
 ```$xslt
-go get github.com/sonrhq/sonr/pkg/crypto@v0.8.6
+go get github.com/didao-org/sonr/pkg/crypto@v0.8.6
 ```
 
 ## Components

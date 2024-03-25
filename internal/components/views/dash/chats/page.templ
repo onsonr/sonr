@@ -1,0 +1,15 @@
+package chats
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/didao-org/sonr/internal/components/base"
+	dash "github.com/didao-org/sonr/internal/components/views/dash"
+)
+
+templ Page(c echo.Context) {
+	@base.SidebarLayout(dash.Sidebar(c)) {
+		@conversationsView()
+		@messagesView()
+	}
+}
+

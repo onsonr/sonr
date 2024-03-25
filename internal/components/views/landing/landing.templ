@@ -1,0 +1,196 @@
+package landing
+
+templ Navbar() {
+	<!-- Site header -->
+	<header class="absolute w-full z-30">
+		<div class="max-w-6xl mx-auto px-4 sm:px-6">
+			<div class="flex items-center justify-between h-16 md:h-20">
+				<!-- Site branding -->
+				<div class="flex-1">
+					<!-- Logo -->
+					<a class="inline-flex" href="/" aria-label="Cruip">
+						<img class="max-w-none" src="https://cdn.sonr.build/images/logo.svg" width="38" height="38" alt="Sonr"/>
+					</a>
+				</div>
+				<!-- Desktop navigation -->
+				<nav class="hidden md:flex md:grow">
+					<!-- Desktop menu links -->
+					<ul class="flex grow justify-center flex-wrap items-center">
+						<li>
+							<a class="font-medium text-sm text-slate-300 hover:text-white mx-4 lg:mx-5 transition duration-150 ease-in-out" href="/about">Mission</a>
+						</li>
+						<li>
+							<a class="font-medium text-sm text-slate-300 hover:text-white mx-4 lg:mx-5 transition duration-150 ease-in-out" href="/ecosystem">Ecosystem</a>
+						</li>
+						<li>
+							<a class="font-medium text-sm text-slate-300 hover:text-white mx-4 lg:mx-5 transition duration-150 ease-in-out" href="/research">Research</a>
+						</li>
+						<li>
+							<a class="font-medium text-sm text-slate-300 hover:text-white mx-4 lg:mx-5 transition duration-150 ease-in-out" href="/changelog">Changelog</a>
+						</li>
+					</ul>
+				</nav>
+				<!-- Desktop sign in links -->
+				<ul class="flex-1 flex justify-end items-center">
+					<li>
+						<a class="font-medium text-sm text-slate-300 hover:text-white whitespace-nowrap transition duration-150 ease-in-out" href="/login">Login</a>
+					</li>
+					<li class="ml-6">
+						<a class="btn-sm text-slate-300 hover:text-white transition duration-150 ease-in-out w-full group [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] relative before:absolute before:inset-0 before:bg-slate-800/30 before:rounded-full before:pointer-events-none" href="/register">
+							<span class="relative inline-flex items-center">
+								Sign up <span class="tracking-normal text-purple-500 group-hover:translate-x-0.5 transition-transform duration-150 ease-in-out ml-1">-&gt;</span>
+							</span>
+						</a>
+					</li>
+				</ul>
+				<!-- Mobile menu -->
+				<div class="md:hidden flex items-center ml-4" x-data="{ expanded: false }">
+					<!-- Hamburger button -->
+					<button class="hamburger" :class="{ 'active': expanded }" @click.stop="expanded = !expanded" aria-controls="mobile-nav" :aria-expanded="expanded">
+						<span class="sr-only">Menu</span>
+						<svg class="w-5 h-5 fill-current text-slate-300 hover:text-white transition duration-150 ease-in-out" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+							<rect y="2" width="20" height="2" rx="1"></rect>
+							<rect y="9" width="20" height="2" rx="1"></rect>
+							<rect y="16" width="20" height="2" rx="1"></rect>
+						</svg>
+					</button>
+					<!-- Mobile navigation -->
+					<nav id="mobile-nav" class="absolute top-full z-20 left-0 w-full px-4 sm:px-6 overflow-hidden transition-all duration-300 ease-in-out" x-ref="mobileNav" :style="expanded ? 'max-height: ' + $refs.mobileNav.scrollHeight + 'px; opacity: 1' : 'max-height: 0; opacity: .8'" @click.outside="expanded = false" @keydown.escape.window="expanded = false" x-cloak>
+						<ul class="border border-transparent [background:linear-gradient(theme(colors.slate.900),_theme(colors.slate.900))_padding-box,_conic-gradient(theme(colors.slate.400),_theme(colors.slate.700)_25%,_theme(colors.slate.700)_75%,_theme(colors.slate.400)_100%)_border-box] rounded-lg px-4 py-1.5">
+							<li>
+								<a class="flex font-medium text-sm text-slate-300 hover:text-white py-1.5" href="/about">About</a>
+							</li>
+							<li>
+								<a class="flex font-medium text-sm text-slate-300 hover:text-white py-1.5" href="/ecosystem">Ecosystem</a>
+							</li>
+							<li>
+								<a class="flex font-medium text-sm text-slate-300 hover:text-white py-1.5" href="/research">Research</a>
+							</li>
+							<li>
+								<a class="flex font-medium text-sm text-slate-300 hover:text-white py-1.5" href="/changelog">Changelog</a>
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+		</div>
+	</header>
+}
+
+templ Footer() {
+	<footer>
+		<div class="max-w-6xl mx-auto px-4 sm:px-6">
+			<!-- Blocks -->
+			<div class="grid sm:grid-cols-12 gap-8 py-8 md:py-12">
+				<!-- 1st block -->
+				<div class="sm:col-span-12 lg:col-span-4 order-1 lg:order-none">
+					<div class="h-full flex flex-col sm:flex-row lg:flex-col justify-between">
+						<div class="mb-4 sm:mb-0">
+							<div class="mb-4">
+								<!-- Logo -->
+								<a class="inline-flex" href="/" aria-label="Cruip">
+									<img src="https://cdn.sonr.build/images/logo.svg" width="38" height="38" alt="Sonr"/>
+								</a>
+							</div>
+							<div class="text-sm text-slate-300">&copy; Sonr Inc. <span class="text-slate-500">-</span> All rights reserved.</div>
+						</div>
+						<!-- Social links -->
+						<ul class="flex">
+							<li>
+								<a class="flex justify-center items-center text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="#0" aria-label="Twitter">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+										<path d="M17.4033 3.5H20.2852L13.989 10.701L21.396 20.5H15.5964L11.054 14.557L5.85637 20.5H2.97269L9.70709 12.7977L2.60156 3.5H8.54839L12.6544 8.93215L17.4033 3.5ZM16.3918 18.7738H17.9887L7.68067 5.13549H5.96702L16.3918 18.7738Z" class="w-8 h-8 fill-current"></path>
+									</svg>
+								</a>
+							</li>
+							<li class="ml-4">
+								<a class="flex justify-center items-center text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="#0" aria-label="Discord">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+										<path d="M19.6361 5.0228C18.1907 4.35756 16.6648 3.88561 15.0973 3.61902C14.8828 4.00447 14.6888 4.40105 14.5159 4.8071C12.8463 4.55418 11.1484 4.55418 9.47881 4.8071C9.30587 4.4011 9.1118 4.00452 8.8974 3.61902C7.32897 3.88786 5.80205 4.36093 4.35518 5.02628C1.48276 9.29851 0.704092 13.4646 1.09342 17.5716C2.77558 18.821 4.6584 19.7712 6.66003 20.3809C7.11074 19.7715 7.50956 19.1251 7.85226 18.4483C7.20135 18.2039 6.57311 17.9024 5.9748 17.5473C6.13227 17.4325 6.28627 17.3142 6.43508 17.1994C8.17601 18.0224 10.0761 18.4491 12 18.4491C13.9238 18.4491 15.8239 18.0224 17.5648 17.1994C17.7154 17.3229 17.8694 17.4412 18.0251 17.5473C17.4257 17.903 16.7963 18.2051 16.1442 18.4501C16.4865 19.1265 16.8853 19.7724 17.3364 20.3809C19.3398 19.7737 21.224 18.8239 22.9065 17.5734C23.3633 12.8106 22.1261 8.68273 19.6361 5.0228ZM8.34541 15.0459C7.26047 15.0459 6.36414 14.0561 6.36414 12.8384C6.36414 11.6208 7.22932 10.6223 8.34195 10.6223C9.45458 10.6223 10.344 11.6208 10.325 12.8384C10.3059 14.0561 9.45112 15.0459 8.34541 15.0459ZM15.6545 15.0459C14.5678 15.0459 13.675 14.0561 13.675 12.8384C13.675 11.6208 14.5401 10.6223 15.6545 10.6223C16.7689 10.6223 17.6514 11.6208 17.6323 12.8384C17.6133 14.0561 16.7602 15.0459 15.6545 15.0459Z" class="w-8 h-8 fill-current"></path>
+									</svg>
+								</a>
+							</li>
+							<li class="ml-4">
+								<a class="flex justify-center items-center text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="#0" aria-label="Github">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+										<path d="M12 1.95068C17.525 1.95068 22 6.42568 22 11.9507C21.9995 14.0459 21.3419 16.0883 20.1198 17.7902C18.8977 19.4922 17.1727 20.768 15.1875 21.4382C14.6875 21.5382 14.5 21.2257 14.5 20.9632C14.5 20.6257 14.5125 19.5507 14.5125 18.2132C14.5125 17.2757 14.2 16.6757 13.8375 16.3632C16.0625 16.1132 18.4 15.2632 18.4 11.4257C18.4 10.3257 18.0125 9.43818 17.375 8.73818C17.475 8.48818 17.825 7.46318 17.275 6.08818C17.275 6.08818 16.4375 5.81318 14.525 7.11318C13.725 6.88818 12.875 6.77568 12.025 6.77568C11.175 6.77568 10.325 6.88818 9.525 7.11318C7.6125 5.82568 6.775 6.08818 6.775 6.08818C6.225 7.46318 6.575 8.48818 6.675 8.73818C6.0375 9.43818 5.65 10.3382 5.65 11.4257C5.65 15.2507 7.975 16.1132 10.2 16.3632C9.9125 16.6132 9.65 17.0507 9.5625 17.7007C8.9875 17.9632 7.55 18.3882 6.65 16.8757C6.4625 16.5757 5.9 15.8382 5.1125 15.8507C4.275 15.8632 4.775 16.3257 5.125 16.5132C5.55 16.7507 6.0375 17.6382 6.15 17.9257C6.35 18.4882 7 19.5632 9.5125 19.1007C9.5125 19.9382 9.525 20.7257 9.525 20.9632C9.525 21.2257 9.3375 21.5257 8.8375 21.4382C6.8458 20.7752 5.11342 19.502 3.88611 17.799C2.65881 16.096 1.9989 14.0498 2 11.9507C2 6.42568 6.475 1.95068 12 1.95068Z" class="w-8 h-8 fill-current"></path>
+									</svg>
+								</a>
+							</li>
+							<li class="ml-4">
+								<a class="flex justify-center items-center text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="#0" aria-label="YouTube">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+										<path fill-rule="evenodd" clip-rule="evenodd" d="M20.2043 4.00776C21.1084 4.28763 21.8189 5.10925 22.0609 6.15475C22.4982 8.04786 22.5 12 22.5 12C22.5 12 22.5 15.9522 22.0609 17.8453C21.8189 18.8908 21.1084 19.7124 20.2043 19.9922C18.5673 20.5 12 20.5 12 20.5C12 20.5 5.43274 20.5 3.79568 19.9922C2.89159 19.7124 2.1811 18.8908 1.93908 17.8453C1.5 15.9522 1.5 12 1.5 12C1.5 12 1.5 8.04786 1.93908 6.15475C2.1811 5.10925 2.89159 4.28763 3.79568 4.00776C5.43274 3.5 12 3.5 12 3.5C12 3.5 18.5673 3.5 20.2043 4.00776ZM15.5134 12.0003L9.79785 15.2999V8.70065L15.5134 12.0003Z" class="w-8 h-8 fill-current"></path>
+									</svg>
+								</a>
+							</li>
+							<li class="ml-4">
+								<a class="flex justify-center items-center text-purple-500 hover:text-purple-400 transition duration-150 ease-in-out" href="#0" aria-label="Telegram">
+									<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none">
+										<path d="M1.58098 10.6794C7.75614 7.99825 11.8729 6.23053 13.9312 5.37652C19.8152 2.93786 21.0363 2.51432 21.8338 2.50014C22.0092 2.49717 22.3997 2.54038 22.6545 2.74588C22.8663 2.91906 22.9259 3.15326 22.9557 3.31753C22.9822 3.4818 23.0186 3.85619 22.9889 4.14845C22.6712 7.48664 21.2912 15.5873 20.5896 19.3263C20.2951 20.9084 19.7093 21.4388 19.1434 21.4906C17.9123 21.6034 16.9791 20.6804 15.7877 19.9022C13.9246 18.6841 12.8723 17.926 11.0621 16.7376C8.97063 15.364 10.3274 14.609 11.5188 13.3753C11.8298 13.0524 17.2504 8.1391 17.353 7.69346C17.3663 7.63771 17.3796 7.4299 17.2538 7.32039C17.1314 7.21054 16.9492 7.24815 16.8169 7.27783C16.6282 7.32006 13.6532 9.28206 7.88175 13.1635C7.03788 13.7421 6.27345 14.0241 5.58511 14.0093C4.83059 13.9931 3.37459 13.5831 2.29245 13.2328C0.968726 12.803 -0.0869939 12.5757 0.00566664 11.8457C0.0519969 11.4657 0.57826 11.0768 1.58098 10.6794Z" class="w-8 h-8 fill-current"></path>
+									</svg>
+								</a>
+							</li>
+						</ul>
+						<iframe src="https://sonr.live/badge?theme=dark" width="250" height="30" frameborder="0" scrolling="no"></iframe>
+					</div>
+				</div>
+				<div class="sm:hidden md:block md:col-span-2 lg:col-span-1"></div>
+				<!-- 2nd block -->
+				<div class="sm:col-span-6 md:col-span-3 lg:col-span-2">
+					<h6 class="text-sm text-slate-50 font-medium mb-2">Technology</h6>
+					<ul class="text-sm space-y-2">
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Features</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Ecosystem</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Research</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Changelog</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Whitepaper</a>
+						</li>
+					</ul>
+				</div>
+				<!-- 3rd block -->
+				<div class="sm:col-span-6 md:col-span-3 lg:col-span-2">
+					<h6 class="text-sm text-slate-50 font-medium mb-2">Company</h6>
+					<ul class="text-sm space-y-2">
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">About us</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Blog</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="https://brandfetch.com/sonr.io">Brand</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="#0">Public Wallets</a>
+						</li>
+					</ul>
+				</div>
+				<!-- 4th block -->
+				<div class="sm:col-span-6 md:col-span-3 lg:col-span-2">
+					<h6 class="text-sm text-slate-50 font-medium mb-2">Resources</h6>
+					<ul class="text-sm space-y-2">
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="/community">Community</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="/legal/terms-of-service">Terms of service</a>
+						</li>
+						<li>
+							<a class="text-slate-400 hover:text-slate-200 transition duration-150 ease-in-out" href="/community/bug-bounty">Bug Bounty</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</footer>
+}

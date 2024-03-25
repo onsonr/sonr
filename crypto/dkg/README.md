@@ -1,7 +1,7 @@
 # Distributed Key Generation (DKG)
 
 Package `dkg` is intended to contain implementations of distributed key generation (DKG) protocols.
-Besides the DKG protocol we introduced in `github.com/sonrhq/sonr/pkg/crypto/tecdsa/README.md`, currently
+Besides the DKG protocol we introduced in `github.com/didao-org/sonr/pkg/crypto/tecdsa/README.md`, currently
 package `dkg` contains the following distributed key generation implementations.
 
 - Gennaro DKG: an adapted version [[overleaf]](https://www.overleaf.com/project/60915c0df1d6917f5cde6657) of
