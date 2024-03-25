@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"cosmossdk.io/collections"
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -27,6 +28,7 @@ type Keeper struct {
 // NewKeeper creates a new swap Keeper instance.
 func NewKeeper(
 	cdc codec.BinaryCodec,
+	storeService store.KVStoreService,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	ics4Wrapper porttypes.ICS4Wrapper,
 ) Keeper {

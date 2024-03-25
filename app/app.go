@@ -621,6 +621,7 @@ func NewChainApp(
 	// Create the service Middleware Keeper
 	app.ServiceKeeper = servicekeeper.NewKeeper(
 		appCodec,
+		runtime.NewKVStoreService(keys[servicetypes.StoreKey]),
 		app.MsgServiceRouter(),
 		app.IBCKeeper.ChannelKeeper,
 	)
@@ -628,6 +629,7 @@ func NewChainApp(
 	// Create the identity Middleware Keeper
 	app.IdentityKeeper = identitykeeper.NewKeeper(
 		appCodec,
+		runtime.NewKVStoreService(keys[servicetypes.StoreKey]),
 		app.MsgServiceRouter(),
 		app.IBCKeeper.ChannelKeeper,
 	)

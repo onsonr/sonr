@@ -1,18 +1,17 @@
 package keeper
 
 import (
-	"github.com/didao-org/sonr/x/identity/types"
-
+	"cosmossdk.io/core/store"
+	"cosmossdk.io/log"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-
-	"cosmossdk.io/log"
-
 	clienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types"
 	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+
+	"github.com/didao-org/sonr/x/identity/types"
 )
 
 // Keeper defines the middleware keeper.
@@ -26,6 +25,7 @@ type Keeper struct {
 // NewKeeper creates a new swap Keeper instance.
 func NewKeeper(
 	cdc codec.BinaryCodec,
+	storeService store.KVStoreService,
 	msgServiceRouter *baseapp.MsgServiceRouter,
 	ics4Wrapper porttypes.ICS4Wrapper,
 ) Keeper {
