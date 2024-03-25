@@ -5,23 +5,6 @@ before:
     - go mod download
 
 builds:
-  # Build - sonrd
-  - id: sonrd
-    main: cmd/sonrd/main.go
-    binary: sonrd
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    flags:
-      - -mod=readonly
-      - -trimpath
-    ldflags:
-      - -X main.Version={{ .Version }}
-      - -X main.Commit={{ .Commit }}
-      - -w -s
   # Build - hway
   - id: hway
     main: cmd/hway/main.go
@@ -41,21 +24,6 @@ builds:
       - -w -s
 
 dockers:
-  # Docker Images - sonrd
-  - image_templates:
-      - ghcr.io/sonrhq/sonrd:{{ .Version }}
-      - ghcr.io/sonrhq/sonrd:latest
-      - "sonrhq/sonrd:{{ .Version }}"
-      - sonrhq/sonrd:latest
-    build_flag_templates:
-      - "--pull"
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title={{.ProjectName}}"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-    ids:
-      - sonrd
-    dockerfile: ./deploy/Dockerfile.sonrd
   # Docker Images - hway
   - image_templates:
       - ghcr.io/sonrhq/hway:{{ .Version }}
@@ -74,12 +42,6 @@ dockers:
 
 archives:
   # Archives
-  - id: sonrd
-    builds:
-      - sonrd
-    name_template: "{{.Binary}}-{{ .Os }}-{{ .Arch }}"
-    format: tar.gz
-  # Archives
   - id: hway
     builds:
       - hway
@@ -91,19 +53,6 @@ checksum:
   algorithm: sha256
 
 brews:
-  # Homebrew - sonrd
-  - folder: Formula
-    caveats: "Run the Sonr Blockchain Node with `sonrd`"
-    homepage: "https://sonr.io"
-    description: "Sonr is an ibc-enabled blockchain for decentralized identity."
-    license: "OpenGLV3"
-    name: "sonrd"
-    ids:
-      - "sonrd"
-    repository:
-      owner: sonrhq
-      name: homebrew-tap
-      token: "{{ .Env.GITHUB_TOKEN }}"
   # Homebrew - hway
   - folder: Formula
     caveats: "Run the Sonr Highway with `hway`"
@@ -120,14 +69,12 @@ brews:
 
 release:
   github:
-    owner: sonrhq
+    owner: didao-org
     name: sonr
 
-  name_template: "🆔 Release {{ .Version }}"
+  name_template: "Release {{ .Version }}"
   mode: replace
   draft: false
-  extra_files:
-    - glob: ./assets/scripts/install.sh
 
 changelog:
   sort: asc
