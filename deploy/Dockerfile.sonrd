@@ -1,0 +1,11 @@
+FROM scratch
+
+LABEL org.opencontainers.image.title="Sonrd"
+LABEL org.opencontainers.image.description="The Base blockchain node for the Sonr network"
+LABEL org.opencontainers.image.source="https://github.com/didao-org/sonr"
+LABEL org.opencontainers.image.licenses="OpenGL 3.0"
+LABEL org.opencontainers.image.documentation="https://sonr.guide"
+LABEL org.opencontainers.image.vendor="Identity LAO"
+
+ENTRYPOINT ["/sonrd"]
+COPY sonrd /

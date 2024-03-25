@@ -33,3 +33,13 @@ tasks:
     desc: "Run the hway"
     cmds:
       - go run ./cmd/hway/main.go
+
+  hway:build:
+    desc: "Build the hway"
+    cmds:
+      - go build -o bin/hway ./cmd/hway/main.go
+
+  hway:release:
+    desc: "Build the hway"
+    cmds:
+      - goreleaser release --clean

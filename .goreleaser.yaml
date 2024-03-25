@@ -55,7 +55,7 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
     ids:
       - sonrd
-    dockerfile: ./deploy/Dockerfile.node
+    dockerfile: ./deploy/Dockerfile.sonrd
   # Docker Images - hway
   - image_templates:
       - ghcr.io/sonrhq/hway:{{ .Version }}
