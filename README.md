@@ -20,20 +20,6 @@
 
 **_Sonr is an ibc-enabled blockchain for decentralized identity_**.
 
-- [x] Passkey based User Accounts. [**Docs**](https://sonr.io/docs/guides/database)
-- [x] DKLS-MPC Powered Wallets _(No seed phrases)_. [**Docs**](https://sonr.io/docs/guides/auth)
-- [x] IPFS Database and Storage. [**Docs**](https://sonr.io/docs/guides/storage)
-  - [x] Redis. [**Docs**](https://sonr.io/docs/guides/api#rest-api-overview)
-  - [x] MySQL. [**Docs**](https://sonr.io/docs/guides/api#graphql-api-overview)
-  - [ ] Matrix chat. [Status](https://github.com/didao-org/sonr/issues/783)
-- [x] IBC Integrations.
-  - [ ] Nomic. [Status](https://github.com/didao-org/sonr/issues/784)
-  - [ ] Evmos. [Status](https://github.com/didao-org/sonr/issues/785)
-  - [ ] Osmosis. [Status](https://github.com/didao-org/sonr/issues/786)
-- [x] Smart Contracts. [**Docs**](https://sonr.io/docs/guides/storage)
-- [ ] Typescript Client SDKs. [Status](https://github.com/sonr-io/front/milestone/2)
-- [ ] Dashboard. [Status](https://github.com/sonr-io/front/milestone/1)
-
 ## Features
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
@@ -68,17 +54,14 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 Sonr is built on top of the Cosmos SDK, which is a framework for building blockchain applications in Golang. We have built the above modules to provide a decentralized identity and asset management system.
 
-## Documentation
-
-For full documentation, visit [sonr.io/docs](https://sonr.io/docs). To see how to Contribute, visit [Getting Started](./docs/contribution/DEVELOPERS.md)
+## Usage
 
 It's recommended to install the following tools:
 
 - [golang](https://golang.org/doc/install)
 - [grpcui](https://github.com/fullstorydev/grpcui)
 - [docker](https://docs.docker.com/get-docker/)
-- [earthly](https://earthly.dev/get-earthly)
-- [buf](https://docs.buf.build/installation)
+- [spawn](https://github.com/rollchains/spawn)
 
 ## Status
 
