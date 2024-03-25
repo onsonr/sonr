@@ -3,19 +3,18 @@ package service
 import (
 	"encoding/json"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/didao-org/sonr/x/service/keeper"
-	"github.com/didao-org/sonr/x/service/types"
-	"github.com/spf13/cobra"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/didao-org/sonr/x/service/keeper"
+	"github.com/didao-org/sonr/x/service/types"
 )
 
 var (
@@ -36,7 +35,9 @@ func (AppModuleBasic) Name() string {
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
 // RegisterInterfaces registers module concrete types into protobuf Any.
-func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {}
+func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
+}
 
 // DefaultGenesis returns default genesis state as raw bytes for the swap module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
@@ -90,7 +91,9 @@ func NewAppModule(keeper keeper.Keeper) *AppModule {
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 // RegisterServices registers module services.
-func (am AppModule) RegisterServices(cfg module.Configurator) {}
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+}
 
 // InitGenesis performs genesis initialization for the ibc-router module. It returns
 // no validator updates.
