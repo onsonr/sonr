@@ -5,7 +5,7 @@
 <div style="text-align: center;">
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/sonrhq/sonr.svg)](https://pkg.go.dev/github.com/sonrhq/sonr)
-![GitHub commit activity](https://img.shields.io/github/commit-activity/w/sonrhq/sonr)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/w/didao-org/sonr)
 ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/sonrhq/sonr)
 [![Static Badge](https://img.shields.io/badge/homepage-sonr.io-blue?style=flat-square)](https://sonr.io)
 ![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Discord%20Chat)
