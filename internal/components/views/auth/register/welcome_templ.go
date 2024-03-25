@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/internal/components/views/auth"
+	"github.com/didao-org/sonr/internal/components/views/auth"
 )
 
 func welcomeAccountScreen() templ.Component {

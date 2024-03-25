@@ -11,9 +11,9 @@ import "io"
 import "bytes"
 
 import (
+	"github.com/didao-org/sonr/internal/components/base"
+	dash "github.com/didao-org/sonr/internal/components/views/dash"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/internal/components/base"
-	dash "github.com/sonrhq/sonr/internal/components/views/dash"
 )
 
 func Page(c echo.Context) templ.Component {

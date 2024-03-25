@@ -8,13 +8,13 @@ import (
 	"path"
 
 	"github.com/ipfs/boxo/files"
+	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
+	did "github.com/sonrhq/sonr/x/identity"
 	"github.com/tink-crypto/tink-go/v2/keyset"
 
 	"github.com/didao-org/sonr/crypto/core/protocol"
 	"github.com/didao-org/sonr/crypto/daead"
 	"github.com/didao-org/sonr/internal/wallet/kss"
-	modulev1 "github.com/sonrhq/sonr/api/sonr/identity/module/v1"
-	did "github.com/sonrhq/sonr/x/identity"
 )
 
 var keyHandle *keyset.Handle

@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/sonrhq/sonr/internal/components/base"
+	"github.com/didao-org/sonr/internal/components/base"
 )
 
 func ConfirmEmailView() templ.Component {

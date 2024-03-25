@@ -1,0 +1,40 @@
+version: "3"
+dotenv:
+  - .env
+
+includes:
+  build: .taskfiles/Build.yml
+  compose: .taskfiles/Compose.yml
+  docker: .taskfiles/Docker.yml
+  deploy: .taskfiles/Deploy.yml
+  gen: .taskfiles/Gen.yml
+  release: .taskfiles/Release.yml
+  test: .taskfiles/Test.yml
+
+tasks:
+  deps:
+    desc: "Setup the development environment"
+    cmds:
+      - go install github.com/cosmtrek/air@latest
+      - go install github.com/kollalabs/protoc-gen-openapi@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
+      - go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm-proto@latest
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - go install github.com/go-task/task/v3/cmd/task@latest
+
+  dev-hway:
+    desc: "Start development server"
+    cmds:
+      - templ generate
+      - air -c ./deploy/air.hway.toml
+
+  dev-node:
+    desc: "Start development server"
+    cmds:
+      - task: gen:proto
+      - air -c ./deploy/air.node.toml
+
+  test-essential:
+    desc: "Run essential tests"
+    cmds:
+      - task: test

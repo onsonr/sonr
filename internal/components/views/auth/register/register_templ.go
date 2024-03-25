@@ -11,10 +11,10 @@ import "io"
 import "bytes"
 
 import (
+	"github.com/didao-org/sonr/internal/components/base"
+	"github.com/didao-org/sonr/internal/components/views/auth"
+	"github.com/didao-org/sonr/pkg/middleware/common"
 	"github.com/labstack/echo/v4"
-	"github.com/sonrhq/sonr/internal/components/base"
-	"github.com/sonrhq/sonr/internal/components/views/auth"
-	"github.com/sonrhq/sonr/pkg/middleware/common"
 )
 
 func Page(c echo.Context) templ.Component {
