@@ -67,8 +67,8 @@ It's recommended to install the following tools:
 
 - [x] **Alpha**: Closed testing.
 - [x] **Private Devnet**: May have kinks. [See projects](https://sonr.io/dashboard).
-- [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](https://sonr.io/dashboard).
-- [ ] **Mainnet**: Coming soon. [Watch status](https://sonr.io/docs/guides/getting-started/features#feature-status).
+- [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](#).
+- [ ] **Mainnet**: Coming soon. [Watch status](#).
 
 We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/didao-org/sonr/releases) of this repo to get notified of major updates.
 
