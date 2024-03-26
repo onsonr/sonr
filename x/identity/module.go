@@ -35,7 +35,9 @@ func (AppModuleBasic) Name() string {
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {}
 
 // RegisterInterfaces registers module concrete types into protobuf Any.
-func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {}
+func (AppModuleBasic) RegisterInterfaces(registry codectypes.InterfaceRegistry) {
+	types.RegisterInterfaces(registry)
+}
 
 // DefaultGenesis returns default genesis state as raw bytes for the swap module.
 func (AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
