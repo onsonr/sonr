@@ -3,19 +3,18 @@ package identity
 import (
 	"encoding/json"
 
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/didao-org/sonr/x/identity/keeper"
-	"github.com/didao-org/sonr/x/identity/types"
-	"github.com/spf13/cobra"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 	simtypes "github.com/cosmos/cosmos-sdk/types/simulation"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
+	"github.com/spf13/cobra"
 
-	abci "github.com/cometbft/cometbft/abci/types"
+	"github.com/didao-org/sonr/x/identity/keeper"
+	"github.com/didao-org/sonr/x/identity/types"
 )
 
 var (
@@ -90,7 +89,9 @@ func NewAppModule(keeper keeper.Keeper) *AppModule {
 func (am AppModule) RegisterInvariants(ir sdk.InvariantRegistry) {}
 
 // RegisterServices registers module services.
-func (am AppModule) RegisterServices(cfg module.Configurator) {}
+func (am AppModule) RegisterServices(cfg module.Configurator) {
+	types.RegisterMsgServer(cfg.MsgServer(), keeper.NewMsgServerImpl(am.keeper))
+}
 
 // InitGenesis performs genesis initialization for the ibc-router module. It returns
 // no validator updates.

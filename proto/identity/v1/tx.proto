@@ -4,4 +4,47 @@ package identity.v1;
 
 option go_package = "github.com/didao-org/sonr/x/identity/types";
 
+import "cosmos/msg/v1/msg.proto";
 import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+import "identity/v1/genesis.proto";
+import "cosmos_proto/cosmos.proto";
+
+// Msg defines the module Msg service.
+service Msg {
+  option (cosmos.msg.v1.service) = true;
+
+  // IncrementCounter increments the counter.
+  rpc InitializeIdentity(MsgInitializeIdentity)
+      returns (MsgInitializeIdentityResponse);
+}
+
+// MsgInitializeIdentity defines the Msg/IncrementCounter request type.
+message MsgInitializeIdentity {
+  option (cosmos.msg.v1.signer) = "sender";
+  option (amino.name) = "sonrhq/identity/MsgInitializeIdentity";
+
+  // sender is the message sender.
+  string sender = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+
+  // peer_id is the peer id of the identity.
+  string peer_id = 2;
+
+  // address is the address of the identity.
+  string address = 3;
+
+  // public_key is the public key of the identity.
+  bytes public_key = 4;
+
+  // ipns is the ipns of the identity.
+  string ipns = 5;
+
+  // accumulator_key is the accumulator key of the identity.
+  bytes accumulator_key = 6;
+
+  // network is the network of the identity.
+  string network = 7;
+}
+
+// MsgInitializeIdentityResponse defines the Msg/InitializeIdentity response type.
+message MsgInitializeIdentityResponse {}

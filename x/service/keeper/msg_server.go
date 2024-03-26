@@ -4,17 +4,16 @@ import (
 	"context"
 
 	"github.com/didao-org/sonr/x/service/types"
-	service "github.com/didao-org/sonr/x/service/types"
 )
 
 type msgServer struct {
 	k Keeper
 }
 
-var _ service.MsgServer = msgServer{}
+var _ types.MsgServer = msgServer{}
 
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
-func NewMsgServerImpl(keeper Keeper) service.MsgServer {
+func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
