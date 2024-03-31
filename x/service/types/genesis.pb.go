@@ -69,6 +69,97 @@ func (m *GenesisState) GetRecords() []Record {
 	return nil
 }
 
+// Credential is the representation of a webauthn credential in the format of a CredentialDescriptor
+type Credential struct {
+	// Assertion Type is the type of the credential
+	AssertionType string `protobuf:"bytes,1,opt,name=assertion_type,json=assertionType,proto3" json:"assertion_type,omitempty"`
+	// Id is the id of the credential
+	Id []byte `protobuf:"bytes,2,opt,name=id,proto3" json:"id,omitempty"`
+	// handle is the handle of the credential
+	Handle string `protobuf:"bytes,3,opt,name=handle,proto3" json:"handle,omitempty"`
+	// transports is the list of transports supported by the credential
+	Transports []string `protobuf:"bytes,4,rep,name=transports,proto3" json:"transports,omitempty"`
+	// origin is the origin of the credential
+	Origin string `protobuf:"bytes,5,opt,name=origin,proto3" json:"origin,omitempty"`
+	// Authority is the address of the owner of the credential
+	Authority string `protobuf:"bytes,6,opt,name=authority,proto3" json:"authority,omitempty"`
+}
+
+func (m *Credential) Reset()         { *m = Credential{} }
+func (m *Credential) String() string { return proto.CompactTextString(m) }
+func (*Credential) ProtoMessage()    {}
+func (*Credential) Descriptor() ([]byte, []int) {
+	return fileDescriptor_0ce55e499988823a, []int{1}
+}
+func (m *Credential) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Credential) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Credential.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Credential) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Credential.Merge(m, src)
+}
+func (m *Credential) XXX_Size() int {
+	return m.Size()
+}
+func (m *Credential) XXX_DiscardUnknown() {
+	xxx_messageInfo_Credential.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Credential proto.InternalMessageInfo
+
+func (m *Credential) GetAssertionType() string {
+	if m != nil {
+		return m.AssertionType
+	}
+	return ""
+}
+
+func (m *Credential) GetId() []byte {
+	if m != nil {
+		return m.Id
+	}
+	return nil
+}
+
+func (m *Credential) GetHandle() string {
+	if m != nil {
+		return m.Handle
+	}
+	return ""
+}
+
+func (m *Credential) GetTransports() []string {
+	if m != nil {
+		return m.Transports
+	}
+	return nil
+}
+
+func (m *Credential) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *Credential) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
 // Record is the representation of a sonr enabled service
 type Record struct {
 	// Name is the name of the service
@@ -87,7 +178,7 @@ func (m *Record) Reset()         { *m = Record{} }
 func (m *Record) String() string { return proto.CompactTextString(m) }
 func (*Record) ProtoMessage()    {}
 func (*Record) Descriptor() ([]byte, []int) {
-	return fileDescriptor_0ce55e499988823a, []int{1}
+	return fileDescriptor_0ce55e499988823a, []int{2}
 }
 func (m *Record) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -153,33 +244,39 @@ func (m *Record) GetOrigin() string {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "service.v1.GenesisState")
+	proto.RegisterType((*Credential)(nil), "service.v1.Credential")
 	proto.RegisterType((*Record)(nil), "service.v1.Record")
 }
 
 func init() { proto.RegisterFile("service/v1/genesis.proto", fileDescriptor_0ce55e499988823a) }
 
 var fileDescriptor_0ce55e499988823a = []byte{
-	// 309 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x4c, 0x90, 0x31, 0x4f, 0x32, 0x31,
-	0x18, 0xc7, 0xaf, 0x2f, 0xbc, 0x18, 0x8a, 0x9a, 0x58, 0x8d, 0x69, 0x88, 0x39, 0x2f, 0x4c, 0x48,
-	0xe2, 0x35, 0xe8, 0x60, 0xe2, 0xa8, 0x03, 0xfb, 0xb9, 0xb9, 0x1d, 0x77, 0x4d, 0x79, 0x86, 0xeb,
-	0x73, 0x69, 0x0b, 0x91, 0xaf, 0xe0, 0xe4, 0xc7, 0x30, 0x71, 0xe1, 0x63, 0x30, 0x32, 0x3a, 0x19,
-	0x03, 0x03, 0x5f, 0xc3, 0xd0, 0x83, 0xc0, 0xd2, 0xfc, 0xfb, 0xfb, 0xf5, 0xf9, 0x27, 0x7d, 0x28,
-	0xb7, 0xd2, 0x4c, 0x20, 0x93, 0x62, 0xd2, 0x17, 0x4a, 0x6a, 0x69, 0xc1, 0xc6, 0xa5, 0x41, 0x87,
-	0x8c, 0x6e, 0x4d, 0x3c, 0xe9, 0xb7, 0xcf, 0xd2, 0x02, 0x34, 0x0a, 0x7f, 0x56, 0xba, 0x7d, 0xa1,
-	0x50, 0xa1, 0x8f, 0x62, 0x93, 0x2a, 0xda, 0x19, 0xd0, 0xe3, 0x41, 0xd5, 0xf2, 0xe2, 0x52, 0x27,
-	0xd9, 0x03, 0x3d, 0x32, 0x32, 0x43, 0x93, 0x5b, 0x4e, 0xa2, 0x5a, 0xb7, 0x75, 0xc7, 0xe2, 0x7d,
-	0x6d, 0x9c, 0x78, 0xf5, 0xd4, 0x9c, 0xff, 0x5c, 0x07, 0x9f, 0xeb, 0x59, 0x8f, 0x24, 0xbb, 0xd7,
-	0x9d, 0x2f, 0x42, 0x1b, 0x95, 0x66, 0x8c, 0xd6, 0x75, 0x5a, 0x48, 0x4e, 0x22, 0xd2, 0x6d, 0x26,
-	0x3e, 0xb3, 0x88, 0xb6, 0x72, 0x69, 0x33, 0x03, 0xa5, 0x03, 0xd4, 0xfc, 0x9f, 0x57, 0x87, 0x88,
-	0x5d, 0xd1, 0x66, 0x3a, 0x76, 0x23, 0x34, 0xe0, 0xa6, 0xbc, 0xe6, 0xfd, 0x1e, 0x6c, 0xe6, 0x4b,
-	0x69, 0x0a, 0xb0, 0x16, 0x50, 0x5b, 0x5e, 0x8f, 0x48, 0xf7, 0x24, 0x39, 0x44, 0xec, 0x92, 0x36,
-	0xd0, 0x80, 0x02, 0xcd, 0xff, 0xfb, 0xe1, 0xed, 0xed, 0xf1, 0xfc, 0x7d, 0x3d, 0xeb, 0x9d, 0xee,
-	0xb6, 0xb6, 0xfd, 0xc1, 0xf3, 0x7c, 0x19, 0x92, 0xc5, 0x32, 0x24, 0xbf, 0xcb, 0x90, 0x7c, 0xac,
-	0xc2, 0x60, 0xb1, 0x0a, 0x83, 0xef, 0x55, 0x18, 0xbc, 0xde, 0x28, 0x70, 0xa3, 0xf1, 0x30, 0xce,
-	0xb0, 0x10, 0x39, 0xe4, 0x29, 0xde, 0xa2, 0x51, 0xc2, 0xa2, 0x36, 0xe2, 0x4d, 0xec, 0x5a, 0xdc,
-	0xb4, 0x94, 0x76, 0xd8, 0xf0, 0x2b, 0xbc, 0xff, 0x0b, 0x00, 0x00, 0xff, 0xff, 0x14, 0x49, 0x9d,
-	0x4e, 0x93, 0x01, 0x00, 0x00,
+	// 394 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x74, 0x91, 0xcf, 0xca, 0xd3, 0x40,
+	0x14, 0xc5, 0x33, 0x4d, 0x8d, 0x64, 0xfa, 0x07, 0x1c, 0x45, 0x86, 0x22, 0x31, 0x14, 0x84, 0x58,
+	0x30, 0x43, 0x75, 0x21, 0xb8, 0xb4, 0x8b, 0xee, 0xa3, 0x2b, 0x37, 0x32, 0xcd, 0x0c, 0xe9, 0x40,
+	0x33, 0x13, 0x66, 0xa6, 0xc5, 0xbe, 0x82, 0x2b, 0x1f, 0x43, 0x70, 0x53, 0xdf, 0xa2, 0xcb, 0x2e,
+	0x5d, 0x89, 0xb4, 0x8b, 0xbe, 0x86, 0x64, 0xd2, 0xd8, 0xfa, 0xc1, 0xb7, 0x09, 0xf7, 0xfe, 0xce,
+	0xbd, 0x87, 0x93, 0xb9, 0x10, 0x1b, 0xae, 0x37, 0x22, 0xe7, 0x64, 0x33, 0x25, 0x05, 0x97, 0xdc,
+	0x08, 0x93, 0x56, 0x5a, 0x59, 0x85, 0xe0, 0x45, 0x49, 0x37, 0xd3, 0xd1, 0x23, 0x5a, 0x0a, 0xa9,
+	0x88, 0xfb, 0x36, 0xf2, 0xe8, 0x49, 0xa1, 0x0a, 0xe5, 0x4a, 0x52, 0x57, 0x0d, 0x1d, 0xcf, 0x61,
+	0x7f, 0xde, 0xb8, 0x7c, 0xb0, 0xd4, 0x72, 0xf4, 0x16, 0x3e, 0xd4, 0x3c, 0x57, 0x9a, 0x19, 0x0c,
+	0x62, 0x3f, 0xe9, 0xbd, 0x46, 0xe9, 0xd5, 0x36, 0xcd, 0x9c, 0xf4, 0x3e, 0xdc, 0xff, 0x7e, 0xee,
+	0x7d, 0x3f, 0xef, 0x26, 0x20, 0x6b, 0xa7, 0xc7, 0x3f, 0x01, 0x84, 0x33, 0xcd, 0x19, 0x97, 0x56,
+	0xd0, 0x15, 0x7a, 0x01, 0x87, 0xd4, 0x18, 0xae, 0xad, 0x50, 0xf2, 0xb3, 0xdd, 0x56, 0x1c, 0x83,
+	0x18, 0x24, 0x61, 0x36, 0xf8, 0x47, 0x3f, 0x6e, 0x2b, 0x8e, 0x86, 0xb0, 0x23, 0x18, 0xee, 0xc4,
+	0x20, 0xe9, 0x67, 0x1d, 0xc1, 0xd0, 0x53, 0x18, 0x2c, 0xa9, 0x64, 0x2b, 0x8e, 0x7d, 0x37, 0x7e,
+	0xe9, 0x50, 0x04, 0xa1, 0xd5, 0x54, 0x9a, 0x4a, 0x69, 0x6b, 0x70, 0x37, 0xf6, 0x93, 0x30, 0xbb,
+	0x21, 0xf5, 0x9e, 0xd2, 0xa2, 0x10, 0x12, 0x3f, 0x68, 0xf6, 0x9a, 0x0e, 0x3d, 0x83, 0x21, 0x5d,
+	0xdb, 0xa5, 0xd2, 0xc2, 0x6e, 0x71, 0xe0, 0xa4, 0x2b, 0x18, 0xff, 0x00, 0x30, 0x68, 0x7e, 0x09,
+	0x21, 0xd8, 0x95, 0xb4, 0x6c, 0x53, 0xba, 0x1a, 0xc5, 0xb0, 0xc7, 0xb8, 0xc9, 0xb5, 0xa8, 0xea,
+	0xbc, 0x2e, 0x65, 0x98, 0xdd, 0xa2, 0xff, 0xed, 0xfd, 0x3b, 0xf6, 0xf5, 0x7e, 0xc5, 0x75, 0x29,
+	0x8c, 0x11, 0x4a, 0xd6, 0xa9, 0x41, 0x32, 0xc8, 0x6e, 0xd1, 0x7d, 0xb1, 0xdf, 0x3d, 0xfe, 0x7a,
+	0xde, 0x4d, 0x86, 0xed, 0xa5, 0x2f, 0xaf, 0x3e, 0xdb, 0x1f, 0x23, 0x70, 0x38, 0x46, 0xe0, 0xcf,
+	0x31, 0x02, 0xdf, 0x4e, 0x91, 0x77, 0x38, 0x45, 0xde, 0xaf, 0x53, 0xe4, 0x7d, 0x7a, 0x59, 0x08,
+	0xbb, 0x5c, 0x2f, 0xd2, 0x5c, 0x95, 0x84, 0x09, 0x46, 0xd5, 0x2b, 0xa5, 0x0b, 0x62, 0x94, 0xd4,
+	0xe4, 0x0b, 0x69, 0x5d, 0xea, 0x23, 0x98, 0x45, 0xe0, 0xce, 0xfe, 0xe6, 0x6f, 0x00, 0x00, 0x00,
+	0xff, 0xff, 0x71, 0x15, 0xa2, 0x88, 0x47, 0x02, 0x00, 0x00,
 }
 
 func (m *GenesisState) Marshal() (dAtA []byte, err error) {
@@ -215,6 +312,73 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i--
 			dAtA[i] = 0xa
 		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Credential) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Credential) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Credential) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Transports) > 0 {
+		for iNdEx := len(m.Transports) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Transports[iNdEx])
+			copy(dAtA[i:], m.Transports[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Transports[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Handle) > 0 {
+		i -= len(m.Handle)
+		copy(dAtA[i:], m.Handle)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Handle)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.AssertionType) > 0 {
+		i -= len(m.AssertionType)
+		copy(dAtA[i:], m.AssertionType)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.AssertionType)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -297,6 +461,41 @@ func (m *GenesisState) Size() (n int) {
 			l = e.Size()
 			n += 1 + l + sovGenesis(uint64(l))
 		}
+	}
+	return n
+}
+
+func (m *Credential) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.AssertionType)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.Handle)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.Transports) > 0 {
+		for _, s := range m.Transports {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
 	}
 	return n
 }
@@ -397,6 +596,250 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 			if err := m.Records[len(m.Records)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Credential) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Credential: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Credential: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AssertionType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AssertionType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Id = append(m.Id[:0], dAtA[iNdEx:postIndex]...)
+			if m.Id == nil {
+				m.Id = []byte{}
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Handle", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Handle = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Transports", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Transports = append(m.Transports, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

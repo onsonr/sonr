@@ -11,7 +11,7 @@ env:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: test-server
     steps:
       - name: Check out source
         uses: actions/checkout@v4

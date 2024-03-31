@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   build-docker:
-    runs-on: ubuntu-latest
+    runs-on: test-server
     steps:
       - id: go-cache-paths
         run: |
@@ -70,7 +70,7 @@ jobs:
 
   e2e-tests:
     needs: build-docker
-    runs-on: ubuntu-latest
+    runs-on: test-server
     strategy:
       matrix:
         # names of `make` commands to run tests

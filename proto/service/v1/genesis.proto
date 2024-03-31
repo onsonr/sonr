@@ -13,6 +13,26 @@ message GenesisState {
       [ (gogoproto.nullable) = false, (amino.dont_omitempty) = true ];
 }
 
+// Credential is the representation of a webauthn credential in the format of a CredentialDescriptor
+message Credential {
+  // Assertion Type is the type of the credential
+  string assertion_type = 1;
+
+  // Id is the id of the credential
+  bytes id = 2;
+
+  // handle is the handle of the credential
+  string handle = 3;
+
+  // transports is the list of transports supported by the credential
+  repeated string transports = 4;
+
+  // origin is the origin of the credential
+  string origin = 5;
+
+  // Authority is the address of the owner of the credential
+  string authority = 6;
+}
 
 // Record is the representation of a sonr enabled service
 message Record {
