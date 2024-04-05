@@ -1,11 +1,111 @@
 # This file is used to create docker images using the heighliner binary.
 # see: https://github.com/strangelove-ventures/heighliner
 
+# Akash
+- name: akash
+  github-organization: akash-network
+  github-repo: node
+  dockerfile: cosmos
+  build-target: |
+    apk add --update nodejs npm jq direnv
+    direnv allow
+    eval $(direnv export bash)
+    export GOVERSION=$(./script/tools.sh gotoolchain | sed 's/go*//')
+    make install
+  binaries:
+    - /go/bin/akash
+
+# Archway
+- name: archway
+  github-organization: archway-network
+  github-repo: archway
+  dockerfile: cosmos
+  build-target: make build
+  binaries:
+    - build/archwayd
+  build-env:
+    - BUILD_TAGS=muslc
+
+# Cosmos Hub
+- name: gaia
+  github-organization: cosmos
+  github-repo: gaia
+  dockerfile: cosmos
+  build-target: make install
+  build-env:
+    - LEDGER_ENABLED=false
+    - BUILD_TAGS=muslc
+  binaries:
+    - /go/bin/gaiad
+
+# Evmos
+- name: evmos
+  github-organization: tharsis
+  github-repo: evmos
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/evmosd
+
+# Neutron
+- name: neutron
+  github-organization: neutron-org
+  github-repo: neutron
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/neutrond
+  build-env:
+    - BUILD_TAGS=muslc
+
+# Noble
+- name: noble
+  github-organization: noble-assets
+  github-repo: noble
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/nobled
+
+# Osmosis
+- name: osmosis
+  github-organization: osmosis-labs
+  github-repo: osmosis
+  dockerfile: cosmos
+  build-target: make build
+  binaries:
+    - build/osmosisd
+  build-env:
+    - BUILD_TAGS=muslc
+
+# Sonr
 - name: sonr
   dockerfile: cosmos
+  github-organization: didao-org
+  github-repo: sonr
   build-target: make install
   binaries:
     - /go/bin/sonrd
   build-env:
     - LEDGER_ENABLED=false
     - BUILD_TAGS=muslc
+
+# Stargaze
+- name: stargaze
+  github-organization: public-awesome
+  github-repo: stargaze
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/starsd
+  build-env:
+    - BUILD_TAGS=muslc
+
+# Stride
+- name: stride
+  github-organization: Stride-Labs
+  github-repo: stride
+  dockerfile: cosmos
+  build-target: make build
+  binaries:
+    - build/strided

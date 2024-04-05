@@ -45,3 +45,9 @@ tasks:
     desc: "Build the hway"
     cmds:
       - goreleaser release --clean
+
+  templ:
+    desc: "Generate all templ files (https://templ.guide)"
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - templ generate
