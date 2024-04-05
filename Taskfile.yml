@@ -25,6 +25,8 @@ tasks:
       - make local-image
 
   proto:
+    aliases:
+      - "gen"
     desc: "Generate the protobuf files"
     cmds:
       - make proto-gen

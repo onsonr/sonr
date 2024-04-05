@@ -226,9 +226,6 @@ func (d *Delta) UnmarshalBinary(data []byte) error {
 	if err != nil {
 		return err
 	}
-	if err != nil {
-		return err
-	}
 	d.d = dValue
 	d.p = pValue
 	return nil
