@@ -1,0 +1,25 @@
+package register
+
+import (
+	"github.com/didao-org/sonr/internal/base"
+)
+
+templ ConfirmEmailView() {
+	<form class={ "flex flex-row justify-evenly items-center align-middle pb-2.5 gap-x-1.5" }>
+		<sl-input
+			name="email"
+			placeholder="sjobs@apple.com"
+			size="large"
+			autocomplete="username webauthn"
+			required
+		>
+			<sl-icon class="text-stone-200" slot="prefix" name="at"></sl-icon>
+		</sl-input>
+		<sl-button type="submit" size="large" variant="default">
+			<div class="text-md">
+				@base.PasskeyIcon()
+			</div>
+		</sl-button>
+		<div id="name-error" aria-live="polite" hidden></div>
+	</form>
+}

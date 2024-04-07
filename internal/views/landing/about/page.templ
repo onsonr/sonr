@@ -1,0 +1,17 @@
+package about
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/didao-org/sonr/internal/base"
+	"github.com/didao-org/sonr/internal/views/landing"
+)
+
+templ Page(ctx echo.Context) {
+	@base.PageLayout() {
+		@landing.Navbar()
+		<main class="grow">
+			@heroSection()
+			@storySection()
+		</main>
+	}
+}
