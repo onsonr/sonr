@@ -28,7 +28,7 @@ func RootLayout() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><script src=\"https://unpkg.com/alpinejs\" defer></script><script src=\"https://cdn.tailwindcss.com\"></script><script src=\"https://cdn.sonr.build/htmx.min.js\"></script><link rel=\"stylesheet\" media=\"(prefers-color-scheme:light)\" href=\"/css/light.css\"><link rel=\"stylesheet\" media=\"(prefers-color-scheme:dark)\" href=\"/css/dark.css\" onload=\"document.documentElement.classList.add(&#39;sl-theme-dark&#39;);\"><script type=\"module\" src=\"https://cdn.sonr.build/shoelace-autoloader.js\"></script><script type=\"module\" src=\"https://cdn.sonr.build/shoelace.js\"></script></head><main class=\"w-full h-full flex flex-row \">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html><head><meta charset=\"UTF-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><script src=\"https://unpkg.com/alpinejs\" defer></script><script src=\"https://cdn.tailwindcss.com\"></script><script src=\"https://cdn.sonr.build/htmx.min.js\"></script><script type=\"text/javascript\">\n  window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement(\"script\");r.type=\"text/javascript\",r.async=!0,r.src=\"https://cdn.heapanalytics.com/js/heap-\"+e+\".js\";var a=document.getElementsByTagName(\"script\")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=[\"addEventProperties\",\"addUserProperties\",\"clearEventProperties\",\"identify\",\"resetIdentity\",\"removeEventProperty\",\"setEventProperties\",\"track\",\"unsetEventProperty\"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};\n  heap.load(\"1957254995\");\n</script><link rel=\"stylesheet\" media=\"(prefers-color-scheme:light)\" href=\"/css/light.css\"><link rel=\"stylesheet\" media=\"(prefers-color-scheme:dark)\" href=\"/css/dark.css\" onload=\"document.documentElement.classList.add(&#39;sl-theme-dark&#39;);\"><script type=\"module\" src=\"https://cdn.sonr.build/shoelace-autoloader.js\"></script><script type=\"module\" src=\"https://cdn.sonr.build/shoelace.js\"></script></head><main class=\"w-full h-full flex flex-row \">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -61,7 +61,7 @@ func PageLayout() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\" class=\"scroll-smooth\"><head><meta charset=\"utf-8\"><title>Sonr - The Blockchain Identity Platform</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link href=\"https://cdn.sonr.build/css/vendors/aos.css\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"https://cdn.sonr.build/css/vendors/swiper-bundle.min.css\"><link href=\"https://cdn.sonr.build/style.css\" rel=\"stylesheet\"><script>\n    !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(\".\");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement(\"script\")).type=\"text/javascript\",p.async=!0,p.src=s.api_host+\"/static/array.js\",(r=t.getElementsByTagName(\"script\")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a=\"posthog\",u.people=u.people||[],u.toString=function(t){var e=\"posthog\";return\"posthog\"!==a&&(e+=\".\"+a),t||(e+=\" (stub)\"),e},u.people.toString=function(){return u.toString(1)+\".people (stub)\"},o=\"capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId\".split(\" \"),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);\n    posthog.init('phc_v3p35G8CdokwRzUETFUnx8pgvUe4PuopDOklSkTrwlR',{api_host:'https://app.posthog.com'})\n</script></head><body class=\"font-inter antialiased bg-slate-900 text-slate-100 tracking-tight\"><!-- Page wrapper --><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<html lang=\"en\" class=\"scroll-smooth\"><head><meta charset=\"utf-8\"><title>Sonr - The Blockchain Identity Platform</title><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><link href=\"https://cdn.sonr.build/css/vendors/aos.css\" rel=\"stylesheet\"><link rel=\"stylesheet\" href=\"https://cdn.sonr.build/css/vendors/swiper-bundle.min.css\"><link href=\"https://cdn.sonr.build/style.css\" rel=\"stylesheet\"><script type=\"text/javascript\">\n  window.heap=window.heap||[],heap.load=function(e,t){window.heap.appid=e,window.heap.config=t=t||{};var r=document.createElement(\"script\");r.type=\"text/javascript\",r.async=!0,r.src=\"https://cdn.heapanalytics.com/js/heap-\"+e+\".js\";var a=document.getElementsByTagName(\"script\")[0];a.parentNode.insertBefore(r,a);for(var n=function(e){return function(){heap.push([e].concat(Array.prototype.slice.call(arguments,0)))}},p=[\"addEventProperties\",\"addUserProperties\",\"clearEventProperties\",\"identify\",\"resetIdentity\",\"removeEventProperty\",\"setEventProperties\",\"track\",\"unsetEventProperty\"],o=0;o<p.length;o++)heap[p[o]]=n(p[o])};\n  heap.load(\"1957254995\");\n</script></head><body class=\"font-inter antialiased bg-slate-900 text-slate-100 tracking-tight\"><!-- Page wrapper --><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -310,7 +310,7 @@ func SidebarItem(label string, icon string, href string, isActive bool) templ.Co
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 103, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 107, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -328,7 +328,7 @@ func SidebarItem(label string, icon string, href string, isActive bool) templ.Co
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(href)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 107, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 111, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -341,7 +341,7 @@ func SidebarItem(label string, icon string, href string, isActive bool) templ.Co
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(icon)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 113, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 117, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {
@@ -359,7 +359,7 @@ func SidebarItem(label string, icon string, href string, isActive bool) templ.Co
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(href)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 117, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 121, Col: 18}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -372,7 +372,7 @@ func SidebarItem(label string, icon string, href string, isActive bool) templ.Co
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(icon)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 122, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `internal/components/base/layouts.templ`, Line: 126, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 			if templ_7745c5c3_Err != nil {
