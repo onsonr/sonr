@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/didao-org/sonr/api/common/v1";
+
+enum IdentifierKind {
+    IDENTIFIER_KIND_UNSPECIFIED = 0;
+    IDENTIFIER_KIND_SERVICE_HANDLE = 1;
+    IDENTIFIER_KIND_PHONE_NUMBER = 2;
+    IDENTIFIER_KIND_EMAIL_ADDRESS = 3;
+    IDENTIFIER_KIND_OAUTH_PROVIDER = 4;
+    IDENTIFIER_KIND_EXTERNAL_WALLET = 5;
+}
+
+enum TokenKind {
+    TOKEN_KIND_UNSPECIFIED = 0;
+    TOKEN_KIND_SONR_NATIVE = 1;
+    TOKEN_KIND_SONR_STAKING = 2;
+    TOKEN_KIND_ETH_NATIVE = 3;
+    TOKEN_KIND_ETH_STAKING = 4;
+    TOKEN_KIND_IBC_NATIVE = 5;
+    TOKEN_KIND_IBC_STAKING = 6;
+    TOKEN_KIND_BTC_NATIVE = 7;
+    TOKEN_KIND_USDC_NATIVE = 8;
+}

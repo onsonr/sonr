@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/didao-org/sonr/api/common/v1";
+
+message ApplicationMetadata {
+  string name = 1;
+  string version = 2;
+  string description = 3;
+  string category = 4;
+  string icon = 5;
+}
+
+message CredentialMetadata {
+  string transport = 1;
+  string assertion_method = 2;
+  string key_type = 3;
+}
+
+message ListingMetadata {
+  string title = 1;
+  string subtitle = 2;
+  repeated string images = 3;
+  repeated string keywords = 4;
+  repeated string currencies = 5;
+  repeated string languages = 6;
+  repeated string countries = 7;
+}
+
+message ServiceMetadata {
+  ApplicationMetadata application = 1;
+  ListingMetadata listing = 2;
+}

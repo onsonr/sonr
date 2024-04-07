@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/didao-org/sonr/api/common/v1";
+
+
+message PublicKey {
+  bytes key = 1;
+  string key_type = 2;
+}
+
+message NetworkInfo {
+  string blockchain = 1;
+  bool is_over_ibc = 2;
+  string chain_id = 3;
+  int32 ibc_port_id = 4;
+}
