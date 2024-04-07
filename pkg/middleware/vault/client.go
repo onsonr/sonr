@@ -7,8 +7,8 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
 
-	"github.com/didao-org/sonr/internal/wallet"
 	"github.com/didao-org/sonr/x/identity/types"
+	"github.com/didao-org/sonr/x/identity/wallet"
 )
 
 // GenerateKey generates a new key
