@@ -26,7 +26,7 @@ func (c *vault) GenerateKey() error {
 }
 
 // GenerateIdentity generates a new fully scoped Sonr identity
-func (c *vault) GenerateIdentity() (*types.Controller, error) {
+func (c *vault) GenerateIdentity() (*types.IdentityController, error) {
 	ipfsC, err := rpc.NewLocalApi()
 	if err != nil {
 		return nil, ErrFailedIPFSClient
@@ -55,7 +55,7 @@ func (c *vault) GenerateIdentity() (*types.Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	cnt := &types.Controller{
+	cnt := &types.IdentityController{
 		Address:   kc.Address,
 		PeerId:    key.ID().String(),
 		PublicKey: kc.PublicKey,

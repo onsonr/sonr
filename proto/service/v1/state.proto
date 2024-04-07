@@ -1,0 +1,85 @@
+syntax = "proto3";
+
+package service.v1;
+
+import "cosmos/orm/v1/orm.proto";
+import "common/v1/base.proto";
+import "common/v1/enums.proto";
+
+option go_package = "github.com/didao-org/sonr/x/service/types";
+
+// ProfileEntity is a profile for a given Service provider.
+message ProfileEntity {
+  option (cosmos.orm.v1.table) = {
+    id : 1
+    primary_key : {fields : "id"}
+  };
+
+  string id = 1;
+  string zk_witness = 2;
+  common.v1.PermissionsType permissions = 3;
+  repeated uint64 credentials = 4;
+  repeated uint64 identifiers = 5;
+  repeated uint64 wallets = 6;
+}
+
+
+// ServiceRecord is the configuration for a given service provider.
+message ServiceRecord {
+  option (cosmos.orm.v1.table) = {
+    id: 2
+    primary_key : {fields : "sequence" auto_increment : true}
+    index : {id : 1 fields : "origin" unique : true}
+  };
+
+  uint64 sequence = 1;
+  string origin = 2;
+  string team_address = 3;
+  string metadata = 4;
+  common.v1.PermissionsType permissions = 5;
+  string tld_extension = 6;
+}
+
+// // TeamAccount is the organization multisig group account.
+// message TeamAccount {
+//   option (cosmos.orm.v1.table) = {
+//     id : 4
+//     primary_key : {fields : "address"}
+//   };
+//   string address = 1;
+//   uint64 amount = 2;
+//   string denom = 3;
+//   common.v1.TokenKind kind = 4;
+//   string blockchain = 5;
+//   string chain_id = 6;
+// }
+
+// UserIdentifier is the root sonr user identifier table which contains all sub-identities.
+message WebCredential {
+  option (cosmos.orm.v1.table) = {
+    id : 4
+    primary_key : {fields : "sequence" auto_increment : true}
+    index : {id : 1 fields : "origin,handle"}
+  };
+
+  // Sequence is the unique identifier for the credential
+  uint64 sequence = 1;
+
+  // Id is the id of the credential
+  bytes id = 2;
+
+  // handle is the handle of the credential
+  string handle = 3;
+
+  // transports is the list of transports supported by the credential
+  repeated string transports = 4;
+
+  // origin is the origin of the credential
+  string origin = 5;
+
+  // Controller is the address of the owner of the credential
+  string controller = 6;
+
+  // Assertion Type is the type of the credential
+  string assertion_type = 7;
+}

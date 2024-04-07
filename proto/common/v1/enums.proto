@@ -64,6 +64,27 @@ enum IdentifierKind {
     IDENTIFIER_KIND_EXTERNAL_WALLET = 5;
 }
 
+// PermissionsType is the type of permissions granted by a user.
+enum PermissionsType {
+    // Unspecified permissions type.
+    PERMISSIONS_TYPE_UNSPECIFIED = 0;
+
+    // Anonymous permissions type.
+    PERMISSIONS_TYPE_ANON = 1;
+
+    // Read permissions type.
+    PERMISSIONS_TYPE_READ = 2;
+
+    // Write permissions type.
+    PERMISSIONS_TYPE_WRITE = 3;
+
+    // Ownership permissions type.
+    PERMISSIONS_TYPE_OWN = 4;
+
+    // Admin permissions type.
+    PERMISSIONS_TYPE_ADMIN = 5;
+}
+
 // TokenKind is the type of token used to represent a currency.
 enum TokenKind {
     // Unspecified token kind.

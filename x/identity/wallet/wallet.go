@@ -10,9 +10,10 @@ import (
 	"github.com/ipfs/boxo/files"
 	"github.com/tink-crypto/tink-go/v2/keyset"
 
+	commonv1 "github.com/didao-org/sonr/api/common/v1"
 	"github.com/didao-org/sonr/crypto/core/protocol"
 	"github.com/didao-org/sonr/crypto/daead"
-	did "github.com/didao-org/sonr/x/identity/types"
+	"github.com/didao-org/sonr/x/identity/types"
 	"github.com/didao-org/sonr/x/identity/wallet/kss"
 )
 
@@ -28,7 +29,7 @@ func init() {
 
 // Wallet is a local temp file system which spawns shares as proto actors
 type Wallet struct {
-	Accounts  []*did.Account
+	Accounts  []*types.BlockchainAccount
 	Address   string
 	PublicKey []byte
 }
@@ -40,8 +41,8 @@ func New(ctx context.Context) (files.Directory, *Wallet, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	ct := did.CoinType_COIN_TYPE_SONR
-	addr, err := did.GetAddressByPublicKey(pub, ct)
+	ct := commonv1.CoinType_COIN_TYPE_SONR
+	addr, err := types.GetAddressByPublicKey(pub, ct)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -108,8 +109,8 @@ func (kc *Wallet) Decrypt(dir files.Directory, associatedData []byte) (files.Dir
 	return files.NewMapDirectory(mapDir), nil
 }
 
-func writeSharesToDisk(coinType did.CoinType, address string, bobOut *protocol.Message, aliceOut *protocol.Message) (files.Directory, error) {
-	pathPrefix := fmt.Sprintf("%s%s", did.GetCoinTypeDIDMethod(coinType), address)
+func writeSharesToDisk(coinType commonv1.CoinType, address string, bobOut *protocol.Message, aliceOut *protocol.Message) (files.Directory, error) {
+	pathPrefix := fmt.Sprintf("%s%s", types.GetCoinTypeDIDMethod(coinType), address)
 	outBz, err := json.Marshal(aliceOut)
 	if err != nil {
 		return nil, err
