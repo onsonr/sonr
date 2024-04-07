@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import (
-	"github.com/didao-org/sonr/internal/base"
+	"github.com/didao-org/sonr/internal/components/base"
 	"github.com/didao-org/sonr/internal/views/auth"
 	"github.com/didao-org/sonr/pkg/middleware/common"
 	"github.com/labstack/echo/v4"
