@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/rollchains/simapp/api
+    default: github.com/didao-org/sonr/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto

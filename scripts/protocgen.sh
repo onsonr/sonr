@@ -48,3 +48,6 @@ for module in $base_namespace; do
 
   rm -rf $module
 done
+
+echo " [+] Moving: ./common to ./api/common"
+mv common ./api/common

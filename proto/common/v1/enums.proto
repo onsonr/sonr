@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package common.v1;
+
+option go_package = "github.com/didao-org/sonr/api/common/v1";
+
+// CoinType is the BIP-0044 coin type for each supported coin.
+enum CoinType {
+  // Bitcoins coin type is 0
+  COIN_TYPE_UNSPECIFIED = 0;
+
+  // Testnet coin type is 1
+  COIN_TYPE_ATOM = 1;
+
+  // Litecoin coin type is 2
+  COIN_TYPE_AXELAR = 2;
+
+  // Dogecoin coin type is 3
+  COIN_TYPE_BITCOIN = 3;
+
+  // Ethereum coin type is 60
+  COIN_TYPE_ETHEREUM = 4;
+
+  // Sonr coin type is 703
+  COIN_TYPE_EVMOS = 5;
+
+  // Cosmos coin type is 118
+  COIN_TYPE_FILECOIN = 6;
+
+  // Filecoin coin type is 461
+  COIN_TYPE_JUNO = 7;
+
+  // Handshake coin type is 5353
+  COIN_TYPE_OSMO = 8;
+
+  // Solana coin type is 501
+  COIN_TYPE_SOLANA = 9;
+
+  // Ripple coin type is 144
+  COIN_TYPE_SONR = 10;
+
+  // Stargaze coin type is 1001
+  COIN_TYPE_STARGAZE = 11;
+}
+
+// IdentifierKind is the type of identifier used to identify a user.
+enum IdentifierKind {
+    // Unspecified identifier kind.
+    IDENTIFIER_KIND_UNSPECIFIED = 0;
+
+    // Service handle identifier kind.
+    IDENTIFIER_KIND_SERVICE_HANDLE = 1;
+
+    // Phone number identifier kind.
+    IDENTIFIER_KIND_PHONE_NUMBER = 2;
+
+    // Email address identifier kind.
+    IDENTIFIER_KIND_EMAIL_ADDRESS = 3;
+
+    // OAuth provider identifier kind.
+    IDENTIFIER_KIND_OAUTH_PROVIDER = 4;
+
+    // External wallet identifier kind.
+    IDENTIFIER_KIND_EXTERNAL_WALLET = 5;
+}
+
+// PermissionsType is the type of permissions granted by a user.
+enum PermissionsType {
+    // Unspecified permissions type.
+    PERMISSIONS_TYPE_UNSPECIFIED = 0;
+
+    // Anonymous permissions type.
+    PERMISSIONS_TYPE_ANON = 1;
+
+    // Read permissions type.
+    PERMISSIONS_TYPE_READ = 2;
+
+    // Write permissions type.
+    PERMISSIONS_TYPE_WRITE = 3;
+
+    // Ownership permissions type.
+    PERMISSIONS_TYPE_OWN = 4;
+
+    // Admin permissions type.
+    PERMISSIONS_TYPE_ADMIN = 5;
+}
+
+// TokenKind is the type of token used to represent a currency.
+enum TokenKind {
+    // Unspecified token kind.
+    TOKEN_KIND_UNSPECIFIED = 0;
+
+    // SONR native token kind.
+    TOKEN_KIND_SONR_NATIVE = 1;
+
+    // SONR staking token kind.
+    TOKEN_KIND_SONR_STAKING = 2;
+
+    // Ethereum native token kind.
+    TOKEN_KIND_ETH_NATIVE = 3;
+
+    // Ethereum staking token kind.
+    TOKEN_KIND_ETH_STAKING = 4;
+
+    // IBC native token kind.
+    TOKEN_KIND_IBC_NATIVE = 5;
+
+    // IBC staking token kind.
+    TOKEN_KIND_IBC_STAKING = 6;
+
+    // Bitcoin native token kind.
+    TOKEN_KIND_BTC_NATIVE = 7;
+
+    // USDC native token kind.
+    TOKEN_KIND_USDC_NATIVE = 8;
+}

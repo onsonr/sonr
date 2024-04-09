@@ -34,11 +34,13 @@ tasks:
   hway:run:
     desc: "Run the hway"
     cmds:
+      - task: templ
       - go run ./cmd/hway/main.go
 
   hway:build:
     desc: "Build the hway"
     cmds:
+      - task: templ
       - go build -o bin/hway ./cmd/hway/main.go
 
   hway:release:
