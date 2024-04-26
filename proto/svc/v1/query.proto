@@ -8,10 +8,24 @@ option go_package = "github.com/di-dao/core/x/svc/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
+    // LoginOptions returns the login options for a given origin and user handle.
+    rpc LoginOptions(QueryLoginOptionsRequest) returns (QueryLoginOptionsResponse) {
+        option (google.api.http).get = "/svc/login_options/{origin}/{user_handle}";
+   }
+
   // Params queries all parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/svc/v1/params";
   }
+  // ServiceRecord returns the service record for a given origin.
+  rpc Record(QueryRecordRequest) returns (QueryRecordResponse) {
+    option (google.api.http).get = "/svc/record/{origin}";
+  }
+
+    // RegisterOptions returns the register options for a given origin and user handle.
+    rpc RegisterOptions(QueryRegisterOptionsRequest) returns (QueryRegisterOptionsResponse) {
+        option (google.api.http).get = "/svc/register_options/{origin}/{user_handle}";
+    }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -21,4 +35,52 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+}
+
+// QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsRequest {
+    // origin defines the origin of the service.
+    string origin = 1;
+
+    // user_handle defines the user handle.
+    string user_handle = 2;
+}
+
+// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsResponse {
+    // login_options defines the login options.
+    string credential_attestation_options = 1;
+
+    // origin defines the origin of the service.
+    string origin = 2;
+}
+
+// QueryRegisterOptionsRequest is the request type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsRequest {
+    // origin defines the origin of the service.
+    string origin = 1;
+
+    // user_handle defines the user handle.
+    string user_handle = 2;
+}
+
+// QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsResponse {
+    // register_options defines the register options.
+    string credential_creation_options = 1;
+
+    // origin defines the origin of the service.
+    string origin = 2;
+}
+
+
+// QueryRecordRequest is the request type for the Query/ServiceRecord RPC method.
+message QueryRecordRequest {
+  // origin defines the origin of the service.
+  string origin = 1;
+}
+
+// QueryRecordResponse is the response type for the Query/ServiceRecord RPC method.
+message QueryRecordResponse {
+  Record record = 1;
 }

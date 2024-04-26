@@ -19,15 +19,24 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/svc.v1.Query/Params"
+	Query_LoginOptions_FullMethodName    = "/svc.v1.Query/LoginOptions"
+	Query_Params_FullMethodName          = "/svc.v1.Query/Params"
+	Query_Record_FullMethodName          = "/svc.v1.Query/Record"
+	Query_RegisterOptions_FullMethodName = "/svc.v1.Query/RegisterOptions"
 )
 
 // QueryClient is the client API for Query service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
+	// LoginOptions returns the login options for a given origin and user handle.
+	LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error)
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// ServiceRecord returns the service record for a given origin.
+	Record(ctx context.Context, in *QueryRecordRequest, opts ...grpc.CallOption) (*QueryRecordResponse, error)
+	// RegisterOptions returns the register options for a given origin and user handle.
+	RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error)
 }
 
 type queryClient struct {
@@ -36,6 +45,15 @@ type queryClient struct {
 
 func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
+}
+
+func (c *queryClient) LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error) {
+	out := new(QueryLoginOptionsResponse)
+	err := c.cc.Invoke(ctx, Query_LoginOptions_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
@@ -47,12 +65,36 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Record(ctx context.Context, in *QueryRecordRequest, opts ...grpc.CallOption) (*QueryRecordResponse, error) {
+	out := new(QueryRecordResponse)
+	err := c.cc.Invoke(ctx, Query_Record_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error) {
+	out := new(QueryRegisterOptionsResponse)
+	err := c.cc.Invoke(ctx, Query_RegisterOptions_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
+	// LoginOptions returns the login options for a given origin and user handle.
+	LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error)
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// ServiceRecord returns the service record for a given origin.
+	Record(context.Context, *QueryRecordRequest) (*QueryRecordResponse, error)
+	// RegisterOptions returns the register options for a given origin and user handle.
+	RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -60,8 +102,17 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
+func (UnimplementedQueryServer) LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginOptions not implemented")
+}
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Record(context.Context, *QueryRecordRequest) (*QueryRecordResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Record not implemented")
+}
+func (UnimplementedQueryServer) RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterOptions not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -74,6 +125,24 @@ type UnsafeQueryServer interface {
 
 func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 	s.RegisterService(&Query_ServiceDesc, srv)
+}
+
+func _Query_LoginOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLoginOptionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).LoginOptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_LoginOptions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).LoginOptions(ctx, req.(*QueryLoginOptionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -94,6 +163,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Record_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRecordRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Record(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Record_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Record(ctx, req.(*QueryRecordRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_RegisterOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisterOptionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RegisterOptions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_RegisterOptions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RegisterOptions(ctx, req.(*QueryRegisterOptionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,8 +207,20 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "LoginOptions",
+			Handler:    _Query_LoginOptions_Handler,
+		},
+		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Record",
+			Handler:    _Query_Record_Handler,
+		},
+		{
+			MethodName: "RegisterOptions",
+			Handler:    _Query_RegisterOptions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
