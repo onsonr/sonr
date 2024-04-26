@@ -1,8 +1,6 @@
 package keeper
 
 import (
-	"context"
-
 	"github.com/cosmos/cosmos-sdk/codec"
 
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
@@ -12,7 +10,16 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 
+	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/x/did/types"
+)
+
+var (
+	// vault is the global vault instance
+	vault vaultStore
+
+	// defaultCurve is the default curve used for key generation
+	defaultCurve = curves.P256()
 )
 
 type Keeper struct {
@@ -63,28 +70,4 @@ func NewKeeper(
 
 func (k Keeper) Logger() log.Logger {
 	return k.logger
-}
-
-// InitGenesis initializes the module's state from a genesis state.
-func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) error {
-	// this line is used by starport scaffolding # genesis/module/init
-	if err := data.Params.Validate(); err != nil {
-		return err
-	}
-
-	return k.Params.Set(ctx, data.Params)
-}
-
-// ExportGenesis exports the module's state to a genesis state.
-func (k *Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
-	params, err := k.Params.Get(ctx)
-	if err != nil {
-		panic(err)
-	}
-
-	// this line is used by starport scaffolding # genesis/module/export
-
-	return &types.GenesisState{
-		Params: params,
-	}
 }

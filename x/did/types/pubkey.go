@@ -22,7 +22,7 @@ func (k *PublicKey) Bytes() []byte {
 }
 
 func (k *PublicKey) VerifySignature(msg []byte, sig []byte) bool {
-	pp, err := buildEcPoint(k.Key)
+	pp, err := BuildEcPoint(k.Key)
 	if err != nil {
 		return false
 	}
@@ -49,8 +49,8 @@ func (k *PublicKey) Type() string {
 	return k.KeyType
 }
 
-// buildEcPoint builds an elliptic curve point from a compressed byte slice
-func buildEcPoint(pubKey []byte) (*curves.EcPoint, error) {
+// BuildEcPoint builds an elliptic curve point from a compressed byte slice
+func BuildEcPoint(pubKey []byte) (*curves.EcPoint, error) {
 	crv := curves.P256()
 	x := new(big.Int).SetBytes(pubKey[1:33])
 	y := new(big.Int).SetBytes(pubKey[33:])
