@@ -3,13 +3,38 @@ package did.v1;
 
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-
 option go_package = "github.com/di-dao/core/x/did/types";
 
 // GenesisState defines the module genesis state
 message GenesisState {
   // Params defines all the paramaters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
+
+  // Controllers defines all the controllers of the module.
+  repeated Controller controllers = 2 [(gogoproto.nullable) = false];
+}
+
+// Controller is the struct that represents a controller
+message Controller {
+    option (amino.name) = "did/controller";
+
+  // Address is the address of the controller
+  string address = 1;
+
+  // Number is the number of the controller
+  uint64 number = 2;
+
+  // PublicKey is the public key of the controller
+  PublicKey public_key = 3;
+
+  // PeerId is the peer id of the controller
+  string peer_id = 4;
+
+  // Network is the chain id of the controller
+  string network = 5;
+
+  // Sequence is the sequence of the controller
+  uint64 sequence = 6;
 }
 
 // Params defines the set of module parameters.
@@ -35,4 +60,13 @@ message Params {
 
   // Referral Reward Rate
   double referral_reward_rate = 6;
+}
+
+// PublicKey is the struct that represents a public key
+message PublicKey {
+  // Key is the public key∆
+  bytes key = 1;
+
+  // Type is the type of the public key
+  string key_type = 2;
 }

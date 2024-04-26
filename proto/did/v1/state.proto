@@ -4,7 +4,7 @@ package did.v1;
 option go_package = "github.com/di-dao/sonr/x/did/types";
 
 import "cosmos/orm/v1/orm.proto";
-import "crypto/v1/keys.proto";
+import "did/v1/genesis.proto";
 
 // Assertion is the root sonr account table which contains all sub-identities.
 message Assertion {
@@ -14,7 +14,7 @@ message Assertion {
   };
 
   string id = 1;
-  crypto.v1.PublicKey public_key = 2;
+  PublicKey public_key = 2;
   string key_type = 3;
   repeated string transport = 4;
   string authenticator = 5;
@@ -32,7 +32,7 @@ message Keyshare {
   };
 
   string id = 1;
-  crypto.v1.PublicKey public_key = 2;
+  PublicKey public_key = 2;
   string key_type = 3;
   bytes val_kss = 4;
   uint64 index = 5;
@@ -47,7 +47,7 @@ message Verification {
   };
 
   string id = 1;
-  crypto.v1.PublicKey public_key = 2;
+  PublicKey public_key = 2;
   string key_type = 3;
   string witness = 4;
   string controller = 5;
