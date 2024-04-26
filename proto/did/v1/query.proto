@@ -8,9 +8,17 @@ option go_package = "github.com/di-dao/core/x/did/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
+    // Account queries an account by its did.
+    rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
+        option (google.api.http).get = "/did/account/{did}";
+    }
+    // Exists queries if an id exists.
+    rpc Exists(QueryExistsRequest) returns (QueryExistsResponse) {
+        option (google.api.http).get = "/did/exists/{id}";
+    }
   // Params queries all parameters of the module.
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/did/v1/params";
+    option (google.api.http).get = "/did/params";
   }
 }
 
@@ -21,4 +29,31 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+}
+
+// QueryAccountRequest is the request type for the Query/Account RPC method.
+message QueryAccountRequest {
+  string did = 1;
+}
+
+// QueryAccountResponse is the response type for the Query/Account RPC method.
+message QueryAccountResponse {
+    // address is the account address
+    string address = 1;
+
+    // account_info is the account info
+    string account_info = 2;
+
+    // network is the network the account is on
+    string network = 3;
+}
+
+// QueryExistsRequest is the request type for the Query/Exists RPC method.
+message QueryExistsRequest {
+    string id = 1;
+}
+
+// QueryExistsResponse is the response type for the Query/Exists RPC method.
+message QueryExistsResponse {
+    bool exists = 1;
 }

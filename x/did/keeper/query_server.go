@@ -28,3 +28,17 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
+
+// Account implements types.QueryServer.
+func (k Querier) Account(goCtx context.Context, req *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Account is unimplemented")
+	return &types.QueryAccountResponse{}, nil
+}
+
+// Exists implements types.QueryServer.
+func (k Querier) Exists(goCtx context.Context, req *types.QueryExistsRequest) (*types.QueryExistsResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Exists is unimplemented")
+	return &types.QueryExistsResponse{}, nil
+}
