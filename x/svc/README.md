@@ -1,6 +1,6 @@
-# `x/service`
+# `x/svc`
 
-Overview of the module.
+The service module manages authorizations from the public internet onto the Sonr Blockchain for leveraging wallet access.
 
 ## Concepts
 

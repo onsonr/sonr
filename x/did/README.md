@@ -1,6 +1,6 @@
-# `x/identity`
+# `x/did`
 
-The Identity module is responsible for managing native Sonr Accounts, their derived wallets, and associated user identification information.
+The Decentralized Identity module is responsible for managing native Sonr Accounts, their derived wallets, and associated user identification information.
 
 ## Concepts
 
