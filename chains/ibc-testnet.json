@@ -1,0 +1,103 @@
+{
+    "chains": [
+        {
+            "name": "core",
+            "ibc_paths": ["ibc-connection-1"],
+            "chain_id": "chainid-1",
+            "denom": "usnr",
+            "binary": "sonrd",
+            "bech32_prefix": "idx",
+            "docker_image": {
+                "repository": "core",
+                "version": "local"
+            },
+            "gas_prices": "0usnr",
+            "chain_type": "cosmos",
+            "coin_type": 118,
+            "trusting_period": "336h",
+            "gas_adjustment": 1.5,
+            "number_vals": 1,
+            "number_node": 0,
+            "debugging": true,
+            "block_time": "1000ms",
+            "host_port_override": {
+                "26657": "26657",
+                "1317": "1317",
+                "9090": "9090"
+            },
+            "encoding-options": ["wasm", "tokenfactory"],
+            "config_file_overrides": [
+                {
+                    "file": "config/config.toml",
+                    "paths": {
+                        "moniker": "localvalmoniker",
+                        "rpc.cors_allowed_origins": ["*"]
+                    }
+                }
+            ],
+            "genesis": {
+                "modify": [
+                    {
+                        "key": "app_state.gov.params.voting_period",
+                        "value": "15s"
+                    },
+                    {
+                        "key": "app_state.gov.params.expedited_voting_period",
+                        "value": "10s"
+                    },
+                    {
+                        "key": "app_state.gov.params.max_deposit_period",
+                        "value": "15s"
+                    },
+                    {
+                        "key": "app_state.gov.params.min_deposit.0.denom",
+                        "value": "usnr"
+                    },
+                    {
+                        "key": "app_state.gov.params.min_deposit.0.amount",
+                        "value": "1"
+                    }
+                ],
+                "accounts": [
+                    {
+                        "name": "acc0",
+                        "address": "idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd",
+                        "amount": "10000000000usnr",
+                        "mnemonic": "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
+                    },
+                    {
+                        "name": "acc1",
+                        "address": "idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y",
+                        "amount": "10000000000usnr",
+                        "mnemonic": "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"
+                    }
+                ],
+                "startup_commands": []
+            }
+        },
+        {
+            "name": "gaia",
+            "chain_id": "localcosmos-1",
+            "denom": "uatom",
+            "binary": "gaiad",
+            "bech32_prefix": "cosmos",
+            "docker_image": {
+                "version": "v9.1.0"
+            },
+            "block_time": "1000ms",
+            "gas_prices": "0%DENOM%",
+            "gas_adjustment": 2.0,
+            "ibc_paths": ["ibc-connection-1"],
+            "genesis": {
+                "accounts": [
+                    {
+                        "name": "acc0",
+                        "address": "cosmos1hj5fveer5cjtn4wd6wstzugjfdxzl0xpxvjjvr",
+                        "amount": "10000000%DENOM%",
+                        "mnemonic": "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
+                    }
+                ]
+            }
+        }
+    ]
+}
