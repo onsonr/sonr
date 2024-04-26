@@ -1,0 +1,197 @@
+{
+  "lockfile_version": "1",
+  "packages": {
+    "buf@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#buf",
+      "source": "devbox-search",
+      "version": "1.30.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/xc2r5msf7g992s6h78xg8lhi3biq71yx-buf-1.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/xc2r5msf7g992s6h78xg8lhi3biq71yx-buf-1.30.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sfsqf02w5b1bd5hlw1nk6bk149pzcx1d-buf-1.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/sfsqf02w5b1bd5hlw1nk6bk149pzcx1d-buf-1.30.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mk6jc47x3k2f7r74z7mlcippgcirmf0b-buf-1.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mk6jc47x3k2f7r74z7mlcippgcirmf0b-buf-1.30.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/p4m2h4g1ap2ly8bshcr7jrsarnicdbyg-buf-1.30.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/p4m2h4g1ap2ly8bshcr7jrsarnicdbyg-buf-1.30.1"
+        }
+      }
+    },
+    "docker-compose@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#docker-compose",
+      "source": "devbox-search",
+      "version": "2.26.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vzf0m7fmrahv7ag80vpmsg6il3gdpdvh-docker-compose-2.26.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vzf0m7fmrahv7ag80vpmsg6il3gdpdvh-docker-compose-2.26.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ja7132xnw5lzz8qvxmq44b4hkfi42rfy-docker-compose-2.26.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ja7132xnw5lzz8qvxmq44b4hkfi42rfy-docker-compose-2.26.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7bjrsgdh3h37909gg8vlh09aqamjsshx-docker-compose-2.26.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7bjrsgdh3h37909gg8vlh09aqamjsshx-docker-compose-2.26.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mn13vcxl4nd6yx4968simkpfrpxypxbn-docker-compose-2.26.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mn13vcxl4nd6yx4968simkpfrpxypxbn-docker-compose-2.26.1"
+        }
+      }
+    },
+    "docker@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#docker",
+      "source": "devbox-search",
+      "version": "24.0.5",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rq15kjwa4gjq9h8scbchxi9nyvrg44ab-docker-24.0.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rq15kjwa4gjq9h8scbchxi9nyvrg44ab-docker-24.0.5"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/v6k3jm8fkp4rmwvxpbchb62p4kmn8bnw-docker-24.0.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/v6k3jm8fkp4rmwvxpbchb62p4kmn8bnw-docker-24.0.5"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ww9ncrcjwl2zvpfvz88z01yhasv3598k-docker-24.0.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ww9ncrcjwl2zvpfvz88z01yhasv3598k-docker-24.0.5"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1s9bdzai4csrc4sb1jy1h9jbwba79gd7-docker-24.0.5",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1s9bdzai4csrc4sb1jy1h9jbwba79gd7-docker-24.0.5"
+        }
+      }
+    },
+    "go@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#go",
+      "source": "devbox-search",
+      "version": "1.22.2",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/x7gzwywk7mvjamdyc4n45fh62jks7lma-go-1.22.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/x7gzwywk7mvjamdyc4n45fh62jks7lma-go-1.22.2"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/ka1iykac1bfvy98p9g2ii3xn2fnl98cn-go-1.22.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/ka1iykac1bfvy98p9g2ii3xn2fnl98cn-go-1.22.2"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/s26vypls3i2rvprj2jq7l1ypb5y12mq9-go-1.22.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/s26vypls3i2rvprj2jq7l1ypb5y12mq9-go-1.22.2"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/9kriq85qac7phcxgpdqbqr25vlr61ifw-go-1.22.2",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/9kriq85qac7phcxgpdqbqr25vlr61ifw-go-1.22.2"
+        }
+      }
+    }
+  }
+}
