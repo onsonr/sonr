@@ -7,7 +7,8 @@ managed:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto
       - buf.build/cosmos/cosmos-proto
-      - buf.build/cosmos/cosmos-sdk
+    override:
+      buf.build/cosmos/cosmos-sdk: cosmossdk.io/api # required to import the Cosmos SDK api module for the orm
 plugins:
   - name: go-pulsar
     out: ..

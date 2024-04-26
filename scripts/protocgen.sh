@@ -48,3 +48,5 @@ for module in $base_namespace; do
 
   rm -rf $module
 done
+
+mv crypto ./api/crypto

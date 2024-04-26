@@ -187,6 +187,7 @@ proto-all: proto-format proto-lint proto-gen format
 
 proto-gen:
 	@echo "Generating Protobuf files"
+	@go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
 	@$(protoImage) sh ./scripts/protocgen.sh
 # generate the stubs for the proto files from the proto directory
 	spawn stub-gen

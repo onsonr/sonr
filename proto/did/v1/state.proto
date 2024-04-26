@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package did.v1;
+option go_package = "github.com/di-dao/sonr/x/did/types";
+
+import "cosmos/orm/v1/orm.proto";
+import "crypto/v1/keys.proto";
+
+// Assertion is the root sonr account table which contains all sub-identities.
+message Assertion {
+  option (cosmos.orm.v1.table) = {
+    id : 1
+    primary_key : {fields : "id"}
+  };
+
+  string id = 1;
+  crypto.v1.PublicKey public_key = 2;
+  string key_type = 3;
+  repeated string transport = 4;
+  string authenticator = 5;
+  string issuer = 6;
+  uint64 index = 7;
+  string controller = 8;
+}
+
+
+// Keyshare is the root sonr controller table which contains all sub-identities.
+message Keyshare {
+  option (cosmos.orm.v1.table) = {
+    id: 2
+    primary_key : {fields : "id" auto_increment : true}
+  };
+
+  string id = 1;
+  crypto.v1.PublicKey public_key = 2;
+  string key_type = 3;
+  bytes val_kss = 4;
+  uint64 index = 5;
+  string controller = 6;
+}
+
+// Verification is the root sonr user identifier table which contains all sub-identities.
+message Verification {
+  option (cosmos.orm.v1.table) = {
+    id : 4
+    primary_key : {fields : "id"}
+  };
+
+  string id = 1;
+  crypto.v1.PublicKey public_key = 2;
+  string key_type = 3;
+  string witness = 4;
+  string controller = 5;
+}

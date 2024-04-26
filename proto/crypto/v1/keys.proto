@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package crypto.v1;
+
+option go_package = "github.com/di-dao/core/api/crypto/v1";
+
+// PublicKey is the struct that represents a public key
+message PublicKey {
+  // Key is the public key
+  bytes key = 1;
+
+  // Type is the type of the public key
+  string key_type = 2;
+}
