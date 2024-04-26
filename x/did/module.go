@@ -113,9 +113,7 @@ func (a AppModuleBasic) RegisterInterfaces(r codectypes.InterfaceRegistry) {
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, message json.RawMessage) []abci.ValidatorUpdate {
-	var genesisState types.GenesisState
-	marshaler.MustUnmarshalJSON(message, &genesisState)
-
+	genesisState := types.DefaultGenesis()
 	if err := a.keeper.Params.Set(ctx, genesisState.Params); err != nil {
 		panic(err)
 	}

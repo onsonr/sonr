@@ -4,6 +4,7 @@
 package types
 
 import (
+	encoding_binary "encoding/binary"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -72,7 +73,18 @@ func (m *GenesisState) GetParams() Params {
 
 // Params defines the set of module parameters.
 type Params struct {
-	SomeValue bool `protobuf:"varint,2,opt,name=some_value,json=someValue,proto3" json:"some_value,omitempty"`
+	// Property Allowlist
+	PropertyAllowlist []string `protobuf:"bytes,1,rep,name=property_allowlist,json=propertyAllowlist,proto3" json:"property_allowlist,omitempty"`
+	// Default Curve
+	DefaultCurve string `protobuf:"bytes,2,opt,name=default_curve,json=defaultCurve,proto3" json:"default_curve,omitempty"`
+	// Whitelisted Verifications
+	WhitelistedVerifications []string `protobuf:"bytes,3,rep,name=whitelisted_verifications,json=whitelistedVerifications,proto3" json:"whitelisted_verifications,omitempty"`
+	// Assertion Reward Rate
+	AssertionRewardRate float64 `protobuf:"fixed64,4,opt,name=assertion_reward_rate,json=assertionRewardRate,proto3" json:"assertion_reward_rate,omitempty"`
+	// Encryption Reward Rate
+	EncryptionRewardRate float64 `protobuf:"fixed64,5,opt,name=encryption_reward_rate,json=encryptionRewardRate,proto3" json:"encryption_reward_rate,omitempty"`
+	// Referral Reward Rate
+	ReferralRewardRate float64 `protobuf:"fixed64,6,opt,name=referral_reward_rate,json=referralRewardRate,proto3" json:"referral_reward_rate,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -107,11 +119,46 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetSomeValue() bool {
+func (m *Params) GetPropertyAllowlist() []string {
 	if m != nil {
-		return m.SomeValue
+		return m.PropertyAllowlist
 	}
-	return false
+	return nil
+}
+
+func (m *Params) GetDefaultCurve() string {
+	if m != nil {
+		return m.DefaultCurve
+	}
+	return ""
+}
+
+func (m *Params) GetWhitelistedVerifications() []string {
+	if m != nil {
+		return m.WhitelistedVerifications
+	}
+	return nil
+}
+
+func (m *Params) GetAssertionRewardRate() float64 {
+	if m != nil {
+		return m.AssertionRewardRate
+	}
+	return 0
+}
+
+func (m *Params) GetEncryptionRewardRate() float64 {
+	if m != nil {
+		return m.EncryptionRewardRate
+	}
+	return 0
+}
+
+func (m *Params) GetReferralRewardRate() float64 {
+	if m != nil {
+		return m.ReferralRewardRate
+	}
+	return 0
 }
 
 func init() {
@@ -122,23 +169,32 @@ func init() {
 func init() { proto.RegisterFile("did/v1/genesis.proto", fileDescriptor_fda181cae44f7c00) }
 
 var fileDescriptor_fda181cae44f7c00 = []byte{
-	// 244 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0x49, 0xc9, 0x4c, 0xd1,
-	0x2f, 0x33, 0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6, 0x2b, 0x28, 0xca, 0x2f, 0xc9,
-	0x17, 0x62, 0x4b, 0xc9, 0x4c, 0xd1, 0x2b, 0x33, 0x94, 0x12, 0x49, 0xcf, 0x4f, 0xcf, 0x07, 0x0b,
-	0xe9, 0x83, 0x58, 0x10, 0x59, 0x29, 0xc1, 0xc4, 0xdc, 0xcc, 0xbc, 0x7c, 0x7d, 0x30, 0x09, 0x11,
-	0x52, 0xb2, 0xe1, 0xe2, 0x71, 0x87, 0x98, 0x10, 0x5c, 0x92, 0x58, 0x92, 0x2a, 0xa4, 0xc3, 0xc5,
-	0x56, 0x90, 0x58, 0x94, 0x98, 0x5b, 0x2c, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1, 0x6d, 0xc4, 0xa7, 0x07,
-	0x31, 0x51, 0x2f, 0x00, 0x2c, 0xea, 0xc4, 0x72, 0xe2, 0x9e, 0x3c, 0x43, 0x10, 0x54, 0x8d, 0x92,
-	0x03, 0x17, 0x1b, 0x44, 0x5c, 0x48, 0x96, 0x8b, 0xab, 0x38, 0x3f, 0x37, 0x35, 0xbe, 0x2c, 0x31,
-	0xa7, 0x34, 0x55, 0x82, 0x49, 0x81, 0x51, 0x83, 0x23, 0x88, 0x13, 0x24, 0x12, 0x06, 0x12, 0xb0,
-	0x12, 0x9f, 0xb1, 0x40, 0x9e, 0xe1, 0xc5, 0x02, 0x79, 0xc6, 0xae, 0xe7, 0x1b, 0xb4, 0xb8, 0x40,
-	0x4e, 0x87, 0x98, 0xe0, 0x64, 0x73, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e,
-	0xc9, 0x31, 0x4e, 0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51,
-	0x4a, 0xe9, 0x99, 0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0x29, 0x99, 0xba, 0x29,
-	0x89, 0xf9, 0xfa, 0xc9, 0xf9, 0x45, 0xa9, 0xfa, 0x15, 0xfa, 0x20, 0xed, 0x25, 0x95, 0x05, 0xa9,
-	0xc5, 0x49, 0x6c, 0x60, 0x4f, 0x18, 0x03, 0x02, 0x00, 0x00, 0xff, 0xff, 0x3a, 0xed, 0x53, 0x1a,
-	0x0d, 0x01, 0x00, 0x00,
+	// 389 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x91, 0xb1, 0x8e, 0xd3, 0x30,
+	0x18, 0xc7, 0xe3, 0xbb, 0x23, 0xd2, 0x99, 0x03, 0xe9, 0x4c, 0x80, 0x70, 0x43, 0x1a, 0x95, 0x25,
+	0x42, 0x5c, 0x4c, 0x0b, 0x13, 0x74, 0xa1, 0x0c, 0xac, 0x28, 0x48, 0x0c, 0x2c, 0x91, 0x1b, 0x7f,
+	0x4d, 0x2d, 0xa5, 0x71, 0x64, 0xbb, 0x29, 0x7d, 0x05, 0x26, 0x46, 0xc6, 0x3e, 0x02, 0x8f, 0xd1,
+	0x09, 0x75, 0x64, 0x42, 0xa8, 0x1d, 0xe0, 0x31, 0x50, 0x9c, 0x96, 0x16, 0xdd, 0x12, 0xc5, 0xff,
+	0xdf, 0xf7, 0xfb, 0x4b, 0xf6, 0x87, 0x3d, 0x2e, 0x38, 0xad, 0x7b, 0x34, 0x87, 0x12, 0xb4, 0xd0,
+	0x71, 0xa5, 0xa4, 0x91, 0xc4, 0xe5, 0x82, 0xc7, 0x75, 0xef, 0xca, 0xcb, 0x65, 0x2e, 0x6d, 0x44,
+	0x9b, 0xbf, 0x96, 0x5e, 0x5d, 0xb2, 0xa9, 0x28, 0x25, 0xb5, 0xdf, 0x36, 0xea, 0x0e, 0xf0, 0xc5,
+	0xdb, 0xb6, 0xe1, 0xbd, 0x61, 0x06, 0xc8, 0x53, 0xec, 0x56, 0x4c, 0xb1, 0xa9, 0xf6, 0x51, 0x88,
+	0xa2, 0xdb, 0xfd, 0xbb, 0x71, 0xdb, 0x18, 0xbf, 0xb3, 0xe9, 0xf0, 0x6c, 0xf5, 0xb3, 0xe3, 0x24,
+	0xbb, 0x99, 0xee, 0xf7, 0x13, 0xec, 0xb6, 0x80, 0x5c, 0x63, 0x52, 0x29, 0x59, 0x81, 0x32, 0x8b,
+	0x94, 0x15, 0x85, 0x9c, 0x17, 0x42, 0x1b, 0x1f, 0x85, 0xa7, 0xd1, 0x79, 0x72, 0xb9, 0x27, 0xaf,
+	0xf7, 0x80, 0x3c, 0xc6, 0x77, 0x38, 0x8c, 0xd9, 0xac, 0x30, 0x69, 0x36, 0x53, 0x35, 0xf8, 0x27,
+	0x21, 0x8a, 0xce, 0x93, 0x8b, 0x5d, 0xf8, 0xa6, 0xc9, 0xc8, 0x2b, 0xfc, 0x68, 0x3e, 0x11, 0x06,
+	0x1a, 0x03, 0x78, 0x5a, 0x83, 0x12, 0x63, 0x91, 0x31, 0x23, 0x64, 0xa9, 0xfd, 0x53, 0x5b, 0xed,
+	0x1f, 0x0d, 0x7c, 0x38, 0xe6, 0xa4, 0x8f, 0xef, 0x33, 0xad, 0x41, 0x35, 0xa7, 0x54, 0xc1, 0x9c,
+	0x29, 0x9e, 0x2a, 0x66, 0xc0, 0x3f, 0x0b, 0x51, 0x84, 0x92, 0x7b, 0xff, 0x60, 0x62, 0x59, 0xd2,
+	0xdc, 0xfe, 0x05, 0x7e, 0x00, 0x65, 0xa6, 0x16, 0xd5, 0x0d, 0xe9, 0x96, 0x95, 0xbc, 0x03, 0x3d,
+	0xb2, 0x9e, 0x61, 0x4f, 0xc1, 0x18, 0x94, 0x62, 0xc5, 0x7f, 0x8e, 0x6b, 0x1d, 0xb2, 0x67, 0x07,
+	0xe3, 0xe5, 0xc3, 0xaf, 0xcb, 0x8e, 0xf3, 0x67, 0xd9, 0x41, 0x9f, 0x7f, 0x7f, 0x7b, 0x82, 0x9b,
+	0x4d, 0xb6, 0x0f, 0x3a, 0x1c, 0xac, 0x36, 0x01, 0x5a, 0x6f, 0x02, 0xf4, 0x6b, 0x13, 0xa0, 0x2f,
+	0xdb, 0xc0, 0x59, 0x6f, 0x03, 0xe7, 0xc7, 0x36, 0x70, 0x3e, 0x76, 0x73, 0x61, 0x26, 0xb3, 0x51,
+	0x9c, 0xc9, 0x29, 0xe5, 0xe2, 0x9a, 0x33, 0x49, 0x33, 0xa9, 0x80, 0x7e, 0xa2, 0x8d, 0x6e, 0x16,
+	0x15, 0xe8, 0x91, 0x6b, 0x77, 0xfa, 0xfc, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x04, 0xae, 0x95,
+	0x6b, 0x1c, 0x02, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -160,7 +216,32 @@ func (this *Params) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.SomeValue != that1.SomeValue {
+	if len(this.PropertyAllowlist) != len(that1.PropertyAllowlist) {
+		return false
+	}
+	for i := range this.PropertyAllowlist {
+		if this.PropertyAllowlist[i] != that1.PropertyAllowlist[i] {
+			return false
+		}
+	}
+	if this.DefaultCurve != that1.DefaultCurve {
+		return false
+	}
+	if len(this.WhitelistedVerifications) != len(that1.WhitelistedVerifications) {
+		return false
+	}
+	for i := range this.WhitelistedVerifications {
+		if this.WhitelistedVerifications[i] != that1.WhitelistedVerifications[i] {
+			return false
+		}
+	}
+	if this.AssertionRewardRate != that1.AssertionRewardRate {
+		return false
+	}
+	if this.EncryptionRewardRate != that1.EncryptionRewardRate {
+		return false
+	}
+	if this.ReferralRewardRate != that1.ReferralRewardRate {
 		return false
 	}
 	return true
@@ -218,15 +299,48 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.SomeValue {
+	if m.ReferralRewardRate != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.ReferralRewardRate))))
 		i--
-		if m.SomeValue {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+		dAtA[i] = 0x31
+	}
+	if m.EncryptionRewardRate != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.EncryptionRewardRate))))
+		i--
+		dAtA[i] = 0x29
+	}
+	if m.AssertionRewardRate != 0 {
+		i -= 8
+		encoding_binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(m.AssertionRewardRate))))
+		i--
+		dAtA[i] = 0x21
+	}
+	if len(m.WhitelistedVerifications) > 0 {
+		for iNdEx := len(m.WhitelistedVerifications) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.WhitelistedVerifications[iNdEx])
+			copy(dAtA[i:], m.WhitelistedVerifications[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.WhitelistedVerifications[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
 		}
+	}
+	if len(m.DefaultCurve) > 0 {
+		i -= len(m.DefaultCurve)
+		copy(dAtA[i:], m.DefaultCurve)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.DefaultCurve)))
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x12
+	}
+	if len(m.PropertyAllowlist) > 0 {
+		for iNdEx := len(m.PropertyAllowlist) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.PropertyAllowlist[iNdEx])
+			copy(dAtA[i:], m.PropertyAllowlist[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.PropertyAllowlist[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -259,8 +373,30 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.SomeValue {
-		n += 2
+	if len(m.PropertyAllowlist) > 0 {
+		for _, s := range m.PropertyAllowlist {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	l = len(m.DefaultCurve)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.WhitelistedVerifications) > 0 {
+		for _, s := range m.WhitelistedVerifications {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if m.AssertionRewardRate != 0 {
+		n += 9
+	}
+	if m.EncryptionRewardRate != 0 {
+		n += 9
+	}
+	if m.ReferralRewardRate != 0 {
+		n += 9
 	}
 	return n
 }
@@ -383,11 +519,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SomeValue", wireType)
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PropertyAllowlist", wireType)
 			}
-			var v int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGenesis
@@ -397,12 +533,121 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.SomeValue = bool(v != 0)
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.PropertyAllowlist = append(m.PropertyAllowlist, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field DefaultCurve", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.DefaultCurve = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field WhitelistedVerifications", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.WhitelistedVerifications = append(m.WhitelistedVerifications, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 4:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AssertionRewardRate", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.AssertionRewardRate = float64(math.Float64frombits(v))
+		case 5:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field EncryptionRewardRate", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.EncryptionRewardRate = float64(math.Float64frombits(v))
+		case 6:
+			if wireType != 1 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ReferralRewardRate", wireType)
+			}
+			var v uint64
+			if (iNdEx + 8) > l {
+				return io.ErrUnexpectedEOF
+			}
+			v = uint64(encoding_binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+			iNdEx += 8
+			m.ReferralRewardRate = float64(math.Float64frombits(v))
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])

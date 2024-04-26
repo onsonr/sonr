@@ -16,9 +16,7 @@ func NewMsgUpdateParams(
 ) *MsgUpdateParams {
 	return &MsgUpdateParams{
 		Authority: sender.String(),
-		Params: Params{
-			SomeValue: someValue,
-		},
+		Params:    DefaultParams(),
 	}
 }
 

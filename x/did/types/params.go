@@ -8,7 +8,15 @@ import (
 func DefaultParams() Params {
 	// TODO:
 	return Params{
-		SomeValue: true,
+		PropertyAllowlist: []string{
+			"email",
+			"phone",
+		},
+		DefaultCurve:             "P-256",
+		WhitelistedVerifications: []string{},
+		AssertionRewardRate:      0.35,
+		EncryptionRewardRate:     0.5,
+		ReferralRewardRate:       0.15,
 	}
 }
 

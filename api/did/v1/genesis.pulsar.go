@@ -2,6 +2,7 @@
 package didv1
 
 import (
+	binary "encoding/binary"
 	fmt "fmt"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/cosmos-sdk/types/tx/amino"
@@ -10,6 +11,7 @@ import (
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
+	math "math"
 	reflect "reflect"
 	sync "sync"
 )
@@ -449,15 +451,117 @@ func (x *fastReflection_GenesisState) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_Params_1_list)(nil)
+
+type _Params_1_list struct {
+	list *[]string
+}
+
+func (x *_Params_1_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Params_1_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Params_1_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Params_1_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Params_1_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Params at list field PropertyAllowlist as it is not of Message kind"))
+}
+
+func (x *_Params_1_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Params_1_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Params_1_list) IsValid() bool {
+	return x.list != nil
+}
+
+var _ protoreflect.List = (*_Params_3_list)(nil)
+
+type _Params_3_list struct {
+	list *[]string
+}
+
+func (x *_Params_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Params_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Params_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Params_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Params_3_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Params at list field WhitelistedVerifications as it is not of Message kind"))
+}
+
+func (x *_Params_3_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Params_3_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Params_3_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_Params            protoreflect.MessageDescriptor
-	fd_Params_some_value protoreflect.FieldDescriptor
+	md_Params                           protoreflect.MessageDescriptor
+	fd_Params_property_allowlist        protoreflect.FieldDescriptor
+	fd_Params_default_curve             protoreflect.FieldDescriptor
+	fd_Params_whitelisted_verifications protoreflect.FieldDescriptor
+	fd_Params_assertion_reward_rate     protoreflect.FieldDescriptor
+	fd_Params_encryption_reward_rate    protoreflect.FieldDescriptor
+	fd_Params_referral_reward_rate      protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_genesis_proto_init()
 	md_Params = File_did_v1_genesis_proto.Messages().ByName("Params")
-	fd_Params_some_value = md_Params.Fields().ByName("some_value")
+	fd_Params_property_allowlist = md_Params.Fields().ByName("property_allowlist")
+	fd_Params_default_curve = md_Params.Fields().ByName("default_curve")
+	fd_Params_whitelisted_verifications = md_Params.Fields().ByName("whitelisted_verifications")
+	fd_Params_assertion_reward_rate = md_Params.Fields().ByName("assertion_reward_rate")
+	fd_Params_encryption_reward_rate = md_Params.Fields().ByName("encryption_reward_rate")
+	fd_Params_referral_reward_rate = md_Params.Fields().ByName("referral_reward_rate")
 }
 
 var _ protoreflect.Message = (*fastReflection_Params)(nil)
@@ -525,9 +629,39 @@ func (x *fastReflection_Params) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.SomeValue != false {
-		value := protoreflect.ValueOfBool(x.SomeValue)
-		if !f(fd_Params_some_value, value) {
+	if len(x.PropertyAllowlist) != 0 {
+		value := protoreflect.ValueOfList(&_Params_1_list{list: &x.PropertyAllowlist})
+		if !f(fd_Params_property_allowlist, value) {
+			return
+		}
+	}
+	if x.DefaultCurve != "" {
+		value := protoreflect.ValueOfString(x.DefaultCurve)
+		if !f(fd_Params_default_curve, value) {
+			return
+		}
+	}
+	if len(x.WhitelistedVerifications) != 0 {
+		value := protoreflect.ValueOfList(&_Params_3_list{list: &x.WhitelistedVerifications})
+		if !f(fd_Params_whitelisted_verifications, value) {
+			return
+		}
+	}
+	if x.AssertionRewardRate != float64(0) || math.Signbit(x.AssertionRewardRate) {
+		value := protoreflect.ValueOfFloat64(x.AssertionRewardRate)
+		if !f(fd_Params_assertion_reward_rate, value) {
+			return
+		}
+	}
+	if x.EncryptionRewardRate != float64(0) || math.Signbit(x.EncryptionRewardRate) {
+		value := protoreflect.ValueOfFloat64(x.EncryptionRewardRate)
+		if !f(fd_Params_encryption_reward_rate, value) {
+			return
+		}
+	}
+	if x.ReferralRewardRate != float64(0) || math.Signbit(x.ReferralRewardRate) {
+		value := protoreflect.ValueOfFloat64(x.ReferralRewardRate)
+		if !f(fd_Params_referral_reward_rate, value) {
 			return
 		}
 	}
@@ -546,8 +680,18 @@ func (x *fastReflection_Params) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.Params.some_value":
-		return x.SomeValue != false
+	case "did.v1.Params.property_allowlist":
+		return len(x.PropertyAllowlist) != 0
+	case "did.v1.Params.default_curve":
+		return x.DefaultCurve != ""
+	case "did.v1.Params.whitelisted_verifications":
+		return len(x.WhitelistedVerifications) != 0
+	case "did.v1.Params.assertion_reward_rate":
+		return x.AssertionRewardRate != float64(0) || math.Signbit(x.AssertionRewardRate)
+	case "did.v1.Params.encryption_reward_rate":
+		return x.EncryptionRewardRate != float64(0) || math.Signbit(x.EncryptionRewardRate)
+	case "did.v1.Params.referral_reward_rate":
+		return x.ReferralRewardRate != float64(0) || math.Signbit(x.ReferralRewardRate)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -564,8 +708,18 @@ func (x *fastReflection_Params) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.Params.some_value":
-		x.SomeValue = false
+	case "did.v1.Params.property_allowlist":
+		x.PropertyAllowlist = nil
+	case "did.v1.Params.default_curve":
+		x.DefaultCurve = ""
+	case "did.v1.Params.whitelisted_verifications":
+		x.WhitelistedVerifications = nil
+	case "did.v1.Params.assertion_reward_rate":
+		x.AssertionRewardRate = float64(0)
+	case "did.v1.Params.encryption_reward_rate":
+		x.EncryptionRewardRate = float64(0)
+	case "did.v1.Params.referral_reward_rate":
+		x.ReferralRewardRate = float64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -582,9 +736,30 @@ func (x *fastReflection_Params) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.Params.some_value":
-		value := x.SomeValue
-		return protoreflect.ValueOfBool(value)
+	case "did.v1.Params.property_allowlist":
+		if len(x.PropertyAllowlist) == 0 {
+			return protoreflect.ValueOfList(&_Params_1_list{})
+		}
+		listValue := &_Params_1_list{list: &x.PropertyAllowlist}
+		return protoreflect.ValueOfList(listValue)
+	case "did.v1.Params.default_curve":
+		value := x.DefaultCurve
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Params.whitelisted_verifications":
+		if len(x.WhitelistedVerifications) == 0 {
+			return protoreflect.ValueOfList(&_Params_3_list{})
+		}
+		listValue := &_Params_3_list{list: &x.WhitelistedVerifications}
+		return protoreflect.ValueOfList(listValue)
+	case "did.v1.Params.assertion_reward_rate":
+		value := x.AssertionRewardRate
+		return protoreflect.ValueOfFloat64(value)
+	case "did.v1.Params.encryption_reward_rate":
+		value := x.EncryptionRewardRate
+		return protoreflect.ValueOfFloat64(value)
+	case "did.v1.Params.referral_reward_rate":
+		value := x.ReferralRewardRate
+		return protoreflect.ValueOfFloat64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -605,8 +780,22 @@ func (x *fastReflection_Params) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.Params.some_value":
-		x.SomeValue = value.Bool()
+	case "did.v1.Params.property_allowlist":
+		lv := value.List()
+		clv := lv.(*_Params_1_list)
+		x.PropertyAllowlist = *clv.list
+	case "did.v1.Params.default_curve":
+		x.DefaultCurve = value.Interface().(string)
+	case "did.v1.Params.whitelisted_verifications":
+		lv := value.List()
+		clv := lv.(*_Params_3_list)
+		x.WhitelistedVerifications = *clv.list
+	case "did.v1.Params.assertion_reward_rate":
+		x.AssertionRewardRate = value.Float()
+	case "did.v1.Params.encryption_reward_rate":
+		x.EncryptionRewardRate = value.Float()
+	case "did.v1.Params.referral_reward_rate":
+		x.ReferralRewardRate = value.Float()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -627,8 +816,26 @@ func (x *fastReflection_Params) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Params.some_value":
-		panic(fmt.Errorf("field some_value of message did.v1.Params is not mutable"))
+	case "did.v1.Params.property_allowlist":
+		if x.PropertyAllowlist == nil {
+			x.PropertyAllowlist = []string{}
+		}
+		value := &_Params_1_list{list: &x.PropertyAllowlist}
+		return protoreflect.ValueOfList(value)
+	case "did.v1.Params.whitelisted_verifications":
+		if x.WhitelistedVerifications == nil {
+			x.WhitelistedVerifications = []string{}
+		}
+		value := &_Params_3_list{list: &x.WhitelistedVerifications}
+		return protoreflect.ValueOfList(value)
+	case "did.v1.Params.default_curve":
+		panic(fmt.Errorf("field default_curve of message did.v1.Params is not mutable"))
+	case "did.v1.Params.assertion_reward_rate":
+		panic(fmt.Errorf("field assertion_reward_rate of message did.v1.Params is not mutable"))
+	case "did.v1.Params.encryption_reward_rate":
+		panic(fmt.Errorf("field encryption_reward_rate of message did.v1.Params is not mutable"))
+	case "did.v1.Params.referral_reward_rate":
+		panic(fmt.Errorf("field referral_reward_rate of message did.v1.Params is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -642,8 +849,20 @@ func (x *fastReflection_Params) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Params) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Params.some_value":
-		return protoreflect.ValueOfBool(false)
+	case "did.v1.Params.property_allowlist":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Params_1_list{list: &list})
+	case "did.v1.Params.default_curve":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Params.whitelisted_verifications":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Params_3_list{list: &list})
+	case "did.v1.Params.assertion_reward_rate":
+		return protoreflect.ValueOfFloat64(float64(0))
+	case "did.v1.Params.encryption_reward_rate":
+		return protoreflect.ValueOfFloat64(float64(0))
+	case "did.v1.Params.referral_reward_rate":
+		return protoreflect.ValueOfFloat64(float64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Params"))
@@ -713,8 +932,30 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if x.SomeValue {
-			n += 2
+		if len(x.PropertyAllowlist) > 0 {
+			for _, s := range x.PropertyAllowlist {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		l = len(x.DefaultCurve)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.WhitelistedVerifications) > 0 {
+			for _, s := range x.WhitelistedVerifications {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if x.AssertionRewardRate != 0 || math.Signbit(x.AssertionRewardRate) {
+			n += 9
+		}
+		if x.EncryptionRewardRate != 0 || math.Signbit(x.EncryptionRewardRate) {
+			n += 9
+		}
+		if x.ReferralRewardRate != 0 || math.Signbit(x.ReferralRewardRate) {
+			n += 9
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -745,15 +986,48 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.SomeValue {
+		if x.ReferralRewardRate != 0 || math.Signbit(x.ReferralRewardRate) {
+			i -= 8
+			binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(x.ReferralRewardRate))))
 			i--
-			if x.SomeValue {
-				dAtA[i] = 1
-			} else {
-				dAtA[i] = 0
+			dAtA[i] = 0x31
+		}
+		if x.EncryptionRewardRate != 0 || math.Signbit(x.EncryptionRewardRate) {
+			i -= 8
+			binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(x.EncryptionRewardRate))))
+			i--
+			dAtA[i] = 0x29
+		}
+		if x.AssertionRewardRate != 0 || math.Signbit(x.AssertionRewardRate) {
+			i -= 8
+			binary.LittleEndian.PutUint64(dAtA[i:], uint64(math.Float64bits(float64(x.AssertionRewardRate))))
+			i--
+			dAtA[i] = 0x21
+		}
+		if len(x.WhitelistedVerifications) > 0 {
+			for iNdEx := len(x.WhitelistedVerifications) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.WhitelistedVerifications[iNdEx])
+				copy(dAtA[i:], x.WhitelistedVerifications[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.WhitelistedVerifications[iNdEx])))
+				i--
+				dAtA[i] = 0x1a
 			}
+		}
+		if len(x.DefaultCurve) > 0 {
+			i -= len(x.DefaultCurve)
+			copy(dAtA[i:], x.DefaultCurve)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DefaultCurve)))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x12
+		}
+		if len(x.PropertyAllowlist) > 0 {
+			for iNdEx := len(x.PropertyAllowlist) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.PropertyAllowlist[iNdEx])
+				copy(dAtA[i:], x.PropertyAllowlist[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PropertyAllowlist[iNdEx])))
+				i--
+				dAtA[i] = 0xa
+			}
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -804,11 +1078,11 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SomeValue", wireType)
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PropertyAllowlist", wireType)
 				}
-				var v int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -818,12 +1092,121 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					v |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				x.SomeValue = bool(v != 0)
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PropertyAllowlist = append(x.PropertyAllowlist, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DefaultCurve", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DefaultCurve = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field WhitelistedVerifications", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.WhitelistedVerifications = append(x.WhitelistedVerifications, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 4:
+				if wireType != 1 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AssertionRewardRate", wireType)
+				}
+				var v uint64
+				if (iNdEx + 8) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v = uint64(binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+				iNdEx += 8
+				x.AssertionRewardRate = float64(math.Float64frombits(v))
+			case 5:
+				if wireType != 1 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EncryptionRewardRate", wireType)
+				}
+				var v uint64
+				if (iNdEx + 8) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v = uint64(binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+				iNdEx += 8
+				x.EncryptionRewardRate = float64(math.Float64frombits(v))
+			case 6:
+				if wireType != 1 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ReferralRewardRate", wireType)
+				}
+				var v uint64
+				if (iNdEx + 8) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				v = uint64(binary.LittleEndian.Uint64(dAtA[iNdEx:]))
+				iNdEx += 8
+				x.ReferralRewardRate = float64(math.Float64frombits(v))
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -915,7 +1298,18 @@ type Params struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	SomeValue bool `protobuf:"varint,2,opt,name=some_value,json=someValue,proto3" json:"some_value,omitempty"`
+	// Property Allowlist
+	PropertyAllowlist []string `protobuf:"bytes,1,rep,name=property_allowlist,json=propertyAllowlist,proto3" json:"property_allowlist,omitempty"`
+	// Default Curve
+	DefaultCurve string `protobuf:"bytes,2,opt,name=default_curve,json=defaultCurve,proto3" json:"default_curve,omitempty"`
+	// Whitelisted Verifications
+	WhitelistedVerifications []string `protobuf:"bytes,3,rep,name=whitelisted_verifications,json=whitelistedVerifications,proto3" json:"whitelisted_verifications,omitempty"`
+	// Assertion Reward Rate
+	AssertionRewardRate float64 `protobuf:"fixed64,4,opt,name=assertion_reward_rate,json=assertionRewardRate,proto3" json:"assertion_reward_rate,omitempty"`
+	// Encryption Reward Rate
+	EncryptionRewardRate float64 `protobuf:"fixed64,5,opt,name=encryption_reward_rate,json=encryptionRewardRate,proto3" json:"encryption_reward_rate,omitempty"`
+	// Referral Reward Rate
+	ReferralRewardRate float64 `protobuf:"fixed64,6,opt,name=referral_reward_rate,json=referralRewardRate,proto3" json:"referral_reward_rate,omitempty"`
 }
 
 func (x *Params) Reset() {
@@ -938,11 +1332,46 @@ func (*Params) Descriptor() ([]byte, []int) {
 	return file_did_v1_genesis_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Params) GetSomeValue() bool {
+func (x *Params) GetPropertyAllowlist() []string {
 	if x != nil {
-		return x.SomeValue
+		return x.PropertyAllowlist
 	}
-	return false
+	return nil
+}
+
+func (x *Params) GetDefaultCurve() string {
+	if x != nil {
+		return x.DefaultCurve
+	}
+	return ""
+}
+
+func (x *Params) GetWhitelistedVerifications() []string {
+	if x != nil {
+		return x.WhitelistedVerifications
+	}
+	return nil
+}
+
+func (x *Params) GetAssertionRewardRate() float64 {
+	if x != nil {
+		return x.AssertionRewardRate
+	}
+	return 0
+}
+
+func (x *Params) GetEncryptionRewardRate() float64 {
+	if x != nil {
+		return x.EncryptionRewardRate
+	}
+	return 0
+}
+
+func (x *Params) GetReferralRewardRate() float64 {
+	if x != nil {
+		return x.ReferralRewardRate
+	}
+	return 0
 }
 
 var File_did_v1_genesis_proto protoreflect.FileDescriptor
@@ -956,19 +1385,36 @@ var file_did_v1_genesis_proto_rawDesc = []byte{
 	0x69, 0x73, 0x53, 0x74, 0x61, 0x74, 0x65, 0x12, 0x2c, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x61, 0x6d,
 	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
 	0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x04, 0xc8, 0xde, 0x1f, 0x00, 0x52, 0x06, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x40, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12,
-	0x1d, 0x0a, 0x0a, 0x73, 0x6f, 0x6d, 0x65, 0x5f, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x08, 0x52, 0x09, 0x73, 0x6f, 0x6d, 0x65, 0x56, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x17,
-	0x98, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0a, 0x64, 0x69, 0x64,
-	0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64,
-	0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72,
-	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02,
-	0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06,
-	0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69,
-	0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0xce, 0x02, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x12, 0x2d, 0x0a, 0x12, 0x70, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x5f, 0x61, 0x6c, 0x6c,
+	0x6f, 0x77, 0x6c, 0x69, 0x73, 0x74, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x11, 0x70, 0x72,
+	0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x41, 0x6c, 0x6c, 0x6f, 0x77, 0x6c, 0x69, 0x73, 0x74, 0x12,
+	0x23, 0x0a, 0x0d, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x75, 0x72, 0x76, 0x65,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x43,
+	0x75, 0x72, 0x76, 0x65, 0x12, 0x3b, 0x0a, 0x19, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69, 0x73,
+	0x74, 0x65, 0x64, 0x5f, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x18, 0x77, 0x68, 0x69, 0x74, 0x65, 0x6c, 0x69,
+	0x73, 0x74, 0x65, 0x64, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e,
+	0x73, 0x12, 0x32, 0x0a, 0x15, 0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x72,
+	0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x01,
+	0x52, 0x13, 0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x77, 0x61, 0x72,
+	0x64, 0x52, 0x61, 0x74, 0x65, 0x12, 0x34, 0x0a, 0x16, 0x65, 0x6e, 0x63, 0x72, 0x79, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x01, 0x52, 0x14, 0x65, 0x6e, 0x63, 0x72, 0x79, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x61, 0x74, 0x65, 0x12, 0x30, 0x0a, 0x14, 0x72,
+	0x65, 0x66, 0x65, 0x72, 0x72, 0x61, 0x6c, 0x5f, 0x72, 0x65, 0x77, 0x61, 0x72, 0x64, 0x5f, 0x72,
+	0x61, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x01, 0x52, 0x12, 0x72, 0x65, 0x66, 0x65, 0x72,
+	0x72, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x61, 0x74, 0x65, 0x3a, 0x17, 0x98,
+	0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0a, 0x64, 0x69, 0x64, 0x2f,
+	0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f,
+	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69,
+	0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03,
+	0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44,
+	0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47,
+	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64,
+	0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
