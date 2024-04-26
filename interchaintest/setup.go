@@ -25,7 +25,7 @@ var (
 	MaxDepositPeriod = "10s"
 
 	Denom   = "usnr"
-	Name    = "core"
+	Name    = "sonr"
 	ChainID = "chainid-1"
 	Binary  = "sonrd"
 

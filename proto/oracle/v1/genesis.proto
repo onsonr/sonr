@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package oracle.v1;
+
+option go_package = "github.com/di-dao/core/x/oracle/types";
+
+import "gogoproto/gogo.proto";
+
+// GenesisState defines the middlewares genesis state.
+message GenesisState {}

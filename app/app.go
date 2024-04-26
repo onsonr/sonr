@@ -8,7 +8,6 @@ import (
 	"sort"
 	"strings"
 	"sync"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -38,7 +37,6 @@ import (
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
 	"github.com/spf13/cast"
-
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
@@ -61,7 +59,6 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -133,30 +130,34 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
 	ibcchanneltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
-
 	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
-
 	poa "github.com/strangelove-ventures/poa"
 	poakeeper "github.com/strangelove-ventures/poa/keeper"
 	poamodule "github.com/strangelove-ventures/poa/module"
-
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
 	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
-
 	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	oracle "github.com/di-dao/core/x/oracle"
+	oraclekeeper "github.com/di-dao/core/x/oracle/keeper"
+	oracletypes "github.com/di-dao/core/x/oracle/types"
+	svc "github.com/di-dao/core/x/svc"
+	svckeeper "github.com/di-dao/core/x/svc/keeper"
+	svctypes "github.com/di-dao/core/x/svc/types"
+	did "github.com/di-dao/core/x/did"
+	didkeeper "github.com/di-dao/core/x/did/keeper"
+	didtypes "github.com/di-dao/core/x/did/types"
 )
 
-const appName = "core"
+const appName = "sonr"
 
 var (
-	NodeDir      = ".core"
+	NodeDir      = ".sonr"
 	Bech32Prefix = "idx"
 
 	capabilities = strings.Join(
@@ -259,6 +260,9 @@ type ChainApp struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	OracleKeeper oraclekeeper.Keeper
+	SvcKeeper svckeeper.Keeper
+	DidKeeper didkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -361,6 +365,9 @@ func NewChainApp(
 		poa.StoreKey,
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
+		oracletypes.StoreKey,
+		svctypes.StoreKey,
+		didtypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -603,6 +610,29 @@ func NewChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
+	// Create the did Keeper
+	app.DidKeeper = didkeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[didtypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Create the svc Keeper
+	app.SvcKeeper = svckeeper.NewKeeper(
+		appCodec,
+		runtime.NewKVStoreService(keys[svctypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Create the oracle Middleware Keeper
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		app.MsgServiceRouter(),
+		app.IBCKeeper.ChannelKeeper,
+	)
+
 	// Create the globalfee keeper
 	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(
 		appCodec,
@@ -779,6 +809,12 @@ func NewChainApp(
 		poamodule.NewAppModule(appCodec, app.POAKeeper),
 		globalfee.NewAppModule(appCodec, app.GlobalFeeKeeper),
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		oracle.NewAppModule(app.OracleKeeper),
+
+		svc.NewAppModule(appCodec, app.SvcKeeper),
+
+		did.NewAppModule(appCodec, app.DidKeeper),
+
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -824,6 +860,9 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		oracletypes.ModuleName,
+		svctypes.ModuleName,
+		didtypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -842,6 +881,9 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		oracletypes.ModuleName,
+		svctypes.ModuleName,
+		didtypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -869,6 +911,9 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
+		oracletypes.ModuleName,
+		svctypes.ModuleName,
+		didtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1279,6 +1324,9 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(poa.ModuleName)
 	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
+	paramsKeeper.Subspace(oracletypes.ModuleName)
+	paramsKeeper.Subspace(svctypes.ModuleName)
+	paramsKeeper.Subspace(didtypes.ModuleName)
 
 	return paramsKeeper
 }
