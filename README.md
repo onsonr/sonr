@@ -1,24 +1,26 @@
-# Generated With [Spawn](https://github.com/rollchains/spawn)
+# Sonr
 
-## Module Scaffolding
+> **_Sonr is an ibc-enabled blockchain for decentralized identity_**.
 
-- `spawn module new <name>` *Generates a Cosmos module template*
+## Features
 
-## Content Generation
+Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
-- `make proto-gen` *Generates golang code from proto files, stubs interfaces*
+## Community & Support
 
-## Testnet
+-   [Forum](https://github.com/di-dao/sonr/discussions)
+-   [Issues](https://github.com/di-dao/sonr/issues)
+-   [Twitter](https://sonr.io/twitter)
+-   [Dev Chat](https://sonr.io/discord)
 
-- `make testnet` *IBC testnet from chain <-> local cosmos-hub*
-- `make sh-testnet` *Single node, no IBC. quick iteration*
+## Acknowledgements
 
-## Local Images
+Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- `make install`      *Builds the chain's binary*
-- `make local-image`  *Builds the chain's docker image*
+-   **Protocol Labs**: For IPFS & Libp2p.
+-   **Interchain Foundation**: For Cosmos & IBC.
+-   **Tim Berners-Lee**: For the Internet.
+-   **Satoshi Nakamoto**: For Bitcoin.
+-   **Steve Jobs**: For Taste.
 
-## Testing
-
-- `go test ./... -v` *Unit test*
-- `make ictest-*`  *E2E testing*
+Thank you for your support and inspiration!
