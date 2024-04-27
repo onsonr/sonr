@@ -8,35 +8,7 @@ import (
 	"sort"
 	"strings"
 	"sync"
-	abci "github.com/cometbft/cometbft/abci/types"
-	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
-	dbm "github.com/cosmos/cosmos-db"
-	"github.com/cosmos/gogoproto/proto"
-	"github.com/cosmos/ibc-go/modules/capability"
-	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
-	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
-	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
-	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
-	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
-	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
-	icahost "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host"
-	icahostkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/keeper"
-	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
-	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
-	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
-	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
-	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
-	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
-	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
-	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
-	ibc "github.com/cosmos/ibc-go/v8/modules/core"
-	ibcclienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types" //nolint:staticcheck
-	ibcconnectiontypes "github.com/cosmos/ibc-go/v8/modules/core/03-connection/types"
-	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
-	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
-	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
-	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	"github.com/spf13/cast"
+
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
 	reflectionv1 "cosmossdk.io/api/cosmos/reflection/v1"
 	"cosmossdk.io/client/v2/autocli"
@@ -59,6 +31,9 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+	abci "github.com/cometbft/cometbft/abci/types"
+	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/baseapp"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/flags"
@@ -67,7 +42,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/address"
 	"github.com/cosmos/cosmos-sdk/codec/types"
-	"github.com/cosmos/cosmos-sdk/runtime"
+	sdkruntime "github.com/cosmos/cosmos-sdk/runtime"
 	runtimeservices "github.com/cosmos/cosmos-sdk/runtime/services"
 	"github.com/cosmos/cosmos-sdk/server"
 	"github.com/cosmos/cosmos-sdk/server/api"
@@ -130,28 +105,54 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/staking"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-	ibcchanneltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
-	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
-	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
-	poa "github.com/strangelove-ventures/poa"
-	poakeeper "github.com/strangelove-ventures/poa/keeper"
-	poamodule "github.com/strangelove-ventures/poa/module"
-	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
-	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
-	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
+	"github.com/cosmos/gogoproto/proto"
 	"github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward"
 	packetforwardkeeper "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/keeper"
 	packetforwardtypes "github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8/packetforward/types"
+	"github.com/cosmos/ibc-go/modules/capability"
+	capabilitykeeper "github.com/cosmos/ibc-go/modules/capability/keeper"
+	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"
+	ica "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts"
+	icacontroller "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller"
+	icacontrollerkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/keeper"
+	icacontrollertypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/controller/types"
+	icahost "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host"
+	icahostkeeper "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/keeper"
+	icahosttypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/host/types"
+	icatypes "github.com/cosmos/ibc-go/v8/modules/apps/27-interchain-accounts/types"
+	ibcfee "github.com/cosmos/ibc-go/v8/modules/apps/29-fee"
+	ibcfeekeeper "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/keeper"
+	ibcfeetypes "github.com/cosmos/ibc-go/v8/modules/apps/29-fee/types"
+	"github.com/cosmos/ibc-go/v8/modules/apps/transfer"
+	ibctransferkeeper "github.com/cosmos/ibc-go/v8/modules/apps/transfer/keeper"
+	ibctransfertypes "github.com/cosmos/ibc-go/v8/modules/apps/transfer/types"
+	ibc "github.com/cosmos/ibc-go/v8/modules/core"
+	ibcclienttypes "github.com/cosmos/ibc-go/v8/modules/core/02-client/types" //nolint:staticcheck
+	ibcconnectiontypes "github.com/cosmos/ibc-go/v8/modules/core/03-connection/types"
+	ibcchanneltypes "github.com/cosmos/ibc-go/v8/modules/core/04-channel/types"
+	porttypes "github.com/cosmos/ibc-go/v8/modules/core/05-port/types"
+	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
+	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
+	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	did "github.com/di-dao/core/x/did"
+	didkeeper "github.com/di-dao/core/x/did/keeper"
+	didtypes "github.com/di-dao/core/x/did/types"
 	oracle "github.com/di-dao/core/x/oracle"
 	oraclekeeper "github.com/di-dao/core/x/oracle/keeper"
 	oracletypes "github.com/di-dao/core/x/oracle/types"
 	svc "github.com/di-dao/core/x/svc"
 	svckeeper "github.com/di-dao/core/x/svc/keeper"
 	svctypes "github.com/di-dao/core/x/svc/types"
-	did "github.com/di-dao/core/x/did"
-	didkeeper "github.com/di-dao/core/x/did/keeper"
-	didtypes "github.com/di-dao/core/x/did/types"
+	"github.com/spf13/cast"
+	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
+	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
+	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
+	poa "github.com/strangelove-ventures/poa"
+	poakeeper "github.com/strangelove-ventures/poa/keeper"
+	poamodule "github.com/strangelove-ventures/poa/module"
+	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
+	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 )
 
 const appName = "sonr"
@@ -206,7 +207,7 @@ var maccPerms = map[string][]string{
 }
 
 var (
-	_ runtime.AppI            = (*ChainApp)(nil)
+	_ sdkruntime.AppI         = (*ChainApp)(nil)
 	_ servertypes.Application = (*ChainApp)(nil)
 )
 
@@ -260,9 +261,9 @@ type ChainApp struct {
 	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	OracleKeeper oraclekeeper.Keeper
-	SvcKeeper svckeeper.Keeper
-	DidKeeper didkeeper.Keeper
+	OracleKeeper              oraclekeeper.Keeper
+	SvcKeeper                 svckeeper.Keeper
+	DidKeeper                 didkeeper.Keeper
 
 	// the module manager
 	ModuleManager      *module.Manager
@@ -305,6 +306,8 @@ func NewChainApp(
 
 	std.RegisterLegacyAminoCodec(legacyAmino)
 	std.RegisterInterfaces(interfaceRegistry)
+
+	// Create an HTTP router
 
 	// Below we could construct and set an application specific mempool and
 	// ABCI 1.0 PrepareProposal and ProcessProposal handlers. These defaults are
@@ -399,9 +402,9 @@ func NewChainApp(
 	// set the BaseApp's parameter store
 	app.ConsensusParamsKeeper = consensusparamkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[consensusparamtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[consensusparamtypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		runtime.EventService{},
+		sdkruntime.EventService{},
 	)
 	bApp.SetParamStore(app.ConsensusParamsKeeper.ParamsStore)
 
@@ -422,7 +425,7 @@ func NewChainApp(
 
 	app.AccountKeeper = authkeeper.NewAccountKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[authtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[authtypes.StoreKey]),
 		authtypes.ProtoBaseAccount,
 		maccPerms,
 		authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
@@ -431,7 +434,7 @@ func NewChainApp(
 	)
 	app.BankKeeper = bankkeeper.NewBaseKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[banktypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[banktypes.StoreKey]),
 		app.AccountKeeper,
 		BlockedAddresses(),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -455,7 +458,7 @@ func NewChainApp(
 
 	app.StakingKeeper = stakingkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[stakingtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[stakingtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -464,7 +467,7 @@ func NewChainApp(
 	)
 	app.MintKeeper = mintkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[minttypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[minttypes.StoreKey]),
 		app.StakingKeeper,
 		app.AccountKeeper,
 		app.BankKeeper,
@@ -474,7 +477,7 @@ func NewChainApp(
 
 	app.DistrKeeper = distrkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[distrtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[distrtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
@@ -485,7 +488,7 @@ func NewChainApp(
 	app.SlashingKeeper = slashingkeeper.NewKeeper(
 		appCodec,
 		legacyAmino,
-		runtime.NewKVStoreService(keys[slashingtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[slashingtypes.StoreKey]),
 		app.StakingKeeper,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -493,7 +496,7 @@ func NewChainApp(
 	invCheckPeriod := cast.ToUint(appOpts.Get(server.FlagInvCheckPeriod))
 	app.CrisisKeeper = crisiskeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[crisistypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[crisistypes.StoreKey]),
 		invCheckPeriod,
 		app.BankKeeper,
 		authtypes.FeeCollectorName,
@@ -501,7 +504,7 @@ func NewChainApp(
 		app.AccountKeeper.AddressCodec(),
 	)
 
-	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, runtime.NewKVStoreService(keys[feegrant.StoreKey]), app.AccountKeeper)
+	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, sdkruntime.NewKVStoreService(keys[feegrant.StoreKey]), app.AccountKeeper)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -511,14 +514,14 @@ func NewChainApp(
 
 	app.CircuitKeeper = circuitkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[circuittypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[circuittypes.StoreKey]),
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper.AddressCodec(),
 	)
 	app.BaseApp.SetCircuitBreaker(&app.CircuitKeeper)
 
 	app.AuthzKeeper = authzkeeper.NewKeeper(
-		runtime.NewKVStoreService(keys[authzkeeper.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[authzkeeper.StoreKey]),
 		appCodec,
 		app.MsgServiceRouter(),
 		app.AccountKeeper,
@@ -544,7 +547,7 @@ func NewChainApp(
 	// set the governance module account as the authority for conducting upgrades
 	app.UpgradeKeeper = upgradekeeper.NewKeeper(
 		skipUpgradeHeights,
-		runtime.NewKVStoreService(keys[upgradetypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[upgradetypes.StoreKey]),
 		appCodec,
 		homePath,
 		app.BaseApp,
@@ -572,7 +575,7 @@ func NewChainApp(
 	govConfig.MaxMetadataLen = 20000
 	govKeeper := govkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[govtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[govtypes.StoreKey]),
 		app.AccountKeeper,
 		app.BankKeeper,
 		app.StakingKeeper,
@@ -592,7 +595,7 @@ func NewChainApp(
 	)
 
 	app.NFTKeeper = nftkeeper.NewKeeper(
-		runtime.NewKVStoreService(keys[nftkeeper.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[nftkeeper.StoreKey]),
 		appCodec,
 		app.AccountKeeper,
 		app.BankKeeper,
@@ -601,11 +604,11 @@ func NewChainApp(
 	// create evidence keeper with router
 	evidenceKeeper := evidencekeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[evidencetypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[evidencetypes.StoreKey]),
 		app.StakingKeeper,
 		app.SlashingKeeper,
 		app.AccountKeeper.AddressCodec(),
-		runtime.ProvideCometInfoService(),
+		sdkruntime.ProvideCometInfoService(),
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
@@ -613,7 +616,7 @@ func NewChainApp(
 	// Create the did Keeper
 	app.DidKeeper = didkeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[didtypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -621,7 +624,7 @@ func NewChainApp(
 	// Create the svc Keeper
 	app.SvcKeeper = svckeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[svctypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[svctypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -660,7 +663,7 @@ func NewChainApp(
 	// Initialize the poa Keeper and and AppModule
 	app.POAKeeper = poakeeper.NewKeeper(
 		appCodec,
-		runtime.NewKVStoreService(keys[poa.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[poa.StoreKey]),
 		app.StakingKeeper,
 		app.SlashingKeeper,
 		app.BankKeeper,
@@ -814,7 +817,6 @@ func NewChainApp(
 		svc.NewAppModule(appCodec, app.SvcKeeper),
 
 		did.NewAppModule(appCodec, app.DidKeeper),
-
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,

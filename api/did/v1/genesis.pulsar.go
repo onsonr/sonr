@@ -2107,6 +2107,7 @@ var (
 	md_PublicKey          protoreflect.MessageDescriptor
 	fd_PublicKey_key      protoreflect.FieldDescriptor
 	fd_PublicKey_key_type protoreflect.FieldDescriptor
+	fd_PublicKey_did      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -2114,6 +2115,7 @@ func init() {
 	md_PublicKey = File_did_v1_genesis_proto.Messages().ByName("PublicKey")
 	fd_PublicKey_key = md_PublicKey.Fields().ByName("key")
 	fd_PublicKey_key_type = md_PublicKey.Fields().ByName("key_type")
+	fd_PublicKey_did = md_PublicKey.Fields().ByName("did")
 }
 
 var _ protoreflect.Message = (*fastReflection_PublicKey)(nil)
@@ -2193,6 +2195,12 @@ func (x *fastReflection_PublicKey) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
+	if x.Did != "" {
+		value := protoreflect.ValueOfString(x.Did)
+		if !f(fd_PublicKey_did, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -2212,6 +2220,8 @@ func (x *fastReflection_PublicKey) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.Key) != 0
 	case "did.v1.PublicKey.key_type":
 		return x.KeyType != ""
+	case "did.v1.PublicKey.did":
+		return x.Did != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.PublicKey"))
@@ -2232,6 +2242,8 @@ func (x *fastReflection_PublicKey) Clear(fd protoreflect.FieldDescriptor) {
 		x.Key = nil
 	case "did.v1.PublicKey.key_type":
 		x.KeyType = ""
+	case "did.v1.PublicKey.did":
+		x.Did = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.PublicKey"))
@@ -2253,6 +2265,9 @@ func (x *fastReflection_PublicKey) Get(descriptor protoreflect.FieldDescriptor) 
 		return protoreflect.ValueOfBytes(value)
 	case "did.v1.PublicKey.key_type":
 		value := x.KeyType
+		return protoreflect.ValueOfString(value)
+	case "did.v1.PublicKey.did":
+		value := x.Did
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -2278,6 +2293,8 @@ func (x *fastReflection_PublicKey) Set(fd protoreflect.FieldDescriptor, value pr
 		x.Key = value.Bytes()
 	case "did.v1.PublicKey.key_type":
 		x.KeyType = value.Interface().(string)
+	case "did.v1.PublicKey.did":
+		x.Did = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.PublicKey"))
@@ -2302,6 +2319,8 @@ func (x *fastReflection_PublicKey) Mutable(fd protoreflect.FieldDescriptor) prot
 		panic(fmt.Errorf("field key of message did.v1.PublicKey is not mutable"))
 	case "did.v1.PublicKey.key_type":
 		panic(fmt.Errorf("field key_type of message did.v1.PublicKey is not mutable"))
+	case "did.v1.PublicKey.did":
+		panic(fmt.Errorf("field did of message did.v1.PublicKey is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.PublicKey"))
@@ -2318,6 +2337,8 @@ func (x *fastReflection_PublicKey) NewField(fd protoreflect.FieldDescriptor) pro
 	case "did.v1.PublicKey.key":
 		return protoreflect.ValueOfBytes(nil)
 	case "did.v1.PublicKey.key_type":
+		return protoreflect.ValueOfString("")
+	case "did.v1.PublicKey.did":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -2396,6 +2417,10 @@ func (x *fastReflection_PublicKey) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.Did)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2424,6 +2449,13 @@ func (x *fastReflection_PublicKey) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Did) > 0 {
+			i -= len(x.Did)
+			copy(dAtA[i:], x.Did)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Did)))
+			i--
+			dAtA[i] = 0x1a
 		}
 		if len(x.KeyType) > 0 {
 			i -= len(x.KeyType)
@@ -2553,6 +2585,38 @@ func (x *fastReflection_PublicKey) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.KeyType = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Did = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2818,10 +2882,12 @@ type PublicKey struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// Key is the public key∆
+	// Key is the public key
 	Key []byte `protobuf:"bytes,1,opt,name=key,proto3" json:"key,omitempty"`
 	// Type is the type of the public key
 	KeyType string `protobuf:"bytes,2,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// DID is the DID of the public key
+	Did string `protobuf:"bytes,3,opt,name=did,proto3" json:"did,omitempty"`
 }
 
 func (x *PublicKey) Reset() {
@@ -2854,6 +2920,13 @@ func (x *PublicKey) GetKey() []byte {
 func (x *PublicKey) GetKeyType() string {
 	if x != nil {
 		return x.KeyType
+	}
+	return ""
+}
+
+func (x *PublicKey) GetDid() string {
+	if x != nil {
+		return x.Did
 	}
 	return ""
 }
@@ -2907,19 +2980,20 @@ var file_did_v1_genesis_proto_rawDesc = []byte{
 	0x64, 0x5f, 0x72, 0x61, 0x74, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x01, 0x52, 0x12, 0x72, 0x65,
 	0x66, 0x65, 0x72, 0x72, 0x61, 0x6c, 0x52, 0x65, 0x77, 0x61, 0x72, 0x64, 0x52, 0x61, 0x74, 0x65,
 	0x3a, 0x17, 0x98, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0a, 0x64,
-	0x69, 0x64, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x38, 0x0a, 0x09, 0x50, 0x75, 0x62,
+	0x69, 0x64, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x4a, 0x0a, 0x09, 0x50, 0x75, 0x62,
 	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79, 0x5f,
 	0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x54,
-	0x79, 0x70, 0x65, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76,
-	0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x69,
-	0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69,
-	0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58,
-	0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c,
-	0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x79, 0x70, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x03, 0x64, 0x69, 0x64, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64,
+	0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44,
+	0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69,
+	0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a,
+	0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
