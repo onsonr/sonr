@@ -4,6 +4,7 @@ import (
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
+	"github.com/di-dao/core/x/did/types"
 
 	"golang.org/x/crypto/sha3"
 )
@@ -23,8 +24,8 @@ type ValidatorKeyshare struct {
 	valKSS *protocol.Message
 }
 
-// newValidatorKeyshare creates a new ValidatorKeyshare
-func NewValidatorKeyshare(valKSS *protocol.Message) *ValidatorKeyshare {
+// createValidatorKeyshare creates a new ValidatorKeyshare
+func createValidatorKeyshare(valKSS *protocol.Message) *ValidatorKeyshare {
 	return &ValidatorKeyshare{
 		valKSS: valKSS,
 	}
@@ -60,10 +61,13 @@ func (v *ValidatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (v *ValidatorKeyshare) PublicKey() ([]byte, error) {
-	aliceOut, err := v.DecodeOutput()
+func (u *ValidatorKeyshare) PublicKey() (*types.PublicKey, error) {
+	bobOut, err := u.DecodeOutput()
 	if err != nil {
 		return nil, err
 	}
-	return aliceOut.PublicKey.ToAffineUncompressed(), nil
+	return &types.PublicKey{
+		Key:     bobOut.PublicKey.ToAffineUncompressed(),
+		KeyType: "ecdsa-secp256k1",
+	}, nil
 }

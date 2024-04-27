@@ -24,7 +24,7 @@ func generateKSS() (*ValidatorKeyshare, *UserKeyshare, error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	return NewValidatorKeyshare(aliceRes), NewUserKeyshare(bobRes), nil
+	return createValidatorKeyshare(aliceRes), createUserKeyshare(bobRes), nil
 }
 
 // signKSS signs a message with the SignFuncs
@@ -59,7 +59,7 @@ func refreshKSS(valRefresh ValidatorRefreshFunc, usrRefresh UserRefreshFunc) (*V
 	if err != nil {
 		return nil, nil, err
 	}
-	return NewValidatorKeyshare(newValKsMsg), NewUserKeyshare(newUsrKsMsg), nil
+	return createValidatorKeyshare(newValKsMsg), createUserKeyshare(newUsrKsMsg), nil
 }
 
 // startKsProtocol runs the keyshare protocol between two parties
