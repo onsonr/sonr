@@ -4,7 +4,6 @@ import (
 	"regexp"
 
 	"github.com/cosmos/btcutil/bech32"
-
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
@@ -82,7 +81,7 @@ func (a IDXAddress) String() string {
 
 // GetBTCAddress returns the BTC address from the public key using bech32 encoding
 func GetBTCAddress(publicKey *PublicKey) (BTCAddress, error) {
-	addr, err := bech32.Encode("bc", publicKey.Address())
+	addr, err := bech32.Encode("bc", publicKey.Bytes())
 	if err != nil {
 		return "", err
 	}
@@ -101,7 +100,7 @@ func GetETHAddress(publicKey *PublicKey) (ETHAddress, error) {
 
 // GetIDXAddress returns the IDX address from the public key
 func GetIDXAddress(publicKey *PublicKey) (IDXAddress, error) {
-	addr, err := bech32.Encode("idx", publicKey.Address())
+	addr, err := bech32.Encode("idx", publicKey.Bytes())
 	if err != nil {
 		return "", err
 	}

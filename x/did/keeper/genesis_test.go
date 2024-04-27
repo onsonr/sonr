@@ -3,8 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/di-dao/core/x/did/types"
 	"github.com/stretchr/testify/require"
+
+	"github.com/di-dao/core/x/did/types"
 )
 
 func TestGenesis(t *testing.T) {
@@ -16,7 +17,9 @@ func TestGenesis(t *testing.T) {
 		// this line is used by starport scaffolding # genesis/test/state
 	}
 
-	f.k.InitGenesis(f.ctx, genesisState)
+	err := f.k.InitGenesis(f.ctx, genesisState)
+	require.NoError(t, err)
+
 
 	got := f.k.ExportGenesis(f.ctx)
 	require.NotNil(t, got)

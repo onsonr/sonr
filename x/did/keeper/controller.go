@@ -14,12 +14,12 @@ import (
 
 // Controller is the interface for the controller
 type Controller interface {
-	Link(key, value string) (Witness, error)
+	Link(key, value string) (string, error)
 	PublicKey() *types.PublicKey
 	Refresh() error
 	Sign(msg []byte) ([]byte, error)
-	Unlink(key, value string) (Witness, error)
-	Validate(key string, w Witness) bool
+	Unlink(key, value string) (string, error)
+	Validate(key string, w string) (bool, error)
 	Verify(msg, sig []byte) bool
 }
 
@@ -40,21 +40,12 @@ func CreateController(uks *UserKeyshare, vks *ValidatorKeyshare) (Controller, er
 		usrKS:      uks,
 		valKS:      vks,
 	}
-	sk, err := DeriveSecretKey(c)
-	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to get secret key"))
-	}
-	prfKey, err := sk.PublicKey()
-	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to get public key"))
-	}
-	c.proofKey = prfKey
 	return c, nil
 }
 
 // Link links a property to the controller
-func (c *controller) Link(key, value string) (Witness, error) {
-	sk, err := DeriveSecretKey(c)
+func (c *controller) Link(key, value string) (string, error) {
+	sk, err := DeriveSecretKey(c, key)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
@@ -62,21 +53,25 @@ func (c *controller) Link(key, value string) (Witness, error) {
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to create accumulator"))
 	}
-	err = acc.AddValues(sk, value)
+	prop, err := zkAddValues(sk, acc, value)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to add values"))
 	}
-	prop, witness, err := acc.CreateWitness(sk, value)
+	witness, err := zkCreateWitness(sk, acc, value)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to create witness"))
 	}
-	prop.Update(key, c.properties)
+	c.properties[key] = prop
 	return witness, nil
 }
 
 // PublicKey returns the public key for the shares
 func (c *controller) PublicKey() *types.PublicKey {
-	return c.usrKS.PublicKey()
+	pub, err := c.usrKS.PublicKey()
+	if err != nil {
+		panic(err)
+	}
+	return pub
 }
 
 // Refresh refreshes the keyshares
@@ -91,26 +86,18 @@ func (c *controller) Refresh() error {
 	}
 	err = StartKsProtocol(valRefresh, usrRefresh)
 	if err != nil {
-		return errors.Join(fmt.Errorf("Error Starting Keyshare MPC Protocol"), err)
+		return errors.Join(fmt.Errorf("error Starting Keyshare MPC Protocol"), err)
 	}
 	newAlice, err := valRefresh.Result(protocol.Version1)
 	if err != nil {
-		return errors.Join(fmt.Errorf("Error Getting Validator Result"), err)
+		return errors.Join(fmt.Errorf("error Getting Validator Result"), err)
 	}
 	newBob, err := usrRefresh.Result(protocol.Version1)
 	if err != nil {
-		return errors.Join(fmt.Errorf("Error Getting User Result"), err)
+		return errors.Join(fmt.Errorf("error Getting User Result"), err)
 	}
-	usrKs, err := createUserKeyshare(newAlice)
-	if err != nil {
-		return errors.Join(fmt.Errorf("Error Creating User Keyshare"), err)
-	}
-	valKs, err := createValidatorKeyshare(newBob)
-	if err != nil {
-		return errors.Join(fmt.Errorf("Error Creating Validator Keyshare"), err)
-	}
-	c.usrKS = usrKs
-	c.valKS = valKs
+	c.usrKS = createUserKeyshare(newAlice)
+	c.valKS = createValidatorKeyshare(newBob)
 	return nil
 }
 
@@ -126,70 +113,64 @@ func (c *controller) Sign(msg []byte) ([]byte, error) {
 	}
 	err = StartKsProtocol(valSign, usrSign)
 	if err != nil {
-		return nil, errors.Join(fmt.Errorf("Error Starting Keyshare MPC Protocol"), err)
+		return nil, errors.Join(fmt.Errorf("error Starting Keyshare MPC Protocol"), err)
 	}
 	// Output
 	resultMessage, err := usrSign.Result(protocol.Version1)
 	if err != nil {
-		return nil, errors.Join(fmt.Errorf("Error Getting User Sign Result"), err)
+		return nil, errors.Join(fmt.Errorf("error Getting User Sign Result"), err)
 	}
 	sig, err := dklsv1.DecodeSignature(resultMessage)
 	if err != nil {
-		return nil, errors.Join(fmt.Errorf("Error Decoding Signature"), err)
+		return nil, errors.Join(fmt.Errorf("error Decoding Signature"), err)
 	}
 	return ecdsa.SerializeSecp256k1Signature(sig)
 }
 
 // Unlink unlinks the property from the controller
-func (c *controller) Unlink(key string, value string) (Witness, error) {
-	propStr, ok := c.properties[key]
+func (c *controller) Unlink(key string, value string) (string, error) {
+	acc, ok := c.properties[key]
 	if !ok {
 		return "", fmt.Errorf("property not found")
 	}
-	sk, err := DeriveSecretKey(c)
+	sk, err := DeriveSecretKey(c, key)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
-	a, err := decodeProperty(Property(propStr))
-	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to decode property"))
-	}
-	err = a.RemoveValues(sk, value)
+	prop, err := zkRemoveValues(sk, acc, value)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to remove values"))
 	}
-	prop, witness, err := a.CreateWitness(sk, value)
+	witness, err := zkCreateWitness(sk, acc, value)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to create witness"))
 	}
-	prop.Update(key, c.properties)
+	c.properties[key] = prop
 	return witness, nil
 }
 
 // Validate validates that the property is linked to the controller
-func (c *controller) Validate(key string, w Witness) bool {
-	propStr, ok := c.properties[key]
+func (c *controller) Validate(key string, w string) (bool, error) {
+	acc, ok := c.properties[key]
 	if !ok {
-		return false
+		return false, fmt.Errorf("property not found")
 	}
-	a, err := decodeProperty(Property(propStr))
+	sk, err := DeriveSecretKey(c, key)
 	if err != nil {
-		return false
+		return false, errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
-	mw, err := decodeWitness(w)
+	pub, err := sk.PublicKey()
 	if err != nil {
-		return false
+		return false, errors.Join(err, fmt.Errorf("failed to get public key"))
 	}
-	err = mw.Verify(c.proofKey, a.Accumulator)
-	if err != nil {
-		return false
-	}
-	return true
+	return zkVerifyElement(pub, acc, w), nil
+
 }
 
 // Verify verifies the signature
 func (c *controller) Verify(msg, sig []byte) bool {
-	return c.usrKS.PublicKey().VerifySignature(msg, sig)
+	pub := c.PublicKey()
+	return pub.VerifySignature(sig, msg)
 }
 
 //
@@ -197,12 +178,8 @@ func (c *controller) Verify(msg, sig []byte) bool {
 //
 
 // DeriveSecretKey derives the secret key from the keyshares
-func DeriveSecretKey(c *controller) (*SecretKey, error) {
-	addr, err := types.GetIDXAddress(c.usrKS.pubKey)
-	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to get IDX address"))
-	}
-	seed, err := c.Sign(addr.Bytes())
+func DeriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
+	seed, err := c.Sign([]byte(propertyKey))
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get anon seed"))
 	}

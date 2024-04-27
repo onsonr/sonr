@@ -1,29 +1,23 @@
 package keeper
 
 import (
-	"github.com/cosmos/cosmos-sdk/codec"
-
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
+	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/di-dao/core/api/did/v1"
-	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/x/did/types"
 )
 
-var (
-	// vault is the global vault instance
-	vault vaultStore
+// vault is the global vault instance
+var vault vaultStore
 
-	// defaultCurve is the default curve used for key generation
-	defaultCurve = curves.P256()
-)
+// defaultCurve is the default curve used for key generation
 
 // Keeper defines the middleware keeper.
 type Keeper struct {
@@ -70,7 +64,21 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 	return k
 }
 
-// GenerateKSS generates a new keyshare set
+// GenerateKSS generates a new keyshare set. First step
 func (k Keeper) GenerateKSS(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
 	return GenerateKSS()
+}
+
+// LinkController links a user identifier to a kss pair creating a controller. Second step
+func (k Keeper) LinkController(ctx sdk.Context, usrKs *UserKeyshare, valKs *ValidatorKeyshare, identifier string) (string, error) {
+	c, err := CreateController(usrKs, valKs)
+	if err != nil {
+		return "", err
+	}
+	return c.Link("email", identifier)
+}
+
+// AssignVault assigns a vault to a controller. Third step
+func (k Keeper) AssignVault(ctx sdk.Context, c Controller) error {
+	return nil
 }

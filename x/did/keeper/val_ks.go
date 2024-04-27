@@ -1,12 +1,13 @@
 package keeper
 
 import (
+	"golang.org/x/crypto/sha3"
+
+	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
 	"github.com/di-dao/core/x/did/types"
-
-	"golang.org/x/crypto/sha3"
 )
 
 // ValidatorKSOutput is the protocol result for the validator keyshare output
@@ -26,28 +27,15 @@ type ValidatorKeyshare struct {
 }
 
 // createValidatorKeyshare creates a new ValidatorKeyshare
-func createValidatorKeyshare(valKSS *protocol.Message) (*ValidatorKeyshare, error) {
-	aliceOut, err := dklsv1.DecodeAliceDkgResult(valKSS)
-	if err != nil {
-		return nil, err
-	}
-	pub := &types.PublicKey{
-		Key:     aliceOut.PublicKey.ToAffineUncompressed(),
-		KeyType: "ecdsa-secp256k1",
-	}
-	pub, err = setValidatorKeyshareDID(pub)
-	if err != nil {
-		return nil, err
-	}
+func createValidatorKeyshare(valKSS *protocol.Message) *ValidatorKeyshare {
 	return &ValidatorKeyshare{
 		valKSS: valKSS,
-		pubKey: pub,
-	}, nil
+	}
 }
 
 // GetSignFunc returns the sign function for the validator keyshare
 func (v *ValidatorKeyshare) GetSignFunc(msg []byte) (ValidatorSignFunc, error) {
-	curve := defaultCurve
+	curve := curves.P256()
 	aliceSign, err := dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.valKSS, protocol.Version1)
 	if err != nil {
 		return nil, err
@@ -57,7 +45,7 @@ func (v *ValidatorKeyshare) GetSignFunc(msg []byte) (ValidatorSignFunc, error) {
 
 // GetRefreshFunc returns the refresh function for the validator keyshare
 func (v *ValidatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
-	curve := defaultCurve
+	curve := curves.P256()
 	aliceRefresh, err := dklsv1.NewAliceRefresh(curve, v.valKSS, protocol.Version1)
 	if err != nil {
 		return nil, err
@@ -67,5 +55,17 @@ func (v *ValidatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
 
 // PublicKey is the public key for the keyshare
 func (u *ValidatorKeyshare) PublicKey() *types.PublicKey {
-	return u.pubKey
+	aliceOut, err := dklsv1.DecodeAliceDkgResult(u.valKSS)
+	if err != nil {
+		panic(err)
+	}
+	pub := &types.PublicKey{
+		Key:     aliceOut.PublicKey.ToAffineUncompressed(),
+		KeyType: "ecdsa-secp256k1",
+	}
+	pub, err = setValidatorKeyshareDID(pub)
+	if err != nil {
+		panic(err)
+	}
+	return pub
 }

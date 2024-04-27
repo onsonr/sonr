@@ -1,11 +1,13 @@
 package keeper
 
 import (
+	"golang.org/x/crypto/sha3"
+
+	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
 	"github.com/di-dao/core/x/did/types"
-	"golang.org/x/crypto/sha3"
 )
 
 // UserKSOutput is the protocol result for the user keyshare output
@@ -25,8 +27,35 @@ type UserKeyshare struct {
 }
 
 // createUserKeyshare creates a new UserKeyshare and stores it into IPFS
-func createUserKeyshare(usrKSS *protocol.Message) (*UserKeyshare, error) {
-	bobOut, err := dklsv1.DecodeBobDkgResult(usrKSS)
+func createUserKeyshare(usrKSS *protocol.Message) *UserKeyshare {
+	return &UserKeyshare{
+		usrKSS: usrKSS,
+	}
+}
+
+// GetSignFunc returns the sign function for the user keyshare
+func (u *UserKeyshare) GetSignFunc(msg []byte) (UserSignFunc, error) {
+	curve := curves.P256()
+	bobSign, err := dklsv1.NewBobSign(curve, sha3.New256(), msg, u.usrKSS, protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	return bobSign, nil
+}
+
+// GetRefreshFunc returns the refresh function for the user keyshare
+func (u *UserKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
+	curve := curves.P256()
+	bobRefresh, err := dklsv1.NewBobRefresh(curve, u.usrKSS, protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	return bobRefresh, nil
+}
+
+// PublicKey is the public key for the keyshare
+func (u *UserKeyshare) PublicKey() (*types.PublicKey, error) {
+	bobOut, err := dklsv1.DecodeBobDkgResult(u.usrKSS)
 	if err != nil {
 		return nil, err
 	}
@@ -38,33 +67,5 @@ func createUserKeyshare(usrKSS *protocol.Message) (*UserKeyshare, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &UserKeyshare{
-		usrKSS: usrKSS,
-		pubKey: pub,
-	}, nil
-}
-
-// GetSignFunc returns the sign function for the user keyshare
-func (u *UserKeyshare) GetSignFunc(msg []byte) (UserSignFunc, error) {
-	curve := defaultCurve
-	bobSign, err := dklsv1.NewBobSign(curve, sha3.New256(), msg, u.usrKSS, protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	return bobSign, nil
-}
-
-// GetRefreshFunc returns the refresh function for the user keyshare
-func (u *UserKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
-	curve := defaultCurve
-	bobRefresh, err := dklsv1.NewBobRefresh(curve, u.usrKSS, protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	return bobRefresh, nil
-}
-
-// PublicKey is the public key for the keyshare
-func (u *UserKeyshare) PublicKey() *types.PublicKey {
-	return u.pubKey
+	return pub, nil
 }

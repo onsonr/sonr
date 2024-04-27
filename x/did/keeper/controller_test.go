@@ -3,9 +3,10 @@ package keeper_test
 import (
 	"testing"
 
+	"github.com/stretchr/testify/require"
+
 	"github.com/di-dao/core/x/did/keeper"
 	"github.com/di-dao/core/x/did/types"
-	"github.com/stretchr/testify/require"
 )
 
 func TestController(t *testing.T) {
@@ -26,7 +27,8 @@ func TestController(t *testing.T) {
 	require.NotEmpty(t, witness)
 
 	// Test validating the linked property
-	valid := ctrl.Validate(key, witness)
+	valid, err := ctrl.Validate(key, witness)
+	require.NoError(t, err)
 	require.True(t, valid)
 
 	// Test unlinking the property
@@ -35,7 +37,8 @@ func TestController(t *testing.T) {
 	require.NotEmpty(t, witness)
 
 	// Test validating the unlinked property
-	valid = ctrl.Validate(key, witness)
+	valid, err = ctrl.Validate(key, witness)
+	require.NoError(t, err)
 	require.False(t, valid)
 
 	// Test signing and verifying a message
