@@ -10,6 +10,7 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	apiv1 "github.com/di-dao/core/api/did/v1"
 	"github.com/di-dao/core/crypto/core/curves"
@@ -69,7 +70,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 	return k
 }
 
-// Logger returns the logger
-func (k Keeper) Logger() log.Logger {
-	return k.logger
+// GenerateKSS generates a new keyshare set
+func (k Keeper) GenerateKSS(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
+	return generateKSS()
 }

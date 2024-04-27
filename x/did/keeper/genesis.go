@@ -3,8 +3,14 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/log"
 	"github.com/di-dao/core/x/did/types"
 )
+
+// Logger returns the logger
+func (k Keeper) Logger() log.Logger {
+	return k.logger
+}
 
 // InitGenesis initializes the module's state from a genesis state.
 func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) error {
