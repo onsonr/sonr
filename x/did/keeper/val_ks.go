@@ -22,22 +22,27 @@ type ValidatorRefreshFunc = *dklsv1.AliceRefresh
 type ValidatorKeyshare struct {
 	Keyshare
 	valKSS *protocol.Message
+	pubKey *types.PublicKey
 }
 
 // createValidatorKeyshare creates a new ValidatorKeyshare
-func createValidatorKeyshare(valKSS *protocol.Message) *ValidatorKeyshare {
-	return &ValidatorKeyshare{
-		valKSS: valKSS,
-	}
-}
-
-// DecodeOutput decodes the output from the validator keyshare
-func (v *ValidatorKeyshare) DecodeOutput() (ValidatorKSOutput, error) {
-	aliceOut, err := dklsv1.DecodeAliceDkgResult(v.valKSS)
+func createValidatorKeyshare(valKSS *protocol.Message) (*ValidatorKeyshare, error) {
+	aliceOut, err := dklsv1.DecodeAliceDkgResult(valKSS)
 	if err != nil {
 		return nil, err
 	}
-	return aliceOut, nil
+	pub := &types.PublicKey{
+		Key:     aliceOut.PublicKey.ToAffineUncompressed(),
+		KeyType: "ecdsa-secp256k1",
+	}
+	pub, err = setValidatorKeyshareDID(pub)
+	if err != nil {
+		return nil, err
+	}
+	return &ValidatorKeyshare{
+		valKSS: valKSS,
+		pubKey: pub,
+	}, nil
 }
 
 // GetSignFunc returns the sign function for the validator keyshare
@@ -61,13 +66,6 @@ func (v *ValidatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (u *ValidatorKeyshare) PublicKey() (*types.PublicKey, error) {
-	bobOut, err := u.DecodeOutput()
-	if err != nil {
-		return nil, err
-	}
-	return &types.PublicKey{
-		Key:     bobOut.PublicKey.ToAffineUncompressed(),
-		KeyType: "ecdsa-secp256k1",
-	}, nil
+func (u *ValidatorKeyshare) PublicKey() *types.PublicKey {
+	return u.pubKey
 }

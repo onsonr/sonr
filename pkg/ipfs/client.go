@@ -23,7 +23,8 @@ func NewLocalClient() (*IPFSClient, error) {
 }
 
 // NewKey creates a new IPFS key.
-func (c *IPFSClient) NewKey(ctx context.Context, address types.Address) (IPFSKey, error) {
+func (c *IPFSClient) NewKey(address types.Address) (IPFSKey, error) {
+	ctx := context.Background()
 	// Use bech32 encoding to convert the address to a string.
 	addr, err := bech32.Encode("idx", address.Bytes())
 	if err != nil {

@@ -25,11 +25,3 @@ func (k *IPFSPublicKey) Path() string {
 func (k *IPFSPublicKey) ID() string {
 	return k.key.ID().String()
 }
-
-func (k *IPFSPublicKey) Bytes() []byte {
-	pk, err := k.key.ID().MarshalBinary()
-	if err != nil {
-		panic(err)
-	}
-	return pk
-}

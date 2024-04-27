@@ -3,6 +3,7 @@ package keeper
 import (
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/pkg/ipfs"
+	"github.com/di-dao/core/x/did/types"
 )
 
 // RefreshFunc is the type for the refresh function
@@ -21,8 +22,8 @@ type Keyshare interface {
 
 // vaultStore is the interface for interacting with Keyshares in the IPFS network.
 type vaultStore struct {
-	ipfs.IPFSClient
-	k Keeper
+	ipfs ipfs.IPFSClient
+	k    Keeper
 }
 
 // NewController creates a new controller instance.
@@ -37,4 +38,24 @@ func (v vaultStore) NewController() (controller, error) {
 	}
 
 	return controller, nil
+}
+
+// formatUserKeyshareDID formats the user keyshare DID
+func setUserKeyshareDID(pub *types.PublicKey) (*types.PublicKey, error) {
+	addr, err := types.GetIDXAddress(pub)
+	if err != nil {
+		return nil, err
+	}
+	pub.Did = addr.DID("ipns")
+	return pub, nil
+}
+
+// formatValidatorKeyshareDID formats the validator keyshare DID
+func setValidatorKeyshareDID(pub *types.PublicKey) (*types.PublicKey, error) {
+	addr, err := types.GetIDXAddress(pub)
+	if err != nil {
+		return nil, err
+	}
+	pub.Did = addr.DID("vksnr")
+	return pub, nil
 }

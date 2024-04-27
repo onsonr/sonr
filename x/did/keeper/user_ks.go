@@ -21,22 +21,27 @@ type UserRefreshFunc = *dklsv1.BobRefresh
 type UserKeyshare struct {
 	Keyshare
 	usrKSS *protocol.Message
+	pubKey *types.PublicKey
 }
 
 // createUserKeyshare creates a new UserKeyshare and stores it into IPFS
-func createUserKeyshare(usrKSS *protocol.Message) *UserKeyshare {
-	return &UserKeyshare{
-		usrKSS: usrKSS,
-	}
-}
-
-// DecodeOutput decodes the output from the user keyshare
-func (u *UserKeyshare) DecodeOutput() (UserKSOutput, error) {
-	bobOut, err := dklsv1.DecodeBobDkgResult(u.usrKSS)
+func createUserKeyshare(usrKSS *protocol.Message) (*UserKeyshare, error) {
+	bobOut, err := dklsv1.DecodeBobDkgResult(usrKSS)
 	if err != nil {
 		return nil, err
 	}
-	return bobOut, nil
+	pub := &types.PublicKey{
+		Key:     bobOut.PublicKey.ToAffineUncompressed(),
+		KeyType: "ecdsa-secp256k1",
+	}
+	pub, err = setUserKeyshareDID(pub)
+	if err != nil {
+		return nil, err
+	}
+	return &UserKeyshare{
+		usrKSS: usrKSS,
+		pubKey: pub,
+	}, nil
 }
 
 // GetSignFunc returns the sign function for the user keyshare
@@ -60,13 +65,6 @@ func (u *UserKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (u *UserKeyshare) PublicKey() (*types.PublicKey, error) {
-	bobOut, err := u.DecodeOutput()
-	if err != nil {
-		return nil, err
-	}
-	return &types.PublicKey{
-		Key:     bobOut.PublicKey.ToAffineUncompressed(),
-		KeyType: "ecdsa-secp256k1",
-	}, nil
+func (u *UserKeyshare) PublicKey() *types.PublicKey {
+	return u.pubKey
 }
