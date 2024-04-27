@@ -72,5 +72,5 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 
 // GenerateKSS generates a new keyshare set
 func (k Keeper) GenerateKSS(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
-	return generateKSS()
+	return GenerateKSS()
 }

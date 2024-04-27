@@ -28,7 +28,7 @@ type vaultStore struct {
 
 // NewController creates a new controller instance.
 func (v vaultStore) NewController() (Controller, error) {
-	valKs, usrKs, err := generateKSS()
+	valKs, usrKs, err := GenerateKSS()
 	if err != nil {
 		return nil, err
 	}
