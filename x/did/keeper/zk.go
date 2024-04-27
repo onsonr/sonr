@@ -2,8 +2,6 @@ package keeper
 
 import (
 	"encoding/hex"
-	"math/rand"
-	"time"
 
 	"github.com/mr-tron/base58"
 
@@ -16,11 +14,29 @@ type SecretKey struct {
 	*accumulator.SecretKey
 }
 
-// sharedKey is the public key for the BLS scheme
-type sharedKey = accumulator.PublicKey
-
 // Element is the element for the BLS scheme
 type Element = accumulator.Element
+
+// Property is the property for the BLS scheme
+type Property string
+
+// String returns the string representation of the property
+func (p Property) String() string {
+	return string(p)
+}
+
+// Update updates the property with the given value
+func (p Property) Update(key string, properties map[string]string) {
+	properties[key] = p.String()
+}
+
+// Witness is the witness for the BLS scheme
+type Witness string
+
+// String returns the string representation of the witness
+func (w Witness) String() string {
+	return string(w)
+}
 
 // CreateAccumulator creates a new accumulator
 func (s *SecretKey) CreateAccumulator() (*Accumulator, error) {
@@ -32,8 +48,8 @@ func (s *SecretKey) CreateAccumulator() (*Accumulator, error) {
 	return &Accumulator{Accumulator: acc}, nil
 }
 
-// OpenAccumulator opens an accumulator
-func (s *SecretKey) OpenAccumulator(hexAcc string) (*Accumulator, error) {
+// DeserializeAccumulator opens an accumulator
+func DeserializeAccumulator(hexAcc string) (*Accumulator, error) {
 	acc, err := hex.DecodeString(hexAcc)
 	if err != nil {
 		return nil, err
@@ -47,18 +63,13 @@ func (s *SecretKey) OpenAccumulator(hexAcc string) (*Accumulator, error) {
 }
 
 // PublicKey returns the public key for the secret key
-func (s *SecretKey) PublicKey() (*sharedKey, error) {
+func (s *SecretKey) PublicKey() (*accumulator.PublicKey, error) {
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
 	pk, err := s.SecretKey.GetPublicKey(curve)
 	if err != nil {
 		return nil, err
 	}
 	return pk, nil
-}
-
-// Serialize marshals the secret key
-func (s *SecretKey) Serialize() ([]byte, error) {
-	return s.SecretKey.MarshalBinary()
 }
 
 // Accumulator is the secret key for the BLS scheme
@@ -100,28 +111,27 @@ func (a *Accumulator) RemoveValues(k *SecretKey, values ...string) error {
 }
 
 // CreateWitness creates a witness for the accumulator for a given value
-func (a *Accumulator) CreateWitness(k *SecretKey, value string) (string, error) {
+func (a *Accumulator) CreateWitness(k *SecretKey, value string) (Property, Witness, error) {
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
 	element := curve.Scalar.Hash([]byte(value))
 	mw, err := new(accumulator.MembershipWitness).New(element, a.Accumulator, k.SecretKey)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	mwbz, err := mw.MarshalBinary()
+	wtstr, err := encodeWitness(mw)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return base58.Encode(mwbz), nil
+	prop, err := encodeProperty(a)
+	if err != nil {
+		return "", "", err
+	}
+	return prop, wtstr, nil
 }
 
 // VerifyElement verifies an element against the accumulator and public key
-func (a *Accumulator) VerifyElement(pk *sharedKey, witness string) bool {
-	mbbz, err := base58.Decode(witness)
-	if err != nil {
-		return false
-	}
-	mw := new(accumulator.MembershipWitness)
-	err = mw.UnmarshalBinary(mbbz)
+func (a *Accumulator) VerifyElement(pk *accumulator.PublicKey, witness Witness) bool {
+	mw, err := decodeWitness(witness)
 	if err != nil {
 		return false
 	}
@@ -129,19 +139,48 @@ func (a *Accumulator) VerifyElement(pk *sharedKey, witness string) bool {
 	return err == nil
 }
 
-// Serialize marshals the accumulator to a hex string
-func (a *Accumulator) Serialize() (string, error) {
-	bz, err := a.Accumulator.MarshalBinary()
+// encoodeProperty encodes the accumulator to a base58 string
+func encodeProperty(acc *Accumulator) (Property, error) {
+	bz, err := acc.MarshalBinary()
 	if err != nil {
 		return "", err
 	}
-	return hex.EncodeToString(bz), nil
+	return Property(base58.Encode(bz)), nil
 }
 
-// RandomSeed returns a random seed for the BLS scheme
-func RandomSeed() []byte {
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	seed := make([]byte, 32)
-	r.Read(seed)
-	return seed
+// encodeWitness encodes the witness to a base58 string
+func encodeWitness(witness *accumulator.MembershipWitness) (Witness, error) {
+	witBz, err := witness.MarshalBinary()
+	if err != nil {
+		return "", err
+	}
+	return Witness(base58.Encode(witBz)), nil
+}
+
+// decodeProperty decodes the accumulator from a base58 string
+func decodeProperty(prop Property) (*Accumulator, error) {
+	accBz, err := hex.DecodeString(prop.String())
+	if err != nil {
+		return nil, err
+	}
+	e := new(accumulator.Accumulator)
+	err = e.UnmarshalBinary(accBz)
+	if err != nil {
+		return nil, err
+	}
+	return &Accumulator{Accumulator: e}, nil
+}
+
+// decodeWitness decodes the witness from a base58 string
+func decodeWitness(witness Witness) (*accumulator.MembershipWitness, error) {
+	bz, err := base58.Decode(witness.String())
+	if err != nil {
+		return nil, err
+	}
+	mw := new(accumulator.MembershipWitness)
+	err = mw.UnmarshalBinary(bz)
+	if err != nil {
+		return nil, err
+	}
+	return mw, nil
 }

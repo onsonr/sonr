@@ -27,17 +27,12 @@ type vaultStore struct {
 }
 
 // NewController creates a new controller instance.
-func (v vaultStore) NewController() (controller, error) {
+func (v vaultStore) NewController() (Controller, error) {
 	valKs, usrKs, err := generateKSS()
 	if err != nil {
-		return controller{}, err
+		return nil, err
 	}
-	controller := controller{
-		valKS: valKs,
-		usrKS: usrKs,
-	}
-
-	return controller, nil
+	return CreateController(usrKs, valKs)
 }
 
 // formatUserKeyshareDID formats the user keyshare DID
