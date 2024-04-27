@@ -99,18 +99,18 @@ func zkCreateWitness(k *SecretKey, encodedAcc string, value string) (string, err
 }
 
 // VerifyElement verifies an element against the accumulator and public key
-func zkVerifyElement(pk *accumulator.PublicKey, encodedAcc string, witness string) bool {
+func zkVerifyElement(pk *accumulator.PublicKey, encodedAcc string, witness string) (bool, error) {
 	acc, err := decodeAccumulator(encodedAcc)
 	if err != nil {
-		return false
+		return false, err
 	}
 
 	mw, err := decodeWitness(witness)
 	if err != nil {
-		return false
+		return false, err
 	}
 	err = mw.Verify(pk, acc)
-	return err == nil
+	return err == nil, err
 }
 
 // encodeAccumulator encodes the accumulator to a base58 string

@@ -25,8 +25,6 @@ type Controller interface {
 
 // controller is the controller for the DID scheme
 type controller struct {
-	proofKey *accumulator.PublicKey
-
 	usrKS *UserKeyshare
 	valKS *ValidatorKeyshare
 
@@ -163,8 +161,7 @@ func (c *controller) Validate(key string, w string) (bool, error) {
 	if err != nil {
 		return false, errors.Join(err, fmt.Errorf("failed to get public key"))
 	}
-	return zkVerifyElement(pub, acc, w), nil
-
+	return zkVerifyElement(pub, acc, w)
 }
 
 // Verify verifies the signature
@@ -179,7 +176,8 @@ func (c *controller) Verify(msg, sig []byte) bool {
 
 // DeriveSecretKey derives the secret key from the keyshares
 func DeriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
-	seed, err := c.Sign([]byte(propertyKey))
+	propHash := types.Blake3Hash([]byte(propertyKey))
+	seed, err := c.Sign(propHash)
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get anon seed"))
 	}
