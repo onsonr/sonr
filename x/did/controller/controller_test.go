@@ -5,20 +5,20 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/x/did/keeper"
+	"github.com/di-dao/core/x/did/controller"
 	"github.com/di-dao/core/x/did/types"
 )
 
 func TestControllerSigning(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := keeper.GenerateKSS()
+	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
 
 	pubKey := kss.PublicKey()
 	require.NotNil(t, pubKey)
 
 	// Create controller
-	ctrl, err := keeper.CreateController(kss)
+	ctrl, err := controller.CreateController(kss)
 	require.NoError(t, err)
 	require.NotNil(t, ctrl)
 
@@ -38,7 +38,7 @@ func TestControllerSigning(t *testing.T) {
 
 func TestAddressConversion(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := keeper.GenerateKSS()
+	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
 
 	pub := kss.PublicKey()
@@ -64,9 +64,9 @@ func TestAddressConversion(t *testing.T) {
 }
 
 func TestLinkUnlinkProperty(t *testing.T) {
-	kss, err := keeper.GenerateKSS()
+	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
-	ctrl, err := keeper.CreateController(kss)
+	ctrl, err := controller.CreateController(kss)
 	require.NoError(t, err)
 
 	// Link a property
@@ -90,9 +90,9 @@ func TestLinkUnlinkProperty(t *testing.T) {
 }
 
 func TestUnlinkNonExistentProperty(t *testing.T) {
-	kss, err := keeper.GenerateKSS()
+	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
-	ctrl, err := keeper.CreateController(kss)
+	ctrl, err := controller.CreateController(kss)
 	require.NoError(t, err)
 
 	// Unlink a non-existent property

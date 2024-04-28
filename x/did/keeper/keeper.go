@@ -11,14 +11,9 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/di-dao/core/api/did/v1"
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/core/protocol"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
+	"github.com/di-dao/core/x/did/controller"
 	"github.com/di-dao/core/x/did/types"
 )
-
-// vault is the global vault instance
-var vault vaultStore
 
 // defaultCurve is the default curve used for key generation
 
@@ -69,27 +64,12 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 
 // GenerateKeyshares generates a new keyshare set. First step
 func (k Keeper) GenerateKeyshares(ctx sdk.Context) (*types.KeyshareSet, error) {
-	defaultCurve := curves.P256()
-	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
-	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
-	err := runMpcProtocol(bob, alice)
-	if err != nil {
-		return nil, err
-	}
-	aliceRes, err := alice.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	bobRes, err := bob.Result(protocol.Version1)
-	if err != nil {
-		return nil, err
-	}
-	return types.NewKeyshareSet(bobRes, aliceRes), nil
+	return controller.GenerateKSS()
 }
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
 func (k Keeper) LinkController(ctx sdk.Context, kss *types.KeyshareSet, identifier string) ([]byte, error) {
-	c, err := CreateController(kss)
+	c, err := controller.CreateController(kss)
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +77,6 @@ func (k Keeper) LinkController(ctx sdk.Context, kss *types.KeyshareSet, identifi
 }
 
 // AssignVault assigns a vault to a controller. Third step
-func (k Keeper) AssignVault(ctx sdk.Context, c Controller) error {
+func (k Keeper) AssignVault(ctx sdk.Context, c controller.Controller) error {
 	return nil
 }
