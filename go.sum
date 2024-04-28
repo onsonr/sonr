@@ -1708,8 +1708,8 @@ github.com/ipfs/go-unixfsnode v1.9.0 h1:ubEhQhr22sPAKO2DNsyVBW7YB/zA8Zkif25aBvz8
 github.com/ipfs/go-unixfsnode v1.9.0/go.mod h1:HxRu9HYHOjK6HUqFBAi++7DVoWAHn0o4v/nZ/VA+0g8=
 github.com/ipfs/go-verifcid v0.0.2 h1:XPnUv0XmdH+ZIhLGKg6U2vaPaRDXb9urMyNVCE7uvTs=
 github.com/ipfs/go-verifcid v0.0.2/go.mod h1:40cD9x1y4OWnFXbLNJYRe7MpNvWlMn3LZAG5Wb4xnPU=
-github.com/ipfs/kubo v0.28.0 h1:JmIunSz43G7BSrZZbSWVA5pJZNR1No3pFA8DiY2UOEA=
-github.com/ipfs/kubo v0.28.0/go.mod h1:QQ0V6ENy2GQ6zbX9ISUhAayojtb36TTw5e7iT06WPDA=
+github.com/ipfs/kubo v0.27.0 h1:rVWKI9VGYt8Eyr/4vflUbT6OrOgOWG0ddHeEAajKClA=
+github.com/ipfs/kubo v0.27.0/go.mod h1:7HMQUnD+S1q9P3G7iV3VfwHzukJ/PeUm4geYYDC+hx0=
 github.com/ipld/go-car/v2 v2.13.1 h1:KnlrKvEPEzr5IZHKTXLAEub+tPrzeAFQVRlSQvuxBO4=
 github.com/ipld/go-car/v2 v2.13.1/go.mod h1:QkdjjFNGit2GIkpQ953KBwowuoukoM75nP/JI1iDJdo=
 github.com/ipld/go-codec-dagpb v1.6.0 h1:9nYazfyu9B1p3NAgfVdpRco3Fs2nFC72DqVsMj6rOcc=

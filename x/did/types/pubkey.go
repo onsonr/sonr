@@ -2,6 +2,7 @@ package types
 
 import (
 	"bytes"
+	"encoding/hex"
 	fmt "fmt"
 	"math/big"
 
@@ -19,6 +20,10 @@ func (k *PublicKey) Address() cryptotypes.Address {
 
 func (k *PublicKey) Bytes() []byte {
 	return k.Key
+}
+
+func (k *PublicKey) String() string {
+	return hex.EncodeToString(k.Key)
 }
 
 func (k *PublicKey) VerifySignature(msg []byte, sig []byte) bool {

@@ -1,6 +1,6 @@
 module github.com/di-dao/core
 
-go 1.22.2
+go 1.21
 
 // overrides
 replace (
@@ -62,7 +62,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/gtank/merlin v0.1.1
-	github.com/ipfs/kubo v0.28.0
+	github.com/ipfs/kubo v0.27.0
 	github.com/mr-tron/base58 v1.2.0
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/cast v1.6.0

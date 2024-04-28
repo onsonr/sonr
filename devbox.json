@@ -1,19 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.10.5/.schema/devbox.schema.json",
   "packages": [
-    "go@latest",
     "buf@latest",
     "docker@latest",
-    "docker-compose@latest"
+    "docker-compose@latest",
+    "go_1_21@latest"
   ],
   "shell": {
-    "init_hook": [
-      "echo 'Welcome to devbox!' > /dev/null"
-    ],
+    "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],
     "scripts": {
-      "test": [
-        "echo \"Error: no test specified\" && exit 1"
-      ]
+      "test": ["echo \"Error: no test specified\" && exit 1"]
     }
   }
 }

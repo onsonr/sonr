@@ -32,10 +32,11 @@ func DefaultParams() Params {
 			"email",
 			"phone",
 		},
-		DefaultCurve:         "P-256",
-		AssertionRewardRate:  0.35,
-		EncryptionRewardRate: 0.5,
-		ReferralRewardRate:   0.15,
+		DefaultCurve:             "P-256",
+		AssertionRewardRate:      0.35,
+		EncryptionRewardRate:     0.5,
+		ReferralRewardRate:       0.15,
+		WhitelistedVerifications: []string{},
 	}
 }
 
