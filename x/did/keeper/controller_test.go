@@ -48,10 +48,14 @@ func TestAddressConversion(t *testing.T) {
 	btcAddr, err := types.CreateBitcoinAddress(pub)
 	require.NoError(t, err)
 	t.Logf("Bitcoin address: %s", btcAddr)
+	err = btcAddr.Validate()
+	require.NoError(t, err)
 
 	ethAddr, err := types.CreateEthereumAddress(pub)
 	require.NoError(t, err)
 	t.Logf("Ethereum address: %s", ethAddr)
+	err = ethAddr.Validate()
+	require.NoError(t, err)
 
 	// Test address validation
 	snrAddr, err := types.CreateSonrAddress(pub)

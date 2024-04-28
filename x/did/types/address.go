@@ -3,8 +3,8 @@ package types
 import (
 	"regexp"
 
-	"github.com/cosmos/btcutil/bech32"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/cosmos/cosmos-sdk/types/bech32"
+	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 // BitcoinAddress is a type for the BTC address
@@ -81,7 +81,7 @@ func (a SonrAddress) String() string {
 
 // CreateBitcoinAddress returns the BTC address from the public key using bech32 encoding
 func CreateBitcoinAddress(publicKey *PublicKey) (BitcoinAddress, error) {
-	addr, err := bech32.Encode("bc", publicKey.Bytes())
+	addr, err := bech32.ConvertAndEncode("bc", publicKey.Address().Bytes())
 	if err != nil {
 		return "", err
 	}
@@ -90,17 +90,13 @@ func CreateBitcoinAddress(publicKey *PublicKey) (BitcoinAddress, error) {
 
 // CreateEthereumAddress returns the ETH address from the public key using keccak256
 func CreateEthereumAddress(publicKey *PublicKey) (EthereumAddress, error) {
-	ecdsaPub, err := crypto.DecompressPubkey(publicKey.Bytes())
-	if err != nil {
-		return "", err
-	}
-	addr := crypto.PubkeyToAddress(*ecdsaPub).Hex()
-	return EthereumAddress(addr), nil
+	addr := ethcommon.BytesToAddress(publicKey.Address().Bytes())
+	return EthereumAddress(addr.String()), nil
 }
 
 // CreateSonrAddress returns the IDX address from the public key
 func CreateSonrAddress(publicKey *PublicKey) (SonrAddress, error) {
-	addr, err := bech32.Encode("idx", publicKey.Bytes())
+	addr, err := bech32.ConvertAndEncode("idx", publicKey.Address().Bytes())
 	if err != nil {
 		return "", err
 	}
