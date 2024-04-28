@@ -1,4 +1,4 @@
-package keeper
+package types
 
 import (
 	"golang.org/x/crypto/sha3"
@@ -7,7 +7,6 @@ import (
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
-	"github.com/di-dao/core/x/did/types"
 )
 
 // UserKSOutput is the protocol result for the user keyshare output
@@ -21,9 +20,8 @@ type UserRefreshFunc = *dklsv1.BobRefresh
 
 // UserKeyshare is the protocol result for the user keyshare
 type UserKeyshare struct {
-	Keyshare
 	usrKSS *protocol.Message
-	pubKey *types.PublicKey
+	pubKey *PublicKey
 }
 
 // createUserKeyshare creates a new UserKeyshare and stores it into IPFS
@@ -54,12 +52,12 @@ func (u *UserKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (u *UserKeyshare) PublicKey() *types.PublicKey {
+func (u *UserKeyshare) PublicKey() *PublicKey {
 	bobOut, err := dklsv1.DecodeBobDkgResult(u.usrKSS)
 	if err != nil {
 		panic(err)
 	}
-	pub := &types.PublicKey{
+	pub := &PublicKey{
 		Key:     bobOut.PublicKey.ToAffineUncompressed(),
 		KeyType: "ecdsa-secp256k1",
 	}

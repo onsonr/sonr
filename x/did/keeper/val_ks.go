@@ -63,9 +63,5 @@ func (u *ValidatorKeyshare) PublicKey() *types.PublicKey {
 		Key:     aliceOut.PublicKey.ToAffineUncompressed(),
 		KeyType: "ecdsa-secp256k1",
 	}
-	pub, err = setValidatorKeyshareDID(pub)
-	if err != nil {
-		panic(err)
-	}
 	return pub
 }

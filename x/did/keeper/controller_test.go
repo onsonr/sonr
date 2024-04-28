@@ -24,8 +24,8 @@ func TestController(t *testing.T) {
 	sig, err := ctrl.Sign(msg)
 	require.NoError(t, err)
 	require.NotEmpty(t, sig)
-
-	valid := ctrl.Verify(msg, sig)
+	pubKey := ctrl.PublicKey()
+	valid := pubKey.VerifySignature(msg, sig)
 	require.True(t, valid)
 
 	// Test refreshing the keyshares
@@ -33,7 +33,7 @@ func TestController(t *testing.T) {
 	require.NoError(t, err)
 
 	// Test getting the public key
-	pubKey := ctrl.PublicKey()
+
 	require.NotNil(t, pubKey)
 	require.IsType(t, &types.PublicKey{}, pubKey)
 }

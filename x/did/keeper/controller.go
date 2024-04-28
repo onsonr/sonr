@@ -20,7 +20,6 @@ type Controller interface {
 	Sign(msg []byte) ([]byte, error)
 	Unlink(key, value string) (string, error)
 	Validate(key string, w string) (bool, error)
-	Verify(msg, sig []byte) bool
 }
 
 // controller is the controller for the DID scheme
@@ -65,10 +64,7 @@ func (c *controller) Link(key, value string) (string, error) {
 
 // PublicKey returns the public key for the shares
 func (c *controller) PublicKey() *types.PublicKey {
-	pub, err := c.usrKS.PublicKey()
-	if err != nil {
-		panic(err)
-	}
+	pub := c.valKS.PublicKey()
 	return pub
 }
 
@@ -162,12 +158,6 @@ func (c *controller) Validate(key string, w string) (bool, error) {
 		return false, errors.Join(err, fmt.Errorf("failed to get public key"))
 	}
 	return zkVerifyElement(pub, acc, w)
-}
-
-// Verify verifies the signature
-func (c *controller) Verify(msg, sig []byte) bool {
-	pub := c.PublicKey()
-	return pub.VerifySignature(sig, msg)
 }
 
 //

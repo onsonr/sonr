@@ -7,26 +7,26 @@ import (
 	"github.com/ethereum/go-ethereum/crypto"
 )
 
-// BTCAddress is a type for the BTC address
-type BTCAddress string
+// BitcoinAddress is a type for the BTC address
+type BitcoinAddress string
 
 // Bytes returns the bytes representation of the BTC address
-func (a BTCAddress) Bytes() []byte {
+func (a BitcoinAddress) Bytes() []byte {
 	return []byte(a)
 }
 
 // DID returns the DID representation of the BTC address given a method
-func (a BTCAddress) DID(method string) string {
+func (a BitcoinAddress) DID(method string) string {
 	return "did:" + method + ":" + a.String()
 }
 
 // String returns the string representation of the BTC address
-func (a BTCAddress) String() string {
+func (a BitcoinAddress) String() string {
 	return string(a)
 }
 
 // Validate returns an error if the BTC address is invalid
-func (a BTCAddress) Validate() error {
+func (a BitcoinAddress) Validate() error {
 	re := regexp.MustCompile(`\b(bc(0([ac-hj-np-z02-9]{39}|[ac-hj-np-z02-9]{59})|1[ac-hj-np-z02-9]{8,87})|[13][a-km-zA-HJ-NP-Z1-9]{25,35})\b`)
 	if !re.MatchString(string(a)) {
 		return ErrInvalidBTCAddressFormat
@@ -34,26 +34,26 @@ func (a BTCAddress) Validate() error {
 	return nil
 }
 
-// ETHAddress is a type for the ETH address
-type ETHAddress string
+// EthereumAddress is a type for the ETH address
+type EthereumAddress string
 
 // Bytes returns the bytes representation of the ETH address
-func (a ETHAddress) Bytes() []byte {
+func (a EthereumAddress) Bytes() []byte {
 	return []byte(a)
 }
 
 // DID returns the DID representation of the ETH address given a method
-func (a ETHAddress) DID(method string) string {
+func (a EthereumAddress) DID(method string) string {
 	return "did:" + method + ":" + a.String()
 }
 
 // String returns the string representation of the ETH address
-func (a ETHAddress) String() string {
+func (a EthereumAddress) String() string {
 	return string(a)
 }
 
 // Validate returns an error if the ETH address is invalid
-func (a ETHAddress) Validate() error {
+func (a EthereumAddress) Validate() error {
 	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
 	if !re.MatchString(string(a)) {
 		return ErrInvalidETHAddressFormat
@@ -61,48 +61,48 @@ func (a ETHAddress) Validate() error {
 	return nil
 }
 
-// IDXAddress is a type for the IDX address
-type IDXAddress string
+// SonrAddress is a type for the IDX address
+type SonrAddress string
 
 // Bytes returns the bytes representation of the IDX address
-func (a IDXAddress) Bytes() []byte {
+func (a SonrAddress) Bytes() []byte {
 	return []byte(a)
 }
 
 // DID returns the DID representation of the IDX address given a method
-func (a IDXAddress) DID(method string) string {
+func (a SonrAddress) DID(method string) string {
 	return "did:" + method + ":" + a.String()
 }
 
 // String returns the string representation of the IDX address
-func (a IDXAddress) String() string {
+func (a SonrAddress) String() string {
 	return string(a)
 }
 
 // GetBTCAddress returns the BTC address from the public key using bech32 encoding
-func GetBTCAddress(publicKey *PublicKey) (BTCAddress, error) {
+func GetBTCAddress(publicKey *PublicKey) (BitcoinAddress, error) {
 	addr, err := bech32.Encode("bc", publicKey.Bytes())
 	if err != nil {
 		return "", err
 	}
-	return BTCAddress(addr), nil
+	return BitcoinAddress(addr), nil
 }
 
 // GetETHAddress returns the ETH address from the public key using keccak256
-func GetETHAddress(publicKey *PublicKey) (ETHAddress, error) {
+func GetETHAddress(publicKey *PublicKey) (EthereumAddress, error) {
 	ecdsaPub, err := crypto.DecompressPubkey(publicKey.Bytes())
 	if err != nil {
 		return "", err
 	}
 	addr := crypto.PubkeyToAddress(*ecdsaPub).Hex()
-	return ETHAddress(addr), nil
+	return EthereumAddress(addr), nil
 }
 
 // GetIDXAddress returns the IDX address from the public key
-func GetIDXAddress(publicKey *PublicKey) (IDXAddress, error) {
+func GetIDXAddress(publicKey *PublicKey) (SonrAddress, error) {
 	addr, err := bech32.Encode("idx", publicKey.Bytes())
 	if err != nil {
 		return "", err
 	}
-	return IDXAddress(addr), nil
+	return SonrAddress(addr), nil
 }

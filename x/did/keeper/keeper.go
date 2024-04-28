@@ -11,6 +11,9 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/di-dao/core/api/did/v1"
+	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/x/did/types"
 )
 
@@ -64,9 +67,26 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 	return k
 }
 
-// GenerateKSS generates a new keyshare set. First step
-func (k Keeper) GenerateKSS(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
-	return GenerateKSS()
+// GenerateKeyshares generates a new keyshare set. First step
+func (k Keeper) GenerateKeyshares(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
+	defaultCurve := curves.P256()
+	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
+	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
+	err := StartKsProtocol(bob, alice)
+	if err != nil {
+		return nil, nil, err
+	}
+	aliceRes, err := alice.Result(protocol.Version1)
+	if err != nil {
+		return nil, nil, err
+	}
+	bobRes, err := bob.Result(protocol.Version1)
+	if err != nil {
+		return nil, nil, err
+	}
+	valKs := createValidatorKeyshare(aliceRes)
+	usrKs := createUserKeyshare(bobRes)
+	return valKs, usrKs, nil
 }
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
