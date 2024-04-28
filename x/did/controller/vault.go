@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"errors"
+	"fmt"
+
 	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
@@ -54,4 +57,39 @@ func GenerateKSS() (types.KeyshareSet, error) {
 		return nil, err
 	}
 	return types.NewKeyshareSet(aliceRes, bobRes), nil
+}
+
+// runMpcProtocol runs the keyshare protocol between two parties
+func runMpcProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) error {
+	var (
+		message *protocol.Message
+		aErr    error
+		bErr    error
+	)
+
+	for aErr != protocol.ErrProtocolFinished || bErr != protocol.ErrProtocolFinished {
+		// Crank each protocol forward one iteration
+		message, bErr = firstParty.Next(message)
+		if bErr != nil && bErr != protocol.ErrProtocolFinished {
+			return errors.Join(fmt.Errorf("validator failed to process mpc message"), bErr)
+		}
+
+		message, aErr = secondParty.Next(message)
+		if aErr != nil && aErr != protocol.ErrProtocolFinished {
+			return errors.Join(fmt.Errorf("user failed to process mpc message"), aErr)
+		}
+	}
+	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
+		return nil
+	}
+	if aErr != nil && bErr != nil {
+		return fmt.Errorf("both parties failed: %v, %v", aErr, bErr)
+	}
+	if aErr != nil {
+		return fmt.Errorf("validator keyshare failed: %v", aErr)
+	}
+	if bErr != nil {
+		return fmt.Errorf("user keyshare failed: %v", bErr)
+	}
+	return nil
 }

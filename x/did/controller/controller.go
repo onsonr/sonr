@@ -39,6 +39,7 @@ func Create(kss types.KeyshareSet) (Controller, error) {
 	}
 	return c, nil
 }
+
 func (c *controller) Set(key string, value string) ([]byte, error) {
 	sk, err := c.deriveSecretKey(key)
 	if err != nil {
@@ -195,38 +196,3 @@ func (c *controller) setAccumulator(key string, acc *accumulator.Accumulator) er
 //
 // 3. Utility Functions
 //
-
-// runMpcProtocol runs the keyshare protocol between two parties
-func runMpcProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) error {
-	var (
-		message *protocol.Message
-		aErr    error
-		bErr    error
-	)
-
-	for aErr != protocol.ErrProtocolFinished || bErr != protocol.ErrProtocolFinished {
-		// Crank each protocol forward one iteration
-		message, bErr = firstParty.Next(message)
-		if bErr != nil && bErr != protocol.ErrProtocolFinished {
-			return errors.Join(fmt.Errorf("validator failed to process mpc message"), bErr)
-		}
-
-		message, aErr = secondParty.Next(message)
-		if aErr != nil && aErr != protocol.ErrProtocolFinished {
-			return errors.Join(fmt.Errorf("user failed to process mpc message"), aErr)
-		}
-	}
-	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
-		return nil
-	}
-	if aErr != nil && bErr != nil {
-		return fmt.Errorf("both parties failed: %v, %v", aErr, bErr)
-	}
-	if aErr != nil {
-		return fmt.Errorf("validator keyshare failed: %v", aErr)
-	}
-	if bErr != nil {
-		return fmt.Errorf("user keyshare failed: %v", bErr)
-	}
-	return nil
-}
