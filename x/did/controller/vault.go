@@ -31,16 +31,16 @@ type vaultStore struct {
 }
 
 // NewController creates a new controller instance.
-func (v vaultStore) NewController() (Controller, error) {
-	kss, err := GenerateKSS()
+func (v vaultStore) NewController() (types.ControllerI, error) {
+	kss, err := GenKSS()
 	if err != nil {
 		return nil, err
 	}
 	return Create(kss)
 }
 
-// GenerateKSS generates both keyshares
-func GenerateKSS() (types.KeyshareSet, error) {
+// GenKSS generates both keyshares
+func GenKSS() (types.KeyshareSet, error) {
 	defaultCurve := curves.P256()
 	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)

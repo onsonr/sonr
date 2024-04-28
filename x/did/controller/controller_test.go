@@ -11,7 +11,7 @@ import (
 
 func TestControllerSigning(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := controller.GenerateKSS()
+	kss, err := controller.GenKSS()
 	require.NoError(t, err)
 
 	pubKey := kss.PublicKey()
@@ -38,7 +38,7 @@ func TestControllerSigning(t *testing.T) {
 
 func TestAddressConversion(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := controller.GenerateKSS()
+	kss, err := controller.GenKSS()
 	require.NoError(t, err)
 
 	pub := kss.PublicKey()
@@ -64,7 +64,7 @@ func TestAddressConversion(t *testing.T) {
 }
 
 func TestLinkUnlinkProperty(t *testing.T) {
-	kss, err := controller.GenerateKSS()
+	kss, err := controller.GenKSS()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
@@ -90,7 +90,7 @@ func TestLinkUnlinkProperty(t *testing.T) {
 }
 
 func TestUnlinkNonExistentProperty(t *testing.T) {
-	kss, err := controller.GenerateKSS()
+	kss, err := controller.GenKSS()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)

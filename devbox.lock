@@ -192,6 +192,54 @@
           "store_path": "/nix/store/r9qdln83ffwmhjrl20byxxxav645mb5b-go-1.21.9"
         }
       }
+    },
+    "helix@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#helix",
+      "source": "devbox-search",
+      "version": "24.03",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/k0zfvywydqhysj817dgqpy5p8w6zlipx-helix-24.03",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/k0zfvywydqhysj817dgqpy5p8w6zlipx-helix-24.03"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/33aiincibancclckdwlkcvvaqwcg4br0-helix-24.03",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/33aiincibancclckdwlkcvvaqwcg4br0-helix-24.03"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/yds6y8z9pwfrbvdb80p9cqwkdbs21y51-helix-24.03",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/yds6y8z9pwfrbvdb80p9cqwkdbs21y51-helix-24.03"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/rzb85bzmy5g43bkgkyxlf67dxpkx7bb3-helix-24.03",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/rzb85bzmy5g43bkgkyxlf67dxpkx7bb3-helix-24.03"
+        }
+      }
     }
   }
 }

@@ -4,7 +4,8 @@
     "buf@latest",
     "docker@latest",
     "docker-compose@latest",
-    "go_1_21@latest"
+    "go_1_21@latest",
+    "helix@latest"
   ],
   "shell": {
     "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],

@@ -12,16 +12,6 @@ import (
 	"github.com/di-dao/core/x/did/types"
 )
 
-// Controller is the interface for the controller
-type Controller interface {
-	Set(key, value string) ([]byte, error)
-	PublicKey() *types.PublicKey
-	Refresh() error
-	Sign(msg []byte) ([]byte, error)
-	Remove(key, value string) error
-	Check(key string, w []byte) bool
-}
-
 // controller is the controller for the DID scheme
 type controller struct {
 	usrKs      types.UserKeyshare
@@ -31,7 +21,7 @@ type controller struct {
 }
 
 // Create creates a new controller
-func Create(kss types.KeyshareSet) (Controller, error) {
+func Create(kss types.KeyshareSet) (types.ControllerI, error) {
 	c := &controller{
 		properties: make(map[string]*accumulator.Accumulator),
 		usrKs:      kss.Usr(),
