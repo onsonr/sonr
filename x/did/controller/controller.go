@@ -31,11 +31,11 @@ type controller struct {
 }
 
 // CreateController creates a new controller
-func CreateController(kss *types.KeyshareSet) (Controller, error) {
+func CreateController(kss types.KeyshareSet) (Controller, error) {
 	c := &controller{
 		properties: make(map[string]*accumulator.Accumulator),
-		usrKs:      kss.Usr,
-		valKs:      kss.Val,
+		usrKs:      kss.Usr(),
+		valKs:      kss.Val(),
 	}
 	return c, nil
 }
@@ -85,8 +85,8 @@ func (c *controller) Refresh() error {
 		return errors.Join(fmt.Errorf("error Getting User Result"), err)
 	}
 	kss := types.NewKeyshareSet(newAlice, newBob)
-	c.valKs = kss.Val
-	c.usrKs = kss.Usr
+	c.valKs = kss.Val()
+	c.usrKs = kss.Usr()
 	return nil
 }
 

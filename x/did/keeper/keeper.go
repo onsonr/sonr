@@ -63,12 +63,12 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 }
 
 // GenerateKeyshares generates a new keyshare set. First step
-func (k Keeper) GenerateKeyshares(ctx sdk.Context) (*types.KeyshareSet, error) {
+func (k Keeper) GenerateKeyshares(ctx sdk.Context) (types.KeyshareSet, error) {
 	return controller.GenerateKSS()
 }
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
-func (k Keeper) LinkController(ctx sdk.Context, kss *types.KeyshareSet, identifier string) ([]byte, error) {
+func (k Keeper) LinkController(ctx sdk.Context, kss types.KeyshareSet, identifier string) ([]byte, error) {
 	c, err := controller.CreateController(kss)
 	if err != nil {
 		return nil, err

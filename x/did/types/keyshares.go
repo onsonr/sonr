@@ -20,15 +20,31 @@ type ValidatorSignFunc = *dklsv1.AliceSign
 // ValidatorRefreshFunc is the type for the validator refresh function
 type ValidatorRefreshFunc = *dklsv1.AliceRefresh
 
+type KeyshareSet interface {
+	Val() ValidatorKeyshare
+	Usr() UserKeyshare
+	PublicKey() *PublicKey
+}
+
 // KeyshareSet is the set of keyshares for the protocol
-type KeyshareSet struct {
-	Val ValidatorKeyshare
-	Usr UserKeyshare
+type keyshareSet struct {
+	val ValidatorKeyshare
+	usr UserKeyshare
+}
+
+// Usr returns the user keyshare
+func (ks *keyshareSet) Usr() UserKeyshare {
+	return ks.usr
+}
+
+// Val returns the validator keyshare
+func (ks *keyshareSet) Val() ValidatorKeyshare {
+	return ks.val
 }
 
 // PublicKey returns the public key for the keyshare set
-func (ks *KeyshareSet) PublicKey() *PublicKey {
-	return ks.Val.PublicKey()
+func (ks *keyshareSet) PublicKey() *PublicKey {
+	return ks.val.PublicKey()
 }
 
 // UserKeyshare is the interface for the user keyshare
@@ -46,10 +62,10 @@ type ValidatorKeyshare interface {
 }
 
 // NewKeyshareSet creates a new KeyshareSet
-func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) *KeyshareSet {
-	return &KeyshareSet{
-		Val: createValidatorKeyshare(aliceResult),
-		Usr: createUserKeyshare(bobResult),
+func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) KeyshareSet {
+	return &keyshareSet{
+		val: createValidatorKeyshare(aliceResult),
+		usr: createUserKeyshare(bobResult),
 	}
 }
 
