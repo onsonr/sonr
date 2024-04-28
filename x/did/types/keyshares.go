@@ -26,6 +26,11 @@ type KeyshareSet struct {
 	Usr UserKeyshare
 }
 
+// PublicKey returns the public key for the keyshare set
+func (ks *KeyshareSet) PublicKey() *PublicKey {
+	return ks.Val.PublicKey()
+}
+
 // UserKeyshare is the interface for the user keyshare
 type UserKeyshare interface {
 	GetSignFunc(msg []byte) (UserSignFunc, error)

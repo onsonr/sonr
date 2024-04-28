@@ -14,6 +14,9 @@ func TestController(t *testing.T) {
 	kss, err := keeper.GenerateKSS()
 	require.NoError(t, err)
 
+	pubKey := kss.PublicKey()
+	require.NotNil(t, pubKey)
+
 	// Create controller
 	ctrl, err := keeper.CreateController(kss)
 	require.NoError(t, err)
@@ -24,7 +27,7 @@ func TestController(t *testing.T) {
 	sig, err := ctrl.Sign(msg)
 	require.NoError(t, err)
 	require.NotEmpty(t, sig)
-	pubKey := ctrl.PublicKey()
+
 	valid := pubKey.VerifySignature(msg, sig)
 	require.True(t, valid)
 
