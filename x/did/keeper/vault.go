@@ -1,7 +1,9 @@
 package keeper
 
 import (
+	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/pkg/ipfs"
 	"github.com/di-dao/core/x/did/types"
 )
@@ -28,29 +30,29 @@ type vaultStore struct {
 
 // NewController creates a new controller instance.
 func (v vaultStore) NewController() (Controller, error) {
-	valKs, usrKs, err := GenerateKSS()
+	kss, err := GenerateKSS()
 	if err != nil {
 		return nil, err
 	}
-	return CreateController(usrKs, valKs)
+	return CreateController(kss)
 }
 
-// formatUserKeyshareDID formats the user keyshare DID
-func setUserKeyshareDID(pub *types.PublicKey) (*types.PublicKey, error) {
-	addr, err := types.GetIDXAddress(pub)
+// GenerateKSS generates both keyshares
+func GenerateKSS() (*types.KeyshareSet, error) {
+	defaultCurve := curves.P256()
+	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
+	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
+	err := StartKsProtocol(bob, alice)
 	if err != nil {
 		return nil, err
 	}
-	pub.Did = addr.DID("ipns")
-	return pub, nil
-}
-
-// formatValidatorKeyshareDID formats the validator keyshare DID
-func setValidatorKeyshareDID(pub *types.PublicKey) (*types.PublicKey, error) {
-	addr, err := types.GetIDXAddress(pub)
+	aliceRes, err := alice.Result(protocol.Version1)
 	if err != nil {
 		return nil, err
 	}
-	pub.Did = addr.DID("vksnr")
-	return pub, nil
+	bobRes, err := bob.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	return types.NewKeyshareSet(aliceRes, bobRes), nil
 }

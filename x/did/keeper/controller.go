@@ -24,18 +24,18 @@ type Controller interface {
 
 // controller is the controller for the DID scheme
 type controller struct {
-	usrKS *UserKeyshare
-	valKS *ValidatorKeyshare
+	usrKs types.UserKeyshare
+	valKs types.ValidatorKeyshare
 
 	properties map[string]string
 }
 
 // CreateController creates a new controller
-func CreateController(uks *UserKeyshare, vks *ValidatorKeyshare) (Controller, error) {
+func CreateController(kss *types.KeyshareSet) (Controller, error) {
 	c := &controller{
 		properties: make(map[string]string),
-		usrKS:      uks,
-		valKS:      vks,
+		usrKs:      kss.Usr,
+		valKs:      kss.Val,
 	}
 	return c, nil
 }
@@ -64,17 +64,17 @@ func (c *controller) Link(key, value string) (string, error) {
 
 // PublicKey returns the public key for the shares
 func (c *controller) PublicKey() *types.PublicKey {
-	pub := c.valKS.PublicKey()
+	pub := c.valKs.PublicKey()
 	return pub
 }
 
 // Refresh refreshes the keyshares
 func (c *controller) Refresh() error {
-	valRefresh, err := c.valKS.GetRefreshFunc()
+	valRefresh, err := c.valKs.GetRefreshFunc()
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("failed to get validator refresh function"))
 	}
-	usrRefresh, err := c.usrKS.GetRefreshFunc()
+	usrRefresh, err := c.usrKs.GetRefreshFunc()
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("failed to get user refresh function"))
 	}
@@ -90,18 +90,19 @@ func (c *controller) Refresh() error {
 	if err != nil {
 		return errors.Join(fmt.Errorf("error Getting User Result"), err)
 	}
-	c.usrKS = createUserKeyshare(newAlice)
-	c.valKS = createValidatorKeyshare(newBob)
+	kss := types.NewKeyshareSet(newAlice, newBob)
+	c.valKs = kss.Val
+	c.usrKs = kss.Usr
 	return nil
 }
 
 // Sign signs the message with the keyshares
 func (c *controller) Sign(msg []byte) ([]byte, error) {
-	valSign, err := c.valKS.GetSignFunc(msg)
+	valSign, err := c.valKs.GetSignFunc(msg)
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get validator sign function"))
 	}
-	usrSign, err := c.usrKS.GetSignFunc(msg)
+	usrSign, err := c.usrKs.GetSignFunc(msg)
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get user sign function"))
 	}
