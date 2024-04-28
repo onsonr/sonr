@@ -52,7 +52,7 @@ func NewRootCmd() *cobra.Command {
 		WithInput(os.Stdin).
 		WithAccountRetriever(authtypes.AccountRetriever{}).
 		WithHomeDir(app.DefaultNodeHome).
-		WithViper("")
+		WithViper("SONR")
 
 	rootCmd := &cobra.Command{
 		Use:           version.AppName,

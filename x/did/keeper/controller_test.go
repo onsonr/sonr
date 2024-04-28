@@ -9,7 +9,7 @@ import (
 	"github.com/di-dao/core/x/did/types"
 )
 
-func TestController(t *testing.T) {
+func TestControllerSigning(t *testing.T) {
 	// Create user and validator keyshares
 	kss, err := keeper.GenerateKSS()
 	require.NoError(t, err)
@@ -34,9 +34,27 @@ func TestController(t *testing.T) {
 	// Test refreshing the keyshares
 	err = ctrl.Refresh()
 	require.NoError(t, err)
+}
 
-	// Test getting the public key
+func TestAddressConversion(t *testing.T) {
+	// Create user and validator keyshares
+	kss, err := keeper.GenerateKSS()
+	require.NoError(t, err)
 
-	require.NotNil(t, pubKey)
-	require.IsType(t, &types.PublicKey{}, pubKey)
+	pub := kss.PublicKey()
+	require.NotNil(t, pub)
+
+	// Test address conversion
+	btcAddr, err := types.CreateBitcoinAddress(pub)
+	require.NoError(t, err)
+	t.Logf("Bitcoin address: %s", btcAddr)
+
+	ethAddr, err := types.CreateEthereumAddress(pub)
+	require.NoError(t, err)
+	t.Logf("Ethereum address: %s", ethAddr)
+
+	// Test address validation
+	snrAddr, err := types.CreateSonrAddress(pub)
+	require.NoError(t, err)
+	t.Logf("Sonr address: %s", snrAddr)
 }

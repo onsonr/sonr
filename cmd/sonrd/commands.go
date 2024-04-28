@@ -91,6 +91,7 @@ func initRootCmd(
 	basicManager module.BasicManager,
 ) {
 	cfg := sdk.GetConfig()
+	cfg.SetCoinType(703)
 	cfg.Seal()
 
 	rootCmd.AddCommand(
