@@ -36,7 +36,6 @@ func DefaultParams() Params {
 		AssertionRewardRate:      0.35,
 		EncryptionRewardRate:     0.5,
 		ReferralRewardRate:       0.15,
-		WhitelistedVerifications: []string{},
 	}
 }
 
