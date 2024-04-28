@@ -14,24 +14,24 @@ import (
 
 // Controller is the interface for the controller
 type Controller interface {
-	Link(key, value string) ([]byte, error)
+	Set(key, value string) ([]byte, error)
 	PublicKey() *types.PublicKey
 	Refresh() error
 	Sign(msg []byte) ([]byte, error)
-	Unlink(key, value string) error
-	Validate(key string, w []byte) bool
+	Remove(key, value string) error
+	Check(key string, w []byte) bool
 }
 
 // controller is the controller for the DID scheme
 type controller struct {
-	usrKs types.UserKeyshare
-	valKs types.ValidatorKeyshare
-
+	usrKs      types.UserKeyshare
+	valKs      types.ValidatorKeyshare
+	props      []*types.Property
 	properties map[string]*accumulator.Accumulator
 }
 
-// CreateController creates a new controller
-func CreateController(kss types.KeyshareSet) (Controller, error) {
+// Create creates a new controller
+func Create(kss types.KeyshareSet) (Controller, error) {
 	c := &controller{
 		properties: make(map[string]*accumulator.Accumulator),
 		usrKs:      kss.Usr(),
@@ -39,7 +39,7 @@ func CreateController(kss types.KeyshareSet) (Controller, error) {
 	}
 	return c, nil
 }
-func (c *controller) Link(key string, value string) ([]byte, error) {
+func (c *controller) Set(key string, value string) ([]byte, error) {
 	sk, err := c.deriveSecretKey(key)
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get secret key"))
@@ -117,7 +117,7 @@ func (c *controller) Sign(msg []byte) ([]byte, error) {
 }
 
 // Unlink unlinks the property from the controller
-func (c *controller) Unlink(key string, value string) error {
+func (c *controller) Remove(key string, value string) error {
 	sk, err := c.deriveSecretKey(key)
 	if err != nil {
 		return err
@@ -144,7 +144,7 @@ func (c *controller) Unlink(key string, value string) error {
 }
 
 // Validate validates the witness
-func (c *controller) Validate(key string, witness []byte) bool {
+func (c *controller) Check(key string, witness []byte) bool {
 	sk, err := c.deriveSecretKey(key)
 	if err != nil {
 		return false

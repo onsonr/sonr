@@ -35,6 +35,9 @@ message Controller {
 
   // Sequence is the sequence of the controller
   uint64 sequence = 6;
+
+  // Properties is the properties of the controller
+  repeated Property properties = 7;
 }
 
 // Params defines the set of module parameters.
@@ -60,6 +63,16 @@ message Params {
 
   // Referral Reward Rate
   double referral_reward_rate = 6;
+}
+
+// Property is the struct that represents a property
+message Property {
+  option (amino.name) = "did/property";
+  // Key is the key of the property
+  string key = 1;
+
+  // Accumulator is the calculated accumulator of the property
+  bytes accumulator = 2;
 }
 
 // PublicKey is the struct that represents a public key

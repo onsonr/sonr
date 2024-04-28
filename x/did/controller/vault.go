@@ -33,7 +33,7 @@ func (v vaultStore) NewController() (Controller, error) {
 	if err != nil {
 		return nil, err
 	}
-	return CreateController(kss)
+	return Create(kss)
 }
 
 // GenerateKSS generates both keyshares

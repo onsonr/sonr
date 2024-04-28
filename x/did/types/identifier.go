@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"strings"
 
+	"github.com/di-dao/core/crypto/accumulator"
 	"lukechampine.com/blake3"
 )
 
@@ -64,4 +65,33 @@ func GetPhoneDID(phone string) (PhoneDID, error) {
 		return "", ErrInvalidPhoneFormat
 	}
 	return PhoneDID("did:phone:" + hex.EncodeToString(Blake3Hash([]byte(phone)))), nil
+}
+
+// ConvertMapToPropertyList converts a map of accumulators to a list of properties
+func ConvertMapToPropertyList(propertyMap map[string]*accumulator.Accumulator) ([]*Property, error) {
+	properties := make([]*Property, 0, len(propertyMap))
+	for k, v := range propertyMap {
+		accBz, err := v.MarshalBinary()
+		if err != nil {
+			return nil, err
+		}
+		properties = append(properties, &Property{
+			Key:         k,
+			Accumulator: accBz,
+		})
+	}
+	return properties, nil
+}
+
+// ConvertPropertyListToMap converts a list of properties to a map of accumulators
+func ConvertPropertyListToMap(properties []*Property) (map[string]*accumulator.Accumulator, error) {
+	propertyMap := make(map[string]*accumulator.Accumulator)
+	for _, p := range properties {
+		acc := &accumulator.Accumulator{}
+		if err := acc.UnmarshalBinary(p.Accumulator); err != nil {
+			return nil, err
+		}
+		propertyMap[p.Key] = acc
+	}
+	return propertyMap, nil
 }

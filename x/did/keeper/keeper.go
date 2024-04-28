@@ -69,11 +69,11 @@ func (k Keeper) GenerateKeyshares(ctx sdk.Context) (types.KeyshareSet, error) {
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
 func (k Keeper) LinkController(ctx sdk.Context, kss types.KeyshareSet, identifier string) ([]byte, error) {
-	c, err := controller.CreateController(kss)
+	c, err := controller.Create(kss)
 	if err != nil {
 		return nil, err
 	}
-	return c.Link("email", identifier)
+	return c.Set("email", identifier)
 }
 
 // AssignVault assigns a vault to a controller. Third step

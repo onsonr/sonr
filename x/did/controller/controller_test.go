@@ -18,7 +18,7 @@ func TestControllerSigning(t *testing.T) {
 	require.NotNil(t, pubKey)
 
 	// Create controller
-	ctrl, err := controller.CreateController(kss)
+	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
 	require.NotNil(t, ctrl)
 
@@ -66,38 +66,38 @@ func TestAddressConversion(t *testing.T) {
 func TestLinkUnlinkProperty(t *testing.T) {
 	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
-	ctrl, err := controller.CreateController(kss)
+	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
 
 	// Link a property
 	propertyKey := "email"
 	propertyValue := "user@example.com"
-	witness, err := ctrl.Link(propertyKey, propertyValue)
+	witness, err := ctrl.Set(propertyKey, propertyValue)
 	require.NoError(t, err)
 	require.NotEmpty(t, witness)
 
 	// Validate the linked property
-	valid := ctrl.Validate(propertyKey, witness)
+	valid := ctrl.Check(propertyKey, witness)
 	require.True(t, valid)
 
 	// Unlink the property
-	err = ctrl.Unlink(propertyKey, propertyValue)
+	err = ctrl.Remove(propertyKey, propertyValue)
 	require.NoError(t, err)
 
 	// Validate the unlinked property
-	valid = ctrl.Validate(propertyKey, witness)
+	valid = ctrl.Check(propertyKey, witness)
 	require.False(t, valid)
 }
 
 func TestUnlinkNonExistentProperty(t *testing.T) {
 	kss, err := controller.GenerateKSS()
 	require.NoError(t, err)
-	ctrl, err := controller.CreateController(kss)
+	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
 
 	// Unlink a non-existent property
 	propertyKey := "non_existent"
 	propertyValue := "value"
-	err = ctrl.Unlink(propertyKey, propertyValue)
+	err = ctrl.Remove(propertyKey, propertyValue)
 	require.Error(t, err)
 }
