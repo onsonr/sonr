@@ -14,12 +14,12 @@ import (
 
 // Controller is the interface for the controller
 type Controller interface {
-	Link(key, value string) (string, error)
+	Link(key, value string) ([]byte, error)
 	PublicKey() *types.PublicKey
 	Refresh() error
 	Sign(msg []byte) ([]byte, error)
-	Unlink(key, value string) (string, error)
-	Validate(key string, w string) (bool, error)
+	Unlink(key, value string) error
+	Validate(key string, w []byte) bool
 }
 
 // controller is the controller for the DID scheme
@@ -27,39 +27,33 @@ type controller struct {
 	usrKs types.UserKeyshare
 	valKs types.ValidatorKeyshare
 
-	properties map[string]string
+	properties map[string]*accumulator.Accumulator
 }
 
 // CreateController creates a new controller
 func CreateController(kss *types.KeyshareSet) (Controller, error) {
 	c := &controller{
-		properties: make(map[string]string),
+		properties: make(map[string]*accumulator.Accumulator),
 		usrKs:      kss.Usr,
 		valKs:      kss.Val,
 	}
 	return c, nil
 }
-
-// Link links a property to the controller
-func (c *controller) Link(key, value string) (string, error) {
-	sk, err := deriveSecretKey(c, key)
+func (c *controller) Link(key string, value string) ([]byte, error) {
+	sk, err := c.deriveSecretKey(key)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
+		return nil, errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
-	acc, err := sk.CreateAccumulator()
+	acc, err := sk.CreateAccumulator(value)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to create accumulator"))
+		return nil, errors.Join(err, fmt.Errorf("failed to create accumulator"))
 	}
-	prop, err := zkAddValues(sk, acc, value)
+	c.setAccumulator(key, acc)
+	witness, err := sk.CreateWitness(acc, value)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to add values"))
+		return nil, errors.Join(err, fmt.Errorf("failed to create witness"))
 	}
-	witness, err := zkCreateWitness(sk, acc, value)
-	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to create witness"))
-	}
-	c.properties[key] = prop
-	return witness, nil
+	return witness.MarshalBinary()
 }
 
 // PublicKey returns the public key for the shares
@@ -123,62 +117,84 @@ func (c *controller) Sign(msg []byte) ([]byte, error) {
 }
 
 // Unlink unlinks the property from the controller
-func (c *controller) Unlink(key string, value string) (string, error) {
-	acc, ok := c.properties[key]
-	if !ok {
-		return "", fmt.Errorf("property not found")
-	}
-	sk, err := deriveSecretKey(c, key)
+func (c *controller) Unlink(key string, value string) error {
+	sk, err := c.deriveSecretKey(key)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
+		return err
 	}
-	prop, err := zkRemoveValues(sk, acc, value)
+	acc, err := c.getAccumulator(key)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to remove values"))
+		return err
 	}
-	witness, err := zkCreateWitness(sk, acc, value)
+	witness, err := sk.CreateWitness(acc, value)
 	if err != nil {
-		return "", errors.Join(err, fmt.Errorf("failed to create witness"))
+		return err
 	}
-	c.properties[key] = prop
-	return witness, nil
+
+	// no need to continue if the property is not linked
+	err = sk.VerifyWitness(acc, witness)
+	if err != nil {
+		return nil
+	}
+	newAcc, err := sk.UpdateAccumulator(acc, []string{}, []string{value})
+	if err != nil {
+		return err
+	}
+	return c.setAccumulator(key, newAcc)
 }
 
-// Validate validates that the property is linked to the controller
-func (c *controller) Validate(key string, w string) (bool, error) {
-	acc, ok := c.properties[key]
-	if !ok {
-		return false, fmt.Errorf("property not found")
-	}
-	sk, err := deriveSecretKey(c, key)
+// Validate validates the witness
+func (c *controller) Validate(key string, witness []byte) bool {
+	sk, err := c.deriveSecretKey(key)
 	if err != nil {
-		return false, errors.Join(err, fmt.Errorf("failed to get secret key"))
+		return false
 	}
-	pub, err := sk.PublicKey()
+	acc, err := c.getAccumulator(key)
 	if err != nil {
-		return false, errors.Join(err, fmt.Errorf("failed to get public key"))
+		return false
 	}
-	return zkVerifyElement(pub, acc, w)
+	wit := &accumulator.MembershipWitness{}
+	err = wit.UnmarshalBinary(witness)
+	if err != nil {
+		return false
+	}
+	return sk.VerifyWitness(acc, wit) == nil
 }
-
-//
-// 2. Utility Functions
-//
 
 // deriveSecretKey derives the secret key from the keyshares
-func deriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
-	propHash := types.Blake3Hash([]byte(propertyKey))
-	seed, err := c.Sign(propHash)
-	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to get anon seed"))
-	}
+func (c *controller) deriveSecretKey(propertyKey string) (*SecretKey, error) {
+	// Get the controller's public key
+	controllerPubKey := c.PublicKey()
+
+	// Concatenate the controller's public key and the property key
+	input := append(controllerPubKey.Bytes(), []byte(propertyKey)...)
+	hash := types.Blake3Hash(input)
+
+	// Use the hash as the seed for the secret key
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
-	key, err := new(accumulator.SecretKey).New(curve, seed[:])
+	key, err := new(accumulator.SecretKey).New(curve, hash[:])
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to create secret key"))
 	}
 	return &SecretKey{SecretKey: key}, nil
 }
+
+func (c *controller) getAccumulator(key string) (*accumulator.Accumulator, error) {
+	acc, ok := c.properties[key]
+	if !ok {
+		return nil, fmt.Errorf("property not found")
+	}
+	return acc, nil
+}
+
+func (c *controller) setAccumulator(key string, acc *accumulator.Accumulator) error {
+	c.properties[key] = acc
+	return nil
+}
+
+//
+// 3. Utility Functions
+//
 
 // runMpcProtocol runs the keyshare protocol between two parties
 func runMpcProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) error {

@@ -62,3 +62,42 @@ func TestAddressConversion(t *testing.T) {
 	require.NoError(t, err)
 	t.Logf("Sonr address: %s", snrAddr)
 }
+
+func TestLinkUnlinkProperty(t *testing.T) {
+	kss, err := keeper.GenerateKSS()
+	require.NoError(t, err)
+	ctrl, err := keeper.CreateController(kss)
+	require.NoError(t, err)
+
+	// Link a property
+	propertyKey := "email"
+	propertyValue := "user@example.com"
+	witness, err := ctrl.Link(propertyKey, propertyValue)
+	require.NoError(t, err)
+	require.NotEmpty(t, witness)
+
+	// Validate the linked property
+	valid := ctrl.Validate(propertyKey, witness)
+	require.True(t, valid)
+
+	// Unlink the property
+	err = ctrl.Unlink(propertyKey, propertyValue)
+	require.NoError(t, err)
+
+	// Validate the unlinked property
+	valid = ctrl.Validate(propertyKey, witness)
+	require.False(t, valid)
+}
+
+func TestUnlinkNonExistentProperty(t *testing.T) {
+	kss, err := keeper.GenerateKSS()
+	require.NoError(t, err)
+	ctrl, err := keeper.CreateController(kss)
+	require.NoError(t, err)
+
+	// Unlink a non-existent property
+	propertyKey := "non_existent"
+	propertyValue := "value"
+	err = ctrl.Unlink(propertyKey, propertyValue)
+	require.Error(t, err)
+}
