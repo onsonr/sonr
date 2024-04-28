@@ -42,7 +42,7 @@ func GenerateKSS() (*types.KeyshareSet, error) {
 	defaultCurve := curves.P256()
 	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
-	err := StartKsProtocol(bob, alice)
+	err := runMpcProtocol(bob, alice)
 	if err != nil {
 		return nil, err
 	}

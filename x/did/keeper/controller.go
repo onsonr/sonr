@@ -42,7 +42,7 @@ func CreateController(kss *types.KeyshareSet) (Controller, error) {
 
 // Link links a property to the controller
 func (c *controller) Link(key, value string) (string, error) {
-	sk, err := DeriveSecretKey(c, key)
+	sk, err := deriveSecretKey(c, key)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
@@ -78,7 +78,7 @@ func (c *controller) Refresh() error {
 	if err != nil {
 		return errors.Join(err, fmt.Errorf("failed to get user refresh function"))
 	}
-	err = StartKsProtocol(valRefresh, usrRefresh)
+	err = runMpcProtocol(valRefresh, usrRefresh)
 	if err != nil {
 		return errors.Join(fmt.Errorf("error Starting Keyshare MPC Protocol"), err)
 	}
@@ -106,7 +106,7 @@ func (c *controller) Sign(msg []byte) ([]byte, error) {
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to get user sign function"))
 	}
-	err = StartKsProtocol(valSign, usrSign)
+	err = runMpcProtocol(valSign, usrSign)
 	if err != nil {
 		return nil, errors.Join(fmt.Errorf("error Starting Keyshare MPC Protocol"), err)
 	}
@@ -128,7 +128,7 @@ func (c *controller) Unlink(key string, value string) (string, error) {
 	if !ok {
 		return "", fmt.Errorf("property not found")
 	}
-	sk, err := DeriveSecretKey(c, key)
+	sk, err := deriveSecretKey(c, key)
 	if err != nil {
 		return "", errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
@@ -150,7 +150,7 @@ func (c *controller) Validate(key string, w string) (bool, error) {
 	if !ok {
 		return false, fmt.Errorf("property not found")
 	}
-	sk, err := DeriveSecretKey(c, key)
+	sk, err := deriveSecretKey(c, key)
 	if err != nil {
 		return false, errors.Join(err, fmt.Errorf("failed to get secret key"))
 	}
@@ -165,8 +165,8 @@ func (c *controller) Validate(key string, w string) (bool, error) {
 // 2. Utility Functions
 //
 
-// DeriveSecretKey derives the secret key from the keyshares
-func DeriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
+// deriveSecretKey derives the secret key from the keyshares
+func deriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
 	propHash := types.Blake3Hash([]byte(propertyKey))
 	seed, err := c.Sign(propHash)
 	if err != nil {
@@ -180,8 +180,8 @@ func DeriveSecretKey(c *controller, propertyKey string) (*SecretKey, error) {
 	return &SecretKey{SecretKey: key}, nil
 }
 
-// StartKsProtocol runs the keyshare protocol between two parties
-func StartKsProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) error {
+// runMpcProtocol runs the keyshare protocol between two parties
+func runMpcProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) error {
 	var (
 		message *protocol.Message
 		aErr    error

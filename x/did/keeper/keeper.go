@@ -68,30 +68,28 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 }
 
 // GenerateKeyshares generates a new keyshare set. First step
-func (k Keeper) GenerateKeyshares(ctx sdk.Context) (*ValidatorKeyshare, *UserKeyshare, error) {
+func (k Keeper) GenerateKeyshares(ctx sdk.Context) (*types.KeyshareSet, error) {
 	defaultCurve := curves.P256()
 	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
-	err := StartKsProtocol(bob, alice)
+	err := runMpcProtocol(bob, alice)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	aliceRes, err := alice.Result(protocol.Version1)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 	bobRes, err := bob.Result(protocol.Version1)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	valKs := createValidatorKeyshare(aliceRes)
-	usrKs := createUserKeyshare(bobRes)
-	return valKs, usrKs, nil
+	return types.NewKeyshareSet(bobRes, aliceRes), nil
 }
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
-func (k Keeper) LinkController(ctx sdk.Context, usrKs *UserKeyshare, valKs *ValidatorKeyshare, identifier string) (string, error) {
-	c, err := CreateController(usrKs, valKs)
+func (k Keeper) LinkController(ctx sdk.Context, kss *types.KeyshareSet, identifier string) (string, error) {
+	c, err := CreateController(kss)
 	if err != nil {
 		return "", err
 	}

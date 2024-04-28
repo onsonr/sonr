@@ -11,11 +11,11 @@ import (
 
 func TestController(t *testing.T) {
 	// Create user and validator keyshares
-	vks, uks, err := keeper.GenerateKSS()
+	kss, err := keeper.GenerateKSS()
 	require.NoError(t, err)
 
 	// Create controller
-	ctrl, err := keeper.CreateController(uks, vks)
+	ctrl, err := keeper.CreateController(kss)
 	require.NoError(t, err)
 	require.NotNil(t, ctrl)
 
