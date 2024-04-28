@@ -8,7 +8,7 @@ permissions:
   packages: write
 
 env:
-  GO_VERSION: 1.21.0
+  GO_VERSION: 1.22.2
   TAR_PATH: /tmp/docker-image.tar
   IMAGE_NAME: docker-image
 
