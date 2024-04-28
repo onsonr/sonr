@@ -51,7 +51,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-	"github.com/cosmos/cosmos-sdk/types/msgservice"
+	// "github.com/cosmos/cosmos-sdk/types/msgservice"
 	signingtype "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -155,7 +155,7 @@ import (
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 )
 
-const appName = "sonr"
+const appName = "core"
 
 var (
 	NodeDir      = ".sonr"
@@ -1019,18 +1019,21 @@ func NewChainApp(
 	// upgrade.
 	app.setPostHandler()
 
-	// At startup, after all modules have been registered, check that all proto
-	// annotations are correct.
-	protoFiles, err := proto.MergedRegistry()
-	if err != nil {
-		panic(err)
-	}
-	err = msgservice.ValidateProtoAnnotations(protoFiles)
-	if err != nil {
-		// Once we switch to using protoreflect-based antehandlers, we might
-		// want to panic here instead of logging a warning.
-		_, _ = fmt.Fprintln(os.Stderr, err.Error())
-	}
+
+	// TODO: Re-enable this check once we have a way to validate proto annotations
+	// > At startup, after all modules have been registered, check that all proto
+	// > annotations are correct.
+	// ---
+	// protoFiles, err := proto.MergedRegistry()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// err = msgservice.ValidateProtoAnnotations(protoFiles)
+	// if err != nil {
+	// 	// Once we switch to using protoreflect-based antehandlers, we might
+	// 	// want to panic here instead of logging a warning.
+	// 	_, _ = fmt.Fprintln(os.Stderr, err.Error())
+	// }
 
 	if loadLatest {
 		if err := app.LoadLatestVersion(); err != nil {
