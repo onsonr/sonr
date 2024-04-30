@@ -27,3 +27,10 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
+
+// InitializeController implements types.MsgServer.
+func (ms msgServer) InitializeController(ctx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("InitializeController is unimplemented")
+	return &types.MsgInitializeControllerResponse{}, nil
+}

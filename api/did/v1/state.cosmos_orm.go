@@ -125,8 +125,6 @@ func NewAssertionTable(db ormtable.Schema) (AssertionTable, error) {
 
 type KeyshareTable interface {
 	Insert(ctx context.Context, keyshare *Keyshare) error
-	InsertReturningId(ctx context.Context, keyshare *Keyshare) (uint64, error)
-	LastInsertedSequence(ctx context.Context) (uint64, error)
 	Update(ctx context.Context, keyshare *Keyshare) error
 	Save(ctx context.Context, keyshare *Keyshare) error
 	Delete(ctx context.Context, keyshare *Keyshare) error
@@ -174,7 +172,7 @@ func (this KeyshareIdIndexKey) WithId(id string) KeyshareIdIndexKey {
 }
 
 type keyshareTable struct {
-	table ormtable.AutoIncrementTable
+	table ormtable.Table
 }
 
 func (this keyshareTable) Insert(ctx context.Context, keyshare *Keyshare) error {
@@ -191,14 +189,6 @@ func (this keyshareTable) Save(ctx context.Context, keyshare *Keyshare) error {
 
 func (this keyshareTable) Delete(ctx context.Context, keyshare *Keyshare) error {
 	return this.table.Delete(ctx, keyshare)
-}
-
-func (this keyshareTable) InsertReturningId(ctx context.Context, keyshare *Keyshare) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, keyshare)
-}
-
-func (this keyshareTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
-	return this.table.LastInsertedSequence(ctx)
 }
 
 func (this keyshareTable) Has(ctx context.Context, id string) (found bool, err error) {
@@ -244,7 +234,7 @@ func NewKeyshareTable(db ormtable.Schema) (KeyshareTable, error) {
 	if table == nil {
 		return nil, ormerrors.TableNotFound.Wrap(string((&Keyshare{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return keyshareTable{table.(ormtable.AutoIncrementTable)}, nil
+	return keyshareTable{table}, nil
 }
 
 type VerificationTable interface {

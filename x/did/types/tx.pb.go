@@ -129,35 +129,164 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+// MsgInitializeController is the message type for the InitializeController RPC.
+type MsgInitializeController struct {
+	// authority is the address of the governance account.
+	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+	// Assertions is the list of assertions to initialize the controller with.
+	Assertions [][]byte `protobuf:"bytes,2,rep,name=assertions,proto3" json:"assertions,omitempty"`
+	// Keyshares is the list of keyshares to initialize the controller with.
+	Keyshares [][]byte `protobuf:"bytes,3,rep,name=keyshares,proto3" json:"keyshares,omitempty"`
+	// Verifications is the list of verifications to initialize the controller with.
+	Verifications [][]byte `protobuf:"bytes,4,rep,name=verifications,proto3" json:"verifications,omitempty"`
+}
+
+func (m *MsgInitializeController) Reset()         { *m = MsgInitializeController{} }
+func (m *MsgInitializeController) String() string { return proto.CompactTextString(m) }
+func (*MsgInitializeController) ProtoMessage()    {}
+func (*MsgInitializeController) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{2}
+}
+func (m *MsgInitializeController) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgInitializeController) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgInitializeController.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgInitializeController) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgInitializeController.Merge(m, src)
+}
+func (m *MsgInitializeController) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgInitializeController) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgInitializeController.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgInitializeController proto.InternalMessageInfo
+
+func (m *MsgInitializeController) GetAuthority() string {
+	if m != nil {
+		return m.Authority
+	}
+	return ""
+}
+
+func (m *MsgInitializeController) GetAssertions() [][]byte {
+	if m != nil {
+		return m.Assertions
+	}
+	return nil
+}
+
+func (m *MsgInitializeController) GetKeyshares() [][]byte {
+	if m != nil {
+		return m.Keyshares
+	}
+	return nil
+}
+
+func (m *MsgInitializeController) GetVerifications() [][]byte {
+	if m != nil {
+		return m.Verifications
+	}
+	return nil
+}
+
+// MsgInitializeControllerResponse is the response type for the InitializeController RPC.
+type MsgInitializeControllerResponse struct {
+	// Controller is the address of the initialized controller.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+}
+
+func (m *MsgInitializeControllerResponse) Reset()         { *m = MsgInitializeControllerResponse{} }
+func (m *MsgInitializeControllerResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgInitializeControllerResponse) ProtoMessage()    {}
+func (*MsgInitializeControllerResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{3}
+}
+func (m *MsgInitializeControllerResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgInitializeControllerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgInitializeControllerResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgInitializeControllerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgInitializeControllerResponse.Merge(m, src)
+}
+func (m *MsgInitializeControllerResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgInitializeControllerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgInitializeControllerResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgInitializeControllerResponse proto.InternalMessageInfo
+
+func (m *MsgInitializeControllerResponse) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "did.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "did.v1.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgInitializeController)(nil), "did.v1.MsgInitializeController")
+	proto.RegisterType((*MsgInitializeControllerResponse)(nil), "did.v1.MsgInitializeControllerResponse")
 }
 
 func init() { proto.RegisterFile("did/v1/tx.proto", fileDescriptor_d73284df019ff211) }
 
 var fileDescriptor_d73284df019ff211 = []byte{
-	// 315 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x4f, 0xc9, 0x4c, 0xd1,
-	0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x4b, 0xc9, 0x4c,
-	0xd1, 0x2b, 0x33, 0x94, 0x12, 0x4f, 0xce, 0x2f, 0xce, 0xcd, 0x2f, 0xd6, 0xcf, 0x2d, 0x4e, 0x07,
-	0xc9, 0xe7, 0x16, 0xa7, 0x43, 0x14, 0x48, 0x89, 0x40, 0x75, 0xa4, 0xa7, 0xe6, 0xa5, 0x16, 0x67,
-	0x16, 0xc3, 0x44, 0xd3, 0xf3, 0xd3, 0xf3, 0xc1, 0x4c, 0x7d, 0x10, 0x0b, 0x2a, 0x2a, 0x09, 0x31,
-	0x24, 0x1e, 0x22, 0x01, 0xe1, 0x40, 0xa4, 0x94, 0xda, 0x19, 0xb9, 0xf8, 0x7d, 0x8b, 0xd3, 0x43,
-	0x0b, 0x52, 0x12, 0x4b, 0x52, 0x03, 0x12, 0x8b, 0x12, 0x73, 0x8b, 0x85, 0xcc, 0xb8, 0x38, 0x13,
-	0x4b, 0x4b, 0x32, 0xf2, 0x8b, 0x32, 0x4b, 0x2a, 0x25, 0x18, 0x15, 0x18, 0x35, 0x38, 0x9d, 0x24,
-	0x2e, 0x6d, 0xd1, 0x15, 0x81, 0x6a, 0x74, 0x4c, 0x49, 0x29, 0x4a, 0x2d, 0x2e, 0x0e, 0x2e, 0x29,
-	0xca, 0xcc, 0x4b, 0x0f, 0x42, 0x28, 0x15, 0xd2, 0xe1, 0x62, 0x2b, 0x00, 0x9b, 0x20, 0xc1, 0xa4,
-	0xc0, 0xa8, 0xc1, 0x6d, 0xc4, 0xa7, 0x07, 0xf1, 0x84, 0x1e, 0xc4, 0x5c, 0x27, 0x96, 0x13, 0xf7,
-	0xe4, 0x19, 0x82, 0xa0, 0x6a, 0xac, 0xf8, 0x9a, 0x9e, 0x6f, 0xd0, 0x42, 0xe8, 0x56, 0x92, 0xe4,
-	0x12, 0x47, 0x73, 0x48, 0x50, 0x6a, 0x71, 0x41, 0x7e, 0x5e, 0x71, 0xaa, 0x51, 0x18, 0x17, 0xb3,
-	0x6f, 0x71, 0xba, 0x90, 0x07, 0x17, 0x0f, 0x8a, 0x3b, 0xc5, 0x61, 0xe6, 0xa3, 0xe9, 0x93, 0x92,
-	0xc7, 0x21, 0x01, 0x33, 0x50, 0x8a, 0xb5, 0xe1, 0xf9, 0x06, 0x2d, 0x46, 0x27, 0x9b, 0x13, 0x8f,
-	0xe4, 0x18, 0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b,
-	0x8f, 0xe5, 0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x52, 0x4a, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2,
-	0x4b, 0xce, 0xcf, 0xd5, 0x4f, 0xc9, 0xd4, 0x4d, 0x49, 0x04, 0x05, 0x5b, 0x51, 0xaa, 0x7e, 0x85,
-	0x3e, 0x28, 0xd8, 0x4b, 0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0x21, 0x68, 0x0c, 0x08, 0x00,
-	0x00, 0xff, 0xff, 0x1f, 0xbc, 0xb5, 0xe7, 0xbc, 0x01, 0x00, 0x00,
+	// 440 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x52, 0x4f, 0x8b, 0xd3, 0x40,
+	0x1c, 0xcd, 0xd8, 0xb5, 0xd0, 0x71, 0xdd, 0x85, 0x50, 0x68, 0x36, 0x48, 0xba, 0x04, 0xc1, 0xb2,
+	0xb8, 0x09, 0xbb, 0x82, 0x88, 0x78, 0xb1, 0x5e, 0xf4, 0xb0, 0x20, 0x11, 0x2f, 0x7a, 0xd0, 0xd9,
+	0xcc, 0x38, 0x1d, 0x6c, 0x32, 0x61, 0x7e, 0xb3, 0x65, 0xeb, 0x49, 0xbc, 0x78, 0xf5, 0xa3, 0xec,
+	0xc1, 0x83, 0x5f, 0x40, 0xd8, 0xe3, 0xe2, 0xc9, 0x93, 0x48, 0x7b, 0xe8, 0xd7, 0x90, 0x64, 0x92,
+	0xfe, 0xb3, 0xa5, 0xb0, 0xb7, 0xc9, 0x7b, 0xef, 0xf7, 0xf2, 0xde, 0xcc, 0x0f, 0xef, 0x52, 0x41,
+	0xc3, 0xc1, 0x51, 0xa8, 0xcf, 0x83, 0x4c, 0x49, 0x2d, 0xed, 0x3a, 0x15, 0x34, 0x18, 0x1c, 0xb9,
+	0xad, 0x58, 0x42, 0x22, 0x21, 0x4c, 0x80, 0xe7, 0x7c, 0x02, 0xdc, 0x08, 0xdc, 0x66, 0x39, 0xc1,
+	0x59, 0xca, 0x40, 0x40, 0x85, 0x72, 0xc9, 0x65, 0x71, 0x0c, 0xf3, 0x53, 0x89, 0xee, 0x19, 0x93,
+	0x77, 0x86, 0x30, 0x1f, 0x86, 0xf2, 0xbf, 0x22, 0xbc, 0x7b, 0x02, 0xfc, 0x75, 0x46, 0x89, 0x66,
+	0x2f, 0x89, 0x22, 0x09, 0xd8, 0x0f, 0x71, 0x83, 0x9c, 0xe9, 0x9e, 0x54, 0x42, 0x0f, 0x1d, 0xb4,
+	0x8f, 0x3a, 0x8d, 0xae, 0xf3, 0xeb, 0xfb, 0x61, 0xb3, 0x1c, 0x7c, 0x4a, 0xa9, 0x62, 0x00, 0xaf,
+	0xb4, 0x12, 0x29, 0x8f, 0x66, 0x52, 0xfb, 0x3e, 0xae, 0x67, 0x85, 0x83, 0x73, 0x63, 0x1f, 0x75,
+	0x6e, 0x1d, 0xef, 0x04, 0xa6, 0x44, 0x60, 0x7c, 0xbb, 0x5b, 0x97, 0x7f, 0xda, 0x56, 0x54, 0x6a,
+	0x1e, 0xef, 0x7c, 0x99, 0x5c, 0x1c, 0xcc, 0xa6, 0xfd, 0x3d, 0xdc, 0x5a, 0x0a, 0x12, 0x31, 0xc8,
+	0x64, 0x0a, 0xcc, 0xff, 0x89, 0x0a, 0xee, 0x45, 0x2a, 0xb4, 0x20, 0x7d, 0xf1, 0x89, 0x3d, 0x93,
+	0xa9, 0x56, 0xb2, 0xdf, 0x67, 0xea, 0xda, 0x61, 0x3d, 0x8c, 0x09, 0x00, 0x53, 0x5a, 0xc8, 0x34,
+	0x0f, 0x5c, 0xeb, 0x6c, 0x47, 0x73, 0x88, 0x7d, 0x07, 0x37, 0x3e, 0xb2, 0x21, 0xf4, 0x88, 0x62,
+	0xe0, 0xd4, 0x0a, 0x7a, 0x06, 0xd8, 0x77, 0xf1, 0xed, 0x01, 0x53, 0xe2, 0x83, 0x88, 0x89, 0x31,
+	0xd8, 0x2a, 0x14, 0x8b, 0xe0, 0x7f, 0x15, 0xdf, 0xe2, 0xf6, 0x9a, 0x1a, 0x55, 0x55, 0xfb, 0x11,
+	0xc6, 0xf1, 0x14, 0xdd, 0xd8, 0x67, 0x4e, 0x7b, 0xfc, 0x03, 0xe1, 0xda, 0x09, 0x70, 0xfb, 0x39,
+	0xde, 0x5e, 0x78, 0xcd, 0x56, 0xf5, 0x0a, 0x4b, 0xb7, 0xeb, 0xb6, 0xd7, 0x10, 0xd3, 0x2c, 0xef,
+	0x71, 0x73, 0xe5, 0x95, 0xcf, 0x0f, 0xae, 0x12, 0xb8, 0xf7, 0x36, 0x08, 0xaa, 0x3f, 0xb8, 0x37,
+	0x3f, 0x4f, 0x2e, 0x0e, 0x50, 0xf7, 0xc9, 0xe5, 0xc8, 0x43, 0x57, 0x23, 0x0f, 0xfd, 0x1d, 0x79,
+	0xe8, 0xdb, 0xd8, 0xb3, 0xae, 0xc6, 0x9e, 0xf5, 0x7b, 0xec, 0x59, 0x6f, 0x7c, 0x2e, 0x74, 0xef,
+	0xec, 0x34, 0x88, 0x65, 0x12, 0x52, 0x71, 0x48, 0x49, 0xbe, 0xbe, 0x8a, 0x85, 0xe7, 0x61, 0xbe,
+	0xfe, 0x7a, 0x98, 0x31, 0x38, 0xad, 0x17, 0x9b, 0xfc, 0xe0, 0x5f, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0xfe, 0x21, 0x86, 0xc1, 0x44, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -176,6 +305,8 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
+	InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error)
 }
 
 type msgClient struct {
@@ -195,12 +326,23 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error) {
+	out := new(MsgInitializeControllerResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/InitializeController", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpdateParams defines a governance operation for updating the parameters.
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
+	InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -209,6 +351,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) InitializeController(ctx context.Context, req *MsgInitializeController) (*MsgInitializeControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method InitializeController not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -233,6 +378,24 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_InitializeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgInitializeController)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).InitializeController(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/did.v1.Msg/InitializeController",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).InitializeController(ctx, req.(*MsgInitializeController))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "did.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -240,6 +403,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "InitializeController",
+			Handler:    _Msg_InitializeController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -309,6 +476,93 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgInitializeController) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgInitializeController) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgInitializeController) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Verifications) > 0 {
+		for iNdEx := len(m.Verifications) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Verifications[iNdEx])
+			copy(dAtA[i:], m.Verifications[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Verifications[iNdEx])))
+			i--
+			dAtA[i] = 0x22
+		}
+	}
+	if len(m.Keyshares) > 0 {
+		for iNdEx := len(m.Keyshares) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Keyshares[iNdEx])
+			copy(dAtA[i:], m.Keyshares[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Keyshares[iNdEx])))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Assertions) > 0 {
+		for iNdEx := len(m.Assertions) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Assertions[iNdEx])
+			copy(dAtA[i:], m.Assertions[iNdEx])
+			i = encodeVarintTx(dAtA, i, uint64(len(m.Assertions[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgInitializeControllerResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgInitializeControllerResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgInitializeControllerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -341,6 +595,50 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *MsgInitializeController) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Assertions) > 0 {
+		for _, b := range m.Assertions {
+			l = len(b)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if len(m.Keyshares) > 0 {
+		for _, b := range m.Keyshares {
+			l = len(b)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	if len(m.Verifications) > 0 {
+		for _, b := range m.Verifications {
+			l = len(b)
+			n += 1 + l + sovTx(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *MsgInitializeControllerResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -494,6 +792,266 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgInitializeController) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgInitializeController: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgInitializeController: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Assertions", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Assertions = append(m.Assertions, make([]byte, postIndex-iNdEx))
+			copy(m.Assertions[len(m.Assertions)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Keyshares", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Keyshares = append(m.Keyshares, make([]byte, postIndex-iNdEx))
+			copy(m.Keyshares[len(m.Keyshares)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Verifications", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Verifications = append(m.Verifications, make([]byte, postIndex-iNdEx))
+			copy(m.Verifications[len(m.Verifications)-1], dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgInitializeControllerResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgInitializeControllerResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgInitializeControllerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
