@@ -14,18 +14,22 @@ import (
 	"github.com/di-dao/core/crypto/signatures/ecdsa"
 )
 
+// Address returns the address of the public key
 func (k *PublicKey) Address() cryptotypes.Address {
 	return cmtcrypto.AddressHash(k.Key)
 }
 
+// Bytes returns the byte representation of the public key
 func (k *PublicKey) Bytes() []byte {
 	return k.Key
 }
 
+// String returns the hex string representation of the public key
 func (k *PublicKey) String() string {
 	return hex.EncodeToString(k.Key)
 }
 
+// VerifySignature verifies the signature of a message
 func (k *PublicKey) VerifySignature(msg []byte, sig []byte) bool {
 	pp, err := BuildEcPoint(k.Key)
 	if err != nil {
