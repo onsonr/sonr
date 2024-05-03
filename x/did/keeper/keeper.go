@@ -77,6 +77,6 @@ func (k Keeper) LinkController(ctx sdk.Context, kss types.KeyshareSet, identifie
 }
 
 // AssignVault assigns a vault to a controller. Third step
-func (k Keeper) AssignVault(ctx sdk.Context, c types.ControllerI) error {
+func (k Keeper) AssignVault(ctx sdk.Context, c types.IController) error {
 	return nil
 }

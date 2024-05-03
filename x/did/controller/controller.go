@@ -21,7 +21,7 @@ type controller struct {
 }
 
 // Create creates a new controller
-func Create(kss types.KeyshareSet) (types.ControllerI, error) {
+func Create(kss types.KeyshareSet) (types.IController, error) {
 	c := &controller{
 		properties: make(map[string]*accumulator.Accumulator),
 		usrKs:      kss.Usr(),

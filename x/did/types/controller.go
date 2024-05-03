@@ -1,7 +1,7 @@
 package types
 
 // Controller is the interface for the controller
-type ControllerI interface {
+type IController interface {
 	Set(key, value string) ([]byte, error)
 	PublicKey() *PublicKey
 	Refresh() error

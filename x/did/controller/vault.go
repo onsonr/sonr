@@ -31,7 +31,7 @@ type vaultStore struct {
 }
 
 // NewController creates a new controller instance.
-func (v vaultStore) NewController() (types.ControllerI, error) {
+func (v vaultStore) NewController() (types.IController, error) {
 	kss, err := GenKSS()
 	if err != nil {
 		return nil, err
