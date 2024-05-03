@@ -64,13 +64,16 @@ func TestAddressConversion(t *testing.T) {
 }
 
 func TestLinkUnlinkProperty(t *testing.T) {
+	// Property key
+	propertyKey := "email"
+
+	// Create controller
 	kss, err := controller.GenKSS()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
 
 	// Link a property
-	propertyKey := "email"
 	propertyValue := "user@example.com"
 	witness, err := ctrl.Set(propertyKey, propertyValue)
 	require.NoError(t, err)
