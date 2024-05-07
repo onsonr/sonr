@@ -1,3 +1,14 @@
+## 0.3.0 (2024-05-07)
+
+### Feat
+
+- add property type for accumulator values
+
+### Refactor
+
+- **identifier.go, codec.go**: move Blake3Hash function from identifier.go to codec.go for better code organization fix(identifier.go): replace local Blake3Hash function calls with types.Blake3Hash to reflect the function move
+- **controller.go**: remove unused props field from controller struct feat(identifier.go): add new file for handling email and phone DIDs refactor(types/controller.go): rename Controller interface to IController for clarity refactor(types/genesis.go): remove unused DefaultCurve and ReferralRewardRate fields from DefaultParams function
+
 ## 0.2.0 (2024-05-07)
 
 ## 0.1.0 (2024-05-07)
