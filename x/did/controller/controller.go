@@ -16,7 +16,6 @@ import (
 type controller struct {
 	usrKs      types.UserKeyshare
 	valKs      types.ValidatorKeyshare
-	props      []*types.Property
 	properties map[string]*accumulator.Accumulator
 }
 

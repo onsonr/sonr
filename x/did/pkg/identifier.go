@@ -1,11 +1,11 @@
-package types
+package did
 
 import (
 	"encoding/hex"
 	"regexp"
 	"strings"
 
-	"github.com/di-dao/core/crypto/accumulator"
+	"github.com/di-dao/core/x/did/types"
 	"lukechampine.com/blake3"
 )
 
@@ -53,7 +53,7 @@ func Blake3Hash(bz []byte) []byte {
 func GetEmailDID(email string) (EmailDID, error) {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 	if !re.MatchString(email) {
-		return "", ErrInvalidEmailFormat
+		return "", types.ErrInvalidEmailFormat
 	}
 	return EmailDID("did:email:" + hex.EncodeToString(Blake3Hash([]byte(email)))), nil
 }
@@ -62,36 +62,7 @@ func GetEmailDID(email string) (EmailDID, error) {
 func GetPhoneDID(phone string) (PhoneDID, error) {
 	re := regexp.MustCompile(`^\+[1-9]\d{1,14}$`)
 	if !re.MatchString(phone) {
-		return "", ErrInvalidPhoneFormat
+		return "", types.ErrInvalidPhoneFormat
 	}
 	return PhoneDID("did:phone:" + hex.EncodeToString(Blake3Hash([]byte(phone)))), nil
-}
-
-// ConvertMapToPropertyList converts a map of accumulators to a list of properties
-func ConvertMapToPropertyList(propertyMap map[string]*accumulator.Accumulator) ([]*Property, error) {
-	properties := make([]*Property, 0, len(propertyMap))
-	for k, v := range propertyMap {
-		accBz, err := v.MarshalBinary()
-		if err != nil {
-			return nil, err
-		}
-		properties = append(properties, &Property{
-			Key:         k,
-			Accumulator: accBz,
-		})
-	}
-	return properties, nil
-}
-
-// ConvertPropertyListToMap converts a list of properties to a map of accumulators
-func ConvertPropertyListToMap(properties []*Property) (map[string]*accumulator.Accumulator, error) {
-	propertyMap := make(map[string]*accumulator.Accumulator)
-	for _, p := range properties {
-		acc := &accumulator.Accumulator{}
-		if err := acc.UnmarshalBinary(p.Accumulator); err != nil {
-			return nil, err
-		}
-		propertyMap[p.Key] = acc
-	}
-	return propertyMap, nil
 }
