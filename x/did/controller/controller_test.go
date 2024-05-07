@@ -104,3 +104,29 @@ func TestUnlinkNonExistentProperty(t *testing.T) {
 	err = ctrl.Remove(propertyKey, propertyValue)
 	require.Error(t, err)
 }
+
+func TestSignRefreshSign(t *testing.T) {
+	// Create controller
+	kss, err := controller.GenKSS()
+	require.NoError(t, err)
+	ctrl, err := controller.Create(kss)
+	require.NoError(t, err)
+
+	// Sign a message
+	msg := []byte("test message")
+	sig1, err := ctrl.Sign(msg)
+	require.NoError(t, err)
+	require.NotEmpty(t, sig1)
+
+	// Refresh the controller
+	err = ctrl.Refresh()
+	require.NoError(t, err)
+
+	// Sign the same message again
+	sig2, err := ctrl.Sign(msg)
+	require.NoError(t, err)
+	require.NotEmpty(t, sig2)
+
+	// Signatures should be different
+	require.NotEqual(t, sig1, sig2)
+}
