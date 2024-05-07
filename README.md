@@ -2,6 +2,8 @@
 
 > **_Sonr is an ibc-enabled blockchain for decentralized identity_**.
 
+[![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/core)
+
 ## Features
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
