@@ -1,0 +1,6 @@
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "$version"
+version_scheme = "semver2"
+version_provider = "scm"
+major_version_zero = true
