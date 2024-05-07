@@ -3,7 +3,7 @@
 
 ## `core` - Sonr Chain
 
-> **_Sonr is an ibc-enabled blockchain for decentralized identity_**.
+Sonr is an ibc-enabled blockchain for decentralized identity.
 
 [![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/core)
 
