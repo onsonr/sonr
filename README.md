@@ -1,4 +1,7 @@
-# Sonr
+<div align="center">
+<img src="https://pub-97e96d678cb448969765e4c1542e675a.r2.dev/github-core.png" width="256" height="256" />
+
+## `core` - Sonr Chain
 
 > **_Sonr is an ibc-enabled blockchain for decentralized identity_**.
 
