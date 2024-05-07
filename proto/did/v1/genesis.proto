@@ -16,7 +16,7 @@ message GenesisState {
 
 // Controller is the struct that represents a controller
 message Controller {
-    option (amino.name) = "did/controller";
+  option (amino.name) = "did/controller";
 
   // Address is the address of the controller
   string address = 1;
@@ -37,7 +37,7 @@ message Controller {
   uint64 sequence = 6;
 
   // Properties is the properties of the controller
-  repeated Property properties = 7;
+  map<string,bytes> properties = 7;
 }
 
 // Params defines the set of module parameters.
