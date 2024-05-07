@@ -36,6 +36,7 @@ heighliner*
 # Test binary, built with `go test -c`
 *.test
 .ignore
+.opencommitignore
 
 deploy/sonrd
 deploy/hway
