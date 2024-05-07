@@ -1,6 +1,7 @@
-#
+<div align="center">
+<img src="https://pub-97e96d678cb448969765e4c1542e675a.r2.dev/github-sonr.png" width="256" height="256" />
 
-[![Sonr Logo Banner](.github/assets/public/img/core-cover.png)](https://sonr.io)
+---
 
 <div style="text-align: center;">
 
@@ -17,11 +18,7 @@
 
 </div>
 
----
-
-**_Sonr is an ibc-enabled blockchain for decentralized identity_**.
-
-## Features
+## `sonr` - Docs, Proposals, & Networks
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS — providing users with a secure, portable decentralized identity.
 
@@ -59,17 +56,17 @@ Sonr is built on top of the Cosmos SDK, which is a framework for building blockc
 
 It's recommended to install the following tools:
 
-- [golang](https://golang.org/doc/install)
-- [grpcui](https://github.com/fullstorydev/grpcui)
-- [docker](https://docs.docker.com/get-docker/)
-- [spawn](https://github.com/rollchains/spawn)
+-   [golang](https://golang.org/doc/install)
+-   [grpcui](https://github.com/fullstorydev/grpcui)
+-   [docker](https://docs.docker.com/get-docker/)
+-   [spawn](https://github.com/rollchains/spawn)
 
 ## Status
 
-- [x] **Alpha**: Closed testing.
-- [x] **Private Devnet**: May have kinks. [See projects](https://sonr.io/dashboard).
-- [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](#).
-- [ ] **Mainnet**: Coming soon. [Watch status](#).
+-   [x] **Alpha**: Closed testing.
+-   [x] **Private Devnet**: May have kinks. [See projects](https://sonr.io/dashboard).
+-   [ ] **Public Testnet**: Stable for non-enterprise use. [Join it](#).
+-   [ ] **Mainnet**: Coming soon. [Watch status](#).
 
 We are currently in transitioning to Public Testnet. Watch [releases](https://github.com/didao-org/sonr/releases) of this repo to get notified of major updates.
 
@@ -85,19 +82,19 @@ See [additional details](https://sonr.io/whitepaper) on these components in the 
 
 ## Community & Support
 
-- [Forum](https://github.com/didao-org/sonr/discussions)
-- [Issues](https://github.com/didao-org/sonr/issues)
-- [Twitter](https://sonr.io/twitter)
-- [Dev Chat](https://sonr.io/discord)
+-   [Forum](https://github.com/didao-org/sonr/discussions)
+-   [Issues](https://github.com/didao-org/sonr/issues)
+-   [Twitter](https://sonr.io/twitter)
+-   [Dev Chat](https://sonr.io/discord)
 
 ## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- **Protocol Labs**: For IPFS & Libp2p.
-- **Interchain Foundation**: For Cosmos & IBC.
-- **Tim Berners-Lee**: For the Internet.
-- **Satoshi Nakamoto**: For Bitcoin.
-- **Steve Jobs**: For Taste.
+-   **Protocol Labs**: For IPFS & Libp2p.
+-   **Interchain Foundation**: For Cosmos & IBC.
+-   **Tim Berners-Lee**: For the Internet.
+-   **Satoshi Nakamoto**: For Bitcoin.
+-   **Steve Jobs**: For Taste.
 
 Thank you for your support and inspiration!
