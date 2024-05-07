@@ -30,21 +30,22 @@ func Create(kss types.KeyshareSet) (types.IController, error) {
 	return c, nil
 }
 
-func (c *controller) Set(key string, value string) ([]byte, error) {
+// Validate validates the witness
+func (c *controller) Check(key string, witness []byte) bool {
 	sk, err := c.deriveSecretKey(key)
 	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to get secret key"))
+		return false
 	}
-	acc, err := sk.CreateAccumulator(value)
+	acc, err := c.getAccumulator(key)
 	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to create accumulator"))
+		return false
 	}
-	c.setAccumulator(key, acc)
-	witness, err := sk.CreateWitness(acc, value)
+	wit := &accumulator.MembershipWitness{}
+	err = wit.UnmarshalBinary(witness)
 	if err != nil {
-		return nil, errors.Join(err, fmt.Errorf("failed to create witness"))
+		return false
 	}
-	return witness.MarshalBinary()
+	return sk.VerifyWitness(acc, wit) == nil
 }
 
 // PublicKey returns the public key for the shares
@@ -79,6 +80,23 @@ func (c *controller) Refresh() error {
 	c.valKs = kss.Val()
 	c.usrKs = kss.Usr()
 	return nil
+}
+
+func (c *controller) Set(key string, value string) ([]byte, error) {
+	sk, err := c.deriveSecretKey(key)
+	if err != nil {
+		return nil, errors.Join(err, fmt.Errorf("failed to get secret key"))
+	}
+	acc, err := sk.CreateAccumulator(value)
+	if err != nil {
+		return nil, errors.Join(err, fmt.Errorf("failed to create accumulator"))
+	}
+	c.setAccumulator(key, acc)
+	witness, err := sk.CreateWitness(acc, value)
+	if err != nil {
+		return nil, errors.Join(err, fmt.Errorf("failed to create witness"))
+	}
+	return witness.MarshalBinary()
 }
 
 // Sign signs the message with the keyshares
@@ -121,7 +139,6 @@ func (c *controller) Remove(key string, value string) error {
 	if err != nil {
 		return err
 	}
-
 	// no need to continue if the property is not linked
 	err = sk.VerifyWitness(acc, witness)
 	if err != nil {
@@ -132,24 +149,6 @@ func (c *controller) Remove(key string, value string) error {
 		return err
 	}
 	return c.setAccumulator(key, newAcc)
-}
-
-// Validate validates the witness
-func (c *controller) Check(key string, witness []byte) bool {
-	sk, err := c.deriveSecretKey(key)
-	if err != nil {
-		return false
-	}
-	acc, err := c.getAccumulator(key)
-	if err != nil {
-		return false
-	}
-	wit := &accumulator.MembershipWitness{}
-	err = wit.UnmarshalBinary(witness)
-	if err != nil {
-		return false
-	}
-	return sk.VerifyWitness(acc, wit) == nil
 }
 
 // deriveSecretKey derives the secret key from the keyshares
