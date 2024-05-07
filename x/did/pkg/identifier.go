@@ -6,7 +6,6 @@ import (
 	"strings"
 
 	"github.com/di-dao/core/x/did/types"
-	"lukechampine.com/blake3"
 )
 
 // EmailDID is the DID method for email addresses
@@ -43,19 +42,13 @@ func (p PhoneDID) String() string {
 	return string(p)
 }
 
-// Blake3Hash returns the blake3 hash of the input bytes
-func Blake3Hash(bz []byte) []byte {
-	bz32 := blake3.Sum256(bz)
-	return bz32[:]
-}
-
 // GetEmailDID returns the DID representation of the email address
 func GetEmailDID(email string) (EmailDID, error) {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 	if !re.MatchString(email) {
 		return "", types.ErrInvalidEmailFormat
 	}
-	return EmailDID("did:email:" + hex.EncodeToString(Blake3Hash([]byte(email)))), nil
+	return EmailDID("did:email:" + hex.EncodeToString(types.Blake3Hash([]byte(email)))), nil
 }
 
 // GetPhoneDID returns the DID representation of the phone number
@@ -64,5 +57,5 @@ func GetPhoneDID(phone string) (PhoneDID, error) {
 	if !re.MatchString(phone) {
 		return "", types.ErrInvalidPhoneFormat
 	}
-	return PhoneDID("did:phone:" + hex.EncodeToString(Blake3Hash([]byte(phone)))), nil
+	return PhoneDID("did:phone:" + hex.EncodeToString(types.Blake3Hash([]byte(phone)))), nil
 }
