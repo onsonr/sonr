@@ -64,7 +64,8 @@ message PublicKey {
   option (amino.name) = "did/publickey";
   option (amino.message_encoding)     = "key_field";
   option (gogoproto.goproto_stringer) = false;
-// Key is the public key
+
+  // Key is the public key
   bytes key = 1;
 
   // Type is the type of the public key
