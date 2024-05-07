@@ -1,3 +1,9 @@
+## 0.1.0 (2024-05-07)
+
+### Feat
+
+- **CHANGELOG.md**: add CHANGELOG.md to document project changes and updates
+
 ## 0.0.1 (2024-05-07)
 
 ### Feat
