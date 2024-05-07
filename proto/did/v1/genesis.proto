@@ -57,9 +57,6 @@ message Params {
 
   // Encryption Reward Rate
   double encryption_reward_rate = 4;
-
-  // Referral Reward Rate
-  double referral_reward_rate = 5;
 }
 
 // Property is the struct that represents a property
