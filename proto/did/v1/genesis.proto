@@ -59,16 +59,6 @@ message Params {
   double encryption_reward_rate = 4;
 }
 
-// Property is the struct that represents a property
-message Property {
-  option (amino.name) = "did/property";
-  // Key is the key of the property
-  string key = 1;
-
-  // Accumulator is the calculated accumulator of the property
-  bytes accumulator = 2;
-}
-
 // PublicKey is the struct that represents a public key
 message PublicKey {
   option (amino.name) = "did/publickey";
