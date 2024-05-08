@@ -5,24 +5,22 @@
 
 [![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/core)
 
-Sonr is an ibc-enabled blockchain for decentralized identity.
-
 ---
 
 </div>
 
-### Features
+## Overview
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
-### Community & Support
+## Community & Support
 
 -   [Forum](https://github.com/di-dao/sonr/discussions)
 -   [Issues](https://github.com/di-dao/sonr/issues)
 -   [Twitter](https://sonr.io/twitter)
 -   [Dev Chat](https://sonr.io/discord)
 
-### Acknowledgements
+## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
