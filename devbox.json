@@ -8,8 +8,14 @@
     "ipfs@latest",
     "go-task@latest",
     "templ@latest",
-    "dendrite@latest"
+    "dendrite@latest",
+    "caddy@latest"
   ],
+  "env": {
+    "GOPATH": "$PWD",
+    "PATH": "$PATH:$PWD/bin",
+    "CADDY_CONFIG": "./etc/caddy/Caddyfile"
+  },
   "shell": {
     "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {

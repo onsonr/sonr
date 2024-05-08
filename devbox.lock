@@ -49,6 +49,55 @@
         }
       }
     },
+    "caddy@latest": {
+      "last_modified": "2024-04-19T17:36:04-04:00",
+      "plugin_version": "0.0.3",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#caddy",
+      "source": "devbox-search",
+      "version": "2.7.6",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/nyda410ppfsghdgk4qf7f21j5xa4bdgw-caddy-2.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/nyda410ppfsghdgk4qf7f21j5xa4bdgw-caddy-2.7.6"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/93k35dgvz8f2gpimmhc275wkfgqxbbb0-caddy-2.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/93k35dgvz8f2gpimmhc275wkfgqxbbb0-caddy-2.7.6"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/w77xmriddvhb8vwxfppj1fdacg4rl3hy-caddy-2.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/w77xmriddvhb8vwxfppj1fdacg4rl3hy-caddy-2.7.6"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/vibz226723s53avyw6q4qvvqh1slj8qd-caddy-2.7.6",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/vibz226723s53avyw6q4qvvqh1slj8qd-caddy-2.7.6"
+        }
+      }
+    },
     "dendrite@latest": {
       "last_modified": "2024-04-19T17:36:04-04:00",
       "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#dendrite",
