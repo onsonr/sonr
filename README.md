@@ -1,11 +1,9 @@
 <div align="center">
 <img src="https://pub-97e96d678cb448969765e4c1542e675a.r2.dev/github-core.png" width="256" height="256" />
 
-# `core` - Sonr Chain
-
 [![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/core)
 
----
+# `core` - Sonr Chain
 
 </div>
 
