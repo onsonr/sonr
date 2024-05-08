@@ -10,6 +10,7 @@ import (
 	"github.com/di-dao/core/crypto/signatures/ecdsa"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/x/did/types"
+	"lukechampine.com/blake3"
 )
 
 // Controller is the interface for the controller
@@ -167,7 +168,7 @@ func (c *controller) deriveSecretKey(propertyKey string) (*SecretKey, error) {
 
 	// Concatenate the controller's public key and the property key
 	input := append(controllerPubKey.Bytes(), []byte(propertyKey)...)
-	hash := types.Blake3Hash(input)
+	hash := blake3Hash(input)
 
 	// Use the hash as the seed for the secret key
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
@@ -194,3 +195,9 @@ func (c *controller) setAccumulator(key string, acc *accumulator.Accumulator) er
 //
 // 3. Utility Functions
 //
+
+// Blake3Hash returns the blake3 hash of the input bytes
+func blake3Hash(bz []byte) []byte {
+	bz32 := blake3.Sum256(bz)
+	return bz32[:]
+}

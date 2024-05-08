@@ -2,10 +2,11 @@ package did
 
 import (
 	"encoding/hex"
+	"fmt"
 	"regexp"
 	"strings"
 
-	"github.com/di-dao/core/x/did/types"
+	"lukechampine.com/blake3"
 )
 
 // EmailDID is the DID method for email addresses
@@ -46,16 +47,22 @@ func (p PhoneDID) String() string {
 func GetEmailDID(email string) (EmailDID, error) {
 	re := regexp.MustCompile(`^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$`)
 	if !re.MatchString(email) {
-		return "", types.ErrInvalidEmailFormat
+		return "", fmt.Errorf("invalid email format")
 	}
-	return EmailDID("did:email:" + hex.EncodeToString(types.Blake3Hash([]byte(email)))), nil
+	return EmailDID("did:email:" + hex.EncodeToString(blake3Hash([]byte(email)))), nil
 }
 
 // GetPhoneDID returns the DID representation of the phone number
 func GetPhoneDID(phone string) (PhoneDID, error) {
 	re := regexp.MustCompile(`^\+[1-9]\d{1,14}$`)
 	if !re.MatchString(phone) {
-		return "", types.ErrInvalidPhoneFormat
+		return "", fmt.Errorf("invalid phone format")
 	}
-	return PhoneDID("did:phone:" + hex.EncodeToString(types.Blake3Hash([]byte(phone)))), nil
+	return PhoneDID("did:phone:" + hex.EncodeToString(blake3Hash([]byte(phone)))), nil
+}
+
+// Blake3Hash returns the blake3 hash of the input bytes
+func blake3Hash(bz []byte) []byte {
+	bz32 := blake3.Sum256(bz)
+	return bz32[:]
 }

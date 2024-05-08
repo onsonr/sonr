@@ -21,23 +21,26 @@ message Controller {
   // Address is the address of the controller
   string address = 1;
 
-  // Number is the number of the controller
-  uint64 number = 2;
+  // BTC Address is the bitcoin address of the controller
+  string btc_address = 2;
+
+  // ETH Address is the ethereum address of the controller
+  string eth_address = 3;
 
   // PublicKey is the public key of the controller
-  PublicKey public_key = 3;
+  PublicKey public_key = 4;
+
+  // Account Number is the number of the controller
+  uint64 account_number = 5;
 
   // PeerId is the peer id of the controller
-  string peer_id = 4;
-
-  // Network is the chain id of the controller
-  string network = 5;
+  string peer_id = 6;
 
   // Sequence is the sequence of the controller
-  uint64 sequence = 6;
+  uint64 sequence = 7;
 
   // Properties is the properties of the controller
-  map<string,bytes> properties = 7;
+  map<string,bytes> properties = 8;
 }
 
 // Params defines the set of module parameters.

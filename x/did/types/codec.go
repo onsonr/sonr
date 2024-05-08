@@ -7,7 +7,7 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	"lukechampine.com/blake3"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	// this line is used by starport scaffolding # 1
 )
 
@@ -28,8 +28,14 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	// this line is used by starport scaffolding # 3
-
+	registry.RegisterImplementations(
+		(*authtypes.AccountI)(nil),
+		&EthAccount{},
+	)
+	registry.RegisterImplementations(
+		(*authtypes.GenesisAccount)(nil),
+		&EthAccount{},
+	)
 	registry.RegisterImplementations(
 		(*cryptotypes.PubKey)(nil),
 		&PublicKey{},
@@ -38,13 +44,7 @@ func RegisterInterfaces(registry types.InterfaceRegistry) {
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgUpdateParams{},
+		&MsgInitializeController{},
 	)
-
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
-}
-
-// Blake3Hash returns the blake3 hash of the input bytes
-func Blake3Hash(bz []byte) []byte {
-	bz32 := blake3.Sum256(bz)
-	return bz32[:]
 }
