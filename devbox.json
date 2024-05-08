@@ -9,19 +9,22 @@
     "go-task@latest",
     "templ@latest",
     "dendrite@latest",
-    "caddy@latest"
+    "caddy@latest",
+    "zellij@latest",
+    "doppler@latest",
+    "mods@latest",
+    "gum@latest"
   ],
   "env": {
-    "GOPATH": "$PWD",
-    "PATH": "$PATH:$PWD/bin",
-    "CADDY_CONFIG": "./etc/caddy/Caddyfile"
+    "CADDY_CONFIG": "./etc/caddy/Caddyfile",
+    "IPFS_PATH":    "~/ipfs"
   },
   "shell": {
     "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
-      "proto": ["make proto-gen"],
-      "templ": ["templ generate"],
-      "devnet": ["make sh-testnet"],
+      "proto":   ["make proto-gen"],
+      "templ":   ["templ generate"],
+      "devnet":  ["make sh-testnet"],
       "testnet": ["make testnet"]
     }
   }

@@ -24,3 +24,18 @@ tasks:
     desc: Start test network
     cmds:
       - devbox run testnet
+
+  rails:up:
+    desc: Starts the devbox services
+    cmds:
+      - devbox services up
+
+  rails:down:
+    desc: Stops the devbox services
+    cmds:
+      - devbox services down
+
+  rails:ls:
+    desc: Lists the devbox services
+    cmds:
+      - devbox services ls

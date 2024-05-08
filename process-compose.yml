@@ -1,0 +1,6 @@
+# Process compose for starting django
+version: "0.5"
+
+processes:
+  ipfs:
+    command: ipfs daemon --migrate --init --mount --enable-gc --unrestricted-api

@@ -8,8 +8,6 @@ arch=$(uname -m)
 install_pkl() {
     # Check if the pkl executable is already installed
     if command -v pkl &> /dev/null; then
-        echo "Pkl is already installed. Version:"
-        pkl --version
         return
     fi
 
