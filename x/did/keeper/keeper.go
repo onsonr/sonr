@@ -10,6 +10,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	apiv1 "github.com/di-dao/core/api/did/v1"
 	"github.com/di-dao/core/x/did/controller"
 	"github.com/di-dao/core/x/did/types"
@@ -28,11 +29,13 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 	Schema collections.Schema
 
+	AccountKeeper authkeeper.AccountKeeper
+
 	authority string
 }
 
 // NewKeeper creates a new poa Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, logger log.Logger, authority string) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, accKeeper authkeeper.AccountKeeper, logger log.Logger, authority string) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 	sb := collections.NewSchemaBuilder(storeService)
 	if authority == "" {
@@ -47,11 +50,12 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, lo
 		panic(err)
 	}
 	k := Keeper{
-		cdc:       cdc,
-		logger:    logger,
-		Params:    collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		authority: authority,
-		OrmDB:     store,
+		cdc:           cdc,
+		logger:        logger,
+		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		authority:     authority,
+		OrmDB:         store,
+		AccountKeeper: accKeeper,
 	}
 	schema, err := sb.Build()
 	if err != nil {

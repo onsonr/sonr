@@ -51,6 +51,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+
 	// "github.com/cosmos/cosmos-sdk/types/msgservice"
 	signingtype "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/version"
@@ -617,6 +618,7 @@ func NewChainApp(
 	app.DidKeeper = didkeeper.NewKeeper(
 		appCodec,
 		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
+		app.AccountKeeper,
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
@@ -1018,7 +1020,6 @@ func NewChainApp(
 	// likely to be a state-machine breaking change, which needs a coordinated
 	// upgrade.
 	app.setPostHandler()
-
 
 	// TODO: Re-enable this check once we have a way to validate proto annotations
 	// > At startup, after all modules have been registered, check that all proto
