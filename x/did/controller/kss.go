@@ -1,4 +1,4 @@
-package types
+package controller
 
 import (
 	"golang.org/x/crypto/sha3"
@@ -6,6 +6,7 @@ import (
 	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
+	"github.com/di-dao/core/x/did/types"
 )
 
 // UserSignFunc is the type for the user sign function
@@ -23,7 +24,7 @@ type ValidatorRefreshFunc = *dklsv1.AliceRefresh
 type KeyshareSet interface {
 	Val() ValidatorKeyshare
 	Usr() UserKeyshare
-	PublicKey() *PublicKey
+	PublicKey() *types.PublicKey
 }
 
 // KeyshareSet is the set of keyshares for the protocol
@@ -43,7 +44,7 @@ func (ks *keyshareSet) Val() ValidatorKeyshare {
 }
 
 // PublicKey returns the public key for the keyshare set
-func (ks *keyshareSet) PublicKey() *PublicKey {
+func (ks *keyshareSet) PublicKey() *types.PublicKey {
 	return ks.val.PublicKey()
 }
 
@@ -51,14 +52,14 @@ func (ks *keyshareSet) PublicKey() *PublicKey {
 type UserKeyshare interface {
 	GetSignFunc(msg []byte) (UserSignFunc, error)
 	GetRefreshFunc() (UserRefreshFunc, error)
-	PublicKey() *PublicKey
+	PublicKey() *types.PublicKey
 }
 
 // ValidatorKeyshare is the interface for the validator keyshare
 type ValidatorKeyshare interface {
 	GetSignFunc(msg []byte) (ValidatorSignFunc, error)
 	GetRefreshFunc() (ValidatorRefreshFunc, error)
-	PublicKey() *PublicKey
+	PublicKey() *types.PublicKey
 }
 
 // NewKeyshareSet creates a new KeyshareSet
@@ -90,12 +91,12 @@ func (u *userKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (u *userKeyshare) PublicKey() *PublicKey {
+func (u *userKeyshare) PublicKey() *types.PublicKey {
 	bobOut, err := dklsv1.DecodeBobDkgResult(u.usrKSS)
 	if err != nil {
 		panic(err)
 	}
-	pub := &PublicKey{
+	pub := &types.PublicKey{
 		Key:     bobOut.PublicKey.ToAffineUncompressed(),
 		KeyType: "ecdsa-secp256k1",
 	}
@@ -123,12 +124,12 @@ func (v *validatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
 }
 
 // PublicKey is the public key for the keyshare
-func (u *validatorKeyshare) PublicKey() *PublicKey {
+func (u *validatorKeyshare) PublicKey() *types.PublicKey {
 	aliceOut, err := dklsv1.DecodeAliceDkgResult(u.valKSS)
 	if err != nil {
 		panic(err)
 	}
-	pub := &PublicKey{
+	pub := &types.PublicKey{
 		Key:     aliceOut.PublicKey.ToAffineUncompressed(),
 		KeyType: "ecdsa-secp256k1",
 	}

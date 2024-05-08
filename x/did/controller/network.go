@@ -8,7 +8,6 @@ import (
 	"github.com/di-dao/core/crypto/core/protocol"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
 	"github.com/di-dao/core/pkg/ipfs"
-	"github.com/di-dao/core/x/did/types"
 )
 
 // RefreshFunc is the type for the refresh function
@@ -31,7 +30,7 @@ type vaultStore struct {
 }
 
 // NewController creates a new controller instance.
-func (v vaultStore) NewController() (types.IController, error) {
+func (v vaultStore) NewController() (Controller, error) {
 	kss, err := GenKSS()
 	if err != nil {
 		return nil, err
@@ -40,7 +39,7 @@ func (v vaultStore) NewController() (types.IController, error) {
 }
 
 // GenKSS generates both keyshares
-func GenKSS() (types.KeyshareSet, error) {
+func GenKSS() (KeyshareSet, error) {
 	defaultCurve := curves.P256()
 	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
@@ -56,7 +55,7 @@ func GenKSS() (types.KeyshareSet, error) {
 	if err != nil {
 		return nil, err
 	}
-	return types.NewKeyshareSet(aliceRes, bobRes), nil
+	return NewKeyshareSet(aliceRes, bobRes), nil
 }
 
 // runMpcProtocol runs the keyshare protocol between two parties
