@@ -1,3 +1,10 @@
+## Unreleased
+
+### Feat
+
+- add Taskfile.yml for task management in root, x/did, x/oracle, and x/svc directories feat(did): add identifier.go and method.go for handling email and phone DIDs
+- **app.go, depinject.go, keeper.go, keeper_test.go**: add AccountKeeper to DID Keeper for account management style(README.md): change list formatting from '--' to '-' for better readability style(app.go): remove unnecessary blank line for cleaner code
+
 ## 0.3.0 (2024-05-07)
 
 ### Feat

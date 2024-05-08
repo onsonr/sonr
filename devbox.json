@@ -5,12 +5,18 @@
     "docker@latest",
     "docker-compose@latest",
     "go_1_21@latest",
-    "helix@latest"
+    "helix@latest",
+    "ipfs@latest",
+    "go-task@latest",
+    "templ@latest"
   ],
   "shell": {
-    "init_hook": ["echo 'Welcome to devbox!' > /dev/null"],
+    "init_hook": ["go mod download"],
     "scripts": {
-      "test": ["echo \"Error: no test specified\" && exit 1"]
+      "proto":   ["make proto-gen"],
+      "templ":   ["templ generate"],
+      "devnet":  ["make sh-testnet"],
+      "testnet": ["make testnet"]
     }
   }
 }
