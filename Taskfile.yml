@@ -36,6 +36,12 @@ tasks:
     desc: Starts the devbox services
     silent: true
     cmds:
+      - devbox services up
+
+  rails:up:bg:
+    desc: Starts the devbox services (background)
+    silent: true
+    cmds:
       - devbox services up --background
 
   rails:down:
