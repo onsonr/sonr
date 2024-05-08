@@ -6,5 +6,21 @@ vars:
 tasks:
   default:
     cmds:
-      - echo "{{.GREETING}}"
+      - task --list
     silent: true
+  proto:
+    desc: Generate protobuf files
+    cmds:
+      - devbox run proto
+  templ:
+    desc: Generate templ files
+    cmds:
+      - devbox run templ
+  devnet:
+    desc: Start development network
+    cmds:
+      - devbox run devnet
+  testnet:
+    desc: Start test network
+    cmds:
+      - devbox run testnet

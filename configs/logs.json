@@ -1,5 +1,5 @@
 {
-  "start_time": 1714288492,
+  "start_time": 1715139054,
   "chains": [
     {
       "chain_id": "chainid-1",
@@ -7,7 +7,7 @@
       "rpc_address": "http://0.0.0.0:26657",
       "rest_address": "http://0.0.0.0:1317",
       "grpc_address": "0.0.0.0:9090",
-      "p2p_address": "0.0.0.0:51998",
+      "p2p_address": "0.0.0.0:58179",
       "ibc_paths": [
         "ibc-connection-1"
       ]
@@ -15,10 +15,10 @@
     {
       "chain_id": "localcosmos-1",
       "chain_name": "localcosmos-1",
-      "rpc_address": "http://0.0.0.0:51991",
-      "rest_address": "http://0.0.0.0:51993",
-      "grpc_address": "0.0.0.0:51992",
-      "p2p_address": "0.0.0.0:51995",
+      "rpc_address": "http://0.0.0.0:58176",
+      "rest_address": "http://0.0.0.0:58173",
+      "grpc_address": "0.0.0.0:58177",
+      "p2p_address": "0.0.0.0:58175",
       "ibc_paths": [
         "ibc-connection-1"
       ]

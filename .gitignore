@@ -20,7 +20,7 @@ go.work
 go.work.sum
 
 # Environment files
-.env*
+.env
 **/*.env
 
 # Lock files
