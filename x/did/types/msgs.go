@@ -45,3 +45,91 @@ func (msg *MsgUpdateParams) Validate() error {
 
 	return msg.Params.Validate()
 }
+
+// NewMsgInitializeController creates a new instance of MsgInitializeController
+func NewMsgInitializeController(
+	sender sdk.Address,
+	assertions AssertionList,
+	keyshares KeyshareList,
+	verifications VerificationList,
+) (*MsgInitializeController, error) {
+
+	// Convert assertions to byte arrays
+	assertionsBz, err := ConvertAssertionListToByteArray(assertions)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert keyshares to byte arrays
+	keysharesBz, err := ConvertKeyshareListToByteArray(keyshares)
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert verifications to byte arrays
+	verificationsBz, err := ConvertVerificationListToByteArray(verifications)
+	if err != nil {
+		return nil, err
+	}
+
+	return &MsgInitializeController{
+		Authority:     sender.String(),
+		Assertions:    assertionsBz,
+		Keyshares:     keysharesBz,
+		Verifications: verificationsBz,
+	}, nil
+}
+
+// Route returns the name of the module
+func (msg MsgInitializeController) Route() string { return ModuleName }
+
+// Type returns the the action
+func (msg MsgInitializeController) Type() string { return "initialize_controller" }
+
+// GetSignBytes implements the LegacyMsg interface.
+func (msg MsgInitializeController) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message.
+func (msg *MsgInitializeController) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+// GetAssertions returns the assertions
+func (msg *MsgInitializeController) GetAssertions() (AssertionList, error) {
+	return ConvertByteArrayToAssertionList(msg.Assertions)
+}
+
+// GetKeyshares returns the keyshares
+func (msg *MsgInitializeController) GetKeyshares() (KeyshareList, error) {
+	return ConvertByteArrayToKeyshareList(msg.Keyshares)
+}
+
+// GetVerifications returns the verifications
+func (msg *MsgInitializeController) GetVerifications() (VerificationList, error) {
+	return ConvertByteArrayToVerificationList(msg.Verifications)
+}
+
+// ValidateBasic does a sanity check on the provided data.
+func (msg *MsgInitializeController) Validate() error {
+	if _, err := sdk.AccAddressFromBech32(msg.Authority); err != nil {
+		return errors.Wrap(err, "invalid authority address")
+	}
+	_, err := ConvertByteArrayToAssertionList(msg.Assertions)
+	if err != nil {
+		return errors.Wrap(err, "invalid assertions")
+	}
+
+	_, err = ConvertByteArrayToKeyshareList(msg.Keyshares)
+	if err != nil {
+		return errors.Wrap(err, "invalid keyshares")
+	}
+
+	_, err = ConvertByteArrayToVerificationList(msg.Verifications)
+	if err != nil {
+		return errors.Wrap(err, "invalid verifications")
+	}
+	return nil
+}

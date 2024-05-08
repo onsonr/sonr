@@ -3,6 +3,7 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"cosmossdk.io/errors"
@@ -29,8 +30,35 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 }
 
 // InitializeController implements types.MsgServer.
-func (ms msgServer) InitializeController(ctx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("InitializeController is unimplemented")
+func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	inserted := 0
+	if assertionList, err := types.ConvertByteArrayToAssertionList(msg.Assertions); err != nil {
+		for _, assertion := range assertionList {
+			err := ms.k.OrmDB.AssertionTable().Insert(ctx, assertion)
+			if err != nil {
+				return nil, err
+			}
+			inserted++
+		}
+	}
+	if keyshareList, err := types.ConvertByteArrayToKeyshareList(msg.Keyshares); err != nil {
+		for _, keyshare := range keyshareList {
+			err := ms.k.OrmDB.KeyshareTable().Insert(ctx, keyshare)
+			if err != nil {
+				return nil, err
+			}
+			inserted++
+		}
+	}
+	if verificationList, err := types.ConvertByteArrayToVerificationList(msg.Verifications); err != nil {
+		for _, verification := range verificationList {
+			err := ms.k.OrmDB.VerificationTable().Insert(ctx, verification)
+			if err != nil {
+				return nil, err
+			}
+			inserted++
+		}
+	}
 	return &types.MsgInitializeControllerResponse{}, nil
 }
