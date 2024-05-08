@@ -33,7 +33,7 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	inserted := 0
-	if assertionList, err := types.ConvertByteArrayToAssertionList(msg.Assertions); err != nil {
+	if assertionList, err := msg.GetAssertionList(); err != nil {
 		for _, assertion := range assertionList {
 			err := ms.k.OrmDB.AssertionTable().Insert(ctx, assertion)
 			if err != nil {
@@ -42,7 +42,7 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 			inserted++
 		}
 	}
-	if keyshareList, err := types.ConvertByteArrayToKeyshareList(msg.Keyshares); err != nil {
+	if keyshareList, err := msg.GetKeyshareList(); err != nil {
 		for _, keyshare := range keyshareList {
 			err := ms.k.OrmDB.KeyshareTable().Insert(ctx, keyshare)
 			if err != nil {
@@ -51,7 +51,7 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 			inserted++
 		}
 	}
-	if verificationList, err := types.ConvertByteArrayToVerificationList(msg.Verifications); err != nil {
+	if verificationList, err := msg.GetVerificationList(); err != nil {
 		for _, verification := range verificationList {
 			err := ms.k.OrmDB.VerificationTable().Insert(ctx, verification)
 			if err != nil {

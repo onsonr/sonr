@@ -98,17 +98,17 @@ func (msg *MsgInitializeController) GetSigners() []sdk.AccAddress {
 }
 
 // GetAssertions returns the assertions
-func (msg *MsgInitializeController) GetAssertions() (AssertionList, error) {
+func (msg *MsgInitializeController) GetAssertionList() (AssertionList, error) {
 	return ConvertByteArrayToAssertionList(msg.Assertions)
 }
 
 // GetKeyshares returns the keyshares
-func (msg *MsgInitializeController) GetKeyshares() (KeyshareList, error) {
+func (msg *MsgInitializeController) GetKeyshareList() (KeyshareList, error) {
 	return ConvertByteArrayToKeyshareList(msg.Keyshares)
 }
 
 // GetVerifications returns the verifications
-func (msg *MsgInitializeController) GetVerifications() (VerificationList, error) {
+func (msg *MsgInitializeController) GetVerificationList() (VerificationList, error) {
 	return ConvertByteArrayToVerificationList(msg.Verifications)
 }
 
