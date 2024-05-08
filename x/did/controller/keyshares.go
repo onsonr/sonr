@@ -9,69 +9,37 @@ import (
 	"github.com/di-dao/core/x/did/types"
 )
 
-// UserSignFunc is the type for the user sign function
-type UserSignFunc = *dklsv1.BobSign
-
-// UserRefreshFunc is the type for the user refresh function
-type UserRefreshFunc = *dklsv1.BobRefresh
-
-// ValidatorSignFunc is the type for the validator sign function
-type ValidatorSignFunc = *dklsv1.AliceSign
-
-// ValidatorRefreshFunc is the type for the validator refresh function
-type ValidatorRefreshFunc = *dklsv1.AliceRefresh
-
-type KeyshareSet interface {
-	Val() ValidatorKeyshare
-	Usr() UserKeyshare
-	PublicKey() *types.PublicKey
-}
-
-// KeyshareSet is the set of keyshares for the protocol
-type keyshareSet struct {
-	val ValidatorKeyshare
-	usr UserKeyshare
+// keyshares is the set of keyshares for the protocol
+type keyshares struct {
+	val types.KssValI
+	usr types.KssUserI
 }
 
 // Usr returns the user keyshare
-func (ks *keyshareSet) Usr() UserKeyshare {
+func (ks *keyshares) Usr() types.KssUserI {
 	return ks.usr
 }
 
 // Val returns the validator keyshare
-func (ks *keyshareSet) Val() ValidatorKeyshare {
+func (ks *keyshares) Val() types.KssValI {
 	return ks.val
 }
 
 // PublicKey returns the public key for the keyshare set
-func (ks *keyshareSet) PublicKey() *types.PublicKey {
+func (ks *keyshares) PublicKey() *types.PublicKey {
 	return ks.val.PublicKey()
 }
 
-// UserKeyshare is the interface for the user keyshare
-type UserKeyshare interface {
-	GetSignFunc(msg []byte) (UserSignFunc, error)
-	GetRefreshFunc() (UserRefreshFunc, error)
-	PublicKey() *types.PublicKey
-}
-
-// ValidatorKeyshare is the interface for the validator keyshare
-type ValidatorKeyshare interface {
-	GetSignFunc(msg []byte) (ValidatorSignFunc, error)
-	GetRefreshFunc() (ValidatorRefreshFunc, error)
-	PublicKey() *types.PublicKey
-}
-
 // NewKeyshareSet creates a new KeyshareSet
-func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) KeyshareSet {
-	return &keyshareSet{
+func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) types.KssI {
+	return &keyshares{
 		val: createValidatorKeyshare(aliceResult),
 		usr: createUserKeyshare(bobResult),
 	}
 }
 
 // GetSignFunc returns the sign function for the user keyshare
-func (u *userKeyshare) GetSignFunc(msg []byte) (UserSignFunc, error) {
+func (u *userKeyshare) GetSignFunc(msg []byte) (types.SignFuncUser, error) {
 	curve := curves.P256()
 	bobSign, err := dklsv1.NewBobSign(curve, sha3.New256(), msg, u.usrKSS, protocol.Version1)
 	if err != nil {
@@ -81,7 +49,7 @@ func (u *userKeyshare) GetSignFunc(msg []byte) (UserSignFunc, error) {
 }
 
 // GetRefreshFunc returns the refresh function for the user keyshare
-func (u *userKeyshare) GetRefreshFunc() (UserRefreshFunc, error) {
+func (u *userKeyshare) GetRefreshFunc() (types.RefreshFuncUser, error) {
 	curve := curves.P256()
 	bobRefresh, err := dklsv1.NewBobRefresh(curve, u.usrKSS, protocol.Version1)
 	if err != nil {
@@ -104,7 +72,7 @@ func (u *userKeyshare) PublicKey() *types.PublicKey {
 }
 
 // GetSignFunc returns the sign function for the validator keyshare
-func (v *validatorKeyshare) GetSignFunc(msg []byte) (ValidatorSignFunc, error) {
+func (v *validatorKeyshare) GetSignFunc(msg []byte) (types.SignFuncVal, error) {
 	curve := curves.P256()
 	aliceSign, err := dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.valKSS, protocol.Version1)
 	if err != nil {
@@ -114,7 +82,7 @@ func (v *validatorKeyshare) GetSignFunc(msg []byte) (ValidatorSignFunc, error) {
 }
 
 // GetRefreshFunc returns the refresh function for the validator keyshare
-func (v *validatorKeyshare) GetRefreshFunc() (ValidatorRefreshFunc, error) {
+func (v *validatorKeyshare) GetRefreshFunc() (types.RefreshFuncVal, error) {
 	curve := curves.P256()
 	aliceRefresh, err := dklsv1.NewAliceRefresh(curve, v.valKSS, protocol.Version1)
 	if err != nil {
@@ -147,14 +115,14 @@ type validatorKeyshare struct {
 }
 
 // createUserKeyshare creates a new UserKeyshare and stores it into IPFS
-func createUserKeyshare(usrKSS *protocol.Message) UserKeyshare {
+func createUserKeyshare(usrKSS *protocol.Message) types.KssUserI {
 	return &userKeyshare{
 		usrKSS: usrKSS,
 	}
 }
 
 // createValidatorKeyshare creates a new ValidatorKeyshare
-func createValidatorKeyshare(valKSS *protocol.Message) ValidatorKeyshare {
+func createValidatorKeyshare(valKSS *protocol.Message) types.KssValI {
 	return &validatorKeyshare{
 		valKSS: valKSS,
 	}
