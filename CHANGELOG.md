@@ -1,9 +1,21 @@
-## Unreleased
+## 0.4.0 (2024-05-08)
 
 ### Feat
 
+- **x/did/keeper**: implement InitializeController in server.go feat(x/did): add new router.go file in module package feat(did/types): add NewMsgInitializeController function in msgs.go feat(x/did/types): add state.go with conversion functions for different lists
+- **x/did/controller**: add keyshares.go for user and validator keyshare management
+- **config**: add new chain/app.pkl configuration file feat(config): add new chain configuration file config.pkl feat(config): add new 'toml.pkl' configuration file feat(hway.pkl): Add new 'hway.pkl' file in 'config/pkl/rails' directory feat(ipfs.pkl): Add new 'config/pkl/rails/ipfs.pkl' file feat(config/pkl/rails): add new 'matrix.pkl' configuration file feat(config/pkl/rails): add new file 'services.pkl' with sonrEventsBridge configurations feat(did): add new 'invocation.go' file in 'pkg/did' directory feat(controller): add Controller interface and update controller struct types in did/controller/controller.go feat(x/did/controller): add new file for keyshare set functionality feat(x/did/controller): add network.go for keyshare interactions with the IPFS network feat(x/did/controller): add new file property.go feat(x/did/controller): add new signer.go file refactor(x/did/keeper): change types.KeyshareSet to controller.KeyshareSet and types.IController to controller.Controller refactor(did/types): simplify controller.go by removing unnecessary IController interface
+- Remove '.zed/tasks.json' file feat: Add Taskfile.yml, enhance DIDs handling, improve code readability in CHANGELOG.md feat(devbox.json): update toolbox and shell scripts feat(devbox.lock): add go-task, ipfs and templ modules to devbox configuration feat(pkg/did): add new assertion.go file feat(did): add new attestation.go file in pkg/did directory feat(did): add new delegation.go file in pkg/did feat(did): add new file 'invokation.go' in 'pkg/did' feat(pkg/did): add new service.go file in 'did' package
 - add Taskfile.yml for task management in root, x/did, x/oracle, and x/svc directories feat(did): add identifier.go and method.go for handling email and phone DIDs
 - **app.go, depinject.go, keeper.go, keeper_test.go**: add AccountKeeper to DID Keeper for account management style(README.md): change list formatting from '--' to '-' for better readability style(app.go): remove unnecessary blank line for cleaner code
+
+### Fix
+
+- **.gitignore**: adjust file to ignore specific .env instead of all .env* files feat(Taskfile.yml): add new tasks for protobuf, templ files, devnet, and testnet fix(configs): update start_time and addresses in logs.json
+
+### Refactor
+
+- **x/did/keeper**: replace ConvertByteArrayTo*List methods with Get*List methods in InitializeController function refactor(x/did/types/msgs.go): rename getter functions for clarity
 
 ## 0.3.0 (2024-05-07)
 
