@@ -22,10 +22,10 @@ import (
 
 	"github.com/di-dao/core/app"
 	"github.com/di-dao/core/app/params"
+	// NewRootCmd creates a new root command for chain app. It is called once in the
+	// main function.
 )
 
-// NewRootCmd creates a new root command for chain app. It is called once in the
-// main function.
 func NewRootCmd() *cobra.Command {
 	cfg := sdk.GetConfig()
 	cfg.SetBech32PrefixForAccount(app.Bech32PrefixAccAddr, app.Bech32PrefixAccPub)
@@ -105,7 +105,7 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 
-	initRootCmd(rootCmd, encodingConfig.TxConfig, encodingConfig.InterfaceRegistry, encodingConfig.Codec, tempApp.BasicModuleManager)
+	initRootCmd(rootCmd, encodingConfig.TxConfig, encodingConfig.InterfaceRegistry, tempApp.BasicModuleManager)
 
 	// add keyring to autocli opts
 	autoCliOpts := tempApp.AutoCliOpts()

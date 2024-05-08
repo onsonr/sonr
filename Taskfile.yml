@@ -6,47 +6,42 @@ tasks:
       - task --list
     silent: true
 
-  proto:
-    desc: Generate protobuf files
+  gen:
+    desc: Generate protobuf files and templ files
     silent: true
     cmds:
       - devbox run proto
-
-  templ:
-    desc: Generate templ files
-    silent: true
-    cmds:
       - devbox run templ
 
-  devnet:
+  run:devnet:
     desc: Start development network
     silent: true
     cmds:
       - devbox run devnet
 
-  testnet:
+  run:testnet:
     desc: Start test network
     silent: true
     cmds:
       - devbox run testnet
 
+  network:up:
+    aliases:
+      - "net-up"
+    desc: Deploy the Sonr Testnet
+    silent: true
+    cmds:
+      - devbox services up --background --process-compose-file ./deploy/networks/testnet/process-compose.yml
+
   rails:up:
     aliases:
       - "rls-up"
-    desc: Starts the devbox services
-    silent: true
-    cmds:
-      - devbox services up --process-compose-file ./deploy/process-compose.yml
-
-  rails:up:bg:
-    aliases:
-      - "rls-bg"
     desc: Starts the devbox services (background)
     silent: true
     cmds:
-      - devbox services up --background --process-compose-file ./deploy/process-compose.yml
+      - devbox services up --background --process-compose-file ./deploy/rails/process-compose.yml
 
-  rails:down:
+  services:down:
     aliases:
       - "rls-kill"
     desc: Stops the devbox services
@@ -54,7 +49,7 @@ tasks:
     cmds:
       - devbox services down
 
-  rails:ls:
+  services:ls:
     aliases:
       - "rls-ls"
     desc: Lists the devbox services
