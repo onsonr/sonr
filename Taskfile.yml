@@ -8,30 +8,39 @@ tasks:
     cmds:
       - task --list
     silent: true
+
   proto:
     desc: Generate protobuf files
+    silent: true
     cmds:
       - devbox run proto
+
   templ:
     desc: Generate templ files
+    silent: true
     cmds:
       - devbox run templ
+
   devnet:
     desc: Start development network
+    silent: true
     cmds:
       - devbox run devnet
   testnet:
     desc: Start test network
+    silent: true
     cmds:
       - devbox run testnet
 
   rails:up:
     desc: Starts the devbox services
+    silent: true
     cmds:
-      - devbox services up
+      - devbox services up --background
 
   rails:down:
     desc: Stops the devbox services
+    silent: true
     cmds:
       - devbox services down
 

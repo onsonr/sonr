@@ -16,15 +16,14 @@
     "gum@latest"
   ],
   "env": {
-    "CADDY_CONFIG": "./etc/caddy/Caddyfile",
-    "IPFS_PATH":    "~/ipfs"
+    "CADDY_CONFIG": "./rails/caddy/Caddyfile"
   },
   "shell": {
     "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
-      "proto":   ["make proto-gen"],
-      "templ":   ["templ generate"],
-      "devnet":  ["make sh-testnet"],
+      "proto": ["make proto-gen"],
+      "templ": ["templ generate"],
+      "devnet": ["make sh-testnet"],
       "testnet": ["make testnet"]
     }
   }
