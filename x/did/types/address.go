@@ -4,7 +4,6 @@ import (
 	"regexp"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
-	ethcommon "github.com/ethereum/go-ethereum/common"
 )
 
 // BitcoinAddress is a type for the BTC address
@@ -34,33 +33,6 @@ func (a BitcoinAddress) Validate() error {
 	return nil
 }
 
-// EthereumAddress is a type for the ETH address
-type EthereumAddress string
-
-// Bytes returns the bytes representation of the ETH address
-func (a EthereumAddress) Bytes() []byte {
-	return []byte(a)
-}
-
-// DID returns the DID representation of the ETH address given a method
-func (a EthereumAddress) DID(method string) string {
-	return "did:" + method + ":" + a.String()
-}
-
-// String returns the string representation of the ETH address
-func (a EthereumAddress) String() string {
-	return string(a)
-}
-
-// Validate returns an error if the ETH address is invalid
-func (a EthereumAddress) Validate() error {
-	re := regexp.MustCompile("^0x[0-9a-fA-F]{40}$")
-	if !re.MatchString(string(a)) {
-		return ErrInvalidETHAddressFormat
-	}
-	return nil
-}
-
 // SonrAddress is a type for the IDX address
 type SonrAddress string
 
@@ -86,12 +58,6 @@ func CreateBitcoinAddress(publicKey *PublicKey) (BitcoinAddress, error) {
 		return "", err
 	}
 	return BitcoinAddress(addr), nil
-}
-
-// CreateEthereumAddress returns the ETH address from the public key using keccak256
-func CreateEthereumAddress(publicKey *PublicKey) (EthereumAddress, error) {
-	addr := ethcommon.BytesToAddress(publicKey.Address().Bytes())
-	return EthereumAddress(addr.String()), nil
 }
 
 // CreateSonrAddress returns the IDX address from the public key
