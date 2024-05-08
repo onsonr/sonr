@@ -3,19 +3,19 @@
   "packages": [
     "buf@latest",
     "docker@latest",
-    "docker-compose@latest",
     "go_1_21@latest",
     "helix@latest",
     "ipfs@latest",
     "go-task@latest",
-    "templ@latest"
+    "templ@latest",
+    "dendrite@latest"
   ],
   "shell": {
-    "init_hook": ["go mod download"],
+    "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
-      "proto":   ["make proto-gen"],
-      "templ":   ["templ generate"],
-      "devnet":  ["make sh-testnet"],
+      "proto": ["make proto-gen"],
+      "templ": ["templ generate"],
+      "devnet": ["make sh-testnet"],
       "testnet": ["make testnet"]
     }
   }

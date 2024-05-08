@@ -49,51 +49,51 @@
         }
       }
     },
-    "docker-compose@latest": {
+    "dendrite@latest": {
       "last_modified": "2024-04-19T17:36:04-04:00",
-      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#docker-compose",
+      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#dendrite",
       "source": "devbox-search",
-      "version": "2.26.1",
+      "version": "0.13.7",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/vzf0m7fmrahv7ag80vpmsg6il3gdpdvh-docker-compose-2.26.1",
+              "path": "/nix/store/r5487wv2sr25dg4b8gnmyrxkgmx1354z-matrix-dendrite-0.13.7",
               "default": true
             }
           ],
-          "store_path": "/nix/store/vzf0m7fmrahv7ag80vpmsg6il3gdpdvh-docker-compose-2.26.1"
+          "store_path": "/nix/store/r5487wv2sr25dg4b8gnmyrxkgmx1354z-matrix-dendrite-0.13.7"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/ja7132xnw5lzz8qvxmq44b4hkfi42rfy-docker-compose-2.26.1",
+              "path": "/nix/store/2g1c1hrihsqmszl4dy4nqag60jjklwig-matrix-dendrite-0.13.7",
               "default": true
             }
           ],
-          "store_path": "/nix/store/ja7132xnw5lzz8qvxmq44b4hkfi42rfy-docker-compose-2.26.1"
+          "store_path": "/nix/store/2g1c1hrihsqmszl4dy4nqag60jjklwig-matrix-dendrite-0.13.7"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/7bjrsgdh3h37909gg8vlh09aqamjsshx-docker-compose-2.26.1",
+              "path": "/nix/store/04l5lrvpfryw0wrfxkhcwm42kd8ihsdv-matrix-dendrite-0.13.7",
               "default": true
             }
           ],
-          "store_path": "/nix/store/7bjrsgdh3h37909gg8vlh09aqamjsshx-docker-compose-2.26.1"
+          "store_path": "/nix/store/04l5lrvpfryw0wrfxkhcwm42kd8ihsdv-matrix-dendrite-0.13.7"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/mn13vcxl4nd6yx4968simkpfrpxypxbn-docker-compose-2.26.1",
+              "path": "/nix/store/96pg4jq78nj5qhf1viylmj8943fcdrg5-matrix-dendrite-0.13.7",
               "default": true
             }
           ],
-          "store_path": "/nix/store/mn13vcxl4nd6yx4968simkpfrpxypxbn-docker-compose-2.26.1"
+          "store_path": "/nix/store/96pg4jq78nj5qhf1viylmj8943fcdrg5-matrix-dendrite-0.13.7"
         }
       }
     },
