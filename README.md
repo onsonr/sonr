@@ -1,5 +1,6 @@
 <div align="center">
 <img src="https://pub-97e96d678cb448969765e4c1542e675a.r2.dev/github-core.png" width="256" height="256" />
+</div>
 
 ## `core` - Sonr Chain
 
@@ -13,19 +14,19 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 ### Community & Support
 
-- [Forum](https://github.com/di-dao/sonr/discussions)
-- [Issues](https://github.com/di-dao/sonr/issues)
-- [Twitter](https://sonr.io/twitter)
-- [Dev Chat](https://sonr.io/discord)
+-   [Forum](https://github.com/di-dao/sonr/discussions)
+-   [Issues](https://github.com/di-dao/sonr/issues)
+-   [Twitter](https://sonr.io/twitter)
+-   [Dev Chat](https://sonr.io/discord)
 
 ### Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
 
-- **Protocol Labs**: For IPFS & Libp2p.
-- **Interchain Foundation**: For Cosmos & IBC.
-- **Tim Berners-Lee**: For the Internet.
-- **Satoshi Nakamoto**: For Bitcoin.
-- **Steve Jobs**: For Taste.
+-   **Protocol Labs**: For IPFS & Libp2p.
+-   **Interchain Foundation**: For Cosmos & IBC.
+-   **Tim Berners-Lee**: For the Internet.
+-   **Satoshi Nakamoto**: For Bitcoin.
+-   **Steve Jobs**: For Taste.
 
 Thank you for your support and inspiration!
