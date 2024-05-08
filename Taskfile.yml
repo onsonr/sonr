@@ -23,6 +23,7 @@ tasks:
     silent: true
     cmds:
       - devbox run devnet
+
   testnet:
     desc: Start test network
     silent: true
@@ -30,24 +31,33 @@ tasks:
       - devbox run testnet
 
   rails:up:
+    aliases:
+      - "rls-up"
     desc: Starts the devbox services
     silent: true
     cmds:
-      - devbox services up
+      - devbox services up --process-compose-file ./deploy/process-compose.yml
 
   rails:up:bg:
+    aliases:
+      - "rls-bg"
     desc: Starts the devbox services (background)
     silent: true
     cmds:
-      - devbox services up --background
+      - devbox services up --background --process-compose-file ./deploy/process-compose.yml
 
   rails:down:
+    aliases:
+      - "rls-kill"
     desc: Stops the devbox services
     silent: true
     cmds:
       - devbox services down
 
   rails:ls:
+    aliases:
+      - "rls-ls"
     desc: Lists the devbox services
+    silent: true
     cmds:
       - devbox services ls

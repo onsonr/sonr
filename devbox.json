@@ -16,7 +16,7 @@
     "gum@latest"
   ],
   "env": {
-    "CADDY_CONFIG": "./rails/caddy/Caddyfile"
+    "CADDY_CONFIG": "./deploy/etc/caddy/Caddyfile"
   },
   "shell": {
     "init_hook": ["sh ./scripts/dev_deps.sh"],
