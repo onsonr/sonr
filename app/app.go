@@ -141,9 +141,6 @@ import (
 	oracle "github.com/di-dao/core/x/oracle"
 	oraclekeeper "github.com/di-dao/core/x/oracle/keeper"
 	oracletypes "github.com/di-dao/core/x/oracle/types"
-	svc "github.com/di-dao/core/x/svc"
-	svckeeper "github.com/di-dao/core/x/svc/keeper"
-	svctypes "github.com/di-dao/core/x/svc/types"
 	"github.com/spf13/cast"
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
@@ -263,7 +260,6 @@ type ChainApp struct {
 	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
 	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
 	OracleKeeper              oraclekeeper.Keeper
-	SvcKeeper                 svckeeper.Keeper
 	DidKeeper                 didkeeper.Keeper
 
 	// the module manager
@@ -370,7 +366,6 @@ func NewChainApp(
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
 		oracletypes.StoreKey,
-		svctypes.StoreKey,
 		didtypes.StoreKey,
 	)
 
@@ -623,14 +618,6 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create the svc Keeper
-	app.SvcKeeper = svckeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[svctypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
 	// Create the oracle Middleware Keeper
 	app.OracleKeeper = oraclekeeper.NewKeeper(
 		appCodec,
@@ -816,8 +803,6 @@ func NewChainApp(
 		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
 		oracle.NewAppModule(app.OracleKeeper),
 
-		svc.NewAppModule(appCodec, app.SvcKeeper),
-
 		did.NewAppModule(appCodec, app.DidKeeper),
 	)
 
@@ -865,7 +850,6 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		oracletypes.ModuleName,
-		svctypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -886,7 +870,6 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		oracletypes.ModuleName,
-		svctypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -916,7 +899,6 @@ func NewChainApp(
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		oracletypes.ModuleName,
-		svctypes.ModuleName,
 		didtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1331,7 +1313,6 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(oracletypes.ModuleName)
-	paramsKeeper.Subspace(svctypes.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 
 	return paramsKeeper
