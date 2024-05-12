@@ -15,13 +15,12 @@
     "ipfs-cluster@latest"
   ],
   "shell": {
-    // "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
       "gen": ["make proto-gen", "templ generate"],
-      "dev": ["make sh-testnet"],
-      "testnet": ["make testnet"],
+      "dev": ["devbox services up --background", "make sh-testnet"],
+      "testnet": ["devbox services up --background", "make testnet"],
       "svc:ls": ["devbox services ls"],
-      "svc:up": ["devbox services up --background"],
+      "svc:up": ["devbox services up"],
       "svc:down": ["devbox services down"]
     }
   }
