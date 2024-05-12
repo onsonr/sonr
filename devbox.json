@@ -4,24 +4,22 @@
     "buf@latest",
     "docker@latest",
     "go_1_21@latest",
-    "helix@latest",
     "ipfs@latest",
-    "go-task@latest",
     "templ@latest",
     "dendrite@latest",
     "doppler@latest",
     "mods@latest",
     "gum@latest",
-    "ipfs-cluster@latest"
+    "neovim@latest"
   ],
   "shell": {
     "scripts": {
+      "edit": ["nvim ."],
       "gen": ["make proto-gen", "templ generate"],
       "dev": ["devbox services up --background", "make sh-testnet"],
       "testnet": ["devbox services up --background", "make testnet"],
-      "svc:ls": ["devbox services ls"],
-      "svc:up": ["devbox services up"],
-      "svc:down": ["devbox services down"]
+      "ps": ["devbox services ls"],
+      "kill": ["devbox services down"]
     }
   }
 }
