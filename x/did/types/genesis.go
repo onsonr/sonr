@@ -34,6 +34,9 @@ func DefaultParams() Params {
 		},
 		AssertionRewardRate:  0.35,
 		EncryptionRewardRate: 0.5,
+		WhitelistedOrigins: []string{
+			"sonr.local",
+		},
 	}
 }
 
