@@ -12,7 +12,7 @@ import (
 
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	apiv1 "github.com/di-dao/core/api/did/v1"
-	"github.com/di-dao/core/x/did/internal/controller"
+	"github.com/di-dao/core/x/did/controller"
 	"github.com/di-dao/core/x/did/types"
 )
 
