@@ -53,7 +53,7 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 	}
 	if verificationList, err := msg.GetVerificationList(); err != nil {
 		for _, verification := range verificationList {
-			err := ms.k.OrmDB.VerificationTable().Insert(ctx, verification)
+			err := ms.k.OrmDB.ProofTable().Insert(ctx, verification)
 			if err != nil {
 				return nil, err
 			}

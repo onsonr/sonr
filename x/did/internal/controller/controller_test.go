@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/x/did/controller"
+	"github.com/di-dao/core/x/did/internal/controller"
 	"github.com/di-dao/core/x/did/types"
 )
 

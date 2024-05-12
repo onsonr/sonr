@@ -15,8 +15,8 @@ type ByteArray = [][]byte
 // KeyshareList is a list of Keyshare
 type KeyshareList = []*didv1.Keyshare
 
-// VerificationList is a list of Verification
-type VerificationList = []*didv1.Verification
+// PropertyList is a list of Verification
+type PropertyList = []*didv1.Proof
 
 // ConvertByteArrayToAssertionList converts a list of byte arrays to a list of assertions
 func ConvertByteArrayToAssertionList(bzList ByteArray) (AssertionList, error) {
@@ -45,10 +45,10 @@ func ConvertByteArrayToKeyshareList(bzList ByteArray) (KeyshareList, error) {
 }
 
 // ConvertByteArrayToVerificationList converts a list of byte arrays to a list of verifications
-func ConvertByteArrayToVerificationList(bzList ByteArray) (VerificationList, error) {
-	result := make([]*didv1.Verification, len(bzList))
+func ConvertByteArrayToVerificationList(bzList ByteArray) (PropertyList, error) {
+	result := make([]*didv1.Proof, len(bzList))
 	for i, bz := range bzList {
-		var v didv1.Verification
+		var v didv1.Proof
 		if err := json.Unmarshal(bz, &v); err != nil {
 			return nil, err
 		}
@@ -84,7 +84,7 @@ func ConvertKeyshareListToByteArray(kss KeyshareList) (ByteArray, error) {
 }
 
 // ConvertVerificationListToByteArray converts a list of verifications to a list of byte arrays
-func ConvertVerificationListToByteArray(verifications VerificationList) (ByteArray, error) {
+func ConvertVerificationListToByteArray(verifications PropertyList) (ByteArray, error) {
 	result := make([][]byte, len(verifications))
 	for i, v := range verifications {
 		bz, err := json.Marshal(v)

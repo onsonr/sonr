@@ -51,7 +51,7 @@ func NewMsgInitializeController(
 	sender sdk.Address,
 	assertions AssertionList,
 	keyshares KeyshareList,
-	verifications VerificationList,
+	verifications PropertyList,
 ) (*MsgInitializeController, error) {
 
 	// Convert assertions to byte arrays
@@ -108,7 +108,7 @@ func (msg *MsgInitializeController) GetKeyshareList() (KeyshareList, error) {
 }
 
 // GetVerifications returns the verifications
-func (msg *MsgInitializeController) GetVerificationList() (VerificationList, error) {
+func (msg *MsgInitializeController) GetVerificationList() (PropertyList, error) {
 	return ConvertByteArrayToVerificationList(msg.Verifications)
 }
 

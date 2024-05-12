@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Account_FullMethodName = "/did.v1.Query/Account"
-	Query_Exists_FullMethodName  = "/did.v1.Query/Exists"
-	Query_Params_FullMethodName  = "/did.v1.Query/Params"
+	Query_Account_FullMethodName       = "/did.v1.Query/Account"
+	Query_Exists_FullMethodName        = "/did.v1.Query/Exists"
+	Query_Params_FullMethodName        = "/did.v1.Query/Params"
+	Query_Resolve_FullMethodName       = "/did.v1.Query/Resolve"
+	Query_StartLogin_FullMethodName    = "/did.v1.Query/StartLogin"
+	Query_StartRegister_FullMethodName = "/did.v1.Query/StartRegister"
 )
 
 // QueryClient is the client API for Query service.
@@ -34,6 +37,12 @@ type QueryClient interface {
 	Exists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error)
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Resolve queries the DID document by its id.
+	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
+	StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error)
+	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
+	StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error)
 }
 
 type queryClient struct {
@@ -71,6 +80,33 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
+	out := new(QueryResolveResponse)
+	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error) {
+	out := new(QueryStartLoginResponse)
+	err := c.cc.Invoke(ctx, Query_StartLogin_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error) {
+	out := new(QueryStartRegisterResponse)
+	err := c.cc.Invoke(ctx, Query_StartRegister_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -81,6 +117,12 @@ type QueryServer interface {
 	Exists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error)
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Resolve queries the DID document by its id.
+	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
+	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
+	StartLogin(context.Context, *QueryStartLoginRequest) (*QueryStartLoginResponse, error)
+	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
+	StartRegister(context.Context, *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -96,6 +138,15 @@ func (UnimplementedQueryServer) Exists(context.Context, *QueryExistsRequest) (*Q
 }
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
+}
+func (UnimplementedQueryServer) StartLogin(context.Context, *QueryStartLoginRequest) (*QueryStartLoginResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartLogin not implemented")
+}
+func (UnimplementedQueryServer) StartRegister(context.Context, *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method StartRegister not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -164,6 +215,60 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryResolveRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Resolve(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Resolve_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Resolve(ctx, req.(*QueryResolveRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_StartLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryStartLoginRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).StartLogin(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_StartLogin_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).StartLogin(ctx, req.(*QueryStartLoginRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_StartRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryStartRegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).StartRegister(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_StartRegister_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).StartRegister(ctx, req.(*QueryStartRegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +287,18 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "Resolve",
+			Handler:    _Query_Resolve_Handler,
+		},
+		{
+			MethodName: "StartLogin",
+			Handler:    _Query_StartLogin_Handler,
+		},
+		{
+			MethodName: "StartRegister",
+			Handler:    _Query_StartRegister_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

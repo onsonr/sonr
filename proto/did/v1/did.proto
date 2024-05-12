@@ -1,0 +1,25 @@
+// Copyright Tharsis Labs Ltd.(Evmos)
+// SPDX-License-Identifier:ENCL-1.0(https://github.com/evmos/evmos/blob/main/LICENSE)
+syntax = "proto3";
+package did.v1;
+
+option go_package = "github.com/di-dao/core/x/did/types";
+
+// DIDDocument defines a DID document
+message DIDDocument {
+  string id = 1;
+  repeated VerificationMethod verification_methods = 2;
+  repeated string authentication = 4;
+  repeated string assertion_method = 5;
+  repeated string capability_delegation = 7;
+  repeated string capability_invocation = 8;
+}
+
+// VerificationMethod defines a verification method
+message VerificationMethod {
+  string id = 1;
+  string controller = 2;
+  string type = 3;
+  string public_key = 4;
+  map<string, string> public_key_jwk = 5;
+}

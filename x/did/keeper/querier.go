@@ -42,3 +42,24 @@ func (k Querier) Exists(goCtx context.Context, req *types.QueryExistsRequest) (*
 	panic("Exists is unimplemented")
 	return &types.QueryExistsResponse{}, nil
 }
+
+// Resolve implements types.QueryServer.
+func (k Querier) Resolve(goCtx context.Context, req *types.QueryResolveRequest) (*types.QueryResolveResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Resolve is unimplemented")
+	return &types.QueryResolveResponse{}, nil
+}
+
+// StartLogin implements types.QueryServer.
+func (k Querier) StartLogin(goCtx context.Context, req *types.QueryStartLoginRequest) (*types.QueryStartLoginResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("StartLogin is unimplemented")
+	return &types.QueryStartLoginResponse{}, nil
+}
+
+// StartRegister implements types.QueryServer.
+func (k Querier) StartRegister(goCtx context.Context, req *types.QueryStartRegisterRequest) (*types.QueryStartRegisterResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("StartRegister is unimplemented")
+	return &types.QueryStartRegisterResponse{}, nil
+}

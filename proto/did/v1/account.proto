@@ -24,4 +24,7 @@ message EthAccount {
 
   // code_hash is the hash calculated from the code contents
   string code_hash = 2 [(gogoproto.moretags) = "yaml:\"code_hash\""];
+
+  // controller is the address of the controller
+  string controller = 3 [(gogoproto.moretags) = "yaml:\"controller\""];
 }

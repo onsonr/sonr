@@ -12,14 +12,31 @@ service Query {
     rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
         option (google.api.http).get = "/did/account/{did}";
     }
+
     // Exists queries if an id exists.
     rpc Exists(QueryExistsRequest) returns (QueryExistsResponse) {
         option (google.api.http).get = "/did/exists/{id}";
     }
-  // Params queries all parameters of the module.
-  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/did/params";
-  }
+
+    // Params queries all parameters of the module.
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/did/params";
+    }
+
+    // Resolve queries the DID document by its id.
+    rpc Resolve(QueryResolveRequest) returns (QueryResolveResponse) {
+        option (google.api.http).get = "/did/resolve/{id}";
+    }
+
+    // StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
+    rpc StartLogin(QueryStartLoginRequest) returns (QueryStartLoginResponse) {
+        option (google.api.http).get = "/did/login/{origin}/start";
+    }
+
+    // StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
+    rpc StartRegister(QueryStartRegisterRequest) returns (QueryStartRegisterResponse) {
+        option (google.api.http).get = "/did/register/{origin}/start";
+    }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -56,4 +73,37 @@ message QueryExistsRequest {
 // QueryExistsResponse is the response type for the Query/Exists RPC method.
 message QueryExistsResponse {
     bool exists = 1;
+}
+
+// QueryResolveRequest is the request type for the Query/Resolve RPC method.
+message QueryResolveRequest {
+    string id = 1;
+}
+
+// QueryResolveResponse is the response type for the Query/Resolve RPC method.
+message QueryResolveResponse {
+    // document is the DID document
+    string document = 1;
+}
+
+// QueryStartLoginRequest is the request type for the Query/StartLogin RPC method.
+message QueryStartLoginRequest {
+    string origin = 1;
+}
+
+// QueryStartLoginResponse is the response type for the Query/StartLogin RPC method.
+message QueryStartLoginResponse {
+    // options is the PublicKeyCredentialAttestationOptions
+    string options = 1;
+}
+
+// QueryStartRegisterRequest is the request type for the Query/StartRegister RPC method.
+message QueryStartRegisterRequest {
+    string origin = 1;
+}
+
+// QueryStartRegisterResponse is the response type for the Query/StartRegister RPC method.
+message QueryStartRegisterResponse {
+    // options is the PublicKeyCredentialCreationOptions
+    string options = 1;
 }

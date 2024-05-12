@@ -53,7 +53,7 @@ message Params {
   repeated string property_allowlist = 1;
 
   // Whitelisted Verifications
-  repeated string whitelisted_verifications = 2;
+  repeated string whitelisted_origins = 2;
 
   // Assertion Reward Rate
   double assertion_reward_rate = 3;

@@ -66,7 +66,8 @@ var (
 	fd_Assertion_key_type      protoreflect.FieldDescriptor
 	fd_Assertion_transport     protoreflect.FieldDescriptor
 	fd_Assertion_authenticator protoreflect.FieldDescriptor
-	fd_Assertion_issuer        protoreflect.FieldDescriptor
+	fd_Assertion_origin        protoreflect.FieldDescriptor
+	fd_Assertion_tld           protoreflect.FieldDescriptor
 	fd_Assertion_index         protoreflect.FieldDescriptor
 	fd_Assertion_controller    protoreflect.FieldDescriptor
 )
@@ -79,7 +80,8 @@ func init() {
 	fd_Assertion_key_type = md_Assertion.Fields().ByName("key_type")
 	fd_Assertion_transport = md_Assertion.Fields().ByName("transport")
 	fd_Assertion_authenticator = md_Assertion.Fields().ByName("authenticator")
-	fd_Assertion_issuer = md_Assertion.Fields().ByName("issuer")
+	fd_Assertion_origin = md_Assertion.Fields().ByName("origin")
+	fd_Assertion_tld = md_Assertion.Fields().ByName("tld")
 	fd_Assertion_index = md_Assertion.Fields().ByName("index")
 	fd_Assertion_controller = md_Assertion.Fields().ByName("controller")
 }
@@ -179,9 +181,15 @@ func (x *fastReflection_Assertion) Range(f func(protoreflect.FieldDescriptor, pr
 			return
 		}
 	}
-	if x.Issuer != "" {
-		value := protoreflect.ValueOfString(x.Issuer)
-		if !f(fd_Assertion_issuer, value) {
+	if x.Origin != "" {
+		value := protoreflect.ValueOfString(x.Origin)
+		if !f(fd_Assertion_origin, value) {
+			return
+		}
+	}
+	if x.Tld != "" {
+		value := protoreflect.ValueOfString(x.Tld)
+		if !f(fd_Assertion_tld, value) {
 			return
 		}
 	}
@@ -222,8 +230,10 @@ func (x *fastReflection_Assertion) Has(fd protoreflect.FieldDescriptor) bool {
 		return len(x.Transport) != 0
 	case "did.v1.Assertion.authenticator":
 		return x.Authenticator != ""
-	case "did.v1.Assertion.issuer":
-		return x.Issuer != ""
+	case "did.v1.Assertion.origin":
+		return x.Origin != ""
+	case "did.v1.Assertion.tld":
+		return x.Tld != ""
 	case "did.v1.Assertion.index":
 		return x.Index != uint64(0)
 	case "did.v1.Assertion.controller":
@@ -254,8 +264,10 @@ func (x *fastReflection_Assertion) Clear(fd protoreflect.FieldDescriptor) {
 		x.Transport = nil
 	case "did.v1.Assertion.authenticator":
 		x.Authenticator = ""
-	case "did.v1.Assertion.issuer":
-		x.Issuer = ""
+	case "did.v1.Assertion.origin":
+		x.Origin = ""
+	case "did.v1.Assertion.tld":
+		x.Tld = ""
 	case "did.v1.Assertion.index":
 		x.Index = uint64(0)
 	case "did.v1.Assertion.controller":
@@ -294,8 +306,11 @@ func (x *fastReflection_Assertion) Get(descriptor protoreflect.FieldDescriptor) 
 	case "did.v1.Assertion.authenticator":
 		value := x.Authenticator
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Assertion.issuer":
-		value := x.Issuer
+	case "did.v1.Assertion.origin":
+		value := x.Origin
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Assertion.tld":
+		value := x.Tld
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Assertion.index":
 		value := x.Index
@@ -335,8 +350,10 @@ func (x *fastReflection_Assertion) Set(fd protoreflect.FieldDescriptor, value pr
 		x.Transport = *clv.list
 	case "did.v1.Assertion.authenticator":
 		x.Authenticator = value.Interface().(string)
-	case "did.v1.Assertion.issuer":
-		x.Issuer = value.Interface().(string)
+	case "did.v1.Assertion.origin":
+		x.Origin = value.Interface().(string)
+	case "did.v1.Assertion.tld":
+		x.Tld = value.Interface().(string)
 	case "did.v1.Assertion.index":
 		x.Index = value.Uint()
 	case "did.v1.Assertion.controller":
@@ -378,8 +395,10 @@ func (x *fastReflection_Assertion) Mutable(fd protoreflect.FieldDescriptor) prot
 		panic(fmt.Errorf("field key_type of message did.v1.Assertion is not mutable"))
 	case "did.v1.Assertion.authenticator":
 		panic(fmt.Errorf("field authenticator of message did.v1.Assertion is not mutable"))
-	case "did.v1.Assertion.issuer":
-		panic(fmt.Errorf("field issuer of message did.v1.Assertion is not mutable"))
+	case "did.v1.Assertion.origin":
+		panic(fmt.Errorf("field origin of message did.v1.Assertion is not mutable"))
+	case "did.v1.Assertion.tld":
+		panic(fmt.Errorf("field tld of message did.v1.Assertion is not mutable"))
 	case "did.v1.Assertion.index":
 		panic(fmt.Errorf("field index of message did.v1.Assertion is not mutable"))
 	case "did.v1.Assertion.controller":
@@ -409,7 +428,9 @@ func (x *fastReflection_Assertion) NewField(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfList(&_Assertion_4_list{list: &list})
 	case "did.v1.Assertion.authenticator":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Assertion.issuer":
+	case "did.v1.Assertion.origin":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Assertion.tld":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Assertion.index":
 		return protoreflect.ValueOfUint64(uint64(0))
@@ -506,7 +527,11 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Issuer)
+		l = len(x.Origin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Tld)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -551,17 +576,24 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.Controller)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Controller)))
 			i--
-			dAtA[i] = 0x42
+			dAtA[i] = 0x4a
 		}
 		if x.Index != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.Index))
 			i--
-			dAtA[i] = 0x38
+			dAtA[i] = 0x40
 		}
-		if len(x.Issuer) > 0 {
-			i -= len(x.Issuer)
-			copy(dAtA[i:], x.Issuer)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Issuer)))
+		if len(x.Tld) > 0 {
+			i -= len(x.Tld)
+			copy(dAtA[i:], x.Tld)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Tld)))
+			i--
+			dAtA[i] = 0x3a
+		}
+		if len(x.Origin) > 0 {
+			i -= len(x.Origin)
+			copy(dAtA[i:], x.Origin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
 			i--
 			dAtA[i] = 0x32
 		}
@@ -824,7 +856,7 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -852,9 +884,41 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Issuer = string(dAtA[iNdEx:postIndex])
+				x.Origin = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Tld", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Tld = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 8:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
 				}
@@ -873,7 +937,7 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 						break
 					}
 				}
-			case 8:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
 				}
@@ -941,13 +1005,13 @@ func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Keyshare            protoreflect.MessageDescriptor
-	fd_Keyshare_id         protoreflect.FieldDescriptor
-	fd_Keyshare_public_key protoreflect.FieldDescriptor
-	fd_Keyshare_key_type   protoreflect.FieldDescriptor
-	fd_Keyshare_val_kss    protoreflect.FieldDescriptor
-	fd_Keyshare_index      protoreflect.FieldDescriptor
-	fd_Keyshare_controller protoreflect.FieldDescriptor
+	md_Keyshare             protoreflect.MessageDescriptor
+	fd_Keyshare_id          protoreflect.FieldDescriptor
+	fd_Keyshare_public_key  protoreflect.FieldDescriptor
+	fd_Keyshare_key_type    protoreflect.FieldDescriptor
+	fd_Keyshare_val_address protoreflect.FieldDescriptor
+	fd_Keyshare_index       protoreflect.FieldDescriptor
+	fd_Keyshare_controller  protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -956,7 +1020,7 @@ func init() {
 	fd_Keyshare_id = md_Keyshare.Fields().ByName("id")
 	fd_Keyshare_public_key = md_Keyshare.Fields().ByName("public_key")
 	fd_Keyshare_key_type = md_Keyshare.Fields().ByName("key_type")
-	fd_Keyshare_val_kss = md_Keyshare.Fields().ByName("val_kss")
+	fd_Keyshare_val_address = md_Keyshare.Fields().ByName("val_address")
 	fd_Keyshare_index = md_Keyshare.Fields().ByName("index")
 	fd_Keyshare_controller = md_Keyshare.Fields().ByName("controller")
 }
@@ -1044,9 +1108,9 @@ func (x *fastReflection_Keyshare) Range(f func(protoreflect.FieldDescriptor, pro
 			return
 		}
 	}
-	if len(x.ValKss) != 0 {
-		value := protoreflect.ValueOfBytes(x.ValKss)
-		if !f(fd_Keyshare_val_kss, value) {
+	if x.ValAddress != "" {
+		value := protoreflect.ValueOfString(x.ValAddress)
+		if !f(fd_Keyshare_val_address, value) {
 			return
 		}
 	}
@@ -1083,8 +1147,8 @@ func (x *fastReflection_Keyshare) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.PublicKey != nil
 	case "did.v1.Keyshare.key_type":
 		return x.KeyType != ""
-	case "did.v1.Keyshare.val_kss":
-		return len(x.ValKss) != 0
+	case "did.v1.Keyshare.val_address":
+		return x.ValAddress != ""
 	case "did.v1.Keyshare.index":
 		return x.Index != uint64(0)
 	case "did.v1.Keyshare.controller":
@@ -1111,8 +1175,8 @@ func (x *fastReflection_Keyshare) Clear(fd protoreflect.FieldDescriptor) {
 		x.PublicKey = nil
 	case "did.v1.Keyshare.key_type":
 		x.KeyType = ""
-	case "did.v1.Keyshare.val_kss":
-		x.ValKss = nil
+	case "did.v1.Keyshare.val_address":
+		x.ValAddress = ""
 	case "did.v1.Keyshare.index":
 		x.Index = uint64(0)
 	case "did.v1.Keyshare.controller":
@@ -1142,9 +1206,9 @@ func (x *fastReflection_Keyshare) Get(descriptor protoreflect.FieldDescriptor) p
 	case "did.v1.Keyshare.key_type":
 		value := x.KeyType
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Keyshare.val_kss":
-		value := x.ValKss
-		return protoreflect.ValueOfBytes(value)
+	case "did.v1.Keyshare.val_address":
+		value := x.ValAddress
+		return protoreflect.ValueOfString(value)
 	case "did.v1.Keyshare.index":
 		value := x.Index
 		return protoreflect.ValueOfUint64(value)
@@ -1177,8 +1241,8 @@ func (x *fastReflection_Keyshare) Set(fd protoreflect.FieldDescriptor, value pro
 		x.PublicKey = value.Message().Interface().(*PublicKey)
 	case "did.v1.Keyshare.key_type":
 		x.KeyType = value.Interface().(string)
-	case "did.v1.Keyshare.val_kss":
-		x.ValKss = value.Bytes()
+	case "did.v1.Keyshare.val_address":
+		x.ValAddress = value.Interface().(string)
 	case "did.v1.Keyshare.index":
 		x.Index = value.Uint()
 	case "did.v1.Keyshare.controller":
@@ -1212,8 +1276,8 @@ func (x *fastReflection_Keyshare) Mutable(fd protoreflect.FieldDescriptor) proto
 		panic(fmt.Errorf("field id of message did.v1.Keyshare is not mutable"))
 	case "did.v1.Keyshare.key_type":
 		panic(fmt.Errorf("field key_type of message did.v1.Keyshare is not mutable"))
-	case "did.v1.Keyshare.val_kss":
-		panic(fmt.Errorf("field val_kss of message did.v1.Keyshare is not mutable"))
+	case "did.v1.Keyshare.val_address":
+		panic(fmt.Errorf("field val_address of message did.v1.Keyshare is not mutable"))
 	case "did.v1.Keyshare.index":
 		panic(fmt.Errorf("field index of message did.v1.Keyshare is not mutable"))
 	case "did.v1.Keyshare.controller":
@@ -1238,8 +1302,8 @@ func (x *fastReflection_Keyshare) NewField(fd protoreflect.FieldDescriptor) prot
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "did.v1.Keyshare.key_type":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Keyshare.val_kss":
-		return protoreflect.ValueOfBytes(nil)
+	case "did.v1.Keyshare.val_address":
+		return protoreflect.ValueOfString("")
 	case "did.v1.Keyshare.index":
 		return protoreflect.ValueOfUint64(uint64(0))
 	case "did.v1.Keyshare.controller":
@@ -1325,7 +1389,7 @@ func (x *fastReflection_Keyshare) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.ValKss)
+		l = len(x.ValAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1377,10 +1441,10 @@ func (x *fastReflection_Keyshare) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x28
 		}
-		if len(x.ValKss) > 0 {
-			i -= len(x.ValKss)
-			copy(dAtA[i:], x.ValKss)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ValKss)))
+		if len(x.ValAddress) > 0 {
+			i -= len(x.ValAddress)
+			copy(dAtA[i:], x.ValAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ValAddress)))
 			i--
 			dAtA[i] = 0x22
 		}
@@ -1563,9 +1627,9 @@ func (x *fastReflection_Keyshare) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ValKss", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ValAddress", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1575,25 +1639,23 @@ func (x *fastReflection_Keyshare) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.ValKss = append(x.ValKss[:0], dAtA[iNdEx:postIndex]...)
-				if x.ValKss == nil {
-					x.ValKss = []byte{}
-				}
+				x.ValAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 5:
 				if wireType != 0 {
@@ -1682,33 +1744,33 @@ func (x *fastReflection_Keyshare) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Verification            protoreflect.MessageDescriptor
-	fd_Verification_id         protoreflect.FieldDescriptor
-	fd_Verification_public_key protoreflect.FieldDescriptor
-	fd_Verification_key_type   protoreflect.FieldDescriptor
-	fd_Verification_witness    protoreflect.FieldDescriptor
-	fd_Verification_controller protoreflect.FieldDescriptor
+	md_Proof            protoreflect.MessageDescriptor
+	fd_Proof_id         protoreflect.FieldDescriptor
+	fd_Proof_public_key protoreflect.FieldDescriptor
+	fd_Proof_key_type   protoreflect.FieldDescriptor
+	fd_Proof_witness    protoreflect.FieldDescriptor
+	fd_Proof_controller protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_state_proto_init()
-	md_Verification = File_did_v1_state_proto.Messages().ByName("Verification")
-	fd_Verification_id = md_Verification.Fields().ByName("id")
-	fd_Verification_public_key = md_Verification.Fields().ByName("public_key")
-	fd_Verification_key_type = md_Verification.Fields().ByName("key_type")
-	fd_Verification_witness = md_Verification.Fields().ByName("witness")
-	fd_Verification_controller = md_Verification.Fields().ByName("controller")
+	md_Proof = File_did_v1_state_proto.Messages().ByName("Proof")
+	fd_Proof_id = md_Proof.Fields().ByName("id")
+	fd_Proof_public_key = md_Proof.Fields().ByName("public_key")
+	fd_Proof_key_type = md_Proof.Fields().ByName("key_type")
+	fd_Proof_witness = md_Proof.Fields().ByName("witness")
+	fd_Proof_controller = md_Proof.Fields().ByName("controller")
 }
 
-var _ protoreflect.Message = (*fastReflection_Verification)(nil)
+var _ protoreflect.Message = (*fastReflection_Proof)(nil)
 
-type fastReflection_Verification Verification
+type fastReflection_Proof Proof
 
-func (x *Verification) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Verification)(x)
+func (x *Proof) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Proof)(x)
 }
 
-func (x *Verification) slowProtoReflect() protoreflect.Message {
+func (x *Proof) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_state_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1720,43 +1782,43 @@ func (x *Verification) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Verification_messageType fastReflection_Verification_messageType
-var _ protoreflect.MessageType = fastReflection_Verification_messageType{}
+var _fastReflection_Proof_messageType fastReflection_Proof_messageType
+var _ protoreflect.MessageType = fastReflection_Proof_messageType{}
 
-type fastReflection_Verification_messageType struct{}
+type fastReflection_Proof_messageType struct{}
 
-func (x fastReflection_Verification_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Verification)(nil)
+func (x fastReflection_Proof_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Proof)(nil)
 }
-func (x fastReflection_Verification_messageType) New() protoreflect.Message {
-	return new(fastReflection_Verification)
+func (x fastReflection_Proof_messageType) New() protoreflect.Message {
+	return new(fastReflection_Proof)
 }
-func (x fastReflection_Verification_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Verification
+func (x fastReflection_Proof_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Proof
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Verification) Descriptor() protoreflect.MessageDescriptor {
-	return md_Verification
+func (x *fastReflection_Proof) Descriptor() protoreflect.MessageDescriptor {
+	return md_Proof
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Verification) Type() protoreflect.MessageType {
-	return _fastReflection_Verification_messageType
+func (x *fastReflection_Proof) Type() protoreflect.MessageType {
+	return _fastReflection_Proof_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Verification) New() protoreflect.Message {
-	return new(fastReflection_Verification)
+func (x *fastReflection_Proof) New() protoreflect.Message {
+	return new(fastReflection_Proof)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Verification) Interface() protoreflect.ProtoMessage {
-	return (*Verification)(x)
+func (x *fastReflection_Proof) Interface() protoreflect.ProtoMessage {
+	return (*Proof)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -1764,34 +1826,34 @@ func (x *fastReflection_Verification) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Verification) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Proof) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != "" {
 		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_Verification_id, value) {
+		if !f(fd_Proof_id, value) {
 			return
 		}
 	}
 	if x.PublicKey != nil {
 		value := protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-		if !f(fd_Verification_public_key, value) {
+		if !f(fd_Proof_public_key, value) {
 			return
 		}
 	}
 	if x.KeyType != "" {
 		value := protoreflect.ValueOfString(x.KeyType)
-		if !f(fd_Verification_key_type, value) {
+		if !f(fd_Proof_key_type, value) {
 			return
 		}
 	}
 	if x.Witness != "" {
 		value := protoreflect.ValueOfString(x.Witness)
-		if !f(fd_Verification_witness, value) {
+		if !f(fd_Proof_witness, value) {
 			return
 		}
 	}
 	if x.Controller != "" {
 		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_Verification_controller, value) {
+		if !f(fd_Proof_controller, value) {
 			return
 		}
 	}
@@ -1808,23 +1870,23 @@ func (x *fastReflection_Verification) Range(f func(protoreflect.FieldDescriptor,
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Verification) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Proof) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.Verification.id":
+	case "did.v1.Proof.id":
 		return x.Id != ""
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		return x.PublicKey != nil
-	case "did.v1.Verification.key_type":
+	case "did.v1.Proof.key_type":
 		return x.KeyType != ""
-	case "did.v1.Verification.witness":
+	case "did.v1.Proof.witness":
 		return x.Witness != ""
-	case "did.v1.Verification.controller":
+	case "did.v1.Proof.controller":
 		return x.Controller != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1834,23 +1896,23 @@ func (x *fastReflection_Verification) Has(fd protoreflect.FieldDescriptor) bool 
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Verification) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Proof) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.Verification.id":
+	case "did.v1.Proof.id":
 		x.Id = ""
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		x.PublicKey = nil
-	case "did.v1.Verification.key_type":
+	case "did.v1.Proof.key_type":
 		x.KeyType = ""
-	case "did.v1.Verification.witness":
+	case "did.v1.Proof.witness":
 		x.Witness = ""
-	case "did.v1.Verification.controller":
+	case "did.v1.Proof.controller":
 		x.Controller = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1860,28 +1922,28 @@ func (x *fastReflection_Verification) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Verification) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Proof) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.Verification.id":
+	case "did.v1.Proof.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		value := x.PublicKey
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "did.v1.Verification.key_type":
+	case "did.v1.Proof.key_type":
 		value := x.KeyType
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Verification.witness":
+	case "did.v1.Proof.witness":
 		value := x.Witness
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Verification.controller":
+	case "did.v1.Proof.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1895,23 +1957,23 @@ func (x *fastReflection_Verification) Get(descriptor protoreflect.FieldDescripto
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Verification) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Proof) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.Verification.id":
+	case "did.v1.Proof.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		x.PublicKey = value.Message().Interface().(*PublicKey)
-	case "did.v1.Verification.key_type":
+	case "did.v1.Proof.key_type":
 		x.KeyType = value.Interface().(string)
-	case "did.v1.Verification.witness":
+	case "did.v1.Proof.witness":
 		x.Witness = value.Interface().(string)
-	case "did.v1.Verification.controller":
+	case "did.v1.Proof.controller":
 		x.Controller = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1925,60 +1987,60 @@ func (x *fastReflection_Verification) Set(fd protoreflect.FieldDescriptor, value
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Verification) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Proof) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		if x.PublicKey == nil {
 			x.PublicKey = new(PublicKey)
 		}
 		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-	case "did.v1.Verification.id":
-		panic(fmt.Errorf("field id of message did.v1.Verification is not mutable"))
-	case "did.v1.Verification.key_type":
-		panic(fmt.Errorf("field key_type of message did.v1.Verification is not mutable"))
-	case "did.v1.Verification.witness":
-		panic(fmt.Errorf("field witness of message did.v1.Verification is not mutable"))
-	case "did.v1.Verification.controller":
-		panic(fmt.Errorf("field controller of message did.v1.Verification is not mutable"))
+	case "did.v1.Proof.id":
+		panic(fmt.Errorf("field id of message did.v1.Proof is not mutable"))
+	case "did.v1.Proof.key_type":
+		panic(fmt.Errorf("field key_type of message did.v1.Proof is not mutable"))
+	case "did.v1.Proof.witness":
+		panic(fmt.Errorf("field witness of message did.v1.Proof is not mutable"))
+	case "did.v1.Proof.controller":
+		panic(fmt.Errorf("field controller of message did.v1.Proof is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Verification) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Proof) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Verification.id":
+	case "did.v1.Proof.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Verification.public_key":
+	case "did.v1.Proof.public_key":
 		m := new(PublicKey)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "did.v1.Verification.key_type":
+	case "did.v1.Proof.key_type":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Verification.witness":
+	case "did.v1.Proof.witness":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Verification.controller":
+	case "did.v1.Proof.controller":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
 		}
-		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Verification) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Proof) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.Verification", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.Proof", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1986,7 +2048,7 @@ func (x *fastReflection_Verification) WhichOneof(d protoreflect.OneofDescriptor)
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Verification) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Proof) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1997,7 +2059,7 @@ func (x *fastReflection_Verification) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Verification) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Proof) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -2009,7 +2071,7 @@ func (x *fastReflection_Verification) SetUnknown(fields protoreflect.RawFields) 
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Verification) IsValid() bool {
+func (x *fastReflection_Proof) IsValid() bool {
 	return x != nil
 }
 
@@ -2019,9 +2081,9 @@ func (x *fastReflection_Verification) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Proof) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Verification)
+		x := input.Message.Interface().(*Proof)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2063,7 +2125,7 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Verification)
+		x := input.Message.Interface().(*Proof)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2135,7 +2197,7 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Verification)
+		x := input.Message.Interface().(*Proof)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2167,10 +2229,10 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Verification: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Proof: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Verification: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Proof: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -2385,20 +2447,30 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Assertion is the root sonr account table which contains all sub-identities.
+// Assertion is the representation of a Credential Assertion.
 type Assertion struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id            string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	PublicKey     *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	KeyType       string     `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	Transport     []string   `protobuf:"bytes,4,rep,name=transport,proto3" json:"transport,omitempty"`
-	Authenticator string     `protobuf:"bytes,5,opt,name=authenticator,proto3" json:"authenticator,omitempty"`
-	Issuer        string     `protobuf:"bytes,6,opt,name=issuer,proto3" json:"issuer,omitempty"`
-	Index         uint64     `protobuf:"varint,7,opt,name=index,proto3" json:"index,omitempty"`
-	Controller    string     `protobuf:"bytes,8,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The unique identifier of the assertion.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The public key associated with the assertion.
+	PublicKey *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The type of key associated with the assertion.
+	KeyType string `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// The transport methods associated with the assertion.
+	Transport []string `protobuf:"bytes,4,rep,name=transport,proto3" json:"transport,omitempty"`
+	// The authenticator associated with the assertion.
+	Authenticator string `protobuf:"bytes,5,opt,name=authenticator,proto3" json:"authenticator,omitempty"`
+	// The origin of the issuer associated with the assertion.
+	Origin string `protobuf:"bytes,6,opt,name=origin,proto3" json:"origin,omitempty"`
+	// The tld of the issuer associated with the assertion.
+	Tld string `protobuf:"bytes,7,opt,name=tld,proto3" json:"tld,omitempty"`
+	// The index associated with the assertion.
+	Index uint64 `protobuf:"varint,8,opt,name=index,proto3" json:"index,omitempty"`
+	// The controller of the assertion.
+	Controller string `protobuf:"bytes,9,opt,name=controller,proto3" json:"controller,omitempty"`
 }
 
 func (x *Assertion) Reset() {
@@ -2456,9 +2528,16 @@ func (x *Assertion) GetAuthenticator() string {
 	return ""
 }
 
-func (x *Assertion) GetIssuer() string {
+func (x *Assertion) GetOrigin() string {
 	if x != nil {
-		return x.Issuer
+		return x.Origin
+	}
+	return ""
+}
+
+func (x *Assertion) GetTld() string {
+	if x != nil {
+		return x.Tld
 	}
 	return ""
 }
@@ -2477,18 +2556,24 @@ func (x *Assertion) GetController() string {
 	return ""
 }
 
-// Keyshare is the root sonr controller table which contains all sub-identities.
+// Keyshare is the generated MPC share references.
 type Keyshare struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	PublicKey  *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	KeyType    string     `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	ValKss     []byte     `protobuf:"bytes,4,opt,name=val_kss,json=valKss,proto3" json:"val_kss,omitempty"`
-	Index      uint64     `protobuf:"varint,5,opt,name=index,proto3" json:"index,omitempty"`
-	Controller string     `protobuf:"bytes,6,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The unique identifier of the keyshare.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The public key associated with the keyshare.
+	PublicKey *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The type of key associated with the keyshare.
+	KeyType string `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// The validator address associated with the keyshare.
+	ValAddress string `protobuf:"bytes,4,opt,name=val_address,json=valAddress,proto3" json:"val_address,omitempty"`
+	// The index associated with the keyshare.
+	Index uint64 `protobuf:"varint,5,opt,name=index,proto3" json:"index,omitempty"`
+	// The controller of the keyshare.
+	Controller string `protobuf:"bytes,6,opt,name=controller,proto3" json:"controller,omitempty"`
 }
 
 func (x *Keyshare) Reset() {
@@ -2532,11 +2617,11 @@ func (x *Keyshare) GetKeyType() string {
 	return ""
 }
 
-func (x *Keyshare) GetValKss() []byte {
+func (x *Keyshare) GetValAddress() string {
 	if x != nil {
-		return x.ValKss
+		return x.ValAddress
 	}
-	return nil
+	return ""
 }
 
 func (x *Keyshare) GetIndex() uint64 {
@@ -2553,21 +2638,26 @@ func (x *Keyshare) GetController() string {
 	return ""
 }
 
-// Verification is the root sonr user identifier table which contains all sub-identities.
-type Verification struct {
+// Proof is the zero-knowledge proof for properties of the keyshare.
+type Proof struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	PublicKey  *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	KeyType    string     `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	Witness    string     `protobuf:"bytes,4,opt,name=witness,proto3" json:"witness,omitempty"`
-	Controller string     `protobuf:"bytes,5,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The unique identifier of the proof.
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The public key associated with the proof.
+	PublicKey *PublicKey `protobuf:"bytes,2,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The type of key associated with the proof.
+	KeyType string `protobuf:"bytes,3,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// The witness associated with the proof.
+	Witness string `protobuf:"bytes,4,opt,name=witness,proto3" json:"witness,omitempty"`
+	// The controller of the proof.
+	Controller string `protobuf:"bytes,5,opt,name=controller,proto3" json:"controller,omitempty"`
 }
 
-func (x *Verification) Reset() {
-	*x = Verification{}
+func (x *Proof) Reset() {
+	*x = Proof{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_state_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2575,46 +2665,46 @@ func (x *Verification) Reset() {
 	}
 }
 
-func (x *Verification) String() string {
+func (x *Proof) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Verification) ProtoMessage() {}
+func (*Proof) ProtoMessage() {}
 
-// Deprecated: Use Verification.ProtoReflect.Descriptor instead.
-func (*Verification) Descriptor() ([]byte, []int) {
+// Deprecated: Use Proof.ProtoReflect.Descriptor instead.
+func (*Proof) Descriptor() ([]byte, []int) {
 	return file_did_v1_state_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Verification) GetId() string {
+func (x *Proof) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Verification) GetPublicKey() *PublicKey {
+func (x *Proof) GetPublicKey() *PublicKey {
 	if x != nil {
 		return x.PublicKey
 	}
 	return nil
 }
 
-func (x *Verification) GetKeyType() string {
+func (x *Proof) GetKeyType() string {
 	if x != nil {
 		return x.KeyType
 	}
 	return ""
 }
 
-func (x *Verification) GetWitness() string {
+func (x *Proof) GetWitness() string {
 	if x != nil {
 		return x.Witness
 	}
 	return ""
 }
 
-func (x *Verification) GetController() string {
+func (x *Proof) GetController() string {
 	if x != nil {
 		return x.Controller
 	}
@@ -2628,7 +2718,7 @@ var file_did_v1_state_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x8a, 0x02, 0x0a, 0x09,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x9c, 0x02, 0x0a, 0x09,
 	0x41, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x75, 0x62,
 	0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e,
@@ -2639,45 +2729,46 @@ var file_did_v1_state_proto_rawDesc = []byte{
 	0x6f, 0x72, 0x74, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x74, 0x72, 0x61, 0x6e, 0x73,
 	0x70, 0x6f, 0x72, 0x74, 0x12, 0x24, 0x0a, 0x0d, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69,
 	0x63, 0x61, 0x74, 0x6f, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x61, 0x75, 0x74,
-	0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73,
-	0x73, 0x75, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x73, 0x73, 0x75,
-	0x65, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x07, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x08, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f,
-	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08,
-	0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x22, 0xc6, 0x01, 0x0a, 0x08, 0x4b, 0x65, 0x79,
-	0x73, 0x68, 0x61, 0x72, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72,
+	0x69, 0x67, 0x69, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x12, 0x10, 0x0a, 0x03, 0x74, 0x6c, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x74, 0x6c, 0x64, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x08, 0x20,
+	0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e,
+	0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x22, 0xce, 0x01, 0x0a, 0x08, 0x4b,
+	0x65, 0x79, 0x73, 0x68, 0x61, 0x72, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69,
+	0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x09,
+	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x76, 0x61, 0x6c, 0x5f, 0x61, 0x64, 0x64, 0x72,
+	0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x76, 0x61, 0x6c, 0x41, 0x64,
+	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x12, 0x1e, 0x0a, 0x0a, 0x63,
+	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3,
+	0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x22, 0xae, 0x01, 0x0a, 0x05,
+	0x50, 0x72, 0x6f, 0x6f, 0x66, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f,
 	0x6b, 0x65, 0x79, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x64, 0x69, 0x64, 0x2e,
 	0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x09, 0x70, 0x75,
 	0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79, 0x5f, 0x74,
 	0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79,
-	0x70, 0x65, 0x12, 0x17, 0x0a, 0x07, 0x76, 0x61, 0x6c, 0x5f, 0x6b, 0x73, 0x73, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0c, 0x52, 0x06, 0x76, 0x61, 0x6c, 0x4b, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x69,
-	0x6e, 0x64, 0x65, 0x78, 0x18, 0x05, 0x20, 0x01, 0x28, 0x04, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65,
-	0x78, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18,
-	0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
-	0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x02, 0x22, 0xb5, 0x01, 0x0a, 0x0c, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x4b, 0x65, 0x79, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12,
-	0x18, 0x0a, 0x07, 0x77, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x07, 0x77, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e,
-	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03,
-	0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d,
-	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72,
-	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65, 0x2f, 0x61, 0x70,
-	0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02,
-	0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06,
-	0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c,
-	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69,
-	0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x77, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x07, 0x77, 0x69, 0x74, 0x6e, 0x65, 0x73, 0x73, 0x12, 0x1e, 0x0a, 0x0a,
+	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e,
+	0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x42, 0x7a, 0x0a, 0x0a,
+	0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74,
+	0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x63, 0x6f, 0x72, 0x65,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76,
+	0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31,
+	0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c,
+	0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2694,15 +2785,15 @@ func file_did_v1_state_proto_rawDescGZIP() []byte {
 
 var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_did_v1_state_proto_goTypes = []interface{}{
-	(*Assertion)(nil),    // 0: did.v1.Assertion
-	(*Keyshare)(nil),     // 1: did.v1.Keyshare
-	(*Verification)(nil), // 2: did.v1.Verification
-	(*PublicKey)(nil),    // 3: did.v1.PublicKey
+	(*Assertion)(nil), // 0: did.v1.Assertion
+	(*Keyshare)(nil),  // 1: did.v1.Keyshare
+	(*Proof)(nil),     // 2: did.v1.Proof
+	(*PublicKey)(nil), // 3: did.v1.PublicKey
 }
 var file_did_v1_state_proto_depIdxs = []int32{
 	3, // 0: did.v1.Assertion.public_key:type_name -> did.v1.PublicKey
 	3, // 1: did.v1.Keyshare.public_key:type_name -> did.v1.PublicKey
-	3, // 2: did.v1.Verification.public_key:type_name -> did.v1.PublicKey
+	3, // 2: did.v1.Proof.public_key:type_name -> did.v1.PublicKey
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -2742,7 +2833,7 @@ func file_did_v1_state_proto_init() {
 			}
 		}
 		file_did_v1_state_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Verification); i {
+			switch v := v.(*Proof); i {
 			case 0:
 				return &v.state
 			case 1:

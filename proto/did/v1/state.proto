@@ -6,49 +6,87 @@ option go_package = "github.com/di-dao/sonr/x/did/types";
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
 
-// Assertion is the root sonr account table which contains all sub-identities.
+// Assertion is the representation of a Credential Assertion.
 message Assertion {
   option (cosmos.orm.v1.table) = {
     id : 1
     primary_key : {fields : "id"}
   };
 
+  // The unique identifier of the assertion.
   string id = 1;
+
+  // The public key associated with the assertion.
   PublicKey public_key = 2;
+
+  // The type of key associated with the assertion.
   string key_type = 3;
+
+  // The transport methods associated with the assertion.
   repeated string transport = 4;
+
+  // The authenticator associated with the assertion.
   string authenticator = 5;
-  string issuer = 6;
-  uint64 index = 7;
-  string controller = 8;
+
+  // The origin of the issuer associated with the assertion.
+  string origin = 6;
+
+  // The tld of the issuer associated with the assertion.
+    string tld = 7;
+
+  // The index associated with the assertion.
+  uint64 index = 8;
+
+  // The controller of the assertion.
+  string controller = 9;
 }
 
 
-// Keyshare is the root sonr controller table which contains all sub-identities.
+// Keyshare is the generated MPC share references.
 message Keyshare {
   option (cosmos.orm.v1.table) = {
     id: 2
     primary_key : {fields : "id"}
   };
 
+  // The unique identifier of the keyshare.
   string id = 1;
+
+  // The public key associated with the keyshare.
   PublicKey public_key = 2;
+
+  // The type of key associated with the keyshare.
   string key_type = 3;
-  bytes val_kss = 4;
+
+  // The validator address associated with the keyshare.
+  string val_address = 4;
+
+  // The index associated with the keyshare.
   uint64 index = 5;
+
+  // The controller of the keyshare.
   string controller = 6;
 }
 
-// Verification is the root sonr user identifier table which contains all sub-identities.
-message Verification {
+// Proof is the zero-knowledge proof for properties of the keyshare.
+message Proof {
   option (cosmos.orm.v1.table) = {
     id : 4
     primary_key : {fields : "id"}
   };
 
+  // The unique identifier of the proof.
   string id = 1;
+
+  // The public key associated with the proof.
   PublicKey public_key = 2;
+
+  // The type of key associated with the proof.
   string key_type = 3;
+
+  // The witness associated with the proof.
   string witness = 4;
+
+  // The controller of the proof.
   string controller = 5;
 }

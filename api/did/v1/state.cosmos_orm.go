@@ -237,132 +237,132 @@ func NewKeyshareTable(db ormtable.Schema) (KeyshareTable, error) {
 	return keyshareTable{table}, nil
 }
 
-type VerificationTable interface {
-	Insert(ctx context.Context, verification *Verification) error
-	Update(ctx context.Context, verification *Verification) error
-	Save(ctx context.Context, verification *Verification) error
-	Delete(ctx context.Context, verification *Verification) error
+type ProofTable interface {
+	Insert(ctx context.Context, proof *Proof) error
+	Update(ctx context.Context, proof *Proof) error
+	Save(ctx context.Context, proof *Proof) error
+	Delete(ctx context.Context, proof *Proof) error
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Verification, error)
-	List(ctx context.Context, prefixKey VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error)
-	ListRange(ctx context.Context, from, to VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error)
-	DeleteBy(ctx context.Context, prefixKey VerificationIndexKey) error
-	DeleteRange(ctx context.Context, from, to VerificationIndexKey) error
+	Get(ctx context.Context, id string) (*Proof, error)
+	List(ctx context.Context, prefixKey ProofIndexKey, opts ...ormlist.Option) (ProofIterator, error)
+	ListRange(ctx context.Context, from, to ProofIndexKey, opts ...ormlist.Option) (ProofIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ProofIndexKey) error
+	DeleteRange(ctx context.Context, from, to ProofIndexKey) error
 
 	doNotImplement()
 }
 
-type VerificationIterator struct {
+type ProofIterator struct {
 	ormtable.Iterator
 }
 
-func (i VerificationIterator) Value() (*Verification, error) {
-	var verification Verification
-	err := i.UnmarshalMessage(&verification)
-	return &verification, err
+func (i ProofIterator) Value() (*Proof, error) {
+	var proof Proof
+	err := i.UnmarshalMessage(&proof)
+	return &proof, err
 }
 
-type VerificationIndexKey interface {
+type ProofIndexKey interface {
 	id() uint32
 	values() []interface{}
-	verificationIndexKey()
+	proofIndexKey()
 }
 
 // primary key starting index..
-type VerificationPrimaryKey = VerificationIdIndexKey
+type ProofPrimaryKey = ProofIdIndexKey
 
-type VerificationIdIndexKey struct {
+type ProofIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x VerificationIdIndexKey) id() uint32            { return 0 }
-func (x VerificationIdIndexKey) values() []interface{} { return x.vs }
-func (x VerificationIdIndexKey) verificationIndexKey() {}
+func (x ProofIdIndexKey) id() uint32            { return 0 }
+func (x ProofIdIndexKey) values() []interface{} { return x.vs }
+func (x ProofIdIndexKey) proofIndexKey()        {}
 
-func (this VerificationIdIndexKey) WithId(id string) VerificationIdIndexKey {
+func (this ProofIdIndexKey) WithId(id string) ProofIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type verificationTable struct {
+type proofTable struct {
 	table ormtable.Table
 }
 
-func (this verificationTable) Insert(ctx context.Context, verification *Verification) error {
-	return this.table.Insert(ctx, verification)
+func (this proofTable) Insert(ctx context.Context, proof *Proof) error {
+	return this.table.Insert(ctx, proof)
 }
 
-func (this verificationTable) Update(ctx context.Context, verification *Verification) error {
-	return this.table.Update(ctx, verification)
+func (this proofTable) Update(ctx context.Context, proof *Proof) error {
+	return this.table.Update(ctx, proof)
 }
 
-func (this verificationTable) Save(ctx context.Context, verification *Verification) error {
-	return this.table.Save(ctx, verification)
+func (this proofTable) Save(ctx context.Context, proof *Proof) error {
+	return this.table.Save(ctx, proof)
 }
 
-func (this verificationTable) Delete(ctx context.Context, verification *Verification) error {
-	return this.table.Delete(ctx, verification)
+func (this proofTable) Delete(ctx context.Context, proof *Proof) error {
+	return this.table.Delete(ctx, proof)
 }
 
-func (this verificationTable) Has(ctx context.Context, id string) (found bool, err error) {
+func (this proofTable) Has(ctx context.Context, id string) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this verificationTable) Get(ctx context.Context, id string) (*Verification, error) {
-	var verification Verification
-	found, err := this.table.PrimaryKey().Get(ctx, &verification, id)
+func (this proofTable) Get(ctx context.Context, id string) (*Proof, error) {
+	var proof Proof
+	found, err := this.table.PrimaryKey().Get(ctx, &proof, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &verification, nil
+	return &proof, nil
 }
 
-func (this verificationTable) List(ctx context.Context, prefixKey VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error) {
+func (this proofTable) List(ctx context.Context, prefixKey ProofIndexKey, opts ...ormlist.Option) (ProofIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return VerificationIterator{it}, err
+	return ProofIterator{it}, err
 }
 
-func (this verificationTable) ListRange(ctx context.Context, from, to VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error) {
+func (this proofTable) ListRange(ctx context.Context, from, to ProofIndexKey, opts ...ormlist.Option) (ProofIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return VerificationIterator{it}, err
+	return ProofIterator{it}, err
 }
 
-func (this verificationTable) DeleteBy(ctx context.Context, prefixKey VerificationIndexKey) error {
+func (this proofTable) DeleteBy(ctx context.Context, prefixKey ProofIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this verificationTable) DeleteRange(ctx context.Context, from, to VerificationIndexKey) error {
+func (this proofTable) DeleteRange(ctx context.Context, from, to ProofIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this verificationTable) doNotImplement() {}
+func (this proofTable) doNotImplement() {}
 
-var _ VerificationTable = verificationTable{}
+var _ ProofTable = proofTable{}
 
-func NewVerificationTable(db ormtable.Schema) (VerificationTable, error) {
-	table := db.GetTable(&Verification{})
+func NewProofTable(db ormtable.Schema) (ProofTable, error) {
+	table := db.GetTable(&Proof{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Verification{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Proof{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return verificationTable{table}, nil
+	return proofTable{table}, nil
 }
 
 type StateStore interface {
 	AssertionTable() AssertionTable
 	KeyshareTable() KeyshareTable
-	VerificationTable() VerificationTable
+	ProofTable() ProofTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	assertion    AssertionTable
-	keyshare     KeyshareTable
-	verification VerificationTable
+	assertion AssertionTable
+	keyshare  KeyshareTable
+	proof     ProofTable
 }
 
 func (x stateStore) AssertionTable() AssertionTable {
@@ -373,8 +373,8 @@ func (x stateStore) KeyshareTable() KeyshareTable {
 	return x.keyshare
 }
 
-func (x stateStore) VerificationTable() VerificationTable {
-	return x.verification
+func (x stateStore) ProofTable() ProofTable {
+	return x.proof
 }
 
 func (stateStore) doNotImplement() {}
@@ -392,7 +392,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
-	verificationTable, err := NewVerificationTable(db)
+	proofTable, err := NewProofTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -400,6 +400,6 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	return stateStore{
 		assertionTable,
 		keyshareTable,
-		verificationTable,
+		proofTable,
 	}, nil
 }
