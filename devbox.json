@@ -10,16 +10,17 @@
     "doppler@latest",
     "mods@latest",
     "gum@latest",
-    "neovim@latest"
+    "neovim@latest",
+    "golangci-lint@latest"
   ],
   "shell": {
     "scripts": {
-      "edit": ["nvim ."],
-      "gen": ["make proto-gen", "templ generate"],
-      "dev": ["devbox services up --background", "make sh-testnet"],
+      "edit":    ["nvim ."],
+      "gen":     ["make proto-gen", "templ generate"],
+      "dev":     ["make sh-testnet"],
       "testnet": ["devbox services up --background", "make testnet"],
-      "ps": ["devbox services ls"],
-      "kill": ["devbox services down"]
+      "ps":      ["devbox services ls"],
+      "kill":    ["devbox services down"]
     }
   }
 }
