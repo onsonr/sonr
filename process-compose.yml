@@ -3,4 +3,5 @@ version: "0.5"
 
 processes:
   ipfs:
-    command: ipfs daemon --migrate --init --mount --enable-gc --unrestricted-api
+    command: ipfs daemon
+    restart: always

@@ -9,17 +9,13 @@
     "go-task@latest",
     "templ@latest",
     "dendrite@latest",
-    "caddy@latest",
-    "zellij@latest",
     "doppler@latest",
     "mods@latest",
-    "gum@latest"
+    "gum@latest",
+    "ipfs-cluster@latest"
   ],
-  "env": {
-    "CADDY_CONFIG": "./deploy/etc/caddy/Caddyfile"
-  },
   "shell": {
-    "init_hook": ["sh ./scripts/dev_deps.sh"],
+    // "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
       "gen": ["make proto-gen", "templ generate"],
       "dev": ["make sh-testnet"],
