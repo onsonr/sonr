@@ -21,10 +21,12 @@
   "shell": {
     "init_hook": ["sh ./scripts/dev_deps.sh"],
     "scripts": {
-      "proto": ["make proto-gen"],
-      "templ": ["templ generate"],
-      "devnet": ["make sh-testnet"],
-      "testnet": ["make testnet"]
+      "proto": ["make proto-gen", "templ generate"],
+      "dev": ["make sh-testnet"],
+      "testnet": ["make testnet"],
+      "svc:ls": ["devbox services ls"],
+      "svc:up": ["devbox services up --background"],
+      "svc:down": ["devbox services down"]
     }
   }
 }
