@@ -6,8 +6,8 @@ option go_package = "github.com/di-dao/sonr/x/did/types";
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
 
-// Assertion is the representation of a Credential Assertion.
-message Assertion {
+// Authenticator is the representation of a Credential Assertion.
+message Authenticator {
   option (cosmos.orm.v1.table) = {
     id : 1
     primary_key : {fields : "id"}
@@ -30,9 +30,6 @@ message Assertion {
 
   // The origin of the issuer associated with the assertion.
   string origin = 6;
-
-  // The tld of the issuer associated with the assertion.
-    string tld = 7;
 
   // The index associated with the assertion.
   uint64 index = 8;

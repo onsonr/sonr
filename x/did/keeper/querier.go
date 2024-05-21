@@ -29,7 +29,7 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// Account implements types.QueryServer.
+// TODO: Implement Account method for types.QueryServer.
 func (k Querier) Account(goCtx context.Context, req *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("Account is unimplemented")

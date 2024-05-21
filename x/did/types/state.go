@@ -7,7 +7,7 @@ import (
 )
 
 // AssertionList is a list of Assertion
-type AssertionList = []*didv1.Assertion
+type AssertionList = []*didv1.Authenticator
 
 // ByteArray is a list of byte arrays
 type ByteArray = [][]byte
@@ -20,9 +20,9 @@ type PropertyList = []*didv1.Proof
 
 // ConvertByteArrayToAssertionList converts a list of byte arrays to a list of assertions
 func ConvertByteArrayToAssertionList(bzList ByteArray) (AssertionList, error) {
-	result := make([]*didv1.Assertion, len(bzList))
+	result := make([]*didv1.Authenticator, len(bzList))
 	for i, bz := range bzList {
-		var a didv1.Assertion
+		var a didv1.Authenticator
 		if err := json.Unmarshal(bz, &a); err != nil {
 			return nil, err
 		}

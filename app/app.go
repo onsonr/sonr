@@ -135,6 +135,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	"github.com/di-dao/core/pkg/proxy"
 	did "github.com/di-dao/core/x/did"
 	didkeeper "github.com/di-dao/core/x/did/keeper"
 	didtypes "github.com/di-dao/core/x/did/types"
@@ -205,12 +206,12 @@ var maccPerms = map[string][]string{
 }
 
 var (
-	_ sdkruntime.AppI         = (*ChainApp)(nil)
-	_ servertypes.Application = (*ChainApp)(nil)
+	_ sdkruntime.AppI         = (*SonrApp)(nil)
+	_ servertypes.Application = (*SonrApp)(nil)
 )
 
-// ChainApp extended ABCI application
-type ChainApp struct {
+// SonrApp extended ABCI application
+type SonrApp struct {
 	*baseapp.BaseApp
 	legacyAmino       *codec.LegacyAmino
 	appCodec          codec.Codec
@@ -282,7 +283,7 @@ func NewChainApp(
 	loadLatest bool,
 	appOpts servertypes.AppOptions,
 	baseAppOptions ...func(*baseapp.BaseApp),
-) *ChainApp {
+) *SonrApp {
 	interfaceRegistry, err := types.NewInterfaceRegistryWithOptions(types.InterfaceRegistryOptions{
 		ProtoFiles: proto.HybridResolver,
 		SigningOptions: signing.Options{
@@ -377,7 +378,7 @@ func NewChainApp(
 		panic(err)
 	}
 
-	app := &ChainApp{
+	app := &SonrApp{
 		BaseApp:           bApp,
 		legacyAmino:       legacyAmino,
 		appCodec:          appCodec,
@@ -1027,7 +1028,7 @@ func NewChainApp(
 		_ = ctx
 
 	}
-
+	proxy.Initialize()
 	return app
 }
 
@@ -1047,7 +1048,7 @@ func GetDefaultBypassFeeMessages() []string {
 	}
 }
 
-func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
+func (app *SonrApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
 	// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
 	// this is a hack to ensure that the migration is executed when needed and not panics
 	app.once.Do(func() {
@@ -1068,7 +1069,7 @@ func (app *ChainApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Respon
 	return app.BaseApp.FinalizeBlock(req)
 }
 
-func (app *ChainApp) setPostHandler() {
+func (app *SonrApp) setPostHandler() {
 	postHandler, err := posthandler.NewPostHandler(
 		posthandler.HandlerOptions{},
 	)
@@ -1080,29 +1081,29 @@ func (app *ChainApp) setPostHandler() {
 }
 
 // Name returns the name of the App
-func (app *ChainApp) Name() string { return app.BaseApp.Name() }
+func (app *SonrApp) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
-func (app *ChainApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+func (app *SonrApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
 	return app.ModuleManager.PreBlock(ctx)
 }
 
 // BeginBlocker application updates every begin block
-func (app *ChainApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
+func (app *SonrApp) BeginBlocker(ctx sdk.Context) (sdk.BeginBlock, error) {
 	return app.ModuleManager.BeginBlock(ctx)
 }
 
 // EndBlocker application updates every end block
-func (app *ChainApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
+func (app *SonrApp) EndBlocker(ctx sdk.Context) (sdk.EndBlock, error) {
 	return app.ModuleManager.EndBlock(ctx)
 }
 
-func (a *ChainApp) Configurator() module.Configurator {
+func (a *SonrApp) Configurator() module.Configurator {
 	return a.configurator
 }
 
 // InitChainer application update at chain initialization
-func (app *ChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+func (app *SonrApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -1116,7 +1117,7 @@ func (app *ChainApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*
 }
 
 // LoadHeight loads a particular height
-func (app *ChainApp) LoadHeight(height int64) error {
+func (app *SonrApp) LoadHeight(height int64) error {
 	return app.LoadVersion(height)
 }
 
@@ -1124,7 +1125,7 @@ func (app *ChainApp) LoadHeight(height int64) error {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *ChainApp) LegacyAmino() *codec.LegacyAmino {
+func (app *SonrApp) LegacyAmino() *codec.LegacyAmino {
 	return app.legacyAmino
 }
 
@@ -1132,22 +1133,22 @@ func (app *ChainApp) LegacyAmino() *codec.LegacyAmino {
 //
 // NOTE: This is solely to be used for testing purposes as it may be desirable
 // for modules to register their own custom testing types.
-func (app *ChainApp) AppCodec() codec.Codec {
+func (app *SonrApp) AppCodec() codec.Codec {
 	return app.appCodec
 }
 
 // InterfaceRegistry returns ChainApp's InterfaceRegistry
-func (app *ChainApp) InterfaceRegistry() types.InterfaceRegistry {
+func (app *SonrApp) InterfaceRegistry() types.InterfaceRegistry {
 	return app.interfaceRegistry
 }
 
 // TxConfig returns ChainApp's TxConfig
-func (app *ChainApp) TxConfig() client.TxConfig {
+func (app *SonrApp) TxConfig() client.TxConfig {
 	return app.txConfig
 }
 
 // AutoCliOpts returns the autocli options for the app.
-func (app *ChainApp) AutoCliOpts() autocli.AppOptions {
+func (app *SonrApp) AutoCliOpts() autocli.AppOptions {
 	modules := make(map[string]appmodule.AppModule, 0)
 	for _, m := range app.ModuleManager.Modules {
 		if moduleWithName, ok := m.(module.HasName); ok {
@@ -1168,19 +1169,19 @@ func (app *ChainApp) AutoCliOpts() autocli.AppOptions {
 }
 
 // DefaultGenesis returns a default genesis from the registered AppModuleBasic's.
-func (a *ChainApp) DefaultGenesis() map[string]json.RawMessage {
+func (a *SonrApp) DefaultGenesis() map[string]json.RawMessage {
 	return a.BasicModuleManager.DefaultGenesis(a.appCodec)
 }
 
 // GetKey returns the KVStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *ChainApp) GetKey(storeKey string) *storetypes.KVStoreKey {
+func (app *SonrApp) GetKey(storeKey string) *storetypes.KVStoreKey {
 	return app.keys[storeKey]
 }
 
 // GetStoreKeys returns all the stored store keys.
-func (app *ChainApp) GetStoreKeys() []storetypes.StoreKey {
+func (app *SonrApp) GetStoreKeys() []storetypes.StoreKey {
 	keys := make([]storetypes.StoreKey, 0, len(app.keys))
 	for _, key := range app.keys {
 		keys = append(keys, key)
@@ -1194,33 +1195,33 @@ func (app *ChainApp) GetStoreKeys() []storetypes.StoreKey {
 // GetTKey returns the TransientStoreKey for the provided store key.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *ChainApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
+func (app *SonrApp) GetTKey(storeKey string) *storetypes.TransientStoreKey {
 	return app.tkeys[storeKey]
 }
 
 // GetMemKey returns the MemStoreKey for the provided mem key.
 //
 // NOTE: This is solely used for testing purposes.
-func (app *ChainApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
+func (app *SonrApp) GetMemKey(storeKey string) *storetypes.MemoryStoreKey {
 	return app.memKeys[storeKey]
 }
 
 // GetSubspace returns a param subspace for a given module name.
 //
 // NOTE: This is solely to be used for testing purposes.
-func (app *ChainApp) GetSubspace(moduleName string) paramstypes.Subspace {
+func (app *SonrApp) GetSubspace(moduleName string) paramstypes.Subspace {
 	subspace, _ := app.ParamsKeeper.GetSubspace(moduleName)
 	return subspace
 }
 
 // SimulationManager implements the SimulationApp interface
-func (app *ChainApp) SimulationManager() *module.SimulationManager {
+func (app *SonrApp) SimulationManager() *module.SimulationManager {
 	return app.sm
 }
 
 // RegisterAPIRoutes registers all application module routes with the provided
 // API server.
-func (app *ChainApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
+func (app *SonrApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIConfig) {
 	clientCtx := apiSvr.ClientCtx
 	// Register new tx routes from grpc-gateway.
 	authtx.RegisterGRPCGatewayRoutes(clientCtx, apiSvr.GRPCGatewayRouter)
@@ -1241,12 +1242,12 @@ func (app *ChainApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APIC
 }
 
 // RegisterTxService implements the Application.RegisterTxService method.
-func (app *ChainApp) RegisterTxService(clientCtx client.Context) {
+func (app *SonrApp) RegisterTxService(clientCtx client.Context) {
 	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
 }
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
-func (app *ChainApp) RegisterTendermintService(clientCtx client.Context) {
+func (app *SonrApp) RegisterTendermintService(clientCtx client.Context) {
 	cmtApp := server.NewCometABCIWrapper(app)
 	cmtservice.RegisterTendermintService(
 		clientCtx,
@@ -1256,7 +1257,7 @@ func (app *ChainApp) RegisterTendermintService(clientCtx client.Context) {
 	)
 }
 
-func (app *ChainApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
+func (app *SonrApp) RegisterNodeService(clientCtx client.Context, cfg config.Config) {
 	nodeservice.RegisterNodeService(clientCtx, app.GRPCQueryRouter(), cfg)
 }
 

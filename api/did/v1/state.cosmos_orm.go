@@ -9,118 +9,118 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type AssertionTable interface {
-	Insert(ctx context.Context, assertion *Assertion) error
-	Update(ctx context.Context, assertion *Assertion) error
-	Save(ctx context.Context, assertion *Assertion) error
-	Delete(ctx context.Context, assertion *Assertion) error
+type AuthenticatorTable interface {
+	Insert(ctx context.Context, authenticator *Authenticator) error
+	Update(ctx context.Context, authenticator *Authenticator) error
+	Save(ctx context.Context, authenticator *Authenticator) error
+	Delete(ctx context.Context, authenticator *Authenticator) error
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Assertion, error)
-	List(ctx context.Context, prefixKey AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
-	ListRange(ctx context.Context, from, to AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
-	DeleteBy(ctx context.Context, prefixKey AssertionIndexKey) error
-	DeleteRange(ctx context.Context, from, to AssertionIndexKey) error
+	Get(ctx context.Context, id string) (*Authenticator, error)
+	List(ctx context.Context, prefixKey AuthenticatorIndexKey, opts ...ormlist.Option) (AuthenticatorIterator, error)
+	ListRange(ctx context.Context, from, to AuthenticatorIndexKey, opts ...ormlist.Option) (AuthenticatorIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AuthenticatorIndexKey) error
+	DeleteRange(ctx context.Context, from, to AuthenticatorIndexKey) error
 
 	doNotImplement()
 }
 
-type AssertionIterator struct {
+type AuthenticatorIterator struct {
 	ormtable.Iterator
 }
 
-func (i AssertionIterator) Value() (*Assertion, error) {
-	var assertion Assertion
-	err := i.UnmarshalMessage(&assertion)
-	return &assertion, err
+func (i AuthenticatorIterator) Value() (*Authenticator, error) {
+	var authenticator Authenticator
+	err := i.UnmarshalMessage(&authenticator)
+	return &authenticator, err
 }
 
-type AssertionIndexKey interface {
+type AuthenticatorIndexKey interface {
 	id() uint32
 	values() []interface{}
-	assertionIndexKey()
+	authenticatorIndexKey()
 }
 
 // primary key starting index..
-type AssertionPrimaryKey = AssertionIdIndexKey
+type AuthenticatorPrimaryKey = AuthenticatorIdIndexKey
 
-type AssertionIdIndexKey struct {
+type AuthenticatorIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x AssertionIdIndexKey) id() uint32            { return 0 }
-func (x AssertionIdIndexKey) values() []interface{} { return x.vs }
-func (x AssertionIdIndexKey) assertionIndexKey()    {}
+func (x AuthenticatorIdIndexKey) id() uint32             { return 0 }
+func (x AuthenticatorIdIndexKey) values() []interface{}  { return x.vs }
+func (x AuthenticatorIdIndexKey) authenticatorIndexKey() {}
 
-func (this AssertionIdIndexKey) WithId(id string) AssertionIdIndexKey {
+func (this AuthenticatorIdIndexKey) WithId(id string) AuthenticatorIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type assertionTable struct {
+type authenticatorTable struct {
 	table ormtable.Table
 }
 
-func (this assertionTable) Insert(ctx context.Context, assertion *Assertion) error {
-	return this.table.Insert(ctx, assertion)
+func (this authenticatorTable) Insert(ctx context.Context, authenticator *Authenticator) error {
+	return this.table.Insert(ctx, authenticator)
 }
 
-func (this assertionTable) Update(ctx context.Context, assertion *Assertion) error {
-	return this.table.Update(ctx, assertion)
+func (this authenticatorTable) Update(ctx context.Context, authenticator *Authenticator) error {
+	return this.table.Update(ctx, authenticator)
 }
 
-func (this assertionTable) Save(ctx context.Context, assertion *Assertion) error {
-	return this.table.Save(ctx, assertion)
+func (this authenticatorTable) Save(ctx context.Context, authenticator *Authenticator) error {
+	return this.table.Save(ctx, authenticator)
 }
 
-func (this assertionTable) Delete(ctx context.Context, assertion *Assertion) error {
-	return this.table.Delete(ctx, assertion)
+func (this authenticatorTable) Delete(ctx context.Context, authenticator *Authenticator) error {
+	return this.table.Delete(ctx, authenticator)
 }
 
-func (this assertionTable) Has(ctx context.Context, id string) (found bool, err error) {
+func (this authenticatorTable) Has(ctx context.Context, id string) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this assertionTable) Get(ctx context.Context, id string) (*Assertion, error) {
-	var assertion Assertion
-	found, err := this.table.PrimaryKey().Get(ctx, &assertion, id)
+func (this authenticatorTable) Get(ctx context.Context, id string) (*Authenticator, error) {
+	var authenticator Authenticator
+	found, err := this.table.PrimaryKey().Get(ctx, &authenticator, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &assertion, nil
+	return &authenticator, nil
 }
 
-func (this assertionTable) List(ctx context.Context, prefixKey AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error) {
+func (this authenticatorTable) List(ctx context.Context, prefixKey AuthenticatorIndexKey, opts ...ormlist.Option) (AuthenticatorIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return AssertionIterator{it}, err
+	return AuthenticatorIterator{it}, err
 }
 
-func (this assertionTable) ListRange(ctx context.Context, from, to AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error) {
+func (this authenticatorTable) ListRange(ctx context.Context, from, to AuthenticatorIndexKey, opts ...ormlist.Option) (AuthenticatorIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return AssertionIterator{it}, err
+	return AuthenticatorIterator{it}, err
 }
 
-func (this assertionTable) DeleteBy(ctx context.Context, prefixKey AssertionIndexKey) error {
+func (this authenticatorTable) DeleteBy(ctx context.Context, prefixKey AuthenticatorIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this assertionTable) DeleteRange(ctx context.Context, from, to AssertionIndexKey) error {
+func (this authenticatorTable) DeleteRange(ctx context.Context, from, to AuthenticatorIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this assertionTable) doNotImplement() {}
+func (this authenticatorTable) doNotImplement() {}
 
-var _ AssertionTable = assertionTable{}
+var _ AuthenticatorTable = authenticatorTable{}
 
-func NewAssertionTable(db ormtable.Schema) (AssertionTable, error) {
-	table := db.GetTable(&Assertion{})
+func NewAuthenticatorTable(db ormtable.Schema) (AuthenticatorTable, error) {
+	table := db.GetTable(&Authenticator{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Assertion{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Authenticator{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return assertionTable{table}, nil
+	return authenticatorTable{table}, nil
 }
 
 type KeyshareTable interface {
@@ -352,7 +352,7 @@ func NewProofTable(db ormtable.Schema) (ProofTable, error) {
 }
 
 type StateStore interface {
-	AssertionTable() AssertionTable
+	AuthenticatorTable() AuthenticatorTable
 	KeyshareTable() KeyshareTable
 	ProofTable() ProofTable
 
@@ -360,13 +360,13 @@ type StateStore interface {
 }
 
 type stateStore struct {
-	assertion AssertionTable
-	keyshare  KeyshareTable
-	proof     ProofTable
+	authenticator AuthenticatorTable
+	keyshare      KeyshareTable
+	proof         ProofTable
 }
 
-func (x stateStore) AssertionTable() AssertionTable {
-	return x.assertion
+func (x stateStore) AuthenticatorTable() AuthenticatorTable {
+	return x.authenticator
 }
 
 func (x stateStore) KeyshareTable() KeyshareTable {
@@ -382,7 +382,7 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	assertionTable, err := NewAssertionTable(db)
+	authenticatorTable, err := NewAuthenticatorTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -398,7 +398,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	}
 
 	return stateStore{
-		assertionTable,
+		authenticatorTable,
 		keyshareTable,
 		proofTable,
 	}, nil

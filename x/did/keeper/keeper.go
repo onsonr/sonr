@@ -12,6 +12,8 @@ import (
 
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	apiv1 "github.com/di-dao/core/api/did/v1"
+	"github.com/di-dao/core/pkg/kss"
+	"github.com/di-dao/core/pkg/mpc"
 	"github.com/di-dao/core/x/did/controller"
 	"github.com/di-dao/core/x/did/types"
 )
@@ -67,12 +69,12 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ac
 }
 
 // GenerateKeyshares generates a new keyshare set. First step
-func (k Keeper) GenerateKeyshares(ctx sdk.Context) (types.KssI, error) {
-	return controller.GenKSS()
+func (k Keeper) GenerateKeyshares(ctx sdk.Context) (kss.SetI, error) {
+	return mpc.GenerateKss()
 }
 
 // LinkController links a user identifier to a kss pair creating a controller. Second step
-func (k Keeper) LinkController(ctx sdk.Context, kss types.KssI, identifier string) ([]byte, error) {
+func (k Keeper) LinkController(ctx sdk.Context, kss kss.SetI, identifier string) ([]byte, error) {
 	c, err := controller.Create(kss)
 	if err != nil {
 		return nil, err

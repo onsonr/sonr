@@ -35,7 +35,7 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 	inserted := 0
 	if assertionList, err := msg.GetAssertionList(); err != nil {
 		for _, assertion := range assertionList {
-			err := ms.k.OrmDB.AssertionTable().Insert(ctx, assertion)
+			err := ms.k.OrmDB.AuthenticatorTable().Insert(ctx, assertion)
 			if err != nil {
 				return nil, err
 			}
@@ -61,4 +61,11 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 		}
 	}
 	return &types.MsgInitializeControllerResponse{}, nil
+}
+
+// Authenticate implements types.MsgServer.
+func (ms msgServer) Authenticate(ctx context.Context, msg *types.MsgAuthenticate) (*types.MsgAuthenticateResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Authenticate is unimplemented")
+	return &types.MsgAuthenticateResponse{}, nil
 }

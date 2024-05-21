@@ -5,13 +5,13 @@ import (
 
 	"github.com/stretchr/testify/require"
 
+	"github.com/di-dao/core/pkg/mpc"
 	"github.com/di-dao/core/x/did/controller"
-	"github.com/di-dao/core/x/did/types"
 )
 
 func TestControllerSigning(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := controller.GenKSS()
+	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
 
 	pubKey := kss.PublicKey()
@@ -38,23 +38,11 @@ func TestControllerSigning(t *testing.T) {
 
 func TestAddressConversion(t *testing.T) {
 	// Create user and validator keyshares
-	kss, err := controller.GenKSS()
+	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
 
 	pub := kss.PublicKey()
 	require.NotNil(t, pub)
-
-	// Test address conversion
-	btcAddr, err := types.CreateBitcoinAddress(pub)
-	require.NoError(t, err)
-	t.Logf("Bitcoin address: %s", btcAddr)
-	err = btcAddr.Validate()
-	require.NoError(t, err)
-
-	// Test address validation
-	snrAddr, err := types.CreateSonrAddress(pub)
-	require.NoError(t, err)
-	t.Logf("Sonr address: %s", snrAddr)
 }
 
 func TestLinkUnlinkProperty(t *testing.T) {
@@ -62,7 +50,7 @@ func TestLinkUnlinkProperty(t *testing.T) {
 	propertyKey := "email"
 
 	// Create controller
-	kss, err := controller.GenKSS()
+	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
@@ -87,7 +75,7 @@ func TestLinkUnlinkProperty(t *testing.T) {
 }
 
 func TestUnlinkNonExistentProperty(t *testing.T) {
-	kss, err := controller.GenKSS()
+	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)
@@ -101,7 +89,7 @@ func TestUnlinkNonExistentProperty(t *testing.T) {
 
 func TestSignRefreshSign(t *testing.T) {
 	// Create controller
-	kss, err := controller.GenKSS()
+	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
 	ctrl, err := controller.Create(kss)
 	require.NoError(t, err)

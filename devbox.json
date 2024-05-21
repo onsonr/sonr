@@ -13,14 +13,15 @@
     "neovim@latest",
     "golangci-lint@latest"
   ],
-  "shell": { 
+  "env": {
+    "GOPATH": "$HOME/go",
+    "PATH": "$HOME/go/bin:$PATH"
+  },
+  "shell": {
     "scripts": {
-      "edit":    ["nvim ."],
-      "gen":     ["make proto-gen", "templ generate"],
-      "dev":     ["devbox services up --background", "make sh-testnet"],
-      "testnet": ["devbox services up --background", "make testnet"],
-      "ps":      ["devbox services ls"],
-      "kill":    ["devbox services down"]
+      "proto": ["make proto-gen"],
+      "templ": ["templ generate"],
+      "ps": ["devbox services ls"]
     }
   }
 }

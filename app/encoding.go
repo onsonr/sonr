@@ -27,7 +27,7 @@ func MakeEncodingConfig(t testing.TB) params.EncodingConfig {
 	return makeEncodingConfig(tempApp)
 }
 
-func makeEncodingConfig(tempApp *ChainApp) params.EncodingConfig {
+func makeEncodingConfig(tempApp *SonrApp) params.EncodingConfig {
 	encodingConfig := params.EncodingConfig{
 		InterfaceRegistry: tempApp.InterfaceRegistry(),
 		Codec:             tempApp.AppCodec(),

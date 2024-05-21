@@ -3,7 +3,9 @@
 syntax = "proto3";
 package did.v1;
 
-option go_package = "github.com/di-dao/core/x/did/types";
+option go_package = "github.com/di-dao/sonr/x/did/types";
+
+import "did/v1/genesis.proto";
 
 // DIDDocument defines a DID document
 message DIDDocument {
@@ -19,7 +21,5 @@ message DIDDocument {
 message VerificationMethod {
   string id = 1;
   string controller = 2;
-  string type = 3;
-  string public_key = 4;
-  map<string, string> public_key_jwk = 5;
+  PublicKey public_key = 3;
 }

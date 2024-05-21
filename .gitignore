@@ -5,9 +5,10 @@
 *.so
 *.dylib
 *.app
-
+**/.DS_Store
 # Test binary
 *.test
+.devon*
 
 # Output of the go coverage tool
 *.out
@@ -43,6 +44,7 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+
 .terraformrc
 terraform.rc
 
@@ -64,3 +66,4 @@ build/
 heighliner*
 sonr
 deploy/**/data
+x/.DS_Store

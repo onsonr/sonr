@@ -1,3 +1,47 @@
+## 0.5.0 (2024-05-13)
+
+### Feat
+
+- **app**: rename ChainApp to SonrApp and initialize proxy in app.go refactor(app): change ChainApp to SonrApp in msg_filter_test.go refactor(app): adjust function parameter in 'app/encoding.go' from 'ChainApp' to 'SonrApp' refactor(app): rename ChainApp to SonrApp in export.go refactor(app): change ChainApp to SonrApp in sim_test.go setupSimulationApp function refactor(app): rename ChainApp instances to SonrApp in test_helpers.go refactor(app): rename ChainApp to SonrApp in test_support.go refactor(app): rename ChainApp to SonrApp in upgrades.go fix(cmd/sonrd): replace ChainApp with SonrApp in commands.go fix(devbox.json): remove 'up' and 'kill' scripts from 'scripts' section feat(go.mod): add bool64/cache dependency to version v0.4.7 feat: add bool64/cache v0.4.7 to go.sum dependencies feat(proxy): add cache management functionalities for session and challenge in pkg/proxy/cache.go feat(proxy): add new file challenge.go with Challenge struct feat(proxy): add session struct to session.go file feat(proxy): add new 'token.go' file in 'pkg/proxy' directory feat(pkg/vault): remove config.go file feat(pkg/vault): remove ipfs.go file feat(vault): remove vault.go and associated structures
+- **.gitignore**: add terraform related files to ignore list
+- Delete 'interchaintest-downloader' subproject
+- **api/did/v1**: delete auth.pulsar.go file
+- **.github/workflows**: add check-pr.yml to monitor PR events
+- **did**: remove attestation.go from pkg/did feat(pkg/did): remove delegation.go file chore(did): remove invocation.go from pkg/did directory feat(did): remove service.go from the did package feat(did): add new verification.go file in pkg/did
+- **.envrc**: add Nushell integration command to script fix(devbox.json): update 'dev' script in shell scripts section feat(middleware): add new 'request.go' file to 'x/did/internal/middleware' package
+- **devbox.json**: add golangci-lint to devbox and update scripts feat(devbox.lock): add golangci-lint@latest with version 1.58.0 to lock file feat(x/did/internal/middleware): add new request.go file
+- **scripts**: remove dev_deps.sh functionality
+- **devbox.json**: update shell scripts for 'dev', 'testnet', and 'svc:up' commands
+- Remove 'Taskfile.yml' fix(devbox.json): rename script proto to gen
+- **Caddyfile**: remove deploy/etc/caddy configuration file feat(deploy/rails): remove process-compose.yml file fix(devbox.json): update shell scripts and add new service commands feat(vault): add new 'config.go' file in 'pkg/vault' feat(pkg/vault): add new ipfs client with key creation functionality feat(vault): add new 'vault.go' file with 'VaultFS' interface and 'vaultFS' struct feat: Add new 'process-compose.yml' for starting Django feat(x/did/controller): add new encrypt.go file
+- **x/did/controller**: add new file 'controller.go' with keyshare operations functions feat(did/controller): add tests for controller functionality in 'controller_test.go' feat(did/controller): add new file encryptor.go feat(x/did/controller): add new file 'keyshares.go' for keyshare handling functionality feat(x/did/controller): add new network controller with keyshare generation feat(did/controller): add new property.go file with accumulator functionality feat(did/controller): add new signer.go file feat(x/did/controller): add new zk.go file with accumulator functionality refactor(x/did/keeper): change import path for controller module
+- **x/did/types**: add WhitelistedOrigins to DefaultParams in genesis.go
+- **x/did/types**: add new error types in 'errors.go'
+- **Taskfile.yml**: add aliases and modify cmds for rails tasks feat(caddy/Caddyfile): add new configuration file feat: Add new process-compose.yml for starting django with ipfs daemon fix(devbox.json): update the path of CADDY_CONFIG in env variables
+- **Taskfile.yml**: add commands for starting devbox services in background
+- **Taskfile.yml**: set silent mode for task commands and run devbox services in background fix(devbox.json): update CADDY_CONFIG path and remove IPFS_PATH environment variable feat(rails/caddy): add new Caddyfile with basic server configuration
+- **Taskfile.yml**: add new tasks for devbox services management feat(devbox.json): add new dependencies and environment variables feat(devbox.lock): add doppler, gum, mods, zellij to lockfile feat: Add new process-compose.yml for starting Django fix(scripts): remove version display of pkl in dev_deps.sh
+- **devbox.json**: add 'caddy@latest' to project dependencies and env settings feat(devbox.lock): add caddy@latest with version 2.7.6 to the lock file feat(caddy): add new Caddyfile with configuration settings
+- **x/did/types**: remove Ethereum related code from address.go
+
+### Fix
+
+- **network**: remove redundant error handling in 'runMpcProtocol' function
+- **.gitignore**: add .DS_Store to ignored files list chore(crypto): update binary files in .DS_Store feat(process-compose.yml): Add sonrd command to processes feat(auth.templ): add createCredential and getCredential functions to `ui` package feat(auth_templ.go): add createCredential and getCredential functions feat(x/did/internal/ui): add new auth_templ.txt for tab functionality and form layout
+- **devbox.json**: update environment settings and clean shell scripts
+- **server**: change database table in insert method from AssertionTable to AuthenticatorTable refactor(x/did/types): change Assertion to Authenticator in state.go
+- **devbox.json**: split 'gen' and 'dev' tasks into separate scripts feat(interchaintest-downloader): add new subproject with commit 74fa7144d84e33377d162e8db9b328bf5e2a3dd5 feat(ui): add new 'exports.go' file in 'ui' package feat(ui): initialize ui package in pkg/ui/ui.go
+- **go.mod**: update dependencies, add direct dep on 'github.com/a-h/templ' v0.2.680 fix(go.sum): update dependencies to new versions
+- **go.mod**: update dependencies versions
+- **devbox.json**: remove unused dependencies and update shell scripts feat(devbox.lock): update packages and versions
+- **devbox.json**: replace init_hook script and update package list fix(devbox.lock): replace docker-compose with dendrite and adjust version feat(scripts): add new dev_deps.sh to automatically install pkl
+
+### Refactor
+
+- **Taskfile.yml**: streamline task definitions and update naming conventions refactor(cmd/sonrd): remove unused codec import and parameter in initRootCmd function refactor(root.go): remove codec argument from initRootCmd function call in NewRootCmd feat(testnet): Add new process-compose file for starting django in test network feat(deploy/rails): add new process-compose.yml for starting django feat(x/did/controller): add new file encryptor.go
+- **Taskfile.yml**: remove unused GREETING var
+- **x/did/controller**: simplify controller and use types from 'types' package refactor(x/did/controller): simplify keyshare structs and methods in keyshares.go refactor(x/did/controller): update type definitions and function return types in network.go
+
 ## 0.4.0 (2024-05-08)
 
 ### Feat

@@ -5,3 +5,5 @@ processes:
   ipfs:
     command: ipfs daemon
     restart: always
+  sonrd:
+    command: make sh-testnet

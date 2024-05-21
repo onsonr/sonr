@@ -28,14 +28,14 @@ service Query {
         option (google.api.http).get = "/did/resolve/{id}";
     }
 
-    // StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
-    rpc StartLogin(QueryStartLoginRequest) returns (QueryStartLoginResponse) {
-        option (google.api.http).get = "/did/login/{origin}/start";
+    // LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+    rpc LoginOptions(QueryLoginOptionsRequest) returns (QueryLoginOptionsResponse) {
+        option (google.api.http).get = "/did/login/{origin}/options";
     }
 
-    // StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
-    rpc StartRegister(QueryStartRegisterRequest) returns (QueryStartRegisterResponse) {
-        option (google.api.http).get = "/did/register/{origin}/start";
+    // RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+    rpc RegisterOptions(QueryRegisterOptionsRequest) returns (QueryRegisterOptionsResponse) {
+        option (google.api.http).get = "/did/register/{origin}/options";
     }
 }
 
@@ -86,24 +86,24 @@ message QueryResolveResponse {
     string document = 1;
 }
 
-// QueryStartLoginRequest is the request type for the Query/StartLogin RPC method.
-message QueryStartLoginRequest {
+// QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsRequest {
     string origin = 1;
 }
 
-// QueryStartLoginResponse is the response type for the Query/StartLogin RPC method.
-message QueryStartLoginResponse {
+// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsResponse {
     // options is the PublicKeyCredentialAttestationOptions
     string options = 1;
 }
 
-// QueryStartRegisterRequest is the request type for the Query/StartRegister RPC method.
-message QueryStartRegisterRequest {
+// QueryRegisterOptionsRequest is the request type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsRequest {
     string origin = 1;
 }
 
-// QueryStartRegisterResponse is the response type for the Query/StartRegister RPC method.
-message QueryStartRegisterResponse {
+// QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsResponse {
     // options is the PublicKeyCredentialCreationOptions
     string options = 1;
 }

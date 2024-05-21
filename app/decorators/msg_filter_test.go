@@ -18,7 +18,7 @@ type AnteTestSuite struct {
 	suite.Suite
 
 	ctx sdk.Context
-	app *app.ChainApp
+	app *app.SonrApp
 }
 
 func (s *AnteTestSuite) SetupTest() {
