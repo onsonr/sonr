@@ -19,12 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Account_FullMethodName       = "/did.v1.Query/Account"
-	Query_Exists_FullMethodName        = "/did.v1.Query/Exists"
-	Query_Params_FullMethodName        = "/did.v1.Query/Params"
-	Query_Resolve_FullMethodName       = "/did.v1.Query/Resolve"
-	Query_StartLogin_FullMethodName    = "/did.v1.Query/StartLogin"
-	Query_StartRegister_FullMethodName = "/did.v1.Query/StartRegister"
+	Query_Account_FullMethodName         = "/did.v1.Query/Account"
+	Query_Exists_FullMethodName          = "/did.v1.Query/Exists"
+	Query_Params_FullMethodName          = "/did.v1.Query/Params"
+	Query_Resolve_FullMethodName         = "/did.v1.Query/Resolve"
+	Query_LoginOptions_FullMethodName    = "/did.v1.Query/LoginOptions"
+	Query_RegisterOptions_FullMethodName = "/did.v1.Query/RegisterOptions"
 )
 
 // QueryClient is the client API for Query service.
@@ -39,10 +39,10 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
-	StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error)
-	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
-	StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error)
+	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+	LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error)
+	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+	RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error)
 }
 
 type queryClient struct {
@@ -89,18 +89,18 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts
 	return out, nil
 }
 
-func (c *queryClient) StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error) {
-	out := new(QueryStartLoginResponse)
-	err := c.cc.Invoke(ctx, Query_StartLogin_FullMethodName, in, out, opts...)
+func (c *queryClient) LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error) {
+	out := new(QueryLoginOptionsResponse)
+	err := c.cc.Invoke(ctx, Query_LoginOptions_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error) {
-	out := new(QueryStartRegisterResponse)
-	err := c.cc.Invoke(ctx, Query_StartRegister_FullMethodName, in, out, opts...)
+func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error) {
+	out := new(QueryRegisterOptionsResponse)
+	err := c.cc.Invoke(ctx, Query_RegisterOptions_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -119,10 +119,10 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
-	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
-	StartLogin(context.Context, *QueryStartLoginRequest) (*QueryStartLoginResponse, error)
-	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
-	StartRegister(context.Context, *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error)
+	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+	LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error)
+	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+	RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -142,11 +142,11 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
-func (UnimplementedQueryServer) StartLogin(context.Context, *QueryStartLoginRequest) (*QueryStartLoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartLogin not implemented")
+func (UnimplementedQueryServer) LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginOptions not implemented")
 }
-func (UnimplementedQueryServer) StartRegister(context.Context, *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartRegister not implemented")
+func (UnimplementedQueryServer) RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterOptions not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -233,38 +233,38 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_StartLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryStartLoginRequest)
+func _Query_LoginOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLoginOptionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).StartLogin(ctx, in)
+		return srv.(QueryServer).LoginOptions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_StartLogin_FullMethodName,
+		FullMethod: Query_LoginOptions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).StartLogin(ctx, req.(*QueryStartLoginRequest))
+		return srv.(QueryServer).LoginOptions(ctx, req.(*QueryLoginOptionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_StartRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryStartRegisterRequest)
+func _Query_RegisterOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisterOptionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).StartRegister(ctx, in)
+		return srv.(QueryServer).RegisterOptions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_StartRegister_FullMethodName,
+		FullMethod: Query_RegisterOptions_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).StartRegister(ctx, req.(*QueryStartRegisterRequest))
+		return srv.(QueryServer).RegisterOptions(ctx, req.(*QueryRegisterOptionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -293,12 +293,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
-			MethodName: "StartLogin",
-			Handler:    _Query_StartLogin_Handler,
+			MethodName: "LoginOptions",
+			Handler:    _Query_LoginOptions_Handler,
 		},
 		{
-			MethodName: "StartRegister",
-			Handler:    _Query_StartRegister_Handler,
+			MethodName: "RegisterOptions",
+			Handler:    _Query_RegisterOptions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

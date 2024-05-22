@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/di-dao/core/crypto"
 	"github.com/di-dao/core/crypto/accumulator"
 	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/x/did/types"
 	"lukechampine.com/blake3"
 )
 
@@ -38,7 +38,7 @@ func ConvertPropertiesToByteMap(p Properties) (map[string][]byte, error) {
 }
 
 // deriveSecretKey derives the secret key from the keyshares
-func DeriveSecretKey(propertyKey string, pubKey *types.PublicKey) (*SecretKey, error) {
+func DeriveSecretKey(propertyKey string, pubKey crypto.PublicKey) (*SecretKey, error) {
 	// Concatenate the controller's public key and the property key
 	input := append(pubKey.Bytes(), []byte(propertyKey)...)
 	hash := blake3Hash(input)

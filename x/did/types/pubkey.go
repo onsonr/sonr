@@ -60,7 +60,7 @@ func (k *PublicKey) Type() string {
 
 // BuildEcPoint builds an elliptic curve point from a compressed byte slice
 func BuildEcPoint(pubKey []byte) (*curves.EcPoint, error) {
-	crv := curves.P256()
+	crv := curves.K256()
 	x := new(big.Int).SetBytes(pubKey[1:33])
 	y := new(big.Int).SetBytes(pubKey[33:])
 	ecCurve, err := crv.ToEllipticCurve()

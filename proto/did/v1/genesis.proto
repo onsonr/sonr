@@ -14,6 +14,26 @@ message GenesisState {
   repeated Controller controllers = 2 [(gogoproto.nullable) = false];
 }
 
+// Coin is the struct that represents a coin
+message Coin {
+  option (amino.name) = "did/coin";
+
+  // Denom is the denomination of the coin
+  int64 index = 1;
+
+  // Path is the path component of the coin as hex
+  uint32 path = 2;
+
+  // Symbol is the symbol of the coin
+  string symbol = 3;
+
+  // Name is the name of the coin
+  string name = 4;
+
+  // HRP is the human readable part of the coin for Bech32 encoding
+  string hrp = 5;
+}
+
 // Controller is the struct that represents a controller
 message Controller {
   option (amino.name) = "did/controller";
@@ -49,17 +69,20 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
+  // Accepted Coins defines all the accepted coins of the module.
+    repeated Coin accepted_coins = 1 [(gogoproto.nullable) = false];
+
   // Property Allowlist
-  repeated string property_allowlist = 1;
+  repeated string property_allowlist = 2;
 
   // Whitelisted Verifications
-  repeated string whitelisted_origins = 2;
+  repeated string whitelisted_origins = 3;
 
   // Assertion Reward Rate
-  double assertion_reward_rate = 3;
+  double assertion_reward_rate = 4;
 
   // Encryption Reward Rate
-  double encryption_reward_rate = 4;
+  double encryption_reward_rate = 5;
 }
 
 // PublicKey is the struct that represents a public key

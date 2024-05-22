@@ -6,13 +6,13 @@ import (
 
 	"github.com/di-dao/core/crypto/core/curves"
 	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/core/crypto/kss"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
-	"github.com/di-dao/core/pkg/kss"
 )
 
 // GenerateKss generates both keyshares
-func GenerateKss() (kss.SetI, error) {
-	defaultCurve := curves.P256()
+func GenerateKss() (kss.Set, error) {
+	defaultCurve := curves.K256()
 	bob := dklsv1.NewBobDkg(defaultCurve, protocol.Version1)
 	alice := dklsv1.NewAliceDkg(defaultCurve, protocol.Version1)
 	err := RunProtocol(bob, alice)

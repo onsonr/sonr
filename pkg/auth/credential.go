@@ -1,6 +1,21 @@
-package creds
+package auth
 
 import "github.com/go-webauthn/webauthn/protocol"
+
+type CredentialFlags struct {
+	// Flag UP indicates the users presence.
+	UserPresent bool `json:"userPresent"`
+
+	// Flag UV indicates the user performed verification.
+	UserVerified bool `json:"userVerified"`
+
+	// Flag BE indicates the credential is able to be backed up and/or sync'd between devices. This should NEVER change.
+	BackupEligible bool `json:"backupEligible"`
+
+	// Flag BS indicates the credential has been backed up and/or sync'd. This value can change but it's recommended
+	// that RP's keep track of this value.
+	BackupState bool `json:"backupState"`
+}
 
 // Credential contains all needed information about a WebAuthn credential for storage.
 type Credential struct {
@@ -26,31 +41,6 @@ type Credential struct {
 	Authenticator Authenticator `json:"authenticator"`
 }
 
-type CredentialFlags struct {
-	// Flag UP indicates the users presence.
-	UserPresent bool `json:"userPresent"`
-
-	// Flag UV indicates the user performed verification.
-	UserVerified bool `json:"userVerified"`
-
-	// Flag BE indicates the credential is able to be backed up and/or sync'd between devices. This should NEVER change.
-	BackupEligible bool `json:"backupEligible"`
-
-	// Flag BS indicates the credential has been backed up and/or sync'd. This value can change but it's recommended
-	// that RP's keep track of this value.
-	BackupState bool `json:"backupState"`
-}
-
-// Descriptor converts a Credential into a protocol.CredentialDescriptor.
-func (c Credential) Descriptor() (descriptor protocol.CredentialDescriptor) {
-	return protocol.CredentialDescriptor{
-		Type:            protocol.PublicKeyCredentialType,
-		CredentialID:    c.ID,
-		Transport:       c.Transport,
-		AttestationType: c.AttestationType,
-	}
-}
-
 // MakeNewCredential will return a credential pointer on successful validation of a registration response.
 func MakeNewCredential(c *protocol.ParsedCredentialCreationData) (*Credential, error) {
 	newCredential := &Credential{
@@ -72,4 +62,14 @@ func MakeNewCredential(c *protocol.ParsedCredentialCreationData) (*Credential, e
 	}
 
 	return newCredential, nil
+}
+
+// Descriptor converts a Credential into a protocol.CredentialDescriptor.
+func (c Credential) Descriptor() (descriptor protocol.CredentialDescriptor) {
+	return protocol.CredentialDescriptor{
+		Type:            protocol.PublicKeyCredentialType,
+		CredentialID:    c.ID,
+		Transport:       c.Transport,
+		AttestationType: c.AttestationType,
+	}
 }

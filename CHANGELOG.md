@@ -1,3 +1,12 @@
+## 0.6.0 (2024-05-21)
+
+### Feat
+
+- Update IPFS Client
+- **pkg/did**: add Bitcoin and Sonr address types and their functions in address.go feat(mpc.go): add keyshare generation and keyshare protocol running functionality fix(vault): use did package for creating bitcoin and sonr addresses in keys.go feat(pkg/zk): add property.go for handling property conversion and secret key derivation feat(zk): add new zk package implementing SecretKey, Element types and related functions feat(did/controller): add mpc, zk packages and new functions to controller.go
+- **go.mod**: update dependencies, add `github.com/ipfs/boxo` and `github.com/spf13/afero`, remove several indirect dependencies fix: remove unused dependencies from go.sum file feat(pkg/creds): add new authenticator.go file with Authenticator struct and related functions feat(pkg/creds): add new credential.go file with WebAuthn credential structs and functions feat(pkg/creds): add new data.go file with CredentialData struct and associated methods feat(pkg/kss): add new interfaces for keyshare set, user keyshare & validator keyshare feat(kss): add new keyshares functionality in kss.go feat(kss): add new 'usr.go' file in 'pkg/kss' directory feat(kss): add new package 'kss' in 'val.go' file feat(mpc): add new package file 'mpc.go' feat(pkg/vault): remove credential.go file feat(pkg/vault): add keys.go for key struct and creation methods feat(vault): remove keyshare.go from the vault package feat(vault): add new dependencies and constructor to vault.go refactor(pkg/vault): simplify wallet.go, rename Wallet to WalletData, remove unused types and functions refactor(controller): remove kss dependency and result calculation in refresh function fix(network.go): move kss package from crypto to core/pkg and update its usage in NewKeyshareSet function refactor: update import path for kss in x/did/keeper/keeper.go
+- **ipfs**: update `SaveVFS` method and remove `GetVFS` in IPFS client feat(ipfs): add Name method to vfs in pkg/ipfs/vfs.go
+
 ## 0.5.0 (2024-05-13)
 
 ### Feat

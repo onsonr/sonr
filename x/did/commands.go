@@ -7,7 +7,8 @@ import (
 )
 
 // RunAsyncLocalAuthServer runs the local auth server asynchronously to authenticate via the command line.
-func runAsyncLocalAuthServer(ctx context.Context) error {
+func runAsyncLocalAuthServer(_ context.Context) error {
 	e := echo.New()
+	SetRouterLocal(e)
 	return e.Start("sonr.local")
 }

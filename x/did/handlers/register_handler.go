@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/di-dao/core/pkg/htmx"
+	"github.com/di-dao/core/internal/middleware/htmx"
 	ui "github.com/di-dao/core/x/did/components"
 	"github.com/labstack/echo/v4"
 )

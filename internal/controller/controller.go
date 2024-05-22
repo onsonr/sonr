@@ -4,25 +4,26 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/di-dao/core/crypto"
 	"github.com/di-dao/core/crypto/accumulator"
 	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/core/crypto/kss"
+	"github.com/di-dao/core/crypto/mpc"
 	"github.com/di-dao/core/crypto/signatures/ecdsa"
 	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
-	"github.com/di-dao/core/pkg/kss"
-	"github.com/di-dao/core/pkg/mpc"
-	"github.com/di-dao/core/pkg/zk"
+	"github.com/di-dao/core/crypto/zk"
 	"github.com/di-dao/core/x/did/types"
 )
 
 // controller is the controller for the DID scheme
 type controller struct {
-	usrKs      kss.UserI
-	valKs      kss.ValI
+	usrKs      kss.User
+	valKs      kss.Val
 	properties zk.Properties
 }
 
 // Create creates a new controller
-func Create(kss kss.SetI) (types.ControllerI, error) {
+func Create(kss kss.Set) (types.ControllerI, error) {
 	c := &controller{
 		properties: make(map[string]*accumulator.Accumulator),
 		usrKs:      kss.Usr(),
@@ -32,7 +33,7 @@ func Create(kss kss.SetI) (types.ControllerI, error) {
 }
 
 // PublicKey returns the public key for the shares
-func (c *controller) PublicKey() *types.PublicKey {
+func (c *controller) PublicKey() crypto.PublicKey {
 	pub := c.valKs.PublicKey()
 	return pub
 }

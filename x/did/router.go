@@ -1,7 +1,14 @@
 package module
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/di-dao/core/x/did/handlers"
+	"github.com/labstack/echo/v4"
+)
 
-func RegisterProxy(e *echo.Echo) {
+func SetRouterProxy(e *echo.Echo) {
+	e.GET("/register", handlers.RenderRegisterModal)
+}
 
+func SetRouterLocal(e *echo.Echo) {
+	e.GET("/", handlers.RenderRegisterModal)
 }

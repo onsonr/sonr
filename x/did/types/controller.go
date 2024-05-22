@@ -1,9 +1,11 @@
 package types
 
+import "github.com/di-dao/core/crypto"
+
 // Controller is the interface for the controller
 type ControllerI interface {
 	Set(key, value string) ([]byte, error)
-	PublicKey() *PublicKey
+	PublicKey() crypto.PublicKey
 	Refresh() error
 	Sign(msg []byte) ([]byte, error)
 	Remove(key, value string) error

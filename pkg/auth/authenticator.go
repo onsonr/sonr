@@ -1,4 +1,4 @@
-package creds
+package auth
 
 import "github.com/go-webauthn/webauthn/protocol"
 

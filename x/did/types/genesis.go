@@ -28,6 +28,7 @@ func (gs GenesisState) Validate() error {
 func DefaultParams() Params {
 	// TODO:
 	return Params{
+		AcceptedCoins: DefaultCoins(),
 		PropertyAllowlist: []string{
 			"email",
 			"phone",
@@ -36,6 +37,7 @@ func DefaultParams() Params {
 		EncryptionRewardRate: 0.5,
 		WhitelistedOrigins: []string{
 			"sonr.local",
+			"sonr.id",
 		},
 	}
 }

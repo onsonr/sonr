@@ -5,8 +5,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/pkg/mpc"
-	"github.com/di-dao/core/x/did/controller"
+	"github.com/di-dao/core/crypto/mpc"
+	"github.com/di-dao/core/internal/controller"
 )
 
 func TestControllerSigning(t *testing.T) {

@@ -401,23 +401,23 @@ func (m *QueryResolveResponse) GetDocument() string {
 	return ""
 }
 
-// QueryStartLoginRequest is the request type for the Query/StartLogin RPC method.
-type QueryStartLoginRequest struct {
+// QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
+type QueryLoginOptionsRequest struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
-func (m *QueryStartLoginRequest) Reset()         { *m = QueryStartLoginRequest{} }
-func (m *QueryStartLoginRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryStartLoginRequest) ProtoMessage()    {}
-func (*QueryStartLoginRequest) Descriptor() ([]byte, []int) {
+func (m *QueryLoginOptionsRequest) Reset()         { *m = QueryLoginOptionsRequest{} }
+func (m *QueryLoginOptionsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryLoginOptionsRequest) ProtoMessage()    {}
+func (*QueryLoginOptionsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ae1fa9bb626e2869, []int{8}
 }
-func (m *QueryStartLoginRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryLoginOptionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryStartLoginRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLoginOptionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryStartLoginRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLoginOptionsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -427,43 +427,43 @@ func (m *QueryStartLoginRequest) XXX_Marshal(b []byte, deterministic bool) ([]by
 		return b[:n], nil
 	}
 }
-func (m *QueryStartLoginRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStartLoginRequest.Merge(m, src)
+func (m *QueryLoginOptionsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLoginOptionsRequest.Merge(m, src)
 }
-func (m *QueryStartLoginRequest) XXX_Size() int {
+func (m *QueryLoginOptionsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryStartLoginRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStartLoginRequest.DiscardUnknown(m)
+func (m *QueryLoginOptionsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLoginOptionsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryStartLoginRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryLoginOptionsRequest proto.InternalMessageInfo
 
-func (m *QueryStartLoginRequest) GetOrigin() string {
+func (m *QueryLoginOptionsRequest) GetOrigin() string {
 	if m != nil {
 		return m.Origin
 	}
 	return ""
 }
 
-// QueryStartLoginResponse is the response type for the Query/StartLogin RPC method.
-type QueryStartLoginResponse struct {
+// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
+type QueryLoginOptionsResponse struct {
 	// options is the PublicKeyCredentialAttestationOptions
 	Options string `protobuf:"bytes,1,opt,name=options,proto3" json:"options,omitempty"`
 }
 
-func (m *QueryStartLoginResponse) Reset()         { *m = QueryStartLoginResponse{} }
-func (m *QueryStartLoginResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryStartLoginResponse) ProtoMessage()    {}
-func (*QueryStartLoginResponse) Descriptor() ([]byte, []int) {
+func (m *QueryLoginOptionsResponse) Reset()         { *m = QueryLoginOptionsResponse{} }
+func (m *QueryLoginOptionsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryLoginOptionsResponse) ProtoMessage()    {}
+func (*QueryLoginOptionsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ae1fa9bb626e2869, []int{9}
 }
-func (m *QueryStartLoginResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryLoginOptionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryStartLoginResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryLoginOptionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryStartLoginResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryLoginOptionsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -473,42 +473,42 @@ func (m *QueryStartLoginResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *QueryStartLoginResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStartLoginResponse.Merge(m, src)
+func (m *QueryLoginOptionsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryLoginOptionsResponse.Merge(m, src)
 }
-func (m *QueryStartLoginResponse) XXX_Size() int {
+func (m *QueryLoginOptionsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryStartLoginResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStartLoginResponse.DiscardUnknown(m)
+func (m *QueryLoginOptionsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryLoginOptionsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryStartLoginResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryLoginOptionsResponse proto.InternalMessageInfo
 
-func (m *QueryStartLoginResponse) GetOptions() string {
+func (m *QueryLoginOptionsResponse) GetOptions() string {
 	if m != nil {
 		return m.Options
 	}
 	return ""
 }
 
-// QueryStartRegisterRequest is the request type for the Query/StartRegister RPC method.
-type QueryStartRegisterRequest struct {
+// QueryRegisterOptionsRequest is the request type for the Query/RegisterOptions RPC method.
+type QueryRegisterOptionsRequest struct {
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
-func (m *QueryStartRegisterRequest) Reset()         { *m = QueryStartRegisterRequest{} }
-func (m *QueryStartRegisterRequest) String() string { return proto.CompactTextString(m) }
-func (*QueryStartRegisterRequest) ProtoMessage()    {}
-func (*QueryStartRegisterRequest) Descriptor() ([]byte, []int) {
+func (m *QueryRegisterOptionsRequest) Reset()         { *m = QueryRegisterOptionsRequest{} }
+func (m *QueryRegisterOptionsRequest) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisterOptionsRequest) ProtoMessage()    {}
+func (*QueryRegisterOptionsRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ae1fa9bb626e2869, []int{10}
 }
-func (m *QueryStartRegisterRequest) XXX_Unmarshal(b []byte) error {
+func (m *QueryRegisterOptionsRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryStartRegisterRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryRegisterOptionsRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryStartRegisterRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryRegisterOptionsRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -518,43 +518,43 @@ func (m *QueryStartRegisterRequest) XXX_Marshal(b []byte, deterministic bool) ([
 		return b[:n], nil
 	}
 }
-func (m *QueryStartRegisterRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStartRegisterRequest.Merge(m, src)
+func (m *QueryRegisterOptionsRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisterOptionsRequest.Merge(m, src)
 }
-func (m *QueryStartRegisterRequest) XXX_Size() int {
+func (m *QueryRegisterOptionsRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryStartRegisterRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStartRegisterRequest.DiscardUnknown(m)
+func (m *QueryRegisterOptionsRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisterOptionsRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryStartRegisterRequest proto.InternalMessageInfo
+var xxx_messageInfo_QueryRegisterOptionsRequest proto.InternalMessageInfo
 
-func (m *QueryStartRegisterRequest) GetOrigin() string {
+func (m *QueryRegisterOptionsRequest) GetOrigin() string {
 	if m != nil {
 		return m.Origin
 	}
 	return ""
 }
 
-// QueryStartRegisterResponse is the response type for the Query/StartRegister RPC method.
-type QueryStartRegisterResponse struct {
+// QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
+type QueryRegisterOptionsResponse struct {
 	// options is the PublicKeyCredentialCreationOptions
 	Options string `protobuf:"bytes,1,opt,name=options,proto3" json:"options,omitempty"`
 }
 
-func (m *QueryStartRegisterResponse) Reset()         { *m = QueryStartRegisterResponse{} }
-func (m *QueryStartRegisterResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryStartRegisterResponse) ProtoMessage()    {}
-func (*QueryStartRegisterResponse) Descriptor() ([]byte, []int) {
+func (m *QueryRegisterOptionsResponse) Reset()         { *m = QueryRegisterOptionsResponse{} }
+func (m *QueryRegisterOptionsResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryRegisterOptionsResponse) ProtoMessage()    {}
+func (*QueryRegisterOptionsResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_ae1fa9bb626e2869, []int{11}
 }
-func (m *QueryStartRegisterResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryRegisterOptionsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryStartRegisterResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryRegisterOptionsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryStartRegisterResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryRegisterOptionsResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -564,19 +564,19 @@ func (m *QueryStartRegisterResponse) XXX_Marshal(b []byte, deterministic bool) (
 		return b[:n], nil
 	}
 }
-func (m *QueryStartRegisterResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryStartRegisterResponse.Merge(m, src)
+func (m *QueryRegisterOptionsResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryRegisterOptionsResponse.Merge(m, src)
 }
-func (m *QueryStartRegisterResponse) XXX_Size() int {
+func (m *QueryRegisterOptionsResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryStartRegisterResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryStartRegisterResponse.DiscardUnknown(m)
+func (m *QueryRegisterOptionsResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryRegisterOptionsResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryStartRegisterResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryRegisterOptionsResponse proto.InternalMessageInfo
 
-func (m *QueryStartRegisterResponse) GetOptions() string {
+func (m *QueryRegisterOptionsResponse) GetOptions() string {
 	if m != nil {
 		return m.Options
 	}
@@ -592,55 +592,55 @@ func init() {
 	proto.RegisterType((*QueryExistsResponse)(nil), "did.v1.QueryExistsResponse")
 	proto.RegisterType((*QueryResolveRequest)(nil), "did.v1.QueryResolveRequest")
 	proto.RegisterType((*QueryResolveResponse)(nil), "did.v1.QueryResolveResponse")
-	proto.RegisterType((*QueryStartLoginRequest)(nil), "did.v1.QueryStartLoginRequest")
-	proto.RegisterType((*QueryStartLoginResponse)(nil), "did.v1.QueryStartLoginResponse")
-	proto.RegisterType((*QueryStartRegisterRequest)(nil), "did.v1.QueryStartRegisterRequest")
-	proto.RegisterType((*QueryStartRegisterResponse)(nil), "did.v1.QueryStartRegisterResponse")
+	proto.RegisterType((*QueryLoginOptionsRequest)(nil), "did.v1.QueryLoginOptionsRequest")
+	proto.RegisterType((*QueryLoginOptionsResponse)(nil), "did.v1.QueryLoginOptionsResponse")
+	proto.RegisterType((*QueryRegisterOptionsRequest)(nil), "did.v1.QueryRegisterOptionsRequest")
+	proto.RegisterType((*QueryRegisterOptionsResponse)(nil), "did.v1.QueryRegisterOptionsResponse")
 }
 
 func init() { proto.RegisterFile("did/v1/query.proto", fileDescriptor_ae1fa9bb626e2869) }
 
 var fileDescriptor_ae1fa9bb626e2869 = []byte{
-	// 609 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0x4d, 0x4f, 0x13, 0x4f,
-	0x18, 0xa7, 0xe5, 0xff, 0x5f, 0xf0, 0x41, 0x08, 0x0e, 0x0d, 0x96, 0x85, 0xac, 0x32, 0xc1, 0x97,
-	0x0b, 0x1d, 0x81, 0xc4, 0x93, 0x1e, 0x34, 0xf1, 0x60, 0xe2, 0x41, 0x6b, 0xe2, 0x41, 0x0f, 0xb8,
-	0x74, 0x86, 0x75, 0x22, 0x9d, 0x59, 0x76, 0xa6, 0x08, 0xa9, 0x5c, 0xfc, 0x04, 0x26, 0x7e, 0x29,
-	0x8f, 0x24, 0x5e, 0x3c, 0x9a, 0xd6, 0xbb, 0x5f, 0xc1, 0xec, 0xcc, 0xb3, 0x6d, 0x76, 0x5b, 0xe4,
-	0xb6, 0xcf, 0xf3, 0xfc, 0x5e, 0xe6, 0xe5, 0x37, 0x0b, 0x84, 0x4b, 0xce, 0x4e, 0x76, 0xd8, 0x71,
-	0x4f, 0x64, 0x67, 0xad, 0x34, 0xd3, 0x56, 0x93, 0x80, 0x4b, 0xde, 0x3a, 0xd9, 0x09, 0x37, 0x12,
-	0xad, 0x93, 0x23, 0xc1, 0xe2, 0x54, 0xb2, 0x58, 0x29, 0x6d, 0x63, 0x2b, 0xb5, 0x32, 0x1e, 0x15,
-	0x36, 0x90, 0x99, 0x08, 0x25, 0x8c, 0xc4, 0x2e, 0x6d, 0x00, 0x79, 0x95, 0x4b, 0xbd, 0x8c, 0xb3,
-	0xb8, 0x6b, 0xda, 0xe2, 0xb8, 0x27, 0x8c, 0xa5, 0x8f, 0x61, 0xa5, 0xd4, 0x35, 0xa9, 0x56, 0x46,
-	0x90, 0xbb, 0x10, 0xa4, 0xae, 0xd3, 0xac, 0xdd, 0xae, 0xdd, 0x5f, 0xd8, 0x5d, 0x6a, 0x79, 0xe7,
-	0x16, 0xe2, 0x70, 0x4a, 0xef, 0x21, 0xfd, 0x49, 0xa7, 0xa3, 0x7b, 0xca, 0xa2, 0x2a, 0x59, 0x86,
-	0x59, 0x2e, 0xb9, 0xe3, 0x5e, 0x6b, 0xe7, 0x9f, 0xb4, 0x0b, 0x8d, 0x32, 0x10, 0x8d, 0x9a, 0x30,
-	0x17, 0x73, 0x9e, 0x09, 0x63, 0x10, 0x5d, 0x94, 0x64, 0x13, 0xae, 0xc7, 0x1e, 0xbc, 0x2f, 0xd5,
-	0xa1, 0x6e, 0xd6, 0xdd, 0x78, 0x01, 0x7b, 0xcf, 0xd5, 0xa1, 0xce, 0xc9, 0x4a, 0xd8, 0x4f, 0x3a,
-	0xfb, 0xd8, 0x9c, 0xf5, 0x64, 0x2c, 0xe9, 0x16, 0x6e, 0xf6, 0xd9, 0xa9, 0x34, 0xb6, 0xd8, 0x2c,
-	0x59, 0x82, 0xfa, 0x68, 0x55, 0x75, 0xc9, 0xe9, 0x36, 0xae, 0xbe, 0x40, 0xe1, 0x9a, 0x56, 0x21,
-	0x10, 0xae, 0xe3, 0xa0, 0xf3, 0x6d, 0xac, 0xe8, 0x1d, 0x84, 0xb7, 0x85, 0xd1, 0x47, 0x27, 0xe2,
-	0x32, 0xd5, 0x5d, 0xdc, 0xea, 0x08, 0x86, 0xb2, 0x21, 0xcc, 0x73, 0xdd, 0xe9, 0x75, 0x85, 0xb2,
-	0x88, 0x1e, 0xd5, 0xf4, 0x01, 0xac, 0x3a, 0xce, 0x6b, 0x1b, 0x67, 0xf6, 0x85, 0x4e, 0xa4, 0x2a,
-	0xd4, 0x57, 0x21, 0xd0, 0x99, 0x4c, 0xa4, 0x42, 0x0e, 0x56, 0x74, 0x0f, 0x6e, 0x4e, 0x30, 0xc6,
-	0x67, 0xaa, 0x53, 0x17, 0x88, 0xe2, 0x4c, 0xb1, 0xa4, 0x7b, 0xb0, 0x36, 0x26, 0xb5, 0x45, 0x22,
-	0x8d, 0x15, 0xd9, 0x55, 0x4e, 0x0f, 0x21, 0x9c, 0x46, 0xba, 0xca, 0x6c, 0xf7, 0xcf, 0x7f, 0xf0,
-	0xbf, 0x23, 0x92, 0xf7, 0x30, 0x87, 0xf7, 0x4e, 0xd6, 0x8b, 0x20, 0x4d, 0x89, 0x4d, 0xb8, 0x31,
-	0x7d, 0xe8, 0x9d, 0x68, 0xf8, 0xe5, 0xc7, 0xef, 0x6f, 0xf5, 0x06, 0x21, 0x2c, 0xcf, 0x37, 0xe6,
-	0x80, 0xf5, 0xb9, 0xe4, 0xe7, 0xe4, 0x1d, 0x04, 0xfe, 0x12, 0x49, 0x58, 0xd2, 0x28, 0xdd, 0x7f,
-	0xb8, 0x3e, 0x75, 0x86, 0xf2, 0x4d, 0x27, 0x4f, 0xc8, 0xb2, 0x93, 0xf7, 0x57, 0xce, 0xfa, 0xb9,
-	0xf8, 0x1b, 0x08, 0x7c, 0xec, 0x2b, 0xe2, 0xa5, 0x97, 0x54, 0x11, 0x2f, 0xbf, 0x27, 0xba, 0xe2,
-	0xc4, 0x17, 0xc9, 0x82, 0x13, 0xf7, 0x8f, 0x87, 0xec, 0xc3, 0x1c, 0x66, 0xa4, 0x72, 0x2c, 0xe5,
-	0x80, 0x55, 0x8e, 0xa5, 0x12, 0x2b, 0xba, 0xe6, 0xa4, 0x57, 0xc8, 0x0d, 0x27, 0x9d, 0xf9, 0xa9,
-	0x5f, 0x78, 0x0a, 0x30, 0x8e, 0x07, 0x89, 0x4a, 0x32, 0x13, 0x49, 0x0b, 0x6f, 0x5d, 0x3a, 0x47,
-	0xa7, 0x4d, 0xe7, 0xb4, 0x4e, 0xd6, 0x9c, 0xd3, 0x51, 0x3e, 0x63, 0x7d, 0x1f, 0x92, 0x73, 0x66,
-	0x72, 0x3c, 0xf9, 0x0c, 0x8b, 0xa5, 0x98, 0x90, 0xcd, 0x49, 0xd1, 0x4a, 0xee, 0x42, 0xfa, 0x2f,
-	0x08, 0x5a, 0x6f, 0x39, 0xeb, 0x88, 0x6c, 0xe0, 0x26, 0xfd, 0xb8, 0xe2, 0xfe, 0xf4, 0xd1, 0xf7,
-	0x41, 0x54, 0xbb, 0x18, 0x44, 0xb5, 0x5f, 0x83, 0xa8, 0xf6, 0x75, 0x18, 0xcd, 0x5c, 0x0c, 0xa3,
-	0x99, 0x9f, 0xc3, 0x68, 0xe6, 0x2d, 0x4d, 0xa4, 0xfd, 0xd0, 0x3b, 0x68, 0x75, 0x74, 0x97, 0x71,
-	0xb9, 0xcd, 0x63, 0xcd, 0x3a, 0x3a, 0x13, 0xec, 0xd4, 0xe9, 0xd9, 0xb3, 0x54, 0x98, 0x83, 0xc0,
-	0xfd, 0x27, 0xf7, 0xfe, 0x06, 0x00, 0x00, 0xff, 0xff, 0x12, 0xb4, 0x2d, 0xbf, 0x79, 0x05, 0x00,
-	0x00,
+	// 611 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x8c, 0x54, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0xad, 0x53, 0xd5, 0x2d, 0xdb, 0x52, 0xca, 0x36, 0xaa, 0x5c, 0xa7, 0x58, 0xe9, 0xb6, 0x14,
+	0x2e, 0xcd, 0xaa, 0x41, 0x95, 0x38, 0xc0, 0x01, 0x24, 0x0e, 0x48, 0x48, 0x40, 0x0e, 0x1c, 0xe0,
+	0x50, 0xdc, 0xec, 0xd6, 0xac, 0x48, 0x76, 0x5d, 0xaf, 0x13, 0x52, 0x45, 0x95, 0x10, 0xe2, 0x03,
+	0x90, 0xf8, 0x29, 0x8e, 0x95, 0xb8, 0x70, 0x44, 0x09, 0x1f, 0x82, 0xbc, 0x3b, 0x0e, 0xd8, 0x98,
+	0xc2, 0x2d, 0x33, 0xf3, 0xde, 0x9b, 0x99, 0x9d, 0xe7, 0x20, 0xcc, 0x04, 0xa3, 0xc3, 0x03, 0x7a,
+	0x3a, 0xe0, 0xc9, 0x59, 0x2b, 0x4e, 0x54, 0xaa, 0xb0, 0xcb, 0x04, 0x6b, 0x0d, 0x0f, 0xfc, 0xad,
+	0x48, 0xa9, 0xa8, 0xc7, 0x69, 0x18, 0x0b, 0x1a, 0x4a, 0xa9, 0xd2, 0x30, 0x15, 0x4a, 0x6a, 0x8b,
+	0xf2, 0xeb, 0xc0, 0x8c, 0xb8, 0xe4, 0x5a, 0x40, 0x96, 0xd4, 0x11, 0x7e, 0x9e, 0x49, 0x3d, 0x0b,
+	0x93, 0xb0, 0xaf, 0x3b, 0xfc, 0x74, 0xc0, 0x75, 0x4a, 0xee, 0xa3, 0xf5, 0x42, 0x56, 0xc7, 0x4a,
+	0x6a, 0x8e, 0xf7, 0x90, 0x1b, 0x9b, 0x8c, 0xe7, 0x34, 0x9d, 0xdb, 0xcb, 0xed, 0xd5, 0x96, 0xed,
+	0xdc, 0x02, 0x1c, 0x54, 0xc9, 0x2d, 0xa0, 0x3f, 0xe8, 0x76, 0xd5, 0x40, 0xa6, 0xa0, 0x8a, 0xd7,
+	0xd0, 0x3c, 0x13, 0xcc, 0x70, 0xaf, 0x74, 0xb2, 0x9f, 0xa4, 0x8f, 0xea, 0x45, 0x20, 0x34, 0xf2,
+	0xd0, 0x62, 0xc8, 0x58, 0xc2, 0xb5, 0x06, 0x74, 0x1e, 0xe2, 0x6d, 0xb4, 0x12, 0x5a, 0xf0, 0x91,
+	0x90, 0x27, 0xca, 0xab, 0x99, 0xf2, 0x32, 0xe4, 0x1e, 0xcb, 0x13, 0x95, 0x91, 0x25, 0x4f, 0xdf,
+	0xa9, 0xe4, 0xad, 0x37, 0x6f, 0xc9, 0x10, 0x92, 0x5d, 0x58, 0xf6, 0xd1, 0x48, 0xe8, 0x34, 0x5f,
+	0x16, 0xaf, 0xa2, 0xda, 0x6c, 0xaa, 0x9a, 0x60, 0x64, 0x1f, 0xa6, 0xcf, 0x51, 0x30, 0xd3, 0x06,
+	0x72, 0xb9, 0xc9, 0x18, 0xe8, 0x52, 0x07, 0x22, 0x72, 0x13, 0xe0, 0x1d, 0xae, 0x55, 0x6f, 0xc8,
+	0xff, 0xa6, 0xda, 0x86, 0x55, 0x67, 0x30, 0x90, 0xf5, 0xd1, 0x12, 0x53, 0xdd, 0x41, 0x9f, 0xcb,
+	0x14, 0xd0, 0xb3, 0x98, 0xb4, 0x91, 0x67, 0x38, 0x4f, 0x54, 0x24, 0xe4, 0xd3, 0xd8, 0x5c, 0x33,
+	0xd7, 0xdf, 0x40, 0xae, 0x4a, 0x44, 0x24, 0x24, 0xb0, 0x20, 0x22, 0x87, 0x68, 0xb3, 0x82, 0xf3,
+	0xeb, 0x5d, 0x95, 0x4d, 0xe5, 0xef, 0x0a, 0x21, 0x39, 0x44, 0x0d, 0x18, 0x2f, 0x12, 0x3a, 0xe5,
+	0xc9, 0x7f, 0x76, 0xbb, 0x8b, 0xb6, 0xaa, 0x69, 0xff, 0x6a, 0xd8, 0x7e, 0xbf, 0x80, 0x16, 0x0c,
+	0x15, 0xbf, 0x46, 0x8b, 0x70, 0x7f, 0xdc, 0xc8, 0x0d, 0x55, 0x61, 0x1f, 0x7f, 0xab, 0xba, 0x68,
+	0x3b, 0x11, 0xff, 0xc3, 0xd7, 0x1f, 0x9f, 0x6b, 0x75, 0x8c, 0x69, 0xe6, 0x73, 0xf0, 0x03, 0x1d,
+	0x33, 0xc1, 0xce, 0xf1, 0x2b, 0xe4, 0xda, 0x63, 0x62, 0xbf, 0xa0, 0x51, 0xf0, 0x81, 0xdf, 0xa8,
+	0xac, 0x81, 0xbc, 0x67, 0xe4, 0x31, 0x5e, 0x33, 0xf2, 0xf6, 0xf4, 0x74, 0x9c, 0x89, 0xbf, 0x40,
+	0xae, 0xb5, 0x7f, 0x49, 0xbc, 0xf0, 0x45, 0x95, 0xc4, 0x8b, 0xdf, 0x15, 0x59, 0x37, 0xe2, 0x57,
+	0xf1, 0xb2, 0x11, 0xb7, 0x1f, 0x11, 0x3e, 0x42, 0x8b, 0xe0, 0x95, 0xd2, 0xb3, 0x14, 0x8d, 0x56,
+	0x7a, 0x96, 0x92, 0xbd, 0xc8, 0xa6, 0x91, 0x5e, 0xc7, 0xd7, 0x8d, 0x74, 0x62, 0xab, 0x76, 0xf0,
+	0x11, 0x5a, 0xf9, 0xdd, 0x24, 0xb8, 0x59, 0x10, 0xaa, 0xf0, 0x9c, 0xbf, 0x7d, 0x09, 0x02, 0xfa,
+	0xed, 0x98, 0x7e, 0x37, 0x70, 0xc3, 0xf4, 0xeb, 0x65, 0x10, 0x3a, 0xb6, 0x66, 0x39, 0xa7, 0x70,
+	0x7b, 0xfc, 0xd1, 0x41, 0xd7, 0x4a, 0x8e, 0xc1, 0x3b, 0xa5, 0x35, 0xaa, 0x6c, 0xe8, 0xef, 0x5e,
+	0x0e, 0x82, 0x19, 0xf6, 0xcc, 0x0c, 0x4d, 0x1c, 0xc0, 0xce, 0x16, 0xf5, 0xc7, 0x18, 0x0f, 0xef,
+	0x7d, 0x99, 0x04, 0xce, 0xc5, 0x24, 0x70, 0xbe, 0x4f, 0x02, 0xe7, 0xd3, 0x34, 0x98, 0xbb, 0x98,
+	0x06, 0x73, 0xdf, 0xa6, 0xc1, 0xdc, 0x4b, 0x12, 0x89, 0xf4, 0xcd, 0xe0, 0xb8, 0xd5, 0x55, 0x7d,
+	0xca, 0xc4, 0x3e, 0x0b, 0x15, 0xed, 0xaa, 0x84, 0xd3, 0x91, 0x51, 0x4c, 0xcf, 0x62, 0xae, 0x8f,
+	0x5d, 0xf3, 0x07, 0x7a, 0xe7, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff, 0x6f, 0xe5, 0x3d, 0x45, 0x92,
+	0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -663,10 +663,10 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
-	StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error)
-	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
-	StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error)
+	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+	LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error)
+	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+	RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error)
 }
 
 type queryClient struct {
@@ -713,18 +713,18 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts
 	return out, nil
 }
 
-func (c *queryClient) StartLogin(ctx context.Context, in *QueryStartLoginRequest, opts ...grpc.CallOption) (*QueryStartLoginResponse, error) {
-	out := new(QueryStartLoginResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/StartLogin", in, out, opts...)
+func (c *queryClient) LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error) {
+	out := new(QueryLoginOptionsResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Query/LoginOptions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) StartRegister(ctx context.Context, in *QueryStartRegisterRequest, opts ...grpc.CallOption) (*QueryStartRegisterResponse, error) {
-	out := new(QueryStartRegisterResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/StartRegister", in, out, opts...)
+func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error) {
+	out := new(QueryRegisterOptionsResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Query/RegisterOptions", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -741,10 +741,10 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
-	// StartLogin returns PublicKeyCredentialAttestationOptions for starting a login flow.
-	StartLogin(context.Context, *QueryStartLoginRequest) (*QueryStartLoginResponse, error)
-	// StartRegister returns PublicKeyCredentialCreationOptions for starting a registration flow.
-	StartRegister(context.Context, *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error)
+	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+	LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error)
+	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+	RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -763,11 +763,11 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 func (*UnimplementedQueryServer) Resolve(ctx context.Context, req *QueryResolveRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
-func (*UnimplementedQueryServer) StartLogin(ctx context.Context, req *QueryStartLoginRequest) (*QueryStartLoginResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartLogin not implemented")
+func (*UnimplementedQueryServer) LoginOptions(ctx context.Context, req *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LoginOptions not implemented")
 }
-func (*UnimplementedQueryServer) StartRegister(ctx context.Context, req *QueryStartRegisterRequest) (*QueryStartRegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method StartRegister not implemented")
+func (*UnimplementedQueryServer) RegisterOptions(ctx context.Context, req *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterOptions not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -846,38 +846,38 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_StartLogin_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryStartLoginRequest)
+func _Query_LoginOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryLoginOptionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).StartLogin(ctx, in)
+		return srv.(QueryServer).LoginOptions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/did.v1.Query/StartLogin",
+		FullMethod: "/did.v1.Query/LoginOptions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).StartLogin(ctx, req.(*QueryStartLoginRequest))
+		return srv.(QueryServer).LoginOptions(ctx, req.(*QueryLoginOptionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_StartRegister_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryStartRegisterRequest)
+func _Query_RegisterOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRegisterOptionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).StartRegister(ctx, in)
+		return srv.(QueryServer).RegisterOptions(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/did.v1.Query/StartRegister",
+		FullMethod: "/did.v1.Query/RegisterOptions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).StartRegister(ctx, req.(*QueryStartRegisterRequest))
+		return srv.(QueryServer).RegisterOptions(ctx, req.(*QueryRegisterOptionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -903,12 +903,12 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
-			MethodName: "StartLogin",
-			Handler:    _Query_StartLogin_Handler,
+			MethodName: "LoginOptions",
+			Handler:    _Query_LoginOptions_Handler,
 		},
 		{
-			MethodName: "StartRegister",
-			Handler:    _Query_StartRegister_Handler,
+			MethodName: "RegisterOptions",
+			Handler:    _Query_RegisterOptions_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1170,7 +1170,7 @@ func (m *QueryResolveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStartLoginRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryLoginOptionsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1180,12 +1180,12 @@ func (m *QueryStartLoginRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStartLoginRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLoginOptionsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStartLoginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLoginOptionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1200,7 +1200,7 @@ func (m *QueryStartLoginRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) 
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStartLoginResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryLoginOptionsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1210,12 +1210,12 @@ func (m *QueryStartLoginResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStartLoginResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryLoginOptionsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStartLoginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryLoginOptionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1230,7 +1230,7 @@ func (m *QueryStartLoginResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStartRegisterRequest) Marshal() (dAtA []byte, err error) {
+func (m *QueryRegisterOptionsRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1240,12 +1240,12 @@ func (m *QueryStartRegisterRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStartRegisterRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryRegisterOptionsRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStartRegisterRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryRegisterOptionsRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1260,7 +1260,7 @@ func (m *QueryStartRegisterRequest) MarshalToSizedBuffer(dAtA []byte) (int, erro
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryStartRegisterResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryRegisterOptionsResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1270,12 +1270,12 @@ func (m *QueryStartRegisterResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryStartRegisterResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryRegisterOptionsResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryStartRegisterResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryRegisterOptionsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1408,7 +1408,7 @@ func (m *QueryResolveResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryStartLoginRequest) Size() (n int) {
+func (m *QueryLoginOptionsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1421,7 +1421,7 @@ func (m *QueryStartLoginRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryStartLoginResponse) Size() (n int) {
+func (m *QueryLoginOptionsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1434,7 +1434,7 @@ func (m *QueryStartLoginResponse) Size() (n int) {
 	return n
 }
 
-func (m *QueryStartRegisterRequest) Size() (n int) {
+func (m *QueryRegisterOptionsRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1447,7 +1447,7 @@ func (m *QueryStartRegisterRequest) Size() (n int) {
 	return n
 }
 
-func (m *QueryStartRegisterResponse) Size() (n int) {
+func (m *QueryRegisterOptionsResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -2146,7 +2146,7 @@ func (m *QueryResolveResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStartLoginRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryLoginOptionsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2169,10 +2169,10 @@ func (m *QueryStartLoginRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStartLoginRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLoginOptionsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStartLoginRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLoginOptionsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2228,7 +2228,7 @@ func (m *QueryStartLoginRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStartLoginResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryLoginOptionsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2251,10 +2251,10 @@ func (m *QueryStartLoginResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStartLoginResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryLoginOptionsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStartLoginResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryLoginOptionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2310,7 +2310,7 @@ func (m *QueryStartLoginResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStartRegisterRequest) Unmarshal(dAtA []byte) error {
+func (m *QueryRegisterOptionsRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2333,10 +2333,10 @@ func (m *QueryStartRegisterRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStartRegisterRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRegisterOptionsRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStartRegisterRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRegisterOptionsRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2392,7 +2392,7 @@ func (m *QueryStartRegisterRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryStartRegisterResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryRegisterOptionsResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2415,10 +2415,10 @@ func (m *QueryStartRegisterResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryStartRegisterResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryRegisterOptionsResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryStartRegisterResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryRegisterOptionsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

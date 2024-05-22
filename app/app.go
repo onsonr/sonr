@@ -135,7 +135,7 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	"github.com/di-dao/core/pkg/proxy"
+	"github.com/di-dao/core/internal/proxy"
 	did "github.com/di-dao/core/x/did"
 	didkeeper "github.com/di-dao/core/x/did/keeper"
 	didtypes "github.com/di-dao/core/x/did/types"
