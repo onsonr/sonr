@@ -27,7 +27,7 @@ func GenerateKss() (kss.Set, error) {
 	if err != nil {
 		return nil, err
 	}
-	return kss.NewKeyshareSet(aliceRes, bobRes), nil
+	return kss.NewKeyshareSet(aliceRes, bobRes)
 }
 
 // RunProtocol runs the keyshare protocol between two parties

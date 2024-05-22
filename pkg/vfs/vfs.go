@@ -31,6 +31,49 @@ func New(name string) FileSystem {
 	}
 }
 
+// Load creates a new virtual file system from a given files.Node.
+func Load(name string, node files.Node) (FileSystem, error) {
+	entry := files.FileEntry(name, node)
+	rootDir := files.DirFromEntry(entry)
+	vfs := &vfs{
+		files: make(map[string]files.File, 0),
+		name:  name,
+	}
+
+	err := loadDirectory(rootDir, vfs)
+	if err != nil {
+		return nil, err
+	}
+
+	return vfs, nil
+}
+
+// loadDirectory recursively loads the files and directories from a given directory node.
+func loadDirectory(dir files.Directory, vfs *vfs) error {
+	it := dir.Entries()
+	for it.Next() {
+		name, node := it.Name(), it.Node()
+		switch node.(type) {
+		case files.File:
+			data, err := io.ReadAll(node.(files.File))
+			if err != nil {
+				return err
+			}
+			vfs.files[name] = files.NewBytesFile(data)
+
+		case files.Directory:
+			subDir := files.DirFromEntry(files.FileEntry(name, node))
+			err := loadDirectory(subDir, vfs)
+			if err != nil {
+				return err
+			}
+		default:
+			return fmt.Errorf("unsupported node type")
+		}
+	}
+	return nil
+}
+
 // Name returns the name of the virtual file system.
 func (v *vfs) Name() string {
 	return v.name
