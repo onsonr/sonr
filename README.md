@@ -28,6 +28,8 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 -   [Twitter](https://sonr.io/twitter)
 -   [Dev Chat](https://sonr.io/discord)
 
+<br />
+
 ## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
