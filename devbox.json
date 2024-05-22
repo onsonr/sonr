@@ -10,8 +10,7 @@
     "doppler@latest",
     "mods@latest",
     "gum@latest",
-    "neovim@latest",
-    "golangci-lint@latest"
+    "neovim@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
