@@ -152,6 +152,8 @@ import (
 	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
+
+	_ "github.com/di-dao/sonr/internal/local"
 )
 
 const appName = "core"

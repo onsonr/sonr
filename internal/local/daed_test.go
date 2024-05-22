@@ -1,11 +1,11 @@
-package daead_test
+package local_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/di-dao/sonr/crypto/daead"
+	daead "github.com/di-dao/sonr/internal/local"
 )
 
 func TestNewKeyset(t *testing.T) {
@@ -21,11 +21,11 @@ func TestEncryptDecrypt(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, kh)
 
-	ciphertext, err := daead.Encrypt(kh, msg, associatedData)
+	ciphertext, err := daead.Encrypt(msg, associatedData)
 	assert.NoError(t, err)
 	assert.NotNil(t, ciphertext)
 
-	plaintext, err := daead.Decrypt(kh, ciphertext, associatedData)
+	plaintext, err := daead.Decrypt(ciphertext, associatedData)
 	assert.NoError(t, err)
 	assert.NotNil(t, plaintext)
 
