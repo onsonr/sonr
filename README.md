@@ -21,15 +21,6 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 <br />
 
-## Community & Support
-
--   [Forum](https://github.com/di-dao/sonr/discussions)
--   [Issues](https://github.com/di-dao/sonr/issues)
--   [Twitter](https://sonr.io/twitter)
--   [Dev Chat](https://sonr.io/discord)
-
-<br />
-
 ## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following organizations and individuals:
@@ -40,4 +31,11 @@ Sonr would not have been possible without the direct and indirect support of the
 -   **Satoshi Nakamoto**: For Bitcoin.
 -   **Steve Jobs**: For Taste.
 
-Thank you for your support and inspiration!
+<br />
+
+## Community & Support
+
+-   [Forum](https://github.com/di-dao/sonr/discussions)
+-   [Issues](https://github.com/di-dao/sonr/issues)
+-   [Twitter](https://sonr.io/twitter)
+-   [Dev Chat](https://sonr.io/discord)
