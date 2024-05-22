@@ -18,8 +18,7 @@ func TestControllerSigning(t *testing.T) {
 	require.NotNil(t, pubKey)
 
 	// Create controller
-	ctrl, err := controller.New(kss)
-	require.NoError(t, err)
+	ctrl := controller.New(kss)
 	require.NotNil(t, ctrl)
 
 	// Test signing and verifying a message
@@ -49,8 +48,10 @@ func TestSignRefreshSign(t *testing.T) {
 	// Create controller
 	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
-	ctrl, err := controller.New(kss)
-	require.NoError(t, err)
+
+	// Create controller
+	ctrl := controller.New(kss)
+	require.NotNil(t, ctrl)
 
 	// Sign a message
 	msg := []byte("test message")

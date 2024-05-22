@@ -25,18 +25,13 @@ type VFS interface {
 type vfs struct {
 	files map[string]files.File
 	name  string
-
-	// TODO: Add afero.Fs to the vfs struct.
-	fs afero.Fs
 }
 
 // NewVFS creates a new virtual file system.
 func NewVFS(name string) VFS {
-	fs := afero.NewMemMapFs()
 	return &vfs{
 		files: make(map[string]files.File, 0),
 		name:  name,
-		fs:    fs,
 	}
 }
 

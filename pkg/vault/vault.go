@@ -8,6 +8,7 @@ import (
 	"github.com/di-dao/sonr/pkg/vault/controller"
 	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
+	"github.com/ipfs/boxo/path"
 )
 
 // Vault is an interface that defines the methods for a vault.
@@ -19,10 +20,11 @@ type Vault interface {
 
 // vault is a struct that contains the information of a vault to be stored in the vault
 type vault struct {
-	vfs        ipfs.VFS
-	wallet     *wallet.Wallet
 	controller controller.Controller
+	path       path.Path
 	properties props.Properties
+	wallet     *wallet.Wallet
+	vfs        ipfs.VFS
 }
 
 // New creates a new vault from a set of keyshares.
