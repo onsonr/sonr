@@ -3,8 +3,6 @@
 
 # `sonr` - Sonr Chain
 
-> Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
-
 [![Go Reference](https://pkg.go.dev/badge/github.com/didao-org/sonr.svg)](https://pkg.go.dev/github.com/didao-org/sonr)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/didao-org/sonr)
 ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/didao-org/sonr)
@@ -17,6 +15,10 @@
 [![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/sonr)
 
 </div>
+
+> Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
+
+<br />
 <br />
 
 ## Community & Support
@@ -25,8 +27,6 @@
 -   [Issues](https://github.com/di-dao/sonr/issues)
 -   [Twitter](https://sonr.io/twitter)
 -   [Dev Chat](https://sonr.io/discord)
-
-<br />
 
 ## Acknowledgements
 
