@@ -17,6 +17,7 @@
 [![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/sonr)
 
 </div>
+<br />
 
 ## Community & Support
 
@@ -24,6 +25,8 @@
 -   [Issues](https://github.com/di-dao/sonr/issues)
 -   [Twitter](https://sonr.io/twitter)
 -   [Dev Chat](https://sonr.io/discord)
+
+<br />
 
 ## Acknowledgements
 
