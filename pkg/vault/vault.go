@@ -33,7 +33,7 @@ func New(ctx context.Context) (Vault, error) {
 		return nil, err
 	}
 
-	// Get sonr address and bitcoin address from keyshares
+	// Create a new wallet
 	wallet, err := wallet.New(keyshares)
 	if err != nil {
 		return nil, err
