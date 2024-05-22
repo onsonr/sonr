@@ -26,16 +26,10 @@ func keysetFile() string {
 func init() {
 	if _, err := os.Stat(keysetFile()); os.IsNotExist(err) {
 		// If the keyset file doesn't exist, generate a new key handle
-		kh, err = NewKeyHandle()
-		if err != nil {
-			panic(err)
-		}
+		kh, _ = NewKeyHandle()
 	} else {
 		// If the keyset file exists, load the key handle from the file
-		kh, err = ReadKeyHandle()
-		if err != nil {
-			panic(err)
-		}
+		kh, _ = ReadKeyHandle()
 	}
 }
 
