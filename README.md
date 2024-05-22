@@ -16,6 +16,8 @@
 
 </div>
 
+---
+
 ## Overview
 
 Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
