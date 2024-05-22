@@ -7,7 +7,7 @@
 package common
 
 import (
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // Commitment represents a point Pedersen commitment of one or more

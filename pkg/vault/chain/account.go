@@ -1,8 +1,8 @@
 package chain
 
 import (
-	"github.com/di-dao/core/crypto"
-	"github.com/di-dao/core/crypto/bip32"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/bip32"
 )
 
 // Account is a struct that contains the information of a wallet account

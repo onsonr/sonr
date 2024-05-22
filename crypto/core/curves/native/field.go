@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // FieldLimbs is the number of limbs needed to represent this field

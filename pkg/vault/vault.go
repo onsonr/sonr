@@ -1,11 +1,11 @@
 package vault
 
 import (
-	"github.com/di-dao/core/crypto/kss"
-	"github.com/di-dao/core/pkg/auth"
-	"github.com/di-dao/core/pkg/ipfs"
-	"github.com/di-dao/core/pkg/vault/chain"
-	"github.com/di-dao/core/pkg/vault/wallet"
+	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/pkg/auth"
+	"github.com/di-dao/sonr/pkg/ipfs"
+	"github.com/di-dao/sonr/pkg/vault/chain"
+	"github.com/di-dao/sonr/pkg/vault/wallet"
 )
 
 // Vault is an interface that defines the methods for a vault.

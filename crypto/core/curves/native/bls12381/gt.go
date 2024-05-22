@@ -3,8 +3,8 @@ package bls12381
 import (
 	"io"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // GtFieldBytes is the number of bytes needed to represent this field

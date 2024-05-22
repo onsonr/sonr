@@ -15,7 +15,7 @@ import (
 	ed "filippo.io/edwards25519"
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 func TestScalarEd25519Random(t *testing.T) {

@@ -15,11 +15,11 @@ import (
 
 	"github.com/btcsuite/btcd/btcec/v2"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	secp256k1 "github.com/di-dao/core/crypto/core/curves/native/k256"
-	"github.com/di-dao/core/crypto/core/curves/native/k256/fp"
-	"github.com/di-dao/core/crypto/core/curves/native/k256/fq"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	secp256k1 "github.com/di-dao/sonr/crypto/core/curves/native/k256"
+	"github.com/di-dao/sonr/crypto/core/curves/native/k256/fp"
+	"github.com/di-dao/sonr/crypto/core/curves/native/k256/fq"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var (

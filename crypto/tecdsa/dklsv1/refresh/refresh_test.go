@@ -13,11 +13,11 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/ot/extension/kos"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1/refresh"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1/sign"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/ot/extension/kos"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1/dkg"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1/refresh"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1/sign"
 )
 
 func performDKG(t *testing.T, curve *curves.Curve) (*dkg.Alice, *dkg.Bob) {

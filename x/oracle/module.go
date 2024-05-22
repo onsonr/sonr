@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-	"github.com/di-dao/core/x/oracle/keeper"
-	"github.com/di-dao/core/x/oracle/types"
+	"github.com/di-dao/sonr/x/oracle/keeper"
+	"github.com/di-dao/sonr/x/oracle/types"
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"

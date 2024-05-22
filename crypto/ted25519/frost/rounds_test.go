@@ -11,9 +11,9 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	dkg "github.com/di-dao/core/crypto/dkg/frost"
-	"github.com/di-dao/core/crypto/sharing"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	dkg "github.com/di-dao/sonr/crypto/dkg/frost"
+	"github.com/di-dao/sonr/crypto/sharing"
 )
 
 var (

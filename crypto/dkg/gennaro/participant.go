@@ -11,9 +11,9 @@ import (
 	"crypto/elliptic"
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
-	v1 "github.com/di-dao/core/crypto/sharing/v1"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
+	v1 "github.com/di-dao/sonr/crypto/sharing/v1"
 )
 
 // Participant is a DKG player that contains information needed to perform DKG rounds

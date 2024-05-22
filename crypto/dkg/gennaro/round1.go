@@ -10,9 +10,9 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/di-dao/core/crypto/core"
-	"github.com/di-dao/core/crypto/internal"
-	v1 "github.com/di-dao/core/crypto/sharing/v1"
+	"github.com/di-dao/sonr/crypto/core"
+	"github.com/di-dao/sonr/crypto/internal"
+	v1 "github.com/di-dao/sonr/crypto/sharing/v1"
 )
 
 // Round1Bcast are the values that are broadcast to all other participants

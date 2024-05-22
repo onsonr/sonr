@@ -10,7 +10,7 @@ import (
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // generators contains a list of points to be used as generators for bulletproofs.

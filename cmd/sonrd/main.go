@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/log"
 
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
-	"github.com/di-dao/core/app"
+	"github.com/di-dao/sonr/app"
 )
 
 func main() {

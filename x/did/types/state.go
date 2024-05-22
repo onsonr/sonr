@@ -3,7 +3,7 @@ package types
 import (
 	"encoding/json"
 
-	didv1 "github.com/di-dao/core/api/did/v1"
+	didv1 "github.com/di-dao/sonr/api/did/v1"
 )
 
 // AssertionList is a list of Assertion

@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/x/did/types"
 
 	"github.com/stretchr/testify/require"
 )

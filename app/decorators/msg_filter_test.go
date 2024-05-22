@@ -10,8 +10,8 @@ import (
 	banktypes "github.com/cosmos/cosmos-sdk/x/bank/types"
 	"github.com/stretchr/testify/suite"
 
-	app "github.com/di-dao/core/app"
-	"github.com/di-dao/core/app/decorators"
+	app "github.com/di-dao/sonr/app"
+	"github.com/di-dao/sonr/app/decorators"
 )
 
 type AnteTestSuite struct {

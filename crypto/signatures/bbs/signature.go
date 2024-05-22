@@ -11,7 +11,7 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // Signature is a BBS+ signature

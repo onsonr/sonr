@@ -13,8 +13,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // Round1Bcast contains values to be broadcast to all players after the completion of signing round 1.

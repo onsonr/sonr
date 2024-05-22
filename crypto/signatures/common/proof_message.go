@@ -9,7 +9,7 @@ package common
 import (
 	"io"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // ProofMessage classifies how a message is presented in a proof

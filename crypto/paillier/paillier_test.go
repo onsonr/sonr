@@ -16,8 +16,8 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	crypto "github.com/di-dao/core/crypto/core"
-	tt "github.com/di-dao/core/crypto/internal"
+	crypto "github.com/di-dao/sonr/crypto/core"
+	tt "github.com/di-dao/sonr/crypto/internal"
 )
 
 var (

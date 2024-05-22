@@ -7,7 +7,7 @@
 package v1
 
 import (
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 type polynomial struct {

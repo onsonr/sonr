@@ -20,8 +20,8 @@ import (
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
-	"github.com/di-dao/core/app"
-	"github.com/di-dao/core/app/params"
+	"github.com/di-dao/sonr/app"
+	"github.com/di-dao/sonr/app/params"
 	// NewRootCmd creates a new root command for chain app. It is called once in the
 	// main function.
 )

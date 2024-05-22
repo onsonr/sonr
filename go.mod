@@ -1,4 +1,4 @@
-module github.com/di-dao/core
+module github.com/di-dao/sonr
 
 go 1.22
 

@@ -4,7 +4,7 @@ package did.v1;
 import "google/api/annotations.proto";
 import "did/v1/genesis.proto";
 
-option go_package = "github.com/di-dao/core/x/did/types";
+option go_package = "github.com/di-dao/sonr/x/did/types";
 
 // Query provides defines the gRPC querier service.
 service Query {

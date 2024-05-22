@@ -9,8 +9,8 @@ package gennaro
 import (
 	"fmt"
 
-	"github.com/di-dao/core/crypto/internal"
-	v1 "github.com/di-dao/core/crypto/sharing/v1"
+	"github.com/di-dao/sonr/crypto/internal"
+	v1 "github.com/di-dao/sonr/crypto/sharing/v1"
 )
 
 type Round2Bcast = []*v1.ShareVerifier

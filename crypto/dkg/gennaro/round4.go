@@ -9,10 +9,10 @@ package gennaro
 import (
 	"math/big"
 
-	"github.com/di-dao/core/crypto/core"
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
-	v1 "github.com/di-dao/core/crypto/sharing/v1"
+	"github.com/di-dao/sonr/crypto/core"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
+	v1 "github.com/di-dao/sonr/crypto/sharing/v1"
 )
 
 // Round4 computes the public shares used by tECDSA during signing

@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/di-dao/core/crypto/daead"
+	"github.com/di-dao/sonr/crypto/daead"
 )
 
 func TestNewKeyset(t *testing.T) {

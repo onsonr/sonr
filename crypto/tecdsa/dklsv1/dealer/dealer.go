@@ -15,10 +15,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/ot/base/simplest"
-	"github.com/di-dao/core/crypto/ot/extension/kos"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/ot/base/simplest"
+	"github.com/di-dao/sonr/crypto/ot/extension/kos"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1/dkg"
 )
 
 // GenerationAndDeal produces private key material for alice and bob which they can later use in signing.

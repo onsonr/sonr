@@ -9,7 +9,7 @@ package bbs
 import (
 	"errors"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // MessageGenerators are used to sign a vector of commitments for

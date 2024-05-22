@@ -14,8 +14,8 @@ import (
 	"filippo.io/edwards25519"
 	"github.com/stretchr/testify/require"
 
-	core "github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
+	core "github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var (

@@ -6,8 +6,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // fp field element mod p

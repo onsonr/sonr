@@ -18,8 +18,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/di-dao/core/x/did/keeper"
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/x/did/keeper"
+	"github.com/di-dao/sonr/x/did/types"
 	// this line is used by starport scaffolding # 1
 )
 

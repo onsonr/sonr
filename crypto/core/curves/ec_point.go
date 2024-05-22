@@ -14,8 +14,8 @@ import (
 
 	"github.com/btcsuite/btcd/btcec/v2"
 
-	"github.com/di-dao/core/crypto/core"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var curveNameToId = map[string]byte{

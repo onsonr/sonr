@@ -1,6 +1,6 @@
 package types
 
-import "github.com/di-dao/core/crypto"
+import "github.com/di-dao/sonr/crypto"
 
 // Controller is the interface for the controller
 type ControllerI interface {

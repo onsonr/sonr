@@ -18,8 +18,8 @@ import (
 
 	"golang.org/x/crypto/blake2b"
 
-	"github.com/di-dao/core/crypto/core/curves/native/pasta/fp"
-	"github.com/di-dao/core/crypto/core/curves/native/pasta/fq"
+	"github.com/di-dao/sonr/crypto/core/curves/native/pasta/fp"
+	"github.com/di-dao/sonr/crypto/core/curves/native/pasta/fq"
 )
 
 var (

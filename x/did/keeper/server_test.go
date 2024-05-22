@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/x/did/types"
 )
 
 func TestParams(t *testing.T) {

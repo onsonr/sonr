@@ -12,9 +12,9 @@ import (
 	"fmt"
 	"math/big"
 
-	crypto "github.com/di-dao/core/crypto/core"
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
+	crypto "github.com/di-dao/sonr/crypto/core"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // [spec] 10.2 and ProvePSF, VerifyPSF fig.15

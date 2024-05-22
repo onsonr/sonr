@@ -1,7 +1,7 @@
 package module
 
 import (
-	"github.com/di-dao/core/x/did/handlers"
+	"github.com/di-dao/sonr/x/did/handlers"
 	"github.com/labstack/echo/v4"
 )
 

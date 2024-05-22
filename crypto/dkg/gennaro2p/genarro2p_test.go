@@ -15,8 +15,8 @@ import (
 	"github.com/btcsuite/btcd/btcec/v2"
 	"github.com/stretchr/testify/require"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	v1 "github.com/di-dao/core/crypto/sharing/v1"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	v1 "github.com/di-dao/sonr/crypto/sharing/v1"
 )
 
 var (

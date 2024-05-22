@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/di-dao/core/x/oracle/types"
+	"github.com/di-dao/sonr/x/oracle/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

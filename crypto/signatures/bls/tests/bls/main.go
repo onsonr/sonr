@@ -15,7 +15,7 @@ import (
 	"io/ioutil"
 	"os"
 
-	bls "github.com/di-dao/core/crypto/signatures/bls/bls_sig"
+	bls "github.com/di-dao/sonr/crypto/signatures/bls/bls_sig"
 )
 
 type signOp struct {

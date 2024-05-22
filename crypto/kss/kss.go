@@ -1,8 +1,8 @@
 package kss
 
 import (
-	"github.com/di-dao/core/crypto"
-	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/core/protocol"
 )
 
 // KssI is the interface for the keyshare set

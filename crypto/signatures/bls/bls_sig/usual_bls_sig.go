@@ -9,9 +9,9 @@ package bls_sig
 import (
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/core/curves/native/bls12381"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/core/curves/native/bls12381"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // Implement BLS signatures on the BLS12-381 curve

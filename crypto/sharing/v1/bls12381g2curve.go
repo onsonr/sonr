@@ -11,8 +11,8 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/core/curves/native/bls12381"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/core/curves/native/bls12381"
 )
 
 var (

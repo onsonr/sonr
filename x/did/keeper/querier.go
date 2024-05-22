@@ -5,7 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/x/did/types"
 )
 
 var _ types.QueryServer = Querier{}

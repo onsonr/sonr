@@ -13,11 +13,11 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	p256n "github.com/di-dao/core/crypto/core/curves/native/p256"
-	"github.com/di-dao/core/crypto/core/curves/native/p256/fp"
-	"github.com/di-dao/core/crypto/core/curves/native/p256/fq"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	p256n "github.com/di-dao/sonr/crypto/core/curves/native/p256"
+	"github.com/di-dao/sonr/crypto/core/curves/native/p256/fp"
+	"github.com/di-dao/sonr/crypto/core/curves/native/p256/fq"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var (

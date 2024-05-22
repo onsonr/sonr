@@ -3,7 +3,7 @@ package vault
 import (
 	"bytes"
 
-	"github.com/di-dao/core/pkg/auth"
+	"github.com/di-dao/sonr/pkg/auth"
 )
 
 // AddCredential will add a credential to the vault.

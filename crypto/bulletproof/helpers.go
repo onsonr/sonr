@@ -9,7 +9,7 @@ package bulletproof
 import (
 	"github.com/pkg/errors"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // innerProduct takes two lists of scalars (a, b) and performs the dot product returning a single scalar.

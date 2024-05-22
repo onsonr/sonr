@@ -3,9 +3,9 @@ package wallet
 import (
 	"encoding/json"
 
-	"github.com/di-dao/core/crypto/kss"
-	"github.com/di-dao/core/pkg/auth"
-	"github.com/di-dao/core/pkg/vault/chain"
+	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/pkg/auth"
+	"github.com/di-dao/sonr/pkg/vault/chain"
 )
 
 // Wallet is a struct that contains the information of a wallet to be stored in the vault

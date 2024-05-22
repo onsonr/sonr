@@ -5,8 +5,8 @@ import (
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	"github.com/di-dao/core/app/upgrades"
-	"github.com/di-dao/core/app/upgrades/noop"
+	"github.com/di-dao/sonr/app/upgrades"
+	"github.com/di-dao/sonr/app/upgrades/noop"
 )
 
 // Upgrades list of chain upgrades

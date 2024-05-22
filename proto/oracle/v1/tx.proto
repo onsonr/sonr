@@ -2,6 +2,6 @@ syntax = "proto3";
 
 package oracle.v1;
 
-option go_package = "github.com/di-dao/core/x/oracle/types";
+option go_package = "github.com/di-dao/sonr/x/oracle/types";
 
 import "gogoproto/gogo.proto";

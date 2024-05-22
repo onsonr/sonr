@@ -9,8 +9,8 @@ package frost
 import (
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // Round3Bcast contains the output of FROST signature, i.e., it contains FROST signature (z,c) and the

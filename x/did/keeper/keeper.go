@@ -11,11 +11,11 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
-	apiv1 "github.com/di-dao/core/api/did/v1"
-	"github.com/di-dao/core/crypto/kss"
-	"github.com/di-dao/core/crypto/mpc"
-	"github.com/di-dao/core/internal/controller"
-	"github.com/di-dao/core/x/did/types"
+	apiv1 "github.com/di-dao/sonr/api/did/v1"
+	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/crypto/mpc"
+	"github.com/di-dao/sonr/internal/controller"
+	"github.com/di-dao/sonr/x/did/types"
 )
 
 // defaultCurve is the default curve used for key generation

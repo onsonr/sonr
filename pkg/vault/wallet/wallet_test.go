@@ -4,8 +4,8 @@ import (
 	"log"
 	"testing"
 
-	"github.com/di-dao/core/crypto/mpc"
-	"github.com/di-dao/core/pkg/vault/wallet"
+	"github.com/di-dao/sonr/crypto/mpc"
+	"github.com/di-dao/sonr/pkg/vault/wallet"
 	"github.com/stretchr/testify/require"
 )
 

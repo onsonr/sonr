@@ -3,7 +3,7 @@
 package dklsv1
 
 import (
-	"github.com/di-dao/core/crypto/core/protocol"
+	"github.com/di-dao/sonr/crypto/core/protocol"
 )
 
 // Basic protocol interface implementation that calls the next step func in a pre-defined list

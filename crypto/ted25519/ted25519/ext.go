@@ -10,7 +10,7 @@ import (
 	"crypto/sha512"
 	"strconv"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // GeAdd returns the sum of two public keys, a and b.

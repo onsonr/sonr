@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
 )
 
 type Fq [native.FieldLimbs]uint64

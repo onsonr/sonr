@@ -13,9 +13,9 @@ import (
 
 	"golang.org/x/crypto/sha3"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/core/curves/native/bls12381"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/core/curves/native/bls12381"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var bls12381modulus = bhex("1a0111ea397fe69a4b1ba7b6434bacd764774b84f38512bf6730d2a0f6b0f6241eabfffeb153ffffb9feffffffffaaab")

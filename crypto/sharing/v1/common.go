@@ -7,7 +7,7 @@
 package v1
 
 import (
-	kryptology "github.com/di-dao/core/crypto/core/curves"
+	kryptology "github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // ShareVerifier is used to verify secret shares from Feldman or Pedersen VSS

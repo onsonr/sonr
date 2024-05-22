@@ -10,7 +10,7 @@ SIMAPP = ./app
 
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
-HTTPS_GIT := github.com/di-dao/core.git
+HTTPS_GIT := github.com/di-dao/sonr.git
 
 export GO111MODULE = on
 

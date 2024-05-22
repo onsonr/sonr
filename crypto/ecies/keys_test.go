@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/di-dao/core/crypto/ecies"
+	"github.com/di-dao/sonr/crypto/ecies"
 )
 
 func TestGenerateKey(t *testing.T) {

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/di-dao/core/crypto"
-	"github.com/di-dao/core/crypto/accumulator"
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/accumulator"
+	"github.com/di-dao/sonr/crypto/core/curves"
 	"lukechampine.com/blake3"
 )
 

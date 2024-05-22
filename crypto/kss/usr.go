@@ -1,11 +1,11 @@
 package kss
 
 import (
-	"github.com/di-dao/core/crypto"
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/core/protocol"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/protocol"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1"
+	"github.com/di-dao/sonr/x/did/types"
 	"golang.org/x/crypto/sha3"
 )
 

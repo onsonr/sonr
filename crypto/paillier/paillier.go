@@ -27,8 +27,8 @@ import (
 
 	"github.com/pkg/errors"
 
-	"github.com/di-dao/core/crypto/core"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 // PaillierPrimeBits is the number of bits used to generate Paillier Safe Primes.

@@ -16,7 +16,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/di-dao/core/crypto/core"
+	"github.com/di-dao/sonr/crypto/core"
 )
 
 func BenchmarkP256(b *testing.B) {

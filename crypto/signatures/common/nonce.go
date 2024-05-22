@@ -7,7 +7,7 @@
 package common
 
 import (
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // Nonce is used for zero-knowledge proofs to prevent replay attacks

@@ -4,15 +4,15 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/di-dao/core/crypto"
-	"github.com/di-dao/core/crypto/accumulator"
-	"github.com/di-dao/core/crypto/core/protocol"
-	"github.com/di-dao/core/crypto/kss"
-	"github.com/di-dao/core/crypto/mpc"
-	"github.com/di-dao/core/crypto/signatures/ecdsa"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1"
-	"github.com/di-dao/core/crypto/zk"
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/accumulator"
+	"github.com/di-dao/sonr/crypto/core/protocol"
+	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/crypto/mpc"
+	"github.com/di-dao/sonr/crypto/signatures/ecdsa"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1"
+	"github.com/di-dao/sonr/crypto/zk"
+	"github.com/di-dao/sonr/x/did/types"
 )
 
 // controller is the controller for the DID scheme

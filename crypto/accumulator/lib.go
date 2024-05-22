@@ -10,7 +10,7 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // dad constructs two polynomials - dA(x) and dD(x)

@@ -1,8 +1,8 @@
 package zk
 
 import (
-	"github.com/di-dao/core/crypto/accumulator"
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/accumulator"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // SecretKey is the secret key for the BLS scheme

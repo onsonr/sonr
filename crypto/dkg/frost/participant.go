@@ -10,9 +10,9 @@ package frost
 import (
 	"strconv"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/internal"
-	"github.com/di-dao/core/crypto/sharing"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/internal"
+	"github.com/di-dao/sonr/crypto/sharing"
 )
 
 type DkgParticipant struct {

@@ -1,7 +1,7 @@
 package chain
 
 import (
-	"github.com/di-dao/core/x/did/types"
+	"github.com/di-dao/sonr/x/did/types"
 )
 
 // Coin represents a cryptocurrency

@@ -16,10 +16,10 @@ import (
 	"github.com/stretchr/testify/require"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/core/protocol"
-	"github.com/di-dao/core/crypto/ot/extension/kos"
-	"github.com/di-dao/core/crypto/tecdsa/dklsv1/dkg"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/protocol"
+	"github.com/di-dao/sonr/crypto/ot/extension/kos"
+	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1/dkg"
 )
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.

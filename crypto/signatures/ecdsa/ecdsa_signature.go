@@ -4,7 +4,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/di-dao/core/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/core/curves"
 )
 
 // SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice

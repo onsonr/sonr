@@ -13,8 +13,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/di-dao/core/crypto/core/curves/native/bls12381"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native/bls12381"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 func genSecretKey(t *testing.T) *SecretKey {

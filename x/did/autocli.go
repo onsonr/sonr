@@ -2,7 +2,7 @@ package module
 
 import (
 	autocliv1 "cosmossdk.io/api/cosmos/autocli/v1"
-	modulev1 "github.com/di-dao/core/api/did/v1"
+	modulev1 "github.com/di-dao/sonr/api/did/v1"
 )
 
 // AutoCLIOptions implements the autocli.HasAutoCLIConfig interface.

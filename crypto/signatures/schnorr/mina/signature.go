@@ -9,8 +9,8 @@ package mina
 import (
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves/native/pasta/fp"
-	"github.com/di-dao/core/crypto/core/curves/native/pasta/fq"
+	"github.com/di-dao/sonr/crypto/core/curves/native/pasta/fp"
+	"github.com/di-dao/sonr/crypto/core/curves/native/pasta/fq"
 )
 
 // Signature is a Mina compatible signature either for payment or delegation

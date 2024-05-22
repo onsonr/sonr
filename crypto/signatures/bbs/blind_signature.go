@@ -10,8 +10,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/di-dao/core/crypto/core/curves"
-	"github.com/di-dao/core/crypto/signatures/common"
+	"github.com/di-dao/sonr/crypto/core/curves"
+	"github.com/di-dao/sonr/crypto/signatures/common"
 )
 
 // BlindSignature is a BBS+ blind signature

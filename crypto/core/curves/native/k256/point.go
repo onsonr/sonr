@@ -3,9 +3,9 @@ package k256
 import (
 	"sync"
 
-	"github.com/di-dao/core/crypto/core/curves/native"
-	"github.com/di-dao/core/crypto/core/curves/native/k256/fp"
-	"github.com/di-dao/core/crypto/internal"
+	"github.com/di-dao/sonr/crypto/core/curves/native"
+	"github.com/di-dao/sonr/crypto/core/curves/native/k256/fp"
+	"github.com/di-dao/sonr/crypto/internal"
 )
 
 var (
