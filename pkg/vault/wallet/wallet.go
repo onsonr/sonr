@@ -15,6 +15,9 @@ type Wallet struct {
 
 	// Credentials of the wallet
 	Credentials map[string][]*auth.Credential `json:"credentials"`
+
+	// Properties of the wallet
+	Properties map[string][]byte `json:"properties"`
 }
 
 // New creates a new wallet from kss.Set and coins

@@ -2,7 +2,6 @@ package vault
 
 import (
 	"github.com/di-dao/sonr/crypto/kss"
-	"github.com/di-dao/sonr/pkg/auth"
 	"github.com/di-dao/sonr/pkg/vault/chain"
 	"github.com/di-dao/sonr/pkg/vault/controller"
 	"github.com/di-dao/sonr/pkg/vault/props"
@@ -13,9 +12,6 @@ import (
 
 // Vault is an interface that defines the methods for a vault.
 type Vault interface {
-	AddCredential(origin string, credential *auth.Credential)
-	ListCredentials(origin string) []*auth.Credential
-	RemoveCredential(origin string, credential *auth.Credential)
 }
 
 // vault is a struct that contains the information of a vault to be stored in the vault

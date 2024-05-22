@@ -65,7 +65,7 @@ func MakeNewCredential(c *protocol.ParsedCredentialCreationData) (*Credential, e
 }
 
 // Descriptor converts a Credential into a protocol.CredentialDescriptor.
-func (c Credential) Descriptor() (descriptor protocol.CredentialDescriptor) {
+func (c Credential) Descriptor() protocol.CredentialDescriptor {
 	return protocol.CredentialDescriptor{
 		Type:            protocol.PublicKeyCredentialType,
 		CredentialID:    c.ID,
