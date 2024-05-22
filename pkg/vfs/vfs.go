@@ -1,15 +1,11 @@
-package ipfs
+package vfs
 
 import (
 	"fmt"
 	"io"
 
 	"github.com/ipfs/boxo/files"
-	"github.com/spf13/afero"
 )
-
-// TODO: Add a new variable called AppFs that is an instance of afero.NewMemMapFs().
-var AppFs = afero.NewMemMapFs()
 
 // VFS is an interface for interacting with a virtual file system.
 type VFS interface {
@@ -28,7 +24,7 @@ type vfs struct {
 }
 
 // NewVFS creates a new virtual file system.
-func NewVFS(name string) VFS {
+func New(name string) VFS {
 	return &vfs{
 		files: make(map[string]files.File, 0),
 		name:  name,

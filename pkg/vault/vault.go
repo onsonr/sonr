@@ -3,11 +3,11 @@ package vault
 import (
 	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/di-dao/sonr/pkg/auth"
-	"github.com/di-dao/sonr/pkg/ipfs"
 	"github.com/di-dao/sonr/pkg/vault/chain"
 	"github.com/di-dao/sonr/pkg/vault/controller"
 	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
+	"github.com/di-dao/sonr/pkg/vfs"
 	"github.com/ipfs/boxo/path"
 )
 
@@ -24,7 +24,7 @@ type vault struct {
 	path       path.Path
 	properties props.Properties
 	wallet     *wallet.Wallet
-	vfs        ipfs.VFS
+	vfs        vfs.VFS
 }
 
 // New creates a new vault from a set of keyshares.
@@ -38,6 +38,6 @@ func New(keyshares kss.Set) (Vault, error) {
 		wallet:     wallet,
 		properties: props.NewProperties(),
 		controller: controller.New(keyshares),
-		vfs:        ipfs.NewVFS(wallet.Accounts[chain.CoinSNRType][0].Address),
+		vfs:        vfs.New(wallet.Accounts[chain.CoinSNRType][0].Address),
 	}, nil
 }
