@@ -1,7 +1,9 @@
 package vault
 
 import (
-	"github.com/di-dao/sonr/crypto/kss"
+	"context"
+
+	"github.com/di-dao/sonr/crypto/mpc"
 	"github.com/di-dao/sonr/pkg/vault/chain"
 	"github.com/di-dao/sonr/pkg/vault/controller"
 	"github.com/di-dao/sonr/pkg/vault/props"
@@ -20,16 +22,24 @@ type vault struct {
 	path       path.Path
 	properties props.Properties
 	wallet     *wallet.Wallet
-	vfs        vfs.VFS
+	vfs        vfs.FileSystem
 }
 
 // New creates a new vault from a set of keyshares.
-func New(keyshares kss.Set) (Vault, error) {
+func New(ctx context.Context) (Vault, error) {
+	// Generate keyshares
+	keyshares, err := mpc.GenerateKss()
+	if err != nil {
+		return nil, err
+	}
+
 	// Get sonr address and bitcoin address from keyshares
 	wallet, err := wallet.New(keyshares)
 	if err != nil {
 		return nil, err
 	}
+
+	// Create a new vault
 	return &vault{
 		wallet:     wallet,
 		properties: props.NewProperties(),
