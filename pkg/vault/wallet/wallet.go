@@ -14,7 +14,7 @@ type Wallet struct {
 	Accounts map[int64][]*chain.Account `json:"accounts"`
 
 	// Credentials of the wallet
-	Credentials map[string][]*auth.Credential `json:"data"`
+	Credentials map[string][]*auth.Credential `json:"credentials"`
 }
 
 // New creates a new wallet from kss.Set and coins
@@ -24,7 +24,8 @@ func New(kset kss.Set, coinList ...chain.Coin) (*Wallet, error) {
 	}
 	pubkey := kset.PublicKey()
 	wallet := &Wallet{
-		Accounts: make(map[int64][]*chain.Account),
+		Accounts:    make(map[int64][]*chain.Account),
+		Credentials: make(map[string][]*auth.Credential),
 	}
 	for _, coin := range coinList {
 		i := len(wallet.Accounts[coin.GetIndex()])

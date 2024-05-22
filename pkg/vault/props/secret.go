@@ -1,4 +1,4 @@
-package zk
+package props
 
 import (
 	"github.com/di-dao/sonr/crypto/accumulator"

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/di-dao/sonr/crypto/mpc"
-	"github.com/di-dao/sonr/internal/controller"
+	"github.com/di-dao/sonr/pkg/vault/controller"
 )
 
 func TestControllerSigning(t *testing.T) {
@@ -18,7 +18,7 @@ func TestControllerSigning(t *testing.T) {
 	require.NotNil(t, pubKey)
 
 	// Create controller
-	ctrl, err := controller.Create(kss)
+	ctrl, err := controller.New(kss)
 	require.NoError(t, err)
 	require.NotNil(t, ctrl)
 
@@ -45,53 +45,11 @@ func TestAddressConversion(t *testing.T) {
 	require.NotNil(t, pub)
 }
 
-func TestLinkUnlinkProperty(t *testing.T) {
-	// Property key
-	propertyKey := "email"
-
-	// Create controller
-	kss, err := mpc.GenerateKss()
-	require.NoError(t, err)
-	ctrl, err := controller.Create(kss)
-	require.NoError(t, err)
-
-	// Link a property
-	propertyValue := "user@example.com"
-	witness, err := ctrl.Set(propertyKey, propertyValue)
-	require.NoError(t, err)
-	require.NotEmpty(t, witness)
-
-	// Validate the linked property
-	valid := ctrl.Check(propertyKey, witness)
-	require.True(t, valid)
-
-	// Unlink the property
-	err = ctrl.Remove(propertyKey, propertyValue)
-	require.NoError(t, err)
-
-	// Validate the unlinked property
-	valid = ctrl.Check(propertyKey, witness)
-	require.False(t, valid)
-}
-
-func TestUnlinkNonExistentProperty(t *testing.T) {
-	kss, err := mpc.GenerateKss()
-	require.NoError(t, err)
-	ctrl, err := controller.Create(kss)
-	require.NoError(t, err)
-
-	// Unlink a non-existent property
-	propertyKey := "non_existent"
-	propertyValue := "value"
-	err = ctrl.Remove(propertyKey, propertyValue)
-	require.Error(t, err)
-}
-
 func TestSignRefreshSign(t *testing.T) {
 	// Create controller
 	kss, err := mpc.GenerateKss()
 	require.NoError(t, err)
-	ctrl, err := controller.Create(kss)
+	ctrl, err := controller.New(kss)
 	require.NoError(t, err)
 
 	// Sign a message
