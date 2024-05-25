@@ -1,54 +1,6 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "buf@latest": {
-      "last_modified": "2024-04-19T17:36:04-04:00",
-      "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#buf",
-      "source": "devbox-search",
-      "version": "1.30.1",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/xc2r5msf7g992s6h78xg8lhi3biq71yx-buf-1.30.1",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/xc2r5msf7g992s6h78xg8lhi3biq71yx-buf-1.30.1"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/sfsqf02w5b1bd5hlw1nk6bk149pzcx1d-buf-1.30.1",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/sfsqf02w5b1bd5hlw1nk6bk149pzcx1d-buf-1.30.1"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/mk6jc47x3k2f7r74z7mlcippgcirmf0b-buf-1.30.1",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/mk6jc47x3k2f7r74z7mlcippgcirmf0b-buf-1.30.1"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/p4m2h4g1ap2ly8bshcr7jrsarnicdbyg-buf-1.30.1",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/p4m2h4g1ap2ly8bshcr7jrsarnicdbyg-buf-1.30.1"
-        }
-      }
-    },
     "dendrite@latest": {
       "last_modified": "2024-04-19T17:36:04-04:00",
       "resolved": "github:NixOS/nixpkgs/92d295f588631b0db2da509f381b4fb1e74173c5#dendrite",
