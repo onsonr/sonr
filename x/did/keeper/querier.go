@@ -4,6 +4,8 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/di-dao/sonr/x/did/types"
 )
@@ -31,6 +33,12 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 
 // TODO: Implement Account method for types.QueryServer.
 func (k Querier) Account(goCtx context.Context, req *types.QueryAccountRequest) (*types.QueryAccountResponse, error) {
+	md := metadata.Pairs(
+		"key1", "val1",
+		"key1", "val1-2", // "key1" will have map value []string{"val1", "val1-2"}
+		"key2", "val2",
+	)
+	grpc.SetHeader(goCtx, md)
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("Account is unimplemented")
 	return &types.QueryAccountResponse{}, nil
