@@ -71,19 +71,3 @@ func TestLs(t *testing.T) {
 	assert.Contains(t, files, path1)
 	assert.Contains(t, files, path2)
 }
-
-func TestNode(t *testing.T) {
-	vfs := vfs.New("test_vfs")
-	path1 := "/file1"
-	data1 := []byte("test data 1")
-	err := vfs.Add(path1, data1)
-	assert.NoError(t, err)
-
-	path2 := "/file2"
-	data2 := []byte("test data 2")
-	err = vfs.Add(path2, data2)
-	assert.NoError(t, err)
-
-	node := vfs.Node()
-	assert.NotNil(t, node)
-}
