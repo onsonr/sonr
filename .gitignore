@@ -12,6 +12,7 @@
 **/.DS_Store
 # Output of the go coverage tool
 *.out
+buf.lock
 
 # Dependency directories
 node_modules/
