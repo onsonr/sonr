@@ -1,7 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.10.5/.schema/devbox.schema.json",
   "packages": [
-    "buf@latest",
     "docker@latest",
     "go_1_21@latest",
     "ipfs@latest",
@@ -12,7 +11,6 @@
     "gum@latest",
     "golangci-lint@latest",
     "neovim@latest"
-
   ],
   "env": {
     "GOPATH": "$HOME/go",

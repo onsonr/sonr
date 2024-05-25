@@ -9,7 +9,7 @@
 # Test binary
 *.test
 .devon*
-
+**/.DS_Store
 # Output of the go coverage tool
 *.out
 
