@@ -1,0 +1,24 @@
+syntax = "proto3";
+package hway.v1;
+
+option go_package = "github.com/di-dao/core/highway/types";
+
+import "apigw/v1/apigw.proto";
+
+message RegisterRequest {
+  string person = 1;
+  Reservation reservation = 2;
+}
+message RegisterResponse {
+  string token = 1;
+}
+
+service ReservationsService {
+  rpc Register(registerRequest) returns (RegisterResponse) {
+    option (apigw.v1.method).operations = {
+      method: "POST",
+      route: "/reservations/register",
+      group: "Reservations",
+    };
+  }
+}
