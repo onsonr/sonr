@@ -12,12 +12,7 @@ id: new Uint8Array(16),
 name: "canand@example.com",
 displayName: "Carina Anand",
 },
-pubKeyCredParams: [
-{
-type: "public-key",
-alg: -7,
-},
-],
+pubKeyCredParams: [{ type: "public-key", alg: -7}],
 };
 
 navigator.credentials.create({ createCredentialOptions }).then((newCredentialInfo) => {
