@@ -21,7 +21,6 @@ func Initialize() {
 		cfg.MaxStaleness = 30 * time.Minute
 		cfg.BackendConfig.TimeToLive = 1*time.Hour - cfg.MaxStaleness
 	})
-
 }
 // GetSession returns a session from cache given a key.
 func GetSession(key string) (Session, error) {
