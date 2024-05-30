@@ -1,0 +1,9 @@
+# Process compose for starting django
+version: "0.5"
+
+processes:
+  ipfs:
+    command: ipfs daemon
+    restart: always
+  sonrd:
+    command: make sh-testnet
