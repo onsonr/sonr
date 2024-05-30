@@ -1,7 +1,7 @@
 package claims
 
 import (
-	"time"   
+	"time"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -26,4 +26,4 @@ func NewCredentialClaims() CredentialClaims {
 		},
 	}
 	return claims
-} 
+}
