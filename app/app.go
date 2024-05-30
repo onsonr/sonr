@@ -51,8 +51,6 @@ import (
 	"github.com/cosmos/cosmos-sdk/std"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
-
-	// "github.com/cosmos/cosmos-sdk/types/msgservice"
 	signingtype "github.com/cosmos/cosmos-sdk/types/tx/signing"
 	"github.com/cosmos/cosmos-sdk/version"
 	"github.com/cosmos/cosmos-sdk/x/auth"
@@ -135,13 +133,6 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
-	"github.com/di-dao/sonr/internal/cache"
-	did "github.com/di-dao/sonr/x/did"
-	didkeeper "github.com/di-dao/sonr/x/did/keeper"
-	didtypes "github.com/di-dao/sonr/x/did/types"
-	oracle "github.com/di-dao/sonr/x/oracle"
-	oraclekeeper "github.com/di-dao/sonr/x/oracle/keeper"
-	oracletypes "github.com/di-dao/sonr/x/oracle/types"
 	"github.com/spf13/cast"
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
@@ -154,6 +145,13 @@ import (
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 
 	_ "github.com/di-dao/sonr/internal/local"
+	"github.com/di-dao/sonr/internal/session"
+	did "github.com/di-dao/sonr/x/did"
+	didkeeper "github.com/di-dao/sonr/x/did/keeper"
+	didtypes "github.com/di-dao/sonr/x/did/types"
+	oracle "github.com/di-dao/sonr/x/oracle"
+	oraclekeeper "github.com/di-dao/sonr/x/oracle/keeper"
+	oracletypes "github.com/di-dao/sonr/x/oracle/types"
 )
 
 const appName = "core"
@@ -350,9 +348,19 @@ func NewChainApp(
 	bApp.SetTxEncoder(txConfig.TxEncoder())
 
 	keys := storetypes.NewKVStoreKeys(
-		authtypes.StoreKey, banktypes.StoreKey, stakingtypes.StoreKey, crisistypes.StoreKey,
-		minttypes.StoreKey, distrtypes.StoreKey, slashingtypes.StoreKey, govtypes.StoreKey, paramstypes.StoreKey,
-		consensusparamtypes.StoreKey, upgradetypes.StoreKey, feegrant.StoreKey, evidencetypes.StoreKey,
+		authtypes.StoreKey,
+		banktypes.StoreKey,
+		stakingtypes.StoreKey,
+		crisistypes.StoreKey,
+		minttypes.StoreKey,
+		distrtypes.StoreKey,
+		slashingtypes.StoreKey,
+		govtypes.StoreKey,
+		paramstypes.StoreKey,
+		consensusparamtypes.StoreKey,
+		upgradetypes.StoreKey,
+		feegrant.StoreKey,
+		evidencetypes.StoreKey,
 		circuittypes.StoreKey,
 		authzkeeper.StoreKey,
 		nftkeeper.StoreKey,
@@ -416,7 +424,9 @@ func NewChainApp(
 
 	scopedIBCKeeper := app.CapabilityKeeper.ScopeToModule(ibcexported.ModuleName)
 	scopedICAHostKeeper := app.CapabilityKeeper.ScopeToModule(icahosttypes.SubModuleName)
-	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(icacontrollertypes.SubModuleName)
+	scopedICAControllerKeeper := app.CapabilityKeeper.ScopeToModule(
+		icacontrollertypes.SubModuleName,
+	)
 	scopedTransferKeeper := app.CapabilityKeeper.ScopeToModule(ibctransfertypes.ModuleName)
 	app.CapabilityKeeper.Seal()
 
@@ -503,7 +513,11 @@ func NewChainApp(
 		app.AccountKeeper.AddressCodec(),
 	)
 
-	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(appCodec, sdkruntime.NewKVStoreService(keys[feegrant.StoreKey]), app.AccountKeeper)
+	app.FeeGrantKeeper = feegrantkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[feegrant.StoreKey]),
+		app.AccountKeeper,
+	)
 
 	// register the staking hooks
 	// NOTE: stakingKeeper above is passed by reference, so that it will contain these hooks
@@ -774,21 +788,88 @@ func NewChainApp(
 			app,
 			txConfig,
 		),
-		auth.NewAppModule(appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+		auth.NewAppModule(
+			appCodec,
+			app.AccountKeeper,
+			authsims.RandomGenesisAccounts,
+			app.GetSubspace(authtypes.ModuleName),
+		),
 		vesting.NewAppModule(app.AccountKeeper, app.BankKeeper),
-		bank.NewAppModule(appCodec, app.BankKeeper, app.AccountKeeper, app.GetSubspace(banktypes.ModuleName)),
-		feegrantmodule.NewAppModule(appCodec, app.AccountKeeper, app.BankKeeper, app.FeeGrantKeeper, app.interfaceRegistry),
-		gov.NewAppModule(appCodec, &app.GovKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(govtypes.ModuleName)),
-		mint.NewAppModule(appCodec, app.MintKeeper, app.AccountKeeper, nil, app.GetSubspace(minttypes.ModuleName)),
-		slashing.NewAppModule(appCodec, app.SlashingKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(slashingtypes.ModuleName), app.interfaceRegistry),
-		distr.NewAppModule(appCodec, app.DistrKeeper, app.AccountKeeper, app.BankKeeper, app.StakingKeeper, app.GetSubspace(distrtypes.ModuleName)),
-		staking.NewAppModule(appCodec, app.StakingKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(stakingtypes.ModuleName)),
+		bank.NewAppModule(
+			appCodec,
+			app.BankKeeper,
+			app.AccountKeeper,
+			app.GetSubspace(banktypes.ModuleName),
+		),
+		feegrantmodule.NewAppModule(
+			appCodec,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.FeeGrantKeeper,
+			app.interfaceRegistry,
+		),
+		gov.NewAppModule(
+			appCodec,
+			&app.GovKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.GetSubspace(govtypes.ModuleName),
+		),
+		mint.NewAppModule(
+			appCodec,
+			app.MintKeeper,
+			app.AccountKeeper,
+			nil,
+			app.GetSubspace(minttypes.ModuleName),
+		),
+		slashing.NewAppModule(
+			appCodec,
+			app.SlashingKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.StakingKeeper,
+			app.GetSubspace(slashingtypes.ModuleName),
+			app.interfaceRegistry,
+		),
+		distr.NewAppModule(
+			appCodec,
+			app.DistrKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.StakingKeeper,
+			app.GetSubspace(distrtypes.ModuleName),
+		),
+		staking.NewAppModule(
+			appCodec,
+			app.StakingKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.GetSubspace(stakingtypes.ModuleName),
+		),
 		upgrade.NewAppModule(app.UpgradeKeeper, app.AccountKeeper.AddressCodec()),
 		evidence.NewAppModule(app.EvidenceKeeper),
 		params.NewAppModule(app.ParamsKeeper),
-		authzmodule.NewAppModule(appCodec, app.AuthzKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		groupmodule.NewAppModule(appCodec, app.GroupKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
-		nftmodule.NewAppModule(appCodec, app.NFTKeeper, app.AccountKeeper, app.BankKeeper, app.interfaceRegistry),
+		authzmodule.NewAppModule(
+			appCodec,
+			app.AuthzKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.interfaceRegistry,
+		),
+		groupmodule.NewAppModule(
+			appCodec,
+			app.GroupKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.interfaceRegistry,
+		),
+		nftmodule.NewAppModule(
+			appCodec,
+			app.NFTKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.interfaceRegistry,
+		),
 		consensus.NewAppModule(appCodec, app.ConsensusParamsKeeper),
 		circuit.NewAppModule(appCodec, app.CircuitKeeper),
 		// non sdk modules
@@ -798,12 +879,24 @@ func NewChainApp(
 		ibcfee.NewAppModule(app.IBCFeeKeeper),
 		ica.NewAppModule(&app.ICAControllerKeeper, &app.ICAHostKeeper),
 		ibctm.NewAppModule(),
-		crisis.NewAppModule(app.CrisisKeeper, skipGenesisInvariants, app.GetSubspace(crisistypes.ModuleName)),
+		crisis.NewAppModule(
+			app.CrisisKeeper,
+			skipGenesisInvariants,
+			app.GetSubspace(crisistypes.ModuleName),
+		),
 		// custom
-		tokenfactory.NewAppModule(app.TokenFactoryKeeper, app.AccountKeeper, app.BankKeeper, app.GetSubspace(tokenfactorytypes.ModuleName)),
+		tokenfactory.NewAppModule(
+			app.TokenFactoryKeeper,
+			app.AccountKeeper,
+			app.BankKeeper,
+			app.GetSubspace(tokenfactorytypes.ModuleName),
+		),
 		poamodule.NewAppModule(appCodec, app.POAKeeper),
 		globalfee.NewAppModule(appCodec, app.GlobalFeeKeeper),
-		packetforward.NewAppModule(app.PacketForwardKeeper, app.GetSubspace(packetforwardtypes.ModuleName)),
+		packetforward.NewAppModule(
+			app.PacketForwardKeeper,
+			app.GetSubspace(packetforwardtypes.ModuleName),
+		),
 		oracle.NewAppModule(app.OracleKeeper),
 
 		did.NewAppModule(appCodec, app.DidKeeper),
@@ -816,7 +909,9 @@ func NewChainApp(
 	app.BasicModuleManager = module.NewBasicManagerFromManager(
 		app.ModuleManager,
 		map[string]module.AppModuleBasic{
-			genutiltypes.ModuleName: genutil.NewAppModuleBasic(genutiltypes.DefaultMessageValidator),
+			genutiltypes.ModuleName: genutil.NewAppModuleBasic(
+				genutiltypes.DefaultMessageValidator,
+			),
 			govtypes.ModuleName: gov.NewAppModuleBasic(
 				[]govclient.ProposalHandler{
 					paramsclient.ProposalHandler,
@@ -911,7 +1006,11 @@ func NewChainApp(
 	// app.ModuleManager.SetOrderMigrations(custom order)
 
 	app.ModuleManager.RegisterInvariants(app.CrisisKeeper)
-	app.configurator = module.NewConfigurator(app.appCodec, app.MsgServiceRouter(), app.GRPCQueryRouter())
+	app.configurator = module.NewConfigurator(
+		app.appCodec,
+		app.MsgServiceRouter(),
+		app.GRPCQueryRouter(),
+	)
 	err = app.ModuleManager.RegisterServices(app.configurator)
 	if err != nil {
 		panic(err)
@@ -921,7 +1020,10 @@ func NewChainApp(
 	// Make sure it's called after `app.ModuleManager` and `app.configurator` are set.
 	app.RegisterUpgradeHandlers()
 
-	autocliv1.RegisterQueryServer(app.GRPCQueryRouter(), runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules))
+	autocliv1.RegisterQueryServer(
+		app.GRPCQueryRouter(),
+		runtimeservices.NewAutoCLIQueryService(app.ModuleManager.Modules),
+	)
 
 	reflectionSvc, err := runtimeservices.NewReflectionService()
 	if err != nil {
@@ -937,7 +1039,12 @@ func NewChainApp(
 	// NOTE: this is not required apps that don't use the simulator for fuzz testing
 	// transactions
 	overrideModules := map[string]module.AppModuleSimulation{
-		authtypes.ModuleName: auth.NewAppModule(app.appCodec, app.AccountKeeper, authsims.RandomGenesisAccounts, app.GetSubspace(authtypes.ModuleName)),
+		authtypes.ModuleName: auth.NewAppModule(
+			app.appCodec,
+			app.AccountKeeper,
+			authsims.RandomGenesisAccounts,
+			app.GetSubspace(authtypes.ModuleName),
+		),
 	}
 	app.sm = module.NewSimulationManagerFromAppModules(app.ModuleManager.Modules, overrideModules)
 
@@ -1030,7 +1137,7 @@ func NewChainApp(
 		_ = ctx
 
 	}
-	cache.Initialize()
+	session.Initialize()
 	return app
 }
 
@@ -1050,7 +1157,9 @@ func GetDefaultBypassFeeMessages() []string {
 	}
 }
 
-func (app *SonrApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.ResponseFinalizeBlock, error) {
+func (app *SonrApp) FinalizeBlock(
+	req *abci.RequestFinalizeBlock,
+) (*abci.ResponseFinalizeBlock, error) {
 	// when skipping sdk 47 for sdk 50, the upgrade handler is called too late in BaseApp
 	// this is a hack to ensure that the migration is executed when needed and not panics
 	app.once.Do(func() {
@@ -1061,7 +1170,11 @@ func (app *SonrApp) FinalizeBlock(req *abci.RequestFinalizeBlock) (*abci.Respons
 			// Migrate Tendermint consensus parameters from x/params module to a dedicated x/consensus module.
 			// see https://github.com/cosmos/cosmos-sdk/blob/v0.47.0/simapp/upgrades.go#L66
 			baseAppLegacySS := app.GetSubspace(baseapp.Paramspace)
-			err := baseapp.MigrateParams(sdk.UnwrapSDKContext(ctx), baseAppLegacySS, app.ConsensusParamsKeeper.ParamsStore)
+			err := baseapp.MigrateParams(
+				sdk.UnwrapSDKContext(ctx),
+				baseAppLegacySS,
+				app.ConsensusParamsKeeper.ParamsStore,
+			)
 			if err != nil {
 				panic(err)
 			}
@@ -1086,7 +1199,10 @@ func (app *SonrApp) setPostHandler() {
 func (app *SonrApp) Name() string { return app.BaseApp.Name() }
 
 // PreBlocker application updates every pre block
-func (app *SonrApp) PreBlocker(ctx sdk.Context, _ *abci.RequestFinalizeBlock) (*sdk.ResponsePreBlock, error) {
+func (app *SonrApp) PreBlocker(
+	ctx sdk.Context,
+	_ *abci.RequestFinalizeBlock,
+) (*sdk.ResponsePreBlock, error) {
 	return app.ModuleManager.PreBlock(ctx)
 }
 
@@ -1105,7 +1221,10 @@ func (a *SonrApp) Configurator() module.Configurator {
 }
 
 // InitChainer application update at chain initialization
-func (app *SonrApp) InitChainer(ctx sdk.Context, req *abci.RequestInitChain) (*abci.ResponseInitChain, error) {
+func (app *SonrApp) InitChainer(
+	ctx sdk.Context,
+	req *abci.RequestInitChain,
+) (*abci.ResponseInitChain, error) {
 	var genesisState GenesisState
 	if err := json.Unmarshal(req.AppStateBytes, &genesisState); err != nil {
 		panic(err)
@@ -1162,11 +1281,17 @@ func (app *SonrApp) AutoCliOpts() autocli.AppOptions {
 	}
 
 	return autocli.AppOptions{
-		Modules:               modules,
-		ModuleOptions:         runtimeservices.ExtractAutoCLIOptions(app.ModuleManager.Modules),
-		AddressCodec:          authcodec.NewBech32Codec(sdk.GetConfig().GetBech32AccountAddrPrefix()),
-		ValidatorAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ValidatorAddrPrefix()),
-		ConsensusAddressCodec: authcodec.NewBech32Codec(sdk.GetConfig().GetBech32ConsensusAddrPrefix()),
+		Modules:       modules,
+		ModuleOptions: runtimeservices.ExtractAutoCLIOptions(app.ModuleManager.Modules),
+		AddressCodec: authcodec.NewBech32Codec(
+			sdk.GetConfig().GetBech32AccountAddrPrefix(),
+		),
+		ValidatorAddressCodec: authcodec.NewBech32Codec(
+			sdk.GetConfig().GetBech32ValidatorAddrPrefix(),
+		),
+		ConsensusAddressCodec: authcodec.NewBech32Codec(
+			sdk.GetConfig().GetBech32ConsensusAddrPrefix(),
+		),
 	}
 }
 
@@ -1245,7 +1370,12 @@ func (app *SonrApp) RegisterAPIRoutes(apiSvr *api.Server, apiConfig config.APICo
 
 // RegisterTxService implements the Application.RegisterTxService method.
 func (app *SonrApp) RegisterTxService(clientCtx client.Context) {
-	authtx.RegisterTxService(app.BaseApp.GRPCQueryRouter(), clientCtx, app.BaseApp.Simulate, app.interfaceRegistry)
+	authtx.RegisterTxService(
+		app.BaseApp.GRPCQueryRouter(),
+		clientCtx,
+		app.BaseApp.Simulate,
+		app.interfaceRegistry,
+	)
 }
 
 // RegisterTendermintService implements the Application.RegisterTendermintService method.
@@ -1288,7 +1418,11 @@ func BlockedAddresses() map[string]bool {
 	return modAccAddrs
 }
 
-func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino, key, tkey storetypes.StoreKey) paramskeeper.Keeper {
+func initParamsKeeper(
+	appCodec codec.BinaryCodec,
+	legacyAmino *codec.LegacyAmino,
+	key, tkey storetypes.StoreKey,
+) paramskeeper.Keeper {
 	paramsKeeper := paramskeeper.NewKeeper(appCodec, legacyAmino, key, tkey)
 
 	// required for testing finalized block migration
@@ -1307,14 +1441,17 @@ func initParamsKeeper(appCodec codec.BinaryCodec, legacyAmino *codec.LegacyAmino
 	keyTable := ibcclienttypes.ParamKeyTable()
 	keyTable.RegisterParamSet(&ibcconnectiontypes.Params{})
 	paramsKeeper.Subspace(ibcexported.ModuleName).WithKeyTable(keyTable)
-	paramsKeeper.Subspace(ibctransfertypes.ModuleName).WithKeyTable(ibctransfertypes.ParamKeyTable())
-	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).WithKeyTable(icacontrollertypes.ParamKeyTable())
+	paramsKeeper.Subspace(ibctransfertypes.ModuleName).
+		WithKeyTable(ibctransfertypes.ParamKeyTable())
+	paramsKeeper.Subspace(icacontrollertypes.SubModuleName).
+		WithKeyTable(icacontrollertypes.ParamKeyTable())
 	paramsKeeper.Subspace(icahosttypes.SubModuleName).WithKeyTable(icahosttypes.ParamKeyTable())
 
 	paramsKeeper.Subspace(tokenfactorytypes.ModuleName)
 	paramsKeeper.Subspace(poa.ModuleName)
 	paramsKeeper.Subspace(globalfee.ModuleName)
-	paramsKeeper.Subspace(packetforwardtypes.ModuleName).WithKeyTable(packetforwardtypes.ParamKeyTable())
+	paramsKeeper.Subspace(packetforwardtypes.ModuleName).
+		WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 

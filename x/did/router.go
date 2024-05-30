@@ -1,8 +1,9 @@
 package module
 
 import (
-	"github.com/di-dao/sonr/x/did/handlers"
 	"github.com/labstack/echo/v4"
+
+	"github.com/di-dao/sonr/x/did/internal/handlers"
 )
 
 func SetRouterProxy(e *echo.Echo) {

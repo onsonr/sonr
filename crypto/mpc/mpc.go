@@ -3,10 +3,10 @@ package mpc
 import (
 	"errors"
 	"fmt"
-
 	"github.com/di-dao/sonr/crypto/core/curves"
 	"github.com/di-dao/sonr/crypto/core/protocol"
 	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/crypto/signatures/ecdsa"
 	"github.com/di-dao/sonr/crypto/tecdsa/dklsv1"
 )
 
@@ -60,4 +60,38 @@ func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) er
 		return fmt.Errorf("user keyshare failed: %v", bErr)
 	}
 	return nil
+}
+
+// RunSignProtocol runs the generic dkls protocol using the kss.SignFuncVal and kss.SignFuncUser
+func RunSignProtocol(valSignFunc kss.SignFuncVal, userSignFunc kss.SignFuncUser) ([]byte, error) {
+	err := RunProtocol(valSignFunc, userSignFunc)
+	if err != nil {
+		return nil, errors.Join(err, fmt.Errorf("failed to get validator sign function"))
+	}
+	resultMessage, err := userSignFunc.Result(protocol.Version1)
+	if err != nil {
+		return nil, errors.Join(fmt.Errorf("error Getting User Sign Result"), err)
+	}
+	sig, err := dklsv1.DecodeSignature(resultMessage)
+	if err != nil {
+		return nil, errors.Join(fmt.Errorf("error Decoding Signature"), err)
+	}
+	return ecdsa.SerializeSecp256k1Signature(sig)
+}
+
+// RunRefreshProtocol runs the generic dkls protocol using the kss.RefreshFuncVal and kss.RefreshFuncUser
+func RunRefreshProtocol(valRefreshFunc kss.RefreshFuncVal, userRefreshFunc kss.RefreshFuncUser) (kss.Set, error) {
+  err := RunProtocol(valRefreshFunc, userRefreshFunc)
+  if err != nil {
+    return nil, err
+  }
+	valRes, err := valRefreshFunc.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	userRes, err := userRefreshFunc.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	return kss.NewKeyshareSet(valRes, userRes)
 }
