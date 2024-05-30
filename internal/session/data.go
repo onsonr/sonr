@@ -4,15 +4,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/bool64/cache"
 	"github.com/go-webauthn/webauthn/protocol"
 )
-
-const (
-	kMetaKeySession = "sonr-session-id"
-)
-
-var sessionCache *cache.FailoverOf[session]
 
 // session is a proxy session.
 type session struct {

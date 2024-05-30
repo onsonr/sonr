@@ -2,9 +2,10 @@ package session
 
 import (
 	"context"
+	"time"
+
 	"github.com/bool64/cache"
 	"github.com/segmentio/ksuid"
-	"time"
 )
 
 // Session is the reference to the clients current session over gRPC/HTTP in the local cache.
@@ -34,7 +35,7 @@ func Initialize() {
 
 // Get returns a session from cache given a key.
 func Get(ctx context.Context) (Session, error) {
-	id := getSessionIDFromCtx(ctx)
+	id := UnwrapSessionIDFromContext(ctx)
 	return sessionCache.Get(
 		context.Background(),
 		[]byte(id),
