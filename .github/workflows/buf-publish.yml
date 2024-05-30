@@ -16,6 +16,7 @@ jobs:
       - uses: bufbuild/buf-setup-action@v1
       # Push only the Input in `proto` to the BSR
       - uses: bufbuild/buf-push-action@v1
+        continue-on-error: true
         with:
           input: proto
           buf_token: ${{ secrets.BUF_TOKEN }}
