@@ -15,6 +15,12 @@ type session struct {
 	// Address is the address of the session.
 	Address string `json:"address"`
 
+	// Validator is the address of the associated validator node address for the session.
+	Validator string `json:"address"`
+
+	// ChainID is the current sonr blockchain network chain ID for the session.
+	ChainID string `json:"address"`
+
 	// Token is the token of the session.
 	Token string `json:"token"`
 
@@ -27,6 +33,14 @@ type session struct {
 
 // GetAddress returns the session address
 func (s session) GetAddress() (string, error) {
+	if s.Address == "" {
+		return "", errors.New("session does not have attached address")
+	}
+	return s.Address, nil
+}
+
+// GetValidator returns the associated validator address
+func (s session) GetValidator() (string, error) {
 	if s.Address == "" {
 		return "", errors.New("session does not have attached address")
 	}

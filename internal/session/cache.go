@@ -10,18 +10,25 @@ import (
 )
 
 const (
-	kMetaKeySession = "sonr-session-id"
+	// Default Key in gRPC Metadata for the Session ID
+	kMetadataSessionIDKey = "sonr-session-id"
+
+	// Default Key in gRPC Metadata for the Session Validator Address
+	kMetadataValAddressKey = "sonr-validator-address"
+
+	// Default Key in gRPC Metadata for the Session Chain ID
+	kMetadataChainIDKey = "sonr-chain-id"
 )
 
 var sessionCache *cache.FailoverOf[session]
 
-// UnwrapSessionIDFromContext uses context.Context to retreive grpc.Metadata
-func UnwrapSessionIDFromContext(ctx context.Context) string {
+// unwrapFromContext uses context.Context to retreive grpc.Metadata
+func unwrapFromContext(ctx context.Context) string {
 	md, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
-		return WrapSessionIDInContext(ctx)
+		return wrapIntoContext(ctx)
 	}
-	vals := md.Get(kMetaKeySession)
+	vals := md.Get(kMetadataSessionIDKey)
 	if len(vals) == 0 {
 		return ""
 	}
@@ -29,10 +36,10 @@ func UnwrapSessionIDFromContext(ctx context.Context) string {
 }
 
 // setSessionIDToCtx uses context.Context and set a new Session ID for grpc.Metadata
-func WrapSessionIDInContext(ctx context.Context) string {
+func wrapIntoContext(ctx context.Context) string {
 	sessionId := ksuid.New().String()
 	// create a header that the gateway will watch for
-	header := metadata.Pairs(kMetaKeySession, sessionId)
+	header := metadata.Pairs(kMetadataSessionIDKey, sessionId)
 	// send the header back to the gateway
 	grpc.SendHeader(ctx, header)
 	return sessionId

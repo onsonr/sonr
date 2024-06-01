@@ -35,7 +35,7 @@ func Initialize() {
 
 // Get returns a session from cache given a key.
 func Get(ctx context.Context) (Session, error) {
-	id := UnwrapSessionIDFromContext(ctx)
+	id := unwrapFromContext(ctx)
 	return sessionCache.Get(
 		context.Background(),
 		[]byte(id),
