@@ -47,6 +47,7 @@ require (
 	filippo.io/edwards25519 v1.0.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
 	github.com/a-h/templ v0.2.680
+	github.com/asynkron/protoactor-go v0.0.0-20240413045429-76c172a71a16
 	github.com/bool64/cache v0.4.7
 	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/bwesterb/go-ristretto v1.2.3
@@ -103,7 +104,6 @@ require (
 	github.com/DataDog/zstd v1.5.5 // indirect
 	github.com/Workiva/go-datastructures v1.1.3 // indirect
 	github.com/alecthomas/units v0.0.0-20231202071711-9a357b53e9c9 // indirect
-	github.com/asynkron/protoactor-go v0.0.0-20240413045429-76c172a71a16 // indirect
 	github.com/aws/aws-sdk-go v1.44.224 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bgentry/go-netrc v0.0.0-20140422174119-9fd32a8b3d3d // indirect
