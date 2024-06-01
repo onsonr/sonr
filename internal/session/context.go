@@ -3,7 +3,6 @@ package session
 import (
 	"context"
 
-	"github.com/bool64/cache"
 	"github.com/segmentio/ksuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -19,8 +18,6 @@ const (
 	// Default Key in gRPC Metadata for the Session Chain ID
 	kMetadataChainIDKey = "sonr-chain-id"
 )
-
-var sessionCache *cache.FailoverOf[session]
 
 // unwrapFromContext uses context.Context to retreive grpc.Metadata
 func unwrapFromContext(ctx context.Context) string {

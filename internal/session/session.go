@@ -5,8 +5,9 @@ import (
 	"time"
 
 	"github.com/bool64/cache"
-	"github.com/segmentio/ksuid"
 )
+
+var sessionCache *cache.FailoverOf[session]
 
 // Session is the reference to the clients current session over gRPC/HTTP in the local cache.
 type Session interface {
@@ -17,7 +18,7 @@ type Session interface {
 	GetChallenge() []byte
 
 	// IsAuthorized returns true if the Session has an attached JWT Token
-	IsAuthorized() (bool, error)
+	IsAuthorized() bool
 
 	// SessionID returns the ksuid for the current session
 	SessionID() string
@@ -42,7 +43,7 @@ func Get(ctx context.Context) (Session, error) {
 		func(ctx context.Context) (session, error) {
 			// Build value or return error on failure.
 			return session{
-				ID: ksuid.New().String(),
+				ID: id,
 			}, nil
 		},
 	)

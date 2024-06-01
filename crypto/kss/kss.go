@@ -67,3 +67,23 @@ func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) 
 		usrBz: usrBz,
 	}, nil
 }
+
+// UserKeyshareFromBytes unmarshals a user keyshare from its bytes representation
+func UserKeyshareFromBytes(bz []byte) (User, error) {
+	val := &protocol.Message{}
+	err := json.Unmarshal(bz, val)
+	if err != nil {
+		return nil, err
+	}
+	return createUserKeyshare(val), nil
+}
+
+// ValidatorKeyshareFromBytes unmarshals a validator keyshare from its bytes representation
+func ValidatorKeyshareFromBytes(bz []byte) (Val, error) {
+	val := &protocol.Message{}
+	err := json.Unmarshal(bz, val)
+	if err != nil {
+		return nil, err
+	}
+	return createValidatorKeyshare(val), nil
+}

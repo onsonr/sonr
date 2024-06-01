@@ -3,9 +3,12 @@ package actor
 import (
 	"context"
 
+	"github.com/asynkron/protoactor-go/actor"
 	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/di-dao/sonr/crypto/mpc"
 )
+
+var keyshareSystem = actor.NewActorSystem()
 
 func GetValidatorKeyshare(ctx context.Context) (kss.Val, error) {
 	ks, err := mpc.GenerateKss()
