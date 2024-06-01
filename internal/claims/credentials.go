@@ -1,6 +1,7 @@
 package claims
 
 import (
+	"context"
 	"time"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -13,7 +14,7 @@ type CredentialClaims struct {
 }
 
 // NewCredentialClaims returns the CredentialClaims for the JWS to sign
-func NewCredentialClaims() CredentialClaims {
+func NewCredentialClaims(ctx context.Context) CredentialClaims {
 	// Create claims with multiple fields populated
 	claims := CredentialClaims{
 		Credentials: make([]protocol.CredentialDescriptor, 0),

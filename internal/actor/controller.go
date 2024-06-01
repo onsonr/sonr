@@ -4,11 +4,15 @@ import (
 	"github.com/asynkron/protoactor-go/actor"
 	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/di-dao/sonr/crypto/mpc"
+	"github.com/ipfs/boxo/path"
 )
 
+// controllerActor is the spawned actor for the controller which manages the signing of messages
 type controllerActor struct {
-	VKS kss.Val
-	UKS kss.User
+	VKS     kss.Val
+	UKS     kss.User
+	daedKey []byte
+	Path    path.Path
 }
 
 // Implement the Receive method for message processing

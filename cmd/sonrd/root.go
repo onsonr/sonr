@@ -22,6 +22,7 @@ import (
 
 	"github.com/di-dao/sonr/app"
 	"github.com/di-dao/sonr/app/params"
+	"github.com/di-dao/sonr/internal/local"
 	// NewRootCmd creates a new root command for chain app. It is called once in the
 	// main function.
 )
@@ -97,6 +98,10 @@ func NewRootCmd() *cobra.Command {
 			if err := client.SetCmdClientContextHandler(initClientCtx, cmd); err != nil {
 				return err
 			}
+
+			// Set the context chain ID and validator address
+			local.SetContextChainID(initClientCtx.ChainID)
+			local.SetContextValidatorAddress(initClientCtx.FromAddress.String())
 
 			customAppTemplate, customAppConfig := initAppConfig()
 			customCMTConfig := initCometBFTConfig()
