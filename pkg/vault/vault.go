@@ -40,3 +40,26 @@ func Generate(ctx context.Context) (Vault, error) {
 		vfs:   ipfs.NewFSWithKss(keyshares, fs.Wallet.SonrAddress()),
 	}, nil
 }
+
+// Connect connects to an existing vault.
+func Connect(ctx context.Context, address string) (Vault, error) {
+	snrCtx := local.UnwrapContext(ctx)
+	vfs, err := ipfs.GetFileSystem(ctx, address)
+	if err != nil {
+		return nil, err
+	}
+	fs, err := loadVaultFS(vfs)
+	if err != nil {
+		return nil, err
+	}
+
+	// Update the context with the wallet address
+	snrCtx.UserAddress = fs.Wallet.SonrAddress()
+	local.WrapContext(snrCtx)
+
+	// Create a new vault
+	return &vault{
+		vfs:   vfs,
+		vltFS: fs,
+	}, nil
+}

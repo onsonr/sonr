@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/pkg/ipfs"
 	"github.com/di-dao/sonr/pkg/vault/auth"
 	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
@@ -67,5 +68,34 @@ func createVaultFS(set kss.Set) (*vaultFS, error) {
 		Wallet:     wallet,
 		Creds:      auth.NewCredentials(),
 		Properties: props.NewProperties(),
+	}, nil
+}
+
+func loadVaultFS(vfs ipfs.VFS) (*vaultFS, error) {
+	wallet := &wallet.Wallet{}
+	walletBz, err := vfs.Get("wallet.json")
+	if err != nil {
+		return nil, err
+	}
+
+	err = wallet.Unmarshal(walletBz)
+	if err != nil {
+		return nil, err
+	}
+
+	info := &InfoFile{}
+	infoBz, err := vfs.Get("info.json")
+	if err != nil {
+		return nil, err
+	}
+	err = info.Unmarshal(infoBz)
+	if err != nil {
+		return nil, err
+	}
+
+	return &vaultFS{
+		Wallet:     wallet,
+		Creds:      info.Creds,
+		Properties: info.Properties,
 	}, nil
 }
