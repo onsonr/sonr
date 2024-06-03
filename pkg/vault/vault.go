@@ -16,14 +16,15 @@ type Vault interface{}
 
 // vault is a struct that contains the information of a vault to be stored in the vault
 type vault struct {
-	path       path.Path
-	properties props.Properties
-	wallet     *wallet.Wallet
-	vfs        vfs.FileSystem
+	path        path.Path
+	credentials props.Credentials
+	properties  props.Properties
+	wallet      *wallet.Wallet
+	vfs         vfs.FileSystem
 }
 
 // New creates a new vault from a set of keyshares.
-func New(ctx context.Context) (Vault, error) {
+func Generate(ctx context.Context) (Vault, error) {
 	// Generate keyshares
 	keyshares, err := mpc.GenerateKss()
 	if err != nil {
@@ -38,8 +39,9 @@ func New(ctx context.Context) (Vault, error) {
 
 	// Create a new vault
 	return &vault{
-		wallet:     wallet,
-		properties: props.NewProperties(),
-		vfs:        vfs.New(wallet.Accounts[chain.CoinSNRType][0].Address),
+		wallet:      wallet,
+		credentials: props.NewCredentials(),
+		properties:  props.NewProperties(),
+		vfs:         vfs.New(wallet.Accounts[chain.CoinSNRType][0].Address),
 	}, nil
 }
