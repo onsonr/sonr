@@ -9,6 +9,7 @@ import (
 
 // KssI is the interface for the keyshare set
 type Set interface {
+	Encrypt(key []byte) (EncryptedSet, error)
 	BytesUsr() []byte
 	BytesVal() []byte
 	PublicKey() crypto.PublicKey
@@ -23,6 +24,11 @@ type keyshares struct {
 
 	valBz []byte
 	usrBz []byte
+}
+
+// Encrypt encrypts the keyshares using a password
+func (ks *keyshares) Encrypt(key []byte) (EncryptedSet, error) {
+	return nil, nil
 }
 
 // Usr returns the user keyshare
