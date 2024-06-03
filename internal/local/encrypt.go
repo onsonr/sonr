@@ -51,7 +51,6 @@ func NewKeyHandle() (*keyset.Handle, error) {
 	if err := kh.WriteWithNoSecrets(writer); err != nil {
 		return nil, err
 	}
-
 	return kh, nil
 }
 
