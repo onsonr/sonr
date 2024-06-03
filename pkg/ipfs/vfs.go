@@ -5,6 +5,7 @@ import (
 	"io"
 
 	"github.com/ipfs/boxo/files"
+	"github.com/ipfs/boxo/path"
 )
 
 // VFS is an interface for interacting with a virtual file system.
@@ -15,10 +16,15 @@ type VFS interface {
 	Ls(path string) ([]string, error)
 	Name() string
 	Node() files.Node
+	Path() path.Path
+	Validate() error
+
+	setPath(path path.Path)
 }
 
 // vfs is the struct implementation of an IPFS file system
 type vfs struct {
+	path  path.Path
 	files map[string]files.File
 	name  string
 }
@@ -121,4 +127,26 @@ func (v *vfs) Node() files.Node {
 	rootDir[v.name] = node
 	finalDir := files.NewMapDirectory(rootDir)
 	return finalDir.Entries().Node()
+}
+
+// Path returns the path for the virtual file system
+func (v *vfs) Path() path.Path {
+	return v.path
+}
+
+// Validate validates the virtual file system and returns an error if it is invalid
+func (v *vfs) Validate() error {
+	if v.name == "" {
+		return fmt.Errorf("name cannot be empty")
+	}
+
+	if v.path == nil {
+		return fmt.Errorf("path cannot be empty")
+	}
+	return nil
+}
+
+// setPath sets the path for the virtual file system
+func (v *vfs) setPath(path path.Path) {
+	v.path = path
 }
