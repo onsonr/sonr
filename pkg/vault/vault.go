@@ -30,16 +30,16 @@ func Generate(ctx context.Context) (Vault, error) {
 	}
 
 	// Create a new wallet
-	wallet, err := wallet.New(keyshares)
+	wal, err := wallet.New(keyshares)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create a new vault
 	return &vault{
-		wallet:      wallet,
+		wallet:      wal,
 		credentials: auth.NewCredentials(),
 		properties:  props.NewProperties(),
-		vfs:         ipfs.NewFileSystem(wallet.Accounts[wallet.Coin][0].Address),
+		vfs:         ipfs.NewFileSystem(wal.Accounts[wallet.CoinSNRType][0].Address),
 	}, nil
 }
