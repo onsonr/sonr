@@ -1,6 +1,7 @@
 package local
 
 import (
+	"context"
 	"time"
 
 	"github.com/bool64/cache"
@@ -63,4 +64,21 @@ type authorizedSession struct {
 
 	// Challenge is used for authenticating credentials for the Session
 	Challenge []byte `json:"challenge"`
+}
+
+// Get returns a session from cache given a key.
+func GetSession(ctx context.Context) (Session, error) {
+	snrCtx := UnwrapContext(ctx)
+	return baseSessionCache.Get(
+		context.Background(),
+		[]byte(snrCtx.SessionID),
+		func(ctx context.Context) (session, error) {
+			// Build value or return error on failure.
+			return session{
+				ID:        snrCtx.SessionID,
+				Validator: snrCtx.ValidatorAddress,
+				ChainID:   snrCtx.ChainID,
+			}, nil
+		},
+	)
 }
