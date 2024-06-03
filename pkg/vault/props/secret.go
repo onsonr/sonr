@@ -46,7 +46,7 @@ func (s *SecretKey) VerifyWitness(acc *accumulator.Accumulator, witness *accumul
 // PublicKey returns the public key for the secret key
 func (s *SecretKey) PublicKey() *accumulator.PublicKey {
 	curve := curves.BLS12381(&curves.PointBls12381G1{})
-	pk, err := s.SecretKey.GetPublicKey(curve)
+	pk, err := s.GetPublicKey(curve)
 	if err != nil {
 		panic(err)
 	}
