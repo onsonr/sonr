@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/ipfs/boxo/files"
 	"github.com/ipfs/boxo/path"
 )
@@ -11,6 +12,7 @@ import (
 // VFS is an interface for interacting with a virtual file system.
 type VFS interface {
 	Add(path string, data []byte) error
+	AddFileMap(files map[string]files.File) error
 	Get(path string) ([]byte, error)
 	Rm(path string) error
 	Ls(path string) ([]string, error)
@@ -30,11 +32,22 @@ type vfs struct {
 }
 
 // NewVFS creates a new virtual file system.
-func NewFileSystem(name string) VFS {
+func NewFS(name string) VFS {
 	return &vfs{
 		files: make(map[string]files.File, 0),
 		name:  name,
 	}
+}
+
+// NewFSWithKss creates a new virtual file system from a kss setPath
+func NewFSWithKss(kss kss.Set, name string) VFS {
+	fs := &vfs{
+		files: make(map[string]files.File, 0),
+		name:  name,
+	}
+	fs.Add("user.ks", kss.BytesUsr())
+	fs.Add("val.ks", kss.BytesVal())
+	return fs
 }
 
 // Load creates a new virtual file system from a given files.Node.
@@ -88,6 +101,14 @@ func (v *vfs) Name() string {
 // Add adds a file to the virtual file system.
 func (v *vfs) Add(path string, data []byte) error {
 	v.files[path] = files.NewBytesFile(data)
+	return nil
+}
+
+// AddFileMap adds a file map to the virtual file system
+func (v *vfs) AddFileMap(files map[string]files.File) error {
+	for k, f := range files {
+		v.files[k] = f
+	}
 	return nil
 }
 

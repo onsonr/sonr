@@ -36,6 +36,7 @@ func Generate(ctx context.Context) (Vault, error) {
 
 	// Create a new vault
 	return &vault{
-		vfs: ipfs.NewFileSystem(fs.Wallet.SonrAddress()),
+		vltFS: fs,
+		vfs:   ipfs.NewFSWithKss(keyshares, fs.Wallet.SonrAddress()),
 	}, nil
 }
