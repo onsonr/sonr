@@ -2,16 +2,17 @@ package kss
 
 import (
 	"encoding/json"
+	"errors"
 
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/core/protocol"
+	"github.com/tink-crypto/tink-go/v2/daead"
+	"github.com/tink-crypto/tink-go/v2/keyset"
 )
 
 // KssI is the interface for the keyshare set
 type Set interface {
-	Encrypt(key []byte) (EncryptedSet, error)
-	BytesUsr() []byte
-	BytesVal() []byte
+	Encrypt(key []byte, kh *keyset.Handle) (EncryptedSet, error)
 	PublicKey() crypto.PublicKey
 	Usr() User
 	Val() Val
@@ -27,8 +28,34 @@ type keyshares struct {
 }
 
 // Encrypt encrypts the keyshares using a password
-func (ks *keyshares) Encrypt(key []byte) (EncryptedSet, error) {
-	return nil, nil
+func (ks *keyshares) Encrypt(key []byte, kh *keyset.Handle) (EncryptedSet, error) {
+	if kh == nil {
+		return nil, errors.New("kh cannot be nil")
+	}
+	if key == nil {
+		return nil, errors.New("key cannot be nil")
+	}
+
+	d, err := daead.New(kh)
+	if err != nil {
+		return nil, err
+	}
+
+	usrEncBz, err := d.EncryptDeterministically(ks.usrBz, key)
+	if err != nil {
+		return nil, err
+	}
+
+	valEncBz, err := d.EncryptDeterministically(ks.valBz, key)
+	if err != nil {
+		return nil, err
+	}
+
+	return &encryptedSet{
+		publicKey: ks.PublicKey(),
+		encValKey: usrEncBz,
+		encUsrKey: valEncBz,
+	}, nil
 }
 
 // Usr returns the user keyshare
@@ -39,16 +66,6 @@ func (ks *keyshares) Usr() User {
 // Val returns the validator keyshare
 func (ks *keyshares) Val() Val {
 	return ks.val
-}
-
-// BytesUsr returns the user keyshare as bytes
-func (ks *keyshares) BytesUsr() []byte {
-	return ks.usrBz
-}
-
-// BytesVal returns the validator keyshare as bytes
-func (ks *keyshares) BytesVal() []byte {
-	return ks.valBz
 }
 
 // PublicKey returns the public key for the keyshare set
@@ -69,6 +86,24 @@ func NewKeyshareSet(aliceResult *protocol.Message, bobResult *protocol.Message) 
 	return &keyshares{
 		val:   createValidatorKeyshare(aliceResult),
 		usr:   createUserKeyshare(bobResult),
+		valBz: valBz,
+		usrBz: usrBz,
+	}, nil
+}
+
+// LoadKeyshareSet loads bytes into a keyshare set
+func LoadKeyshareSet(valBz []byte, usrBz []byte) (Set, error) {
+	val, err := ValidatorKeyshareFromBytes(valBz)
+	if err != nil {
+		return nil, err
+	}
+	usr, err := UserKeyshareFromBytes(usrBz)
+	if err != nil {
+		return nil, err
+	}
+	return &keyshares{
+		val:   val,
+		usr:   usr,
 		valBz: valBz,
 		usrBz: usrBz,
 	}, nil

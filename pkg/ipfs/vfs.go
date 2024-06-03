@@ -45,8 +45,7 @@ func NewFSWithKss(kss kss.Set, name string) VFS {
 		files: make(map[string]files.File, 0),
 		name:  name,
 	}
-	fs.Add("user.ks", kss.BytesUsr())
-	fs.Add("val.ks", kss.BytesVal())
+
 	return fs
 }
 
