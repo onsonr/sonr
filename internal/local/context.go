@@ -16,11 +16,6 @@ const kMetadataSessionIDKey = "sonr-session-id"
 // Default Key in gRPC Metadata for the Session Authentication JWT Token
 const kMetadataAuthTokenKey = "sonr-auth-token"
 
-var (
-	chainID = "testnet"
-	valAddr = "val1"
-)
-
 // SonrContext is the context for the Sonr API
 type SonrContext struct {
 	Context          context.Context
@@ -29,16 +24,6 @@ type SonrContext struct {
 	ChainID          string
 	Token            string
 	SDKContext       sdk.Context
-}
-
-// SetLocalContextSessionID sets the session ID for the local context
-func SetContextValidatorAddress(address string) {
-	valAddr = address
-}
-
-// SetLocalContextChainID sets the chain ID for the local
-func SetContextChainID(id string) {
-	chainID = id
 }
 
 // UnwrapContext uses context.Context to retreive grpc.Metadata

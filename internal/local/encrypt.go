@@ -23,16 +23,6 @@ func keysetFile() string {
 	return path.Join(defaultNodeHome, "daead_keyset.json")
 }
 
-func setupKeyHandle() {
-	if _, err := os.Stat(keysetFile()); os.IsNotExist(err) {
-		// If the keyset file doesn't exist, generate a new key handle
-		kh, _ = NewKeyHandle()
-	} else {
-		// If the keyset file exists, load the key handle from the file
-		kh, _ = ReadKeyHandle()
-	}
-}
-
 // NewKeyHandle creates a new keyset, writes it to a file, and returns the keyset handle
 func NewKeyHandle() (*keyset.Handle, error) {
 	kh, err := keyset.NewHandle(daead.AESSIVKeyTemplate())
