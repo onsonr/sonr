@@ -48,7 +48,6 @@ require (
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
 	github.com/a-h/templ v0.2.680
 	github.com/asynkron/protoactor-go v0.0.0-20240413045429-76c172a71a16
-	github.com/bool64/cache v0.4.7
 	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/bwesterb/go-ristretto v1.2.3
 	github.com/cometbft/cometbft v0.38.6
