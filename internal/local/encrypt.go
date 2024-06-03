@@ -23,7 +23,7 @@ func keysetFile() string {
 	return path.Join(defaultNodeHome, "daead_keyset.json")
 }
 
-func init() {
+func setupKeyHandle() {
 	if _, err := os.Stat(keysetFile()); os.IsNotExist(err) {
 		// If the keyset file doesn't exist, generate a new key handle
 		kh, _ = NewKeyHandle()

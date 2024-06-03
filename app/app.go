@@ -154,7 +154,7 @@ import (
 	oracletypes "github.com/di-dao/sonr/x/oracle/types"
 )
 
-const appName = "core"
+const appName = "sonr"
 
 var (
 	NodeDir      = ".sonr"

@@ -45,16 +45,16 @@ func Initialize() {
 
 // Get returns a session from cache given a key.
 func Get(ctx context.Context) (Session, error) {
-	id := unwrapFromContext(ctx)
 	snrCtx := local.UnwrapContext(ctx)
-
 	return baseSessionCache.Get(
 		context.Background(),
 		[]byte(snrCtx.SessionID),
 		func(ctx context.Context) (session, error) {
 			// Build value or return error on failure.
 			return session{
-				ID: id,
+				ID:        snrCtx.SessionID,
+				Validator: snrCtx.ValidatorAddress,
+				ChainID:   snrCtx.ChainID,
 			}, nil
 		},
 	)

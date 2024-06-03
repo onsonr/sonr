@@ -53,9 +53,9 @@ func loadDirectory(dir files.Directory, vfs *vfs) error {
 	it := dir.Entries()
 	for it.Next() {
 		name, node := it.Name(), it.Node()
-		switch node.(type) {
+		switch node := node.(type) {
 		case files.File:
-			data, err := io.ReadAll(node.(files.File))
+			data, err := io.ReadAll(node)
 			if err != nil {
 				return err
 			}
