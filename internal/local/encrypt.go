@@ -11,14 +11,6 @@ import (
 // These constants are derived from the above variables.
 // These are the ones we will want to use in the code, based on
 // any overrides above
-var (
-	nodeDir = ".sonr"
-
-	defaultNodeHome = os.ExpandEnv("$HOME/") + nodeDir
-
-	kh *keyset.Handle
-)
-
 func keysetFile() string {
 	return path.Join(defaultNodeHome, "daead_keyset.json")
 }
