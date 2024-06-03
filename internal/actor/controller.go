@@ -11,8 +11,8 @@ import (
 type controllerActor struct {
 	VKS     kss.Val
 	UKS     kss.User
-	daedKey []byte
 	Path    path.Path
+	daedKey []byte
 }
 
 // Implement the Receive method for message processing

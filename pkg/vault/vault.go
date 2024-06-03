@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/di-dao/sonr/crypto/mpc"
+	"github.com/di-dao/sonr/pkg/vault/auth"
 	"github.com/di-dao/sonr/pkg/vault/chain"
 	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
@@ -17,7 +18,7 @@ type Vault interface{}
 // vault is a struct that contains the information of a vault to be stored in the vault
 type vault struct {
 	path        path.Path
-	credentials props.Credentials
+	credentials auth.Credentials
 	properties  props.Properties
 	wallet      *wallet.Wallet
 	vfs         vfs.FileSystem
@@ -40,7 +41,7 @@ func Generate(ctx context.Context) (Vault, error) {
 	// Create a new vault
 	return &vault{
 		wallet:      wallet,
-		credentials: props.NewCredentials(),
+		credentials: auth.NewCredentials(),
 		properties:  props.NewProperties(),
 		vfs:         vfs.New(wallet.Accounts[chain.CoinSNRType][0].Address),
 	}, nil

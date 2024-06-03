@@ -1,15 +1,14 @@
-package props
+package auth
 
 import (
 	"bytes"
 	"encoding/json"
 
-	"github.com/di-dao/sonr/pkg/auth"
 	"github.com/go-webauthn/webauthn/protocol"
 )
 
 // Credentials is a map of credentials
-type Credentials map[string][]*auth.Credential
+type Credentials map[string][]*Credential
 
 // NewCredentials creates a new Credentials map
 func NewCredentials() Credentials {
@@ -17,9 +16,9 @@ func NewCredentials() Credentials {
 }
 
 // LinkCredential will add a credential to the vault.
-func (c Credentials) LinkCredential(origin string, credential *auth.Credential) {
+func (c Credentials) LinkCredential(origin string, credential *Credential) {
 	if _, ok := c[origin]; !ok {
-		c[origin] = make([]*auth.Credential, 0)
+		c[origin] = make([]*Credential, 0)
 	}
 
 	c[origin] = append(c[origin], credential)
@@ -39,7 +38,7 @@ func (c Credentials) GetCredentials(origin string) []protocol.CredentialDescript
 }
 
 // UnlinkCredential will remove a credential from the vault.
-func (c Credentials) UnlinkCredential(origin string, credential *auth.Credential) {
+func (c Credentials) UnlinkCredential(origin string, credential *Credential) {
 	if _, ok := c[origin]; !ok {
 		return
 	}
