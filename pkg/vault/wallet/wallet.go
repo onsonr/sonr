@@ -39,6 +39,11 @@ func New(kset kss.Set, coinList ...Coin) (*Wallet, error) {
 	return wallet, nil
 }
 
+// SonrAddress returns the address of the wallet
+func (w *Wallet) SonrAddress() string {
+	return w.Accounts[CoinSNRType][0].Address
+}
+
 // Marshal returns the JSON encoding of the Credentials.
 func (c *Wallet) Marshal() ([]byte, error) {
 	return json.Marshal(c)

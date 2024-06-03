@@ -3,6 +3,7 @@ package auth
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 
 	"github.com/go-webauthn/webauthn/protocol"
 )
@@ -16,12 +17,16 @@ func NewCredentials() Credentials {
 }
 
 // LinkCredential will add a credential to the vault.
-func (c Credentials) LinkCredential(origin string, credential *Credential) {
+func (c Credentials) LinkCredential(origin string, credential *Credential) error {
+	if origin == "" {
+		return errors.New("origin cannot be empty")
+	}
 	if _, ok := c[origin]; !ok {
 		c[origin] = make([]*Credential, 0)
 	}
 
 	c[origin] = append(c[origin], credential)
+	return nil
 }
 
 // GetCredentials will return a list of credentials for a given origin.
