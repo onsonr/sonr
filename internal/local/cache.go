@@ -2,15 +2,32 @@ package local
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/bool64/cache"
 )
 
-var (
-	baseSessionCache       *cache.FailoverOf[session]
-	authorizedSessionCache *cache.FailoverOf[authorizedSession]
-)
+var baseSessionCache *cache.FailoverOf[session]
+
+func getSessionFromCache(ctx context.Context, key string) (session, error) {
+	if baseSessionCache == nil {
+		return session{}, errors.New("session cache not initialized")
+	}
+	return baseSessionCache.Get(
+		ctx,
+		[]byte(key),
+		func(ctx context.Context) (session, error) {
+			snrCtx := UnwrapContext(ctx)
+			// Build value or return error on failure.
+			return session{
+				ID:        snrCtx.SessionID,
+				Validator: snrCtx.ValidatorAddress,
+				ChainID:   snrCtx.ChainID,
+			}, nil
+		},
+	)
+}
 
 // Session is the reference to the clients current session over gRPC/HTTP in the local cache.
 type Session interface {
@@ -32,23 +49,8 @@ type session struct {
 	// ID is the ksuid of the Session
 	ID string `json:"id"`
 
-	// Validator is the address of the associated validator node address for the session.
-	Validator string `json:"validator"`
-
-	// ChainID is the current sonr blockchain network chain ID for the session.
-	ChainID string `json:"chain_id"`
-
-	// Challenge is used for authenticating credentials for the Session
-	Challenge []byte `json:"challenge"`
-}
-
-// session is a proxy session.
-type authorizedSession struct {
-	// ID is the ksuid of the Session
-	ID string `json:"id"`
-
 	// Address is the address of the session.
-	Address string `json:"address"`
+	UserAddress string `json:"address"`
 
 	// Validator is the address of the associated validator node address for the session.
 	Validator string `json:"validator"`
@@ -67,12 +69,12 @@ type authorizedSession struct {
 }
 
 // Get returns a session from cache given a key.
-func GetSession(ctx context.Context) (Session, error) {
-	snrCtx := UnwrapContext(ctx)
+func (c SonrContext) Session() (Session, error) {
 	return baseSessionCache.Get(
-		context.Background(),
-		[]byte(snrCtx.SessionID),
+		c.Context,
+		[]byte(c.SessionID),
 		func(ctx context.Context) (session, error) {
+			snrCtx := UnwrapContext(ctx)
 			// Build value or return error on failure.
 			return session{
 				ID:        snrCtx.SessionID,

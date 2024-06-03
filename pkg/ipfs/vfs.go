@@ -1,4 +1,4 @@
-package vfs
+package ipfs
 
 import (
 	"fmt"
@@ -7,8 +7,8 @@ import (
 	"github.com/ipfs/boxo/files"
 )
 
-// FileSystem is an interface for interacting with a virtual file system.
-type FileSystem interface {
+// VFS is an interface for interacting with a virtual file system.
+type VFS interface {
 	Add(path string, data []byte) error
 	Get(path string) ([]byte, error)
 	Rm(path string) error
@@ -24,7 +24,7 @@ type vfs struct {
 }
 
 // NewVFS creates a new virtual file system.
-func New(name string) FileSystem {
+func NewFileSystem(name string) VFS {
 	return &vfs{
 		files: make(map[string]files.File, 0),
 		name:  name,
@@ -32,7 +32,7 @@ func New(name string) FileSystem {
 }
 
 // Load creates a new virtual file system from a given files.Node.
-func Load(name string, node files.Node) (FileSystem, error) {
+func Load(name string, node files.Node) (VFS, error) {
 	entry := files.FileEntry(name, node)
 	rootDir := files.DirFromEntry(entry)
 	vfs := &vfs{

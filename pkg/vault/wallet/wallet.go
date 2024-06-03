@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 
 	"github.com/di-dao/sonr/crypto/kss"
-	"github.com/di-dao/sonr/pkg/vfs"
 )
 
 const filename = "wallet.json"
@@ -48,13 +47,4 @@ func (c *Wallet) Marshal() ([]byte, error) {
 // Unmarshal parses the JSON-encoded data and stores the result in the Credentials.
 func (c *Wallet) Unmarshal(data []byte) error {
 	return json.Unmarshal(data, c)
-}
-
-// Save saves the wallet to the vfs.FileSystem.
-func (c *Wallet) Save(fs vfs.FileSystem) error {
-	bz, err := c.Marshal()
-	if err != nil {
-		return err
-	}
-	return fs.Add(filename, bz)
 }

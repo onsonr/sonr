@@ -42,11 +42,6 @@ func setupCache() {
 		cfg.MaxStaleness = 1 * time.Hour
 		cfg.BackendConfig.TimeToLive = 2*time.Hour - cfg.MaxStaleness
 	})
-	authorizedSessionCache = cache.NewFailoverOf(func(cfg *cache.FailoverConfigOf[authorizedSession]) {
-		// Using last 30 seconds of 5m TTL for background update.
-		cfg.MaxStaleness = 30 * time.Minute
-		cfg.BackendConfig.TimeToLive = 1*time.Hour - cfg.MaxStaleness
-	})
 }
 
 func setupKeyHandle() {

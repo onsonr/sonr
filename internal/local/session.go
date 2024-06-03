@@ -41,40 +41,13 @@ func (s session) SessionID() string {
 	return s.ID
 }
 
-// GetAddress returns the session address
-func (s authorizedSession) GetAddress() (string, error) {
-	if s.Address == "" {
-		return "", errors.New("session does not have attached address")
+// SetUserAddress sets the user address for the session and persists it in cache
+func (c SonrContext) SetUserAddress(address string) error {
+	s, err := getSessionFromCache(c.Context, c.SessionID)
+	if err != nil {
+		return err
 	}
-	return s.Address, nil
-}
+	s.UserAddress = address
 
-// GetValidator returns the associated validator address
-func (s authorizedSession) GetValidator() (string, error) {
-	if s.Address == "" {
-		return "", errors.New("session does not have attached address")
-	}
-	return s.Address, nil
-}
-
-// GetChallenge returns the URL Encoded byte challenge
-func (s authorizedSession) GetChallenge() []byte {
-	if s.Challenge == nil {
-		bz, err := protocol.CreateChallenge()
-		if err != nil {
-			panic(err)
-		}
-		s.Challenge = bz
-	}
-	return s.Challenge
-}
-
-// IsAuthorized returns true or false for if it is authorized
-func (s authorizedSession) IsAuthorized() bool {
-	return true
-}
-
-// SessionID returns the string ksuid for the session
-func (s authorizedSession) SessionID() string {
-	return s.ID
+	return nil
 }
