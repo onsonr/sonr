@@ -6,14 +6,11 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
 	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/di-dao/sonr/api/did/v1"
-	"github.com/di-dao/sonr/crypto/kss"
-	"github.com/di-dao/sonr/crypto/mpc"
 	"github.com/di-dao/sonr/x/did/types"
 )
 
@@ -63,23 +60,4 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ac
 
 	k.Schema = schema
 	return k
-}
-
-// GenerateKeyshares generates a new keyshare set. First step
-func (k Keeper) GenerateKeyshares(ctx sdk.Context) (kss.Set, error) {
-	return mpc.GenerateKss()
-}
-
-// // LinkController links a user identifier to a kss pair creating a controller. Second step
-// func (k Keeper) LinkController(ctx sdk.Context) ([]byte, error) {
-// 	c, err := controller.New(kss)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return c.Set("email", identifier)
-// }
-
-// AssignVault assigns a vault to a controller. Third step
-func (k Keeper) AssignVault(ctx sdk.Context) error {
-	return nil
 }

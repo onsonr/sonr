@@ -1,4 +1,4 @@
-package claims
+package session
 
 import (
 	"context"
@@ -8,9 +8,10 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// CredentialClaims is the claims for a credential.
 type CredentialClaims struct {
-	Credentials []protocol.CredentialDescriptor `json:"credentials"`
 	jwt.RegisteredClaims
+	Credentials []protocol.CredentialDescriptor `json:"credentials"`
 }
 
 // NewCredentialClaims returns the CredentialClaims for the JWS to sign

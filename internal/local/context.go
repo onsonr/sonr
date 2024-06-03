@@ -2,6 +2,7 @@ package local
 
 import (
 	"context"
+	"errors"
 
 	"github.com/segmentio/ksuid"
 	"google.golang.org/grpc"
@@ -11,17 +12,12 @@ import (
 // Default Key in gRPC Metadata for the Session ID
 const kMetadataSessionIDKey = "sonr-session-id"
 
-// Default Key in gRPC Metadata for the Session Validator Address
-const kMetadataValAddressKey = "sonr-validator-address"
-
-// Default Key in gRPC Metadata for the Session Chain ID
-const kMetadataChainIDKey = "sonr-chain-id"
-
 var (
 	chainID = "testnet"
 	valAddr = "val1"
 )
 
+// SonrContext is the context for the Sonr API
 type SonrContext struct {
 	SessionID        string
 	ValidatorAddress string
@@ -38,25 +34,20 @@ func SetContextChainID(id string) {
 	chainID = id
 }
 
-// UnwrapSessionIDFromContext uses context.Context to retreive grpc.Metadata
+// UnwrapContext uses context.Context to retreive grpc.Metadata
 func UnwrapContext(ctx context.Context) SonrContext {
-	md, ok := metadata.FromIncomingContext(ctx)
-	if !ok {
+	sessionID, err := firstValueForKey(ctx, kMetadataSessionIDKey)
+	if err != nil {
 		return WrapContext(ctx)
 	}
-	vals := md.Get(kMetadataSessionIDKey)
-	if len(vals) == 0 {
-		return WrapContext(ctx)
-	}
-	id := vals[0]
 	return SonrContext{
-		SessionID:        id,
+		SessionID:        sessionID,
 		ValidatorAddress: valAddr,
 		ChainID:          chainID,
 	}
 }
 
-// setSessionIDToCtx uses context.Context and set a new Session ID for grpc.Metadata
+// WrapContext wraps a context with a session ID
 func WrapContext(ctx context.Context) SonrContext {
 	sessionId := ksuid.New().String()
 	// create a header that the gateway will watch for
@@ -68,4 +59,16 @@ func WrapContext(ctx context.Context) SonrContext {
 		ValidatorAddress: valAddr,
 		ChainID:          chainID,
 	}
+}
+
+func firstValueForKey(ctx context.Context, key string) (string, error) {
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return "", errors.New("no metadata found")
+	}
+	vals := md.Get(key)
+	if len(vals) == 0 {
+		return "", errors.New("no values found")
+	}
+	return vals[0], nil
 }

@@ -5,9 +5,13 @@ import (
 	"time"
 
 	"github.com/bool64/cache"
+	"github.com/di-dao/sonr/internal/local"
 )
 
-var sessionCache *cache.FailoverOf[session]
+var (
+	baseSessionCache       *cache.FailoverOf[session]
+	authorizedSessionCache *cache.FailoverOf[authorizedSession]
+)
 
 // Session is the reference to the clients current session over gRPC/HTTP in the local cache.
 type Session interface {
@@ -27,7 +31,12 @@ type Session interface {
 // Initialize configures cache and inital settings for proxy.
 func Initialize() {
 	// Setup cache for session.
-	sessionCache = cache.NewFailoverOf(func(cfg *cache.FailoverConfigOf[session]) {
+	baseSessionCache = cache.NewFailoverOf(func(cfg *cache.FailoverConfigOf[session]) {
+		// Using last 30 seconds of 5m TTL for background update.
+		cfg.MaxStaleness = 1 * time.Hour
+		cfg.BackendConfig.TimeToLive = 2*time.Hour - cfg.MaxStaleness
+	})
+	authorizedSessionCache = cache.NewFailoverOf(func(cfg *cache.FailoverConfigOf[authorizedSession]) {
 		// Using last 30 seconds of 5m TTL for background update.
 		cfg.MaxStaleness = 30 * time.Minute
 		cfg.BackendConfig.TimeToLive = 1*time.Hour - cfg.MaxStaleness
@@ -37,9 +46,11 @@ func Initialize() {
 // Get returns a session from cache given a key.
 func Get(ctx context.Context) (Session, error) {
 	id := unwrapFromContext(ctx)
-	return sessionCache.Get(
+	snrCtx := local.UnwrapContext(ctx)
+
+	return baseSessionCache.Get(
 		context.Background(),
-		[]byte(id),
+		[]byte(snrCtx.SessionID),
 		func(ctx context.Context) (session, error) {
 			// Build value or return error on failure.
 			return session{
