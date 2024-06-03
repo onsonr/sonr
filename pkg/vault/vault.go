@@ -5,7 +5,6 @@ import (
 
 	"github.com/di-dao/sonr/crypto/mpc"
 	"github.com/di-dao/sonr/pkg/vault/chain"
-	"github.com/di-dao/sonr/pkg/vault/controller"
 	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
 	"github.com/di-dao/sonr/pkg/vfs"
@@ -13,12 +12,10 @@ import (
 )
 
 // Vault is an interface that defines the methods for a vault.
-type Vault interface {
-}
+type Vault interface{}
 
 // vault is a struct that contains the information of a vault to be stored in the vault
 type vault struct {
-	controller controller.Controller
 	path       path.Path
 	properties props.Properties
 	wallet     *wallet.Wallet
@@ -43,7 +40,6 @@ func New(ctx context.Context) (Vault, error) {
 	return &vault{
 		wallet:     wallet,
 		properties: props.NewProperties(),
-		controller: controller.New(keyshares),
 		vfs:        vfs.New(wallet.Accounts[chain.CoinSNRType][0].Address),
 	}, nil
 }
