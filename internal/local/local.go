@@ -3,6 +3,7 @@ package local
 import (
 	"os"
 
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/tink-crypto/tink-go/v2/keyset"
 )
 
@@ -18,7 +19,6 @@ var (
 
 // Initialize initializes the local configuration values
 func Initialize() {
-	setupKeyHandle()
 }
 
 // SetLocalContextSessionID sets the session ID for the local context
@@ -31,12 +31,14 @@ func SetLocalChainID(id string) {
 	chainID = id
 }
 
-func setupKeyHandle() {
-	if _, err := os.Stat(keysetFile()); os.IsNotExist(err) {
-		// If the keyset file doesn't exist, generate a new key handle
-		kh, _ = NewKeyHandle()
-	} else {
-		// If the keyset file exists, load the key handle from the file
-		kh, _ = ReadKeyHandle()
+// IPFSClient is an interface for interacting with an IPFS node.
+type IPFSClient = *rpc.HttpApi
+
+// NewLocalClient creates a new IPFS client that connects to the local IPFS node.
+func GetIPFSClient() (IPFSClient, error) {
+	rpcClient, err := rpc.NewLocalApi()
+	if err != nil {
+		return nil, err
 	}
+	return rpcClient, nil
 }
