@@ -10,19 +10,19 @@ import (
 )
 
 // Default Key in gRPC Metadata for the Session ID
-const kMetadataSessionIDKey = "sonr-session-id"
+const MetadataSessionIDKey = "sonr-session-id"
 
 // Default Key in gRPC Metadata for the Session Authentication JWT Token
-const kMetadataAuthTokenKey = "sonr-auth-token"
+const MetadataAuthTokenKey = "sonr-auth-token"
 
 // Default Key in gRPC Metadata for the Session User Address
-const kMetadataUserAddressKey = "sonr-user-address"
+const MetadataUserAddressKey = "sonr-user-address"
 
 // Default Key in gRPC Metadata for the Service Origin
-const kMetadataServiceOriginKey = "sonr-service-origin"
+const MetadataServiceOriginKey = "sonr-service-origin"
 
 // Default Key in gRPC Metadata for the IPFS Peer ID
-const kMetadataIPFSPeerIDKey = "sonr-ipfs-peer-id"
+const MetadataIPFSPeerIDKey = "sonr-ipfs-peer-id"
 
 // SonrContext is the context for the Sonr API
 type SonrContext struct {
@@ -71,7 +71,7 @@ func findOrSetSessionID(ctx context.Context) string {
 	if !ok {
 		return ksuid.New().String()
 	}
-	vals := md.Get(kMetadataSessionIDKey)
+	vals := md.Get(MetadataSessionIDKey)
 	if len(vals) == 0 {
 		return ksuid.New().String()
 	}
@@ -84,7 +84,7 @@ func fetchSessionAuthToken(ctx context.Context) (string, error) {
 	if !ok {
 		return "", errors.New("no metadata found")
 	}
-	vals := md.Get(kMetadataAuthTokenKey)
+	vals := md.Get(MetadataAuthTokenKey)
 	if len(vals) == 0 {
 		return "", errors.New("no values found")
 	}
@@ -97,7 +97,7 @@ func fetchSessionServiceOrigin(ctx context.Context) (string, error) {
 	if !ok {
 		return "", errors.New("no metadata found")
 	}
-	vals := md.Get(kMetadataServiceOriginKey)
+	vals := md.Get(MetadataServiceOriginKey)
 	if len(vals) == 0 {
 		return "", errors.New("no values found")
 	}
@@ -110,7 +110,7 @@ func fetchSessionPeerID(ctx context.Context) (string, error) {
 	if !ok {
 		return "", errors.New("no metadata found")
 	}
-	vals := md.Get(kMetadataIPFSPeerIDKey)
+	vals := md.Get(MetadataIPFSPeerIDKey)
 	if len(vals) == 0 {
 		return "", errors.New("no values found")
 	}
@@ -123,7 +123,7 @@ func fetchSessionUserAddress(ctx context.Context) (string, error) {
 	if !ok {
 		return "", errors.New("no metadata found")
 	}
-	vals := md.Get(kMetadataAuthTokenKey)
+	vals := md.Get(MetadataAuthTokenKey)
 	if len(vals) == 0 {
 		return "", errors.New("no values found")
 	}
@@ -137,17 +137,17 @@ func refreshGrpcHeaders(ctx SonrContext) {
 		header := metadata.Pairs(key, value)
 		return grpc.SendHeader(ctx.Context, header)
 	}
-	sendHeader(kMetadataSessionIDKey, ctx.SessionID)
+	sendHeader(MetadataSessionIDKey, ctx.SessionID)
 	if ctx.Token != "" {
-		sendHeader(kMetadataAuthTokenKey, ctx.Token)
+		sendHeader(MetadataAuthTokenKey, ctx.Token)
 	}
 	if ctx.UserAddress != "" {
-		sendHeader(kMetadataUserAddressKey, ctx.UserAddress)
+		sendHeader(MetadataUserAddressKey, ctx.UserAddress)
 	}
 	if ctx.ServiceOrigin != "" {
-		sendHeader(kMetadataServiceOriginKey, ctx.ServiceOrigin)
+		sendHeader(MetadataServiceOriginKey, ctx.ServiceOrigin)
 	}
 	if ctx.PeerID != "" {
-		sendHeader(kMetadataIPFSPeerIDKey, ctx.PeerID)
+		sendHeader(MetadataIPFSPeerIDKey, ctx.PeerID)
 	}
 }

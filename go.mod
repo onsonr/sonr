@@ -73,6 +73,7 @@ require (
 	github.com/ipfs/kubo v0.27.0
 	github.com/labstack/echo/v4 v4.12.0
 	github.com/mr-tron/base58 v1.2.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
@@ -263,7 +264,6 @@ require (
 	github.com/oklog/run v1.1.0 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
 	github.com/orcaman/concurrent-map v1.0.0 // indirect
-	github.com/patrickmn/go-cache v2.1.0+incompatible // indirect
 	github.com/pbnjay/memory v0.0.0-20210728143218-7b4eea64cf58 // indirect
 	github.com/pelletier/go-toml/v2 v2.1.0 // indirect
 	github.com/petar/GoLLRB v0.0.0-20210522233825-ae3b015fd3e9 // indirect
