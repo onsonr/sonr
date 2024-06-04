@@ -3,7 +3,7 @@ package ipfs
 import (
 	"context"
 
-	"github.com/ipfs/boxo/files"
+	"github.com/di-dao/sonr/internal/local"
 	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
 	coreiface "github.com/ipfs/kubo/core/coreiface"
@@ -15,13 +15,12 @@ type IPNSKey = coreiface.Key
 // IPFSClient is an interface for interacting with an IPFS node.
 type IPFSClient struct {
 	*rpc.HttpApi
-	reachable bool
 }
 
 // NewKey creates a new IPFS key.
 func NewKey(ctx context.Context, addr string) (IPNSKey, error) {
 	// Call the IPFS client to create a new key
-	c, err := getClient()
+	c, err := local.GetIPFSClient()
 	if err != nil {
 		return nil, err
 	}
@@ -32,9 +31,9 @@ func NewKey(ctx context.Context, addr string) (IPNSKey, error) {
 	return key, nil
 }
 
-// // GetVFS returns the VFS interface from the client UnixFS API.
-func Get(ctx context.Context, path string) (files.Node, error) {
-	c, err := getClient()
+// GetFileSystem returns the VFS interface from the client UnixFS API.
+func GetFileSystem(ctx context.Context, path string) (VFS, error) {
+	c, err := local.GetIPFSClient()
 	if err != nil {
 		return nil, err
 	}
@@ -48,34 +47,42 @@ func Get(ctx context.Context, path string) (files.Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	return node, nil
+	return Load(path, node)
 }
 
-// SaveVFS saves the VFS interface to the client UnixFS API.
-func Save(ctx context.Context, fs files.Node, keyName string) (string, error) {
+// SaveFileSystem saves the VFS interface to the client UnixFS API.
+func SaveFileSystem(ctx context.Context, fs VFS) error {
 	// Call the IPFS client to get the UnixFS API.
-	c, err := getClient()
+	c, err := local.GetIPFSClient()
 	if err != nil {
-		return "", err
+		return err
 	}
-	api, err := c.Unixfs().Add(ctx, fs)
+	api, err := c.Unixfs().Add(ctx, fs.Node())
 	if err != nil {
-		return "", err
+		return err
 	}
-	name, err := c.Name().Publish(ctx, api, options.Name.Key(keyName))
-	if err != nil {
-		return "", err
-	}
-	return name.AsPath().String(), nil
+	fs.setPath(api)
+	return nil
 }
 
-// NewLocalClient creates a new IPFS client that connects to the local IPFS node.
-func getClient() (*IPFSClient, error) {
-	rpcClient, err := rpc.NewLocalApi()
+// PublishFileSystem publishes the VFS interface to the client UnixFS API.
+func PublishFileSystem(ctx context.Context, fs VFS) error {
+	// Call the IPFS client to get the UnixFS API.
+	c, err := local.GetIPFSClient()
 	if err != nil {
-		return &IPFSClient{HttpApi: nil, reachable: false}, err
+		return err
 	}
-	return &IPFSClient{HttpApi: rpcClient, reachable: true}, nil
+
+	err = fs.Validate()
+	if err != nil {
+		return err
+	}
+
+	_, err = c.Name().Publish(ctx, fs.Path(), options.Name.Key(fs.Name()))
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func parsePath(p string) (path.Path, error) {

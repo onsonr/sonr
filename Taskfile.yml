@@ -1,0 +1,10 @@
+version: "3"
+
+tasks:
+  dev:
+    cmds:
+      - devbox services up --process-compose-file ./deploy/process-compose.dev.yaml
+  serve:
+    silent: true
+    cmds:
+      - devbox services up --process-compose-file ./deploy/process-compose.prod.yaml
