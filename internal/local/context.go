@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/segmentio/ksuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -35,13 +34,11 @@ type SonrContext struct {
 	PeerID           string
 	ChainID          string
 	Token            string
-	SDKContext       sdk.Context
 }
 
 // UnwrapContext uses context.Context to retreive grpc.Metadata
 func UnwrapContext(ctx context.Context) SonrContext {
 	sctx := SonrContext{
-		SDKContext:       sdk.UnwrapSDKContext(ctx),
 		Context:          ctx,
 		ValidatorAddress: valAddr,
 		ChainID:          chainID,

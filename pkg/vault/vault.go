@@ -33,6 +33,7 @@ func Generate(ctx context.Context) (Vault, error) {
 	// Update the context with the wallet address
 	snrCtx.UserAddress = fs.Wallet.SonrAddress()
 	local.WrapContext(snrCtx)
+	vaultCache.Set(contextKey(snrCtx.SessionID), fs)
 
 	// Create a new vault
 	return &vault{

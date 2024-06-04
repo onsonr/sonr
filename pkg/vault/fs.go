@@ -1,37 +1,21 @@
 package vault
 
 import (
-	"encoding/json"
-
 	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/di-dao/sonr/pkg/ipfs"
 	"github.com/di-dao/sonr/pkg/vault/auth"
-	"github.com/di-dao/sonr/pkg/vault/props"
 	"github.com/di-dao/sonr/pkg/vault/wallet"
 	"github.com/ipfs/boxo/files"
 )
 
-type InfoFile struct {
-	Creds      auth.Credentials `json:"credentials"`
-	Properties props.Properties `json:"properties"`
-}
-
-func (i *InfoFile) Marshal() ([]byte, error) {
-	return json.Marshal(i)
-}
-
-func (i *InfoFile) Unmarshal(data []byte) error {
-	return json.Unmarshal(data, i)
-}
-
 type vaultFS struct {
-	Wallet     *wallet.Wallet
-	Creds      auth.Credentials
-	Properties props.Properties
+	Wallet     *wallet.Wallet   `json:"wallet"`
+	Creds      auth.Credentials `json:"credentials"`
+	Properties auth.Properties  `json:"properties"`
 }
 
-func (v *vaultFS) GetInfoFile() *InfoFile {
-	return &InfoFile{
+func (v *vaultFS) GetInfoFile() *auth.InfoFile {
+	return &auth.InfoFile{
 		Creds:      v.Creds,
 		Properties: v.Properties,
 	}
@@ -67,7 +51,7 @@ func createVaultFS(set kss.Set) (*vaultFS, error) {
 	return &vaultFS{
 		Wallet:     wallet,
 		Creds:      auth.NewCredentials(),
-		Properties: props.NewProperties(),
+		Properties: auth.NewProperties(),
 	}, nil
 }
 
@@ -83,7 +67,7 @@ func loadVaultFS(vfs ipfs.VFS) (*vaultFS, error) {
 		return nil, err
 	}
 
-	info := &InfoFile{}
+	info := &auth.InfoFile{}
 	infoBz, err := vfs.Get("info.json")
 	if err != nil {
 		return nil, err

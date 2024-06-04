@@ -1,4 +1,4 @@
-package props
+package auth
 
 import (
 	"github.com/di-dao/sonr/crypto/accumulator"
