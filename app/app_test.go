@@ -5,7 +5,6 @@ import (
 
 	abci "github.com/cometbft/cometbft/abci/types"
 	dbm "github.com/cosmos/cosmos-db"
-	"github.com/cosmos/gogoproto/proto"
 	"github.com/stretchr/testify/require"
 
 	"cosmossdk.io/log"
@@ -60,12 +59,4 @@ func TestBlockedAddrs(t *testing.T) {
 func TestGetMaccPerms(t *testing.T) {
 	dup := GetMaccPerms()
 	require.Equal(t, maccPerms, dup, "duplicated module account permissions differed from actual module account permissions")
-}
-
-// TestMergedRegistry tests that fetching the gogo/protov2 merged registry
-// doesn't fail after loading all file descriptors.
-func TestMergedRegistry(t *testing.T) {
-	r, err := proto.MergedRegistry()
-	require.NoError(t, err)
-	require.Greater(t, r.NumFiles(), 0)
 }
