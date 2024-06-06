@@ -46,7 +46,6 @@ require (
 	cosmossdk.io/x/upgrade v0.1.1
 	filippo.io/edwards25519 v1.0.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
-	github.com/a-h/templ v0.2.680
 	github.com/asynkron/protoactor-go v0.0.0-20240413045429-76c172a71a16
 	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/bwesterb/go-ristretto v1.2.3
@@ -60,7 +59,6 @@ require (
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.0.2-0.20240228211029-91e486ec4dbb
 	github.com/cosmos/ibc-go/modules/capability v1.0.0
 	github.com/cosmos/ibc-go/v8 v8.1.0
-	github.com/donseba/go-htmx v1.8.0
 	github.com/ecies/go/v2 v2.0.9
 	github.com/ethereum/go-ethereum v1.14.3
 	github.com/go-webauthn/webauthn v0.10.2
@@ -71,7 +69,6 @@ require (
 	github.com/gtank/merlin v0.1.1
 	github.com/ipfs/boxo v0.19.0
 	github.com/ipfs/kubo v0.27.0
-	github.com/labstack/echo/v4 v4.12.0
 	github.com/mr-tron/base58 v1.2.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pkg/errors v0.9.1
@@ -158,7 +155,6 @@ require (
 	github.com/godbus/dbus v0.0.0-20190726142602-4481cbc300e2 // indirect
 	github.com/gogo/googleapis v1.4.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/glog v1.2.0 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/mock v1.6.0 // indirect
@@ -223,7 +219,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/labstack/gommon v0.4.2 // indirect
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/libp2p/go-cidranger v1.1.0 // indirect
@@ -291,8 +286,6 @@ require (
 	github.com/tidwall/btree v1.7.0 // indirect
 	github.com/twmb/murmur3 v1.1.8 // indirect
 	github.com/ulikunitz/xz v0.5.11 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/whyrusleeping/base32 v0.0.0-20170828182744-c30ac30633cc // indirect
 	github.com/whyrusleeping/cbor v0.0.0-20171005072247-63513f603b11 // indirect
 	github.com/whyrusleeping/cbor-gen v0.1.0 // indirect
