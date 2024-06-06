@@ -87,7 +87,7 @@ func thresholdGenerateKeysWithSeedVt(ikm []byte, threshold, total uint) (*Public
 	return pk, shares, nil
 }
 
-// SigBasic is minimal-pubkey-size scheme that doesn't support FastAggregateVerification.
+// SigBasicVt is minimal-pubkey-size scheme that doesn't support FastAggregateVerification.
 // see: https://tools.ietf.org/html/draft-irtf-cfrg-bls-signature-03#section-4.2.1
 type SigBasicVt struct {
 	dst string
