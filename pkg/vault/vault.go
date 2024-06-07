@@ -39,7 +39,7 @@ func Generate(ctx context.Context) (Client, error) {
 	return &client{
 		address:   snrCtx.UserAddress,
 		sessionId: snrCtx.SessionID,
-		vfs:       ipfs.NewFSWithKss(keyshares, fs.Wallet.SonrAddress()),
+		vfs:       ipfs.NewFS(fs.Wallet.SonrAddress()),
 	}, nil
 }
 

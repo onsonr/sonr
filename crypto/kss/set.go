@@ -1,6 +1,8 @@
 package kss
 
 import (
+	"io"
+
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/daed"
 	"github.com/ipfs/boxo/files"
@@ -43,4 +45,22 @@ func (es *encryptedSet) FileMap() map[string]files.File {
 	fileMap["usr.ks"] = usrKsFile
 	fileMap["val.ks"] = valKsFile
 	return nil
+}
+
+func NewEncryptedSetFromFileMap(files map[string]files.File) (EncryptedSet, error) {
+	usrKsFile := files["usr.ks"]
+	valKsFile := files["val.ks"]
+	encUsrKey, err := io.ReadAll(usrKsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	encValKey, err := io.ReadAll(valKsFile)
+	if err != nil {
+		return nil, err
+	}
+	return &encryptedSet{
+		encUsrKey: encUsrKey,
+		encValKey: encValKey,
+	}, nil
 }

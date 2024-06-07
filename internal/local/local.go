@@ -4,9 +4,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/di-dao/sonr/crypto/daed"
 	"github.com/di-dao/sonr/pkg/cache"
 	"github.com/ipfs/kubo/client/rpc"
-	"github.com/tink-crypto/tink-go/v2/keyset"
 )
 
 var (
@@ -18,7 +18,7 @@ var (
 	defaultNodeHome = os.ExpandEnv("$HOME/") + nodeDir
 	sessionCache    *cache.Cache[contextKey, SonrContext]
 
-	kh *keyset.Handle
+	kh *daed.AESSIV
 )
 
 // Initialize initializes the local configuration values
