@@ -58,7 +58,7 @@ func (v *vaultFS) ToFileMap() (map[string]files.File, error) {
 }
 
 func createVaultFS(set kss.Set) (*vaultFS, error) {
-	wallet, err := types.New(set)
+	wallet, err := types.NewWallet(set)
 	if err != nil {
 		return nil, err
 	}

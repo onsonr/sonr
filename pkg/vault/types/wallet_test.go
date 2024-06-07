@@ -15,7 +15,7 @@ func TestNewWallet(t *testing.T) {
 	keyset, err := mpc.GenerateKss()
 	require.NoError(t, err)
 
-	w, err := types.New(keyset)
+	w, err := types.NewWallet(keyset)
 	require.NoError(t, err)
 	require.NotNil(t, w)
 	t.Log(w)
