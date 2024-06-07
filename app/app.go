@@ -144,7 +144,6 @@ import (
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 
-	"github.com/di-dao/sonr/internal/local"
 	did "github.com/di-dao/sonr/x/did"
 	didkeeper "github.com/di-dao/sonr/x/did/keeper"
 	didtypes "github.com/di-dao/sonr/x/did/types"
@@ -1136,7 +1135,6 @@ func NewChainApp(
 		_ = ctx
 
 	}
-	local.Initialize()
 	return app
 }
 
