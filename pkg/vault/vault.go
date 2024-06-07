@@ -18,8 +18,8 @@ type vault struct {
 }
 
 // New creates a new vault from a set of keyshares.
-func Generate(ctx context.Context) (Vault, error) {
-	snrCtx := local.UnwrapContext(ctx)
+func Generate(ctx context.Context) (Client, error) {
+	snrCtx := local.UnwrapCtx(ctx)
 	// Generate keyshare
 	keyshares, err := mpc.GenerateKss()
 	if err != nil {
@@ -32,19 +32,20 @@ func Generate(ctx context.Context) (Vault, error) {
 
 	// Update the context with the wallet address
 	snrCtx.UserAddress = fs.Wallet.SonrAddress()
-	local.WrapContext(snrCtx)
-	vaultCache.Set(contextKey(snrCtx.SessionID), fs)
+	local.WrapCtx(snrCtx)
+	vaultCache.Set(cacheKey(snrCtx.SessionID), fs)
 
 	// Create a new vault
-	return &vault{
-		vltFS: fs,
-		vfs:   ipfs.NewFSWithKss(keyshares, fs.Wallet.SonrAddress()),
+	return &client{
+		address:   snrCtx.UserAddress,
+		sessionId: snrCtx.SessionID,
+		vfs:       ipfs.NewFSWithKss(keyshares, fs.Wallet.SonrAddress()),
 	}, nil
 }
 
 // Connect connects to an existing vault.
-func Connect(ctx context.Context, address string) (Vault, error) {
-	snrCtx := local.UnwrapContext(ctx)
+func Connect(ctx context.Context, address string) (Client, error) {
+	snrCtx := local.UnwrapCtx(ctx)
 	vfs, err := ipfs.GetFileSystem(ctx, address)
 	if err != nil {
 		return nil, err
@@ -56,12 +57,13 @@ func Connect(ctx context.Context, address string) (Vault, error) {
 
 	// Update the context with the wallet address
 	snrCtx.UserAddress = fs.Wallet.SonrAddress()
-	local.WrapContext(snrCtx)
-	vaultCache.Set(contextKey(snrCtx.SessionID), fs)
+	local.WrapCtx(snrCtx)
+	vaultCache.Set(cacheKey(snrCtx.SessionID), fs)
 
 	// Create a new vault
-	return &vault{
-		vfs:   vfs,
-		vltFS: fs,
+	return &client{
+		vfs:       vfs,
+		address:   snrCtx.UserAddress,
+		sessionId: snrCtx.SessionID,
 	}, nil
 }

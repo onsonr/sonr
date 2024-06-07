@@ -1,4 +1,4 @@
-package types
+package wallet
 
 import (
 	"encoding/json"

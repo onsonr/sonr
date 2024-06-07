@@ -6,21 +6,21 @@ import (
 	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/di-dao/sonr/pkg/cache"
 	"github.com/di-dao/sonr/pkg/ipfs"
-	"github.com/di-dao/sonr/pkg/vault/types"
+	types "github.com/di-dao/sonr/pkg/wallet"
 	"github.com/ipfs/boxo/files"
 )
 
-var vaultCache *cache.Cache[contextKey, vaultFS]
+var vaultCache *cache.Cache[cacheKey, vaultFS]
 
-type contextKey string
+type cacheKey string
 
-func (c contextKey) String() string {
+func (c cacheKey) String() string {
 	return "vault/" + string(c)
 }
 
 func init() {
 	// This is a placeholder
-	vaultCache = cache.New[contextKey, vaultFS](time.Minute*5, time.Minute)
+	vaultCache = cache.New[cacheKey, vaultFS](time.Minute*30, time.Minute)
 }
 
 type vaultFS struct {

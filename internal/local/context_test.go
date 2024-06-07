@@ -16,7 +16,7 @@ func TestUnwrapContext_NoMetadata(t *testing.T) {
 	ctx := context.Background()
 
 	// Unwrap context with no metadata
-	sctx := local.UnwrapContext(ctx)
+	sctx := local.UnwrapCtx(ctx)
 	if sctx.SessionID == "" {
 		t.Errorf("Expected SessionID to be set, got empty string")
 	}

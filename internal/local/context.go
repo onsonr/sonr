@@ -3,6 +3,7 @@ package local
 import (
 	"context"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/segmentio/ksuid"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -22,17 +23,18 @@ func (c contextKey) String() string {
 // SonrContext is the context for the Sonr API
 type SonrContext struct {
 	Context          context.Context
-	SessionID        string `json:"session_id"`
-	UserAddress      string `json:"user_address"`
-	ValidatorAddress string `json:"validator_address"`
-	ServiceOrigin    string `json:"service_origin"`
-	PeerID           string `json:"peer_id"`
-	ChainID          string `json:"chain_id"`
-	Token            string `json:"token"`
+	SessionID        string                    `json:"session_id"`
+	UserAddress      string                    `json:"user_address"`
+	ValidatorAddress string                    `json:"validator_address"`
+	ServiceOrigin    string                    `json:"service_origin"`
+	PeerID           string                    `json:"peer_id"`
+	ChainID          string                    `json:"chain_id"`
+	Token            string                    `json:"token"`
+	Challenge        protocol.URLEncodedBase64 `json:"challenge"`
 }
 
-// UnwrapContext uses context.Context to retreive grpc.Metadata
-func UnwrapContext(ctx context.Context) SonrContext {
+// UnwrapCtx uses context.Context to retreive grpc.Metadata
+func UnwrapCtx(ctx context.Context) SonrContext {
 	var sessionId string
 	// Check grpc metadata for session ID
 	md, ok := metadata.FromIncomingContext(ctx)
@@ -57,8 +59,8 @@ func UnwrapContext(ctx context.Context) SonrContext {
 	return *sctx
 }
 
-// WrapContext wraps a context with a session ID
-func WrapContext(ctx SonrContext) context.Context {
+// WrapCtx wraps a context with a session ID
+func WrapCtx(ctx SonrContext) context.Context {
 	sessionCache.Set(contextKey(ctx.SessionID), ctx)
 
 	// function to send a header to the gateway
