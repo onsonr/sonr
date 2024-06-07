@@ -1,4 +1,4 @@
-package auth
+package types
 
 import "github.com/go-webauthn/webauthn/protocol"
 

@@ -1,10 +1,10 @@
-package auth_test
+package types_test
 
 import (
 	"testing"
 
 	"github.com/di-dao/sonr/crypto/mpc"
-	props "github.com/di-dao/sonr/pkg/vault/auth"
+	props "github.com/di-dao/sonr/pkg/vault/types"
 	"github.com/stretchr/testify/require"
 )
 

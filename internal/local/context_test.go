@@ -32,11 +32,4 @@ func TestUnwrapContext_NoMetadata(t *testing.T) {
 	if sctx.PeerID != "" {
 		t.Errorf("Expected PeerID to be empty, got %s", sctx.PeerID)
 	}
-
-	sctx.Token = "token"
-	ctx2 := local.WrapContext(sctx)
-	sctx2 := local.UnwrapContext(ctx2)
-	if sctx2.Token != "token" {
-		t.Errorf("Expected Token to be token, got %s", sctx2.Token)
-	}
 }

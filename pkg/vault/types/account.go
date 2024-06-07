@@ -1,4 +1,4 @@
-package wallet
+package types
 
 import (
 	"github.com/di-dao/sonr/crypto"

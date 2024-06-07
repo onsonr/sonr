@@ -1,4 +1,4 @@
-package auth
+package types
 
 import (
 	"errors"
@@ -105,7 +105,7 @@ func (p Properties) Unmarshal(m map[string][]byte) error {
 }
 
 // deriveSecretKey derives the secret key from the keyshares
-func DeriveSecretKey(propertyKey string, pubKey crypto.PublicKey) (*SecretKey, error) {
+func DeriveSecretKey(propertyKey string, pubKey crypto.PublicKey) (*crypto.SecretKey, error) {
 	// Concatenate the controller's public key and the property key
 	input := append(pubKey.Bytes(), []byte(propertyKey)...)
 	hash := []byte(input)
@@ -116,5 +116,5 @@ func DeriveSecretKey(propertyKey string, pubKey crypto.PublicKey) (*SecretKey, e
 	if err != nil {
 		return nil, errors.Join(err, fmt.Errorf("failed to create secret key"))
 	}
-	return &SecretKey{SecretKey: key}, nil
+	return &crypto.SecretKey{SecretKey: key}, nil
 }

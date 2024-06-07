@@ -1,4 +1,4 @@
-package wallet
+package types
 
 import (
 	"encoding/json"
@@ -14,8 +14,8 @@ type Wallet struct {
 	Accounts map[int64][]*Account `json:"accounts"`
 }
 
-// New creates a new wallet from kss.Set and coins
-func New(kset kss.Set, coinList ...Coin) (*Wallet, error) {
+// NewWallet creates a new wallet from kss.Set and coins
+func NewWallet(kset kss.Set, coinList ...Coin) (*Wallet, error) {
 	// Set default coins if none are provided
 	if coinList == nil {
 		coinList = DefaultCoins
