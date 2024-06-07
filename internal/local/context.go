@@ -27,7 +27,7 @@ const MetadataIPFSPeerIDKey = "sonr-ipfs-peer-id"
 // SonrContext is the context for the Sonr API
 type SonrContext struct {
 	Context          context.Context
-	SessionID        string
+	SessionID        string `json:"session_id"`
 	UserAddress      string
 	ValidatorAddress string
 	ServiceOrigin    string
