@@ -1,21 +1,36 @@
 package vault
 
 import (
+	"time"
+
 	"github.com/di-dao/sonr/crypto/kss"
+	"github.com/di-dao/sonr/pkg/cache"
 	"github.com/di-dao/sonr/pkg/ipfs"
-	"github.com/di-dao/sonr/pkg/vault/auth"
-	"github.com/di-dao/sonr/pkg/vault/wallet"
+	types "github.com/di-dao/sonr/pkg/wallet"
 	"github.com/ipfs/boxo/files"
 )
 
-type vaultFS struct {
-	Wallet     *wallet.Wallet   `json:"wallet"`
-	Creds      auth.Credentials `json:"credentials"`
-	Properties auth.Properties  `json:"properties"`
+var vaultCache *cache.Cache[cacheKey, vaultFS]
+
+type cacheKey string
+
+func (c cacheKey) String() string {
+	return "vault/" + string(c)
 }
 
-func (v *vaultFS) GetInfoFile() *auth.InfoFile {
-	return &auth.InfoFile{
+func init() {
+	// This is a placeholder
+	vaultCache = cache.New[cacheKey, vaultFS](time.Minute*30, time.Minute)
+}
+
+type vaultFS struct {
+	Wallet     *types.Wallet     `json:"wallet"`
+	Creds      types.Credentials `json:"credentials"`
+	Properties types.Properties  `json:"properties"`
+}
+
+func (v *vaultFS) GetInfoFile() *types.InfoFile {
+	return &types.InfoFile{
 		Creds:      v.Creds,
 		Properties: v.Properties,
 	}
@@ -43,20 +58,20 @@ func (v *vaultFS) ToFileMap() (map[string]files.File, error) {
 }
 
 func createVaultFS(set kss.Set) (*vaultFS, error) {
-	wallet, err := wallet.New(set)
+	wallet, err := types.NewWallet(set)
 	if err != nil {
 		return nil, err
 	}
 
 	return &vaultFS{
 		Wallet:     wallet,
-		Creds:      auth.NewCredentials(),
-		Properties: auth.NewProperties(),
+		Creds:      types.NewCredentials(),
+		Properties: types.NewProperties(),
 	}, nil
 }
 
 func loadVaultFS(vfs ipfs.VFS) (*vaultFS, error) {
-	wallet := &wallet.Wallet{}
+	wallet := &types.Wallet{}
 	walletBz, err := vfs.Get("wallet.json")
 	if err != nil {
 		return nil, err
@@ -67,7 +82,7 @@ func loadVaultFS(vfs ipfs.VFS) (*vaultFS, error) {
 		return nil, err
 	}
 
-	info := &auth.InfoFile{}
+	info := &types.InfoFile{}
 	infoBz, err := vfs.Get("info.json")
 	if err != nil {
 		return nil, err

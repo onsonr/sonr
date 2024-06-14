@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/di-dao/sonr/crypto/kss"
 	"github.com/ipfs/boxo/files"
 	"github.com/ipfs/boxo/path"
 )
@@ -37,16 +36,6 @@ func NewFS(name string) VFS {
 		files: make(map[string]files.File, 0),
 		name:  name,
 	}
-}
-
-// NewFSWithKss creates a new virtual file system from a kss setPath
-func NewFSWithKss(kss kss.Set, name string) VFS {
-	fs := &vfs{
-		files: make(map[string]files.File, 0),
-		name:  name,
-	}
-
-	return fs
 }
 
 // Load creates a new virtual file system from a given files.Node.

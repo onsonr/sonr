@@ -81,7 +81,6 @@ require (
 	github.com/strangelove-ventures/poa v0.50.0
 	github.com/strangelove-ventures/tokenfactory v0.50.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tink-crypto/tink-go/v2 v2.1.0
 	golang.org/x/crypto v0.23.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240205150955-31a09d347014
 	google.golang.org/grpc v1.62.0

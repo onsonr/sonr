@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/di-dao/sonr/crypto/mpc"
-	"github.com/di-dao/sonr/pkg/vault/wallet"
+	wallet "github.com/di-dao/sonr/pkg/wallet"
 	"github.com/stretchr/testify/require"
 )
 
@@ -15,7 +15,7 @@ func TestNewWallet(t *testing.T) {
 	keyset, err := mpc.GenerateKss()
 	require.NoError(t, err)
 
-	w, err := wallet.New(keyset)
+	w, err := wallet.NewWallet(keyset)
 	require.NoError(t, err)
 	require.NotNil(t, w)
 	t.Log(w)

@@ -1,16 +1,16 @@
 package kss
 
 import (
-	"github.com/di-dao/sonr/crypto"
-	"github.com/ipfs/boxo/files"
+	"io"
 
-	"github.com/tink-crypto/tink-go/v2/daead"
-	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/di-dao/sonr/crypto"
+	"github.com/di-dao/sonr/crypto/daed"
+	"github.com/ipfs/boxo/files"
 )
 
 // KssI is the interface for the keyshare set
 type EncryptedSet interface {
-	Decrypt(key []byte, kh *keyset.Handle) (Set, error)
+	Decrypt(key []byte, kh *daed.AESSIV) (Set, error)
 	PublicKey() crypto.PublicKey
 	FileMap() map[string]files.File
 }
@@ -21,18 +21,13 @@ type encryptedSet struct {
 	encUsrKey []byte
 }
 
-func (es *encryptedSet) Decrypt(key []byte, kh *keyset.Handle) (Set, error) {
-	d, err := daead.New(kh)
+func (es *encryptedSet) Decrypt(key []byte, kh *daed.AESSIV) (Set, error) {
+	decValKs, err := kh.DecryptDeterministically(es.encValKey, key)
 	if err != nil {
 		return nil, err
 	}
 
-	decValKs, err := d.DecryptDeterministically(es.encValKey, key)
-	if err != nil {
-		return nil, err
-	}
-
-	decUsrKs, err := d.DecryptDeterministically(es.encUsrKey, key)
+	decUsrKs, err := kh.DecryptDeterministically(es.encUsrKey, key)
 	if err != nil {
 		return nil, err
 	}
@@ -50,4 +45,22 @@ func (es *encryptedSet) FileMap() map[string]files.File {
 	fileMap["usr.ks"] = usrKsFile
 	fileMap["val.ks"] = valKsFile
 	return nil
+}
+
+func NewEncryptedSetFromFileMap(files map[string]files.File) (EncryptedSet, error) {
+	usrKsFile := files["usr.ks"]
+	valKsFile := files["val.ks"]
+	encUsrKey, err := io.ReadAll(usrKsFile)
+	if err != nil {
+		return nil, err
+	}
+
+	encValKey, err := io.ReadAll(valKsFile)
+	if err != nil {
+		return nil, err
+	}
+	return &encryptedSet{
+		encUsrKey: encUsrKey,
+		encValKey: encValKey,
+	}, nil
 }

@@ -1,4 +1,4 @@
-package auth
+package wallet
 
 import (
 	"bytes"
@@ -62,4 +62,17 @@ func (c Credentials) Marshal() ([]byte, error) {
 // Unmarshal unmarshals the Credentials from a byte slice
 func (c *Credentials) Unmarshal(data []byte) error {
 	return json.Unmarshal(data, c)
+}
+
+type InfoFile struct {
+	Creds      Credentials `json:"credentials"`
+	Properties Properties  `json:"properties"`
+}
+
+func (i *InfoFile) Marshal() ([]byte, error) {
+	return json.Marshal(i)
+}
+
+func (i *InfoFile) Unmarshal(data []byte) error {
+	return json.Unmarshal(data, i)
 }

@@ -1,4 +1,4 @@
-package auth
+package crypto
 
 import (
 	"github.com/di-dao/sonr/crypto/accumulator"

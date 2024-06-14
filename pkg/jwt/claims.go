@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"context"
@@ -17,7 +17,7 @@ type CredentialClaims struct {
 
 // NewCredentialClaims returns the CredentialClaims for the JWS to sign
 func NewCredentialClaims(ctx context.Context, address string, origin string, credentials ...protocol.CredentialDescriptor) CredentialClaims {
-	snrCtx := local.UnwrapContext(ctx)
+	snrCtx := local.UnwrapCtx(ctx)
 
 	// Create claims with multiple fields populated
 	return CredentialClaims{

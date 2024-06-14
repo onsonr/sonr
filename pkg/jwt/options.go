@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"context"
@@ -8,6 +8,13 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 )
 
+// GenerateChallenge generates a challenge for the user
+func GenerateChallenge(ctx context.Context) protocol.URLEncodedBase64 {
+	c, _ := protocol.CreateChallenge()
+	return c
+}
+
+// GetRegisterOptions returns the options for registering a credential
 func GetRegisterOptions(ctx context.Context, challenge protocol.URLEncodedBase64) (protocol.PublicKeyCredentialCreationOptions, error) {
 	return protocol.PublicKeyCredentialCreationOptions{
 		Challenge:              challenge,
@@ -18,8 +25,9 @@ func GetRegisterOptions(ctx context.Context, challenge protocol.URLEncodedBase64
 	}, nil
 }
 
+// GetUserEntity returns the user entity
 func GetUserEntity(ctx context.Context) protocol.UserEntity {
-	snrctx := local.UnwrapContext(ctx)
+	snrctx := local.UnwrapCtx(ctx)
 	return protocol.UserEntity{
 		ID:          snrctx.UserAddress,
 		DisplayName: snrctx.UserAddress,
@@ -29,8 +37,9 @@ func GetUserEntity(ctx context.Context) protocol.UserEntity {
 	}
 }
 
+// GetRelayingPartyEntity returns the relaying party entity
 func GetRelayingPartyEntity(ctx context.Context) protocol.RelyingPartyEntity {
-	snrctx := local.UnwrapContext(ctx)
+	snrctx := local.UnwrapCtx(ctx)
 	return protocol.RelyingPartyEntity{
 		ID: snrctx.ServiceOrigin,
 		CredentialEntity: protocol.CredentialEntity{
@@ -39,12 +48,14 @@ func GetRelayingPartyEntity(ctx context.Context) protocol.RelyingPartyEntity {
 	}
 }
 
+// defaultAuthenticationSelection returns the default authentication selection
 func defaultAuthenticationSelection() protocol.AuthenticatorSelection {
 	return protocol.AuthenticatorSelection{
 		AuthenticatorAttachment: protocol.CrossPlatform,
 	}
 }
 
+// defaultRegistrationCredentialParameters returns the default registration credential parameters
 func defaultRegistrationCredentialParameters() []protocol.CredentialParameter {
 	return []protocol.CredentialParameter{
 		{

@@ -1,4 +1,4 @@
-package auth
+package wallet
 
 import "github.com/go-webauthn/webauthn/protocol"
 

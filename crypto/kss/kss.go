@@ -6,13 +6,12 @@ import (
 
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/core/protocol"
-	"github.com/tink-crypto/tink-go/v2/daead"
-	"github.com/tink-crypto/tink-go/v2/keyset"
+	"github.com/di-dao/sonr/crypto/daed"
 )
 
 // KssI is the interface for the keyshare set
 type Set interface {
-	Encrypt(key []byte, kh *keyset.Handle) (EncryptedSet, error)
+	Encrypt(key []byte, kh *daed.AESSIV) (EncryptedSet, error)
 	PublicKey() crypto.PublicKey
 	Usr() User
 	Val() Val
@@ -28,7 +27,7 @@ type keyshares struct {
 }
 
 // Encrypt encrypts the keyshares using a password
-func (ks *keyshares) Encrypt(key []byte, kh *keyset.Handle) (EncryptedSet, error) {
+func (ks *keyshares) Encrypt(key []byte, kh *daed.AESSIV) (EncryptedSet, error) {
 	if kh == nil {
 		return nil, errors.New("kh cannot be nil")
 	}
@@ -36,17 +35,12 @@ func (ks *keyshares) Encrypt(key []byte, kh *keyset.Handle) (EncryptedSet, error
 		return nil, errors.New("key cannot be nil")
 	}
 
-	d, err := daead.New(kh)
+	usrEncBz, err := kh.EncryptDeterministically(ks.usrBz, key)
 	if err != nil {
 		return nil, err
 	}
 
-	usrEncBz, err := d.EncryptDeterministically(ks.usrBz, key)
-	if err != nil {
-		return nil, err
-	}
-
-	valEncBz, err := d.EncryptDeterministically(ks.valBz, key)
+	valEncBz, err := kh.EncryptDeterministically(ks.valBz, key)
 	if err != nil {
 		return nil, err
 	}
