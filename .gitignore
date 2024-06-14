@@ -5,7 +5,8 @@
 *.so
 *.dylib
 *.app
-**/.DS_Store
+.DS_Store
+
 # Test binary
 *.test
 .devon*
