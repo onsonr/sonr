@@ -29,13 +29,6 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// Resolve implements types.QueryServer.
-func (k Querier) Resolve(goCtx context.Context, req *types.QueryResolveRequest) (*types.QueryResolveResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Resolve is unimplemented")
-	return &types.QueryResolveResponse{}, nil
-}
-
 // LoginOptions implements types.QueryServer.
 func (k Querier) LoginOptions(goCtx context.Context, req *types.QueryLoginOptionsRequest) (*types.QueryLoginOptionsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
