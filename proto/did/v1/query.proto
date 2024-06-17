@@ -8,25 +8,20 @@ option go_package = "github.com/di-dao/sonr/x/did/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
-    // Account queries an account by its did.
-    rpc Account(QueryAccountRequest) returns (QueryAccountResponse) {
-        option (google.api.http).get = "/did/account/{did}";
-    }
-
-    // Exists queries if an id exists.
-    rpc Exists(QueryExistsRequest) returns (QueryExistsResponse) {
-        option (google.api.http).get = "/did/exists/{id}";
-    }
-
     // Params queries all parameters of the module.
     rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
         option (google.api.http).get = "/did/params";
     }
 
-    // Resolve queries the DID document by its id.
-    rpc Resolve(QueryResolveRequest) returns (QueryResolveResponse) {
-        option (google.api.http).get = "/did/resolve/{id}";
+    // Exists queries if an id exists.
+    rpc PropertyExists(QueryExistsRequest) returns (QueryExistsResponse) {
+        option (google.api.http).get = "/did/exists/{id}";
     }
+
+   // Resolve queries the DID document by its id.
+    rpc ResolveIdentifier(QueryResolveRequest) returns (QueryResolveResponse) { 
+        option (google.api.http).get = "/did/resolve/{id}"; 
+    } 
 
     // LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
     rpc LoginOptions(QueryLoginOptionsRequest) returns (QueryLoginOptionsResponse) {
@@ -46,23 +41,6 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
-}
-
-// QueryAccountRequest is the request type for the Query/Account RPC method.
-message QueryAccountRequest {
-  string did = 1;
-}
-
-// QueryAccountResponse is the response type for the Query/Account RPC method.
-message QueryAccountResponse {
-    // address is the account address
-    string address = 1;
-
-    // account_info is the account info
-    string account_info = 2;
-
-    // network is the network the account is on
-    string network = 3;
 }
 
 // QueryExistsRequest is the request type for the Query/Exists RPC method.
