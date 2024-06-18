@@ -18,6 +18,7 @@ func NewQuerier(keeper Keeper) Querier {
 	return Querier{Keeper: keeper}
 }
 
+// Params returns the total set of did parameters.
 func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
@@ -31,7 +32,7 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 
 // LoginOptions implements types.QueryServer.
 func (k Querier) LoginOptions(goCtx context.Context, req *types.QueryLoginOptionsRequest) (*types.QueryLoginOptionsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+	//	ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("LoginOptions is unimplemented")
 	return &types.QueryLoginOptionsResponse{}, nil
 }

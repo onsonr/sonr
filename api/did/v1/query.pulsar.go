@@ -805,14 +805,16 @@ func (x *fastReflection_QueryParamsResponse) ProtoMethods() *protoiface.Methods 
 }
 
 var (
-	md_QueryExistsRequest    protoreflect.MessageDescriptor
-	fd_QueryExistsRequest_id protoreflect.FieldDescriptor
+	md_QueryExistsRequest       protoreflect.MessageDescriptor
+	fd_QueryExistsRequest_kind  protoreflect.FieldDescriptor
+	fd_QueryExistsRequest_value protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_query_proto_init()
 	md_QueryExistsRequest = File_did_v1_query_proto.Messages().ByName("QueryExistsRequest")
-	fd_QueryExistsRequest_id = md_QueryExistsRequest.Fields().ByName("id")
+	fd_QueryExistsRequest_kind = md_QueryExistsRequest.Fields().ByName("kind")
+	fd_QueryExistsRequest_value = md_QueryExistsRequest.Fields().ByName("value")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryExistsRequest)(nil)
@@ -880,9 +882,15 @@ func (x *fastReflection_QueryExistsRequest) Interface() protoreflect.ProtoMessag
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_QueryExistsRequest) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Id != "" {
-		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_QueryExistsRequest_id, value) {
+	if x.Kind != "" {
+		value := protoreflect.ValueOfString(x.Kind)
+		if !f(fd_QueryExistsRequest_kind, value) {
+			return
+		}
+	}
+	if x.Value != "" {
+		value := protoreflect.ValueOfString(x.Value)
+		if !f(fd_QueryExistsRequest_value, value) {
 			return
 		}
 	}
@@ -901,8 +909,10 @@ func (x *fastReflection_QueryExistsRequest) Range(f func(protoreflect.FieldDescr
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_QueryExistsRequest) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.QueryExistsRequest.id":
-		return x.Id != ""
+	case "did.v1.QueryExistsRequest.kind":
+		return x.Kind != ""
+	case "did.v1.QueryExistsRequest.value":
+		return x.Value != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryExistsRequest"))
@@ -919,8 +929,10 @@ func (x *fastReflection_QueryExistsRequest) Has(fd protoreflect.FieldDescriptor)
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryExistsRequest) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.QueryExistsRequest.id":
-		x.Id = ""
+	case "did.v1.QueryExistsRequest.kind":
+		x.Kind = ""
+	case "did.v1.QueryExistsRequest.value":
+		x.Value = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryExistsRequest"))
@@ -937,8 +949,11 @@ func (x *fastReflection_QueryExistsRequest) Clear(fd protoreflect.FieldDescripto
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_QueryExistsRequest) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.QueryExistsRequest.id":
-		value := x.Id
+	case "did.v1.QueryExistsRequest.kind":
+		value := x.Kind
+		return protoreflect.ValueOfString(value)
+	case "did.v1.QueryExistsRequest.value":
+		value := x.Value
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -960,8 +975,10 @@ func (x *fastReflection_QueryExistsRequest) Get(descriptor protoreflect.FieldDes
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryExistsRequest) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.QueryExistsRequest.id":
-		x.Id = value.Interface().(string)
+	case "did.v1.QueryExistsRequest.kind":
+		x.Kind = value.Interface().(string)
+	case "did.v1.QueryExistsRequest.value":
+		x.Value = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryExistsRequest"))
@@ -982,8 +999,10 @@ func (x *fastReflection_QueryExistsRequest) Set(fd protoreflect.FieldDescriptor,
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_QueryExistsRequest) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.QueryExistsRequest.id":
-		panic(fmt.Errorf("field id of message did.v1.QueryExistsRequest is not mutable"))
+	case "did.v1.QueryExistsRequest.kind":
+		panic(fmt.Errorf("field kind of message did.v1.QueryExistsRequest is not mutable"))
+	case "did.v1.QueryExistsRequest.value":
+		panic(fmt.Errorf("field value of message did.v1.QueryExistsRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryExistsRequest"))
@@ -997,7 +1016,9 @@ func (x *fastReflection_QueryExistsRequest) Mutable(fd protoreflect.FieldDescrip
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_QueryExistsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.QueryExistsRequest.id":
+	case "did.v1.QueryExistsRequest.kind":
+		return protoreflect.ValueOfString("")
+	case "did.v1.QueryExistsRequest.value":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -1068,7 +1089,11 @@ func (x *fastReflection_QueryExistsRequest) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Id)
+		l = len(x.Kind)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Value)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1101,10 +1126,17 @@ func (x *fastReflection_QueryExistsRequest) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Id) > 0 {
-			i -= len(x.Id)
-			copy(dAtA[i:], x.Id)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Id)))
+		if len(x.Value) > 0 {
+			i -= len(x.Value)
+			copy(dAtA[i:], x.Value)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Value)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Kind) > 0 {
+			i -= len(x.Kind)
+			copy(dAtA[i:], x.Kind)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Kind)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -1159,7 +1191,7 @@ func (x *fastReflection_QueryExistsRequest) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1187,7 +1219,39 @@ func (x *fastReflection_QueryExistsRequest) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Id = string(dAtA[iNdEx:postIndex])
+				x.Kind = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Value = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2477,12 +2541,14 @@ func (x *fastReflection_QueryResolveResponse) ProtoMethods() *protoiface.Methods
 var (
 	md_QueryLoginOptionsRequest        protoreflect.MessageDescriptor
 	fd_QueryLoginOptionsRequest_origin protoreflect.FieldDescriptor
+	fd_QueryLoginOptionsRequest_handle protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_query_proto_init()
 	md_QueryLoginOptionsRequest = File_did_v1_query_proto.Messages().ByName("QueryLoginOptionsRequest")
 	fd_QueryLoginOptionsRequest_origin = md_QueryLoginOptionsRequest.Fields().ByName("origin")
+	fd_QueryLoginOptionsRequest_handle = md_QueryLoginOptionsRequest.Fields().ByName("handle")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryLoginOptionsRequest)(nil)
@@ -2556,6 +2622,12 @@ func (x *fastReflection_QueryLoginOptionsRequest) Range(f func(protoreflect.Fiel
 			return
 		}
 	}
+	if x.Handle != "" {
+		value := protoreflect.ValueOfString(x.Handle)
+		if !f(fd_QueryLoginOptionsRequest_handle, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -2573,6 +2645,8 @@ func (x *fastReflection_QueryLoginOptionsRequest) Has(fd protoreflect.FieldDescr
 	switch fd.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
 		return x.Origin != ""
+	case "did.v1.QueryLoginOptionsRequest.handle":
+		return x.Handle != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryLoginOptionsRequest"))
@@ -2591,6 +2665,8 @@ func (x *fastReflection_QueryLoginOptionsRequest) Clear(fd protoreflect.FieldDes
 	switch fd.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
 		x.Origin = ""
+	case "did.v1.QueryLoginOptionsRequest.handle":
+		x.Handle = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryLoginOptionsRequest"))
@@ -2609,6 +2685,9 @@ func (x *fastReflection_QueryLoginOptionsRequest) Get(descriptor protoreflect.Fi
 	switch descriptor.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
 		value := x.Origin
+		return protoreflect.ValueOfString(value)
+	case "did.v1.QueryLoginOptionsRequest.handle":
+		value := x.Handle
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -2632,6 +2711,8 @@ func (x *fastReflection_QueryLoginOptionsRequest) Set(fd protoreflect.FieldDescr
 	switch fd.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
 		x.Origin = value.Interface().(string)
+	case "did.v1.QueryLoginOptionsRequest.handle":
+		x.Handle = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryLoginOptionsRequest"))
@@ -2654,6 +2735,8 @@ func (x *fastReflection_QueryLoginOptionsRequest) Mutable(fd protoreflect.FieldD
 	switch fd.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
 		panic(fmt.Errorf("field origin of message did.v1.QueryLoginOptionsRequest is not mutable"))
+	case "did.v1.QueryLoginOptionsRequest.handle":
+		panic(fmt.Errorf("field handle of message did.v1.QueryLoginOptionsRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryLoginOptionsRequest"))
@@ -2668,6 +2751,8 @@ func (x *fastReflection_QueryLoginOptionsRequest) Mutable(fd protoreflect.FieldD
 func (x *fastReflection_QueryLoginOptionsRequest) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	case "did.v1.QueryLoginOptionsRequest.origin":
+		return protoreflect.ValueOfString("")
+	case "did.v1.QueryLoginOptionsRequest.handle":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -2742,6 +2827,10 @@ func (x *fastReflection_QueryLoginOptionsRequest) ProtoMethods() *protoiface.Met
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.Handle)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -2770,6 +2859,13 @@ func (x *fastReflection_QueryLoginOptionsRequest) ProtoMethods() *protoiface.Met
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Handle) > 0 {
+			i -= len(x.Handle)
+			copy(dAtA[i:], x.Handle)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Handle)))
+			i--
+			dAtA[i] = 0x12
 		}
 		if len(x.Origin) > 0 {
 			i -= len(x.Origin)
@@ -2858,6 +2954,38 @@ func (x *fastReflection_QueryLoginOptionsRequest) ProtoMethods() *protoiface.Met
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Origin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Handle", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Handle = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -3315,14 +3443,18 @@ func (x *fastReflection_QueryLoginOptionsResponse) ProtoMethods() *protoiface.Me
 }
 
 var (
-	md_QueryRegisterOptionsRequest        protoreflect.MessageDescriptor
-	fd_QueryRegisterOptionsRequest_origin protoreflect.FieldDescriptor
+	md_QueryRegisterOptionsRequest          protoreflect.MessageDescriptor
+	fd_QueryRegisterOptionsRequest_origin   protoreflect.FieldDescriptor
+	fd_QueryRegisterOptionsRequest_handle   protoreflect.FieldDescriptor
+	fd_QueryRegisterOptionsRequest_generate protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_query_proto_init()
 	md_QueryRegisterOptionsRequest = File_did_v1_query_proto.Messages().ByName("QueryRegisterOptionsRequest")
 	fd_QueryRegisterOptionsRequest_origin = md_QueryRegisterOptionsRequest.Fields().ByName("origin")
+	fd_QueryRegisterOptionsRequest_handle = md_QueryRegisterOptionsRequest.Fields().ByName("handle")
+	fd_QueryRegisterOptionsRequest_generate = md_QueryRegisterOptionsRequest.Fields().ByName("generate")
 }
 
 var _ protoreflect.Message = (*fastReflection_QueryRegisterOptionsRequest)(nil)
@@ -3396,6 +3528,18 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Range(f func(protoreflect.F
 			return
 		}
 	}
+	if x.Handle != "" {
+		value := protoreflect.ValueOfString(x.Handle)
+		if !f(fd_QueryRegisterOptionsRequest_handle, value) {
+			return
+		}
+	}
+	if x.Generate != false {
+		value := protoreflect.ValueOfBool(x.Generate)
+		if !f(fd_QueryRegisterOptionsRequest_generate, value) {
+			return
+		}
+	}
 }
 
 // Has reports whether a field is populated.
@@ -3413,6 +3557,10 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Has(fd protoreflect.FieldDe
 	switch fd.FullName() {
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		return x.Origin != ""
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		return x.Handle != ""
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		return x.Generate != false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3431,6 +3579,10 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Clear(fd protoreflect.Field
 	switch fd.FullName() {
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		x.Origin = ""
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		x.Handle = ""
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		x.Generate = false
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3450,6 +3602,12 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Get(descriptor protoreflect
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		value := x.Origin
 		return protoreflect.ValueOfString(value)
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		value := x.Handle
+		return protoreflect.ValueOfString(value)
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		value := x.Generate
+		return protoreflect.ValueOfBool(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3472,6 +3630,10 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Set(fd protoreflect.FieldDe
 	switch fd.FullName() {
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		x.Origin = value.Interface().(string)
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		x.Handle = value.Interface().(string)
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		x.Generate = value.Bool()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3494,6 +3656,10 @@ func (x *fastReflection_QueryRegisterOptionsRequest) Mutable(fd protoreflect.Fie
 	switch fd.FullName() {
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		panic(fmt.Errorf("field origin of message did.v1.QueryRegisterOptionsRequest is not mutable"))
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		panic(fmt.Errorf("field handle of message did.v1.QueryRegisterOptionsRequest is not mutable"))
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		panic(fmt.Errorf("field generate of message did.v1.QueryRegisterOptionsRequest is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3509,6 +3675,10 @@ func (x *fastReflection_QueryRegisterOptionsRequest) NewField(fd protoreflect.Fi
 	switch fd.FullName() {
 	case "did.v1.QueryRegisterOptionsRequest.origin":
 		return protoreflect.ValueOfString("")
+	case "did.v1.QueryRegisterOptionsRequest.handle":
+		return protoreflect.ValueOfString("")
+	case "did.v1.QueryRegisterOptionsRequest.generate":
+		return protoreflect.ValueOfBool(false)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.QueryRegisterOptionsRequest"))
@@ -3582,6 +3752,13 @@ func (x *fastReflection_QueryRegisterOptionsRequest) ProtoMethods() *protoiface.
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.Handle)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.Generate {
+			n += 2
+		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
 		}
@@ -3610,6 +3787,23 @@ func (x *fastReflection_QueryRegisterOptionsRequest) ProtoMethods() *protoiface.
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if x.Generate {
+			i--
+			if x.Generate {
+				dAtA[i] = 1
+			} else {
+				dAtA[i] = 0
+			}
+			i--
+			dAtA[i] = 0x18
+		}
+		if len(x.Handle) > 0 {
+			i -= len(x.Handle)
+			copy(dAtA[i:], x.Handle)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Handle)))
+			i--
+			dAtA[i] = 0x12
 		}
 		if len(x.Origin) > 0 {
 			i -= len(x.Origin)
@@ -3699,6 +3893,58 @@ func (x *fastReflection_QueryRegisterOptionsRequest) ProtoMethods() *protoiface.
 				}
 				x.Origin = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Handle", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Handle = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Generate", wireType)
+				}
+				var v int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					v |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				x.Generate = bool(v != 0)
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -4237,7 +4483,8 @@ type QueryExistsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Kind  string `protobuf:"bytes,1,opt,name=kind,proto3" json:"kind,omitempty"`
+	Value string `protobuf:"bytes,2,opt,name=value,proto3" json:"value,omitempty"`
 }
 
 func (x *QueryExistsRequest) Reset() {
@@ -4260,9 +4507,16 @@ func (*QueryExistsRequest) Descriptor() ([]byte, []int) {
 	return file_did_v1_query_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *QueryExistsRequest) GetId() string {
+func (x *QueryExistsRequest) GetKind() string {
 	if x != nil {
-		return x.Id
+		return x.Kind
+	}
+	return ""
+}
+
+func (x *QueryExistsRequest) GetValue() string {
+	if x != nil {
+		return x.Value
 	}
 	return ""
 }
@@ -4383,6 +4637,7 @@ type QueryLoginOptionsRequest struct {
 	unknownFields protoimpl.UnknownFields
 
 	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Handle string `protobuf:"bytes,2,opt,name=handle,proto3" json:"handle,omitempty"`
 }
 
 func (x *QueryLoginOptionsRequest) Reset() {
@@ -4408,6 +4663,13 @@ func (*QueryLoginOptionsRequest) Descriptor() ([]byte, []int) {
 func (x *QueryLoginOptionsRequest) GetOrigin() string {
 	if x != nil {
 		return x.Origin
+	}
+	return ""
+}
+
+func (x *QueryLoginOptionsRequest) GetHandle() string {
+	if x != nil {
+		return x.Handle
 	}
 	return ""
 }
@@ -4455,7 +4717,9 @@ type QueryRegisterOptionsRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Origin string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Origin   string `protobuf:"bytes,1,opt,name=origin,proto3" json:"origin,omitempty"`
+	Handle   string `protobuf:"bytes,2,opt,name=handle,proto3" json:"handle,omitempty"`
+	Generate bool   `protobuf:"varint,3,opt,name=generate,proto3" json:"generate,omitempty"`
 }
 
 func (x *QueryRegisterOptionsRequest) Reset() {
@@ -4485,13 +4749,26 @@ func (x *QueryRegisterOptionsRequest) GetOrigin() string {
 	return ""
 }
 
+func (x *QueryRegisterOptionsRequest) GetHandle() string {
+	if x != nil {
+		return x.Handle
+	}
+	return ""
+}
+
+func (x *QueryRegisterOptionsRequest) GetGenerate() bool {
+	if x != nil {
+		return x.Generate
+	}
+	return false
+}
+
 // QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
 type QueryRegisterOptionsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// options is the PublicKeyCredentialCreationOptions
 	Options string `protobuf:"bytes,1,opt,name=options,proto3" json:"options,omitempty"`
 }
 
@@ -4535,44 +4812,51 @@ var file_did_v1_query_proto_rawDesc = []byte{
 	0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x26, 0x0a,
 	0x06, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e,
 	0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x06, 0x70,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x24, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78,
-	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x2d, 0x0a, 0x13, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
-	0x73, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x08, 0x52, 0x06, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x22, 0x25, 0x0a, 0x13, 0x51, 0x75,
-	0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
-	0x64, 0x22, 0x32, 0x0a, 0x14, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76,
-	0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x6f, 0x63,
-	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x6f, 0x63,
-	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x22, 0x32, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x6f,
-	0x67, 0x69, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x3e, 0x0a, 0x12, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6b,
+	0x69, 0x6e, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x2d, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x16, 0x0a, 0x06,
+	0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x65, 0x78,
+	0x69, 0x73, 0x74, 0x73, 0x22, 0x25, 0x0a, 0x13, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73,
+	0x6f, 0x6c, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x22, 0x32, 0x0a, 0x14, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x6f, 0x6c, 0x76, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f,
+	0x6e, 0x73, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x64, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x22,
+	0x4a, 0x0a, 0x18, 0x51, 0x75, 0x65, 0x72, 0x79, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x4f, 0x70, 0x74,
+	0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f,
+	0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x22, 0x35, 0x0a, 0x19, 0x51,
+	0x75, 0x65, 0x72, 0x79, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69,
+	0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f,
+	0x6e, 0x73, 0x22, 0x69, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x67, 0x69, 0x73,
+	0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
 	0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x22, 0x35, 0x0a, 0x19, 0x51, 0x75, 0x65,
-	0x72, 0x79, 0x4c, 0x6f, 0x67, 0x69, 0x6e, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73,
-	0x22, 0x35, 0x0a, 0x1b, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65,
-	0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12,
-	0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x22, 0x38, 0x0a, 0x1c, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52,
-	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f,
-	0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x73, 0x32, 0xb0, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72, 0x79, 0x12, 0x56, 0x0a, 0x06, 0x50,
-	0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x1b, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x13,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x0d, 0x12, 0x0b, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x70, 0x61, 0x72,
-	0x61, 0x6d, 0x73, 0x12, 0x63, 0x0a, 0x0e, 0x50, 0x72, 0x6f, 0x70, 0x65, 0x72, 0x74, 0x79, 0x45,
-	0x78, 0x69, 0x73, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51,
-	0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x1a, 0x1b, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79,
-	0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x18,
-	0x82, 0xd3, 0xe4, 0x93, 0x02, 0x12, 0x12, 0x10, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x65, 0x78, 0x69,
-	0x73, 0x74, 0x73, 0x2f, 0x7b, 0x69, 0x64, 0x7d, 0x12, 0x69, 0x0a, 0x11, 0x52, 0x65, 0x73, 0x6f,
+	0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x68, 0x61, 0x6e,
+	0x64, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x68, 0x61, 0x6e, 0x64, 0x6c,
+	0x65, 0x12, 0x1a, 0x0a, 0x08, 0x67, 0x65, 0x6e, 0x65, 0x72, 0x61, 0x74, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x08, 0x67, 0x65, 0x6e, 0x65, 0x72, 0x61, 0x74, 0x65, 0x22, 0x38, 0x0a,
+	0x1c, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x67, 0x69, 0x73, 0x74, 0x65, 0x72, 0x4f, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x18, 0x0a,
+	0x07, 0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
+	0x6f, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x32, 0xba, 0x04, 0x0a, 0x05, 0x51, 0x75, 0x65, 0x72,
+	0x79, 0x12, 0x56, 0x0a, 0x06, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x1a, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x13, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x0d, 0x12, 0x0b, 0x2f, 0x64,
+	0x69, 0x64, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x12, 0x6d, 0x0a, 0x0e, 0x50, 0x72, 0x6f,
+	0x70, 0x65, 0x72, 0x74, 0x79, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x12, 0x1a, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73,
+	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1b, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x52, 0x65, 0x73, 0x70,
+	0x6f, 0x6e, 0x73, 0x65, 0x22, 0x22, 0x82, 0xd3, 0xe4, 0x93, 0x02, 0x1c, 0x12, 0x1a, 0x2f, 0x64,
+	0x69, 0x64, 0x2f, 0x65, 0x78, 0x69, 0x73, 0x74, 0x73, 0x2f, 0x7b, 0x6b, 0x69, 0x6e, 0x64, 0x7d,
+	0x2f, 0x7b, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x7d, 0x12, 0x69, 0x0a, 0x11, 0x52, 0x65, 0x73, 0x6f,
 	0x6c, 0x76, 0x65, 0x49, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12, 0x1b, 0x2e,
 	0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x51, 0x75, 0x65, 0x72, 0x79, 0x52, 0x65, 0x73, 0x6f,
 	0x6c, 0x76, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1c, 0x2e, 0x64, 0x69, 0x64,
