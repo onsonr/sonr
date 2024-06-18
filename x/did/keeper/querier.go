@@ -5,6 +5,7 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
+	// "github.com/di-dao/sonr/internal/local"
 	"github.com/di-dao/sonr/x/did/types"
 )
 
@@ -39,7 +40,6 @@ func (k Querier) LoginOptions(goCtx context.Context, req *types.QueryLoginOption
 
 // RegisterOptions implements types.QueryServer.
 func (k Querier) RegisterOptions(goCtx context.Context, req *types.QueryRegisterOptionsRequest) (*types.QueryRegisterOptionsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("RegisterOptions is unimplemented")
 	return &types.QueryRegisterOptionsResponse{}, nil
 }

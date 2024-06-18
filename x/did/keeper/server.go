@@ -21,14 +21,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
-	if ms.k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
-	}
-
-	return nil, ms.k.Params.Set(ctx, msg.Params)
-}
-
 // InitializeController implements types.MsgServer.
 func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -63,9 +55,18 @@ func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgIn
 	return &types.MsgInitializeControllerResponse{}, nil
 }
 
-// Authenticate implements types.MsgServer.
-func (ms msgServer) Authenticate(ctx context.Context, msg *types.MsgAuthenticate) (*types.MsgAuthenticateResponse, error) {
+// UpdateParams updates the x/did module parameters.
+func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+	}
+
+	return nil, ms.k.Params.Set(ctx, msg.Params)
+}
+
+// AuthenticateController implements types.MsgServer.
+func (ms msgServer) AuthenticateController(ctx context.Context, msg *types.MsgAuthenticateController) (*types.MsgAuthenticateControllerResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Authenticate is unimplemented")
-	return &types.MsgAuthenticateResponse{}, nil
+	panic("AuthenticateController is unimplemented")
+	return &types.MsgAuthenticateControllerResponse{}, nil
 }

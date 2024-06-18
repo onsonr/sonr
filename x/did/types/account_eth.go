@@ -6,6 +6,8 @@ import (
 	"bytes"
 
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -54,9 +56,29 @@ func ProtoAccount() authtypes.AccountI {
 	}
 }
 
+// GetAccountNumber returns account number.
+func (acc EthAccount) GetAccountNumber() uint64 {
+	return acc.BaseAccount.AccountNumber
+}
+
+// GetAddress returns account address.
+func (acc EthAccount) GetAddress() sdk.AccAddress {
+	return acc.BaseAccount.Address
+}
+
 // GetBaseAccount returns base account.
 func (acc EthAccount) GetBaseAccount() *authtypes.BaseAccount {
 	return acc.BaseAccount
+}
+
+// GetPubKey returns the PubKey
+func (acc EthAccount) GetPubKey() cryptotypes.PubKey {
+	return acc.BaseAccount.PubKey
+}
+
+// GetSequence returns the sequence
+func (acc EthAccount) GetSequence() uint64 {
+	return acc.BaseAccount.Sequence
 }
 
 // EthAddress returns the account address ethereum format.
@@ -67,6 +89,11 @@ func (acc EthAccount) EthAddress() common.Address {
 // GetCodeHash returns the account code hash in byte format
 func (acc EthAccount) GetCodeHash() common.Hash {
 	return common.HexToHash(acc.CodeHash)
+}
+
+// SetAccountNumber sets the account number
+func (acc *EthAccount) SetAccountNumber(accNum uint64) {
+	acc.BaseAccount.AccountNumber = accNum
 }
 
 // SetCodeHash sets the account code hash to the EthAccount fields
@@ -81,4 +108,9 @@ func (acc EthAccount) Type() int8 {
 		return AccountTypeEOA
 	}
 	return AccountTypeContract
+}
+
+// Stringreturns the string representation of the EthAccount
+func (acc EthAccount) String() string {
+	return acc.EthAddress().String()
 }

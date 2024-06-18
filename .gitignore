@@ -6,6 +6,7 @@
 *.dylib
 *.app
 .DS_Store
+.session.vim
 
 # Test binary
 *.test
