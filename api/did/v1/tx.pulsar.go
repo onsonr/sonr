@@ -2083,29 +2083,29 @@ func (x *fastReflection_MsgInitializeControllerResponse) ProtoMethods() *protoif
 }
 
 var (
-	md_MsgAuthenticate            protoreflect.MessageDescriptor
-	fd_MsgAuthenticate_authority  protoreflect.FieldDescriptor
-	fd_MsgAuthenticate_controller protoreflect.FieldDescriptor
-	fd_MsgAuthenticate_address    protoreflect.FieldDescriptor
+	md_MsgAuthenticateController            protoreflect.MessageDescriptor
+	fd_MsgAuthenticateController_authority  protoreflect.FieldDescriptor
+	fd_MsgAuthenticateController_controller protoreflect.FieldDescriptor
+	fd_MsgAuthenticateController_address    protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_tx_proto_init()
-	md_MsgAuthenticate = File_did_v1_tx_proto.Messages().ByName("MsgAuthenticate")
-	fd_MsgAuthenticate_authority = md_MsgAuthenticate.Fields().ByName("authority")
-	fd_MsgAuthenticate_controller = md_MsgAuthenticate.Fields().ByName("controller")
-	fd_MsgAuthenticate_address = md_MsgAuthenticate.Fields().ByName("address")
+	md_MsgAuthenticateController = File_did_v1_tx_proto.Messages().ByName("MsgAuthenticateController")
+	fd_MsgAuthenticateController_authority = md_MsgAuthenticateController.Fields().ByName("authority")
+	fd_MsgAuthenticateController_controller = md_MsgAuthenticateController.Fields().ByName("controller")
+	fd_MsgAuthenticateController_address = md_MsgAuthenticateController.Fields().ByName("address")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgAuthenticate)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgAuthenticateController)(nil)
 
-type fastReflection_MsgAuthenticate MsgAuthenticate
+type fastReflection_MsgAuthenticateController MsgAuthenticateController
 
-func (x *MsgAuthenticate) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgAuthenticate)(x)
+func (x *MsgAuthenticateController) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAuthenticateController)(x)
 }
 
-func (x *MsgAuthenticate) slowProtoReflect() protoreflect.Message {
+func (x *MsgAuthenticateController) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_tx_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2117,43 +2117,43 @@ func (x *MsgAuthenticate) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAuthenticate_messageType fastReflection_MsgAuthenticate_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAuthenticate_messageType{}
+var _fastReflection_MsgAuthenticateController_messageType fastReflection_MsgAuthenticateController_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAuthenticateController_messageType{}
 
-type fastReflection_MsgAuthenticate_messageType struct{}
+type fastReflection_MsgAuthenticateController_messageType struct{}
 
-func (x fastReflection_MsgAuthenticate_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgAuthenticate)(nil)
+func (x fastReflection_MsgAuthenticateController_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAuthenticateController)(nil)
 }
-func (x fastReflection_MsgAuthenticate_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgAuthenticate)
+func (x fastReflection_MsgAuthenticateController_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAuthenticateController)
 }
-func (x fastReflection_MsgAuthenticate_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAuthenticate
+func (x fastReflection_MsgAuthenticateController_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAuthenticateController
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgAuthenticate) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAuthenticate
+func (x *fastReflection_MsgAuthenticateController) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAuthenticateController
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgAuthenticate) Type() protoreflect.MessageType {
-	return _fastReflection_MsgAuthenticate_messageType
+func (x *fastReflection_MsgAuthenticateController) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAuthenticateController_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgAuthenticate) New() protoreflect.Message {
-	return new(fastReflection_MsgAuthenticate)
+func (x *fastReflection_MsgAuthenticateController) New() protoreflect.Message {
+	return new(fastReflection_MsgAuthenticateController)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgAuthenticate) Interface() protoreflect.ProtoMessage {
-	return (*MsgAuthenticate)(x)
+func (x *fastReflection_MsgAuthenticateController) Interface() protoreflect.ProtoMessage {
+	return (*MsgAuthenticateController)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -2161,22 +2161,22 @@ func (x *fastReflection_MsgAuthenticate) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgAuthenticate) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgAuthenticateController) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Authority != "" {
 		value := protoreflect.ValueOfString(x.Authority)
-		if !f(fd_MsgAuthenticate_authority, value) {
+		if !f(fd_MsgAuthenticateController_authority, value) {
 			return
 		}
 	}
 	if x.Controller != "" {
 		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_MsgAuthenticate_controller, value) {
+		if !f(fd_MsgAuthenticateController_controller, value) {
 			return
 		}
 	}
 	if x.Address != "" {
 		value := protoreflect.ValueOfString(x.Address)
-		if !f(fd_MsgAuthenticate_address, value) {
+		if !f(fd_MsgAuthenticateController_address, value) {
 			return
 		}
 	}
@@ -2193,19 +2193,19 @@ func (x *fastReflection_MsgAuthenticate) Range(f func(protoreflect.FieldDescript
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgAuthenticate) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgAuthenticateController) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
+	case "did.v1.MsgAuthenticateController.authority":
 		return x.Authority != ""
-	case "did.v1.MsgAuthenticate.controller":
+	case "did.v1.MsgAuthenticateController.controller":
 		return x.Controller != ""
-	case "did.v1.MsgAuthenticate.address":
+	case "did.v1.MsgAuthenticateController.address":
 		return x.Address != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2215,19 +2215,19 @@ func (x *fastReflection_MsgAuthenticate) Has(fd protoreflect.FieldDescriptor) bo
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticate) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgAuthenticateController) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
+	case "did.v1.MsgAuthenticateController.authority":
 		x.Authority = ""
-	case "did.v1.MsgAuthenticate.controller":
+	case "did.v1.MsgAuthenticateController.controller":
 		x.Controller = ""
-	case "did.v1.MsgAuthenticate.address":
+	case "did.v1.MsgAuthenticateController.address":
 		x.Address = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2237,22 +2237,22 @@ func (x *fastReflection_MsgAuthenticate) Clear(fd protoreflect.FieldDescriptor) 
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgAuthenticate) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateController) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
+	case "did.v1.MsgAuthenticateController.authority":
 		value := x.Authority
 		return protoreflect.ValueOfString(value)
-	case "did.v1.MsgAuthenticate.controller":
+	case "did.v1.MsgAuthenticateController.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
-	case "did.v1.MsgAuthenticate.address":
+	case "did.v1.MsgAuthenticateController.address":
 		value := x.Address
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -2266,19 +2266,19 @@ func (x *fastReflection_MsgAuthenticate) Get(descriptor protoreflect.FieldDescri
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticate) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgAuthenticateController) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
+	case "did.v1.MsgAuthenticateController.authority":
 		x.Authority = value.Interface().(string)
-	case "did.v1.MsgAuthenticate.controller":
+	case "did.v1.MsgAuthenticateController.controller":
 		x.Controller = value.Interface().(string)
-	case "did.v1.MsgAuthenticate.address":
+	case "did.v1.MsgAuthenticateController.address":
 		x.Address = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2292,48 +2292,48 @@ func (x *fastReflection_MsgAuthenticate) Set(fd protoreflect.FieldDescriptor, va
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticate) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateController) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
-		panic(fmt.Errorf("field authority of message did.v1.MsgAuthenticate is not mutable"))
-	case "did.v1.MsgAuthenticate.controller":
-		panic(fmt.Errorf("field controller of message did.v1.MsgAuthenticate is not mutable"))
-	case "did.v1.MsgAuthenticate.address":
-		panic(fmt.Errorf("field address of message did.v1.MsgAuthenticate is not mutable"))
+	case "did.v1.MsgAuthenticateController.authority":
+		panic(fmt.Errorf("field authority of message did.v1.MsgAuthenticateController is not mutable"))
+	case "did.v1.MsgAuthenticateController.controller":
+		panic(fmt.Errorf("field controller of message did.v1.MsgAuthenticateController is not mutable"))
+	case "did.v1.MsgAuthenticateController.address":
+		panic(fmt.Errorf("field address of message did.v1.MsgAuthenticateController is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgAuthenticate) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateController) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.MsgAuthenticate.authority":
+	case "did.v1.MsgAuthenticateController.authority":
 		return protoreflect.ValueOfString("")
-	case "did.v1.MsgAuthenticate.controller":
+	case "did.v1.MsgAuthenticateController.controller":
 		return protoreflect.ValueOfString("")
-	case "did.v1.MsgAuthenticate.address":
+	case "did.v1.MsgAuthenticateController.address":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticate"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateController"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticate does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateController does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgAuthenticate) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgAuthenticateController) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.MsgAuthenticate", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.MsgAuthenticateController", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -2341,7 +2341,7 @@ func (x *fastReflection_MsgAuthenticate) WhichOneof(d protoreflect.OneofDescript
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgAuthenticate) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgAuthenticateController) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -2352,7 +2352,7 @@ func (x *fastReflection_MsgAuthenticate) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticate) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgAuthenticateController) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -2364,7 +2364,7 @@ func (x *fastReflection_MsgAuthenticate) SetUnknown(fields protoreflect.RawField
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgAuthenticate) IsValid() bool {
+func (x *fastReflection_MsgAuthenticateController) IsValid() bool {
 	return x != nil
 }
 
@@ -2374,9 +2374,9 @@ func (x *fastReflection_MsgAuthenticate) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgAuthenticate) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgAuthenticateController) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgAuthenticate)
+		x := input.Message.Interface().(*MsgAuthenticateController)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2410,7 +2410,7 @@ func (x *fastReflection_MsgAuthenticate) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAuthenticate)
+		x := input.Message.Interface().(*MsgAuthenticateController)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2461,7 +2461,7 @@ func (x *fastReflection_MsgAuthenticate) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAuthenticate)
+		x := input.Message.Interface().(*MsgAuthenticateController)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2493,10 +2493,10 @@ func (x *fastReflection_MsgAuthenticate) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticate: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateController: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticate: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateController: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -2631,23 +2631,23 @@ func (x *fastReflection_MsgAuthenticate) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_MsgAuthenticateResponse protoreflect.MessageDescriptor
+	md_MsgAuthenticateControllerResponse protoreflect.MessageDescriptor
 )
 
 func init() {
 	file_did_v1_tx_proto_init()
-	md_MsgAuthenticateResponse = File_did_v1_tx_proto.Messages().ByName("MsgAuthenticateResponse")
+	md_MsgAuthenticateControllerResponse = File_did_v1_tx_proto.Messages().ByName("MsgAuthenticateControllerResponse")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgAuthenticateResponse)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgAuthenticateControllerResponse)(nil)
 
-type fastReflection_MsgAuthenticateResponse MsgAuthenticateResponse
+type fastReflection_MsgAuthenticateControllerResponse MsgAuthenticateControllerResponse
 
-func (x *MsgAuthenticateResponse) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgAuthenticateResponse)(x)
+func (x *MsgAuthenticateControllerResponse) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAuthenticateControllerResponse)(x)
 }
 
-func (x *MsgAuthenticateResponse) slowProtoReflect() protoreflect.Message {
+func (x *MsgAuthenticateControllerResponse) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_tx_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2659,43 +2659,43 @@ func (x *MsgAuthenticateResponse) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgAuthenticateResponse_messageType fastReflection_MsgAuthenticateResponse_messageType
-var _ protoreflect.MessageType = fastReflection_MsgAuthenticateResponse_messageType{}
+var _fastReflection_MsgAuthenticateControllerResponse_messageType fastReflection_MsgAuthenticateControllerResponse_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAuthenticateControllerResponse_messageType{}
 
-type fastReflection_MsgAuthenticateResponse_messageType struct{}
+type fastReflection_MsgAuthenticateControllerResponse_messageType struct{}
 
-func (x fastReflection_MsgAuthenticateResponse_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgAuthenticateResponse)(nil)
+func (x fastReflection_MsgAuthenticateControllerResponse_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAuthenticateControllerResponse)(nil)
 }
-func (x fastReflection_MsgAuthenticateResponse_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgAuthenticateResponse)
+func (x fastReflection_MsgAuthenticateControllerResponse_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAuthenticateControllerResponse)
 }
-func (x fastReflection_MsgAuthenticateResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAuthenticateResponse
+func (x fastReflection_MsgAuthenticateControllerResponse_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAuthenticateControllerResponse
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgAuthenticateResponse) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgAuthenticateResponse
+func (x *fastReflection_MsgAuthenticateControllerResponse) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAuthenticateControllerResponse
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgAuthenticateResponse) Type() protoreflect.MessageType {
-	return _fastReflection_MsgAuthenticateResponse_messageType
+func (x *fastReflection_MsgAuthenticateControllerResponse) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAuthenticateControllerResponse_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgAuthenticateResponse) New() protoreflect.Message {
-	return new(fastReflection_MsgAuthenticateResponse)
+func (x *fastReflection_MsgAuthenticateControllerResponse) New() protoreflect.Message {
+	return new(fastReflection_MsgAuthenticateControllerResponse)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgAuthenticateResponse) Interface() protoreflect.ProtoMessage {
-	return (*MsgAuthenticateResponse)(x)
+func (x *fastReflection_MsgAuthenticateControllerResponse) Interface() protoreflect.ProtoMessage {
+	return (*MsgAuthenticateControllerResponse)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -2703,7 +2703,7 @@ func (x *fastReflection_MsgAuthenticateResponse) Interface() protoreflect.ProtoM
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgAuthenticateResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 }
 
 // Has reports whether a field is populated.
@@ -2717,13 +2717,13 @@ func (x *fastReflection_MsgAuthenticateResponse) Range(f func(protoreflect.Field
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_MsgAuthenticateResponse) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2733,13 +2733,13 @@ func (x *fastReflection_MsgAuthenticateResponse) Has(fd protoreflect.FieldDescri
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticateResponse) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2749,13 +2749,13 @@ func (x *fastReflection_MsgAuthenticateResponse) Clear(fd protoreflect.FieldDesc
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_MsgAuthenticateResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -2769,13 +2769,13 @@ func (x *fastReflection_MsgAuthenticateResponse) Get(descriptor protoreflect.Fie
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticateResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -2789,36 +2789,36 @@ func (x *fastReflection_MsgAuthenticateResponse) Set(fd protoreflect.FieldDescri
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticateResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateControllerResponse) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_MsgAuthenticateResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_MsgAuthenticateControllerResponse) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateResponse"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.MsgAuthenticateControllerResponse"))
 		}
-		panic(fmt.Errorf("message did.v1.MsgAuthenticateResponse does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.MsgAuthenticateControllerResponse does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_MsgAuthenticateResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_MsgAuthenticateControllerResponse) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.MsgAuthenticateResponse", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.MsgAuthenticateControllerResponse", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -2826,7 +2826,7 @@ func (x *fastReflection_MsgAuthenticateResponse) WhichOneof(d protoreflect.Oneof
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_MsgAuthenticateResponse) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_MsgAuthenticateControllerResponse) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -2837,7 +2837,7 @@ func (x *fastReflection_MsgAuthenticateResponse) GetUnknown() protoreflect.RawFi
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_MsgAuthenticateResponse) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_MsgAuthenticateControllerResponse) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -2849,7 +2849,7 @@ func (x *fastReflection_MsgAuthenticateResponse) SetUnknown(fields protoreflect.
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_MsgAuthenticateResponse) IsValid() bool {
+func (x *fastReflection_MsgAuthenticateControllerResponse) IsValid() bool {
 	return x != nil
 }
 
@@ -2859,9 +2859,9 @@ func (x *fastReflection_MsgAuthenticateResponse) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_MsgAuthenticateResponse) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_MsgAuthenticateControllerResponse) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*MsgAuthenticateResponse)
+		x := input.Message.Interface().(*MsgAuthenticateControllerResponse)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2883,7 +2883,7 @@ func (x *fastReflection_MsgAuthenticateResponse) ProtoMethods() *protoiface.Meth
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAuthenticateResponse)
+		x := input.Message.Interface().(*MsgAuthenticateControllerResponse)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2913,7 +2913,7 @@ func (x *fastReflection_MsgAuthenticateResponse) ProtoMethods() *protoiface.Meth
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*MsgAuthenticateResponse)
+		x := input.Message.Interface().(*MsgAuthenticateControllerResponse)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -2945,10 +2945,10 @@ func (x *fastReflection_MsgAuthenticateResponse) ProtoMethods() *protoiface.Meth
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateResponse: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateControllerResponse: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: MsgAuthenticateControllerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			default:
@@ -3181,7 +3181,7 @@ func (x *MsgInitializeControllerResponse) GetController() string {
 }
 
 // MsgAuthenticate is the message type for the Authenticate RPC.
-type MsgAuthenticate struct {
+type MsgAuthenticateController struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -3194,8 +3194,8 @@ type MsgAuthenticate struct {
 	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
 }
 
-func (x *MsgAuthenticate) Reset() {
-	*x = MsgAuthenticate{}
+func (x *MsgAuthenticateController) Reset() {
+	*x = MsgAuthenticateController{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3203,47 +3203,47 @@ func (x *MsgAuthenticate) Reset() {
 	}
 }
 
-func (x *MsgAuthenticate) String() string {
+func (x *MsgAuthenticateController) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAuthenticate) ProtoMessage() {}
+func (*MsgAuthenticateController) ProtoMessage() {}
 
-// Deprecated: Use MsgAuthenticate.ProtoReflect.Descriptor instead.
-func (*MsgAuthenticate) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAuthenticateController.ProtoReflect.Descriptor instead.
+func (*MsgAuthenticateController) Descriptor() ([]byte, []int) {
 	return file_did_v1_tx_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *MsgAuthenticate) GetAuthority() string {
+func (x *MsgAuthenticateController) GetAuthority() string {
 	if x != nil {
 		return x.Authority
 	}
 	return ""
 }
 
-func (x *MsgAuthenticate) GetController() string {
+func (x *MsgAuthenticateController) GetController() string {
 	if x != nil {
 		return x.Controller
 	}
 	return ""
 }
 
-func (x *MsgAuthenticate) GetAddress() string {
+func (x *MsgAuthenticateController) GetAddress() string {
 	if x != nil {
 		return x.Address
 	}
 	return ""
 }
 
-// MsgAuthenticateResponse is the response type for the Authenticate RPC.
-type MsgAuthenticateResponse struct {
+// MsgAuthenticateControllerResponse is the response type for the Authenticate RPC.
+type MsgAuthenticateControllerResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *MsgAuthenticateResponse) Reset() {
-	*x = MsgAuthenticateResponse{}
+func (x *MsgAuthenticateControllerResponse) Reset() {
+	*x = MsgAuthenticateControllerResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -3251,14 +3251,14 @@ func (x *MsgAuthenticateResponse) Reset() {
 	}
 }
 
-func (x *MsgAuthenticateResponse) String() string {
+func (x *MsgAuthenticateControllerResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAuthenticateResponse) ProtoMessage() {}
+func (*MsgAuthenticateControllerResponse) ProtoMessage() {}
 
-// Deprecated: Use MsgAuthenticateResponse.ProtoReflect.Descriptor instead.
-func (*MsgAuthenticateResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAuthenticateControllerResponse.ProtoReflect.Descriptor instead.
+func (*MsgAuthenticateControllerResponse) Descriptor() ([]byte, []int) {
 	return file_did_v1_tx_proto_rawDescGZIP(), []int{5}
 }
 
@@ -3301,45 +3301,48 @@ var file_did_v1_tx_proto_rawDesc = []byte{
 	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
 	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
 	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x65, 0x72, 0x22, 0xc7, 0x01, 0x0a, 0x0f, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65,
-	0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f,
-	0x72, 0x69, 0x74, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
-	0x72, 0x69, 0x6e, 0x67, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12,
-	0x38, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e,
-	0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0a, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x32, 0x0a, 0x07, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74,
-	0x72, 0x69, 0x6e, 0x67, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x0e, 0x82,
-	0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22, 0x19, 0x0a,
-	0x17, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65,
-	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0x82, 0x02, 0x0a, 0x03, 0x4d, 0x73, 0x67,
-	0x12, 0x48, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73,
-	0x12, 0x17, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64,
-	0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e,
-	0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60, 0x0a, 0x14, 0x49, 0x6e,
-	0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x12, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x49,
-	0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x65, 0x72, 0x1a, 0x27, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67,
-	0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x48, 0x0a, 0x0c,
-	0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x12, 0x17, 0x2e, 0x64,
-	0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74,
-	0x69, 0x63, 0x61, 0x74, 0x65, 0x1a, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d,
-	0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x52, 0x65,
-	0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42, 0x77, 0x0a,
-	0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x07, 0x54, 0x78, 0x50,
-	0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61,
-	0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2,
-	0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02,
-	0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31,
-	0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44,
-	0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6c, 0x65, 0x72, 0x22, 0xd1, 0x01, 0x0a, 0x19, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65,
+	0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
+	0x72, 0x12, 0x36, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x09,
+	0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x38, 0x0a, 0x0a, 0x63, 0x6f, 0x6e,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2,
+	0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73,
+	0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
+	0x6c, 0x65, 0x72, 0x12, 0x32, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x42, 0x18, 0xd2, 0xb4, 0x2d, 0x14, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73,
+	0x2e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x52, 0x07,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x3a, 0x0e, 0x82, 0xe7, 0xb0, 0x2a, 0x09, 0x61, 0x75,
+	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x22, 0x23, 0x0a, 0x21, 0x4d, 0x73, 0x67, 0x41, 0x75,
+	0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
+	0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x32, 0xa0, 0x02, 0x0a,
+	0x03, 0x4d, 0x73, 0x67, 0x12, 0x48, 0x0a, 0x0c, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61,
+	0x72, 0x61, 0x6d, 0x73, 0x12, 0x17, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73,
+	0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65, 0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x1a, 0x1f, 0x2e,
+	0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x55, 0x70, 0x64, 0x61, 0x74, 0x65,
+	0x50, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x60,
+	0x0a, 0x14, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f, 0x6e, 0x74,
+	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e,
+	0x4d, 0x73, 0x67, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f, 0x6e,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x1a, 0x27, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
+	0x2e, 0x4d, 0x73, 0x67, 0x49, 0x6e, 0x69, 0x74, 0x69, 0x61, 0x6c, 0x69, 0x7a, 0x65, 0x43, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x66, 0x0a, 0x16, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x65,
+	0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x21, 0x2e, 0x64, 0x69, 0x64,
+	0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63,
+	0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x1a, 0x29, 0x2e,
+	0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x4d, 0x73, 0x67, 0x41, 0x75, 0x74, 0x68, 0x65, 0x6e,
+	0x74, 0x69, 0x63, 0x61, 0x74, 0x65, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
+	0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x1a, 0x05, 0x80, 0xe7, 0xb0, 0x2a, 0x01, 0x42,
+	0x77, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x07, 0x54,
+	0x78, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
+	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x64, 0x69, 0x2d, 0x64, 0x61, 0x6f, 0x2f, 0x73, 0x6f, 0x6e, 0x72,
+	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76,
+	0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31,
+	0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c,
+	0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
+	0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3356,22 +3359,22 @@ func file_did_v1_tx_proto_rawDescGZIP() []byte {
 
 var file_did_v1_tx_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
 var file_did_v1_tx_proto_goTypes = []interface{}{
-	(*MsgUpdateParams)(nil),                 // 0: did.v1.MsgUpdateParams
-	(*MsgUpdateParamsResponse)(nil),         // 1: did.v1.MsgUpdateParamsResponse
-	(*MsgInitializeController)(nil),         // 2: did.v1.MsgInitializeController
-	(*MsgInitializeControllerResponse)(nil), // 3: did.v1.MsgInitializeControllerResponse
-	(*MsgAuthenticate)(nil),                 // 4: did.v1.MsgAuthenticate
-	(*MsgAuthenticateResponse)(nil),         // 5: did.v1.MsgAuthenticateResponse
-	(*Params)(nil),                          // 6: did.v1.Params
+	(*MsgUpdateParams)(nil),                   // 0: did.v1.MsgUpdateParams
+	(*MsgUpdateParamsResponse)(nil),           // 1: did.v1.MsgUpdateParamsResponse
+	(*MsgInitializeController)(nil),           // 2: did.v1.MsgInitializeController
+	(*MsgInitializeControllerResponse)(nil),   // 3: did.v1.MsgInitializeControllerResponse
+	(*MsgAuthenticateController)(nil),         // 4: did.v1.MsgAuthenticateController
+	(*MsgAuthenticateControllerResponse)(nil), // 5: did.v1.MsgAuthenticateControllerResponse
+	(*Params)(nil),                            // 6: did.v1.Params
 }
 var file_did_v1_tx_proto_depIdxs = []int32{
 	6, // 0: did.v1.MsgUpdateParams.params:type_name -> did.v1.Params
 	0, // 1: did.v1.Msg.UpdateParams:input_type -> did.v1.MsgUpdateParams
 	2, // 2: did.v1.Msg.InitializeController:input_type -> did.v1.MsgInitializeController
-	4, // 3: did.v1.Msg.Authenticate:input_type -> did.v1.MsgAuthenticate
+	4, // 3: did.v1.Msg.AuthenticateController:input_type -> did.v1.MsgAuthenticateController
 	1, // 4: did.v1.Msg.UpdateParams:output_type -> did.v1.MsgUpdateParamsResponse
 	3, // 5: did.v1.Msg.InitializeController:output_type -> did.v1.MsgInitializeControllerResponse
-	5, // 6: did.v1.Msg.Authenticate:output_type -> did.v1.MsgAuthenticateResponse
+	5, // 6: did.v1.Msg.AuthenticateController:output_type -> did.v1.MsgAuthenticateControllerResponse
 	4, // [4:7] is the sub-list for method output_type
 	1, // [1:4] is the sub-list for method input_type
 	1, // [1:1] is the sub-list for extension type_name
@@ -3435,7 +3438,7 @@ func file_did_v1_tx_proto_init() {
 			}
 		}
 		file_did_v1_tx_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAuthenticate); i {
+			switch v := v.(*MsgAuthenticateController); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3447,7 +3450,7 @@ func file_did_v1_tx_proto_init() {
 			}
 		}
 		file_did_v1_tx_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgAuthenticateResponse); i {
+			switch v := v.(*MsgAuthenticateControllerResponse); i {
 			case 0:
 				return &v.state
 			case 1:

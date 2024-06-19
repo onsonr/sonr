@@ -1,7 +1,7 @@
 version: v1
 name: buf.build/didao/sonr
 deps:
-  - buf.build/cosmos/cosmos-sdk
+  - buf.build/cosmos/cosmos-sdk:65bf8005287c4fe7805789327d649f4c
   - buf.build/cosmos/cosmos-proto
   - buf.build/cosmos/gogo-proto
   - buf.build/googleapis/googleapis

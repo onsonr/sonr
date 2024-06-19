@@ -19,26 +19,23 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Account_FullMethodName         = "/did.v1.Query/Account"
-	Query_Exists_FullMethodName          = "/did.v1.Query/Exists"
-	Query_Params_FullMethodName          = "/did.v1.Query/Params"
-	Query_Resolve_FullMethodName         = "/did.v1.Query/Resolve"
-	Query_LoginOptions_FullMethodName    = "/did.v1.Query/LoginOptions"
-	Query_RegisterOptions_FullMethodName = "/did.v1.Query/RegisterOptions"
+	Query_Params_FullMethodName            = "/did.v1.Query/Params"
+	Query_PropertyExists_FullMethodName    = "/did.v1.Query/PropertyExists"
+	Query_ResolveIdentifier_FullMethodName = "/did.v1.Query/ResolveIdentifier"
+	Query_LoginOptions_FullMethodName      = "/did.v1.Query/LoginOptions"
+	Query_RegisterOptions_FullMethodName   = "/did.v1.Query/RegisterOptions"
 )
 
 // QueryClient is the client API for Query service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
-	// Account queries an account by its did.
-	Account(ctx context.Context, in *QueryAccountRequest, opts ...grpc.CallOption) (*QueryAccountResponse, error)
-	// Exists queries if an id exists.
-	Exists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error)
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Exists queries if an id exists.
+	PropertyExists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
 	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
 	LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error)
 	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
@@ -53,24 +50,6 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Account(ctx context.Context, in *QueryAccountRequest, opts ...grpc.CallOption) (*QueryAccountResponse, error) {
-	out := new(QueryAccountResponse)
-	err := c.cc.Invoke(ctx, Query_Account_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Exists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error) {
-	out := new(QueryExistsResponse)
-	err := c.cc.Invoke(ctx, Query_Exists_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
@@ -80,9 +59,18 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
+func (c *queryClient) PropertyExists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error) {
+	out := new(QueryExistsResponse)
+	err := c.cc.Invoke(ctx, Query_PropertyExists_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
 	out := new(QueryResolveResponse)
-	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Query_ResolveIdentifier_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -111,14 +99,12 @@ func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOpti
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
-	// Account queries an account by its did.
-	Account(context.Context, *QueryAccountRequest) (*QueryAccountResponse, error)
-	// Exists queries if an id exists.
-	Exists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error)
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Exists queries if an id exists.
+	PropertyExists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
+	ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
 	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
 	LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error)
 	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
@@ -130,17 +116,14 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) Account(context.Context, *QueryAccountRequest) (*QueryAccountResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Account not implemented")
-}
-func (UnimplementedQueryServer) Exists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Exists not implemented")
-}
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
+func (UnimplementedQueryServer) PropertyExists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method PropertyExists not implemented")
+}
+func (UnimplementedQueryServer) ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ResolveIdentifier not implemented")
 }
 func (UnimplementedQueryServer) LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LoginOptions not implemented")
@@ -161,42 +144,6 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 	s.RegisterService(&Query_ServiceDesc, srv)
 }
 
-func _Query_Account_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAccountRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Account(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Account_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Account(ctx, req.(*QueryAccountRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Exists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryExistsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Exists(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Exists_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Exists(ctx, req.(*QueryExistsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryParamsRequest)
 	if err := dec(in); err != nil {
@@ -215,20 +162,38 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_PropertyExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryExistsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).PropertyExists(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_PropertyExists_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).PropertyExists(ctx, req.(*QueryExistsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ResolveIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryResolveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Resolve(ctx, in)
+		return srv.(QueryServer).ResolveIdentifier(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_Resolve_FullMethodName,
+		FullMethod: Query_ResolveIdentifier_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Resolve(ctx, req.(*QueryResolveRequest))
+		return srv.(QueryServer).ResolveIdentifier(ctx, req.(*QueryResolveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -277,20 +242,16 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*QueryServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Account",
-			Handler:    _Query_Account_Handler,
-		},
-		{
-			MethodName: "Exists",
-			Handler:    _Query_Exists_Handler,
-		},
-		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Resolve",
-			Handler:    _Query_Resolve_Handler,
+			MethodName: "PropertyExists",
+			Handler:    _Query_PropertyExists_Handler,
+		},
+		{
+			MethodName: "ResolveIdentifier",
+			Handler:    _Query_ResolveIdentifier_Handler,
 		},
 		{
 			MethodName: "LoginOptions",
