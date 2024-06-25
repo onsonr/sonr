@@ -22,8 +22,8 @@ replace (
 
 require (
 	cosmossdk.io/math v1.3.0
-	github.com/cosmos/cosmos-sdk v0.50.4
-	github.com/cosmos/ibc-go/v8 v8.1.0
+	github.com/cosmos/cosmos-sdk v0.50.5
+	github.com/cosmos/ibc-go/v8 v8.2.0
 	github.com/strangelove-ventures/globalfee v0.50.0
 	github.com/strangelove-ventures/interchaintest/v8 v8.1.0
 	github.com/strangelove-ventures/poa v0.50.0
@@ -102,7 +102,7 @@ require (
 	github.com/dgryski/go-farm v0.0.0-20200201041132-a6ae2369ad13 // indirect
 	github.com/distribution/reference v0.5.0 // indirect
 	github.com/docker/distribution v2.8.3+incompatible // indirect
-	github.com/docker/docker v24.0.7+incompatible // indirect
+	github.com/docker/docker v24.0.9+incompatible // indirect
 	github.com/docker/go-connections v0.5.0 // indirect
 	github.com/docker/go-units v0.5.0 // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
@@ -142,7 +142,7 @@ require (
 	github.com/gtank/merlin v0.1.1 // indirect
 	github.com/gtank/ristretto255 v0.1.2 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
-	github.com/hashicorp/go-getter v1.7.3 // indirect
+	github.com/hashicorp/go-getter v1.7.5 // indirect
 	github.com/hashicorp/go-hclog v1.5.0 // indirect
 	github.com/hashicorp/go-immutable-radix v1.3.1 // indirect
 	github.com/hashicorp/go-metrics v0.5.2 // indirect
