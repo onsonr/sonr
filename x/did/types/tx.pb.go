@@ -249,27 +249,29 @@ func (m *MsgInitializeControllerResponse) GetController() string {
 }
 
 // MsgAuthenticate is the message type for the Authenticate RPC.
-type MsgAuthenticate struct {
+type MsgAuthenticateController struct {
 	// authority is the address of the governance account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// Controller is the address of the controller to authenticate.
 	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
 	// Address is the address to authenticate.
 	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
+	// Origin is the origin of the request in wildcard form.
+	Origin string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
-func (m *MsgAuthenticate) Reset()         { *m = MsgAuthenticate{} }
-func (m *MsgAuthenticate) String() string { return proto.CompactTextString(m) }
-func (*MsgAuthenticate) ProtoMessage()    {}
-func (*MsgAuthenticate) Descriptor() ([]byte, []int) {
+func (m *MsgAuthenticateController) Reset()         { *m = MsgAuthenticateController{} }
+func (m *MsgAuthenticateController) String() string { return proto.CompactTextString(m) }
+func (*MsgAuthenticateController) ProtoMessage()    {}
+func (*MsgAuthenticateController) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d73284df019ff211, []int{4}
 }
-func (m *MsgAuthenticate) XXX_Unmarshal(b []byte) error {
+func (m *MsgAuthenticateController) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAuthenticate) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAuthenticateController) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAuthenticate.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAuthenticateController.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -279,55 +281,62 @@ func (m *MsgAuthenticate) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *MsgAuthenticate) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAuthenticate.Merge(m, src)
+func (m *MsgAuthenticateController) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAuthenticateController.Merge(m, src)
 }
-func (m *MsgAuthenticate) XXX_Size() int {
+func (m *MsgAuthenticateController) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAuthenticate) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAuthenticate.DiscardUnknown(m)
+func (m *MsgAuthenticateController) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAuthenticateController.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAuthenticate proto.InternalMessageInfo
+var xxx_messageInfo_MsgAuthenticateController proto.InternalMessageInfo
 
-func (m *MsgAuthenticate) GetAuthority() string {
+func (m *MsgAuthenticateController) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgAuthenticate) GetController() string {
+func (m *MsgAuthenticateController) GetController() string {
 	if m != nil {
 		return m.Controller
 	}
 	return ""
 }
 
-func (m *MsgAuthenticate) GetAddress() string {
+func (m *MsgAuthenticateController) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-// MsgAuthenticateResponse is the response type for the Authenticate RPC.
-type MsgAuthenticateResponse struct {
+func (m *MsgAuthenticateController) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
 }
 
-func (m *MsgAuthenticateResponse) Reset()         { *m = MsgAuthenticateResponse{} }
-func (m *MsgAuthenticateResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgAuthenticateResponse) ProtoMessage()    {}
-func (*MsgAuthenticateResponse) Descriptor() ([]byte, []int) {
+// MsgAuthenticateControllerResponse is the response type for the Authenticate RPC.
+type MsgAuthenticateControllerResponse struct {
+}
+
+func (m *MsgAuthenticateControllerResponse) Reset()         { *m = MsgAuthenticateControllerResponse{} }
+func (m *MsgAuthenticateControllerResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgAuthenticateControllerResponse) ProtoMessage()    {}
+func (*MsgAuthenticateControllerResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d73284df019ff211, []int{5}
 }
-func (m *MsgAuthenticateResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgAuthenticateControllerResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgAuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAuthenticateControllerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgAuthenticateResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAuthenticateControllerResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -337,62 +346,64 @@ func (m *MsgAuthenticateResponse) XXX_Marshal(b []byte, deterministic bool) ([]b
 		return b[:n], nil
 	}
 }
-func (m *MsgAuthenticateResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAuthenticateResponse.Merge(m, src)
+func (m *MsgAuthenticateControllerResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAuthenticateControllerResponse.Merge(m, src)
 }
-func (m *MsgAuthenticateResponse) XXX_Size() int {
+func (m *MsgAuthenticateControllerResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgAuthenticateResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAuthenticateResponse.DiscardUnknown(m)
+func (m *MsgAuthenticateControllerResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAuthenticateControllerResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgAuthenticateResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgAuthenticateControllerResponse proto.InternalMessageInfo
 
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "did.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "did.v1.MsgUpdateParamsResponse")
 	proto.RegisterType((*MsgInitializeController)(nil), "did.v1.MsgInitializeController")
 	proto.RegisterType((*MsgInitializeControllerResponse)(nil), "did.v1.MsgInitializeControllerResponse")
-	proto.RegisterType((*MsgAuthenticate)(nil), "did.v1.MsgAuthenticate")
-	proto.RegisterType((*MsgAuthenticateResponse)(nil), "did.v1.MsgAuthenticateResponse")
+	proto.RegisterType((*MsgAuthenticateController)(nil), "did.v1.MsgAuthenticateController")
+	proto.RegisterType((*MsgAuthenticateControllerResponse)(nil), "did.v1.MsgAuthenticateControllerResponse")
 }
 
 func init() { proto.RegisterFile("did/v1/tx.proto", fileDescriptor_d73284df019ff211) }
 
 var fileDescriptor_d73284df019ff211 = []byte{
-	// 493 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0x41, 0x6b, 0x13, 0x41,
-	0x14, 0xce, 0x34, 0x35, 0x92, 0x31, 0xb6, 0xb0, 0x04, 0xb2, 0x5d, 0x64, 0x53, 0x16, 0xc1, 0x50,
-	0xec, 0x2e, 0x8d, 0x20, 0x22, 0x5e, 0x1a, 0x2f, 0xf5, 0x50, 0x90, 0x88, 0x17, 0x3d, 0xe8, 0x34,
-	0x33, 0x4e, 0x06, 0xb3, 0x3b, 0xcb, 0xbc, 0x49, 0x68, 0x3c, 0x49, 0x2f, 0x5e, 0xfd, 0x29, 0x3d,
-	0xf8, 0x17, 0xc4, 0x1e, 0x8b, 0x27, 0x4f, 0x22, 0xc9, 0xa1, 0x7f, 0x43, 0x76, 0x27, 0x9b, 0xec,
-	0xd6, 0x84, 0x48, 0x6f, 0xb3, 0xdf, 0xf7, 0xbd, 0xb7, 0xdf, 0xf7, 0xe6, 0xed, 0xe2, 0x6d, 0x2a,
-	0x68, 0x30, 0x3a, 0x08, 0xf4, 0xa9, 0x1f, 0x2b, 0xa9, 0xa5, 0x55, 0xa1, 0x82, 0xfa, 0xa3, 0x03,
-	0xa7, 0xd1, 0x93, 0x10, 0x4a, 0x08, 0x42, 0xe0, 0x09, 0x1f, 0x02, 0x37, 0x02, 0xa7, 0x3e, 0xab,
-	0xe0, 0x2c, 0x62, 0x20, 0x20, 0x43, 0xb9, 0xe4, 0x32, 0x3d, 0x06, 0xc9, 0x69, 0x86, 0xee, 0x98,
-	0x26, 0xef, 0x0c, 0x61, 0x1e, 0x0c, 0xe5, 0x7d, 0x41, 0x78, 0xfb, 0x18, 0xf8, 0xeb, 0x98, 0x12,
-	0xcd, 0x5e, 0x12, 0x45, 0x42, 0xb0, 0x1e, 0xe3, 0x2a, 0x19, 0xea, 0xbe, 0x54, 0x42, 0x8f, 0x6d,
-	0xb4, 0x8b, 0x5a, 0xd5, 0x8e, 0xfd, 0xf3, 0xdb, 0x7e, 0x7d, 0x56, 0x78, 0x48, 0xa9, 0x62, 0x00,
-	0xaf, 0xb4, 0x12, 0x11, 0xef, 0x2e, 0xa4, 0xd6, 0x43, 0x5c, 0x89, 0xd3, 0x0e, 0xf6, 0xc6, 0x2e,
-	0x6a, 0xdd, 0x69, 0x6f, 0xf9, 0x26, 0x84, 0x6f, 0xfa, 0x76, 0x36, 0x2f, 0x7e, 0x37, 0x4b, 0xdd,
-	0x99, 0xe6, 0xe9, 0xd6, 0xd9, 0xd5, 0xf9, 0xde, 0xa2, 0xda, 0xdb, 0xc1, 0x8d, 0x6b, 0x46, 0xba,
-	0x0c, 0x62, 0x19, 0x01, 0xf3, 0xbe, 0xa3, 0x94, 0x7b, 0x11, 0x09, 0x2d, 0xc8, 0x40, 0x7c, 0x62,
-	0xcf, 0x65, 0xa4, 0x95, 0x1c, 0x0c, 0x98, 0xba, 0xb1, 0x59, 0x17, 0x63, 0x02, 0xc0, 0x94, 0x16,
-	0x32, 0x4a, 0x0c, 0x97, 0x5b, 0xb5, 0x6e, 0x0e, 0xb1, 0xee, 0xe1, 0xea, 0x47, 0x36, 0x86, 0x3e,
-	0x51, 0x0c, 0xec, 0x72, 0x4a, 0x2f, 0x00, 0xeb, 0x3e, 0xbe, 0x3b, 0x62, 0x4a, 0x7c, 0x10, 0x3d,
-	0x62, 0x1a, 0x6c, 0xa6, 0x8a, 0x22, 0xf8, 0x4f, 0xc4, 0xb7, 0xb8, 0xb9, 0x22, 0x46, 0x16, 0xd5,
-	0x7a, 0x82, 0x71, 0x6f, 0x8e, 0xae, 0xcd, 0x93, 0xd3, 0x7a, 0x3f, 0xcc, 0x4d, 0x1e, 0x0e, 0x75,
-	0x9f, 0x45, 0x3a, 0xf1, 0xc0, 0x6e, 0x3c, 0x9c, 0xa2, 0x8b, 0x8d, 0xff, 0x77, 0x61, 0xb5, 0xf1,
-	0x6d, 0x62, 0x48, 0xbb, 0xbc, 0xa6, 0x2c, 0x13, 0xae, 0xd8, 0x84, 0x7c, 0x90, 0x6c, 0x3c, 0xed,
-	0xb3, 0x0d, 0x5c, 0x3e, 0x06, 0x6e, 0x1d, 0xe1, 0x5a, 0x61, 0x65, 0x1b, 0xd9, 0xaa, 0x5d, 0x5b,
-	0x21, 0xa7, 0xb9, 0x82, 0x98, 0x0f, 0xfc, 0x3d, 0xae, 0x2f, 0xdd, 0xab, 0x7c, 0xe1, 0x32, 0x81,
-	0xf3, 0x60, 0x8d, 0x60, 0xfe, 0x86, 0x23, 0x5c, 0x2b, 0x5c, 0x4a, 0xde, 0x6b, 0x9e, 0x28, 0x78,
-	0x5d, 0x96, 0xde, 0xb9, 0xf5, 0xf9, 0xea, 0x7c, 0x0f, 0x75, 0x9e, 0x5d, 0x4c, 0x5c, 0x74, 0x39,
-	0x71, 0xd1, 0x9f, 0x89, 0x8b, 0xbe, 0x4e, 0xdd, 0xd2, 0xe5, 0xd4, 0x2d, 0xfd, 0x9a, 0xba, 0xa5,
-	0x37, 0x1e, 0x17, 0xba, 0x3f, 0x3c, 0xf1, 0x7b, 0x32, 0x0c, 0xa8, 0xd8, 0xa7, 0x44, 0x06, 0x20,
-	0x23, 0x15, 0x9c, 0x06, 0xc9, 0xdf, 0x42, 0x8f, 0x63, 0x06, 0x27, 0x95, 0xf4, 0xc3, 0x7f, 0xf4,
-	0x37, 0x00, 0x00, 0xff, 0xff, 0x35, 0x9e, 0x37, 0x91, 0x73, 0x04, 0x00, 0x00,
+	// 519 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xac, 0x54, 0x4f, 0x6b, 0x13, 0x4f,
+	0x18, 0xce, 0x24, 0xf9, 0xe5, 0x47, 0x5e, 0x6b, 0x0b, 0x4b, 0x68, 0x36, 0x8b, 0x6c, 0xda, 0x28,
+	0x18, 0x8b, 0xcd, 0xd2, 0x08, 0x22, 0xe2, 0xa5, 0xf1, 0xa2, 0x87, 0x80, 0x44, 0xbc, 0xe8, 0x41,
+	0xa7, 0xd9, 0xe9, 0x64, 0x30, 0xbb, 0xb3, 0xcc, 0x3b, 0x09, 0x8d, 0x27, 0xf1, 0xe2, 0xd5, 0x8f,
+	0xe0, 0x47, 0xe8, 0xc1, 0xaf, 0x20, 0xf4, 0x58, 0x3c, 0x79, 0x12, 0x49, 0x0e, 0xc5, 0x6f, 0x21,
+	0xfb, 0x2f, 0x7f, 0xda, 0x84, 0x88, 0x78, 0x9b, 0x79, 0x9f, 0xe7, 0x79, 0xe7, 0x79, 0x66, 0x5e,
+	0x06, 0xb6, 0x5c, 0xe1, 0x3a, 0xc3, 0x03, 0x47, 0x9f, 0x34, 0x02, 0x25, 0xb5, 0x34, 0x0a, 0xae,
+	0x70, 0x1b, 0xc3, 0x03, 0xab, 0xdc, 0x95, 0xe8, 0x49, 0x74, 0x3c, 0xe4, 0x21, 0xee, 0x21, 0x8f,
+	0x09, 0x56, 0x29, 0x51, 0x70, 0xe6, 0x33, 0x14, 0x98, 0x56, 0xb9, 0xe4, 0x32, 0x5a, 0x3a, 0xe1,
+	0x2a, 0xa9, 0x56, 0xe2, 0x26, 0xaf, 0x63, 0x20, 0xde, 0xc4, 0x50, 0xed, 0x23, 0x81, 0xad, 0x36,
+	0xf2, 0x17, 0x81, 0x4b, 0x35, 0x7b, 0x46, 0x15, 0xf5, 0xd0, 0xb8, 0x0f, 0x45, 0x3a, 0xd0, 0x3d,
+	0xa9, 0x84, 0x1e, 0x99, 0x64, 0x87, 0xd4, 0x8b, 0x2d, 0xf3, 0xdb, 0x97, 0xfd, 0x52, 0x22, 0x3c,
+	0x74, 0x5d, 0xc5, 0x10, 0x9f, 0x6b, 0x25, 0x7c, 0xde, 0x99, 0x51, 0x8d, 0xbb, 0x50, 0x08, 0xa2,
+	0x0e, 0x66, 0x76, 0x87, 0xd4, 0xaf, 0x35, 0x37, 0x1b, 0x71, 0x88, 0x46, 0xdc, 0xb7, 0x95, 0x3f,
+	0xfb, 0x51, 0xcd, 0x74, 0x12, 0xce, 0xc3, 0xcd, 0x0f, 0x17, 0xa7, 0x7b, 0x33, 0x75, 0xad, 0x02,
+	0xe5, 0x4b, 0x46, 0x3a, 0x0c, 0x03, 0xe9, 0x23, 0xab, 0x7d, 0x25, 0x11, 0xf6, 0xd4, 0x17, 0x5a,
+	0xd0, 0xbe, 0x78, 0xc7, 0x1e, 0x4b, 0x5f, 0x2b, 0xd9, 0xef, 0x33, 0xf5, 0xd7, 0x66, 0x6d, 0x00,
+	0x8a, 0xc8, 0x94, 0x16, 0xd2, 0x0f, 0x0d, 0xe7, 0xea, 0x1b, 0x9d, 0xb9, 0x8a, 0x71, 0x03, 0x8a,
+	0x6f, 0xd9, 0x08, 0x7b, 0x54, 0x31, 0x34, 0x73, 0x11, 0x3c, 0x2b, 0x18, 0xb7, 0xe0, 0xfa, 0x90,
+	0x29, 0x71, 0x2c, 0xba, 0x34, 0x6e, 0x90, 0x8f, 0x18, 0x8b, 0xc5, 0x2b, 0x11, 0x5f, 0x41, 0x75,
+	0x45, 0x8c, 0x34, 0xaa, 0xf1, 0x00, 0xa0, 0x3b, 0xad, 0xae, 0xcd, 0x33, 0xc7, 0xad, 0xfd, 0x22,
+	0x50, 0x69, 0x23, 0x3f, 0x1c, 0xe8, 0x1e, 0xf3, 0x75, 0xe8, 0xe1, 0x5f, 0x5c, 0xd3, 0xa2, 0x9f,
+	0xec, 0x9f, 0xfb, 0x31, 0x9a, 0xf0, 0x3f, 0x8d, 0x41, 0x33, 0xb7, 0x46, 0x96, 0x12, 0x8d, 0x6d,
+	0x28, 0x48, 0x25, 0xb8, 0xf0, 0xcd, 0x7c, 0x28, 0xe9, 0x24, 0xbb, 0x2b, 0x17, 0x79, 0x13, 0x76,
+	0x57, 0x46, 0x4d, 0xaf, 0xb2, 0xf9, 0x39, 0x0b, 0xb9, 0x36, 0x72, 0xe3, 0x09, 0x6c, 0x2c, 0x8c,
+	0x77, 0x39, 0x1d, 0xcb, 0x4b, 0xe3, 0x66, 0x55, 0x57, 0x00, 0xd3, 0xc7, 0x79, 0x03, 0xa5, 0xa5,
+	0x33, 0x38, 0x2f, 0x5c, 0x46, 0xb0, 0x6e, 0xaf, 0x21, 0x4c, 0x4f, 0x38, 0x86, 0xed, 0x15, 0x0f,
+	0xb8, 0x3b, 0xd7, 0x62, 0x39, 0xc5, 0xba, 0xb3, 0x96, 0x92, 0x9e, 0x63, 0xfd, 0xf7, 0xfe, 0xe2,
+	0x74, 0x8f, 0xb4, 0x1e, 0x9d, 0x8d, 0x6d, 0x72, 0x3e, 0xb6, 0xc9, 0xcf, 0xb1, 0x4d, 0x3e, 0x4d,
+	0xec, 0xcc, 0xf9, 0xc4, 0xce, 0x7c, 0x9f, 0xd8, 0x99, 0x97, 0x35, 0x2e, 0x74, 0x6f, 0x70, 0xd4,
+	0xe8, 0x4a, 0xcf, 0x71, 0xc5, 0xbe, 0x4b, 0xa5, 0x83, 0xd2, 0x57, 0xce, 0x89, 0x13, 0xfe, 0x3b,
+	0x7a, 0x14, 0x30, 0x3c, 0x2a, 0x44, 0x5f, 0xc8, 0xbd, 0xdf, 0x01, 0x00, 0x00, 0xff, 0xff, 0x27,
+	0xba, 0x53, 0x7f, 0xbd, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -413,8 +424,8 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
 	InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error)
+	// AuthenticateController asserts the given controller is the owner of the given address.
+	AuthenticateController(ctx context.Context, in *MsgAuthenticateController, opts ...grpc.CallOption) (*MsgAuthenticateControllerResponse, error)
 }
 
 type msgClient struct {
@@ -443,9 +454,9 @@ func (c *msgClient) InitializeController(ctx context.Context, in *MsgInitializeC
 	return out, nil
 }
 
-func (c *msgClient) Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error) {
-	out := new(MsgAuthenticateResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Msg/Authenticate", in, out, opts...)
+func (c *msgClient) AuthenticateController(ctx context.Context, in *MsgAuthenticateController, opts ...grpc.CallOption) (*MsgAuthenticateControllerResponse, error) {
+	out := new(MsgAuthenticateControllerResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/AuthenticateController", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -460,8 +471,8 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
 	InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error)
+	// AuthenticateController asserts the given controller is the owner of the given address.
+	AuthenticateController(context.Context, *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -474,8 +485,8 @@ func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateP
 func (*UnimplementedMsgServer) InitializeController(ctx context.Context, req *MsgInitializeController) (*MsgInitializeControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitializeController not implemented")
 }
-func (*UnimplementedMsgServer) Authenticate(ctx context.Context, req *MsgAuthenticate) (*MsgAuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+func (*UnimplementedMsgServer) AuthenticateController(ctx context.Context, req *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateController not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -518,20 +529,20 @@ func _Msg_InitializeController_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthenticate)
+func _Msg_AuthenticateController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAuthenticateController)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Authenticate(ctx, in)
+		return srv.(MsgServer).AuthenticateController(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/did.v1.Msg/Authenticate",
+		FullMethod: "/did.v1.Msg/AuthenticateController",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Authenticate(ctx, req.(*MsgAuthenticate))
+		return srv.(MsgServer).AuthenticateController(ctx, req.(*MsgAuthenticateController))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -549,8 +560,8 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_InitializeController_Handler,
 		},
 		{
-			MethodName: "Authenticate",
-			Handler:    _Msg_Authenticate_Handler,
+			MethodName: "AuthenticateController",
+			Handler:    _Msg_AuthenticateController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -707,7 +718,7 @@ func (m *MsgInitializeControllerResponse) MarshalToSizedBuffer(dAtA []byte) (int
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAuthenticate) Marshal() (dAtA []byte, err error) {
+func (m *MsgAuthenticateController) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -717,16 +728,23 @@ func (m *MsgAuthenticate) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAuthenticate) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAuthenticateController) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAuthenticate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAuthenticateController) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x22
+	}
 	if len(m.Address) > 0 {
 		i -= len(m.Address)
 		copy(dAtA[i:], m.Address)
@@ -751,7 +769,7 @@ func (m *MsgAuthenticate) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAuthenticateResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgAuthenticateControllerResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -761,12 +779,12 @@ func (m *MsgAuthenticateResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgAuthenticateResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAuthenticateControllerResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgAuthenticateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgAuthenticateControllerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -853,7 +871,7 @@ func (m *MsgInitializeControllerResponse) Size() (n int) {
 	return n
 }
 
-func (m *MsgAuthenticate) Size() (n int) {
+func (m *MsgAuthenticateController) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -871,10 +889,14 @@ func (m *MsgAuthenticate) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
-func (m *MsgAuthenticateResponse) Size() (n int) {
+func (m *MsgAuthenticateControllerResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1314,7 +1336,7 @@ func (m *MsgInitializeControllerResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAuthenticate) Unmarshal(dAtA []byte) error {
+func (m *MsgAuthenticateController) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1337,10 +1359,10 @@ func (m *MsgAuthenticate) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAuthenticate: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAuthenticateController: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAuthenticate: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAuthenticateController: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1439,6 +1461,38 @@ func (m *MsgAuthenticate) Unmarshal(dAtA []byte) error {
 			}
 			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])
@@ -1460,7 +1514,7 @@ func (m *MsgAuthenticate) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *MsgAuthenticateResponse) Unmarshal(dAtA []byte) error {
+func (m *MsgAuthenticateControllerResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1483,10 +1537,10 @@ func (m *MsgAuthenticateResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAuthenticateResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAuthenticateControllerResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAuthenticateResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAuthenticateControllerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		default:

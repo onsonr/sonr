@@ -10,6 +10,7 @@ import (
 )
 
 var (
+	// Bitcoin mainnet
 	CoinBTC = &Coin{
 		Name:   "Bitcoin",
 		Index:  0,
@@ -18,6 +19,7 @@ var (
 		Hrp:    "bc",
 	}
 
+	// Ethereum
 	CoinETH = &Coin{
 		Name:   "Ethereum",
 		Index:  60,
@@ -25,6 +27,7 @@ var (
 		Symbol: "ETH",
 	}
 
+	// Sonr
 	CoinSNR = &Coin{
 		Name:   "Sonr",
 		Index:  703,
@@ -34,6 +37,7 @@ var (
 	}
 )
 
+// DefaultCoins returns default coins
 func DefaultCoins() []Coin {
 	return []Coin{
 		*CoinBTC,
@@ -42,6 +46,7 @@ func DefaultCoins() []Coin {
 	}
 }
 
+// FormatAddress formats the address based on the coin
 func (c *Coin) FormatAddress(pubKey []byte) (string, error) {
 	if c.Hrp != "" {
 		return bech32.ConvertAndEncode(c.Hrp, pubKey)
@@ -52,6 +57,7 @@ func (c *Coin) FormatAddress(pubKey []byte) (string, error) {
 	return "", fmt.Errorf("unsupported coin")
 }
 
+// Equal returns if two coins are equal
 func (c *Coin) Equal(c2 *Coin) bool {
 	return c.Index == c2.Index && c.Path == c2.Path
 }

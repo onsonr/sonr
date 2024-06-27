@@ -2,16 +2,13 @@ package kss
 
 import (
 	"encoding/json"
-	"errors"
 
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/core/protocol"
-	"github.com/di-dao/sonr/crypto/daed"
 )
 
 // KssI is the interface for the keyshare set
 type Set interface {
-	Encrypt(key []byte, kh *daed.AESSIV) (EncryptedSet, error)
 	PublicKey() crypto.PublicKey
 	Usr() User
 	Val() Val
@@ -24,32 +21,6 @@ type keyshares struct {
 
 	valBz []byte
 	usrBz []byte
-}
-
-// Encrypt encrypts the keyshares using a password
-func (ks *keyshares) Encrypt(key []byte, kh *daed.AESSIV) (EncryptedSet, error) {
-	if kh == nil {
-		return nil, errors.New("kh cannot be nil")
-	}
-	if key == nil {
-		return nil, errors.New("key cannot be nil")
-	}
-
-	usrEncBz, err := kh.EncryptDeterministically(ks.usrBz, key)
-	if err != nil {
-		return nil, err
-	}
-
-	valEncBz, err := kh.EncryptDeterministically(ks.valBz, key)
-	if err != nil {
-		return nil, err
-	}
-
-	return &encryptedSet{
-		publicKey: ks.PublicKey(),
-		encValKey: usrEncBz,
-		encUsrKey: valEncBz,
-	}, nil
 }
 
 // Usr returns the user keyshare

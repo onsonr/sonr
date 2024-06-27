@@ -3,7 +3,6 @@ package jwt
 import (
 	"context"
 
-	"github.com/di-dao/sonr/internal/local"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 )
@@ -27,23 +26,23 @@ func GetRegisterOptions(ctx context.Context, challenge protocol.URLEncodedBase64
 
 // GetUserEntity returns the user entity
 func GetUserEntity(ctx context.Context) protocol.UserEntity {
-	snrctx := local.UnwrapCtx(ctx)
+	//	snrctx := local.UnwrapCtx(ctx)
 	return protocol.UserEntity{
-		ID:          snrctx.UserAddress,
-		DisplayName: snrctx.UserAddress,
+		//	ID:          snrctx.UserAddress,
+		// DisplayName: snrctx.UserAddress,
 		CredentialEntity: protocol.CredentialEntity{
-			Name: snrctx.UserAddress,
+			// Name: snrctx.UserAddress,
 		},
 	}
 }
 
 // GetRelayingPartyEntity returns the relaying party entity
 func GetRelayingPartyEntity(ctx context.Context) protocol.RelyingPartyEntity {
-	snrctx := local.UnwrapCtx(ctx)
+	//	snrctx := local.UnwrapCtx(ctx)
 	return protocol.RelyingPartyEntity{
-		ID: snrctx.ServiceOrigin,
+		//	ID: snrctx.ServiceOrigin,
 		CredentialEntity: protocol.CredentialEntity{
-			Name: snrctx.ServiceOrigin,
+			//	Name: snrctx.ServiceOrigin,
 		},
 	}
 }

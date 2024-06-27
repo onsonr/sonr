@@ -2,10 +2,8 @@ package local
 
 import (
 	"os"
-	"time"
 
 	"github.com/di-dao/sonr/crypto/daed"
-	"github.com/di-dao/sonr/pkg/cache"
 	"github.com/ipfs/kubo/client/rpc"
 )
 
@@ -16,16 +14,12 @@ var (
 	contextSessionKey = contextKey("session-id")
 
 	defaultNodeHome = os.ExpandEnv("$HOME/") + nodeDir
-	sessionCache    *cache.Cache[contextKey, SonrContext]
 
 	kh *daed.AESSIV
 )
 
 // Initialize initializes the local configuration values
 func init() {
-	if sessionCache == nil {
-		sessionCache = cache.New[contextKey, SonrContext](time.Hour, 30*time.Minute)
-	}
 }
 
 // SetLocalContextSessionID sets the session ID for the local context

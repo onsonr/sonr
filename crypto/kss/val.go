@@ -1,6 +1,8 @@
 package kss
 
 import (
+	"encoding/json"
+
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/core/curves"
 	"github.com/di-dao/sonr/crypto/core/protocol"
@@ -20,6 +22,7 @@ type Val interface {
 	GetSignFunc(msg []byte) (SignFuncVal, error)
 	GetRefreshFunc() (RefreshFuncVal, error)
 	PublicKey() crypto.PublicKey
+	Marshal() ([]byte, error)
 }
 
 // validatorKeyshare is the protocol result for the validator keyshare
@@ -32,6 +35,11 @@ func createValidatorKeyshare(valKSS *protocol.Message) Val {
 	return &validatorKeyshare{
 		valKSS: valKSS,
 	}
+}
+
+// Bytes returns the bytes of the user keyshare
+func (u *validatorKeyshare) Marshal() ([]byte, error) {
+	return json.Marshal(u.valKSS)
 }
 
 // GetSignFunc returns the sign function for the validator keyshare

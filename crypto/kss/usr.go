@@ -1,6 +1,8 @@
 package kss
 
 import (
+	"encoding/json"
+
 	"github.com/di-dao/sonr/crypto"
 	"github.com/di-dao/sonr/crypto/core/curves"
 	"github.com/di-dao/sonr/crypto/core/protocol"
@@ -20,6 +22,7 @@ type User interface {
 	GetSignFunc(msg []byte) (SignFuncUser, error)
 	GetRefreshFunc() (RefreshFuncUser, error)
 	PublicKey() crypto.PublicKey
+	Marshal() ([]byte, error)
 }
 
 // userKeyshare is the protocol result for the user keyshare
@@ -32,6 +35,11 @@ func createUserKeyshare(usrKSS *protocol.Message) User {
 	return &userKeyshare{
 		usrKSS: usrKSS,
 	}
+}
+
+// Bytes returns the bytes of the user keyshare
+func (u *userKeyshare) Marshal() ([]byte, error) {
+	return json.Marshal(u.usrKSS)
 }
 
 // GetSignFunc returns the sign function for the user keyshare
