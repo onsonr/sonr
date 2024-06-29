@@ -20,8 +20,8 @@ import (
 )
 
 type structMarshal struct {
-	Value []byte `bare:"value"`
 	Curve string `bare:"curve"`
+	Value []byte `bare:"value"`
 }
 
 type Element curves.Scalar

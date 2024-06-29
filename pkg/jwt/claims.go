@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"time"
 
-	"github.com/di-dao/sonr/internal/local"
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -17,8 +16,6 @@ type CredentialClaims struct {
 
 // NewCredentialClaims returns the CredentialClaims for the JWS to sign
 func NewCredentialClaims(ctx context.Context, address string, origin string, credentials ...protocol.CredentialDescriptor) CredentialClaims {
-	snrCtx := local.UnwrapCtx(ctx)
-
 	// Create claims with multiple fields populated
 	return CredentialClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
@@ -26,7 +23,6 @@ func NewCredentialClaims(ctx context.Context, address string, origin string, cre
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour)),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
 			NotBefore: jwt.NewNumericDate(time.Now()),
-			Issuer:    snrCtx.ValidatorAddress,
 			Subject:   origin,
 			ID:        address,
 			Audience:  ConvertCredentialDescriptorsToStringList(credentials),

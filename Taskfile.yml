@@ -2,9 +2,22 @@ version: "3"
 
 tasks:
   dev:
-    cmds:
-      - devbox services up --process-compose-file ./deploy/process-compose.dev.yaml
-  serve:
-    silent: true
-    cmds:
-      - devbox services up --process-compose-file ./deploy/process-compose.prod.yaml
+    cmd: air
+
+  install:
+    cmd: make install
+
+  testnet:
+    cmd: make sh-testnet
+
+  proto:
+    cmd: devbox -q run proto
+
+  templ:
+    cmd: templ generate
+
+  build:vltd:
+    cmd: go build -o /bin/vltd ./cmd/vltd/main.go
+
+  build:sonrd:
+    cmd: go build -o /bin/sonrd ./cmd/sonrd/main.go

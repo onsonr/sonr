@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName         = "/did.v1.Msg/UpdateParams"
-	Msg_InitializeController_FullMethodName = "/did.v1.Msg/InitializeController"
-	Msg_Authenticate_FullMethodName         = "/did.v1.Msg/Authenticate"
+	Msg_UpdateParams_FullMethodName           = "/did.v1.Msg/UpdateParams"
+	Msg_InitializeController_FullMethodName   = "/did.v1.Msg/InitializeController"
+	Msg_AuthenticateController_FullMethodName = "/did.v1.Msg/AuthenticateController"
 )
 
 // MsgClient is the client API for Msg service.
@@ -34,8 +34,8 @@ type MsgClient interface {
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
 	InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error)
+	// AuthenticateController asserts the given controller is the owner of the given address.
+	AuthenticateController(ctx context.Context, in *MsgAuthenticateController, opts ...grpc.CallOption) (*MsgAuthenticateControllerResponse, error)
 }
 
 type msgClient struct {
@@ -64,9 +64,9 @@ func (c *msgClient) InitializeController(ctx context.Context, in *MsgInitializeC
 	return out, nil
 }
 
-func (c *msgClient) Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error) {
-	out := new(MsgAuthenticateResponse)
-	err := c.cc.Invoke(ctx, Msg_Authenticate_FullMethodName, in, out, opts...)
+func (c *msgClient) AuthenticateController(ctx context.Context, in *MsgAuthenticateController, opts ...grpc.CallOption) (*MsgAuthenticateControllerResponse, error) {
+	out := new(MsgAuthenticateControllerResponse)
+	err := c.cc.Invoke(ctx, Msg_AuthenticateController_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +83,8 @@ type MsgServer interface {
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
 	InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error)
+	// AuthenticateController asserts the given controller is the owner of the given address.
+	AuthenticateController(context.Context, *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -98,8 +98,8 @@ func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*
 func (UnimplementedMsgServer) InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InitializeController not implemented")
 }
-func (UnimplementedMsgServer) Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+func (UnimplementedMsgServer) AuthenticateController(context.Context, *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateController not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -150,20 +150,20 @@ func _Msg_InitializeController_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthenticate)
+func _Msg_AuthenticateController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAuthenticateController)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Authenticate(ctx, in)
+		return srv.(MsgServer).AuthenticateController(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Authenticate_FullMethodName,
+		FullMethod: Msg_AuthenticateController_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Authenticate(ctx, req.(*MsgAuthenticate))
+		return srv.(MsgServer).AuthenticateController(ctx, req.(*MsgAuthenticateController))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -184,8 +184,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_InitializeController_Handler,
 		},
 		{
-			MethodName: "Authenticate",
-			Handler:    _Msg_Authenticate_Handler,
+			MethodName: "AuthenticateController",
+			Handler:    _Msg_AuthenticateController_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

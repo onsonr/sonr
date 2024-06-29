@@ -7,6 +7,8 @@
 package accumulator
 
 import (
+	"encoding/hex"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -22,6 +24,14 @@ func TestNewAccumulator100(t *testing.T) {
 	require.NotNil(t, key)
 	acc, err := new(Accumulator).New(curve)
 	require.NoError(t, err)
+	accBz, err := acc.MarshalBinary()
+	require.NoError(t, err)
+	fmt.Println(accBz)
+	fmt.Println(len(accBz))
+	fmt.Println(hex.EncodeToString(accBz))
+	fmt.Println(len(hex.EncodeToString(accBz)))
+	require.Equal(t, 60, len(accBz), "Marshalled accumulator should be 60 bytes")
+	require.Equal(t, 120, len(hex.EncodeToString(accBz)), "Hex-encoded accumulator should be 120 characters")
 	require.NotNil(t, acc)
 	require.Equal(t, acc.value.ToAffineCompressed(), curve.PointG1.Generator().ToAffineCompressed())
 }

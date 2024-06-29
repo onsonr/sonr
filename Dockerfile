@@ -6,7 +6,7 @@ RUN apk add --no-cache ca-certificates build-base git
 
 WORKDIR /code
 
-ADD go.mod go.sum ./
+COPY go.mod go.sum ./
 RUN set -eux; \
   export ARCH=$(uname -m); \
   WASM_VERSION=$(go list -m all | grep github.com/CosmWasm/wasmvm || true); \

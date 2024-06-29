@@ -1,51 +1,51 @@
 {
   "lockfile_version": "1",
   "packages": {
-    "go-task@latest": {
-      "last_modified": "2024-05-29T10:04:41Z",
-      "resolved": "github:NixOS/nixpkgs/ac82a513e55582291805d6f09d35b6d8b60637a1#go-task",
+    "air@latest": {
+      "last_modified": "2024-06-12T20:55:33Z",
+      "resolved": "github:NixOS/nixpkgs/a9858885e197f984d92d7fe64e9fff6b2e488d40#air",
       "source": "devbox-search",
-      "version": "3.37.2",
+      "version": "1.52.2",
       "systems": {
         "aarch64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/sxx5qi67pni1188alq2a8vxnyliy4mpk-go-task-3.37.2",
+              "path": "/nix/store/54a18zdrvbj5mmsrgg4p102pzq9q3iml-air-1.52.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/sxx5qi67pni1188alq2a8vxnyliy4mpk-go-task-3.37.2"
+          "store_path": "/nix/store/54a18zdrvbj5mmsrgg4p102pzq9q3iml-air-1.52.2"
         },
         "aarch64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/6ji3xndcf45yrsrvbv3rkp789bz6rcby-go-task-3.37.2",
+              "path": "/nix/store/21ylb6pff7856gkhxw1xgrkxxl7hqf06-air-1.52.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/6ji3xndcf45yrsrvbv3rkp789bz6rcby-go-task-3.37.2"
+          "store_path": "/nix/store/21ylb6pff7856gkhxw1xgrkxxl7hqf06-air-1.52.2"
         },
         "x86_64-darwin": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/gf9ygvd2m7v2hv3349k6q3jgk0bfqr9z-go-task-3.37.2",
+              "path": "/nix/store/3x2prnsfzm082mpbighi8bv4yqvk3mrd-air-1.52.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/gf9ygvd2m7v2hv3349k6q3jgk0bfqr9z-go-task-3.37.2"
+          "store_path": "/nix/store/3x2prnsfzm082mpbighi8bv4yqvk3mrd-air-1.52.2"
         },
         "x86_64-linux": {
           "outputs": [
             {
               "name": "out",
-              "path": "/nix/store/9bswbbgd0fdbqa40yrj7f595303zbrnj-go-task-3.37.2",
+              "path": "/nix/store/pf6j811r7y3lfmdq0njll7mlzi1d521p-air-1.52.2",
               "default": true
             }
           ],
-          "store_path": "/nix/store/9bswbbgd0fdbqa40yrj7f595303zbrnj-go-task-3.37.2"
+          "store_path": "/nix/store/pf6j811r7y3lfmdq0njll7mlzi1d521p-air-1.52.2"
         }
       }
     },
@@ -158,6 +158,54 @@
               "default": true
             }
           ]
+        }
+      }
+    },
+    "templ@latest": {
+      "last_modified": "2024-06-11T07:07:27Z",
+      "resolved": "github:NixOS/nixpkgs/f7207adcc68d9cafa29e3cd252a18743ae512c6a#templ",
+      "source": "devbox-search",
+      "version": "0.2.707",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n7caxakybzhb7ddnyr84fwbxrsqyapiw-templ-0.2.707",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n7caxakybzhb7ddnyr84fwbxrsqyapiw-templ-0.2.707"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4wzq8p7ssa9gsnkjq7d921lwh1hvqn4w-templ-0.2.707",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4wzq8p7ssa9gsnkjq7d921lwh1hvqn4w-templ-0.2.707"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/i2987x72rykp32d0kxlp2kfs9n4w09zp-templ-0.2.707",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/i2987x72rykp32d0kxlp2kfs9n4w09zp-templ-0.2.707"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/bqfl3231g8p5q1km2h4zwrnbv950pai2-templ-0.2.707",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/bqfl3231g8p5q1km2h4zwrnbv950pai2-templ-0.2.707"
         }
       }
     }

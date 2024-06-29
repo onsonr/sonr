@@ -1,0 +1,23 @@
+package components
+
+templ head() {
+	<head>
+		<script src="//unpkg.com/alpinejs" defer></script>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
+		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+	</head>
+}
+
+templ Home() {
+	<html>
+		@head()
+		<body>
+			<div class="pt-24 flex flex-col items-center">
+				<sl-card class="card-basic">
+					This is just a basic card. No image, no header, and no footer. Just your content.
+				</sl-card>
+			</div>
+		</body>
+	</html>
+}
