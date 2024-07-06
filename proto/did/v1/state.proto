@@ -43,7 +43,7 @@ message Controller {
   string did = 2;
 
   // The public key of the controller
-  PublicKey public_key = 3;
+  bytes public_key = 3;
 
   // The vault address or identifier
   string vault_cid = 4;
@@ -75,7 +75,7 @@ message Delegation {
   string controller_did = 5;
 
   // The delegation proof or verification method
-  PublicKey public_key = 6;
+  bytes public_key = 6;
 
   // IBC Channel ID
   uint64 channel_id = 7;
