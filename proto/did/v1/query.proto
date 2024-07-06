@@ -1,0 +1,90 @@
+syntax = "proto3";
+package did.v1;
+
+import "google/api/annotations.proto";
+import "did/v1/genesis.proto";
+
+option go_package = "github.com/onsonr/hway/x/did/types";
+
+// Query provides defines the gRPC querier service.
+service Query {
+    // Params queries all parameters of the module.
+    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+        option (google.api.http).get = "/did/params";
+    }
+
+    // Exists queries if an id exists.
+    rpc PropertyExists(QueryExistsRequest) returns (QueryExistsResponse) {
+        option (google.api.http).get = "/did/exists/{kind}/{value}";
+    }
+
+   // Resolve queries the DID document by its id.
+    rpc ResolveIdentifier(QueryResolveRequest) returns (QueryResolveResponse) { 
+        option (google.api.http).get = "/did/resolve/{id}"; 
+    } 
+
+    // LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
+    rpc LoginOptions(QueryLoginOptionsRequest) returns (QueryLoginOptionsResponse) {
+        option (google.api.http).get = "/did/login/{origin}/{handle}/options";
+    }
+
+    // RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
+    rpc RegisterOptions(QueryRegisterOptionsRequest) returns (QueryRegisterOptionsResponse) {
+        option (google.api.http).get = "/did/register/{origin}/{handle}/options";
+    }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1;
+}
+
+// QueryExistsRequest is the request type for the Query/Exists RPC method.
+message QueryExistsRequest {
+    string kind = 1;
+    string value = 2;
+}
+
+// QueryExistsResponse is the response type for the Query/Exists RPC method.
+message QueryExistsResponse {
+    bool exists = 1;
+}
+
+// QueryResolveRequest is the request type for the Query/Resolve RPC method.
+message QueryResolveRequest {
+    string id = 1;
+}
+
+// QueryResolveResponse is the response type for the Query/Resolve RPC method.
+message QueryResolveResponse {
+    // document is the DID document
+    string document = 1;
+}
+
+// QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsRequest {
+    string origin = 1;
+    string handle = 2;
+}
+
+// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
+message QueryLoginOptionsResponse {
+    // options is the PublicKeyCredentialAttestationOptions
+    string options = 1;
+}
+
+// QueryRegisterOptionsRequest is the request type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsRequest {
+    string origin = 1;
+    string handle = 2;
+}
+
+// QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
+message QueryRegisterOptionsResponse {
+    string options = 1;
+}
+

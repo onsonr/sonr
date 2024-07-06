@@ -1,0 +1,74 @@
+# Binaries
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.app
+.DS_Store
+.session.vim
+aof*
+
+# Test binary
+*.test
+.devon*
+**/.DS_Store
+# Output of the go coverage tool
+*.out
+buf.lock
+
+# Dependency directories
+node_modules/
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Environment files
+.env
+**/*.env
+
+# Lock files
+package-lock.json
+devbox.lock
+
+# Config files
+pkg/config/static/
+
+# Terraform
+**/.terraform/*
+.terraform
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+.terraformrc
+terraform.rc
+
+# Misc
+.DS_Store
+.tmp/
+tmp/
+**/*tmp*/
+*.tmp
+*.log
+*.dot
+*.pem
+dist/
+bin/
+build/
+.devbox
+.ignore
+.opencommitignore
+heighliner*
+sonr
+deploy/**/data
+x/.DS_Store
+.aider*

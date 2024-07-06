@@ -1,0 +1,24 @@
+package components
+
+templ head() {
+	<head>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/themes/light.css"/>
+		<script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.15.1/cdn/shoelace-autoloader.js"></script>
+		<link rel="stylesheet" href="https://i.icomoon.io/public/c5fe40a91e/OXYUI/style-svg.css"/>
+		<script defer src="https://i.icomoon.io/public/c5fe40a91e/OXYUI/svgxuse.js"></script>
+	</head>
+}
+
+templ footer(sessionID string) {
+	<footer class="absolute bottom-0 w-full">
+		<div class="mx-auto max-w-7xl px-6 py-12 md:flex md:items-center md:justify-between lg:px-8">
+			<div class="flex justify-center space-x-6 md:order-2">
+				<p class="text-center text-xs leading-5 text-gray-800 font-mono">Session: { sessionID }</p>
+			</div>
+			<div class="mt-8 md:order-1 md:mt-0">
+				<p class="text-center text-xs leading-5 text-gray-500">&copy; 2024 diDAO. All rights reserved.</p>
+			</div>
+		</div>
+	</footer>
+}

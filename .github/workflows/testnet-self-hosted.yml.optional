@@ -1,0 +1,65 @@
+name: self-hosted testnet
+
+#
+# Setup a runner on your own hardware or in a public cloud like GCP, Hetzner, etc.
+# This is required if your chain is closed source but you want a dev/semi-public testnet
+# - https://github.com/<org>/<repo>/settings/actions/runners/new?arch=x64&os=linux
+#
+
+on:
+  push:
+    tags:
+    - 'v[0-9]+.[0-9]+.[0-9]+' # ignore rc
+
+env:
+  GO_VERSION: 1.21.0
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  LOCALIC_PORT: 8080
+  LOCALIC_AUTH_KEY: ""
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  launch-testnet:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup System
+        run: |
+          sudo apt-get update
+          sudo DEBIAN_FRONTEND=noninteractive apt -y install make gcc jq bison ca-certificates curl
+
+          wget https://go.dev/dl/go1.22.1.linux-amd64.tar.gz
+          sudo rm -rf /usr/local/go && sudo tar -C /usr/local -xzf go1.22.1.linux-amd64.tar.gz
+          echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.bashrc
+          export PATH=$PATH:/usr/local/go/bin
+
+          sudo DEBIAN_FRONTEND=noninteractive apt-get remove -y containerd.io || true
+          sudo DEBIAN_FRONTEND=noninteractive apt-get -y install docker.io docker-compose
+          sudo apt-get update
+
+          wget https://github.com/strangelove-ventures/interchaintest/releases/download/v8.2.0/local-ic && chmod +x local-ic
+          sudo mv local-ic /usr/local/bin
+
+          git clone https://github.com/strangelove-ventures/heighliner.git && cd heighliner
+          go build && chmod +x heighliner
+          sudo mv heighliner /usr/local/bin
+          cd .. && rm -rf heighliner
+
+      - name: Build + Run Testnet
+        run: |
+          killall local-ic || true
+          docker kill $(docker ps -q) || true
+
+          export PATH=$PATH:/usr/local/go/bin
+
+          make local-image
+
+          sudo screen -S testnet-${{ github.ref_name }} -d -m local-ic start ibc-testnet --api-address=0.0.0.0 --api-port=${{ env.LOCALIC_PORT }} --auth-key=${{ env.LOCALIC_AUTH_KEY }}
+
+          # Add other commands here you perform for setup once local-ic has started (poll on LOCALIC_PORT) such as contract upload.
+

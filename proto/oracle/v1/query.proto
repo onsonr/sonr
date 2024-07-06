@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package oracle.v1;
+
+option go_package = "github.com/onsonr/hway/x/oracle/types";
+
+import "gogoproto/gogo.proto";

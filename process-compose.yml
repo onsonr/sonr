@@ -1,0 +1,8 @@
+version: "0.5"
+
+processes:
+  ipfs:
+    command: ipfs daemon
+    restart: always
+  sonrd:
+    command: task testnet

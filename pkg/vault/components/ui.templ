@@ -1,0 +1,111 @@
+package components
+
+templ Header(title, description string) {
+	<div class="flex flex-col gap-2">
+		<h1 class="text-3xl font-bold">{ title }</h1>
+		<p class="text-gray-600">{ description }</p>
+	</div>
+	<sl-divider></sl-divider>
+}
+
+templ NameInput() {
+	<sl-input id="name" name="name" pattern="[A-Za-z]+" label="Name" placeholder="Satoshi Nakamoto" required>
+		<sl-icon name="person-circle" slot="prefix"></sl-icon>
+	</sl-input>
+}
+
+templ UsernameInput() {
+	<sl-input id="handle" name="handle" pattern="[A-Za-z]+" label="Username" placeholder="really_satoshi" required>
+		<sl-icon class="text-xl" name="at" slot="prefix"></sl-icon>
+	</sl-input>
+}
+
+templ EmailInput(required bool) {
+	<sl-input id="email" name="email" type="email" label="Email" placeholder="satoshi@gmx.com" required?={ required }></sl-input>
+}
+
+templ PrimaryButton(title string, href string) {
+	<sl-button href={ href } size="medium" variant="primary" pill>
+		{ title }
+	</sl-button>
+}
+
+templ SecondaryButton(title string, href string) {
+	<sl-button href={ href } size="medium" pill>
+		{ title }
+	</sl-button>
+}
+
+templ PasskeyButton(formId string) {
+	<input type="hidden" id="credentialData" name="credentialData"/>
+	<sl-button variant="primary" onClick={ createCredential(formId) }>
+		<div slot="prefix" class="text-xl">
+			<svg class="icon Passkey"><use xlink:href="#Passkey"></use></svg>
+		</div>
+		Create Passkey
+	</sl-button>
+}
+
+script createCredential(formId string) {
+    // Base64 encoding and decoding functions
+  function arrayBufferToBase64(buffer) {
+    return btoa(String.fromCharCode.apply(null, new Uint8Array(buffer)))
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=/g, "");
+  }
+
+  function base64ToArrayBuffer(base64) {
+    const binary = atob(base64.replace(/-/g, "+").replace(/_/g, "/"));
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      bytes[i] = binary.charCodeAt(i);
+    }
+    return bytes.buffer;
+  }
+
+  // Check if the form is valid
+  const form = document.getElementById(formId);
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
+  }
+
+  // Get user information from the form
+  const name = document.getElementById('name').value;
+  const handle = document.getElementById('handle').value;
+
+  let credential = navigator.credentials.create({
+    publicKey: {
+      challenge: new Uint8Array([117, 61, 252, 231, 191, 241]),
+      rp: { name: "ACME Corporation" },
+      user: {
+        id: new Uint8Array([79, 252, 83, 72, 214, 7, 89, 26]),
+        name: handle,
+        displayName: name
+      },
+      pubKeyCredParams: [{ type: "public-key", alg: -7 }]
+    }
+  }).then(credential => {
+    // Prepare the credential data
+    let credentialData = {
+      id: credential.id,
+      type: credential.type,
+      rawId: arrayBufferToBase64(credential.rawId),
+      response: {
+        clientDataJSON: arrayBufferToBase64(credential.response.clientDataJSON),
+        attestationObject: arrayBufferToBase64(credential.response.attestationObject)            
+      },
+      clientExtensionResults: credential.getClientExtensionResults()
+    };
+
+    // Set the serialized credential data as the form value
+    document.getElementById('credentialData').value = JSON.stringify(credentialData);
+
+    // Submit the form
+    form.submit();
+  }).catch(error => {
+    console.error('Error creating credential:', error);
+    // Handle the error (e.g., show an error message to the user)
+  });
+}

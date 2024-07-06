@@ -1,0 +1,41 @@
+package components
+
+templ RootLayout() {
+	<html>
+		@head()
+		<body>
+			{ children... }
+		</body>
+	</html>
+}
+
+templ Container() {
+	<html>
+		@head()
+		<body>
+			<div class="pt-24 flex flex-col items-center">
+				<sl-card class="card-basic max-w-xl min-w-lg">
+					{ children... }
+				</sl-card>
+			</div>
+		</body>
+	</html>
+}
+
+templ Form(id, action, method string) {
+	<form id={ id } class="flex flex-col gap-x-2 gap-y-4 pt-3" action={ templ.URL(action) } method={ method }>
+		{ children... }
+	</form>
+}
+
+templ Rows() {
+	<div class="pt-3 flex flex-row space-x-2">
+		{ children... }
+	</div>
+}
+
+templ Columns() {
+	<div class="pt-3 flex flex-col space-y-4">
+		{ children... }
+	</div>
+}

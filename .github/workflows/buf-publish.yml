@@ -1,0 +1,22 @@
+name: Publish to buf.build/didao/sonr
+on:
+  push:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  buf_push:
+    runs-on: ubuntu-latest
+    steps:
+      # Run `git checkout`
+      - uses: actions/checkout@v2
+      # Install the `buf` CLI
+      - uses: bufbuild/buf-setup-action@v1
+      # Push only the Input in `proto` to the BSR
+      - uses: bufbuild/buf-push-action@v1
+        continue-on-error: true
+        with:
+          input: proto
+          buf_token: ${{ secrets.BUF_TOKEN }}

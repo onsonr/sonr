@@ -1,0 +1,217 @@
+//===----------------------------------------------------------------------===//
+// Copyright © 2024 Apple Inc. and the Pkl project authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//===----------------------------------------------------------------------===//
+/// A renderer for [TOML](https://toml.io) configuration files.
+///
+/// Basic usage:
+/// ```
+/// import "package://pkg.pkl-lang.org/pantry/pkl.toml@1.0.0"
+///
+/// output {
+///   renderer = new toml.Renderer {}
+/// }
+/// ```
+///
+/// To render TOML dates and times, use [Date], [Time], and [DateTime].
+@ModuleInfo { minPklVersion = "0.25.0" }
+module pkl.toml.toml
+
+abstract class AbstractDateTime {
+  value: String
+}
+
+/// A TOML [Local Date](https://toml.io/en/v1.0.0#local-date) value.
+class Date extends AbstractDateTime {
+  value: String(matches(Regex(#"(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"#)))
+}
+
+/// A TOML [Local Time](https://toml.io/en/v1.0.0#local-time) value.
+class Time extends AbstractDateTime {
+  value: String(matches(Regex(#"([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?"#)))
+}
+
+/// A TOML [Offset Date-Time](https://toml.io/en/v1.0.0#offset-date-time)
+/// or [Local Date-Time](https://toml.io/en/v1.0.0#local-date-time) value.
+class DateTime extends AbstractDateTime {
+  value: String(matches(Regex(#"(\d{4})-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])[T ]([01][0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9]|60)(\.[0-9]+)?(Z|[+-]([01][0-9]|2[0-3]):([0-5][0-9]))?"#)))
+}
+
+/// Renders values as TOML.
+class Renderer extends ValueRenderer {
+  /// Value converters to apply before values are rendered.
+  ///
+  /// For further information see [PcfRenderer.converters].
+  /// For path converters, only "*" is supported.
+  converters: Mapping<Class|String, (unknown) -> Any>
+
+  function renderValue(value: Any) =
+    let (_value = getBasicValue(value, false))
+      doRenderValue(_value, List()).trim()
+
+  function renderDocument(value: Any) =
+    if (!isTableLike(value))
+      throw("""
+        Invalid input: TOML can only render object-types at the root level. Received: \(value)
+        """)
+    else
+      renderValue(value)
+
+  local jsonRenderer = new JsonRenderer {}
+
+  local function getConvertersForValue(value: Any): List<(Any) -> unknown> = new Listing {
+    when (convertersMap.containsKey(value.getClass())) {
+      convertersMap[value.getClass()]
+    }
+    when (convertersMap.containsKey("*")) {
+      convertersMap["*"]
+    }
+  }.toList()
+
+  local function applyConverters(value: Any) =
+    let (converters = getConvertersForValue(value))
+      converters.fold(value, (acc, converter) -> converter.apply(acc))
+
+  /// Traverses the object and casts it down to its basic type: Map, List, or the primitive value. Runs each
+  /// value through the converter if there is a match.
+  /// `skipConversion` is a helper flag to avoid infinite recursion in case the converter returns the same type.
+  local function getBasicValue(value: Any, skipConversion: Boolean) =
+    if (!skipConversion && !getConvertersForValue(value).isEmpty)
+      getBasicValue(applyConverters(value), true)
+    // If the value is Dynamic, and we have both elements and properties, it's ambiguous whether we should
+    // render as a table or an array.
+    else if (value is Dynamic && isTableLike(value) && isArrayLike(value))
+      throw("""
+        Cannot render object with both properties/entries and elements as TOML. Received: \(value)
+        """)
+    else if (isTableLike(value))
+      getMap(value)
+        .mapValues((_, elem) -> getBasicValue(elem, false))
+    else if (isArrayLike(value)) getList(value).map((elem) -> getBasicValue(elem, false))
+    else value
+
+  /// Underlying implementation for rendering values as toml
+  local function doRenderValue(value: Any, path: List<String>): String =
+    if (isTableArray(value))
+      renderTableArray(value, path)
+    else if (value is Map)
+      renderTable(value, path)
+    else
+      renderInlineValue(value)
+
+  /// Determine whether an object is map-like. We'll consider any Dynamic that doesn't have any elements as map-like.
+  local function isTableLike(obj: Any) = !(obj is AbstractDateTime) && ((obj is Dynamic && obj.toList().isEmpty) || obj is MapLike)
+
+  /// Determine whether an object is list-like. We'll consider any Dynamic that has elements as list-like.
+  local function isArrayLike(obj: Any) = (obj is Dynamic && !obj.toList().isEmpty) || obj is ListLike
+
+  /// Convert an object to its Map representation. Toml doesn't include null so we should filter out null properties.
+  local function getMap(obj: MapLike|Dynamic) = (if (obj is Map) obj else obj.toMap()).filter((_, elem) -> elem != null)
+
+  /// Convert an object to its List representation.
+  local function getList(obj: ListLike|Dynamic) = if (obj is List) obj else obj.toList()
+
+  /// Determine if we should render this value as an array of tables or not.
+  /// A value is an array of tables if all of the inhabitants are table-like.
+  local function isTableArray(value: Any) =
+    value is List && value.every((elem) -> elem is Map)
+
+  local function isTableTypeProp(value: Any) = value is Map || isTableArray(value)
+
+  local convertersMap = converters.toMap()
+
+  /// Render the value as an inline value (e.g. inline array, object, or primitive)
+  local function renderInlineValue(value: Any) =
+    if (value is Number && value.isNaN)
+      "nan"
+    else if (value == Infinity)
+      "inf"
+    else if (value is String)
+      renderString(value)
+    else if (value is Number|Boolean)
+      jsonRenderer.renderValue(value)
+    else if (value is AbstractDateTime)
+      value.value
+    else if (value is Map)
+      "{ " + new Listing {
+          for (k, v in value) {
+            "\(makeSingleKey(k)) = \(renderInlineValue(v))"
+          }
+        }.toList().join(", ") + " }"
+    else if (value is List)
+      "[ " + value.map((elem) -> renderInlineValue(elem)).join(", ") + " ]"
+    else
+      throw("Not sure how to render value: \(value). Try defining a converter for this type.")
+
+  /// Render a string making sure multi-line use the """ multi-line syntax for better readability.
+  local function renderString(value: String) =
+    if (value.contains("\n"))
+      ("\"\"\"\n" +
+      value.split("\n")
+        .map((line) -> jsonRenderer.renderValue(line).drop(1).dropLast(1))
+        .join("\n")
+      + "\"\"\"")
+    else jsonRenderer.renderValue(value)
+
+  local function renderSingleTableArray(map: Map, path: List<String>) =
+    let (nativeProps = map.filter((_, value) -> !isTableTypeProp(value)))
+      let (tableProps = map.filter((_, value) -> isTableTypeProp(value)))
+        new Listing {
+            """
+
+            [[\(makeKey(path))]]
+            """
+          for (k, v in nativeProps) {
+            "\(makeSingleKey(k)) = \(renderInlineValue(v))"
+          }
+          for (k, v in tableProps) {
+            doRenderValue(v, path.add(k))
+          }
+        }.toList().join("\n")
+
+  local function renderTableArray(value: List, path: List<String>) =
+    value.map((elem) -> renderSingleTableArray(getMap(elem), path)).join("\n")
+
+  local function makeSingleKey(key: String) = if (key.matches(Regex(#"[A-Za-z0-9_-]+"#)))
+    key
+  else
+    jsonRenderer.renderValue(key)
+
+  local function makeKey(path: List<String>): String = path.map((k) -> makeSingleKey(k)).join(".")
+
+  local function renderTable(m: Map, path: List<String>): String =
+    let (nativeProps = m.filter((_, value) -> !isTableTypeProp(value)))
+      let (tableProps = m.filter((_, value) -> isTableTypeProp(value)))
+        new Listing {
+          // If we are in an object's context, render the object header. Skip if all children are also objects.
+          when (!path.isEmpty && nativeProps.length > 0) {
+              """
+
+              [\(makeKey(path))]
+              """
+          }
+          for (k, v in nativeProps) {
+            "\(makeSingleKey(k)) = \(renderInlineValue(v))"
+          }
+          for (k, v in tableProps) {
+            doRenderValue(v, path.add(k))
+          }
+        }
+          .toList()
+          .join("\n")
+}
+
+local typealias MapLike = Typed|Map|Mapping
+
+local typealias ListLike = List|Listing

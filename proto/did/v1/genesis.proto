@@ -1,0 +1,47 @@
+syntax = "proto3";
+package did.v1;
+
+import "gogoproto/gogo.proto";
+import "amino/amino.proto";
+option go_package = "github.com/onsonr/hway/x/did/types";
+
+// GenesisState defines the module genesis state
+message GenesisState {
+  // Params defines all the paramaters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// Params defines the set of module parameters.
+message Params {
+  option (amino.name) = "did/params";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  // Property Allowlist
+  repeated string property_allowlist = 2;
+
+  // Whitelisted Verifications
+  repeated string whitelisted_origins = 3;
+
+  // Assertion Reward Rate
+  double assertion_reward_rate = 4;
+
+  // Encryption Reward Rate
+  double encryption_reward_rate = 5;
+}
+
+// PublicKey is the struct that represents a public key
+message PublicKey {
+  option (amino.name) = "did/publickey";
+  option (amino.message_encoding)     = "key_field";
+  option (gogoproto.goproto_stringer) = false;
+
+  // Key is the public key
+  bytes key = 1;
+
+  // Type is the type of the public key
+  string key_type = 2;
+
+  // DID is the DID of the public key
+  string did = 3;
+}

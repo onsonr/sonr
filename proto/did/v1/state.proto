@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package did.v1;
+option go_package = "github.com/onsonr/hway/x/did/types";
+
+import "cosmos/orm/v1/orm.proto";
+import "did/v1/genesis.proto";
+
+// Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
+message Attestation {
+  option (cosmos.orm.v1.table) = {
+    id: 1
+    primary_key: {fields: "id"}
+  };
+
+  // The unique identifier of the attestation
+  string id = 1;
+
+  // The type of the linked identifier (e.g., "crypto", "github", "email", "phone")
+  string key_type = 2;
+
+  // The value of the linked identifier
+  string value = 3;
+
+  // The proof or verification method for this attestation
+  string proof = 4;
+
+  // The controller of the attestation
+  string controller = 5;
+}
+
+// Controller represents a Sonr DWN Vault
+message Controller {
+  option (cosmos.orm.v1.table) = {
+    id: 2
+    primary_key: {fields: "id"}
+  };
+
+  // The unique identifier of the controller
+  string id = 1;
+
+  // The DID of the controller
+  string did = 2;
+
+  // The public key of the controller
+  PublicKey public_key = 3;
+
+  // The vault address or identifier
+  string vault_cid = 4;
+
+  // Fingerprint is the Accumulator of discrete credential identifiers
+  bytes fingerprint = 5;
+}
+
+// Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
+message Delegation {
+  option (cosmos.orm.v1.table) = {
+    id: 3
+    primary_key: {fields: "id"}
+  };
+
+  // The unique identifier of the delegation
+  string id = 1;
+
+  // The Decentralized Identifier of the delegated account
+  string did = 2;
+
+  // The chain type (e.g., "ETH", "BTC")
+  string chain_type = 3;
+
+  // The address on the target chain
+  string chain_address = 4;
+
+  // The controller DID
+  string controller_did = 5;
+
+  // The delegation proof or verification method
+  PublicKey public_key = 6;
+
+  // IBC Channel ID
+  uint64 channel_id = 7;
+}
+
+// Service represents a service in a DID Document
+message Service {
+  option (cosmos.orm.v1.table) = {
+    id: 4
+    primary_key: {fields: "id"}
+  };
+
+  // The ID of the service
+  string id = 1;
+
+  // The type of the service
+  string service_type = 2;
+
+  // The service endpoint
+  string service_endpoint = 3;
+
+  // The controller DID of the service
+  string controller_did = 4;
+}

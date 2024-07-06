@@ -1,0 +1,27 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.10.5/.schema/devbox.schema.json",
+  "packages": [
+    "ipfs@latest",
+    "golangci-lint@latest",
+    "go_1_21@latest",
+    "templ@latest",
+    "air@latest"
+  ],
+  "env": {
+    "GOPATH": "$HOME/go",
+    "PATH":   "$HOME/go/bin:$PATH"
+  },
+  "shell": {
+    "scripts": {
+      "proto": [
+        "make proto-gen"
+      ],
+      "templ": [
+        "templ generate"
+      ],
+      "ps": [
+        "devbox services ls"
+      ]
+    }
+  }
+}
