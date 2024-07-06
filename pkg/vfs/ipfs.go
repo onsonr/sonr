@@ -5,9 +5,9 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/onsonr/hway/internal/env"
 	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/core/coreiface/options"
+	"github.com/onsonr/hway/internal/env"
 )
 
 // Constant for the name of the folder where the vaults are stored

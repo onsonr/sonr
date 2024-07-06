@@ -10,8 +10,8 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"golang.org/x/crypto/sha3"
 
-	"github.com/onsonr/hway/crypto/core/curves"
-	"github.com/onsonr/hway/crypto/signatures/ecdsa"
+	"github.com/onsonr/crypto/core/curves"
+	"github.com/onsonr/crypto/signatures/ecdsa"
 )
 
 // Address returns the address of the public key
