@@ -5,21 +5,18 @@ package types
 
 import (
 	fmt "fmt"
-	io "io"
-	math "math"
-	math_bits "math/bits"
-
 	_ "github.com/cosmos/cosmos-proto"
 	_ "github.com/cosmos/gogoproto/gogoproto"
 	proto "github.com/cosmos/gogoproto/proto"
+	io "io"
+	math "math"
+	math_bits "math/bits"
 )
 
 // Reference imports to suppress errors if they are not otherwise used.
-var (
-	_ = proto.Marshal
-	_ = fmt.Errorf
-	_ = math.Inf
-)
+var _ = proto.Marshal
+var _ = fmt.Errorf
+var _ = math.Inf
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the proto package it is being compiled against.
@@ -43,11 +40,9 @@ func (*DIDDocument) ProtoMessage()    {}
 func (*DIDDocument) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f1c7ebf7d0ca3c72, []int{0}
 }
-
 func (m *DIDDocument) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *DIDDocument) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_DIDDocument.Marshal(b, m, deterministic)
@@ -60,15 +55,12 @@ func (m *DIDDocument) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) 
 		return b[:n], nil
 	}
 }
-
 func (m *DIDDocument) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_DIDDocument.Merge(m, src)
 }
-
 func (m *DIDDocument) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *DIDDocument) XXX_DiscardUnknown() {
 	xxx_messageInfo_DIDDocument.DiscardUnknown(m)
 }
@@ -133,11 +125,9 @@ func (*VerificationMethod) ProtoMessage()    {}
 func (*VerificationMethod) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f1c7ebf7d0ca3c72, []int{1}
 }
-
 func (m *VerificationMethod) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-
 func (m *VerificationMethod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
 		return xxx_messageInfo_VerificationMethod.Marshal(b, m, deterministic)
@@ -150,15 +140,12 @@ func (m *VerificationMethod) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-
 func (m *VerificationMethod) XXX_Merge(src proto.Message) {
 	xxx_messageInfo_VerificationMethod.Merge(m, src)
 }
-
 func (m *VerificationMethod) XXX_Size() int {
 	return m.Size()
 }
-
 func (m *VerificationMethod) XXX_DiscardUnknown() {
 	xxx_messageInfo_VerificationMethod.DiscardUnknown(m)
 }
@@ -387,7 +374,6 @@ func encodeVarintAccount(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-
 func (m *DIDDocument) Size() (n int) {
 	if m == nil {
 		return 0
@@ -463,11 +449,9 @@ func (m *VerificationMethod) Size() (n int) {
 func sovAccount(x uint64) (n int) {
 	return (math_bits.Len64(x|1) + 6) / 7
 }
-
 func sozAccount(x uint64) (n int) {
 	return sovAccount(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-
 func (m *DIDDocument) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -712,7 +696,6 @@ func (m *DIDDocument) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func (m *VerificationMethod) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
@@ -986,7 +969,6 @@ func (m *VerificationMethod) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-
 func skipAccount(dAtA []byte) (n int, err error) {
 	l := len(dAtA)
 	iNdEx := 0

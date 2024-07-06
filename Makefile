@@ -52,8 +52,7 @@ comma := ,
 build_tags_comma_sep := $(subst $(empty),$(comma),$(build_tags))
 
 # process linker flags
-
-ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=core \
+ldflags = -X github.com/cosmos/cosmos-sdk/version.Name=sonr \
 		  -X github.com/cosmos/cosmos-sdk/version.AppName=sonrd \
 		  -X github.com/cosmos/cosmos-sdk/version.Version=$(VERSION) \
 		  -X github.com/cosmos/cosmos-sdk/version.Commit=$(COMMIT) \
@@ -231,7 +230,7 @@ local-image:
 ifeq (,$(shell which heighliner))
 	echo 'heighliner' binary not found. Consider running `make get-heighliner`
 else
-	heighliner build -c core --local -f chains.yaml
+	heighliner build -c sonr --local -f chains.yaml
 endif
 
 .PHONY: get-heighliner local-image is-localic-installed
@@ -273,7 +272,7 @@ setup-testnet: mod-tidy is-localic-installed install local-image set-testnet-con
 # Run this before testnet keys are added
 # chainid-1 is used in the testnet.json
 set-testnet-configs:
-	sonrd config set client chain-id chainid-1
+	sonrd config set client chain-id sonr-testnet-1
 	sonrd config set client keyring-backend test
 	sonrd config set client output text
 
@@ -290,6 +289,6 @@ testnet-basic: setup-testnet
 	spawn local-ic start testnet
 
 sh-testnet: mod-tidy
-	CHAIN_ID="local-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
+	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet

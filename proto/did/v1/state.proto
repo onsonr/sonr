@@ -33,7 +33,7 @@ message Assertion {
 // Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
 message Attestation {
   option (cosmos.orm.v1.table) = {
-    id: 1
+    id: 2
     primary_key: {fields: "id"}
   };
 
@@ -57,7 +57,7 @@ message Attestation {
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id: 2
+    id: 3
     primary_key: {fields: "id"}
   };
 
@@ -80,7 +80,7 @@ message Controller {
 // Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
 message Delegation {
   option (cosmos.orm.v1.table) = {
-    id: 3
+    id: 4
     primary_key: {fields: "id"}
   };
 
@@ -112,7 +112,7 @@ message Delegation {
 // Service represents a service in a DID Document
 message Service {
   option (cosmos.orm.v1.table) = {
-    id: 4
+    id: 5
     primary_key: {fields: "id"}
   };
 
