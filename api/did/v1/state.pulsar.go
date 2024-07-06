@@ -10,8 +10,927 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
 	reflect "reflect"
+	sort "sort"
 	sync "sync"
 )
+
+var _ protoreflect.Map = (*_Assertion_4_map)(nil)
+
+type _Assertion_4_map struct {
+	m *map[string]string
+}
+
+func (x *_Assertion_4_map) Len() int {
+	if x.m == nil {
+		return 0
+	}
+	return len(*x.m)
+}
+
+func (x *_Assertion_4_map) Range(f func(protoreflect.MapKey, protoreflect.Value) bool) {
+	if x.m == nil {
+		return
+	}
+	for k, v := range *x.m {
+		mapKey := (protoreflect.MapKey)(protoreflect.ValueOfString(k))
+		mapValue := protoreflect.ValueOfString(v)
+		if !f(mapKey, mapValue) {
+			break
+		}
+	}
+}
+
+func (x *_Assertion_4_map) Has(key protoreflect.MapKey) bool {
+	if x.m == nil {
+		return false
+	}
+	keyUnwrapped := key.String()
+	concreteValue := keyUnwrapped
+	_, ok := (*x.m)[concreteValue]
+	return ok
+}
+
+func (x *_Assertion_4_map) Clear(key protoreflect.MapKey) {
+	if x.m == nil {
+		return
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	delete(*x.m, concreteKey)
+}
+
+func (x *_Assertion_4_map) Get(key protoreflect.MapKey) protoreflect.Value {
+	if x.m == nil {
+		return protoreflect.Value{}
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	v, ok := (*x.m)[concreteKey]
+	if !ok {
+		return protoreflect.Value{}
+	}
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Assertion_4_map) Set(key protoreflect.MapKey, value protoreflect.Value) {
+	if !key.IsValid() || !value.IsValid() {
+		panic("invalid key or value provided")
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.m)[concreteKey] = concreteValue
+}
+
+func (x *_Assertion_4_map) Mutable(key protoreflect.MapKey) protoreflect.Value {
+	panic("should not call Mutable on protoreflect.Map whose value is not of type protoreflect.Message")
+}
+
+func (x *_Assertion_4_map) NewValue() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Assertion_4_map) IsValid() bool {
+	return x.m != nil
+}
+
+var (
+	md_Assertion            protoreflect.MessageDescriptor
+	fd_Assertion_id         protoreflect.FieldDescriptor
+	fd_Assertion_key_type   protoreflect.FieldDescriptor
+	fd_Assertion_credential protoreflect.FieldDescriptor
+	fd_Assertion_metadata   protoreflect.FieldDescriptor
+	fd_Assertion_controller protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_did_v1_state_proto_init()
+	md_Assertion = File_did_v1_state_proto.Messages().ByName("Assertion")
+	fd_Assertion_id = md_Assertion.Fields().ByName("id")
+	fd_Assertion_key_type = md_Assertion.Fields().ByName("key_type")
+	fd_Assertion_credential = md_Assertion.Fields().ByName("credential")
+	fd_Assertion_metadata = md_Assertion.Fields().ByName("metadata")
+	fd_Assertion_controller = md_Assertion.Fields().ByName("controller")
+}
+
+var _ protoreflect.Message = (*fastReflection_Assertion)(nil)
+
+type fastReflection_Assertion Assertion
+
+func (x *Assertion) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Assertion)(x)
+}
+
+func (x *Assertion) slowProtoReflect() protoreflect.Message {
+	mi := &file_did_v1_state_proto_msgTypes[0]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_Assertion_messageType fastReflection_Assertion_messageType
+var _ protoreflect.MessageType = fastReflection_Assertion_messageType{}
+
+type fastReflection_Assertion_messageType struct{}
+
+func (x fastReflection_Assertion_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Assertion)(nil)
+}
+func (x fastReflection_Assertion_messageType) New() protoreflect.Message {
+	return new(fastReflection_Assertion)
+}
+func (x fastReflection_Assertion_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Assertion
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_Assertion) Descriptor() protoreflect.MessageDescriptor {
+	return md_Assertion
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_Assertion) Type() protoreflect.MessageType {
+	return _fastReflection_Assertion_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_Assertion) New() protoreflect.Message {
+	return new(fastReflection_Assertion)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_Assertion) Interface() protoreflect.ProtoMessage {
+	return (*Assertion)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_Assertion) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Id != "" {
+		value := protoreflect.ValueOfString(x.Id)
+		if !f(fd_Assertion_id, value) {
+			return
+		}
+	}
+	if x.KeyType != "" {
+		value := protoreflect.ValueOfString(x.KeyType)
+		if !f(fd_Assertion_key_type, value) {
+			return
+		}
+	}
+	if len(x.Credential) != 0 {
+		value := protoreflect.ValueOfBytes(x.Credential)
+		if !f(fd_Assertion_credential, value) {
+			return
+		}
+	}
+	if len(x.Metadata) != 0 {
+		value := protoreflect.ValueOfMap(&_Assertion_4_map{m: &x.Metadata})
+		if !f(fd_Assertion_metadata, value) {
+			return
+		}
+	}
+	if x.Controller != "" {
+		value := protoreflect.ValueOfString(x.Controller)
+		if !f(fd_Assertion_controller, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_Assertion) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "did.v1.Assertion.id":
+		return x.Id != ""
+	case "did.v1.Assertion.key_type":
+		return x.KeyType != ""
+	case "did.v1.Assertion.credential":
+		return len(x.Credential) != 0
+	case "did.v1.Assertion.metadata":
+		return len(x.Metadata) != 0
+	case "did.v1.Assertion.controller":
+		return x.Controller != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Assertion) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "did.v1.Assertion.id":
+		x.Id = ""
+	case "did.v1.Assertion.key_type":
+		x.KeyType = ""
+	case "did.v1.Assertion.credential":
+		x.Credential = nil
+	case "did.v1.Assertion.metadata":
+		x.Metadata = nil
+	case "did.v1.Assertion.controller":
+		x.Controller = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_Assertion) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "did.v1.Assertion.id":
+		value := x.Id
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Assertion.key_type":
+		value := x.KeyType
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Assertion.credential":
+		value := x.Credential
+		return protoreflect.ValueOfBytes(value)
+	case "did.v1.Assertion.metadata":
+		if len(x.Metadata) == 0 {
+			return protoreflect.ValueOfMap(&_Assertion_4_map{})
+		}
+		mapValue := &_Assertion_4_map{m: &x.Metadata}
+		return protoreflect.ValueOfMap(mapValue)
+	case "did.v1.Assertion.controller":
+		value := x.Controller
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Assertion) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "did.v1.Assertion.id":
+		x.Id = value.Interface().(string)
+	case "did.v1.Assertion.key_type":
+		x.KeyType = value.Interface().(string)
+	case "did.v1.Assertion.credential":
+		x.Credential = value.Bytes()
+	case "did.v1.Assertion.metadata":
+		mv := value.Map()
+		cmv := mv.(*_Assertion_4_map)
+		x.Metadata = *cmv.m
+	case "did.v1.Assertion.controller":
+		x.Controller = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Assertion) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "did.v1.Assertion.metadata":
+		if x.Metadata == nil {
+			x.Metadata = make(map[string]string)
+		}
+		value := &_Assertion_4_map{m: &x.Metadata}
+		return protoreflect.ValueOfMap(value)
+	case "did.v1.Assertion.id":
+		panic(fmt.Errorf("field id of message did.v1.Assertion is not mutable"))
+	case "did.v1.Assertion.key_type":
+		panic(fmt.Errorf("field key_type of message did.v1.Assertion is not mutable"))
+	case "did.v1.Assertion.credential":
+		panic(fmt.Errorf("field credential of message did.v1.Assertion is not mutable"))
+	case "did.v1.Assertion.controller":
+		panic(fmt.Errorf("field controller of message did.v1.Assertion is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_Assertion) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "did.v1.Assertion.id":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Assertion.key_type":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Assertion.credential":
+		return protoreflect.ValueOfBytes(nil)
+	case "did.v1.Assertion.metadata":
+		m := make(map[string]string)
+		return protoreflect.ValueOfMap(&_Assertion_4_map{m: &m})
+	case "did.v1.Assertion.controller":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Assertion"))
+		}
+		panic(fmt.Errorf("message did.v1.Assertion does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_Assertion) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.Assertion", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_Assertion) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Assertion) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_Assertion) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_Assertion) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*Assertion)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		l = len(x.Id)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.KeyType)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Credential)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Metadata) > 0 {
+			SiZeMaP := func(k string, v string) {
+				mapEntrySize := 1 + len(k) + runtime.Sov(uint64(len(k))) + 1 + len(v) + runtime.Sov(uint64(len(v)))
+				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
+			}
+			if options.Deterministic {
+				sortme := make([]string, 0, len(x.Metadata))
+				for k := range x.Metadata {
+					sortme = append(sortme, k)
+				}
+				sort.Strings(sortme)
+				for _, k := range sortme {
+					v := x.Metadata[k]
+					SiZeMaP(k, v)
+				}
+			} else {
+				for k, v := range x.Metadata {
+					SiZeMaP(k, v)
+				}
+			}
+		}
+		l = len(x.Controller)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*Assertion)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Controller) > 0 {
+			i -= len(x.Controller)
+			copy(dAtA[i:], x.Controller)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Controller)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.Metadata) > 0 {
+			MaRsHaLmAp := func(k string, v string) (protoiface.MarshalOutput, error) {
+				baseI := i
+				i -= len(v)
+				copy(dAtA[i:], v)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(v)))
+				i--
+				dAtA[i] = 0x12
+				i -= len(k)
+				copy(dAtA[i:], k)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(k)))
+				i--
+				dAtA[i] = 0xa
+				i = runtime.EncodeVarint(dAtA, i, uint64(baseI-i))
+				i--
+				dAtA[i] = 0x22
+				return protoiface.MarshalOutput{}, nil
+			}
+			if options.Deterministic {
+				keysForMetadata := make([]string, 0, len(x.Metadata))
+				for k := range x.Metadata {
+					keysForMetadata = append(keysForMetadata, string(k))
+				}
+				sort.Slice(keysForMetadata, func(i, j int) bool {
+					return keysForMetadata[i] < keysForMetadata[j]
+				})
+				for iNdEx := len(keysForMetadata) - 1; iNdEx >= 0; iNdEx-- {
+					v := x.Metadata[string(keysForMetadata[iNdEx])]
+					out, err := MaRsHaLmAp(keysForMetadata[iNdEx], v)
+					if err != nil {
+						return out, err
+					}
+				}
+			} else {
+				for k := range x.Metadata {
+					v := x.Metadata[k]
+					out, err := MaRsHaLmAp(k, v)
+					if err != nil {
+						return out, err
+					}
+				}
+			}
+		}
+		if len(x.Credential) > 0 {
+			i -= len(x.Credential)
+			copy(dAtA[i:], x.Credential)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Credential)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.KeyType) > 0 {
+			i -= len(x.KeyType)
+			copy(dAtA[i:], x.KeyType)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.KeyType)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Id) > 0 {
+			i -= len(x.Id)
+			copy(dAtA[i:], x.Id)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Id)))
+			i--
+			dAtA[i] = 0xa
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*Assertion)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Assertion: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Assertion: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Id = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field KeyType", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.KeyType = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Credential", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Credential = append(x.Credential[:0], dAtA[iNdEx:postIndex]...)
+				if x.Credential == nil {
+					x.Credential = []byte{}
+				}
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.Metadata == nil {
+					x.Metadata = make(map[string]string)
+				}
+				var mapkey string
+				var mapvalue string
+				for iNdEx < postIndex {
+					entryPreIndex := iNdEx
+					var wire uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						wire |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					fieldNum := int32(wire >> 3)
+					if fieldNum == 1 {
+						var stringLenmapkey uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapkey |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapkey := int(stringLenmapkey)
+						if intStringLenmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapkey := iNdEx + intStringLenmapkey
+						if postStringIndexmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapkey > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+						iNdEx = postStringIndexmapkey
+					} else if fieldNum == 2 {
+						var stringLenmapvalue uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapvalue |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapvalue := int(stringLenmapvalue)
+						if intStringLenmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+						if postStringIndexmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapvalue > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+						iNdEx = postStringIndexmapvalue
+					} else {
+						iNdEx = entryPreIndex
+						skippy, err := runtime.Skip(dAtA[iNdEx:])
+						if err != nil {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+						}
+						if (skippy < 0) || (iNdEx+skippy) < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if (iNdEx + skippy) > postIndex {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						iNdEx += skippy
+					}
+				}
+				x.Metadata[mapkey] = mapvalue
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Controller = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
 
 var (
 	md_Attestation            protoreflect.MessageDescriptor
@@ -41,7 +960,7 @@ func (x *Attestation) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Attestation) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[0]
+	mi := &file_did_v1_state_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -690,12 +1609,12 @@ func (x *fastReflection_Attestation) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Controller             protoreflect.MessageDescriptor
-	fd_Controller_id          protoreflect.FieldDescriptor
-	fd_Controller_did         protoreflect.FieldDescriptor
-	fd_Controller_public_key  protoreflect.FieldDescriptor
-	fd_Controller_vault_cid   protoreflect.FieldDescriptor
-	fd_Controller_fingerprint protoreflect.FieldDescriptor
+	md_Controller                      protoreflect.MessageDescriptor
+	fd_Controller_id                   protoreflect.FieldDescriptor
+	fd_Controller_did                  protoreflect.FieldDescriptor
+	fd_Controller_public_key_multibase protoreflect.FieldDescriptor
+	fd_Controller_vault_cid            protoreflect.FieldDescriptor
+	fd_Controller_fingerprint          protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -703,7 +1622,7 @@ func init() {
 	md_Controller = File_did_v1_state_proto.Messages().ByName("Controller")
 	fd_Controller_id = md_Controller.Fields().ByName("id")
 	fd_Controller_did = md_Controller.Fields().ByName("did")
-	fd_Controller_public_key = md_Controller.Fields().ByName("public_key")
+	fd_Controller_public_key_multibase = md_Controller.Fields().ByName("public_key_multibase")
 	fd_Controller_vault_cid = md_Controller.Fields().ByName("vault_cid")
 	fd_Controller_fingerprint = md_Controller.Fields().ByName("fingerprint")
 }
@@ -717,7 +1636,7 @@ func (x *Controller) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Controller) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[1]
+	mi := &file_did_v1_state_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -785,9 +1704,9 @@ func (x *fastReflection_Controller) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if len(x.PublicKey) != 0 {
-		value := protoreflect.ValueOfBytes(x.PublicKey)
-		if !f(fd_Controller_public_key, value) {
+	if x.PublicKeyMultibase != "" {
+		value := protoreflect.ValueOfString(x.PublicKeyMultibase)
+		if !f(fd_Controller_public_key_multibase, value) {
 			return
 		}
 	}
@@ -822,8 +1741,8 @@ func (x *fastReflection_Controller) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.Id != ""
 	case "did.v1.Controller.did":
 		return x.Did != ""
-	case "did.v1.Controller.public_key":
-		return len(x.PublicKey) != 0
+	case "did.v1.Controller.public_key_multibase":
+		return x.PublicKeyMultibase != ""
 	case "did.v1.Controller.vault_cid":
 		return x.VaultCid != ""
 	case "did.v1.Controller.fingerprint":
@@ -848,8 +1767,8 @@ func (x *fastReflection_Controller) Clear(fd protoreflect.FieldDescriptor) {
 		x.Id = ""
 	case "did.v1.Controller.did":
 		x.Did = ""
-	case "did.v1.Controller.public_key":
-		x.PublicKey = nil
+	case "did.v1.Controller.public_key_multibase":
+		x.PublicKeyMultibase = ""
 	case "did.v1.Controller.vault_cid":
 		x.VaultCid = ""
 	case "did.v1.Controller.fingerprint":
@@ -876,9 +1795,9 @@ func (x *fastReflection_Controller) Get(descriptor protoreflect.FieldDescriptor)
 	case "did.v1.Controller.did":
 		value := x.Did
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Controller.public_key":
-		value := x.PublicKey
-		return protoreflect.ValueOfBytes(value)
+	case "did.v1.Controller.public_key_multibase":
+		value := x.PublicKeyMultibase
+		return protoreflect.ValueOfString(value)
 	case "did.v1.Controller.vault_cid":
 		value := x.VaultCid
 		return protoreflect.ValueOfString(value)
@@ -909,8 +1828,8 @@ func (x *fastReflection_Controller) Set(fd protoreflect.FieldDescriptor, value p
 		x.Id = value.Interface().(string)
 	case "did.v1.Controller.did":
 		x.Did = value.Interface().(string)
-	case "did.v1.Controller.public_key":
-		x.PublicKey = value.Bytes()
+	case "did.v1.Controller.public_key_multibase":
+		x.PublicKeyMultibase = value.Interface().(string)
 	case "did.v1.Controller.vault_cid":
 		x.VaultCid = value.Interface().(string)
 	case "did.v1.Controller.fingerprint":
@@ -939,8 +1858,8 @@ func (x *fastReflection_Controller) Mutable(fd protoreflect.FieldDescriptor) pro
 		panic(fmt.Errorf("field id of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.did":
 		panic(fmt.Errorf("field did of message did.v1.Controller is not mutable"))
-	case "did.v1.Controller.public_key":
-		panic(fmt.Errorf("field public_key of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.public_key_multibase":
+		panic(fmt.Errorf("field public_key_multibase of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.vault_cid":
 		panic(fmt.Errorf("field vault_cid of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.fingerprint":
@@ -962,8 +1881,8 @@ func (x *fastReflection_Controller) NewField(fd protoreflect.FieldDescriptor) pr
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.did":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Controller.public_key":
-		return protoreflect.ValueOfBytes(nil)
+	case "did.v1.Controller.public_key_multibase":
+		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.vault_cid":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.fingerprint":
@@ -1045,7 +1964,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.PublicKey)
+		l = len(x.PublicKeyMultibase)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1100,10 +2019,10 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if len(x.PublicKey) > 0 {
-			i -= len(x.PublicKey)
-			copy(dAtA[i:], x.PublicKey)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKey)))
+		if len(x.PublicKeyMultibase) > 0 {
+			i -= len(x.PublicKeyMultibase)
+			copy(dAtA[i:], x.PublicKeyMultibase)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKeyMultibase)))
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -1236,9 +2155,9 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKeyMultibase", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1248,25 +2167,23 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.PublicKey = append(x.PublicKey[:0], dAtA[iNdEx:postIndex]...)
-				if x.PublicKey == nil {
-					x.PublicKey = []byte{}
-				}
+				x.PublicKeyMultibase = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
@@ -1369,15 +2286,98 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.Map = (*_Delegation_7_map)(nil)
+
+type _Delegation_7_map struct {
+	m *map[string]string
+}
+
+func (x *_Delegation_7_map) Len() int {
+	if x.m == nil {
+		return 0
+	}
+	return len(*x.m)
+}
+
+func (x *_Delegation_7_map) Range(f func(protoreflect.MapKey, protoreflect.Value) bool) {
+	if x.m == nil {
+		return
+	}
+	for k, v := range *x.m {
+		mapKey := (protoreflect.MapKey)(protoreflect.ValueOfString(k))
+		mapValue := protoreflect.ValueOfString(v)
+		if !f(mapKey, mapValue) {
+			break
+		}
+	}
+}
+
+func (x *_Delegation_7_map) Has(key protoreflect.MapKey) bool {
+	if x.m == nil {
+		return false
+	}
+	keyUnwrapped := key.String()
+	concreteValue := keyUnwrapped
+	_, ok := (*x.m)[concreteValue]
+	return ok
+}
+
+func (x *_Delegation_7_map) Clear(key protoreflect.MapKey) {
+	if x.m == nil {
+		return
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	delete(*x.m, concreteKey)
+}
+
+func (x *_Delegation_7_map) Get(key protoreflect.MapKey) protoreflect.Value {
+	if x.m == nil {
+		return protoreflect.Value{}
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	v, ok := (*x.m)[concreteKey]
+	if !ok {
+		return protoreflect.Value{}
+	}
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Delegation_7_map) Set(key protoreflect.MapKey, value protoreflect.Value) {
+	if !key.IsValid() || !value.IsValid() {
+		panic("invalid key or value provided")
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.m)[concreteKey] = concreteValue
+}
+
+func (x *_Delegation_7_map) Mutable(key protoreflect.MapKey) protoreflect.Value {
+	panic("should not call Mutable on protoreflect.Map whose value is not of type protoreflect.Message")
+}
+
+func (x *_Delegation_7_map) NewValue() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Delegation_7_map) IsValid() bool {
+	return x.m != nil
+}
+
 var (
-	md_Delegation                protoreflect.MessageDescriptor
-	fd_Delegation_id             protoreflect.FieldDescriptor
-	fd_Delegation_did            protoreflect.FieldDescriptor
-	fd_Delegation_chain_type     protoreflect.FieldDescriptor
-	fd_Delegation_chain_address  protoreflect.FieldDescriptor
-	fd_Delegation_controller_did protoreflect.FieldDescriptor
-	fd_Delegation_public_key     protoreflect.FieldDescriptor
-	fd_Delegation_channel_id     protoreflect.FieldDescriptor
+	md_Delegation                      protoreflect.MessageDescriptor
+	fd_Delegation_id                   protoreflect.FieldDescriptor
+	fd_Delegation_did                  protoreflect.FieldDescriptor
+	fd_Delegation_chain_type           protoreflect.FieldDescriptor
+	fd_Delegation_chain_address        protoreflect.FieldDescriptor
+	fd_Delegation_controller_did       protoreflect.FieldDescriptor
+	fd_Delegation_public_key_multibase protoreflect.FieldDescriptor
+	fd_Delegation_public_key_jwks      protoreflect.FieldDescriptor
+	fd_Delegation_channel_id           protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1388,7 +2388,8 @@ func init() {
 	fd_Delegation_chain_type = md_Delegation.Fields().ByName("chain_type")
 	fd_Delegation_chain_address = md_Delegation.Fields().ByName("chain_address")
 	fd_Delegation_controller_did = md_Delegation.Fields().ByName("controller_did")
-	fd_Delegation_public_key = md_Delegation.Fields().ByName("public_key")
+	fd_Delegation_public_key_multibase = md_Delegation.Fields().ByName("public_key_multibase")
+	fd_Delegation_public_key_jwks = md_Delegation.Fields().ByName("public_key_jwks")
 	fd_Delegation_channel_id = md_Delegation.Fields().ByName("channel_id")
 }
 
@@ -1401,7 +2402,7 @@ func (x *Delegation) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Delegation) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[2]
+	mi := &file_did_v1_state_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1487,9 +2488,15 @@ func (x *fastReflection_Delegation) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if len(x.PublicKey) != 0 {
-		value := protoreflect.ValueOfBytes(x.PublicKey)
-		if !f(fd_Delegation_public_key, value) {
+	if x.PublicKeyMultibase != "" {
+		value := protoreflect.ValueOfString(x.PublicKeyMultibase)
+		if !f(fd_Delegation_public_key_multibase, value) {
+			return
+		}
+	}
+	if len(x.PublicKeyJwks) != 0 {
+		value := protoreflect.ValueOfMap(&_Delegation_7_map{m: &x.PublicKeyJwks})
+		if !f(fd_Delegation_public_key_jwks, value) {
 			return
 		}
 	}
@@ -1524,8 +2531,10 @@ func (x *fastReflection_Delegation) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.ChainAddress != ""
 	case "did.v1.Delegation.controller_did":
 		return x.ControllerDid != ""
-	case "did.v1.Delegation.public_key":
-		return len(x.PublicKey) != 0
+	case "did.v1.Delegation.public_key_multibase":
+		return x.PublicKeyMultibase != ""
+	case "did.v1.Delegation.public_key_jwks":
+		return len(x.PublicKeyJwks) != 0
 	case "did.v1.Delegation.channel_id":
 		return x.ChannelId != uint64(0)
 	default:
@@ -1554,8 +2563,10 @@ func (x *fastReflection_Delegation) Clear(fd protoreflect.FieldDescriptor) {
 		x.ChainAddress = ""
 	case "did.v1.Delegation.controller_did":
 		x.ControllerDid = ""
-	case "did.v1.Delegation.public_key":
-		x.PublicKey = nil
+	case "did.v1.Delegation.public_key_multibase":
+		x.PublicKeyMultibase = ""
+	case "did.v1.Delegation.public_key_jwks":
+		x.PublicKeyJwks = nil
 	case "did.v1.Delegation.channel_id":
 		x.ChannelId = uint64(0)
 	default:
@@ -1589,9 +2600,15 @@ func (x *fastReflection_Delegation) Get(descriptor protoreflect.FieldDescriptor)
 	case "did.v1.Delegation.controller_did":
 		value := x.ControllerDid
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Delegation.public_key":
-		value := x.PublicKey
-		return protoreflect.ValueOfBytes(value)
+	case "did.v1.Delegation.public_key_multibase":
+		value := x.PublicKeyMultibase
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Delegation.public_key_jwks":
+		if len(x.PublicKeyJwks) == 0 {
+			return protoreflect.ValueOfMap(&_Delegation_7_map{})
+		}
+		mapValue := &_Delegation_7_map{m: &x.PublicKeyJwks}
+		return protoreflect.ValueOfMap(mapValue)
 	case "did.v1.Delegation.channel_id":
 		value := x.ChannelId
 		return protoreflect.ValueOfUint64(value)
@@ -1625,8 +2642,12 @@ func (x *fastReflection_Delegation) Set(fd protoreflect.FieldDescriptor, value p
 		x.ChainAddress = value.Interface().(string)
 	case "did.v1.Delegation.controller_did":
 		x.ControllerDid = value.Interface().(string)
-	case "did.v1.Delegation.public_key":
-		x.PublicKey = value.Bytes()
+	case "did.v1.Delegation.public_key_multibase":
+		x.PublicKeyMultibase = value.Interface().(string)
+	case "did.v1.Delegation.public_key_jwks":
+		mv := value.Map()
+		cmv := mv.(*_Delegation_7_map)
+		x.PublicKeyJwks = *cmv.m
 	case "did.v1.Delegation.channel_id":
 		x.ChannelId = value.Uint()
 	default:
@@ -1649,6 +2670,12 @@ func (x *fastReflection_Delegation) Set(fd protoreflect.FieldDescriptor, value p
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Delegation) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "did.v1.Delegation.public_key_jwks":
+		if x.PublicKeyJwks == nil {
+			x.PublicKeyJwks = make(map[string]string)
+		}
+		value := &_Delegation_7_map{m: &x.PublicKeyJwks}
+		return protoreflect.ValueOfMap(value)
 	case "did.v1.Delegation.id":
 		panic(fmt.Errorf("field id of message did.v1.Delegation is not mutable"))
 	case "did.v1.Delegation.did":
@@ -1659,8 +2686,8 @@ func (x *fastReflection_Delegation) Mutable(fd protoreflect.FieldDescriptor) pro
 		panic(fmt.Errorf("field chain_address of message did.v1.Delegation is not mutable"))
 	case "did.v1.Delegation.controller_did":
 		panic(fmt.Errorf("field controller_did of message did.v1.Delegation is not mutable"))
-	case "did.v1.Delegation.public_key":
-		panic(fmt.Errorf("field public_key of message did.v1.Delegation is not mutable"))
+	case "did.v1.Delegation.public_key_multibase":
+		panic(fmt.Errorf("field public_key_multibase of message did.v1.Delegation is not mutable"))
 	case "did.v1.Delegation.channel_id":
 		panic(fmt.Errorf("field channel_id of message did.v1.Delegation is not mutable"))
 	default:
@@ -1686,8 +2713,11 @@ func (x *fastReflection_Delegation) NewField(fd protoreflect.FieldDescriptor) pr
 		return protoreflect.ValueOfString("")
 	case "did.v1.Delegation.controller_did":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Delegation.public_key":
-		return protoreflect.ValueOfBytes(nil)
+	case "did.v1.Delegation.public_key_multibase":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Delegation.public_key_jwks":
+		m := make(map[string]string)
+		return protoreflect.ValueOfMap(&_Delegation_7_map{m: &m})
 	case "did.v1.Delegation.channel_id":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
@@ -1779,9 +2809,30 @@ func (x *fastReflection_Delegation) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.PublicKey)
+		l = len(x.PublicKeyMultibase)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.PublicKeyJwks) > 0 {
+			SiZeMaP := func(k string, v string) {
+				mapEntrySize := 1 + len(k) + runtime.Sov(uint64(len(k))) + 1 + len(v) + runtime.Sov(uint64(len(v)))
+				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
+			}
+			if options.Deterministic {
+				sortme := make([]string, 0, len(x.PublicKeyJwks))
+				for k := range x.PublicKeyJwks {
+					sortme = append(sortme, k)
+				}
+				sort.Strings(sortme)
+				for _, k := range sortme {
+					v := x.PublicKeyJwks[k]
+					SiZeMaP(k, v)
+				}
+			} else {
+				for k, v := range x.PublicKeyJwks {
+					SiZeMaP(k, v)
+				}
+			}
 		}
 		if x.ChannelId != 0 {
 			n += 1 + runtime.Sov(uint64(x.ChannelId))
@@ -1818,12 +2869,55 @@ func (x *fastReflection_Delegation) ProtoMethods() *protoiface.Methods {
 		if x.ChannelId != 0 {
 			i = runtime.EncodeVarint(dAtA, i, uint64(x.ChannelId))
 			i--
-			dAtA[i] = 0x38
+			dAtA[i] = 0x40
 		}
-		if len(x.PublicKey) > 0 {
-			i -= len(x.PublicKey)
-			copy(dAtA[i:], x.PublicKey)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKey)))
+		if len(x.PublicKeyJwks) > 0 {
+			MaRsHaLmAp := func(k string, v string) (protoiface.MarshalOutput, error) {
+				baseI := i
+				i -= len(v)
+				copy(dAtA[i:], v)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(v)))
+				i--
+				dAtA[i] = 0x12
+				i -= len(k)
+				copy(dAtA[i:], k)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(k)))
+				i--
+				dAtA[i] = 0xa
+				i = runtime.EncodeVarint(dAtA, i, uint64(baseI-i))
+				i--
+				dAtA[i] = 0x3a
+				return protoiface.MarshalOutput{}, nil
+			}
+			if options.Deterministic {
+				keysForPublicKeyJwks := make([]string, 0, len(x.PublicKeyJwks))
+				for k := range x.PublicKeyJwks {
+					keysForPublicKeyJwks = append(keysForPublicKeyJwks, string(k))
+				}
+				sort.Slice(keysForPublicKeyJwks, func(i, j int) bool {
+					return keysForPublicKeyJwks[i] < keysForPublicKeyJwks[j]
+				})
+				for iNdEx := len(keysForPublicKeyJwks) - 1; iNdEx >= 0; iNdEx-- {
+					v := x.PublicKeyJwks[string(keysForPublicKeyJwks[iNdEx])]
+					out, err := MaRsHaLmAp(keysForPublicKeyJwks[iNdEx], v)
+					if err != nil {
+						return out, err
+					}
+				}
+			} else {
+				for k := range x.PublicKeyJwks {
+					v := x.PublicKeyJwks[k]
+					out, err := MaRsHaLmAp(k, v)
+					if err != nil {
+						return out, err
+					}
+				}
+			}
+		}
+		if len(x.PublicKeyMultibase) > 0 {
+			i -= len(x.PublicKeyMultibase)
+			copy(dAtA[i:], x.PublicKeyMultibase)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKeyMultibase)))
 			i--
 			dAtA[i] = 0x32
 		}
@@ -2073,9 +3167,9 @@ func (x *fastReflection_Delegation) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 6:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKeyMultibase", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2085,27 +3179,152 @@ func (x *fastReflection_Delegation) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.PublicKey = append(x.PublicKey[:0], dAtA[iNdEx:postIndex]...)
-				if x.PublicKey == nil {
-					x.PublicKey = []byte{}
-				}
+				x.PublicKeyMultibase = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 7:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKeyJwks", wireType)
+				}
+				var msglen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					msglen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if msglen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + msglen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if x.PublicKeyJwks == nil {
+					x.PublicKeyJwks = make(map[string]string)
+				}
+				var mapkey string
+				var mapvalue string
+				for iNdEx < postIndex {
+					entryPreIndex := iNdEx
+					var wire uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						wire |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					fieldNum := int32(wire >> 3)
+					if fieldNum == 1 {
+						var stringLenmapkey uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapkey |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapkey := int(stringLenmapkey)
+						if intStringLenmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapkey := iNdEx + intStringLenmapkey
+						if postStringIndexmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapkey > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+						iNdEx = postStringIndexmapkey
+					} else if fieldNum == 2 {
+						var stringLenmapvalue uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapvalue |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapvalue := int(stringLenmapvalue)
+						if intStringLenmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+						if postStringIndexmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapvalue > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+						iNdEx = postStringIndexmapvalue
+					} else {
+						iNdEx = entryPreIndex
+						skippy, err := runtime.Skip(dAtA[iNdEx:])
+						if err != nil {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+						}
+						if (skippy < 0) || (iNdEx+skippy) < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if (iNdEx + skippy) > postIndex {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						iNdEx += skippy
+					}
+				}
+				x.PublicKeyJwks[mapkey] = mapvalue
+				iNdEx = postIndex
+			case 8:
 				if wireType != 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ChannelId", wireType)
 				}
@@ -2185,7 +3404,7 @@ func (x *Service) ProtoReflect() protoreflect.Message {
 }
 
 func (x *Service) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[3]
+	mi := &file_did_v1_state_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -2784,6 +4003,79 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
+type Assertion struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	// The unique identifier of the attestation
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
+	KeyType string `protobuf:"bytes,2,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
+	// The value of the linked identifier
+	Credential []byte `protobuf:"bytes,3,opt,name=credential,proto3" json:"credential,omitempty"`
+	// Metadata is optional additional information about the assertion
+	Metadata map[string]string `protobuf:"bytes,4,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// The controller of the attestation
+	Controller string `protobuf:"bytes,5,opt,name=controller,proto3" json:"controller,omitempty"`
+}
+
+func (x *Assertion) Reset() {
+	*x = Assertion{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_did_v1_state_proto_msgTypes[0]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Assertion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Assertion) ProtoMessage() {}
+
+// Deprecated: Use Assertion.ProtoReflect.Descriptor instead.
+func (*Assertion) Descriptor() ([]byte, []int) {
+	return file_did_v1_state_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *Assertion) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Assertion) GetKeyType() string {
+	if x != nil {
+		return x.KeyType
+	}
+	return ""
+}
+
+func (x *Assertion) GetCredential() []byte {
+	if x != nil {
+		return x.Credential
+	}
+	return nil
+}
+
+func (x *Assertion) GetMetadata() map[string]string {
+	if x != nil {
+		return x.Metadata
+	}
+	return nil
+}
+
+func (x *Assertion) GetController() string {
+	if x != nil {
+		return x.Controller
+	}
+	return ""
+}
+
 // Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
 type Attestation struct {
 	state         protoimpl.MessageState
@@ -2805,7 +4097,7 @@ type Attestation struct {
 func (x *Attestation) Reset() {
 	*x = Attestation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[0]
+		mi := &file_did_v1_state_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2819,7 +4111,7 @@ func (*Attestation) ProtoMessage() {}
 
 // Deprecated: Use Attestation.ProtoReflect.Descriptor instead.
 func (*Attestation) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{0}
+	return file_did_v1_state_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Attestation) GetId() string {
@@ -2868,7 +4160,7 @@ type Controller struct {
 	// The DID of the controller
 	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 	// The public key of the controller
-	PublicKey []byte `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKeyMultibase string `protobuf:"bytes,3,opt,name=public_key_multibase,json=publicKeyMultibase,proto3" json:"public_key_multibase,omitempty"`
 	// The vault address or identifier
 	VaultCid string `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
 	// Fingerprint is the Accumulator of discrete credential identifiers
@@ -2878,7 +4170,7 @@ type Controller struct {
 func (x *Controller) Reset() {
 	*x = Controller{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[1]
+		mi := &file_did_v1_state_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2892,7 +4184,7 @@ func (*Controller) ProtoMessage() {}
 
 // Deprecated: Use Controller.ProtoReflect.Descriptor instead.
 func (*Controller) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{1}
+	return file_did_v1_state_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Controller) GetId() string {
@@ -2909,11 +4201,11 @@ func (x *Controller) GetDid() string {
 	return ""
 }
 
-func (x *Controller) GetPublicKey() []byte {
+func (x *Controller) GetPublicKeyMultibase() string {
 	if x != nil {
-		return x.PublicKey
+		return x.PublicKeyMultibase
 	}
-	return nil
+	return ""
 }
 
 func (x *Controller) GetVaultCid() string {
@@ -2947,15 +4239,17 @@ type Delegation struct {
 	// The controller DID
 	ControllerDid string `protobuf:"bytes,5,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
 	// The delegation proof or verification method
-	PublicKey []byte `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKeyMultibase string `protobuf:"bytes,6,opt,name=public_key_multibase,json=publicKeyMultibase,proto3" json:"public_key_multibase,omitempty"`
+	// Public Key JWKS is a map of the associated public keys
+	PublicKeyJwks map[string]string `protobuf:"bytes,7,rep,name=public_key_jwks,json=publicKeyJwks,proto3" json:"public_key_jwks,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 	// IBC Channel ID
-	ChannelId uint64 `protobuf:"varint,7,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	ChannelId uint64 `protobuf:"varint,8,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
 }
 
 func (x *Delegation) Reset() {
 	*x = Delegation{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[2]
+		mi := &file_did_v1_state_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2969,7 +4263,7 @@ func (*Delegation) ProtoMessage() {}
 
 // Deprecated: Use Delegation.ProtoReflect.Descriptor instead.
 func (*Delegation) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{2}
+	return file_did_v1_state_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *Delegation) GetId() string {
@@ -3007,9 +4301,16 @@ func (x *Delegation) GetControllerDid() string {
 	return ""
 }
 
-func (x *Delegation) GetPublicKey() []byte {
+func (x *Delegation) GetPublicKeyMultibase() string {
 	if x != nil {
-		return x.PublicKey
+		return x.PublicKeyMultibase
+	}
+	return ""
+}
+
+func (x *Delegation) GetPublicKeyJwks() map[string]string {
+	if x != nil {
+		return x.PublicKeyJwks
 	}
 	return nil
 }
@@ -3040,7 +4341,7 @@ type Service struct {
 func (x *Service) Reset() {
 	*x = Service{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[3]
+		mi := &file_did_v1_state_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -3054,7 +4355,7 @@ func (*Service) ProtoMessage() {}
 
 // Deprecated: Use Service.ProtoReflect.Descriptor instead.
 func (*Service) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{3}
+	return file_did_v1_state_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Service) GetId() string {
@@ -3092,59 +4393,87 @@ var file_did_v1_state_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x94, 0x01, 0x0a, 0x0b,
-	0x41, 0x74, 0x74, 0x65, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6b,
-	0x65, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b,
-	0x65, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12, 0x14, 0x0a, 0x05,
-	0x70, 0x72, 0x6f, 0x6f, 0x66, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x70, 0x72, 0x6f,
-	0x6f, 0x66, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x22, 0x9c, 0x01, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
-	0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
-	0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03,
-	0x64, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65,
-	0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b,
-	0x65, 0x79, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x18,
-	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x69, 0x64, 0x12,
-	0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x0c, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e,
-	0x74, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18,
-	0x02, 0x22, 0xe7, 0x01, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
-	0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64,
-	0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x54, 0x79, 0x70,
-	0x65, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65,
-	0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x41,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x25, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d,
-	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x44, 0x69, 0x64, 0x12, 0x1d, 0x0a,
-	0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28,
-	0x0c, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1d, 0x0a, 0x0a,
-	0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x5f, 0x69, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x04,
-	0x52, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x49, 0x64, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3,
-	0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x03, 0x22, 0x9e, 0x01, 0x0a, 0x07,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x29, 0x0a, 0x10, 0x73, 0x65,
-	0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x0f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64,
-	0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12, 0x25, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x44, 0x69, 0x64, 0x3a, 0x0e, 0xf2, 0x9e,
-	0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x42, 0x7a, 0x0a, 0x0a,
-	0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74,
-	0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79,
-	0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76,
-	0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31,
-	0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c,
-	0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02,
-	0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x80, 0x02, 0x0a, 0x09,
+	0x41, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79,
+	0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65, 0x79,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69,
+	0x61, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61,
+	0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e,
+	0x41, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
+	0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18,
+	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
+	0x72, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a, 0x0e,
+	0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x22, 0x94,
+	0x01, 0x0a, 0x0b, 0x41, 0x74, 0x74, 0x65, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19,
+	0x0a, 0x08, 0x6b, 0x65, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x12,
+	0x14, 0x0a, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x70, 0x72, 0x6f, 0x6f, 0x66, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
+	0x6c, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72,
+	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x22, 0xaf, 0x01, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
+	0x6c, 0x6c, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63,
+	0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x18, 0x03,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4d,
+	0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c,
+	0x74, 0x5f, 0x63, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x43, 0x69, 0x64, 0x12, 0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72, 0x70,
+	0x72, 0x69, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0b, 0x66, 0x69, 0x6e, 0x67,
+	0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a,
+	0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x22, 0x8b, 0x03, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65,
+	0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x68, 0x61, 0x69,
+	0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63, 0x68,
+	0x61, 0x69, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x68, 0x61, 0x69, 0x6e,
+	0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c,
+	0x63, 0x68, 0x61, 0x69, 0x6e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x25, 0x0a, 0x0e,
+	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x05,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
+	0x44, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65,
+	0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4d, 0x75, 0x6c, 0x74,
+	0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x4d, 0x0a, 0x0f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f,
+	0x6b, 0x65, 0x79, 0x5f, 0x6a, 0x77, 0x6b, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x25,
+	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b, 0x73,
+	0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x4a, 0x77, 0x6b, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c, 0x5f,
+	0x69, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65,
+	0x6c, 0x49, 0x64, 0x1a, 0x40, 0x0a, 0x12, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
+	0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76,
+	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
+	0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x03, 0x22, 0x9e, 0x01, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63,
+	0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
+	0x64, 0x12, 0x21, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x74, 0x79, 0x70,
+	0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
+	0x54, 0x79, 0x70, 0x65, 0x12, 0x29, 0x0a, 0x10, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f,
+	0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0f,
+	0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x12,
+	0x25, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69,
+	0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
+	0x6c, 0x65, 0x72, 0x44, 0x69, 0x64, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04,
+	0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f,
+	0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f,
+	0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64,
+	0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58,
+	0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64,
+	0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42,
+	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a,
+	0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -3159,19 +4488,24 @@ func file_did_v1_state_proto_rawDescGZIP() []byte {
 	return file_did_v1_state_proto_rawDescData
 }
 
-var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
 var file_did_v1_state_proto_goTypes = []interface{}{
-	(*Attestation)(nil), // 0: did.v1.Attestation
-	(*Controller)(nil),  // 1: did.v1.Controller
-	(*Delegation)(nil),  // 2: did.v1.Delegation
-	(*Service)(nil),     // 3: did.v1.Service
+	(*Assertion)(nil),   // 0: did.v1.Assertion
+	(*Attestation)(nil), // 1: did.v1.Attestation
+	(*Controller)(nil),  // 2: did.v1.Controller
+	(*Delegation)(nil),  // 3: did.v1.Delegation
+	(*Service)(nil),     // 4: did.v1.Service
+	nil,                 // 5: did.v1.Assertion.MetadataEntry
+	nil,                 // 6: did.v1.Delegation.PublicKeyJwksEntry
 }
 var file_did_v1_state_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: did.v1.Assertion.metadata:type_name -> did.v1.Assertion.MetadataEntry
+	6, // 1: did.v1.Delegation.public_key_jwks:type_name -> did.v1.Delegation.PublicKeyJwksEntry
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_did_v1_state_proto_init() }
@@ -3182,7 +4516,7 @@ func file_did_v1_state_proto_init() {
 	file_did_v1_genesis_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_did_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Attestation); i {
+			switch v := v.(*Assertion); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3194,7 +4528,7 @@ func file_did_v1_state_proto_init() {
 			}
 		}
 		file_did_v1_state_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Controller); i {
+			switch v := v.(*Attestation); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3206,7 +4540,7 @@ func file_did_v1_state_proto_init() {
 			}
 		}
 		file_did_v1_state_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Delegation); i {
+			switch v := v.(*Controller); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -3218,6 +4552,18 @@ func file_did_v1_state_proto_init() {
 			}
 		}
 		file_did_v1_state_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Delegation); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_did_v1_state_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Service); i {
 			case 0:
 				return &v.state
@@ -3236,7 +4582,7 @@ func file_did_v1_state_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_did_v1_state_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

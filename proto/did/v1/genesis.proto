@@ -30,18 +30,4 @@ message Params {
   double encryption_reward_rate = 5;
 }
 
-// PublicKey is the struct that represents a public key
-message PublicKey {
-  option (amino.name) = "did/publickey";
-  option (amino.message_encoding)     = "key_field";
-  option (gogoproto.goproto_stringer) = false;
 
-  // Key is the public key
-  bytes key = 1;
-
-  // Type is the type of the public key
-  string key_type = 2;
-
-  // DID is the DID of the public key
-  string did = 3;
-}

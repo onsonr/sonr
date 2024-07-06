@@ -23,7 +23,12 @@ message DIDDocument {
 message VerificationMethod {
   string id = 1;
   string controller = 2;
-  PublicKey public_key = 3;
+  
+  // The delegation proof or verification method
+  string public_key_multibase = 3;
+
+  // Public Key JWKS is a map of the associated public keys
+  map<string, string> public_key_jwks = 4;
 }
 
 

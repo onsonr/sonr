@@ -11,6 +11,7 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
 	reflect "reflect"
+	sort "sort"
 	sync "sync"
 )
 
@@ -1068,11 +1069,94 @@ func (x *fastReflection_DIDDocument) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.Map = (*_VerificationMethod_4_map)(nil)
+
+type _VerificationMethod_4_map struct {
+	m *map[string]string
+}
+
+func (x *_VerificationMethod_4_map) Len() int {
+	if x.m == nil {
+		return 0
+	}
+	return len(*x.m)
+}
+
+func (x *_VerificationMethod_4_map) Range(f func(protoreflect.MapKey, protoreflect.Value) bool) {
+	if x.m == nil {
+		return
+	}
+	for k, v := range *x.m {
+		mapKey := (protoreflect.MapKey)(protoreflect.ValueOfString(k))
+		mapValue := protoreflect.ValueOfString(v)
+		if !f(mapKey, mapValue) {
+			break
+		}
+	}
+}
+
+func (x *_VerificationMethod_4_map) Has(key protoreflect.MapKey) bool {
+	if x.m == nil {
+		return false
+	}
+	keyUnwrapped := key.String()
+	concreteValue := keyUnwrapped
+	_, ok := (*x.m)[concreteValue]
+	return ok
+}
+
+func (x *_VerificationMethod_4_map) Clear(key protoreflect.MapKey) {
+	if x.m == nil {
+		return
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	delete(*x.m, concreteKey)
+}
+
+func (x *_VerificationMethod_4_map) Get(key protoreflect.MapKey) protoreflect.Value {
+	if x.m == nil {
+		return protoreflect.Value{}
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	v, ok := (*x.m)[concreteKey]
+	if !ok {
+		return protoreflect.Value{}
+	}
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_VerificationMethod_4_map) Set(key protoreflect.MapKey, value protoreflect.Value) {
+	if !key.IsValid() || !value.IsValid() {
+		panic("invalid key or value provided")
+	}
+	keyUnwrapped := key.String()
+	concreteKey := keyUnwrapped
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.m)[concreteKey] = concreteValue
+}
+
+func (x *_VerificationMethod_4_map) Mutable(key protoreflect.MapKey) protoreflect.Value {
+	panic("should not call Mutable on protoreflect.Map whose value is not of type protoreflect.Message")
+}
+
+func (x *_VerificationMethod_4_map) NewValue() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_VerificationMethod_4_map) IsValid() bool {
+	return x.m != nil
+}
+
 var (
-	md_VerificationMethod            protoreflect.MessageDescriptor
-	fd_VerificationMethod_id         protoreflect.FieldDescriptor
-	fd_VerificationMethod_controller protoreflect.FieldDescriptor
-	fd_VerificationMethod_public_key protoreflect.FieldDescriptor
+	md_VerificationMethod                      protoreflect.MessageDescriptor
+	fd_VerificationMethod_id                   protoreflect.FieldDescriptor
+	fd_VerificationMethod_controller           protoreflect.FieldDescriptor
+	fd_VerificationMethod_public_key_multibase protoreflect.FieldDescriptor
+	fd_VerificationMethod_public_key_jwks      protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1080,7 +1164,8 @@ func init() {
 	md_VerificationMethod = File_did_v1_account_proto.Messages().ByName("VerificationMethod")
 	fd_VerificationMethod_id = md_VerificationMethod.Fields().ByName("id")
 	fd_VerificationMethod_controller = md_VerificationMethod.Fields().ByName("controller")
-	fd_VerificationMethod_public_key = md_VerificationMethod.Fields().ByName("public_key")
+	fd_VerificationMethod_public_key_multibase = md_VerificationMethod.Fields().ByName("public_key_multibase")
+	fd_VerificationMethod_public_key_jwks = md_VerificationMethod.Fields().ByName("public_key_jwks")
 }
 
 var _ protoreflect.Message = (*fastReflection_VerificationMethod)(nil)
@@ -1160,9 +1245,15 @@ func (x *fastReflection_VerificationMethod) Range(f func(protoreflect.FieldDescr
 			return
 		}
 	}
-	if x.PublicKey != nil {
-		value := protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-		if !f(fd_VerificationMethod_public_key, value) {
+	if x.PublicKeyMultibase != "" {
+		value := protoreflect.ValueOfString(x.PublicKeyMultibase)
+		if !f(fd_VerificationMethod_public_key_multibase, value) {
+			return
+		}
+	}
+	if len(x.PublicKeyJwks) != 0 {
+		value := protoreflect.ValueOfMap(&_VerificationMethod_4_map{m: &x.PublicKeyJwks})
+		if !f(fd_VerificationMethod_public_key_jwks, value) {
 			return
 		}
 	}
@@ -1185,8 +1276,10 @@ func (x *fastReflection_VerificationMethod) Has(fd protoreflect.FieldDescriptor)
 		return x.Id != ""
 	case "did.v1.VerificationMethod.controller":
 		return x.Controller != ""
-	case "did.v1.VerificationMethod.public_key":
-		return x.PublicKey != nil
+	case "did.v1.VerificationMethod.public_key_multibase":
+		return x.PublicKeyMultibase != ""
+	case "did.v1.VerificationMethod.public_key_jwks":
+		return len(x.PublicKeyJwks) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1207,8 +1300,10 @@ func (x *fastReflection_VerificationMethod) Clear(fd protoreflect.FieldDescripto
 		x.Id = ""
 	case "did.v1.VerificationMethod.controller":
 		x.Controller = ""
-	case "did.v1.VerificationMethod.public_key":
-		x.PublicKey = nil
+	case "did.v1.VerificationMethod.public_key_multibase":
+		x.PublicKeyMultibase = ""
+	case "did.v1.VerificationMethod.public_key_jwks":
+		x.PublicKeyJwks = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1231,9 +1326,15 @@ func (x *fastReflection_VerificationMethod) Get(descriptor protoreflect.FieldDes
 	case "did.v1.VerificationMethod.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
-	case "did.v1.VerificationMethod.public_key":
-		value := x.PublicKey
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
+	case "did.v1.VerificationMethod.public_key_multibase":
+		value := x.PublicKeyMultibase
+		return protoreflect.ValueOfString(value)
+	case "did.v1.VerificationMethod.public_key_jwks":
+		if len(x.PublicKeyJwks) == 0 {
+			return protoreflect.ValueOfMap(&_VerificationMethod_4_map{})
+		}
+		mapValue := &_VerificationMethod_4_map{m: &x.PublicKeyJwks}
+		return protoreflect.ValueOfMap(mapValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1258,8 +1359,12 @@ func (x *fastReflection_VerificationMethod) Set(fd protoreflect.FieldDescriptor,
 		x.Id = value.Interface().(string)
 	case "did.v1.VerificationMethod.controller":
 		x.Controller = value.Interface().(string)
-	case "did.v1.VerificationMethod.public_key":
-		x.PublicKey = value.Message().Interface().(*PublicKey)
+	case "did.v1.VerificationMethod.public_key_multibase":
+		x.PublicKeyMultibase = value.Interface().(string)
+	case "did.v1.VerificationMethod.public_key_jwks":
+		mv := value.Map()
+		cmv := mv.(*_VerificationMethod_4_map)
+		x.PublicKeyJwks = *cmv.m
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1280,15 +1385,18 @@ func (x *fastReflection_VerificationMethod) Set(fd protoreflect.FieldDescriptor,
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_VerificationMethod) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.public_key":
-		if x.PublicKey == nil {
-			x.PublicKey = new(PublicKey)
+	case "did.v1.VerificationMethod.public_key_jwks":
+		if x.PublicKeyJwks == nil {
+			x.PublicKeyJwks = make(map[string]string)
 		}
-		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
+		value := &_VerificationMethod_4_map{m: &x.PublicKeyJwks}
+		return protoreflect.ValueOfMap(value)
 	case "did.v1.VerificationMethod.id":
 		panic(fmt.Errorf("field id of message did.v1.VerificationMethod is not mutable"))
 	case "did.v1.VerificationMethod.controller":
 		panic(fmt.Errorf("field controller of message did.v1.VerificationMethod is not mutable"))
+	case "did.v1.VerificationMethod.public_key_multibase":
+		panic(fmt.Errorf("field public_key_multibase of message did.v1.VerificationMethod is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1306,9 +1414,11 @@ func (x *fastReflection_VerificationMethod) NewField(fd protoreflect.FieldDescri
 		return protoreflect.ValueOfString("")
 	case "did.v1.VerificationMethod.controller":
 		return protoreflect.ValueOfString("")
-	case "did.v1.VerificationMethod.public_key":
-		m := new(PublicKey)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
+	case "did.v1.VerificationMethod.public_key_multibase":
+		return protoreflect.ValueOfString("")
+	case "did.v1.VerificationMethod.public_key_jwks":
+		m := make(map[string]string)
+		return protoreflect.ValueOfMap(&_VerificationMethod_4_map{m: &m})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
@@ -1386,9 +1496,30 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.PublicKey != nil {
-			l = options.Size(x.PublicKey)
+		l = len(x.PublicKeyMultibase)
+		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.PublicKeyJwks) > 0 {
+			SiZeMaP := func(k string, v string) {
+				mapEntrySize := 1 + len(k) + runtime.Sov(uint64(len(k))) + 1 + len(v) + runtime.Sov(uint64(len(v)))
+				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
+			}
+			if options.Deterministic {
+				sortme := make([]string, 0, len(x.PublicKeyJwks))
+				for k := range x.PublicKeyJwks {
+					sortme = append(sortme, k)
+				}
+				sort.Strings(sortme)
+				for _, k := range sortme {
+					v := x.PublicKeyJwks[k]
+					SiZeMaP(k, v)
+				}
+			} else {
+				for k, v := range x.PublicKeyJwks {
+					SiZeMaP(k, v)
+				}
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1419,17 +1550,53 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.PublicKey != nil {
-			encoded, err := options.Marshal(x.PublicKey)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
+		if len(x.PublicKeyJwks) > 0 {
+			MaRsHaLmAp := func(k string, v string) (protoiface.MarshalOutput, error) {
+				baseI := i
+				i -= len(v)
+				copy(dAtA[i:], v)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(v)))
+				i--
+				dAtA[i] = 0x12
+				i -= len(k)
+				copy(dAtA[i:], k)
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(k)))
+				i--
+				dAtA[i] = 0xa
+				i = runtime.EncodeVarint(dAtA, i, uint64(baseI-i))
+				i--
+				dAtA[i] = 0x22
+				return protoiface.MarshalOutput{}, nil
 			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+			if options.Deterministic {
+				keysForPublicKeyJwks := make([]string, 0, len(x.PublicKeyJwks))
+				for k := range x.PublicKeyJwks {
+					keysForPublicKeyJwks = append(keysForPublicKeyJwks, string(k))
+				}
+				sort.Slice(keysForPublicKeyJwks, func(i, j int) bool {
+					return keysForPublicKeyJwks[i] < keysForPublicKeyJwks[j]
+				})
+				for iNdEx := len(keysForPublicKeyJwks) - 1; iNdEx >= 0; iNdEx-- {
+					v := x.PublicKeyJwks[string(keysForPublicKeyJwks[iNdEx])]
+					out, err := MaRsHaLmAp(keysForPublicKeyJwks[iNdEx], v)
+					if err != nil {
+						return out, err
+					}
+				}
+			} else {
+				for k := range x.PublicKeyJwks {
+					v := x.PublicKeyJwks[k]
+					out, err := MaRsHaLmAp(k, v)
+					if err != nil {
+						return out, err
+					}
+				}
+			}
+		}
+		if len(x.PublicKeyMultibase) > 0 {
+			i -= len(x.PublicKeyMultibase)
+			copy(dAtA[i:], x.PublicKeyMultibase)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKeyMultibase)))
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -1562,7 +1729,39 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKeyMultibase", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PublicKeyMultibase = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKeyJwks", wireType)
 				}
 				var msglen int
 				for shift := uint(0); ; shift += 7 {
@@ -1589,12 +1788,103 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				if x.PublicKey == nil {
-					x.PublicKey = &PublicKey{}
+				if x.PublicKeyJwks == nil {
+					x.PublicKeyJwks = make(map[string]string)
 				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PublicKey); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				var mapkey string
+				var mapvalue string
+				for iNdEx < postIndex {
+					entryPreIndex := iNdEx
+					var wire uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+						}
+						if iNdEx >= l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						wire |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					fieldNum := int32(wire >> 3)
+					if fieldNum == 1 {
+						var stringLenmapkey uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapkey |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapkey := int(stringLenmapkey)
+						if intStringLenmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapkey := iNdEx + intStringLenmapkey
+						if postStringIndexmapkey < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapkey > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+						iNdEx = postStringIndexmapkey
+					} else if fieldNum == 2 {
+						var stringLenmapvalue uint64
+						for shift := uint(0); ; shift += 7 {
+							if shift >= 64 {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+							}
+							if iNdEx >= l {
+								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+							}
+							b := dAtA[iNdEx]
+							iNdEx++
+							stringLenmapvalue |= uint64(b&0x7F) << shift
+							if b < 0x80 {
+								break
+							}
+						}
+						intStringLenmapvalue := int(stringLenmapvalue)
+						if intStringLenmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+						if postStringIndexmapvalue < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if postStringIndexmapvalue > l {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+						iNdEx = postStringIndexmapvalue
+					} else {
+						iNdEx = entryPreIndex
+						skippy, err := runtime.Skip(dAtA[iNdEx:])
+						if err != nil {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+						}
+						if (skippy < 0) || (iNdEx+skippy) < 0 {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+						}
+						if (iNdEx + skippy) > postIndex {
+							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+						}
+						iNdEx += skippy
+					}
 				}
+				x.PublicKeyJwks[mapkey] = mapvalue
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1729,9 +2019,12 @@ type VerificationMethod struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id         string     `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Controller string     `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
-	PublicKey  *PublicKey `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	Id         string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The delegation proof or verification method
+	PublicKeyMultibase string `protobuf:"bytes,3,opt,name=public_key_multibase,json=publicKeyMultibase,proto3" json:"public_key_multibase,omitempty"`
+	// Public Key JWKS is a map of the associated public keys
+	PublicKeyJwks map[string]string `protobuf:"bytes,4,rep,name=public_key_jwks,json=publicKeyJwks,proto3" json:"public_key_jwks,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
 }
 
 func (x *VerificationMethod) Reset() {
@@ -1768,9 +2061,16 @@ func (x *VerificationMethod) GetController() string {
 	return ""
 }
 
-func (x *VerificationMethod) GetPublicKey() *PublicKey {
+func (x *VerificationMethod) GetPublicKeyMultibase() string {
 	if x != nil {
-		return x.PublicKey
+		return x.PublicKeyMultibase
+	}
+	return ""
+}
+
+func (x *VerificationMethod) GetPublicKeyJwks() map[string]string {
+	if x != nil {
+		return x.PublicKeyJwks
 	}
 	return nil
 }
@@ -1803,22 +2103,32 @@ var file_did_v1_account_proto_rawDesc = []byte{
 	0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x69, 0x6e, 0x76, 0x6f, 0x63,
 	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x03, 0x28, 0x09, 0x52, 0x14, 0x63, 0x61, 0x70,
 	0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x49, 0x6e, 0x76, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x22, 0x76, 0x0a, 0x12, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e,
-	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x11, 0x2e, 0x64, 0x69,
-	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x52, 0x09,
-	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d,
-	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f,
-	0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31,
-	0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca,
-	0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56,
-	0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07,
-	0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6e, 0x22, 0x8f, 0x02, 0x0a, 0x12, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74,
+	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
+	0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x55, 0x0a, 0x0f, 0x70, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6a, 0x77, 0x6b, 0x73, 0x18, 0x04, 0x20,
+	0x03, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72,
+	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x2e,
+	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74,
+	0x72, 0x79, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b,
+	0x73, 0x1a, 0x40, 0x0a, 0x12, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77,
+	0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
+	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
+	0x02, 0x38, 0x01, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76,
+	0x31, 0x42, 0x0c, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e,
+	0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69,
+	0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58,
+	0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c,
+	0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
+	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56,
+	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1833,15 +2143,15 @@ func file_did_v1_account_proto_rawDescGZIP() []byte {
 	return file_did_v1_account_proto_rawDescData
 }
 
-var file_did_v1_account_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_did_v1_account_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_did_v1_account_proto_goTypes = []interface{}{
 	(*DIDDocument)(nil),        // 0: did.v1.DIDDocument
 	(*VerificationMethod)(nil), // 1: did.v1.VerificationMethod
-	(*PublicKey)(nil),          // 2: did.v1.PublicKey
+	nil,                        // 2: did.v1.VerificationMethod.PublicKeyJwksEntry
 }
 var file_did_v1_account_proto_depIdxs = []int32{
 	1, // 0: did.v1.DIDDocument.verification_methods:type_name -> did.v1.VerificationMethod
-	2, // 1: did.v1.VerificationMethod.public_key:type_name -> did.v1.PublicKey
+	2, // 1: did.v1.VerificationMethod.public_key_jwks:type_name -> did.v1.VerificationMethod.PublicKeyJwksEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
 	2, // [2:2] is the sub-list for extension type_name
@@ -1887,7 +2197,7 @@ func file_did_v1_account_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_did_v1_account_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

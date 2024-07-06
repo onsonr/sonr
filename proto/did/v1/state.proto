@@ -6,6 +6,30 @@ option go_package = "github.com/onsonr/hway/x/did/types";
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
 
+// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
+message Assertion {
+  option (cosmos.orm.v1.table) = {
+    id: 1
+    primary_key: {fields: "id"}
+  };
+
+  // The unique identifier of the attestation
+  string id = 1;
+
+  // Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
+  string key_type = 2;
+
+  // The value of the linked identifier
+  bytes credential = 3;
+
+  // Metadata is optional additional information about the assertion
+  map<string, string> metadata = 4;
+
+  // The controller of the attestation
+  string controller = 5;
+}
+
+
 // Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
 message Attestation {
   option (cosmos.orm.v1.table) = {
@@ -29,6 +53,7 @@ message Attestation {
   string controller = 5;
 }
 
+
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
@@ -43,7 +68,7 @@ message Controller {
   string did = 2;
 
   // The public key of the controller
-  bytes public_key = 3;
+  string public_key_multibase = 3;
 
   // The vault address or identifier
   string vault_cid = 4;
@@ -75,10 +100,13 @@ message Delegation {
   string controller_did = 5;
 
   // The delegation proof or verification method
-  bytes public_key = 6;
+  string public_key_multibase = 6;
+
+  // Public Key JWKS is a map of the associated public keys
+  map<string, string> public_key_jwks = 7;
 
   // IBC Channel ID
-  uint64 channel_id = 7;
+  uint64 channel_id = 8;
 }
 
 // Service represents a service in a DID Document
