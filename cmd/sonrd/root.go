@@ -22,7 +22,6 @@ import (
 
 	"github.com/onsonr/hway/app"
 	"github.com/onsonr/hway/app/params"
-	"github.com/onsonr/hway/internal/env"
 	// NewRootCmd creates a new root command for chain app. It is called once in the
 	// main function.
 )
@@ -100,8 +99,8 @@ func NewRootCmd() *cobra.Command {
 			}
 
 			// Set the context chain ID and validator address
-			env.SetLocalChainID(initClientCtx.ChainID)
-			env.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
+			app.SetLocalChainID(initClientCtx.ChainID)
+			app.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
 
 			customAppTemplate, customAppConfig := initAppConfig()
 			customCMTConfig := initCometBFTConfig()

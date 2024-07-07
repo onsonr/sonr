@@ -211,67 +211,53 @@ var (
 
 // SonrApp extended ABCI application
 type SonrApp struct {
-	*baseapp.BaseApp
-	legacyAmino       *codec.LegacyAmino
-	appCodec          codec.Codec
-	txConfig          client.TxConfig
-	interfaceRegistry types.InterfaceRegistry
-
-	// keys to access the substores
-	keys    map[string]*storetypes.KVStoreKey
-	tkeys   map[string]*storetypes.TransientStoreKey
-	memKeys map[string]*storetypes.MemoryStoreKey
-
-	// keepers
-	AccountKeeper         authkeeper.AccountKeeper
-	BankKeeper            bankkeeper.BaseKeeper
-	CapabilityKeeper      *capabilitykeeper.Keeper
-	StakingKeeper         *stakingkeeper.Keeper
-	SlashingKeeper        slashingkeeper.Keeper
-	MintKeeper            mintkeeper.Keeper
-	DistrKeeper           distrkeeper.Keeper
-	GovKeeper             govkeeper.Keeper
-	CrisisKeeper          *crisiskeeper.Keeper
-	UpgradeKeeper         *upgradekeeper.Keeper
-	ParamsKeeper          paramskeeper.Keeper
-	AuthzKeeper           authzkeeper.Keeper
-	EvidenceKeeper        evidencekeeper.Keeper
-	FeeGrantKeeper        feegrantkeeper.Keeper
-	GroupKeeper           groupkeeper.Keeper
-	NFTKeeper             nftkeeper.Keeper
-	ConsensusParamsKeeper consensusparamkeeper.Keeper
-	CircuitKeeper         circuitkeeper.Keeper
-
-	IBCKeeper           *ibckeeper.Keeper // IBC Keeper must be a pointer in the app, so we can SetRouter on it correctly
-	IBCFeeKeeper        ibcfeekeeper.Keeper
-	ICAControllerKeeper icacontrollerkeeper.Keeper
-	ICAHostKeeper       icahostkeeper.Keeper
-	TransferKeeper      ibctransferkeeper.Keeper
-
-	// Custom
-	TokenFactoryKeeper  tokenfactorykeeper.Keeper
-	POAKeeper           poakeeper.Keeper
-	GlobalFeeKeeper     globalfeekeeper.Keeper
-	PacketForwardKeeper *packetforwardkeeper.Keeper
-
-	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
-	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
-	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
-	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
-	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
-	OracleKeeper              oraclekeeper.Keeper
-	DidKeeper                 didkeeper.Keeper
-
-	// the module manager
-	ModuleManager      *module.Manager
+	BankKeeper         bankkeeper.BaseKeeper
+	AccountKeeper      authkeeper.AccountKeeper
+	GroupKeeper        groupkeeper.Keeper
+	TokenFactoryKeeper tokenfactorykeeper.Keeper
+	IBCFeeKeeper       ibcfeekeeper.Keeper
+	ParamsKeeper       paramskeeper.Keeper
+	NFTKeeper          nftkeeper.Keeper
+	AuthzKeeper        authzkeeper.Keeper
+	FeeGrantKeeper     feegrantkeeper.Keeper
+	OracleKeeper       oraclekeeper.Keeper
+	interfaceRegistry  types.InterfaceRegistry
+	txConfig           client.TxConfig
+	appCodec           codec.Codec
+	configurator       module.Configurator
+	StakingKeeper      *stakingkeeper.Keeper
+	tkeys              map[string]*storetypes.TransientStoreKey
+	CrisisKeeper       *crisiskeeper.Keeper
+	UpgradeKeeper      *upgradekeeper.Keeper
+	legacyAmino        *codec.LegacyAmino
+	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
-
-	// simulation manager
-	sm *module.SimulationManager
-
-	// module configurator
-	configurator module.Configurator
-	once         sync.Once
+	ModuleManager      *module.Manager
+	*baseapp.BaseApp
+	CapabilityKeeper          *capabilitykeeper.Keeper
+	keys                      map[string]*storetypes.KVStoreKey
+	PacketForwardKeeper       *packetforwardkeeper.Keeper
+	IBCKeeper                 *ibckeeper.Keeper
+	memKeys                   map[string]*storetypes.MemoryStoreKey
+	GovKeeper                 govkeeper.Keeper
+	DidKeeper                 didkeeper.Keeper
+	POAKeeper                 poakeeper.Keeper
+	DistrKeeper               distrkeeper.Keeper
+	MintKeeper                mintkeeper.Keeper
+	CircuitKeeper             circuitkeeper.Keeper
+	EvidenceKeeper            evidencekeeper.Keeper
+	ICAHostKeeper             icahostkeeper.Keeper
+	TransferKeeper            ibctransferkeeper.Keeper
+	ICAControllerKeeper       icacontrollerkeeper.Keeper
+	ConsensusParamsKeeper     consensusparamkeeper.Keeper
+	ScopedIBCFeeKeeper        capabilitykeeper.ScopedKeeper
+	ScopedTransferKeeper      capabilitykeeper.ScopedKeeper
+	ScopedICAControllerKeeper capabilitykeeper.ScopedKeeper
+	SlashingKeeper            slashingkeeper.Keeper
+	ScopedICAHostKeeper       capabilitykeeper.ScopedKeeper
+	ScopedIBCKeeper           capabilitykeeper.ScopedKeeper
+	GlobalFeeKeeper           globalfeekeeper.Keeper
+	once                      sync.Once
 }
 
 // NewChainApp returns a reference to an initialized ChainApp.

@@ -1,4 +1,4 @@
-package env
+package app
 
 import (
 	"github.com/ipfs/kubo/client/rpc"
@@ -7,7 +7,6 @@ import (
 var (
 	ChainID = "testnet"
 	ValAddr = "val1"
-	NodeDir = ".sonr"
 )
 
 // Initialize initializes the local configuration values
