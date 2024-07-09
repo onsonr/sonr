@@ -13,24 +13,14 @@ service Query {
         option (google.api.http).get = "/did/params";
     }
 
-    // Exists queries if an id exists.
-    rpc PropertyExists(QueryExistsRequest) returns (QueryExistsResponse) {
-        option (google.api.http).get = "/did/exists/{kind}/{value}";
-    }
-
-   // Resolve queries the DID document by its id.
+// Resolve queries the DID document by its id.
     rpc ResolveIdentifier(QueryResolveRequest) returns (QueryResolveResponse) { 
         option (google.api.http).get = "/did/resolve/{id}"; 
     } 
 
     // LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-    rpc LoginOptions(QueryLoginOptionsRequest) returns (QueryLoginOptionsResponse) {
-        option (google.api.http).get = "/did/login/{origin}/{handle}/options";
-    }
-
-    // RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
-    rpc RegisterOptions(QueryRegisterOptionsRequest) returns (QueryRegisterOptionsResponse) {
-        option (google.api.http).get = "/did/register/{origin}/{handle}/options";
+    rpc WitnessCredential(QueryWitnessCredentialRequest) returns (QueryWitnessCredentialResponse) {
+        option (google.api.http).get = "/did/assertion/{id}/witness";
     }
 }
 
