@@ -3,7 +3,7 @@
   "packages": [
     "ipfs@latest",
     "golangci-lint@latest",
-    "go_1_22@latest",
+    "go@1.22",
     "templ@latest",
     "air@latest"
   ],
