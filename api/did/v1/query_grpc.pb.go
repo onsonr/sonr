@@ -20,10 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Query_Params_FullMethodName            = "/did.v1.Query/Params"
-	Query_PropertyExists_FullMethodName    = "/did.v1.Query/PropertyExists"
 	Query_ResolveIdentifier_FullMethodName = "/did.v1.Query/ResolveIdentifier"
-	Query_LoginOptions_FullMethodName      = "/did.v1.Query/LoginOptions"
-	Query_RegisterOptions_FullMethodName   = "/did.v1.Query/RegisterOptions"
+	Query_WitnessCredential_FullMethodName = "/did.v1.Query/WitnessCredential"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,14 +30,10 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Exists queries if an id exists.
-	PropertyExists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error)
 	// Resolve queries the DID document by its id.
 	ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
 	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-	LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error)
-	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
-	RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error)
+	WitnessCredential(ctx context.Context, in *QueryWitnessCredentialRequest, opts ...grpc.CallOption) (*QueryWitnessCredentialResponse, error)
 }
 
 type queryClient struct {
@@ -59,15 +53,6 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) PropertyExists(ctx context.Context, in *QueryExistsRequest, opts ...grpc.CallOption) (*QueryExistsResponse, error) {
-	out := new(QueryExistsResponse)
-	err := c.cc.Invoke(ctx, Query_PropertyExists_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
 	out := new(QueryResolveResponse)
 	err := c.cc.Invoke(ctx, Query_ResolveIdentifier_FullMethodName, in, out, opts...)
@@ -77,18 +62,9 @@ func (c *queryClient) ResolveIdentifier(ctx context.Context, in *QueryResolveReq
 	return out, nil
 }
 
-func (c *queryClient) LoginOptions(ctx context.Context, in *QueryLoginOptionsRequest, opts ...grpc.CallOption) (*QueryLoginOptionsResponse, error) {
-	out := new(QueryLoginOptionsResponse)
-	err := c.cc.Invoke(ctx, Query_LoginOptions_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOptionsRequest, opts ...grpc.CallOption) (*QueryRegisterOptionsResponse, error) {
-	out := new(QueryRegisterOptionsResponse)
-	err := c.cc.Invoke(ctx, Query_RegisterOptions_FullMethodName, in, out, opts...)
+func (c *queryClient) WitnessCredential(ctx context.Context, in *QueryWitnessCredentialRequest, opts ...grpc.CallOption) (*QueryWitnessCredentialResponse, error) {
+	out := new(QueryWitnessCredentialResponse)
+	err := c.cc.Invoke(ctx, Query_WitnessCredential_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,14 +77,10 @@ func (c *queryClient) RegisterOptions(ctx context.Context, in *QueryRegisterOpti
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// Exists queries if an id exists.
-	PropertyExists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error)
 	// Resolve queries the DID document by its id.
 	ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
 	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-	LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error)
-	// RegisterOptions queries the PublicKeyCredentialCreationOptions for starting a register flow.
-	RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error)
+	WitnessCredential(context.Context, *QueryWitnessCredentialRequest) (*QueryWitnessCredentialResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -119,17 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) PropertyExists(context.Context, *QueryExistsRequest) (*QueryExistsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method PropertyExists not implemented")
-}
 func (UnimplementedQueryServer) ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResolveIdentifier not implemented")
 }
-func (UnimplementedQueryServer) LoginOptions(context.Context, *QueryLoginOptionsRequest) (*QueryLoginOptionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method LoginOptions not implemented")
-}
-func (UnimplementedQueryServer) RegisterOptions(context.Context, *QueryRegisterOptionsRequest) (*QueryRegisterOptionsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterOptions not implemented")
+func (UnimplementedQueryServer) WitnessCredential(context.Context, *QueryWitnessCredentialRequest) (*QueryWitnessCredentialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method WitnessCredential not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -162,24 +128,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_PropertyExists_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryExistsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).PropertyExists(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_PropertyExists_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).PropertyExists(ctx, req.(*QueryExistsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_ResolveIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryResolveRequest)
 	if err := dec(in); err != nil {
@@ -198,38 +146,20 @@ func _Query_ResolveIdentifier_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_LoginOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryLoginOptionsRequest)
+func _Query_WitnessCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryWitnessCredentialRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).LoginOptions(ctx, in)
+		return srv.(QueryServer).WitnessCredential(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_LoginOptions_FullMethodName,
+		FullMethod: Query_WitnessCredential_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).LoginOptions(ctx, req.(*QueryLoginOptionsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_RegisterOptions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRegisterOptionsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).RegisterOptions(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_RegisterOptions_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).RegisterOptions(ctx, req.(*QueryRegisterOptionsRequest))
+		return srv.(QueryServer).WitnessCredential(ctx, req.(*QueryWitnessCredentialRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -246,20 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "PropertyExists",
-			Handler:    _Query_PropertyExists_Handler,
-		},
-		{
 			MethodName: "ResolveIdentifier",
 			Handler:    _Query_ResolveIdentifier_Handler,
 		},
 		{
-			MethodName: "LoginOptions",
-			Handler:    _Query_LoginOptions_Handler,
-		},
-		{
-			MethodName: "RegisterOptions",
-			Handler:    _Query_RegisterOptions_Handler,
+			MethodName: "WitnessCredential",
+			Handler:    _Query_WitnessCredential_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

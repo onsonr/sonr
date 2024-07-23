@@ -50,7 +50,6 @@ func TestParams(t *testing.T) {
 
 				require.EqualValues(&tc.request.Params, r.Params)
 			}
-
 		})
 	}
 }

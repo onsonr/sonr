@@ -56,25 +56,13 @@ message QueryResolveResponse {
 }
 
 // QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
-message QueryLoginOptionsRequest {
-    string origin = 1;
-    string handle = 2;
+message QueryWitnessCredentialRequest {
+    string id = 1;
 }
 
 // QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
-message QueryLoginOptionsResponse {
+message QueryWitnessCredentialResponse {
     // options is the PublicKeyCredentialAttestationOptions
-    string options = 1;
-}
-
-// QueryRegisterOptionsRequest is the request type for the Query/RegisterOptions RPC method.
-message QueryRegisterOptionsRequest {
-    string origin = 1;
-    string handle = 2;
-}
-
-// QueryRegisterOptionsResponse is the response type for the Query/RegisterOptions RPC method.
-message QueryRegisterOptionsResponse {
     string options = 1;
 }
 

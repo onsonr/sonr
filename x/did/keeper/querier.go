@@ -31,19 +31,6 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// LoginOptions implements types.QueryServer.
-func (k Querier) LoginOptions(goCtx context.Context, req *types.QueryLoginOptionsRequest) (*types.QueryLoginOptionsResponse, error) {
-	//	ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("LoginOptions is unimplemented")
-	return &types.QueryLoginOptionsResponse{}, nil
-}
-
-// RegisterOptions implements types.QueryServer.
-func (k Querier) RegisterOptions(goCtx context.Context, req *types.QueryRegisterOptionsRequest) (*types.QueryRegisterOptionsResponse, error) {
-	panic("RegisterOptions is unimplemented")
-	return &types.QueryRegisterOptionsResponse{}, nil
-}
-
 // PropertyExists implements types.QueryServer.
 func (k Querier) PropertyExists(goCtx context.Context, req *types.QueryExistsRequest) (*types.QueryExistsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
@@ -56,4 +43,11 @@ func (k Querier) ResolveIdentifier(goCtx context.Context, req *types.QueryResolv
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("ResolveIdentifier is unimplemented")
 	return &types.QueryResolveResponse{}, nil
+}
+
+// WitnessCredential implements types.QueryServer.
+func (k Querier) WitnessCredential(goCtx context.Context, req *types.QueryWitnessCredentialRequest) (*types.QueryWitnessCredentialResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("WitnessCredential is unimplemented")
+	return &types.QueryWitnessCredentialResponse{}, nil
 }

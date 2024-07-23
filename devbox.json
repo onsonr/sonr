@@ -3,25 +3,19 @@
   "packages": [
     "ipfs@latest",
     "golangci-lint@latest",
-    "go_1_21@latest",
+    "go_1_22@latest",
     "templ@latest",
     "air@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
-    "PATH":   "$HOME/go/bin:$PATH"
+    "PATH": "$HOME/go/bin:$PATH"
   },
   "shell": {
     "scripts": {
-      "proto": [
-        "make proto-gen"
-      ],
-      "templ": [
-        "templ generate"
-      ],
-      "ps": [
-        "devbox services ls"
-      ]
+      "proto": ["make proto-gen"],
+      "templ": ["templ generate"],
+      "ps": ["devbox services ls"]
     }
   }
 }
