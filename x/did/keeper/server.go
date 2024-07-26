@@ -3,7 +3,6 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"cosmossdk.io/errors"
@@ -21,12 +20,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// InitializeController implements types.MsgServer.
-func (ms msgServer) InitializeController(goCtx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
-	_ = sdk.UnwrapSDKContext(goCtx)
-	return &types.MsgInitializeControllerResponse{}, nil
-}
-
 // UpdateParams updates the x/did module parameters.
 func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != msg.Authority {
@@ -41,4 +34,11 @@ func (ms msgServer) AuthenticateController(ctx context.Context, msg *types.MsgAu
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("AuthenticateController is unimplemented")
 	return &types.MsgAuthenticateControllerResponse{}, nil
+}
+
+// RegisterController implements types.MsgServer.
+func (ms msgServer) RegisterController(ctx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("RegisterController is unimplemented")
+	return &types.MsgInitializeControllerResponse{}, nil
 }

@@ -17,6 +17,9 @@ type AliasesTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Aliases, error)
+	HasByHandle(ctx context.Context, handle string) (found bool, err error)
+	// GetByHandle returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByHandle(ctx context.Context, handle string) (*Aliases, error)
 	List(ctx context.Context, prefixKey AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
 	ListRange(ctx context.Context, from, to AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AliasesIndexKey) error
@@ -57,6 +60,19 @@ func (this AliasesIdIndexKey) WithId(id string) AliasesIdIndexKey {
 	return this
 }
 
+type AliasesHandleIndexKey struct {
+	vs []interface{}
+}
+
+func (x AliasesHandleIndexKey) id() uint32            { return 1 }
+func (x AliasesHandleIndexKey) values() []interface{} { return x.vs }
+func (x AliasesHandleIndexKey) aliasesIndexKey()      {}
+
+func (this AliasesHandleIndexKey) WithHandle(handle string) AliasesHandleIndexKey {
+	this.vs = []interface{}{handle}
+	return this
+}
+
 type aliasesTable struct {
 	table ormtable.Table
 }
@@ -84,6 +100,26 @@ func (this aliasesTable) Has(ctx context.Context, id string) (found bool, err er
 func (this aliasesTable) Get(ctx context.Context, id string) (*Aliases, error) {
 	var aliases Aliases
 	found, err := this.table.PrimaryKey().Get(ctx, &aliases, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &aliases, nil
+}
+
+func (this aliasesTable) HasByHandle(ctx context.Context, handle string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		handle,
+	)
+}
+
+func (this aliasesTable) GetByHandle(ctx context.Context, handle string) (*Aliases, error) {
+	var aliases Aliases
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &aliases,
+		handle,
+	)
 	if err != nil {
 		return nil, err
 	}

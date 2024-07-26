@@ -16,8 +16,8 @@ service Msg {
     // Since: cosmos-sdk 0.47
     rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
-    // InitializeController initializes a controller with the given assertions, keyshares, and verifications.
-    rpc InitializeController(MsgInitializeController) returns (MsgInitializeControllerResponse);
+    // RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
+    rpc RegisterController(MsgInitializeController) returns (MsgInitializeControllerResponse);
 
     // AuthenticateController asserts the given controller is the owner of the given address.
     rpc AuthenticateController(MsgAuthenticateController) returns (MsgAuthenticateControllerResponse);

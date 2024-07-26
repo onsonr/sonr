@@ -1,16 +1,17 @@
-// Copyright Tharsis Labs Ltd.(Evmos)
-// SPDX-License-Identifier:ENCL-1.0(https://github.com/evmos/evmos/blob/main/LICENSE)
 syntax = "proto3";
+
 package did.v1;
 
-import "cosmos_proto/cosmos.proto";
-import "gogoproto/gogo.proto";
+import "cosmos/msg/v1/msg.proto";
 import "did/v1/genesis.proto";
+import "gogoproto/gogo.proto";
+import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/onsonr/hway/x/did/types";
 
-// DIDDocument defines a DID document
-message DIDDocument {
+
+// BaseDocument defines a DID document
+message BaseDocument {
   string id = 1;
   repeated VerificationMethod verification_methods = 2;
   repeated string authentication = 4;

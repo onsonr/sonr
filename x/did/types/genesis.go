@@ -25,18 +25,7 @@ func (gs GenesisState) Validate() error {
 
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
-	return Params{
-		PropertyAllowlist: []string{
-			"email",
-			"phone",
-		},
-		AssertionRewardRate:  0.35,
-		EncryptionRewardRate: 0.5,
-		WhitelistedOrigins: []string{
-			"sonr.local",
-			"sonr.id",
-		},
-	}
+	return Params{}
 }
 
 // Stringer method for Params.
