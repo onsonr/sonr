@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_UpdateParams_FullMethodName           = "/did.v1.Msg/UpdateParams"
-	Msg_InitializeController_FullMethodName   = "/did.v1.Msg/InitializeController"
+	Msg_RegisterController_FullMethodName     = "/did.v1.Msg/RegisterController"
 	Msg_AuthenticateController_FullMethodName = "/did.v1.Msg/AuthenticateController"
 )
 
@@ -32,8 +32,8 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
-	InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error)
+	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
+	RegisterController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error)
 	// AuthenticateController asserts the given controller is the owner of the given address.
 	AuthenticateController(ctx context.Context, in *MsgAuthenticateController, opts ...grpc.CallOption) (*MsgAuthenticateControllerResponse, error)
 }
@@ -55,9 +55,9 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) InitializeController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error) {
+func (c *msgClient) RegisterController(ctx context.Context, in *MsgInitializeController, opts ...grpc.CallOption) (*MsgInitializeControllerResponse, error) {
 	out := new(MsgInitializeControllerResponse)
-	err := c.cc.Invoke(ctx, Msg_InitializeController_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_RegisterController_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -81,8 +81,8 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// InitializeController initializes a controller with the given assertions, keyshares, and verifications.
-	InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error)
+	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
+	RegisterController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error)
 	// AuthenticateController asserts the given controller is the owner of the given address.
 	AuthenticateController(context.Context, *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -95,8 +95,8 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (UnimplementedMsgServer) InitializeController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InitializeController not implemented")
+func (UnimplementedMsgServer) RegisterController(context.Context, *MsgInitializeController) (*MsgInitializeControllerResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
 }
 func (UnimplementedMsgServer) AuthenticateController(context.Context, *MsgAuthenticateController) (*MsgAuthenticateControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateController not implemented")
@@ -132,20 +132,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_InitializeController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgInitializeController)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).InitializeController(ctx, in)
+		return srv.(MsgServer).RegisterController(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_InitializeController_FullMethodName,
+		FullMethod: Msg_RegisterController_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).InitializeController(ctx, req.(*MsgInitializeController))
+		return srv.(MsgServer).RegisterController(ctx, req.(*MsgInitializeController))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -180,8 +180,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "InitializeController",
-			Handler:    _Msg_InitializeController_Handler,
+			MethodName: "RegisterController",
+			Handler:    _Msg_RegisterController_Handler,
 		},
 		{
 			MethodName: "AuthenticateController",

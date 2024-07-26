@@ -11,6 +11,7 @@ message Aliases {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
+    index: { id: 1, fields: "handle", unique: true }
     };
 
   // The unique identifier of the alias

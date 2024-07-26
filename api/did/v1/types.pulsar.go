@@ -2,6 +2,7 @@
 package didv1
 
 import (
+	_ "cosmossdk.io/api/cosmos/msg/v1"
 	fmt "fmt"
 	_ "github.com/cosmos/cosmos-proto"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
@@ -15,272 +16,272 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_DIDDocument_2_list)(nil)
+var _ protoreflect.List = (*_BaseDocument_2_list)(nil)
 
-type _DIDDocument_2_list struct {
+type _BaseDocument_2_list struct {
 	list *[]*VerificationMethod
 }
 
-func (x *_DIDDocument_2_list) Len() int {
+func (x *_BaseDocument_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DIDDocument_2_list) Get(i int) protoreflect.Value {
+func (x *_BaseDocument_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
 }
 
-func (x *_DIDDocument_2_list) Set(i int, value protoreflect.Value) {
+func (x *_BaseDocument_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*VerificationMethod)
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DIDDocument_2_list) Append(value protoreflect.Value) {
+func (x *_BaseDocument_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.Message()
 	concreteValue := valueUnwrapped.Interface().(*VerificationMethod)
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DIDDocument_2_list) AppendMutable() protoreflect.Value {
+func (x *_BaseDocument_2_list) AppendMutable() protoreflect.Value {
 	v := new(VerificationMethod)
 	*x.list = append(*x.list, v)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_DIDDocument_2_list) Truncate(n int) {
+func (x *_BaseDocument_2_list) Truncate(n int) {
 	for i := n; i < len(*x.list); i++ {
 		(*x.list)[i] = nil
 	}
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DIDDocument_2_list) NewElement() protoreflect.Value {
+func (x *_BaseDocument_2_list) NewElement() protoreflect.Value {
 	v := new(VerificationMethod)
 	return protoreflect.ValueOfMessage(v.ProtoReflect())
 }
 
-func (x *_DIDDocument_2_list) IsValid() bool {
+func (x *_BaseDocument_2_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_DIDDocument_4_list)(nil)
+var _ protoreflect.List = (*_BaseDocument_4_list)(nil)
 
-type _DIDDocument_4_list struct {
+type _BaseDocument_4_list struct {
 	list *[]string
 }
 
-func (x *_DIDDocument_4_list) Len() int {
+func (x *_BaseDocument_4_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DIDDocument_4_list) Get(i int) protoreflect.Value {
+func (x *_BaseDocument_4_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_DIDDocument_4_list) Set(i int, value protoreflect.Value) {
+func (x *_BaseDocument_4_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DIDDocument_4_list) Append(value protoreflect.Value) {
+func (x *_BaseDocument_4_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DIDDocument_4_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message DIDDocument at list field Authentication as it is not of Message kind"))
+func (x *_BaseDocument_4_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message BaseDocument at list field Authentication as it is not of Message kind"))
 }
 
-func (x *_DIDDocument_4_list) Truncate(n int) {
+func (x *_BaseDocument_4_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DIDDocument_4_list) NewElement() protoreflect.Value {
+func (x *_BaseDocument_4_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_DIDDocument_4_list) IsValid() bool {
+func (x *_BaseDocument_4_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_DIDDocument_5_list)(nil)
+var _ protoreflect.List = (*_BaseDocument_5_list)(nil)
 
-type _DIDDocument_5_list struct {
+type _BaseDocument_5_list struct {
 	list *[]string
 }
 
-func (x *_DIDDocument_5_list) Len() int {
+func (x *_BaseDocument_5_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DIDDocument_5_list) Get(i int) protoreflect.Value {
+func (x *_BaseDocument_5_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_DIDDocument_5_list) Set(i int, value protoreflect.Value) {
+func (x *_BaseDocument_5_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DIDDocument_5_list) Append(value protoreflect.Value) {
+func (x *_BaseDocument_5_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DIDDocument_5_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message DIDDocument at list field AssertionMethod as it is not of Message kind"))
+func (x *_BaseDocument_5_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message BaseDocument at list field AssertionMethod as it is not of Message kind"))
 }
 
-func (x *_DIDDocument_5_list) Truncate(n int) {
+func (x *_BaseDocument_5_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DIDDocument_5_list) NewElement() protoreflect.Value {
+func (x *_BaseDocument_5_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_DIDDocument_5_list) IsValid() bool {
+func (x *_BaseDocument_5_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_DIDDocument_7_list)(nil)
+var _ protoreflect.List = (*_BaseDocument_7_list)(nil)
 
-type _DIDDocument_7_list struct {
+type _BaseDocument_7_list struct {
 	list *[]string
 }
 
-func (x *_DIDDocument_7_list) Len() int {
+func (x *_BaseDocument_7_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DIDDocument_7_list) Get(i int) protoreflect.Value {
+func (x *_BaseDocument_7_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_DIDDocument_7_list) Set(i int, value protoreflect.Value) {
+func (x *_BaseDocument_7_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DIDDocument_7_list) Append(value protoreflect.Value) {
+func (x *_BaseDocument_7_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DIDDocument_7_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message DIDDocument at list field CapabilityDelegation as it is not of Message kind"))
+func (x *_BaseDocument_7_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message BaseDocument at list field CapabilityDelegation as it is not of Message kind"))
 }
 
-func (x *_DIDDocument_7_list) Truncate(n int) {
+func (x *_BaseDocument_7_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DIDDocument_7_list) NewElement() protoreflect.Value {
+func (x *_BaseDocument_7_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_DIDDocument_7_list) IsValid() bool {
+func (x *_BaseDocument_7_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_DIDDocument_8_list)(nil)
+var _ protoreflect.List = (*_BaseDocument_8_list)(nil)
 
-type _DIDDocument_8_list struct {
+type _BaseDocument_8_list struct {
 	list *[]string
 }
 
-func (x *_DIDDocument_8_list) Len() int {
+func (x *_BaseDocument_8_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_DIDDocument_8_list) Get(i int) protoreflect.Value {
+func (x *_BaseDocument_8_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_DIDDocument_8_list) Set(i int, value protoreflect.Value) {
+func (x *_BaseDocument_8_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_DIDDocument_8_list) Append(value protoreflect.Value) {
+func (x *_BaseDocument_8_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_DIDDocument_8_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message DIDDocument at list field CapabilityInvocation as it is not of Message kind"))
+func (x *_BaseDocument_8_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message BaseDocument at list field CapabilityInvocation as it is not of Message kind"))
 }
 
-func (x *_DIDDocument_8_list) Truncate(n int) {
+func (x *_BaseDocument_8_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_DIDDocument_8_list) NewElement() protoreflect.Value {
+func (x *_BaseDocument_8_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_DIDDocument_8_list) IsValid() bool {
+func (x *_BaseDocument_8_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_DIDDocument                       protoreflect.MessageDescriptor
-	fd_DIDDocument_id                    protoreflect.FieldDescriptor
-	fd_DIDDocument_verification_methods  protoreflect.FieldDescriptor
-	fd_DIDDocument_authentication        protoreflect.FieldDescriptor
-	fd_DIDDocument_assertion_method      protoreflect.FieldDescriptor
-	fd_DIDDocument_capability_delegation protoreflect.FieldDescriptor
-	fd_DIDDocument_capability_invocation protoreflect.FieldDescriptor
+	md_BaseDocument                       protoreflect.MessageDescriptor
+	fd_BaseDocument_id                    protoreflect.FieldDescriptor
+	fd_BaseDocument_verification_methods  protoreflect.FieldDescriptor
+	fd_BaseDocument_authentication        protoreflect.FieldDescriptor
+	fd_BaseDocument_assertion_method      protoreflect.FieldDescriptor
+	fd_BaseDocument_capability_delegation protoreflect.FieldDescriptor
+	fd_BaseDocument_capability_invocation protoreflect.FieldDescriptor
 )
 
 func init() {
-	file_did_v1_account_proto_init()
-	md_DIDDocument = File_did_v1_account_proto.Messages().ByName("DIDDocument")
-	fd_DIDDocument_id = md_DIDDocument.Fields().ByName("id")
-	fd_DIDDocument_verification_methods = md_DIDDocument.Fields().ByName("verification_methods")
-	fd_DIDDocument_authentication = md_DIDDocument.Fields().ByName("authentication")
-	fd_DIDDocument_assertion_method = md_DIDDocument.Fields().ByName("assertion_method")
-	fd_DIDDocument_capability_delegation = md_DIDDocument.Fields().ByName("capability_delegation")
-	fd_DIDDocument_capability_invocation = md_DIDDocument.Fields().ByName("capability_invocation")
+	file_did_v1_types_proto_init()
+	md_BaseDocument = File_did_v1_types_proto.Messages().ByName("BaseDocument")
+	fd_BaseDocument_id = md_BaseDocument.Fields().ByName("id")
+	fd_BaseDocument_verification_methods = md_BaseDocument.Fields().ByName("verification_methods")
+	fd_BaseDocument_authentication = md_BaseDocument.Fields().ByName("authentication")
+	fd_BaseDocument_assertion_method = md_BaseDocument.Fields().ByName("assertion_method")
+	fd_BaseDocument_capability_delegation = md_BaseDocument.Fields().ByName("capability_delegation")
+	fd_BaseDocument_capability_invocation = md_BaseDocument.Fields().ByName("capability_invocation")
 }
 
-var _ protoreflect.Message = (*fastReflection_DIDDocument)(nil)
+var _ protoreflect.Message = (*fastReflection_BaseDocument)(nil)
 
-type fastReflection_DIDDocument DIDDocument
+type fastReflection_BaseDocument BaseDocument
 
-func (x *DIDDocument) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_DIDDocument)(x)
+func (x *BaseDocument) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_BaseDocument)(x)
 }
 
-func (x *DIDDocument) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_account_proto_msgTypes[0]
+func (x *BaseDocument) slowProtoReflect() protoreflect.Message {
+	mi := &file_did_v1_types_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -291,43 +292,43 @@ func (x *DIDDocument) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_DIDDocument_messageType fastReflection_DIDDocument_messageType
-var _ protoreflect.MessageType = fastReflection_DIDDocument_messageType{}
+var _fastReflection_BaseDocument_messageType fastReflection_BaseDocument_messageType
+var _ protoreflect.MessageType = fastReflection_BaseDocument_messageType{}
 
-type fastReflection_DIDDocument_messageType struct{}
+type fastReflection_BaseDocument_messageType struct{}
 
-func (x fastReflection_DIDDocument_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_DIDDocument)(nil)
+func (x fastReflection_BaseDocument_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_BaseDocument)(nil)
 }
-func (x fastReflection_DIDDocument_messageType) New() protoreflect.Message {
-	return new(fastReflection_DIDDocument)
+func (x fastReflection_BaseDocument_messageType) New() protoreflect.Message {
+	return new(fastReflection_BaseDocument)
 }
-func (x fastReflection_DIDDocument_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_DIDDocument
+func (x fastReflection_BaseDocument_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_BaseDocument
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_DIDDocument) Descriptor() protoreflect.MessageDescriptor {
-	return md_DIDDocument
+func (x *fastReflection_BaseDocument) Descriptor() protoreflect.MessageDescriptor {
+	return md_BaseDocument
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_DIDDocument) Type() protoreflect.MessageType {
-	return _fastReflection_DIDDocument_messageType
+func (x *fastReflection_BaseDocument) Type() protoreflect.MessageType {
+	return _fastReflection_BaseDocument_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_DIDDocument) New() protoreflect.Message {
-	return new(fastReflection_DIDDocument)
+func (x *fastReflection_BaseDocument) New() protoreflect.Message {
+	return new(fastReflection_BaseDocument)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_DIDDocument) Interface() protoreflect.ProtoMessage {
-	return (*DIDDocument)(x)
+func (x *fastReflection_BaseDocument) Interface() protoreflect.ProtoMessage {
+	return (*BaseDocument)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -335,40 +336,40 @@ func (x *fastReflection_DIDDocument) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_DIDDocument) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_BaseDocument) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != "" {
 		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_DIDDocument_id, value) {
+		if !f(fd_BaseDocument_id, value) {
 			return
 		}
 	}
 	if len(x.VerificationMethods) != 0 {
-		value := protoreflect.ValueOfList(&_DIDDocument_2_list{list: &x.VerificationMethods})
-		if !f(fd_DIDDocument_verification_methods, value) {
+		value := protoreflect.ValueOfList(&_BaseDocument_2_list{list: &x.VerificationMethods})
+		if !f(fd_BaseDocument_verification_methods, value) {
 			return
 		}
 	}
 	if len(x.Authentication) != 0 {
-		value := protoreflect.ValueOfList(&_DIDDocument_4_list{list: &x.Authentication})
-		if !f(fd_DIDDocument_authentication, value) {
+		value := protoreflect.ValueOfList(&_BaseDocument_4_list{list: &x.Authentication})
+		if !f(fd_BaseDocument_authentication, value) {
 			return
 		}
 	}
 	if len(x.AssertionMethod) != 0 {
-		value := protoreflect.ValueOfList(&_DIDDocument_5_list{list: &x.AssertionMethod})
-		if !f(fd_DIDDocument_assertion_method, value) {
+		value := protoreflect.ValueOfList(&_BaseDocument_5_list{list: &x.AssertionMethod})
+		if !f(fd_BaseDocument_assertion_method, value) {
 			return
 		}
 	}
 	if len(x.CapabilityDelegation) != 0 {
-		value := protoreflect.ValueOfList(&_DIDDocument_7_list{list: &x.CapabilityDelegation})
-		if !f(fd_DIDDocument_capability_delegation, value) {
+		value := protoreflect.ValueOfList(&_BaseDocument_7_list{list: &x.CapabilityDelegation})
+		if !f(fd_BaseDocument_capability_delegation, value) {
 			return
 		}
 	}
 	if len(x.CapabilityInvocation) != 0 {
-		value := protoreflect.ValueOfList(&_DIDDocument_8_list{list: &x.CapabilityInvocation})
-		if !f(fd_DIDDocument_capability_invocation, value) {
+		value := protoreflect.ValueOfList(&_BaseDocument_8_list{list: &x.CapabilityInvocation})
+		if !f(fd_BaseDocument_capability_invocation, value) {
 			return
 		}
 	}
@@ -385,25 +386,25 @@ func (x *fastReflection_DIDDocument) Range(f func(protoreflect.FieldDescriptor, 
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_DIDDocument) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_BaseDocument) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.DIDDocument.id":
+	case "did.v1.BaseDocument.id":
 		return x.Id != ""
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		return len(x.VerificationMethods) != 0
-	case "did.v1.DIDDocument.authentication":
+	case "did.v1.BaseDocument.authentication":
 		return len(x.Authentication) != 0
-	case "did.v1.DIDDocument.assertion_method":
+	case "did.v1.BaseDocument.assertion_method":
 		return len(x.AssertionMethod) != 0
-	case "did.v1.DIDDocument.capability_delegation":
+	case "did.v1.BaseDocument.capability_delegation":
 		return len(x.CapabilityDelegation) != 0
-	case "did.v1.DIDDocument.capability_invocation":
+	case "did.v1.BaseDocument.capability_invocation":
 		return len(x.CapabilityInvocation) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -413,25 +414,25 @@ func (x *fastReflection_DIDDocument) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DIDDocument) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_BaseDocument) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.DIDDocument.id":
+	case "did.v1.BaseDocument.id":
 		x.Id = ""
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		x.VerificationMethods = nil
-	case "did.v1.DIDDocument.authentication":
+	case "did.v1.BaseDocument.authentication":
 		x.Authentication = nil
-	case "did.v1.DIDDocument.assertion_method":
+	case "did.v1.BaseDocument.assertion_method":
 		x.AssertionMethod = nil
-	case "did.v1.DIDDocument.capability_delegation":
+	case "did.v1.BaseDocument.capability_delegation":
 		x.CapabilityDelegation = nil
-	case "did.v1.DIDDocument.capability_invocation":
+	case "did.v1.BaseDocument.capability_invocation":
 		x.CapabilityInvocation = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -441,46 +442,46 @@ func (x *fastReflection_DIDDocument) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_DIDDocument) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_BaseDocument) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.DIDDocument.id":
+	case "did.v1.BaseDocument.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		if len(x.VerificationMethods) == 0 {
-			return protoreflect.ValueOfList(&_DIDDocument_2_list{})
+			return protoreflect.ValueOfList(&_BaseDocument_2_list{})
 		}
-		listValue := &_DIDDocument_2_list{list: &x.VerificationMethods}
+		listValue := &_BaseDocument_2_list{list: &x.VerificationMethods}
 		return protoreflect.ValueOfList(listValue)
-	case "did.v1.DIDDocument.authentication":
+	case "did.v1.BaseDocument.authentication":
 		if len(x.Authentication) == 0 {
-			return protoreflect.ValueOfList(&_DIDDocument_4_list{})
+			return protoreflect.ValueOfList(&_BaseDocument_4_list{})
 		}
-		listValue := &_DIDDocument_4_list{list: &x.Authentication}
+		listValue := &_BaseDocument_4_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(listValue)
-	case "did.v1.DIDDocument.assertion_method":
+	case "did.v1.BaseDocument.assertion_method":
 		if len(x.AssertionMethod) == 0 {
-			return protoreflect.ValueOfList(&_DIDDocument_5_list{})
+			return protoreflect.ValueOfList(&_BaseDocument_5_list{})
 		}
-		listValue := &_DIDDocument_5_list{list: &x.AssertionMethod}
+		listValue := &_BaseDocument_5_list{list: &x.AssertionMethod}
 		return protoreflect.ValueOfList(listValue)
-	case "did.v1.DIDDocument.capability_delegation":
+	case "did.v1.BaseDocument.capability_delegation":
 		if len(x.CapabilityDelegation) == 0 {
-			return protoreflect.ValueOfList(&_DIDDocument_7_list{})
+			return protoreflect.ValueOfList(&_BaseDocument_7_list{})
 		}
-		listValue := &_DIDDocument_7_list{list: &x.CapabilityDelegation}
+		listValue := &_BaseDocument_7_list{list: &x.CapabilityDelegation}
 		return protoreflect.ValueOfList(listValue)
-	case "did.v1.DIDDocument.capability_invocation":
+	case "did.v1.BaseDocument.capability_invocation":
 		if len(x.CapabilityInvocation) == 0 {
-			return protoreflect.ValueOfList(&_DIDDocument_8_list{})
+			return protoreflect.ValueOfList(&_BaseDocument_8_list{})
 		}
-		listValue := &_DIDDocument_8_list{list: &x.CapabilityInvocation}
+		listValue := &_BaseDocument_8_list{list: &x.CapabilityInvocation}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -494,35 +495,35 @@ func (x *fastReflection_DIDDocument) Get(descriptor protoreflect.FieldDescriptor
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DIDDocument) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_BaseDocument) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.DIDDocument.id":
+	case "did.v1.BaseDocument.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		lv := value.List()
-		clv := lv.(*_DIDDocument_2_list)
+		clv := lv.(*_BaseDocument_2_list)
 		x.VerificationMethods = *clv.list
-	case "did.v1.DIDDocument.authentication":
+	case "did.v1.BaseDocument.authentication":
 		lv := value.List()
-		clv := lv.(*_DIDDocument_4_list)
+		clv := lv.(*_BaseDocument_4_list)
 		x.Authentication = *clv.list
-	case "did.v1.DIDDocument.assertion_method":
+	case "did.v1.BaseDocument.assertion_method":
 		lv := value.List()
-		clv := lv.(*_DIDDocument_5_list)
+		clv := lv.(*_BaseDocument_5_list)
 		x.AssertionMethod = *clv.list
-	case "did.v1.DIDDocument.capability_delegation":
+	case "did.v1.BaseDocument.capability_delegation":
 		lv := value.List()
-		clv := lv.(*_DIDDocument_7_list)
+		clv := lv.(*_BaseDocument_7_list)
 		x.CapabilityDelegation = *clv.list
-	case "did.v1.DIDDocument.capability_invocation":
+	case "did.v1.BaseDocument.capability_invocation":
 		lv := value.List()
-		clv := lv.(*_DIDDocument_8_list)
+		clv := lv.(*_BaseDocument_8_list)
 		x.CapabilityInvocation = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -536,85 +537,85 @@ func (x *fastReflection_DIDDocument) Set(fd protoreflect.FieldDescriptor, value 
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DIDDocument) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_BaseDocument) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		if x.VerificationMethods == nil {
 			x.VerificationMethods = []*VerificationMethod{}
 		}
-		value := &_DIDDocument_2_list{list: &x.VerificationMethods}
+		value := &_BaseDocument_2_list{list: &x.VerificationMethods}
 		return protoreflect.ValueOfList(value)
-	case "did.v1.DIDDocument.authentication":
+	case "did.v1.BaseDocument.authentication":
 		if x.Authentication == nil {
 			x.Authentication = []string{}
 		}
-		value := &_DIDDocument_4_list{list: &x.Authentication}
+		value := &_BaseDocument_4_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(value)
-	case "did.v1.DIDDocument.assertion_method":
+	case "did.v1.BaseDocument.assertion_method":
 		if x.AssertionMethod == nil {
 			x.AssertionMethod = []string{}
 		}
-		value := &_DIDDocument_5_list{list: &x.AssertionMethod}
+		value := &_BaseDocument_5_list{list: &x.AssertionMethod}
 		return protoreflect.ValueOfList(value)
-	case "did.v1.DIDDocument.capability_delegation":
+	case "did.v1.BaseDocument.capability_delegation":
 		if x.CapabilityDelegation == nil {
 			x.CapabilityDelegation = []string{}
 		}
-		value := &_DIDDocument_7_list{list: &x.CapabilityDelegation}
+		value := &_BaseDocument_7_list{list: &x.CapabilityDelegation}
 		return protoreflect.ValueOfList(value)
-	case "did.v1.DIDDocument.capability_invocation":
+	case "did.v1.BaseDocument.capability_invocation":
 		if x.CapabilityInvocation == nil {
 			x.CapabilityInvocation = []string{}
 		}
-		value := &_DIDDocument_8_list{list: &x.CapabilityInvocation}
+		value := &_BaseDocument_8_list{list: &x.CapabilityInvocation}
 		return protoreflect.ValueOfList(value)
-	case "did.v1.DIDDocument.id":
-		panic(fmt.Errorf("field id of message did.v1.DIDDocument is not mutable"))
+	case "did.v1.BaseDocument.id":
+		panic(fmt.Errorf("field id of message did.v1.BaseDocument is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_DIDDocument) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_BaseDocument) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.DIDDocument.id":
+	case "did.v1.BaseDocument.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.DIDDocument.verification_methods":
+	case "did.v1.BaseDocument.verification_methods":
 		list := []*VerificationMethod{}
-		return protoreflect.ValueOfList(&_DIDDocument_2_list{list: &list})
-	case "did.v1.DIDDocument.authentication":
+		return protoreflect.ValueOfList(&_BaseDocument_2_list{list: &list})
+	case "did.v1.BaseDocument.authentication":
 		list := []string{}
-		return protoreflect.ValueOfList(&_DIDDocument_4_list{list: &list})
-	case "did.v1.DIDDocument.assertion_method":
+		return protoreflect.ValueOfList(&_BaseDocument_4_list{list: &list})
+	case "did.v1.BaseDocument.assertion_method":
 		list := []string{}
-		return protoreflect.ValueOfList(&_DIDDocument_5_list{list: &list})
-	case "did.v1.DIDDocument.capability_delegation":
+		return protoreflect.ValueOfList(&_BaseDocument_5_list{list: &list})
+	case "did.v1.BaseDocument.capability_delegation":
 		list := []string{}
-		return protoreflect.ValueOfList(&_DIDDocument_7_list{list: &list})
-	case "did.v1.DIDDocument.capability_invocation":
+		return protoreflect.ValueOfList(&_BaseDocument_7_list{list: &list})
+	case "did.v1.BaseDocument.capability_invocation":
 		list := []string{}
-		return protoreflect.ValueOfList(&_DIDDocument_8_list{list: &list})
+		return protoreflect.ValueOfList(&_BaseDocument_8_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.DIDDocument"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.BaseDocument"))
 		}
-		panic(fmt.Errorf("message did.v1.DIDDocument does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.BaseDocument does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_DIDDocument) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_BaseDocument) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.DIDDocument", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.BaseDocument", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -622,7 +623,7 @@ func (x *fastReflection_DIDDocument) WhichOneof(d protoreflect.OneofDescriptor) 
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_DIDDocument) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_BaseDocument) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -633,7 +634,7 @@ func (x *fastReflection_DIDDocument) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_DIDDocument) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_BaseDocument) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -645,7 +646,7 @@ func (x *fastReflection_DIDDocument) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_DIDDocument) IsValid() bool {
+func (x *fastReflection_BaseDocument) IsValid() bool {
 	return x != nil
 }
 
@@ -655,9 +656,9 @@ func (x *fastReflection_DIDDocument) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_DIDDocument) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_BaseDocument) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*DIDDocument)
+		x := input.Message.Interface().(*BaseDocument)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -713,7 +714,7 @@ func (x *fastReflection_DIDDocument) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*DIDDocument)
+		x := input.Message.Interface().(*BaseDocument)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -802,7 +803,7 @@ func (x *fastReflection_DIDDocument) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*DIDDocument)
+		x := input.Message.Interface().(*BaseDocument)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -834,10 +835,10 @@ func (x *fastReflection_DIDDocument) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DIDDocument: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: BaseDocument: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: DIDDocument: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: BaseDocument: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1160,8 +1161,8 @@ var (
 )
 
 func init() {
-	file_did_v1_account_proto_init()
-	md_VerificationMethod = File_did_v1_account_proto.Messages().ByName("VerificationMethod")
+	file_did_v1_types_proto_init()
+	md_VerificationMethod = File_did_v1_types_proto.Messages().ByName("VerificationMethod")
 	fd_VerificationMethod_id = md_VerificationMethod.Fields().ByName("id")
 	fd_VerificationMethod_controller = md_VerificationMethod.Fields().ByName("controller")
 	fd_VerificationMethod_public_key_multibase = md_VerificationMethod.Fields().ByName("public_key_multibase")
@@ -1177,7 +1178,7 @@ func (x *VerificationMethod) ProtoReflect() protoreflect.Message {
 }
 
 func (x *VerificationMethod) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_account_proto_msgTypes[1]
+	mi := &file_did_v1_types_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -1921,14 +1922,11 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-// Copyright Tharsis Labs Ltd.(Evmos)
-// SPDX-License-Identifier:ENCL-1.0(https://github.com/evmos/evmos/blob/main/LICENSE)
-
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
 // 	protoc        (unknown)
-// source: did/v1/account.proto
+// source: did/v1/types.proto
 
 const (
 	// Verify that this generated code is sufficiently up-to-date.
@@ -1937,8 +1935,8 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// DIDDocument defines a DID document
-type DIDDocument struct {
+// BaseDocument defines a DID document
+type BaseDocument struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1951,62 +1949,62 @@ type DIDDocument struct {
 	CapabilityInvocation []string              `protobuf:"bytes,8,rep,name=capability_invocation,json=capabilityInvocation,proto3" json:"capability_invocation,omitempty"`
 }
 
-func (x *DIDDocument) Reset() {
-	*x = DIDDocument{}
+func (x *BaseDocument) Reset() {
+	*x = BaseDocument{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_account_proto_msgTypes[0]
+		mi := &file_did_v1_types_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *DIDDocument) String() string {
+func (x *BaseDocument) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DIDDocument) ProtoMessage() {}
+func (*BaseDocument) ProtoMessage() {}
 
-// Deprecated: Use DIDDocument.ProtoReflect.Descriptor instead.
-func (*DIDDocument) Descriptor() ([]byte, []int) {
-	return file_did_v1_account_proto_rawDescGZIP(), []int{0}
+// Deprecated: Use BaseDocument.ProtoReflect.Descriptor instead.
+func (*BaseDocument) Descriptor() ([]byte, []int) {
+	return file_did_v1_types_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DIDDocument) GetId() string {
+func (x *BaseDocument) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *DIDDocument) GetVerificationMethods() []*VerificationMethod {
+func (x *BaseDocument) GetVerificationMethods() []*VerificationMethod {
 	if x != nil {
 		return x.VerificationMethods
 	}
 	return nil
 }
 
-func (x *DIDDocument) GetAuthentication() []string {
+func (x *BaseDocument) GetAuthentication() []string {
 	if x != nil {
 		return x.Authentication
 	}
 	return nil
 }
 
-func (x *DIDDocument) GetAssertionMethod() []string {
+func (x *BaseDocument) GetAssertionMethod() []string {
 	if x != nil {
 		return x.AssertionMethod
 	}
 	return nil
 }
 
-func (x *DIDDocument) GetCapabilityDelegation() []string {
+func (x *BaseDocument) GetCapabilityDelegation() []string {
 	if x != nil {
 		return x.CapabilityDelegation
 	}
 	return nil
 }
 
-func (x *DIDDocument) GetCapabilityInvocation() []string {
+func (x *BaseDocument) GetCapabilityInvocation() []string {
 	if x != nil {
 		return x.CapabilityInvocation
 	}
@@ -2030,7 +2028,7 @@ type VerificationMethod struct {
 func (x *VerificationMethod) Reset() {
 	*x = VerificationMethod{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_account_proto_msgTypes[1]
+		mi := &file_did_v1_types_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -2044,7 +2042,7 @@ func (*VerificationMethod) ProtoMessage() {}
 
 // Deprecated: Use VerificationMethod.ProtoReflect.Descriptor instead.
 func (*VerificationMethod) Descriptor() ([]byte, []int) {
-	return file_did_v1_account_proto_rawDescGZIP(), []int{1}
+	return file_did_v1_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *VerificationMethod) GetId() string {
@@ -2075,82 +2073,83 @@ func (x *VerificationMethod) GetPublicKeyJwks() map[string]string {
 	return nil
 }
 
-var File_did_v1_account_proto protoreflect.FileDescriptor
+var File_did_v1_types_proto protoreflect.FileDescriptor
 
-var file_did_v1_account_proto_rawDesc = []byte{
-	0x0a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
-	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x19,
-	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x63, 0x6f, 0x73,
-	0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67, 0x6f, 0x70,
-	0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a,
-	0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xa9, 0x02, 0x0a, 0x0b, 0x44, 0x49, 0x44, 0x44, 0x6f, 0x63,
-	0x75, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x4d, 0x0a, 0x14, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73, 0x18, 0x02, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72,
-	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x52,
-	0x13, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74,
-	0x68, 0x6f, 0x64, 0x73, 0x12, 0x26, 0x0a, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69,
-	0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0e, 0x61, 0x75,
-	0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x29, 0x0a, 0x10,
-	0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64,
-	0x18, 0x05, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0f, 0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f,
-	0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x33, 0x0a, 0x15, 0x63, 0x61, 0x70, 0x61, 0x62,
-	0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x64, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x14, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69,
-	0x74, 0x79, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x33, 0x0a, 0x15,
-	0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x69, 0x6e, 0x76, 0x6f, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x03, 0x28, 0x09, 0x52, 0x14, 0x63, 0x61, 0x70,
-	0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x49, 0x6e, 0x76, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f,
-	0x6e, 0x22, 0x8f, 0x02, 0x0a, 0x12, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f,
-	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c,
-	0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65,
-	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
-	0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x55, 0x0a, 0x0f, 0x70, 0x75,
-	0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6a, 0x77, 0x6b, 0x73, 0x18, 0x04, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72,
-	0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x2e,
-	0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74,
-	0x72, 0x79, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b,
-	0x73, 0x1a, 0x40, 0x0a, 0x12, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77,
-	0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a,
-	0x02, 0x38, 0x01, 0x42, 0x7c, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76,
-	0x31, 0x42, 0x0c, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e,
-	0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69,
-	0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58,
-	0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c,
-	0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+var file_did_v1_types_proto_rawDesc = []byte{
+	0x0a, 0x12, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x74, 0x79, 0x70, 0x65, 0x73, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
+	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6d, 0x73, 0x67, 0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x73, 0x67, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x67, 0x6f, 0x67,
+	0x6f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f, 0x67, 0x6f, 0x67, 0x6f, 0x2e, 0x70, 0x72, 0x6f, 0x74,
+	0x6f, 0x1a, 0x19, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x5f, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x2f,
+	0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xaa, 0x02, 0x0a,
+	0x0c, 0x42, 0x61, 0x73, 0x65, 0x44, 0x6f, 0x63, 0x75, 0x6d, 0x65, 0x6e, 0x74, 0x12, 0x0e, 0x0a,
+	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x4d, 0x0a,
+	0x14, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x6d, 0x65,
+	0x74, 0x68, 0x6f, 0x64, 0x73, 0x18, 0x02, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x52, 0x13, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73, 0x12, 0x26, 0x0a, 0x0e,
+	0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04,
+	0x20, 0x03, 0x28, 0x09, 0x52, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x05, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0f,
+	0x61, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12,
+	0x33, 0x0a, 0x15, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x5f, 0x64, 0x65,
+	0x6c, 0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x14,
+	0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61,
+	0x74, 0x69, 0x6f, 0x6e, 0x12, 0x33, 0x0a, 0x15, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69,
+	0x74, 0x79, 0x5f, 0x69, 0x6e, 0x76, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20,
+	0x03, 0x28, 0x09, 0x52, 0x14, 0x63, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79, 0x49,
+	0x6e, 0x76, 0x6f, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x8f, 0x02, 0x0a, 0x12, 0x56, 0x65,
+	0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
+	0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6d,
+	0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12,
+	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61,
+	0x73, 0x65, 0x12, 0x55, 0x0a, 0x0f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79,
+	0x5f, 0x6a, 0x77, 0x6b, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x2d, 0x2e, 0x64, 0x69,
+	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
+	0x79, 0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b, 0x73, 0x1a, 0x40, 0x0a, 0x12, 0x50, 0x75, 0x62,
+	0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12,
+	0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65,
+	0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x42, 0x7a, 0x0a, 0x0a, 0x63,
+	0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x54, 0x79, 0x70, 0x65, 0x73,
+	0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
+	0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f,
+	0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31,
+	0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca,
+	0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56,
+	0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07,
+	0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_did_v1_account_proto_rawDescOnce sync.Once
-	file_did_v1_account_proto_rawDescData = file_did_v1_account_proto_rawDesc
+	file_did_v1_types_proto_rawDescOnce sync.Once
+	file_did_v1_types_proto_rawDescData = file_did_v1_types_proto_rawDesc
 )
 
-func file_did_v1_account_proto_rawDescGZIP() []byte {
-	file_did_v1_account_proto_rawDescOnce.Do(func() {
-		file_did_v1_account_proto_rawDescData = protoimpl.X.CompressGZIP(file_did_v1_account_proto_rawDescData)
+func file_did_v1_types_proto_rawDescGZIP() []byte {
+	file_did_v1_types_proto_rawDescOnce.Do(func() {
+		file_did_v1_types_proto_rawDescData = protoimpl.X.CompressGZIP(file_did_v1_types_proto_rawDescData)
 	})
-	return file_did_v1_account_proto_rawDescData
+	return file_did_v1_types_proto_rawDescData
 }
 
-var file_did_v1_account_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
-var file_did_v1_account_proto_goTypes = []interface{}{
-	(*DIDDocument)(nil),        // 0: did.v1.DIDDocument
+var file_did_v1_types_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_did_v1_types_proto_goTypes = []interface{}{
+	(*BaseDocument)(nil),       // 0: did.v1.BaseDocument
 	(*VerificationMethod)(nil), // 1: did.v1.VerificationMethod
 	nil,                        // 2: did.v1.VerificationMethod.PublicKeyJwksEntry
 }
-var file_did_v1_account_proto_depIdxs = []int32{
-	1, // 0: did.v1.DIDDocument.verification_methods:type_name -> did.v1.VerificationMethod
+var file_did_v1_types_proto_depIdxs = []int32{
+	1, // 0: did.v1.BaseDocument.verification_methods:type_name -> did.v1.VerificationMethod
 	2, // 1: did.v1.VerificationMethod.public_key_jwks:type_name -> did.v1.VerificationMethod.PublicKeyJwksEntry
 	2, // [2:2] is the sub-list for method output_type
 	2, // [2:2] is the sub-list for method input_type
@@ -2159,15 +2158,15 @@ var file_did_v1_account_proto_depIdxs = []int32{
 	0, // [0:2] is the sub-list for field type_name
 }
 
-func init() { file_did_v1_account_proto_init() }
-func file_did_v1_account_proto_init() {
-	if File_did_v1_account_proto != nil {
+func init() { file_did_v1_types_proto_init() }
+func file_did_v1_types_proto_init() {
+	if File_did_v1_types_proto != nil {
 		return
 	}
 	file_did_v1_genesis_proto_init()
 	if !protoimpl.UnsafeEnabled {
-		file_did_v1_account_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*DIDDocument); i {
+		file_did_v1_types_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*BaseDocument); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2178,7 +2177,7 @@ func file_did_v1_account_proto_init() {
 				return nil
 			}
 		}
-		file_did_v1_account_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_did_v1_types_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*VerificationMethod); i {
 			case 0:
 				return &v.state
@@ -2195,18 +2194,18 @@ func file_did_v1_account_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_did_v1_account_proto_rawDesc,
+			RawDescriptor: file_did_v1_types_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_did_v1_account_proto_goTypes,
-		DependencyIndexes: file_did_v1_account_proto_depIdxs,
-		MessageInfos:      file_did_v1_account_proto_msgTypes,
+		GoTypes:           file_did_v1_types_proto_goTypes,
+		DependencyIndexes: file_did_v1_types_proto_depIdxs,
+		MessageInfos:      file_did_v1_types_proto_msgTypes,
 	}.Build()
-	File_did_v1_account_proto = out.File
-	file_did_v1_account_proto_rawDesc = nil
-	file_did_v1_account_proto_goTypes = nil
-	file_did_v1_account_proto_depIdxs = nil
+	File_did_v1_types_proto = out.File
+	file_did_v1_types_proto_rawDesc = nil
+	file_did_v1_types_proto_goTypes = nil
+	file_did_v1_types_proto_depIdxs = nil
 }
