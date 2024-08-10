@@ -29,16 +29,23 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
 
-// AuthenticateController implements types.MsgServer.
-func (ms msgServer) AuthenticateController(ctx context.Context, msg *types.MsgAuthenticateController) (*types.MsgAuthenticateControllerResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("AuthenticateController is unimplemented")
-	return &types.MsgAuthenticateControllerResponse{}, nil
-}
-
 // RegisterController implements types.MsgServer.
-func (ms msgServer) RegisterController(ctx context.Context, msg *types.MsgInitializeController) (*types.MsgInitializeControllerResponse, error) {
+func (ms msgServer) RegisterController(ctx context.Context, msg *types.MsgRegisterController) (*types.MsgRegisterControllerResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	panic("RegisterController is unimplemented")
-	return &types.MsgInitializeControllerResponse{}, nil
+	return &types.MsgRegisterControllerResponse{}, nil
+}
+
+// Authenticate implements types.MsgServer.
+func (ms msgServer) Authenticate(ctx context.Context, msg *types.MsgAuthenticate) (*types.MsgAuthenticateResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Authenticate is unimplemented")
+	return &types.MsgAuthenticateResponse{}, nil
+}
+
+// RegisterService implements types.MsgServer.
+func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("RegisterService is unimplemented")
+	return &types.MsgRegisterServiceResponse{}, nil
 }

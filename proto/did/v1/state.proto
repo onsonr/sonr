@@ -5,6 +5,7 @@ option go_package = "github.com/onsonr/hway/x/did/types";
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
+import "did/v1/enums.proto";
 
 // Aliases represents the `alsoKnownAs` property associated with a DID Controller
 message Aliases {
@@ -146,9 +147,15 @@ message Service {
   // The type of the service
   string service_type = 2;
 
-  // The service endpoint
-  string service_endpoint = 3;
-
   // The controller DID of the service
-  string controller_did = 4;
+  string controller_did = 3;
+
+  // The domain name of the service
+  string origin_uri = 4;
+
+  // The service endpoint
+  map<string, string> service_endpoints = 5;
+
+  // Scopes is the Authorization Grants of the service
+  repeated PermissionScope scopes = 6;
 }
