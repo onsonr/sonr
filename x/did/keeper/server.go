@@ -3,9 +3,11 @@ package keeper
 import (
 	"context"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"cosmossdk.io/errors"
+	didv1 "github.com/onsonr/hway/api/did/v1"
 	"github.com/onsonr/hway/x/did/types"
 )
 
@@ -29,23 +31,33 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
 
-// RegisterController implements types.MsgServer.
-func (ms msgServer) RegisterController(ctx context.Context, msg *types.MsgRegisterController) (*types.MsgRegisterControllerResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("RegisterController is unimplemented")
-	return &types.MsgRegisterControllerResponse{}, nil
-}
-
 // Authenticate implements types.MsgServer.
 func (ms msgServer) Authenticate(ctx context.Context, msg *types.MsgAuthenticate) (*types.MsgAuthenticateResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+	}
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("Authenticate is unimplemented")
 	return &types.MsgAuthenticateResponse{}, nil
+}
+
+// RegisterController implements types.MsgServer.
+func (ms msgServer) RegisterController(goCtx context.Context, msg *types.MsgRegisterController) (*types.MsgRegisterControllerResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+	}
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	svc := didv1.Service{
+		ControllerDid: msg.Authority,
+	}
+	ms.k.OrmDB.ServiceTable().Insert(ctx, &svc)
+	return &types.MsgRegisterControllerResponse{}, nil
 }
 
 // RegisterService implements types.MsgServer.
 func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
+	if ms.k.authority != msg.Authority {
+		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+	}
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("RegisterService is unimplemented")
 	return &types.MsgRegisterServiceResponse{}, nil
 }

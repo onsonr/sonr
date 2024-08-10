@@ -9,15 +9,42 @@ import "cosmos_proto/cosmos.proto";
 
 option go_package = "github.com/onsonr/hway/x/did/types";
 
+// Credential defines a WebAuthn credential
+message Credential {
+  string id = 1;
+  string credential_type = 2;
+  bytes credential_id = 3;
+  repeated string transport = 4;
+  string attestation_type = 5;
+  string display_name = 6;
+  string controller = 7;
+}  
 
-// BaseDocument defines a DID document
-message BaseDocument {
+// Document defines a DID document
+message Document {
   string id = 1;
   repeated VerificationMethod verification_methods = 2;
   repeated string authentication = 4;
   repeated string assertion_method = 5;
   repeated string capability_delegation = 7;
   repeated string capability_invocation = 8;
+}
+
+// Identity defines an associated profile for a did subject
+message Identity {
+  string id = 1;
+  string subject = 2;
+  string controller = 3;
+  repeated Credential credentials = 4;
+  repeated VerificationMethod verification_methods = 5;
+}
+
+// PubKey defines a public key for a did
+message PubKey {
+  string id = 1;
+  bytes key = 2;
+  string key_type = 3;
+  string controller = 4;
 }
 
 // VerificationMethod defines a verification method

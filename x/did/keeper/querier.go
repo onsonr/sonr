@@ -31,23 +31,32 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// PropertyExists implements types.QueryServer.
-func (k Querier) PropertyExists(goCtx context.Context, req *types.QueryExistsRequest) (*types.QueryExistsResponse, error) {
+// Accounts implements types.QueryServer.
+func (k Querier) Accounts(goCtx context.Context, req *types.QueryAccountsRequest) (*types.QueryAccountsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("PropertyExists is unimplemented")
-	return &types.QueryExistsResponse{}, nil
+	return &types.QueryAccountsResponse{}, nil
 }
 
-// ResolveIdentifier implements types.QueryServer.
-func (k Querier) ResolveIdentifier(goCtx context.Context, req *types.QueryResolveRequest) (*types.QueryResolveResponse, error) {
+// Credentials implements types.QueryServer.
+func (k Querier) Credentials(goCtx context.Context, req *types.QueryCredentialsRequest) (*types.QueryCredentialsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("ResolveIdentifier is unimplemented")
+	return &types.QueryCredentialsResponse{}, nil
+}
+
+// Identities implements types.QueryServer.
+func (k Querier) Identities(goCtx context.Context, req *types.QueryIdentitiesRequest) (*types.QueryIdentitiesResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryIdentitiesResponse{}, nil
+}
+
+// Resolve implements types.QueryServer.
+func (k Querier) Resolve(goCtx context.Context, req *types.QueryResolveRequest) (*types.QueryResolveResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryResolveResponse{}, nil
 }
 
-// WitnessCredential implements types.QueryServer.
-func (k Querier) WitnessCredential(goCtx context.Context, req *types.QueryWitnessCredentialRequest) (*types.QueryWitnessCredentialResponse, error) {
+// Service implements types.QueryServer.
+func (k Querier) Service(goCtx context.Context, req *types.QueryServiceRequest) (*types.QueryServiceResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("WitnessCredential is unimplemented")
-	return &types.QueryWitnessCredentialResponse{}, nil
+	return &types.QueryServiceResponse{}, nil
 }

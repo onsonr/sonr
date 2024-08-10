@@ -12,7 +12,7 @@ message Aliases {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
-    index: { id: 1, fields: "handle", unique: true }
+    index: { id: 1, fields: "subject", unique: true }
     };
 
   // The unique identifier of the alias
@@ -21,8 +21,8 @@ message Aliases {
   // Origin is the  Alias provider
   string origin = 2;
 
-  // Handle is the user defined alias
-  string handle = 3;
+  // Subject is the user defined alias
+  string subject = 3;
 
   // Controller of the alias
   string controller = 4;

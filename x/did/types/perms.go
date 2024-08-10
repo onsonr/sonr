@@ -3,7 +3,7 @@ package types
 import "gopkg.in/macaroon-bakery.v2/bakery/checkers"
 
 var (
-	PermissionScope_PERMISSION_SCOPEStrings = [...]string{
+	PermissionScopeStrings = [...]string{
 		"profile.name",
 		"identifiers.email",
 		"identifiers.phone",
@@ -19,7 +19,7 @@ var (
 		"admin.validator",
 	}
 
-	StringToPermissionScope_PERMISSION_SCOPE = map[string]PermissionScope{
+	StringToPermissionScope = map[string]PermissionScope{
 		"PERMISSION_SCOPE_UNSPECIFIED":            PermissionScope_PERMISSION_SCOPE_UNSPECIFIED,
 		"PERMISSION_SCOPE_PROFILE_NAME":           PermissionScope_PERMISSION_SCOPE_PROFILE_NAME,
 		"PERMISSION_SCOPE_IDENTIFIERS_EMAIL":      PermissionScope_PERMISSION_SCOPE_IDENTIFIERS_EMAIL,
@@ -35,6 +35,19 @@ var (
 		"PERMISSION_SCOPE_ADMIN_USER":             PermissionScope_PERMISSION_SCOPE_ADMIN_USER,
 		"PERMISSION_SCOPE_ADMIN_VALIDATOR":        PermissionScope_PERMISSION_SCOPE_ADMIN_VALIDATOR,
 	}
-
-	PermissionNamespace *checkers.Namespace
 )
+
+func ResolvePermissionScope(scope string) (PermissionScope, bool) {
+	uriToPrefix := make(map[string]string)
+	for _, scope := range PermissionScopeStrings {
+		uriToPrefix["https://example.com/auth/"+scope] = scope
+	}
+	PermissionNamespace := checkers.NewNamespace(uriToPrefix)
+
+	prefix, ok := PermissionNamespace.Resolve("https://example.com/auth/" + scope)
+	if !ok {
+		return 0, false
+	}
+	permScope, ok := StringToPermissionScope[prefix]
+	return permScope, ok
+}
