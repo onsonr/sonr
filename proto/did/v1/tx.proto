@@ -20,6 +20,12 @@ service Msg {
     // Authenticate asserts the given controller is the owner of the given address.
     rpc Authenticate(MsgAuthenticate) returns (MsgAuthenticateResponse);
 
+    // ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
+    rpc ProveWitness(MsgProveWitness) returns (MsgProveWitnessResponse);
+
+    // SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
+    rpc SyncVault(MsgSyncVault) returns (MsgSyncVaultResponse);
+
     // RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
     rpc RegisterController(MsgRegisterController) returns (MsgRegisterControllerResponse);
 
@@ -67,6 +73,45 @@ message MsgAuthenticate {
 
 // MsgAuthenticateResponse is the response type for the Authenticate RPC.
 message MsgAuthenticateResponse {}
+
+// MsgProveWitness is the message type for the ProveWitness RPC.
+message MsgProveWitness {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address of the governance account.
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // property is key to prove.
+  string property = 2;
+
+  // Witness Value is the bytes of the witness.
+  bytes witness = 3;
+}
+
+// MsgProveWitnessResponse is the response type for the ProveWitness RPC.
+message MsgProveWitnessResponse {
+  bool success = 1;
+  string property = 2;
+}
+
+// MsgSyncVault is the message type for the SyncVault RPC.
+message MsgSyncVault {
+  option (cosmos.msg.v1.signer) = "controller";
+
+  // controller is the address of the controller to sync.
+  string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+  
+  // cid is the IPFS content identifier.
+  string cid = 2;
+
+  // Macroon is the public token to authenticate the operation.
+  bytes macron = 3;
+}
+
+// MsgSyncVaultResponse is the response type for the SyncVault RPC.
+message MsgSyncVaultResponse {
+  bool success = 1;
+}
 
 // MsgRegisterController is the message type for the InitializeController RPC.
 message MsgRegisterController {

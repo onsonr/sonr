@@ -61,3 +61,15 @@ func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterS
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgRegisterServiceResponse{}, nil
 }
+
+// ProveWitness implements types.MsgServer.
+func (ms msgServer) ProveWitness(ctx context.Context, msg *types.MsgProveWitness) (*types.MsgProveWitnessResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgProveWitnessResponse{}, nil
+}
+
+// SyncVault implements types.MsgServer.
+func (ms msgServer) SyncVault(ctx context.Context, msg *types.MsgSyncVault) (*types.MsgSyncVaultResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgSyncVaultResponse{}, nil
+}
