@@ -7,8 +7,10 @@
   },
   "shell": {
     "scripts": {
+      "install": ["make install"],
       "proto": ["make proto-gen"],
-      "ps": ["devbox services ls"]
+      "build": ["go build -o ./bin/sonrd ./cmd/sonrd"],
+      "testnet": ["make sh-testnet"]
     }
   }
 }
