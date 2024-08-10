@@ -24,15 +24,6 @@ message Params {
   repeated ChainInfo whitelisted_chains = 2;
 }
 
-// Meta represents 
-message Meta {
-  option (amino.name) = "did/meta";
-  option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
-  
-  // Key value data for the Property
-  map<string, string> data = 1;
-}
 
 
 message AssetInfo {
@@ -50,7 +41,6 @@ message AssetInfo {
     string path = 12;
     string channel = 13;
     string port = 14;
-    Meta counter_party = 15;
 }
 
 message ChainInfo {
