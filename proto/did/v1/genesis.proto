@@ -3,11 +3,13 @@ package did.v1;
 
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
+import "did/v1/types.proto";
+
 option go_package = "github.com/onsonr/hway/x/did/types";
 
 // GenesisState defines the module genesis state
 message GenesisState {
-  // Params defines all the paramaters of the module.
+  // Params defines all the parameters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
 
@@ -24,49 +26,4 @@ message Params {
   repeated ChainInfo whitelisted_chains = 2;
 }
 
-// Meta represents 
-message Meta {
-  option (amino.name) = "did/meta";
-  option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
-  
-  // Key value data for the Property
-  map<string, string> data = 1;
-}
 
-
-message AssetInfo {
-    string denom = 1;
-    string asset_type = 2;
-    string origin_chain = 3;
-    string origin_denom = 4;
-    string origin_type = 5;
-    string symbol = 6;
-    int32 decimals = 7;
-    string description = 8;
-    string image = 9;
-    string coinGeckoId = 10;
-    bool enable = 11;
-    string path = 12;
-    string channel = 13;
-    string port = 14;
-    Meta counter_party = 15;
-}
-
-message ChainInfo {
-    string chain_id_cosmos = 1;
-    string chain_name = 2;
-    string symbol = 3;
-    string bechAccountPrefix = 4;
-    string bechValidatorPrefix = 5;
-    string origin_genesis_time = 6;
-    repeated Meta accountType = 7;
-    repeated Meta grpc_endpoint = 8;
-    repeated Meta lcd_endpoint = 9;
-    Meta explorer = 10;
-    string fee_base = 11;
-    repeated string fee_rate = 12;
-    int32 fee_init_gas_limit = 13;
-    bool fee_isSimulable = 14;
-    double simul_gas_multiply = 15;
-}

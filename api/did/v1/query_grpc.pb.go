@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName            = "/did.v1.Query/Params"
-	Query_ResolveIdentifier_FullMethodName = "/did.v1.Query/ResolveIdentifier"
-	Query_WitnessCredential_FullMethodName = "/did.v1.Query/WitnessCredential"
+	Query_Params_FullMethodName      = "/did.v1.Query/Params"
+	Query_Accounts_FullMethodName    = "/did.v1.Query/Accounts"
+	Query_Credentials_FullMethodName = "/did.v1.Query/Credentials"
+	Query_Identities_FullMethodName  = "/did.v1.Query/Identities"
+	Query_Resolve_FullMethodName     = "/did.v1.Query/Resolve"
+	Query_Service_FullMethodName     = "/did.v1.Query/Service"
 )
 
 // QueryClient is the client API for Query service.
@@ -30,10 +33,16 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// Accounts returns associated wallet accounts with the DID.
+	Accounts(ctx context.Context, in *QueryAccountsRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
+	// Credentials returns associated credentials with the DID and Service Origin.
+	Credentials(ctx context.Context, in *QueryCredentialsRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
+	// Identities returns associated identity with the DID.
+	Identities(ctx context.Context, in *QueryIdentitiesRequest, opts ...grpc.CallOption) (*QueryIdentitiesResponse, error)
 	// Resolve queries the DID document by its id.
-	ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-	WitnessCredential(ctx context.Context, in *QueryWitnessCredentialRequest, opts ...grpc.CallOption) (*QueryWitnessCredentialResponse, error)
+	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	// Service returns associated ServiceInfo for a given Origin
+	Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
 }
 
 type queryClient struct {
@@ -53,18 +62,45 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) ResolveIdentifier(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
-	out := new(QueryResolveResponse)
-	err := c.cc.Invoke(ctx, Query_ResolveIdentifier_FullMethodName, in, out, opts...)
+func (c *queryClient) Accounts(ctx context.Context, in *QueryAccountsRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error) {
+	out := new(QueryAccountsResponse)
+	err := c.cc.Invoke(ctx, Query_Accounts_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *queryClient) WitnessCredential(ctx context.Context, in *QueryWitnessCredentialRequest, opts ...grpc.CallOption) (*QueryWitnessCredentialResponse, error) {
-	out := new(QueryWitnessCredentialResponse)
-	err := c.cc.Invoke(ctx, Query_WitnessCredential_FullMethodName, in, out, opts...)
+func (c *queryClient) Credentials(ctx context.Context, in *QueryCredentialsRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error) {
+	out := new(QueryCredentialsResponse)
+	err := c.cc.Invoke(ctx, Query_Credentials_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Identities(ctx context.Context, in *QueryIdentitiesRequest, opts ...grpc.CallOption) (*QueryIdentitiesResponse, error) {
+	out := new(QueryIdentitiesResponse)
+	err := c.cc.Invoke(ctx, Query_Identities_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
+	out := new(QueryResolveResponse)
+	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
+	out := new(QueryServiceResponse)
+	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -77,10 +113,16 @@ func (c *queryClient) WitnessCredential(ctx context.Context, in *QueryWitnessCre
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// Accounts returns associated wallet accounts with the DID.
+	Accounts(context.Context, *QueryAccountsRequest) (*QueryAccountsResponse, error)
+	// Credentials returns associated credentials with the DID and Service Origin.
+	Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error)
+	// Identities returns associated identity with the DID.
+	Identities(context.Context, *QueryIdentitiesRequest) (*QueryIdentitiesResponse, error)
 	// Resolve queries the DID document by its id.
-	ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
-	// LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-	WitnessCredential(context.Context, *QueryWitnessCredentialRequest) (*QueryWitnessCredentialResponse, error)
+	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
+	// Service returns associated ServiceInfo for a given Origin
+	Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -91,11 +133,20 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) ResolveIdentifier(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ResolveIdentifier not implemented")
+func (UnimplementedQueryServer) Accounts(context.Context, *QueryAccountsRequest) (*QueryAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Accounts not implemented")
 }
-func (UnimplementedQueryServer) WitnessCredential(context.Context, *QueryWitnessCredentialRequest) (*QueryWitnessCredentialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method WitnessCredential not implemented")
+func (UnimplementedQueryServer) Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Credentials not implemented")
+}
+func (UnimplementedQueryServer) Identities(context.Context, *QueryIdentitiesRequest) (*QueryIdentitiesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Identities not implemented")
+}
+func (UnimplementedQueryServer) Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
+}
+func (UnimplementedQueryServer) Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -128,38 +179,92 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ResolveIdentifier_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Query_Accounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryAccountsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Accounts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Accounts_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Accounts(ctx, req.(*QueryAccountsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryCredentialsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Credentials(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Credentials_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Credentials(ctx, req.(*QueryCredentialsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Identities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryIdentitiesRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Identities(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Identities_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Identities(ctx, req.(*QueryIdentitiesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryResolveRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).ResolveIdentifier(ctx, in)
+		return srv.(QueryServer).Resolve(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_ResolveIdentifier_FullMethodName,
+		FullMethod: Query_Resolve_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ResolveIdentifier(ctx, req.(*QueryResolveRequest))
+		return srv.(QueryServer).Resolve(ctx, req.(*QueryResolveRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_WitnessCredential_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryWitnessCredentialRequest)
+func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryServiceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).WitnessCredential(ctx, in)
+		return srv.(QueryServer).Service(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_WitnessCredential_FullMethodName,
+		FullMethod: Query_Service_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).WitnessCredential(ctx, req.(*QueryWitnessCredentialRequest))
+		return srv.(QueryServer).Service(ctx, req.(*QueryServiceRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -176,12 +281,24 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "ResolveIdentifier",
-			Handler:    _Query_ResolveIdentifier_Handler,
+			MethodName: "Accounts",
+			Handler:    _Query_Accounts_Handler,
 		},
 		{
-			MethodName: "WitnessCredential",
-			Handler:    _Query_WitnessCredential_Handler,
+			MethodName: "Credentials",
+			Handler:    _Query_Credentials_Handler,
+		},
+		{
+			MethodName: "Identities",
+			Handler:    _Query_Identities_Handler,
+		},
+		{
+			MethodName: "Resolve",
+			Handler:    _Query_Resolve_Handler,
+		},
+		{
+			MethodName: "Service",
+			Handler:    _Query_Service_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

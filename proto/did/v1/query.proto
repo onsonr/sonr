@@ -3,6 +3,7 @@ package did.v1;
 
 import "google/api/annotations.proto";
 import "did/v1/genesis.proto";
+import "did/v1/types.proto";
 
 option go_package = "github.com/onsonr/hway/x/did/types";
 
@@ -13,14 +14,29 @@ service Query {
         option (google.api.http).get = "/did/params";
     }
 
-// Resolve queries the DID document by its id.
-    rpc ResolveIdentifier(QueryResolveRequest) returns (QueryResolveResponse) { 
-        option (google.api.http).get = "/did/resolve/{id}"; 
+    // Accounts returns associated wallet accounts with the DID.
+    rpc Accounts(QueryAccountsRequest) returns (QueryAccountsResponse) {
+      option (google.api.http).get = "/did/{did}/accounts";
+    }
+
+    // Credentials returns associated credentials with the DID and Service Origin.
+    rpc Credentials(QueryCredentialsRequest) returns (QueryCredentialsResponse) {
+      option (google.api.http).get = "/did/{did}/{origin}/credentials";
+    }
+
+    // Identities returns associated identity with the DID.
+    rpc Identities(QueryIdentitiesRequest) returns (QueryIdentitiesResponse) {
+      option (google.api.http).get = "/did/{did}/identities";
+    }
+
+    // Resolve queries the DID document by its id.
+    rpc Resolve(QueryResolveRequest) returns (QueryResolveResponse) { 
+        option (google.api.http).get = "/did/resolve/{did}"; 
     } 
 
-    // LoginOptions queries the PublicKeyCredentialAttestationOptions for starting a login flow.
-    rpc WitnessCredential(QueryWitnessCredentialRequest) returns (QueryWitnessCredentialResponse) {
-        option (google.api.http).get = "/did/assertion/{id}/witness";
+    // Service returns associated ServiceInfo for a given Origin
+    rpc Service(QueryServiceRequest) returns (QueryServiceResponse) {
+      option (google.api.http).get = "/did/service/{origin}";
     }
 }
 
@@ -33,35 +49,56 @@ message QueryParamsResponse {
   Params params = 1;
 }
 
-// QueryExistsRequest is the request type for the Query/Exists RPC method.
-message QueryExistsRequest {
-    string kind = 1;
-    string value = 2;
+// QueryAccountsRequest is the request type for the Query/Exists RPC method.
+message QueryAccountsRequest {
+    string did = 1;
 }
 
-// QueryExistsResponse is the response type for the Query/Exists RPC method.
-message QueryExistsResponse {
+// QueryAccountsResponse is the response type for the Query/Exists RPC method.
+message QueryAccountsResponse {
     bool exists = 1;
+}
+
+// QueryCredentialsRequest is the request type for the Query/Exists RPC method.
+message QueryCredentialsRequest {
+  string did = 1;
+  string origin = 2;
+}
+
+// QueryCredentialsResponse is the response type for the Query/Exists RPC method.
+message QueryCredentialsResponse {
+  map<string, bytes> credentials = 1;
+}
+
+// QueryIdentitiesRequest is the request type for the Query/Exists RPC method.
+message QueryIdentitiesRequest {
+  string did = 1;
+}
+
+// QueryIdentitiesResponse is the response type for the Query/Exists RPC method.
+message QueryIdentitiesResponse {
+  bool exists = 1;
+  repeated VerificationMethod verificationMethod = 2;
 }
 
 // QueryResolveRequest is the request type for the Query/Resolve RPC method.
 message QueryResolveRequest {
-    string id = 1;
+    string did = 1;
 }
 
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
 message QueryResolveResponse {
     // document is the DID document
-    string document = 1;
+    Document document = 1;
 }
 
-// QueryLoginOptionsRequest is the request type for the Query/LoginOptions RPC method.
-message QueryWitnessCredentialRequest {
-    string id = 1;
+// QueryServiceRequest is the request type for the Query/LoginOptions RPC method.
+message QueryServiceRequest {
+    string origin = 1;
 }
 
 // QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
-message QueryWitnessCredentialResponse {
+message QueryServiceResponse {
     // options is the PublicKeyCredentialAttestationOptions
     string options = 1;
 }
