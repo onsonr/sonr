@@ -45,20 +45,23 @@ func (ms msgServer) RegisterController(goCtx context.Context, msg *types.MsgRegi
 	if ms.k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
 	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	svc := didv1.Service{
-		ControllerDid: msg.Authority,
-	}
-	ms.k.OrmDB.ServiceTable().Insert(ctx, &svc)
 	return &types.MsgRegisterControllerResponse{}, nil
 }
 
 // RegisterService implements types.MsgServer.
-func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
+func (ms msgServer) RegisterService(goCtx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
 	if ms.k.authority != msg.Authority {
 		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
 	}
-	// ctx := sdk.UnwrapSDKContext(goCtx)
+
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	svc := didv1.Service{
+		ControllerDid: msg.Authority,
+	}
+	err := ms.k.OrmDB.ServiceTable().Insert(ctx, &svc)
+	if err != nil {
+		return nil, err
+	}
 	return &types.MsgRegisterServiceResponse{}, nil
 }
 

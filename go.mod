@@ -70,7 +70,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
-	gopkg.in/macaroon-bakery.v2 v2.3.0
 )
 
 require (
@@ -305,9 +304,7 @@ require (
 	google.golang.org/api v0.169.0 // indirect
 	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 // indirect
-	gopkg.in/errgo.v1 v1.0.1 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
-	gopkg.in/macaroon.v2 v2.1.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	gotest.tools/v3 v3.5.1 // indirect

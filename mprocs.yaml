@@ -1,0 +1,19 @@
+# General
+hide_keymap_window: true
+proc_list_width: 18
+keymap_procs:
+  <Enter>: { c: toggle-focus }
+  <Tab>: { c: toggle-focus }
+  <M-l>: { c: toggle-focus }
+  <C-a>: null
+keymap_term:
+  reset: true
+  <M-h>: { c: toggle-focus } # Processes
+procs:
+  (editor):
+    cmd: ["nvim"]
+  <gex>:
+    shell: "gex"
+    autorestart: true
+  <sonr>:
+    shell: "make sh-testnet"

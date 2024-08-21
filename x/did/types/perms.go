@@ -1,7 +1,5 @@
 package types
 
-import "gopkg.in/macaroon-bakery.v2/bakery/checkers"
-
 var (
 	PermissionScopeStrings = [...]string{
 		"profile.name",
@@ -36,18 +34,3 @@ var (
 		"PERMISSION_SCOPE_ADMIN_VALIDATOR":        PermissionScope_PERMISSION_SCOPE_ADMIN_VALIDATOR,
 	}
 )
-
-func ResolvePermissionScope(scope string) (PermissionScope, bool) {
-	uriToPrefix := make(map[string]string)
-	for _, scope := range PermissionScopeStrings {
-		uriToPrefix["https://example.com/auth/"+scope] = scope
-	}
-	PermissionNamespace := checkers.NewNamespace(uriToPrefix)
-
-	prefix, ok := PermissionNamespace.Resolve("https://example.com/auth/" + scope)
-	if !ok {
-		return 0, false
-	}
-	permScope, ok := StringToPermissionScope[prefix]
-	return permScope, ok
-}

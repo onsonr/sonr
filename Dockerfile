@@ -39,6 +39,6 @@ RUN apk add --no-cache curl make bash jq sed
 WORKDIR /opt
 
 # rest server, tendermint p2p, tendermint rpc
-EXPOSE 1317 26656 26657
+EXPOSE 1317 26656 26657 6060
 
 CMD ["/usr/bin/sonrd", "version"]
