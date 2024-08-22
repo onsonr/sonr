@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  sonr:
+    build: .
+    environment:
+      - SECRET_VAR
+      - REDIS_HOST
+      - REDIS_PASSWORD
+    depends_on:
+      - ipfs
+
+  ipfs:
+    build: .
+    environment:
+      - SECRET_VAR
+      - REDIS_HOST
+      - REDIS_PASSWORD
