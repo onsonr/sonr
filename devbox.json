@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["mprocs@latest", "go@1.21"],
+  "packages": ["go@1.21"],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH"
@@ -8,10 +8,12 @@
   "shell": {
     "scripts": {
       "install": ["make install"],
-      "proto": ["make proto-gen"],
-      "build": ["go build -o ./bin/sonrd ./cmd/sonrd"],
-      "testnet": ["make sh-testnet"],
-      "serve": ["mprocs"]
+      "gen": ["make proto-gen"],
+      "build": [
+        "make local-image",
+        "docker tag sonr:local ghcr.io/onsonr/sonrd:latest"
+      ],
+      "push": ["docker push ghcr.io/onsonr/sonrd:latest"]
     }
   }
 }
