@@ -25,7 +25,7 @@ services:
       - CLEAN=true
       - BLOCK_TIME=5s
     command: >
-      sh -c "
+      /bin/sh -c "
         if [ ! -d /root/.core/config ]; then
           /usr/bin/sonrd init $${MONIKER} --chain-id $${CHAIN_ID} --default-denom $${DENOM} &&
           sed -i 's/laddr = \"tcp:\\/\\/127.0.0.1:26657\"/laddr = \"tcp:\\/\\/0.0.0.0:26657\"/g' /root/.core/config/config.toml &&
