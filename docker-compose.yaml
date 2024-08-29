@@ -5,9 +5,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: sonr-testnet-node
     volumes:
-      - ~/.core:/root/.sonr
+      - /home/prad/.core:/root/.sonr
     ports:
       - "26656:26656"
       - "26657:26657"
