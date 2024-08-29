@@ -22,3 +22,9 @@ services:
       - BLOCK_TIME=5s
     command: "start --pruning=nothing"
     restart: always
+    networks:
+      - testnet
+
+networks:
+  testnet:
+    external: true
