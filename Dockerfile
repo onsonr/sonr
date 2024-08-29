@@ -32,13 +32,38 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
 FROM alpine:3.16
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
+COPY scripts/test_node.sh /usr/local/bin/test_node.sh
 
-# Install dependencies used for Starship
+# Install dependencies
 RUN apk add --no-cache curl make bash jq sed
 
 WORKDIR /opt
 
-# rest server, tendermint p2p, tendermint rpc
-EXPOSE 1317 26656 26657
+# Set environment variables
+ENV CHAIN_ID=local-1 \
+    HOME_DIR=/root/.core \
+    BINARY=sonrd \
+    DENOM=usnr \
+    KEYRING=test \
+    KEY=user1 \
+    KEY2=user2 \
+    CLEAN=true \
+    RPC=26657 \
+    REST=1317 \
+    PROFF=6060 \
+    P2P=26656 \
+    GRPC=9090 \
+    GRPC_WEB=9091 \
+    ROSETTA=8080 \
+    BLOCK_TIME=5s
 
-CMD ["/usr/bin/sonrd", "version"]
+# Expose ports
+EXPOSE 1317 26656 26657 9090 9091 8080
+
+# Create entrypoint script
+RUN echo '#!/bin/sh' > /usr/local/bin/entrypoint.sh && \
+    echo 'set -e' >> /usr/local/bin/entrypoint.sh && \
+    echo 'bash /usr/local/bin/test_node.sh' >> /usr/local/bin/entrypoint.sh && \
+    chmod +x /usr/local/bin/entrypoint.sh
+
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
