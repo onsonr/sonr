@@ -36,7 +36,6 @@ COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
 # Install dependencies for Debian 11
 RUN apt-get update && apt-get install -y \
-  sh \
   curl \
   make \
   bash \
