@@ -47,4 +47,4 @@ WORKDIR /opt
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657
 
-ENTRYPOINT ["/usr/bin/sonrd"]
+CMD ["/usr/bin/sonrd", "start"]
