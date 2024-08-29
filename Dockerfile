@@ -29,7 +29,7 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
   && (file /code/build/sonrd | grep "statically linked")
 
 # --------------------------------------------------------
-FROM alpine:3.16
+FROM debian:11-slim
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
@@ -41,4 +41,4 @@ WORKDIR /opt
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657
 
-CMD ["/usr/bin/sonrd", "start"]
+ENTRYPOINT ["/usr/bin/sonrd"]
