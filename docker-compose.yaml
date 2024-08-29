@@ -1,0 +1,45 @@
+version: '3'
+
+services:
+  sonr-node:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sonr-testnet-node
+    volumes:
+      - ./data:/root/.core
+    ports:
+      - "26656:26656"
+      - "26657:26657"
+      - "1317:1317"
+      - "9090:9090"
+      - "9091:9091"
+      - "8080:8080"
+    environment:
+      - CHAIN_ID=local-1
+      - MONIKER=localvalidator
+      - KEYRING=test
+      - KEY=user1
+      - KEY2=user2
+      - DENOM=usnr
+      - CLEAN=true
+      - BLOCK_TIME=5s
+    command: >
+      sh -c "
+        if [ ! -d /root/.core/config ]; then
+          /usr/bin/sonrd init $${MONIKER} --chain-id $${CHAIN_ID} --default-denom $${DENOM} &&
+          sed -i 's/laddr = \"tcp:\\/\\/127.0.0.1:26657\"/laddr = \"tcp:\\/\\/0.0.0.0:26657\"/g' /root/.core/config/config.toml &&
+          sed -i 's/cors_allowed_origins = \\[\\]/cors_allowed_origins = [\"*\"]/g' /root/.core/config/config.toml &&
+          sed -i 's/address = \"tcp:\\/\\/localhost:1317\"/address = \"tcp:\\/\\/0.0.0.0:1317\"/g' /root/.core/config/app.toml &&
+          sed -i 's/enable = false/enable = true/g' /root/.core/config/app.toml &&
+          sed -i 's/address = \"localhost:9090\"/address = \"0.0.0.0:9090\"/g' /root/.core/config/app.toml &&
+          sed -i 's/address = \"localhost:9091\"/address = \"0.0.0.0:9091\"/g' /root/.core/config/app.toml &&
+          sed -i 's/address = \":8080\"/address = \"0.0.0.0:8080\"/g' /root/.core/config/app.toml &&
+          sed -i 's/timeout_commit = \"5s\"/timeout_commit = \"$${BLOCK_TIME}\"/g' /root/.core/config/config.toml &&
+          /usr/bin/sonrd genesis add-genesis-account $${KEY} 10000000$${DENOM},900test --keyring-backend $${KEYRING} &&
+          /usr/bin/sonrd genesis add-genesis-account $${KEY2} 10000000$${DENOM},800test --keyring-backend $${KEYRING} &&
+          /usr/bin/sonrd genesis gentx $${KEY} 1000000$${DENOM} --keyring-backend $${KEYRING} --chain-id $${CHAIN_ID} &&
+          /usr/bin/sonrd genesis collect-gentxs
+        fi &&
+        /usr/bin/sonrd start --pruning=nothing --minimum-gas-prices=0$${DENOM}"
+    restart: always
