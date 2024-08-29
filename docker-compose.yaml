@@ -8,7 +8,6 @@ services:
     volumes:
       - /home/prad/.core:/root/.sonr
     ports:
-      - "26656:26656"
       - "26657:26657"
       - "1317:1317"
       - "9090:9090"
