@@ -23,8 +23,8 @@ services:
     command: "start --pruning=nothing"
     restart: always
     networks:
-      - dokploy
+      - dokploy-network
 
 networks:
-  dokploy:
+  dokploy-network:
     external: true
