@@ -13,8 +13,6 @@ services:
       - "26657:26657"
       - "1317:1317"
       - "9090:9090"
-      - "9091:9091"
-      - "8080:8080"
     environment:
       - CHAIN_ID=local-1
       - MONIKER=localvalidator
