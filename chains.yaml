@@ -9,3 +9,24 @@
   build-env:
     - LEDGER_ENABLED=false
     - BUILD_TAGS=muslc
+- name: evmos
+  github-organization: tharsis
+  github-repo: evmos
+  dockerfile: cosmos
+  build-target: make install
+  binaries:
+    - /go/bin/evmosd
+- name: nomic
+  github-organization: nomic-io
+  github-repo: nomic
+  dockerfile: cargo
+  build-target: |
+    TOOLCHAIN=$(cat rust-toolchain.toml | grep channel | awk '{print $3}' | tr -d '"')
+    rustup component add rust-src --toolchain ${TOOLCHAIN}-$(uname -m)-unknown-linux-gnu
+    cargo install --locked --path . -Zbuild-std
+  binaries:
+    - /build/nomic/target/${ARCH}-unknown-linux-gnu/release/nomic
+  # TODO remove platforms here so that both linux/amd64 and linux/arm64 are built
+  # once these changes are merged: https://github.com/nomic-io/orga/pull/154
+  platforms:
+    - linux/amd64
