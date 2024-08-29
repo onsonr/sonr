@@ -8,9 +8,9 @@ services:
     volumes:
       - /home/prad/.core:/root/.sonr
     ports:
-      - "26657:26657"
-      - "1317:1317"
-      - "9090:9090"
+      - "127.0.0.1:26657:26657"
+      - "127.0.0.1:1317:1317"
+      - "127.0.0.1:9090:9090"
     environment:
       - CHAIN_ID=local-1
       - MONIKER=localvalidator
