@@ -33,8 +33,14 @@ FROM debian:11-slim
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
-# Install dependencies used for Starship
-RUN apk add --no-cache curl make bash jq sed
+# Install dependencies for Debian 11
+RUN apt-get update && apt-get install -y \
+    curl \
+    make \
+    bash \
+    jq \
+    sed \
+    && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /opt
 
