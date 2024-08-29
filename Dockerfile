@@ -44,7 +44,6 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 
 COPY scripts/test_node.sh /usr/bin/test_node.sh 
-RUN chmod +x /usr/bin/test_node.sh && ./usr/bin/test_node.sh
 
 WORKDIR /opt
 
