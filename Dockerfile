@@ -33,14 +33,19 @@ FROM debian:11-slim
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
+
 # Install dependencies for Debian 11
 RUN apt-get update && apt-get install -y \
+  sh \
   curl \
   make \
   bash \
   jq \
   sed \
   && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/test_node.sh /usr/bin/test_node.sh 
+RUN chmod +x /usr/bin/test_node.sh && ./usr/bin/test_node.sh
 
 WORKDIR /opt
 
