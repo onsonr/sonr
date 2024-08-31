@@ -17,12 +17,20 @@ enum DIDNamespace {
 
 enum KeyType {
   KEY_TYPE_UNSPECIFIED = 0;
+  // Blockchain key types
   KEY_TYPE_SECP256K1 = 1;
   KEY_TYPE_ED25519 = 2;
   KEY_TYPE_P256 = 3;
   KEY_TYPE_BLS12381 = 4;
   KEY_TYPE_X25519 = 5;
   KEY_TYPE_SCHNORR = 6;
+  // Webauthn and FIDO key types
+  KEY_TYPE_WEBAUTHN = 7;
+  KEY_TYPE_FIDO = 8;
+  // MPC key type
+  KEY_TYPE_MPC = 9;
+  // ZK key type
+  KEY_TYPE_ZK = 10;
 }
 
 // PermissionScope define the Capabilities Controllers can grant for Services

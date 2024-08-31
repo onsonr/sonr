@@ -81,11 +81,41 @@ message ChainInfo {
   }
 }
 
+import "did/v1/grants.proto";
+
 // KeyInfo defines information for accepted PubKey types
 message KeyInfo {
-    string key_type = 1;  // e.g., "secp256k1", "ed25519", "webauthn"
+    KeyType key_type = 1;
     string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
     string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
     bool is_cbor = 4;     // true for WebAuthn CBOR-encoded keys, false for others
     string encoding = 5;  // e.g., "hex", "base64", "multibase"
+    
+    // Additional fields for specific key types
+    oneof key_specific_info {
+        WebauthnInfo webauthn_info = 6;
+        FidoInfo fido_info = 7;
+        MPCInfo mpc_info = 8;
+        ZKInfo zk_info = 9;
+    }
+}
+
+message WebauthnInfo {
+    string attestation_type = 1;
+    string aaguid = 2;
+}
+
+message FidoInfo {
+    string authenticator_attachment = 1;
+    repeated string supported_algorithms = 2;
+}
+
+message MPCInfo {
+    int32 threshold = 1;
+    int32 total_parties = 2;
+}
+
+message ZKInfo {
+    string proof_system = 1;
+    string setup_parameters = 2;
 }
