@@ -6,12 +6,12 @@ import "amino/amino.proto";
 option go_package = "github.com/onsonr/hway/x/did/types";
 
 enum DIDNamespace {
-  GRANT_NAMESPACE_UNSPECIFIED = 0;
-  GRANT_NAMESPACE_IPFS = 1;
-  GRANT_NAMESPACE_SONR = 2;
-  GRANT_NAMESPACE_BITCOIN = 3;
-  GRANT_NAMESPACE_ETHEREUM = 4;
-  GRANT_NAMESPACE_IBC = 5;
+  DID_NAMESPACE_UNSPECIFIED = 0;
+  DID_NAMESPACE_IPFS = 1;
+  DID_NAMESPACE_SONR = 2;
+  DID_NAMESPACE_BITCOIN = 3;
+  DID_NAMESPACE_ETHEREUM = 4;
+  DID_NAMESPACE_IBC = 5;
 }
 
 // PermissionScope define the Capabilities Controllers can grant for Services
