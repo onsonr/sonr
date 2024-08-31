@@ -91,17 +91,17 @@ message KeyInfo {
     string encoding = 5;  // e.g., "hex", "base64", "multibase"
 }
 
-// KeyKend defines the kind of key
+// KeyKind defines the kind of key
 enum KeyKind {
-  KEY_TYPE_UNSPECIFIED = 0;
+  KEY_KIND_UNSPECIFIED = 0;
   // Blockchain key types
-  KEY_TYPE_SECP256K1 = 1;
-  KEY_TYPE_ED25519 = 2;
-  KEY_TYPE_P256 = 3;
-  KEY_TYPE_BLS12381 = 4;
-  KEY_TYPE_X25519 = 5;
-  KEY_TYPE_SCHNORR = 6;
+  KEY_KIND_SECP256K1 = 1;
+  KEY_KIND_ED25519 = 2;
+  KEY_KIND_P256 = 3;
+  KEY_KIND_BLS12381 = 4;
+  KEY_KIND_X25519 = 5;
+  KEY_KIND_SCHNORR = 6;
   // Webauthn and FIDO key types
-  KEY_TYPE_WEBAUTHN = 7;
-  KEY_TYPE_FIDO = 8;
+  KEY_KIND_WEBAUTHN = 7;
+  KEY_KIND_FIDO = 8;
 }
