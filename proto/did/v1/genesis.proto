@@ -3,7 +3,6 @@ package did.v1;
 
 import "gogoproto/gogo.proto";
 import "amino/amino.proto";
-import "did/v1/types.proto";
 
 option go_package = "github.com/onsonr/hway/x/did/types";
 
@@ -26,4 +25,59 @@ message Params {
   repeated ChainInfo whitelisted_chains = 2;
 }
 
+// AssetInfo defines the asset info
+message AssetInfo {
+    string id = 1;
+    string denom = 2;
+    string symbol = 3;
+    string asset_type = 4;
+    string origin_chain = 5;
+    string origin_denom = 6;
+    int32 decimals = 7;
+    string description = 8;
+    string image_url = 9;
+    string coingecko_id = 10;
+    bool is_enabled = 11;
+    string ibc_path = 12;
+    string ibc_channel = 13;
+    string ibc_port = 14;
+}
 
+// ChainInfo defines the chain info
+message ChainInfo {
+    string id = 1;
+    string chain_id = 2;
+    string name = 3;
+    string symbol = 4;
+    string bech32_prefix = 5;
+    string genesis_time = 6;
+    repeated Endpoint grpc_endpoints = 7;
+    repeated Endpoint rest_endpoints = 8;
+    ExplorerInfo explorer = 9;
+    FeeInfo fee_info = 10;
+}
+
+// Endpoint defines an endpoint
+message Endpoint {
+    string url = 1;
+    bool is_primary = 2;
+}
+
+// ExplorerInfo defines the explorer info
+message ExplorerInfo {
+    string name = 1;
+    string url = 2;
+}
+
+// FeeInfo defines a fee info
+message FeeInfo {
+    string base_denom = 1;
+    repeated string fee_rates = 2;
+    int32 init_gas_limit = 3;
+    bool is_simulable = 4;
+    double gas_multiply = 5;
+}
+
+// KeyInfo defines information for accepted PubKey types
+message KeyInfo {
+}
