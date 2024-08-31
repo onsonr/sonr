@@ -81,41 +81,27 @@ message ChainInfo {
   }
 }
 
-import "did/v1/grants.proto";
 
 // KeyInfo defines information for accepted PubKey types
 message KeyInfo {
-    KeyType key_type = 1;
+    KeyKind kind = 1;
     string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
     string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
     bool is_cbor = 4;     // true for WebAuthn CBOR-encoded keys, false for others
     string encoding = 5;  // e.g., "hex", "base64", "multibase"
-    
-    // Additional fields for specific key types
-    oneof key_specific_info {
-        WebauthnInfo webauthn_info = 6;
-        FidoInfo fido_info = 7;
-        MPCInfo mpc_info = 8;
-        ZKInfo zk_info = 9;
-    }
 }
 
-message WebauthnInfo {
-    string attestation_type = 1;
-    string aaguid = 2;
-}
-
-message FidoInfo {
-    string authenticator_attachment = 1;
-    repeated string supported_algorithms = 2;
-}
-
-message MPCInfo {
-    int32 threshold = 1;
-    int32 total_parties = 2;
-}
-
-message ZKInfo {
-    string proof_system = 1;
-    string setup_parameters = 2;
+// KeyKend defines the kind of key
+enum KeyKind {
+  KEY_TYPE_UNSPECIFIED = 0;
+  // Blockchain key types
+  KEY_TYPE_SECP256K1 = 1;
+  KEY_TYPE_ED25519 = 2;
+  KEY_TYPE_P256 = 3;
+  KEY_TYPE_BLS12381 = 4;
+  KEY_TYPE_X25519 = 5;
+  KEY_TYPE_SCHNORR = 6;
+  // Webauthn and FIDO key types
+  KEY_TYPE_WEBAUTHN = 7;
+  KEY_TYPE_FIDO = 8;
 }
