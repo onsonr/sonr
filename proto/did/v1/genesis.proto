@@ -23,6 +23,9 @@ message Params {
 
   // Whitelisted Blockchains
   repeated ChainInfo whitelisted_chains = 2;
+
+  // Whitelisted Key Types
+  repeated KeyInfo whitelisted_keys = 3;
 }
 
 // AssetInfo defines the asset info
@@ -55,27 +58,27 @@ message ChainInfo {
     repeated Endpoint rest_endpoints = 8;
     ExplorerInfo explorer = 9;
     FeeInfo fee_info = 10;
-}
+  
+  // Endpoint defines an endpoint
+  message Endpoint {
+      string url = 1;
+      bool is_primary = 2;
+  }
 
-// Endpoint defines an endpoint
-message Endpoint {
-    string url = 1;
-    bool is_primary = 2;
-}
+  // ExplorerInfo defines the explorer info
+  message ExplorerInfo {
+      string name = 1;
+      string url = 2;
+  }
 
-// ExplorerInfo defines the explorer info
-message ExplorerInfo {
-    string name = 1;
-    string url = 2;
-}
-
-// FeeInfo defines a fee info
-message FeeInfo {
-    string base_denom = 1;
-    repeated string fee_rates = 2;
-    int32 init_gas_limit = 3;
-    bool is_simulable = 4;
-    double gas_multiply = 5;
+  // FeeInfo defines a fee info
+  message FeeInfo {
+      string base_denom = 1;
+      repeated string fee_rates = 2;
+      int32 init_gas_limit = 3;
+      bool is_simulable = 4;
+      double gas_multiply = 5;
+  }
 }
 
 // KeyInfo defines information for accepted PubKey types

@@ -5,6 +5,7 @@ import "gogoproto/gogo.proto";
 import "amino/amino.proto";
 option go_package = "github.com/onsonr/hway/x/did/types";
 
+// DIDNamespace define the different namespaces of DID
 enum DIDNamespace {
   DID_NAMESPACE_UNSPECIFIED = 0;
   DID_NAMESPACE_IPFS = 1;
@@ -12,6 +13,16 @@ enum DIDNamespace {
   DID_NAMESPACE_BITCOIN = 3;
   DID_NAMESPACE_ETHEREUM = 4;
   DID_NAMESPACE_IBC = 5;
+}
+
+enum KeyType {
+  KEY_TYPE_UNSPECIFIED = 0;
+  KEY_TYPE_SECP256K1 = 1;
+  KEY_TYPE_ED25519 = 2;
+  KEY_TYPE_P256 = 3;
+  KEY_TYPE_BLS12381 = 4;
+  KEY_TYPE_X25519 = 5;
+  KEY_TYPE_SCHNORR = 6;
 }
 
 // PermissionScope define the Capabilities Controllers can grant for Services
