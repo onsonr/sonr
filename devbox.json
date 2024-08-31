@@ -1,15 +1,15 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["golangci-lint@latest", "go@1.21", "air@latest"],
+  "packages": ["go@1.21", "air@latest"],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH"
   },
   "shell": {
     "scripts": {
-      "install": ["make install"],
+      "init": ["make install", "sonrd init"],
       "proto": ["make proto-gen"],
-      "build": ["go build -o ./bin/sonrd ./cmd/sonrd"],
+      "build": ["make build", "make local-image"],
       "testnet": ["make sh-testnet"]
     }
   }

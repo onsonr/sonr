@@ -26,6 +26,9 @@ message Params {
 
   // Whitelisted Key Types
   repeated KeyInfo allowed_public_keys = 3;
+
+  // Whitlested Validator nodes with Public DID Resolvers
+  repeated ValidatorInfo public_validators = 4;
 }
 
 // AssetInfo defines the asset info
@@ -54,11 +57,23 @@ message ChainInfo {
     string symbol = 4;
     string bech32_prefix = 5;
     string genesis_time = 6;
-    repeated Endpoint grpc_endpoints = 7;
-    repeated Endpoint rest_endpoints = 8;
-    ExplorerInfo explorer = 9;
-    FeeInfo fee_info = 10;
-  
+ }
+
+// KeyInfo defines information for accepted PubKey types
+message KeyInfo {
+    KeyType kind = 1;
+    string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
+    string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
+    string encoding = 4;  // e.g., "hex", "base64", "multibase"
+}
+
+// ValidatorInfo defines information for accepted Validator nodes
+message ValidatorInfo {
+    repeated Endpoint grpc_endpoints = 5;
+    repeated Endpoint rest_endpoints = 6;
+    ExplorerInfo explorer = 7;
+    FeeInfo fee_info = 8;
+     
   // Endpoint defines an endpoint
   message Endpoint {
       string url = 1;
@@ -81,13 +96,6 @@ message ChainInfo {
   }
 }
 
-// KeyInfo defines information for accepted PubKey types
-message KeyInfo {
-    KeyType kind = 1;
-    string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
-    string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
-    string encoding = 4;  // e.g., "hex", "base64", "multibase"
-}
 
 // DIDNamespace define the different namespaces of DID
 enum DIDNamespace {
