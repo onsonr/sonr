@@ -25,7 +25,7 @@ message Params {
   repeated ChainInfo whitelisted_chains = 2;
 
   // Whitelisted Key Types
-  repeated KeyInfo whitelisted_keys = 3;
+  repeated KeyInfo allowed_public_keys = 3;
 }
 
 // AssetInfo defines the asset info
@@ -81,27 +81,55 @@ message ChainInfo {
   }
 }
 
-
 // KeyInfo defines information for accepted PubKey types
 message KeyInfo {
-    KeyKind kind = 1;
+    KeyType kind = 1;
     string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
     string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
-    bool is_cbor = 4;     // true for WebAuthn CBOR-encoded keys, false for others
-    string encoding = 5;  // e.g., "hex", "base64", "multibase"
+    string encoding = 4;  // e.g., "hex", "base64", "multibase"
 }
 
-// KeyKind defines the kind of key
-enum KeyKind {
-  KEY_KIND_UNSPECIFIED = 0;
+// DIDNamespace define the different namespaces of DID
+enum DIDNamespace {
+  DID_NAMESPACE_UNSPECIFIED = 0;
+  DID_NAMESPACE_IPFS = 1;
+  DID_NAMESPACE_SONR = 2;
+  DID_NAMESPACE_BITCOIN = 3;
+  DID_NAMESPACE_ETHEREUM = 4;
+  DID_NAMESPACE_IBC = 5;
+}
+
+// KeyKTind defines the kind of key
+enum KeyType {
+  KEY_TYPE_UNSPECIFIED = 0;
+
   // Blockchain key types
-  KEY_KIND_SECP256K1 = 1;
-  KEY_KIND_ED25519 = 2;
-  KEY_KIND_P256 = 3;
-  KEY_KIND_BLS12381 = 4;
-  KEY_KIND_X25519 = 5;
-  KEY_KIND_SCHNORR = 6;
+  KEY_TYPE_SECP256K1 = 1; // cross-chain
+  KEY_TYPE_ED25519 = 2; // validators
+  KEY_TYPE_KECCAK = 3; // ethereum addresses
+  KEY_TYPE_BLS12381 = 4; // zero-knowledge
+  KEY_TYPE_X25519 = 5; // multisig
+  KEY_TYPE_SCHNORR = 6; // mpc
+
   // Webauthn and FIDO key types
-  KEY_KIND_WEBAUTHN = 7;
-  KEY_KIND_FIDO = 8;
+  KEY_TYPE_WEBAUTHN = 7; // passkey authentication
+  KEY_TYPE_FIDO = 8; // fido2 authentication
+}
+
+// PermissionScope define the Capabilities Controllers can grant for Services
+enum PermissionScope {
+  PERMISSION_SCOPE_UNSPECIFIED = 0;
+  PERMISSION_SCOPE_BASIC_INFO = 1;
+  PERMISSION_SCOPE_RECORDS_READ = 2;
+  PERMISSION_SCOPE_RECORDS_WRITE = 3;
+  PERMISSION_SCOPE_TRANSACTIONS_READ = 4;
+  PERMISSION_SCOPE_TRANSACTIONS_WRITE = 5;
+  PERMISSION_SCOPE_WALLETS_READ = 6;
+  PERMISSION_SCOPE_WALLETS_CREATE = 7;
+  PERMISSION_SCOPE_WALLETS_SUBSCRIBE = 8;
+  PERMISSION_SCOPE_WALLETS_UPDATE = 9;
+  PERMISSION_SCOPE_TRANSACTIONS_VERIFY = 10;
+  PERMISSION_SCOPE_TRANSACTIONS_BROADCAST = 11;
+  PERMISSION_SCOPE_ADMIN_USER = 12;
+  PERMISSION_SCOPE_ADMIN_VALIDATOR = 13;
 }

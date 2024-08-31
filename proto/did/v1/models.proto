@@ -1,0 +1,84 @@
+syntax = "proto3";
+
+package did.v1;
+
+import "did/v1/genesis.proto";
+
+option go_package = "github.com/onsonr/hway/x/did/types";
+
+// DID defines a parsed DID string
+message DID {
+  string id = 1;
+  DIDNamespace method = 2;
+  string network = 3;
+  string identifier = 4;
+  repeated string paths = 5;
+}
+
+// Credential defines a WebAuthn credential
+message Credential {
+  string id = 1;
+  string credential_type = 2;
+  bytes credential_id = 3;
+  repeated string transport = 4;
+  string subject = 6;
+  string controller = 7;
+}  
+
+// Document defines a DID document
+message Document {
+  string id = 1;
+  repeated VerificationMethod verification_methods = 2;
+  repeated string authentication = 4;
+  repeated string assertion_method = 5;
+  repeated string capability_delegation = 7;
+  repeated string capability_invocation = 8;
+}
+
+// Metadata defines additional information provided to a did
+message Metadata {
+  string origin_uri = 1;
+  map<string, string> public = 2;
+  map<string, Property> private = 3;
+}
+
+// Permissions contains a list of grants and access control rules for 
+// a Service.
+message Permissions {
+  repeated DIDNamespace grants = 1;
+  repeated PermissionScope scopes = 2;
+}
+
+// Profile defines an associated public identity for a did subject
+message Profile {
+  string id = 1;
+  string subject = 2;
+  string controller = 3;
+  repeated Credential credentials = 4;
+  repeated VerificationMethod attestations = 5;
+  Metadata metadata = 6;
+}
+
+// Property defines a Zero-Knowledge accumulator which can be used to
+// anonymously prove a given value to a DID subject
+message Property {
+  bytes accumulator = 1;
+  bytes key = 2;
+}
+
+// PubKey defines a public key for a did
+message PubKey {
+  DIDNamespace namespace = 1;
+  bytes key = 2;
+  KeyType kind = 3;
+  string multibase = 5;
+  map<string, string> jwks = 6;
+}
+
+// VerificationMethod defines a verification method
+message VerificationMethod {
+  string id = 1;
+  string controller = 2;
+  PubKey public_key = 3; 
+}
+

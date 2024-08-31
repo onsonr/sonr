@@ -3,7 +3,7 @@ package did.v1;
 
 import "google/api/annotations.proto";
 import "did/v1/genesis.proto";
-import "did/v1/types.proto";
+import "did/v1/models.proto";
 
 option go_package = "github.com/onsonr/hway/x/did/types";
 

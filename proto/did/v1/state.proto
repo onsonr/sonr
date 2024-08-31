@@ -5,7 +5,7 @@ option go_package = "github.com/onsonr/hway/x/did/types";
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
-import "did/v1/enums.proto";
+import "did/v1/models.proto";
 
 // Aliases represents the `alsoKnownAs` property associated with a DID Controller
 message Aliases {
@@ -41,19 +41,18 @@ message Assertion {
   // The unique identifier of the attestation
   string id = 1;
 
+  // The controller of the attestation
+  string controller = 2;
+
   // Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
-  string key_type = 2;
+  PubKey public_key = 3;
 
   // The value of the linked identifier
-  bytes credential = 3;
+  bytes credential_id = 4;
 
   // Metadata is optional additional information about the assertion
-  map<string, string> metadata = 4;
-
-  // The controller of the attestation
-  string controller = 5;
+  Metadata metadata = 5;
 }
-
 
 // Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
 message Attestation {
@@ -66,16 +65,13 @@ message Attestation {
   string id = 1;
 
   // The type of the linked identifier (e.g., "crypto", "github", "email", "phone")
-  string key_type = 2;
+  string controller = 2;
 
   // The value of the linked identifier
-  string value = 3;
-
-  // The proof or verification method for this attestation
-  string proof = 4;
+  PubKey public_key = 3;
 
   // The controller of the attestation
-  string controller = 5;
+  Metadata metadata = 4;
 }
 
 
@@ -90,16 +86,13 @@ message Controller {
   string id = 1;
 
   // The DID of the controller
-  string did = 2;
+  string address = 2;
 
-  // The public key of the controller
-  string public_key_multibase = 3;
+  // PubKey is the verification method
+  PubKey public_key = 4; 
 
   // The vault address or identifier
-  string vault_cid = 4;
-
-  // Fingerprint is the Accumulator of discrete credential identifiers
-  bytes fingerprint = 5;
+  string vault_cid = 5;
 }
 
 // Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
@@ -113,25 +106,13 @@ message Delegation {
   string id = 1;
 
   // The Decentralized Identifier of the delegated account
-  string did = 2;
+  string controller = 2;
 
-  // The chain type (e.g., "ETH", "BTC")
-  string chain_type = 3;
-
-  // The address on the target chain
-  string chain_address = 4;
-
-  // The controller DID
-  string controller_did = 5;
+  // Resolved from module parameters
+  string chain_info_id = 3;
 
   // The delegation proof or verification method
-  string public_key_multibase = 6;
-
-  // Public Key JWKS is a map of the associated public keys
-  map<string, string> public_key_jwks = 7;
-
-  // IBC Channel ID
-  uint64 channel_id = 8;
+  PubKey public_key = 4; 
 }
 
 // Service represents a service in a DID Document
@@ -157,5 +138,5 @@ message Service {
   map<string, string> service_endpoints = 5;
 
   // Scopes is the Authorization Grants of the service
-  repeated PermissionScope scopes = 6;
+  Permissions permissions = 6;
 }
