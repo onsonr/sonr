@@ -80,4 +80,9 @@ message FeeInfo {
 
 // KeyInfo defines information for accepted PubKey types
 message KeyInfo {
+    string key_type = 1;  // e.g., "secp256k1", "ed25519", "webauthn"
+    string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
+    string curve = 3;     // e.g., "P-256", "Ed25519", "secp256k1"
+    bool is_cbor = 4;     // true for WebAuthn CBOR-encoded keys, false for others
+    string encoding = 5;  // e.g., "hex", "base64", "multibase"
 }
