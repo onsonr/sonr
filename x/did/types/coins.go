@@ -1,4 +1,4 @@
-package coins
+package types
 
 // Coin represents a cryptocurrency
 type Coin interface {
@@ -20,44 +20,6 @@ type Coin interface {
 	// GetName returns the coin name
 	GetName() string
 }
-
-// DefaultCoins is a list of default coins used in the vault
-var DefaultCoins = []Coin{
-	CoinBTC,
-	CoinETH,
-	CoinSNR,
-}
-
-var (
-	// Bitcoin mainnet
-	CoinBTC = &coin{
-		Name:   "Bitcoin",
-		Index:  0,
-		Path:   0x80000000,
-		Symbol: "BTC",
-		Hrp:    "bc",
-		Method: "btcr",
-	}
-
-	// Ethereum
-	CoinETH = &coin{
-		Name:   "Ethereum",
-		Index:  60,
-		Path:   0x8000003c,
-		Symbol: "ETH",
-		Method: "ethr",
-	}
-
-	// Sonr
-	CoinSNR = &coin{
-		Name:   "Sonr",
-		Index:  703,
-		Path:   0x800002bf,
-		Symbol: "SNR",
-		Hrp:    "idx",
-		Method: "sonr",
-	}
-)
 
 // CoinBTCType is the coin type for BTC
 const CoinBTCType = int64(0)
