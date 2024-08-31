@@ -9,156 +9,6 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type AliasesTable interface {
-	Insert(ctx context.Context, aliases *Aliases) error
-	Update(ctx context.Context, aliases *Aliases) error
-	Save(ctx context.Context, aliases *Aliases) error
-	Delete(ctx context.Context, aliases *Aliases) error
-	Has(ctx context.Context, id string) (found bool, err error)
-	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Aliases, error)
-	HasBySubject(ctx context.Context, subject string) (found bool, err error)
-	// GetBySubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySubject(ctx context.Context, subject string) (*Aliases, error)
-	List(ctx context.Context, prefixKey AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
-	ListRange(ctx context.Context, from, to AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
-	DeleteBy(ctx context.Context, prefixKey AliasesIndexKey) error
-	DeleteRange(ctx context.Context, from, to AliasesIndexKey) error
-
-	doNotImplement()
-}
-
-type AliasesIterator struct {
-	ormtable.Iterator
-}
-
-func (i AliasesIterator) Value() (*Aliases, error) {
-	var aliases Aliases
-	err := i.UnmarshalMessage(&aliases)
-	return &aliases, err
-}
-
-type AliasesIndexKey interface {
-	id() uint32
-	values() []interface{}
-	aliasesIndexKey()
-}
-
-// primary key starting index..
-type AliasesPrimaryKey = AliasesIdIndexKey
-
-type AliasesIdIndexKey struct {
-	vs []interface{}
-}
-
-func (x AliasesIdIndexKey) id() uint32            { return 0 }
-func (x AliasesIdIndexKey) values() []interface{} { return x.vs }
-func (x AliasesIdIndexKey) aliasesIndexKey()      {}
-
-func (this AliasesIdIndexKey) WithId(id string) AliasesIdIndexKey {
-	this.vs = []interface{}{id}
-	return this
-}
-
-type AliasesSubjectIndexKey struct {
-	vs []interface{}
-}
-
-func (x AliasesSubjectIndexKey) id() uint32            { return 1 }
-func (x AliasesSubjectIndexKey) values() []interface{} { return x.vs }
-func (x AliasesSubjectIndexKey) aliasesIndexKey()      {}
-
-func (this AliasesSubjectIndexKey) WithSubject(subject string) AliasesSubjectIndexKey {
-	this.vs = []interface{}{subject}
-	return this
-}
-
-type aliasesTable struct {
-	table ormtable.Table
-}
-
-func (this aliasesTable) Insert(ctx context.Context, aliases *Aliases) error {
-	return this.table.Insert(ctx, aliases)
-}
-
-func (this aliasesTable) Update(ctx context.Context, aliases *Aliases) error {
-	return this.table.Update(ctx, aliases)
-}
-
-func (this aliasesTable) Save(ctx context.Context, aliases *Aliases) error {
-	return this.table.Save(ctx, aliases)
-}
-
-func (this aliasesTable) Delete(ctx context.Context, aliases *Aliases) error {
-	return this.table.Delete(ctx, aliases)
-}
-
-func (this aliasesTable) Has(ctx context.Context, id string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, id)
-}
-
-func (this aliasesTable) Get(ctx context.Context, id string) (*Aliases, error) {
-	var aliases Aliases
-	found, err := this.table.PrimaryKey().Get(ctx, &aliases, id)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &aliases, nil
-}
-
-func (this aliasesTable) HasBySubject(ctx context.Context, subject string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		subject,
-	)
-}
-
-func (this aliasesTable) GetBySubject(ctx context.Context, subject string) (*Aliases, error) {
-	var aliases Aliases
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &aliases,
-		subject,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &aliases, nil
-}
-
-func (this aliasesTable) List(ctx context.Context, prefixKey AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error) {
-	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return AliasesIterator{it}, err
-}
-
-func (this aliasesTable) ListRange(ctx context.Context, from, to AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error) {
-	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return AliasesIterator{it}, err
-}
-
-func (this aliasesTable) DeleteBy(ctx context.Context, prefixKey AliasesIndexKey) error {
-	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
-}
-
-func (this aliasesTable) DeleteRange(ctx context.Context, from, to AliasesIndexKey) error {
-	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
-}
-
-func (this aliasesTable) doNotImplement() {}
-
-var _ AliasesTable = aliasesTable{}
-
-func NewAliasesTable(db ormtable.Schema) (AliasesTable, error) {
-	table := db.GetTable(&Aliases{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Aliases{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return aliasesTable{table}, nil
-}
-
 type AssertionTable interface {
 	Insert(ctx context.Context, assertion *Assertion) error
 	Update(ctx context.Context, assertion *Assertion) error
@@ -281,6 +131,9 @@ type AttestationTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Attestation, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Attestation, error)
 	List(ctx context.Context, prefixKey AttestationIndexKey, opts ...ormlist.Option) (AttestationIterator, error)
 	ListRange(ctx context.Context, from, to AttestationIndexKey, opts ...ormlist.Option) (AttestationIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AttestationIndexKey) error
@@ -321,6 +174,24 @@ func (this AttestationIdIndexKey) WithId(id string) AttestationIdIndexKey {
 	return this
 }
 
+type AttestationSubjectOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x AttestationSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x AttestationSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x AttestationSubjectOriginIndexKey) attestationIndexKey()  {}
+
+func (this AttestationSubjectOriginIndexKey) WithSubject(subject string) AttestationSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
+	return this
+}
+
+func (this AttestationSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) AttestationSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
+	return this
+}
+
 type attestationTable struct {
 	table ormtable.Table
 }
@@ -348,6 +219,28 @@ func (this attestationTable) Has(ctx context.Context, id string) (found bool, er
 func (this attestationTable) Get(ctx context.Context, id string) (*Attestation, error) {
 	var attestation Attestation
 	found, err := this.table.PrimaryKey().Get(ctx, &attestation, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &attestation, nil
+}
+
+func (this attestationTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
+		origin,
+	)
+}
+
+func (this attestationTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Attestation, error) {
+	var attestation Attestation
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &attestation,
+		subject,
+		origin,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -730,7 +623,6 @@ func NewServiceTable(db ormtable.Schema) (ServiceTable, error) {
 }
 
 type StateStore interface {
-	AliasesTable() AliasesTable
 	AssertionTable() AssertionTable
 	AttestationTable() AttestationTable
 	ControllerTable() ControllerTable
@@ -741,16 +633,11 @@ type StateStore interface {
 }
 
 type stateStore struct {
-	aliases     AliasesTable
 	assertion   AssertionTable
 	attestation AttestationTable
 	controller  ControllerTable
 	delegation  DelegationTable
 	service     ServiceTable
-}
-
-func (x stateStore) AliasesTable() AliasesTable {
-	return x.aliases
 }
 
 func (x stateStore) AssertionTable() AssertionTable {
@@ -778,11 +665,6 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	aliasesTable, err := NewAliasesTable(db)
-	if err != nil {
-		return nil, err
-	}
-
 	assertionTable, err := NewAssertionTable(db)
 	if err != nil {
 		return nil, err
@@ -809,7 +691,6 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	}
 
 	return stateStore{
-		aliasesTable,
 		assertionTable,
 		attestationTable,
 		controllerTable,

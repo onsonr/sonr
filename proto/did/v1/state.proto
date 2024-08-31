@@ -1,40 +1,17 @@
 syntax = "proto3";
 
 package did.v1;
+
 option go_package = "github.com/onsonr/hway/x/did/types";
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 
-// Aliases represents the `alsoKnownAs` property associated with a DID Controller
-message Aliases {
-  option (cosmos.orm.v1.table) = {
-    id: 1
-    primary_key: {fields: "id"}
-    index: { id: 1, fields: "subject", unique: true }
-    };
-
-  // The unique identifier of the alias
-  string id = 1;
-
-  // Origin is the  Alias provider
-  string origin = 2;
-
-  // Subject is the user defined alias
-  string subject = 3;
-
-  // Controller of the alias
-  string controller = 4;
-
-  // Expiration of the alias
-  uint64 expiration = 5;
-}
-
 // Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
 message Assertion {
   option (cosmos.orm.v1.table) = {
-    id: 2 
+    id: 1 
     primary_key: {fields: "id"}
   };
 
@@ -57,8 +34,9 @@ message Assertion {
 // Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
 message Attestation {
   option (cosmos.orm.v1.table) = {
-    id: 3
+    id: 2
     primary_key: {fields: "id"}
+    index: { id: 1, fields: "subject,origin", unique: true }
   };
 
   // The unique identifier of the attestation
@@ -70,15 +48,21 @@ message Attestation {
   // The value of the linked identifier
   PubKey public_key = 3;
 
+  // The origin of the attestation
+  string origin = 4;
+
+  // The subject of the attestation
+  string subject = 5;
+
   // The controller of the attestation
-  Metadata metadata = 4;
+  Metadata metadata = 6;
 }
 
 
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id: 4
+    id: 3
     primary_key: {fields: "id"}
   };
 
@@ -98,7 +82,7 @@ message Controller {
 // Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
 message Delegation {
   option (cosmos.orm.v1.table) = {
-    id: 5
+    id: 4
     primary_key: {fields: "id"}
   };
 
@@ -118,7 +102,7 @@ message Delegation {
 // Service represents a service in a DID Document
 message Service {
   option (cosmos.orm.v1.table) = {
-    id: 6
+    id: 5
     primary_key: {fields: "id"}
   };
 
