@@ -9,6 +9,7 @@ import (
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	stakkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
 	apiv1 "github.com/onsonr/sonr/api/did/v1"
 	"github.com/onsonr/sonr/x/did/types"
@@ -26,12 +27,13 @@ type Keeper struct {
 	Schema collections.Schema
 
 	AccountKeeper authkeeper.AccountKeeper
+	StakingKeeper *stakkeeper.Keeper
 
 	authority string
 }
 
 // NewKeeper creates a new poa Keeper instance
-func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, accKeeper authkeeper.AccountKeeper, logger log.Logger, authority string) Keeper {
+func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, accKeeper authkeeper.AccountKeeper, stkKeeper *stakkeeper.Keeper, logger log.Logger, authority string) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 	sb := collections.NewSchemaBuilder(storeService)
 	if authority == "" {
@@ -52,6 +54,7 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ac
 		authority:     authority,
 		OrmDB:         store,
 		AccountKeeper: accKeeper,
+		StakingKeeper: stkKeeper,
 	}
 	schema, err := sb.Build()
 	if err != nil {

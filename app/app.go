@@ -616,6 +616,7 @@ func NewChainApp(
 		appCodec,
 		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		app.AccountKeeper,
+		app.StakingKeeper,
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

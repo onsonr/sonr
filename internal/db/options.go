@@ -3,7 +3,6 @@ package db
 import (
 	"crypto/rand"
 
-	_ "github.com/ncruces/go-sqlite3/embed"
 	"github.com/ncruces/go-sqlite3/gormlite"
 	"github.com/ncruces/go-sqlite3/vfs"
 	"golang.org/x/crypto/argon2"

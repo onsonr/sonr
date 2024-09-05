@@ -1,4 +1,8 @@
+@go.Package { name = "github.com/onsonr/sonr/gen/transactions" }
+
 module transactions
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 /// Common Cosmos SDK types
 typealias Coin = Dynamic
