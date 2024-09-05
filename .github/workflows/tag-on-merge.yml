@@ -11,19 +11,28 @@ permissions:
   contents: write
 
 jobs:
-  build:
+  create_release_tag:
     if: github.event.pull_request.merged == true
-    runs-on: ubuntu-22.04
-    permissions:
-      contents: write
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
         with:
-          ref: ${{ github.event.pull_request.merge_commit_sha }}
-          fetch-depth: "0"
+          fetch-depth: 0
 
-      - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@v1 # Don't use @master or @v1 unless you're happy to test the latest version
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # if you don't want to set write permissions use a PAT token
-          WITH_V: true
+      - name: Install Commitizen
+        run: pip install commitizen
+
+      - name: Determine next version
+        id: version
+        run: |
+          next_version=$(cz bump --dry-run)
+          echo "Next version: $next_version"
+          echo "NEW_VERSION=$next_version" >> $GITHUB_ENV
+
+      - name: Create and push tag
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git tag -a "release/${{ env.NEW_VERSION }}" -m "Release ${{ env.NEW_VERSION }}"
+          git push origin "release/${{ env.NEW_VERSION }}"

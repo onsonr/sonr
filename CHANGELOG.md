@@ -1,4 +1,4 @@
-## 0.7.0 (2024-09-05)
+## 0.1.0 (2024-09-05)
 
 ### Feat
 
@@ -79,7 +79,7 @@
 - remove unused FileSystem interface
 - remove unused functions and types
 - update AssetInfo protobuf definition
-- add  field to
+- add field to
 - Update KeyKind Enum to have proper naming conventions
 - Update `DIDNamespace` to have proper naming convention
 - expose ports directly in docker-compose
