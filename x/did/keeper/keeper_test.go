@@ -3,12 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
-
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
-
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -23,13 +20,13 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	"cosmossdk.io/core/store"
+	"github.com/strangelove-ventures/poa"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 
 	module "github.com/onsonr/sonr/x/did"
 	"github.com/onsonr/sonr/x/did/keeper"
 	"github.com/onsonr/sonr/x/did/types"
-	"github.com/strangelove-ventures/poa"
 )
 
 var maccPerms = map[string][]string{
@@ -80,7 +77,7 @@ func SetupTest(t *testing.T) *testFixture {
 	registerBaseSDKModules(f, encCfg, storeService, logger, require)
 
 	// Setup POA Keeper.
-	f.k = keeper.NewKeeper(encCfg.Codec, storeService, f.accountkeeper, logger, f.govModAddr)
+	f.k = keeper.NewKeeper(encCfg.Codec, storeService, f.accountkeeper, f.stakingKeeper, logger, f.govModAddr)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
 	f.appModule = module.NewAppModule(encCfg.Codec, f.k)
