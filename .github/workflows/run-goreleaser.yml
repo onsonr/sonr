@@ -5,7 +5,7 @@ name: "Release Binary"
 on:
   push:
     tags:
-      - "v*"
+      - v*
 
 permissions:
   contents: write
