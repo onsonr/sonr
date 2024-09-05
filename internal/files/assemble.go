@@ -5,8 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	_ "github.com/mattn/go-sqlite3"
-
 	"github.com/onsonr/sonr/internal/db"
 )
 

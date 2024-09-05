@@ -2,7 +2,6 @@ package app
 
 import (
 	"github.com/ipfs/kubo/client/rpc"
-	"github.com/onsonr/sonr/internal/files"
 )
 
 var (
@@ -12,10 +11,7 @@ var (
 
 // Initialize initializes the local configuration values
 func init() {
-	err := files.Assemble(".data/vaults/0")
-	if err != nil {
-		panic(err)
-	}
+
 }
 
 // SetLocalContextSessionID sets the session ID for the local context

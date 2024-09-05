@@ -9,21 +9,12 @@ import (
 	"fmt"
 	"net/http"
 
-	_ "github.com/flimzy/go-sql.js"
 	wasmhttp "github.com/nlepage/go-wasm-http-server"
 )
 
 var db *sql.DB
 
 func main() {
-	var err error
-	// Open a new in-memory SQLite database
-	db, err = sql.Open("sqljs", "")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
-
 	// Initialize the database
 	initDB()
 

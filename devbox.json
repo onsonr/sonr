@@ -18,11 +18,10 @@
   },
   "shell": {
     "scripts": {
-      "init": ["make install", "sonrd init"],
+      "init": ["make install", "sh ./scripts/test_node.sh"],
       "gen": ["make proto-gen", "make vault", "make templ"],
       "build": ["make build", "make local-image"],
       "testnet": ["make install", "make sh-testnet"],
-      "icnet": ["make install", "make testnet"],
       "explorer": ["make explorer"]
     }
   }

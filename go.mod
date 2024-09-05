@@ -58,7 +58,6 @@ require (
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.0.2-0.20240228211029-91e486ec4dbb
 	github.com/cosmos/ibc-go/modules/capability v1.0.0
 	github.com/cosmos/ibc-go/v8 v8.2.0
-	github.com/flimzy/go-sql.js v0.0.0-20170413005827-c7e22c0fd6e9
 	github.com/go-webauthn/webauthn v0.10.2
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
@@ -66,7 +65,6 @@ require (
 	github.com/ipfs/boxo v0.21.0
 	github.com/ipfs/kubo v0.29.0
 	github.com/joho/godotenv v1.5.1
-	github.com/mattn/go-sqlite3 v1.14.23
 	github.com/mr-tron/base58 v1.2.0
 	github.com/ncruces/go-sqlite3 v0.18.2
 	github.com/ncruces/go-sqlite3/gormlite v0.18.0
@@ -174,7 +172,6 @@ require (
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.2 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20190430165422-3e4dfb77656c // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect

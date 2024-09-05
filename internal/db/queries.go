@@ -20,7 +20,7 @@ func insertAssetQuery(name, symbol string, decimals int, chainID int64) string {
 
 // Chain queries
 func insertChainQuery(name string, networkID string) string {
-	return fmt.Sprintf(`INSERT INTO chains (name, network_id) VALUES (%s, %d)`, name, networkID)
+	return fmt.Sprintf(`INSERT INTO chains (name, network_id) VALUES (%s, %s)`, name, networkID)
 }
 
 // Credential queries
