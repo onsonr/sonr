@@ -25,7 +25,12 @@ func (gs GenesisState) Validate() error {
 
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
-	return Params{}
+	return Params{
+		WhitelistedAssets: DefaultAssets(),
+		WhitelistedChains: DefaultChains(),
+		AllowedPublicKeys: DefaultKeyInfos(),
+		OpenidConfig:      DefaultOpenIDConfig(),
+	}
 }
 
 // Stringer method for Params.

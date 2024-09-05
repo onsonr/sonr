@@ -26,9 +26,9 @@ import (
 
 	"cosmossdk.io/core/store"
 
-	module "github.com/onsonr/hway/x/did"
-	"github.com/onsonr/hway/x/did/keeper"
-	"github.com/onsonr/hway/x/did/types"
+	module "github.com/onsonr/sonr/x/did"
+	"github.com/onsonr/sonr/x/did/keeper"
+	"github.com/onsonr/sonr/x/did/types"
 	"github.com/strangelove-ventures/poa"
 )
 

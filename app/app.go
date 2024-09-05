@@ -145,12 +145,12 @@ import (
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 
-	did "github.com/onsonr/hway/x/did"
-	didkeeper "github.com/onsonr/hway/x/did/keeper"
-	didtypes "github.com/onsonr/hway/x/did/types"
-	oracle "github.com/onsonr/hway/x/oracle"
-	oraclekeeper "github.com/onsonr/hway/x/oracle/keeper"
-	oracletypes "github.com/onsonr/hway/x/oracle/types"
+	did "github.com/onsonr/sonr/x/did"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	didtypes "github.com/onsonr/sonr/x/did/types"
+	oracle "github.com/onsonr/sonr/x/oracle"
+	oraclekeeper "github.com/onsonr/sonr/x/oracle/keeper"
+	oracletypes "github.com/onsonr/sonr/x/oracle/types"
 )
 
 const appName = "sonr"

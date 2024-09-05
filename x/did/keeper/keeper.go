@@ -10,8 +10,8 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	apiv1 "github.com/onsonr/hway/api/did/v1"
-	"github.com/onsonr/hway/x/did/types"
+	apiv1 "github.com/onsonr/sonr/api/did/v1"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 // Keeper defines the middleware keeper.

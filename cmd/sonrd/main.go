@@ -6,7 +6,7 @@ import (
 	"cosmossdk.io/log"
 	svrcmd "github.com/cosmos/cosmos-sdk/server/cmd"
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/onsonr/hway/app"
+	"github.com/onsonr/sonr/app"
 )
 
 func main() {

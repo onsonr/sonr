@@ -1,7 +1,10 @@
 # This file is used to create docker images using the heighliner binary.
 # see: https://github.com/strangelove-ventures/heighliner
 
+# Sonr Node - Identity
 - name: sonr
+  github-organization: onsonr
+  github-repo: core
   dockerfile: cosmos
   build-target: make install
   binaries:
@@ -9,6 +12,8 @@
   build-env:
     - LEDGER_ENABLED=false
     - BUILD_TAGS=muslc
+
+# Ethereum Node - Web3
 - name: evmos
   github-organization: tharsis
   github-repo: evmos
@@ -16,6 +21,8 @@
   build-target: make install
   binaries:
     - /go/bin/evmosd
+
+# Bitcoin Node - Gold
 - name: nomic
   github-organization: nomic-io
   github-repo: nomic
@@ -26,7 +33,5 @@
     cargo install --locked --path . -Zbuild-std
   binaries:
     - /build/nomic/target/${ARCH}-unknown-linux-gnu/release/nomic
-  # TODO remove platforms here so that both linux/amd64 and linux/arm64 are built
-  # once these changes are merged: https://github.com/nomic-io/orga/pull/154
   platforms:
     - linux/amd64

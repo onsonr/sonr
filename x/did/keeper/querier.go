@@ -5,8 +5,8 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	// "github.com/onsonr/hway/internal/local"
-	"github.com/onsonr/hway/x/did/types"
+	// "github.com/onsonr/sonr/internal/local"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 var _ types.QueryServer = Querier{}
@@ -20,7 +20,7 @@ func NewQuerier(keeper Keeper) Querier {
 }
 
 // Params returns the total set of did parameters.
-func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
+func (k Querier) Params(c context.Context, req *types.QueryRequest) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	p, err := k.Keeper.Params.Get(ctx)
@@ -32,31 +32,31 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 }
 
 // Accounts implements types.QueryServer.
-func (k Querier) Accounts(goCtx context.Context, req *types.QueryAccountsRequest) (*types.QueryAccountsResponse, error) {
+func (k Querier) Accounts(goCtx context.Context, req *types.QueryRequest) (*types.QueryAccountsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryAccountsResponse{}, nil
 }
 
 // Credentials implements types.QueryServer.
-func (k Querier) Credentials(goCtx context.Context, req *types.QueryCredentialsRequest) (*types.QueryCredentialsResponse, error) {
+func (k Querier) Credentials(goCtx context.Context, req *types.QueryRequest) (*types.QueryCredentialsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryCredentialsResponse{}, nil
 }
 
-// Identities implements types.QueryServer.
-func (k Querier) Identities(goCtx context.Context, req *types.QueryIdentitiesRequest) (*types.QueryIdentitiesResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryIdentitiesResponse{}, nil
-}
-
 // Resolve implements types.QueryServer.
-func (k Querier) Resolve(goCtx context.Context, req *types.QueryResolveRequest) (*types.QueryResolveResponse, error) {
+func (k Querier) Resolve(goCtx context.Context, req *types.QueryRequest) (*types.QueryResolveResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryResolveResponse{}, nil
 }
 
 // Service implements types.QueryServer.
-func (k Querier) Service(goCtx context.Context, req *types.QueryServiceRequest) (*types.QueryServiceResponse, error) {
+func (k Querier) Service(goCtx context.Context, req *types.QueryRequest) (*types.QueryServiceResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryServiceResponse{}, nil
+}
+
+// Token implements types.QueryServer.
+func (k Querier) Token(goCtx context.Context, req *types.QueryRequest) (*types.QueryTokenResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.QueryTokenResponse{}, nil
 }

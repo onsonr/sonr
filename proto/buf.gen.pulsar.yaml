@@ -2,7 +2,7 @@ version: v1
 managed:
   enabled: true
   go_package_prefix:
-    default: github.com/onsonr/hway/api
+    default: github.com/onsonr/sonr/api
     except:
       - buf.build/googleapis/googleapis
       - buf.build/cosmos/gogo-proto

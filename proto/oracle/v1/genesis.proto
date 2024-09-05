@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package oracle.v1;
 
-option go_package = "github.com/onsonr/hway/x/oracle/types";
+option go_package = "github.com/onsonr/sonr/x/oracle/types";
 
 import "gogoproto/gogo.proto";
 

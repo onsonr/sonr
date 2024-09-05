@@ -1,7 +1,7 @@
 package oracle
 
 import (
-	"github.com/onsonr/hway/x/oracle/keeper"
+	"github.com/onsonr/sonr/x/oracle/keeper"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	capabilitytypes "github.com/cosmos/ibc-go/modules/capability/types"

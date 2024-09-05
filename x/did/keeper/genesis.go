@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"cosmossdk.io/log"
-	"github.com/onsonr/hway/x/did/types"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 // Logger returns the logger

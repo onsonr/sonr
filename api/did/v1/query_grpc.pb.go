@@ -22,9 +22,9 @@ const (
 	Query_Params_FullMethodName      = "/did.v1.Query/Params"
 	Query_Accounts_FullMethodName    = "/did.v1.Query/Accounts"
 	Query_Credentials_FullMethodName = "/did.v1.Query/Credentials"
-	Query_Identities_FullMethodName  = "/did.v1.Query/Identities"
 	Query_Resolve_FullMethodName     = "/did.v1.Query/Resolve"
 	Query_Service_FullMethodName     = "/did.v1.Query/Service"
+	Query_Token_FullMethodName       = "/did.v1.Query/Token"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,17 +32,17 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	// Params queries all parameters of the module.
-	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Accounts returns associated wallet accounts with the DID.
-	Accounts(ctx context.Context, in *QueryAccountsRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
+	Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
 	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(ctx context.Context, in *QueryCredentialsRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
-	// Identities returns associated identity with the DID.
-	Identities(ctx context.Context, in *QueryIdentitiesRequest, opts ...grpc.CallOption) (*QueryIdentitiesResponse, error)
+	Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
-	Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
+	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
+	// Token returns the current authentication token for the client.
+	Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 }
 
 type queryClient struct {
@@ -53,7 +53,7 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
+func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -62,7 +62,7 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Accounts(ctx context.Context, in *QueryAccountsRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error) {
+func (c *queryClient) Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error) {
 	out := new(QueryAccountsResponse)
 	err := c.cc.Invoke(ctx, Query_Accounts_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -71,7 +71,7 @@ func (c *queryClient) Accounts(ctx context.Context, in *QueryAccountsRequest, op
 	return out, nil
 }
 
-func (c *queryClient) Credentials(ctx context.Context, in *QueryCredentialsRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error) {
+func (c *queryClient) Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error) {
 	out := new(QueryCredentialsResponse)
 	err := c.cc.Invoke(ctx, Query_Credentials_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -80,16 +80,7 @@ func (c *queryClient) Credentials(ctx context.Context, in *QueryCredentialsReque
 	return out, nil
 }
 
-func (c *queryClient) Identities(ctx context.Context, in *QueryIdentitiesRequest, opts ...grpc.CallOption) (*QueryIdentitiesResponse, error) {
-	out := new(QueryIdentitiesResponse)
-	err := c.cc.Invoke(ctx, Query_Identities_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
+func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
 	out := new(QueryResolveResponse)
 	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
 	if err != nil {
@@ -98,9 +89,18 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryResolveRequest, opts
 	return out, nil
 }
 
-func (c *queryClient) Service(ctx context.Context, in *QueryServiceRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
+func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
 	out := new(QueryServiceResponse)
 	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error) {
+	out := new(QueryTokenResponse)
+	err := c.cc.Invoke(ctx, Query_Token_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -112,17 +112,17 @@ func (c *queryClient) Service(ctx context.Context, in *QueryServiceRequest, opts
 // for forward compatibility
 type QueryServer interface {
 	// Params queries all parameters of the module.
-	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
 	// Accounts returns associated wallet accounts with the DID.
-	Accounts(context.Context, *QueryAccountsRequest) (*QueryAccountsResponse, error)
+	Accounts(context.Context, *QueryRequest) (*QueryAccountsResponse, error)
 	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error)
-	// Identities returns associated identity with the DID.
-	Identities(context.Context, *QueryIdentitiesRequest) (*QueryIdentitiesResponse, error)
+	Credentials(context.Context, *QueryRequest) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error)
+	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
-	Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error)
+	Service(context.Context, *QueryRequest) (*QueryServiceResponse, error)
+	// Token returns the current authentication token for the client.
+	Token(context.Context, *QueryRequest) (*QueryTokenResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -130,23 +130,23 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
+func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) Accounts(context.Context, *QueryAccountsRequest) (*QueryAccountsResponse, error) {
+func (UnimplementedQueryServer) Accounts(context.Context, *QueryRequest) (*QueryAccountsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Accounts not implemented")
 }
-func (UnimplementedQueryServer) Credentials(context.Context, *QueryCredentialsRequest) (*QueryCredentialsResponse, error) {
+func (UnimplementedQueryServer) Credentials(context.Context, *QueryRequest) (*QueryCredentialsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Credentials not implemented")
 }
-func (UnimplementedQueryServer) Identities(context.Context, *QueryIdentitiesRequest) (*QueryIdentitiesResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Identities not implemented")
-}
-func (UnimplementedQueryServer) Resolve(context.Context, *QueryResolveRequest) (*QueryResolveResponse, error) {
+func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
-func (UnimplementedQueryServer) Service(context.Context, *QueryServiceRequest) (*QueryServiceResponse, error) {
+func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryServiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
+}
+func (UnimplementedQueryServer) Token(context.Context, *QueryRequest) (*QueryTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -162,7 +162,7 @@ func RegisterQueryServer(s grpc.ServiceRegistrar, srv QueryServer) {
 }
 
 func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryParamsRequest)
+	in := new(QueryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -174,13 +174,13 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 		FullMethod: Query_Params_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Params(ctx, req.(*QueryParamsRequest))
+		return srv.(QueryServer).Params(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Accounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryAccountsRequest)
+	in := new(QueryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -192,13 +192,13 @@ func _Query_Accounts_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: Query_Accounts_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Accounts(ctx, req.(*QueryAccountsRequest))
+		return srv.(QueryServer).Accounts(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryCredentialsRequest)
+	in := new(QueryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -210,31 +210,13 @@ func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(i
 		FullMethod: Query_Credentials_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Credentials(ctx, req.(*QueryCredentialsRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Identities_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryIdentitiesRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Identities(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Identities_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Identities(ctx, req.(*QueryIdentitiesRequest))
+		return srv.(QueryServer).Credentials(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryResolveRequest)
+	in := new(QueryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -246,13 +228,13 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: Query_Resolve_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Resolve(ctx, req.(*QueryResolveRequest))
+		return srv.(QueryServer).Resolve(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryServiceRequest)
+	in := new(QueryRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -264,7 +246,25 @@ func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(inter
 		FullMethod: Query_Service_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Service(ctx, req.(*QueryServiceRequest))
+		return srv.(QueryServer).Service(ctx, req.(*QueryRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Token(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Token_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Token(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -289,16 +289,16 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Credentials_Handler,
 		},
 		{
-			MethodName: "Identities",
-			Handler:    _Query_Identities_Handler,
-		},
-		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
 			MethodName: "Service",
 			Handler:    _Query_Service_Handler,
+		},
+		{
+			MethodName: "Token",
+			Handler:    _Query_Token_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

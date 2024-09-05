@@ -1,7 +1,7 @@
 package keeper
 
 import (
-	"github.com/onsonr/hway/x/oracle/types"
+	"github.com/onsonr/sonr/x/oracle/types"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )

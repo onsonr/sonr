@@ -20,8 +20,8 @@ const _ = grpc.SupportPackageIsVersion7
 
 const (
 	Msg_UpdateParams_FullMethodName       = "/did.v1.Msg/UpdateParams"
-	Msg_Authenticate_FullMethodName       = "/did.v1.Msg/Authenticate"
-	Msg_ProveWitness_FullMethodName       = "/did.v1.Msg/ProveWitness"
+	Msg_Authorize_FullMethodName          = "/did.v1.Msg/Authorize"
+	Msg_AllocateVault_FullMethodName      = "/did.v1.Msg/AllocateVault"
 	Msg_SyncVault_FullMethodName          = "/did.v1.Msg/SyncVault"
 	Msg_RegisterController_FullMethodName = "/did.v1.Msg/RegisterController"
 	Msg_RegisterService_FullMethodName    = "/did.v1.Msg/RegisterService"
@@ -35,10 +35,11 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error)
-	// ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
-	ProveWitness(ctx context.Context, in *MsgProveWitness, opts ...grpc.CallOption) (*MsgProveWitnessResponse, error)
+	// Authorize asserts the given controller is the owner of the given address.
+	Authorize(ctx context.Context, in *MsgAuthorize, opts ...grpc.CallOption) (*MsgAuthorizeResponse, error)
+	// AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
+	// this operation is called by services initiating a controller registration.
+	AllocateVault(ctx context.Context, in *MsgAllocateVault, opts ...grpc.CallOption) (*MsgAllocateVaultResponse, error)
 	// SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
 	SyncVault(ctx context.Context, in *MsgSyncVault, opts ...grpc.CallOption) (*MsgSyncVaultResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
@@ -64,18 +65,18 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error) {
-	out := new(MsgAuthenticateResponse)
-	err := c.cc.Invoke(ctx, Msg_Authenticate_FullMethodName, in, out, opts...)
+func (c *msgClient) Authorize(ctx context.Context, in *MsgAuthorize, opts ...grpc.CallOption) (*MsgAuthorizeResponse, error) {
+	out := new(MsgAuthorizeResponse)
+	err := c.cc.Invoke(ctx, Msg_Authorize_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *msgClient) ProveWitness(ctx context.Context, in *MsgProveWitness, opts ...grpc.CallOption) (*MsgProveWitnessResponse, error) {
-	out := new(MsgProveWitnessResponse)
-	err := c.cc.Invoke(ctx, Msg_ProveWitness_FullMethodName, in, out, opts...)
+func (c *msgClient) AllocateVault(ctx context.Context, in *MsgAllocateVault, opts ...grpc.CallOption) (*MsgAllocateVaultResponse, error) {
+	out := new(MsgAllocateVaultResponse)
+	err := c.cc.Invoke(ctx, Msg_AllocateVault_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,10 +118,11 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error)
-	// ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
-	ProveWitness(context.Context, *MsgProveWitness) (*MsgProveWitnessResponse, error)
+	// Authorize asserts the given controller is the owner of the given address.
+	Authorize(context.Context, *MsgAuthorize) (*MsgAuthorizeResponse, error)
+	// AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
+	// this operation is called by services initiating a controller registration.
+	AllocateVault(context.Context, *MsgAllocateVault) (*MsgAllocateVaultResponse, error)
 	// SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
 	SyncVault(context.Context, *MsgSyncVault) (*MsgSyncVaultResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
@@ -137,11 +139,11 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (UnimplementedMsgServer) Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
+func (UnimplementedMsgServer) Authorize(context.Context, *MsgAuthorize) (*MsgAuthorizeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Authorize not implemented")
 }
-func (UnimplementedMsgServer) ProveWitness(context.Context, *MsgProveWitness) (*MsgProveWitnessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProveWitness not implemented")
+func (UnimplementedMsgServer) AllocateVault(context.Context, *MsgAllocateVault) (*MsgAllocateVaultResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AllocateVault not implemented")
 }
 func (UnimplementedMsgServer) SyncVault(context.Context, *MsgSyncVault) (*MsgSyncVaultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SyncVault not implemented")
@@ -183,38 +185,38 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthenticate)
+func _Msg_Authorize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAuthorize)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Authenticate(ctx, in)
+		return srv.(MsgServer).Authorize(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Authenticate_FullMethodName,
+		FullMethod: Msg_Authorize_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Authenticate(ctx, req.(*MsgAuthenticate))
+		return srv.(MsgServer).Authorize(ctx, req.(*MsgAuthorize))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_ProveWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProveWitness)
+func _Msg_AllocateVault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgAllocateVault)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).ProveWitness(ctx, in)
+		return srv.(MsgServer).AllocateVault(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_ProveWitness_FullMethodName,
+		FullMethod: Msg_AllocateVault_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProveWitness(ctx, req.(*MsgProveWitness))
+		return srv.(MsgServer).AllocateVault(ctx, req.(*MsgAllocateVault))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -285,12 +287,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "Authenticate",
-			Handler:    _Msg_Authenticate_Handler,
+			MethodName: "Authorize",
+			Handler:    _Msg_Authorize_Handler,
 		},
 		{
-			MethodName: "ProveWitness",
-			Handler:    _Msg_ProveWitness_Handler,
+			MethodName: "AllocateVault",
+			Handler:    _Msg_AllocateVault_Handler,
 		},
 		{
 			MethodName: "SyncVault",

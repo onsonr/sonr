@@ -2,17 +2,15 @@ syntax = "proto3";
 
 package did.v1;
 
+import "did/v1/constants.proto";
 import "did/v1/genesis.proto";
+import "gogoproto/gogo.proto";
 
-option go_package = "github.com/onsonr/hway/x/did/types";
+option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// DID defines a parsed DID string
-message DID {
-  string id = 1;
-  DIDNamespace method = 2;
-  string network = 3;
-  string identifier = 4;
-  repeated string paths = 5;
+// Accumulator defines a BLS accumulator
+message Accumulator {
+  bytes accumulator = 1;
 }
 
 // Credential defines a WebAuthn credential
@@ -23,7 +21,16 @@ message Credential {
   repeated string transport = 4;
   string subject = 6;
   string controller = 7;
-}  
+}
+
+// DID defines a parsed DID string
+message DID {
+  DIDNamespace method = 1;
+  string network = 2;
+  string subject = 3;
+  string identifier = 4;
+  repeated string paths = 5;
+}
 
 // Document defines a DID document
 message Document {
@@ -33,6 +40,7 @@ message Document {
   repeated string assertion_method = 5;
   repeated string capability_delegation = 7;
   repeated string capability_invocation = 8;
+  repeated string service = 9;
 }
 
 // Metadata defines additional information provided to a did
@@ -42,7 +50,7 @@ message Metadata {
   map<string, Property> private = 3;
 }
 
-// Permissions contains a list of grants and access control rules for 
+// Permissions contains a list of grants and access control rules for
 // a Service.
 message Permissions {
   repeated DIDNamespace grants = 1;
@@ -54,9 +62,7 @@ message Profile {
   string id = 1;
   string subject = 2;
   string controller = 3;
-  repeated Credential credentials = 4;
-  repeated VerificationMethod attestations = 5;
-  Metadata metadata = 6;
+  Metadata metadata = 4;
 }
 
 // Property defines a Zero-Knowledge accumulator which can be used to
@@ -68,17 +74,42 @@ message Property {
 
 // PubKey defines a public key for a did
 message PubKey {
-  DIDNamespace namespace = 1;
-  bytes key = 2;
-  KeyType kind = 3;
-  string multibase = 5;
-  map<string, string> jwks = 6;
+  KeyRole role = 1;
+  KeyAlgorithm algorithm = 2;
+  KeyEncoding encoding = 3;
+  bytes raw = 4;
+  string hex = 5;
+  string multibase = 6;
+  map<string, string> jwk = 7;
+}
+
+// Service defines a Decentralized Service on the Sonr Blockchain
+message Service {
+  string id = 1;
+  string controller = 2;
+  string origin = 3;
+  Permissions permissions = 4;
+  OpenIDConfig openid = 5;
+  Metadata metadata = 6;
+}
+
+// Token defines a macron token
+message Token {
+  string id = 1;
+  string controller = 2;
+  bytes macron = 3;
 }
 
 // VerificationMethod defines a verification method
 message VerificationMethod {
   string id = 1;
   string controller = 2;
-  PubKey public_key = 3; 
+  DIDNamespace method = 3;
+  PubKey public_key = 4;
+  Service service = 7;
 }
 
+// Witness defines a BLS witness
+message Witness {
+  bytes witness = 1;
+}

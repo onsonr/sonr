@@ -4,6 +4,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	"github.com/cosmos/cosmos-sdk/codec/types"
 	cryptocodec "github.com/cosmos/cosmos-sdk/crypto/codec"
+	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
 	// this line is used by starport scaffolding # 1
@@ -26,16 +27,17 @@ func RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 }
 
 func RegisterInterfaces(registry types.InterfaceRegistry) {
-	//registry.RegisterImplementations(
-	//(*cryptotypes.PubKey)(nil),
-	//		&PublicKey{},
-	//)
+	registry.RegisterImplementations(
+		(*cryptotypes.PubKey)(nil),
+		&PubKey{},
+	)
 
 	registry.RegisterImplementations(
 		(*sdk.Msg)(nil),
 		&MsgUpdateParams{},
 		&MsgRegisterController{},
 		&MsgRegisterService{},
+		&MsgAllocateVault{},
 	)
 	msgservice.RegisterMsgServiceDesc(registry, &_Msg_serviceDesc)
 }

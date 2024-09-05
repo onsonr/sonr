@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/onsonr/hway/x/did/types"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 func TestGenesis(t *testing.T) {
@@ -19,7 +19,6 @@ func TestGenesis(t *testing.T) {
 
 	err := f.k.InitGenesis(f.ctx, genesisState)
 	require.NoError(t, err)
-
 
 	got := f.k.ExportGenesis(f.ctx)
 	require.NotNil(t, got)

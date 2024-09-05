@@ -12,4 +12,5 @@ var (
 	ErrMinimumAssertions       = sdkerrors.Register(ModuleName, 300, "at least one assertion is required for account initialization")
 	ErrInvalidControllers      = sdkerrors.Register(ModuleName, 301, "no more than one controller can be used for account initialization")
 	ErrMaximumAuthenticators   = sdkerrors.Register(ModuleName, 302, "more authenticators provided than the total accepted count")
+	ErrUnsupportedKeyEncoding  = sdkerrors.Register(ModuleName, 400, "unsupported key encoding")
 )

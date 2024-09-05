@@ -1,3 +1,20 @@
+FROM jetpackio/devbox:latest as sonrvm
+
+# Installing your devbox project
+WORKDIR /code
+USER root:root
+
+RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
+
+USER ${DEVBOX_USER}:${DEVBOX_USER}
+
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
+
+RUN devbox run -- echo "Installed Packages."
+
+ENTRYPOINT ["devbox", "run"]
+
+# --------------------------------------------------------
 FROM golang:1.22-alpine AS go-builder
 
 SHELL ["/bin/sh", "-ecuxo", "pipefail"]
@@ -32,7 +49,6 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
 FROM debian:11-slim
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
-
 
 # Install dependencies for Debian 11
 RUN apt-get update && apt-get install -y \

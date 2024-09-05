@@ -1,4 +1,4 @@
-name: docker image release
+name: Publish Docker Image
 
 # NOTE: For this action to work, you must enable write permissions in your github repository settings.
 # Settings -> Actions -> General. "Workflow Permissions". Select "Read and write permissions".

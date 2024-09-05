@@ -17,6 +17,15 @@ type AssertionTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Assertion, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Assertion, error)
+	HasByControllerOrigin(ctx context.Context, controller string, origin string) (found bool, err error)
+	// GetByControllerOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerOrigin(ctx context.Context, controller string, origin string) (*Assertion, error)
+	HasByControllerCredentialLabel(ctx context.Context, controller string, credential_label string) (found bool, err error)
+	// GetByControllerCredentialLabel returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerCredentialLabel(ctx context.Context, controller string, credential_label string) (*Assertion, error)
 	List(ctx context.Context, prefixKey AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
 	ListRange(ctx context.Context, from, to AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AssertionIndexKey) error
@@ -57,6 +66,60 @@ func (this AssertionIdIndexKey) WithId(id string) AssertionIdIndexKey {
 	return this
 }
 
+type AssertionSubjectOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x AssertionSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x AssertionSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x AssertionSubjectOriginIndexKey) assertionIndexKey()    {}
+
+func (this AssertionSubjectOriginIndexKey) WithSubject(subject string) AssertionSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
+	return this
+}
+
+func (this AssertionSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) AssertionSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
+	return this
+}
+
+type AssertionControllerOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x AssertionControllerOriginIndexKey) id() uint32            { return 2 }
+func (x AssertionControllerOriginIndexKey) values() []interface{} { return x.vs }
+func (x AssertionControllerOriginIndexKey) assertionIndexKey()    {}
+
+func (this AssertionControllerOriginIndexKey) WithController(controller string) AssertionControllerOriginIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this AssertionControllerOriginIndexKey) WithControllerOrigin(controller string, origin string) AssertionControllerOriginIndexKey {
+	this.vs = []interface{}{controller, origin}
+	return this
+}
+
+type AssertionControllerCredentialLabelIndexKey struct {
+	vs []interface{}
+}
+
+func (x AssertionControllerCredentialLabelIndexKey) id() uint32            { return 3 }
+func (x AssertionControllerCredentialLabelIndexKey) values() []interface{} { return x.vs }
+func (x AssertionControllerCredentialLabelIndexKey) assertionIndexKey()    {}
+
+func (this AssertionControllerCredentialLabelIndexKey) WithController(controller string) AssertionControllerCredentialLabelIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this AssertionControllerCredentialLabelIndexKey) WithControllerCredentialLabel(controller string, credential_label string) AssertionControllerCredentialLabelIndexKey {
+	this.vs = []interface{}{controller, credential_label}
+	return this
+}
+
 type assertionTable struct {
 	table ormtable.Table
 }
@@ -84,6 +147,72 @@ func (this assertionTable) Has(ctx context.Context, id string) (found bool, err 
 func (this assertionTable) Get(ctx context.Context, id string) (*Assertion, error) {
 	var assertion Assertion
 	found, err := this.table.PrimaryKey().Get(ctx, &assertion, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &assertion, nil
+}
+
+func (this assertionTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
+		origin,
+	)
+}
+
+func (this assertionTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Assertion, error) {
+	var assertion Assertion
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &assertion,
+		subject,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &assertion, nil
+}
+
+func (this assertionTable) HasByControllerOrigin(ctx context.Context, controller string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		origin,
+	)
+}
+
+func (this assertionTable) GetByControllerOrigin(ctx context.Context, controller string, origin string) (*Assertion, error) {
+	var assertion Assertion
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &assertion,
+		controller,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &assertion, nil
+}
+
+func (this assertionTable) HasByControllerCredentialLabel(ctx context.Context, controller string, credential_label string) (found bool, err error) {
+	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		credential_label,
+	)
+}
+
+func (this assertionTable) GetByControllerCredentialLabel(ctx context.Context, controller string, credential_label string) (*Assertion, error) {
+	var assertion Assertion
+	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &assertion,
+		controller,
+		credential_label,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -134,6 +263,9 @@ type AttestationTable interface {
 	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
 	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Attestation, error)
+	HasByControllerOrigin(ctx context.Context, controller string, origin string) (found bool, err error)
+	// GetByControllerOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerOrigin(ctx context.Context, controller string, origin string) (*Attestation, error)
 	List(ctx context.Context, prefixKey AttestationIndexKey, opts ...ormlist.Option) (AttestationIterator, error)
 	ListRange(ctx context.Context, from, to AttestationIndexKey, opts ...ormlist.Option) (AttestationIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AttestationIndexKey) error
@@ -189,6 +321,24 @@ func (this AttestationSubjectOriginIndexKey) WithSubject(subject string) Attesta
 
 func (this AttestationSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) AttestationSubjectOriginIndexKey {
 	this.vs = []interface{}{subject, origin}
+	return this
+}
+
+type AttestationControllerOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x AttestationControllerOriginIndexKey) id() uint32            { return 2 }
+func (x AttestationControllerOriginIndexKey) values() []interface{} { return x.vs }
+func (x AttestationControllerOriginIndexKey) attestationIndexKey()  {}
+
+func (this AttestationControllerOriginIndexKey) WithController(controller string) AttestationControllerOriginIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this AttestationControllerOriginIndexKey) WithControllerOrigin(controller string, origin string) AttestationControllerOriginIndexKey {
+	this.vs = []interface{}{controller, origin}
 	return this
 }
 
@@ -250,6 +400,28 @@ func (this attestationTable) GetBySubjectOrigin(ctx context.Context, subject str
 	return &attestation, nil
 }
 
+func (this attestationTable) HasByControllerOrigin(ctx context.Context, controller string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		origin,
+	)
+}
+
+func (this attestationTable) GetByControllerOrigin(ctx context.Context, controller string, origin string) (*Attestation, error) {
+	var attestation Attestation
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &attestation,
+		controller,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &attestation, nil
+}
+
 func (this attestationTable) List(ctx context.Context, prefixKey AttestationIndexKey, opts ...ormlist.Option) (AttestationIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
 	return AttestationIterator{it}, err
@@ -288,6 +460,12 @@ type ControllerTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Controller, error)
+	HasByAddress(ctx context.Context, address string) (found bool, err error)
+	// GetByAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAddress(ctx context.Context, address string) (*Controller, error)
+	HasByVaultCid(ctx context.Context, vault_cid string) (found bool, err error)
+	// GetByVaultCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByVaultCid(ctx context.Context, vault_cid string) (*Controller, error)
 	List(ctx context.Context, prefixKey ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	ListRange(ctx context.Context, from, to ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ControllerIndexKey) error
@@ -328,6 +506,32 @@ func (this ControllerIdIndexKey) WithId(id string) ControllerIdIndexKey {
 	return this
 }
 
+type ControllerAddressIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerAddressIndexKey) id() uint32            { return 1 }
+func (x ControllerAddressIndexKey) values() []interface{} { return x.vs }
+func (x ControllerAddressIndexKey) controllerIndexKey()   {}
+
+func (this ControllerAddressIndexKey) WithAddress(address string) ControllerAddressIndexKey {
+	this.vs = []interface{}{address}
+	return this
+}
+
+type ControllerVaultCidIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerVaultCidIndexKey) id() uint32            { return 2 }
+func (x ControllerVaultCidIndexKey) values() []interface{} { return x.vs }
+func (x ControllerVaultCidIndexKey) controllerIndexKey()   {}
+
+func (this ControllerVaultCidIndexKey) WithVaultCid(vault_cid string) ControllerVaultCidIndexKey {
+	this.vs = []interface{}{vault_cid}
+	return this
+}
+
 type controllerTable struct {
 	table ormtable.Table
 }
@@ -355,6 +559,46 @@ func (this controllerTable) Has(ctx context.Context, id string) (found bool, err
 func (this controllerTable) Get(ctx context.Context, id string) (*Controller, error) {
 	var controller Controller
 	found, err := this.table.PrimaryKey().Get(ctx, &controller, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByAddress(ctx context.Context, address string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		address,
+	)
+}
+
+func (this controllerTable) GetByAddress(ctx context.Context, address string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &controller,
+		address,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByVaultCid(ctx context.Context, vault_cid string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		vault_cid,
+	)
+}
+
+func (this controllerTable) GetByVaultCid(ctx context.Context, vault_cid string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &controller,
+		vault_cid,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -402,6 +646,12 @@ type DelegationTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Delegation, error)
+	HasByAccountAddressChainId(ctx context.Context, account_address string, chain_id string) (found bool, err error)
+	// GetByAccountAddressChainId returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAccountAddressChainId(ctx context.Context, account_address string, chain_id string) (*Delegation, error)
+	HasByControllerAccountLabel(ctx context.Context, controller string, account_label string) (found bool, err error)
+	// GetByControllerAccountLabel returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerAccountLabel(ctx context.Context, controller string, account_label string) (*Delegation, error)
 	List(ctx context.Context, prefixKey DelegationIndexKey, opts ...ormlist.Option) (DelegationIterator, error)
 	ListRange(ctx context.Context, from, to DelegationIndexKey, opts ...ormlist.Option) (DelegationIterator, error)
 	DeleteBy(ctx context.Context, prefixKey DelegationIndexKey) error
@@ -442,6 +692,60 @@ func (this DelegationIdIndexKey) WithId(id string) DelegationIdIndexKey {
 	return this
 }
 
+type DelegationAccountAddressChainIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x DelegationAccountAddressChainIdIndexKey) id() uint32            { return 1 }
+func (x DelegationAccountAddressChainIdIndexKey) values() []interface{} { return x.vs }
+func (x DelegationAccountAddressChainIdIndexKey) delegationIndexKey()   {}
+
+func (this DelegationAccountAddressChainIdIndexKey) WithAccountAddress(account_address string) DelegationAccountAddressChainIdIndexKey {
+	this.vs = []interface{}{account_address}
+	return this
+}
+
+func (this DelegationAccountAddressChainIdIndexKey) WithAccountAddressChainId(account_address string, chain_id string) DelegationAccountAddressChainIdIndexKey {
+	this.vs = []interface{}{account_address, chain_id}
+	return this
+}
+
+type DelegationControllerAccountLabelIndexKey struct {
+	vs []interface{}
+}
+
+func (x DelegationControllerAccountLabelIndexKey) id() uint32            { return 2 }
+func (x DelegationControllerAccountLabelIndexKey) values() []interface{} { return x.vs }
+func (x DelegationControllerAccountLabelIndexKey) delegationIndexKey()   {}
+
+func (this DelegationControllerAccountLabelIndexKey) WithController(controller string) DelegationControllerAccountLabelIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this DelegationControllerAccountLabelIndexKey) WithControllerAccountLabel(controller string, account_label string) DelegationControllerAccountLabelIndexKey {
+	this.vs = []interface{}{controller, account_label}
+	return this
+}
+
+type DelegationControllerChainIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x DelegationControllerChainIdIndexKey) id() uint32            { return 3 }
+func (x DelegationControllerChainIdIndexKey) values() []interface{} { return x.vs }
+func (x DelegationControllerChainIdIndexKey) delegationIndexKey()   {}
+
+func (this DelegationControllerChainIdIndexKey) WithController(controller string) DelegationControllerChainIdIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this DelegationControllerChainIdIndexKey) WithControllerChainId(controller string, chain_id string) DelegationControllerChainIdIndexKey {
+	this.vs = []interface{}{controller, chain_id}
+	return this
+}
+
 type delegationTable struct {
 	table ormtable.Table
 }
@@ -469,6 +773,50 @@ func (this delegationTable) Has(ctx context.Context, id string) (found bool, err
 func (this delegationTable) Get(ctx context.Context, id string) (*Delegation, error) {
 	var delegation Delegation
 	found, err := this.table.PrimaryKey().Get(ctx, &delegation, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &delegation, nil
+}
+
+func (this delegationTable) HasByAccountAddressChainId(ctx context.Context, account_address string, chain_id string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		account_address,
+		chain_id,
+	)
+}
+
+func (this delegationTable) GetByAccountAddressChainId(ctx context.Context, account_address string, chain_id string) (*Delegation, error) {
+	var delegation Delegation
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &delegation,
+		account_address,
+		chain_id,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &delegation, nil
+}
+
+func (this delegationTable) HasByControllerAccountLabel(ctx context.Context, controller string, account_label string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		account_label,
+	)
+}
+
+func (this delegationTable) GetByControllerAccountLabel(ctx context.Context, controller string, account_label string) (*Delegation, error) {
+	var delegation Delegation
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &delegation,
+		controller,
+		account_label,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -508,118 +856,197 @@ func NewDelegationTable(db ormtable.Schema) (DelegationTable, error) {
 	return delegationTable{table}, nil
 }
 
-type ServiceTable interface {
-	Insert(ctx context.Context, service *Service) error
-	Update(ctx context.Context, service *Service) error
-	Save(ctx context.Context, service *Service) error
-	Delete(ctx context.Context, service *Service) error
+type ServiceRecordTable interface {
+	Insert(ctx context.Context, serviceRecord *ServiceRecord) error
+	Update(ctx context.Context, serviceRecord *ServiceRecord) error
+	Save(ctx context.Context, serviceRecord *ServiceRecord) error
+	Delete(ctx context.Context, serviceRecord *ServiceRecord) error
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Service, error)
-	List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
-	ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error
-	DeleteRange(ctx context.Context, from, to ServiceIndexKey) error
+	Get(ctx context.Context, id string) (*ServiceRecord, error)
+	HasByOriginUri(ctx context.Context, origin_uri string) (found bool, err error)
+	// GetByOriginUri returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByOriginUri(ctx context.Context, origin_uri string) (*ServiceRecord, error)
+	HasByControllerOriginUri(ctx context.Context, controller string, origin_uri string) (found bool, err error)
+	// GetByControllerOriginUri returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerOriginUri(ctx context.Context, controller string, origin_uri string) (*ServiceRecord, error)
+	List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
+	ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error
+	DeleteRange(ctx context.Context, from, to ServiceRecordIndexKey) error
 
 	doNotImplement()
 }
 
-type ServiceIterator struct {
+type ServiceRecordIterator struct {
 	ormtable.Iterator
 }
 
-func (i ServiceIterator) Value() (*Service, error) {
-	var service Service
-	err := i.UnmarshalMessage(&service)
-	return &service, err
+func (i ServiceRecordIterator) Value() (*ServiceRecord, error) {
+	var serviceRecord ServiceRecord
+	err := i.UnmarshalMessage(&serviceRecord)
+	return &serviceRecord, err
 }
 
-type ServiceIndexKey interface {
+type ServiceRecordIndexKey interface {
 	id() uint32
 	values() []interface{}
-	serviceIndexKey()
+	serviceRecordIndexKey()
 }
 
 // primary key starting index..
-type ServicePrimaryKey = ServiceIdIndexKey
+type ServiceRecordPrimaryKey = ServiceRecordIdIndexKey
 
-type ServiceIdIndexKey struct {
+type ServiceRecordIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x ServiceIdIndexKey) id() uint32            { return 0 }
-func (x ServiceIdIndexKey) values() []interface{} { return x.vs }
-func (x ServiceIdIndexKey) serviceIndexKey()      {}
+func (x ServiceRecordIdIndexKey) id() uint32             { return 0 }
+func (x ServiceRecordIdIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordIdIndexKey) serviceRecordIndexKey() {}
 
-func (this ServiceIdIndexKey) WithId(id string) ServiceIdIndexKey {
+func (this ServiceRecordIdIndexKey) WithId(id string) ServiceRecordIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type serviceTable struct {
+type ServiceRecordOriginUriIndexKey struct {
+	vs []interface{}
+}
+
+func (x ServiceRecordOriginUriIndexKey) id() uint32             { return 1 }
+func (x ServiceRecordOriginUriIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordOriginUriIndexKey) serviceRecordIndexKey() {}
+
+func (this ServiceRecordOriginUriIndexKey) WithOriginUri(origin_uri string) ServiceRecordOriginUriIndexKey {
+	this.vs = []interface{}{origin_uri}
+	return this
+}
+
+type ServiceRecordControllerOriginUriIndexKey struct {
+	vs []interface{}
+}
+
+func (x ServiceRecordControllerOriginUriIndexKey) id() uint32             { return 2 }
+func (x ServiceRecordControllerOriginUriIndexKey) values() []interface{}  { return x.vs }
+func (x ServiceRecordControllerOriginUriIndexKey) serviceRecordIndexKey() {}
+
+func (this ServiceRecordControllerOriginUriIndexKey) WithController(controller string) ServiceRecordControllerOriginUriIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this ServiceRecordControllerOriginUriIndexKey) WithControllerOriginUri(controller string, origin_uri string) ServiceRecordControllerOriginUriIndexKey {
+	this.vs = []interface{}{controller, origin_uri}
+	return this
+}
+
+type serviceRecordTable struct {
 	table ormtable.Table
 }
 
-func (this serviceTable) Insert(ctx context.Context, service *Service) error {
-	return this.table.Insert(ctx, service)
+func (this serviceRecordTable) Insert(ctx context.Context, serviceRecord *ServiceRecord) error {
+	return this.table.Insert(ctx, serviceRecord)
 }
 
-func (this serviceTable) Update(ctx context.Context, service *Service) error {
-	return this.table.Update(ctx, service)
+func (this serviceRecordTable) Update(ctx context.Context, serviceRecord *ServiceRecord) error {
+	return this.table.Update(ctx, serviceRecord)
 }
 
-func (this serviceTable) Save(ctx context.Context, service *Service) error {
-	return this.table.Save(ctx, service)
+func (this serviceRecordTable) Save(ctx context.Context, serviceRecord *ServiceRecord) error {
+	return this.table.Save(ctx, serviceRecord)
 }
 
-func (this serviceTable) Delete(ctx context.Context, service *Service) error {
-	return this.table.Delete(ctx, service)
+func (this serviceRecordTable) Delete(ctx context.Context, serviceRecord *ServiceRecord) error {
+	return this.table.Delete(ctx, serviceRecord)
 }
 
-func (this serviceTable) Has(ctx context.Context, id string) (found bool, err error) {
+func (this serviceRecordTable) Has(ctx context.Context, id string) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this serviceTable) Get(ctx context.Context, id string) (*Service, error) {
-	var service Service
-	found, err := this.table.PrimaryKey().Get(ctx, &service, id)
+func (this serviceRecordTable) Get(ctx context.Context, id string) (*ServiceRecord, error) {
+	var serviceRecord ServiceRecord
+	found, err := this.table.PrimaryKey().Get(ctx, &serviceRecord, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &service, nil
+	return &serviceRecord, nil
 }
 
-func (this serviceTable) List(ctx context.Context, prefixKey ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
+func (this serviceRecordTable) HasByOriginUri(ctx context.Context, origin_uri string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		origin_uri,
+	)
+}
+
+func (this serviceRecordTable) GetByOriginUri(ctx context.Context, origin_uri string) (*ServiceRecord, error) {
+	var serviceRecord ServiceRecord
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
+		origin_uri,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &serviceRecord, nil
+}
+
+func (this serviceRecordTable) HasByControllerOriginUri(ctx context.Context, controller string, origin_uri string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		origin_uri,
+	)
+}
+
+func (this serviceRecordTable) GetByControllerOriginUri(ctx context.Context, controller string, origin_uri string) (*ServiceRecord, error) {
+	var serviceRecord ServiceRecord
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &serviceRecord,
+		controller,
+		origin_uri,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &serviceRecord, nil
+}
+
+func (this serviceRecordTable) List(ctx context.Context, prefixKey ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ServiceIterator{it}, err
+	return ServiceRecordIterator{it}, err
 }
 
-func (this serviceTable) ListRange(ctx context.Context, from, to ServiceIndexKey, opts ...ormlist.Option) (ServiceIterator, error) {
+func (this serviceRecordTable) ListRange(ctx context.Context, from, to ServiceRecordIndexKey, opts ...ormlist.Option) (ServiceRecordIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ServiceIterator{it}, err
+	return ServiceRecordIterator{it}, err
 }
 
-func (this serviceTable) DeleteBy(ctx context.Context, prefixKey ServiceIndexKey) error {
+func (this serviceRecordTable) DeleteBy(ctx context.Context, prefixKey ServiceRecordIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this serviceTable) DeleteRange(ctx context.Context, from, to ServiceIndexKey) error {
+func (this serviceRecordTable) DeleteRange(ctx context.Context, from, to ServiceRecordIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this serviceTable) doNotImplement() {}
+func (this serviceRecordTable) doNotImplement() {}
 
-var _ ServiceTable = serviceTable{}
+var _ ServiceRecordTable = serviceRecordTable{}
 
-func NewServiceTable(db ormtable.Schema) (ServiceTable, error) {
-	table := db.GetTable(&Service{})
+func NewServiceRecordTable(db ormtable.Schema) (ServiceRecordTable, error) {
+	table := db.GetTable(&ServiceRecord{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Service{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&ServiceRecord{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return serviceTable{table}, nil
+	return serviceRecordTable{table}, nil
 }
 
 type StateStore interface {
@@ -627,17 +1054,17 @@ type StateStore interface {
 	AttestationTable() AttestationTable
 	ControllerTable() ControllerTable
 	DelegationTable() DelegationTable
-	ServiceTable() ServiceTable
+	ServiceRecordTable() ServiceRecordTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	assertion   AssertionTable
-	attestation AttestationTable
-	controller  ControllerTable
-	delegation  DelegationTable
-	service     ServiceTable
+	assertion     AssertionTable
+	attestation   AttestationTable
+	controller    ControllerTable
+	delegation    DelegationTable
+	serviceRecord ServiceRecordTable
 }
 
 func (x stateStore) AssertionTable() AssertionTable {
@@ -656,8 +1083,8 @@ func (x stateStore) DelegationTable() DelegationTable {
 	return x.delegation
 }
 
-func (x stateStore) ServiceTable() ServiceTable {
-	return x.service
+func (x stateStore) ServiceRecordTable() ServiceRecordTable {
+	return x.serviceRecord
 }
 
 func (stateStore) doNotImplement() {}
@@ -685,7 +1112,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		return nil, err
 	}
 
-	serviceTable, err := NewServiceTable(db)
+	serviceRecordTable, err := NewServiceRecordTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -695,6 +1122,6 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 		attestationTable,
 		controllerTable,
 		delegationTable,
-		serviceTable,
+		serviceRecordTable,
 	}, nil
 }

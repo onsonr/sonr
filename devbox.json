@@ -1,16 +1,30 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["go@1.21", "air@latest"],
+  "packages": [
+    "go@1.22",
+    "templ@latest",
+    "commitizen@latest",
+    "goreleaser@latest",
+    "go-task@latest"
+  ],
   "env": {
     "GOPATH": "$HOME/go",
-    "PATH": "$HOME/go/bin:$PATH"
+    "PATH": "$HOME/go/bin:$PATH",
+    "CHAIN_ID": "sonr-testnet-1",
+    "DENOM": "usnr",
+    "KEYRING": "test",
+    "MONIKER": "florence",
+    "MIN_GAS_PRICES": "0.0001usnr"
   },
   "shell": {
     "scripts": {
       "init": ["make install", "sonrd init"],
-      "proto": ["make proto-gen"],
+      "gen": ["make proto-gen", "make vault", "make templ"],
       "build": ["make build", "make local-image"],
-      "testnet": ["make sh-testnet"]
+      "testnet": ["make install", "make sh-testnet"],
+      "icnet": ["make install", "make testnet"],
+      "explorer": ["make explorer"],
+      "release": ["cz bump --yes", "goreleaser release --clean --dry-run"]
     }
   }
 }

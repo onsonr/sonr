@@ -1,0 +1,48 @@
+name: Publish VM Image
+
+on:
+  push:
+    branches: [master, develop, feature/*]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  GO_VERSION: 1.22
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  release-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      # all lowercase ghcr registry
+      - run: |
+          DOCKER_REGISTRY=`echo "${{ env.REGISTRY }}/${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
+          echo "DOCKER_REGISTRY=$DOCKER_REGISTRY" >> $GITHUB_ENV
+
+          REPO_NAME=`echo "${{ github.repository }}" | awk -F'/' '{print $2}' | tr '[:upper:]' '[:lower:]'`
+          echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
+
+      - name: Parse tag
+        id: tag
+        run: |
+          # v0.0.1
+          VERSION=$(echo ${{ github.ref_name }} | sed "s/v//")
+          # 0.0.1
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      # build and publish package to ghcr (public) with codebase remaining private
+      - name: Log in to the Container registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
