@@ -1,4 +1,4 @@
-FROM jetpackio/devbox:latest as sonrvm
+FROM jetpackio/devbox:latest AS sonrvm
 
 # Installing your devbox project
 WORKDIR /code

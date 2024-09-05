@@ -5,7 +5,8 @@
     "templ@latest",
     "commitizen@latest",
     "goreleaser@latest",
-    "go-task@latest"
+    "go-task@latest",
+    "bun@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
@@ -22,7 +23,8 @@
       "gen": ["make proto-gen", "make vault", "make templ"],
       "build": ["make build", "make local-image"],
       "testnet": ["make install", "make sh-testnet"],
-      "explorer": ["make explorer"]
+      "explorer": ["make explorer"],
+      "pkl-eval": ["bunx pkl eval ./pkl/msgs.pkl"]
     }
   }
 }
