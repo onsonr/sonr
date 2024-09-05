@@ -1,3 +1,13 @@
+## v0.1.1 (2024-09-05)
+
+### Fix
+
+- **release**: remove unnecessary quotes in tag pattern
+
+### Refactor
+
+- remove unused image building workflow
+
 ## 0.1.0 (2024-09-05)
 
 ### Feat
