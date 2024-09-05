@@ -23,8 +23,7 @@
       "build": ["make build", "make local-image"],
       "testnet": ["make install", "make sh-testnet"],
       "icnet": ["make install", "make testnet"],
-      "explorer": ["make explorer"],
-      "release": ["cz bump --yes", "goreleaser release --clean --dry-run"]
+      "explorer": ["make explorer"]
     }
   }
 }
