@@ -4,5 +4,5 @@ type Builder interface {
 	Build() error
 }
 
-func New() Builder {
+func New() {
 }
