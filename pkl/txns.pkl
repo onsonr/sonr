@@ -23,26 +23,26 @@ class Proposal {
 
 
 /// Gov module messages
-  class MsgGovSubmitProposal extends Msg {
+class MsgGovSubmitProposal extends Msg {
     typeUrl = "/cosmos.gov.v1beta1.MsgSubmitProposal"
     content: Proposal
     initialDeposit: List<Coin>
     proposer: AccAddress
-  }
+}
 
-  class MsgGovVote extends Msg {
+class MsgGovVote extends Msg {
     typeUrl = "/cosmos.gov.v1beta1.MsgVote"
     proposalId: Int
     voter: AccAddress
     option: Int
-  }
+}
 
-  class MsgGovDeposit extends Msg {
+class MsgGovDeposit extends Msg {
     typeUrl = "/cosmos.gov.v1beta1.MsgDeposit"
     proposalId: Int
     depositor: AccAddress
     amount: List<Coin>
-  }
+}
 
 /// Group module messages
   class MsgGroupCreateGroup extends Msg {
