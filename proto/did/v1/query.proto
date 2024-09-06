@@ -52,6 +52,9 @@ message QueryRequest {
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+
+  // ipfs_active returns true if the IPFS client is initialized
+  bool ipfs_active = 2;
 }
 
 // QueryAccountsResponse is the response type for the Query/Exists RPC method.

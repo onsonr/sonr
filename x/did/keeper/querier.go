@@ -5,7 +5,6 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	// "github.com/onsonr/sonr/internal/local"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -28,7 +27,7 @@ func (k Querier) Params(c context.Context, req *types.QueryRequest) (*types.Quer
 		return nil, err
 	}
 
-	return &types.QueryParamsResponse{Params: &p}, nil
+	return &types.QueryParamsResponse{Params: &p, IpfsActive: k.HasIPFSConnection()}, nil
 }
 
 // Accounts implements types.QueryServer.

@@ -10,6 +10,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
+	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/did/v1"
 	"github.com/onsonr/sonr/x/did/types"
@@ -29,7 +30,8 @@ type Keeper struct {
 	AccountKeeper authkeeper.AccountKeeper
 	StakingKeeper *stakkeeper.Keeper
 
-	authority string
+	authority  string
+	ipfsClient *rpc.HttpApi
 }
 
 // NewKeeper creates a new poa Keeper instance
@@ -47,7 +49,11 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ac
 	if err != nil {
 		panic(err)
 	}
+
+	// Initialize IPFS client
+	ipfsClient, _ := rpc.NewLocalApi()
 	k := Keeper{
+		ipfsClient:    ipfsClient,
 		cdc:           cdc,
 		logger:        logger,
 		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
@@ -63,4 +69,9 @@ func NewKeeper(cdc codec.BinaryCodec, storeService storetypes.KVStoreService, ac
 
 	k.Schema = schema
 	return k
+}
+
+// HasIPFSConnection returns true if the IPFS client is initialized
+func (k *Keeper) HasIPFSConnection() bool {
+	return k.ipfsClient != nil
 }
