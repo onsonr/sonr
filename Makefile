@@ -305,17 +305,17 @@ templ:
 	@echo "Generating templ files"
 	templ generate
 
-vault:
+dwn:
+	@echo "Generating go-pkl files"
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/vault.pkl
 	@echo "Building vault.wasm"
-	GOOS=js GOARCH=wasm go build -o ./internal/files/vault.wasm ./cmd/vault/main.go
+	GOOS=js GOARCH=wasm go build -o ./internal/vfs/dwn.wasm ./cmd/dwn/main.go
 
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
 
-.PHONY: explorer
-explorer:
-	docker compose up
 
 help:
 	@echo "Usage: make <target>"

@@ -322,7 +322,7 @@ func RunTUIForm() (*tx.TxBody, error) {
 	return finalM.message, nil
 }
 
-func NewBuildProtoMsgCmd() *cobra.Command {
+func NewTUIDashboardCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "dash",
 		Short: "TUI for managing the local Sonr validator node",

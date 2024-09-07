@@ -2,8 +2,11 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"google.golang.org/genproto/googleapis/api/httpbody"
+	"google.golang.org/grpc/peer"
 
 	"github.com/onsonr/sonr/x/did/types"
 )
@@ -19,43 +22,53 @@ func NewQuerier(keeper Keeper) Querier {
 }
 
 // Params returns the total set of did parameters.
-func (k Querier) Params(c context.Context, req *types.QueryRequest) (*types.QueryParamsResponse, error) {
+func (k Querier) Params(
+	c context.Context,
+	req *types.QueryRequest,
+) (*types.QueryParamsResponse, error) {
 	ctx := sdk.UnwrapSDKContext(c)
 
 	p, err := k.Keeper.Params.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
-
-	return &types.QueryParamsResponse{Params: &p, IpfsActive: k.HasIPFSConnection()}, nil
-}
-
-// Accounts implements types.QueryServer.
-func (k Querier) Accounts(goCtx context.Context, req *types.QueryRequest) (*types.QueryAccountsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryAccountsResponse{}, nil
-}
-
-// Credentials implements types.QueryServer.
-func (k Querier) Credentials(goCtx context.Context, req *types.QueryRequest) (*types.QueryCredentialsResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryCredentialsResponse{}, nil
+	params := p.ActiveParams(k.HasIPFSConnection())
+	return &types.QueryParamsResponse{Params: &params}, nil
 }
 
 // Resolve implements types.QueryServer.
-func (k Querier) Resolve(goCtx context.Context, req *types.QueryRequest) (*types.QueryResolveResponse, error) {
+func (k Querier) Resolve(
+	goCtx context.Context,
+	req *types.QueryRequest,
+) (*types.QueryResolveResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.QueryResolveResponse{}, nil
 }
 
 // Service implements types.QueryServer.
-func (k Querier) Service(goCtx context.Context, req *types.QueryRequest) (*types.QueryServiceResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryServiceResponse{}, nil
+func (k Querier) Service(
+	goCtx context.Context,
+	req *types.QueryRequest,
+) (*types.QueryServiceResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	_, ok := peer.FromContext(goCtx)
+	if !ok {
+		return nil, fmt.Errorf("failed to get peer from context")
+	}
+
+	rec, err := k.OrmDB.ServiceRecordTable().GetByOriginUri(ctx, req.Origin)
+	if err != nil {
+		return nil, err
+	}
+	return &types.QueryServiceResponse{Service: convertServiceRecord(rec)}, nil
 }
 
-// Token implements types.QueryServer.
-func (k Querier) Token(goCtx context.Context, req *types.QueryRequest) (*types.QueryTokenResponse, error) {
+// HTMX implements types.QueryServer.
+func (k Querier) HTMX(goCtx context.Context, req *types.QueryRequest) (*httpbody.HttpBody, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryTokenResponse{}, nil
+	return &httpbody.HttpBody{
+		ContentType: "text/html",
+		Data:        []byte("<html><body>HTMX</body></html>"),
+	}, nil
 }

@@ -4,6 +4,7 @@ package did.v1;
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 import "google/api/annotations.proto";
+import "google/api/httpbody.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
@@ -12,16 +13,6 @@ service Query {
   // Params queries all parameters of the module.
   rpc Params(QueryRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/did/params";
-  }
-
-  // Accounts returns associated wallet accounts with the DID.
-  rpc Accounts(QueryRequest) returns (QueryAccountsResponse) {
-    option (google.api.http).get = "/did/{did}/accounts";
-  }
-
-  // Credentials returns associated credentials with the DID and Service Origin.
-  rpc Credentials(QueryRequest) returns (QueryCredentialsResponse) {
-    option (google.api.http).get = "/service/{origin}/{subject}/credentials";
   }
 
   // Resolve queries the DID document by its id.
@@ -33,11 +24,6 @@ service Query {
   rpc Service(QueryRequest) returns (QueryServiceResponse) {
     option (google.api.http).get = "/service/{origin}";
   }
-
-  // Token returns the current authentication token for the client.
-  rpc Token(QueryRequest) returns (QueryTokenResponse) {
-    option (google.api.http).post = "/token";
-  }
 }
 
 // Queryequest is the request type for the Query/Params RPC method.
@@ -45,46 +31,47 @@ message QueryRequest {
   string did = 1;
   string origin = 2;
   string subject = 3;
-  repeated Credential credentials = 4;
+  string endpoint = 4;
 }
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
-
-  // ipfs_active returns true if the IPFS client is initialized
-  bool ipfs_active = 2;
 }
 
-// QueryAccountsResponse is the response type for the Query/Exists RPC method.
-message QueryAccountsResponse {
-  bool exists = 1;
-}
-
-// QueryCredentialsResponse is the response type for the Query/Exists RPC method.
-message QueryCredentialsResponse {
+// QueryResponse is the response type for the Query/Exists RPC method.
+message QueryResponse {
   bool success = 1;
   string subject = 2;
   string origin = 3;
-  repeated Credential credentials = 4;
-  string error = 5;
+  bool ipfs_active = 4;
+  Params params = 5;
+  Document document = 6;
+  Service service = 7;
+  repeated Credential credentials = 8;
+  Token token = 9;
+  string error = 10;
 }
 
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
 message QueryResolveResponse {
-  // document is the DID document
-  Document document = 1;
+  bool success = 1;
+  string subject = 2;
+  string origin = 3;
+  bool ipfs_active = 4;
+  Params params = 5;
+  Document document = 6;
+  repeated Credential credentials = 7;
+  Token token = 8;
 }
 
 // QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
 message QueryServiceResponse {
-  Service service = 1;
-}
-
-// QueryTokenResponse is the response type for the Query/LoginOptions RPC method.
-message QueryTokenResponse {
   bool success = 1;
-  Token token = 2;
-  string error = 3;
+  string subject = 2;
+  string origin = 3;
+  bool ipfs_active = 4;
+  Params params = 5;
+  Service service = 6;
 }

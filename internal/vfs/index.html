@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sonr Vault</title>
+    <script>
+      navigator.serviceWorker.register({ swPath });
+
+      // Skip installed stage and jump to activating stage
+      addEventListener("install", (event) => {
+        event.waitUntil(skipWaiting());
+      });
+
+      // Start controlling clients as soon as the SW is activated
+      addEventListener("activate", (event) => {
+        event.waitUntil(clients.claim());
+      });
+    </script>
+  </head>
+</html>

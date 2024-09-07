@@ -23,8 +23,8 @@ services:
     command: "start --pruning=nothing"
     restart: always
     networks:
-      - dokploy-network
+      - sonr-network
 
 networks:
-  dokploy-network:
-    external: true
+  sonr-network:
+    name: sonr-network

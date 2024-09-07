@@ -12,7 +12,7 @@ export CHAIN_ID=${CHAIN_ID:-"sonr-testnet-1"}
 export MONIKER="florence"
 export KEYALGO="secp256k1"
 export KEYRING=${KEYRING:-"test"}
-export HOME_DIR=$(eval echo "${HOME_DIR:-"~/.core"}")
+export HOME_DIR=$(eval echo "${HOME_DIR:-"~/.sonr"}")
 export BINARY=${BINARY:-sonrd}
 export DENOM=${DENOM:-usnr}
 

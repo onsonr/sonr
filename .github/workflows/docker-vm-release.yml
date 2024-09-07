@@ -13,6 +13,10 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   release-image:
     runs-on: ubuntu-latest
@@ -23,26 +27,33 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      # all lowercase ghcr registry
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - run: |
           DOCKER_REGISTRY=`echo "${{ env.REGISTRY }}/${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]'`
           echo "DOCKER_REGISTRY=$DOCKER_REGISTRY" >> $GITHUB_ENV
 
           REPO_NAME=`echo "${{ github.repository }}" | awk -F'/' '{print $2}' | tr '[:upper:]' '[:lower:]'`
           echo "REPO_NAME=$REPO_NAME" >> $GITHUB_ENV
-
-      - name: Parse tag
-        id: tag
-        run: |
-          # v0.0.1
-          VERSION=$(echo ${{ github.ref_name }} | sed "s/v//")
-          # 0.0.1
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      # build and publish package to ghcr (public) with codebase remaining private
+      # login to ghcr (public) with codebase remaining private
       - name: Log in to the Container registry
         uses: docker/login-action@v2
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push sonrvm image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          target: sonrvm
+          tags: ghcr.io/${{ github.repository_owner }}/sonrvm:latest
+
+      - name: Build and push sonr-runner image
+        uses: docker/build-push-action@v6
+        with:
+          push: true
+          target: sonr-runner
+          tags: ghcr.io/${{ github.repository_owner }}/sonr-runner:latest

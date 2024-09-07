@@ -18,6 +18,9 @@ aof*
 *.out
 buf.lock
 
+# Exclude embedded files
+!internal/files/dist
+
 # Dependency directories
 node_modules/
 

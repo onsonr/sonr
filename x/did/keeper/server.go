@@ -2,13 +2,14 @@ package keeper
 
 import (
 	"context"
+	"encoding/json"
 
+	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"cosmossdk.io/errors"
-	didv1 "github.com/onsonr/sonr/api/did/v1"
-	"github.com/onsonr/sonr/internal/files"
+	"github.com/onsonr/sonr/x/did/builder"
+	"github.com/onsonr/sonr/x/did/middleware"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -24,62 +25,111 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 }
 
 // UpdateParams updates the x/did module parameters.
-func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
+func (ms msgServer) UpdateParams(
+	ctx context.Context,
+	msg *types.MsgUpdateParams,
+) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+		return nil, errors.Wrapf(
+			govtypes.ErrInvalidSigner,
+			"invalid authority; expected %s, got %s",
+			ms.k.authority,
+			msg.Authority,
+		)
 	}
 
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
 
 // Authorize implements types.MsgServer.
-func (ms msgServer) Authorize(ctx context.Context, msg *types.MsgAuthorize) (*types.MsgAuthorizeResponse, error) {
+func (ms msgServer) Authorize(
+	ctx context.Context,
+	msg *types.MsgAuthorize,
+) (*types.MsgAuthorizeResponse, error) {
 	if ms.k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
+		return nil, errors.Wrapf(
+			govtypes.ErrInvalidSigner,
+			"invalid authority; expected %s, got %s",
+			ms.k.authority,
+			msg.Authority,
+		)
 	}
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgAuthorizeResponse{}, nil
 }
 
 // AllocateVault implements types.MsgServer.
-func (ms msgServer) AllocateVault(goCtx context.Context, msg *types.MsgAllocateVault) (*types.MsgAllocateVaultResponse, error) {
-	//	ctx := sdk.UnwrapSDKContext(goCtx)
-	err := files.Assemble("/tmp/sonr-testnet-1/vaults/0")
+func (ms msgServer) AllocateVault(
+	goCtx context.Context,
+	msg *types.MsgAllocateVault,
+) (*types.MsgAllocateVaultResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	clientInfo, err := middleware.ExtractClientInfo(goCtx)
 	if err != nil {
 		return nil, err
 	}
-	return &types.MsgAllocateVaultResponse{}, nil
+
+	// 1.Check if the service origin is valid
+	if ms.k.IsValidServiceOrigin(ctx, msg.Origin, clientInfo) {
+		return nil, types.ErrInvalidServiceOrigin
+	}
+
+	cid, expiryBlock, err := ms.k.assembleInitialVault(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	regOpts, err := builder.NewRegistrationOptions(msg.Origin, msg.Subject, cid, ms.k.GetParams(ctx))
+	if err != nil {
+		return nil, err
+	}
+
+	// Convert to string
+	regOptsJSON, err := json.Marshal(regOpts)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.MsgAllocateVaultResponse{
+		ExpiryBlock:         expiryBlock,
+		Cid:                 cid,
+		RegistrationOptions: string(regOptsJSON),
+	}, nil
 }
 
 // RegisterController implements types.MsgServer.
-func (ms msgServer) RegisterController(goCtx context.Context, msg *types.MsgRegisterController) (*types.MsgRegisterControllerResponse, error) {
-	if ms.k.authority != msg.Authority {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Authority)
-	}
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	svc := didv1.ServiceRecord{
-		Controller: msg.Authority,
-	}
-	ms.k.OrmDB.ServiceRecordTable().Insert(ctx, &svc)
+func (ms msgServer) RegisterController(
+	goCtx context.Context,
+	msg *types.MsgRegisterController,
+) (*types.MsgRegisterControllerResponse, error) {
+	_ = sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgRegisterControllerResponse{}, nil
 }
 
 // RegisterService implements types.MsgServer.
-func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
-	if ms.k.authority != msg.Controller {
-		return nil, errors.Wrapf(govtypes.ErrInvalidSigner, "invalid authority; expected %s, got %s", ms.k.authority, msg.Controller)
+func (ms msgServer) RegisterService(
+	goCtx context.Context,
+	msg *types.MsgRegisterService,
+) (*types.MsgRegisterServiceResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	clientInfo, err := middleware.ExtractClientInfo(goCtx)
+	if err != nil {
+		return nil, err
 	}
 
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	svc := didv1.ServiceRecord{
-		Controller: msg.Controller,
+	// 1.Check if the service origin is valid
+	if !ms.k.IsValidServiceOrigin(ctx, msg.OriginUri, clientInfo) {
+		return nil, types.ErrInvalidServiceOrigin
 	}
-	ms.k.OrmDB.ServiceRecordTable().Insert(ctx, &svc)
-	return &types.MsgRegisterServiceResponse{}, nil
+	return ms.k.insertService(ctx, msg)
 }
 
 // SyncVault implements types.MsgServer.
-func (ms msgServer) SyncVault(ctx context.Context, msg *types.MsgSyncVault) (*types.MsgSyncVaultResponse, error) {
+func (ms msgServer) SyncVault(
+	ctx context.Context,
+	msg *types.MsgSyncVault,
+) (*types.MsgSyncVaultResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgSyncVaultResponse{}, nil
 }

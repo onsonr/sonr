@@ -9,6 +9,7 @@ import (
 	grpc1 "github.com/cosmos/gogoproto/grpc"
 	proto "github.com/cosmos/gogoproto/proto"
 	_ "google.golang.org/genproto/googleapis/api/annotations"
+	_ "google.golang.org/genproto/googleapis/api/httpbody"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -30,10 +31,10 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
 // Queryequest is the request type for the Query/Params RPC method.
 type QueryRequest struct {
-	Did         string        `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
-	Origin      string        `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	Subject     string        `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
-	Credentials []*Credential `protobuf:"bytes,4,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	Did      string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
+	Origin   string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	Subject  string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
+	Endpoint string `protobuf:"bytes,4,opt,name=endpoint,proto3" json:"endpoint,omitempty"`
 }
 
 func (m *QueryRequest) Reset()         { *m = QueryRequest{} }
@@ -90,19 +91,17 @@ func (m *QueryRequest) GetSubject() string {
 	return ""
 }
 
-func (m *QueryRequest) GetCredentials() []*Credential {
+func (m *QueryRequest) GetEndpoint() string {
 	if m != nil {
-		return m.Credentials
+		return m.Endpoint
 	}
-	return nil
+	return ""
 }
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 type QueryParamsResponse struct {
 	// params defines the parameters of the module.
 	Params *Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params,omitempty"`
-	// ipfs_active returns true if the IPFS client is initialized
-	IpfsActive bool `protobuf:"varint,2,opt,name=ipfs_active,json=ipfsActive,proto3" json:"ipfs_active,omitempty"`
 }
 
 func (m *QueryParamsResponse) Reset()         { *m = QueryParamsResponse{} }
@@ -145,79 +144,32 @@ func (m *QueryParamsResponse) GetParams() *Params {
 	return nil
 }
 
-func (m *QueryParamsResponse) GetIpfsActive() bool {
-	if m != nil {
-		return m.IpfsActive
-	}
-	return false
-}
-
-// QueryAccountsResponse is the response type for the Query/Exists RPC method.
-type QueryAccountsResponse struct {
-	Exists bool `protobuf:"varint,1,opt,name=exists,proto3" json:"exists,omitempty"`
-}
-
-func (m *QueryAccountsResponse) Reset()         { *m = QueryAccountsResponse{} }
-func (m *QueryAccountsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryAccountsResponse) ProtoMessage()    {}
-func (*QueryAccountsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{2}
-}
-func (m *QueryAccountsResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryAccountsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryAccountsResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryAccountsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryAccountsResponse.Merge(m, src)
-}
-func (m *QueryAccountsResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryAccountsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryAccountsResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryAccountsResponse proto.InternalMessageInfo
-
-func (m *QueryAccountsResponse) GetExists() bool {
-	if m != nil {
-		return m.Exists
-	}
-	return false
-}
-
-// QueryCredentialsResponse is the response type for the Query/Exists RPC method.
-type QueryCredentialsResponse struct {
+// QueryResponse is the response type for the Query/Exists RPC method.
+type QueryResponse struct {
 	Success     bool          `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Subject     string        `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
 	Origin      string        `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
-	Credentials []*Credential `protobuf:"bytes,4,rep,name=credentials,proto3" json:"credentials,omitempty"`
-	Error       string        `protobuf:"bytes,5,opt,name=error,proto3" json:"error,omitempty"`
+	IpfsActive  bool          `protobuf:"varint,4,opt,name=ipfs_active,json=ipfsActive,proto3" json:"ipfs_active,omitempty"`
+	Params      *Params       `protobuf:"bytes,5,opt,name=params,proto3" json:"params,omitempty"`
+	Document    *Document     `protobuf:"bytes,6,opt,name=document,proto3" json:"document,omitempty"`
+	Service     *Service      `protobuf:"bytes,7,opt,name=service,proto3" json:"service,omitempty"`
+	Credentials []*Credential `protobuf:"bytes,8,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	Token       *Token        `protobuf:"bytes,9,opt,name=token,proto3" json:"token,omitempty"`
+	Error       string        `protobuf:"bytes,10,opt,name=error,proto3" json:"error,omitempty"`
 }
 
-func (m *QueryCredentialsResponse) Reset()         { *m = QueryCredentialsResponse{} }
-func (m *QueryCredentialsResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryCredentialsResponse) ProtoMessage()    {}
-func (*QueryCredentialsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{3}
+func (m *QueryResponse) Reset()         { *m = QueryResponse{} }
+func (m *QueryResponse) String() string { return proto.CompactTextString(m) }
+func (*QueryResponse) ProtoMessage()    {}
+func (*QueryResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_ae1fa9bb626e2869, []int{2}
 }
-func (m *QueryCredentialsResponse) XXX_Unmarshal(b []byte) error {
+func (m *QueryResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *QueryCredentialsResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *QueryResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_QueryCredentialsResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_QueryResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -227,47 +179,82 @@ func (m *QueryCredentialsResponse) XXX_Marshal(b []byte, deterministic bool) ([]
 		return b[:n], nil
 	}
 }
-func (m *QueryCredentialsResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryCredentialsResponse.Merge(m, src)
+func (m *QueryResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QueryResponse.Merge(m, src)
 }
-func (m *QueryCredentialsResponse) XXX_Size() int {
+func (m *QueryResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *QueryCredentialsResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryCredentialsResponse.DiscardUnknown(m)
+func (m *QueryResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QueryResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_QueryCredentialsResponse proto.InternalMessageInfo
+var xxx_messageInfo_QueryResponse proto.InternalMessageInfo
 
-func (m *QueryCredentialsResponse) GetSuccess() bool {
+func (m *QueryResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *QueryCredentialsResponse) GetSubject() string {
+func (m *QueryResponse) GetSubject() string {
 	if m != nil {
 		return m.Subject
 	}
 	return ""
 }
 
-func (m *QueryCredentialsResponse) GetOrigin() string {
+func (m *QueryResponse) GetOrigin() string {
 	if m != nil {
 		return m.Origin
 	}
 	return ""
 }
 
-func (m *QueryCredentialsResponse) GetCredentials() []*Credential {
+func (m *QueryResponse) GetIpfsActive() bool {
+	if m != nil {
+		return m.IpfsActive
+	}
+	return false
+}
+
+func (m *QueryResponse) GetParams() *Params {
+	if m != nil {
+		return m.Params
+	}
+	return nil
+}
+
+func (m *QueryResponse) GetDocument() *Document {
+	if m != nil {
+		return m.Document
+	}
+	return nil
+}
+
+func (m *QueryResponse) GetService() *Service {
+	if m != nil {
+		return m.Service
+	}
+	return nil
+}
+
+func (m *QueryResponse) GetCredentials() []*Credential {
 	if m != nil {
 		return m.Credentials
 	}
 	return nil
 }
 
-func (m *QueryCredentialsResponse) GetError() string {
+func (m *QueryResponse) GetToken() *Token {
+	if m != nil {
+		return m.Token
+	}
+	return nil
+}
+
+func (m *QueryResponse) GetError() string {
 	if m != nil {
 		return m.Error
 	}
@@ -276,15 +263,21 @@ func (m *QueryCredentialsResponse) GetError() string {
 
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
 type QueryResolveResponse struct {
-	// document is the DID document
-	Document *Document `protobuf:"bytes,1,opt,name=document,proto3" json:"document,omitempty"`
+	Success     bool          `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Subject     string        `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Origin      string        `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
+	IpfsActive  bool          `protobuf:"varint,4,opt,name=ipfs_active,json=ipfsActive,proto3" json:"ipfs_active,omitempty"`
+	Params      *Params       `protobuf:"bytes,5,opt,name=params,proto3" json:"params,omitempty"`
+	Document    *Document     `protobuf:"bytes,6,opt,name=document,proto3" json:"document,omitempty"`
+	Credentials []*Credential `protobuf:"bytes,7,rep,name=credentials,proto3" json:"credentials,omitempty"`
+	Token       *Token        `protobuf:"bytes,8,opt,name=token,proto3" json:"token,omitempty"`
 }
 
 func (m *QueryResolveResponse) Reset()         { *m = QueryResolveResponse{} }
 func (m *QueryResolveResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryResolveResponse) ProtoMessage()    {}
 func (*QueryResolveResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{4}
+	return fileDescriptor_ae1fa9bb626e2869, []int{3}
 }
 func (m *QueryResolveResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -313,6 +306,41 @@ func (m *QueryResolveResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryResolveResponse proto.InternalMessageInfo
 
+func (m *QueryResolveResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *QueryResolveResponse) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *QueryResolveResponse) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *QueryResolveResponse) GetIpfsActive() bool {
+	if m != nil {
+		return m.IpfsActive
+	}
+	return false
+}
+
+func (m *QueryResolveResponse) GetParams() *Params {
+	if m != nil {
+		return m.Params
+	}
+	return nil
+}
+
 func (m *QueryResolveResponse) GetDocument() *Document {
 	if m != nil {
 		return m.Document
@@ -320,16 +348,35 @@ func (m *QueryResolveResponse) GetDocument() *Document {
 	return nil
 }
 
+func (m *QueryResolveResponse) GetCredentials() []*Credential {
+	if m != nil {
+		return m.Credentials
+	}
+	return nil
+}
+
+func (m *QueryResolveResponse) GetToken() *Token {
+	if m != nil {
+		return m.Token
+	}
+	return nil
+}
+
 // QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
 type QueryServiceResponse struct {
-	Service *Service `protobuf:"bytes,1,opt,name=service,proto3" json:"service,omitempty"`
+	Success    bool     `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Subject    string   `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	Origin     string   `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
+	IpfsActive bool     `protobuf:"varint,4,opt,name=ipfs_active,json=ipfsActive,proto3" json:"ipfs_active,omitempty"`
+	Params     *Params  `protobuf:"bytes,5,opt,name=params,proto3" json:"params,omitempty"`
+	Service    *Service `protobuf:"bytes,6,opt,name=service,proto3" json:"service,omitempty"`
 }
 
 func (m *QueryServiceResponse) Reset()         { *m = QueryServiceResponse{} }
 func (m *QueryServiceResponse) String() string { return proto.CompactTextString(m) }
 func (*QueryServiceResponse) ProtoMessage()    {}
 func (*QueryServiceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{5}
+	return fileDescriptor_ae1fa9bb626e2869, []int{4}
 }
 func (m *QueryServiceResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -358,6 +405,41 @@ func (m *QueryServiceResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_QueryServiceResponse proto.InternalMessageInfo
 
+func (m *QueryServiceResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *QueryServiceResponse) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *QueryServiceResponse) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *QueryServiceResponse) GetIpfsActive() bool {
+	if m != nil {
+		return m.IpfsActive
+	}
+	return false
+}
+
+func (m *QueryServiceResponse) GetParams() *Params {
+	if m != nil {
+		return m.Params
+	}
+	return nil
+}
+
 func (m *QueryServiceResponse) GetService() *Service {
 	if m != nil {
 		return m.Service
@@ -365,122 +447,54 @@ func (m *QueryServiceResponse) GetService() *Service {
 	return nil
 }
 
-// QueryTokenResponse is the response type for the Query/LoginOptions RPC method.
-type QueryTokenResponse struct {
-	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Token   *Token `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
-	Error   string `protobuf:"bytes,3,opt,name=error,proto3" json:"error,omitempty"`
-}
-
-func (m *QueryTokenResponse) Reset()         { *m = QueryTokenResponse{} }
-func (m *QueryTokenResponse) String() string { return proto.CompactTextString(m) }
-func (*QueryTokenResponse) ProtoMessage()    {}
-func (*QueryTokenResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{6}
-}
-func (m *QueryTokenResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *QueryTokenResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_QueryTokenResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *QueryTokenResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_QueryTokenResponse.Merge(m, src)
-}
-func (m *QueryTokenResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *QueryTokenResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_QueryTokenResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_QueryTokenResponse proto.InternalMessageInfo
-
-func (m *QueryTokenResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-func (m *QueryTokenResponse) GetToken() *Token {
-	if m != nil {
-		return m.Token
-	}
-	return nil
-}
-
-func (m *QueryTokenResponse) GetError() string {
-	if m != nil {
-		return m.Error
-	}
-	return ""
-}
-
 func init() {
 	proto.RegisterType((*QueryRequest)(nil), "did.v1.QueryRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "did.v1.QueryParamsResponse")
-	proto.RegisterType((*QueryAccountsResponse)(nil), "did.v1.QueryAccountsResponse")
-	proto.RegisterType((*QueryCredentialsResponse)(nil), "did.v1.QueryCredentialsResponse")
+	proto.RegisterType((*QueryResponse)(nil), "did.v1.QueryResponse")
 	proto.RegisterType((*QueryResolveResponse)(nil), "did.v1.QueryResolveResponse")
 	proto.RegisterType((*QueryServiceResponse)(nil), "did.v1.QueryServiceResponse")
-	proto.RegisterType((*QueryTokenResponse)(nil), "did.v1.QueryTokenResponse")
 }
 
 func init() { proto.RegisterFile("did/v1/query.proto", fileDescriptor_ae1fa9bb626e2869) }
 
 var fileDescriptor_ae1fa9bb626e2869 = []byte{
-	// 641 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xc1, 0x4f, 0x13, 0x4f,
-	0x14, 0x66, 0x29, 0xdd, 0xf6, 0xf7, 0x16, 0xf8, 0xe1, 0xb4, 0x90, 0xb5, 0x60, 0x25, 0x63, 0xa2,
-	0x90, 0x98, 0x4e, 0xa8, 0x1e, 0xbd, 0x20, 0x5c, 0xbc, 0xc1, 0xca, 0xc1, 0x18, 0xa3, 0x59, 0x76,
-	0xc7, 0x3a, 0xda, 0xee, 0x94, 0x9d, 0x69, 0x03, 0x21, 0x5c, 0x3c, 0x79, 0x34, 0xf1, 0x8f, 0xf0,
-	0xee, 0x5f, 0xe1, 0x91, 0xc4, 0x8b, 0x47, 0x03, 0xfe, 0x21, 0xa6, 0x6f, 0x67, 0xd8, 0x5d, 0x84,
-	0x84, 0x78, 0x69, 0xfa, 0xbe, 0xf7, 0xde, 0xf7, 0xde, 0xfb, 0xe6, 0x6b, 0x81, 0xc4, 0x22, 0x66,
-	0xe3, 0x0d, 0x76, 0x30, 0xe2, 0xe9, 0x51, 0x67, 0x98, 0x4a, 0x2d, 0x89, 0x1b, 0x8b, 0xb8, 0x33,
-	0xde, 0x68, 0x35, 0x4d, 0xae, 0xc7, 0x13, 0xae, 0x84, 0xca, 0xb2, 0xad, 0x86, 0x41, 0x07, 0x32,
-	0xe6, 0x7d, 0x0b, 0xae, 0xf4, 0xa4, 0xec, 0xf5, 0x39, 0x0b, 0x87, 0x82, 0x85, 0x49, 0x22, 0x75,
-	0xa8, 0x85, 0x4c, 0x4c, 0x96, 0x7e, 0x72, 0x60, 0x76, 0x77, 0x32, 0x20, 0xe0, 0x07, 0x23, 0xae,
-	0x34, 0x59, 0x80, 0x4a, 0x2c, 0x62, 0xdf, 0x59, 0x75, 0xd6, 0xfe, 0x0b, 0x26, 0x5f, 0xc9, 0x12,
-	0xb8, 0x32, 0x15, 0x3d, 0x91, 0xf8, 0xd3, 0x08, 0x9a, 0x88, 0xf8, 0x50, 0x53, 0xa3, 0xfd, 0xf7,
-	0x3c, 0xd2, 0x7e, 0x05, 0x13, 0x36, 0x24, 0x8f, 0xc1, 0x8b, 0x52, 0x1e, 0xf3, 0x44, 0x8b, 0xb0,
-	0xaf, 0xfc, 0x99, 0xd5, 0xca, 0x9a, 0xd7, 0x25, 0x9d, 0x6c, 0xf7, 0xce, 0xd6, 0x45, 0x2a, 0x28,
-	0x96, 0xd1, 0xd7, 0xd0, 0xc0, 0x4d, 0x76, 0xc2, 0x34, 0x1c, 0xa8, 0x80, 0xab, 0xa1, 0x4c, 0x14,
-	0x27, 0xf7, 0xc1, 0x1d, 0x22, 0x82, 0x3b, 0x79, 0xdd, 0x79, 0xcb, 0x63, 0xea, 0x4c, 0x96, 0xdc,
-	0x05, 0x4f, 0x0c, 0xdf, 0xaa, 0x37, 0x61, 0xa4, 0xc5, 0x98, 0xe3, 0xae, 0xf5, 0x00, 0x26, 0xd0,
-	0x26, 0x22, 0x94, 0xc1, 0x22, 0xf2, 0x6f, 0x46, 0x91, 0x1c, 0x25, 0x3a, 0x9f, 0xb0, 0x04, 0x2e,
-	0x3f, 0x14, 0x4a, 0x67, 0x13, 0xea, 0x81, 0x89, 0xe8, 0x37, 0x07, 0x7c, 0xec, 0xc8, 0x37, 0xce,
-	0x9b, 0xf0, 0xfa, 0x28, 0xe2, 0xca, 0x76, 0xd9, 0xb0, 0xa8, 0xcb, 0x74, 0x59, 0x97, 0x5c, 0xc9,
-	0x4a, 0x49, 0xc9, 0x7f, 0xd2, 0x8b, 0x34, 0xa1, 0xca, 0xd3, 0x54, 0xa6, 0x7e, 0x15, 0xc9, 0xb2,
-	0x80, 0x6e, 0x43, 0xd3, 0xbc, 0xa7, 0x92, 0xfd, 0x31, 0xbf, 0xd8, 0xf7, 0x21, 0xd4, 0x63, 0x19,
-	0x8d, 0x06, 0x3c, 0xd1, 0x46, 0xc8, 0x05, 0x3b, 0x60, 0xdb, 0xe0, 0xc1, 0x45, 0x05, 0xdd, 0x34,
-	0x2c, 0xcf, 0x79, 0x3a, 0x16, 0x51, 0xce, 0xb2, 0x0e, 0x35, 0x95, 0x41, 0x86, 0xe4, 0x7f, 0x4b,
-	0x62, 0x2b, 0x6d, 0x9e, 0x0a, 0x20, 0x48, 0xb1, 0x27, 0x3f, 0xf0, 0xe4, 0x06, 0xb2, 0xdd, 0x83,
-	0xaa, 0x9e, 0x94, 0xa2, 0x68, 0x5e, 0x77, 0xce, 0x12, 0x67, 0xfd, 0x59, 0x2e, 0xbf, 0xb9, 0x52,
-	0xb8, 0xb9, 0xfb, 0x75, 0x06, 0xaa, 0x38, 0x8b, 0xec, 0x80, 0x9b, 0xd9, 0x82, 0x34, 0x6d, 0x7f,
-	0xd1, 0xdd, 0xad, 0xe5, 0x12, 0x5a, 0x76, 0x1a, 0x6d, 0x7c, 0xfc, 0xf1, 0xfb, 0xcb, 0xf4, 0x1c,
-	0xf1, 0xd8, 0xe4, 0x77, 0x64, 0x6c, 0xf5, 0x0a, 0xea, 0xd6, 0x30, 0xd7, 0x70, 0xde, 0x29, 0xa1,
-	0x97, 0xdd, 0x45, 0x97, 0x91, 0x75, 0x91, 0x34, 0x90, 0xf5, 0x38, 0x16, 0xf1, 0x09, 0x0b, 0x2d,
-	0xe3, 0x18, 0xbc, 0xad, 0xe2, 0x93, 0x5e, 0x39, 0x60, 0xb5, 0x84, 0x5e, 0x61, 0x46, 0xca, 0x70,
-	0xc6, 0x3a, 0x79, 0xc0, 0x8c, 0xfa, 0xec, 0x38, 0xb3, 0xd6, 0x09, 0x3b, 0x36, 0xe6, 0x3b, 0x61,
-	0x45, 0xef, 0xec, 0x42, 0xcd, 0x18, 0xe4, 0x9a, 0x99, 0x2b, 0x97, 0xd0, 0x92, 0x99, 0x28, 0xc1,
-	0x79, 0xb3, 0x04, 0xf2, 0x9b, 0xc8, 0x0b, 0xa8, 0x19, 0x0f, 0xdc, 0x88, 0xf2, 0x92, 0xb3, 0xe8,
-	0x6d, 0xa4, 0x6c, 0x90, 0x5b, 0x7f, 0x9d, 0x40, 0x9e, 0x41, 0x75, 0x2f, 0x7b, 0xfd, 0x2b, 0x79,
-	0x5b, 0x25, 0xb4, 0x64, 0x37, 0x3a, 0x8f, 0xac, 0x75, 0xea, 0x32, 0xf4, 0xcf, 0xd3, 0x27, 0xdf,
-	0xcf, 0xda, 0xce, 0xe9, 0x59, 0xdb, 0xf9, 0x75, 0xd6, 0x76, 0x3e, 0x9f, 0xb7, 0xa7, 0x4e, 0xcf,
-	0xdb, 0x53, 0x3f, 0xcf, 0xdb, 0x53, 0x2f, 0x69, 0x4f, 0xe8, 0x77, 0xa3, 0xfd, 0x4e, 0x24, 0x07,
-	0x4c, 0x26, 0x4a, 0x26, 0x29, 0xc3, 0x8f, 0x43, 0x3c, 0x51, 0x1f, 0x0d, 0xb9, 0xda, 0x77, 0xf1,
-	0x3f, 0xf3, 0xd1, 0x9f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x17, 0xd1, 0xf9, 0x55, 0x9a, 0x05, 0x00,
-	0x00,
+	// 576 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xdc, 0x54, 0x4d, 0x6f, 0xd3, 0x40,
+	0x10, 0xad, 0x1d, 0x62, 0xbb, 0x93, 0x16, 0xca, 0x26, 0x42, 0x6e, 0xa8, 0x4c, 0x65, 0x24, 0x54,
+	0x24, 0x14, 0xab, 0x85, 0x23, 0x1c, 0xf8, 0xf8, 0x01, 0xad, 0xe1, 0x80, 0xb8, 0x20, 0xc7, 0x3b,
+	0xa4, 0x0b, 0xc9, 0xae, 0xeb, 0xdd, 0x44, 0x54, 0x55, 0x2f, 0x1c, 0x38, 0x23, 0xf1, 0x57, 0xf8,
+	0x11, 0x1c, 0x2b, 0x21, 0x21, 0x8e, 0xa8, 0xe5, 0xcc, 0x6f, 0x40, 0x59, 0xef, 0x06, 0x27, 0x52,
+	0x2b, 0xb8, 0x21, 0x2e, 0x51, 0xe6, 0xbd, 0xe7, 0xd9, 0x37, 0xcf, 0xe3, 0x05, 0x42, 0x19, 0x4d,
+	0x26, 0xdb, 0xc9, 0xc1, 0x18, 0xcb, 0xc3, 0x5e, 0x51, 0x0a, 0x25, 0x88, 0x47, 0x19, 0xed, 0x4d,
+	0xb6, 0xbb, 0x1d, 0xc3, 0x0d, 0x90, 0xa3, 0x64, 0xb2, 0x62, 0xbb, 0x6d, 0x83, 0x8e, 0x04, 0xc5,
+	0xa1, 0x05, 0x37, 0x06, 0x42, 0x0c, 0x86, 0x98, 0x64, 0x05, 0x4b, 0x32, 0xce, 0x85, 0xca, 0x14,
+	0x13, 0xdc, 0xb2, 0xeb, 0x35, 0x76, 0x5f, 0xa9, 0xa2, 0x2f, 0xa8, 0x39, 0x2b, 0xe6, 0xb0, 0xb2,
+	0x37, 0x3d, 0x3a, 0xc5, 0x83, 0x31, 0x4a, 0x45, 0xd6, 0xa0, 0x41, 0x19, 0x0d, 0x9d, 0x4d, 0x67,
+	0x6b, 0x39, 0x9d, 0xfe, 0x25, 0xd7, 0xc0, 0x13, 0x25, 0x1b, 0x30, 0x1e, 0xba, 0x1a, 0x34, 0x15,
+	0x09, 0xc1, 0x97, 0xe3, 0xfe, 0x6b, 0xcc, 0x55, 0xd8, 0xd0, 0x84, 0x2d, 0x49, 0x17, 0x02, 0xe4,
+	0xb4, 0x10, 0x8c, 0xab, 0xf0, 0x92, 0xa6, 0x66, 0x75, 0xfc, 0x00, 0xda, 0xfa, 0xbc, 0xdd, 0xac,
+	0xcc, 0x46, 0x32, 0x45, 0x59, 0x08, 0x2e, 0x91, 0xdc, 0x02, 0xaf, 0xd0, 0x88, 0x3e, 0xb9, 0xb5,
+	0x73, 0xb9, 0x57, 0x65, 0xd0, 0x33, 0x3a, 0xc3, 0xc6, 0x3f, 0x5d, 0x58, 0x35, 0x7e, 0xcd, 0x93,
+	0xda, 0x46, 0x9e, 0xa3, 0xac, 0x1e, 0x0d, 0x52, 0x5b, 0xd6, 0x0d, 0xba, 0xf3, 0x06, 0x7f, 0x8f,
+	0xd4, 0x98, 0x1b, 0xe9, 0x06, 0xb4, 0x58, 0xf1, 0x4a, 0xbe, 0xcc, 0x72, 0xc5, 0x26, 0xa8, 0xbd,
+	0x07, 0x29, 0x4c, 0xa1, 0x87, 0x1a, 0xa9, 0xd9, 0x6c, 0x5e, 0x64, 0x93, 0xdc, 0x81, 0x80, 0x8a,
+	0x7c, 0x3c, 0x42, 0xae, 0x42, 0x4f, 0x2b, 0xd7, 0xac, 0xf2, 0x89, 0xc1, 0xd3, 0x99, 0x82, 0xdc,
+	0x06, 0x5f, 0x62, 0x39, 0x61, 0x39, 0x86, 0xbe, 0x16, 0x5f, 0xb1, 0xe2, 0xa7, 0x15, 0x9c, 0x5a,
+	0x9e, 0xdc, 0x83, 0x56, 0x5e, 0x22, 0x45, 0xae, 0x58, 0x36, 0x94, 0x61, 0xb0, 0xd9, 0xd8, 0x6a,
+	0xed, 0x10, 0x2b, 0x7f, 0x3c, 0xa3, 0xd2, 0xba, 0x8c, 0xdc, 0x84, 0xa6, 0x12, 0x6f, 0x90, 0x87,
+	0xcb, 0xba, 0xfd, 0xaa, 0xd5, 0x3f, 0x9b, 0x82, 0x69, 0xc5, 0x91, 0x0e, 0x34, 0xb1, 0x2c, 0x45,
+	0x19, 0x82, 0xce, 0xa4, 0x2a, 0xe2, 0x4f, 0x2e, 0x74, 0x6c, 0xe0, 0x62, 0x38, 0xc1, 0xff, 0x29,
+	0xf7, 0x85, 0x30, 0xfd, 0xbf, 0x0c, 0x33, 0x38, 0x3f, 0xcc, 0xf8, 0xab, 0x63, 0x62, 0xb3, 0x6f,
+	0xf0, 0x9f, 0x8e, 0xad, 0xb6, 0x80, 0xde, 0xc5, 0x0b, 0xb8, 0xf3, 0xde, 0x85, 0xa6, 0x1e, 0x8c,
+	0xec, 0x82, 0x57, 0xb5, 0x21, 0x1d, 0xab, 0xae, 0xdf, 0x24, 0xdd, 0xeb, 0x73, 0xe8, 0xfc, 0xf7,
+	0x1e, 0xb7, 0xdf, 0x7d, 0xf9, 0xf1, 0xd1, 0x5d, 0x25, 0xad, 0x64, 0x7a, 0x9b, 0x19, 0x1b, 0x7b,
+	0xe0, 0x9b, 0x2d, 0x3b, 0xa7, 0xe5, 0xc6, 0x02, 0x3a, 0xb7, 0x91, 0x31, 0xd1, 0x3d, 0x57, 0x08,
+	0xe8, 0x9e, 0x47, 0x94, 0xd1, 0x63, 0xf2, 0x1c, 0x7c, 0x33, 0xc2, 0x1f, 0xb5, 0x5c, 0x78, 0x5b,
+	0xf1, 0xba, 0x6e, 0xd9, 0x26, 0x57, 0x13, 0x33, 0x7f, 0x72, 0x54, 0x65, 0x7f, 0xfc, 0xe8, 0xfe,
+	0xe7, 0xd3, 0xc8, 0x39, 0x39, 0x8d, 0x9c, 0xef, 0xa7, 0x91, 0xf3, 0xe1, 0x2c, 0x5a, 0x3a, 0x39,
+	0x8b, 0x96, 0xbe, 0x9d, 0x45, 0x4b, 0x2f, 0xe2, 0x01, 0x53, 0xfb, 0xe3, 0x7e, 0x2f, 0x17, 0xa3,
+	0x44, 0x70, 0x29, 0x78, 0x99, 0xe8, 0x9f, 0xb7, 0xda, 0x97, 0x3a, 0x2c, 0x50, 0xf6, 0x3d, 0x7d,
+	0xfb, 0xde, 0xfd, 0x15, 0x00, 0x00, 0xff, 0xff, 0xaf, 0xf3, 0x66, 0xb2, 0xff, 0x05, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -497,16 +511,10 @@ const _ = grpc.SupportPackageIsVersion4
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Accounts returns associated wallet accounts with the DID.
-	Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
-	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
 	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
-	// Token returns the current authentication token for the client.
-	Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 }
 
 type queryClient struct {
@@ -520,24 +528,6 @@ func NewQueryClient(cc grpc1.ClientConn) QueryClient {
 func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, "/did.v1.Query/Params", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error) {
-	out := new(QueryAccountsResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/Accounts", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error) {
-	out := new(QueryCredentialsResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/Credentials", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -562,29 +552,14 @@ func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error) {
-	out := new(QueryTokenResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/Token", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // QueryServer is the server API for Query service.
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
-	// Accounts returns associated wallet accounts with the DID.
-	Accounts(context.Context, *QueryRequest) (*QueryAccountsResponse, error)
-	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(context.Context, *QueryRequest) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
 	Service(context.Context, *QueryRequest) (*QueryServiceResponse, error)
-	// Token returns the current authentication token for the client.
-	Token(context.Context, *QueryRequest) (*QueryTokenResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -594,20 +569,11 @@ type UnimplementedQueryServer struct {
 func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (*UnimplementedQueryServer) Accounts(ctx context.Context, req *QueryRequest) (*QueryAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Accounts not implemented")
-}
-func (*UnimplementedQueryServer) Credentials(ctx context.Context, req *QueryRequest) (*QueryCredentialsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Credentials not implemented")
-}
 func (*UnimplementedQueryServer) Resolve(ctx context.Context, req *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
 func (*UnimplementedQueryServer) Service(ctx context.Context, req *QueryRequest) (*QueryServiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
-}
-func (*UnimplementedQueryServer) Token(ctx context.Context, req *QueryRequest) (*QueryTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -628,42 +594,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Accounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Accounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Query/Accounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Accounts(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Credentials(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Query/Credentials",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Credentials(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -704,24 +634,6 @@ func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Token(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Query/Token",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Token(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 var _Query_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "did.v1.Query",
 	HandlerType: (*QueryServer)(nil),
@@ -731,24 +643,12 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Accounts",
-			Handler:    _Query_Accounts_Handler,
-		},
-		{
-			MethodName: "Credentials",
-			Handler:    _Query_Credentials_Handler,
-		},
-		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
 			MethodName: "Service",
 			Handler:    _Query_Service_Handler,
-		},
-		{
-			MethodName: "Token",
-			Handler:    _Query_Token_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -775,19 +675,12 @@ func (m *QueryRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Credentials) > 0 {
-		for iNdEx := len(m.Credentials) - 1; iNdEx >= 0; iNdEx-- {
-			{
-				size, err := m.Credentials[iNdEx].MarshalToSizedBuffer(dAtA[:i])
-				if err != nil {
-					return 0, err
-				}
-				i -= size
-				i = encodeVarintQuery(dAtA, i, uint64(size))
-			}
-			i--
-			dAtA[i] = 0x22
-		}
+	if len(m.Endpoint) > 0 {
+		i -= len(m.Endpoint)
+		copy(dAtA[i:], m.Endpoint)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Endpoint)))
+		i--
+		dAtA[i] = 0x22
 	}
 	if len(m.Subject) > 0 {
 		i -= len(m.Subject)
@@ -833,16 +726,6 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.IpfsActive {
-		i--
-		if m.IpfsActive {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x10
-	}
 	if m.Params != nil {
 		{
 			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
@@ -858,7 +741,7 @@ func (m *QueryParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *QueryAccountsResponse) Marshal() (dAtA []byte, err error) {
+func (m *QueryResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -868,45 +751,12 @@ func (m *QueryAccountsResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *QueryAccountsResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *QueryResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *QueryAccountsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Exists {
-		i--
-		if m.Exists {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryCredentialsResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryCredentialsResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryCredentialsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *QueryResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -916,7 +766,19 @@ func (m *QueryCredentialsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 		copy(dAtA[i:], m.Error)
 		i = encodeVarintQuery(dAtA, i, uint64(len(m.Error)))
 		i--
-		dAtA[i] = 0x2a
+		dAtA[i] = 0x52
+	}
+	if m.Token != nil {
+		{
+			size, err := m.Token.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x4a
 	}
 	if len(m.Credentials) > 0 {
 		for iNdEx := len(m.Credentials) - 1; iNdEx >= 0; iNdEx-- {
@@ -929,8 +791,54 @@ func (m *QueryCredentialsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error
 				i = encodeVarintQuery(dAtA, i, uint64(size))
 			}
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x42
 		}
+	}
+	if m.Service != nil {
+		{
+			size, err := m.Service.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3a
+	}
+	if m.Document != nil {
+		{
+			size, err := m.Document.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.IpfsActive {
+		i--
+		if m.IpfsActive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
 	}
 	if len(m.Origin) > 0 {
 		i -= len(m.Origin)
@@ -979,6 +887,32 @@ func (m *QueryResolveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.Token != nil {
+		{
+			size, err := m.Token.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x42
+	}
+	if len(m.Credentials) > 0 {
+		for iNdEx := len(m.Credentials) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Credentials[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintQuery(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x3a
+		}
+	}
 	if m.Document != nil {
 		{
 			size, err := m.Document.MarshalToSizedBuffer(dAtA[:i])
@@ -989,7 +923,53 @@ func (m *QueryResolveResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x32
+	}
+	if m.Params != nil {
+		{
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.IpfsActive {
+		i--
+		if m.IpfsActive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
 	}
 	return len(dAtA) - i, nil
 }
@@ -1024,47 +1004,41 @@ func (m *QueryServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0xa
+		dAtA[i] = 0x32
 	}
-	return len(dAtA) - i, nil
-}
-
-func (m *QueryTokenResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *QueryTokenResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *QueryTokenResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Error) > 0 {
-		i -= len(m.Error)
-		copy(dAtA[i:], m.Error)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Error)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.Token != nil {
+	if m.Params != nil {
 		{
-			size, err := m.Token.MarshalToSizedBuffer(dAtA[:i])
+			size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 			if err != nil {
 				return 0, err
 			}
 			i -= size
 			i = encodeVarintQuery(dAtA, i, uint64(size))
 		}
+		i--
+		dAtA[i] = 0x2a
+	}
+	if m.IpfsActive {
+		i--
+		if m.IpfsActive {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintQuery(dAtA, i, uint64(len(m.Subject)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1110,11 +1084,9 @@ func (m *QueryRequest) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if len(m.Credentials) > 0 {
-		for _, e := range m.Credentials {
-			l = e.Size()
-			n += 1 + l + sovQuery(uint64(l))
-		}
+	l = len(m.Endpoint)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -1129,25 +1101,10 @@ func (m *QueryParamsResponse) Size() (n int) {
 		l = m.Params.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	if m.IpfsActive {
-		n += 2
-	}
 	return n
 }
 
-func (m *QueryAccountsResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Exists {
-		n += 2
-	}
-	return n
-}
-
-func (m *QueryCredentialsResponse) Size() (n int) {
+func (m *QueryResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1164,11 +1121,30 @@ func (m *QueryCredentialsResponse) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
+	if m.IpfsActive {
+		n += 2
+	}
+	if m.Params != nil {
+		l = m.Params.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Document != nil {
+		l = m.Document.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Service != nil {
+		l = m.Service.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	if len(m.Credentials) > 0 {
 		for _, e := range m.Credentials {
 			l = e.Size()
 			n += 1 + l + sovQuery(uint64(l))
 		}
+	}
+	if m.Token != nil {
+		l = m.Token.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	l = len(m.Error)
 	if l > 0 {
@@ -1183,8 +1159,36 @@ func (m *QueryResolveResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.IpfsActive {
+		n += 2
+	}
+	if m.Params != nil {
+		l = m.Params.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
 	if m.Document != nil {
 		l = m.Document.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if len(m.Credentials) > 0 {
+		for _, e := range m.Credentials {
+			l = e.Size()
+			n += 1 + l + sovQuery(uint64(l))
+		}
+	}
+	if m.Token != nil {
+		l = m.Token.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -1196,28 +1200,26 @@ func (m *QueryServiceResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.Service != nil {
-		l = m.Service.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *QueryTokenResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
 	if m.Success {
 		n += 2
 	}
-	if m.Token != nil {
-		l = m.Token.Size()
+	l = len(m.Subject)
+	if l > 0 {
 		n += 1 + l + sovQuery(uint64(l))
 	}
-	l = len(m.Error)
+	l = len(m.Origin)
 	if l > 0 {
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.IpfsActive {
+		n += 2
+	}
+	if m.Params != nil {
+		l = m.Params.Size()
+		n += 1 + l + sovQuery(uint64(l))
+	}
+	if m.Service != nil {
+		l = m.Service.Size()
 		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
@@ -1356,9 +1358,9 @@ func (m *QueryRequest) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credentials", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Endpoint", wireType)
 			}
-			var msglen int
+			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowQuery
@@ -1368,25 +1370,23 @@ func (m *QueryRequest) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				msglen |= int(b&0x7F) << shift
+				stringLen |= uint64(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if msglen < 0 {
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
 				return ErrInvalidLengthQuery
 			}
-			postIndex := iNdEx + msglen
+			postIndex := iNdEx + intStringLen
 			if postIndex < 0 {
 				return ErrInvalidLengthQuery
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Credentials = append(m.Credentials, &Credential{})
-			if err := m.Credentials[len(m.Credentials)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
+			m.Endpoint = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1474,26 +1474,6 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field IpfsActive", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.IpfsActive = bool(v != 0)
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
@@ -1515,7 +1495,7 @@ func (m *QueryParamsResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *QueryAccountsResponse) Unmarshal(dAtA []byte) error {
+func (m *QueryResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1538,80 +1518,10 @@ func (m *QueryAccountsResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: QueryAccountsResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: QueryResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryAccountsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Exists", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Exists = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryCredentialsResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryCredentialsResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryCredentialsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: QueryResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1699,6 +1609,134 @@ func (m *QueryCredentialsResponse) Unmarshal(dAtA []byte) error {
 			m.Origin = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpfsActive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IpfsActive = bool(v != 0)
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Document == nil {
+				m.Document = &Document{}
+			}
+			if err := m.Document.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Service", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Service == nil {
+				m.Service = &Service{}
+			}
+			if err := m.Service.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Credentials", wireType)
 			}
@@ -1732,7 +1770,43 @@ func (m *QueryCredentialsResponse) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
-		case 5:
+		case 9:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Token == nil {
+				m.Token = &Token{}
+			}
+			if err := m.Token.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 10:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
 			}
@@ -1815,6 +1889,146 @@ func (m *QueryResolveResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpfsActive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IpfsActive = bool(v != 0)
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Document", wireType)
 			}
@@ -1847,6 +2061,76 @@ func (m *QueryResolveResponse) Unmarshal(dAtA []byte) error {
 				m.Document = &Document{}
 			}
 			if err := m.Document.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Credentials", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Credentials = append(m.Credentials, &Credential{})
+			if err := m.Credentials[len(m.Credentials)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Token == nil {
+				m.Token = &Token{}
+			}
+			if err := m.Token.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
 			iNdEx = postIndex
@@ -1901,6 +2185,146 @@ func (m *QueryServiceResponse) Unmarshal(dAtA []byte) error {
 		}
 		switch fieldNum {
 		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field IpfsActive", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.IpfsActive = bool(v != 0)
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Params", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Params == nil {
+				m.Params = &Params{}
+			}
+			if err := m.Params.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 6:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Service", wireType)
 			}
@@ -1935,144 +2359,6 @@ func (m *QueryServiceResponse) Unmarshal(dAtA []byte) error {
 			if err := m.Service.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *QueryTokenResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: QueryTokenResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: QueryTokenResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Success = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Token == nil {
-				m.Token = &Token{}
-			}
-			if err := m.Token.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Error", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Error = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

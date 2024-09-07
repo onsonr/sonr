@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package did.v1;
 
-import "did/v1/constants.proto";
 import "did/v1/genesis.proto";
 import "gogoproto/gogo.proto";
 
@@ -43,6 +42,16 @@ message Document {
   repeated string service = 9;
 }
 
+// JWK represents a JSON Web Key
+message JWK {
+  string kty = 1; // Key Type
+  string crv = 2; // Curve (for EC and OKP keys)
+  string x = 3; // X coordinate (for EC and OKP keys)
+  string y = 4; // Y coordinate (for EC keys)
+  string n = 5; // Modulus (for RSA keys)
+  string e = 6; // Exponent (for RSA keys)
+}
+
 // Metadata defines additional information provided to a did
 message Metadata {
   string origin_uri = 1;
@@ -77,10 +86,10 @@ message PubKey {
   KeyRole role = 1;
   KeyAlgorithm algorithm = 2;
   KeyEncoding encoding = 3;
-  bytes raw = 4;
-  string hex = 5;
-  string multibase = 6;
-  map<string, string> jwk = 7;
+  KeyCurve curve = 4;
+  KeyType key_type = 5;
+  bytes raw = 6;
+  JWK jwk = 7;
 }
 
 // Service defines a Decentralized Service on the Sonr Blockchain
@@ -102,11 +111,11 @@ message Token {
 
 // VerificationMethod defines a verification method
 message VerificationMethod {
-  string id = 1;
-  string controller = 2;
-  DIDNamespace method = 3;
-  PubKey public_key = 4;
-  Service service = 7;
+  DIDNamespace method = 1;
+  string id = 2;
+  string controller = 3;
+  string issuer = 4;
+  PubKey public_key = 5;
 }
 
 // Witness defines a BLS witness

@@ -6,7 +6,8 @@
     "commitizen@latest",
     "goreleaser@latest",
     "go-task@latest",
-    "bun@latest"
+    "bun@latest",
+    "ipfs-cluster@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
@@ -19,12 +20,26 @@
   },
   "shell": {
     "scripts": {
-      "init": ["make install", "sh ./scripts/test_node.sh"],
-      "gen": ["make proto-gen", "make vault", "make templ"],
-      "build": ["make build", "make local-image"],
-      "testnet": ["make install", "make sh-testnet"],
-      "explorer": ["make explorer"],
-      "pkl-eval": ["bunx pkl eval ./pkl/msgs.pkl"]
+      "init": [
+        "make install",
+        "sh ./scripts/test_node.sh"
+      ],
+      "gen": [
+        "make proto-gen",
+        "make templ",
+        "make dwn"
+      ],
+      "build": [
+        "make build",
+        "make local-image"
+      ],
+      "testnet": [
+        "make install",
+        "devbox services up"
+      ],
+      "pkl-eval": [
+        "bunx pkl eval ./pkl/msgs.pkl"
+      ]
     }
   }
 }

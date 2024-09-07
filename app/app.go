@@ -1123,6 +1123,9 @@ func NewChainApp(
 		_ = ctx
 
 	}
+
+	// Start the frontend
+	// go app.ServeFrontend()
 	return app
 }
 

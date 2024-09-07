@@ -8,8 +8,8 @@ import "did/v1/models.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
-message Assertion {
+// Authentication represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
+message Authentication {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
@@ -39,24 +39,30 @@ message Assertion {
   // Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
   PubKey public_key = 3;
 
-  // The value of the linked identifier
-  bytes credential_id = 4;
-
-  // The display label of the attestation
-  string credential_label = 5;
-
   // The origin of the attestation
-  string origin = 6;
+  string origin = 4;
 
   // The subject of the attestation
-  string subject = 7;
+  string subject = 5;
+
+  // The value of the linked identifier
+  bytes credential_id = 6;
+
+  // The credential label
+  string credential_label = 7;
+
+  // The display label of the attestation
+  repeated string credential_transport = 8;
+
+  // The attestationtype of the attestation
+  string attestation_type = 9;
 
   // Metadata is optional additional information about the assertion
-  Metadata metadata = 8;
+  Metadata metadata = 10;
 }
 
-// Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
-message Attestation {
+// Assertion represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
+message Assertion {
   option (cosmos.orm.v1.table) = {
     id: 2
     primary_key: {fields: "id"}

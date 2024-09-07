@@ -4,7 +4,6 @@ package did.v1;
 
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
-import "did/v1/constants.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 import "gogoproto/gogo.proto";
@@ -68,8 +67,8 @@ message MsgAllocateVault {
   // subject is a unique human-defined identifier to associate with the vault.
   string subject = 2;
 
-  // token is the macron token to authenticate the operation.
-  Token token = 3;
+  // origin is the origin of the request in wildcard form.
+  string origin = 3;
 }
 
 // MsgAllocateVaultResponse is the response type for the AllocateVault RPC.
@@ -79,6 +78,9 @@ message MsgAllocateVaultResponse {
 
   // ExpiryBlock is the block number at which the vault will expire.
   int64 expiry_block = 2;
+
+  // RegistrationOptions is a json string of the PublicKeyCredentialCreationOptions for WebAuthn
+  string registration_options = 3;
 }
 
 // MsgProveWitness is the message type for the ProveWitness RPC.

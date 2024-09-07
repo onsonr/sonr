@@ -13,7 +13,7 @@ import (
 
 func main() {
 	rootCmd := NewRootCmd()
-	rootCmd.AddCommand(tui.NewBuildProtoMsgCmd())
+	rootCmd.AddCommand(tui.NewTUIDashboardCmd())
 	// rootCmd.AddCommand(tui.NewExplorerCmd())
 
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {

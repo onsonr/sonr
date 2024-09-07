@@ -19,12 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName      = "/did.v1.Query/Params"
-	Query_Accounts_FullMethodName    = "/did.v1.Query/Accounts"
-	Query_Credentials_FullMethodName = "/did.v1.Query/Credentials"
-	Query_Resolve_FullMethodName     = "/did.v1.Query/Resolve"
-	Query_Service_FullMethodName     = "/did.v1.Query/Service"
-	Query_Token_FullMethodName       = "/did.v1.Query/Token"
+	Query_Params_FullMethodName  = "/did.v1.Query/Params"
+	Query_Resolve_FullMethodName = "/did.v1.Query/Resolve"
+	Query_Service_FullMethodName = "/did.v1.Query/Service"
 )
 
 // QueryClient is the client API for Query service.
@@ -33,16 +30,10 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// Accounts returns associated wallet accounts with the DID.
-	Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error)
-	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
 	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
-	// Token returns the current authentication token for the client.
-	Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error)
 }
 
 type queryClient struct {
@@ -56,24 +47,6 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
 	out := new(QueryParamsResponse)
 	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Accounts(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryAccountsResponse, error) {
-	out := new(QueryAccountsResponse)
-	err := c.cc.Invoke(ctx, Query_Accounts_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Credentials(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryCredentialsResponse, error) {
-	out := new(QueryCredentialsResponse)
-	err := c.cc.Invoke(ctx, Query_Credentials_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,31 +71,16 @@ func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Token(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryTokenResponse, error) {
-	out := new(QueryTokenResponse)
-	err := c.cc.Invoke(ctx, Query_Token_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
-	// Accounts returns associated wallet accounts with the DID.
-	Accounts(context.Context, *QueryRequest) (*QueryAccountsResponse, error)
-	// Credentials returns associated credentials with the DID and Service Origin.
-	Credentials(context.Context, *QueryRequest) (*QueryCredentialsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
 	Service(context.Context, *QueryRequest) (*QueryServiceResponse, error)
-	// Token returns the current authentication token for the client.
-	Token(context.Context, *QueryRequest) (*QueryTokenResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -133,20 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) Accounts(context.Context, *QueryRequest) (*QueryAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Accounts not implemented")
-}
-func (UnimplementedQueryServer) Credentials(context.Context, *QueryRequest) (*QueryCredentialsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Credentials not implemented")
-}
 func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
 func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryServiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
-}
-func (UnimplementedQueryServer) Token(context.Context, *QueryRequest) (*QueryTokenResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Token not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -175,42 +124,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(QueryServer).Params(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Accounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Accounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Accounts_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Accounts(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_Credentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Credentials(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Credentials_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Credentials(ctx, req.(*QueryRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -251,24 +164,6 @@ func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Token_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Token(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Token_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Token(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -281,24 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "Accounts",
-			Handler:    _Query_Accounts_Handler,
-		},
-		{
-			MethodName: "Credentials",
-			Handler:    _Query_Credentials_Handler,
-		},
-		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
 			MethodName: "Service",
 			Handler:    _Query_Service_Handler,
-		},
-		{
-			MethodName: "Token",
-			Handler:    _Query_Token_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

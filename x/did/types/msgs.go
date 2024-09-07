@@ -49,41 +49,6 @@ func (msg *MsgUpdateParams) Validate() error {
 }
 
 //
-// [RegisterController]
-//
-
-// NewMsgRegisterController creates a new instance of MsgRegisterController
-func NewMsgRegisterController(
-	sender sdk.Address,
-) (*MsgRegisterController, error) {
-	return &MsgRegisterController{
-		Authority: sender.String(),
-	}, nil
-}
-
-// Route returns the name of the module
-func (msg MsgRegisterController) Route() string { return ModuleName }
-
-// Type returns the the action
-func (msg MsgRegisterController) Type() string { return "register_controller" }
-
-// GetSignBytes implements the LegacyMsg interface.
-func (msg MsgRegisterController) GetSignBytes() []byte {
-	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
-}
-
-// GetSigners returns the expected signers for a MsgUpdateParams message.
-func (msg *MsgRegisterController) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{addr}
-}
-
-// ValidateBasic does a sanity check on the provided data.
-func (msg *MsgRegisterController) Validate() error {
-	return nil
-}
-
-//
 // [RegisterService]
 //
 
@@ -150,5 +115,40 @@ func (msg *MsgAllocateVault) GetSigners() []sdk.AccAddress {
 
 // Vaalidate does a sanity check on the provided data.
 func (msg *MsgAllocateVault) Validate() error {
+	return nil
+}
+
+//
+// [RegisterController]
+//
+
+// NewMsgRegisterController creates a new instance of MsgRegisterController
+func NewMsgRegisterController(
+	sender sdk.Address,
+) (*MsgRegisterController, error) {
+	return &MsgRegisterController{
+		Authority: sender.String(),
+	}, nil
+}
+
+// Route returns the name of the module
+func (msg MsgRegisterController) Route() string { return ModuleName }
+
+// Type returns the the action
+func (msg MsgRegisterController) Type() string { return "register_controller" }
+
+// GetSignBytes implements the LegacyMsg interface.
+func (msg MsgRegisterController) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message.
+func (msg *MsgRegisterController) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic does a sanity check on the provided data.
+func (msg *MsgRegisterController) Validate() error {
 	return nil
 }
