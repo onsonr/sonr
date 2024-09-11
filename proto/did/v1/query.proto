@@ -4,24 +4,25 @@ package did.v1;
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 import "google/api/annotations.proto";
-import "google/api/httpbody.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
   // Params queries all parameters of the module.
-  rpc Params(QueryRequest) returns (QueryParamsResponse) {
+  rpc Params(QueryRequest) returns (QueryResponse) {
     option (google.api.http).get = "/did/params";
   }
 
   // Resolve queries the DID document by its id.
-  rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
+  rpc Resolve(QueryRequest) returns (QueryResponse) {
     option (google.api.http).get = "/did/{did}";
   }
 
   // Service returns associated ServiceInfo for a given Origin
-  rpc Service(QueryRequest) returns (QueryServiceResponse) {
+  // if the servie is not found, a fingerprint is generated to be used
+  // as a TXT record in DNS. v=sonr, o=origin, p=protocol
+  rpc Service(QueryRequest) returns (QueryResponse) {
     option (google.api.http).get = "/service/{origin}";
   }
 }
@@ -30,48 +31,13 @@ service Query {
 message QueryRequest {
   string did = 1;
   string origin = 2;
-  string subject = 3;
-  string endpoint = 4;
-}
-
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  // params defines the parameters of the module.
-  Params params = 1;
-}
-
-// QueryResponse is the response type for the Query/Exists RPC method.
-message QueryResponse {
-  bool success = 1;
-  string subject = 2;
-  string origin = 3;
-  bool ipfs_active = 4;
-  Params params = 5;
-  Document document = 6;
-  Service service = 7;
-  repeated Credential credentials = 8;
-  Token token = 9;
-  string error = 10;
 }
 
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
-message QueryResolveResponse {
+message QueryResponse {
   bool success = 1;
-  string subject = 2;
-  string origin = 3;
-  bool ipfs_active = 4;
+  string query = 2;
+  Document document = 3;
+  ServiceInfo service = 4;
   Params params = 5;
-  Document document = 6;
-  repeated Credential credentials = 7;
-  Token token = 8;
-}
-
-// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
-message QueryServiceResponse {
-  bool success = 1;
-  string subject = 2;
-  string origin = 3;
-  bool ipfs_active = 4;
-  Params params = 5;
-  Service service = 6;
 }

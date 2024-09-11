@@ -1,0 +1,23 @@
+package views
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gui/elements"
+)
+
+func HomeView(c echo.Context) error {
+	return echoComponentResponse(c, renderHomeView())
+}
+
+templ renderHomeView() {
+	@elements.Layout("Sonr.ID") {
+		@elements.Card(elements.SizeMedium) {
+			@elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading)
+			@elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph)
+			@elements.Spacer()
+			@elements.Button(elements.ButtonVariantPrimary) {
+				@elements.Text("Get Started", elements.TextSizeMedium, elements.TextStyleParagraph)
+			}
+		}
+	}
+}

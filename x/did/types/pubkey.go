@@ -1,14 +1,43 @@
 package types
 
 import (
-	fmt "fmt"
-	"math/big"
+	"encoding/hex"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
-	"github.com/onsonr/crypto/core/curves"
-	"github.com/onsonr/crypto/signatures/ecdsa"
-	"golang.org/x/crypto/sha3"
+	"github.com/mr-tron/base58/base58"
+	"github.com/onsonr/crypto"
 )
+
+var WalletKeyInfo = &KeyInfo{
+	Role:      KeyRole_KEY_ROLE_DELEGATION,
+	Curve:     KeyCurve_KEY_CURVE_SECP256K1,
+	Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
+	Encoding:  KeyEncoding_KEY_ENCODING_HEX,
+	Type:      KeyType_KEY_TYPE_BIP32,
+}
+
+var EthKeyInfo = &KeyInfo{
+	Role:      KeyRole_KEY_ROLE_DELEGATION,
+	Curve:     KeyCurve_KEY_CURVE_KECCAK256,
+	Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
+	Encoding:  KeyEncoding_KEY_ENCODING_HEX,
+	Type:      KeyType_KEY_TYPE_BIP32,
+}
+
+var SonrKeyInfo = &KeyInfo{
+	Role:      KeyRole_KEY_ROLE_INVOCATION,
+	Curve:     KeyCurve_KEY_CURVE_P256,
+	Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
+	Encoding:  KeyEncoding_KEY_ENCODING_HEX,
+	Type:      KeyType_KEY_TYPE_MPC,
+}
+
+var ChainCodeKeyInfos = map[ChainCode]*KeyInfo{
+	ChainCodeBTC: WalletKeyInfo,
+	ChainCodeETH: EthKeyInfo,
+	ChainCodeSNR: SonrKeyInfo,
+	ChainCodeIBC: WalletKeyInfo,
+}
 
 // NewEthPublicKey returns a new ethereum public key
 func NewPublicKey(data []byte, keyInfo *KeyInfo) (*PubKey, error) {
@@ -52,21 +81,12 @@ func (k *PubKey) Clone() cryptotypes.PubKey {
 
 // VerifySignature verifies a signature over the given message
 func (k *PubKey) VerifySignature(msg []byte, sig []byte) bool {
-	pp, err := buildEcPoint(k.Bytes())
+	pk, err := crypto.ComputeEcdsaPublicKey(k.Bytes())
+	sigMpc, err := crypto.DeserializeMPCSignature(sig)
 	if err != nil {
 		return false
 	}
-	sigEd, err := ecdsa.DeserializeSecp256k1Signature(sig)
-	if err != nil {
-		return false
-	}
-	hash := sha3.New256()
-	_, err = hash.Write(msg)
-	if err != nil {
-		return false
-	}
-	digest := hash.Sum(nil)
-	return curves.VerifyEcdsa(pp, digest[:], sigEd)
+	return crypto.VerifyMPCSignature(sigMpc, msg, pk)
 }
 
 // Equals returns true if two public keys are equal
@@ -79,36 +99,43 @@ func (k *PubKey) Equals(k2 cryptotypes.PubKey) bool {
 
 // Type returns the type of the public key
 func (k *PubKey) Type() string {
-	return ""
+	return k.KeyType.String()
 }
 
-// VerifySignature verifies the signature of a message
-func VerifySignature(key []byte, msg []byte, sig []byte) bool {
-	pp, err := buildEcPoint(key)
-	if err != nil {
-		return false
+// DecodePublicKey extracts the public key from the given data
+func (k *KeyInfo) DecodePublicKey(data interface{}) ([]byte, error) {
+	var bz []byte
+	switch v := data.(type) {
+	case string:
+		bz = []byte(v)
+	case []byte:
+		bz = v
+	default:
+		return nil, ErrUnsupportedKeyEncoding
 	}
-	sigEd, err := ecdsa.DeserializeSecp256k1Signature(sig)
-	if err != nil {
-		return false
+
+	if k.Encoding == KeyEncoding_KEY_ENCODING_RAW {
+		return bz, nil
 	}
-	hash := sha3.New256()
-	_, err = hash.Write(msg)
-	if err != nil {
-		return false
+	if k.Encoding == KeyEncoding_KEY_ENCODING_HEX {
+		return hex.DecodeString(string(bz))
 	}
-	digest := hash.Sum(nil)
-	return curves.VerifyEcdsa(pp, digest[:], sigEd)
+	if k.Encoding == KeyEncoding_KEY_ENCODING_MULTIBASE {
+		return base58.Decode(string(bz))
+	}
+	return nil, ErrUnsupportedKeyEncoding
 }
 
-// BuildEcPoint builds an elliptic curve point from a compressed byte slice
-func buildEcPoint(pubKey []byte) (*curves.EcPoint, error) {
-	crv := curves.K256()
-	x := new(big.Int).SetBytes(pubKey[1:33])
-	y := new(big.Int).SetBytes(pubKey[33:])
-	ecCurve, err := crv.ToEllipticCurve()
-	if err != nil {
-		return nil, fmt.Errorf("error converting curve: %v", err)
+// EncodePublicKey encodes the public key according to the KeyInfo's encoding
+func (k *KeyInfo) EncodePublicKey(data []byte) (string, error) {
+	if k.Encoding == KeyEncoding_KEY_ENCODING_RAW {
+		return string(data), nil
 	}
-	return &curves.EcPoint{X: x, Y: y, Curve: ecCurve}, nil
+	if k.Encoding == KeyEncoding_KEY_ENCODING_HEX {
+		return hex.EncodeToString(data), nil
+	}
+	if k.Encoding == KeyEncoding_KEY_ENCODING_MULTIBASE {
+		return base58.Encode(data), nil
+	}
+	return "", ErrUnsupportedKeyEncoding
 }

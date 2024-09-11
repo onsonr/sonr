@@ -29,11 +29,13 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type QueryClient interface {
 	// Params queries all parameters of the module.
-	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
-	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
+	// if the servie is not found, a fingerprint is generated to be used
+	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
+	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
 }
 
 type queryClient struct {
@@ -44,8 +46,8 @@ func NewQueryClient(cc grpc.ClientConnInterface) QueryClient {
 	return &queryClient{cc}
 }
 
-func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error) {
-	out := new(QueryParamsResponse)
+func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
+	out := new(QueryResponse)
 	err := c.cc.Invoke(ctx, Query_Params_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -53,8 +55,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
-	out := new(QueryResolveResponse)
+func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
+	out := new(QueryResponse)
 	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -62,8 +64,8 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
-	out := new(QueryServiceResponse)
+func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
+	out := new(QueryResponse)
 	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -76,11 +78,13 @@ func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grp
 // for forward compatibility
 type QueryServer interface {
 	// Params queries all parameters of the module.
-	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
+	Params(context.Context, *QueryRequest) (*QueryResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
+	Resolve(context.Context, *QueryRequest) (*QueryResponse, error)
 	// Service returns associated ServiceInfo for a given Origin
-	Service(context.Context, *QueryRequest) (*QueryServiceResponse, error)
+	// if the servie is not found, a fingerprint is generated to be used
+	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
+	Service(context.Context, *QueryRequest) (*QueryResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -88,13 +92,13 @@ type QueryServer interface {
 type UnimplementedQueryServer struct {
 }
 
-func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryParamsResponse, error) {
+func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
+func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
-func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryServiceResponse, error) {
+func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}

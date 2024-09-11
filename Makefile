@@ -299,18 +299,15 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: templ vault
-
-templ:
-	@echo "Generating templ files"
-	templ generate
+.PHONY: dwn motr
 
 dwn:
-	@echo "Generating go-pkl files"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/vault.pkl
-	@echo "Building vault.wasm"
-	GOOS=js GOARCH=wasm go build -o ./internal/vfs/dwn.wasm ./cmd/dwn/main.go
+	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
+	GOOS=js GOARCH=wasm go build -o ./internal/vfs/dwn.wasm ./cmd/dwn
+
+motr:
+	@echo "(motr) Building app.wasm -> Deploy to Cloudflare Workers"
+	GOOS=js GOARCH=wasm go build -o ./motr/build/app.wasm ./motr
 
 ###############################################################################
 ###                                     help                                ###

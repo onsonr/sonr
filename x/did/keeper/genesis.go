@@ -66,7 +66,8 @@ func (k Keeper) GetParams(ctx sdk.Context) *types.Params {
 	if err != nil {
 		p = types.DefaultParams()
 	}
-	return &p
+	params := p.ActiveParams(k.HasIPFSConnection())
+	return &params
 }
 
 // GetExpirationBlockHeight returns the block height at which the given duration will have passed

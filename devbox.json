@@ -3,11 +3,11 @@
   "packages": [
     "go@1.22",
     "templ@latest",
-    "commitizen@latest",
-    "goreleaser@latest",
     "go-task@latest",
+    "templ@latest",
     "bun@latest",
-    "ipfs-cluster@latest"
+    "ipfs-cluster@latest",
+    "air@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
@@ -20,25 +20,33 @@
   },
   "shell": {
     "scripts": {
-      "init": [
-        "make install",
-        "sh ./scripts/test_node.sh"
-      ],
-      "gen": [
-        "make proto-gen",
-        "make templ",
-        "make dwn"
+      "install": [
+        "make install"
       ],
       "build": [
         "make build",
         "make local-image"
       ],
-      "testnet": [
-        "make install",
-        "devbox services up"
+      "build:dwn": [
+        "templ generate",
+        "make dwn"
       ],
-      "pkl-eval": [
-        "bunx pkl eval ./pkl/msgs.pkl"
+      "build:motr": [
+        "templ generate",
+        "make motr"
+      ],
+      "gen:proto": [
+        "make proto-gen"
+      ],
+      "gen:pkl": [
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl",
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl"
+      ],
+      "dev": [
+        "air"
+      ],
+      "testnet": [
+        "devbox services up"
       ]
     }
   }

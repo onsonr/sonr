@@ -8,99 +8,57 @@ import "did/v1/models.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Authentication represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
-message Authentication {
+// Account represents a wallet account associated with a DID Controller
+message Account {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "subject,origin"
+      fields: "controller,label"
       unique: true
     }
     index: {
       id: 2
-      fields: "controller,origin"
+      fields: "controller,address"
       unique: true
     }
     index: {
       id: 3
-      fields: "controller,credential_label"
+      fields: "controller,chain_code,index"
       unique: true
     }
   };
 
-  // The unique identifier of the attestation
+  // The unique identifier of the account
   string id = 1;
 
-  // The controller of the attestation
-  string controller = 2;
-
-  // Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
-  PubKey public_key = 3;
-
-  // The origin of the attestation
-  string origin = 4;
-
-  // The subject of the attestation
-  string subject = 5;
-
-  // The value of the linked identifier
-  bytes credential_id = 6;
-
-  // The credential label
-  string credential_label = 7;
-
-  // The display label of the attestation
-  repeated string credential_transport = 8;
-
-  // The attestationtype of the attestation
-  string attestation_type = 9;
-
-  // Metadata is optional additional information about the assertion
-  Metadata metadata = 10;
-}
-
-// Assertion represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
-message Assertion {
-  option (cosmos.orm.v1.table) = {
-    id: 2
-    primary_key: {fields: "id"}
-    index: {
-      id: 1
-      fields: "subject,origin"
-      unique: true
-    }
-    index: {
-      id: 2
-      fields: "controller,origin"
-      unique: true
-    }
-  };
-
-  // The unique identifier of the attestation
-  string id = 1;
-
-  // The type of the linked identifier (e.g., "crypto", "github", "email", "phone")
+  // The controller of the account
   string controller = 2;
 
   // The value of the linked identifier
   PubKey public_key = 3;
 
-  // The origin of the attestation
-  string origin = 4;
+  // The address of the account
+  string address = 4;
 
-  // The subject of the attestation
-  string subject = 5;
+  // The label of the account
+  string label = 5;
 
-  // The controller of the attestation
-  Metadata metadata = 6;
+  // The bip32 chain code
+  uint32 chain_code = 6;
+
+  // The index of the account
+  uint32 index = 7;
+
+  // The supported chains of the account
+  repeated string chains = 8;
 }
 
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id: 3
+    id: 2
     primary_key: {fields: "id"}
     index: {
       id: 1
@@ -121,71 +79,62 @@ message Controller {
   string address = 2;
 
   // Aliases of the controller
-  repeated string aliases = 3;
+  repeated Alias aliases = 3;
 
   // PubKey is the verification method
   PubKey public_key = 4;
 
   // The vault address or identifier
   string vault_cid = 5;
+
+  // The Authentications of the controller
+  repeated Credential authentication = 6;
 }
 
-// Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
-message Delegation {
+// Proof represents a verifiable credential
+message Proof {
   option (cosmos.orm.v1.table) = {
     id: 4
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "account_address,chain_id"
+      fields: "controller,issuer,property"
       unique: true
-    }
-    index: {
-      id: 2
-      fields: "controller,account_label"
-      unique: true
-    }
-    index: {
-      id: 3
-      fields: "controller,chain_id"
     }
   };
 
-  // The unique identifier of the delegation
+  // The unique identifier of the proof
   string id = 1;
 
-  // The Decentralized Identifier of the delegated account
+  // The controller of the proof
   string controller = 2;
 
-  // Resolved from module parameters
-  string chain_index = 3;
+  // The value of the linked identifier
+  string issuer = 3;
 
-  // The delegation proof or verification method
-  PubKey public_key = 4;
+  // The property of the proof
+  string property = 4;
 
-  // The Account Address
-  string account_address = 5;
+  // The accumulator of the proof
+  bytes accumulator = 5;
 
-  // The Account label
-  string account_label = 6;
-
-  // The Chain ID
-  string chain_id = 7;
+  // The secret key of the proof
+  bytes key = 6;
 }
 
 // ServiceRecord represents a decentralized service in a DID Document
 message ServiceRecord {
   option (cosmos.orm.v1.table) = {
-    id: 5
+    id: 3
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "origin_uri"
+      fields: "origin"
       unique: true
     }
     index: {
       id: 2
-      fields: "controller,origin_uri"
+      fields: "authority,origin"
       unique: true
     }
   };
@@ -196,11 +145,11 @@ message ServiceRecord {
   // The type of the service
   string service_type = 2;
 
-  // The controller DID of the service
-  string controller = 3;
+  // The authority DID of the service
+  string authority = 3;
 
   // The domain name of the service
-  string origin_uri = 4;
+  string origin = 4;
 
   // The description of the service
   string description = 5;
@@ -210,7 +159,35 @@ message ServiceRecord {
 
   // Scopes is the Authorization Grants of the service
   Permissions permissions = 7;
+}
 
-  // Metadata is optional additional information about the service
-  Metadata metadata = 8;
+// Verification reprsents a method of verifying membership in a DID
+message VerificationMethod {
+  option (cosmos.orm.v1.table) = {
+    id: 5
+    primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "controller,method,issuer,subject"
+      unique: true
+    }
+  };
+
+  // The unique identifier of the verification
+  string id = 1;
+
+  // The controller of the verification
+  string controller = 2;
+
+  // The DIDNamespace of the verification
+  DIDNamespace method = 3;
+
+  // The value of the linked identifier
+  string issuer = 4;
+
+  // The subject of the verification
+  string subject = 5;
+
+  // The public key of the verification
+  PubKey public_key = 6;
 }

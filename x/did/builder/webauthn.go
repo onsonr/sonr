@@ -4,7 +4,62 @@ import (
 	"bytes"
 	"encoding/base64"
 	"reflect"
+
+	"github.com/go-webauthn/webauthn/protocol"
 )
+
+// Credential contains all needed information about a WebAuthn credential for storage.
+type Credential struct {
+	Subject         string   `json:"handle"`
+	AttestationType string   `json:"attestationType"`
+	Origin          string   `json:"origin"`
+	CredentialID    []byte   `json:"id"`
+	PublicKey       []byte   `json:"publicKey"`
+	Transport       []string `json:"transport"`
+	SignCount       uint32   `json:"signCount"`
+	UserPresent     bool     `json:"userPresent"`
+	UserVerified    bool     `json:"userVerified"`
+	BackupEligible  bool     `json:"backupEligible"`
+	BackupState     bool     `json:"backupState"`
+	CloneWarning    bool     `json:"cloneWarning"`
+}
+
+// NewCredential will return a credential pointer on successful validation of a registration response.
+func NewCredential(c *protocol.ParsedCredentialCreationData, origin, handle string) *Credential {
+	return &Credential{
+		Subject:         handle,
+		Origin:          origin,
+		AttestationType: c.Response.AttestationObject.Format,
+		CredentialID:    c.Response.AttestationObject.AuthData.AttData.CredentialID,
+		PublicKey:       c.Response.AttestationObject.AuthData.AttData.CredentialPublicKey,
+		Transport:       NormalizeTransports(c.Response.Transports),
+		SignCount:       c.Response.AttestationObject.AuthData.Counter,
+		UserPresent:     c.Response.AttestationObject.AuthData.Flags.HasUserPresent(),
+		UserVerified:    c.Response.AttestationObject.AuthData.Flags.HasUserVerified(),
+		BackupEligible:  c.Response.AttestationObject.AuthData.Flags.HasBackupEligible(),
+		BackupState:     c.Response.AttestationObject.AuthData.Flags.HasAttestedCredentialData(),
+	}
+}
+
+// Descriptor converts a Credential into a protocol.CredentialDescriptor.
+func (c *Credential) Descriptor() protocol.CredentialDescriptor {
+	return protocol.CredentialDescriptor{
+		Type:            protocol.PublicKeyCredentialType,
+		CredentialID:    c.CredentialID,
+		Transport:       ModuleTransportsToProtocol(c.Transport),
+		AttestationType: c.AttestationType,
+	}
+}
+
+// This is a signal that the authenticator may be cloned, see CloneWarning above for more information.
+func (a *Credential) UpdateCounter(authDataCount uint32) {
+	if authDataCount <= a.SignCount && (authDataCount != 0 || a.SignCount != 0) {
+		a.CloneWarning = true
+		return
+	}
+
+	a.SignCount = authDataCount
+}
 
 type CredentialDescriptor struct {
 	// The valid credential types.

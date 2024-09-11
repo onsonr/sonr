@@ -95,8 +95,8 @@ func NewRootCmd() *cobra.Command {
 			}
 
 			// Set the context chain ID and validator address
-			app.SetLocalChainID(initClientCtx.ChainID)
-			app.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
+			//		app.SetLocalChainID(initClientCtx.ChainID)
+			//			app.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
 
 			customAppTemplate, customAppConfig := initAppConfig()
 			customCMTConfig := initCometBFTConfig()

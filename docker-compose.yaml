@@ -6,7 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - /home/prad/.sonr:/root/.sonr
+      - /home/prad/.scnr:/root/.sonr
     ports:
       - "26657:26657"
       - "1317:1317"

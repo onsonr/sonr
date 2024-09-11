@@ -23,11 +23,11 @@ func (k Keeper) assembleInitialVault(ctx sdk.Context) (string, int64, error) {
 }
 
 // pinInitialVault pins the initial vault to the local IPFS node
-func (k Keeper) pinInitialVault(_ sdk.Context, cid string, address string) error {
+func (k Keeper) pinInitialVault(_ sdk.Context, cid string, address string) (bool, error) {
 	// Resolve the path
 	path, err := path.NewPath(cid)
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// 1. Initialize vault.db sqlite database in local IPFS with Mount
@@ -37,13 +37,13 @@ func (k Keeper) pinInitialVault(_ sdk.Context, cid string, address string) error
 	// 3. Publish the path to the IPNS
 	_, err = k.ipfsClient.Name().Publish(context.Background(), path, options.Name.Key(address))
 	if err != nil {
-		return err
+		return false, err
 	}
 
 	// 4. Insert the accounts into x/auth
 
 	// 5. Insert the controller into state
-	return nil
+	return true, nil
 }
 
 // GetFromIPFS gets a file from the local IPFS node

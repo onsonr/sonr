@@ -7,56 +7,47 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Accumulator defines a BLS accumulator
-message Accumulator {
-  bytes accumulator = 1;
+// Alias defines a subject/origin pair
+message Alias {
+  string subject = 1;
+  string origin = 2;
+  string controller = 3;
 }
 
-// Credential defines a WebAuthn credential
 message Credential {
-  string id = 1;
-  string credential_type = 2;
-  bytes credential_id = 3;
-  repeated string transport = 4;
-  string subject = 6;
-  string controller = 7;
-}
-
-// DID defines a parsed DID string
-message DID {
-  DIDNamespace method = 1;
-  string network = 2;
-  string subject = 3;
-  string identifier = 4;
-  repeated string paths = 5;
+  string subject = 1;
+  string attestation_type = 2;
+  string origin = 3;
+  bytes credential_id = 4;
+  bytes public_key = 5;
+  repeated string transport = 6;
+  uint32 sign_count = 7;
+  bool user_present = 8;
+  bool user_verified = 9;
+  bool backup_eligible = 10;
+  bool backup_state = 11;
+  bool clone_warning = 12;
 }
 
 // Document defines a DID document
 message Document {
   string id = 1;
-  repeated VerificationMethod verification_methods = 2;
-  repeated string authentication = 4;
-  repeated string assertion_method = 5;
-  repeated string capability_delegation = 7;
-  repeated string capability_invocation = 8;
-  repeated string service = 9;
+  string controller = 2; // The DID of the controller
+  repeated string authentication = 3;
+  repeated string assertion_method = 4;
+  repeated string capability_delegation = 5;
+  repeated string capability_invocation = 6;
+  repeated string service = 7;
 }
 
-// JWK represents a JSON Web Key
-message JWK {
-  string kty = 1; // Key Type
-  string crv = 2; // Curve (for EC and OKP keys)
-  string x = 3; // X coordinate (for EC and OKP keys)
-  string y = 4; // Y coordinate (for EC keys)
-  string n = 5; // Modulus (for RSA keys)
-  string e = 6; // Exponent (for RSA keys)
-}
-
-// Metadata defines additional information provided to a did
-message Metadata {
-  string origin_uri = 1;
-  map<string, string> public = 2;
-  map<string, Property> private = 3;
+// Keyshare defines a keyshare from the MPC protocol
+message Keyshare {
+  map<string, string> metadata = 1;
+  map<string, bytes> payloads = 2;
+  string protocol = 3;
+  bytes public_key = 4;
+  uint32 version = 5;
+  int32 role = 6; // 0 =none, 1 = validator, 2 = user
 }
 
 // Permissions contains a list of grants and access control rules for
@@ -64,21 +55,6 @@ message Metadata {
 message Permissions {
   repeated DIDNamespace grants = 1;
   repeated PermissionScope scopes = 2;
-}
-
-// Profile defines an associated public identity for a did subject
-message Profile {
-  string id = 1;
-  string subject = 2;
-  string controller = 3;
-  Metadata metadata = 4;
-}
-
-// Property defines a Zero-Knowledge accumulator which can be used to
-// anonymously prove a given value to a DID subject
-message Property {
-  bytes accumulator = 1;
-  bytes key = 2;
 }
 
 // PubKey defines a public key for a did
@@ -90,16 +66,35 @@ message PubKey {
   KeyType key_type = 5;
   bytes raw = 6;
   JWK jwk = 7;
+
+  // JWK represents a JSON Web Key
+  message JWK {
+    string kty = 1; // Key Type
+    string crv = 2; // Curve (for EC and OKP keys)
+    string x = 3; // X coordinate (for EC and OKP keys)
+    string y = 4; // Y coordinate (for EC keys)
+    string n = 5; // Modulus (for RSA keys)
+    string e = 6; // Exponent (for RSA keys)
+  }
 }
 
 // Service defines a Decentralized Service on the Sonr Blockchain
 message Service {
   string id = 1;
-  string controller = 2;
-  string origin = 3;
-  Permissions permissions = 4;
-  OpenIDConfig openid = 5;
-  Metadata metadata = 6;
+  string service_type = 2;
+  string authority = 3;
+  string origin = 4;
+  string description = 5;
+  map<string, string> service_endpoints = 6;
+  Permissions permissions = 7;
+}
+
+// ServicceInfo defines a Decentralized Service on the Sonr Blockchain
+message ServiceInfo {
+  bool exists = 1;
+  string origin = 2;
+  string fingerprint = 3;
+  Service service = 4;
 }
 
 // Token defines a macron token
@@ -107,18 +102,4 @@ message Token {
   string id = 1;
   string controller = 2;
   bytes macron = 3;
-}
-
-// VerificationMethod defines a verification method
-message VerificationMethod {
-  DIDNamespace method = 1;
-  string id = 2;
-  string controller = 3;
-  string issuer = 4;
-  PubKey public_key = 5;
-}
-
-// Witness defines a BLS witness
-message Witness {
-  bytes witness = 1;
 }

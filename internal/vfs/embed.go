@@ -9,20 +9,14 @@ import (
 //go:embed dwn.wasm
 var dwnWasmData []byte
 
+//go:embed sw.js
+var swJSData []byte
+
 func DWNWasmFile() files.Node {
 	return files.NewBytesFile(dwnWasmData)
 }
 
-//go:embed sw.js
-var swJSData []byte
-
+// Use ServiceWorkerJS template to generate the service worker file
 func SWJSFile() files.Node {
 	return files.NewBytesFile(swJSData)
-}
-
-//go:embed index.html
-var indexHTMLData []byte
-
-func IndexHTMLFile() files.Node {
-	return files.NewBytesFile(indexHTMLData)
 }

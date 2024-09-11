@@ -52,7 +52,7 @@ type PublicKeyCredentialCreationOptions struct {
 	Extensions             AuthenticationExtensions   `json:"extensions,omitempty"`
 }
 
-func NewRegistrationOptions(origin string, subject string, vaultCID string, params *types.Params) (*PublicKeyCredentialCreationOptions, error) {
+func GetPublicKeyCredentialCreationOptions(origin string, subject string, vaultCID string, params *types.Params) (*PublicKeyCredentialCreationOptions, error) {
 	chal, err := CreateChallenge()
 	if err != nil {
 		return nil, err

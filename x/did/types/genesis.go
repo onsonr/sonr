@@ -53,7 +53,6 @@ func DefaultParams() Params {
 		WhitelistedAssets:            DefaultAssets(),
 		WhitelistedChains:            DefaultChains(),
 		AllowedPublicKeys:            DefaultKeyInfos(),
-		OpenidConfig:                 DefaultOpenIDConfig(),
 		LocalhostRegistrationEnabled: true,
 		ConveyancePreference:         "direct",
 		AttestationFormats:           []string{"packed", "android-key", "fido-u2f", "apple"},
@@ -163,21 +162,6 @@ func DefaultKeyInfos() []*KeyInfo {
 	}
 }
 
-func DefaultOpenIDConfig() *OpenIDConfig {
-	return &OpenIDConfig{
-		Issuer:                 "https://sonr.id",
-		AuthorizationEndpoint:  "https://api.sonr.id/auth",
-		TokenEndpoint:          "https://api.sonr.id/token",
-		UserinfoEndpoint:       "https://api.sonr.id/userinfo",
-		ScopesSupported:        []string{"openid", "profile", "email", "web3", "sonr"},
-		ResponseTypesSupported: []string{"code"},
-		ResponseModesSupported: []string{"query", "form_post"},
-		GrantTypesSupported:    []string{"authorization_code", "refresh_token"},
-		AcrValuesSupported:     []string{"passkey"},
-		SubjectTypesSupported:  []string{"public"},
-	}
-}
-
 func (p Params) ActiveParams(ipfsActive bool) Params {
 	p.IpfsActive = ipfsActive
 	return p
@@ -197,4 +181,40 @@ func (p Params) String() string {
 func (p Params) Validate() error {
 	// TODO:
 	return nil
+}
+
+//
+// # Genesis Structures
+//
+
+// Equal returns true if two asset infos are equal
+func (a *AssetInfo) Equal(b *AssetInfo) bool {
+	if a == nil && b == nil {
+		return true
+	}
+	return false
+}
+
+// Equal returns true if two chain infos are equal
+func (c *ChainInfo) Equal(b *ChainInfo) bool {
+	if c == nil && b == nil {
+		return true
+	}
+	return false
+}
+
+// Equal returns true if two key infos are equal
+func (k *KeyInfo) Equal(b *KeyInfo) bool {
+	if k == nil && b == nil {
+		return true
+	}
+	return false
+}
+
+// Equal returns true if two validator infos are equal
+func (v *ValidatorInfo) Equal(b *ValidatorInfo) bool {
+	if v == nil && b == nil {
+		return true
+	}
+	return false
 }

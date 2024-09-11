@@ -148,9 +148,6 @@ import (
 	did "github.com/onsonr/sonr/x/did"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	didtypes "github.com/onsonr/sonr/x/did/types"
-	oracle "github.com/onsonr/sonr/x/oracle"
-	oraclekeeper "github.com/onsonr/sonr/x/oracle/keeper"
-	oracletypes "github.com/onsonr/sonr/x/oracle/types"
 )
 
 const appName = "sonr"
@@ -220,7 +217,6 @@ type SonrApp struct {
 	NFTKeeper          nftkeeper.Keeper
 	AuthzKeeper        authzkeeper.Keeper
 	FeeGrantKeeper     feegrantkeeper.Keeper
-	OracleKeeper       oraclekeeper.Keeper
 	interfaceRegistry  types.InterfaceRegistry
 	txConfig           client.TxConfig
 	appCodec           codec.Codec
@@ -361,7 +357,6 @@ func NewChainApp(
 		poa.StoreKey,
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
-		oracletypes.StoreKey,
 		didtypes.StoreKey,
 	)
 
@@ -621,13 +616,6 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create the oracle Middleware Keeper
-	app.OracleKeeper = oraclekeeper.NewKeeper(
-		appCodec,
-		app.MsgServiceRouter(),
-		app.IBCKeeper.ChannelKeeper,
-	)
-
 	// Create the globalfee keeper
 	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(
 		appCodec,
@@ -883,7 +871,6 @@ func NewChainApp(
 			app.PacketForwardKeeper,
 			app.GetSubspace(packetforwardtypes.ModuleName),
 		),
-		oracle.NewAppModule(app.OracleKeeper),
 
 		did.NewAppModule(appCodec, app.DidKeeper),
 	)
@@ -933,7 +920,6 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -953,7 +939,6 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -982,7 +967,6 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1440,7 +1424,6 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
-	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 
 	return paramsKeeper

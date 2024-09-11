@@ -1,0 +1,37 @@
+package elements
+
+templ Layout(title string) {
+	<!DOCTYPE html>
+	<html>
+		<head>
+			@defaultStyles()
+			<title>{ title }</title>
+		</head>
+		<body class="flex items-center justify-center h-full bg-gray-50 lg:p-24">
+			<main class="flex items-center justify-center w-full max-w-full">
+				<div id="view">
+					{ children... }
+				</div>
+			</main>
+		</body>
+	</html>
+}
+
+templ Spacer() {
+	<br/>
+}
+
+templ ServiceWorker(path string) {
+	<script>
+	  navigator.serviceWorker.register({ path })
+  </script>
+}
+
+templ defaultStyles() {
+	<meta charset="UTF-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<style>[x-cloak]{display:none}</style>
+	<script src="https://unpkg.com/alpinejs" defer></script>
+	<script src="https://cdn.tailwindcss.com"></script>
+}

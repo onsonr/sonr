@@ -27,20 +27,17 @@ message Params {
   // Whitelisted Key Types
   repeated KeyInfo allowed_public_keys = 3;
 
-  // OpenIDConfig defines the base openid configuration across all did services
-  OpenIDConfig openid_config = 4;
-
   // IpfsActive is a flag to enable/disable ipfs
-  bool ipfs_active = 5;
+  bool ipfs_active = 4;
 
   // Localhost Registration Enabled
-  bool localhost_registration_enabled = 6;
+  bool localhost_registration_enabled = 5;
 
   // ConveyancePreference defines the conveyance preference
-  string conveyance_preference = 7;
+  string conveyance_preference = 6;
 
   // AttestationFormats defines the attestation formats
-  repeated string attestation_formats = 8;
+  repeated string attestation_formats = 7;
 }
 
 // AssetInfo defines the asset info
@@ -83,20 +80,6 @@ message KeyInfo {
   KeyEncoding encoding = 3; // e.g., "hex", "base64", "multibase"
   KeyCurve curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448", "Ed25519", "Ed448", "secp256k1"
   KeyType type = 5; // e.g., "Octet", "Elliptic", "RSA", "Symmetric", "HMAC"
-}
-
-// OpenIDConfig defines the base openid configuration across all did services
-message OpenIDConfig {
-  string issuer = 1;
-  string authorization_endpoint = 2;
-  string token_endpoint = 3;
-  string userinfo_endpoint = 4;
-  repeated string scopes_supported = 5;
-  repeated string response_types_supported = 6;
-  repeated string response_modes_supported = 7;
-  repeated string grant_types_supported = 8;
-  repeated string acr_values_supported = 9;
-  repeated string subject_types_supported = 10;
 }
 
 // ValidatorInfo defines information for accepted Validator nodes
@@ -219,6 +202,12 @@ enum KeyType {
   KEY_TYPE_ZK = 7;
   KEY_TYPE_WEBAUTHN = 8;
   KEY_TYPE_BIP32 = 9;
+}
+
+enum KeyshareRole {
+  KEYSHARE_ROLE_UNSPECIFIED = 0;
+  KEYSHARE_ROLE_USER = 1;
+  KEYSHARE_ROLE_VALIDATOR = 2;
 }
 
 // PermissionScope define the Capabilities Controllers can grant for Services

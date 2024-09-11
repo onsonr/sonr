@@ -4,12 +4,103 @@ import (
 	"encoding/base64"
 	"fmt"
 
+	"github.com/go-webauthn/webauthn/protocol"
+
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
-func FormatEC2PublicKey(key *webauthncose.EC2PublicKeyData) (*types.JWK, error) {
+func APIFormatDIDNamespace(namespace types.DIDNamespace) didv1.DIDNamespace {
+	return didv1.DIDNamespace(namespace)
+}
+
+func APIFormatDIDNamespaces(namespaces []types.DIDNamespace) []didv1.DIDNamespace {
+	var s []didv1.DIDNamespace
+	for _, namespace := range namespaces {
+		s = append(s, APIFormatDIDNamespace(namespace))
+	}
+	return s
+}
+
+func APIFormatKeyRole(role types.KeyRole) didv1.KeyRole {
+	return didv1.KeyRole(role)
+}
+
+func APIFormatKeyAlgorithm(algorithm types.KeyAlgorithm) didv1.KeyAlgorithm {
+	return didv1.KeyAlgorithm(algorithm)
+}
+
+func APIFormatKeyEncoding(encoding types.KeyEncoding) didv1.KeyEncoding {
+	return didv1.KeyEncoding(encoding)
+}
+
+func APIFormatKeyCurve(curve types.KeyCurve) didv1.KeyCurve {
+	return didv1.KeyCurve(curve)
+}
+
+func APIFormatKeyType(keyType types.KeyType) didv1.KeyType {
+	return didv1.KeyType(keyType)
+}
+
+func APIFormatPermissions(permissions *types.Permissions) *didv1.Permissions {
+	if permissions == nil {
+		return nil
+	}
+	p := didv1.Permissions{
+		Grants: APIFormatDIDNamespaces(permissions.Grants),
+		Scopes: APIFormatPermissionScopes(permissions.Scopes),
+	}
+	return &p
+}
+
+func APIFormatPermissionScope(scope types.PermissionScope) didv1.PermissionScope {
+	return didv1.PermissionScope(scope)
+}
+
+func APIFormatPermissionScopes(scopes []types.PermissionScope) []didv1.PermissionScope {
+	var s []didv1.PermissionScope
+	for _, scope := range scopes {
+		s = append(s, APIFormatPermissionScope(scope))
+	}
+	return s
+}
+
+func APIFormatServiceRecord(service *types.Service) *didv1.ServiceRecord {
+	return &didv1.ServiceRecord{
+		Id:               service.Id,
+		ServiceType:      service.ServiceType,
+		Authority:        service.Authority,
+		Origin:           service.Origin,
+		Description:      service.Description,
+		ServiceEndpoints: service.ServiceEndpoints,
+		Permissions:      APIFormatPermissions(service.Permissions),
+	}
+}
+
+func APIFormatPubKeyJWK(jwk *types.PubKey_JWK) *didv1.PubKey_JWK {
+	return &didv1.PubKey_JWK{
+		Kty: jwk.Kty,
+		Crv: jwk.Crv,
+		X:   jwk.X,
+		Y:   jwk.Y,
+		N:   jwk.N,
+		E:   jwk.E,
+	}
+}
+
+func APIFormatPubKey(key *types.PubKey) *didv1.PubKey {
+	return &didv1.PubKey{
+		Role:      APIFormatKeyRole(key.GetRole()),
+		Algorithm: APIFormatKeyAlgorithm(key.GetAlgorithm()),
+		Encoding:  APIFormatKeyEncoding(key.GetEncoding()),
+		Curve:     APIFormatKeyCurve(key.GetCurve()),
+		KeyType:   APIFormatKeyType(key.GetKeyType()),
+		Raw:       key.GetRaw(),
+	}
+}
+
+func FormatEC2PublicKey(key *webauthncose.EC2PublicKeyData) (*types.PubKey_JWK, error) {
 	curve, err := GetCOSECurveName(key.Curve)
 	if err != nil {
 		return nil, err
@@ -25,7 +116,7 @@ func FormatEC2PublicKey(key *webauthncose.EC2PublicKeyData) (*types.JWK, error) 
 	return MapToJWK(jwkMap)
 }
 
-func FormatRSAPublicKey(key *webauthncose.RSAPublicKeyData) (*types.JWK, error) {
+func FormatRSAPublicKey(key *webauthncose.RSAPublicKeyData) (*types.PubKey_JWK, error) {
 	jwkMap := map[string]interface{}{
 		"kty": "RSA",
 		"n":   base64.RawURLEncoding.EncodeToString(key.Modulus),
@@ -35,8 +126,8 @@ func FormatRSAPublicKey(key *webauthncose.RSAPublicKeyData) (*types.JWK, error) 
 	return MapToJWK(jwkMap)
 }
 
-func FormatOKPPublicKey(key *webauthncose.OKPPublicKeyData) (*types.JWK, error) {
-	curve, err := getOKPCurveName(key.Curve)
+func FormatOKPPublicKey(key *webauthncose.OKPPublicKeyData) (*types.PubKey_JWK, error) {
+	curve, err := GetOKPCurveName(key.Curve)
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +141,8 @@ func FormatOKPPublicKey(key *webauthncose.OKPPublicKeyData) (*types.JWK, error) 
 	return MapToJWK(jwkMap)
 }
 
-func MapToJWK(m map[string]interface{}) (*types.JWK, error) {
-	jwk := &types.JWK{}
+func MapToJWK(m map[string]interface{}) (*types.PubKey_JWK, error) {
+	jwk := &types.PubKey_JWK{}
 	for k, v := range m {
 		switch k {
 		case "kty":
@@ -84,7 +175,7 @@ func GetCOSECurveName(curveID int64) (string, error) {
 	}
 }
 
-func getOKPCurveName(curveID int64) (string, error) {
+func GetOKPCurveName(curveID int64) (string, error) {
 	switch curveID {
 	case int64(webauthncose.Ed25519):
 		return "Ed25519", nil
@@ -93,84 +184,68 @@ func getOKPCurveName(curveID int64) (string, error) {
 	}
 }
 
-func ModulePubKeyToAPI(pk *types.PubKey) *didv1.PubKey {
-	return &didv1.PubKey{
-		Role:      ModuleKeyRoleToAPI(pk.GetRole()),
-		Algorithm: ModuleKeyAlgorithmToAPI(pk.GetAlgorithm()),
-		Encoding:  ModuleKeyEncodingToAPI(pk.GetEncoding()),
-		Curve:     ModuleKeyCurveToAPI(pk.GetCurve()),
-		KeyType:   ModuleKeyTypeToAPI(pk.GetKeyType()),
-		Raw:       pk.GetRaw(),
+// NormalizeTransports returns the transports as strings
+func NormalizeTransports(transports []protocol.AuthenticatorTransport) []string {
+	tss := make([]string, len(transports))
+	for i, t := range transports {
+		tss[i] = string(t)
+	}
+	return tss
+}
+
+// GetTransports returns the protocol.AuthenticatorTransport
+func ModuleTransportsToProtocol(transport []string) []protocol.AuthenticatorTransport {
+	tss := make([]protocol.AuthenticatorTransport, len(transport))
+	for i, t := range transport {
+		tss[i] = protocol.AuthenticatorTransport(t)
+	}
+	return tss
+}
+
+// ModuleFormatAPIServiceRecord formats a service record for the module
+func ModuleFormatAPIServiceRecord(service *didv1.ServiceRecord) *types.Service {
+	return &types.Service{
+		Id:               service.Id,
+		ServiceType:      service.ServiceType,
+		Authority:        service.Authority,
+		Origin:           service.Origin,
+		Description:      service.Description,
+		ServiceEndpoints: service.ServiceEndpoints,
+		Permissions:      ModuleFormatAPIPermissions(service.Permissions),
 	}
 }
 
-func ModuleKeyRoleToAPI(role types.KeyRole) didv1.KeyRole {
-	switch role {
-	case types.KeyRole_KEY_ROLE_INVOCATION:
-		return didv1.KeyRole_KEY_ROLE_INVOCATION
-	case types.KeyRole_KEY_ROLE_ASSERTION:
-		return didv1.KeyRole_KEY_ROLE_ASSERTION
-	case types.KeyRole_KEY_ROLE_DELEGATION:
-		return didv1.KeyRole_KEY_ROLE_DELEGATION
-	default:
-		return didv1.KeyRole_KEY_ROLE_INVOCATION
+func ModuleFormatAPIPermissions(permissions *didv1.Permissions) *types.Permissions {
+	if permissions == nil {
+		return nil
 	}
+	p := types.Permissions{
+		Grants: ModuleFormatAPIDIDNamespaces(permissions.Grants),
+		Scopes: ModuleFormatAPIPermissionScopes(permissions.Scopes),
+	}
+	return &p
 }
 
-func ModuleKeyAlgorithmToAPI(algorithm types.KeyAlgorithm) didv1.KeyAlgorithm {
-	switch algorithm {
-	case types.KeyAlgorithm_KEY_ALGORITHM_ES256K:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_ES256K
-	case types.KeyAlgorithm_KEY_ALGORITHM_ES256:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_ES256
-	case types.KeyAlgorithm_KEY_ALGORITHM_ES384:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_ES384
-	case types.KeyAlgorithm_KEY_ALGORITHM_ES512:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_ES512
-	case types.KeyAlgorithm_KEY_ALGORITHM_EDDSA:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_EDDSA
-	default:
-		return didv1.KeyAlgorithm_KEY_ALGORITHM_ES256K
-	}
+func ModuleFormatAPIPermissionScope(scope didv1.PermissionScope) types.PermissionScope {
+	return types.PermissionScope(scope)
 }
 
-func ModuleKeyCurveToAPI(curve types.KeyCurve) didv1.KeyCurve {
-	switch curve {
-	case types.KeyCurve_KEY_CURVE_P256:
-		return didv1.KeyCurve_KEY_CURVE_P256
-	case types.KeyCurve_KEY_CURVE_SECP256K1:
-		return didv1.KeyCurve_KEY_CURVE_SECP256K1
-	case types.KeyCurve_KEY_CURVE_BLS12381:
-		return didv1.KeyCurve_KEY_CURVE_BLS12381
-	case types.KeyCurve_KEY_CURVE_KECCAK256:
-		return didv1.KeyCurve_KEY_CURVE_KECCAK256
-	default:
-		return didv1.KeyCurve_KEY_CURVE_P256
+func ModuleFormatAPIPermissionScopes(scopes []didv1.PermissionScope) []types.PermissionScope {
+	var s []types.PermissionScope
+	for _, scope := range scopes {
+		s = append(s, ModuleFormatAPIPermissionScope(scope))
 	}
+	return s
 }
 
-func ModuleKeyEncodingToAPI(encoding types.KeyEncoding) didv1.KeyEncoding {
-	switch encoding {
-	case types.KeyEncoding_KEY_ENCODING_RAW:
-		return didv1.KeyEncoding_KEY_ENCODING_RAW
-	case types.KeyEncoding_KEY_ENCODING_HEX:
-		return didv1.KeyEncoding_KEY_ENCODING_HEX
-	case types.KeyEncoding_KEY_ENCODING_MULTIBASE:
-		return didv1.KeyEncoding_KEY_ENCODING_MULTIBASE
-	default:
-		return didv1.KeyEncoding_KEY_ENCODING_RAW
-	}
+func ModuleFormatAPIDIDNamespace(namespace didv1.DIDNamespace) types.DIDNamespace {
+	return types.DIDNamespace(namespace)
 }
 
-func ModuleKeyTypeToAPI(keyType types.KeyType) didv1.KeyType {
-	switch keyType {
-	case types.KeyType_KEY_TYPE_BIP32:
-		return didv1.KeyType_KEY_TYPE_BIP32
-	case types.KeyType_KEY_TYPE_ZK:
-		return didv1.KeyType_KEY_TYPE_ZK
-	case types.KeyType_KEY_TYPE_WEBAUTHN:
-		return didv1.KeyType_KEY_TYPE_WEBAUTHN
-	default:
-		return didv1.KeyType_KEY_TYPE_BIP32
+func ModuleFormatAPIDIDNamespaces(namespaces []didv1.DIDNamespace) []types.DIDNamespace {
+	var s []types.DIDNamespace
+	for _, namespace := range namespaces {
+		s = append(s, ModuleFormatAPIDIDNamespace(namespace))
 	}
+	return s
 }

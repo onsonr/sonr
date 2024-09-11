@@ -14,7 +14,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/did/v1"
-	middleware "github.com/onsonr/sonr/x/did/middleware"
+	middleware "github.com/onsonr/sonr/x/did/context"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -90,7 +90,7 @@ func NewKeeper(
 
 // IsClaimedServiceOrigin checks if a service origin is unclaimed
 func (k Keeper) IsUnclaimedServiceOrigin(ctx sdk.Context, origin string) bool {
-	rec, _ := k.OrmDB.ServiceRecordTable().GetByOriginUri(ctx, origin)
+	rec, _ := k.OrmDB.ServiceRecordTable().GetByOrigin(ctx, origin)
 	return rec == nil
 }
 
@@ -99,7 +99,7 @@ func (k Keeper) IsValidServiceOrigin(ctx sdk.Context, origin string, clientInfo 
 	if origin != clientInfo.Hostname {
 		return false
 	}
-	rec, err := k.OrmDB.ServiceRecordTable().GetByOriginUri(ctx, origin)
+	rec, err := k.OrmDB.ServiceRecordTable().GetByOrigin(ctx, origin)
 	if err != nil {
 		return false
 	}
