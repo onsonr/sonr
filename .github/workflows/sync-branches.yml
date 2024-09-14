@@ -1,0 +1,82 @@
+name: Scheduled Production Release
+
+on:
+  schedule:
+    - cron: "0 0 * * MON" # Runs every Monday at 00:00 UTC
+  workflow_dispatch:
+permissions:
+  contents: write # Grants the workflow permission to push changes
+
+jobs:
+  production-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history for accurate merging
+          ref: develop # Start from the develop branch
+
+      - name: Set up Git user
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+
+      - name: Install Devbox
+        run: |
+          curl -fsSL https://get.jetpack.io/devbox | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+          devbox version  # Verify installation
+
+      - name: Set up Devbox Environment
+        run: |
+          devbox shell -- rm -rf .devbox  # Clean any previous state
+          devbox shell --command "true"    # Initialize Devbox environment
+
+      - name: Install Project Dependencies
+        run: |
+          devbox run install
+
+      - name: Run Build Scripts
+        run: |
+          devbox run build
+
+      - name: Install Commitizen with Bun
+        run: |
+          # Verify that bun is installed
+          devbox shell -- bun --version
+
+          # Install Commitizen globally using bun
+          devbox shell -- bun add -g commitizen
+
+      - name: Bump Version with Commitizen
+        run: |
+          # Use Commitizen to bump version
+          devbox shell -- cz bump --yes --changelog
+
+          # Get the new version
+          NEW_VERSION=$(devbox shell -- cz version --project)
+          echo "New version: $NEW_VERSION"
+
+          # Tag the new version
+          git tag -a "v$NEW_VERSION" -m "Release $NEW_VERSION"
+
+      - name: Merge develop into master
+        run: |
+          # Switch to master branch
+          git checkout master
+
+          # Merge develop into master with a merge commit
+          git merge develop --no-ff -m "Merge develop into master for release v$NEW_VERSION"
+
+      - name: Push Changes and Tags
+        run: |
+          git push origin master
+          git push origin --tags
+
+      - name: Merge back into develop
+        run: |
+          git checkout develop
+          git merge master --no-ff -m "Merge master back into develop after release v$NEW_VERSION"
+          git push origin develop
