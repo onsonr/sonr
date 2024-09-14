@@ -2,7 +2,7 @@
 
 set -e
 
-GO_MOD_PACKAGE="github.com/onsonr/hway"
+GO_MOD_PACKAGE="github.com/onsonr/sonr"
 
 echo "Generating gogo proto code"
 cd proto

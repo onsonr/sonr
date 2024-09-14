@@ -3,11 +3,8 @@ package main
 import (
 	"os"
 
-	dbm "github.com/cosmos/cosmos-db"
-	"github.com/spf13/cobra"
-
 	"cosmossdk.io/log"
-
+	dbm "github.com/cosmos/cosmos-db"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/client/config"
 	"github.com/cosmos/cosmos-sdk/crypto/keyring"
@@ -19,11 +16,10 @@ import (
 	"github.com/cosmos/cosmos-sdk/x/auth/tx"
 	txmodule "github.com/cosmos/cosmos-sdk/x/auth/tx/config"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	"github.com/spf13/cobra"
 
-	"github.com/onsonr/hway/app"
-	"github.com/onsonr/hway/app/params"
-	// NewRootCmd creates a new root command for chain app. It is called once in the
-	// main function.
+	"github.com/onsonr/sonr/app"
+	"github.com/onsonr/sonr/app/params"
 )
 
 func NewRootCmd() *cobra.Command {
@@ -34,14 +30,14 @@ func NewRootCmd() *cobra.Command {
 	cfg.Seal()
 	// we "pre"-instantiate the application for getting the injected/configured encoding configuration
 	// note, this is not necessary when using app wiring, as depinject can be directly used (see root_v2.go)
-	tempApp := app.NewChainApp(
+	preApp := app.NewChainApp(
 		log.NewNopLogger(), dbm.NewMemDB(), nil, false, simtestutil.NewAppOptionsWithFlagHome(tempDir()),
 	)
 	encodingConfig := params.EncodingConfig{
-		InterfaceRegistry: tempApp.InterfaceRegistry(),
-		Codec:             tempApp.AppCodec(),
-		TxConfig:          tempApp.TxConfig(),
-		Amino:             tempApp.LegacyAmino(),
+		InterfaceRegistry: preApp.InterfaceRegistry(),
+		Codec:             preApp.AppCodec(),
+		TxConfig:          preApp.TxConfig(),
+		Amino:             preApp.LegacyAmino(),
 	}
 
 	initClientCtx := client.Context{}.
@@ -99,8 +95,8 @@ func NewRootCmd() *cobra.Command {
 			}
 
 			// Set the context chain ID and validator address
-			app.SetLocalChainID(initClientCtx.ChainID)
-			app.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
+			//		app.SetLocalChainID(initClientCtx.ChainID)
+			//			app.SetLocalValidatorAddress(initClientCtx.FromAddress.String())
 
 			customAppTemplate, customAppConfig := initAppConfig()
 			customCMTConfig := initCometBFTConfig()
@@ -109,10 +105,10 @@ func NewRootCmd() *cobra.Command {
 		},
 	}
 
-	initRootCmd(rootCmd, encodingConfig.TxConfig, encodingConfig.InterfaceRegistry, tempApp.BasicModuleManager)
+	initRootCmd(rootCmd, encodingConfig.TxConfig, encodingConfig.InterfaceRegistry, preApp.BasicModuleManager)
 
 	// add keyring to autocli opts
-	autoCliOpts := tempApp.AutoCliOpts()
+	autoCliOpts := preApp.AutoCliOpts()
 	initClientCtx, _ = config.ReadFromClientConfig(initClientCtx)
 	autoCliOpts.Keyring, _ = keyring.NewAutoCLIKeyring(initClientCtx.Keyring)
 	autoCliOpts.ClientCtx = initClientCtx

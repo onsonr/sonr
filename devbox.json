@@ -1,12 +1,54 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.22",
+    "templ@latest",
+    "go-task@latest",
+    "templ@latest",
+    "bun@latest",
+    "ipfs-cluster@latest",
+    "air@latest"
+  ],
   "packages": ["go@1.21"],
   "env": {
     "GOPATH": "$HOME/go",
-    "PATH": "$HOME/go/bin:$PATH"
+    "PATH": "$HOME/go/bin:$PATH",
+    "CHAIN_ID": "sonr-testnet-1",
+    "DENOM": "usnr",
+    "KEYRING": "test",
+    "MONIKER": "florence"
   },
   "shell": {
     "scripts": {
+      "install": [
+        "make install"
+      ],
+      "build": [
+        "make build",
+        "make local-image"
+      ],
+      "build:dwn": [
+        "templ generate",
+        "make dwn"
+      ],
+      "build:motr": [
+        "templ generate",
+        "make motr"
+      ],
+      "gen:proto": [
+        "make proto-gen"
+      ],
+      "gen:pkl": [
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/oidc.pkl",
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl",
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl"
+      ],
+      "dev": [
+        "air"
+      ],
+      "testnet": [
+        "devbox services up"
+      ]
       "install": ["make install"],
       "gen": ["make proto-gen"],
       "build": [

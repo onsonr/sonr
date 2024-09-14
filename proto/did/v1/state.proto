@@ -1,17 +1,34 @@
 syntax = "proto3";
 
 package did.v1;
-option go_package = "github.com/onsonr/hway/x/did/types";
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
+import "did/v1/models.proto";
 import "did/v1/enums.proto";
 
-// Aliases represents the `alsoKnownAs` property associated with a DID Controller
-message Aliases {
+option go_package = "github.com/onsonr/sonr/x/did/types";
+
+// Account represents a wallet account associated with a DID Controller
+message Account {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "controller,label"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "controller,address"
+      unique: true
+    }
+    index: {
+      id: 3
+      fields: "controller,chain_code,index"
+      unique: true
+    }
     index: { id: 1, fields: "subject", unique: true }
     };
 
@@ -38,107 +55,113 @@ message Assertion {
     primary_key: {fields: "id"}
   };
 
-  // The unique identifier of the attestation
+  // The unique identifier of the account
   string id = 1;
 
-  // Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
-  string key_type = 2;
+  // The controller of the account
+  string controller = 2;
 
   // The value of the linked identifier
-  bytes credential = 3;
+  PubKey public_key = 3;
 
-  // Metadata is optional additional information about the assertion
-  map<string, string> metadata = 4;
+  // The address of the account
+  string address = 4;
 
-  // The controller of the attestation
-  string controller = 5;
+  // The label of the account
+  string label = 5;
+
+  // The bip32 chain code
+  uint32 chain_code = 6;
+
+  // The index of the account
+  uint32 index = 7;
+
+  // The supported chains of the account
+  repeated string chains = 8;
 }
-
-
-// Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
-message Attestation {
-  option (cosmos.orm.v1.table) = {
-    id: 3
-    primary_key: {fields: "id"}
-  };
-
-  // The unique identifier of the attestation
-  string id = 1;
-
-  // The type of the linked identifier (e.g., "crypto", "github", "email", "phone")
-  string key_type = 2;
-
-  // The value of the linked identifier
-  string value = 3;
-
-  // The proof or verification method for this attestation
-  string proof = 4;
-
-  // The controller of the attestation
-  string controller = 5;
-}
-
 
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id: 4
+    id: 2
     primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "address"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "vault_cid"
+      unique: true
+    }
   };
 
   // The unique identifier of the controller
   string id = 1;
 
   // The DID of the controller
-  string did = 2;
+  string address = 2;
 
-  // The public key of the controller
-  string public_key_multibase = 3;
+  // Aliases of the controller
+  repeated Alias aliases = 3;
+
+  // PubKey is the verification method
+  PubKey public_key = 4;
 
   // The vault address or identifier
-  string vault_cid = 4;
+  string vault_cid = 5;
 
-  // Fingerprint is the Accumulator of discrete credential identifiers
-  bytes fingerprint = 5;
+  // The Authentications of the controller
+  repeated Credential authentication = 6;
 }
 
-// Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
-message Delegation {
+// Proof represents a verifiable credential
+message Proof {
   option (cosmos.orm.v1.table) = {
-    id: 5
+    id: 4
     primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "controller,issuer,property"
+      unique: true
+    }
   };
 
-  // The unique identifier of the delegation
+  // The unique identifier of the proof
   string id = 1;
 
-  // The Decentralized Identifier of the delegated account
-  string did = 2;
+  // The controller of the proof
+  string controller = 2;
 
-  // The chain type (e.g., "ETH", "BTC")
-  string chain_type = 3;
+  // The value of the linked identifier
+  string issuer = 3;
 
-  // The address on the target chain
-  string chain_address = 4;
+  // The property of the proof
+  string property = 4;
 
-  // The controller DID
-  string controller_did = 5;
+  // The accumulator of the proof
+  bytes accumulator = 5;
 
-  // The delegation proof or verification method
-  string public_key_multibase = 6;
-
-  // Public Key JWKS is a map of the associated public keys
-  map<string, string> public_key_jwks = 7;
-
-  // IBC Channel ID
-  uint64 channel_id = 8;
+  // The secret key of the proof
+  bytes key = 6;
 }
 
-// Service represents a service in a DID Document
-message Service {
+// ServiceRecord represents a decentralized service in a DID Document
+message ServiceRecord {
   option (cosmos.orm.v1.table) = {
-    id: 6
+    id: 3
     primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "origin"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "authority,origin"
+      unique: true
+    }
   };
 
   // The ID of the service
@@ -147,6 +170,51 @@ message Service {
   // The type of the service
   string service_type = 2;
 
+  // The authority DID of the service
+  string authority = 3;
+
+  // The domain name of the service
+  string origin = 4;
+
+  // The description of the service
+  string description = 5;
+
+  // The service endpoint
+  map<string, string> service_endpoints = 6;
+
+  // Scopes is the Authorization Grants of the service
+  Permissions permissions = 7;
+}
+
+// Verification reprsents a method of verifying membership in a DID
+message VerificationMethod {
+  option (cosmos.orm.v1.table) = {
+    id: 5
+    primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "controller,method,issuer,subject"
+      unique: true
+    }
+  };
+
+  // The unique identifier of the verification
+  string id = 1;
+
+  // The controller of the verification
+  string controller = 2;
+
+  // The DIDNamespace of the verification
+  DIDNamespace method = 3;
+
+  // The value of the linked identifier
+  string issuer = 4;
+
+  // The subject of the verification
+  string subject = 5;
+
+  // The public key of the verification
+  PubKey public_key = 6;
   // The controller DID of the service
   string controller_did = 3;
 

@@ -23,10 +23,24 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// Aliases represents the `alsoKnownAs` property associated with a DID Controller
-type Aliases struct {
-	// The unique identifier of the alias
+// Account represents a wallet account associated with a DID Controller
+type Account struct {
+	// The unique identifier of the account
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The controller of the account
+	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The value of the linked identifier
+	PublicKey *PubKey `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The address of the account
+	Address string `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
+	// The label of the account
+	Label string `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty"`
+	// The bip32 chain code
+	ChainCode uint32 `protobuf:"varint,6,opt,name=chain_code,json=chainCode,proto3" json:"chain_code,omitempty"`
+	// The index of the account
+	Index uint32 `protobuf:"varint,7,opt,name=index,proto3" json:"index,omitempty"`
+	// The supported chains of the account
+	Chains []string `protobuf:"bytes,8,rep,name=chains,proto3" json:"chains,omitempty"`
 	// Origin is the  Alias provider
 	Origin string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
 	// Subject is the user defined alias
@@ -37,18 +51,18 @@ type Aliases struct {
 	Expiration uint64 `protobuf:"varint,5,opt,name=expiration,proto3" json:"expiration,omitempty"`
 }
 
-func (m *Aliases) Reset()         { *m = Aliases{} }
-func (m *Aliases) String() string { return proto.CompactTextString(m) }
-func (*Aliases) ProtoMessage()    {}
-func (*Aliases) Descriptor() ([]byte, []int) {
+func (m *Account) Reset()         { *m = Account{} }
+func (m *Account) String() string { return proto.CompactTextString(m) }
+func (*Account) ProtoMessage()    {}
+func (*Account) Descriptor() ([]byte, []int) {
 	return fileDescriptor_f44bb702879c34b4, []int{0}
 }
-func (m *Aliases) XXX_Unmarshal(b []byte) error {
+func (m *Account) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Aliases) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Account) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Aliases.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Account.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -58,25 +72,26 @@ func (m *Aliases) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Aliases) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Aliases.Merge(m, src)
+func (m *Account) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Account.Merge(m, src)
 }
-func (m *Aliases) XXX_Size() int {
+func (m *Account) XXX_Size() int {
 	return m.Size()
 }
-func (m *Aliases) XXX_DiscardUnknown() {
-	xxx_messageInfo_Aliases.DiscardUnknown(m)
+func (m *Account) XXX_DiscardUnknown() {
+	xxx_messageInfo_Account.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Aliases proto.InternalMessageInfo
+var xxx_messageInfo_Account proto.InternalMessageInfo
 
-func (m *Aliases) GetId() string {
+func (m *Account) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
+func (m *Account) GetController() string {
 func (m *Aliases) GetOrigin() string {
 	if m != nil {
 		return m.Origin
@@ -98,175 +113,46 @@ func (m *Aliases) GetController() string {
 	return ""
 }
 
-func (m *Aliases) GetExpiration() uint64 {
+func (m *Account) GetPublicKey() *PubKey {
 	if m != nil {
-		return m.Expiration
+		return m.PublicKey
+	}
+	return nil
+}
+
+func (m *Account) GetAddress() string {
+	if m != nil {
+		return m.Address
+	}
+	return ""
+}
+
+func (m *Account) GetLabel() string {
+	if m != nil {
+		return m.Label
+	}
+	return ""
+}
+
+func (m *Account) GetChainCode() uint32 {
+	if m != nil {
+		return m.ChainCode
 	}
 	return 0
 }
 
-// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
-type Assertion struct {
-	// The unique identifier of the attestation
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// Key type (e.g., "passkey", "ssh", "gpg", "native-secure-enclave")
-	KeyType string `protobuf:"bytes,2,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	// The value of the linked identifier
-	Credential []byte `protobuf:"bytes,3,opt,name=credential,proto3" json:"credential,omitempty"`
-	// Metadata is optional additional information about the assertion
-	Metadata map[string]string `protobuf:"bytes,4,rep,name=metadata,proto3" json:"metadata,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// The controller of the attestation
-	Controller string `protobuf:"bytes,5,opt,name=controller,proto3" json:"controller,omitempty"`
-}
-
-func (m *Assertion) Reset()         { *m = Assertion{} }
-func (m *Assertion) String() string { return proto.CompactTextString(m) }
-func (*Assertion) ProtoMessage()    {}
-func (*Assertion) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f44bb702879c34b4, []int{1}
-}
-func (m *Assertion) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Assertion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Assertion.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Assertion) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Assertion.Merge(m, src)
-}
-func (m *Assertion) XXX_Size() int {
-	return m.Size()
-}
-func (m *Assertion) XXX_DiscardUnknown() {
-	xxx_messageInfo_Assertion.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Assertion proto.InternalMessageInfo
-
-func (m *Assertion) GetId() string {
+func (m *Account) GetIndex() uint32 {
 	if m != nil {
-		return m.Id
+		return m.Index
 	}
-	return ""
+	return 0
 }
 
-func (m *Assertion) GetKeyType() string {
+func (m *Account) GetChains() []string {
 	if m != nil {
-		return m.KeyType
-	}
-	return ""
-}
-
-func (m *Assertion) GetCredential() []byte {
-	if m != nil {
-		return m.Credential
+		return m.Chains
 	}
 	return nil
-}
-
-func (m *Assertion) GetMetadata() map[string]string {
-	if m != nil {
-		return m.Metadata
-	}
-	return nil
-}
-
-func (m *Assertion) GetController() string {
-	if m != nil {
-		return m.Controller
-	}
-	return ""
-}
-
-// Attestation represents linked identifiers (e.g., Crypto Accounts, Github, Email, Phone)
-type Attestation struct {
-	// The unique identifier of the attestation
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The type of the linked identifier (e.g., "crypto", "github", "email", "phone")
-	KeyType string `protobuf:"bytes,2,opt,name=key_type,json=keyType,proto3" json:"key_type,omitempty"`
-	// The value of the linked identifier
-	Value string `protobuf:"bytes,3,opt,name=value,proto3" json:"value,omitempty"`
-	// The proof or verification method for this attestation
-	Proof string `protobuf:"bytes,4,opt,name=proof,proto3" json:"proof,omitempty"`
-	// The controller of the attestation
-	Controller string `protobuf:"bytes,5,opt,name=controller,proto3" json:"controller,omitempty"`
-}
-
-func (m *Attestation) Reset()         { *m = Attestation{} }
-func (m *Attestation) String() string { return proto.CompactTextString(m) }
-func (*Attestation) ProtoMessage()    {}
-func (*Attestation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f44bb702879c34b4, []int{2}
-}
-func (m *Attestation) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Attestation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Attestation.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Attestation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Attestation.Merge(m, src)
-}
-func (m *Attestation) XXX_Size() int {
-	return m.Size()
-}
-func (m *Attestation) XXX_DiscardUnknown() {
-	xxx_messageInfo_Attestation.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Attestation proto.InternalMessageInfo
-
-func (m *Attestation) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *Attestation) GetKeyType() string {
-	if m != nil {
-		return m.KeyType
-	}
-	return ""
-}
-
-func (m *Attestation) GetValue() string {
-	if m != nil {
-		return m.Value
-	}
-	return ""
-}
-
-func (m *Attestation) GetProof() string {
-	if m != nil {
-		return m.Proof
-	}
-	return ""
-}
-
-func (m *Attestation) GetController() string {
-	if m != nil {
-		return m.Controller
-	}
-	return ""
 }
 
 // Controller represents a Sonr DWN Vault
@@ -274,20 +160,22 @@ type Controller struct {
 	// The unique identifier of the controller
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The DID of the controller
-	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-	// The public key of the controller
-	PublicKeyMultibase string `protobuf:"bytes,3,opt,name=public_key_multibase,json=publicKeyMultibase,proto3" json:"public_key_multibase,omitempty"`
+	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	// Aliases of the controller
+	Aliases []*Alias `protobuf:"bytes,3,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	// PubKey is the verification method
+	PublicKey *PubKey `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	// The vault address or identifier
-	VaultCid string `protobuf:"bytes,4,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
-	// Fingerprint is the Accumulator of discrete credential identifiers
-	Fingerprint []byte `protobuf:"bytes,5,opt,name=fingerprint,proto3" json:"fingerprint,omitempty"`
+	VaultCid string `protobuf:"bytes,5,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	// The Authentications of the controller
+	Authentication []*Credential `protobuf:"bytes,6,rep,name=authentication,proto3" json:"authentication,omitempty"`
 }
 
 func (m *Controller) Reset()         { *m = Controller{} }
 func (m *Controller) String() string { return proto.CompactTextString(m) }
 func (*Controller) ProtoMessage()    {}
 func (*Controller) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f44bb702879c34b4, []int{3}
+	return fileDescriptor_f44bb702879c34b4, []int{1}
 }
 func (m *Controller) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -323,18 +211,25 @@ func (m *Controller) GetId() string {
 	return ""
 }
 
-func (m *Controller) GetDid() string {
+func (m *Controller) GetAddress() string {
 	if m != nil {
-		return m.Did
+		return m.Address
 	}
 	return ""
 }
 
-func (m *Controller) GetPublicKeyMultibase() string {
+func (m *Controller) GetAliases() []*Alias {
 	if m != nil {
-		return m.PublicKeyMultibase
+		return m.Aliases
 	}
-	return ""
+	return nil
+}
+
+func (m *Controller) GetPublicKey() *PubKey {
+	if m != nil {
+		return m.PublicKey
+	}
+	return nil
 }
 
 func (m *Controller) GetVaultCid() string {
@@ -344,45 +239,41 @@ func (m *Controller) GetVaultCid() string {
 	return ""
 }
 
-func (m *Controller) GetFingerprint() []byte {
+func (m *Controller) GetAuthentication() []*Credential {
 	if m != nil {
-		return m.Fingerprint
+		return m.Authentication
 	}
 	return nil
 }
 
-// Delegation represents IBC Account Controllers for various chains (e.g., ETH, BTC)
-type Delegation struct {
-	// The unique identifier of the delegation
+// Proof represents a verifiable credential
+type Proof struct {
+	// The unique identifier of the proof
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The Decentralized Identifier of the delegated account
-	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-	// The chain type (e.g., "ETH", "BTC")
-	ChainType string `protobuf:"bytes,3,opt,name=chain_type,json=chainType,proto3" json:"chain_type,omitempty"`
-	// The address on the target chain
-	ChainAddress string `protobuf:"bytes,4,opt,name=chain_address,json=chainAddress,proto3" json:"chain_address,omitempty"`
-	// The controller DID
-	ControllerDid string `protobuf:"bytes,5,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
-	// The delegation proof or verification method
-	PublicKeyMultibase string `protobuf:"bytes,6,opt,name=public_key_multibase,json=publicKeyMultibase,proto3" json:"public_key_multibase,omitempty"`
-	// Public Key JWKS is a map of the associated public keys
-	PublicKeyJwks map[string]string `protobuf:"bytes,7,rep,name=public_key_jwks,json=publicKeyJwks,proto3" json:"public_key_jwks,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// IBC Channel ID
-	ChannelId uint64 `protobuf:"varint,8,opt,name=channel_id,json=channelId,proto3" json:"channel_id,omitempty"`
+	// The controller of the proof
+	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The value of the linked identifier
+	Issuer string `protobuf:"bytes,3,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	// The property of the proof
+	Property string `protobuf:"bytes,4,opt,name=property,proto3" json:"property,omitempty"`
+	// The accumulator of the proof
+	Accumulator []byte `protobuf:"bytes,5,opt,name=accumulator,proto3" json:"accumulator,omitempty"`
+	// The secret key of the proof
+	Key []byte `protobuf:"bytes,6,opt,name=key,proto3" json:"key,omitempty"`
 }
 
-func (m *Delegation) Reset()         { *m = Delegation{} }
-func (m *Delegation) String() string { return proto.CompactTextString(m) }
-func (*Delegation) ProtoMessage()    {}
-func (*Delegation) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f44bb702879c34b4, []int{4}
+func (m *Proof) Reset()         { *m = Proof{} }
+func (m *Proof) String() string { return proto.CompactTextString(m) }
+func (*Proof) ProtoMessage()    {}
+func (*Proof) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f44bb702879c34b4, []int{2}
 }
-func (m *Delegation) XXX_Unmarshal(b []byte) error {
+func (m *Proof) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Delegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *Proof) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Delegation.Marshal(b, m, deterministic)
+		return xxx_messageInfo_Proof.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -392,80 +283,76 @@ func (m *Delegation) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Delegation) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Delegation.Merge(m, src)
+func (m *Proof) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Proof.Merge(m, src)
 }
-func (m *Delegation) XXX_Size() int {
+func (m *Proof) XXX_Size() int {
 	return m.Size()
 }
-func (m *Delegation) XXX_DiscardUnknown() {
-	xxx_messageInfo_Delegation.DiscardUnknown(m)
+func (m *Proof) XXX_DiscardUnknown() {
+	xxx_messageInfo_Proof.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Delegation proto.InternalMessageInfo
+var xxx_messageInfo_Proof proto.InternalMessageInfo
 
-func (m *Delegation) GetId() string {
+func (m *Proof) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Delegation) GetDid() string {
+func (m *Proof) GetController() string {
 	if m != nil {
-		return m.Did
+		return m.Controller
 	}
 	return ""
 }
 
-func (m *Delegation) GetChainType() string {
+func (m *Proof) GetIssuer() string {
 	if m != nil {
-		return m.ChainType
+		return m.Issuer
 	}
 	return ""
 }
 
-func (m *Delegation) GetChainAddress() string {
+func (m *Proof) GetProperty() string {
 	if m != nil {
-		return m.ChainAddress
+		return m.Property
 	}
 	return ""
 }
 
-func (m *Delegation) GetControllerDid() string {
+func (m *Proof) GetAccumulator() []byte {
 	if m != nil {
-		return m.ControllerDid
-	}
-	return ""
-}
-
-func (m *Delegation) GetPublicKeyMultibase() string {
-	if m != nil {
-		return m.PublicKeyMultibase
-	}
-	return ""
-}
-
-func (m *Delegation) GetPublicKeyJwks() map[string]string {
-	if m != nil {
-		return m.PublicKeyJwks
+		return m.Accumulator
 	}
 	return nil
 }
 
-func (m *Delegation) GetChannelId() uint64 {
+func (m *Proof) GetKey() []byte {
 	if m != nil {
-		return m.ChannelId
+		return m.Key
 	}
-	return 0
+	return nil
 }
 
-// Service represents a service in a DID Document
-type Service struct {
+// ServiceRecord represents a decentralized service in a DID Document
+type ServiceRecord struct {
 	// The ID of the service
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The type of the service
 	ServiceType string `protobuf:"bytes,2,opt,name=service_type,json=serviceType,proto3" json:"service_type,omitempty"`
+	// The authority DID of the service
+	Authority string `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
+	// The domain name of the service
+	Origin string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
+	// The description of the service
+	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	// The service endpoint
+	ServiceEndpoints map[string]string `protobuf:"bytes,6,rep,name=service_endpoints,json=serviceEndpoints,proto3" json:"service_endpoints,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// Scopes is the Authorization Grants of the service
+	Permissions *Permissions `protobuf:"bytes,7,opt,name=permissions,proto3" json:"permissions,omitempty"`
 	// The controller DID of the service
 	ControllerDid string `protobuf:"bytes,3,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
 	// The domain name of the service
@@ -476,18 +363,18 @@ type Service struct {
 	Scopes []PermissionScope `protobuf:"varint,6,rep,packed,name=scopes,proto3,enum=did.v1.PermissionScope" json:"scopes,omitempty"`
 }
 
-func (m *Service) Reset()         { *m = Service{} }
-func (m *Service) String() string { return proto.CompactTextString(m) }
-func (*Service) ProtoMessage()    {}
-func (*Service) Descriptor() ([]byte, []int) {
-	return fileDescriptor_f44bb702879c34b4, []int{5}
+func (m *ServiceRecord) Reset()         { *m = ServiceRecord{} }
+func (m *ServiceRecord) String() string { return proto.CompactTextString(m) }
+func (*ServiceRecord) ProtoMessage()    {}
+func (*ServiceRecord) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f44bb702879c34b4, []int{3}
 }
-func (m *Service) XXX_Unmarshal(b []byte) error {
+func (m *ServiceRecord) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *Service) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *ServiceRecord) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_Service.Marshal(b, m, deterministic)
+		return xxx_messageInfo_ServiceRecord.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -497,39 +384,50 @@ func (m *Service) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 		return b[:n], nil
 	}
 }
-func (m *Service) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Service.Merge(m, src)
+func (m *ServiceRecord) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ServiceRecord.Merge(m, src)
 }
-func (m *Service) XXX_Size() int {
+func (m *ServiceRecord) XXX_Size() int {
 	return m.Size()
 }
-func (m *Service) XXX_DiscardUnknown() {
-	xxx_messageInfo_Service.DiscardUnknown(m)
+func (m *ServiceRecord) XXX_DiscardUnknown() {
+	xxx_messageInfo_ServiceRecord.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Service proto.InternalMessageInfo
+var xxx_messageInfo_ServiceRecord proto.InternalMessageInfo
 
-func (m *Service) GetId() string {
+func (m *ServiceRecord) GetId() string {
 	if m != nil {
 		return m.Id
 	}
 	return ""
 }
 
-func (m *Service) GetServiceType() string {
+func (m *ServiceRecord) GetServiceType() string {
 	if m != nil {
 		return m.ServiceType
 	}
 	return ""
 }
 
-func (m *Service) GetControllerDid() string {
+func (m *ServiceRecord) GetAuthority() string {
 	if m != nil {
-		return m.ControllerDid
+		return m.Authority
 	}
 	return ""
 }
 
+func (m *ServiceRecord) GetOrigin() string {
+func (m *Service) GetControllerDid() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *ServiceRecord) GetDescription() string {
+	if m != nil {
+		return m.Description
 func (m *Service) GetOriginUri() string {
 	if m != nil {
 		return m.OriginUri
@@ -537,6 +435,7 @@ func (m *Service) GetOriginUri() string {
 	return ""
 }
 
+func (m *ServiceRecord) GetServiceEndpoints() map[string]string {
 func (m *Service) GetServiceEndpoints() map[string]string {
 	if m != nil {
 		return m.ServiceEndpoints
@@ -544,6 +443,100 @@ func (m *Service) GetServiceEndpoints() map[string]string {
 	return nil
 }
 
+func (m *ServiceRecord) GetPermissions() *Permissions {
+	if m != nil {
+		return m.Permissions
+	}
+	return nil
+}
+
+// Verification reprsents a method of verifying membership in a DID
+type VerificationMethod struct {
+	// The unique identifier of the verification
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The controller of the verification
+	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	// The DIDNamespace of the verification
+	Method DIDNamespace `protobuf:"varint,3,opt,name=method,proto3,enum=did.v1.DIDNamespace" json:"method,omitempty"`
+	// The value of the linked identifier
+	Issuer string `protobuf:"bytes,4,opt,name=issuer,proto3" json:"issuer,omitempty"`
+	// The subject of the verification
+	Subject string `protobuf:"bytes,5,opt,name=subject,proto3" json:"subject,omitempty"`
+	// The public key of the verification
+	PublicKey *PubKey `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+}
+
+func (m *VerificationMethod) Reset()         { *m = VerificationMethod{} }
+func (m *VerificationMethod) String() string { return proto.CompactTextString(m) }
+func (*VerificationMethod) ProtoMessage()    {}
+func (*VerificationMethod) Descriptor() ([]byte, []int) {
+	return fileDescriptor_f44bb702879c34b4, []int{4}
+}
+func (m *VerificationMethod) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *VerificationMethod) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_VerificationMethod.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *VerificationMethod) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_VerificationMethod.Merge(m, src)
+}
+func (m *VerificationMethod) XXX_Size() int {
+	return m.Size()
+}
+func (m *VerificationMethod) XXX_DiscardUnknown() {
+	xxx_messageInfo_VerificationMethod.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_VerificationMethod proto.InternalMessageInfo
+
+func (m *VerificationMethod) GetId() string {
+	if m != nil {
+		return m.Id
+	}
+	return ""
+}
+
+func (m *VerificationMethod) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+func (m *VerificationMethod) GetMethod() DIDNamespace {
+	if m != nil {
+		return m.Method
+	}
+	return DIDNamespace_DID_NAMESPACE_UNSPECIFIED
+}
+
+func (m *VerificationMethod) GetIssuer() string {
+	if m != nil {
+		return m.Issuer
+	}
+	return ""
+}
+
+func (m *VerificationMethod) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *VerificationMethod) GetPublicKey() *PubKey {
+	if m != nil {
+		return m.PublicKey
 func (m *Service) GetScopes() []PermissionScope {
 	if m != nil {
 		return m.Scopes
@@ -552,11 +545,12 @@ func (m *Service) GetScopes() []PermissionScope {
 }
 
 func init() {
-	proto.RegisterType((*Aliases)(nil), "did.v1.Aliases")
-	proto.RegisterType((*Assertion)(nil), "did.v1.Assertion")
-	proto.RegisterMapType((map[string]string)(nil), "did.v1.Assertion.MetadataEntry")
-	proto.RegisterType((*Attestation)(nil), "did.v1.Attestation")
+	proto.RegisterType((*Account)(nil), "did.v1.Account")
 	proto.RegisterType((*Controller)(nil), "did.v1.Controller")
+	proto.RegisterType((*Proof)(nil), "did.v1.Proof")
+	proto.RegisterType((*ServiceRecord)(nil), "did.v1.ServiceRecord")
+	proto.RegisterMapType((map[string]string)(nil), "did.v1.ServiceRecord.ServiceEndpointsEntry")
+	proto.RegisterType((*VerificationMethod)(nil), "did.v1.VerificationMethod")
 	proto.RegisterType((*Delegation)(nil), "did.v1.Delegation")
 	proto.RegisterMapType((map[string]string)(nil), "did.v1.Delegation.PublicKeyJwksEntry")
 	proto.RegisterType((*Service)(nil), "did.v1.Service")
@@ -566,6 +560,59 @@ func init() {
 func init() { proto.RegisterFile("did/v1/state.proto", fileDescriptor_f44bb702879c34b4) }
 
 var fileDescriptor_f44bb702879c34b4 = []byte{
+	// 828 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x55, 0x4f, 0x8f, 0xdb, 0x44,
+	0x14, 0x5f, 0xdb, 0x59, 0x67, 0xf3, 0xb2, 0xbb, 0x84, 0xe9, 0xb2, 0x8c, 0x52, 0x88, 0xdc, 0x1c,
+	0x20, 0x82, 0x90, 0xb4, 0xcb, 0x1f, 0xa1, 0x88, 0x4b, 0x49, 0x7b, 0x40, 0x15, 0xa8, 0x32, 0x08,
+	0x21, 0x24, 0xb4, 0x72, 0x66, 0xa6, 0xbb, 0x03, 0xb6, 0xc7, 0x9a, 0x19, 0x47, 0xf5, 0x67, 0x40,
+	0x42, 0xdc, 0xb8, 0x71, 0xe4, 0xb3, 0x20, 0x4e, 0x45, 0x5c, 0x38, 0xa2, 0xdd, 0x6f, 0xc0, 0x27,
+	0x40, 0x33, 0x1e, 0x27, 0xde, 0x50, 0xa9, 0xea, 0x25, 0xca, 0xfb, 0xbd, 0x37, 0xf3, 0xde, 0xef,
+	0xf7, 0x7e, 0x23, 0x03, 0xa2, 0x9c, 0xce, 0xd7, 0xf7, 0xe6, 0x4a, 0x27, 0x9a, 0xcd, 0x0a, 0x29,
+	0xb4, 0x40, 0x21, 0xe5, 0x74, 0xb6, 0xbe, 0x37, 0x7c, 0x9d, 0x08, 0x95, 0x09, 0x35, 0x17, 0x32,
+	0x33, 0x25, 0x42, 0x66, 0x75, 0xc1, 0xf0, 0xc4, 0x1d, 0xba, 0x60, 0x39, 0x53, 0x5c, 0x39, 0xf4,
+	0x96, 0x43, 0x33, 0x41, 0x59, 0xea, 0xc0, 0xf1, 0x1f, 0x3e, 0x74, 0xef, 0x13, 0x22, 0xca, 0x5c,
+	0xa3, 0x63, 0xf0, 0x39, 0xc5, 0x5e, 0xe4, 0x4d, 0x7a, 0xb1, 0xcf, 0x29, 0x1a, 0x01, 0x10, 0x91,
+	0x6b, 0x29, 0xd2, 0x94, 0x49, 0xec, 0x5b, 0xbc, 0x85, 0xa0, 0xf7, 0x00, 0x8a, 0x72, 0x95, 0x72,
+	0x72, 0xfe, 0x03, 0xab, 0x70, 0x10, 0x79, 0x93, 0xfe, 0xd9, 0xf1, 0xac, 0x1e, 0x6e, 0xf6, 0xb8,
+	0x5c, 0x3d, 0x62, 0x55, 0xdc, 0xab, 0x2b, 0x1e, 0xb1, 0x0a, 0x61, 0xe8, 0x26, 0x94, 0x4a, 0xa6,
+	0x14, 0xee, 0xd8, 0xbb, 0x9a, 0x10, 0x9d, 0xc0, 0x7e, 0x9a, 0xac, 0x58, 0x8a, 0xf7, 0x2d, 0x5e,
+	0x07, 0xe8, 0x4d, 0x00, 0x72, 0x99, 0xf0, 0xfc, 0x9c, 0x08, 0xca, 0x70, 0x18, 0x79, 0x93, 0xa3,
+	0xb8, 0x67, 0x91, 0xa5, 0xa0, 0xcc, 0x1c, 0xe2, 0x39, 0x65, 0x4f, 0x71, 0xd7, 0x66, 0xea, 0x00,
+	0x9d, 0x42, 0x68, 0x4b, 0x14, 0x3e, 0x88, 0x82, 0x49, 0x2f, 0x76, 0xd1, 0x82, 0xfc, 0xfb, 0xeb,
+	0x5f, 0x3f, 0x05, 0xdf, 0x41, 0xc7, 0x70, 0x44, 0xa7, 0x30, 0xd8, 0xf2, 0x98, 0xda, 0x76, 0x03,
+	0x0f, 0x7b, 0x08, 0x03, 0x6a, 0xe1, 0x6e, 0xbc, 0x81, 0x8f, 0x3d, 0x74, 0x07, 0x6e, 0xb7, 0x32,
+	0xdb, 0xb9, 0xa6, 0xb6, 0xed, 0x20, 0xc0, 0x1e, 0xf6, 0xc6, 0xbf, 0xf8, 0x00, 0xcb, 0xad, 0x3e,
+	0xbb, 0x7a, 0xb6, 0x04, 0xf0, 0x6f, 0x0a, 0xf0, 0x36, 0x74, 0x93, 0x94, 0x27, 0x8a, 0x29, 0x1c,
+	0x44, 0xc1, 0xa4, 0x7f, 0x76, 0xd4, 0xc8, 0x78, 0xdf, 0xc0, 0x71, 0x93, 0xdd, 0x91, 0xbc, 0xf3,
+	0x22, 0xc9, 0x6f, 0x43, 0x6f, 0x9d, 0x94, 0xa9, 0x3e, 0x27, 0x9c, 0x3a, 0x71, 0x0f, 0x2c, 0xb0,
+	0xe4, 0x14, 0x2d, 0xe0, 0x38, 0x29, 0xf5, 0x25, 0xcb, 0x35, 0x27, 0x89, 0xe6, 0x22, 0xc7, 0xa1,
+	0xed, 0x8d, 0x9a, 0xfb, 0x96, 0x92, 0x51, 0x93, 0x4d, 0xd2, 0x78, 0xa7, 0x72, 0x31, 0xb3, 0x72,
+	0x4e, 0x9c, 0x9c, 0x47, 0x1b, 0x62, 0x56, 0xc5, 0x57, 0x5a, 0x5d, 0x8d, 0x78, 0xd8, 0x1f, 0xff,
+	0xe9, 0xc1, 0xfe, 0x63, 0x29, 0xc4, 0x93, 0x97, 0x36, 0xd9, 0x29, 0x84, 0x5c, 0xa9, 0x92, 0x49,
+	0x6b, 0xb0, 0x5e, 0xec, 0x22, 0x34, 0x84, 0x83, 0x42, 0x8a, 0x82, 0x49, 0x5d, 0x39, 0x3b, 0x6d,
+	0x62, 0x14, 0x41, 0x3f, 0x21, 0xa4, 0xcc, 0xca, 0x34, 0xd1, 0x42, 0x5a, 0xe2, 0x87, 0x71, 0x1b,
+	0x42, 0x03, 0x08, 0x8c, 0x80, 0xa1, 0xcd, 0x98, 0xbf, 0x8b, 0xbb, 0x96, 0xd1, 0x3b, 0x8e, 0x51,
+	0x04, 0xc3, 0xd6, 0xba, 0xeb, 0x96, 0xd3, 0xe6, 0x7e, 0x43, 0x12, 0x77, 0xc6, 0xbf, 0x05, 0x70,
+	0xf4, 0x25, 0x93, 0x6b, 0x4e, 0x58, 0xcc, 0x88, 0x90, 0xf4, 0x7f, 0xdc, 0xee, 0xc0, 0xa1, 0xaa,
+	0x0b, 0xce, 0x75, 0x55, 0x30, 0xc7, 0xae, 0xef, 0xb0, 0xaf, 0xaa, 0x82, 0xa1, 0x37, 0xa0, 0x67,
+	0xa4, 0x15, 0x92, 0xeb, 0xca, 0x31, 0xdc, 0x02, 0x86, 0xbc, 0x90, 0xfc, 0x82, 0xe7, 0x8e, 0xa2,
+	0x8b, 0x0c, 0x41, 0xca, 0x14, 0x91, 0xbc, 0xb0, 0x7b, 0xab, 0x37, 0xdb, 0x86, 0xd0, 0x37, 0xf0,
+	0x6a, 0xd3, 0x9a, 0xe5, 0xb4, 0x10, 0x3c, 0xd7, 0xca, 0xed, 0xf7, 0xdd, 0x66, 0xbf, 0x37, 0x86,
+	0x6f, 0xa2, 0x87, 0x4d, 0xf5, 0xc3, 0x5c, 0xcb, 0x2a, 0x1e, 0xa8, 0x1d, 0x18, 0x7d, 0x08, 0xfd,
+	0x82, 0xc9, 0x8c, 0x2b, 0xc5, 0x45, 0xae, 0xec, 0xeb, 0xeb, 0x9f, 0xdd, 0xda, 0x78, 0x70, 0x9b,
+	0x8a, 0xdb, 0x75, 0xc3, 0x25, 0xbc, 0xf6, 0xdc, 0x0e, 0xcd, 0x2a, 0x6a, 0xd5, 0xcc, 0x5f, 0xf3,
+	0xb2, 0xd7, 0x49, 0x5a, 0x36, 0x7a, 0xd5, 0xc1, 0xc2, 0xff, 0xd8, 0x5b, 0x7c, 0x60, 0x97, 0x34,
+	0x73, 0x4b, 0x3a, 0x6c, 0xd4, 0xb1, 0xae, 0x3b, 0x85, 0xc1, 0x46, 0xb8, 0xa9, 0xc3, 0x8d, 0xf9,
+	0x82, 0xf1, 0x8f, 0x3e, 0xa0, 0xaf, 0x99, 0xe4, 0x4f, 0x9c, 0x7b, 0x3f, 0x67, 0xfa, 0x52, 0xd0,
+	0x97, 0x76, 0xe2, 0x14, 0xc2, 0xcc, 0x9e, 0xb4, 0x7b, 0x3a, 0x3e, 0x3b, 0x69, 0x38, 0x3f, 0xf8,
+	0xec, 0xc1, 0x17, 0x49, 0xc6, 0x54, 0x91, 0x10, 0x16, 0xbb, 0x9a, 0x96, 0x6f, 0x3b, 0x37, 0x7c,
+	0x8b, 0xa1, 0xab, 0xca, 0xd5, 0xf7, 0x8c, 0x68, 0xb7, 0xb6, 0x26, 0xdc, 0x79, 0xdb, 0xe1, 0x0b,
+	0xde, 0xf6, 0xe2, 0x23, 0xab, 0xc5, 0x5d, 0xa7, 0xc5, 0x5b, 0x10, 0xb5, 0x0c, 0x5b, 0xcf, 0xd0,
+	0xf8, 0xd6, 0x35, 0xb0, 0xb6, 0xdd, 0xff, 0xf4, 0x93, 0xdf, 0xaf, 0x46, 0xde, 0xb3, 0xab, 0x91,
+	0xf7, 0xcf, 0xd5, 0xc8, 0xfb, 0xf9, 0x7a, 0xb4, 0xf7, 0xec, 0x7a, 0xb4, 0xf7, 0xf7, 0xf5, 0x68,
+	0xef, 0xdb, 0xf1, 0x05, 0xd7, 0x97, 0xe5, 0x6a, 0x46, 0x44, 0x36, 0x17, 0xb9, 0x12, 0xb9, 0x9c,
+	0xdb, 0x9f, 0xa7, 0x73, 0xf3, 0xe5, 0x30, 0x0e, 0x56, 0xab, 0xd0, 0x7e, 0x36, 0xde, 0xff, 0x2f,
+	0x00, 0x00, 0xff, 0xff, 0x31, 0x1c, 0x51, 0xe6, 0x98, 0x06, 0x00, 0x00,
 	// 760 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x95, 0xbd, 0x6e, 0x2b, 0x45,
 	0x14, 0xc7, 0xb3, 0x5e, 0x7f, 0x1e, 0x7f, 0x60, 0x46, 0x81, 0x2c, 0x46, 0x31, 0xc6, 0xe8, 0x4a,
@@ -617,7 +664,7 @@ var fileDescriptor_f44bb702879c34b4 = []byte{
 	0x54, 0xb1, 0xb7, 0x51, 0x8b, 0x06, 0x00, 0x00,
 }
 
-func (m *Aliases) Marshal() (dAtA []byte, err error) {
+func (m *Account) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -627,16 +674,21 @@ func (m *Aliases) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Aliases) MarshalTo(dAtA []byte) (int, error) {
+func (m *Account) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Aliases) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Account) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Chains) > 0 {
+		for iNdEx := len(m.Chains) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Chains[iNdEx])
+			copy(dAtA[i:], m.Chains[iNdEx])
+			i = encodeVarintState(dAtA, i, uint64(len(m.Chains[iNdEx])))
 	if m.Expiration != 0 {
 		i = encodeVarintState(dAtA, i, uint64(m.Expiration))
 		i--
@@ -708,86 +760,49 @@ func (m *Assertion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			copy(dAtA[i:], v)
 			i = encodeVarintState(dAtA, i, uint64(len(v)))
 			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintState(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintState(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x42
 		}
 	}
-	if len(m.Credential) > 0 {
-		i -= len(m.Credential)
-		copy(dAtA[i:], m.Credential)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Credential)))
+	if m.Index != 0 {
+		i = encodeVarintState(dAtA, i, uint64(m.Index))
+		i--
+		dAtA[i] = 0x38
+	}
+	if m.ChainCode != 0 {
+		i = encodeVarintState(dAtA, i, uint64(m.ChainCode))
+		i--
+		dAtA[i] = 0x30
+	}
+	if len(m.Label) > 0 {
+		i -= len(m.Label)
+		copy(dAtA[i:], m.Label)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Label)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Address)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.PublicKey != nil {
+		{
+			size, err := m.PublicKey.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintState(dAtA, i, uint64(size))
+		}
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.KeyType) > 0 {
-		i -= len(m.KeyType)
-		copy(dAtA[i:], m.KeyType)
-		i = encodeVarintState(dAtA, i, uint64(len(m.KeyType)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *Attestation) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Attestation) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Attestation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
 	if len(m.Controller) > 0 {
 		i -= len(m.Controller)
 		copy(dAtA[i:], m.Controller)
 		i = encodeVarintState(dAtA, i, uint64(len(m.Controller)))
-		i--
-		dAtA[i] = 0x2a
-	}
-	if len(m.Proof) > 0 {
-		i -= len(m.Proof)
-		copy(dAtA[i:], m.Proof)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Proof)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Value) > 0 {
-		i -= len(m.Value)
-		copy(dAtA[i:], m.Value)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Value)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if len(m.KeyType) > 0 {
-		i -= len(m.KeyType)
-		copy(dAtA[i:], m.KeyType)
-		i = encodeVarintState(dAtA, i, uint64(len(m.KeyType)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -821,31 +836,57 @@ func (m *Controller) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Fingerprint) > 0 {
-		i -= len(m.Fingerprint)
-		copy(dAtA[i:], m.Fingerprint)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Fingerprint)))
-		i--
-		dAtA[i] = 0x2a
+	if len(m.Authentication) > 0 {
+		for iNdEx := len(m.Authentication) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Authentication[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintState(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x32
+		}
 	}
 	if len(m.VaultCid) > 0 {
 		i -= len(m.VaultCid)
 		copy(dAtA[i:], m.VaultCid)
 		i = encodeVarintState(dAtA, i, uint64(len(m.VaultCid)))
 		i--
+		dAtA[i] = 0x2a
+	}
+	if m.PublicKey != nil {
+		{
+			size, err := m.PublicKey.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintState(dAtA, i, uint64(size))
+		}
+		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.PublicKeyMultibase) > 0 {
-		i -= len(m.PublicKeyMultibase)
-		copy(dAtA[i:], m.PublicKeyMultibase)
-		i = encodeVarintState(dAtA, i, uint64(len(m.PublicKeyMultibase)))
-		i--
-		dAtA[i] = 0x1a
+	if len(m.Aliases) > 0 {
+		for iNdEx := len(m.Aliases) - 1; iNdEx >= 0; iNdEx-- {
+			{
+				size, err := m.Aliases[iNdEx].MarshalToSizedBuffer(dAtA[:i])
+				if err != nil {
+					return 0, err
+				}
+				i -= size
+				i = encodeVarintState(dAtA, i, uint64(size))
+			}
+			i--
+			dAtA[i] = 0x1a
+		}
 	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Did)))
+	if len(m.Address) > 0 {
+		i -= len(m.Address)
+		copy(dAtA[i:], m.Address)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Address)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -859,7 +900,7 @@ func (m *Controller) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Delegation) Marshal() (dAtA []byte, err error) {
+func (m *Proof) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -869,24 +910,96 @@ func (m *Delegation) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Delegation) MarshalTo(dAtA []byte) (int, error) {
+func (m *Proof) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Delegation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Proof) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if m.ChannelId != 0 {
-		i = encodeVarintState(dAtA, i, uint64(m.ChannelId))
+	if len(m.Key) > 0 {
+		i -= len(m.Key)
+		copy(dAtA[i:], m.Key)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Key)))
 		i--
-		dAtA[i] = 0x40
+		dAtA[i] = 0x32
 	}
-	if len(m.PublicKeyJwks) > 0 {
-		for k := range m.PublicKeyJwks {
-			v := m.PublicKeyJwks[k]
+	if len(m.Accumulator) > 0 {
+		i -= len(m.Accumulator)
+		copy(dAtA[i:], m.Accumulator)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Accumulator)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Property) > 0 {
+		i -= len(m.Property)
+		copy(dAtA[i:], m.Property)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Property)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Issuer) > 0 {
+		i -= len(m.Issuer)
+		copy(dAtA[i:], m.Issuer)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Issuer)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Id) > 0 {
+		i -= len(m.Id)
+		copy(dAtA[i:], m.Id)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Id)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *ServiceRecord) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *ServiceRecord) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *ServiceRecord) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Permissions != nil {
+		{
+			size, err := m.Permissions.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintState(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x3a
+	}
+	if len(m.ServiceEndpoints) > 0 {
+		for k := range m.ServiceEndpoints {
+			v := m.ServiceEndpoints[k]
 			baseI := i
 			i -= len(v)
 			copy(dAtA[i:], v)
@@ -900,41 +1013,34 @@ func (m *Delegation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 			dAtA[i] = 0xa
 			i = encodeVarintState(dAtA, i, uint64(baseI-i))
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x32
 		}
 	}
-	if len(m.PublicKeyMultibase) > 0 {
-		i -= len(m.PublicKeyMultibase)
-		copy(dAtA[i:], m.PublicKeyMultibase)
-		i = encodeVarintState(dAtA, i, uint64(len(m.PublicKeyMultibase)))
-		i--
-		dAtA[i] = 0x32
-	}
-	if len(m.ControllerDid) > 0 {
-		i -= len(m.ControllerDid)
-		copy(dAtA[i:], m.ControllerDid)
-		i = encodeVarintState(dAtA, i, uint64(len(m.ControllerDid)))
+	if len(m.Description) > 0 {
+		i -= len(m.Description)
+		copy(dAtA[i:], m.Description)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Description)))
 		i--
 		dAtA[i] = 0x2a
 	}
-	if len(m.ChainAddress) > 0 {
-		i -= len(m.ChainAddress)
-		copy(dAtA[i:], m.ChainAddress)
-		i = encodeVarintState(dAtA, i, uint64(len(m.ChainAddress)))
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Origin)))
 		i--
 		dAtA[i] = 0x22
 	}
-	if len(m.ChainType) > 0 {
-		i -= len(m.ChainType)
-		copy(dAtA[i:], m.ChainType)
-		i = encodeVarintState(dAtA, i, uint64(len(m.ChainType)))
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Authority)))
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintState(dAtA, i, uint64(len(m.Did)))
+	if len(m.ServiceType) > 0 {
+		i -= len(m.ServiceType)
+		copy(dAtA[i:], m.ServiceType)
+		i = encodeVarintState(dAtA, i, uint64(len(m.ServiceType)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -948,7 +1054,7 @@ func (m *Delegation) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Service) Marshal() (dAtA []byte, err error) {
+func (m *VerificationMethod) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -958,16 +1064,46 @@ func (m *Service) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Service) MarshalTo(dAtA []byte) (int, error) {
+func (m *VerificationMethod) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Service) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *VerificationMethod) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if m.PublicKey != nil {
+		{
+			size, err := m.PublicKey.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintState(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x32
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.Issuer) > 0 {
+		i -= len(m.Issuer)
+		copy(dAtA[i:], m.Issuer)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Issuer)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if m.Method != 0 {
+		i = encodeVarintState(dAtA, i, uint64(m.Method))
+		i--
+		dAtA[i] = 0x18
 	if len(m.Scopes) > 0 {
 		dAtA2 := make([]byte, len(m.Scopes)*10)
 		var j1 int
@@ -1019,10 +1155,10 @@ func (m *Service) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		i--
 		dAtA[i] = 0x1a
 	}
-	if len(m.ServiceType) > 0 {
-		i -= len(m.ServiceType)
-		copy(dAtA[i:], m.ServiceType)
-		i = encodeVarintState(dAtA, i, uint64(len(m.ServiceType)))
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintState(dAtA, i, uint64(len(m.Controller)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -1047,7 +1183,7 @@ func encodeVarintState(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Aliases) Size() (n int) {
+func (m *Account) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1069,70 +1205,29 @@ func (m *Aliases) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	if m.Expiration != 0 {
-		n += 1 + sovState(uint64(m.Expiration))
+	if m.PublicKey != nil {
+		l = m.PublicKey.Size()
+		n += 1 + l + sovState(uint64(l))
 	}
-	return n
-}
-
-func (m *Assertion) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
+	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.KeyType)
+	l = len(m.Label)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.Credential)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
+	if m.ChainCode != 0 {
+		n += 1 + sovState(uint64(m.ChainCode))
 	}
-	if len(m.Metadata) > 0 {
-		for k, v := range m.Metadata {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovState(uint64(len(k))) + 1 + len(v) + sovState(uint64(len(v)))
-			n += mapEntrySize + 1 + sovState(uint64(mapEntrySize))
+	if m.Index != 0 {
+		n += 1 + sovState(uint64(m.Index))
+	}
+	if len(m.Chains) > 0 {
+		for _, s := range m.Chains {
+			l = len(s)
+			n += 1 + l + sovState(uint64(l))
 		}
-	}
-	l = len(m.Controller)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
-	}
-	return n
-}
-
-func (m *Attestation) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
-	}
-	l = len(m.KeyType)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
-	}
-	l = len(m.Value)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
-	}
-	l = len(m.Proof)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
-	}
-	l = len(m.Controller)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
 	}
 	return n
 }
@@ -1147,26 +1242,34 @@ func (m *Controller) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.Did)
+	l = len(m.Address)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.PublicKeyMultibase)
-	if l > 0 {
+	if len(m.Aliases) > 0 {
+		for _, e := range m.Aliases {
+			l = e.Size()
+			n += 1 + l + sovState(uint64(l))
+		}
+	}
+	if m.PublicKey != nil {
+		l = m.PublicKey.Size()
 		n += 1 + l + sovState(uint64(l))
 	}
 	l = len(m.VaultCid)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.Fingerprint)
-	if l > 0 {
-		n += 1 + l + sovState(uint64(l))
+	if len(m.Authentication) > 0 {
+		for _, e := range m.Authentication {
+			l = e.Size()
+			n += 1 + l + sovState(uint64(l))
+		}
 	}
 	return n
 }
 
-func (m *Delegation) Size() (n int) {
+func (m *Proof) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1176,41 +1279,30 @@ func (m *Delegation) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.Did)
+	l = len(m.Controller)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.ChainType)
+	l = len(m.Issuer)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.ChainAddress)
+	l = len(m.Property)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.ControllerDid)
+	l = len(m.Accumulator)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
-	l = len(m.PublicKeyMultibase)
+	l = len(m.Key)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
-	}
-	if len(m.PublicKeyJwks) > 0 {
-		for k, v := range m.PublicKeyJwks {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovState(uint64(len(k))) + 1 + len(v) + sovState(uint64(len(v)))
-			n += mapEntrySize + 1 + sovState(uint64(mapEntrySize))
-		}
-	}
-	if m.ChannelId != 0 {
-		n += 1 + sovState(uint64(m.ChannelId))
 	}
 	return n
 }
 
-func (m *Service) Size() (n int) {
+func (m *ServiceRecord) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1224,6 +1316,15 @@ func (m *Service) Size() (n int) {
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
 	}
+	l = len(m.Authority)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	l = len(m.Description)
 	l = len(m.ControllerDid)
 	if l > 0 {
 		n += 1 + l + sovState(uint64(l))
@@ -1240,6 +1341,41 @@ func (m *Service) Size() (n int) {
 			n += mapEntrySize + 1 + sovState(uint64(mapEntrySize))
 		}
 	}
+	if m.Permissions != nil {
+		l = m.Permissions.Size()
+		n += 1 + l + sovState(uint64(l))
+	}
+	return n
+}
+
+func (m *VerificationMethod) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Id)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	if m.Method != 0 {
+		n += 1 + sovState(uint64(m.Method))
+	}
+	l = len(m.Issuer)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovState(uint64(l))
+	}
+	if m.PublicKey != nil {
+		l = m.PublicKey.Size()
+		n += 1 + l + sovState(uint64(l))
 	if len(m.Scopes) > 0 {
 		l = 0
 		for _, e := range m.Scopes {
@@ -1256,7 +1392,7 @@ func sovState(x uint64) (n int) {
 func sozState(x uint64) (n int) {
 	return sovState(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Aliases) Unmarshal(dAtA []byte) error {
+func (m *Account) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1279,10 +1415,10 @@ func (m *Aliases) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Aliases: wiretype end group for non-group")
+			return fmt.Errorf("proto: Account: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Aliases: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Account: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -1413,176 +1549,9 @@ func (m *Aliases) Unmarshal(dAtA []byte) error {
 			}
 			m.Controller = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
-			}
-			m.Expiration = 0
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				m.Expiration |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-		default:
-			iNdEx = preIndex
-			skippy, err := skipState(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthState
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Assertion) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowState
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Assertion: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Assertion: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field KeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.KeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Credential", wireType)
-			}
-			var byteLen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				byteLen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if byteLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + byteLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Credential = append(m.Credential[:0], dAtA[iNdEx:postIndex]...)
-			if m.Credential == nil {
-				m.Credential = []byte{}
-			}
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Metadata", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -1609,285 +1578,16 @@ func (m *Assertion) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.Metadata == nil {
-				m.Metadata = make(map[string]string)
+			if m.PublicKey == nil {
+				m.PublicKey = &PubKey{}
 			}
-			var mapkey string
-			var mapvalue string
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowState
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowState
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthState
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthState
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var stringLenmapvalue uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowState
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapvalue |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapvalue := int(stringLenmapvalue)
-					if intStringLenmapvalue < 0 {
-						return ErrInvalidLengthState
-					}
-					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-					if postStringIndexmapvalue < 0 {
-						return ErrInvalidLengthState
-					}
-					if postStringIndexmapvalue > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-					iNdEx = postStringIndexmapvalue
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipState(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthState
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Metadata[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Controller = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipState(dAtA[iNdEx:])
-			if err != nil {
+			if err := m.PublicKey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
 				return err
 			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthState
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Attestation) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowState
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Attestation: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Attestation: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field KeyType", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.KeyType = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Value", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowState
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthState
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthState
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Value = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Proof", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1915,11 +1615,11 @@ func (m *Attestation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Proof = string(dAtA[iNdEx:postIndex])
+			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1947,7 +1647,77 @@ func (m *Attestation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Controller = string(dAtA[iNdEx:postIndex])
+			m.Label = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ChainCode", wireType)
+			}
+			m.ChainCode = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.ChainCode |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 7:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
+			}
+			m.Index = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Index |= uint32(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 8:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Chains", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Chains = append(m.Chains, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -2033,7 +1803,7 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2061,13 +1831,13 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Did = string(dAtA[iNdEx:postIndex])
+			m.Address = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicKeyMultibase", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Aliases", wireType)
 			}
-			var stringLen uint64
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowState
@@ -2077,25 +1847,63 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthState
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthState
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.PublicKeyMultibase = string(dAtA[iNdEx:postIndex])
+			m.Aliases = append(m.Aliases, &Alias{})
+			if err := m.Aliases[len(m.Aliases)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PublicKey == nil {
+				m.PublicKey = &PubKey{}
+			}
+			if err := m.PublicKey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 5:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
 			}
@@ -2127,11 +1935,11 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 			}
 			m.VaultCid = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 5:
+		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Fingerprint", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Authentication", wireType)
 			}
-			var byteLen int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowState
@@ -2141,24 +1949,24 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				byteLen |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			if byteLen < 0 {
+			if msglen < 0 {
 				return ErrInvalidLengthState
 			}
-			postIndex := iNdEx + byteLen
+			postIndex := iNdEx + msglen
 			if postIndex < 0 {
 				return ErrInvalidLengthState
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Fingerprint = append(m.Fingerprint[:0], dAtA[iNdEx:postIndex]...)
-			if m.Fingerprint == nil {
-				m.Fingerprint = []byte{}
+			m.Authentication = append(m.Authentication, &Credential{})
+			if err := m.Authentication[len(m.Authentication)-1].Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
 			}
 			iNdEx = postIndex
 		default:
@@ -2182,7 +1990,7 @@ func (m *Controller) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Delegation) Unmarshal(dAtA []byte) error {
+func (m *Proof) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2205,10 +2013,10 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Delegation: wiretype end group for non-group")
+			return fmt.Errorf("proto: Proof: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Delegation: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Proof: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2245,7 +2053,7 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2273,11 +2081,11 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Did = string(dAtA[iNdEx:postIndex])
+			m.Controller = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ChainType", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2305,11 +2113,11 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ChainType = string(dAtA[iNdEx:postIndex])
+			m.Issuer = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ChainAddress", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Property", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2337,13 +2145,13 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ChainAddress = string(dAtA[iNdEx:postIndex])
+			m.Property = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 5:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ControllerDid", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Accumulator", wireType)
 			}
-			var stringLen uint64
+			var byteLen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowState
@@ -2353,27 +2161,113 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
+				byteLen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
+			if byteLen < 0 {
 				return ErrInvalidLengthState
 			}
-			postIndex := iNdEx + intStringLen
+			postIndex := iNdEx + byteLen
 			if postIndex < 0 {
 				return ErrInvalidLengthState
 			}
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ControllerDid = string(dAtA[iNdEx:postIndex])
+			m.Accumulator = append(m.Accumulator[:0], dAtA[iNdEx:postIndex]...)
+			if m.Accumulator == nil {
+				m.Accumulator = []byte{}
+			}
 			iNdEx = postIndex
 		case 6:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicKeyMultibase", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Key = append(m.Key[:0], dAtA[iNdEx:postIndex]...)
+			if m.Key == nil {
+				m.Key = []byte{}
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipState(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthState
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *ServiceRecord) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowState
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: ServiceRecord: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: ServiceRecord: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2401,11 +2295,139 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.PublicKeyMultibase = string(dAtA[iNdEx:postIndex])
+			m.Id = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
-		case 7:
+		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field PublicKeyJwks", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field ServiceType", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.ServiceType = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Authority = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Description = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field ServiceEndpoints", wireType)
 			}
 			var msglen int
 			for shift := uint(0); ; shift += 7 {
@@ -2432,8 +2454,8 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			if m.PublicKeyJwks == nil {
-				m.PublicKeyJwks = make(map[string]string)
+			if m.ServiceEndpoints == nil {
+				m.ServiceEndpoints = make(map[string]string)
 			}
 			var mapkey string
 			var mapvalue string
@@ -2528,13 +2550,13 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 					iNdEx += skippy
 				}
 			}
-			m.PublicKeyJwks[mapkey] = mapvalue
+			m.ServiceEndpoints[mapkey] = mapvalue
 			iNdEx = postIndex
-		case 8:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ChannelId", wireType)
+		case 7:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
 			}
-			m.ChannelId = 0
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowState
@@ -2544,11 +2566,28 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				m.ChannelId |= uint64(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
+			if msglen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Permissions == nil {
+				m.Permissions = &Permissions{}
+			}
+			if err := m.Permissions.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipState(dAtA[iNdEx:])
@@ -2570,7 +2609,7 @@ func (m *Delegation) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Service) Unmarshal(dAtA []byte) error {
+func (m *VerificationMethod) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2593,10 +2632,10 @@ func (m *Service) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Service: wiretype end group for non-group")
+			return fmt.Errorf("proto: VerificationMethod: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Service: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: VerificationMethod: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2633,7 +2672,7 @@ func (m *Service) Unmarshal(dAtA []byte) error {
 			iNdEx = postIndex
 		case 2:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ServiceType", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -2661,9 +2700,30 @@ func (m *Service) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ServiceType = string(dAtA[iNdEx:postIndex])
+			m.Controller = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		case 3:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Method", wireType)
+			}
+			m.Method = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Method |= DIDNamespace(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field ControllerDid", wireType)
 			}
@@ -2693,7 +2753,75 @@ func (m *Service) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.ControllerDid = string(dAtA[iNdEx:postIndex])
+			m.Issuer = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 6:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowState
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthState
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthState
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.PublicKey == nil {
+				m.PublicKey = &PubKey{}
+			}
+			if err := m.PublicKey.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
 			iNdEx = postIndex
 		case 4:
 			if wireType != 2 {

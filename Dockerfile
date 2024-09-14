@@ -1,4 +1,41 @@
-FROM golang:1.21-alpine AS go-builder
+FROM jetpackio/devbox:latest AS sonrvm
+
+# Installing your devbox project
+WORKDIR /code
+USER root:root
+
+RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
+
+USER ${DEVBOX_USER}:${DEVBOX_USER}
+
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} process-compose.yaml process-compose.yaml
+
+RUN devbox run -- echo "Installed Packages."
+
+ENTRYPOINT ["devbox", "run"]
+
+# --------------------------------------------------------
+FROM jetpackio/devbox:latest AS sonr-runner
+
+WORKDIR /code
+USER root:root
+
+RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
+
+USER ${DEVBOX_USER}:${DEVBOX_USER}
+
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} process-compose.yaml process-compose.yaml
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} . .
+
+RUN devbox run -- echo "Installed Packages."
+
+RUN git config --global --add safe.directory /code
+ENTRYPOINT ["devbox", "run", "testnet"]
+
+# --------------------------------------------------------
+FROM golang:1.22-alpine AS go-builder
 
 SHELL ["/bin/sh", "-ecuxo", "pipefail"]
 
@@ -29,16 +66,28 @@ RUN LEDGER_ENABLED=false BUILD_TAGS=muslc LINK_STATICALLY=true make build \
   && (file /code/build/sonrd | grep "statically linked")
 
 # --------------------------------------------------------
-FROM alpine:3.16
+FROM debian:11-slim
 
 COPY --from=go-builder /code/build/sonrd /usr/bin/sonrd
 
-# Install dependencies used for Starship
-RUN apk add --no-cache curl make bash jq sed
+# Install dependencies for Debian 11
+RUN apt-get update && apt-get install -y \
+  curl \
+  make \
+  bash \
+  jq \
+  sed \
+  && rm -rf /var/lib/apt/lists/*
+
+COPY scripts/test_node.sh /usr/bin/test_node.sh 
 
 WORKDIR /opt
 
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657 6060
 
+<<<<<<< HEAD
+CMD ["test_node.sh"]
+=======
 ENTRYPOINT ["/usr/bin/sonrd"]
+>>>>>>> master

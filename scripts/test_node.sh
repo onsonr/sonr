@@ -8,15 +8,15 @@
 export KEY="user1"
 export KEY2="user2"
 
-export CHAIN_ID=${CHAIN_ID:-"local-1"}
-export MONIKER="localvalidator"
+export CHAIN_ID=${CHAIN_ID:-"sonr-testnet-1"}
+export MONIKER="florence"
 export KEYALGO="secp256k1"
 export KEYRING=${KEYRING:-"test"}
-export HOME_DIR=$(eval echo "${HOME_DIR:-"~/.core"}")
+export HOME_DIR=$(eval echo "${HOME_DIR:-"~/.sonr"}")
 export BINARY=${BINARY:-sonrd}
 export DENOM=${DENOM:-usnr}
 
-export CLEAN=${CLEAN:-"false"}
+export CLEAN=${CLEAN:-"true"}
 export RPC=${RPC:-"26657"}
 export REST=${REST:-"1317"}
 export PROFF=${PROFF:-"6060"}
@@ -106,8 +106,8 @@ from_scratch () {
   update_test_genesis '.app_state["poa"]["params"]["admins"]=["idx10d07y265gmmuvt4z0w9aw880jnsr700j9kqcfa"]'
 
   # Allocate genesis accounts
-  BINARY genesis add-genesis-account $KEY 10000000$DENOM,900test --keyring-backend $KEYRING
-  BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800test --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY 10000000$DENOM,900snr --keyring-backend $KEYRING
+  BINARY genesis add-genesis-account $KEY2 10000000$DENOM,800snr --keyring-backend $KEYRING
 
   # Sign genesis transaction
   BINARY genesis gentx $KEY 1000000$DENOM --keyring-backend $KEYRING --chain-id $CHAIN_ID

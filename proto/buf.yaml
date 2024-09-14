@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/didao/sonr
+name: buf.build/onsonr/sonr
 deps:
   - buf.build/cosmos/cosmos-sdk:9000fcc585a046c9881271d53dd40c34
   - buf.build/cosmos/cosmos-proto:1935555c206d4afb9e94615dfd0fad31

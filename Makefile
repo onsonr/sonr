@@ -10,7 +10,7 @@ SIMAPP = ./app
 
 # for dockerized protobuf tools
 DOCKER := $(shell which docker)
-HTTPS_GIT := github.com/onsonr/hway.git
+HTTPS_GIT := github.com/onsonr/sonr.git
 
 export GO111MODULE = on
 
@@ -213,7 +213,7 @@ proto-check-breaking:
 ## --- Testnet Utilities ---
 get-localic:
 	@echo "Installing local-interchain"
-	git clone --branch v8.2.0 https://github.com/strangelove-ventures/interchaintest.git interchaintest-downloader
+	git clone --branch v8.7.0 https://github.com/strangelove-ventures/interchaintest.git interchaintest-downloader
 	cd interchaintest-downloader/local-interchain && make install
 	@echo ✅ local-interchain installed $(shell which local-ic)
 
@@ -230,7 +230,7 @@ local-image:
 ifeq (,$(shell which heighliner))
 	echo 'heighliner' binary not found. Consider running `make get-heighliner`
 else
-	heighliner build -c sonr --local -f chains.yaml
+	heighliner build -c sonrd --local -f chains.yaml
 endif
 
 .PHONY: get-heighliner local-image is-localic-installed
@@ -292,3 +292,40 @@ sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+
+
+
+###############################################################################
+###                                 templ & vault                           ###
+###############################################################################
+
+.PHONY: dwn motr
+
+dwn:
+	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
+	GOOS=js GOARCH=wasm go build -o ./internal/vfs/dwn.wasm ./cmd/dwn
+
+motr:
+	@echo "(motr) Building app.wasm -> Deploy to Cloudflare Workers"
+	GOOS=js GOARCH=wasm go build -o ./cmd/motr/build/app.wasm ./cmd/motr/main.go
+
+###############################################################################
+###                                     help                                ###
+###############################################################################
+
+
+help:
+	@echo "Usage: make <target>"
+	@echo ""
+	@echo "Available targets:"
+	@echo "  install             : Install the binary"
+	@echo "  local-image         : Install the docker image"
+	@echo "  proto-gen           : Generate code from proto files"
+	@echo "  testnet             : Local devnet with IBC"
+	@echo "  sh-testnet          : Shell local devnet"
+	@echo "  ictest-basic        : Basic end-to-end test"
+	@echo "  ictest-ibc          : IBC end-to-end test"
+	@echo "  templ               : Generate templ files"
+	@echo "  vault               : Build vault.wasm"
+
+.PHONY: help

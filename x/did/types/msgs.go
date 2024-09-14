@@ -49,6 +49,91 @@ func (msg *MsgUpdateParams) Validate() error {
 }
 
 //
+// [RegisterService]
+//
+
+// NewMsgRegisterController creates a new instance of MsgRegisterController
+func NewMsgRegisterService(
+	sender sdk.Address,
+) (*MsgRegisterService, error) {
+	return &MsgRegisterService{
+		Controller: sender.String(),
+	}, nil
+}
+
+// Route returns the name of the module
+func (msg MsgRegisterService) Route() string { return ModuleName }
+
+// Type returns the the action
+func (msg MsgRegisterService) Type() string { return "register_service" }
+
+// GetSignBytes implements the LegacyMsg interface.
+func (msg MsgRegisterService) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message.
+func (msg *MsgRegisterService) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Controller)
+	return []sdk.AccAddress{addr}
+}
+
+// ValidateBasic does a sanity check on the provided data.
+func (msg *MsgRegisterService) Validate() error {
+	return nil
+}
+
+//
+// [AllocateVault]
+//
+
+// NewMsgAllocateVault creates a new instance of MsgAllocateVault
+func NewMsgAllocateVault(
+	sender sdk.Address,
+) (*MsgAllocateVault, error) {
+	return &MsgAllocateVault{
+// [RegisterController]
+//
+
+// NewMsgRegisterController creates a new instance of MsgRegisterController
+func NewMsgRegisterController(
+	sender sdk.Address,
+) (*MsgRegisterController, error) {
+	return &MsgRegisterController{
+		Authority: sender.String(),
+	}, nil
+}
+
+// Route returns the name of the module
+func (msg MsgAllocateVault) Route() string { return ModuleName }
+
+// Type returns the the action
+func (msg MsgAllocateVault) Type() string { return "allocate_vault" }
+
+// GetSignBytes implements the LegacyMsg interface.
+func (msg MsgAllocateVault) GetSignBytes() []byte {
+func (msg MsgRegisterController) Route() string { return ModuleName }
+
+// Type returns the the action
+func (msg MsgRegisterController) Type() string { return "initialize_controller" }
+
+// GetSignBytes implements the LegacyMsg interface.
+func (msg MsgRegisterController) GetSignBytes() []byte {
+	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
+}
+
+// GetSigners returns the expected signers for a MsgUpdateParams message.
+func (msg *MsgAllocateVault) GetSigners() []sdk.AccAddress {
+	addr, _ := sdk.AccAddressFromBech32(msg.Authority)
+	return []sdk.AccAddress{addr}
+}
+
+// Vaalidate does a sanity check on the provided data.
+func (msg *MsgAllocateVault) Validate() error {
+	return nil
+}
+
+//
 // [RegisterController]
 //
 
@@ -65,7 +150,7 @@ func NewMsgRegisterController(
 func (msg MsgRegisterController) Route() string { return ModuleName }
 
 // Type returns the the action
-func (msg MsgRegisterController) Type() string { return "initialize_controller" }
+func (msg MsgRegisterController) Type() string { return "register_controller" }
 
 // GetSignBytes implements the LegacyMsg interface.
 func (msg MsgRegisterController) GetSignBytes() []byte {

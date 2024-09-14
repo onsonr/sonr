@@ -5,8 +5,8 @@ import (
 
 	upgradetypes "cosmossdk.io/x/upgrade/types"
 
-	"github.com/onsonr/hway/app/upgrades"
-	"github.com/onsonr/hway/app/upgrades/noop"
+	"github.com/onsonr/sonr/app/upgrades"
+	"github.com/onsonr/sonr/app/upgrades/noop"
 )
 
 // Upgrades list of chain upgrades
@@ -22,6 +22,7 @@ func (app *SonrApp) RegisterUpgradeHandlers() {
 
 	keepers := upgrades.AppKeepers{
 		AccountKeeper:         &app.AccountKeeper,
+		DidKeeper:             &app.DidKeeper,
 		ParamsKeeper:          &app.ParamsKeeper,
 		ConsensusParamsKeeper: &app.ConsensusParamsKeeper,
 		CapabilityKeeper:      app.CapabilityKeeper,

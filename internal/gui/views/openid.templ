@@ -1,0 +1,19 @@
+package views
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/gui/elements"
+)
+
+func AuthorizeView(c echo.Context) error {
+	return echoComponentResponse(c, renderAuthorizeView())
+}
+
+templ renderAuthorizeView() {
+	@elements.Layout("Login | Sonr.ID") {
+		@elements.Card("authorize-view", elements.SizeMedium) {
+			@elements.H1("Sonr.ID")
+			@elements.Text("Neo-tree is a file manager for NeoFS.")
+		}
+	}
+}

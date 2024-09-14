@@ -3,10 +3,7 @@ package keeper
 import (
 	"context"
 
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	// "github.com/onsonr/hway/internal/local"
-	"github.com/onsonr/hway/x/did/types"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 var _ types.QueryServer = Querier{}
@@ -20,17 +17,65 @@ func NewQuerier(keeper Keeper) Querier {
 }
 
 // Params returns the total set of did parameters.
-func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*types.QueryParamsResponse, error) {
-	ctx := sdk.UnwrapSDKContext(c)
-
-	p, err := k.Keeper.Params.Get(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	return &types.QueryParamsResponse{Params: &p}, nil
+func (k Querier) Params(
+	goCtx context.Context,
+	req *types.QueryRequest,
+) (*types.QueryParamsResponse, error) {
+	ctx := k.CurrentCtx(goCtx)
+	return &types.QueryParamsResponse{Params: k.GetParams(ctx.SDK())}, nil
 }
 
+// Resolve implements types.QueryServer.
+func (k Querier) Resolve(
+	goCtx context.Context,
+	req *types.QueryRequest,
+) (*types.QueryResponse, error) {
+	ctx := k.CurrentCtx(goCtx)
+	return &types.QueryResponse{Params: k.GetParams(ctx.SDK())}, nil
+}
+
+// Service implements types.QueryServer.
+func (k Querier) Service(
+	goCtx context.Context,
+	req *types.QueryRequest,
+) (*types.QueryResponse, error) {
+	ctx := k.CurrentCtx(goCtx)
+	return &types.QueryResponse{Service: ctx.GetServiceInfo(req.GetOrigin()), Params: ctx.Params()}, nil
+}
+
+// ParamsAssets implements types.QueryServer.
+func (k Querier) ParamsAssets(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsAssets is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsByAsset implements types.QueryServer.
+func (k Querier) ParamsByAsset(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsByAsset is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsKeys implements types.QueryServer.
+func (k Querier) ParamsKeys(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsKeys is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsByKey implements types.QueryServer.
+func (k Querier) ParamsByKey(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsByKey is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// RegistrationOptionsByKey implements types.QueryServer.
+func (k Querier) RegistrationOptionsByKey(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("RegistrationOptionsByKey is unimplemented")
+	return &types.QueryResponse{}, nil
 // Accounts implements types.QueryServer.
 func (k Querier) Accounts(goCtx context.Context, req *types.QueryAccountsRequest) (*types.QueryAccountsResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)

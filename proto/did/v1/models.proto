@@ -1,0 +1,114 @@
+syntax = "proto3";
+
+package did.v1;
+
+import "did/v1/genesis.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/onsonr/sonr/x/did/types";
+
+// Alias defines a subject/origin pair
+message Alias {
+  string subject = 1;
+  string origin = 2;
+  string controller = 3;
+}
+
+message Credential {
+  string subject = 1;
+  string attestation_type = 2;
+  string origin = 3;
+  bytes credential_id = 4;
+  bytes public_key = 5;
+  repeated string transport = 6;
+  uint32 sign_count = 7;
+  bool user_present = 8;
+  bool user_verified = 9;
+  bool backup_eligible = 10;
+  bool backup_state = 11;
+  bool clone_warning = 12;
+}
+
+// Document defines a DID document
+message Document {
+  string id = 1;
+  string controller = 2; // The DID of the controller
+  repeated string authentication = 3;
+  repeated string assertion_method = 4;
+  repeated string capability_delegation = 5;
+  repeated string capability_invocation = 6;
+  repeated string service = 7;
+}
+
+// Keyshare defines a keyshare from the MPC protocol
+message Keyshare {
+  map<string, string> metadata = 1;
+  map<string, bytes> payloads = 2;
+  string protocol = 3;
+  bytes public_key = 4;
+  uint32 version = 5;
+  int32 role = 6; // 0 =none, 1 = validator, 2 = user
+}
+
+// Permissions contains a list of grants and access control rules for
+// a Service.
+message Permissions {
+  repeated DIDNamespace grants = 1;
+  repeated PermissionScope scopes = 2;
+}
+
+// PubKey defines a public key for a did
+message PubKey {
+  KeyRole role = 1;
+  KeyAlgorithm algorithm = 2;
+  KeyEncoding encoding = 3;
+  KeyCurve curve = 4;
+  KeyType key_type = 5;
+  bytes raw = 6;
+  JWK jwk = 7;
+
+  // JWK represents a JSON Web Key
+  message JWK {
+    string kty = 1; // Key Type
+    string crv = 2; // Curve (for EC and OKP keys)
+    string x = 3; // X coordinate (for EC and OKP keys)
+    string y = 4; // Y coordinate (for EC keys)
+    string n = 5; // Modulus (for RSA keys)
+    string e = 6; // Exponent (for RSA keys)
+  }
+}
+
+// Service defines a Decentralized Service on the Sonr Blockchain
+message Service {
+  string id = 1;
+  string service_type = 2;
+  string authority = 3;
+  string origin = 4;
+  string description = 5;
+  map<string, string> service_endpoints = 6;
+  Permissions permissions = 7;
+}
+
+// ServicceInfo defines a Decentralized Service on the Sonr Blockchain
+message ServiceInfo {
+  bool exists = 1;
+  string origin = 2;
+  string fingerprint = 3;
+  Service service = 4;
+}
+
+// FirstPartyCaveat defines a first party caveat
+message FirstPartyCaveat {
+  Permissions scope = 1;
+  int64 exp = 2;
+  string cnf = 3;
+  string aud = 4;
+}
+
+// ThirdPartyCaveat defines a third party caveat
+message ThirdPartyCaveat {
+  Permissions scope = 1;
+  int64 exp = 2;
+  string cnf = 3;
+  string aud = 4;
+}

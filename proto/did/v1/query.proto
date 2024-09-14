@@ -1,19 +1,82 @@
 syntax = "proto3";
 package did.v1;
 
-import "google/api/annotations.proto";
 import "did/v1/genesis.proto";
+import "did/v1/models.proto";
+import "google/api/annotations.proto";
 import "did/v1/types.proto";
 
-option go_package = "github.com/onsonr/hway/x/did/types";
+option go_package = "github.com/onsonr/sonr/x/did/types";
 
 // Query provides defines the gRPC querier service.
 service Query {
-    // Params queries all parameters of the module.
-    rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
-        option (google.api.http).get = "/did/params";
-    }
+  // Params queries all parameters of the module.
+  rpc Params(QueryRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/params";
+  }
 
+  // ParamsAssets queries all parameters of the module.
+  rpc ParamsAssets(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/params/assets";
+  }
+
+  // Params queries all parameters of the module.
+  rpc ParamsByAsset(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/params/assets/{asset}";
+  }
+
+  // ParamsKeys queries all parameters of the module.
+  rpc ParamsKeys(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/params/keys";
+  }
+
+  // Params queries all parameters of the module.
+  rpc ParamsByKey(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/params/keys/{key}";
+  }
+
+  // Params queries all parameters of the module.
+  rpc RegistrationOptionsByKey(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/params/keys/{key}/registration";
+  }
+
+  // Resolve queries the DID document by its id.
+  rpc Resolve(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/did/{did}";
+  }
+
+  // Service returns associated ServiceInfo for a given Origin
+  // if the servie is not found, a fingerprint is generated to be used
+  // as a TXT record in DNS. v=sonr, o=origin, p=protocol
+  rpc Service(QueryRequest) returns (QueryResponse) {
+    option (google.api.http).get = "/service/{origin}";
+  }
+}
+
+// Queryequest is the request type for the Query/Params RPC method.
+message QueryRequest {
+  string did = 1;
+  string origin = 2;
+  string key = 3;
+  string asset = 4;
+}
+
+// QueryResolveResponse is the response type for the Query/Resolve RPC method.
+message QueryResponse {
+  bool success = 1;
+  string query = 2;
+  Document document = 3;
+  ServiceInfo service = 4;
+  Params params = 5;
+}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  Params params = 1;
+}
+
+message QueryParamsAssetsResponse {
+  repeated AssetInfo assets = 1;
     // Accounts returns associated wallet accounts with the DID.
     rpc Accounts(QueryAccountsRequest) returns (QueryAccountsResponse) {
       option (google.api.http).get = "/did/{did}/accounts";
@@ -103,3 +166,18 @@ message QueryServiceResponse {
     string options = 1;
 }
 
+message QueryParamsKeysResponse {
+  map<string, KeyInfo> keys = 1;
+}
+
+message QueryParamsByKeyResponse {
+  KeyInfo key = 1;
+}
+
+message QueryParamsByAssetResponse {
+  AssetInfo asset = 1;
+}
+
+message QueryRegistrationOptionsByKeyResponse {
+  repeated string registration_options = 1;
+}

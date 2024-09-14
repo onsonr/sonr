@@ -145,12 +145,9 @@ import (
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 
-	did "github.com/onsonr/hway/x/did"
-	didkeeper "github.com/onsonr/hway/x/did/keeper"
-	didtypes "github.com/onsonr/hway/x/did/types"
-	oracle "github.com/onsonr/hway/x/oracle"
-	oraclekeeper "github.com/onsonr/hway/x/oracle/keeper"
-	oracletypes "github.com/onsonr/hway/x/oracle/types"
+	did "github.com/onsonr/sonr/x/did"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	didtypes "github.com/onsonr/sonr/x/did/types"
 )
 
 const appName = "sonr"
@@ -220,7 +217,6 @@ type SonrApp struct {
 	NFTKeeper          nftkeeper.Keeper
 	AuthzKeeper        authzkeeper.Keeper
 	FeeGrantKeeper     feegrantkeeper.Keeper
-	OracleKeeper       oraclekeeper.Keeper
 	interfaceRegistry  types.InterfaceRegistry
 	txConfig           client.TxConfig
 	appCodec           codec.Codec
@@ -361,7 +357,6 @@ func NewChainApp(
 		poa.StoreKey,
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
-		oracletypes.StoreKey,
 		didtypes.StoreKey,
 	)
 
@@ -616,15 +611,10 @@ func NewChainApp(
 		appCodec,
 		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		app.AccountKeeper,
+		app.NFTKeeper,
+		app.StakingKeeper,
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Create the oracle Middleware Keeper
-	app.OracleKeeper = oraclekeeper.NewKeeper(
-		appCodec,
-		app.MsgServiceRouter(),
-		app.IBCKeeper.ChannelKeeper,
 	)
 
 	// Create the globalfee keeper
@@ -882,9 +872,8 @@ func NewChainApp(
 			app.PacketForwardKeeper,
 			app.GetSubspace(packetforwardtypes.ModuleName),
 		),
-		oracle.NewAppModule(app.OracleKeeper),
 
-		did.NewAppModule(appCodec, app.DidKeeper),
+		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -932,7 +921,6 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -952,7 +940,6 @@ func NewChainApp(
 		ibcfeetypes.ModuleName,
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	)
 
@@ -981,7 +968,6 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
-		oracletypes.ModuleName,
 		didtypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1122,6 +1108,9 @@ func NewChainApp(
 		_ = ctx
 
 	}
+
+	// Start the frontend
+	// go app.ServeFrontend()
 	return app
 }
 
@@ -1436,7 +1425,6 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(globalfee.ModuleName)
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
-	paramsKeeper.Subspace(oracletypes.ModuleName)
 	paramsKeeper.Subspace(didtypes.ModuleName)
 
 	return paramsKeeper

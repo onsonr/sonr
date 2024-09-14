@@ -3,7 +3,7 @@ package types_test
 import (
 	"testing"
 
-	"github.com/onsonr/hway/x/did/types"
+	"github.com/onsonr/sonr/x/did/types"
 
 	"github.com/stretchr/testify/require"
 )
@@ -18,14 +18,6 @@ func TestGenesisState_Validate(t *testing.T) {
 			desc:     "default is valid",
 			genState: types.DefaultGenesis(),
 			valid:    true,
-		},
-		{
-			desc:     "valid genesis state",
-			genState: &types.GenesisState{
-
-				// this line is used by starport scaffolding # types/genesis/validField
-			},
-			valid: true,
 		},
 		// this line is used by starport scaffolding # types/genesis/testcase
 	}

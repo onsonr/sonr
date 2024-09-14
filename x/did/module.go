@@ -4,13 +4,14 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	abci "github.com/cometbft/cometbft/abci/types"
 
 	"cosmossdk.io/client/v2/autocli"
 	errorsmod "cosmossdk.io/errors"
+	"cosmossdk.io/x/nft"
+	nftkeeper "cosmossdk.io/x/nft/keeper"
 
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -18,23 +19,21 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
 
-	"github.com/onsonr/hway/x/did/keeper"
-	"github.com/onsonr/hway/x/did/types"
+	"github.com/onsonr/sonr/x/did/keeper"
+	"github.com/onsonr/sonr/x/did/types"
 	// this line is used by starport scaffolding # 1
 )
 
 const (
-	// ConsensusVersion defines the current x/did module consensus version.
 	ConsensusVersion = 1
 
 // this line is used by starport scaffolding # simapp/module/const
 )
 
 var (
-	_ module.AppModuleBasic   = AppModuleBasic{}
-	_ module.AppModuleGenesis = AppModule{}
-	_ module.AppModule        = AppModule{}
-
+	_ module.AppModuleBasic    = AppModuleBasic{}
+	_ module.AppModuleGenesis  = AppModule{}
+	_ module.AppModule         = AppModule{}
 	_ autocli.HasAutoCLIConfig = AppModule{}
 )
 
@@ -46,17 +45,20 @@ type AppModuleBasic struct {
 type AppModule struct {
 	AppModuleBasic
 
-	keeper keeper.Keeper
+	keeper    keeper.Keeper
+	nftKeeper nftkeeper.Keeper
 }
 
 // NewAppModule constructor
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	nftKeeper nftkeeper.Keeper,
 ) *AppModule {
 	return &AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
+		nftKeeper:      nftKeeper,
 	}
 }
 
@@ -66,7 +68,8 @@ func (a AppModuleBasic) Name() string {
 
 func (a AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(&types.GenesisState{
-		Params: types.DefaultParams(),
+		GlobalIntegrity: types.DefaultGlobalIntegrity(),
+		Params:          types.DefaultParams(),
 	})
 }
 
@@ -82,27 +85,12 @@ func (a AppModuleBasic) ValidateGenesis(marshaler codec.JSONCodec, _ client.TxEn
 	return nil
 }
 
-func (a AppModuleBasic) RegisterRESTRoutes(_ client.Context, _ *mux.Router) {
-}
-
 func (a AppModuleBasic) RegisterGRPCGatewayRoutes(clientCtx client.Context, mux *runtime.ServeMux) {
 	err := types.RegisterQueryHandlerClient(context.Background(), mux, types.NewQueryClient(clientCtx))
 	if err != nil {
-		// same behavior as in cosmos-sdk
 		panic(err)
 	}
 }
-
-// Disable in favor of autocli.go. If you wish to use these, it will override AutoCLI methods.
-/*
-func (a AppModuleBasic) GetTxCmd() *cobra.Command {
-	return cli.NewTxCmd()
-}
-
-func (a AppModuleBasic) GetQueryCmd() *cobra.Command {
-	return cli.GetQueryCmd()
-}
-*/
 
 func (AppModuleBasic) RegisterLegacyAminoCodec(cdc *codec.LegacyAmino) {
 	types.RegisterLegacyAminoCodec(cdc)
@@ -113,11 +101,15 @@ func (a AppModuleBasic) RegisterInterfaces(r codectypes.InterfaceRegistry) {
 }
 
 func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, message json.RawMessage) []abci.ValidatorUpdate {
-	genesisState := types.DefaultGenesis()
-	if err := a.keeper.Params.Set(ctx, genesisState.Params); err != nil {
+	didGenesisState := types.DefaultGenesis()
+	if err := a.keeper.Params.Set(ctx, didGenesisState.Params); err != nil {
 		panic(err)
 	}
-
+	nftGenesisState := nft.DefaultGenesisState()
+	if err := types.DefaultNFTClasses(nftGenesisState); err != nil {
+		panic(err)
+	}
+	a.nftKeeper.InitGenesis(ctx, nftGenesisState)
 	return nil
 }
 

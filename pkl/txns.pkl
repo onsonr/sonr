@@ -1,0 +1,175 @@
+@go.Package { name = "github.com/onsonr/sonr/x/did/types/txns" }
+
+module txns
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+/// Common Cosmos SDK types
+typealias Coin = Dynamic
+typealias AccAddress = String
+typealias ValAddress = String
+typealias Timestamp = String
+
+/// Base class for all messages
+abstract class Msg {
+  /// The type URL for the message
+  typeUrl: String
+}
+
+/// Base class for all proposals
+class Proposal {
+  /// The title of the proposal
+  title: String
+
+  /// The description of the proposal
+  description: String
+}
+
+
+/// Gov module messages
+class MsgGovSubmitProposal extends Msg {
+    typeUrl = "/cosmos.gov.v1beta1.MsgSubmitProposal"
+    content: Proposal
+    initialDeposit: List<Coin>
+    proposer: AccAddress
+}
+
+class MsgGovVote extends Msg {
+    typeUrl = "/cosmos.gov.v1beta1.MsgVote"
+    proposalId: Int
+    voter: AccAddress
+    option: Int
+}
+
+class MsgGovDeposit extends Msg {
+    typeUrl = "/cosmos.gov.v1beta1.MsgDeposit"
+    proposalId: Int
+    depositor: AccAddress
+    amount: List<Coin>
+}
+
+/// Group module messages
+  class MsgGroupCreateGroup extends Msg {
+    typeUrl = "/cosmos.group.v1.MsgCreateGroup"
+    admin: AccAddress
+    members: List<Dynamic>
+    metadata: String
+  }
+
+  class MsgGroupSubmitProposal extends Msg {
+    typeUrl = "/cosmos.group.v1.MsgSubmitProposal"
+    groupPolicyAddress: AccAddress
+    proposers: List<AccAddress>
+    metadata: String
+    messages: List<Dynamic>
+    exec: Int
+  }
+
+  class MsgGroupVote extends Msg {
+    typeUrl = "/cosmos.group.v1.MsgVote"
+    proposalId: Int
+    voter: AccAddress
+    option: Int
+    metadata: String
+    exec: Int
+  }
+
+/// Staking module messages
+  class MsgStakingCreateValidator extends Msg {
+    typeUrl = "/cosmos.staking.v1beta1.MsgCreateValidator"
+    description: Dynamic
+    commission: Dynamic
+    minSelfDelegation: String
+    delegatorAddress: AccAddress
+    validatorAddress: ValAddress
+    pubkey: Dynamic
+    value: Coin
+  }
+
+  class MsgStakingDelegate extends Msg {
+    typeUrl = "/cosmos.staking.v1beta1.MsgDelegate"
+    delegatorAddress: AccAddress
+    validatorAddress: ValAddress
+    amount: Coin
+  }
+
+  class MsgStakingUndelegate extends Msg {
+    typeUrl = "/cosmos.staking.v1beta1.MsgUndelegate"
+    delegatorAddress: AccAddress
+    validatorAddress: ValAddress
+    amount: Coin
+  }
+
+  class MsgStakingBeginRedelegate extends Msg {
+    typeUrl = "/cosmos.staking.v1beta1.MsgBeginRedelegate"
+    delegatorAddress: AccAddress
+    validatorSrcAddress: ValAddress
+    validatorDstAddress: ValAddress
+    amount: Coin
+  }
+  class MsgDidUpdateParams extends Msg {
+    typeUrl = "/sonr.did.v1.MsgUpdateParams"
+    authority: AccAddress
+    params: Dynamic
+    token: Dynamic
+  }
+
+  class MsgDidAllocateVault extends Msg {
+    typeUrl = "/sonr.did.v1.MsgAllocateVault"
+    authority: AccAddress
+    subject: String
+    token: Dynamic
+  }
+
+  class MsgDidProveWitness extends Msg {
+    typeUrl = "/sonr.did.v1.MsgProveWitness"
+    authority: AccAddress
+    property: String
+    witness: Listing<Int>
+    token: Dynamic
+  }
+
+  class MsgDidSyncVault extends Msg {
+    typeUrl = "/sonr.did.v1.MsgSyncVault"
+    controller: AccAddress
+    token: Dynamic
+  }
+
+class MsgDidRegisterController extends Msg {
+    typeUrl = "/sonr.did.v1.MsgRegisterController"
+    authority: AccAddress
+    cid: String
+    origin: String
+    authentication: List<Dynamic>
+    token: Dynamic
+  }
+
+class MsgDidAuthorize extends Msg {
+    typeUrl = "/sonr.did.v1.MsgAuthorize"
+    authority: AccAddress
+    controller: AccAddress
+    address: AccAddress
+    origin: String
+    token: Dynamic
+  }
+
+class MsgDidRegisterService extends Msg {
+    typeUrl = "/sonr.did.v1.MsgRegisterService"
+    controller: AccAddress
+    originUri: String
+    scopes: Dynamic
+    description: String
+    serviceEndpoints: Map<String, String>
+    metadata: Dynamic
+    token: Dynamic
+  }
+
+/// Represents a transaction body
+class TxBody {
+  messages: List<Msg>
+  memo: String?
+  timeoutHeight: Int?
+  extensionOptions: List<Dynamic>?
+  nonCriticalExtensionOptions: List<Dynamic>?
+}
+

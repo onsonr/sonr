@@ -1,4 +1,5 @@
 # Binaries
+.data
 *.exe
 *.exe~
 *.dll
@@ -16,6 +17,9 @@ aof*
 # Output of the go coverage tool
 *.out
 buf.lock
+
+# Exclude embedded files
+!internal/files/dist
 
 # Dependency directories
 node_modules/
@@ -72,3 +76,6 @@ sonr
 deploy/**/data
 x/.DS_Store
 .aider*
+
+
+!motr/build
