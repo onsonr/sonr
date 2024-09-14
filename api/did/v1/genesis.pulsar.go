@@ -3,7 +3,6 @@ package didv1
 
 import (
 	_ "cosmossdk.io/api/amino"
-	binary "encoding/binary"
 	fmt "fmt"
 	runtime "github.com/cosmos/cosmos-proto/runtime"
 	_ "github.com/cosmos/gogoproto/gogoproto"
@@ -11,9 +10,7 @@ import (
 	protoiface "google.golang.org/protobuf/runtime/protoiface"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
-	math "math"
 	reflect "reflect"
-	sort "sort"
 	sync "sync"
 )
 
@@ -8142,6 +8139,7 @@ func file_did_v1_genesis_proto_init() {
 	if File_did_v1_genesis_proto != nil {
 		return
 	}
+	file_did_v1_types_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_did_v1_genesis_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*GenesisState); i {

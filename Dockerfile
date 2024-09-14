@@ -84,6 +84,10 @@ COPY scripts/test_node.sh /usr/bin/test_node.sh
 WORKDIR /opt
 
 # rest server, tendermint p2p, tendermint rpc
-EXPOSE 1317 26656 26657
+EXPOSE 1317 26656 26657 6060
 
+<<<<<<< HEAD
 CMD ["test_node.sh"]
+=======
+ENTRYPOINT ["/usr/bin/sonrd"]
+>>>>>>> master

@@ -5,6 +5,9 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
+import "did/v1/types.proto";
+
+option go_package = "github.com/onsonr/hway/x/did/types";
 
 // GenesisState defines the module genesis state
 message GenesisState {
@@ -223,3 +226,4 @@ enum PermissionScope {
   PERMISSION_SCOPE_ADMIN_USER = 12;
   PERMISSION_SCOPE_ADMIN_VALIDATOR = 13;
 }
+

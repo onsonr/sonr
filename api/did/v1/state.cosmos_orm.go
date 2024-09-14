@@ -30,6 +30,14 @@ type AccountTable interface {
 	ListRange(ctx context.Context, from, to AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AccountIndexKey) error
 	DeleteRange(ctx context.Context, from, to AccountIndexKey) error
+	Get(ctx context.Context, id string) (*Aliases, error)
+	HasBySubject(ctx context.Context, subject string) (found bool, err error)
+	// GetBySubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubject(ctx context.Context, subject string) (*Aliases, error)
+	List(ctx context.Context, prefixKey AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
+	ListRange(ctx context.Context, from, to AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AliasesIndexKey) error
+	DeleteRange(ctx context.Context, from, to AliasesIndexKey) error
 
 	doNotImplement()
 }
@@ -76,6 +84,16 @@ func (x AccountControllerLabelIndexKey) accountIndexKey()      {}
 
 func (this AccountControllerLabelIndexKey) WithController(controller string) AccountControllerLabelIndexKey {
 	this.vs = []interface{}{controller}
+type AliasesSubjectIndexKey struct {
+	vs []interface{}
+}
+
+func (x AliasesSubjectIndexKey) id() uint32            { return 1 }
+func (x AliasesSubjectIndexKey) values() []interface{} { return x.vs }
+func (x AliasesSubjectIndexKey) aliasesIndexKey()      {}
+
+func (this AliasesSubjectIndexKey) WithSubject(subject string) AliasesSubjectIndexKey {
+	this.vs = []interface{}{subject}
 	return this
 }
 
@@ -173,6 +191,16 @@ func (this accountTable) GetByControllerLabel(ctx context.Context, controller st
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &account,
 		controller,
 		label,
+func (this aliasesTable) HasBySubject(ctx context.Context, subject string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
+	)
+}
+
+func (this aliasesTable) GetBySubject(ctx context.Context, subject string) (*Aliases, error) {
+	var aliases Aliases
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &aliases,
+		subject,
 	)
 	if err != nil {
 		return nil, err
