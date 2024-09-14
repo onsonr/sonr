@@ -1,4 +1,0 @@
-syntax = "proto3";
-package did.v1;
-
-option go_package = "github.com/onsonr/hway/x/did/types";

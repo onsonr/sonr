@@ -9,7 +9,6 @@
     "ipfs-cluster@latest",
     "air@latest"
   ],
-  "packages": ["go@1.21"],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH",
@@ -49,13 +48,6 @@
       "testnet": [
         "devbox services up"
       ]
-      "install": ["make install"],
-      "gen": ["make proto-gen"],
-      "build": [
-        "make local-image",
-        "docker tag sonr:local ghcr.io/onsonr/sonrd:latest"
-      ],
-      "push": ["docker push ghcr.io/onsonr/sonrd:latest"]
     }
   }
 }

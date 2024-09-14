@@ -3,10 +3,8 @@ syntax = "proto3";
 package did.v1;
 
 import "cosmos/msg/v1/msg.proto";
-import "did/v1/enums.proto";
-import "did/v1/genesis.proto";
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "did/v1/enums.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 import "gogoproto/gogo.proto";
@@ -36,20 +34,6 @@ service Msg {
 
   // RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
   rpc RegisterService(MsgRegisterService) returns (MsgRegisterServiceResponse);
-    // Authenticate asserts the given controller is the owner of the given address.
-    rpc Authenticate(MsgAuthenticate) returns (MsgAuthenticateResponse);
-
-    // ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
-    rpc ProveWitness(MsgProveWitness) returns (MsgProveWitnessResponse);
-
-    // SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
-    rpc SyncVault(MsgSyncVault) returns (MsgSyncVaultResponse);
-
-    // RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
-    rpc RegisterController(MsgRegisterController) returns (MsgRegisterControllerResponse);
-
-    // RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key. 
-    rpc RegisterService(MsgRegisterService) returns (MsgRegisterServiceResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -103,32 +87,6 @@ message MsgAllocateVaultResponse {
   bool localhost = 4;
 }
 
-// MsgProveWitness is the message type for the ProveWitness RPC.
-message MsgProveWitness {
-  option (cosmos.msg.v1.signer) = "authority";
-// MsgAuthenticate is the message type for the Authenticate RPC.
-message MsgAuthenticate {
-    option (cosmos.msg.v1.signer) = "authority";
-
-  // authority is the address of the governance account.
-  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-
-  // property is key to prove.
-  string property = 2;
-
-  // Witness Value is the bytes of the witness.
-  bytes witness = 3;
-
-  // token is the macron token to authenticate the operation.
-  string token = 4;
-}
-
-// MsgProveWitnessResponse is the response type for the ProveWitness RPC.
-message MsgProveWitnessResponse {
-  bool success = 1;
-  string property = 2;
-}
-
 // MsgSyncController is the message type for the SyncController RPC.
 message MsgSyncController {
   option (cosmos.msg.v1.signer) = "controller";
@@ -147,71 +105,19 @@ message MsgSyncControllerResponse {
 
 // MsgRegisterController is the message type for the InitializeController RPC.
 message MsgRegisterController {
-// MsgAuthenticateResponse is the response type for the Authenticate RPC.
-message MsgAuthenticateResponse {}
-
-// MsgProveWitness is the message type for the ProveWitness RPC.
-message MsgProveWitness {
   option (cosmos.msg.v1.signer) = "authority";
 
   // authority is the address of the governance account.
   string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // Assertions is the list of assertions to initialize the controller with.
-  string cid = 2;
+  repeated bytes assertions = 2;
 
-  // Origin is the origin of the request in wildcard form.
-  string origin = 3;
+  // Keyshares is the list of keyshares to initialize the controller with.
+  repeated bytes keyshares = 3;
 
-  // Credential is the list of keyshares to initialize the controller with.
-  string credential_creation_response = 4;
-  // property is key to prove.
-  string property = 2;
-
-  // Witness Value is the bytes of the witness.
-  bytes witness = 3;
-}
-
-// MsgProveWitnessResponse is the response type for the ProveWitness RPC.
-message MsgProveWitnessResponse {
-  bool success = 1;
-  string property = 2;
-}
-
-// MsgSyncVault is the message type for the SyncVault RPC.
-message MsgSyncVault {
-  option (cosmos.msg.v1.signer) = "controller";
-
-  // controller is the address of the controller to sync.
-  string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-  
-  // cid is the IPFS content identifier.
-  string cid = 2;
-
-  // Macroon is the public token to authenticate the operation.
-  bytes macron = 3;
-}
-
-// MsgSyncVaultResponse is the response type for the SyncVault RPC.
-message MsgSyncVaultResponse {
-  bool success = 1;
-}
-
-// MsgRegisterController is the message type for the InitializeController RPC.
-message MsgRegisterController {
-    option (cosmos.msg.v1.signer) = "authority";
-
-    // authority is the address of the governance account.
-    string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-
-    // Assertions is the list of assertions to initialize the controller with.
-    repeated bytes assertions = 2;
-
-    // Keyshares is the list of keyshares to initialize the controller with.
-    repeated bytes keyshares = 3;
-
-    // Verifications is the list of verifications to initialize the controller with.
-    repeated bytes verifications = 4;
+  // Verifications is the list of verifications to initialize the controller with.
+  repeated bytes verifications = 4;
 }
 
 // MsgRegisterControllerResponse is the response type for the InitializeController RPC.
@@ -247,11 +153,6 @@ message MsgAuthorizeService {
 message MsgAuthorizeServiceResponse {
   bool success = 1;
   string token = 2;
-    // Controller is the address of the initialized controller.
-    string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-
-    // Accounts are a Address Map and Supported coin Denoms for the controller
-    map<string, string> accounts = 2;
 }
 
 // MsgRegisterService is the message type for the RegisterService RPC.
@@ -263,19 +164,6 @@ message MsgRegisterService {
 
   // origin is the origin of the request in wildcard form. Requires valid TXT record in DNS.
   Service service = 2;
-
-  // token is the macron token to authenticate the operation.
-  string token = 3;
-  option (cosmos.msg.v1.signer) = "authority";
-
-  // authority is the address of the governance account.
-  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
-
-  // origin is the origin of the request in wildcard form.
-  string origin_uri = 2;
-
-  // PermissionScope is the scope of the service.
-  repeated PermissionScope scopes = 3;
 }
 
 // MsgRegisterServiceResponse is the response type for the RegisterService RPC.

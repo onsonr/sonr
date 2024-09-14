@@ -5,9 +5,6 @@ import "amino/amino.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
-import "did/v1/types.proto";
-
-option go_package = "github.com/onsonr/hway/x/did/types";
 
 // GenesisState defines the module genesis state
 message GenesisState {
@@ -80,47 +77,6 @@ message KeyInfo {
   KeyCurve curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448", "Ed25519", "Ed448", "secp256k1"
   KeyType type = 5; // e.g., "Octet", "Elliptic", "RSA", "Symmetric", "HMAC"
 }
-
-// ValidatorInfo defines information for accepted Validator nodes
-message ValidatorInfo {
-  string moniker = 1;
-  repeated Endpoint grpc_endpoints = 2;
-  repeated Endpoint rest_endpoints = 3;
-  ExplorerInfo explorer = 4;
-  FeeInfo fee_info = 5;
-  IBCChannel ibc_channel = 6;
-
-  // Endpoint defines an endpoint
-  message Endpoint {
-    string url = 1;
-    bool is_primary = 2;
-  }
-
-  // ExplorerInfo defines the explorer info
-  message ExplorerInfo {
-    string name = 1;
-    string url = 2;
-  }
-
-  // FeeInfo defines a fee info
-  message FeeInfo {
-    string base_denom = 1;
-    repeated string fee_rates = 2;
-    int32 init_gas_limit = 3;
-    bool is_simulable = 4;
-    double gas_multiply = 5;
-  }
-
-  // IBCChannel defines the IBC channel info
-  message IBCChannel {
-    string id = 1;
-    string port = 2;
-  }
-}
-
-//
-// [Constant Enumerations]
-//
 
 // AssetType defines the type of asset: native, wrapped, staking, pool, or unspecified
 enum AssetType {
@@ -226,4 +182,3 @@ enum PermissionScope {
   PERMISSION_SCOPE_ADMIN_USER = 12;
   PERMISSION_SCOPE_ADMIN_VALIDATOR = 13;
 }
-

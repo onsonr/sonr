@@ -3,9 +3,9 @@ syntax = "proto3";
 package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
+import "did/v1/enums.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
-import "did/v1/enums.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
@@ -29,8 +29,12 @@ message Account {
       fields: "controller,chain_code,index"
       unique: true
     }
-    index: { id: 1, fields: "subject", unique: true }
-    };
+    index: {
+      id: 1
+      fields: "subject"
+      unique: true
+    }
+  };
 
   // The unique identifier of the alias
   string id = 1;
@@ -51,7 +55,7 @@ message Account {
 // Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
 message Assertion {
   option (cosmos.orm.v1.table) = {
-    id: 2 
+    id: 2
     primary_key: {fields: "id"}
   };
 
@@ -216,14 +220,4 @@ message VerificationMethod {
   // The public key of the verification
   PubKey public_key = 6;
   // The controller DID of the service
-  string controller_did = 3;
-
-  // The domain name of the service
-  string origin_uri = 4;
-
-  // The service endpoint
-  map<string, string> service_endpoints = 5;
-
-  // Scopes is the Authorization Grants of the service
-  repeated PermissionScope scopes = 6;
 }
