@@ -76,3 +76,6 @@ sonr
 deploy/**/data
 x/.DS_Store
 .aider*
+
+
+!motr/build

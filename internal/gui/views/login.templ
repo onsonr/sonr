@@ -10,13 +10,15 @@ func LoginView(c echo.Context) error {
 }
 
 templ renderLoginView() {
-	@elements.Layout("Sonr.ID") {
-		@elements.Card(elements.SizeMedium) {
-			@elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading)
-			@elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph)
+	@elements.Layout("Login | Sonr.ID") {
+		@elements.Card("login-view", elements.SizeLarge) {
+			@elements.H1("Sonr.ID")
+			@elements.Text("Neo-tree is a file manager for NeoFS.")
 			@elements.Spacer()
-			@elements.Button(elements.ButtonVariantPrimary) {
-				@elements.Text("Login", elements.TextSizeMedium, elements.TextStyleParagraph)
+			@elements.RadioGroup()
+			@elements.Spacer()
+			@elements.Button(elements.GET("/", "#login-view")) {
+				@elements.Text("Cancel")
 			}
 		}
 	}

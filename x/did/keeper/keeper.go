@@ -5,16 +5,17 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
+	nftkeeper "cosmossdk.io/x/nft/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/did/v1"
-	middleware "github.com/onsonr/sonr/x/did/context"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -30,6 +31,7 @@ type Keeper struct {
 	Schema collections.Schema
 
 	AccountKeeper authkeeper.AccountKeeper
+	NftKeeper     nftkeeper.Keeper
 	StakingKeeper *stakkeeper.Keeper
 
 	authority  string
@@ -41,6 +43,7 @@ func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService storetypes.KVStoreService,
 	accKeeper authkeeper.AccountKeeper,
+	nftKeeper nftkeeper.Keeper,
 	stkKeeper *stakkeeper.Keeper,
 	logger log.Logger,
 	authority string,
@@ -77,6 +80,7 @@ func NewKeeper(
 		authority:     authority,
 		OrmDB:         store,
 		AccountKeeper: accKeeper,
+		NftKeeper:     nftKeeper,
 		StakingKeeper: stkKeeper,
 	}
 	schema, err := sb.Build()
@@ -95,10 +99,7 @@ func (k Keeper) IsUnclaimedServiceOrigin(ctx sdk.Context, origin string) bool {
 }
 
 // IsValidServiceOrigin checks if a service origin is valid
-func (k Keeper) IsValidServiceOrigin(ctx sdk.Context, origin string, clientInfo *middleware.ClientInfo) bool {
-	if origin != clientInfo.Hostname {
-		return false
-	}
+func (k Keeper) IsValidServiceOrigin(ctx sdk.Context, origin string) bool {
 	rec, err := k.OrmDB.ServiceRecordTable().GetByOrigin(ctx, origin)
 	if err != nil {
 		return false

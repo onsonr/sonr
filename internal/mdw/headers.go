@@ -1,7 +1,5 @@
 package mdw
 
-import "github.com/labstack/echo/v4"
-
 type RequestHeaders struct {
 	Authorization      *string `header:"Authorization"`
 	CacheControl       *string `header:"Cache-Control"`
@@ -54,9 +52,4 @@ type ResponseHeaders struct {
 	HXTrigger            *string `header:"HX-Trigger"`
 	HXTriggerAfterSettle *string `header:"HX-Trigger-After-Settle"`
 	HXTriggerAfterSwap   *string `header:"HX-Trigger-After-Swap"`
-}
-
-func bindRequestHeaders(c echo.Context) {
-	headers := new(RequestHeaders)
-	c.Bind(headers)
 }

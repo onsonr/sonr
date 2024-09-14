@@ -15,8 +15,7 @@
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
-    "MONIKER": "florence",
-    "MIN_GAS_PRICES": "0.0001usnr"
+    "MONIKER": "florence"
   },
   "shell": {
     "scripts": {
@@ -39,6 +38,7 @@
         "make proto-gen"
       ],
       "gen:pkl": [
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/oidc.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl"
       ],

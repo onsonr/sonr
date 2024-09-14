@@ -10,13 +10,10 @@ import (
 	"github.com/segmentio/ksuid"
 )
 
-// UseSession establishes a Session Cookie.
-func UseSession(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sc := newSession(c)
-		bindRequestHeaders(sc)
-		return next(sc)
-	}
+type Session struct {
+	echo.Context
+	htmx *htmx.HTMX
+	dB   *db.DB
 }
 
 // GetSession returns the current Session
@@ -24,25 +21,29 @@ func GetSession(c echo.Context) *Session {
 	return c.(*Session)
 }
 
-type Session struct {
-	echo.Context
-	htmx *htmx.HTMX
-	dB   *db.DB
-}
-
-func (c *Session) ID() string {
-	return readCookie(c, "session")
-}
-
-func (c *Session) Htmx() *htmx.HTMX {
-	return c.htmx
+// UseSession establishes a Session Cookie.
+func UseSession(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		sc := initSession(c)
+		headers := new(RequestHeaders)
+		sc.Bind(headers)
+		return next(sc)
+	}
 }
 
 func (c *Session) DB() *db.DB {
 	return c.dB
 }
 
-func newSession(c echo.Context) *Session {
+func (c *Session) Htmx() *htmx.HTMX {
+	return c.htmx
+}
+
+func (c *Session) ID() string {
+	return readCookie(c, "session")
+}
+
+func initSession(c echo.Context) *Session {
 	s := &Session{Context: c}
 	if val := readCookie(c, "session"); val == "" {
 		id := ksuid.New().String()

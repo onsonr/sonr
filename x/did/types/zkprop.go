@@ -17,7 +17,7 @@ type Element = accumulator.Element
 type Witness []byte
 
 // NewProof creates a new Proof which is used for ZKP
-func NewProof(id, controller, issuer, property string, pubKey []byte) (*Proof, error) {
+func NewProof(issuer, property string, pubKey []byte) (*Proof, error) {
 	input := append(pubKey, []byte(property)...)
 	hash := []byte(input)
 
@@ -33,8 +33,6 @@ func NewProof(id, controller, issuer, property string, pubKey []byte) (*Proof, e
 	}
 
 	return &Proof{
-		Id:          id,
-		Controller:  controller,
 		Issuer:      issuer,
 		Property:    property,
 		Accumulator: keyBytes,
@@ -117,7 +115,6 @@ func VerifyWitness(proof *Proof, acc Accumulator, witness Witness) error {
 	if err := witnessObj.UnmarshalBinary(witness); err != nil {
 		return fmt.Errorf("failed to unmarshal witness: %w", err)
 	}
-
 	return witnessObj.Verify(publicKey, accObj)
 }
 

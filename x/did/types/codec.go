@@ -1,9 +1,15 @@
 package types
 
 import (
+	"crypto/ecdsa"
 	"crypto/sha256"
 	"encoding/hex"
+	"strings"
+
 	fmt "fmt"
+
+	ethcrypto "github.com/ethereum/go-ethereum/crypto"
+	"golang.org/x/crypto/sha3"
 
 	"github.com/cosmos/btcutil/bech32"
 	"github.com/cosmos/cosmos-sdk/codec"
@@ -71,7 +77,11 @@ func (c ChainCode) FormatAddress(pubKey *PubKey) (string, error) {
 		return bech32.Encode("bc", pubKey.Bytes())
 
 	case ChainCodeETH:
-		return bech32.Encode("eth", pubKey.Bytes())
+		epk, err := pubKey.ECDSA()
+		if err != nil {
+			return "", err
+		}
+		return ComputeEthAddress(*epk), nil
 
 	case ChainCodeSNR:
 		return bech32.Encode("idx", pubKey.Bytes())
@@ -197,4 +207,31 @@ func ComputeOriginTXTRecord(origin string) string {
 	h := sha256.New()
 	h.Write([]byte(origin))
 	return fmt.Sprintf("v=sonr,o=%s,p=%x", origin, h.Sum(nil))
+}
+
+func ComputeEthAddress(pk ecdsa.PublicKey) string {
+	// Generate Ethereum address
+	address := ethcrypto.PubkeyToAddress(pk)
+
+	// Apply ERC-55 checksum encoding
+	addr := address.Hex()
+	addr = strings.ToLower(addr)
+	addr = strings.TrimPrefix(addr, "0x")
+	hash := sha3.NewLegacyKeccak256()
+	hash.Write([]byte(addr))
+	hashBytes := hash.Sum(nil)
+
+	result := "0x"
+	for i, c := range addr {
+		if c >= '0' && c <= '9' {
+			result += string(c)
+		} else {
+			if hashBytes[i/2]>>(4-i%2*4)&0xf >= 8 {
+				result += strings.ToUpper(string(c))
+			} else {
+				result += string(c)
+			}
+		}
+	}
+	return result
 }

@@ -611,6 +611,7 @@ func NewChainApp(
 		appCodec,
 		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		app.AccountKeeper,
+		app.NFTKeeper,
 		app.StakingKeeper,
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
@@ -872,7 +873,7 @@ func NewChainApp(
 			app.GetSubspace(packetforwardtypes.ModuleName),
 		),
 
-		did.NewAppModule(appCodec, app.DidKeeper),
+		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,

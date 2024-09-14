@@ -196,42 +196,10 @@ class Keyshare {
   id: UInt
 
   @JsonField
-  metadata: String
-
-  @JsonField
-  payloads: String
-
-  @JsonField
-  protocol: String
-
-  @JsonField
-  publicKey: String
+  data: String
 
   @JsonField
   role: Int
-
-  @JsonField
-  version: Int
-
-  @JsonField
-  createdAt: String?
-}
-
-class PublicKey {
-  @PrimaryKey
-  id: UInt
-
-  @JsonField
-  role: Int
-
-  @JsonField
-  algorithm: Int
-
-  @JsonField
-  encoding: Int
-
-  @JsonField
-  jwk: String
 
   @JsonField
   createdAt: String?
@@ -257,53 +225,3 @@ class Permission  {
   updatedAt: String?
 }
 
-//
-// OpenID Connect
-//
-
-class DiscoveryDocument {
-  @JsonField
-  issuer: String
-  
-  @JsonField
-  authorization_endpoint: String
-
-  @JsonField
-  token_endpoint: String
-
-  @JsonField
-  userinfo_endpoint: String
-
-  @JsonField
-  jwks_uri: String
-
-  @JsonField
-  registration_endpoint: String
-
-  @JsonField
-  scopes_supported: List<String>
-
-  @JsonField
-  response_types_supported: List<String>
-
-  @JsonField
-  response_modes_supported: List<String>
-
-  @JsonField
-  subject_types_supported: List<String>
-
-  @JsonField
-  id_token_signing_alg_values_supported: List<String>
-
-  @JsonField
-  claims_supported: List<String>
-
-  @JsonField
-  grant_types_supported: List<String>
-
-  @JsonField
-  acr_values_supported: List<String>
-
-  @JsonField
-  token_endpoint_auth_methods_supported: List<String>
-}

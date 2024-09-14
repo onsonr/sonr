@@ -59,7 +59,7 @@ func renderAuthorizeView() templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.H1("Sonr.ID").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -67,13 +67,13 @@ func renderAuthorizeView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = elements.Text("Neo-tree is a file manager for NeoFS.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = elements.Card(elements.SizeMedium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = elements.Card("authorize-view", elements.SizeMedium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

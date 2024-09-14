@@ -2,6 +2,7 @@ package builder
 
 import (
 	"crypto/rand"
+	"strings"
 
 	"github.com/onsonr/sonr/x/did/types"
 )
@@ -53,8 +54,8 @@ func NewCredentialParameter(ki *types.KeyInfo) CredentialParameter {
 
 func ExtractCredentialParameters(p *types.Params) []CredentialParameter {
 	var keys []*types.KeyInfo
-	for _, v := range p.AllowedPublicKeys {
-		if v.Role == types.KeyRole_KEY_ROLE_AUTHENTICATION {
+	for k, v := range p.AllowedPublicKeys {
+		if strings.Contains(k, "webauthn") {
 			keys = append(keys, v)
 		}
 	}

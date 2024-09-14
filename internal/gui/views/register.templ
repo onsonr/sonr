@@ -3,31 +3,24 @@ package views
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/gui/elements"
+	"github.com/onsonr/sonr/internal/gui/forms"
 )
 
 func RegisterView(c echo.Context) error {
-	return echoComponentResponse(c, renderRegisterView())
+	return echoComponentResponse(c, renderRegisterView(c))
 }
 
-templ renderRegisterView() {
+templ renderRegisterView(c echo.Context) {
 	@elements.Layout("Register | Sonr.ID") {
-		@elements.Card(elements.SizeMedium) {
-			@elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading)
-			@elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph)
-		}
-		@elements.Card(elements.SizeMedium) {
-			<h1>Welcome to Neo-tree</h1>
-			<p>Neo-tree is a file manager for NeoFS.</p>
-		}
-		@elements.Card(elements.SizeMedium) {
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12">
-						<h1>Welcome to Neo-tree</h1>
-						<p>Neo-tree is a file manager for NeoFS.</p>
-					</div>
-				</div>
-			</div>
+		@elements.Card("register-view", elements.SizeMedium) {
+			@elements.H2("Account Registration")
+			@elements.Spacer()
+			@elements.Breadcrumbs()
+			@forms.BasicInfo(c, forms.InitialForm)
+			@elements.Spacer()
+			@elements.Button(elements.GET("/", "#register-view")) {
+				@elements.Text("Cancel")
+			}
 		}
 	}
 }

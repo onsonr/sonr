@@ -12,7 +12,5 @@ func init() {
 	pkl.RegisterMapping("orm#Profile", Profile{})
 	pkl.RegisterMapping("orm#Property", Property{})
 	pkl.RegisterMapping("orm#Keyshare", Keyshare{})
-	pkl.RegisterMapping("orm#PublicKey", PublicKey{})
 	pkl.RegisterMapping("orm#Permission", Permission{})
-	pkl.RegisterMapping("orm#DiscoveryDocument", DiscoveryDocument{})
 }

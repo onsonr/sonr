@@ -4,6 +4,8 @@ name: "Release Binary"
 
 on:
   push:
+    branches:
+      - master
     tags:
       - v*
 

@@ -21,15 +21,15 @@ func (s Size) CardAttributes() templ.Attributes {
 	switch s {
 	case SizeSmall:
 		return templ.Attributes{
-			"class": "max-w-md bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
+			"class": "max-w-lg bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
 		}
 	case SizeLarge:
 		return templ.Attributes{
-			"class": "max-w-xl bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
+			"class": "max-w-2xl bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
 		}
 	}
 	return templ.Attributes{
-		"class": "max-w-lg bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
+		"class": "max-w-xl bg-white border rounded-lg shadow-sm p-7 border-neutral-200/60",
 	}
 }
 

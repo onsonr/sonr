@@ -7,11 +7,9 @@ templ Layout(title string) {
 			@defaultStyles()
 			<title>{ title }</title>
 		</head>
-		<body class="flex items-center justify-center h-full bg-gray-50 lg:p-24">
-			<main class="flex items-center justify-center w-full max-w-full">
-				<div id="view">
-					{ children... }
-				</div>
+		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
+			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+				{ children... }
 			</main>
 		</body>
 	</html>
@@ -31,7 +29,26 @@ templ defaultStyles() {
 	<meta charset="UTF-8"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<style>[x-cloak]{display:none}</style>
-	<script src="https://unpkg.com/alpinejs" defer></script>
+	<script src="https://cdn.sonr.io/js/htmx.min.js"></script>
+	<link href="https://cdn.sonr.io/stylesheet.css" rel="stylesheet"/>
 	<script src="https://cdn.tailwindcss.com"></script>
+	<script src="https://unpkg.com/alpinejs" defer></script>
+	<style>[x-cloak]{display:none}</style>
+	<style>font-family: R-Flex, system-ui, Inter, Helvetica, Arial, sans-serif;</style>
+}
+
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4">
+		{ children... }
+	</div>
+}
+
+templ Columns() {
+	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
+		{ children... }
+	</div>
+}
+
+css main() {
+	font-family: R-Flex, system-ui, Avenir, Helvetica, Arial, sans-serif;
 }

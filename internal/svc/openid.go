@@ -1,8 +1,10 @@
 package svc
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/db/orm"
+	oidc "github.com/onsonr/sonr/x/did/types/oidc"
 )
 
 func GrantAuthorization(e echo.Context) error {
@@ -25,13 +27,13 @@ func GetToken(e echo.Context) error {
 
 func GetDiscovery(e echo.Context) error {
 	baseURL := "https://" + e.Request().Host // Ensure this is the correct base URL for your service
-	discoveryDoc := &orm.DiscoveryDocument{
-		Issuer:                 "https://sonr.id",
-		AuthorizationEndpoint:  "https://api.sonr.id/auth",
-		TokenEndpoint:          "https://api.sonr.id/token",
-		UserinfoEndpoint:       "https://api.sonr.id/userinfo",
-		JwksUri:                baseURL + "/jwks", // You'll need to implement this endpoint
-		RegistrationEndpoint:   baseURL + "/register",
+	discoveryDoc := &oidc.DiscoveryDocument{
+		Issuer:                 baseURL,
+		AuthorizationEndpoint:  fmt.Sprintf("%s/auth", baseURL),
+		TokenEndpoint:          fmt.Sprintf("%s/token", baseURL),
+		UserinfoEndpoint:       fmt.Sprintf("%s/userinfo", baseURL),
+		JwksUri:                fmt.Sprintf("%s/jwks", baseURL),
+		RegistrationEndpoint:   fmt.Sprintf("%s/register", baseURL),
 		ScopesSupported:        []string{"openid", "profile", "email", "web3", "sonr"},
 		ResponseTypesSupported: []string{"code"},
 		ResponseModesSupported: []string{"query", "form_post"},

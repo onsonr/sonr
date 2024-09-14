@@ -20,9 +20,9 @@ func NewQuerier(keeper Keeper) Querier {
 func (k Querier) Params(
 	goCtx context.Context,
 	req *types.QueryRequest,
-) (*types.QueryResponse, error) {
+) (*types.QueryParamsResponse, error) {
 	ctx := k.CurrentCtx(goCtx)
-	return &types.QueryResponse{Params: k.GetParams(ctx.SDK())}, nil
+	return &types.QueryParamsResponse{Params: k.GetParams(ctx.SDK())}, nil
 }
 
 // Resolve implements types.QueryServer.
@@ -41,4 +41,39 @@ func (k Querier) Service(
 ) (*types.QueryResponse, error) {
 	ctx := k.CurrentCtx(goCtx)
 	return &types.QueryResponse{Service: ctx.GetServiceInfo(req.GetOrigin()), Params: ctx.Params()}, nil
+}
+
+// ParamsAssets implements types.QueryServer.
+func (k Querier) ParamsAssets(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsAssets is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsByAsset implements types.QueryServer.
+func (k Querier) ParamsByAsset(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsByAsset is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsKeys implements types.QueryServer.
+func (k Querier) ParamsKeys(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsKeys is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// ParamsByKey implements types.QueryServer.
+func (k Querier) ParamsByKey(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ParamsByKey is unimplemented")
+	return &types.QueryResponse{}, nil
+}
+
+// RegistrationOptionsByKey implements types.QueryServer.
+func (k Querier) RegistrationOptionsByKey(goCtx context.Context, req *types.QueryRequest) (*types.QueryResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("RegistrationOptionsByKey is unimplemented")
+	return &types.QueryResponse{}, nil
 }

@@ -48,7 +48,7 @@ message MsgUpdateParams {
   Params params = 2 [(gogoproto.nullable) = false];
 
   // token is the macron token to authenticate the operation.
-  Token token = 3;
+  string token = 3;
 }
 
 // MsgUpdateParamsResponse defines the response structure for executing a
@@ -100,7 +100,7 @@ message MsgProveWitness {
   bytes witness = 3;
 
   // token is the macron token to authenticate the operation.
-  Token token = 4;
+  string token = 4;
 }
 
 // MsgProveWitnessResponse is the response type for the ProveWitness RPC.
@@ -117,7 +117,7 @@ message MsgSyncController {
   string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // Token is the public token to authenticate the operation.
-  Token token = 3;
+  string token = 3;
 }
 
 // MsgSyncControllerResponse is the response type for the SyncController RPC.
@@ -168,13 +168,13 @@ message MsgAuthorizeService {
   Permissions scopes = 3;
 
   // token is the macron token to authenticate the operation.
-  Token token = 4;
+  string token = 4;
 }
 
 // MsgAuthorizeServiceResponse is the response type for the AuthorizeService RPC.
 message MsgAuthorizeServiceResponse {
   bool success = 1;
-  Token token = 2;
+  string token = 2;
 }
 
 // MsgRegisterService is the message type for the RegisterService RPC.
@@ -188,7 +188,7 @@ message MsgRegisterService {
   Service service = 2;
 
   // token is the macron token to authenticate the operation.
-  Token token = 3;
+  string token = 3;
 }
 
 // MsgRegisterServiceResponse is the response type for the RegisterService RPC.

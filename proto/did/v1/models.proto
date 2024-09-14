@@ -97,9 +97,18 @@ message ServiceInfo {
   Service service = 4;
 }
 
-// Token defines a macron token
-message Token {
-  string id = 1;
-  string controller = 2;
-  bytes macron = 3;
+// FirstPartyCaveat defines a first party caveat
+message FirstPartyCaveat {
+  Permissions scope = 1;
+  int64 exp = 2;
+  string cnf = 3;
+  string aud = 4;
+}
+
+// ThirdPartyCaveat defines a third party caveat
+message ThirdPartyCaveat {
+  Permissions scope = 1;
+  int64 exp = 2;
+  string cnf = 3;
+  string aud = 4;
 }

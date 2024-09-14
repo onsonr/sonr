@@ -10,6 +10,17 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 message GenesisState {
   // Params defines all the parameters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
+
+  // GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+  GlobalIntegrity global_integrity = 2;
+}
+
+// GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+message GlobalIntegrity {
+  string controller = 1;
+  string seed = 2;
+  bytes accumulator = 3;
+  uint64 count = 4;
 }
 
 // Params defines the set of module parameters.
@@ -21,23 +32,20 @@ message Params {
   // Whitelisted Assets
   repeated AssetInfo whitelisted_assets = 1;
 
-  // Whitelisted Blockchains
-  repeated ChainInfo whitelisted_chains = 2;
-
   // Whitelisted Key Types
-  repeated KeyInfo allowed_public_keys = 3;
+  map<string, KeyInfo> allowed_public_keys = 2;
 
   // IpfsActive is a flag to enable/disable ipfs
-  bool ipfs_active = 4;
+  bool ipfs_active = 3;
 
   // Localhost Registration Enabled
-  bool localhost_registration_enabled = 5;
+  bool localhost_registration_enabled = 4;
 
   // ConveyancePreference defines the conveyance preference
-  string conveyance_preference = 6;
+  string conveyance_preference = 5;
 
   // AttestationFormats defines the attestation formats
-  repeated string attestation_formats = 7;
+  repeated string attestation_formats = 6;
 }
 
 // AssetInfo defines the asset info
@@ -57,20 +65,8 @@ message AssetInfo {
   // The name of the asset
   string name = 5;
 
-  // The Method of the did namespace
-  string method = 6;
-
   // The icon url
-  string icon_url = 7;
-}
-
-// ChainInfo defines the chain info
-message ChainInfo {
-  string id = 1;
-  string chain_id = 2;
-  string name = 3;
-  string symbol = 4;
-  repeated ValidatorInfo validators = 5;
+  string icon_url = 6;
 }
 
 // KeyInfo defines information for accepted PubKey types

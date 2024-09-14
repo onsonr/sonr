@@ -11,9 +11,9 @@ func AuthorizeView(c echo.Context) error {
 
 templ renderAuthorizeView() {
 	@elements.Layout("Login | Sonr.ID") {
-		@elements.Card(elements.SizeMedium) {
-			@elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading)
-			@elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph)
+		@elements.Card("authorize-view", elements.SizeMedium) {
+			@elements.H1("Sonr.ID")
+			@elements.Text("Neo-tree is a file manager for NeoFS.")
 		}
 	}
 }

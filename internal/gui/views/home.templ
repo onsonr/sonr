@@ -11,13 +11,19 @@ func HomeView(c echo.Context) error {
 
 templ renderHomeView() {
 	@elements.Layout("Sonr.ID") {
-		@elements.Card(elements.SizeMedium) {
-			@elements.Text("Sonr.ID", elements.TextSizeLarge, elements.TextStyleHeading)
-			@elements.Text("Neo-tree is a file manager for NeoFS.", elements.TextSizeMedium, elements.TextStyleParagraph)
+		@elements.Card("home-view", elements.SizeLarge) {
+			@elements.H1("Sonr.ID")
+			@elements.Text("A Decentralized Web Node Client for the Sonr Network.")
 			@elements.Spacer()
-			@elements.Button(elements.ButtonVariantPrimary) {
-				@elements.Text("Get Started", elements.TextSizeMedium, elements.TextStyleParagraph)
-			}
+			<div class="flex flex-col gap-3">
+				@elements.Button(elements.GET("/register", "#home-view"), elements.PrimaryButtonStyle()) {
+					@elements.Text("Get Started")
+				}
+				@elements.Button(elements.GET("/login", "#home-view")) {
+					@elements.Text("Login")
+				}
+			</div>
+			@elements.PoweredBySonr()
 		}
 	}
 }

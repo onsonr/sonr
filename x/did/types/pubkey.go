@@ -1,11 +1,13 @@
 package types
 
 import (
+	"crypto/ecdsa"
 	"encoding/hex"
 
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	"github.com/mr-tron/base58/base58"
 	"github.com/onsonr/crypto"
+	"github.com/onsonr/crypto/macaroon"
 )
 
 var WalletKeyInfo = &KeyInfo{
@@ -77,6 +79,16 @@ func (k *PubKey) Clone() cryptotypes.PubKey {
 		Curve:     k.GetCurve(),
 		KeyType:   k.GetKeyType(),
 	}
+}
+
+// IssueMacaroon returns a macaroon for the public key with the given id and location
+func (pk *PubKey) IssueMacaroon(subject string, origin string) (*macaroon.Macaroon, error) {
+	return macaroon.New(pk.Bytes(), []byte(subject), origin, macaroon.LatestVersion)
+}
+
+// ECDSA returns the ECDSA public key
+func (k *PubKey) ECDSA() (*ecdsa.PublicKey, error) {
+	return crypto.ComputeEcdsaPublicKey(k.Bytes())
 }
 
 // VerifySignature verifies a signature over the given message

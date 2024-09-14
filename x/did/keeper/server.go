@@ -9,7 +9,6 @@ import (
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/onsonr/sonr/x/did/builder"
-	snrctx "github.com/onsonr/sonr/x/did/context"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -24,6 +23,8 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
+// # AuthorizeService
+//
 // AuthorizeService implements types.MsgServer.
 func (ms msgServer) AuthorizeService(goCtx context.Context, msg *types.MsgAuthorizeService) (*types.MsgAuthorizeServiceResponse, error) {
 	if ms.k.authority != msg.Controller {
@@ -37,19 +38,16 @@ func (ms msgServer) AuthorizeService(goCtx context.Context, msg *types.MsgAuthor
 	return &types.MsgAuthorizeServiceResponse{}, nil
 }
 
+//	# AllocateVault
+//
 // AllocateVault implements types.MsgServer.
 func (ms msgServer) AllocateVault(
 	goCtx context.Context,
 	msg *types.MsgAllocateVault,
 ) (*types.MsgAllocateVaultResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
-	clientInfo, err := snrctx.ExtractClientInfo(goCtx)
-	if err != nil {
-		return nil, err
-	}
-
 	// 1.Check if the service origin is valid
-	if ms.k.IsValidServiceOrigin(ctx, msg.Origin, clientInfo) {
+	if ms.k.IsValidServiceOrigin(ctx, msg.Origin) {
 		return nil, types.ErrInvalidServiceOrigin
 	}
 
@@ -76,6 +74,8 @@ func (ms msgServer) AllocateVault(
 	}, nil
 }
 
+// # RegisterController
+//
 // RegisterController implements types.MsgServer.
 func (ms msgServer) RegisterController(
 	goCtx context.Context,
@@ -85,6 +85,8 @@ func (ms msgServer) RegisterController(
 	return &types.MsgRegisterControllerResponse{}, nil
 }
 
+// # RegisterService
+//
 // RegisterService implements types.MsgServer.
 func (ms msgServer) RegisterService(
 	goCtx context.Context,
@@ -92,24 +94,23 @@ func (ms msgServer) RegisterService(
 ) (*types.MsgRegisterServiceResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	clientInfo, err := snrctx.ExtractClientInfo(goCtx)
-	if err != nil {
-		return nil, err
-	}
-
 	// 1.Check if the service origin is valid
-	if !ms.k.IsValidServiceOrigin(ctx, msg.Service.Origin, clientInfo) {
+	if !ms.k.IsValidServiceOrigin(ctx, msg.Service.Origin) {
 		return nil, types.ErrInvalidServiceOrigin
 	}
 	return ms.k.insertService(ctx, msg.Service)
 }
 
+// # SyncController
+//
 // SyncController implements types.MsgServer.
 func (ms msgServer) SyncController(ctx context.Context, msg *types.MsgSyncController) (*types.MsgSyncControllerResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgSyncControllerResponse{}, nil
 }
 
+// # UpdateParams
+//
 // UpdateParams updates the x/did module parameters.
 func (ms msgServer) UpdateParams(
 	ctx context.Context,

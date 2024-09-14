@@ -6,6 +6,7 @@ import (
 	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
+	nftkeeper "cosmossdk.io/x/nft/keeper"
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -48,6 +49,7 @@ type testFixture struct {
 
 	accountkeeper authkeeper.AccountKeeper
 	bankkeeper    bankkeeper.BaseKeeper
+	nftKeeper     nftkeeper.Keeper
 	stakingKeeper *stakingkeeper.Keeper
 	mintkeeper    mintkeeper.Keeper
 
@@ -77,10 +79,10 @@ func SetupTest(t *testing.T) *testFixture {
 	registerBaseSDKModules(f, encCfg, storeService, logger, require)
 
 	// Setup POA Keeper.
-	f.k = keeper.NewKeeper(encCfg.Codec, storeService, f.accountkeeper, f.stakingKeeper, logger, f.govModAddr)
+	f.k = keeper.NewKeeper(encCfg.Codec, storeService, f.accountkeeper, f.nftKeeper, f.stakingKeeper, logger, f.govModAddr)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
-	f.appModule = module.NewAppModule(encCfg.Codec, f.k)
+	f.appModule = module.NewAppModule(encCfg.Codec, f.k, f.nftKeeper)
 
 	return f
 }

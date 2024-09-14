@@ -307,7 +307,7 @@ dwn:
 
 motr:
 	@echo "(motr) Building app.wasm -> Deploy to Cloudflare Workers"
-	GOOS=js GOARCH=wasm go build -o ./motr/build/app.wasm ./motr
+	GOOS=js GOARCH=wasm go build -o ./cmd/motr/build/app.wasm ./cmd/motr/main.go
 
 ###############################################################################
 ###                                     help                                ###
