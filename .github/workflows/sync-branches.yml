@@ -24,31 +24,10 @@ jobs:
           git config user.email "action@github.com"
 
       - name: Install Devbox
-        run: |
-          curl -fsSL https://get.jetpack.io/devbox | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-          devbox version  # Verify installation
+        uses: jetpack-io/devbox-install-action@v0.7.0
 
-      - name: Set up Devbox Environment
-        run: |
-          devbox shell -- rm -rf .devbox  # Clean any previous state
-          devbox shell --command "true"    # Initialize Devbox environment
-
-      - name: Install Project Dependencies
-        run: |
-          devbox run install
-
-      - name: Run Build Scripts
-        run: |
-          devbox run build
-
-      - name: Install Commitizen with Bun
-        run: |
-          # Verify that bun is installed
-          devbox shell -- bun --version
-
-          # Install Commitizen globally using bun
-          devbox shell -- bun add -g commitizen
+      - name: Install dependencies
+        run: devbox install
 
       - name: Bump Version with Commitizen
         run: |
