@@ -2,9 +2,9 @@ package types
 
 var (
 	PermissionScopeStrings = [...]string{
-		"profile.name",
-		"identifiers.email",
-		"identifiers.phone",
+		"profile",
+		"permissions.read",
+		"permissions.write",
 		"transactions.read",
 		"transactions.write",
 		"wallets.read",
@@ -19,9 +19,9 @@ var (
 
 	StringToPermissionScope = map[string]PermissionScope{
 		"PERMISSION_SCOPE_UNSPECIFIED":            PermissionScope_PERMISSION_SCOPE_UNSPECIFIED,
-		"PERMISSION_SCOPE_PROFILE_NAME":           PermissionScope_PERMISSION_SCOPE_PROFILE_NAME,
-		"PERMISSION_SCOPE_IDENTIFIERS_EMAIL":      PermissionScope_PERMISSION_SCOPE_IDENTIFIERS_EMAIL,
-		"PERMISSION_SCOPE_IDENTIFIERS_PHONE":      PermissionScope_PERMISSION_SCOPE_IDENTIFIERS_PHONE,
+		"PERMISSION_SCOPE_PROFILE_NAME":           PermissionScope_PERMISSION_SCOPE_BASIC_INFO,
+		"PERMISSION_SCOPE_IDENTIFIERS_EMAIL":      PermissionScope_PERMISSION_SCOPE_PERMISSIONS_READ,
+		"PERMISSION_SCOPE_IDENTIFIERS_PHONE":      PermissionScope_PERMISSION_SCOPE_PERMISSIONS_WRITE,
 		"PERMISSION_SCOPE_TRANSACTIONS_READ":      PermissionScope_PERMISSION_SCOPE_TRANSACTIONS_READ,
 		"PERMISSION_SCOPE_TRANSACTIONS_WRITE":     PermissionScope_PERMISSION_SCOPE_TRANSACTIONS_WRITE,
 		"PERMISSION_SCOPE_WALLETS_READ":           PermissionScope_PERMISSION_SCOPE_WALLETS_READ,

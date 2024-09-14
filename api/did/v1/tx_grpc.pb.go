@@ -23,9 +23,6 @@ const (
 	Msg_AuthorizeService_FullMethodName   = "/did.v1.Msg/AuthorizeService"
 	Msg_AllocateVault_FullMethodName      = "/did.v1.Msg/AllocateVault"
 	Msg_SyncController_FullMethodName     = "/did.v1.Msg/SyncController"
-	Msg_Authenticate_FullMethodName       = "/did.v1.Msg/Authenticate"
-	Msg_ProveWitness_FullMethodName       = "/did.v1.Msg/ProveWitness"
-	Msg_SyncVault_FullMethodName          = "/did.v1.Msg/SyncVault"
 	Msg_RegisterController_FullMethodName = "/did.v1.Msg/RegisterController"
 	Msg_RegisterService_FullMethodName    = "/did.v1.Msg/RegisterService"
 )
@@ -45,12 +42,6 @@ type MsgClient interface {
 	AllocateVault(ctx context.Context, in *MsgAllocateVault, opts ...grpc.CallOption) (*MsgAllocateVaultResponse, error)
 	// SyncController synchronizes the controller with the Vault Motr DWN WASM Wallet.
 	SyncController(ctx context.Context, in *MsgSyncController, opts ...grpc.CallOption) (*MsgSyncControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error)
-	// ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
-	ProveWitness(ctx context.Context, in *MsgProveWitness, opts ...grpc.CallOption) (*MsgProveWitnessResponse, error)
-	// SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
-	SyncVault(ctx context.Context, in *MsgSyncVault, opts ...grpc.CallOption) (*MsgSyncVaultResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
 	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
 	// RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
@@ -77,9 +68,6 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 func (c *msgClient) AuthorizeService(ctx context.Context, in *MsgAuthorizeService, opts ...grpc.CallOption) (*MsgAuthorizeServiceResponse, error) {
 	out := new(MsgAuthorizeServiceResponse)
 	err := c.cc.Invoke(ctx, Msg_AuthorizeService_FullMethodName, in, out, opts...)
-func (c *msgClient) Authenticate(ctx context.Context, in *MsgAuthenticate, opts ...grpc.CallOption) (*MsgAuthenticateResponse, error) {
-	out := new(MsgAuthenticateResponse)
-	err := c.cc.Invoke(ctx, Msg_Authenticate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,9 +77,6 @@ func (c *msgClient) Authenticate(ctx context.Context, in *MsgAuthenticate, opts 
 func (c *msgClient) AllocateVault(ctx context.Context, in *MsgAllocateVault, opts ...grpc.CallOption) (*MsgAllocateVaultResponse, error) {
 	out := new(MsgAllocateVaultResponse)
 	err := c.cc.Invoke(ctx, Msg_AllocateVault_FullMethodName, in, out, opts...)
-func (c *msgClient) ProveWitness(ctx context.Context, in *MsgProveWitness, opts ...grpc.CallOption) (*MsgProveWitnessResponse, error) {
-	out := new(MsgProveWitnessResponse)
-	err := c.cc.Invoke(ctx, Msg_ProveWitness_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -101,9 +86,6 @@ func (c *msgClient) ProveWitness(ctx context.Context, in *MsgProveWitness, opts 
 func (c *msgClient) SyncController(ctx context.Context, in *MsgSyncController, opts ...grpc.CallOption) (*MsgSyncControllerResponse, error) {
 	out := new(MsgSyncControllerResponse)
 	err := c.cc.Invoke(ctx, Msg_SyncController_FullMethodName, in, out, opts...)
-func (c *msgClient) SyncVault(ctx context.Context, in *MsgSyncVault, opts ...grpc.CallOption) (*MsgSyncVaultResponse, error) {
-	out := new(MsgSyncVaultResponse)
-	err := c.cc.Invoke(ctx, Msg_SyncVault_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -143,12 +125,6 @@ type MsgServer interface {
 	AllocateVault(context.Context, *MsgAllocateVault) (*MsgAllocateVaultResponse, error)
 	// SyncController synchronizes the controller with the Vault Motr DWN WASM Wallet.
 	SyncController(context.Context, *MsgSyncController) (*MsgSyncControllerResponse, error)
-	// Authenticate asserts the given controller is the owner of the given address.
-	Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error)
-	// ProveWitness is an operation to prove the controller has a valid property using ZK Accumulators.
-	ProveWitness(context.Context, *MsgProveWitness) (*MsgProveWitnessResponse, error)
-	// SyncVault synchronizes the controller with the Vault Motr DWN WASM Wallet.
-	SyncVault(context.Context, *MsgSyncVault) (*MsgSyncVaultResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
 	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
 	// RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
@@ -171,14 +147,6 @@ func (UnimplementedMsgServer) AllocateVault(context.Context, *MsgAllocateVault) 
 }
 func (UnimplementedMsgServer) SyncController(context.Context, *MsgSyncController) (*MsgSyncControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SyncController not implemented")
-func (UnimplementedMsgServer) Authenticate(context.Context, *MsgAuthenticate) (*MsgAuthenticateResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Authenticate not implemented")
-}
-func (UnimplementedMsgServer) ProveWitness(context.Context, *MsgProveWitness) (*MsgProveWitnessResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ProveWitness not implemented")
-}
-func (UnimplementedMsgServer) SyncVault(context.Context, *MsgSyncVault) (*MsgSyncVaultResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SyncVault not implemented")
 }
 func (UnimplementedMsgServer) RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
@@ -219,8 +187,6 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 
 func _Msg_AuthorizeService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgAuthorizeService)
-func _Msg_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthenticate)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -233,22 +199,12 @@ func _Msg_Authenticate_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AuthorizeService(ctx, req.(*MsgAuthorizeService))
-		return srv.(MsgServer).Authenticate(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_Authenticate_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Authenticate(ctx, req.(*MsgAuthenticate))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_AllocateVault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgAllocateVault)
-func _Msg_ProveWitness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgProveWitness)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -261,22 +217,12 @@ func _Msg_ProveWitness_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).AllocateVault(ctx, req.(*MsgAllocateVault))
-		return srv.(MsgServer).ProveWitness(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_ProveWitness_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).ProveWitness(ctx, req.(*MsgProveWitness))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_SyncController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgSyncController)
-func _Msg_SyncVault_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSyncVault)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -289,14 +235,6 @@ func _Msg_SyncVault_Handler(srv interface{}, ctx context.Context, dec func(inter
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(MsgServer).SyncController(ctx, req.(*MsgSyncController))
-		return srv.(MsgServer).SyncVault(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_SyncVault_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SyncVault(ctx, req.(*MsgSyncVault))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -359,16 +297,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SyncController",
 			Handler:    _Msg_SyncController_Handler,
-			MethodName: "Authenticate",
-			Handler:    _Msg_Authenticate_Handler,
-		},
-		{
-			MethodName: "ProveWitness",
-			Handler:    _Msg_ProveWitness_Handler,
-		},
-		{
-			MethodName: "SyncVault",
-			Handler:    _Msg_SyncVault_Handler,
 		},
 		{
 			MethodName: "RegisterController",

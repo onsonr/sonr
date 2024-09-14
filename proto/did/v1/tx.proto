@@ -4,7 +4,6 @@ package did.v1;
 
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
-import "did/v1/enums.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 import "gogoproto/gogo.proto";

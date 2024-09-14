@@ -3,7 +3,6 @@ syntax = "proto3";
 package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
-import "did/v1/enums.proto";
 import "did/v1/genesis.proto";
 import "did/v1/models.proto";
 
@@ -30,8 +29,8 @@ message Account {
       unique: true
     }
     index: {
-      id: 1
-      fields: "subject"
+      id: 4
+      fields: "namespace,address"
       unique: true
     }
   };
@@ -40,48 +39,19 @@ message Account {
   string id = 1;
 
   // Origin is the  Alias provider
-  string origin = 2;
+  string address = 2;
 
   // Subject is the user defined alias
-  string subject = 3;
+  string label = 3;
 
   // Controller of the alias
   string controller = 4;
 
-  // Expiration of the alias
-  uint64 expiration = 5;
-}
+  string namespace = 5;
 
-// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
-message Assertion {
-  option (cosmos.orm.v1.table) = {
-    id: 2
-    primary_key: {fields: "id"}
-  };
-
-  // The unique identifier of the account
-  string id = 1;
-
-  // The controller of the account
-  string controller = 2;
-
-  // The value of the linked identifier
-  PubKey public_key = 3;
-
-  // The address of the account
-  string address = 4;
-
-  // The label of the account
-  string label = 5;
-
-  // The bip32 chain code
   uint32 chain_code = 6;
 
-  // The index of the account
   uint32 index = 7;
-
-  // The supported chains of the account
-  repeated string chains = 8;
 }
 
 // Controller represents a Sonr DWN Vault

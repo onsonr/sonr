@@ -227,11 +227,3 @@ func (k *KeyInfo) Equal(b *KeyInfo) bool {
 	}
 	return false
 }
-
-// Equal returns true if two validator infos are equal
-func (v *ValidatorInfo) Equal(b *ValidatorInfo) bool {
-	if v == nil && b == nil {
-		return true
-	}
-	return false
-}

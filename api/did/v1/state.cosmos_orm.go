@@ -26,18 +26,13 @@ type AccountTable interface {
 	HasByControllerChainCodeIndex(ctx context.Context, controller string, chain_code uint32, index uint32) (found bool, err error)
 	// GetByControllerChainCodeIndex returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetByControllerChainCodeIndex(ctx context.Context, controller string, chain_code uint32, index uint32) (*Account, error)
+	HasByNamespaceAddress(ctx context.Context, namespace string, address string) (found bool, err error)
+	// GetByNamespaceAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByNamespaceAddress(ctx context.Context, namespace string, address string) (*Account, error)
 	List(ctx context.Context, prefixKey AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
 	ListRange(ctx context.Context, from, to AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AccountIndexKey) error
 	DeleteRange(ctx context.Context, from, to AccountIndexKey) error
-	Get(ctx context.Context, id string) (*Aliases, error)
-	HasBySubject(ctx context.Context, subject string) (found bool, err error)
-	// GetBySubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySubject(ctx context.Context, subject string) (*Aliases, error)
-	List(ctx context.Context, prefixKey AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
-	ListRange(ctx context.Context, from, to AliasesIndexKey, opts ...ormlist.Option) (AliasesIterator, error)
-	DeleteBy(ctx context.Context, prefixKey AliasesIndexKey) error
-	DeleteRange(ctx context.Context, from, to AliasesIndexKey) error
 
 	doNotImplement()
 }
@@ -84,16 +79,6 @@ func (x AccountControllerLabelIndexKey) accountIndexKey()      {}
 
 func (this AccountControllerLabelIndexKey) WithController(controller string) AccountControllerLabelIndexKey {
 	this.vs = []interface{}{controller}
-type AliasesSubjectIndexKey struct {
-	vs []interface{}
-}
-
-func (x AliasesSubjectIndexKey) id() uint32            { return 1 }
-func (x AliasesSubjectIndexKey) values() []interface{} { return x.vs }
-func (x AliasesSubjectIndexKey) aliasesIndexKey()      {}
-
-func (this AliasesSubjectIndexKey) WithSubject(subject string) AliasesSubjectIndexKey {
-	this.vs = []interface{}{subject}
 	return this
 }
 
@@ -140,6 +125,24 @@ func (this AccountControllerChainCodeIndexIndexKey) WithControllerChainCode(cont
 
 func (this AccountControllerChainCodeIndexIndexKey) WithControllerChainCodeIndex(controller string, chain_code uint32, index uint32) AccountControllerChainCodeIndexIndexKey {
 	this.vs = []interface{}{controller, chain_code, index}
+	return this
+}
+
+type AccountNamespaceAddressIndexKey struct {
+	vs []interface{}
+}
+
+func (x AccountNamespaceAddressIndexKey) id() uint32            { return 4 }
+func (x AccountNamespaceAddressIndexKey) values() []interface{} { return x.vs }
+func (x AccountNamespaceAddressIndexKey) accountIndexKey()      {}
+
+func (this AccountNamespaceAddressIndexKey) WithNamespace(namespace string) AccountNamespaceAddressIndexKey {
+	this.vs = []interface{}{namespace}
+	return this
+}
+
+func (this AccountNamespaceAddressIndexKey) WithNamespaceAddress(namespace string, address string) AccountNamespaceAddressIndexKey {
+	this.vs = []interface{}{namespace, address}
 	return this
 }
 
@@ -191,16 +194,6 @@ func (this accountTable) GetByControllerLabel(ctx context.Context, controller st
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &account,
 		controller,
 		label,
-func (this aliasesTable) HasBySubject(ctx context.Context, subject string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		subject,
-	)
-}
-
-func (this aliasesTable) GetBySubject(ctx context.Context, subject string) (*Aliases, error) {
-	var aliases Aliases
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &aliases,
-		subject,
 	)
 	if err != nil {
 		return nil, err
@@ -247,6 +240,28 @@ func (this accountTable) GetByControllerChainCodeIndex(ctx context.Context, cont
 		controller,
 		chain_code,
 		index,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &account, nil
+}
+
+func (this accountTable) HasByNamespaceAddress(ctx context.Context, namespace string, address string) (found bool, err error) {
+	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
+		namespace,
+		address,
+	)
+}
+
+func (this accountTable) GetByNamespaceAddress(ctx context.Context, namespace string, address string) (*Account, error) {
+	var account Account
+	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &account,
+		namespace,
+		address,
 	)
 	if err != nil {
 		return nil, err

@@ -21,17 +21,4 @@ func (k Keeper) insertService(
 		Success: true,
 		Did:     record.Id,
 	}, nil
-func (k Keeper) insertAliasFromDisplayName() {
-}
-
-func (k Keeper) insertAssertionFromIdentity() {
-}
-
-func (k Keeper) insertAuthenticationFromCredential() {
-}
-
-func (k Keeper) insertControllerFromMotrVault() {
-}
-
-func (k Keeper) insertDelegationFromAccount() {
 }
