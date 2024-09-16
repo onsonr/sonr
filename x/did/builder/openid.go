@@ -3,12 +3,12 @@ package builder
 import (
 	"fmt"
 
-	"github.com/onsonr/sonr/x/did/types/oidc"
+	"github.com/onsonr/sonr/internal/dwn/models"
 )
 
-func GetDiscovery(origin string) *oidc.DiscoveryDocument {
+func GetDiscovery(origin string) *models.DiscoveryDocument {
 	baseURL := "https://" + origin // Ensure this is the correct base URL for your service
-	discoveryDoc := &oidc.DiscoveryDocument{
+	discoveryDoc := &models.DiscoveryDocument{
 		Issuer:                 baseURL,
 		AuthorizationEndpoint:  fmt.Sprintf("%s/auth", baseURL),
 		TokenEndpoint:          fmt.Sprintf("%s/token", baseURL),

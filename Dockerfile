@@ -86,8 +86,4 @@ WORKDIR /opt
 # rest server, tendermint p2p, tendermint rpc
 EXPOSE 1317 26656 26657 6060
 
-<<<<<<< HEAD
-CMD ["test_node.sh"]
-=======
 ENTRYPOINT ["/usr/bin/sonrd"]
->>>>>>> master

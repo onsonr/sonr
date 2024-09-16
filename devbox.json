@@ -3,20 +3,18 @@
   "packages": [
     "go@1.22",
     "templ@latest",
-    "go-task@latest",
-    "templ@latest",
     "bun@latest",
     "ipfs-cluster@latest",
     "air@latest",
     "commitizen@latest"
   ],
   "env": {
-    "GOPATH":   "$HOME/go",
-    "PATH":     "$HOME/go/bin:$PATH",
+    "GOPATH": "$HOME/go",
+    "PATH": "$HOME/go/bin:$PATH",
     "CHAIN_ID": "sonr-testnet-1",
-    "DENOM":    "usnr",
-    "KEYRING":  "test",
-    "MONIKER":  "florence"
+    "DENOM": "usnr",
+    "KEYRING": "test",
+    "MONIKER": "florence"
   },
   "shell": {
     "scripts": {
@@ -39,9 +37,11 @@
         "make proto-gen"
       ],
       "gen:pkl": [
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/oidc.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl"
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl",
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl"
+      ],
+      "gen:templ": [
+        "templ generate"
       ],
       "dev": [
         "air"
