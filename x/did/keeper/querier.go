@@ -43,26 +43,9 @@ func (k Querier) Service(
 	return &types.QueryServiceResponse{Service: ctx.GetServiceInfo(req.GetOrigin())}, nil
 }
 
-// ParamsAssets implements types.QueryServer.
-func (k Querier) ParamsAssets(goCtx context.Context, req *types.QueryRequest) (*types.QueryParamsAssetsResponse, error) {
+// Sync implements types.QueryServer.
+func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.SyncResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryParamsAssetsResponse{}, nil
-}
-
-// ParamsByAsset implements types.QueryServer.
-func (k Querier) ParamsByAsset(goCtx context.Context, req *types.QueryRequest) (*types.QueryParamsByAssetResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryParamsByAssetResponse{}, nil
-}
-
-// ParamsKeys implements types.QueryServer.
-func (k Querier) ParamsKeys(goCtx context.Context, req *types.QueryRequest) (*types.QueryParamsKeysResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryParamsKeysResponse{}, nil
-}
-
-// ParamsByKey implements types.QueryServer.
-func (k Querier) ParamsByKey(goCtx context.Context, req *types.QueryRequest) (*types.QueryParamsByKeyResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.QueryParamsByKeyResponse{}, nil
+	panic("Sync is unimplemented")
+	return &types.SyncResponse{}, nil
 }

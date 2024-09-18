@@ -1,0 +1,62 @@
+@go.Package { name = "github.com/onsonr/sonr/config/dwn" }
+
+module dwn
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+typealias JSON = String
+
+class JsonField extends go.Field {
+  structTags {
+    ["json"] = "%{name},omitempty"
+  }
+}
+
+class Config {
+  @JsonField
+  ipfs: IPFS
+
+  @JsonField
+  sonr: Sonr
+
+  @JsonField
+  keyshare: JSON?
+
+  @JsonField
+  address: String?
+
+  @JsonField
+  vault: IndexedDB
+}
+
+class IndexedDB {
+  name: String = "vault"
+  version: Int = 1
+}
+
+class IPFS {
+  apiUrl: String
+  gatewayUrl: String
+}
+
+class Sonr {
+  apiUrl: String
+  grpcUrl: String
+  rpcUrl: String
+  webSocketUrl: String
+}
+
+
+config = new Config {
+  ipfs = new IPFS {
+    apiUrl = "https://api.sonr-ipfs.land"
+    gatewayUrl = "https://ipfs.sonr.land"
+  }
+
+  sonr = new Sonr {
+    apiUrl = "https://api.sonr.land"
+    grpcUrl = "https://grpc.sonr.land"
+    rpcUrl = "https://rpc.sonr.land"
+    webSocketUrl = "wss://rpc.sonr.land/ws"
+  }
+}

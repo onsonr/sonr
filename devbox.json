@@ -37,6 +37,7 @@
         "make proto-gen"
       ],
       "gen:pkl": [
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl"
       ],

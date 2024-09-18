@@ -14,26 +14,6 @@ service Query {
     option (google.api.http).get = "/params";
   }
 
-  // ParamsAssets queries all parameters of the module.
-  rpc ParamsAssets(QueryRequest) returns (QueryParamsAssetsResponse) {
-    option (google.api.http).get = "/params/assets";
-  }
-
-  // Params queries all parameters of the module.
-  rpc ParamsByAsset(QueryRequest) returns (QueryParamsByAssetResponse) {
-    option (google.api.http).get = "/params/assets/{asset}";
-  }
-
-  // ParamsKeys queries all parameters of the module.
-  rpc ParamsKeys(QueryRequest) returns (QueryParamsKeysResponse) {
-    option (google.api.http).get = "/params/keys";
-  }
-
-  // Params queries all parameters of the module.
-  rpc ParamsByKey(QueryRequest) returns (QueryParamsByKeyResponse) {
-    option (google.api.http).get = "/params/keys/{key}";
-  }
-
   // Resolve queries the DID document by its id.
   rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
     option (google.api.http).get = "/did/{did}";
@@ -44,6 +24,11 @@ service Query {
   // as a TXT record in DNS. v=sonr, o=origin, p=protocol
   rpc Service(QueryRequest) returns (QueryServiceResponse) {
     option (google.api.http).get = "/service/{origin}";
+  }
+
+  // Sync queries the DID document by its id. And returns the required PKL information
+  rpc Sync(SyncRequest) returns (SyncResponse) {
+    option (google.api.http).post = "/sync";
   }
 }
 
@@ -69,22 +54,6 @@ message QueryParamsResponse {
   Params params = 1;
 }
 
-message QueryParamsAssetsResponse {
-  repeated AssetInfo assets = 1;
-}
-
-message QueryParamsByAssetResponse {
-  AssetInfo asset = 1;
-}
-
-message QueryParamsKeysResponse {
-  map<string, KeyInfo> keys = 1;
-}
-
-message QueryParamsByKeyResponse {
-  KeyInfo key = 1;
-}
-
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
 message QueryResolveResponse {
   // document is the DID document
@@ -97,4 +66,14 @@ message QueryServiceResponse {
   bool existing = 1;
   ServiceInfo service = 2;
   string txt_record = 3;
+}
+
+// SyncRequest is the request type for the Sync RPC method.
+message SyncRequest {
+  string did = 1;
+}
+
+// SyncResponse is the response type for the Sync RPC method.
+message SyncResponse {
+  bool success = 1;
 }

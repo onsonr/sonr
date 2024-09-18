@@ -1,11 +1,12 @@
 //go:build js && wasm
 // +build js,wasm
 
-package mdw
+package middleware
 
 import (
 	"github.com/donseba/go-htmx"
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/dwn/middleware/jsexc"
 )
 
 type Browser struct {
@@ -20,9 +21,15 @@ type Browser struct {
 	htmx *htmx.HTMX
 
 	// WebAPIs
-	credentials    CredentialsAPI
-	indexedDB      IndexedDBAPI
-	localStorage   LocalStorageAPI
-	push           PushAPI
-	sessionStorage SessionStorageAPI
+	indexedDB      jsexc.IndexedDBAPI
+	localStorage   jsexc.LocalStorageAPI
+	push           jsexc.PushAPI
+	sessionStorage jsexc.SessionStorageAPI
+}
+
+func UseNavigator(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		cc := jsexc.NewNavigator(c)
+		return next(cc)
+	}
 }

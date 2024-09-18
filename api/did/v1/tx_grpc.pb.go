@@ -22,7 +22,6 @@ const (
 	Msg_UpdateParams_FullMethodName       = "/did.v1.Msg/UpdateParams"
 	Msg_AuthorizeService_FullMethodName   = "/did.v1.Msg/AuthorizeService"
 	Msg_AllocateVault_FullMethodName      = "/did.v1.Msg/AllocateVault"
-	Msg_SyncController_FullMethodName     = "/did.v1.Msg/SyncController"
 	Msg_RegisterController_FullMethodName = "/did.v1.Msg/RegisterController"
 	Msg_RegisterService_FullMethodName    = "/did.v1.Msg/RegisterService"
 )
@@ -40,8 +39,6 @@ type MsgClient interface {
 	// AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
 	// this operation is called by services initiating a controller registration.
 	AllocateVault(ctx context.Context, in *MsgAllocateVault, opts ...grpc.CallOption) (*MsgAllocateVaultResponse, error)
-	// SyncController synchronizes the controller with the Vault Motr DWN WASM Wallet.
-	SyncController(ctx context.Context, in *MsgSyncController, opts ...grpc.CallOption) (*MsgSyncControllerResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
 	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
 	// RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
@@ -83,15 +80,6 @@ func (c *msgClient) AllocateVault(ctx context.Context, in *MsgAllocateVault, opt
 	return out, nil
 }
 
-func (c *msgClient) SyncController(ctx context.Context, in *MsgSyncController, opts ...grpc.CallOption) (*MsgSyncControllerResponse, error) {
-	out := new(MsgSyncControllerResponse)
-	err := c.cc.Invoke(ctx, Msg_SyncController_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error) {
 	out := new(MsgRegisterControllerResponse)
 	err := c.cc.Invoke(ctx, Msg_RegisterController_FullMethodName, in, out, opts...)
@@ -123,8 +111,6 @@ type MsgServer interface {
 	// AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
 	// this operation is called by services initiating a controller registration.
 	AllocateVault(context.Context, *MsgAllocateVault) (*MsgAllocateVaultResponse, error)
-	// SyncController synchronizes the controller with the Vault Motr DWN WASM Wallet.
-	SyncController(context.Context, *MsgSyncController) (*MsgSyncControllerResponse, error)
 	// RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
 	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
 	// RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
@@ -144,9 +130,6 @@ func (UnimplementedMsgServer) AuthorizeService(context.Context, *MsgAuthorizeSer
 }
 func (UnimplementedMsgServer) AllocateVault(context.Context, *MsgAllocateVault) (*MsgAllocateVaultResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AllocateVault not implemented")
-}
-func (UnimplementedMsgServer) SyncController(context.Context, *MsgSyncController) (*MsgSyncControllerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SyncController not implemented")
 }
 func (UnimplementedMsgServer) RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
@@ -221,24 +204,6 @@ func _Msg_AllocateVault_Handler(srv interface{}, ctx context.Context, dec func(i
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_SyncController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgSyncController)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).SyncController(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_SyncController_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).SyncController(ctx, req.(*MsgSyncController))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgRegisterController)
 	if err := dec(in); err != nil {
@@ -293,10 +258,6 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AllocateVault",
 			Handler:    _Msg_AllocateVault_Handler,
-		},
-		{
-			MethodName: "SyncController",
-			Handler:    _Msg_SyncController_Handler,
 		},
 		{
 			MethodName: "RegisterController",

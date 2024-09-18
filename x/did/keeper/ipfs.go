@@ -15,7 +15,18 @@ import (
 
 // assembleInitialVault assembles the initial vault
 func (k Keeper) assembleInitialVault(ctx sdk.Context) (string, int64, error) {
-	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), vfs.AssembleDirectory())
+	cnfg, err := vfs.NewDWNConfigFile("test", "test")
+	if err != nil {
+		return "", 0, err
+	}
+	fileMap := map[string]files.Node{
+		"config.pkl": cnfg,
+		"sw.js":      vfs.SWJSFile(),
+		"app.wasm":   vfs.DWNWasmFile(),
+		"index.html": vfs.IndexFile(),
+	}
+
+	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), files.NewMapDirectory(fileMap))
 	if err != nil {
 		return "", 0, err
 	}

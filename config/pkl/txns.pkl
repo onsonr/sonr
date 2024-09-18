@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/internal/dwn/txns" }
+@go.Package { name = "github.com/onsonr/sonr/internal/vfs/txns" }
 
 module txns
 
@@ -25,6 +25,14 @@ class Proposal {
   description: String
 }
 
+class SWT {
+  origin: String
+  location: String
+  identifier: String
+  scopes: List<String>
+  properties: Map<String, String>
+  expiryBlock: Int
+}
 
 /// Gov module messages
 class MsgGovSubmitProposal extends Msg {

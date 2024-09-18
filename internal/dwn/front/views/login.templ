@@ -1,0 +1,25 @@
+package views
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/dwn/front/blocks"
+)
+
+func LoginView(c echo.Context) error {
+	return echoComponentResponse(c, renderLoginView())
+}
+
+templ renderLoginView() {
+	@blocks.Layout("Login | Sonr.ID") {
+		@blocks.Card("login-view", blocks.SizeLarge) {
+			@blocks.H1("Sonr.ID")
+			@blocks.Text("Neo-tree is a file manager for NeoFS.")
+			@blocks.Spacer()
+			@blocks.RadioGroup()
+			@blocks.Spacer()
+			@blocks.Button(blocks.GET("/", "#login-view")) {
+				@blocks.Text("Cancel")
+			}
+		}
+	}
+}

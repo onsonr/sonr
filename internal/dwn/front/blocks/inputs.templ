@@ -1,0 +1,29 @@
+package blocks
+
+type InputState int
+
+const (
+	InputStateDefault InputState = iota
+	InputStateError
+	InputStateSuccess
+)
+
+templ TextInput(state InputState, label string, placeholder string) {
+	switch (state) {
+		case InputStateDefault:
+			<div class="flex flex-col space-y-1.5 p-6">
+				<label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">{ label }</label>
+				<input type="text" placeholder="{label}" id="name" value="{value}" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-neutral-300 ring-offset-background placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+			</div>
+		case InputStateError:
+			<div class="flex flex-col space-y-1.5 p-6">
+				<label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">{ label }</label>
+				<input type="text" placeholder="{label}" id="name" value="{value}" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-neutral-300 ring-offset-background placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+			</div>
+		case InputStateSuccess:
+			<div class="flex flex-col space-y-1.5 p-6">
+				<label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">{ label }</label>
+				<input type="text" placeholder="{label}" id="name" value="{value}" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-neutral-300 ring-offset-background placeholder:text-neutral-400 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+			</div>
+	}
+}

@@ -101,14 +101,6 @@ func (ms msgServer) RegisterService(
 	return ms.k.insertService(ctx, msg.Service)
 }
 
-// # SyncController
-//
-// SyncController implements types.MsgServer.
-func (ms msgServer) SyncController(ctx context.Context, msg *types.MsgSyncController) (*types.MsgSyncControllerResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.MsgSyncControllerResponse{}, nil
-}
-
 // # UpdateParams
 //
 // UpdateParams updates the x/did module parameters.

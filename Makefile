@@ -303,7 +303,7 @@ sh-testnet: mod-tidy
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./internal/vfs/dwn.wasm ./internal/dwn/dwn.go
+	GOOS=js GOARCH=wasm go build -o ./internal/vfs/app.wasm ./internal/dwn/wasm/main.go
 
 motr:
 	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
