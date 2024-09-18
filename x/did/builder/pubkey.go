@@ -23,8 +23,8 @@ type PublicKey interface {
 }
 
 // CreateAuthnVerification creates a new verification method for an authn method
-func CreateAuthnVerification(namespace types.DIDNamespace, issuer string, controller string, pubkey *types.PubKey, identifier string) *types.VerificationMethod {
-	return &types.VerificationMethod{
+func CreateAuthnVerification(namespace types.DIDNamespace, issuer string, controller string, pubkey *types.PubKey, identifier string) *types.Verification {
+	return &types.Verification{
 		Method:     namespace,
 		Controller: controller,
 		PublicKey:  pubkey,
@@ -34,8 +34,8 @@ func CreateAuthnVerification(namespace types.DIDNamespace, issuer string, contro
 }
 
 // CreateWalletVerification creates a new verification method for a wallet
-func CreateWalletVerification(namespace types.DIDNamespace, controller string, pubkey *types.PubKey, identifier string) *didv1.VerificationMethod {
-	return &didv1.VerificationMethod{
+func CreateWalletVerification(namespace types.DIDNamespace, controller string, pubkey *types.PubKey, identifier string) *didv1.Verification {
+	return &didv1.Verification{
 		Method:     APIFormatDIDNamespace(namespace),
 		Controller: controller,
 		PublicKey:  APIFormatPubKey(pubkey),
@@ -63,8 +63,8 @@ func ExtractWebAuthnPublicKey(keyBytes []byte) (*types.PubKey_JWK, error) {
 }
 
 // NewInitialWalletAccounts creates a new set of verification methods for a wallet
-func NewInitialWalletAccounts(controller string, pubkey *types.PubKey) ([]*didv1.VerificationMethod, error) {
-	var verificationMethods []*didv1.VerificationMethod
+func NewInitialWalletAccounts(controller string, pubkey *types.PubKey) ([]*didv1.Verification, error) {
+	var verificationMethods []*didv1.Verification
 	for method, chain := range types.InitialChainCodes {
 		nk, err := computeBip32AccountPublicKey(pubkey, chain, 0)
 		if err != nil {

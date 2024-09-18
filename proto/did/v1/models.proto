@@ -7,13 +7,6 @@ import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Alias defines a subject/origin pair
-message Alias {
-  string subject = 1;
-  string origin = 2;
-  string controller = 3;
-}
-
 message Credential {
   string subject = 1;
   string attestation_type = 2;

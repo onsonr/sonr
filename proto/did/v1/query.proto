@@ -19,13 +19,6 @@ service Query {
     option (google.api.http).get = "/did/{did}";
   }
 
-  // Service returns associated ServiceInfo for a given Origin
-  // if the servie is not found, a fingerprint is generated to be used
-  // as a TXT record in DNS. v=sonr, o=origin, p=protocol
-  rpc Service(QueryRequest) returns (QueryServiceResponse) {
-    option (google.api.http).get = "/service/{origin}";
-  }
-
   // Sync queries the DID document by its id. And returns the required PKL information
   rpc Sync(SyncRequest) returns (SyncResponse) {
     option (google.api.http).post = "/sync";
@@ -52,20 +45,6 @@ message QueryResponse {
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
-}
-
-// QueryResolveResponse is the response type for the Query/Resolve RPC method.
-message QueryResolveResponse {
-  // document is the DID document
-  Document document = 1;
-}
-
-// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
-message QueryServiceResponse {
-  // options is the PublicKeyCredentialAttestationOptions
-  bool existing = 1;
-  ServiceInfo service = 2;
-  string txt_record = 3;
 }
 
 // SyncRequest is the request type for the Sync RPC method.

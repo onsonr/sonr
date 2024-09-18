@@ -92,24 +92,6 @@ func NewKeeper(
 	return k
 }
 
-// IsClaimedServiceOrigin checks if a service origin is unclaimed
-func (k Keeper) IsUnclaimedServiceOrigin(ctx sdk.Context, origin string) bool {
-	rec, _ := k.OrmDB.ServiceRecordTable().GetByOrigin(ctx, origin)
-	return rec == nil
-}
-
-// IsValidServiceOrigin checks if a service origin is valid
-func (k Keeper) IsValidServiceOrigin(ctx sdk.Context, origin string) bool {
-	rec, err := k.OrmDB.ServiceRecordTable().GetByOrigin(ctx, origin)
-	if err != nil {
-		return false
-	}
-	if rec == nil {
-		return false
-	}
-	return true
-}
-
 // VerifyMinimumStake checks if a validator has a minimum stake
 func (k Keeper) VerifyMinimumStake(ctx sdk.Context, addr string) bool {
 	address, err := sdk.AccAddressFromBech32(addr)

@@ -66,18 +66,6 @@ func APIFormatPermissionScopes(scopes []types.PermissionScope) []didv1.Permissio
 	return s
 }
 
-func APIFormatServiceRecord(service *types.Service) *didv1.ServiceRecord {
-	return &didv1.ServiceRecord{
-		Id:               service.Id,
-		ServiceType:      service.ServiceType,
-		Authority:        service.Authority,
-		Origin:           service.Origin,
-		Description:      service.Description,
-		ServiceEndpoints: service.ServiceEndpoints,
-		Permissions:      APIFormatPermissions(service.Permissions),
-	}
-}
-
 func APIFormatPubKeyJWK(jwk *types.PubKey_JWK) *didv1.PubKey_JWK {
 	return &didv1.PubKey_JWK{
 		Kty: jwk.Kty,
@@ -200,19 +188,6 @@ func ModuleTransportsToProtocol(transport []string) []protocol.AuthenticatorTran
 		tss[i] = protocol.AuthenticatorTransport(t)
 	}
 	return tss
-}
-
-// ModuleFormatAPIServiceRecord formats a service record for the module
-func ModuleFormatAPIServiceRecord(service *didv1.ServiceRecord) *types.Service {
-	return &types.Service{
-		Id:               service.Id,
-		ServiceType:      service.ServiceType,
-		Authority:        service.Authority,
-		Origin:           service.Origin,
-		Description:      service.Description,
-		ServiceEndpoints: service.ServiceEndpoints,
-		Permissions:      ModuleFormatAPIPermissions(service.Permissions),
-	}
 }
 
 func ModuleFormatAPIPermissions(permissions *didv1.Permissions) *types.Permissions {

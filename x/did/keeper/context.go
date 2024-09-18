@@ -4,7 +4,6 @@ import (
 	"context"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/sonr/x/did/builder"
 	"github.com/onsonr/sonr/x/did/types"
 	"google.golang.org/grpc/peer"
 )
@@ -41,20 +40,4 @@ func (c Context) PeerID() string {
 		return ""
 	}
 	return c.Peer.Addr.String()
-}
-
-func (c Context) GetService(origin string) (*types.Service, error) {
-	rec, err := c.Keeper.OrmDB.ServiceRecordTable().GetByOrigin(c.SDK(), origin)
-	if err != nil {
-		return nil, err
-	}
-	return builder.ModuleFormatAPIServiceRecord(rec), nil
-}
-
-func (c Context) GetServiceInfo(origin string) *types.ServiceInfo {
-	rec, _ := c.GetService(origin)
-	if rec == nil {
-		return &types.ServiceInfo{Exists: false, Origin: origin, Fingerprint: types.ComputeOriginTXTRecord(origin)}
-	}
-	return &types.ServiceInfo{Exists: true, Origin: origin, Fingerprint: types.ComputeOriginTXTRecord(origin), Service: rec}
 }

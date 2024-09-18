@@ -39,8 +39,8 @@ func (k Querier) Service(
 	goCtx context.Context,
 	req *types.QueryRequest,
 ) (*types.QueryServiceResponse, error) {
-	ctx := k.CurrentCtx(goCtx)
-	return &types.QueryServiceResponse{Service: ctx.GetServiceInfo(req.GetOrigin())}, nil
+	// ctx := k.CurrentCtx(goCtx)
+	return &types.QueryServiceResponse{}, nil
 }
 
 // Sync implements types.QueryServer.

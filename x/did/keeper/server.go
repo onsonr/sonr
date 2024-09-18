@@ -47,9 +47,9 @@ func (ms msgServer) AllocateVault(
 ) (*types.MsgAllocateVaultResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	// 1.Check if the service origin is valid
-	if ms.k.IsValidServiceOrigin(ctx, msg.Origin) {
-		return nil, types.ErrInvalidServiceOrigin
-	}
+	// if ms.k.IsValidServiceOrigin(ctx, msg.Origin) {
+	// 	return nil, types.ErrInvalidServiceOrigin
+	// }
 
 	cid, expiryBlock, err := ms.k.assembleInitialVault(ctx)
 	if err != nil {
@@ -92,13 +92,13 @@ func (ms msgServer) RegisterService(
 	goCtx context.Context,
 	msg *types.MsgRegisterService,
 ) (*types.MsgRegisterServiceResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
+	// ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// 1.Check if the service origin is valid
-	if !ms.k.IsValidServiceOrigin(ctx, msg.Service.Origin) {
-		return nil, types.ErrInvalidServiceOrigin
-	}
-	return ms.k.insertService(ctx, msg.Service)
+	// if !ms.k.IsValidServiceOrigin(ctx, msg.Service.Origin) {
+	// 	return nil, types.ErrInvalidServiceOrigin
+	// }
+	return nil, errors.Wrapf(types.ErrInvalidServiceOrigin, "invalid service origin")
 }
 
 // # UpdateParams

@@ -21,7 +21,6 @@ func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) erro
 	if err := data.Params.Validate(); err != nil {
 		return err
 	}
-
 	return k.Params.Set(ctx, data.Params)
 }
 
