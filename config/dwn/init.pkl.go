@@ -8,5 +8,5 @@ func init() {
 	pkl.RegisterMapping("dwn#Config", Config{})
 	pkl.RegisterMapping("dwn#IPFS", IPFS{})
 	pkl.RegisterMapping("dwn#Sonr", Sonr{})
-	pkl.RegisterMapping("dwn#IndexedDB", IndexedDB{})
+	pkl.RegisterMapping("dwn#Motr", Motr{})
 }

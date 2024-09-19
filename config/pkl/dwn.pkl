@@ -20,30 +20,43 @@ class Config {
   sonr: Sonr
 
   @JsonField
-  keyshare: JSON?
-
-  @JsonField
-  address: String?
-
-  @JsonField
-  vault: IndexedDB
-}
-
-class IndexedDB {
-  name: String = "vault"
-  version: Int = 1
+  motr: Motr
 }
 
 class IPFS {
+  @JsonField
   apiUrl: String
+  
+  @JsonField
   gatewayUrl: String
 }
 
+class Motr {
+  @JsonField
+  keyshare: JSON
+  
+  @JsonField
+  address: String
+  
+  @JsonField
+  origin: String
+}
+
 class Sonr {
+  @JsonField
   apiUrl: String
+
+  @JsonField
   grpcUrl: String
+
+  @JsonField
   rpcUrl: String
+
+  @JsonField
   webSocketUrl: String
+
+  @JsonField
+  chainId: String
 }
 
 

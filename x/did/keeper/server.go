@@ -2,13 +2,11 @@ package keeper
 
 import (
 	"context"
-	"encoding/json"
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"github.com/onsonr/sonr/x/did/builder"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -23,21 +21,6 @@ func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
 }
 
-// # AuthorizeService
-//
-// AuthorizeService implements types.MsgServer.
-func (ms msgServer) AuthorizeService(goCtx context.Context, msg *types.MsgAuthorizeService) (*types.MsgAuthorizeServiceResponse, error) {
-	if ms.k.authority != msg.Controller {
-		return nil, errors.Wrapf(
-			govtypes.ErrInvalidSigner,
-			"invalid authority; expected %s, got %s",
-			ms.k.authority,
-			msg.Controller,
-		)
-	}
-	return &types.MsgAuthorizeServiceResponse{}, nil
-}
-
 //	# AllocateVault
 //
 // AllocateVault implements types.MsgServer.
@@ -45,32 +28,22 @@ func (ms msgServer) AllocateVault(
 	goCtx context.Context,
 	msg *types.MsgAllocateVault,
 ) (*types.MsgAllocateVaultResponse, error) {
-	ctx := sdk.UnwrapSDKContext(goCtx)
 	// 1.Check if the service origin is valid
-	// if ms.k.IsValidServiceOrigin(ctx, msg.Origin) {
-	// 	return nil, types.ErrInvalidServiceOrigin
-	// }
+	ctx := ms.k.UnwrapCtx(goCtx)
+	if err := ctx.ValidateOrigin(msg.Origin); err != nil {
+		return nil, err
+	}
 
-	cid, expiryBlock, err := ms.k.assembleInitialVault(ctx)
+	// 2.Allocate the vault
+	cid, expiryBlock, err := ms.k.AssembleVault(ctx, msg.GetSubject(), msg.GetOrigin())
 	if err != nil {
 		return nil, err
 	}
 
-	regOpts, err := builder.GetPublicKeyCredentialCreationOptions(msg.Origin, msg.Subject, cid, ms.k.GetParams(ctx))
-	if err != nil {
-		return nil, err
-	}
-
-	// Convert to string
-	regOptsJSON, err := json.Marshal(regOpts)
-	if err != nil {
-		return nil, err
-	}
-
+	// 3.Return the response
 	return &types.MsgAllocateVaultResponse{
-		ExpiryBlock:         expiryBlock,
-		Cid:                 cid,
-		RegistrationOptions: string(regOptsJSON),
+		ExpiryBlock: expiryBlock,
+		Cid:         cid,
 	}, nil
 }
 
@@ -99,6 +72,21 @@ func (ms msgServer) RegisterService(
 	// 	return nil, types.ErrInvalidServiceOrigin
 	// }
 	return nil, errors.Wrapf(types.ErrInvalidServiceOrigin, "invalid service origin")
+}
+
+// # AuthorizeService
+//
+// AuthorizeService implements types.MsgServer.
+func (ms msgServer) AuthorizeService(goCtx context.Context, msg *types.MsgAuthorizeService) (*types.MsgAuthorizeServiceResponse, error) {
+	if ms.k.authority != msg.Controller {
+		return nil, errors.Wrapf(
+			govtypes.ErrInvalidSigner,
+			"invalid authority; expected %s, got %s",
+			ms.k.authority,
+			msg.Controller,
+		)
+	}
+	return &types.MsgAuthorizeServiceResponse{}, nil
 }
 
 // # UpdateParams

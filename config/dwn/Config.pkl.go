@@ -6,9 +6,5 @@ type Config struct {
 
 	Sonr *Sonr `pkl:"sonr" json:"sonr,omitempty"`
 
-	Keyshare *string `pkl:"keyshare" json:"keyshare,omitempty"`
-
-	Address *string `pkl:"address" json:"address,omitempty"`
-
-	Vault *IndexedDB `pkl:"vault" json:"vault,omitempty"`
+	Motr *Motr `pkl:"motr" json:"motr,omitempty"`
 }

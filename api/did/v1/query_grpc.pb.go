@@ -21,7 +21,6 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Query_Params_FullMethodName  = "/did.v1.Query/Params"
 	Query_Resolve_FullMethodName = "/did.v1.Query/Resolve"
-	Query_Service_FullMethodName = "/did.v1.Query/Service"
 	Query_Sync_FullMethodName    = "/did.v1.Query/Sync"
 )
 
@@ -33,10 +32,6 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// Service returns associated ServiceInfo for a given Origin
-	// if the servie is not found, a fingerprint is generated to be used
-	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
-	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL information
 	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
 }
@@ -67,15 +62,6 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryServiceResponse, error) {
-	out := new(QueryServiceResponse)
-	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
 	out := new(SyncResponse)
 	err := c.cc.Invoke(ctx, Query_Sync_FullMethodName, in, out, opts...)
@@ -93,10 +79,6 @@ type QueryServer interface {
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
-	// Service returns associated ServiceInfo for a given Origin
-	// if the servie is not found, a fingerprint is generated to be used
-	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
-	Service(context.Context, *QueryRequest) (*QueryServiceResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL information
 	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
 	mustEmbedUnimplementedQueryServer()
@@ -111,9 +93,6 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryPa
 }
 func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
-}
-func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryServiceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
 }
 func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
@@ -167,24 +146,6 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Service(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Service_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Service(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SyncRequest)
 	if err := dec(in); err != nil {
@@ -217,10 +178,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
-		},
-		{
-			MethodName: "Service",
-			Handler:    _Query_Service_Handler,
 		},
 		{
 			MethodName: "Sync",

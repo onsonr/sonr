@@ -299,15 +299,32 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: dwn motr
+.PHONY: dwn motr xcaddy ipfs-cluster-start
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./internal/vfs/app.wasm ./internal/dwn/wasm/main.go
+	GOOS=js GOARCH=wasm go build -o ./internal/vfs/app.wasm ./internal/dwn/main.go
 
 motr:
 	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
-	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/main.go
+	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/src/main.go
+
+xcaddy:
+	@echo "(proxy) Building Cloudflare/Caddy proxy"
+	go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+	mkdir -p ./bin
+	xcaddy build --with github.com/caddy-dns/cloudflare
+	mv ./caddy ./bin/caddy
+	./bin/caddy adapt > ./config/caddy/caddy.json
+
+ipfs-cluster-start:
+	@echo "(ipfs) Starting ipfs-cluster"
+	ipfs-cluster-service init --consensus crdt
+	ipfs-cluster-service daemon
+
+caddy-start:
+	@echo "(proxy) Starting caddy"
+	./bin/caddy run --config ./config/caddy/caddy.json
 
 ###############################################################################
 ###                                     help                                ###

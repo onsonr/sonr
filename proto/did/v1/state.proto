@@ -4,7 +4,6 @@ package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
-import "did/v1/models.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
@@ -15,7 +14,7 @@ message Alias {
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "did,alias"
+      fields: "subject,origin"
       unique: true
     }
   };
@@ -23,20 +22,11 @@ message Alias {
   // The unique identifier of the alias
   string id = 1;
 
-  // The DID of the alias
-  string did = 2;
-
   // The alias of the DID
-  string alias = 3;
+  string subject = 2;
 
   // Origin of the alias
-  string origin = 4;
-
-  // Permissions of the alias
-  repeated string scopes = 5;
-
-  // Expiration of the alias
-  int64 expiration = 6;
+  string origin = 3;
 }
 
 // Controller represents a Sonr DWN Vault
@@ -46,16 +36,26 @@ message Controller {
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "address"
+      fields: "sonr_address"
       unique: true
     }
     index: {
       id: 2
-      fields: "vault_cid"
+      fields: "eth_address"
       unique: true
     }
     index: {
       id: 3
+      fields: "btc_address"
+      unique: true
+    }
+    index: {
+      id: 4
+      fields: "vault_cid"
+      unique: true
+    }
+    index: {
+      id: 5
       fields: "status,vault_cid"
       unique: true
     }
@@ -65,22 +65,28 @@ message Controller {
   string id = 1;
 
   // The DID of the controller
-  string address = 2;
+  string sonr_address = 2;
+
+  // The DID of the controller
+  string eth_address = 3;
+
+  // The DID of the controller
+  string btc_address = 4;
 
   // Aliases of the controller
-  repeated Alias aliases = 3;
+  repeated string aliases = 5;
 
   // PubKey is the verification method
-  PubKey public_key = 4;
+  PubKey public_key = 6;
 
   // The vault address or identifier
-  string vault_cid = 5;
+  string vault_cid = 7;
 
   // The Authentications of the controller
-  repeated Credential authentication = 6;
+  repeated string authentication = 8;
 
   // The Status of the claims for the controller
-  string status = 7;
+  string status = 9;
 }
 
 // Verification reprsents a method of verifying membership in a DID
@@ -90,7 +96,17 @@ message Verification {
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "controller,method,issuer,subject"
+      fields: "issuer,subject"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "controller,did_method,issuer"
+      unique: true
+    }
+    index: {
+      id: 3
+      fields: "verification_type,subject,issuer"
       unique: true
     }
   };
@@ -102,7 +118,7 @@ message Verification {
   string controller = 2;
 
   // The DIDNamespace of the verification
-  DIDNamespace method = 3;
+  string did_method = 3;
 
   // The value of the linked identifier
   string issuer = 4;
@@ -113,6 +129,6 @@ message Verification {
   // The public key of the verification
   PubKey public_key = 6;
 
-  // The Verification Kind (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
-  string kind = 7;
+  // The Verification Type (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
+  string verification_type = 7;
 }

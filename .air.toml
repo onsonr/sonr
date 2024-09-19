@@ -16,7 +16,6 @@ include_ext = ["go", "templ", "html", "pkl", "js", "mjs"]
 include_file = [
   "wrangler.toml",
   "Dockerfile",
-  "Makefile",
   ".goreleaser.yaml",
   "go.mod",
   "devbox.json",

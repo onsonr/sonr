@@ -9,8 +9,11 @@
     "commitizen@latest"
   ],
   "env": {
+    "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
+    "PROJECT_DIR": "$HOME/ghq/github.com/onsonr/sonr",
+    "PROJECT_BIN": "$PROJECT_DIR/bin",
     "GOPATH": "$HOME/go",
-    "PATH": "$HOME/go/bin:$PATH",
+    "PATH": "$HOME/go/bin:$PROJECT_BIN:$PATH",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
@@ -39,6 +42,7 @@
       "gen:pkl": [
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl",
+        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl",
         "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl"
       ],
       "gen:templ": [
@@ -47,7 +51,11 @@
       "dev": [
         "air"
       ],
+      "start-proxy": [
+        "./bin/caddy run --config ./config/caddy/caddy.conf"
+      ],
       "testnet": [
+        "make xcaddy",
         "devbox services up"
       ]
     }

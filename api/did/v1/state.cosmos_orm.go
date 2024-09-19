@@ -17,9 +17,9 @@ type AliasTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Alias, error)
-	HasByDidAlias(ctx context.Context, did string, alias string) (found bool, err error)
-	// GetByDidAlias returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByDidAlias(ctx context.Context, did string, alias string) (*Alias, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Alias, error)
 	List(ctx context.Context, prefixKey AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error)
 	ListRange(ctx context.Context, from, to AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AliasIndexKey) error
@@ -60,21 +60,21 @@ func (this AliasIdIndexKey) WithId(id string) AliasIdIndexKey {
 	return this
 }
 
-type AliasDidAliasIndexKey struct {
+type AliasSubjectOriginIndexKey struct {
 	vs []interface{}
 }
 
-func (x AliasDidAliasIndexKey) id() uint32            { return 1 }
-func (x AliasDidAliasIndexKey) values() []interface{} { return x.vs }
-func (x AliasDidAliasIndexKey) aliasIndexKey()        {}
+func (x AliasSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x AliasSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x AliasSubjectOriginIndexKey) aliasIndexKey()        {}
 
-func (this AliasDidAliasIndexKey) WithDid(did string) AliasDidAliasIndexKey {
-	this.vs = []interface{}{did}
+func (this AliasSubjectOriginIndexKey) WithSubject(subject string) AliasSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
 	return this
 }
 
-func (this AliasDidAliasIndexKey) WithDidAlias(did string, alias string) AliasDidAliasIndexKey {
-	this.vs = []interface{}{did, alias}
+func (this AliasSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) AliasSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
 	return this
 }
 
@@ -114,18 +114,18 @@ func (this aliasTable) Get(ctx context.Context, id string) (*Alias, error) {
 	return &alias, nil
 }
 
-func (this aliasTable) HasByDidAlias(ctx context.Context, did string, alias string) (found bool, err error) {
+func (this aliasTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		did,
-		alias,
+		subject,
+		origin,
 	)
 }
 
-func (this aliasTable) GetByDidAlias(ctx context.Context, did string, alias string) (*Alias, error) {
+func (this aliasTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Alias, error) {
 	var alias Alias
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &alias,
-		did,
-		alias,
+		subject,
+		origin,
 	)
 	if err != nil {
 		return nil, err
@@ -174,12 +174,21 @@ type ControllerTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Controller, error)
-	HasByAddress(ctx context.Context, address string) (found bool, err error)
-	// GetByAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByAddress(ctx context.Context, address string) (*Controller, error)
+	HasBySonrAddress(ctx context.Context, sonr_address string) (found bool, err error)
+	// GetBySonrAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySonrAddress(ctx context.Context, sonr_address string) (*Controller, error)
+	HasByEthAddress(ctx context.Context, eth_address string) (found bool, err error)
+	// GetByEthAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByEthAddress(ctx context.Context, eth_address string) (*Controller, error)
+	HasByBtcAddress(ctx context.Context, btc_address string) (found bool, err error)
+	// GetByBtcAddress returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByBtcAddress(ctx context.Context, btc_address string) (*Controller, error)
 	HasByVaultCid(ctx context.Context, vault_cid string) (found bool, err error)
 	// GetByVaultCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	GetByVaultCid(ctx context.Context, vault_cid string) (*Controller, error)
+	HasByStatusVaultCid(ctx context.Context, status string, vault_cid string) (found bool, err error)
+	// GetByStatusVaultCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByStatusVaultCid(ctx context.Context, status string, vault_cid string) (*Controller, error)
 	List(ctx context.Context, prefixKey ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	ListRange(ctx context.Context, from, to ControllerIndexKey, opts ...ormlist.Option) (ControllerIterator, error)
 	DeleteBy(ctx context.Context, prefixKey ControllerIndexKey) error
@@ -220,16 +229,42 @@ func (this ControllerIdIndexKey) WithId(id string) ControllerIdIndexKey {
 	return this
 }
 
-type ControllerAddressIndexKey struct {
+type ControllerSonrAddressIndexKey struct {
 	vs []interface{}
 }
 
-func (x ControllerAddressIndexKey) id() uint32            { return 1 }
-func (x ControllerAddressIndexKey) values() []interface{} { return x.vs }
-func (x ControllerAddressIndexKey) controllerIndexKey()   {}
+func (x ControllerSonrAddressIndexKey) id() uint32            { return 1 }
+func (x ControllerSonrAddressIndexKey) values() []interface{} { return x.vs }
+func (x ControllerSonrAddressIndexKey) controllerIndexKey()   {}
 
-func (this ControllerAddressIndexKey) WithAddress(address string) ControllerAddressIndexKey {
-	this.vs = []interface{}{address}
+func (this ControllerSonrAddressIndexKey) WithSonrAddress(sonr_address string) ControllerSonrAddressIndexKey {
+	this.vs = []interface{}{sonr_address}
+	return this
+}
+
+type ControllerEthAddressIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerEthAddressIndexKey) id() uint32            { return 2 }
+func (x ControllerEthAddressIndexKey) values() []interface{} { return x.vs }
+func (x ControllerEthAddressIndexKey) controllerIndexKey()   {}
+
+func (this ControllerEthAddressIndexKey) WithEthAddress(eth_address string) ControllerEthAddressIndexKey {
+	this.vs = []interface{}{eth_address}
+	return this
+}
+
+type ControllerBtcAddressIndexKey struct {
+	vs []interface{}
+}
+
+func (x ControllerBtcAddressIndexKey) id() uint32            { return 3 }
+func (x ControllerBtcAddressIndexKey) values() []interface{} { return x.vs }
+func (x ControllerBtcAddressIndexKey) controllerIndexKey()   {}
+
+func (this ControllerBtcAddressIndexKey) WithBtcAddress(btc_address string) ControllerBtcAddressIndexKey {
+	this.vs = []interface{}{btc_address}
 	return this
 }
 
@@ -237,7 +272,7 @@ type ControllerVaultCidIndexKey struct {
 	vs []interface{}
 }
 
-func (x ControllerVaultCidIndexKey) id() uint32            { return 2 }
+func (x ControllerVaultCidIndexKey) id() uint32            { return 4 }
 func (x ControllerVaultCidIndexKey) values() []interface{} { return x.vs }
 func (x ControllerVaultCidIndexKey) controllerIndexKey()   {}
 
@@ -246,16 +281,21 @@ func (this ControllerVaultCidIndexKey) WithVaultCid(vault_cid string) Controller
 	return this
 }
 
-type ControllerStatusIndexKey struct {
+type ControllerStatusVaultCidIndexKey struct {
 	vs []interface{}
 }
 
-func (x ControllerStatusIndexKey) id() uint32            { return 3 }
-func (x ControllerStatusIndexKey) values() []interface{} { return x.vs }
-func (x ControllerStatusIndexKey) controllerIndexKey()   {}
+func (x ControllerStatusVaultCidIndexKey) id() uint32            { return 5 }
+func (x ControllerStatusVaultCidIndexKey) values() []interface{} { return x.vs }
+func (x ControllerStatusVaultCidIndexKey) controllerIndexKey()   {}
 
-func (this ControllerStatusIndexKey) WithStatus(status string) ControllerStatusIndexKey {
+func (this ControllerStatusVaultCidIndexKey) WithStatus(status string) ControllerStatusVaultCidIndexKey {
 	this.vs = []interface{}{status}
+	return this
+}
+
+func (this ControllerStatusVaultCidIndexKey) WithStatusVaultCid(status string, vault_cid string) ControllerStatusVaultCidIndexKey {
+	this.vs = []interface{}{status, vault_cid}
 	return this
 }
 
@@ -295,16 +335,56 @@ func (this controllerTable) Get(ctx context.Context, id string) (*Controller, er
 	return &controller, nil
 }
 
-func (this controllerTable) HasByAddress(ctx context.Context, address string) (found bool, err error) {
+func (this controllerTable) HasBySonrAddress(ctx context.Context, sonr_address string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		address,
+		sonr_address,
 	)
 }
 
-func (this controllerTable) GetByAddress(ctx context.Context, address string) (*Controller, error) {
+func (this controllerTable) GetBySonrAddress(ctx context.Context, sonr_address string) (*Controller, error) {
 	var controller Controller
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &controller,
-		address,
+		sonr_address,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByEthAddress(ctx context.Context, eth_address string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		eth_address,
+	)
+}
+
+func (this controllerTable) GetByEthAddress(ctx context.Context, eth_address string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &controller,
+		eth_address,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByBtcAddress(ctx context.Context, btc_address string) (found bool, err error) {
+	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
+		btc_address,
+	)
+}
+
+func (this controllerTable) GetByBtcAddress(ctx context.Context, btc_address string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &controller,
+		btc_address,
 	)
 	if err != nil {
 		return nil, err
@@ -316,14 +396,36 @@ func (this controllerTable) GetByAddress(ctx context.Context, address string) (*
 }
 
 func (this controllerTable) HasByVaultCid(ctx context.Context, vault_cid string) (found bool, err error) {
-	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+	return this.table.GetIndexByID(4).(ormtable.UniqueIndex).Has(ctx,
 		vault_cid,
 	)
 }
 
 func (this controllerTable) GetByVaultCid(ctx context.Context, vault_cid string) (*Controller, error) {
 	var controller Controller
-	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &controller,
+	found, err := this.table.GetIndexByID(4).(ormtable.UniqueIndex).Get(ctx, &controller,
+		vault_cid,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &controller, nil
+}
+
+func (this controllerTable) HasByStatusVaultCid(ctx context.Context, status string, vault_cid string) (found bool, err error) {
+	return this.table.GetIndexByID(5).(ormtable.UniqueIndex).Has(ctx,
+		status,
+		vault_cid,
+	)
+}
+
+func (this controllerTable) GetByStatusVaultCid(ctx context.Context, status string, vault_cid string) (*Controller, error) {
+	var controller Controller
+	found, err := this.table.GetIndexByID(5).(ormtable.UniqueIndex).Get(ctx, &controller,
+		status,
 		vault_cid,
 	)
 	if err != nil {
@@ -373,9 +475,15 @@ type VerificationTable interface {
 	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id string) (*Verification, error)
-	HasByControllerMethodIssuerSubject(ctx context.Context, controller string, method DIDNamespace, issuer string, subject string) (found bool, err error)
-	// GetByControllerMethodIssuerSubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByControllerMethodIssuerSubject(ctx context.Context, controller string, method DIDNamespace, issuer string, subject string) (*Verification, error)
+	HasByIssuerSubject(ctx context.Context, issuer string, subject string) (found bool, err error)
+	// GetByIssuerSubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByIssuerSubject(ctx context.Context, issuer string, subject string) (*Verification, error)
+	HasByControllerDidMethodIssuer(ctx context.Context, controller string, did_method string, issuer string) (found bool, err error)
+	// GetByControllerDidMethodIssuer returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerDidMethodIssuer(ctx context.Context, controller string, did_method string, issuer string) (*Verification, error)
+	HasByVerificationTypeSubjectIssuer(ctx context.Context, verification_type string, subject string, issuer string) (found bool, err error)
+	// GetByVerificationTypeSubjectIssuer returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByVerificationTypeSubjectIssuer(ctx context.Context, verification_type string, subject string, issuer string) (*Verification, error)
 	List(ctx context.Context, prefixKey VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error)
 	ListRange(ctx context.Context, from, to VerificationIndexKey, opts ...ormlist.Option) (VerificationIterator, error)
 	DeleteBy(ctx context.Context, prefixKey VerificationIndexKey) error
@@ -416,31 +524,67 @@ func (this VerificationIdIndexKey) WithId(id string) VerificationIdIndexKey {
 	return this
 }
 
-type VerificationControllerMethodIssuerSubjectIndexKey struct {
+type VerificationIssuerSubjectIndexKey struct {
 	vs []interface{}
 }
 
-func (x VerificationControllerMethodIssuerSubjectIndexKey) id() uint32            { return 1 }
-func (x VerificationControllerMethodIssuerSubjectIndexKey) values() []interface{} { return x.vs }
-func (x VerificationControllerMethodIssuerSubjectIndexKey) verificationIndexKey() {}
+func (x VerificationIssuerSubjectIndexKey) id() uint32            { return 1 }
+func (x VerificationIssuerSubjectIndexKey) values() []interface{} { return x.vs }
+func (x VerificationIssuerSubjectIndexKey) verificationIndexKey() {}
 
-func (this VerificationControllerMethodIssuerSubjectIndexKey) WithController(controller string) VerificationControllerMethodIssuerSubjectIndexKey {
+func (this VerificationIssuerSubjectIndexKey) WithIssuer(issuer string) VerificationIssuerSubjectIndexKey {
+	this.vs = []interface{}{issuer}
+	return this
+}
+
+func (this VerificationIssuerSubjectIndexKey) WithIssuerSubject(issuer string, subject string) VerificationIssuerSubjectIndexKey {
+	this.vs = []interface{}{issuer, subject}
+	return this
+}
+
+type VerificationControllerDidMethodIssuerIndexKey struct {
+	vs []interface{}
+}
+
+func (x VerificationControllerDidMethodIssuerIndexKey) id() uint32            { return 2 }
+func (x VerificationControllerDidMethodIssuerIndexKey) values() []interface{} { return x.vs }
+func (x VerificationControllerDidMethodIssuerIndexKey) verificationIndexKey() {}
+
+func (this VerificationControllerDidMethodIssuerIndexKey) WithController(controller string) VerificationControllerDidMethodIssuerIndexKey {
 	this.vs = []interface{}{controller}
 	return this
 }
 
-func (this VerificationControllerMethodIssuerSubjectIndexKey) WithControllerMethod(controller string, method DIDNamespace) VerificationControllerMethodIssuerSubjectIndexKey {
-	this.vs = []interface{}{controller, method}
+func (this VerificationControllerDidMethodIssuerIndexKey) WithControllerDidMethod(controller string, did_method string) VerificationControllerDidMethodIssuerIndexKey {
+	this.vs = []interface{}{controller, did_method}
 	return this
 }
 
-func (this VerificationControllerMethodIssuerSubjectIndexKey) WithControllerMethodIssuer(controller string, method DIDNamespace, issuer string) VerificationControllerMethodIssuerSubjectIndexKey {
-	this.vs = []interface{}{controller, method, issuer}
+func (this VerificationControllerDidMethodIssuerIndexKey) WithControllerDidMethodIssuer(controller string, did_method string, issuer string) VerificationControllerDidMethodIssuerIndexKey {
+	this.vs = []interface{}{controller, did_method, issuer}
 	return this
 }
 
-func (this VerificationControllerMethodIssuerSubjectIndexKey) WithControllerMethodIssuerSubject(controller string, method DIDNamespace, issuer string, subject string) VerificationControllerMethodIssuerSubjectIndexKey {
-	this.vs = []interface{}{controller, method, issuer, subject}
+type VerificationVerificationTypeSubjectIssuerIndexKey struct {
+	vs []interface{}
+}
+
+func (x VerificationVerificationTypeSubjectIssuerIndexKey) id() uint32            { return 3 }
+func (x VerificationVerificationTypeSubjectIssuerIndexKey) values() []interface{} { return x.vs }
+func (x VerificationVerificationTypeSubjectIssuerIndexKey) verificationIndexKey() {}
+
+func (this VerificationVerificationTypeSubjectIssuerIndexKey) WithVerificationType(verification_type string) VerificationVerificationTypeSubjectIssuerIndexKey {
+	this.vs = []interface{}{verification_type}
+	return this
+}
+
+func (this VerificationVerificationTypeSubjectIssuerIndexKey) WithVerificationTypeSubject(verification_type string, subject string) VerificationVerificationTypeSubjectIssuerIndexKey {
+	this.vs = []interface{}{verification_type, subject}
+	return this
+}
+
+func (this VerificationVerificationTypeSubjectIssuerIndexKey) WithVerificationTypeSubjectIssuer(verification_type string, subject string, issuer string) VerificationVerificationTypeSubjectIssuerIndexKey {
+	this.vs = []interface{}{verification_type, subject, issuer}
 	return this
 }
 
@@ -480,22 +624,66 @@ func (this verificationTable) Get(ctx context.Context, id string) (*Verification
 	return &verification, nil
 }
 
-func (this verificationTable) HasByControllerMethodIssuerSubject(ctx context.Context, controller string, method DIDNamespace, issuer string, subject string) (found bool, err error) {
+func (this verificationTable) HasByIssuerSubject(ctx context.Context, issuer string, subject string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		controller,
-		method,
 		issuer,
 		subject,
 	)
 }
 
-func (this verificationTable) GetByControllerMethodIssuerSubject(ctx context.Context, controller string, method DIDNamespace, issuer string, subject string) (*Verification, error) {
+func (this verificationTable) GetByIssuerSubject(ctx context.Context, issuer string, subject string) (*Verification, error) {
 	var verification Verification
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &verification,
-		controller,
-		method,
 		issuer,
 		subject,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &verification, nil
+}
+
+func (this verificationTable) HasByControllerDidMethodIssuer(ctx context.Context, controller string, did_method string, issuer string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		did_method,
+		issuer,
+	)
+}
+
+func (this verificationTable) GetByControllerDidMethodIssuer(ctx context.Context, controller string, did_method string, issuer string) (*Verification, error) {
+	var verification Verification
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &verification,
+		controller,
+		did_method,
+		issuer,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &verification, nil
+}
+
+func (this verificationTable) HasByVerificationTypeSubjectIssuer(ctx context.Context, verification_type string, subject string, issuer string) (found bool, err error) {
+	return this.table.GetIndexByID(3).(ormtable.UniqueIndex).Has(ctx,
+		verification_type,
+		subject,
+		issuer,
+	)
+}
+
+func (this verificationTable) GetByVerificationTypeSubjectIssuer(ctx context.Context, verification_type string, subject string, issuer string) (*Verification, error) {
+	var verification Verification
+	found, err := this.table.GetIndexByID(3).(ormtable.UniqueIndex).Get(ctx, &verification,
+		verification_type,
+		subject,
+		issuer,
 	)
 	if err != nil {
 		return nil, err

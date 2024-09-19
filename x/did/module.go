@@ -10,7 +10,6 @@ import (
 
 	"cosmossdk.io/client/v2/autocli"
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/x/nft"
 	nftkeeper "cosmossdk.io/x/nft/keeper"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -68,8 +67,7 @@ func (a AppModuleBasic) Name() string {
 
 func (a AppModuleBasic) DefaultGenesis(cdc codec.JSONCodec) json.RawMessage {
 	return cdc.MustMarshalJSON(&types.GenesisState{
-		GlobalIntegrity: types.DefaultGlobalIntegrity(),
-		Params:          types.DefaultParams(),
+		Params: types.DefaultParams(),
 	})
 }
 
@@ -105,11 +103,7 @@ func (a AppModule) InitGenesis(ctx sdk.Context, marshaler codec.JSONCodec, messa
 	if err := a.keeper.Params.Set(ctx, didGenesisState.Params); err != nil {
 		panic(err)
 	}
-	nftGenesisState := nft.DefaultGenesisState()
-	if err := types.DefaultNFTClasses(nftGenesisState); err != nil {
-		panic(err)
-	}
-	a.nftKeeper.InitGenesis(ctx, nftGenesisState)
+
 	return nil
 }
 

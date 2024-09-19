@@ -2,7 +2,6 @@ syntax = "proto3";
 package did.v1;
 
 import "did/v1/genesis.proto";
-import "did/v1/models.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
@@ -45,6 +44,12 @@ message QueryResponse {
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+}
+
+// QueryResolveResponse is the response type for the Query/Resolve RPC method.
+message QueryResolveResponse {
+  // document is the DID document
+  Document document = 1;
 }
 
 // SyncRequest is the request type for the Sync RPC method.

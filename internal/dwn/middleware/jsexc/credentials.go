@@ -8,6 +8,7 @@ import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/config/dwn"
 )
 
 type Navigator struct {
@@ -16,7 +17,7 @@ type Navigator struct {
 	hasCredentials bool
 }
 
-func NewNavigator(c echo.Context) *Navigator {
+func NewNavigator(c echo.Context, cnfg *dwn.Config) *Navigator {
 	navigator := js.Global().Get("navigator")
 	credentials := navigator.Get("credentials")
 	hasCredentials := !credentials.IsUndefined()

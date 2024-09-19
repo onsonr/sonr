@@ -18,12 +18,11 @@ var indexData []byte
 var swJSData []byte
 
 // NewDWNConfigFile uses the config template to generate the dwn config file
-func NewDWNConfigFile(keyshareJSON string, adddress string) (files.Node, error) {
+func NewDWNConfigFile(keyshareJSON string, adddress string, chainID string) (files.Node, error) {
 	dwnCfg := &dwn.Config{
-		Keyshare: &keyshareJSON,
-		Address:  &adddress,
-		Ipfs:     defaultIPFSConfig(),
-		Sonr:     defaultSonrConfig(),
+		Motr: createMotrConfig(keyshareJSON, adddress, "sonr.id"),
+		Ipfs: defaultIPFSConfig(),
+		Sonr: defaultSonrConfig(chainID),
 	}
 	dwnConfigData, err := json.Marshal(dwnCfg)
 	if err != nil {
@@ -47,6 +46,14 @@ func SWJSFile() files.Node {
 	return files.NewBytesFile(swJSData)
 }
 
+func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwn.Motr {
+	return &dwn.Motr{
+		Keyshare: keyshareJSON,
+		Address:  adddress,
+		Origin:   origin,
+	}
+}
+
 func defaultIPFSConfig() *dwn.IPFS {
 	return &dwn.IPFS{
 		ApiUrl:     "https://api.sonr-ipfs.land",
@@ -54,11 +61,12 @@ func defaultIPFSConfig() *dwn.IPFS {
 	}
 }
 
-func defaultSonrConfig() *dwn.Sonr {
+func defaultSonrConfig(chainID string) *dwn.Sonr {
 	return &dwn.Sonr{
 		ApiUrl:       "https://api.sonr.land",
 		GrpcUrl:      "https://grpc.sonr.land",
 		RpcUrl:       "https://rpc.sonr.land",
 		WebSocketUrl: "wss://rpc.sonr.land/ws",
+		ChainId:      chainID,
 	}
 }

@@ -2,10 +2,11 @@ package keeper
 
 import (
 	"context"
-	"time"
 
 	"cosmossdk.io/log"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/ipfs/boxo/path"
+	"google.golang.org/grpc/peer"
 
 	"github.com/onsonr/sonr/x/did/types"
 )
@@ -54,22 +55,25 @@ func (k Keeper) CheckValidatorExists(ctx sdk.Context, addr string) bool {
 	return false
 }
 
-// GetAverageBlockTime returns the average block time in seconds
-func (k Keeper) GetAverageBlockTime(ctx sdk.Context) float64 {
-	return float64(ctx.BlockTime().Sub(ctx.BlockTime()).Seconds())
-}
-
-// GetParams returns the module parameters.
-func (k Keeper) GetParams(ctx sdk.Context) *types.Params {
-	p, err := k.Params.Get(ctx)
+// HasPathInIPFS checks if a file is in the local IPFS node
+func (k Keeper) HasPathInIPFS(ctx sdk.Context, cid string) (bool, error) {
+	path, err := path.NewPath(cid)
 	if err != nil {
-		p = types.DefaultParams()
+		return false, err
 	}
-	params := p.ActiveParams(k.HasIPFSConnection())
-	return &params
+	v, err := k.ipfsClient.Unixfs().Get(ctx, path)
+	if err != nil {
+		return false, err
+	}
+
+	if v == nil {
+		return false, nil
+	}
+	return true, nil
 }
 
-// GetExpirationBlockHeight returns the block height at which the given duration will have passed
-func (k Keeper) GetExpirationBlockHeight(ctx sdk.Context, duration time.Duration) int64 {
-	return ctx.BlockHeight() + int64(duration.Seconds()/k.GetAverageBlockTime(ctx))
+func (k Keeper) UnwrapCtx(goCtx context.Context) Context {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	peer, _ := peer.FromContext(goCtx)
+	return Context{SDKCtx: ctx, Peer: peer, Keeper: k}
 }

@@ -13,71 +13,19 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Alias_5_list)(nil)
-
-type _Alias_5_list struct {
-	list *[]string
-}
-
-func (x *_Alias_5_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_Alias_5_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfString((*x.list)[i])
-}
-
-func (x *_Alias_5_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_Alias_5_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_Alias_5_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Alias at list field Scopes as it is not of Message kind"))
-}
-
-func (x *_Alias_5_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_Alias_5_list) NewElement() protoreflect.Value {
-	v := ""
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_Alias_5_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
-	md_Alias            protoreflect.MessageDescriptor
-	fd_Alias_id         protoreflect.FieldDescriptor
-	fd_Alias_did        protoreflect.FieldDescriptor
-	fd_Alias_alias      protoreflect.FieldDescriptor
-	fd_Alias_origin     protoreflect.FieldDescriptor
-	fd_Alias_scopes     protoreflect.FieldDescriptor
-	fd_Alias_expiration protoreflect.FieldDescriptor
+	md_Alias         protoreflect.MessageDescriptor
+	fd_Alias_id      protoreflect.FieldDescriptor
+	fd_Alias_subject protoreflect.FieldDescriptor
+	fd_Alias_origin  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_state_proto_init()
 	md_Alias = File_did_v1_state_proto.Messages().ByName("Alias")
 	fd_Alias_id = md_Alias.Fields().ByName("id")
-	fd_Alias_did = md_Alias.Fields().ByName("did")
-	fd_Alias_alias = md_Alias.Fields().ByName("alias")
+	fd_Alias_subject = md_Alias.Fields().ByName("subject")
 	fd_Alias_origin = md_Alias.Fields().ByName("origin")
-	fd_Alias_scopes = md_Alias.Fields().ByName("scopes")
-	fd_Alias_expiration = md_Alias.Fields().ByName("expiration")
 }
 
 var _ protoreflect.Message = (*fastReflection_Alias)(nil)
@@ -151,33 +99,15 @@ func (x *fastReflection_Alias) Range(f func(protoreflect.FieldDescriptor, protor
 			return
 		}
 	}
-	if x.Did != "" {
-		value := protoreflect.ValueOfString(x.Did)
-		if !f(fd_Alias_did, value) {
-			return
-		}
-	}
-	if x.Alias != "" {
-		value := protoreflect.ValueOfString(x.Alias)
-		if !f(fd_Alias_alias, value) {
+	if x.Subject != "" {
+		value := protoreflect.ValueOfString(x.Subject)
+		if !f(fd_Alias_subject, value) {
 			return
 		}
 	}
 	if x.Origin != "" {
 		value := protoreflect.ValueOfString(x.Origin)
 		if !f(fd_Alias_origin, value) {
-			return
-		}
-	}
-	if len(x.Scopes) != 0 {
-		value := protoreflect.ValueOfList(&_Alias_5_list{list: &x.Scopes})
-		if !f(fd_Alias_scopes, value) {
-			return
-		}
-	}
-	if x.Expiration != int64(0) {
-		value := protoreflect.ValueOfInt64(x.Expiration)
-		if !f(fd_Alias_expiration, value) {
 			return
 		}
 	}
@@ -198,16 +128,10 @@ func (x *fastReflection_Alias) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "did.v1.Alias.id":
 		return x.Id != ""
-	case "did.v1.Alias.did":
-		return x.Did != ""
-	case "did.v1.Alias.alias":
-		return x.Alias != ""
+	case "did.v1.Alias.subject":
+		return x.Subject != ""
 	case "did.v1.Alias.origin":
 		return x.Origin != ""
-	case "did.v1.Alias.scopes":
-		return len(x.Scopes) != 0
-	case "did.v1.Alias.expiration":
-		return x.Expiration != int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -226,16 +150,10 @@ func (x *fastReflection_Alias) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "did.v1.Alias.id":
 		x.Id = ""
-	case "did.v1.Alias.did":
-		x.Did = ""
-	case "did.v1.Alias.alias":
-		x.Alias = ""
+	case "did.v1.Alias.subject":
+		x.Subject = ""
 	case "did.v1.Alias.origin":
 		x.Origin = ""
-	case "did.v1.Alias.scopes":
-		x.Scopes = nil
-	case "did.v1.Alias.expiration":
-		x.Expiration = int64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -255,24 +173,12 @@ func (x *fastReflection_Alias) Get(descriptor protoreflect.FieldDescriptor) prot
 	case "did.v1.Alias.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Alias.did":
-		value := x.Did
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Alias.alias":
-		value := x.Alias
+	case "did.v1.Alias.subject":
+		value := x.Subject
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Alias.origin":
 		value := x.Origin
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Alias.scopes":
-		if len(x.Scopes) == 0 {
-			return protoreflect.ValueOfList(&_Alias_5_list{})
-		}
-		listValue := &_Alias_5_list{list: &x.Scopes}
-		return protoreflect.ValueOfList(listValue)
-	case "did.v1.Alias.expiration":
-		value := x.Expiration
-		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -295,18 +201,10 @@ func (x *fastReflection_Alias) Set(fd protoreflect.FieldDescriptor, value protor
 	switch fd.FullName() {
 	case "did.v1.Alias.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.Alias.did":
-		x.Did = value.Interface().(string)
-	case "did.v1.Alias.alias":
-		x.Alias = value.Interface().(string)
+	case "did.v1.Alias.subject":
+		x.Subject = value.Interface().(string)
 	case "did.v1.Alias.origin":
 		x.Origin = value.Interface().(string)
-	case "did.v1.Alias.scopes":
-		lv := value.List()
-		clv := lv.(*_Alias_5_list)
-		x.Scopes = *clv.list
-	case "did.v1.Alias.expiration":
-		x.Expiration = value.Int()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -327,22 +225,12 @@ func (x *fastReflection_Alias) Set(fd protoreflect.FieldDescriptor, value protor
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Alias) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Alias.scopes":
-		if x.Scopes == nil {
-			x.Scopes = []string{}
-		}
-		value := &_Alias_5_list{list: &x.Scopes}
-		return protoreflect.ValueOfList(value)
 	case "did.v1.Alias.id":
 		panic(fmt.Errorf("field id of message did.v1.Alias is not mutable"))
-	case "did.v1.Alias.did":
-		panic(fmt.Errorf("field did of message did.v1.Alias is not mutable"))
-	case "did.v1.Alias.alias":
-		panic(fmt.Errorf("field alias of message did.v1.Alias is not mutable"))
+	case "did.v1.Alias.subject":
+		panic(fmt.Errorf("field subject of message did.v1.Alias is not mutable"))
 	case "did.v1.Alias.origin":
 		panic(fmt.Errorf("field origin of message did.v1.Alias is not mutable"))
-	case "did.v1.Alias.expiration":
-		panic(fmt.Errorf("field expiration of message did.v1.Alias is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -358,17 +246,10 @@ func (x *fastReflection_Alias) NewField(fd protoreflect.FieldDescriptor) protore
 	switch fd.FullName() {
 	case "did.v1.Alias.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Alias.did":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Alias.alias":
+	case "did.v1.Alias.subject":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Alias.origin":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Alias.scopes":
-		list := []string{}
-		return protoreflect.ValueOfList(&_Alias_5_list{list: &list})
-	case "did.v1.Alias.expiration":
-		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
@@ -442,26 +323,13 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Did)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Alias)
+		l = len(x.Subject)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.Origin)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if len(x.Scopes) > 0 {
-			for _, s := range x.Scopes {
-				l = len(s)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
-		}
-		if x.Expiration != 0 {
-			n += 1 + runtime.Sov(uint64(x.Expiration))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -492,38 +360,17 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Expiration != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Expiration))
-			i--
-			dAtA[i] = 0x30
-		}
-		if len(x.Scopes) > 0 {
-			for iNdEx := len(x.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.Scopes[iNdEx])
-				copy(dAtA[i:], x.Scopes[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Scopes[iNdEx])))
-				i--
-				dAtA[i] = 0x2a
-			}
-		}
 		if len(x.Origin) > 0 {
 			i -= len(x.Origin)
 			copy(dAtA[i:], x.Origin)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
 			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.Alias) > 0 {
-			i -= len(x.Alias)
-			copy(dAtA[i:], x.Alias)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Alias)))
-			i--
 			dAtA[i] = 0x1a
 		}
-		if len(x.Did) > 0 {
-			i -= len(x.Did)
-			copy(dAtA[i:], x.Did)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Did)))
+		if len(x.Subject) > 0 {
+			i -= len(x.Subject)
+			copy(dAtA[i:], x.Subject)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Subject)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -617,7 +464,7 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -645,41 +492,9 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Did = string(dAtA[iNdEx:postIndex])
+				x.Subject = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Alias = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 				}
@@ -711,57 +526,6 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 				}
 				x.Origin = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Scopes = append(x.Scopes, string(dAtA[iNdEx:postIndex]))
-				iNdEx = postIndex
-			case 6:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Expiration", wireType)
-				}
-				x.Expiration = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Expiration |= int64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -797,112 +561,104 @@ func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Controller_3_list)(nil)
+var _ protoreflect.List = (*_Controller_5_list)(nil)
 
-type _Controller_3_list struct {
-	list *[]*Alias
+type _Controller_5_list struct {
+	list *[]string
 }
 
-func (x *_Controller_3_list) Len() int {
+func (x *_Controller_5_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Controller_3_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+func (x *_Controller_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Controller_3_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Alias)
+func (x *_Controller_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Controller_3_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Alias)
+func (x *_Controller_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Controller_3_list) AppendMutable() protoreflect.Value {
-	v := new(Alias)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_5_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Controller at list field Aliases as it is not of Message kind"))
 }
 
-func (x *_Controller_3_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
+func (x *_Controller_5_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Controller_3_list) NewElement() protoreflect.Value {
-	v := new(Alias)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_5_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Controller_3_list) IsValid() bool {
+func (x *_Controller_5_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_Controller_6_list)(nil)
+var _ protoreflect.List = (*_Controller_8_list)(nil)
 
-type _Controller_6_list struct {
-	list *[]*Credential
+type _Controller_8_list struct {
+	list *[]string
 }
 
-func (x *_Controller_6_list) Len() int {
+func (x *_Controller_8_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Controller_6_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+func (x *_Controller_8_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Controller_6_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Credential)
+func (x *_Controller_8_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Controller_6_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Credential)
+func (x *_Controller_8_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Controller_6_list) AppendMutable() protoreflect.Value {
-	v := new(Credential)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_8_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Controller at list field Authentication as it is not of Message kind"))
 }
 
-func (x *_Controller_6_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
+func (x *_Controller_8_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Controller_6_list) NewElement() protoreflect.Value {
-	v := new(Credential)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_8_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Controller_6_list) IsValid() bool {
+func (x *_Controller_8_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
 	md_Controller                protoreflect.MessageDescriptor
 	fd_Controller_id             protoreflect.FieldDescriptor
-	fd_Controller_address        protoreflect.FieldDescriptor
+	fd_Controller_sonr_address   protoreflect.FieldDescriptor
+	fd_Controller_eth_address    protoreflect.FieldDescriptor
+	fd_Controller_btc_address    protoreflect.FieldDescriptor
 	fd_Controller_aliases        protoreflect.FieldDescriptor
 	fd_Controller_public_key     protoreflect.FieldDescriptor
 	fd_Controller_vault_cid      protoreflect.FieldDescriptor
@@ -914,7 +670,9 @@ func init() {
 	file_did_v1_state_proto_init()
 	md_Controller = File_did_v1_state_proto.Messages().ByName("Controller")
 	fd_Controller_id = md_Controller.Fields().ByName("id")
-	fd_Controller_address = md_Controller.Fields().ByName("address")
+	fd_Controller_sonr_address = md_Controller.Fields().ByName("sonr_address")
+	fd_Controller_eth_address = md_Controller.Fields().ByName("eth_address")
+	fd_Controller_btc_address = md_Controller.Fields().ByName("btc_address")
 	fd_Controller_aliases = md_Controller.Fields().ByName("aliases")
 	fd_Controller_public_key = md_Controller.Fields().ByName("public_key")
 	fd_Controller_vault_cid = md_Controller.Fields().ByName("vault_cid")
@@ -993,14 +751,26 @@ func (x *fastReflection_Controller) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.Address != "" {
-		value := protoreflect.ValueOfString(x.Address)
-		if !f(fd_Controller_address, value) {
+	if x.SonrAddress != "" {
+		value := protoreflect.ValueOfString(x.SonrAddress)
+		if !f(fd_Controller_sonr_address, value) {
+			return
+		}
+	}
+	if x.EthAddress != "" {
+		value := protoreflect.ValueOfString(x.EthAddress)
+		if !f(fd_Controller_eth_address, value) {
+			return
+		}
+	}
+	if x.BtcAddress != "" {
+		value := protoreflect.ValueOfString(x.BtcAddress)
+		if !f(fd_Controller_btc_address, value) {
 			return
 		}
 	}
 	if len(x.Aliases) != 0 {
-		value := protoreflect.ValueOfList(&_Controller_3_list{list: &x.Aliases})
+		value := protoreflect.ValueOfList(&_Controller_5_list{list: &x.Aliases})
 		if !f(fd_Controller_aliases, value) {
 			return
 		}
@@ -1018,7 +788,7 @@ func (x *fastReflection_Controller) Range(f func(protoreflect.FieldDescriptor, p
 		}
 	}
 	if len(x.Authentication) != 0 {
-		value := protoreflect.ValueOfList(&_Controller_6_list{list: &x.Authentication})
+		value := protoreflect.ValueOfList(&_Controller_8_list{list: &x.Authentication})
 		if !f(fd_Controller_authentication, value) {
 			return
 		}
@@ -1046,8 +816,12 @@ func (x *fastReflection_Controller) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		return x.Id != ""
-	case "did.v1.Controller.address":
-		return x.Address != ""
+	case "did.v1.Controller.sonr_address":
+		return x.SonrAddress != ""
+	case "did.v1.Controller.eth_address":
+		return x.EthAddress != ""
+	case "did.v1.Controller.btc_address":
+		return x.BtcAddress != ""
 	case "did.v1.Controller.aliases":
 		return len(x.Aliases) != 0
 	case "did.v1.Controller.public_key":
@@ -1076,8 +850,12 @@ func (x *fastReflection_Controller) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		x.Id = ""
-	case "did.v1.Controller.address":
-		x.Address = ""
+	case "did.v1.Controller.sonr_address":
+		x.SonrAddress = ""
+	case "did.v1.Controller.eth_address":
+		x.EthAddress = ""
+	case "did.v1.Controller.btc_address":
+		x.BtcAddress = ""
 	case "did.v1.Controller.aliases":
 		x.Aliases = nil
 	case "did.v1.Controller.public_key":
@@ -1107,14 +885,20 @@ func (x *fastReflection_Controller) Get(descriptor protoreflect.FieldDescriptor)
 	case "did.v1.Controller.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Controller.address":
-		value := x.Address
+	case "did.v1.Controller.sonr_address":
+		value := x.SonrAddress
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Controller.eth_address":
+		value := x.EthAddress
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Controller.btc_address":
+		value := x.BtcAddress
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Controller.aliases":
 		if len(x.Aliases) == 0 {
-			return protoreflect.ValueOfList(&_Controller_3_list{})
+			return protoreflect.ValueOfList(&_Controller_5_list{})
 		}
-		listValue := &_Controller_3_list{list: &x.Aliases}
+		listValue := &_Controller_5_list{list: &x.Aliases}
 		return protoreflect.ValueOfList(listValue)
 	case "did.v1.Controller.public_key":
 		value := x.PublicKey
@@ -1124,9 +908,9 @@ func (x *fastReflection_Controller) Get(descriptor protoreflect.FieldDescriptor)
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Controller.authentication":
 		if len(x.Authentication) == 0 {
-			return protoreflect.ValueOfList(&_Controller_6_list{})
+			return protoreflect.ValueOfList(&_Controller_8_list{})
 		}
-		listValue := &_Controller_6_list{list: &x.Authentication}
+		listValue := &_Controller_8_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(listValue)
 	case "did.v1.Controller.status":
 		value := x.Status
@@ -1153,11 +937,15 @@ func (x *fastReflection_Controller) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.Controller.address":
-		x.Address = value.Interface().(string)
+	case "did.v1.Controller.sonr_address":
+		x.SonrAddress = value.Interface().(string)
+	case "did.v1.Controller.eth_address":
+		x.EthAddress = value.Interface().(string)
+	case "did.v1.Controller.btc_address":
+		x.BtcAddress = value.Interface().(string)
 	case "did.v1.Controller.aliases":
 		lv := value.List()
-		clv := lv.(*_Controller_3_list)
+		clv := lv.(*_Controller_5_list)
 		x.Aliases = *clv.list
 	case "did.v1.Controller.public_key":
 		x.PublicKey = value.Message().Interface().(*PubKey)
@@ -1165,7 +953,7 @@ func (x *fastReflection_Controller) Set(fd protoreflect.FieldDescriptor, value p
 		x.VaultCid = value.Interface().(string)
 	case "did.v1.Controller.authentication":
 		lv := value.List()
-		clv := lv.(*_Controller_6_list)
+		clv := lv.(*_Controller_8_list)
 		x.Authentication = *clv.list
 	case "did.v1.Controller.status":
 		x.Status = value.Interface().(string)
@@ -1191,9 +979,9 @@ func (x *fastReflection_Controller) Mutable(fd protoreflect.FieldDescriptor) pro
 	switch fd.FullName() {
 	case "did.v1.Controller.aliases":
 		if x.Aliases == nil {
-			x.Aliases = []*Alias{}
+			x.Aliases = []string{}
 		}
-		value := &_Controller_3_list{list: &x.Aliases}
+		value := &_Controller_5_list{list: &x.Aliases}
 		return protoreflect.ValueOfList(value)
 	case "did.v1.Controller.public_key":
 		if x.PublicKey == nil {
@@ -1202,14 +990,18 @@ func (x *fastReflection_Controller) Mutable(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
 	case "did.v1.Controller.authentication":
 		if x.Authentication == nil {
-			x.Authentication = []*Credential{}
+			x.Authentication = []string{}
 		}
-		value := &_Controller_6_list{list: &x.Authentication}
+		value := &_Controller_8_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(value)
 	case "did.v1.Controller.id":
 		panic(fmt.Errorf("field id of message did.v1.Controller is not mutable"))
-	case "did.v1.Controller.address":
-		panic(fmt.Errorf("field address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.sonr_address":
+		panic(fmt.Errorf("field sonr_address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.eth_address":
+		panic(fmt.Errorf("field eth_address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.btc_address":
+		panic(fmt.Errorf("field btc_address of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.vault_cid":
 		panic(fmt.Errorf("field vault_cid of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.status":
@@ -1229,19 +1021,23 @@ func (x *fastReflection_Controller) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Controller.address":
+	case "did.v1.Controller.sonr_address":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Controller.eth_address":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Controller.btc_address":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.aliases":
-		list := []*Alias{}
-		return protoreflect.ValueOfList(&_Controller_3_list{list: &list})
+		list := []string{}
+		return protoreflect.ValueOfList(&_Controller_5_list{list: &list})
 	case "did.v1.Controller.public_key":
 		m := new(PubKey)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "did.v1.Controller.vault_cid":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.authentication":
-		list := []*Credential{}
-		return protoreflect.ValueOfList(&_Controller_6_list{list: &list})
+		list := []string{}
+		return protoreflect.ValueOfList(&_Controller_8_list{list: &list})
 	case "did.v1.Controller.status":
 		return protoreflect.ValueOfString("")
 	default:
@@ -1317,13 +1113,21 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Address)
+		l = len(x.SonrAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.EthAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BtcAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if len(x.Aliases) > 0 {
-			for _, e := range x.Aliases {
-				l = options.Size(e)
+			for _, s := range x.Aliases {
+				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
@@ -1336,8 +1140,8 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if len(x.Authentication) > 0 {
-			for _, e := range x.Authentication {
-				l = options.Size(e)
+			for _, s := range x.Authentication {
+				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
@@ -1379,22 +1183,15 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.Status)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Status)))
 			i--
-			dAtA[i] = 0x3a
+			dAtA[i] = 0x4a
 		}
 		if len(x.Authentication) > 0 {
 			for iNdEx := len(x.Authentication) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Authentication[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i -= len(x.Authentication[iNdEx])
+				copy(dAtA[i:], x.Authentication[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Authentication[iNdEx])))
 				i--
-				dAtA[i] = 0x32
+				dAtA[i] = 0x42
 			}
 		}
 		if len(x.VaultCid) > 0 {
@@ -1402,7 +1199,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.VaultCid)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.VaultCid)))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x3a
 		}
 		if x.PublicKey != nil {
 			encoded, err := options.Marshal(x.PublicKey)
@@ -1416,28 +1213,35 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x32
 		}
 		if len(x.Aliases) > 0 {
 			for iNdEx := len(x.Aliases) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Aliases[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i -= len(x.Aliases[iNdEx])
+				copy(dAtA[i:], x.Aliases[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Aliases[iNdEx])))
 				i--
-				dAtA[i] = 0x1a
+				dAtA[i] = 0x2a
 			}
 		}
-		if len(x.Address) > 0 {
-			i -= len(x.Address)
-			copy(dAtA[i:], x.Address)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+		if len(x.BtcAddress) > 0 {
+			i -= len(x.BtcAddress)
+			copy(dAtA[i:], x.BtcAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BtcAddress)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.EthAddress) > 0 {
+			i -= len(x.EthAddress)
+			copy(dAtA[i:], x.EthAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EthAddress)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.SonrAddress) > 0 {
+			i -= len(x.SonrAddress)
+			copy(dAtA[i:], x.SonrAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SonrAddress)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -1531,7 +1335,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SonrAddress", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1559,13 +1363,13 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Address = string(dAtA[iNdEx:postIndex])
+				x.SonrAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Aliases", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EthAddress", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1575,27 +1379,89 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Aliases = append(x.Aliases, &Alias{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Aliases[len(x.Aliases)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
+				x.EthAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BtcAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BtcAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Aliases", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Aliases = append(x.Aliases, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
 				}
@@ -1631,7 +1497,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 5:
+			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
 				}
@@ -1663,11 +1529,11 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				}
 				x.VaultCid = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 6:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Authentication", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1677,27 +1543,25 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Authentication = append(x.Authentication, &Credential{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Authentication[len(x.Authentication)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
+				x.Authentication = append(x.Authentication, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
-			case 7:
+			case 9:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
 				}
@@ -1765,14 +1629,14 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Verification            protoreflect.MessageDescriptor
-	fd_Verification_id         protoreflect.FieldDescriptor
-	fd_Verification_controller protoreflect.FieldDescriptor
-	fd_Verification_method     protoreflect.FieldDescriptor
-	fd_Verification_issuer     protoreflect.FieldDescriptor
-	fd_Verification_subject    protoreflect.FieldDescriptor
-	fd_Verification_public_key protoreflect.FieldDescriptor
-	fd_Verification_kind       protoreflect.FieldDescriptor
+	md_Verification                   protoreflect.MessageDescriptor
+	fd_Verification_id                protoreflect.FieldDescriptor
+	fd_Verification_controller        protoreflect.FieldDescriptor
+	fd_Verification_did_method        protoreflect.FieldDescriptor
+	fd_Verification_issuer            protoreflect.FieldDescriptor
+	fd_Verification_subject           protoreflect.FieldDescriptor
+	fd_Verification_public_key        protoreflect.FieldDescriptor
+	fd_Verification_verification_type protoreflect.FieldDescriptor
 )
 
 func init() {
@@ -1780,11 +1644,11 @@ func init() {
 	md_Verification = File_did_v1_state_proto.Messages().ByName("Verification")
 	fd_Verification_id = md_Verification.Fields().ByName("id")
 	fd_Verification_controller = md_Verification.Fields().ByName("controller")
-	fd_Verification_method = md_Verification.Fields().ByName("method")
+	fd_Verification_did_method = md_Verification.Fields().ByName("did_method")
 	fd_Verification_issuer = md_Verification.Fields().ByName("issuer")
 	fd_Verification_subject = md_Verification.Fields().ByName("subject")
 	fd_Verification_public_key = md_Verification.Fields().ByName("public_key")
-	fd_Verification_kind = md_Verification.Fields().ByName("kind")
+	fd_Verification_verification_type = md_Verification.Fields().ByName("verification_type")
 }
 
 var _ protoreflect.Message = (*fastReflection_Verification)(nil)
@@ -1864,9 +1728,9 @@ func (x *fastReflection_Verification) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if x.Method != 0 {
-		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Method))
-		if !f(fd_Verification_method, value) {
+	if x.DidMethod != "" {
+		value := protoreflect.ValueOfString(x.DidMethod)
+		if !f(fd_Verification_did_method, value) {
 			return
 		}
 	}
@@ -1888,9 +1752,9 @@ func (x *fastReflection_Verification) Range(f func(protoreflect.FieldDescriptor,
 			return
 		}
 	}
-	if x.Kind != "" {
-		value := protoreflect.ValueOfString(x.Kind)
-		if !f(fd_Verification_kind, value) {
+	if x.VerificationType != "" {
+		value := protoreflect.ValueOfString(x.VerificationType)
+		if !f(fd_Verification_verification_type, value) {
 			return
 		}
 	}
@@ -1913,16 +1777,16 @@ func (x *fastReflection_Verification) Has(fd protoreflect.FieldDescriptor) bool 
 		return x.Id != ""
 	case "did.v1.Verification.controller":
 		return x.Controller != ""
-	case "did.v1.Verification.method":
-		return x.Method != 0
+	case "did.v1.Verification.did_method":
+		return x.DidMethod != ""
 	case "did.v1.Verification.issuer":
 		return x.Issuer != ""
 	case "did.v1.Verification.subject":
 		return x.Subject != ""
 	case "did.v1.Verification.public_key":
 		return x.PublicKey != nil
-	case "did.v1.Verification.kind":
-		return x.Kind != ""
+	case "did.v1.Verification.verification_type":
+		return x.VerificationType != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
@@ -1943,16 +1807,16 @@ func (x *fastReflection_Verification) Clear(fd protoreflect.FieldDescriptor) {
 		x.Id = ""
 	case "did.v1.Verification.controller":
 		x.Controller = ""
-	case "did.v1.Verification.method":
-		x.Method = 0
+	case "did.v1.Verification.did_method":
+		x.DidMethod = ""
 	case "did.v1.Verification.issuer":
 		x.Issuer = ""
 	case "did.v1.Verification.subject":
 		x.Subject = ""
 	case "did.v1.Verification.public_key":
 		x.PublicKey = nil
-	case "did.v1.Verification.kind":
-		x.Kind = ""
+	case "did.v1.Verification.verification_type":
+		x.VerificationType = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
@@ -1975,9 +1839,9 @@ func (x *fastReflection_Verification) Get(descriptor protoreflect.FieldDescripto
 	case "did.v1.Verification.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Verification.method":
-		value := x.Method
-		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
+	case "did.v1.Verification.did_method":
+		value := x.DidMethod
+		return protoreflect.ValueOfString(value)
 	case "did.v1.Verification.issuer":
 		value := x.Issuer
 		return protoreflect.ValueOfString(value)
@@ -1987,8 +1851,8 @@ func (x *fastReflection_Verification) Get(descriptor protoreflect.FieldDescripto
 	case "did.v1.Verification.public_key":
 		value := x.PublicKey
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "did.v1.Verification.kind":
-		value := x.Kind
+	case "did.v1.Verification.verification_type":
+		value := x.VerificationType
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -2014,16 +1878,16 @@ func (x *fastReflection_Verification) Set(fd protoreflect.FieldDescriptor, value
 		x.Id = value.Interface().(string)
 	case "did.v1.Verification.controller":
 		x.Controller = value.Interface().(string)
-	case "did.v1.Verification.method":
-		x.Method = (DIDNamespace)(value.Enum())
+	case "did.v1.Verification.did_method":
+		x.DidMethod = value.Interface().(string)
 	case "did.v1.Verification.issuer":
 		x.Issuer = value.Interface().(string)
 	case "did.v1.Verification.subject":
 		x.Subject = value.Interface().(string)
 	case "did.v1.Verification.public_key":
 		x.PublicKey = value.Message().Interface().(*PubKey)
-	case "did.v1.Verification.kind":
-		x.Kind = value.Interface().(string)
+	case "did.v1.Verification.verification_type":
+		x.VerificationType = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
@@ -2053,14 +1917,14 @@ func (x *fastReflection_Verification) Mutable(fd protoreflect.FieldDescriptor) p
 		panic(fmt.Errorf("field id of message did.v1.Verification is not mutable"))
 	case "did.v1.Verification.controller":
 		panic(fmt.Errorf("field controller of message did.v1.Verification is not mutable"))
-	case "did.v1.Verification.method":
-		panic(fmt.Errorf("field method of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.did_method":
+		panic(fmt.Errorf("field did_method of message did.v1.Verification is not mutable"))
 	case "did.v1.Verification.issuer":
 		panic(fmt.Errorf("field issuer of message did.v1.Verification is not mutable"))
 	case "did.v1.Verification.subject":
 		panic(fmt.Errorf("field subject of message did.v1.Verification is not mutable"))
-	case "did.v1.Verification.kind":
-		panic(fmt.Errorf("field kind of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.verification_type":
+		panic(fmt.Errorf("field verification_type of message did.v1.Verification is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
@@ -2078,8 +1942,8 @@ func (x *fastReflection_Verification) NewField(fd protoreflect.FieldDescriptor) 
 		return protoreflect.ValueOfString("")
 	case "did.v1.Verification.controller":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Verification.method":
-		return protoreflect.ValueOfEnum(0)
+	case "did.v1.Verification.did_method":
+		return protoreflect.ValueOfString("")
 	case "did.v1.Verification.issuer":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Verification.subject":
@@ -2087,7 +1951,7 @@ func (x *fastReflection_Verification) NewField(fd protoreflect.FieldDescriptor) 
 	case "did.v1.Verification.public_key":
 		m := new(PubKey)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "did.v1.Verification.kind":
+	case "did.v1.Verification.verification_type":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -2166,8 +2030,9 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Method != 0 {
-			n += 1 + runtime.Sov(uint64(x.Method))
+		l = len(x.DidMethod)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.Issuer)
 		if l > 0 {
@@ -2181,7 +2046,7 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.PublicKey)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Kind)
+		l = len(x.VerificationType)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -2214,10 +2079,10 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Kind) > 0 {
-			i -= len(x.Kind)
-			copy(dAtA[i:], x.Kind)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Kind)))
+		if len(x.VerificationType) > 0 {
+			i -= len(x.VerificationType)
+			copy(dAtA[i:], x.VerificationType)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.VerificationType)))
 			i--
 			dAtA[i] = 0x3a
 		}
@@ -2249,10 +2114,12 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if x.Method != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Method))
+		if len(x.DidMethod) > 0 {
+			i -= len(x.DidMethod)
+			copy(dAtA[i:], x.DidMethod)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DidMethod)))
 			i--
-			dAtA[i] = 0x18
+			dAtA[i] = 0x1a
 		}
 		if len(x.Controller) > 0 {
 			i -= len(x.Controller)
@@ -2382,10 +2249,10 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 				x.Controller = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Method", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DidMethod", wireType)
 				}
-				x.Method = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -2395,11 +2262,24 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Method |= DIDNamespace(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DidMethod = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
@@ -2502,7 +2382,7 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 7:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VerificationType", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -2530,7 +2410,7 @@ func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Kind = string(dAtA[iNdEx:postIndex])
+				x.VerificationType = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2588,16 +2468,10 @@ type Alias struct {
 
 	// The unique identifier of the alias
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The DID of the alias
-	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 	// The alias of the DID
-	Alias string `protobuf:"bytes,3,opt,name=alias,proto3" json:"alias,omitempty"`
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
 	// Origin of the alias
-	Origin string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
-	// Permissions of the alias
-	Scopes []string `protobuf:"bytes,5,rep,name=scopes,proto3" json:"scopes,omitempty"`
-	// Expiration of the alias
-	Expiration int64 `protobuf:"varint,6,opt,name=expiration,proto3" json:"expiration,omitempty"`
+	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
 func (x *Alias) Reset() {
@@ -2627,16 +2501,9 @@ func (x *Alias) GetId() string {
 	return ""
 }
 
-func (x *Alias) GetDid() string {
+func (x *Alias) GetSubject() string {
 	if x != nil {
-		return x.Did
-	}
-	return ""
-}
-
-func (x *Alias) GetAlias() string {
-	if x != nil {
-		return x.Alias
+		return x.Subject
 	}
 	return ""
 }
@@ -2648,20 +2515,6 @@ func (x *Alias) GetOrigin() string {
 	return ""
 }
 
-func (x *Alias) GetScopes() []string {
-	if x != nil {
-		return x.Scopes
-	}
-	return nil
-}
-
-func (x *Alias) GetExpiration() int64 {
-	if x != nil {
-		return x.Expiration
-	}
-	return 0
-}
-
 // Controller represents a Sonr DWN Vault
 type Controller struct {
 	state         protoimpl.MessageState
@@ -2671,17 +2524,21 @@ type Controller struct {
 	// The unique identifier of the controller
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The DID of the controller
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	SonrAddress string `protobuf:"bytes,2,opt,name=sonr_address,json=sonrAddress,proto3" json:"sonr_address,omitempty"`
+	// The DID of the controller
+	EthAddress string `protobuf:"bytes,3,opt,name=eth_address,json=ethAddress,proto3" json:"eth_address,omitempty"`
+	// The DID of the controller
+	BtcAddress string `protobuf:"bytes,4,opt,name=btc_address,json=btcAddress,proto3" json:"btc_address,omitempty"`
 	// Aliases of the controller
-	Aliases []*Alias `protobuf:"bytes,3,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	Aliases []string `protobuf:"bytes,5,rep,name=aliases,proto3" json:"aliases,omitempty"`
 	// PubKey is the verification method
-	PublicKey *PubKey `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKey *PubKey `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	// The vault address or identifier
-	VaultCid string `protobuf:"bytes,5,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	VaultCid string `protobuf:"bytes,7,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
 	// The Authentications of the controller
-	Authentication []*Credential `protobuf:"bytes,6,rep,name=authentication,proto3" json:"authentication,omitempty"`
+	Authentication []string `protobuf:"bytes,8,rep,name=authentication,proto3" json:"authentication,omitempty"`
 	// The Status of the claims for the controller
-	Status string `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
+	Status string `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
 }
 
 func (x *Controller) Reset() {
@@ -2711,14 +2568,28 @@ func (x *Controller) GetId() string {
 	return ""
 }
 
-func (x *Controller) GetAddress() string {
+func (x *Controller) GetSonrAddress() string {
 	if x != nil {
-		return x.Address
+		return x.SonrAddress
 	}
 	return ""
 }
 
-func (x *Controller) GetAliases() []*Alias {
+func (x *Controller) GetEthAddress() string {
+	if x != nil {
+		return x.EthAddress
+	}
+	return ""
+}
+
+func (x *Controller) GetBtcAddress() string {
+	if x != nil {
+		return x.BtcAddress
+	}
+	return ""
+}
+
+func (x *Controller) GetAliases() []string {
 	if x != nil {
 		return x.Aliases
 	}
@@ -2739,7 +2610,7 @@ func (x *Controller) GetVaultCid() string {
 	return ""
 }
 
-func (x *Controller) GetAuthentication() []*Credential {
+func (x *Controller) GetAuthentication() []string {
 	if x != nil {
 		return x.Authentication
 	}
@@ -2764,15 +2635,15 @@ type Verification struct {
 	// The controller of the verification
 	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
 	// The DIDNamespace of the verification
-	Method DIDNamespace `protobuf:"varint,3,opt,name=method,proto3,enum=did.v1.DIDNamespace" json:"method,omitempty"`
+	DidMethod string `protobuf:"bytes,3,opt,name=did_method,json=didMethod,proto3" json:"did_method,omitempty"`
 	// The value of the linked identifier
 	Issuer string `protobuf:"bytes,4,opt,name=issuer,proto3" json:"issuer,omitempty"`
 	// The subject of the verification
 	Subject string `protobuf:"bytes,5,opt,name=subject,proto3" json:"subject,omitempty"`
 	// The public key of the verification
 	PublicKey *PubKey `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	// The Verification Kind (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
-	Kind string `protobuf:"bytes,7,opt,name=kind,proto3" json:"kind,omitempty"`
+	// The Verification Type (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
+	VerificationType string `protobuf:"bytes,7,opt,name=verification_type,json=verificationType,proto3" json:"verification_type,omitempty"`
 }
 
 func (x *Verification) Reset() {
@@ -2809,11 +2680,11 @@ func (x *Verification) GetController() string {
 	return ""
 }
 
-func (x *Verification) GetMethod() DIDNamespace {
+func (x *Verification) GetDidMethod() string {
 	if x != nil {
-		return x.Method
+		return x.DidMethod
 	}
-	return DIDNamespace_DID_NAMESPACE_UNSPECIFIED
+	return ""
 }
 
 func (x *Verification) GetIssuer() string {
@@ -2837,9 +2708,9 @@ func (x *Verification) GetPublicKey() *PubKey {
 	return nil
 }
 
-func (x *Verification) GetKind() string {
+func (x *Verification) GetVerificationType() string {
 	if x != nil {
-		return x.Kind
+		return x.VerificationType
 	}
 	return ""
 }
@@ -2851,66 +2722,70 @@ var file_did_v1_state_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x13, 0x64, 0x69, 0x64,
-	0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0xb0, 0x01, 0x0a, 0x05, 0x41, 0x6c, 0x69, 0x61, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69,
-	0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x05,
-	0x61, 0x6c, 0x69, 0x61, 0x73, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x61, 0x6c, 0x69,
-	0x61, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x04, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x63,
-	0x6f, 0x70, 0x65, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70,
-	0x65, 0x73, 0x12, 0x1e, 0x0a, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x03, 0x52, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64,
-	0x12, 0x0f, 0x0a, 0x09, 0x64, 0x69, 0x64, 0x2c, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x10, 0x01, 0x18,
-	0x01, 0x18, 0x01, 0x22, 0xbb, 0x02, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x27, 0x0a, 0x07,
-	0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e,
-	0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x41, 0x6c, 0x69, 0x61, 0x73, 0x52, 0x07, 0x61, 0x6c,
-	0x69, 0x61, 0x73, 0x65, 0x73, 0x12, 0x2d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f,
-	0x6b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e,
-	0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x4b, 0x65, 0x79, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69,
-	0x64, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x69,
-	0x64, 0x12, 0x3a, 0x0a, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x64, 0x69, 0x64, 0x2e,
-	0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0e, 0x61,
-	0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16, 0x0a,
-	0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x73,
-	0x74, 0x61, 0x74, 0x75, 0x73, 0x3a, 0x3a, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x34, 0x0a, 0x04, 0x0a,
-	0x02, 0x69, 0x64, 0x12, 0x0d, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x10, 0x01,
-	0x18, 0x01, 0x12, 0x0f, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x10,
-	0x02, 0x18, 0x01, 0x12, 0x0a, 0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x10, 0x03, 0x18,
-	0x02, 0x22, 0x99, 0x02, 0x0a, 0x0c, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
-	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x12, 0x2c, 0x0a, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01,
-	0x28, 0x0e, 0x32, 0x14, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x49, 0x44, 0x4e,
-	0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64,
-	0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a,
-	0x65, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65,
-	0x63, 0x74, 0x12, 0x2d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79,
-	0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
-	0x79, 0x12, 0x12, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x04, 0x6b, 0x69, 0x6e, 0x64, 0x3a, 0x36, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x30, 0x0a, 0x04, 0x0a,
-	0x02, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x20, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
-	0x72, 0x2c, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x2c, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x2c,
-	0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x01, 0x18, 0x01, 0x18, 0x05, 0x42, 0x7a, 0x0a,
-	0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61,
-	0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e,
-	0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64,
-	0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56,
-	0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64,
-	0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
-	0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x33,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x6f, 0x0a, 0x05, 0x41,
+	0x6c, 0x69, 0x61, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x16,
+	0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x3a, 0x24, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x1e, 0x0a, 0x04,
+	0x0a, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c,
+	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x01, 0x18, 0x01, 0x18, 0x01, 0x22, 0x9a, 0x03, 0x0a,
+	0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x73,
+	0x6f, 0x6e, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x73, 0x6f, 0x6e, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1f,
+	0x0a, 0x0b, 0x65, 0x74, 0x68, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x74, 0x68, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x1f, 0x0a, 0x0b, 0x62, 0x74, 0x63, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x74, 0x63, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x12, 0x2d, 0x0a, 0x0a, 0x70, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e,
+	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52, 0x09,
+	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x43, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e,
+	0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0e,
+	0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x3a, 0x71, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x6b, 0x0a, 0x04,
+	0x0a, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x0c, 0x73, 0x6f, 0x6e, 0x72, 0x5f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x10, 0x01, 0x18, 0x01, 0x12, 0x11, 0x0a, 0x0b, 0x65, 0x74, 0x68, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x10, 0x02, 0x18, 0x01, 0x12, 0x11, 0x0a, 0x0b, 0x62,
+	0x74, 0x63, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x10, 0x03, 0x18, 0x01, 0x12, 0x0f,
+	0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x10, 0x04, 0x18, 0x01, 0x12,
+	0x16, 0x0a, 0x10, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x2c, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f,
+	0x63, 0x69, 0x64, 0x10, 0x05, 0x18, 0x01, 0x18, 0x02, 0x22, 0xdd, 0x02, 0x0a, 0x0c, 0x56, 0x65,
+	0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x64, 0x69,
+	0x64, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x64, 0x69, 0x64, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73,
+	0x75, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65,
+	0x72, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x2d, 0x0a, 0x0a, 0x70,
+	0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52,
+	0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x2b, 0x0a, 0x11, 0x76, 0x65,
+	0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x3a, 0x70, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x6a, 0x0a,
+	0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x0e, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x2c,
+	0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x01, 0x18, 0x01, 0x12, 0x22, 0x0a, 0x1c, 0x63,
+	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x64, 0x69, 0x64, 0x5f, 0x6d, 0x65,
+	0x74, 0x68, 0x6f, 0x64, 0x2c, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x10, 0x02, 0x18, 0x01, 0x12,
+	0x26, 0x0a, 0x20, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x74, 0x79, 0x70, 0x65, 0x2c, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c, 0x69, 0x73, 0x73,
+	0x75, 0x65, 0x72, 0x10, 0x03, 0x18, 0x01, 0x18, 0x05, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d,
+	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06,
+	0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69,
+	0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -2931,20 +2806,15 @@ var file_did_v1_state_proto_goTypes = []interface{}{
 	(*Controller)(nil),   // 1: did.v1.Controller
 	(*Verification)(nil), // 2: did.v1.Verification
 	(*PubKey)(nil),       // 3: did.v1.PubKey
-	(*Credential)(nil),   // 4: did.v1.Credential
-	(DIDNamespace)(0),    // 5: did.v1.DIDNamespace
 }
 var file_did_v1_state_proto_depIdxs = []int32{
-	0, // 0: did.v1.Controller.aliases:type_name -> did.v1.Alias
-	3, // 1: did.v1.Controller.public_key:type_name -> did.v1.PubKey
-	4, // 2: did.v1.Controller.authentication:type_name -> did.v1.Credential
-	5, // 3: did.v1.Verification.method:type_name -> did.v1.DIDNamespace
-	3, // 4: did.v1.Verification.public_key:type_name -> did.v1.PubKey
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	3, // 0: did.v1.Controller.public_key:type_name -> did.v1.PubKey
+	3, // 1: did.v1.Verification.public_key:type_name -> did.v1.PubKey
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_did_v1_state_proto_init() }
@@ -2953,7 +2823,6 @@ func file_did_v1_state_proto_init() {
 		return
 	}
 	file_did_v1_genesis_proto_init()
-	file_did_v1_models_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_did_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Alias); i {

@@ -5,7 +5,6 @@ package did.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "did/v1/genesis.proto";
-import "did/v1/models.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
@@ -77,7 +76,7 @@ message MsgAllocateVaultResponse {
   int64 expiry_block = 2;
 
   // RegistrationOptions is a json string of the PublicKeyCredentialCreationOptions for WebAuthn
-  string registration_options = 3;
+  string token = 3;
 
   // IsLocalhost is a flag to indicate if the vault is localhost
   bool localhost = 4;
@@ -123,7 +122,7 @@ message MsgAuthorizeService {
   string origin = 2;
 
   // Permissions is the scope of the service.
-  Permissions scopes = 3;
+  map<string, string> permissions = 3;
 
   // token is the macron token to authenticate the operation.
   string token = 4;
