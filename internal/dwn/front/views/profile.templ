@@ -10,10 +10,8 @@ func ProfileView(c echo.Context) error {
 }
 
 templ renderProfileView() {
-	@blocks.Layout("Profile | Sonr.ID") {
 		@blocks.Card("profile-view", blocks.SizeLarge) {
 			@blocks.ProfileCard()
 			@blocks.Tabs()
-		}
 	}
 }

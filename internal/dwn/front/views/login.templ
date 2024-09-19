@@ -10,7 +10,6 @@ func LoginView(c echo.Context) error {
 }
 
 templ renderLoginView() {
-	@blocks.Layout("Login | Sonr.ID") {
 		@blocks.Card("login-view", blocks.SizeLarge) {
 			@blocks.H1("Sonr.ID")
 			@blocks.Text("Neo-tree is a file manager for NeoFS.")
@@ -21,5 +20,4 @@ templ renderLoginView() {
 				@blocks.Text("Cancel")
 			}
 		}
-	}
 }

@@ -66,7 +66,6 @@ require (
 	github.com/go-webauthn/webauthn v0.10.2
 	github.com/golang/protobuf v1.5.4
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/hack-pad/go-indexeddb v0.3.2
 	github.com/ipfs/boxo v0.21.0
 	github.com/ipfs/kubo v0.29.0
 	github.com/joho/godotenv v1.5.1
@@ -186,7 +185,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
-	github.com/hack-pad/safejs v0.1.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-getter v1.7.5 // indirect

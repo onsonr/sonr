@@ -10,7 +10,6 @@ func HomeView(c echo.Context) error {
 }
 
 templ renderHomeView() {
-	@blocks.Layout("Sonr.ID") {
 		@blocks.Card("home-view", blocks.SizeLarge) {
 			@blocks.H1("Sonr.ID")
 			@blocks.Text("A Decentralized Web Node Client for the Sonr Network.")
@@ -25,5 +24,4 @@ templ renderHomeView() {
 			</div>
 			@blocks.PoweredBySonr()
 		}
-	}
 }

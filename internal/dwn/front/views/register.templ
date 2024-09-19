@@ -11,7 +11,6 @@ func RegisterView(c echo.Context) error {
 }
 
 templ renderRegisterView(c echo.Context) {
-	@blocks.Layout("Register | Sonr.ID") {
 		@blocks.Card("register-view", blocks.SizeMedium) {
 			@blocks.H2("Account Registration")
 			@blocks.Spacer()
@@ -22,5 +21,4 @@ templ renderRegisterView(c echo.Context) {
 				@blocks.Text("Cancel")
 			}
 		}
-	}
 }

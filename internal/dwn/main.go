@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/internal/dwn/front"
 	"github.com/onsonr/sonr/internal/dwn/handlers"
 	"github.com/onsonr/sonr/internal/dwn/middleware"
-	"github.com/onsonr/sonr/internal/dwn/middleware/jsexc"
+	"github.com/onsonr/sonr/internal/vfs"
 )
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	e.Use(middleware.UseSession)
 	front.RegisterViews(e)
 	handlers.RegisterState(e)
-	jsexc.Serve(e)
+	vfs.Serve(e)
 }

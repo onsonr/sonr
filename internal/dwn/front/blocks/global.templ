@@ -1,19 +1,5 @@
 package blocks
 
-templ Layout(title string) {
-	<!DOCTYPE html>
-	<html>
-		<head>
-			@defaultStyles()
-			<title>{ title }</title>
-		</head>
-		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-				{ children... }
-			</main>
-		</body>
-	</html>
-}
 
 templ Spacer() {
 	<br/>

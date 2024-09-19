@@ -1,6 +1,6 @@
 //go:build js && wasm
 
-package jsexc
+package vfs
 
 import (
 	"bytes"

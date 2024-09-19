@@ -10,10 +10,8 @@ func AuthorizeView(c echo.Context) error {
 }
 
 templ renderAuthorizeView() {
-	@blocks.Layout("Login | Sonr.ID") {
 		@blocks.Card("authorize-view", blocks.SizeMedium) {
 			@blocks.H1("Sonr.ID")
 			@blocks.Text("Neo-tree is a file manager for NeoFS.")
 		}
-	}
 }
