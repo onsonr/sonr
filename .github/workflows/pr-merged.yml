@@ -1,0 +1,29 @@
+name: PR Merged - Bump Version and Tag
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - develop
+
+permissions:
+  contents: write
+
+jobs:
+  bump-version-and-tag:
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'feature/')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Bump version and update changelog
+        uses: commitizen-tools/commitizen-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push changes and tag
+        run: git push && git push --tags

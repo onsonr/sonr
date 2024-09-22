@@ -21,6 +21,9 @@ class Config {
 
   @JsonField
   motr: Motr
+
+  @JsonField
+  schema: Schema
 }
 
 class IPFS {
@@ -42,6 +45,37 @@ class Motr {
   origin: String
 }
 
+class Schema {
+  version: Int
+
+  @JsonField
+  account: String
+  
+  @JsonField
+  asset: String
+  
+  @JsonField
+  chain: String
+  
+  @JsonField
+  credential: String
+
+  @JsonField
+  jwk: String
+  
+  @JsonField
+  grant: String
+  
+  @JsonField
+  keyshare: String
+
+  @JsonField
+  publicKey: String
+
+  @JsonField
+  profile: String
+}
+
 class Sonr {
   @JsonField
   apiUrl: String
@@ -60,16 +94,4 @@ class Sonr {
 }
 
 
-config = new Config {
-  ipfs = new IPFS {
-    apiUrl = "https://api.sonr-ipfs.land"
-    gatewayUrl = "https://ipfs.sonr.land"
-  }
 
-  sonr = new Sonr {
-    apiUrl = "https://api.sonr.land"
-    grpcUrl = "https://grpc.sonr.land"
-    rpcUrl = "https://rpc.sonr.land"
-    webSocketUrl = "wss://rpc.sonr.land/ws"
-  }
-}

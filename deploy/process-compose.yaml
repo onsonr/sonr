@@ -1,0 +1,17 @@
+version: "0.6"
+
+processes:
+  sonr:
+    namespace: testnet
+    command: "make sh-testnet"
+    restart: on_failure
+    max_restarts: 3
+    depends:
+
+  caddy:
+    namespace: testnet
+    command: "make xcaddy"
+    restart: on_failure
+    max_restarts: 3
+    depends:
+      - sonr

@@ -7,4 +7,6 @@ type Config struct {
 	Sonr *Sonr `pkl:"sonr" json:"sonr,omitempty"`
 
 	Motr *Motr `pkl:"motr" json:"motr,omitempty"`
+
+	Schema *Schema `pkl:"schema" json:"schema,omitempty"`
 }

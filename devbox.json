@@ -2,11 +2,9 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
   "packages": [
     "go@1.22",
-    "templ@latest",
     "bun@latest",
     "ipfs-cluster@latest",
-    "air@latest",
-    "commitizen@latest"
+    "process-compose@latest"
   ],
   "env": {
     "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
@@ -14,49 +12,56 @@
     "PROJECT_BIN": "$PROJECT_DIR/bin",
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PROJECT_BIN:$PATH",
+    "TEMPL_EXPERIMENT": "rawgo",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
-    "MONIKER": "florence"
+    "MONIKER": "florence",
+    "ENV": "$ENVIRONMENT"
   },
   "shell": {
     "scripts": {
       "install": [
         "make install"
       ],
+      "install:deps": [
+        "make deps"
+      ],
       "build": [
-        "make build",
-        "make local-image"
+        "make build"
       ],
       "build:dwn": [
-        "templ generate",
         "make dwn"
       ],
+      "build:image": [
+        "make local-image"
+      ],
       "build:motr": [
-        "templ generate",
         "make motr"
       ],
       "gen:proto": [
         "make proto-gen"
       ],
       "gen:pkl": [
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl"
+        "make pkl"
       ],
       "gen:templ": [
-        "templ generate"
+        "make templ"
       ],
-      "dev": [
-        "air"
+      "serve:local": [
+        "process-compose -f ./deploy/process-compose.dev.yaml"
       ],
-      "start-proxy": [
-        "./bin/caddy run --config ./config/caddy/caddy.conf"
+      "serve:testnet": [
+        "process-compose -f ./deploy/process-compose.yaml"
       ],
-      "testnet": [
-        "make xcaddy",
-        "devbox services up"
+      "air": [
+        "air -c ./deploy/air.toml"
+      ],
+      "xcaddy": [
+        "make xcaddy"
+      ],
+      "sonr": [
+        "make sh-testnet"
       ]
     }
   }

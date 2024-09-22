@@ -8,7 +8,6 @@ import (
 )
 
 type Dwn struct {
-	Config any `pkl:"config"`
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Dwn

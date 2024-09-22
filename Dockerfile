@@ -9,7 +9,7 @@ RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
 USER ${DEVBOX_USER}:${DEVBOX_USER}
 
 COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
-COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} process-compose.yaml process-compose.yaml
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} deploy/process-compose.yaml process-compose.yaml
 
 RUN devbox run -- echo "Installed Packages."
 
@@ -26,7 +26,7 @@ RUN mkdir -p /code && chown ${DEVBOX_USER}:${DEVBOX_USER} /code
 USER ${DEVBOX_USER}:${DEVBOX_USER}
 
 COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} devbox.json devbox.json
-COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} process-compose.yaml process-compose.yaml
+COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} deploy/process-compose.yaml process-compose.yaml
 COPY --chown=${DEVBOX_USER}:${DEVBOX_USER} . .
 
 RUN devbox run -- echo "Installed Packages."

@@ -1,0 +1,18 @@
+package views
+
+import (
+	"github.com/labstack/echo/v4"
+		"github.com/onsonr/sonr/pkg/nebula/blocks"
+
+)
+
+func ProfileView(c echo.Context) error {
+	return echoComponentResponse(c, renderProfileView())
+}
+
+templ renderProfileView() {
+		@blocks.Card("profile-view", blocks.SizeLarge) {
+			@blocks.ProfileCard()
+			@blocks.Tabs()
+	}
+}

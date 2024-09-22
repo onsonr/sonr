@@ -1,61 +1,45 @@
-name: Scheduled Production Release
+name: Sync Branches
 
 on:
-  schedule:
-    - cron: "0 0 * * MON" # Runs every Monday at 00:00 UTC
-  workflow_dispatch:
+  push:
+    tags:
+      - "*"
+
 permissions:
-  contents: write # Grants the workflow permission to push changes
+  contents: write
 
 jobs:
-  production-release:
+  sync-branches:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetch all history for accurate merging
-          ref: develop # Start from the develop branch
+          fetch-depth: 0
 
-      - name: Set up Git user
+      - name: Check if tag is on develop or master
+        id: check-branch
         run: |
-          git config user.name "GitHub Action"
-          git config user.email "action@github.com"
+          if git branch -r --contains ${{ github.ref }} | grep -q 'origin/develop\|origin/master'; then
+            echo "SYNC_NEEDED=true" >> $GITHUB_OUTPUT
+          else
+            echo "SYNC_NEEDED=false" >> $GITHUB_OUTPUT
+          fi
 
-      - name: Install Devbox
-        uses: jetpack-io/devbox-install-action@v0.7.0
+      - name: Sync develop to master
+        if: steps.check-branch.outputs.SYNC_NEEDED == 'true'
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: develop
+          target_branch: master
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install dependencies
-        run: devbox install
-
-      - name: Bump Version with Commitizen
-        run: |
-          # Use Commitizen to bump version
-          devbox shell -- cz bump --yes --changelog
-
-          # Get the new version
-          NEW_VERSION=$(devbox shell -- cz version --project)
-          echo "New version: $NEW_VERSION"
-
-          # Tag the new version
-          git tag -a "v$NEW_VERSION" -m "Release $NEW_VERSION"
-
-      - name: Merge develop into master
-        run: |
-          # Switch to master branch
-          git checkout master
-
-          # Merge develop into master with a merge commit
-          git merge develop --no-ff -m "Merge develop into master for release v$NEW_VERSION"
-
-      - name: Push Changes and Tags
-        run: |
-          git push origin master
-          git push origin --tags
-
-      - name: Merge back into develop
-        run: |
-          git checkout develop
-          git merge master --no-ff -m "Merge master back into develop after release v$NEW_VERSION"
-          git push origin develop
+      - name: Sync master back to develop
+        if: steps.check-branch.outputs.SYNC_NEEDED == 'true'
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          from_branch: master
+          target_branch: develop
+          github_token: ${{ secrets.GITHUB_TOKEN }}

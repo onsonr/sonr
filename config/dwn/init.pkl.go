@@ -9,4 +9,5 @@ func init() {
 	pkl.RegisterMapping("dwn#IPFS", IPFS{})
 	pkl.RegisterMapping("dwn#Sonr", Sonr{})
 	pkl.RegisterMapping("dwn#Motr", Motr{})
+	pkl.RegisterMapping("dwn#Schema", Schema{})
 }

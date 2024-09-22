@@ -95,6 +95,13 @@ endif
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
 
+deps:
+	@echo "(go) Installing go dependencies"
+	@which air > /dev/null || go install github.com/air-verse/air@latest
+	@which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
+	@which xcaddy > /dev/null || go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+	@mkdir -p ./bin
+	@[ ! -f ./bin/caddy ] && xcaddy build --with github.com/caddy-dns/cloudflare && mv ./caddy ./bin/caddy || echo "Caddy already exists"
 ########################################
 ### Tools & dependencies
 
@@ -293,8 +300,6 @@ sh-testnet: mod-tidy
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
-
-
 ###############################################################################
 ###                                 templ & vault                           ###
 ###############################################################################
@@ -303,27 +308,31 @@ sh-testnet: mod-tidy
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./internal/vfs/app.wasm ./internal/dwn/main.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/vault/app.wasm ./internal/dwn/main.go
 
 motr:
 	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
 	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/src/main.go
 
-xcaddy:
-	@echo "(proxy) Building Cloudflare/Caddy proxy"
-	go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-	mkdir -p ./bin
-	xcaddy build --with github.com/caddy-dns/cloudflare
-	mv ./caddy ./bin/caddy
-	./bin/caddy adapt > ./config/caddy/caddy.json
+templ:
+	@echo "(templ) Generating templ files"
+	templ generate
+
+pkl:
+	@echo "(pkl) Building PKL"
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl
 
 ipfs-cluster-start:
 	@echo "(ipfs) Starting ipfs-cluster"
 	ipfs-cluster-service init --consensus crdt
 	ipfs-cluster-service daemon
 
-caddy-start:
+xcaddy:
 	@echo "(proxy) Starting caddy"
+#	./bin/caddy adapt ./config/caddy/Caddyfile > ./config/caddy/caddy.json
 	./bin/caddy run --config ./config/caddy/caddy.json
 
 ###############################################################################

@@ -46,7 +46,7 @@ require (
 	cosmossdk.io/x/nft v0.1.0
 	cosmossdk.io/x/tx v0.13.3
 	cosmossdk.io/x/upgrade v0.1.1
-	github.com/a-h/templ v0.2.771
+	github.com/a-h/templ v0.2.778
 	github.com/apple/pkl-go v0.8.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/charmbracelet/bubbles v0.19.0

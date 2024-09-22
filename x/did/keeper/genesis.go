@@ -6,7 +6,6 @@ import (
 	"cosmossdk.io/log"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ipfs/boxo/path"
-	"google.golang.org/grpc/peer"
 
 	"github.com/onsonr/sonr/x/did/types"
 )
@@ -70,10 +69,4 @@ func (k Keeper) HasPathInIPFS(ctx sdk.Context, cid string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
-}
-
-func (k Keeper) UnwrapCtx(goCtx context.Context) Context {
-	ctx := sdk.UnwrapSDKContext(goCtx)
-	peer, _ := peer.FromContext(goCtx)
-	return Context{SDKCtx: ctx, Peer: peer, Keeper: k}
 }
