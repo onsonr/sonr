@@ -3,14 +3,14 @@ version: "0.6"
 processes:
   sonr:
     namespace: testnet
-    command: "devbox run sonr"
+    command: "devbox run serve:sonr"
     restart: on_failure
     max_restarts: 3
     depends:
 
   caddy:
     namespace: testnet
-    command: "devbox run xcaddy"
+    command: "devbox run serve:xcaddy"
     restart: on_failure
     max_restarts: 3
     depends:
@@ -18,7 +18,7 @@ processes:
 
   air:
     namespace: testnet
-    command: "devbox run air"
+    command: "devbox run serve:air"
     restart: on_failure
     max_restarts: 3
     depends:

@@ -1,10 +1,49 @@
-package builder
+package vault
 
-import "github.com/onsonr/sonr/config/dwn"
+import (
+	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/ipfs/boxo/files"
+	"github.com/onsonr/crypto/mpc"
+	"github.com/onsonr/sonr/config/dwn"
+)
 
 type SchemaVersion = int
 
 var CurrentSchemaVersion SchemaVersion = 1
+
+type Vault struct {
+	FS    files.Node
+	ValKs mpc.Share
+}
+
+func New(subject string, origin string, chainID string) (*Vault, error) {
+	shares, err := mpc.GenerateKeyshares()
+	var (
+		valKs = shares[0]
+		usrKs = shares[1]
+	)
+	usrKsJSON, err := usrKs.Marshal()
+	if err != nil {
+		return nil, err
+	}
+
+	sonrAddr, err := bech32.ConvertAndEncode("idx", valKs.GetPublicKey())
+	if err != nil {
+		return nil, err
+	}
+
+	cnfg := NewConfig(usrKsJSON, sonrAddr, chainID, DefaultSchema())
+
+	fileMap, err := NewVaultDirectory(cnfg)
+	if err != nil {
+		return nil, err
+	}
+
+	return &Vault{
+		FS:    fileMap,
+		ValKs: valKs,
+	}, nil
+}
 
 func DefaultSchema() *dwn.Schema {
 	return &dwn.Schema{

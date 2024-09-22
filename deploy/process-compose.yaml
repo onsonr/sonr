@@ -3,14 +3,14 @@ version: "0.6"
 processes:
   sonr:
     namespace: testnet
-    command: "make sh-testnet"
+    command: "devbox run serve:sonr"
     restart: on_failure
     max_restarts: 3
     depends:
 
   caddy:
     namespace: testnet
-    command: "make xcaddy"
+    command: "devbox run serve:xcaddy"
     restart: on_failure
     max_restarts: 3
     depends:

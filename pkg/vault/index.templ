@@ -51,6 +51,11 @@ templ indexFile(cfg string) {
     </html>
 }
 
+templ serviceWorker() {
+<script>
+</script>
+}
+
 script initializeMotr(config string) {
     const motr = new Motr(JSON.parse(config));
 
@@ -100,7 +105,6 @@ script initializeMotr(config string) {
             document.getElementById('output').innerHTML = `<p>Error: ${error.message}</p>`;
         }
     }
-
     // Run the demo when the page loads
     window.onload = demo;
 }

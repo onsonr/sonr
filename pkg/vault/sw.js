@@ -3,7 +3,7 @@ importScripts(
   "https://cdn.jsdelivr.net/gh/nlepage/go-wasm-http-server@v1.1.0/sw.js",
 );
 
-registerWasmHTTPListener("app.wasm");
+registerWasmHTTPListener("/app.wasm");
 
 // Skip installed stage and jump to activating stage
 self.addEventListener("install", (event) => {

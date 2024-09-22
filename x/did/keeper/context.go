@@ -11,7 +11,7 @@ import (
 	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/ipfs/kubo/core/coreiface/options"
-	"github.com/onsonr/sonr/pkg/builder"
+	"github.com/onsonr/sonr/pkg/vault"
 	"github.com/onsonr/sonr/x/did/types"
 	"google.golang.org/grpc/peer"
 	"gopkg.in/macaroon.v2"
@@ -32,7 +32,7 @@ type Context struct {
 
 // AssembleVault assembles the initial vault
 func (k Keeper) AssembleVault(ctx Context, subject string, origin string) (string, int64, error) {
-	v, err := builder.NewVault(subject, origin, "sonr-testnet")
+	v, err := vault.New(subject, origin, "sonr-testnet")
 	if err != nil {
 		return "", 0, err
 	}

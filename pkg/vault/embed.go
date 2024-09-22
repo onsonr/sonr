@@ -20,6 +20,12 @@ var motrMJSData []byte
 //go:embed sw.js
 var swJSData []byte
 
+var (
+	dwnWasmFile = files.NewBytesFile(dwnWasmData)
+	motrMJSFile = files.NewBytesFile(motrMJSData)
+	swJSFile    = files.NewBytesFile(swJSData)
+)
+
 // NewConfig uses the config template to generate the dwn config file
 func NewConfig(keyshareJSON string, adddress string, chainID string, schema *dwn.Schema) *dwn.Config {
 	dwnCfg := &dwn.Config{
@@ -29,6 +35,32 @@ func NewConfig(keyshareJSON string, adddress string, chainID string, schema *dwn
 		Schema: schema,
 	}
 	return dwnCfg
+}
+
+// NewVaultDirectory creates a new directory with the default files
+func NewVaultDirectory(cnfg *dwn.Config) (files.Node, error) {
+	dwnJSON, err := json.Marshal(cnfg)
+	if err != nil {
+		return nil, err
+	}
+
+	dwnStr, err := templ.JSONString(cnfg)
+	if err != nil {
+		return nil, err
+	}
+	w := bytes.NewBuffer(nil)
+	err = indexFile(dwnStr).Render(context.Background(), w)
+	if err != nil {
+		return nil, err
+	}
+	fileMap := map[string]files.Node{
+		"config.json": files.NewBytesFile(dwnJSON),
+		"motr.mjs":    motrMJSFile,
+		"sw.js":       swJSFile,
+		"app.wasm":    dwnWasmFile,
+		"index.html":  files.NewBytesFile(w.Bytes()),
+	}
+	return files.NewMapDirectory(fileMap), nil
 }
 
 // Use IndexHTML template to generate the index file
@@ -53,21 +85,6 @@ func MarshalConfigFile(c *dwn.Config) (files.Node, error) {
 		return nil, err
 	}
 	return files.NewBytesFile(dwnConfigData), nil
-}
-
-// Use DWNWasm template to generate the dwn wasm file
-func DWNWasmFile() files.Node {
-	return files.NewBytesFile(dwnWasmData)
-}
-
-// Use MotrMJS template to generate the dwn wasm file
-func MotrMJSFile() files.Node {
-	return files.NewBytesFile(motrMJSData)
-}
-
-// Use ServiceWorkerJS template to generate the service worker file
-func SWJSFile() files.Node {
-	return files.NewBytesFile(swJSData)
 }
 
 func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwn.Motr {

@@ -1,9 +1,9 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
   "packages": [
-    "go@1.22",
     "bun@latest",
-    "ipfs-cluster@latest",
+    "go@1.22",
+    "gum@latest",
     "process-compose@latest"
   ],
   "env": {
@@ -23,9 +23,6 @@
     "scripts": {
       "install": [
         "make install"
-      ],
-      "install:deps": [
-        "make deps"
       ],
       "build": [
         "make build"
@@ -48,20 +45,20 @@
       "gen:templ": [
         "make templ"
       ],
-      "serve:local": [
-        "process-compose -f ./deploy/process-compose.dev.yaml"
+      "serve:air": [
+        "make air"
       ],
-      "serve:testnet": [
-        "process-compose -f ./deploy/process-compose.yaml"
-      ],
-      "air": [
-        "air -c ./deploy/air.toml"
-      ],
-      "xcaddy": [
+      "serve:xcaddy": [
         "make xcaddy"
       ],
-      "sonr": [
+      "serve:sonr": [
         "make sh-testnet"
+      ],
+      "local": [
+        "process-compose -f ./deploy/process-compose.dev.yaml"
+      ],
+      "testnet": [
+        "process-compose -f ./deploy/process-compose.yaml"
       ]
     }
   }

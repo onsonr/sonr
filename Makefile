@@ -95,13 +95,6 @@ endif
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
 
-deps:
-	@echo "(go) Installing go dependencies"
-	@which air > /dev/null || go install github.com/air-verse/air@latest
-	@which templ > /dev/null || go install github.com/a-h/templ/cmd/templ@latest
-	@which xcaddy > /dev/null || go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-	@mkdir -p ./bin
-	@[ ! -f ./bin/caddy ] && xcaddy build --with github.com/caddy-dns/cloudflare && mv ./caddy ./bin/caddy || echo "Caddy already exists"
 ########################################
 ### Tools & dependencies
 
@@ -316,6 +309,7 @@ motr:
 
 templ:
 	@echo "(templ) Generating templ files"
+	go install github.com/a-h/templ/cmd/templ@latest
 	templ generate
 
 pkl:
@@ -325,6 +319,11 @@ pkl:
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl
 
+air:
+	@echo "(air) Building air"
+	go install github.com/air-verse/air@latest
+	air -c ./deploy/air.toml
+
 ipfs-cluster-start:
 	@echo "(ipfs) Starting ipfs-cluster"
 	ipfs-cluster-service init --consensus crdt
@@ -332,6 +331,10 @@ ipfs-cluster-start:
 
 xcaddy:
 	@echo "(proxy) Starting caddy"
+	go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+  mkdir -p ./bin 
+  xcaddy build --with github.com/caddy-dns/cloudflare 
+  mv ./caddy ./bin/caddy
 #	./bin/caddy adapt ./config/caddy/Caddyfile > ./config/caddy/caddy.json
 	./bin/caddy run --config ./config/caddy/caddy.json
 
