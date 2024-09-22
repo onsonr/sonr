@@ -4,7 +4,7 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/web/src/pages"
+	"github.com/onsonr/sonr/pkg/proxy/routes"
 	"github.com/syumai/workers"
 )
 
@@ -16,8 +16,8 @@ func main() {
 	// 1. Display Generic Homepage
 	e := echo.New()
 	// Configure the server
-	e.GET("/", pages.HomeView)
-	e.GET("/allocate", pages.AllocateView)
+	e.GET("/", routes.HomeView)
+	e.GET("/allocate", routes.AllocateView)
 	// 2. Present Terms Agreement and Checkbox to Accept
 	// 3. Collect UserAgent, Set-Cookie, and Client Headers
 	// 4. Redirect to DWN Node

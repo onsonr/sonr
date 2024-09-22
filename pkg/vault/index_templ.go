@@ -106,10 +106,39 @@ func indexFile(cfg string) templ.Component {
 	})
 }
 
+func serviceWorker() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n</script>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
 func initializeMotr(config string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_initializeMotr_4943`,
-		Function: `function __templ_initializeMotr_4943(config){const motr = new Motr(JSON.parse(config));
+		Name: `__templ_initializeMotr_d70f`,
+		Function: `function __templ_initializeMotr_d70f(config){const motr = new Motr(JSON.parse(config));
 
     async function demo() {
         try {
@@ -157,12 +186,11 @@ func initializeMotr(config string) templ.ComponentScript {
             document.getElementById('output').innerHTML = ` + "`" + `<p>Error: ${error.message}</p>` + "`" + `;
         }
     }
-
     // Run the demo when the page loads
     window.onload = demo;
 }`,
-		Call:       templ.SafeScript(`__templ_initializeMotr_4943`, config),
-		CallInline: templ.SafeScriptInline(`__templ_initializeMotr_4943`, config),
+		Call:       templ.SafeScript(`__templ_initializeMotr_d70f`, config),
+		CallInline: templ.SafeScriptInline(`__templ_initializeMotr_d70f`, config),
 	}
 }
 

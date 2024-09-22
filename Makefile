@@ -329,15 +329,6 @@ ipfs-cluster-start:
 	ipfs-cluster-service init --consensus crdt
 	ipfs-cluster-service daemon
 
-xcaddy:
-	@echo "(proxy) Starting caddy"
-	go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-  mkdir -p ./bin 
-  xcaddy build --with github.com/caddy-dns/cloudflare 
-  mv ./caddy ./bin/caddy
-#	./bin/caddy adapt ./config/caddy/Caddyfile > ./config/caddy/caddy.json
-	./bin/caddy run --config ./config/caddy/caddy.json
-
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
