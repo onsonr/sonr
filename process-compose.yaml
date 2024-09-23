@@ -1,0 +1,18 @@
+version: "0.6"
+
+processes:
+  ipfs:
+    namespace: testnet
+    command: "ipfs-cluster-service init --consensus crdt && ipfs-cluster-service daemon"
+    background: true
+    availability:
+      restart: on_failure
+      max_restarts: 3
+
+  sonr:
+    namespace: testnet
+    command: "make sh-testnet"
+    restart: on_failure
+    max_restarts: 3
+    depends:
+      - ipfs

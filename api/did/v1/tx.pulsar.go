@@ -31,15 +31,15 @@ func init() {
 	fd_MsgUpdateParams_token = md_MsgUpdateParams.Fields().ByName("token")
 }
 
-var _ protoreflect.Message = (*fastReflection_MsgUpdateParams)(nil)
+var _ protoreflect.Message = (*fastReflection_MsgAllocateVault)(nil)
 
-type fastReflection_MsgUpdateParams MsgUpdateParams
+type fastReflection_MsgAllocateVault MsgAllocateVault
 
-func (x *MsgUpdateParams) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_MsgUpdateParams)(x)
+func (x *MsgAllocateVault) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_MsgAllocateVault)(x)
 }
 
-func (x *MsgUpdateParams) slowProtoReflect() protoreflect.Message {
+func (x *MsgAllocateVault) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_tx_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -51,43 +51,43 @@ func (x *MsgUpdateParams) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_MsgUpdateParams_messageType fastReflection_MsgUpdateParams_messageType
-var _ protoreflect.MessageType = fastReflection_MsgUpdateParams_messageType{}
+var _fastReflection_MsgAllocateVault_messageType fastReflection_MsgAllocateVault_messageType
+var _ protoreflect.MessageType = fastReflection_MsgAllocateVault_messageType{}
 
-type fastReflection_MsgUpdateParams_messageType struct{}
+type fastReflection_MsgAllocateVault_messageType struct{}
 
-func (x fastReflection_MsgUpdateParams_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_MsgUpdateParams)(nil)
+func (x fastReflection_MsgAllocateVault_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_MsgAllocateVault)(nil)
 }
-func (x fastReflection_MsgUpdateParams_messageType) New() protoreflect.Message {
-	return new(fastReflection_MsgUpdateParams)
+func (x fastReflection_MsgAllocateVault_messageType) New() protoreflect.Message {
+	return new(fastReflection_MsgAllocateVault)
 }
-func (x fastReflection_MsgUpdateParams_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgUpdateParams
+func (x fastReflection_MsgAllocateVault_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAllocateVault
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_MsgUpdateParams) Descriptor() protoreflect.MessageDescriptor {
-	return md_MsgUpdateParams
+func (x *fastReflection_MsgAllocateVault) Descriptor() protoreflect.MessageDescriptor {
+	return md_MsgAllocateVault
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_MsgUpdateParams) Type() protoreflect.MessageType {
-	return _fastReflection_MsgUpdateParams_messageType
+func (x *fastReflection_MsgAllocateVault) Type() protoreflect.MessageType {
+	return _fastReflection_MsgAllocateVault_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_MsgUpdateParams) New() protoreflect.Message {
-	return new(fastReflection_MsgUpdateParams)
+func (x *fastReflection_MsgAllocateVault) New() protoreflect.Message {
+	return new(fastReflection_MsgAllocateVault)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_MsgUpdateParams) Interface() protoreflect.ProtoMessage {
-	return (*MsgUpdateParams)(x)
+func (x *fastReflection_MsgAllocateVault) Interface() protoreflect.ProtoMessage {
+	return (*MsgAllocateVault)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -95,10 +95,10 @@ func (x *fastReflection_MsgUpdateParams) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_MsgUpdateParams) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_MsgAllocateVault) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Authority != "" {
 		value := protoreflect.ValueOfString(x.Authority)
-		if !f(fd_MsgUpdateParams_authority, value) {
+		if !f(fd_MsgAllocateVault_authority, value) {
 			return
 		}
 	}
@@ -5951,15 +5951,13 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
-//
-// Since: cosmos-sdk 0.47
-type MsgUpdateParams struct {
+// MsgAllocateVault is the message type for the AllocateVault RPC.
+type MsgAllocateVault struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// authority is the address of the governance account.
+	// authority is the address of the service account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the parameters to update.
 	Params *Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params,omitempty"`
@@ -5967,8 +5965,8 @@ type MsgUpdateParams struct {
 	Token string `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
 }
 
-func (x *MsgUpdateParams) Reset() {
-	*x = MsgUpdateParams{}
+func (x *MsgAllocateVault) Reset() {
+	*x = MsgAllocateVault{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5976,29 +5974,29 @@ func (x *MsgUpdateParams) Reset() {
 	}
 }
 
-func (x *MsgUpdateParams) String() string {
+func (x *MsgAllocateVault) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgUpdateParams) ProtoMessage() {}
+func (*MsgAllocateVault) ProtoMessage() {}
 
-// Deprecated: Use MsgUpdateParams.ProtoReflect.Descriptor instead.
-func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAllocateVault.ProtoReflect.Descriptor instead.
+func (*MsgAllocateVault) Descriptor() ([]byte, []int) {
 	return file_did_v1_tx_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *MsgUpdateParams) GetAuthority() string {
+func (x *MsgAllocateVault) GetAuthority() string {
 	if x != nil {
 		return x.Authority
 	}
 	return ""
 }
 
-func (x *MsgUpdateParams) GetParams() *Params {
+func (x *MsgAllocateVault) GetSubject() string {
 	if x != nil {
-		return x.Params
+		return x.Subject
 	}
-	return nil
+	return ""
 }
 
 func (x *MsgUpdateParams) GetToken() string {
@@ -6016,10 +6014,19 @@ type MsgUpdateParamsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
+
+	// CID is the content identifier of the vault.
+	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
+	// ExpiryBlock is the block number at which the vault will expire.
+	ExpiryBlock int64 `protobuf:"varint,2,opt,name=expiry_block,json=expiryBlock,proto3" json:"expiry_block,omitempty"`
+	// RegistrationOptions is a json string of the PublicKeyCredentialCreationOptions for WebAuthn
+	Token string `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
+	// IsLocalhost is a flag to indicate if the vault is localhost
+	Localhost bool `protobuf:"varint,4,opt,name=localhost,proto3" json:"localhost,omitempty"`
 }
 
-func (x *MsgUpdateParamsResponse) Reset() {
-	*x = MsgUpdateParamsResponse{}
+func (x *MsgAllocateVaultResponse) Reset() {
+	*x = MsgAllocateVaultResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6027,14 +6034,14 @@ func (x *MsgUpdateParamsResponse) Reset() {
 	}
 }
 
-func (x *MsgUpdateParamsResponse) String() string {
+func (x *MsgAllocateVaultResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgUpdateParamsResponse) ProtoMessage() {}
+func (*MsgAllocateVaultResponse) ProtoMessage() {}
 
-// Deprecated: Use MsgUpdateParamsResponse.ProtoReflect.Descriptor instead.
-func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use MsgAllocateVaultResponse.ProtoReflect.Descriptor instead.
+func (*MsgAllocateVaultResponse) Descriptor() ([]byte, []int) {
 	return file_did_v1_tx_proto_rawDescGZIP(), []int{1}
 }
 
@@ -6675,7 +6682,7 @@ func file_did_v1_tx_proto_init() {
 	file_did_v1_genesis_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_did_v1_tx_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgUpdateParams); i {
+			switch v := v.(*MsgAllocateVault); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6687,7 +6694,7 @@ func file_did_v1_tx_proto_init() {
 			}
 		}
 		file_did_v1_tx_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*MsgUpdateParamsResponse); i {
+			switch v := v.(*MsgAllocateVaultResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -6784,6 +6791,30 @@ func file_did_v1_tx_proto_init() {
 		}
 		file_did_v1_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*MsgRegisterServiceResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_did_v1_tx_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdateParams); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_did_v1_tx_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*MsgUpdateParamsResponse); i {
 			case 0:
 				return &v.state
 			case 1:

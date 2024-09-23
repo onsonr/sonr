@@ -41,7 +41,8 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		Params: DefaultParams(),
+		GlobalIntegrity: DefaultGlobalIntegrity(),
+		Params:          DefaultParams(),
 	}
 }
 
@@ -49,7 +50,9 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
-
+	if gs.GlobalIntegrity == nil {
+		return fmt.Errorf("global integrity proof is nil")
+	}
 	return gs.Params.Validate()
 }
 

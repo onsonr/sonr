@@ -1,45 +1,24 @@
-name: Sync Branches
-
+name: Gitflow Sync
 on:
+  # To create pull requests.
   push:
-    tags:
-      - "*"
+  # To merge pull requests if not possible during the push run. Remove if `auto-merge` is `false`.
+  pull_request_review:
+  check_run:
+    types: [completed]
 
 permissions:
-  contents: write
+  contents: read
+  pull-requests: write
 
 jobs:
-  sync-branches:
+  build:
+    name: Gitflow
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: Logerfo/gitflow-action@0.0.5
         with:
-          fetch-depth: 0
-
-      - name: Check if tag is on develop or master
-        id: check-branch
-        run: |
-          if git branch -r --contains ${{ github.ref }} | grep -q 'origin/develop\|origin/master'; then
-            echo "SYNC_NEEDED=true" >> $GITHUB_OUTPUT
-          else
-            echo "SYNC_NEEDED=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Sync develop to master
-        if: steps.check-branch.outputs.SYNC_NEEDED == 'true'
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: develop
-          target_branch: master
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Sync master back to develop
-        if: steps.check-branch.outputs.SYNC_NEEDED == 'true'
-        uses: devmasx/merge-branch@master
-        with:
-          type: now
-          from_branch: master
-          target_branch: develop
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # The `GITHUB_TOKEN` secret.
+          dev: develop
+          master: master
+          release: release

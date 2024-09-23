@@ -28,6 +28,8 @@ const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 type GenesisState struct {
 	// Params defines all the parameters of the module.
 	Params Params `protobuf:"bytes,1,opt,name=params,proto3" json:"params"`
+	// GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+	GlobalIntegrity *GlobalIntegrity `protobuf:"bytes,2,opt,name=global_integrity,json=globalIntegrity,proto3" json:"global_integrity,omitempty"`
 }
 
 func (m *GenesisState) Reset()         { *m = GenesisState{} }
@@ -70,6 +72,82 @@ func (m *GenesisState) GetParams() Params {
 	return Params{}
 }
 
+func (m *GenesisState) GetGlobalIntegrity() *GlobalIntegrity {
+	if m != nil {
+		return m.GlobalIntegrity
+	}
+	return nil
+}
+
+// GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+type GlobalIntegrity struct {
+	Controller  string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	Seed        string `protobuf:"bytes,2,opt,name=seed,proto3" json:"seed,omitempty"`
+	Accumulator []byte `protobuf:"bytes,3,opt,name=accumulator,proto3" json:"accumulator,omitempty"`
+	Count       uint64 `protobuf:"varint,4,opt,name=count,proto3" json:"count,omitempty"`
+}
+
+func (m *GlobalIntegrity) Reset()         { *m = GlobalIntegrity{} }
+func (m *GlobalIntegrity) String() string { return proto.CompactTextString(m) }
+func (*GlobalIntegrity) ProtoMessage()    {}
+func (*GlobalIntegrity) Descriptor() ([]byte, []int) {
+	return fileDescriptor_fda181cae44f7c00, []int{1}
+}
+func (m *GlobalIntegrity) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *GlobalIntegrity) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_GlobalIntegrity.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *GlobalIntegrity) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_GlobalIntegrity.Merge(m, src)
+}
+func (m *GlobalIntegrity) XXX_Size() int {
+	return m.Size()
+}
+func (m *GlobalIntegrity) XXX_DiscardUnknown() {
+	xxx_messageInfo_GlobalIntegrity.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_GlobalIntegrity proto.InternalMessageInfo
+
+func (m *GlobalIntegrity) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+func (m *GlobalIntegrity) GetSeed() string {
+	if m != nil {
+		return m.Seed
+	}
+	return ""
+}
+
+func (m *GlobalIntegrity) GetAccumulator() []byte {
+	if m != nil {
+		return m.Accumulator
+	}
+	return nil
+}
+
+func (m *GlobalIntegrity) GetCount() uint64 {
+	if m != nil {
+		return m.Count
+	}
+	return 0
+}
+
 // Params defines the set of module parameters.
 type Params struct {
 	// Whitelisted Assets
@@ -89,7 +167,7 @@ type Params struct {
 func (m *Params) Reset()      { *m = Params{} }
 func (*Params) ProtoMessage() {}
 func (*Params) Descriptor() ([]byte, []int) {
-	return fileDescriptor_fda181cae44f7c00, []int{1}
+	return fileDescriptor_fda181cae44f7c00, []int{2}
 }
 func (m *Params) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -694,6 +772,7 @@ func (m *Service) GetPermissions() map[string]string {
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "did.v1.GenesisState")
+	proto.RegisterType((*GlobalIntegrity)(nil), "did.v1.GlobalIntegrity")
 	proto.RegisterType((*Params)(nil), "did.v1.Params")
 	proto.RegisterMapType((map[string]*KeyInfo)(nil), "did.v1.Params.AllowedPublicKeysEntry")
 	proto.RegisterType((*AssetInfo)(nil), "did.v1.AssetInfo")
@@ -848,6 +927,18 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
+	if m.GlobalIntegrity != nil {
+		{
+			size, err := m.GlobalIntegrity.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
 	{
 		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
 		if err != nil {
@@ -858,6 +949,55 @@ func (m *GenesisState) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	}
 	i--
 	dAtA[i] = 0xa
+	return len(dAtA) - i, nil
+}
+
+func (m *GlobalIntegrity) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *GlobalIntegrity) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *GlobalIntegrity) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Count != 0 {
+		i = encodeVarintGenesis(dAtA, i, uint64(m.Count))
+		i--
+		dAtA[i] = 0x20
+	}
+	if len(m.Accumulator) > 0 {
+		i -= len(m.Accumulator)
+		copy(dAtA[i:], m.Accumulator)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Accumulator)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Seed) > 0 {
+		i -= len(m.Seed)
+		copy(dAtA[i:], m.Seed)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Seed)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
 	return len(dAtA) - i, nil
 }
 
@@ -1420,6 +1560,34 @@ func (m *GenesisState) Size() (n int) {
 	_ = l
 	l = m.Params.Size()
 	n += 1 + l + sovGenesis(uint64(l))
+	if m.GlobalIntegrity != nil {
+		l = m.GlobalIntegrity.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	return n
+}
+
+func (m *GlobalIntegrity) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.Seed)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	l = len(m.Accumulator)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.Count != 0 {
+		n += 1 + sovGenesis(uint64(m.Count))
+	}
 	return n
 }
 
@@ -1758,6 +1926,209 @@ func (m *GenesisState) Unmarshal(dAtA []byte) error {
 				return err
 			}
 			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field GlobalIntegrity", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.GlobalIntegrity == nil {
+				m.GlobalIntegrity = &GlobalIntegrity{}
+			}
+			if err := m.GlobalIntegrity.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *GlobalIntegrity) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: GlobalIntegrity: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: GlobalIntegrity: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Seed", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Seed = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Accumulator", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Accumulator = append(m.Accumulator[:0], dAtA[iNdEx:postIndex]...)
+			if m.Accumulator == nil {
+				m.Accumulator = []byte{}
+			}
+			iNdEx = postIndex
+		case 4:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Count", wireType)
+			}
+			m.Count = 0
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				m.Count |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])

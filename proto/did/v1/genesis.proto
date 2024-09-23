@@ -10,6 +10,17 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 message GenesisState {
   // Params defines all the parameters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
+
+  // GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+  GlobalIntegrity global_integrity = 2;
+}
+
+// GlobalIntegrity defines a zkp integrity proof for the entire DID namespace
+message GlobalIntegrity {
+  string controller = 1;
+  string seed = 2;
+  bytes accumulator = 3;
+  uint64 count = 4;
 }
 
 // Params defines the set of module parameters.

@@ -92,7 +92,7 @@ message Controller {
 // Verification reprsents a method of verifying membership in a DID
 message Verification {
   option (cosmos.orm.v1.table) = {
-    id: 5
+    id: 4
     primary_key: {fields: "id"}
     index: {
       id: 1

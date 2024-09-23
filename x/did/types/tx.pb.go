@@ -30,11 +30,9 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
-//
-// Since: cosmos-sdk 0.47
-type MsgUpdateParams struct {
-	// authority is the address of the governance account.
+// MsgAllocateVault is the message type for the AllocateVault RPC.
+type MsgAllocateVault struct {
+	// authority is the address of the service account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the parameters to update.
 	Params Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params"`
@@ -42,18 +40,18 @@ type MsgUpdateParams struct {
 	Token string `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
 }
 
-func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
-func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
-func (*MsgUpdateParams) ProtoMessage()    {}
-func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
+func (m *MsgAllocateVault) Reset()         { *m = MsgAllocateVault{} }
+func (m *MsgAllocateVault) String() string { return proto.CompactTextString(m) }
+func (*MsgAllocateVault) ProtoMessage()    {}
+func (*MsgAllocateVault) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d73284df019ff211, []int{0}
 }
-func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
+func (m *MsgAllocateVault) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgAllocateVault) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgUpdateParams.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgAllocateVault.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -63,26 +61,26 @@ func (m *MsgUpdateParams) XXX_Marshal(b []byte, deterministic bool) ([]byte, err
 		return b[:n], nil
 	}
 }
-func (m *MsgUpdateParams) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgUpdateParams.Merge(m, src)
+func (m *MsgAllocateVault) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgAllocateVault.Merge(m, src)
 }
-func (m *MsgUpdateParams) XXX_Size() int {
+func (m *MsgAllocateVault) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgUpdateParams) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgUpdateParams.DiscardUnknown(m)
+func (m *MsgAllocateVault) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgAllocateVault.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgUpdateParams proto.InternalMessageInfo
+var xxx_messageInfo_MsgAllocateVault proto.InternalMessageInfo
 
-func (m *MsgUpdateParams) GetAuthority() string {
+func (m *MsgAllocateVault) GetAuthority() string {
 	if m != nil {
 		return m.Authority
 	}
 	return ""
 }
 
-func (m *MsgUpdateParams) GetParams() Params {
+func (m *MsgAllocateVault) GetSubject() string {
 	if m != nil {
 		return m.Params
 	}
@@ -657,6 +655,8 @@ func init() {
 	proto.RegisterType((*MsgAuthorizeServiceResponse)(nil), "did.v1.MsgAuthorizeServiceResponse")
 	proto.RegisterType((*MsgRegisterService)(nil), "did.v1.MsgRegisterService")
 	proto.RegisterType((*MsgRegisterServiceResponse)(nil), "did.v1.MsgRegisterServiceResponse")
+	proto.RegisterType((*MsgUpdateParams)(nil), "did.v1.MsgUpdateParams")
+	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "did.v1.MsgUpdateParamsResponse")
 }
 
 func init() { proto.RegisterFile("did/v1/tx.proto", fileDescriptor_d73284df019ff211) }
@@ -956,7 +956,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "did/v1/tx.proto",
 }
 
-func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
+func (m *MsgAllocateVault) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -966,7 +966,7 @@ func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgAllocateVault) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
@@ -1423,6 +1423,76 @@ func (m *MsgRegisterServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, err
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParams) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParams) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Token) > 0 {
+		i -= len(m.Token)
+		copy(dAtA[i:], m.Token)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Token)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	{
+		size, err := m.Params.MarshalToSizedBuffer(dAtA[:i])
+		if err != nil {
+			return 0, err
+		}
+		i -= size
+		i = encodeVarintTx(dAtA, i, uint64(size))
+	}
+	i--
+	dAtA[i] = 0x12
+	if len(m.Authority) > 0 {
+		i -= len(m.Authority)
+		copy(dAtA[i:], m.Authority)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUpdateParamsResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUpdateParamsResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -1434,7 +1504,7 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgUpdateParams) Size() (n int) {
+func (m *MsgAllocateVault) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1645,7 +1715,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
+func (m *MsgAllocateVault) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -1668,10 +1738,10 @@ func (m *MsgUpdateParams) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgUpdateParams: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgAllocateVault: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgUpdateParams: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgAllocateVault: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
