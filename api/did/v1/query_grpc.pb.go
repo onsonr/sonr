@@ -19,14 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName                   = "/did.v1.Query/Params"
-	Query_ParamsAssets_FullMethodName             = "/did.v1.Query/ParamsAssets"
-	Query_ParamsByAsset_FullMethodName            = "/did.v1.Query/ParamsByAsset"
-	Query_ParamsKeys_FullMethodName               = "/did.v1.Query/ParamsKeys"
-	Query_ParamsByKey_FullMethodName              = "/did.v1.Query/ParamsByKey"
-	Query_RegistrationOptionsByKey_FullMethodName = "/did.v1.Query/RegistrationOptionsByKey"
-	Query_Resolve_FullMethodName                  = "/did.v1.Query/Resolve"
-	Query_Service_FullMethodName                  = "/did.v1.Query/Service"
+	Query_Params_FullMethodName  = "/did.v1.Query/Params"
+	Query_Resolve_FullMethodName = "/did.v1.Query/Resolve"
+	Query_Sync_FullMethodName    = "/did.v1.Query/Sync"
 )
 
 // QueryClient is the client API for Query service.
@@ -35,22 +30,10 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// ParamsAssets queries all parameters of the module.
-	ParamsAssets(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	ParamsByAsset(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// ParamsKeys queries all parameters of the module.
-	ParamsKeys(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	ParamsByKey(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	RegistrationOptionsByKey(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
-	// Service returns associated ServiceInfo for a given Origin
-	// if the servie is not found, a fingerprint is generated to be used
-	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
-	Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error)
+	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	// Sync queries the DID document by its id. And returns the required PKL information
+	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
 }
 
 type queryClient struct {
@@ -70,53 +53,8 @@ func (c *queryClient) Params(ctx context.Context, in *QueryRequest, opts ...grpc
 	return out, nil
 }
 
-func (c *queryClient) ParamsAssets(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_ParamsAssets_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) ParamsByAsset(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_ParamsByAsset_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) ParamsKeys(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_ParamsKeys_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) ParamsByKey(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_ParamsByKey_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) RegistrationOptionsByKey(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_RegistrationOptionsByKey_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
+func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error) {
+	out := new(QueryResolveResponse)
 	err := c.cc.Invoke(ctx, Query_Resolve_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -124,9 +62,9 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResponse, error) {
-	out := new(QueryResponse)
-	err := c.cc.Invoke(ctx, Query_Service_FullMethodName, in, out, opts...)
+func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
+	out := new(SyncResponse)
+	err := c.cc.Invoke(ctx, Query_Sync_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -139,22 +77,10 @@ func (c *queryClient) Service(ctx context.Context, in *QueryRequest, opts ...grp
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
-	// ParamsAssets queries all parameters of the module.
-	ParamsAssets(context.Context, *QueryRequest) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	ParamsByAsset(context.Context, *QueryRequest) (*QueryResponse, error)
-	// ParamsKeys queries all parameters of the module.
-	ParamsKeys(context.Context, *QueryRequest) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	ParamsByKey(context.Context, *QueryRequest) (*QueryResponse, error)
-	// Params queries all parameters of the module.
-	RegistrationOptionsByKey(context.Context, *QueryRequest) (*QueryResponse, error)
 	// Resolve queries the DID document by its id.
-	Resolve(context.Context, *QueryRequest) (*QueryResponse, error)
-	// Service returns associated ServiceInfo for a given Origin
-	// if the servie is not found, a fingerprint is generated to be used
-	// as a TXT record in DNS. v=sonr, o=origin, p=protocol
-	Service(context.Context, *QueryRequest) (*QueryResponse, error)
+	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
+	// Sync queries the DID document by its id. And returns the required PKL information
+	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -165,26 +91,11 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) ParamsAssets(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ParamsAssets not implemented")
-}
-func (UnimplementedQueryServer) ParamsByAsset(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ParamsByAsset not implemented")
-}
-func (UnimplementedQueryServer) ParamsKeys(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ParamsKeys not implemented")
-}
-func (UnimplementedQueryServer) ParamsByKey(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ParamsByKey not implemented")
-}
-func (UnimplementedQueryServer) RegistrationOptionsByKey(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegistrationOptionsByKey not implemented")
-}
-func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResponse, error) {
+func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
 }
-func (UnimplementedQueryServer) Service(context.Context, *QueryRequest) (*QueryResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Service not implemented")
+func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -217,96 +128,6 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_ParamsAssets_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ParamsAssets(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_ParamsAssets_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ParamsAssets(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_ParamsByAsset_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ParamsByAsset(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_ParamsByAsset_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ParamsByAsset(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_ParamsKeys_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ParamsKeys(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_ParamsKeys_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ParamsKeys(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_ParamsByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).ParamsByKey(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_ParamsByKey_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).ParamsByKey(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_RegistrationOptionsByKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).RegistrationOptionsByKey(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_RegistrationOptionsByKey_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).RegistrationOptionsByKey(ctx, req.(*QueryRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryRequest)
 	if err := dec(in); err != nil {
@@ -325,20 +146,20 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Service_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QueryRequest)
+func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Service(ctx, in)
+		return srv.(QueryServer).Sync(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_Service_FullMethodName,
+		FullMethod: Query_Sync_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Service(ctx, req.(*QueryRequest))
+		return srv.(QueryServer).Sync(ctx, req.(*SyncRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -355,32 +176,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "ParamsAssets",
-			Handler:    _Query_ParamsAssets_Handler,
-		},
-		{
-			MethodName: "ParamsByAsset",
-			Handler:    _Query_ParamsByAsset_Handler,
-		},
-		{
-			MethodName: "ParamsKeys",
-			Handler:    _Query_ParamsKeys_Handler,
-		},
-		{
-			MethodName: "ParamsByKey",
-			Handler:    _Query_ParamsByKey_Handler,
-		},
-		{
-			MethodName: "RegistrationOptionsByKey",
-			Handler:    _Query_RegistrationOptionsByKey_Handler,
-		},
-		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
 		},
 		{
-			MethodName: "Service",
-			Handler:    _Query_Service_Handler,
+			MethodName: "Sync",
+			Handler:    _Query_Sync_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

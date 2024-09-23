@@ -46,7 +46,7 @@ require (
 	cosmossdk.io/x/nft v0.1.0
 	cosmossdk.io/x/tx v0.13.3
 	cosmossdk.io/x/upgrade v0.1.1
-	github.com/a-h/templ v0.2.771
+	github.com/a-h/templ v0.2.778
 	github.com/apple/pkl-go v0.8.0
 	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/charmbracelet/bubbles v0.19.0
@@ -67,16 +67,12 @@ require (
 	github.com/go-webauthn/webauthn v0.10.2
 	github.com/golang/protobuf v1.5.4
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
-	github.com/hack-pad/go-indexeddb v0.3.2
 	github.com/ipfs/boxo v0.21.0
 	github.com/ipfs/kubo v0.29.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.10.2
-	github.com/mr-tron/base58 v1.2.0
-	github.com/ncruces/go-sqlite3 v0.18.2
-	github.com/ncruces/go-sqlite3/gormlite v0.18.0
 	github.com/nlepage/go-js-promise v1.0.0
-	github.com/onsonr/crypto v1.29.0
+	github.com/onsonr/crypto v1.32.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.0
@@ -91,11 +87,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
 	google.golang.org/grpc v1.64.0
 	google.golang.org/protobuf v1.34.2
-	gopkg.in/macaroon-bakery.v2 v2.3.0
 	gopkg.in/macaroon.v2 v2.1.0
-	gorm.io/gorm v1.25.11
-	lukechampine.com/adiantum v1.1.1
-	lukechampine.com/blake3 v1.3.0
 )
 
 require (
@@ -194,7 +186,6 @@ require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
 	github.com/gtank/merlin v0.1.1 // indirect
-	github.com/hack-pad/safejs v0.1.0 // indirect
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-cleanhttp v0.5.2 // indirect
 	github.com/hashicorp/go-getter v1.7.5 // indirect

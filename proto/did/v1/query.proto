@@ -2,9 +2,7 @@ syntax = "proto3";
 package did.v1;
 
 import "did/v1/genesis.proto";
-import "did/v1/models.proto";
 import "google/api/annotations.proto";
-import "did/v1/types.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
@@ -15,41 +13,14 @@ service Query {
     option (google.api.http).get = "/params";
   }
 
-  // ParamsAssets queries all parameters of the module.
-  rpc ParamsAssets(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/params/assets";
-  }
-
-  // Params queries all parameters of the module.
-  rpc ParamsByAsset(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/params/assets/{asset}";
-  }
-
-  // ParamsKeys queries all parameters of the module.
-  rpc ParamsKeys(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/params/keys";
-  }
-
-  // Params queries all parameters of the module.
-  rpc ParamsByKey(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/params/keys/{key}";
-  }
-
-  // Params queries all parameters of the module.
-  rpc RegistrationOptionsByKey(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/params/keys/{key}/registration";
-  }
-
   // Resolve queries the DID document by its id.
-  rpc Resolve(QueryRequest) returns (QueryResponse) {
+  rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
     option (google.api.http).get = "/did/{did}";
   }
 
-  // Service returns associated ServiceInfo for a given Origin
-  // if the servie is not found, a fingerprint is generated to be used
-  // as a TXT record in DNS. v=sonr, o=origin, p=protocol
-  rpc Service(QueryRequest) returns (QueryResponse) {
-    option (google.api.http).get = "/service/{origin}";
+  // Sync queries the DID document by its id. And returns the required PKL information
+  rpc Sync(SyncRequest) returns (SyncResponse) {
+    option (google.api.http).post = "/sync";
   }
 }
 
@@ -66,45 +37,8 @@ message QueryResponse {
   bool success = 1;
   string query = 2;
   Document document = 3;
-  ServiceInfo service = 4;
   Params params = 5;
 }
-
-// QueryParamsResponse is the response type for the Query/Params RPC method.
-message QueryParamsResponse {
-  Params params = 1;
-}
-
-message QueryParamsAssetsResponse {
-  repeated AssetInfo assets = 1;
-    // Accounts returns associated wallet accounts with the DID.
-    rpc Accounts(QueryAccountsRequest) returns (QueryAccountsResponse) {
-      option (google.api.http).get = "/did/{did}/accounts";
-    }
-
-    // Credentials returns associated credentials with the DID and Service Origin.
-    rpc Credentials(QueryCredentialsRequest) returns (QueryCredentialsResponse) {
-      option (google.api.http).get = "/did/{did}/{origin}/credentials";
-    }
-
-    // Identities returns associated identity with the DID.
-    rpc Identities(QueryIdentitiesRequest) returns (QueryIdentitiesResponse) {
-      option (google.api.http).get = "/did/{did}/identities";
-    }
-
-    // Resolve queries the DID document by its id.
-    rpc Resolve(QueryResolveRequest) returns (QueryResolveResponse) { 
-        option (google.api.http).get = "/did/resolve/{did}"; 
-    } 
-
-    // Service returns associated ServiceInfo for a given Origin
-    rpc Service(QueryServiceRequest) returns (QueryServiceResponse) {
-      option (google.api.http).get = "/did/service/{origin}";
-    }
-}
-
-// QueryParamsRequest is the request type for the Query/Params RPC method.
-message QueryParamsRequest {}
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
 message QueryParamsResponse {
@@ -112,72 +46,18 @@ message QueryParamsResponse {
   Params params = 1;
 }
 
-// QueryAccountsRequest is the request type for the Query/Exists RPC method.
-message QueryAccountsRequest {
-    string did = 1;
-}
-
-// QueryAccountsResponse is the response type for the Query/Exists RPC method.
-message QueryAccountsResponse {
-    bool exists = 1;
-}
-
-// QueryCredentialsRequest is the request type for the Query/Exists RPC method.
-message QueryCredentialsRequest {
-  string did = 1;
-  string origin = 2;
-}
-
-// QueryCredentialsResponse is the response type for the Query/Exists RPC method.
-message QueryCredentialsResponse {
-  map<string, bytes> credentials = 1;
-}
-
-// QueryIdentitiesRequest is the request type for the Query/Exists RPC method.
-message QueryIdentitiesRequest {
-  string did = 1;
-}
-
-// QueryIdentitiesResponse is the response type for the Query/Exists RPC method.
-message QueryIdentitiesResponse {
-  bool exists = 1;
-  repeated VerificationMethod verificationMethod = 2;
-}
-
-// QueryResolveRequest is the request type for the Query/Resolve RPC method.
-message QueryResolveRequest {
-    string did = 1;
-}
-
 // QueryResolveResponse is the response type for the Query/Resolve RPC method.
 message QueryResolveResponse {
-    // document is the DID document
-    Document document = 1;
+  // document is the DID document
+  Document document = 1;
 }
 
-// QueryServiceRequest is the request type for the Query/LoginOptions RPC method.
-message QueryServiceRequest {
-    string origin = 1;
+// SyncRequest is the request type for the Sync RPC method.
+message SyncRequest {
+  string did = 1;
 }
 
-// QueryLoginOptionsResponse is the response type for the Query/LoginOptions RPC method.
-message QueryServiceResponse {
-    // options is the PublicKeyCredentialAttestationOptions
-    string options = 1;
-}
-
-message QueryParamsKeysResponse {
-  map<string, KeyInfo> keys = 1;
-}
-
-message QueryParamsByKeyResponse {
-  KeyInfo key = 1;
-}
-
-message QueryParamsByAssetResponse {
-  AssetInfo asset = 1;
-}
-
-message QueryRegistrationOptionsByKeyResponse {
-  repeated string registration_options = 1;
+// SyncResponse is the response type for the Sync RPC method.
+message SyncResponse {
+  bool success = 1;
 }

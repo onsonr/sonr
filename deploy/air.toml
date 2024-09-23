@@ -1,0 +1,50 @@
+root = "."
+testdata_dir = "testdata"
+tmp_dir = "tmp"
+
+[build]
+delay = 1000
+cmd = "devbox run build:motr"
+exclude_dir = ["assets", "tmp", "vendor", "testdata"]
+exclude_file = []
+exclude_regex = ["_test.go", ".pk.go", "_templ.go", ".pb.go"]
+exclude_unchanged = true
+follow_symlink = false
+full_bin = "bunx wrangler -c ./web/wrangler.toml dev"
+include_dir = ["web", "internal/dwn", "pkl"]
+include_ext = ["go", "templ", "html", "pkl", "js", "mjs"]
+include_file = [
+  "wrangler.toml",
+  "Dockerfile",
+  ".goreleaser.yaml",
+  "go.mod",
+  "devbox.json",
+  ".air.toml",
+]
+kill_delay = "2s"
+log = "build-errors.log"
+poll = false
+poll_interval = 0
+post_cmd = []
+pre_cmd = ["templ generate", "devbox run gen:pkl"]
+rerun = false
+rerun_delay = 500
+send_interrupt = false
+stop_on_error = false
+
+[color]
+build = "yellow"
+main = "magenta"
+runner = "green"
+watcher = "cyan"
+
+[log]
+main_only = true
+time = true
+
+[misc]
+clean_on_exit = true
+
+[screen]
+clear_on_rebuild = true
+keep_scroll = true

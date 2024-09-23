@@ -79,3 +79,4 @@ x/.DS_Store
 
 
 !motr/build
+buildenv*

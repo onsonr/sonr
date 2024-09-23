@@ -8,12 +8,12 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 
 	"github.com/onsonr/sonr/app"
-	"github.com/onsonr/sonr/internal/tui"
+	"github.com/onsonr/sonr/internal/cli"
 )
 
 func main() {
 	rootCmd := NewRootCmd()
-	tui.AddTUICmds(rootCmd)
+	cli.AddTUICmds(rootCmd)
 
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
 		log.NewLogger(rootCmd.OutOrStderr()).Error("failure when running app", "err", err)

@@ -2,21 +2,19 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
   "packages": [
     "go@1.22",
-    "templ@latest",
-    "go-task@latest",
-    "templ@latest",
     "bun@latest",
-    "ipfs-cluster@latest",
-    "air@latest"
+    "process-compose@latest"
   ],
-  "packages": ["go@1.21"],
   "env": {
+    "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH",
+    "TEMPL_EXPERIMENT": "rawgo",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
-    "MONIKER": "florence"
+    "MONIKER": "florence",
+    "ENV": "$ENVIRONMENT"
   },
   "shell": {
     "scripts": {
@@ -24,38 +22,41 @@
         "make install"
       ],
       "build": [
-        "make build",
-        "make local-image"
+        "make build"
       ],
       "build:dwn": [
-        "templ generate",
         "make dwn"
       ],
+      "build:image": [
+        "make local-image"
+      ],
       "build:motr": [
-        "templ generate",
         "make motr"
       ],
       "gen:proto": [
         "make proto-gen"
       ],
       "gen:pkl": [
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/oidc.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl",
-        "go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl"
+        "make pkl"
       ],
-      "dev": [
-        "air"
+      "gen:templ": [
+        "make templ"
+      ],
+      "serve:air": [
+        "make air"
+      ],
+      "serve:xcaddy": [
+        "make xcaddy"
+      ],
+      "serve:sonr": [
+        "make sh-testnet"
+      ],
+      "local": [
+        "process-compose -f ./deploy/process-compose.dev.yaml"
       ],
       "testnet": [
-        "devbox services up"
+        "process-compose -f ./deploy/process-compose.yaml"
       ]
-      "install": ["make install"],
-      "gen": ["make proto-gen"],
-      "build": [
-        "make local-image",
-        "docker tag sonr:local ghcr.io/onsonr/sonrd:latest"
-      ],
-      "push": ["docker push ghcr.io/onsonr/sonrd:latest"]
     }
   }
 }

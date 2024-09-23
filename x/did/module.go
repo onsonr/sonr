@@ -10,7 +10,6 @@ import (
 
 	"cosmossdk.io/client/v2/autocli"
 	errorsmod "cosmossdk.io/errors"
-	"cosmossdk.io/x/nft"
 	nftkeeper "cosmossdk.io/x/nft/keeper"
 
 	"github.com/cosmos/cosmos-sdk/client"

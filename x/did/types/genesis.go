@@ -6,7 +6,12 @@ import (
 
 	ormv1alpha1 "cosmossdk.io/api/cosmos/orm/v1alpha1"
 	"cosmossdk.io/collections"
-	"cosmossdk.io/x/nft"
+	"github.com/onsonr/sonr/internal/orm/assettype"
+	"github.com/onsonr/sonr/internal/orm/keyalgorithm"
+	"github.com/onsonr/sonr/internal/orm/keycurve"
+	"github.com/onsonr/sonr/internal/orm/keyencoding"
+	"github.com/onsonr/sonr/internal/orm/keyrole"
+	"github.com/onsonr/sonr/internal/orm/keytype"
 )
 
 // ParamsKey saves the current module params.
@@ -51,14 +56,15 @@ func (gs GenesisState) Validate() error {
 	return gs.Params.Validate()
 }
 
-// DefaultNFTClasses configures the Initial DIDNamespace NFT classes
-func DefaultNFTClasses(nftGenesis *nft.GenesisState) error {
-	for _, n := range DIDNamespace_value {
-		nftGenesis.Classes = append(nftGenesis.Classes, DIDNamespace(n).GetNFTClass())
-	}
-	return nil
-}
-
+// // DefaultNFTClasses configures the Initial DIDNamespace NFT classes
+//
+//	func DefaultNFTClasses(nftGenesis *nft.GenesisState) error {
+//		for _, n := range DIDNamespace_value {
+//			nftGenesis.Classes = append(nftGenesis.Classes, DIDNamespace(n).GetNFTClass())
+//		}
+//		return nil
+//	}
+//
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
 	return Params{
@@ -67,16 +73,6 @@ func DefaultParams() Params {
 		LocalhostRegistrationEnabled: true,
 		ConveyancePreference:         "direct",
 		AttestationFormats:           []string{"packed", "android-key", "fido-u2f", "apple"},
-	}
-}
-
-// DefaultGlobalIntegrity returns the default global integrity proof
-func DefaultGlobalIntegrity() *GlobalIntegrity {
-	return &GlobalIntegrity{
-		Controller:  "did:sonr:0x0",
-		Seed:        DefaultSeedMessage(),
-		Accumulator: []byte{},
-		Count:       0,
 	}
 }
 
@@ -97,7 +93,7 @@ func DefaultAssets() []*AssetInfo {
 			Symbol:    "BTC",
 			Hrp:       "bc",
 			Index:     0,
-			AssetType: AssetType_ASSET_TYPE_NATIVE,
+			AssetType: assettype.Native.String(),
 			IconUrl:   "https://cdn.sonr.land/BTC.svg",
 		},
 		{
@@ -105,7 +101,7 @@ func DefaultAssets() []*AssetInfo {
 			Symbol:    "ETH",
 			Hrp:       "eth",
 			Index:     64,
-			AssetType: AssetType_ASSET_TYPE_NATIVE,
+			AssetType: assettype.Native.String(),
 			IconUrl:   "https://cdn.sonr.land/ETH.svg",
 		},
 		{
@@ -113,76 +109,75 @@ func DefaultAssets() []*AssetInfo {
 			Symbol:    "SNR",
 			Hrp:       "idx",
 			Index:     703,
-			AssetType: AssetType_ASSET_TYPE_NATIVE,
+			AssetType: assettype.Native.String(),
 			IconUrl:   "https://cdn.sonr.land/SNR.svg",
 		},
 	}
 }
 
-// DefaultKeyInfos returns the default key infos: secp256k1, ed25519, keccak256, and bls12381.
 func DefaultKeyInfos() map[string]*KeyInfo {
 	return map[string]*KeyInfo{
 		// Identity Key Info
 		// Sonr Controller Key Info - From MPC
 		"auth.dwn": {
-			Role:      KeyRole_KEY_ROLE_INVOCATION,
-			Curve:     KeyCurve_KEY_CURVE_P256,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
-			Encoding:  KeyEncoding_KEY_ENCODING_HEX,
-			Type:      KeyType_KEY_TYPE_MPC,
+			Role:      keyrole.Invocation.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+			Type:      keytype.Mpc.String(),
 		},
 
 		// Sonr Vault Shared Key Info - From Registration
 		"auth.zk": {
-			Role:      KeyRole_KEY_ROLE_ASSERTION,
-			Curve:     KeyCurve_KEY_CURVE_BLS12381,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_UNSPECIFIED,
-			Encoding:  KeyEncoding_KEY_ENCODING_MULTIBASE,
-			Type:      KeyType_KEY_TYPE_ZK,
+			Role:      keyrole.Assertion.String(),
+			Curve:     keycurve.Bls12381.String(),
+			Algorithm: keyalgorithm.Es256k.String(),
+			Encoding:  keyencoding.Multibase.String(),
+			Type:      keytype.Zk.String(),
 		},
 
 		// Blockchain Key Info
 		// Ethereum Key Info
 		"auth.ethereum": {
-			Role:      KeyRole_KEY_ROLE_DELEGATION,
-			Curve:     KeyCurve_KEY_CURVE_KECCAK256,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
-			Encoding:  KeyEncoding_KEY_ENCODING_HEX,
-			Type:      KeyType_KEY_TYPE_BIP32,
+			Role:      keyrole.Delegation.String(),
+			Curve:     keycurve.Keccak256.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+			Type:      keytype.Bip32.String(),
 		},
 		// Bitcoin/IBC Key Info
 		"auth.bitcoin": {
-			Role:      KeyRole_KEY_ROLE_DELEGATION,
-			Curve:     KeyCurve_KEY_CURVE_SECP256K1,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_ECDSA,
-			Encoding:  KeyEncoding_KEY_ENCODING_HEX,
-			Type:      KeyType_KEY_TYPE_BIP32,
+			Role:      keyrole.Delegation.String(),
+			Curve:     keycurve.Secp256k1.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+			Type:      keytype.Bip32.String(),
 		},
 
 		// Authentication Key Info
 		// Browser based WebAuthn
 		"webauthn.browser": {
-			Role:      KeyRole_KEY_ROLE_AUTHENTICATION,
-			Curve:     KeyCurve_KEY_CURVE_P256,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_ES256,
-			Encoding:  KeyEncoding_KEY_ENCODING_RAW,
-			Type:      KeyType_KEY_TYPE_WEBAUTHN,
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Es256.String(),
+			Encoding:  keyencoding.Raw.String(),
+			Type:      keytype.Webauthn.String(),
 		},
 		// FIDO U2F
 		"webauthn.fido": {
-			Role:      KeyRole_KEY_ROLE_AUTHENTICATION,
-			Curve:     KeyCurve_KEY_CURVE_P256,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_ES256,
-			Encoding:  KeyEncoding_KEY_ENCODING_RAW,
-			Type:      KeyType_KEY_TYPE_WEBAUTHN,
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Es256.String(),
+			Encoding:  keyencoding.Raw.String(),
+			Type:      keytype.Webauthn.String(),
 		},
 		// Cross-Platform Passkeys
 		"webauthn.passkey": {
-			Role:      KeyRole_KEY_ROLE_AUTHENTICATION,
-			Curve:     KeyCurve_KEY_CURVE_ED25519,
-			Algorithm: KeyAlgorithm_KEY_ALGORITHM_EDDSA,
-			Encoding:  KeyEncoding_KEY_ENCODING_RAW,
-			Type:      KeyType_KEY_TYPE_WEBAUTHN,
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.Ed25519.String(),
+			Algorithm: keyalgorithm.Eddsa.String(),
+			Encoding:  keyencoding.Raw.String(),
+			Type:      keytype.Webauthn.String(),
 		},
 	}
 }
@@ -223,14 +218,6 @@ func (a *AssetInfo) Equal(b *AssetInfo) bool {
 // Equal returns true if two key infos are equal
 func (k *KeyInfo) Equal(b *KeyInfo) bool {
 	if k == nil && b == nil {
-		return true
-	}
-	return false
-}
-
-// Equal returns true if two validator infos are equal
-func (v *ValidatorInfo) Equal(b *ValidatorInfo) bool {
-	if v == nil && b == nil {
 		return true
 	}
 	return false

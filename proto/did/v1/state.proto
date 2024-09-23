@@ -4,80 +4,29 @@ package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
 import "did/v1/genesis.proto";
-import "did/v1/models.proto";
-import "did/v1/enums.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Account represents a wallet account associated with a DID Controller
-message Account {
+// Alias represents a DID alias
+message Alias {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "controller,label"
+      fields: "subject,origin"
       unique: true
     }
-    index: {
-      id: 2
-      fields: "controller,address"
-      unique: true
-    }
-    index: {
-      id: 3
-      fields: "controller,chain_code,index"
-      unique: true
-    }
-    index: { id: 1, fields: "subject", unique: true }
-    };
+  };
 
   // The unique identifier of the alias
   string id = 1;
 
-  // Origin is the  Alias provider
-  string origin = 2;
+  // The alias of the DID
+  string subject = 2;
 
-  // Subject is the user defined alias
-  string subject = 3;
-
-  // Controller of the alias
-  string controller = 4;
-
-  // Expiration of the alias
-  uint64 expiration = 5;
-}
-
-// Assertion represents strongly created credentials (e.g., Passkeys, SSH, GPG, Native Secure Enclaave)
-message Assertion {
-  option (cosmos.orm.v1.table) = {
-    id: 2 
-    primary_key: {fields: "id"}
-  };
-
-  // The unique identifier of the account
-  string id = 1;
-
-  // The controller of the account
-  string controller = 2;
-
-  // The value of the linked identifier
-  PubKey public_key = 3;
-
-  // The address of the account
-  string address = 4;
-
-  // The label of the account
-  string label = 5;
-
-  // The bip32 chain code
-  uint32 chain_code = 6;
-
-  // The index of the account
-  uint32 index = 7;
-
-  // The supported chains of the account
-  repeated string chains = 8;
+  // Origin of the alias
+  string origin = 3;
 }
 
 // Controller represents a Sonr DWN Vault
@@ -87,12 +36,27 @@ message Controller {
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "address"
+      fields: "sonr_address"
       unique: true
     }
     index: {
       id: 2
+      fields: "eth_address"
+      unique: true
+    }
+    index: {
+      id: 3
+      fields: "btc_address"
+      unique: true
+    }
+    index: {
+      id: 4
       fields: "vault_cid"
+      unique: true
+    }
+    index: {
+      id: 5
+      fields: "status,vault_cid"
       unique: true
     }
   };
@@ -101,99 +65,48 @@ message Controller {
   string id = 1;
 
   // The DID of the controller
-  string address = 2;
+  string sonr_address = 2;
+
+  // The DID of the controller
+  string eth_address = 3;
+
+  // The DID of the controller
+  string btc_address = 4;
 
   // Aliases of the controller
-  repeated Alias aliases = 3;
+  repeated string aliases = 5;
 
   // PubKey is the verification method
-  PubKey public_key = 4;
+  PubKey public_key = 6;
 
   // The vault address or identifier
-  string vault_cid = 5;
+  string vault_cid = 7;
 
   // The Authentications of the controller
-  repeated Credential authentication = 6;
+  repeated string authentication = 8;
+
+  // The Status of the claims for the controller
+  string status = 9;
 }
 
-// Proof represents a verifiable credential
-message Proof {
+// Verification reprsents a method of verifying membership in a DID
+message Verification {
   option (cosmos.orm.v1.table) = {
     id: 4
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "controller,issuer,property"
-      unique: true
-    }
-  };
-
-  // The unique identifier of the proof
-  string id = 1;
-
-  // The controller of the proof
-  string controller = 2;
-
-  // The value of the linked identifier
-  string issuer = 3;
-
-  // The property of the proof
-  string property = 4;
-
-  // The accumulator of the proof
-  bytes accumulator = 5;
-
-  // The secret key of the proof
-  bytes key = 6;
-}
-
-// ServiceRecord represents a decentralized service in a DID Document
-message ServiceRecord {
-  option (cosmos.orm.v1.table) = {
-    id: 3
-    primary_key: {fields: "id"}
-    index: {
-      id: 1
-      fields: "origin"
+      fields: "issuer,subject"
       unique: true
     }
     index: {
       id: 2
-      fields: "authority,origin"
+      fields: "controller,did_method,issuer"
       unique: true
     }
-  };
-
-  // The ID of the service
-  string id = 1;
-
-  // The type of the service
-  string service_type = 2;
-
-  // The authority DID of the service
-  string authority = 3;
-
-  // The domain name of the service
-  string origin = 4;
-
-  // The description of the service
-  string description = 5;
-
-  // The service endpoint
-  map<string, string> service_endpoints = 6;
-
-  // Scopes is the Authorization Grants of the service
-  Permissions permissions = 7;
-}
-
-// Verification reprsents a method of verifying membership in a DID
-message VerificationMethod {
-  option (cosmos.orm.v1.table) = {
-    id: 5
-    primary_key: {fields: "id"}
     index: {
-      id: 1
-      fields: "controller,method,issuer,subject"
+      id: 3
+      fields: "verification_type,subject,issuer"
       unique: true
     }
   };
@@ -205,7 +118,7 @@ message VerificationMethod {
   string controller = 2;
 
   // The DIDNamespace of the verification
-  DIDNamespace method = 3;
+  string did_method = 3;
 
   // The value of the linked identifier
   string issuer = 4;
@@ -215,15 +128,7 @@ message VerificationMethod {
 
   // The public key of the verification
   PubKey public_key = 6;
-  // The controller DID of the service
-  string controller_did = 3;
 
-  // The domain name of the service
-  string origin_uri = 4;
-
-  // The service endpoint
-  map<string, string> service_endpoints = 5;
-
-  // Scopes is the Authorization Grants of the service
-  repeated PermissionScope scopes = 6;
+  // The Verification Type (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
+  string verification_type = 7;
 }

@@ -10,102 +10,33 @@ import (
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	io "io"
 	reflect "reflect"
-	sort "sort"
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Account_8_list)(nil)
-
-type _Account_8_list struct {
-	list *[]string
-}
-
-func (x *_Account_8_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_Account_8_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfString((*x.list)[i])
-}
-
-func (x *_Account_8_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_Account_8_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_Account_8_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Account at list field Chains as it is not of Message kind"))
-}
-
-func (x *_Account_8_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_Account_8_list) NewElement() protoreflect.Value {
-	v := ""
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_Account_8_list) IsValid() bool {
-	return x.list != nil
-}
-
 var (
-	md_Account            protoreflect.MessageDescriptor
-	fd_Account_id         protoreflect.FieldDescriptor
-	fd_Account_controller protoreflect.FieldDescriptor
-	fd_Account_public_key protoreflect.FieldDescriptor
-	fd_Account_address    protoreflect.FieldDescriptor
-	fd_Account_label      protoreflect.FieldDescriptor
-	fd_Account_chain_code protoreflect.FieldDescriptor
-	fd_Account_index      protoreflect.FieldDescriptor
-	fd_Account_chains     protoreflect.FieldDescriptor
-	md_Aliases            protoreflect.MessageDescriptor
-	fd_Aliases_id         protoreflect.FieldDescriptor
-	fd_Aliases_origin     protoreflect.FieldDescriptor
-	fd_Aliases_subject    protoreflect.FieldDescriptor
-	fd_Aliases_controller protoreflect.FieldDescriptor
-	fd_Aliases_expiration protoreflect.FieldDescriptor
+	md_Alias         protoreflect.MessageDescriptor
+	fd_Alias_id      protoreflect.FieldDescriptor
+	fd_Alias_subject protoreflect.FieldDescriptor
+	fd_Alias_origin  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_state_proto_init()
-	md_Account = File_did_v1_state_proto.Messages().ByName("Account")
-	fd_Account_id = md_Account.Fields().ByName("id")
-	fd_Account_controller = md_Account.Fields().ByName("controller")
-	fd_Account_public_key = md_Account.Fields().ByName("public_key")
-	fd_Account_address = md_Account.Fields().ByName("address")
-	fd_Account_label = md_Account.Fields().ByName("label")
-	fd_Account_chain_code = md_Account.Fields().ByName("chain_code")
-	fd_Account_index = md_Account.Fields().ByName("index")
-	fd_Account_chains = md_Account.Fields().ByName("chains")
-	md_Aliases = File_did_v1_state_proto.Messages().ByName("Aliases")
-	fd_Aliases_id = md_Aliases.Fields().ByName("id")
-	fd_Aliases_origin = md_Aliases.Fields().ByName("origin")
-	fd_Aliases_subject = md_Aliases.Fields().ByName("subject")
-	fd_Aliases_controller = md_Aliases.Fields().ByName("controller")
-	fd_Aliases_expiration = md_Aliases.Fields().ByName("expiration")
+	md_Alias = File_did_v1_state_proto.Messages().ByName("Alias")
+	fd_Alias_id = md_Alias.Fields().ByName("id")
+	fd_Alias_subject = md_Alias.Fields().ByName("subject")
+	fd_Alias_origin = md_Alias.Fields().ByName("origin")
 }
 
-var _ protoreflect.Message = (*fastReflection_Account)(nil)
+var _ protoreflect.Message = (*fastReflection_Alias)(nil)
 
-type fastReflection_Account Account
+type fastReflection_Alias Alias
 
-func (x *Account) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Account)(x)
+func (x *Alias) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Alias)(x)
 }
 
-func (x *Account) slowProtoReflect() protoreflect.Message {
+func (x *Alias) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_state_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -117,43 +48,43 @@ func (x *Account) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Account_messageType fastReflection_Account_messageType
-var _ protoreflect.MessageType = fastReflection_Account_messageType{}
+var _fastReflection_Alias_messageType fastReflection_Alias_messageType
+var _ protoreflect.MessageType = fastReflection_Alias_messageType{}
 
-type fastReflection_Account_messageType struct{}
+type fastReflection_Alias_messageType struct{}
 
-func (x fastReflection_Account_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Account)(nil)
+func (x fastReflection_Alias_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Alias)(nil)
 }
-func (x fastReflection_Account_messageType) New() protoreflect.Message {
-	return new(fastReflection_Account)
+func (x fastReflection_Alias_messageType) New() protoreflect.Message {
+	return new(fastReflection_Alias)
 }
-func (x fastReflection_Account_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Account
+func (x fastReflection_Alias_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Alias
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Account) Descriptor() protoreflect.MessageDescriptor {
-	return md_Account
+func (x *fastReflection_Alias) Descriptor() protoreflect.MessageDescriptor {
+	return md_Alias
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Account) Type() protoreflect.MessageType {
-	return _fastReflection_Account_messageType
+func (x *fastReflection_Alias) Type() protoreflect.MessageType {
+	return _fastReflection_Alias_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Account) New() protoreflect.Message {
-	return new(fastReflection_Account)
+func (x *fastReflection_Alias) New() protoreflect.Message {
+	return new(fastReflection_Alias)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Account) Interface() protoreflect.ProtoMessage {
-	return (*Account)(x)
+func (x *fastReflection_Alias) Interface() protoreflect.ProtoMessage {
+	return (*Alias)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -161,65 +92,22 @@ func (x *fastReflection_Account) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Account) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Alias) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != "" {
 		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_Account_id, value) {
-		if !f(fd_Aliases_id, value) {
-			return
-		}
-	}
-	if x.Origin != "" {
-		value := protoreflect.ValueOfString(x.Origin)
-		if !f(fd_Aliases_origin, value) {
+		if !f(fd_Alias_id, value) {
 			return
 		}
 	}
 	if x.Subject != "" {
 		value := protoreflect.ValueOfString(x.Subject)
-		if !f(fd_Aliases_subject, value) {
+		if !f(fd_Alias_subject, value) {
 			return
 		}
 	}
-	if x.Controller != "" {
-		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_Account_controller, value) {
-			return
-		}
-	}
-	if x.PublicKey != nil {
-		value := protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-		if !f(fd_Account_public_key, value) {
-			return
-		}
-	}
-	if x.Address != "" {
-		value := protoreflect.ValueOfString(x.Address)
-		if !f(fd_Account_address, value) {
-			return
-		}
-	}
-	if x.Label != "" {
-		value := protoreflect.ValueOfString(x.Label)
-		if !f(fd_Account_label, value) {
-			return
-		}
-	}
-	if x.ChainCode != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.ChainCode)
-		if !f(fd_Account_chain_code, value) {
-			return
-		}
-	}
-	if x.Index != uint32(0) {
-		value := protoreflect.ValueOfUint32(x.Index)
-		if !f(fd_Account_index, value) {
-			return
-		}
-	}
-	if len(x.Chains) != 0 {
-		value := protoreflect.ValueOfList(&_Account_8_list{list: &x.Chains})
-		if !f(fd_Account_chains, value) {
+	if x.Origin != "" {
+		value := protoreflect.ValueOfString(x.Origin)
+		if !f(fd_Alias_origin, value) {
 			return
 		}
 	}
@@ -236,34 +124,19 @@ func (x *fastReflection_Account) Range(f func(protoreflect.FieldDescriptor, prot
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Account) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Alias) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.Account.id":
+	case "did.v1.Alias.id":
 		return x.Id != ""
-	case "did.v1.Account.controller":
-	case "did.v1.Aliases.origin":
-		return x.Origin != ""
-	case "did.v1.Aliases.subject":
+	case "did.v1.Alias.subject":
 		return x.Subject != ""
-	case "did.v1.Aliases.controller":
-		return x.Controller != ""
-	case "did.v1.Account.public_key":
-		return x.PublicKey != nil
-	case "did.v1.Account.address":
-		return x.Address != ""
-	case "did.v1.Account.label":
-		return x.Label != ""
-	case "did.v1.Account.chain_code":
-		return x.ChainCode != uint32(0)
-	case "did.v1.Account.index":
-		return x.Index != uint32(0)
-	case "did.v1.Account.chains":
-		return len(x.Chains) != 0
+	case "did.v1.Alias.origin":
+		return x.Origin != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -273,34 +146,19 @@ func (x *fastReflection_Account) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Account) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Alias) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.Account.id":
+	case "did.v1.Alias.id":
 		x.Id = ""
-	case "did.v1.Account.controller":
-	case "did.v1.Aliases.origin":
-		x.Origin = ""
-	case "did.v1.Aliases.subject":
+	case "did.v1.Alias.subject":
 		x.Subject = ""
-	case "did.v1.Aliases.controller":
-		x.Controller = ""
-	case "did.v1.Account.public_key":
-		x.PublicKey = nil
-	case "did.v1.Account.address":
-		x.Address = ""
-	case "did.v1.Account.label":
-		x.Label = ""
-	case "did.v1.Account.chain_code":
-		x.ChainCode = uint32(0)
-	case "did.v1.Account.index":
-		x.Index = uint32(0)
-	case "did.v1.Account.chains":
-		x.Chains = nil
+	case "did.v1.Alias.origin":
+		x.Origin = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -310,47 +168,22 @@ func (x *fastReflection_Account) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Account) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Alias) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.Account.id":
+	case "did.v1.Alias.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Account.controller":
-	case "did.v1.Aliases.origin":
-		value := x.Origin
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Aliases.subject":
+	case "did.v1.Alias.subject":
 		value := x.Subject
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Aliases.controller":
-		value := x.Controller
+	case "did.v1.Alias.origin":
+		value := x.Origin
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Account.public_key":
-		value := x.PublicKey
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "did.v1.Account.address":
-		value := x.Address
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Account.label":
-		value := x.Label
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Account.chain_code":
-		value := x.ChainCode
-		return protoreflect.ValueOfUint32(value)
-	case "did.v1.Account.index":
-		value := x.Index
-		return protoreflect.ValueOfUint32(value)
-	case "did.v1.Account.chains":
-		if len(x.Chains) == 0 {
-			return protoreflect.ValueOfList(&_Account_8_list{})
-		}
-		listValue := &_Account_8_list{list: &x.Chains}
-		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -364,36 +197,19 @@ func (x *fastReflection_Account) Get(descriptor protoreflect.FieldDescriptor) pr
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Account) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Alias) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.Account.id":
+	case "did.v1.Alias.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.Account.controller":
-	case "did.v1.Aliases.origin":
-		x.Origin = value.Interface().(string)
-	case "did.v1.Aliases.subject":
+	case "did.v1.Alias.subject":
 		x.Subject = value.Interface().(string)
-	case "did.v1.Aliases.controller":
-		x.Controller = value.Interface().(string)
-	case "did.v1.Account.public_key":
-		x.PublicKey = value.Message().Interface().(*PubKey)
-	case "did.v1.Account.address":
-		x.Address = value.Interface().(string)
-	case "did.v1.Account.label":
-		x.Label = value.Interface().(string)
-	case "did.v1.Account.chain_code":
-		x.ChainCode = uint32(value.Uint())
-	case "did.v1.Account.index":
-		x.Index = uint32(value.Uint())
-	case "did.v1.Account.chains":
-		lv := value.List()
-		clv := lv.(*_Account_8_list)
-		x.Chains = *clv.list
+	case "did.v1.Alias.origin":
+		x.Origin = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -407,88 +223,48 @@ func (x *fastReflection_Account) Set(fd protoreflect.FieldDescriptor, value prot
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Account) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Alias) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Account.public_key":
-		if x.PublicKey == nil {
-			x.PublicKey = new(PubKey)
-		}
-		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-	case "did.v1.Account.chains":
-		if x.Chains == nil {
-			x.Chains = []string{}
-		}
-		value := &_Account_8_list{list: &x.Chains}
-		return protoreflect.ValueOfList(value)
-	case "did.v1.Account.id":
-		panic(fmt.Errorf("field id of message did.v1.Account is not mutable"))
-	case "did.v1.Account.controller":
-		panic(fmt.Errorf("field controller of message did.v1.Account is not mutable"))
-	case "did.v1.Account.address":
-		panic(fmt.Errorf("field address of message did.v1.Account is not mutable"))
-	case "did.v1.Account.label":
-		panic(fmt.Errorf("field label of message did.v1.Account is not mutable"))
-	case "did.v1.Account.chain_code":
-		panic(fmt.Errorf("field chain_code of message did.v1.Account is not mutable"))
-	case "did.v1.Account.index":
-		panic(fmt.Errorf("field index of message did.v1.Account is not mutable"))
-	case "did.v1.Aliases.id":
-		panic(fmt.Errorf("field id of message did.v1.Aliases is not mutable"))
-	case "did.v1.Aliases.origin":
-		panic(fmt.Errorf("field origin of message did.v1.Aliases is not mutable"))
-	case "did.v1.Aliases.subject":
-		panic(fmt.Errorf("field subject of message did.v1.Aliases is not mutable"))
-	case "did.v1.Aliases.controller":
-		panic(fmt.Errorf("field controller of message did.v1.Aliases is not mutable"))
-	case "did.v1.Aliases.expiration":
-		panic(fmt.Errorf("field expiration of message did.v1.Aliases is not mutable"))
+	case "did.v1.Alias.id":
+		panic(fmt.Errorf("field id of message did.v1.Alias is not mutable"))
+	case "did.v1.Alias.subject":
+		panic(fmt.Errorf("field subject of message did.v1.Alias is not mutable"))
+	case "did.v1.Alias.origin":
+		panic(fmt.Errorf("field origin of message did.v1.Alias is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Account) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Alias) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.Account.id":
+	case "did.v1.Alias.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Account.controller":
+	case "did.v1.Alias.subject":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Account.public_key":
-		m := new(PubKey)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "did.v1.Account.address":
-	case "did.v1.Aliases.subject":
+	case "did.v1.Alias.origin":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Account.label":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Account.chain_code":
-		return protoreflect.ValueOfUint32(uint32(0))
-	case "did.v1.Account.index":
-		return protoreflect.ValueOfUint32(uint32(0))
-	case "did.v1.Account.chains":
-		list := []string{}
-		return protoreflect.ValueOfList(&_Account_8_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Account"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Alias"))
 		}
-		panic(fmt.Errorf("message did.v1.Account does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Alias does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Account) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Alias) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.Account", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.Alias", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -496,7 +272,7 @@ func (x *fastReflection_Account) WhichOneof(d protoreflect.OneofDescriptor) prot
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Account) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Alias) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -507,7 +283,7 @@ func (x *fastReflection_Account) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Account) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Alias) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -519,7 +295,7 @@ func (x *fastReflection_Account) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Account) IsValid() bool {
+func (x *fastReflection_Alias) IsValid() bool {
 	return x != nil
 }
 
@@ -529,9 +305,9 @@ func (x *fastReflection_Account) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Alias) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Account)
+		x := input.Message.Interface().(*Alias)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -547,41 +323,13 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Origin)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
 		l = len(x.Subject)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Controller)
+		l = len(x.Origin)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.PublicKey != nil {
-			l = options.Size(x.PublicKey)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Address)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Label)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.ChainCode != 0 {
-			n += 1 + runtime.Sov(uint64(x.ChainCode))
-		}
-		if x.Index != 0 {
-			n += 1 + runtime.Sov(uint64(x.Index))
-		}
-		if len(x.Chains) > 0 {
-			for _, s := range x.Chains {
-				l = len(s)
-				n += 1 + l + runtime.Sov(uint64(l))
-			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -593,7 +341,7 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Account)
+		x := input.Message.Interface().(*Alias)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -612,71 +360,17 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Chains) > 0 {
-			for iNdEx := len(x.Chains) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.Chains[iNdEx])
-				copy(dAtA[i:], x.Chains[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Chains[iNdEx])))
-				i--
-				dAtA[i] = 0x42
-			}
-		}
-		if x.Index != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Index))
-			i--
-			dAtA[i] = 0x38
-		}
-		if x.ChainCode != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.ChainCode))
-			i--
-			dAtA[i] = 0x30
-		}
-		if len(x.Label) > 0 {
-			i -= len(x.Label)
-			copy(dAtA[i:], x.Label)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Label)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if len(x.Address) > 0 {
-			i -= len(x.Address)
-			copy(dAtA[i:], x.Address)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if x.PublicKey != nil {
-			encoded, err := options.Marshal(x.PublicKey)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+		if len(x.Origin) > 0 {
+			i -= len(x.Origin)
+			copy(dAtA[i:], x.Origin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
 			i--
 			dAtA[i] = 0x1a
-		}
-		if len(x.Controller) > 0 {
-			i -= len(x.Controller)
-			copy(dAtA[i:], x.Controller)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Controller)))
-			i--
-			dAtA[i] = 0x22
 		}
 		if len(x.Subject) > 0 {
 			i -= len(x.Subject)
 			copy(dAtA[i:], x.Subject)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Subject)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.Origin) > 0 {
-			i -= len(x.Origin)
-			copy(dAtA[i:], x.Origin)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -698,7 +392,7 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Account)
+		x := input.Message.Interface().(*Alias)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -730,10 +424,10 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Account: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Alias: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Account: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Alias: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -770,38 +464,6 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Origin = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
 				}
 				var stringLen uint64
@@ -832,77 +494,9 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 				}
 				x.Subject = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Controller = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.PublicKey == nil {
-					x.PublicKey = &PubKey{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.PublicKey); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -930,109 +524,7 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Address = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Label", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Label = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ChainCode", wireType)
-				}
-				x.ChainCode = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.ChainCode |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 7:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Index", wireType)
-				}
-				x.Index = 0
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					x.Index |= uint32(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-			case 8:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Chains", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Chains = append(x.Chains, string(dAtA[iNdEx:postIndex]))
+				x.Origin = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1069,127 +561,123 @@ func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Controller_3_list)(nil)
+var _ protoreflect.List = (*_Controller_5_list)(nil)
 
-type _Controller_3_list struct {
-	list *[]*Alias
+type _Controller_5_list struct {
+	list *[]string
 }
 
-func (x *_Controller_3_list) Len() int {
+func (x *_Controller_5_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Controller_3_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+func (x *_Controller_5_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Controller_3_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Alias)
+func (x *_Controller_5_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Controller_3_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Alias)
+func (x *_Controller_5_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Controller_3_list) AppendMutable() protoreflect.Value {
-	v := new(Alias)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_5_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Controller at list field Aliases as it is not of Message kind"))
 }
 
-func (x *_Controller_3_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
+func (x *_Controller_5_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Controller_3_list) NewElement() protoreflect.Value {
-	v := new(Alias)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_5_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Controller_3_list) IsValid() bool {
+func (x *_Controller_5_list) IsValid() bool {
 	return x.list != nil
 }
 
-var _ protoreflect.List = (*_Controller_6_list)(nil)
+var _ protoreflect.List = (*_Controller_8_list)(nil)
 
-type _Controller_6_list struct {
-	list *[]*Credential
+type _Controller_8_list struct {
+	list *[]string
 }
 
-func (x *_Controller_6_list) Len() int {
+func (x *_Controller_8_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Controller_6_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfMessage((*x.list)[i].ProtoReflect())
+func (x *_Controller_8_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Controller_6_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Credential)
+func (x *_Controller_8_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Controller_6_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Message()
-	concreteValue := valueUnwrapped.Interface().(*Credential)
+func (x *_Controller_8_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Controller_6_list) AppendMutable() protoreflect.Value {
-	v := new(Credential)
-	*x.list = append(*x.list, v)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_8_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Controller at list field Authentication as it is not of Message kind"))
 }
 
-func (x *_Controller_6_list) Truncate(n int) {
-	for i := n; i < len(*x.list); i++ {
-		(*x.list)[i] = nil
-	}
+func (x *_Controller_8_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Controller_6_list) NewElement() protoreflect.Value {
-	v := new(Credential)
-	return protoreflect.ValueOfMessage(v.ProtoReflect())
+func (x *_Controller_8_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Controller_6_list) IsValid() bool {
+func (x *_Controller_8_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
 	md_Controller                protoreflect.MessageDescriptor
 	fd_Controller_id             protoreflect.FieldDescriptor
-	fd_Controller_address        protoreflect.FieldDescriptor
+	fd_Controller_sonr_address   protoreflect.FieldDescriptor
+	fd_Controller_eth_address    protoreflect.FieldDescriptor
+	fd_Controller_btc_address    protoreflect.FieldDescriptor
 	fd_Controller_aliases        protoreflect.FieldDescriptor
 	fd_Controller_public_key     protoreflect.FieldDescriptor
 	fd_Controller_vault_cid      protoreflect.FieldDescriptor
 	fd_Controller_authentication protoreflect.FieldDescriptor
+	fd_Controller_status         protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_state_proto_init()
 	md_Controller = File_did_v1_state_proto.Messages().ByName("Controller")
 	fd_Controller_id = md_Controller.Fields().ByName("id")
-	fd_Controller_address = md_Controller.Fields().ByName("address")
+	fd_Controller_sonr_address = md_Controller.Fields().ByName("sonr_address")
+	fd_Controller_eth_address = md_Controller.Fields().ByName("eth_address")
+	fd_Controller_btc_address = md_Controller.Fields().ByName("btc_address")
 	fd_Controller_aliases = md_Controller.Fields().ByName("aliases")
 	fd_Controller_public_key = md_Controller.Fields().ByName("public_key")
 	fd_Controller_vault_cid = md_Controller.Fields().ByName("vault_cid")
 	fd_Controller_authentication = md_Controller.Fields().ByName("authentication")
+	fd_Controller_status = md_Controller.Fields().ByName("status")
 }
 
 var _ protoreflect.Message = (*fastReflection_Controller)(nil)
@@ -1263,14 +751,26 @@ func (x *fastReflection_Controller) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
-	if x.Address != "" {
-		value := protoreflect.ValueOfString(x.Address)
-		if !f(fd_Controller_address, value) {
+	if x.SonrAddress != "" {
+		value := protoreflect.ValueOfString(x.SonrAddress)
+		if !f(fd_Controller_sonr_address, value) {
+			return
+		}
+	}
+	if x.EthAddress != "" {
+		value := protoreflect.ValueOfString(x.EthAddress)
+		if !f(fd_Controller_eth_address, value) {
+			return
+		}
+	}
+	if x.BtcAddress != "" {
+		value := protoreflect.ValueOfString(x.BtcAddress)
+		if !f(fd_Controller_btc_address, value) {
 			return
 		}
 	}
 	if len(x.Aliases) != 0 {
-		value := protoreflect.ValueOfList(&_Controller_3_list{list: &x.Aliases})
+		value := protoreflect.ValueOfList(&_Controller_5_list{list: &x.Aliases})
 		if !f(fd_Controller_aliases, value) {
 			return
 		}
@@ -1288,8 +788,14 @@ func (x *fastReflection_Controller) Range(f func(protoreflect.FieldDescriptor, p
 		}
 	}
 	if len(x.Authentication) != 0 {
-		value := protoreflect.ValueOfList(&_Controller_6_list{list: &x.Authentication})
+		value := protoreflect.ValueOfList(&_Controller_8_list{list: &x.Authentication})
 		if !f(fd_Controller_authentication, value) {
+			return
+		}
+	}
+	if x.Status != "" {
+		value := protoreflect.ValueOfString(x.Status)
+		if !f(fd_Controller_status, value) {
 			return
 		}
 	}
@@ -1310,8 +816,12 @@ func (x *fastReflection_Controller) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		return x.Id != ""
-	case "did.v1.Controller.address":
-		return x.Address != ""
+	case "did.v1.Controller.sonr_address":
+		return x.SonrAddress != ""
+	case "did.v1.Controller.eth_address":
+		return x.EthAddress != ""
+	case "did.v1.Controller.btc_address":
+		return x.BtcAddress != ""
 	case "did.v1.Controller.aliases":
 		return len(x.Aliases) != 0
 	case "did.v1.Controller.public_key":
@@ -1320,6 +830,8 @@ func (x *fastReflection_Controller) Has(fd protoreflect.FieldDescriptor) bool {
 		return x.VaultCid != ""
 	case "did.v1.Controller.authentication":
 		return len(x.Authentication) != 0
+	case "did.v1.Controller.status":
+		return x.Status != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1338,8 +850,12 @@ func (x *fastReflection_Controller) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		x.Id = ""
-	case "did.v1.Controller.address":
-		x.Address = ""
+	case "did.v1.Controller.sonr_address":
+		x.SonrAddress = ""
+	case "did.v1.Controller.eth_address":
+		x.EthAddress = ""
+	case "did.v1.Controller.btc_address":
+		x.BtcAddress = ""
 	case "did.v1.Controller.aliases":
 		x.Aliases = nil
 	case "did.v1.Controller.public_key":
@@ -1348,6 +864,8 @@ func (x *fastReflection_Controller) Clear(fd protoreflect.FieldDescriptor) {
 		x.VaultCid = ""
 	case "did.v1.Controller.authentication":
 		x.Authentication = nil
+	case "did.v1.Controller.status":
+		x.Status = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1367,14 +885,20 @@ func (x *fastReflection_Controller) Get(descriptor protoreflect.FieldDescriptor)
 	case "did.v1.Controller.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Controller.address":
-		value := x.Address
+	case "did.v1.Controller.sonr_address":
+		value := x.SonrAddress
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Controller.eth_address":
+		value := x.EthAddress
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Controller.btc_address":
+		value := x.BtcAddress
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Controller.aliases":
 		if len(x.Aliases) == 0 {
-			return protoreflect.ValueOfList(&_Controller_3_list{})
+			return protoreflect.ValueOfList(&_Controller_5_list{})
 		}
-		listValue := &_Controller_3_list{list: &x.Aliases}
+		listValue := &_Controller_5_list{list: &x.Aliases}
 		return protoreflect.ValueOfList(listValue)
 	case "did.v1.Controller.public_key":
 		value := x.PublicKey
@@ -1384,10 +908,13 @@ func (x *fastReflection_Controller) Get(descriptor protoreflect.FieldDescriptor)
 		return protoreflect.ValueOfString(value)
 	case "did.v1.Controller.authentication":
 		if len(x.Authentication) == 0 {
-			return protoreflect.ValueOfList(&_Controller_6_list{})
+			return protoreflect.ValueOfList(&_Controller_8_list{})
 		}
-		listValue := &_Controller_6_list{list: &x.Authentication}
+		listValue := &_Controller_8_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(listValue)
+	case "did.v1.Controller.status":
+		value := x.Status
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1410,11 +937,15 @@ func (x *fastReflection_Controller) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.Controller.address":
-		x.Address = value.Interface().(string)
+	case "did.v1.Controller.sonr_address":
+		x.SonrAddress = value.Interface().(string)
+	case "did.v1.Controller.eth_address":
+		x.EthAddress = value.Interface().(string)
+	case "did.v1.Controller.btc_address":
+		x.BtcAddress = value.Interface().(string)
 	case "did.v1.Controller.aliases":
 		lv := value.List()
-		clv := lv.(*_Controller_3_list)
+		clv := lv.(*_Controller_5_list)
 		x.Aliases = *clv.list
 	case "did.v1.Controller.public_key":
 		x.PublicKey = value.Message().Interface().(*PubKey)
@@ -1422,8 +953,10 @@ func (x *fastReflection_Controller) Set(fd protoreflect.FieldDescriptor, value p
 		x.VaultCid = value.Interface().(string)
 	case "did.v1.Controller.authentication":
 		lv := value.List()
-		clv := lv.(*_Controller_6_list)
+		clv := lv.(*_Controller_8_list)
 		x.Authentication = *clv.list
+	case "did.v1.Controller.status":
+		x.Status = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1446,9 +979,9 @@ func (x *fastReflection_Controller) Mutable(fd protoreflect.FieldDescriptor) pro
 	switch fd.FullName() {
 	case "did.v1.Controller.aliases":
 		if x.Aliases == nil {
-			x.Aliases = []*Alias{}
+			x.Aliases = []string{}
 		}
-		value := &_Controller_3_list{list: &x.Aliases}
+		value := &_Controller_5_list{list: &x.Aliases}
 		return protoreflect.ValueOfList(value)
 	case "did.v1.Controller.public_key":
 		if x.PublicKey == nil {
@@ -1457,16 +990,22 @@ func (x *fastReflection_Controller) Mutable(fd protoreflect.FieldDescriptor) pro
 		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
 	case "did.v1.Controller.authentication":
 		if x.Authentication == nil {
-			x.Authentication = []*Credential{}
+			x.Authentication = []string{}
 		}
-		value := &_Controller_6_list{list: &x.Authentication}
+		value := &_Controller_8_list{list: &x.Authentication}
 		return protoreflect.ValueOfList(value)
 	case "did.v1.Controller.id":
 		panic(fmt.Errorf("field id of message did.v1.Controller is not mutable"))
-	case "did.v1.Controller.address":
-		panic(fmt.Errorf("field address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.sonr_address":
+		panic(fmt.Errorf("field sonr_address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.eth_address":
+		panic(fmt.Errorf("field eth_address of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.btc_address":
+		panic(fmt.Errorf("field btc_address of message did.v1.Controller is not mutable"))
 	case "did.v1.Controller.vault_cid":
 		panic(fmt.Errorf("field vault_cid of message did.v1.Controller is not mutable"))
+	case "did.v1.Controller.status":
+		panic(fmt.Errorf("field status of message did.v1.Controller is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1482,19 +1021,25 @@ func (x *fastReflection_Controller) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "did.v1.Controller.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Controller.address":
+	case "did.v1.Controller.sonr_address":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Controller.eth_address":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Controller.btc_address":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.aliases":
-		list := []*Alias{}
-		return protoreflect.ValueOfList(&_Controller_3_list{list: &list})
+		list := []string{}
+		return protoreflect.ValueOfList(&_Controller_5_list{list: &list})
 	case "did.v1.Controller.public_key":
 		m := new(PubKey)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
 	case "did.v1.Controller.vault_cid":
 		return protoreflect.ValueOfString("")
 	case "did.v1.Controller.authentication":
-		list := []*Credential{}
-		return protoreflect.ValueOfList(&_Controller_6_list{list: &list})
+		list := []string{}
+		return protoreflect.ValueOfList(&_Controller_8_list{list: &list})
+	case "did.v1.Controller.status":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Controller"))
@@ -1568,13 +1113,21 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Address)
+		l = len(x.SonrAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.EthAddress)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.BtcAddress)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if len(x.Aliases) > 0 {
-			for _, e := range x.Aliases {
-				l = options.Size(e)
+			for _, s := range x.Aliases {
+				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
 		}
@@ -1587,10 +1140,14 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if len(x.Authentication) > 0 {
-			for _, e := range x.Authentication {
-				l = options.Size(e)
+			for _, s := range x.Authentication {
+				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
+		}
+		l = len(x.Status)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1621,20 +1178,20 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.Status) > 0 {
+			i -= len(x.Status)
+			copy(dAtA[i:], x.Status)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Status)))
+			i--
+			dAtA[i] = 0x4a
+		}
 		if len(x.Authentication) > 0 {
 			for iNdEx := len(x.Authentication) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Authentication[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i -= len(x.Authentication[iNdEx])
+				copy(dAtA[i:], x.Authentication[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Authentication[iNdEx])))
 				i--
-				dAtA[i] = 0x32
+				dAtA[i] = 0x42
 			}
 		}
 		if len(x.VaultCid) > 0 {
@@ -1642,7 +1199,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], x.VaultCid)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.VaultCid)))
 			i--
-			dAtA[i] = 0x2a
+			dAtA[i] = 0x3a
 		}
 		if x.PublicKey != nil {
 			encoded, err := options.Marshal(x.PublicKey)
@@ -1656,28 +1213,35 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 			copy(dAtA[i:], encoded)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
 			i--
-			dAtA[i] = 0x22
+			dAtA[i] = 0x32
 		}
 		if len(x.Aliases) > 0 {
 			for iNdEx := len(x.Aliases) - 1; iNdEx >= 0; iNdEx-- {
-				encoded, err := options.Marshal(x.Aliases[iNdEx])
-				if err != nil {
-					return protoiface.MarshalOutput{
-						NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-						Buf:               input.Buf,
-					}, err
-				}
-				i -= len(encoded)
-				copy(dAtA[i:], encoded)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
+				i -= len(x.Aliases[iNdEx])
+				copy(dAtA[i:], x.Aliases[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Aliases[iNdEx])))
 				i--
-				dAtA[i] = 0x1a
+				dAtA[i] = 0x2a
 			}
 		}
-		if len(x.Address) > 0 {
-			i -= len(x.Address)
-			copy(dAtA[i:], x.Address)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Address)))
+		if len(x.BtcAddress) > 0 {
+			i -= len(x.BtcAddress)
+			copy(dAtA[i:], x.BtcAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.BtcAddress)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.EthAddress) > 0 {
+			i -= len(x.EthAddress)
+			copy(dAtA[i:], x.EthAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.EthAddress)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.SonrAddress) > 0 {
+			i -= len(x.SonrAddress)
+			copy(dAtA[i:], x.SonrAddress)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SonrAddress)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -1771,7 +1335,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SonrAddress", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1799,13 +1363,13 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Address = string(dAtA[iNdEx:postIndex])
+				x.SonrAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Aliases", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field EthAddress", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1815,27 +1379,89 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Aliases = append(x.Aliases, &Alias{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Aliases[len(x.Aliases)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
+				x.EthAddress = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field BtcAddress", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.BtcAddress = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Aliases", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Aliases = append(x.Aliases, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 6:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
 				}
@@ -1871,7 +1497,7 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 5:
+			case 7:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VaultCid", wireType)
 				}
@@ -1903,11 +1529,11 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 				}
 				x.VaultCid = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 6:
+			case 8:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Authentication", wireType)
 				}
-				var msglen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -1917,25 +1543,55 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					msglen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if msglen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + msglen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Authentication = append(x.Authentication, &Credential{})
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Authentication[len(x.Authentication)-1]); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				x.Authentication = append(x.Authentication, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 9:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Status", wireType)
 				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Status = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1973,35 +1629,37 @@ func (x *fastReflection_Controller) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Proof             protoreflect.MessageDescriptor
-	fd_Proof_id          protoreflect.FieldDescriptor
-	fd_Proof_controller  protoreflect.FieldDescriptor
-	fd_Proof_issuer      protoreflect.FieldDescriptor
-	fd_Proof_property    protoreflect.FieldDescriptor
-	fd_Proof_accumulator protoreflect.FieldDescriptor
-	fd_Proof_key         protoreflect.FieldDescriptor
+	md_Verification                   protoreflect.MessageDescriptor
+	fd_Verification_id                protoreflect.FieldDescriptor
+	fd_Verification_controller        protoreflect.FieldDescriptor
+	fd_Verification_did_method        protoreflect.FieldDescriptor
+	fd_Verification_issuer            protoreflect.FieldDescriptor
+	fd_Verification_subject           protoreflect.FieldDescriptor
+	fd_Verification_public_key        protoreflect.FieldDescriptor
+	fd_Verification_verification_type protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_did_v1_state_proto_init()
-	md_Proof = File_did_v1_state_proto.Messages().ByName("Proof")
-	fd_Proof_id = md_Proof.Fields().ByName("id")
-	fd_Proof_controller = md_Proof.Fields().ByName("controller")
-	fd_Proof_issuer = md_Proof.Fields().ByName("issuer")
-	fd_Proof_property = md_Proof.Fields().ByName("property")
-	fd_Proof_accumulator = md_Proof.Fields().ByName("accumulator")
-	fd_Proof_key = md_Proof.Fields().ByName("key")
+	md_Verification = File_did_v1_state_proto.Messages().ByName("Verification")
+	fd_Verification_id = md_Verification.Fields().ByName("id")
+	fd_Verification_controller = md_Verification.Fields().ByName("controller")
+	fd_Verification_did_method = md_Verification.Fields().ByName("did_method")
+	fd_Verification_issuer = md_Verification.Fields().ByName("issuer")
+	fd_Verification_subject = md_Verification.Fields().ByName("subject")
+	fd_Verification_public_key = md_Verification.Fields().ByName("public_key")
+	fd_Verification_verification_type = md_Verification.Fields().ByName("verification_type")
 }
 
-var _ protoreflect.Message = (*fastReflection_Proof)(nil)
+var _ protoreflect.Message = (*fastReflection_Verification)(nil)
 
-type fastReflection_Proof Proof
+type fastReflection_Verification Verification
 
-func (x *Proof) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Proof)(x)
+func (x *Verification) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Verification)(x)
 }
 
-func (x *Proof) slowProtoReflect() protoreflect.Message {
+func (x *Verification) slowProtoReflect() protoreflect.Message {
 	mi := &file_did_v1_state_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -2013,43 +1671,43 @@ func (x *Proof) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Proof_messageType fastReflection_Proof_messageType
-var _ protoreflect.MessageType = fastReflection_Proof_messageType{}
+var _fastReflection_Verification_messageType fastReflection_Verification_messageType
+var _ protoreflect.MessageType = fastReflection_Verification_messageType{}
 
-type fastReflection_Proof_messageType struct{}
+type fastReflection_Verification_messageType struct{}
 
-func (x fastReflection_Proof_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Proof)(nil)
+func (x fastReflection_Verification_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Verification)(nil)
 }
-func (x fastReflection_Proof_messageType) New() protoreflect.Message {
-	return new(fastReflection_Proof)
+func (x fastReflection_Verification_messageType) New() protoreflect.Message {
+	return new(fastReflection_Verification)
 }
-func (x fastReflection_Proof_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Proof
+func (x fastReflection_Verification_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Verification
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Proof) Descriptor() protoreflect.MessageDescriptor {
-	return md_Proof
+func (x *fastReflection_Verification) Descriptor() protoreflect.MessageDescriptor {
+	return md_Verification
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Proof) Type() protoreflect.MessageType {
-	return _fastReflection_Proof_messageType
+func (x *fastReflection_Verification) Type() protoreflect.MessageType {
+	return _fastReflection_Verification_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Proof) New() protoreflect.Message {
-	return new(fastReflection_Proof)
+func (x *fastReflection_Verification) New() protoreflect.Message {
+	return new(fastReflection_Verification)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Proof) Interface() protoreflect.ProtoMessage {
-	return (*Proof)(x)
+func (x *fastReflection_Verification) Interface() protoreflect.ProtoMessage {
+	return (*Verification)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -2057,2006 +1715,46 @@ func (x *fastReflection_Proof) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Proof) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Verification) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != "" {
 		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_Proof_id, value) {
+		if !f(fd_Verification_id, value) {
 			return
 		}
 	}
 	if x.Controller != "" {
 		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_Proof_controller, value) {
+		if !f(fd_Verification_controller, value) {
+			return
+		}
+	}
+	if x.DidMethod != "" {
+		value := protoreflect.ValueOfString(x.DidMethod)
+		if !f(fd_Verification_did_method, value) {
 			return
 		}
 	}
 	if x.Issuer != "" {
 		value := protoreflect.ValueOfString(x.Issuer)
-		if !f(fd_Proof_issuer, value) {
-			return
-		}
-	}
-	if x.Property != "" {
-		value := protoreflect.ValueOfString(x.Property)
-		if !f(fd_Proof_property, value) {
-			return
-		}
-	}
-	if len(x.Accumulator) != 0 {
-		value := protoreflect.ValueOfBytes(x.Accumulator)
-		if !f(fd_Proof_accumulator, value) {
-			return
-		}
-	}
-	if len(x.Key) != 0 {
-		value := protoreflect.ValueOfBytes(x.Key)
-		if !f(fd_Proof_key, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_Proof) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "did.v1.Proof.id":
-		return x.Id != ""
-	case "did.v1.Proof.controller":
-		return x.Controller != ""
-	case "did.v1.Proof.issuer":
-		return x.Issuer != ""
-	case "did.v1.Proof.property":
-		return x.Property != ""
-	case "did.v1.Proof.accumulator":
-		return len(x.Accumulator) != 0
-	case "did.v1.Proof.key":
-		return len(x.Key) != 0
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Proof) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "did.v1.Proof.id":
-		x.Id = ""
-	case "did.v1.Proof.controller":
-		x.Controller = ""
-	case "did.v1.Proof.issuer":
-		x.Issuer = ""
-	case "did.v1.Proof.property":
-		x.Property = ""
-	case "did.v1.Proof.accumulator":
-		x.Accumulator = nil
-	case "did.v1.Proof.key":
-		x.Key = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Proof) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "did.v1.Proof.id":
-		value := x.Id
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Proof.controller":
-		value := x.Controller
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Proof.issuer":
-		value := x.Issuer
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Proof.property":
-		value := x.Property
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Proof.accumulator":
-		value := x.Accumulator
-		return protoreflect.ValueOfBytes(value)
-	case "did.v1.Proof.key":
-		value := x.Key
-		return protoreflect.ValueOfBytes(value)
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Proof) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "did.v1.Proof.id":
-		x.Id = value.Interface().(string)
-	case "did.v1.Proof.controller":
-		x.Controller = value.Interface().(string)
-	case "did.v1.Proof.issuer":
-		x.Issuer = value.Interface().(string)
-	case "did.v1.Proof.property":
-		x.Property = value.Interface().(string)
-	case "did.v1.Proof.accumulator":
-		x.Accumulator = value.Bytes()
-	case "did.v1.Proof.key":
-		x.Key = value.Bytes()
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Proof) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "did.v1.Proof.id":
-		panic(fmt.Errorf("field id of message did.v1.Proof is not mutable"))
-	case "did.v1.Proof.controller":
-		panic(fmt.Errorf("field controller of message did.v1.Proof is not mutable"))
-	case "did.v1.Proof.issuer":
-		panic(fmt.Errorf("field issuer of message did.v1.Proof is not mutable"))
-	case "did.v1.Proof.property":
-		panic(fmt.Errorf("field property of message did.v1.Proof is not mutable"))
-	case "did.v1.Proof.accumulator":
-		panic(fmt.Errorf("field accumulator of message did.v1.Proof is not mutable"))
-	case "did.v1.Proof.key":
-		panic(fmt.Errorf("field key of message did.v1.Proof is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Proof) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "did.v1.Proof.id":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Proof.controller":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Proof.issuer":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Proof.property":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Proof.accumulator":
-		return protoreflect.ValueOfBytes(nil)
-	case "did.v1.Proof.key":
-		return protoreflect.ValueOfBytes(nil)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Proof"))
-		}
-		panic(fmt.Errorf("message did.v1.Proof does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Proof) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.Proof", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Proof) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Proof) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_Proof) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_Proof) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Proof)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.Id)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Controller)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Issuer)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Property)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Accumulator)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Key)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Proof)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if len(x.Key) > 0 {
-			i -= len(x.Key)
-			copy(dAtA[i:], x.Key)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Key)))
-			i--
-			dAtA[i] = 0x32
-		}
-		if len(x.Accumulator) > 0 {
-			i -= len(x.Accumulator)
-			copy(dAtA[i:], x.Accumulator)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Accumulator)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if len(x.Property) > 0 {
-			i -= len(x.Property)
-			copy(dAtA[i:], x.Property)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Property)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.Issuer) > 0 {
-			i -= len(x.Issuer)
-			copy(dAtA[i:], x.Issuer)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Issuer)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.Controller) > 0 {
-			i -= len(x.Controller)
-			copy(dAtA[i:], x.Controller)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Controller)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.Id) > 0 {
-			i -= len(x.Id)
-			copy(dAtA[i:], x.Id)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Id)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Proof)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Proof: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Proof: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Id = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Controller = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Issuer = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Property", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Property = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Accumulator", wireType)
-				}
-				var byteLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					byteLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if byteLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + byteLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Accumulator = append(x.Accumulator[:0], dAtA[iNdEx:postIndex]...)
-				if x.Accumulator == nil {
-					x.Accumulator = []byte{}
-				}
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Key", wireType)
-				}
-				var byteLen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					byteLen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if byteLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + byteLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Key = append(x.Key[:0], dAtA[iNdEx:postIndex]...)
-				if x.Key == nil {
-					x.Key = []byte{}
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var _ protoreflect.Map = (*_ServiceRecord_6_map)(nil)
-
-type _ServiceRecord_6_map struct {
-	m *map[string]string
-}
-
-func (x *_ServiceRecord_6_map) Len() int {
-	if x.m == nil {
-		return 0
-	}
-	return len(*x.m)
-}
-
-func (x *_ServiceRecord_6_map) Range(f func(protoreflect.MapKey, protoreflect.Value) bool) {
-	if x.m == nil {
-		return
-	}
-	for k, v := range *x.m {
-		mapKey := (protoreflect.MapKey)(protoreflect.ValueOfString(k))
-		mapValue := protoreflect.ValueOfString(v)
-		if !f(mapKey, mapValue) {
-			break
-		}
-	}
-}
-
-func (x *_ServiceRecord_6_map) Has(key protoreflect.MapKey) bool {
-	if x.m == nil {
-		return false
-	}
-	keyUnwrapped := key.String()
-	concreteValue := keyUnwrapped
-	_, ok := (*x.m)[concreteValue]
-	return ok
-}
-
-func (x *_ServiceRecord_6_map) Clear(key protoreflect.MapKey) {
-	if x.m == nil {
-		return
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	delete(*x.m, concreteKey)
-}
-
-func (x *_ServiceRecord_6_map) Get(key protoreflect.MapKey) protoreflect.Value {
-	if x.m == nil {
-		return protoreflect.Value{}
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	v, ok := (*x.m)[concreteKey]
-	if !ok {
-		return protoreflect.Value{}
-	}
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_ServiceRecord_6_map) Set(key protoreflect.MapKey, value protoreflect.Value) {
-	if !key.IsValid() || !value.IsValid() {
-		panic("invalid key or value provided")
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	(*x.m)[concreteKey] = concreteValue
-}
-
-func (x *_ServiceRecord_6_map) Mutable(key protoreflect.MapKey) protoreflect.Value {
-	panic("should not call Mutable on protoreflect.Map whose value is not of type protoreflect.Message")
-}
-
-func (x *_ServiceRecord_6_map) NewValue() protoreflect.Value {
-	v := ""
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_ServiceRecord_6_map) IsValid() bool {
-	return x.m != nil
-}
-
-var (
-	md_ServiceRecord                   protoreflect.MessageDescriptor
-	fd_ServiceRecord_id                protoreflect.FieldDescriptor
-	fd_ServiceRecord_service_type      protoreflect.FieldDescriptor
-	fd_ServiceRecord_authority         protoreflect.FieldDescriptor
-	fd_ServiceRecord_origin            protoreflect.FieldDescriptor
-	fd_ServiceRecord_description       protoreflect.FieldDescriptor
-	fd_ServiceRecord_service_endpoints protoreflect.FieldDescriptor
-	fd_ServiceRecord_permissions       protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_did_v1_state_proto_init()
-	md_ServiceRecord = File_did_v1_state_proto.Messages().ByName("ServiceRecord")
-	fd_ServiceRecord_id = md_ServiceRecord.Fields().ByName("id")
-	fd_ServiceRecord_service_type = md_ServiceRecord.Fields().ByName("service_type")
-	fd_ServiceRecord_authority = md_ServiceRecord.Fields().ByName("authority")
-	fd_ServiceRecord_origin = md_ServiceRecord.Fields().ByName("origin")
-	fd_ServiceRecord_description = md_ServiceRecord.Fields().ByName("description")
-	fd_ServiceRecord_service_endpoints = md_ServiceRecord.Fields().ByName("service_endpoints")
-	fd_ServiceRecord_permissions = md_ServiceRecord.Fields().ByName("permissions")
-}
-
-var _ protoreflect.Message = (*fastReflection_ServiceRecord)(nil)
-
-type fastReflection_ServiceRecord ServiceRecord
-
-func (x *ServiceRecord) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_ServiceRecord)(x)
-}
-
-func (x *ServiceRecord) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[3]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_ServiceRecord_messageType fastReflection_ServiceRecord_messageType
-var _ protoreflect.MessageType = fastReflection_ServiceRecord_messageType{}
-
-type fastReflection_ServiceRecord_messageType struct{}
-
-func (x fastReflection_ServiceRecord_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_ServiceRecord)(nil)
-}
-func (x fastReflection_ServiceRecord_messageType) New() protoreflect.Message {
-	return new(fastReflection_ServiceRecord)
-}
-func (x fastReflection_ServiceRecord_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_ServiceRecord
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_ServiceRecord) Descriptor() protoreflect.MessageDescriptor {
-	return md_ServiceRecord
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_ServiceRecord) Type() protoreflect.MessageType {
-	return _fastReflection_ServiceRecord_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_ServiceRecord) New() protoreflect.Message {
-	return new(fastReflection_ServiceRecord)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_ServiceRecord) Interface() protoreflect.ProtoMessage {
-	return (*ServiceRecord)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_ServiceRecord) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Id != "" {
-		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_ServiceRecord_id, value) {
-			return
-		}
-	}
-	if x.ServiceType != "" {
-		value := protoreflect.ValueOfString(x.ServiceType)
-		if !f(fd_ServiceRecord_service_type, value) {
-			return
-		}
-	}
-	if x.Authority != "" {
-		value := protoreflect.ValueOfString(x.Authority)
-		if !f(fd_ServiceRecord_authority, value) {
-			return
-		}
-	}
-	if x.Origin != "" {
-		value := protoreflect.ValueOfString(x.Origin)
-		if !f(fd_ServiceRecord_origin, value) {
-			return
-		}
-	}
-	if x.Description != "" {
-		value := protoreflect.ValueOfString(x.Description)
-		if !f(fd_ServiceRecord_description, value) {
-			return
-		}
-	}
-	if len(x.ServiceEndpoints) != 0 {
-		value := protoreflect.ValueOfMap(&_ServiceRecord_6_map{m: &x.ServiceEndpoints})
-		if !f(fd_ServiceRecord_service_endpoints, value) {
-			return
-		}
-	}
-	if x.Permissions != nil {
-		value := protoreflect.ValueOfMessage(x.Permissions.ProtoReflect())
-		if !f(fd_ServiceRecord_permissions, value) {
-			return
-		}
-	}
-}
-
-// Has reports whether a field is populated.
-//
-// Some fields have the property of nullability where it is possible to
-// distinguish between the default value of a field and whether the field
-// was explicitly populated with the default value. Singular message fields,
-// member fields of a oneof, and proto2 scalar fields are nullable. Such
-// fields are populated only if explicitly set.
-//
-// In other cases (aside from the nullable cases above),
-// a proto3 scalar field is populated if it contains a non-zero value, and
-// a repeated field is populated if it is non-empty.
-func (x *fastReflection_ServiceRecord) Has(fd protoreflect.FieldDescriptor) bool {
-	switch fd.FullName() {
-	case "did.v1.ServiceRecord.id":
-		return x.Id != ""
-	case "did.v1.ServiceRecord.service_type":
-		return x.ServiceType != ""
-	case "did.v1.ServiceRecord.authority":
-		return x.Authority != ""
-	case "did.v1.ServiceRecord.origin":
-		return x.Origin != ""
-	case "did.v1.ServiceRecord.description":
-		return x.Description != ""
-	case "did.v1.ServiceRecord.service_endpoints":
-		return len(x.ServiceEndpoints) != 0
-	case "did.v1.ServiceRecord.permissions":
-		return x.Permissions != nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", fd.FullName()))
-	}
-}
-
-// Clear clears the field such that a subsequent Has call reports false.
-//
-// Clearing an extension field clears both the extension type and value
-// associated with the given field number.
-//
-// Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ServiceRecord) Clear(fd protoreflect.FieldDescriptor) {
-	switch fd.FullName() {
-	case "did.v1.ServiceRecord.id":
-		x.Id = ""
-	case "did.v1.ServiceRecord.service_type":
-		x.ServiceType = ""
-	case "did.v1.ServiceRecord.authority":
-		x.Authority = ""
-	case "did.v1.ServiceRecord.origin":
-		x.Origin = ""
-	case "did.v1.ServiceRecord.description":
-		x.Description = ""
-	case "did.v1.ServiceRecord.service_endpoints":
-		x.ServiceEndpoints = nil
-	case "did.v1.ServiceRecord.permissions":
-		x.Permissions = nil
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", fd.FullName()))
-	}
-}
-
-// Get retrieves the value for a field.
-//
-// For unpopulated scalars, it returns the default value, where
-// the default value of a bytes scalar is guaranteed to be a copy.
-// For unpopulated composite types, it returns an empty, read-only view
-// of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_ServiceRecord) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
-	switch descriptor.FullName() {
-	case "did.v1.ServiceRecord.id":
-		value := x.Id
-		return protoreflect.ValueOfString(value)
-	case "did.v1.ServiceRecord.service_type":
-		value := x.ServiceType
-		return protoreflect.ValueOfString(value)
-	case "did.v1.ServiceRecord.authority":
-		value := x.Authority
-		return protoreflect.ValueOfString(value)
-	case "did.v1.ServiceRecord.origin":
-		value := x.Origin
-		return protoreflect.ValueOfString(value)
-	case "did.v1.ServiceRecord.description":
-		value := x.Description
-		return protoreflect.ValueOfString(value)
-	case "did.v1.ServiceRecord.service_endpoints":
-		if len(x.ServiceEndpoints) == 0 {
-			return protoreflect.ValueOfMap(&_ServiceRecord_6_map{})
-		}
-		mapValue := &_ServiceRecord_6_map{m: &x.ServiceEndpoints}
-		return protoreflect.ValueOfMap(mapValue)
-	case "did.v1.ServiceRecord.permissions":
-		value := x.Permissions
-		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	default:
-		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", descriptor.FullName()))
-	}
-}
-
-// Set stores the value for a field.
-//
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType.
-// When setting a composite type, it is unspecified whether the stored value
-// aliases the source's memory in any way. If the composite value is an
-// empty, read-only value, then it panics.
-//
-// Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ServiceRecord) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
-	switch fd.FullName() {
-	case "did.v1.ServiceRecord.id":
-		x.Id = value.Interface().(string)
-	case "did.v1.ServiceRecord.service_type":
-		x.ServiceType = value.Interface().(string)
-	case "did.v1.ServiceRecord.authority":
-		x.Authority = value.Interface().(string)
-	case "did.v1.ServiceRecord.origin":
-		x.Origin = value.Interface().(string)
-	case "did.v1.ServiceRecord.description":
-		x.Description = value.Interface().(string)
-	case "did.v1.ServiceRecord.service_endpoints":
-		mv := value.Map()
-		cmv := mv.(*_ServiceRecord_6_map)
-		x.ServiceEndpoints = *cmv.m
-	case "did.v1.ServiceRecord.permissions":
-		x.Permissions = value.Message().Interface().(*Permissions)
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", fd.FullName()))
-	}
-}
-
-// Mutable returns a mutable reference to a composite type.
-//
-// If the field is unpopulated, it may allocate a composite value.
-// For a field belonging to a oneof, it implicitly clears any other field
-// that may be currently set within the same oneof.
-// For extension fields, it implicitly stores the provided ExtensionType
-// if not already stored.
-// It panics if the field does not contain a composite type.
-//
-// Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ServiceRecord) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "did.v1.ServiceRecord.service_endpoints":
-		if x.ServiceEndpoints == nil {
-			x.ServiceEndpoints = make(map[string]string)
-		}
-		value := &_ServiceRecord_6_map{m: &x.ServiceEndpoints}
-		return protoreflect.ValueOfMap(value)
-	case "did.v1.ServiceRecord.permissions":
-		if x.Permissions == nil {
-			x.Permissions = new(Permissions)
-		}
-		return protoreflect.ValueOfMessage(x.Permissions.ProtoReflect())
-	case "did.v1.ServiceRecord.id":
-		panic(fmt.Errorf("field id of message did.v1.ServiceRecord is not mutable"))
-	case "did.v1.ServiceRecord.service_type":
-		panic(fmt.Errorf("field service_type of message did.v1.ServiceRecord is not mutable"))
-	case "did.v1.ServiceRecord.authority":
-		panic(fmt.Errorf("field authority of message did.v1.ServiceRecord is not mutable"))
-	case "did.v1.ServiceRecord.origin":
-		panic(fmt.Errorf("field origin of message did.v1.ServiceRecord is not mutable"))
-	case "did.v1.ServiceRecord.description":
-		panic(fmt.Errorf("field description of message did.v1.ServiceRecord is not mutable"))
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", fd.FullName()))
-	}
-}
-
-// NewField returns a new value that is assignable to the field
-// for the given descriptor. For scalars, this returns the default value.
-// For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_ServiceRecord) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
-	switch fd.FullName() {
-	case "did.v1.ServiceRecord.id":
-		return protoreflect.ValueOfString("")
-	case "did.v1.ServiceRecord.service_type":
-		return protoreflect.ValueOfString("")
-	case "did.v1.ServiceRecord.authority":
-		return protoreflect.ValueOfString("")
-	case "did.v1.ServiceRecord.origin":
-		return protoreflect.ValueOfString("")
-	case "did.v1.ServiceRecord.description":
-		return protoreflect.ValueOfString("")
-	case "did.v1.ServiceRecord.service_endpoints":
-		m := make(map[string]string)
-		return protoreflect.ValueOfMap(&_ServiceRecord_6_map{m: &m})
-	case "did.v1.ServiceRecord.permissions":
-		m := new(Permissions)
-		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	default:
-		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.ServiceRecord"))
-		}
-		panic(fmt.Errorf("message did.v1.ServiceRecord does not contain field %s", fd.FullName()))
-	}
-}
-
-// WhichOneof reports which field within the oneof is populated,
-// returning nil if none are populated.
-// It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_ServiceRecord) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
-	switch d.FullName() {
-	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.ServiceRecord", d.FullName()))
-	}
-	panic("unreachable")
-}
-
-// GetUnknown retrieves the entire list of unknown fields.
-// The caller may only mutate the contents of the RawFields
-// if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_ServiceRecord) GetUnknown() protoreflect.RawFields {
-	return x.unknownFields
-}
-
-// SetUnknown stores an entire list of unknown fields.
-// The raw fields must be syntactically valid according to the wire format.
-// An implementation may panic if this is not the case.
-// Once stored, the caller must not mutate the content of the RawFields.
-// An empty RawFields may be passed to clear the fields.
-//
-// SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ServiceRecord) SetUnknown(fields protoreflect.RawFields) {
-	x.unknownFields = fields
-}
-
-// IsValid reports whether the message is valid.
-//
-// An invalid message is an empty, read-only value.
-//
-// An invalid message often corresponds to a nil pointer of the concrete
-// message type, but the details are implementation dependent.
-// Validity is not part of the protobuf data model, and may not
-// be preserved in marshaling or other operations.
-func (x *fastReflection_ServiceRecord) IsValid() bool {
-	return x != nil
-}
-
-// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
-// This method may return nil.
-//
-// The returned methods type is identical to
-// "google.golang.org/protobuf/runtime/protoiface".Methods.
-// Consult the protoiface package documentation for details.
-func (x *fastReflection_ServiceRecord) ProtoMethods() *protoiface.Methods {
-	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*ServiceRecord)
-		if x == nil {
-			return protoiface.SizeOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Size:              0,
-			}
-		}
-		options := runtime.SizeInputToOptions(input)
-		_ = options
-		var n int
-		var l int
-		_ = l
-		l = len(x.Id)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.ServiceType)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Authority)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Origin)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.Description)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if len(x.ServiceEndpoints) > 0 {
-			SiZeMaP := func(k string, v string) {
-				mapEntrySize := 1 + len(k) + runtime.Sov(uint64(len(k))) + 1 + len(v) + runtime.Sov(uint64(len(v)))
-				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
-			}
-			if options.Deterministic {
-				sortme := make([]string, 0, len(x.ServiceEndpoints))
-				for k := range x.ServiceEndpoints {
-					sortme = append(sortme, k)
-				}
-				sort.Strings(sortme)
-				for _, k := range sortme {
-					v := x.ServiceEndpoints[k]
-					SiZeMaP(k, v)
-				}
-			} else {
-				for k, v := range x.ServiceEndpoints {
-					SiZeMaP(k, v)
-				}
-			}
-		}
-		if x.Permissions != nil {
-			l = options.Size(x.Permissions)
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if x.unknownFields != nil {
-			n += len(x.unknownFields)
-		}
-		return protoiface.SizeOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Size:              n,
-		}
-	}
-
-	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*ServiceRecord)
-		if x == nil {
-			return protoiface.MarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Buf:               input.Buf,
-			}, nil
-		}
-		options := runtime.MarshalInputToOptions(input)
-		_ = options
-		size := options.Size(x)
-		dAtA := make([]byte, size)
-		i := len(dAtA)
-		_ = i
-		var l int
-		_ = l
-		if x.unknownFields != nil {
-			i -= len(x.unknownFields)
-			copy(dAtA[i:], x.unknownFields)
-		}
-		if x.Permissions != nil {
-			encoded, err := options.Marshal(x.Permissions)
-			if err != nil {
-				return protoiface.MarshalOutput{
-					NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-					Buf:               input.Buf,
-				}, err
-			}
-			i -= len(encoded)
-			copy(dAtA[i:], encoded)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(encoded)))
-			i--
-			dAtA[i] = 0x3a
-		}
-		if len(x.ServiceEndpoints) > 0 {
-			MaRsHaLmAp := func(k string, v string) (protoiface.MarshalOutput, error) {
-				baseI := i
-				i -= len(v)
-				copy(dAtA[i:], v)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(v)))
-				i--
-				dAtA[i] = 0x12
-				i -= len(k)
-				copy(dAtA[i:], k)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(k)))
-				i--
-				dAtA[i] = 0xa
-				i = runtime.EncodeVarint(dAtA, i, uint64(baseI-i))
-				i--
-				dAtA[i] = 0x32
-				return protoiface.MarshalOutput{}, nil
-			}
-			if options.Deterministic {
-				keysForServiceEndpoints := make([]string, 0, len(x.ServiceEndpoints))
-				for k := range x.ServiceEndpoints {
-					keysForServiceEndpoints = append(keysForServiceEndpoints, string(k))
-				}
-				sort.Slice(keysForServiceEndpoints, func(i, j int) bool {
-					return keysForServiceEndpoints[i] < keysForServiceEndpoints[j]
-				})
-				for iNdEx := len(keysForServiceEndpoints) - 1; iNdEx >= 0; iNdEx-- {
-					v := x.ServiceEndpoints[string(keysForServiceEndpoints[iNdEx])]
-					out, err := MaRsHaLmAp(keysForServiceEndpoints[iNdEx], v)
-					if err != nil {
-						return out, err
-					}
-				}
-			} else {
-				for k := range x.ServiceEndpoints {
-					v := x.ServiceEndpoints[k]
-					out, err := MaRsHaLmAp(k, v)
-					if err != nil {
-						return out, err
-					}
-				}
-			}
-		}
-		if len(x.Description) > 0 {
-			i -= len(x.Description)
-			copy(dAtA[i:], x.Description)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Description)))
-			i--
-			dAtA[i] = 0x2a
-		}
-		if len(x.Origin) > 0 {
-			i -= len(x.Origin)
-			copy(dAtA[i:], x.Origin)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.Authority) > 0 {
-			i -= len(x.Authority)
-			copy(dAtA[i:], x.Authority)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Authority)))
-			i--
-			dAtA[i] = 0x1a
-		}
-		if len(x.ServiceType) > 0 {
-			i -= len(x.ServiceType)
-			copy(dAtA[i:], x.ServiceType)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ServiceType)))
-			i--
-			dAtA[i] = 0x12
-		}
-		if len(x.Id) > 0 {
-			i -= len(x.Id)
-			copy(dAtA[i:], x.Id)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Id)))
-			i--
-			dAtA[i] = 0xa
-		}
-		if input.Buf != nil {
-			input.Buf = append(input.Buf, dAtA...)
-		} else {
-			input.Buf = dAtA
-		}
-		return protoiface.MarshalOutput{
-			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-			Buf:               input.Buf,
-		}, nil
-	}
-	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*ServiceRecord)
-		if x == nil {
-			return protoiface.UnmarshalOutput{
-				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
-				Flags:             input.Flags,
-			}, nil
-		}
-		options := runtime.UnmarshalInputToOptions(input)
-		_ = options
-		dAtA := input.Buf
-		l := len(dAtA)
-		iNdEx := 0
-		for iNdEx < l {
-			preIndex := iNdEx
-			var wire uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-				}
-				if iNdEx >= l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				wire |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			fieldNum := int32(wire >> 3)
-			wireType := int(wire & 0x7)
-			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ServiceRecord: wiretype end group for non-group")
-			}
-			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ServiceRecord: illegal tag %d (wire type %d)", fieldNum, wire)
-			}
-			switch fieldNum {
-			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Id = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 2:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ServiceType", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.ServiceType = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 3:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Authority = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 4:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Origin = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
-				}
-				var stringLen uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					stringLen |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				intStringLen := int(stringLen)
-				if intStringLen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + intStringLen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				x.Description = string(dAtA[iNdEx:postIndex])
-				iNdEx = postIndex
-			case 6:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ServiceEndpoints", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.ServiceEndpoints == nil {
-					x.ServiceEndpoints = make(map[string]string)
-				}
-				var mapkey string
-				var mapvalue string
-				for iNdEx < postIndex {
-					entryPreIndex := iNdEx
-					var wire uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						wire |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					fieldNum := int32(wire >> 3)
-					if fieldNum == 1 {
-						var stringLenmapkey uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							stringLenmapkey |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						intStringLenmapkey := int(stringLenmapkey)
-						if intStringLenmapkey < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						postStringIndexmapkey := iNdEx + intStringLenmapkey
-						if postStringIndexmapkey < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if postStringIndexmapkey > l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-						iNdEx = postStringIndexmapkey
-					} else if fieldNum == 2 {
-						var stringLenmapvalue uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							stringLenmapvalue |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						intStringLenmapvalue := int(stringLenmapvalue)
-						if intStringLenmapvalue < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-						if postStringIndexmapvalue < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if postStringIndexmapvalue > l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-						iNdEx = postStringIndexmapvalue
-					} else {
-						iNdEx = entryPreIndex
-						skippy, err := runtime.Skip(dAtA[iNdEx:])
-						if err != nil {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-						}
-						if (skippy < 0) || (iNdEx+skippy) < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if (iNdEx + skippy) > postIndex {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						iNdEx += skippy
-					}
-				}
-				x.ServiceEndpoints[mapkey] = mapvalue
-				iNdEx = postIndex
-			case 7:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.Permissions == nil {
-					x.Permissions = &Permissions{}
-				}
-				if err := options.Unmarshal(dAtA[iNdEx:postIndex], x.Permissions); err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				iNdEx = postIndex
-			default:
-				iNdEx = preIndex
-				skippy, err := runtime.Skip(dAtA[iNdEx:])
-				if err != nil {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-				}
-				if (skippy < 0) || (iNdEx+skippy) < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if (iNdEx + skippy) > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if !options.DiscardUnknown {
-					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
-				}
-				iNdEx += skippy
-			}
-		}
-
-		if iNdEx > l {
-			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-		}
-		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
-	}
-	return &protoiface.Methods{
-		NoUnkeyedLiterals: struct{}{},
-		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
-		Size:              size,
-		Marshal:           marshal,
-		Unmarshal:         unmarshal,
-		Merge:             nil,
-		CheckInitialized:  nil,
-	}
-}
-
-var _ protoreflect.Map = (*_Service_5_map)(nil)
-
-type _Service_5_map struct {
-	m *map[string]string
-}
-
-func (x *_Service_5_map) Len() int {
-	if x.m == nil {
-		return 0
-	}
-	return len(*x.m)
-}
-
-func (x *_Service_5_map) Range(f func(protoreflect.MapKey, protoreflect.Value) bool) {
-	if x.m == nil {
-		return
-	}
-	for k, v := range *x.m {
-		mapKey := (protoreflect.MapKey)(protoreflect.ValueOfString(k))
-		mapValue := protoreflect.ValueOfString(v)
-		if !f(mapKey, mapValue) {
-			break
-		}
-	}
-}
-
-func (x *_Service_5_map) Has(key protoreflect.MapKey) bool {
-	if x.m == nil {
-		return false
-	}
-	keyUnwrapped := key.String()
-	concreteValue := keyUnwrapped
-	_, ok := (*x.m)[concreteValue]
-	return ok
-}
-
-func (x *_Service_5_map) Clear(key protoreflect.MapKey) {
-	if x.m == nil {
-		return
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	delete(*x.m, concreteKey)
-}
-
-func (x *_Service_5_map) Get(key protoreflect.MapKey) protoreflect.Value {
-	if x.m == nil {
-		return protoreflect.Value{}
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	v, ok := (*x.m)[concreteKey]
-	if !ok {
-		return protoreflect.Value{}
-	}
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_Service_5_map) Set(key protoreflect.MapKey, value protoreflect.Value) {
-	if !key.IsValid() || !value.IsValid() {
-		panic("invalid key or value provided")
-	}
-	keyUnwrapped := key.String()
-	concreteKey := keyUnwrapped
-	valueUnwrapped := value.String()
-	concreteValue := valueUnwrapped
-	(*x.m)[concreteKey] = concreteValue
-}
-
-func (x *_Service_5_map) Mutable(key protoreflect.MapKey) protoreflect.Value {
-	panic("should not call Mutable on protoreflect.Map whose value is not of type protoreflect.Message")
-}
-
-func (x *_Service_5_map) NewValue() protoreflect.Value {
-	v := ""
-	return protoreflect.ValueOfString(v)
-}
-
-func (x *_Service_5_map) IsValid() bool {
-	return x.m != nil
-}
-
-var _ protoreflect.List = (*_Service_6_list)(nil)
-
-type _Service_6_list struct {
-	list *[]PermissionScope
-}
-
-func (x *_Service_6_list) Len() int {
-	if x.list == nil {
-		return 0
-	}
-	return len(*x.list)
-}
-
-func (x *_Service_6_list) Get(i int) protoreflect.Value {
-	return protoreflect.ValueOfEnum((protoreflect.EnumNumber)((*x.list)[i]))
-}
-
-func (x *_Service_6_list) Set(i int, value protoreflect.Value) {
-	valueUnwrapped := value.Enum()
-	concreteValue := (PermissionScope)(valueUnwrapped)
-	(*x.list)[i] = concreteValue
-}
-
-func (x *_Service_6_list) Append(value protoreflect.Value) {
-	valueUnwrapped := value.Enum()
-	concreteValue := (PermissionScope)(valueUnwrapped)
-	*x.list = append(*x.list, concreteValue)
-}
-
-func (x *_Service_6_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Service at list field Scopes as it is not of Message kind"))
-}
-
-func (x *_Service_6_list) Truncate(n int) {
-	*x.list = (*x.list)[:n]
-}
-
-func (x *_Service_6_list) NewElement() protoreflect.Value {
-	v := 0
-	return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(v))
-}
-
-func (x *_Service_6_list) IsValid() bool {
-	return x.list != nil
-}
-
-var (
-	md_VerificationMethod            protoreflect.MessageDescriptor
-	fd_VerificationMethod_id         protoreflect.FieldDescriptor
-	fd_VerificationMethod_controller protoreflect.FieldDescriptor
-	fd_VerificationMethod_method     protoreflect.FieldDescriptor
-	fd_VerificationMethod_issuer     protoreflect.FieldDescriptor
-	fd_VerificationMethod_subject    protoreflect.FieldDescriptor
-	fd_VerificationMethod_public_key protoreflect.FieldDescriptor
-	md_Service                   protoreflect.MessageDescriptor
-	fd_Service_id                protoreflect.FieldDescriptor
-	fd_Service_service_type      protoreflect.FieldDescriptor
-	fd_Service_controller_did    protoreflect.FieldDescriptor
-	fd_Service_origin_uri        protoreflect.FieldDescriptor
-	fd_Service_service_endpoints protoreflect.FieldDescriptor
-	fd_Service_scopes            protoreflect.FieldDescriptor
-)
-
-func init() {
-	file_did_v1_state_proto_init()
-	md_VerificationMethod = File_did_v1_state_proto.Messages().ByName("VerificationMethod")
-	fd_VerificationMethod_id = md_VerificationMethod.Fields().ByName("id")
-	fd_VerificationMethod_controller = md_VerificationMethod.Fields().ByName("controller")
-	fd_VerificationMethod_method = md_VerificationMethod.Fields().ByName("method")
-	fd_VerificationMethod_issuer = md_VerificationMethod.Fields().ByName("issuer")
-	fd_VerificationMethod_subject = md_VerificationMethod.Fields().ByName("subject")
-	fd_VerificationMethod_public_key = md_VerificationMethod.Fields().ByName("public_key")
-	md_Service = File_did_v1_state_proto.Messages().ByName("Service")
-	fd_Service_id = md_Service.Fields().ByName("id")
-	fd_Service_service_type = md_Service.Fields().ByName("service_type")
-	fd_Service_controller_did = md_Service.Fields().ByName("controller_did")
-	fd_Service_origin_uri = md_Service.Fields().ByName("origin_uri")
-	fd_Service_service_endpoints = md_Service.Fields().ByName("service_endpoints")
-	fd_Service_scopes = md_Service.Fields().ByName("scopes")
-}
-
-var _ protoreflect.Message = (*fastReflection_VerificationMethod)(nil)
-
-type fastReflection_VerificationMethod VerificationMethod
-
-func (x *VerificationMethod) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_VerificationMethod)(x)
-}
-
-func (x *VerificationMethod) slowProtoReflect() protoreflect.Message {
-	mi := &file_did_v1_state_proto_msgTypes[4]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-var _fastReflection_VerificationMethod_messageType fastReflection_VerificationMethod_messageType
-var _ protoreflect.MessageType = fastReflection_VerificationMethod_messageType{}
-
-type fastReflection_VerificationMethod_messageType struct{}
-
-func (x fastReflection_VerificationMethod_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_VerificationMethod)(nil)
-}
-func (x fastReflection_VerificationMethod_messageType) New() protoreflect.Message {
-	return new(fastReflection_VerificationMethod)
-}
-func (x fastReflection_VerificationMethod_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_VerificationMethod
-}
-
-// Descriptor returns message descriptor, which contains only the protobuf
-// type information for the message.
-func (x *fastReflection_VerificationMethod) Descriptor() protoreflect.MessageDescriptor {
-	return md_VerificationMethod
-}
-
-// Type returns the message type, which encapsulates both Go and protobuf
-// type information. If the Go type information is not needed,
-// it is recommended that the message descriptor be used instead.
-func (x *fastReflection_VerificationMethod) Type() protoreflect.MessageType {
-	return _fastReflection_VerificationMethod_messageType
-}
-
-// New returns a newly allocated and mutable empty message.
-func (x *fastReflection_VerificationMethod) New() protoreflect.Message {
-	return new(fastReflection_VerificationMethod)
-}
-
-// Interface unwraps the message reflection interface and
-// returns the underlying ProtoMessage interface.
-func (x *fastReflection_VerificationMethod) Interface() protoreflect.ProtoMessage {
-	return (*VerificationMethod)(x)
-}
-
-// Range iterates over every populated field in an undefined order,
-// calling f for each field descriptor and value encountered.
-// Range returns immediately if f returns false.
-// While iterating, mutating operations may only be performed
-// on the current field descriptor.
-func (x *fastReflection_VerificationMethod) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Id != "" {
-		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_VerificationMethod_id, value) {
-			return
-		}
-	}
-	if x.Controller != "" {
-		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_VerificationMethod_controller, value) {
-			return
-		}
-	}
-	if x.Method != 0 {
-		value := protoreflect.ValueOfEnum((protoreflect.EnumNumber)(x.Method))
-		if !f(fd_VerificationMethod_method, value) {
-			return
-		}
-	}
-	if x.Issuer != "" {
-		value := protoreflect.ValueOfString(x.Issuer)
-		if !f(fd_VerificationMethod_issuer, value) {
+		if !f(fd_Verification_issuer, value) {
 			return
 		}
 	}
 	if x.Subject != "" {
 		value := protoreflect.ValueOfString(x.Subject)
-		if !f(fd_VerificationMethod_subject, value) {
+		if !f(fd_Verification_subject, value) {
 			return
 		}
 	}
 	if x.PublicKey != nil {
 		value := protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-		if !f(fd_VerificationMethod_public_key, value) {
-	if x.ControllerDid != "" {
-		value := protoreflect.ValueOfString(x.ControllerDid)
-		if !f(fd_Service_controller_did, value) {
+		if !f(fd_Verification_public_key, value) {
 			return
 		}
 	}
-	if x.OriginUri != "" {
-		value := protoreflect.ValueOfString(x.OriginUri)
-		if !f(fd_Service_origin_uri, value) {
-			return
-		}
-	}
-	if len(x.ServiceEndpoints) != 0 {
-		value := protoreflect.ValueOfMap(&_Service_5_map{m: &x.ServiceEndpoints})
-		if !f(fd_Service_service_endpoints, value) {
-			return
-		}
-	}
-	if len(x.Scopes) != 0 {
-		value := protoreflect.ValueOfList(&_Service_6_list{list: &x.Scopes})
-		if !f(fd_Service_scopes, value) {
+	if x.VerificationType != "" {
+		value := protoreflect.ValueOfString(x.VerificationType)
+		if !f(fd_Verification_verification_type, value) {
 			return
 		}
 	}
@@ -4073,35 +1771,27 @@ func (x *fastReflection_VerificationMethod) Range(f func(protoreflect.FieldDescr
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_VerificationMethod) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Verification) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.id":
+	case "did.v1.Verification.id":
 		return x.Id != ""
-	case "did.v1.VerificationMethod.controller":
+	case "did.v1.Verification.controller":
 		return x.Controller != ""
-	case "did.v1.VerificationMethod.method":
-		return x.Method != 0
-	case "did.v1.VerificationMethod.issuer":
+	case "did.v1.Verification.did_method":
+		return x.DidMethod != ""
+	case "did.v1.Verification.issuer":
 		return x.Issuer != ""
-	case "did.v1.VerificationMethod.subject":
+	case "did.v1.Verification.subject":
 		return x.Subject != ""
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.public_key":
 		return x.PublicKey != nil
-	case "did.v1.Service.service_type":
-		return x.ServiceType != ""
-	case "did.v1.Service.controller_did":
-		return x.ControllerDid != ""
-	case "did.v1.Service.origin_uri":
-		return x.OriginUri != ""
-	case "did.v1.Service.service_endpoints":
-		return len(x.ServiceEndpoints) != 0
-	case "did.v1.Service.scopes":
-		return len(x.Scopes) != 0
+	case "did.v1.Verification.verification_type":
+		return x.VerificationType != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4111,35 +1801,27 @@ func (x *fastReflection_VerificationMethod) Has(fd protoreflect.FieldDescriptor)
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_VerificationMethod) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Verification) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.id":
+	case "did.v1.Verification.id":
 		x.Id = ""
-	case "did.v1.VerificationMethod.controller":
+	case "did.v1.Verification.controller":
 		x.Controller = ""
-	case "did.v1.VerificationMethod.method":
-		x.Method = 0
-	case "did.v1.VerificationMethod.issuer":
+	case "did.v1.Verification.did_method":
+		x.DidMethod = ""
+	case "did.v1.Verification.issuer":
 		x.Issuer = ""
-	case "did.v1.VerificationMethod.subject":
+	case "did.v1.Verification.subject":
 		x.Subject = ""
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.public_key":
 		x.PublicKey = nil
-	case "did.v1.Service.service_type":
-		x.ServiceType = ""
-	case "did.v1.Service.controller_did":
-		x.ControllerDid = ""
-	case "did.v1.Service.origin_uri":
-		x.OriginUri = ""
-	case "did.v1.Service.service_endpoints":
-		x.ServiceEndpoints = nil
-	case "did.v1.Service.scopes":
-		x.Scopes = nil
+	case "did.v1.Verification.verification_type":
+		x.VerificationType = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4149,49 +1831,34 @@ func (x *fastReflection_VerificationMethod) Clear(fd protoreflect.FieldDescripto
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_VerificationMethod) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Verification) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "did.v1.VerificationMethod.id":
+	case "did.v1.Verification.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "did.v1.VerificationMethod.controller":
+	case "did.v1.Verification.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
-	case "did.v1.VerificationMethod.method":
-		value := x.Method
-		return protoreflect.ValueOfEnum((protoreflect.EnumNumber)(value))
-	case "did.v1.VerificationMethod.issuer":
+	case "did.v1.Verification.did_method":
+		value := x.DidMethod
+		return protoreflect.ValueOfString(value)
+	case "did.v1.Verification.issuer":
 		value := x.Issuer
 		return protoreflect.ValueOfString(value)
-	case "did.v1.VerificationMethod.subject":
+	case "did.v1.Verification.subject":
 		value := x.Subject
 		return protoreflect.ValueOfString(value)
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.public_key":
 		value := x.PublicKey
 		return protoreflect.ValueOfMessage(value.ProtoReflect())
-	case "did.v1.Service.controller_did":
-		value := x.ControllerDid
+	case "did.v1.Verification.verification_type":
+		value := x.VerificationType
 		return protoreflect.ValueOfString(value)
-	case "did.v1.Service.origin_uri":
-		value := x.OriginUri
-		return protoreflect.ValueOfString(value)
-	case "did.v1.Service.service_endpoints":
-		if len(x.ServiceEndpoints) == 0 {
-			return protoreflect.ValueOfMap(&_Service_5_map{})
-		}
-		mapValue := &_Service_5_map{m: &x.ServiceEndpoints}
-		return protoreflect.ValueOfMap(mapValue)
-	case "did.v1.Service.scopes":
-		if len(x.Scopes) == 0 {
-			return protoreflect.ValueOfList(&_Service_6_list{})
-		}
-		listValue := &_Service_6_list{list: &x.Scopes}
-		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -4205,39 +1872,27 @@ func (x *fastReflection_VerificationMethod) Get(descriptor protoreflect.FieldDes
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_VerificationMethod) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Verification) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.id":
+	case "did.v1.Verification.id":
 		x.Id = value.Interface().(string)
-	case "did.v1.VerificationMethod.controller":
+	case "did.v1.Verification.controller":
 		x.Controller = value.Interface().(string)
-	case "did.v1.VerificationMethod.method":
-		x.Method = (DIDNamespace)(value.Enum())
-	case "did.v1.VerificationMethod.issuer":
+	case "did.v1.Verification.did_method":
+		x.DidMethod = value.Interface().(string)
+	case "did.v1.Verification.issuer":
 		x.Issuer = value.Interface().(string)
-	case "did.v1.VerificationMethod.subject":
+	case "did.v1.Verification.subject":
 		x.Subject = value.Interface().(string)
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.public_key":
 		x.PublicKey = value.Message().Interface().(*PubKey)
-	case "did.v1.Service.service_type":
-		x.ServiceType = value.Interface().(string)
-	case "did.v1.Service.controller_did":
-		x.ControllerDid = value.Interface().(string)
-	case "did.v1.Service.origin_uri":
-		x.OriginUri = value.Interface().(string)
-	case "did.v1.Service.service_endpoints":
-		mv := value.Map()
-		cmv := mv.(*_Service_5_map)
-		x.ServiceEndpoints = *cmv.m
-	case "did.v1.Service.scopes":
-		lv := value.List()
-		clv := lv.(*_Service_6_list)
-		x.Scopes = *clv.list
+	case "did.v1.Verification.verification_type":
+		x.VerificationType = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -4251,94 +1906,68 @@ func (x *fastReflection_VerificationMethod) Set(fd protoreflect.FieldDescriptor,
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_VerificationMethod) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Verification) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.public_key":
 		if x.PublicKey == nil {
 			x.PublicKey = new(PubKey)
 		}
 		return protoreflect.ValueOfMessage(x.PublicKey.ProtoReflect())
-	case "did.v1.VerificationMethod.id":
-		panic(fmt.Errorf("field id of message did.v1.VerificationMethod is not mutable"))
-	case "did.v1.VerificationMethod.controller":
-		panic(fmt.Errorf("field controller of message did.v1.VerificationMethod is not mutable"))
-	case "did.v1.VerificationMethod.method":
-		panic(fmt.Errorf("field method of message did.v1.VerificationMethod is not mutable"))
-	case "did.v1.VerificationMethod.issuer":
-		panic(fmt.Errorf("field issuer of message did.v1.VerificationMethod is not mutable"))
-	case "did.v1.VerificationMethod.subject":
-		panic(fmt.Errorf("field subject of message did.v1.VerificationMethod is not mutable"))
-	case "did.v1.Service.service_endpoints":
-		if x.ServiceEndpoints == nil {
-			x.ServiceEndpoints = make(map[string]string)
-		}
-		value := &_Service_5_map{m: &x.ServiceEndpoints}
-		return protoreflect.ValueOfMap(value)
-	case "did.v1.Service.scopes":
-		if x.Scopes == nil {
-			x.Scopes = []PermissionScope{}
-		}
-		value := &_Service_6_list{list: &x.Scopes}
-		return protoreflect.ValueOfList(value)
-	case "did.v1.Service.id":
-		panic(fmt.Errorf("field id of message did.v1.Service is not mutable"))
-	case "did.v1.Service.service_type":
-		panic(fmt.Errorf("field service_type of message did.v1.Service is not mutable"))
-	case "did.v1.Service.controller_did":
-		panic(fmt.Errorf("field controller_did of message did.v1.Service is not mutable"))
-	case "did.v1.Service.origin_uri":
-		panic(fmt.Errorf("field origin_uri of message did.v1.Service is not mutable"))
+	case "did.v1.Verification.id":
+		panic(fmt.Errorf("field id of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.controller":
+		panic(fmt.Errorf("field controller of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.did_method":
+		panic(fmt.Errorf("field did_method of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.issuer":
+		panic(fmt.Errorf("field issuer of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.subject":
+		panic(fmt.Errorf("field subject of message did.v1.Verification is not mutable"))
+	case "did.v1.Verification.verification_type":
+		panic(fmt.Errorf("field verification_type of message did.v1.Verification is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_VerificationMethod) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Verification) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "did.v1.VerificationMethod.id":
+	case "did.v1.Verification.id":
 		return protoreflect.ValueOfString("")
-	case "did.v1.VerificationMethod.controller":
+	case "did.v1.Verification.controller":
 		return protoreflect.ValueOfString("")
-	case "did.v1.VerificationMethod.method":
-		return protoreflect.ValueOfEnum(0)
-	case "did.v1.VerificationMethod.issuer":
+	case "did.v1.Verification.did_method":
 		return protoreflect.ValueOfString("")
-	case "did.v1.VerificationMethod.subject":
+	case "did.v1.Verification.issuer":
 		return protoreflect.ValueOfString("")
-	case "did.v1.VerificationMethod.public_key":
+	case "did.v1.Verification.subject":
+		return protoreflect.ValueOfString("")
+	case "did.v1.Verification.public_key":
 		m := new(PubKey)
 		return protoreflect.ValueOfMessage(m.ProtoReflect())
-	case "did.v1.Service.controller_did":
+	case "did.v1.Verification.verification_type":
 		return protoreflect.ValueOfString("")
-	case "did.v1.Service.origin_uri":
-		return protoreflect.ValueOfString("")
-	case "did.v1.Service.service_endpoints":
-		m := make(map[string]string)
-		return protoreflect.ValueOfMap(&_Service_5_map{m: &m})
-	case "did.v1.Service.scopes":
-		list := []PermissionScope{}
-		return protoreflect.ValueOfList(&_Service_6_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.VerificationMethod"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: did.v1.Verification"))
 		}
-		panic(fmt.Errorf("message did.v1.VerificationMethod does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message did.v1.Verification does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_VerificationMethod) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Verification) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in did.v1.VerificationMethod", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in did.v1.Verification", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -4346,7 +1975,7 @@ func (x *fastReflection_VerificationMethod) WhichOneof(d protoreflect.OneofDescr
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_VerificationMethod) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Verification) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -4357,7 +1986,7 @@ func (x *fastReflection_VerificationMethod) GetUnknown() protoreflect.RawFields 
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_VerificationMethod) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Verification) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -4369,7 +1998,7 @@ func (x *fastReflection_VerificationMethod) SetUnknown(fields protoreflect.RawFi
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_VerificationMethod) IsValid() bool {
+func (x *fastReflection_Verification) IsValid() bool {
 	return x != nil
 }
 
@@ -4379,9 +2008,9 @@ func (x *fastReflection_VerificationMethod) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Verification) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*VerificationMethod)
+		x := input.Message.Interface().(*Verification)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4401,8 +2030,9 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Method != 0 {
-			n += 1 + runtime.Sov(uint64(x.Method))
+		l = len(x.DidMethod)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		l = len(x.Issuer)
 		if l > 0 {
@@ -4416,41 +2046,9 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 			l = options.Size(x.PublicKey)
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.ControllerDid)
+		l = len(x.VerificationType)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		l = len(x.OriginUri)
-		if l > 0 {
-			n += 1 + l + runtime.Sov(uint64(l))
-		}
-		if len(x.ServiceEndpoints) > 0 {
-			SiZeMaP := func(k string, v string) {
-				mapEntrySize := 1 + len(k) + runtime.Sov(uint64(len(k))) + 1 + len(v) + runtime.Sov(uint64(len(v)))
-				n += mapEntrySize + 1 + runtime.Sov(uint64(mapEntrySize))
-			}
-			if options.Deterministic {
-				sortme := make([]string, 0, len(x.ServiceEndpoints))
-				for k := range x.ServiceEndpoints {
-					sortme = append(sortme, k)
-				}
-				sort.Strings(sortme)
-				for _, k := range sortme {
-					v := x.ServiceEndpoints[k]
-					SiZeMaP(k, v)
-				}
-			} else {
-				for k, v := range x.ServiceEndpoints {
-					SiZeMaP(k, v)
-				}
-			}
-		}
-		if len(x.Scopes) > 0 {
-			l = 0
-			for _, e := range x.Scopes {
-				l += runtime.Sov(uint64(e))
-			}
-			n += 1 + runtime.Sov(uint64(l)) + l
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -4462,7 +2060,7 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*VerificationMethod)
+		x := input.Message.Interface().(*Verification)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4480,6 +2078,13 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 		if x.unknownFields != nil {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.VerificationType) > 0 {
+			i -= len(x.VerificationType)
+			copy(dAtA[i:], x.VerificationType)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.VerificationType)))
+			i--
+			dAtA[i] = 0x3a
 		}
 		if x.PublicKey != nil {
 			encoded, err := options.Marshal(x.PublicKey)
@@ -4509,85 +2114,10 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 			i--
 			dAtA[i] = 0x22
 		}
-		if x.Method != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Method))
-			i--
-			dAtA[i] = 0x18
-		if len(x.Scopes) > 0 {
-			var pksize2 int
-			for _, num := range x.Scopes {
-				pksize2 += runtime.Sov(uint64(num))
-			}
-			i -= pksize2
-			j1 := i
-			for _, num1 := range x.Scopes {
-				num := uint64(num1)
-				for num >= 1<<7 {
-					dAtA[j1] = uint8(uint64(num)&0x7f | 0x80)
-					num >>= 7
-					j1++
-				}
-				dAtA[j1] = uint8(num)
-				j1++
-			}
-			i = runtime.EncodeVarint(dAtA, i, uint64(pksize2))
-			i--
-			dAtA[i] = 0x32
-		}
-		if len(x.ServiceEndpoints) > 0 {
-			MaRsHaLmAp := func(k string, v string) (protoiface.MarshalOutput, error) {
-				baseI := i
-				i -= len(v)
-				copy(dAtA[i:], v)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(v)))
-				i--
-				dAtA[i] = 0x12
-				i -= len(k)
-				copy(dAtA[i:], k)
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(k)))
-				i--
-				dAtA[i] = 0xa
-				i = runtime.EncodeVarint(dAtA, i, uint64(baseI-i))
-				i--
-				dAtA[i] = 0x2a
-				return protoiface.MarshalOutput{}, nil
-			}
-			if options.Deterministic {
-				keysForServiceEndpoints := make([]string, 0, len(x.ServiceEndpoints))
-				for k := range x.ServiceEndpoints {
-					keysForServiceEndpoints = append(keysForServiceEndpoints, string(k))
-				}
-				sort.Slice(keysForServiceEndpoints, func(i, j int) bool {
-					return keysForServiceEndpoints[i] < keysForServiceEndpoints[j]
-				})
-				for iNdEx := len(keysForServiceEndpoints) - 1; iNdEx >= 0; iNdEx-- {
-					v := x.ServiceEndpoints[string(keysForServiceEndpoints[iNdEx])]
-					out, err := MaRsHaLmAp(keysForServiceEndpoints[iNdEx], v)
-					if err != nil {
-						return out, err
-					}
-				}
-			} else {
-				for k := range x.ServiceEndpoints {
-					v := x.ServiceEndpoints[k]
-					out, err := MaRsHaLmAp(k, v)
-					if err != nil {
-						return out, err
-					}
-				}
-			}
-		}
-		if len(x.OriginUri) > 0 {
-			i -= len(x.OriginUri)
-			copy(dAtA[i:], x.OriginUri)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.OriginUri)))
-			i--
-			dAtA[i] = 0x22
-		}
-		if len(x.ControllerDid) > 0 {
-			i -= len(x.ControllerDid)
-			copy(dAtA[i:], x.ControllerDid)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.ControllerDid)))
+		if len(x.DidMethod) > 0 {
+			i -= len(x.DidMethod)
+			copy(dAtA[i:], x.DidMethod)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.DidMethod)))
 			i--
 			dAtA[i] = 0x1a
 		}
@@ -4616,7 +2146,7 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*VerificationMethod)
+		x := input.Message.Interface().(*Verification)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -4648,10 +2178,10 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: VerificationMethod: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Verification: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: VerificationMethod: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Verification: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -4719,10 +2249,10 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 				x.Controller = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 3:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Method", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field DidMethod", wireType)
 				}
-				x.Method = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -4732,16 +2262,27 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Method |= DIDNamespace(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.DidMethod = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			case 4:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Issuer", wireType)
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ControllerDid", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -4839,9 +2380,9 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
 				}
 				iNdEx = postIndex
-			case 4:
+			case 7:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field OriginUri", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field VerificationType", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -4869,204 +2410,8 @@ func (x *fastReflection_VerificationMethod) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.OriginUri = string(dAtA[iNdEx:postIndex])
+				x.VerificationType = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 5:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ServiceEndpoints", wireType)
-				}
-				var msglen int
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-					}
-					if iNdEx >= l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					msglen |= int(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				if msglen < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				postIndex := iNdEx + msglen
-				if postIndex < 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-				}
-				if postIndex > l {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-				}
-				if x.ServiceEndpoints == nil {
-					x.ServiceEndpoints = make(map[string]string)
-				}
-				var mapkey string
-				var mapvalue string
-				for iNdEx < postIndex {
-					entryPreIndex := iNdEx
-					var wire uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						wire |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					fieldNum := int32(wire >> 3)
-					if fieldNum == 1 {
-						var stringLenmapkey uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							stringLenmapkey |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						intStringLenmapkey := int(stringLenmapkey)
-						if intStringLenmapkey < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						postStringIndexmapkey := iNdEx + intStringLenmapkey
-						if postStringIndexmapkey < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if postStringIndexmapkey > l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-						iNdEx = postStringIndexmapkey
-					} else if fieldNum == 2 {
-						var stringLenmapvalue uint64
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							stringLenmapvalue |= uint64(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						intStringLenmapvalue := int(stringLenmapvalue)
-						if intStringLenmapvalue < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-						if postStringIndexmapvalue < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if postStringIndexmapvalue > l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-						iNdEx = postStringIndexmapvalue
-					} else {
-						iNdEx = entryPreIndex
-						skippy, err := runtime.Skip(dAtA[iNdEx:])
-						if err != nil {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
-						}
-						if (skippy < 0) || (iNdEx+skippy) < 0 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-						}
-						if (iNdEx + skippy) > postIndex {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						iNdEx += skippy
-					}
-				}
-				x.ServiceEndpoints[mapkey] = mapvalue
-				iNdEx = postIndex
-			case 6:
-				if wireType == 0 {
-					var v PermissionScope
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						v |= PermissionScope(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					x.Scopes = append(x.Scopes, v)
-				} else if wireType == 2 {
-					var packedLen int
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-						}
-						if iNdEx >= l {
-							return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						packedLen |= int(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					if packedLen < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					postIndex := iNdEx + packedLen
-					if postIndex < 0 {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
-					}
-					if postIndex > l {
-						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-					}
-					var elementCount int
-					if elementCount != 0 && len(x.Scopes) == 0 {
-						x.Scopes = make([]PermissionScope, 0, elementCount)
-					}
-					for iNdEx < postIndex {
-						var v PermissionScope
-						for shift := uint(0); ; shift += 7 {
-							if shift >= 64 {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
-							}
-							if iNdEx >= l {
-								return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
-							}
-							b := dAtA[iNdEx]
-							iNdEx++
-							v |= PermissionScope(b&0x7F) << shift
-							if b < 0x80 {
-								break
-							}
-						}
-						x.Scopes = append(x.Scopes, v)
-					}
-				} else {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
-				}
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -5115,40 +2460,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Account represents a wallet account associated with a DID Controller
-type Account struct {
+// Alias represents a DID alias
+type Alias struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// The unique identifier of the account
+	// The unique identifier of the alias
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The controller of the account
-	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
-	// The value of the linked identifier
-	PublicKey *PubKey `protobuf:"bytes,3,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
-	// The address of the account
-	Address string `protobuf:"bytes,4,opt,name=address,proto3" json:"address,omitempty"`
-	// The label of the account
-	Label string `protobuf:"bytes,5,opt,name=label,proto3" json:"label,omitempty"`
-	// The bip32 chain code
-	ChainCode uint32 `protobuf:"varint,6,opt,name=chain_code,json=chainCode,proto3" json:"chain_code,omitempty"`
-	// The index of the account
-	Index uint32 `protobuf:"varint,7,opt,name=index,proto3" json:"index,omitempty"`
-	// The supported chains of the account
-	Chains []string `protobuf:"bytes,8,rep,name=chains,proto3" json:"chains,omitempty"`
-	// Origin is the  Alias provider
-	Origin string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	// Subject is the user defined alias
-	Subject string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
-	// Controller of the alias
-	Controller string `protobuf:"bytes,4,opt,name=controller,proto3" json:"controller,omitempty"`
-	// Expiration of the alias
-	Expiration uint64 `protobuf:"varint,5,opt,name=expiration,proto3" json:"expiration,omitempty"`
+	// The alias of the DID
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	// Origin of the alias
+	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
 }
 
-func (x *Account) Reset() {
-	*x = Account{}
+func (x *Alias) Reset() {
+	*x = Alias{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_state_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -5156,86 +2483,36 @@ func (x *Account) Reset() {
 	}
 }
 
-func (x *Account) String() string {
+func (x *Alias) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Account) ProtoMessage() {}
+func (*Alias) ProtoMessage() {}
 
-// Deprecated: Use Account.ProtoReflect.Descriptor instead.
-func (*Account) Descriptor() ([]byte, []int) {
+// Deprecated: Use Alias.ProtoReflect.Descriptor instead.
+func (*Alias) Descriptor() ([]byte, []int) {
 	return file_did_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Account) GetId() string {
+func (x *Alias) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Account) GetController() string {
-func (x *Aliases) GetOrigin() string {
-	if x != nil {
-		return x.Origin
-	}
-	return ""
-}
-
-func (x *Aliases) GetSubject() string {
+func (x *Alias) GetSubject() string {
 	if x != nil {
 		return x.Subject
 	}
 	return ""
 }
 
-func (x *Aliases) GetController() string {
+func (x *Alias) GetOrigin() string {
 	if x != nil {
-		return x.Controller
+		return x.Origin
 	}
 	return ""
-}
-
-func (x *Account) GetPublicKey() *PubKey {
-	if x != nil {
-		return x.PublicKey
-	}
-	return nil
-}
-
-func (x *Account) GetAddress() string {
-	if x != nil {
-		return x.Address
-	}
-	return ""
-}
-
-func (x *Account) GetLabel() string {
-	if x != nil {
-		return x.Label
-	}
-	return ""
-}
-
-func (x *Account) GetChainCode() uint32 {
-	if x != nil {
-		return x.ChainCode
-	}
-	return 0
-}
-
-func (x *Account) GetIndex() uint32 {
-	if x != nil {
-		return x.Index
-	}
-	return 0
-}
-
-func (x *Account) GetChains() []string {
-	if x != nil {
-		return x.Chains
-	}
-	return nil
 }
 
 // Controller represents a Sonr DWN Vault
@@ -5247,15 +2524,21 @@ type Controller struct {
 	// The unique identifier of the controller
 	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// The DID of the controller
-	Address string `protobuf:"bytes,2,opt,name=address,proto3" json:"address,omitempty"`
+	SonrAddress string `protobuf:"bytes,2,opt,name=sonr_address,json=sonrAddress,proto3" json:"sonr_address,omitempty"`
+	// The DID of the controller
+	EthAddress string `protobuf:"bytes,3,opt,name=eth_address,json=ethAddress,proto3" json:"eth_address,omitempty"`
+	// The DID of the controller
+	BtcAddress string `protobuf:"bytes,4,opt,name=btc_address,json=btcAddress,proto3" json:"btc_address,omitempty"`
 	// Aliases of the controller
-	Aliases []*Alias `protobuf:"bytes,3,rep,name=aliases,proto3" json:"aliases,omitempty"`
+	Aliases []string `protobuf:"bytes,5,rep,name=aliases,proto3" json:"aliases,omitempty"`
 	// PubKey is the verification method
-	PublicKey *PubKey `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	PublicKey *PubKey `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
 	// The vault address or identifier
-	VaultCid string `protobuf:"bytes,5,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
+	VaultCid string `protobuf:"bytes,7,opt,name=vault_cid,json=vaultCid,proto3" json:"vault_cid,omitempty"`
 	// The Authentications of the controller
-	Authentication []*Credential `protobuf:"bytes,6,rep,name=authentication,proto3" json:"authentication,omitempty"`
+	Authentication []string `protobuf:"bytes,8,rep,name=authentication,proto3" json:"authentication,omitempty"`
+	// The Status of the claims for the controller
+	Status string `protobuf:"bytes,9,opt,name=status,proto3" json:"status,omitempty"`
 }
 
 func (x *Controller) Reset() {
@@ -5285,14 +2568,28 @@ func (x *Controller) GetId() string {
 	return ""
 }
 
-func (x *Controller) GetAddress() string {
+func (x *Controller) GetSonrAddress() string {
 	if x != nil {
-		return x.Address
+		return x.SonrAddress
 	}
 	return ""
 }
 
-func (x *Controller) GetAliases() []*Alias {
+func (x *Controller) GetEthAddress() string {
+	if x != nil {
+		return x.EthAddress
+	}
+	return ""
+}
+
+func (x *Controller) GetBtcAddress() string {
+	if x != nil {
+		return x.BtcAddress
+	}
+	return ""
+}
+
+func (x *Controller) GetAliases() []string {
 	if x != nil {
 		return x.Aliases
 	}
@@ -5313,201 +2610,22 @@ func (x *Controller) GetVaultCid() string {
 	return ""
 }
 
-func (x *Controller) GetAuthentication() []*Credential {
+func (x *Controller) GetAuthentication() []string {
 	if x != nil {
 		return x.Authentication
 	}
 	return nil
 }
 
-// Proof represents a verifiable credential
-type Proof struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// The unique identifier of the proof
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The controller of the proof
-	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
-	// The value of the linked identifier
-	Issuer string `protobuf:"bytes,3,opt,name=issuer,proto3" json:"issuer,omitempty"`
-	// The property of the proof
-	Property string `protobuf:"bytes,4,opt,name=property,proto3" json:"property,omitempty"`
-	// The accumulator of the proof
-	Accumulator []byte `protobuf:"bytes,5,opt,name=accumulator,proto3" json:"accumulator,omitempty"`
-	// The secret key of the proof
-	Key []byte `protobuf:"bytes,6,opt,name=key,proto3" json:"key,omitempty"`
-}
-
-func (x *Proof) Reset() {
-	*x = Proof{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[2]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *Proof) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*Proof) ProtoMessage() {}
-
-// Deprecated: Use Proof.ProtoReflect.Descriptor instead.
-func (*Proof) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *Proof) GetId() string {
+func (x *Controller) GetStatus() string {
 	if x != nil {
-		return x.Id
+		return x.Status
 	}
 	return ""
-}
-
-func (x *Proof) GetController() string {
-	if x != nil {
-		return x.Controller
-	}
-	return ""
-}
-
-func (x *Proof) GetIssuer() string {
-	if x != nil {
-		return x.Issuer
-	}
-	return ""
-}
-
-func (x *Proof) GetProperty() string {
-	if x != nil {
-		return x.Property
-	}
-	return ""
-}
-
-func (x *Proof) GetAccumulator() []byte {
-	if x != nil {
-		return x.Accumulator
-	}
-	return nil
-}
-
-func (x *Proof) GetKey() []byte {
-	if x != nil {
-		return x.Key
-	}
-	return nil
-}
-
-// ServiceRecord represents a decentralized service in a DID Document
-type ServiceRecord struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	// The ID of the service
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The type of the service
-	ServiceType string `protobuf:"bytes,2,opt,name=service_type,json=serviceType,proto3" json:"service_type,omitempty"`
-	// The authority DID of the service
-	Authority string `protobuf:"bytes,3,opt,name=authority,proto3" json:"authority,omitempty"`
-	// The domain name of the service
-	Origin string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
-	// The description of the service
-	Description string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	// The service endpoint
-	ServiceEndpoints map[string]string `protobuf:"bytes,6,rep,name=service_endpoints,json=serviceEndpoints,proto3" json:"service_endpoints,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// Scopes is the Authorization Grants of the service
-	Permissions *Permissions `protobuf:"bytes,7,opt,name=permissions,proto3" json:"permissions,omitempty"`
-	// The controller DID of the service
-	ControllerDid string `protobuf:"bytes,3,opt,name=controller_did,json=controllerDid,proto3" json:"controller_did,omitempty"`
-	// The domain name of the service
-	OriginUri string `protobuf:"bytes,4,opt,name=origin_uri,json=originUri,proto3" json:"origin_uri,omitempty"`
-	// The service endpoint
-	ServiceEndpoints map[string]string `protobuf:"bytes,5,rep,name=service_endpoints,json=serviceEndpoints,proto3" json:"service_endpoints,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// Scopes is the Authorization Grants of the service
-	Scopes []PermissionScope `protobuf:"varint,6,rep,packed,name=scopes,proto3,enum=did.v1.PermissionScope" json:"scopes,omitempty"`
-}
-
-func (x *ServiceRecord) Reset() {
-	*x = ServiceRecord{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[3]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *ServiceRecord) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ServiceRecord) ProtoMessage() {}
-
-// Deprecated: Use ServiceRecord.ProtoReflect.Descriptor instead.
-func (*ServiceRecord) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *ServiceRecord) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *ServiceRecord) GetServiceType() string {
-	if x != nil {
-		return x.ServiceType
-	}
-	return ""
-}
-
-func (x *ServiceRecord) GetAuthority() string {
-	if x != nil {
-		return x.Authority
-	}
-	return ""
-}
-
-func (x *ServiceRecord) GetOrigin() string {
-func (x *Service) GetControllerDid() string {
-	if x != nil {
-		return x.Origin
-	}
-	return ""
-}
-
-func (x *ServiceRecord) GetDescription() string {
-	if x != nil {
-		return x.Description
-func (x *Service) GetOriginUri() string {
-	if x != nil {
-		return x.OriginUri
-	}
-	return ""
-}
-
-func (x *ServiceRecord) GetServiceEndpoints() map[string]string {
-func (x *Service) GetServiceEndpoints() map[string]string {
-	if x != nil {
-		return x.ServiceEndpoints
-	}
-	return nil
-}
-
-func (x *ServiceRecord) GetPermissions() *Permissions {
-	if x != nil {
-		return x.Permissions
-	}
-	return nil
 }
 
 // Verification reprsents a method of verifying membership in a DID
-type VerificationMethod struct {
+type Verification struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -5517,78 +2635,84 @@ type VerificationMethod struct {
 	// The controller of the verification
 	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
 	// The DIDNamespace of the verification
-	Method DIDNamespace `protobuf:"varint,3,opt,name=method,proto3,enum=did.v1.DIDNamespace" json:"method,omitempty"`
+	DidMethod string `protobuf:"bytes,3,opt,name=did_method,json=didMethod,proto3" json:"did_method,omitempty"`
 	// The value of the linked identifier
 	Issuer string `protobuf:"bytes,4,opt,name=issuer,proto3" json:"issuer,omitempty"`
 	// The subject of the verification
 	Subject string `protobuf:"bytes,5,opt,name=subject,proto3" json:"subject,omitempty"`
 	// The public key of the verification
 	PublicKey *PubKey `protobuf:"bytes,6,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`
+	// The Verification Type (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
+	VerificationType string `protobuf:"bytes,7,opt,name=verification_type,json=verificationType,proto3" json:"verification_type,omitempty"`
 }
 
-func (x *VerificationMethod) Reset() {
-	*x = VerificationMethod{}
+func (x *Verification) Reset() {
+	*x = Verification{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_did_v1_state_proto_msgTypes[4]
+		mi := &file_did_v1_state_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
 }
 
-func (x *VerificationMethod) String() string {
+func (x *Verification) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*VerificationMethod) ProtoMessage() {}
+func (*Verification) ProtoMessage() {}
 
-// Deprecated: Use VerificationMethod.ProtoReflect.Descriptor instead.
-func (*VerificationMethod) Descriptor() ([]byte, []int) {
-	return file_did_v1_state_proto_rawDescGZIP(), []int{4}
+// Deprecated: Use Verification.ProtoReflect.Descriptor instead.
+func (*Verification) Descriptor() ([]byte, []int) {
+	return file_did_v1_state_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *VerificationMethod) GetId() string {
+func (x *Verification) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *VerificationMethod) GetController() string {
+func (x *Verification) GetController() string {
 	if x != nil {
 		return x.Controller
 	}
 	return ""
 }
 
-func (x *VerificationMethod) GetMethod() DIDNamespace {
+func (x *Verification) GetDidMethod() string {
 	if x != nil {
-		return x.Method
+		return x.DidMethod
 	}
-	return DIDNamespace_DID_NAMESPACE_UNSPECIFIED
+	return ""
 }
 
-func (x *VerificationMethod) GetIssuer() string {
+func (x *Verification) GetIssuer() string {
 	if x != nil {
 		return x.Issuer
 	}
 	return ""
 }
 
-func (x *VerificationMethod) GetSubject() string {
+func (x *Verification) GetSubject() string {
 	if x != nil {
 		return x.Subject
 	}
 	return ""
 }
 
-func (x *VerificationMethod) GetPublicKey() *PubKey {
+func (x *Verification) GetPublicKey() *PubKey {
 	if x != nil {
 		return x.PublicKey
-func (x *Service) GetScopes() []PermissionScope {
-	if x != nil {
-		return x.Scopes
 	}
 	return nil
+}
+
+func (x *Verification) GetVerificationType() string {
+	if x != nil {
+		return x.VerificationType
+	}
+	return ""
 }
 
 var File_did_v1_state_proto protoreflect.FileDescriptor
@@ -5598,217 +2722,70 @@ var file_did_v1_state_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
 	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x14, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x2f, 0x67, 0x65,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x13, 0x64, 0x69, 0x64,
-	0x2f, 0x76, 0x31, 0x2f, 0x6d, 0x6f, 0x64, 0x65, 0x6c, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x22, 0xca, 0x02, 0x0a, 0x07, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a,
-	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x2d, 0x0a, 0x0a,
-	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79,
-	0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x18, 0x0a, 0x07, 0x61,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x64,
-	0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x14, 0x0a, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x18, 0x05,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x12, 0x1d, 0x0a, 0x0a, 0x63,
-	0x68, 0x61, 0x69, 0x6e, 0x5f, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0d, 0x52,
-	0x09, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x43, 0x6f, 0x64, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x69, 0x6e,
-	0x64, 0x65, 0x78, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0d, 0x52, 0x05, 0x69, 0x6e, 0x64, 0x65, 0x78,
-	0x12, 0x16, 0x0a, 0x06, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x73, 0x18, 0x08, 0x20, 0x03, 0x28, 0x09,
-	0x52, 0x06, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x73, 0x3a, 0x63, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x5d,
-	0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x10, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x6c, 0x61, 0x62, 0x65, 0x6c, 0x10, 0x01, 0x18, 0x01, 0x12, 0x18,
-	0x0a, 0x12, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x61, 0x64, 0x64,
-	0x72, 0x65, 0x73, 0x73, 0x10, 0x02, 0x18, 0x01, 0x12, 0x21, 0x0a, 0x1b, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x5f, 0x63, 0x6f, 0x64,
-	0x65, 0x2c, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x10, 0x03, 0x18, 0x01, 0x18, 0x01, 0x22, 0x97, 0x02,
-	0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02,
-	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07,
-	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61,
-	0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x27, 0x0a, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65,
-	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
-	0x2e, 0x41, 0x6c, 0x69, 0x61, 0x73, 0x52, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x12,
-	0x2d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62,
-	0x4b, 0x65, 0x79, 0x52, 0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1b,
-	0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x43, 0x69, 0x64, 0x12, 0x3a, 0x0a, 0x0e, 0x61,
-	0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x06, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x12, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65,
-	0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x52, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74,
-	0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x3a, 0x2e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x28, 0x0a,
-	0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x0d, 0x0a, 0x07, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
-	0x10, 0x01, 0x18, 0x01, 0x12, 0x0f, 0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69,
-	0x64, 0x10, 0x02, 0x18, 0x01, 0x18, 0x02, 0x22, 0xd1, 0x01, 0x0a, 0x05, 0x50, 0x72, 0x6f, 0x6f,
-	0x66, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69,
-	0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18,
-	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
-	0x72, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x18, 0x03, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f,
-	0x70, 0x65, 0x72, 0x74, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f,
-	0x70, 0x65, 0x72, 0x74, 0x79, 0x12, 0x20, 0x0a, 0x0b, 0x61, 0x63, 0x63, 0x75, 0x6d, 0x75, 0x6c,
-	0x61, 0x74, 0x6f, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x75,
-	0x6d, 0x75, 0x6c, 0x61, 0x74, 0x6f, 0x72, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x06,
-	0x20, 0x01, 0x28, 0x0c, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x3a, 0x30, 0xf2, 0x9e, 0xd3, 0x8e, 0x03,
-	0x2a, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x20, 0x0a, 0x1a, 0x63, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x2c, 0x70, 0x72, 0x6f,
-	0x70, 0x65, 0x72, 0x74, 0x79, 0x10, 0x01, 0x18, 0x01, 0x18, 0x04, 0x22, 0xa6, 0x03, 0x0a, 0x0d,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x12, 0x0e, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a,
-	0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x54, 0x79, 0x70, 0x65,
-	0x12, 0x1c, 0x0a, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x18, 0x03, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x75, 0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x12, 0x16,
-	0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
-	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x58, 0x0a, 0x11, 0x73, 0x65, 0x72, 0x76,
-	0x69, 0x63, 0x65, 0x5f, 0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x18, 0x06, 0x20,
-	0x03, 0x28, 0x0b, 0x32, 0x2b, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x63, 0x6f, 0x72, 0x64, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79,
-	0x52, 0x10, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e,
-	0x74, 0x73, 0x12, 0x35, 0x0a, 0x0b, 0x70, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e,
-	0x73, 0x18, 0x07, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x13, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
-	0x2e, 0x50, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x52, 0x0b, 0x70, 0x65,
-	0x72, 0x6d, 0x69, 0x73, 0x73, 0x69, 0x6f, 0x6e, 0x73, 0x1a, 0x43, 0x0a, 0x15, 0x53, 0x65, 0x72,
-	0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74,
-	0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a, 0x34,
-	0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x2e, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x0c, 0x0a, 0x06,
-	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x01, 0x18, 0x01, 0x12, 0x16, 0x0a, 0x10, 0x61, 0x75,
-	0x74, 0x68, 0x6f, 0x72, 0x69, 0x74, 0x79, 0x2c, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x02,
-	0x18, 0x01, 0x18, 0x03, 0x22, 0x8b, 0x02, 0x0a, 0x12, 0x56, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x2c, 0x0a, 0x06, 0x6d,
-	0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0e, 0x32, 0x14, 0x2e, 0x64, 0x69,
-	0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x49, 0x44, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63,
-	0x65, 0x52, 0x06, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73,
+	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x6f, 0x0a, 0x05, 0x41,
+	0x6c, 0x69, 0x61, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x16,
+	0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x3a, 0x24, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x1e, 0x0a, 0x04,
+	0x0a, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c,
+	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x01, 0x18, 0x01, 0x18, 0x01, 0x22, 0x9a, 0x03, 0x0a,
+	0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69,
+	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x73,
+	0x6f, 0x6e, 0x72, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x73, 0x6f, 0x6e, 0x72, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x1f,
+	0x0a, 0x0b, 0x65, 0x74, 0x68, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x65, 0x74, 0x68, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12,
+	0x1f, 0x0a, 0x0b, 0x62, 0x74, 0x63, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x62, 0x74, 0x63, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73,
+	0x12, 0x18, 0x0a, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x18, 0x05, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x07, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x12, 0x2d, 0x0a, 0x0a, 0x70, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e,
+	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52, 0x09,
+	0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75,
+	0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x18, 0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x43, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x0e, 0x61, 0x75, 0x74, 0x68, 0x65, 0x6e,
+	0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x08, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0e,
+	0x61, 0x75, 0x74, 0x68, 0x65, 0x6e, 0x74, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x16,
+	0x0a, 0x06, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x18, 0x09, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06,
+	0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x3a, 0x71, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x6b, 0x0a, 0x04,
+	0x0a, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x0c, 0x73, 0x6f, 0x6e, 0x72, 0x5f, 0x61, 0x64, 0x64,
+	0x72, 0x65, 0x73, 0x73, 0x10, 0x01, 0x18, 0x01, 0x12, 0x11, 0x0a, 0x0b, 0x65, 0x74, 0x68, 0x5f,
+	0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x10, 0x02, 0x18, 0x01, 0x12, 0x11, 0x0a, 0x0b, 0x62,
+	0x74, 0x63, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x10, 0x03, 0x18, 0x01, 0x12, 0x0f,
+	0x0a, 0x09, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x10, 0x04, 0x18, 0x01, 0x12,
+	0x16, 0x0a, 0x10, 0x73, 0x74, 0x61, 0x74, 0x75, 0x73, 0x2c, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x5f,
+	0x63, 0x69, 0x64, 0x10, 0x05, 0x18, 0x01, 0x18, 0x02, 0x22, 0xdd, 0x02, 0x0a, 0x0c, 0x56, 0x65,
+	0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f,
+	0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a,
+	0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x1d, 0x0a, 0x0a, 0x64, 0x69,
+	0x64, 0x5f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09,
+	0x64, 0x69, 0x64, 0x4d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x69, 0x73, 0x73,
 	0x75, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x69, 0x73, 0x73, 0x75, 0x65,
 	0x72, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x05, 0x20, 0x01,
 	0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x2d, 0x0a, 0x0a, 0x70,
 	0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32,
 	0x0e, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x75, 0x62, 0x4b, 0x65, 0x79, 0x52,
-	0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x3a, 0x36, 0xf2, 0x9e, 0xd3, 0x8e,
-	0x03, 0x30, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x26, 0x0a, 0x20, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x2c, 0x69, 0x73,
-	0x73, 0x75, 0x65, 0x72, 0x2c, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x01, 0x18, 0x01,
-	0x18, 0x05, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
-	0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27,
-	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e,
-	0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76,
-	0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06,
-	0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2,
-	0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61,
-	0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
-	0x6e, 0x65, 0x73, 0x69, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x12, 0x64, 0x69, 0x64,
-	0x2f, 0x76, 0x31, 0x2f, 0x65, 0x6e, 0x75, 0x6d, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0xaa, 0x01, 0x0a, 0x07, 0x41, 0x6c, 0x69, 0x61, 0x73, 0x65, 0x73, 0x12, 0x0e, 0x0a, 0x02, 0x69,
-	0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6f,
-	0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69,
-	0x67, 0x69, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x1e, 0x0a,
-	0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x04, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x1e, 0x0a,
-	0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x05, 0x20, 0x01, 0x28,
-	0x04, 0x52, 0x0a, 0x65, 0x78, 0x70, 0x69, 0x72, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x3a, 0x1d, 0xf2,
-	0x9e, 0xd3, 0x8e, 0x03, 0x17, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x0d, 0x0a, 0x07, 0x73,
-	0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x01, 0x18, 0x01, 0x18, 0x01, 0x22, 0x80, 0x02, 0x0a,
-	0x09, 0x41, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x19, 0x0a, 0x08, 0x6b, 0x65,
-	0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6b, 0x65,
-	0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x64, 0x65,
-	0x6e, 0x74, 0x69, 0x61, 0x6c, 0x12, 0x3b, 0x0a, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
-	0x61, 0x18, 0x04, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x1f, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31,
-	0x2e, 0x41, 0x73, 0x73, 0x65, 0x72, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x74, 0x61, 0x64,
-	0x61, 0x74, 0x61, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x08, 0x6d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
-	0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x1a, 0x3b, 0x0a, 0x0d, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x45, 0x6e,
-	0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a,
-	0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x02, 0x22,
-	0x94, 0x01, 0x0a, 0x0b, 0x41, 0x74, 0x74, 0x65, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
-	0x19, 0x0a, 0x08, 0x6b, 0x65, 0x79, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x6b, 0x65, 0x79, 0x54, 0x79, 0x70, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61,
-	0x6c, 0x75, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65,
-	0x12, 0x14, 0x0a, 0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x05, 0x70, 0x72, 0x6f, 0x6f, 0x66, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f,
-	0x6c, 0x6c, 0x65, 0x72, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74,
-	0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x03, 0x22, 0xaf, 0x01, 0x0a, 0x0a, 0x43, 0x6f, 0x6e, 0x74, 0x72,
-	0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c, 0x69,
-	0x63, 0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x18,
-	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79,
-	0x4d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x76, 0x61, 0x75,
-	0x6c, 0x74, 0x5f, 0x63, 0x69, 0x64, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x76, 0x61,
-	0x75, 0x6c, 0x74, 0x43, 0x69, 0x64, 0x12, 0x20, 0x0a, 0x0b, 0x66, 0x69, 0x6e, 0x67, 0x65, 0x72,
-	0x70, 0x72, 0x69, 0x6e, 0x74, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x0b, 0x66, 0x69, 0x6e,
-	0x67, 0x65, 0x72, 0x70, 0x72, 0x69, 0x6e, 0x74, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08,
-	0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x04, 0x22, 0x8b, 0x03, 0x0a, 0x0a, 0x44, 0x65, 0x6c,
-	0x65, 0x67, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x64, 0x69, 0x64, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x64, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x68, 0x61,
-	0x69, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x63,
-	0x68, 0x61, 0x69, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x12, 0x23, 0x0a, 0x0d, 0x63, 0x68, 0x61, 0x69,
-	0x6e, 0x5f, 0x61, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52,
-	0x0c, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x41, 0x64, 0x64, 0x72, 0x65, 0x73, 0x73, 0x12, 0x25, 0x0a,
-	0x0e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18,
-	0x05, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
-	0x72, 0x44, 0x69, 0x64, 0x12, 0x30, 0x0a, 0x14, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x5f, 0x6b,
-	0x65, 0x79, 0x5f, 0x6d, 0x75, 0x6c, 0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x18, 0x06, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x12, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4d, 0x75, 0x6c,
-	0x74, 0x69, 0x62, 0x61, 0x73, 0x65, 0x12, 0x4d, 0x0a, 0x0f, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63,
-	0x5f, 0x6b, 0x65, 0x79, 0x5f, 0x6a, 0x77, 0x6b, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0b, 0x32,
-	0x25, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x67, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x2e, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x4a, 0x77, 0x6b,
-	0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
-	0x79, 0x4a, 0x77, 0x6b, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x68, 0x61, 0x6e, 0x6e, 0x65, 0x6c,
-	0x5f, 0x69, 0x64, 0x18, 0x08, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x63, 0x68, 0x61, 0x6e, 0x6e,
-	0x65, 0x6c, 0x49, 0x64, 0x1a, 0x40, 0x0a, 0x12, 0x50, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65,
-	0x79, 0x4a, 0x77, 0x6b, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65,
-	0x79, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05,
-	0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c,
-	0x75, 0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04,
-	0x0a, 0x02, 0x69, 0x64, 0x18, 0x05, 0x22, 0xdc, 0x02, 0x0a, 0x07, 0x53, 0x65, 0x72, 0x76, 0x69,
-	0x63, 0x65, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x21, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x74, 0x79,
-	0x70, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63,
-	0x65, 0x54, 0x79, 0x70, 0x65, 0x12, 0x25, 0x0a, 0x0e, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c,
-	0x6c, 0x65, 0x72, 0x5f, 0x64, 0x69, 0x64, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0d, 0x63,
-	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x44, 0x69, 0x64, 0x12, 0x1d, 0x0a, 0x0a,
-	0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x5f, 0x75, 0x72, 0x69, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x09, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x55, 0x72, 0x69, 0x12, 0x52, 0x0a, 0x11, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x65, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73,
-	0x18, 0x05, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x25, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e,
-	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2e, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45,
-	0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x52, 0x10, 0x73,
-	0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f, 0x69, 0x6e, 0x74, 0x73, 0x12,
-	0x2f, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x18, 0x06, 0x20, 0x03, 0x28, 0x0e, 0x32,
-	0x17, 0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x2e, 0x50, 0x65, 0x72, 0x6d, 0x69, 0x73, 0x73,
-	0x69, 0x6f, 0x6e, 0x53, 0x63, 0x6f, 0x70, 0x65, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73,
-	0x1a, 0x43, 0x0a, 0x15, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x45, 0x6e, 0x64, 0x70, 0x6f,
-	0x69, 0x6e, 0x74, 0x73, 0x45, 0x6e, 0x74, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x6b, 0x65, 0x79,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x6b, 0x65, 0x79, 0x12, 0x14, 0x0a, 0x05, 0x76,
-	0x61, 0x6c, 0x75, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75,
-	0x65, 0x3a, 0x02, 0x38, 0x01, 0x3a, 0x0e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x08, 0x0a, 0x04, 0x0a,
-	0x02, 0x69, 0x64, 0x18, 0x06, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x69, 0x64,
-	0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
-	0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e,
-	0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x68, 0x77, 0x61, 0x79, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x69,
-	0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58,
-	0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x69, 0x64, 0x5c,
-	0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d,
-	0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69, 0x64, 0x3a, 0x3a, 0x56,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x09, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x2b, 0x0a, 0x11, 0x76, 0x65,
+	0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18,
+	0x07, 0x20, 0x01, 0x28, 0x09, 0x52, 0x10, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74,
+	0x69, 0x6f, 0x6e, 0x54, 0x79, 0x70, 0x65, 0x3a, 0x70, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x6a, 0x0a,
+	0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x14, 0x0a, 0x0e, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x2c,
+	0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x10, 0x01, 0x18, 0x01, 0x12, 0x22, 0x0a, 0x1c, 0x63,
+	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x2c, 0x64, 0x69, 0x64, 0x5f, 0x6d, 0x65,
+	0x74, 0x68, 0x6f, 0x64, 0x2c, 0x69, 0x73, 0x73, 0x75, 0x65, 0x72, 0x10, 0x02, 0x18, 0x01, 0x12,
+	0x26, 0x0a, 0x20, 0x76, 0x65, 0x72, 0x69, 0x66, 0x69, 0x63, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f,
+	0x74, 0x79, 0x70, 0x65, 0x2c, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c, 0x69, 0x73, 0x73,
+	0x75, 0x65, 0x72, 0x10, 0x03, 0x18, 0x01, 0x18, 0x04, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d,
+	0x2e, 0x64, 0x69, 0x64, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x64, 0x69, 0x64, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x69, 0x64, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x69, 0x64, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06,
+	0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x69, 0x64, 0x5c, 0x56, 0x31, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x69,
+	0x64, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -5823,57 +2800,21 @@ func file_did_v1_state_proto_rawDescGZIP() []byte {
 	return file_did_v1_state_proto_rawDescData
 }
 
-var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_did_v1_state_proto_goTypes = []interface{}{
-	(*Account)(nil),            // 0: did.v1.Account
-	(*Controller)(nil),         // 1: did.v1.Controller
-	(*Proof)(nil),              // 2: did.v1.Proof
-	(*ServiceRecord)(nil),      // 3: did.v1.ServiceRecord
-	(*VerificationMethod)(nil), // 4: did.v1.VerificationMethod
-	nil,                        // 5: did.v1.ServiceRecord.ServiceEndpointsEntry
-	(*PubKey)(nil),             // 6: did.v1.PubKey
-	(*Alias)(nil),              // 7: did.v1.Alias
-	(*Credential)(nil),         // 8: did.v1.Credential
-	(*Permissions)(nil),        // 9: did.v1.Permissions
-	(DIDNamespace)(0),          // 10: did.v1.DIDNamespace
+	(*Alias)(nil),        // 0: did.v1.Alias
+	(*Controller)(nil),   // 1: did.v1.Controller
+	(*Verification)(nil), // 2: did.v1.Verification
+	(*PubKey)(nil),       // 3: did.v1.PubKey
 }
 var file_did_v1_state_proto_depIdxs = []int32{
-	6,  // 0: did.v1.Account.public_key:type_name -> did.v1.PubKey
-	7,  // 1: did.v1.Controller.aliases:type_name -> did.v1.Alias
-	6,  // 2: did.v1.Controller.public_key:type_name -> did.v1.PubKey
-	8,  // 3: did.v1.Controller.authentication:type_name -> did.v1.Credential
-	5,  // 4: did.v1.ServiceRecord.service_endpoints:type_name -> did.v1.ServiceRecord.ServiceEndpointsEntry
-	9,  // 5: did.v1.ServiceRecord.permissions:type_name -> did.v1.Permissions
-	10, // 6: did.v1.VerificationMethod.method:type_name -> did.v1.DIDNamespace
-	6,  // 7: did.v1.VerificationMethod.public_key:type_name -> did.v1.PubKey
-	8,  // [8:8] is the sub-list for method output_type
-	8,  // [8:8] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
-var file_did_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 9)
-var file_did_v1_state_proto_goTypes = []interface{}{
-	(*Aliases)(nil),      // 0: did.v1.Aliases
-	(*Assertion)(nil),    // 1: did.v1.Assertion
-	(*Attestation)(nil),  // 2: did.v1.Attestation
-	(*Controller)(nil),   // 3: did.v1.Controller
-	(*Delegation)(nil),   // 4: did.v1.Delegation
-	(*Service)(nil),      // 5: did.v1.Service
-	nil,                  // 6: did.v1.Assertion.MetadataEntry
-	nil,                  // 7: did.v1.Delegation.PublicKeyJwksEntry
-	nil,                  // 8: did.v1.Service.ServiceEndpointsEntry
-	(PermissionScope)(0), // 9: did.v1.PermissionScope
-}
-var file_did_v1_state_proto_depIdxs = []int32{
-	6, // 0: did.v1.Assertion.metadata:type_name -> did.v1.Assertion.MetadataEntry
-	7, // 1: did.v1.Delegation.public_key_jwks:type_name -> did.v1.Delegation.PublicKeyJwksEntry
-	8, // 2: did.v1.Service.service_endpoints:type_name -> did.v1.Service.ServiceEndpointsEntry
-	9, // 3: did.v1.Service.scopes:type_name -> did.v1.PermissionScope
-	4, // [4:4] is the sub-list for method output_type
-	4, // [4:4] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	3, // 0: did.v1.Controller.public_key:type_name -> did.v1.PubKey
+	3, // 1: did.v1.Verification.public_key:type_name -> did.v1.PubKey
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_did_v1_state_proto_init() }
@@ -5882,11 +2823,9 @@ func file_did_v1_state_proto_init() {
 		return
 	}
 	file_did_v1_genesis_proto_init()
-	file_did_v1_models_proto_init()
-	file_did_v1_enums_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_did_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Account); i {
+			switch v := v.(*Alias); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5910,31 +2849,7 @@ func file_did_v1_state_proto_init() {
 			}
 		}
 		file_did_v1_state_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Proof); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_did_v1_state_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ServiceRecord); i {
-			case 0:
-				return &v.state
-			case 1:
-				return &v.sizeCache
-			case 2:
-				return &v.unknownFields
-			default:
-				return nil
-			}
-		}
-		file_did_v1_state_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*VerificationMethod); i {
+			switch v := v.(*Verification); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -5952,8 +2867,7 @@ func file_did_v1_state_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_did_v1_state_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   6,
-			NumMessages:   9,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
