@@ -47,8 +47,8 @@ func NewAnteHandler(options HandlerOptions) (sdk.AnteHandler, error) {
 	}
 
 	poaDoGenTxRateValidation := false
-	poaRateFloor := sdkmath.LegacyMustNewDecFromStr("0.10")
-	poaRateCeil := sdkmath.LegacyMustNewDecFromStr("0.50")
+	poaRateFloor := sdkmath.LegacyMustNewDecFromStr("0.05")
+	poaRateCeil := sdkmath.LegacyMustNewDecFromStr("0.25")
 
 	anteDecorators := []sdk.AnteDecorator{
 		ante.NewSetUpContextDecorator(), // outermost AnteDecorator. SetUpContext must be called first
