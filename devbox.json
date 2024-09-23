@@ -7,10 +7,8 @@
   ],
   "env": {
     "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
-    "PROJECT_DIR": "$HOME/ghq/github.com/onsonr/sonr",
-    "PROJECT_BIN": "$PROJECT_DIR/bin",
     "GOPATH": "$HOME/go",
-    "PATH": "$HOME/go/bin:$PROJECT_BIN:$PATH",
+    "PATH": "$HOME/go/bin:$PATH",
     "TEMPL_EXPERIMENT": "rawgo",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
