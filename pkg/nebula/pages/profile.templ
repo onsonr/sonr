@@ -5,7 +5,11 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/blocks"
 )
 
-templ Profile(c echo.Context) {
+func Profile(c echo.Context) error {
+	return echoResponse(c, profileView(c))
+}
+
+templ profileView(c echo.Context) {
 	@blocks.Card("profile-view", blocks.SizeLarge) {
 		@blocks.ProfileCard()
 		@blocks.Tabs()

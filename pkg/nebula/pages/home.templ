@@ -5,7 +5,11 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/blocks"
 )
 
-templ Home(c echo.Context) {
+func Home(c echo.Context) error {
+	return echoResponse(c, homeView())
+}
+
+templ homeView() {
 	@blocks.Card("home-view", blocks.SizeLarge) {
 		@blocks.H1("Sonr.ID")
 		@blocks.Text("A Decentralized Web Node Client for the Sonr Network.")

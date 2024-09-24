@@ -305,7 +305,7 @@ dwn:
 
 motr:
 	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
-	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/src/main.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/proxy/build/app.wasm ./pkg/proxy/main.go
 
 templ:
 	@echo "(templ) Generating templ files"
@@ -324,7 +324,7 @@ air:
 	go install github.com/air-verse/air@latest
 	air -c ./deploy/air.toml
 
-ipfs-cluster-start:
+ipfs:
 	@echo "(ipfs) Starting ipfs-cluster"
 	ipfs-cluster-service init --consensus crdt
 	ipfs-cluster-service daemon

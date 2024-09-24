@@ -13,8 +13,6 @@ import (
 	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/msgservice"
-	"github.com/mr-tron/base58/base58"
-	"github.com/onsonr/crypto"
 	// this line is used by starport scaffolding # 1
 )
 

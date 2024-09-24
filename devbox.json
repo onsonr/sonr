@@ -45,17 +45,14 @@
       "serve:air": [
         "make air"
       ],
+      "serve:ipfs": [
+        "make ipfs"
+      ],
       "serve:xcaddy": [
         "make xcaddy"
       ],
       "serve:sonr": [
         "make sh-testnet"
-      ],
-      "local": [
-        "process-compose -f ./deploy/process-compose.dev.yaml"
-      ],
-      "testnet": [
-        "process-compose -f ./deploy/process-compose.yaml"
       ]
     }
   }

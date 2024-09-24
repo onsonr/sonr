@@ -12,23 +12,24 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 // Msg defines the Msg service.
 service Msg {
   option (cosmos.msg.v1.service) = true;
-  // UpdateParams defines a governance operation for updating the parameters.
-  //
-  // Since: cosmos-sdk 0.47
-  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+  // AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
+  // this operation is called by services initiating a controller registration.
+  rpc AllocateVault(MsgAllocateVault) returns (MsgAllocateVaultResponse);
 
   // AuthorizeService asserts the given controller is the owner of the given address.
   rpc AuthorizeService(MsgAuthorizeService) returns (MsgAuthorizeServiceResponse);
 
-  // AllocateVault assembles a sqlite3 database in a local directory and returns the CID of the database.
-  // this operation is called by services initiating a controller registration.
-  rpc AllocateVault(MsgAllocateVault) returns (MsgAllocateVaultResponse);
+  // ExecuteTx executes a transaction on the Sonr Blockchain. It leverages Macaroon for verification.
+  rpc ExecuteTx(MsgExecuteTx) returns (MsgExecuteTxResponse);
 
   // RegisterController initializes a controller with the given authentication set, address, cid, publicKey, and user-defined alias.
   rpc RegisterController(MsgRegisterController) returns (MsgRegisterControllerResponse);
 
   // RegisterService initializes a Service with a given permission scope and URI. The domain must have a valid TXT record containing the public key.
   rpc RegisterService(MsgRegisterService) returns (MsgRegisterServiceResponse);
+
+  // UpdateParams defines a governance operation for updating the parameters.
+  rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
 // MsgAllocateVault is the message type for the AllocateVault RPC.
@@ -87,6 +88,26 @@ message MsgRegisterControllerResponse {
 
   // Accounts are a Address Map and Supported coin Denoms for the controller
   map<string, string> accounts = 3;
+}
+
+// MsgExecuteTx is the message type for the ExecuteTx RPC.
+message MsgExecuteTx {
+  option (cosmos.msg.v1.signer) = "controller";
+
+  // Controller is the address of the controller to authenticate.
+  string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Messages is the list of messages to execute.
+  map<string, bytes> messages = 2;
+
+  // MacaroonToken is the macaroon token to authenticate the operation.
+  string macaroon_token = 3;
+}
+
+// MsgExecuteTxResponse is the response type for the ExecuteTx RPC.
+message MsgExecuteTxResponse {
+  bool success = 1;
+  string tx_hash = 2;
 }
 
 // MsgAuthorizeService is the message type for the AuthorizeService RPC.

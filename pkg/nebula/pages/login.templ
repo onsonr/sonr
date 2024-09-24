@@ -5,7 +5,11 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/blocks"
 )
 
-templ Login(c echo.Context) {
+func Login(c echo.Context) error {
+	return echoResponse(c, loginView(c))
+}
+
+templ loginView(c echo.Context) {
 	@blocks.Card("login-view", blocks.SizeLarge) {
 		@blocks.H1("Sonr.ID")
 		@blocks.Text("Neo-tree is a file manager for NeoFS.")

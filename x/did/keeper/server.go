@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"encoding/json"
 
 	"cosmossdk.io/errors"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -106,4 +105,11 @@ func (ms msgServer) UpdateParams(
 		)
 	}
 	return nil, ms.k.Params.Set(ctx, msg.Params)
+}
+
+// ExecuteTx implements types.MsgServer.
+func (ms msgServer) ExecuteTx(ctx context.Context, msg *types.MsgExecuteTx) (*types.MsgExecuteTxResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("ExecuteTx is unimplemented")
+	return &types.MsgExecuteTxResponse{}, nil
 }

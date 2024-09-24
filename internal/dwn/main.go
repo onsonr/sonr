@@ -14,16 +14,16 @@ import (
 
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
-	"github.com/onsonr/sonr/internal/dwn/handlers"
 	"github.com/onsonr/sonr/internal/dwn/middleware"
+	"github.com/onsonr/sonr/internal/dwn/state"
 	"github.com/onsonr/sonr/pkg/nebula"
 )
 
 func main() {
 	e := echo.New()
 	e.Use(middleware.UseSession)
-	nebula.RouteViews(e)
-	handlers.RegisterState(e)
+	nebula.RegisterHandlers(e)
+	state.RegisterHandlers(e)
 	Serve(e)
 }
 

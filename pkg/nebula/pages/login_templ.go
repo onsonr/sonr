@@ -13,7 +13,11 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/blocks"
 )
 
-func Login(c echo.Context) templ.Component {
+func Login(c echo.Context) error {
+	return echoResponse(c, loginView(c))
+}
+
+func loginView(c echo.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

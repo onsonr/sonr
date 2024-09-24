@@ -1,9 +1,9 @@
 version: "0.6"
 
 processes:
-  ipfs:
+  air:
     namespace: testnet
-    command: "ipfs-cluster-service init --consensus crdt && ipfs-cluster-service daemon"
+    command: "devbox run serve:air"
     background: true
     availability:
       restart: on_failure
@@ -11,8 +11,7 @@ processes:
 
   sonr:
     namespace: testnet
-    command: "make sh-testnet"
+    command: "devbox run serve:sonr"
     restart: on_failure
     max_restarts: 3
     depends:
-      - ipfs
