@@ -33,7 +33,10 @@ message Alias {
 message Controller {
   option (cosmos.orm.v1.table) = {
     id: 2
-    primary_key: {fields: "id"}
+    primary_key: {
+      fields: "number"
+      auto_increment: true
+    }
     index: {
       id: 1
       fields: "sonr_address"
@@ -51,49 +54,41 @@ message Controller {
     }
     index: {
       id: 4
-      fields: "vault_cid"
-      unique: true
-    }
-    index: {
-      id: 5
-      fields: "status,vault_cid"
+      fields: "did"
       unique: true
     }
   };
 
   // The unique identifier of the controller
-  string id = 1;
+  uint64 number = 1;
+
+  // The unique identifier of the controller
+  string did = 2;
 
   // The DID of the controller
-  string sonr_address = 2;
+  string sonr_address = 3;
 
   // The DID of the controller
-  string eth_address = 3;
+  string eth_address = 4;
 
   // The DID of the controller
-  string btc_address = 4;
-
-  // Aliases of the controller
-  repeated string aliases = 5;
+  string btc_address = 5;
 
   // PubKey is the verification method
-  PubKey public_key = 6;
+  bytes public_key = 6;
 
-  // The vault address or identifier
-  string vault_cid = 7;
-
-  // The Authentications of the controller
-  repeated string authentication = 8;
+  // Val Keyshare
+  string ks_val = 7;
 
   // The Status of the claims for the controller
-  string status = 9;
+  bool claimed = 8;
 }
 
 // Verification reprsents a method of verifying membership in a DID
 message Verification {
   option (cosmos.orm.v1.table) = {
     id: 4
-    primary_key: {fields: "id"}
+    primary_key: {fields: "did"}
     index: {
       id: 1
       fields: "issuer,subject"
@@ -112,7 +107,7 @@ message Verification {
   };
 
   // The unique identifier of the verification
-  string id = 1;
+  string did = 1;
 
   // The controller of the verification
   string controller = 2;
@@ -129,6 +124,7 @@ message Verification {
   // The public key of the verification
   PubKey public_key = 6;
 
-  // The Verification Type (Authentication, Assertion, CapabilityDelegation, CapabilityInvocation)
+  // The Verification Type (Authentication, Assertion, CapabilityDelegation,
+  // CapabilityInvocation)
   string verification_type = 7;
 }

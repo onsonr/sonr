@@ -8,12 +8,15 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 
 	"github.com/onsonr/sonr/app"
-	"github.com/onsonr/sonr/internal/cli"
+	"github.com/onsonr/sonr/app/cli"
+	"github.com/onsonr/sonr/app/proxy"
 )
 
 func main() {
 	rootCmd := NewRootCmd()
-	cli.AddTUICmds(rootCmd)
+	rootCmd.AddCommand(cli.NewBuildTxnTUICmd())
+	rootCmd.AddCommand(cli.NewExplorerTUICmd())
+	rootCmd.AddCommand(proxy.NewProxyCmd())
 
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
 		log.NewLogger(rootCmd.OutOrStderr()).Error("failure when running app", "err", err)

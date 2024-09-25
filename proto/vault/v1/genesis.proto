@@ -1,0 +1,37 @@
+syntax = "proto3";
+package vault.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/onsonr/sonr/x/vault/types";
+
+// GenesisState defines the module genesis state
+message GenesisState {
+  // Params defines all the parameters of the module.
+  Params params = 1 [(gogoproto.nullable) = false];
+}
+
+// Params defines the set of module parameters.
+message Params {
+  option (amino.name) = "vault/params";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  bool ipfs_active = 1;
+  bool local_registration_enabled = 2;
+  Schema schema = 3;
+}
+
+message Schema {
+  int32 version = 1;
+  string account = 2;
+  string asset = 3;
+  string chain = 4;
+  string credential = 5;
+  string jwk = 6;
+  string grant = 7;
+  string keyshare = 8;
+  string publicKey = 9;
+  string profile = 10;
+}

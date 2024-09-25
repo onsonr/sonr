@@ -24,17 +24,11 @@ message Params {
   // Whitelisted Key Types
   map<string, KeyInfo> allowed_public_keys = 2;
 
-  // IpfsActive is a flag to enable/disable ipfs
-  bool ipfs_active = 3;
-
-  // Localhost Registration Enabled
-  bool localhost_registration_enabled = 4;
-
   // ConveyancePreference defines the conveyance preference
-  string conveyance_preference = 5;
+  string conveyance_preference = 3;
 
   // AttestationFormats defines the attestation formats
-  repeated string attestation_formats = 6;
+  repeated string attestation_formats = 4;
 }
 
 // AssetInfo defines the asset info
@@ -74,7 +68,8 @@ message KeyInfo {
   string role = 1;
   string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
   string encoding = 3; // e.g., "hex", "base64", "multibase"
-  string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448", "Ed25519", "Ed448", "secp256k1"
+  string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448",
+  // "Ed25519", "Ed448", "secp256k1"
   string type = 5; // e.g., "Octet", "Elliptic", "RSA", "Symmetric", "HMAC"
 }
 

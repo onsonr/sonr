@@ -4,9 +4,8 @@ import (
 	"context"
 
 	"cosmossdk.io/log"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/ipfs/boxo/path"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -32,41 +31,16 @@ func (k *Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
 	}
 
 	// this line is used by starport scaffolding # genesis/module/export
-
 	return &types.GenesisState{
 		Params: params,
 	}
 }
 
-// CheckValidatorExists checks if a validator exists
-func (k Keeper) CheckValidatorExists(ctx sdk.Context, addr string) bool {
-	address, err := sdk.ValAddressFromBech32(addr)
+// CurrentSchema returns the current schema
+func (k Keeper) CurrentParams(ctx sdk.Context) (*types.Params, error) {
+	p, err := k.Params.Get(ctx)
 	if err != nil {
-		return false
+		return nil, err
 	}
-	ok, err := k.StakingKeeper.Validator(ctx, address)
-	if err != nil {
-		return false
-	}
-	if ok != nil {
-		return true
-	}
-	return false
-}
-
-// HasPathInIPFS checks if a file is in the local IPFS node
-func (k Keeper) HasPathInIPFS(ctx sdk.Context, cid string) (bool, error) {
-	path, err := path.NewPath(cid)
-	if err != nil {
-		return false, err
-	}
-	v, err := k.ipfsClient.Unixfs().Get(ctx, path)
-	if err != nil {
-		return false, err
-	}
-
-	if v == nil {
-		return false, nil
-	}
-	return true, nil
+	return &p, nil
 }

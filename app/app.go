@@ -134,6 +134,12 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	did "github.com/onsonr/sonr/x/did"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	didtypes "github.com/onsonr/sonr/x/did/types"
+	vault "github.com/onsonr/sonr/x/vault"
+	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
+	vaulttypes "github.com/onsonr/sonr/x/vault/types"
 	"github.com/spf13/cast"
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
@@ -144,10 +150,6 @@ import (
 	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
-
-	did "github.com/onsonr/sonr/x/did"
-	didkeeper "github.com/onsonr/sonr/x/did/keeper"
-	didtypes "github.com/onsonr/sonr/x/did/types"
 )
 
 const appName = "sonr"
@@ -226,6 +228,7 @@ type SonrApp struct {
 	CrisisKeeper       *crisiskeeper.Keeper
 	UpgradeKeeper      *upgradekeeper.Keeper
 	legacyAmino        *codec.LegacyAmino
+	VaultKeeper        vaultkeeper.Keeper
 	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
 	ModuleManager      *module.Manager
@@ -358,6 +361,7 @@ func NewChainApp(
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
 		didtypes.StoreKey,
+		vaulttypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -605,6 +609,15 @@ func NewChainApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	// Create the vault Keeper
+	app.VaultKeeper = vaultkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.DidKeeper,
+	)
 
 	// Create the did Keeper
 	app.DidKeeper = didkeeper.NewKeeper(
@@ -874,6 +887,7 @@ func NewChainApp(
 		),
 
 		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
+		vault.NewAppModule(appCodec, app.VaultKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -922,6 +936,7 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
+		vaulttypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -941,6 +956,7 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
+		vaulttypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -969,6 +985,7 @@ func NewChainApp(
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
+		vaulttypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1127,7 +1144,7 @@ func GetDefaultBypassFeeMessages() []string {
 		sdk.MsgTypeURL(&ibcchanneltypes.MsgChannelOpenTry{}),
 		sdk.MsgTypeURL(&ibcchanneltypes.MsgChannelOpenConfirm{}),
 		sdk.MsgTypeURL(&ibcchanneltypes.MsgChannelOpenAck{}),
-		sdk.MsgTypeURL(&didtypes.MsgAllocateVault{}),
+		sdk.MsgTypeURL(&vaulttypes.MsgAllocateVault{}),
 		sdk.MsgTypeURL(&didtypes.MsgRegisterController{}),
 	}
 }
@@ -1428,6 +1445,7 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(didtypes.ModuleName)
+	paramsKeeper.Subspace(vaulttypes.ModuleName)
 
 	return paramsKeeper
 }

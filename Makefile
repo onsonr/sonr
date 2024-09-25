@@ -301,11 +301,7 @@ sh-testnet: mod-tidy
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/vault/app.wasm ./internal/dwn/main.go
-
-motr:
-	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
-	GOOS=js GOARCH=wasm go build -o ./pkg/proxy/build/app.wasm ./pkg/proxy/main.go
+	GOOS=js GOARCH=wasm go build -o ./x/vault/internal/app.wasm ./x/vault/client/dwn/main.go
 
 templ:
 	@echo "(templ) Generating templ files"
@@ -316,8 +312,6 @@ pkl:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl
 
 air:
 	@echo "(air) Building air"

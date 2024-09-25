@@ -1,9 +1,0 @@
-name = "sonr-id"
-main = "./build/worker.mjs"
-compatibility_date = "2024-07-26"
-
-[dev]
-ip = "localhost"
-
-[build]
-command = "devbox run build:motr"

@@ -21,7 +21,6 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Query_Params_FullMethodName  = "/did.v1.Query/Params"
 	Query_Resolve_FullMethodName = "/did.v1.Query/Resolve"
-	Query_Sync_FullMethodName    = "/did.v1.Query/Sync"
 )
 
 // QueryClient is the client API for Query service.
@@ -32,8 +31,6 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// Sync queries the DID document by its id. And returns the required PKL information
-	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
 }
 
 type queryClient struct {
@@ -62,15 +59,6 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
-	out := new(SyncResponse)
-	err := c.cc.Invoke(ctx, Query_Sync_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -79,8 +67,6 @@ type QueryServer interface {
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
-	// Sync queries the DID document by its id. And returns the required PKL information
-	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -93,9 +79,6 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryPa
 }
 func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
-}
-func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -146,24 +129,6 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Sync(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Query_Sync_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Sync(ctx, req.(*SyncRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -178,10 +143,6 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
-		},
-		{
-			MethodName: "Sync",
-			Handler:    _Query_Sync_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

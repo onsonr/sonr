@@ -48,7 +48,6 @@ require (
 	cosmossdk.io/x/upgrade v0.1.1
 	github.com/a-h/templ v0.2.778
 	github.com/apple/pkl-go v0.8.0
-	github.com/btcsuite/btcd/btcec/v2 v2.3.3
 	github.com/charmbracelet/bubbles v0.19.0
 	github.com/charmbracelet/bubbletea v1.1.0
 	github.com/charmbracelet/huh v0.5.3
@@ -65,11 +64,13 @@ require (
 	github.com/ethereum/go-ethereum v1.14.6
 	github.com/go-webauthn/webauthn v0.10.2
 	github.com/golang/protobuf v1.5.4
+	github.com/gorilla/mux v1.8.1
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/ipfs/boxo v0.21.0
 	github.com/ipfs/kubo v0.29.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.10.2
+	github.com/labstack/gommon v0.4.0
 	github.com/nlepage/go-js-promise v1.0.0
 	github.com/onsonr/crypto v1.32.0
 	github.com/segmentio/ksuid v1.0.4
@@ -81,7 +82,6 @@ require (
 	github.com/strangelove-ventures/poa v0.50.0
 	github.com/strangelove-ventures/tokenfactory v0.50.0
 	github.com/stretchr/testify v1.9.0
-	github.com/syumai/workers v0.26.3
 	golang.org/x/crypto v0.26.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
 	google.golang.org/grpc v1.64.0
@@ -108,6 +108,7 @@ require (
 	github.com/bgentry/speakeasy v0.1.1-0.20220910012023-760eaf8b6816 // indirect
 	github.com/bits-and-blooms/bitset v1.13.0 // indirect
 	github.com/blang/semver/v4 v4.0.0 // indirect
+	github.com/btcsuite/btcd/btcec/v2 v2.3.3 // indirect
 	github.com/btcsuite/btcd/btcutil v1.1.5 // indirect
 	github.com/btcsuite/btcd/chaincfg/chainhash v1.1.0 // indirect
 	github.com/bwesterb/go-ristretto v1.2.3 // indirect
@@ -180,7 +181,6 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.2 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
-	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect
@@ -232,7 +232,6 @@ require (
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
-	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/lib/pq v1.10.7 // indirect
 	github.com/libp2p/go-buffer-pool v0.1.0 // indirect
 	github.com/libp2p/go-cidranger v1.1.0 // indirect
