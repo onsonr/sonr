@@ -6510,7 +6510,7 @@ type MsgUpdateParams struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	// authority is the address of the service account.
+	// authority is the address of the governance account.
 	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
 	// params defines the parameters to update.
 	Params *Params `protobuf:"bytes,2,opt,name=params,proto3" json:"params,omitempty"`
@@ -6518,8 +6518,8 @@ type MsgUpdateParams struct {
 	Token string `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
 }
 
-func (x *MsgAllocateVault) Reset() {
-	*x = MsgAllocateVault{}
+func (x *MsgUpdateParams) Reset() {
+	*x = MsgUpdateParams{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6527,29 +6527,29 @@ func (x *MsgAllocateVault) Reset() {
 	}
 }
 
-func (x *MsgAllocateVault) String() string {
+func (x *MsgUpdateParams) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAllocateVault) ProtoMessage() {}
+func (*MsgUpdateParams) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateParams.ProtoReflect.Descriptor instead.
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
 	return file_did_v1_tx_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *MsgAllocateVault) GetAuthority() string {
+func (x *MsgUpdateParams) GetAuthority() string {
 	if x != nil {
 		return x.Authority
 	}
 	return ""
 }
 
-func (x *MsgAllocateVault) GetSubject() string {
+func (x *MsgUpdateParams) GetParams() *Params {
 	if x != nil {
-		return x.Subject
+		return x.Params
 	}
-	return ""
+	return nil
 }
 
 func (x *MsgUpdateParams) GetToken() string {
@@ -6567,19 +6567,10 @@ type MsgUpdateParamsResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
-
-	// CID is the content identifier of the vault.
-	Cid string `protobuf:"bytes,1,opt,name=cid,proto3" json:"cid,omitempty"`
-	// ExpiryBlock is the block number at which the vault will expire.
-	ExpiryBlock int64 `protobuf:"varint,2,opt,name=expiry_block,json=expiryBlock,proto3" json:"expiry_block,omitempty"`
-	// RegistrationOptions is a json string of the PublicKeyCredentialCreationOptions for WebAuthn
-	Token string `protobuf:"bytes,3,opt,name=token,proto3" json:"token,omitempty"`
-	// IsLocalhost is a flag to indicate if the vault is localhost
-	Localhost bool `protobuf:"varint,4,opt,name=localhost,proto3" json:"localhost,omitempty"`
 }
 
-func (x *MsgAllocateVaultResponse) Reset() {
-	*x = MsgAllocateVaultResponse{}
+func (x *MsgUpdateParamsResponse) Reset() {
+	*x = MsgUpdateParamsResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_did_v1_tx_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -6587,11 +6578,11 @@ func (x *MsgAllocateVaultResponse) Reset() {
 	}
 }
 
-func (x *MsgAllocateVaultResponse) String() string {
+func (x *MsgUpdateParamsResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*MsgAllocateVaultResponse) ProtoMessage() {}
+func (*MsgUpdateParamsResponse) ProtoMessage() {}
 
 // Deprecated: Use MsgUpdateParamsResponse.ProtoReflect.Descriptor instead.
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
