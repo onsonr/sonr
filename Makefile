@@ -301,11 +301,7 @@ sh-testnet: mod-tidy
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/vault/app.wasm ./internal/dwn/main.go
-
-motr:
-	@echo "(web) Building app.wasm -> Deploy to Cloudflare Workers"
-	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/src/main.go
+	GOOS=js GOARCH=wasm go build -o ./x/vault/internal/app.wasm ./x/vault/client/dwn/main.go
 
 templ:
 	@echo "(templ) Generating templ files"
@@ -316,15 +312,13 @@ pkl:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/web.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/txns.pkl
 
 air:
 	@echo "(air) Building air"
 	go install github.com/air-verse/air@latest
 	air -c ./deploy/air.toml
 
-ipfs-cluster-start:
+ipfs:
 	@echo "(ipfs) Starting ipfs-cluster"
 	ipfs-cluster-service init --consensus crdt
 	ipfs-cluster-service daemon

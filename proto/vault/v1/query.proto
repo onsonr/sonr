@@ -1,0 +1,66 @@
+syntax = "proto3";
+package vault.v1;
+
+import "google/api/annotations.proto";
+import "vault/v1/genesis.proto";
+
+option go_package = "github.com/onsonr/sonr/x/vault/types";
+
+// Query provides defines the gRPC querier service.
+service Query {
+  // Params queries all parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/vault/v1/params";
+  }
+
+  // BuildTx builds an unsigned transaction message for the given PKL.
+  rpc BuildTx(BuildTxRequest) returns (BuildTxResponse) {
+    option (google.api.http).post = "/vault/v1/buildtx";
+  }
+
+  // Sync queries the DID document by its id. And returns the required PKL
+  // information
+  rpc Sync(SyncRequest) returns (SyncResponse) {
+    option (google.api.http).post = "/vault/v1/sync";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1;
+}
+
+// QueryIPFSRequest is the request type for the Query/IPFS RPC method.
+message QueryIPFSRequest {}
+
+// QueryIPFSResponse is the response type for the Query/IPFS RPC method.
+message QueryIPFSResponse {
+  // IPFS is the IPFS client status.
+  bool ipfs = 1;
+}
+
+// SyncRequest is the request type for the Sync RPC method.
+message SyncRequest {
+  string did = 1;
+}
+
+// SyncResponse is the response type for the Sync RPC method.
+message SyncResponse {
+  bool success = 1;
+}
+
+// BuildTxRequest is the request type for the BuildTx RPC method.
+message BuildTxRequest {
+  string did = 1;
+  string pkl = 2;
+}
+
+// BuildTxResponse is the response type for the BuildTx RPC method.
+message BuildTxResponse {
+  bool success = 1;
+  string tx = 2;
+}

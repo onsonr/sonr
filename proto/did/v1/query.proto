@@ -17,11 +17,6 @@ service Query {
   rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
     option (google.api.http).get = "/did/{did}";
   }
-
-  // Sync queries the DID document by its id. And returns the required PKL information
-  rpc Sync(SyncRequest) returns (SyncResponse) {
-    option (google.api.http).post = "/sync";
-  }
 }
 
 // Queryequest is the request type for the Query/Params RPC method.
@@ -30,14 +25,6 @@ message QueryRequest {
   string origin = 2;
   string key = 3;
   string asset = 4;
-}
-
-// QueryResolveResponse is the response type for the Query/Resolve RPC method.
-message QueryResponse {
-  bool success = 1;
-  string query = 2;
-  Document document = 3;
-  Params params = 5;
 }
 
 // QueryParamsResponse is the response type for the Query/Params RPC method.
@@ -50,14 +37,4 @@ message QueryParamsResponse {
 message QueryResolveResponse {
   // document is the DID document
   Document document = 1;
-}
-
-// SyncRequest is the request type for the Sync RPC method.
-message SyncRequest {
-  string did = 1;
-}
-
-// SyncResponse is the response type for the Sync RPC method.
-message SyncResponse {
-  bool success = 1;
 }

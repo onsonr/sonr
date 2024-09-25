@@ -6,12 +6,12 @@ import (
 
 	ormv1alpha1 "cosmossdk.io/api/cosmos/orm/v1alpha1"
 	"cosmossdk.io/collections"
-	"github.com/onsonr/sonr/internal/orm/assettype"
-	"github.com/onsonr/sonr/internal/orm/keyalgorithm"
-	"github.com/onsonr/sonr/internal/orm/keycurve"
-	"github.com/onsonr/sonr/internal/orm/keyencoding"
-	"github.com/onsonr/sonr/internal/orm/keyrole"
-	"github.com/onsonr/sonr/internal/orm/keytype"
+	"github.com/onsonr/sonr/x/did/types/orm/assettype"
+	"github.com/onsonr/sonr/x/did/types/orm/keyalgorithm"
+	"github.com/onsonr/sonr/x/did/types/orm/keycurve"
+	"github.com/onsonr/sonr/x/did/types/orm/keyencoding"
+	"github.com/onsonr/sonr/x/did/types/orm/keyrole"
+	"github.com/onsonr/sonr/x/did/types/orm/keytype"
 )
 
 // ParamsKey saves the current module params.
@@ -41,8 +41,7 @@ const DefaultIndex uint64 = 1
 func DefaultGenesis() *GenesisState {
 	return &GenesisState{
 		// this line is used by starport scaffolding # genesis/types/default
-		GlobalIntegrity: DefaultGlobalIntegrity(),
-		Params:          DefaultParams(),
+		Params: DefaultParams(),
 	}
 }
 
@@ -56,23 +55,13 @@ func (gs GenesisState) Validate() error {
 	return gs.Params.Validate()
 }
 
-// // DefaultNFTClasses configures the Initial DIDNamespace NFT classes
-//
-//	func DefaultNFTClasses(nftGenesis *nft.GenesisState) error {
-//		for _, n := range DIDNamespace_value {
-//			nftGenesis.Classes = append(nftGenesis.Classes, DIDNamespace(n).GetNFTClass())
-//		}
-//		return nil
-//	}
-//
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
 	return Params{
-		WhitelistedAssets:            DefaultAssets(),
-		AllowedPublicKeys:            DefaultKeyInfos(),
-		LocalhostRegistrationEnabled: true,
-		ConveyancePreference:         "direct",
-		AttestationFormats:           []string{"packed", "android-key", "fido-u2f", "apple"},
+		WhitelistedAssets:    DefaultAssets(),
+		AllowedPublicKeys:    DefaultKeyInfos(),
+		ConveyancePreference: "direct",
+		AttestationFormats:   []string{"packed", "android-key", "fido-u2f", "apple"},
 	}
 }
 
@@ -180,11 +169,6 @@ func DefaultKeyInfos() map[string]*KeyInfo {
 			Type:      keytype.Webauthn.String(),
 		},
 	}
-}
-
-func (p Params) ActiveParams(ipfsActive bool) Params {
-	p.IpfsActive = ipfsActive
-	return p
 }
 
 // Stringer method for Params.
