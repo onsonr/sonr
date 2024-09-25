@@ -76,7 +76,7 @@ sonr
 deploy/**/data
 x/.DS_Store
 .aider*
-
-
-!motr/build
 buildenv*
+
+!devbox.lock
+!motr/build
