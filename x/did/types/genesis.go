@@ -49,7 +49,9 @@ func DefaultGenesis() *GenesisState {
 // failure.
 func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
-
+	if gs.GlobalIntegrity == nil {
+		return fmt.Errorf("global integrity proof is nil")
+	}
 	return gs.Params.Validate()
 }
 
