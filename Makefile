@@ -301,7 +301,7 @@ sh-testnet: mod-tidy
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./x/vault/internal/app.wasm ./x/vault/client/dwn/main.go
+	GOOS=js GOARCH=wasm go build -o ./x/vault/internal/app.wasm ./x/vault/client/htmx/dwn.go
 
 templ:
 	@echo "(templ) Generating templ files"

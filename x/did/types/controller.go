@@ -7,55 +7,6 @@ import (
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 )
 
-type controller struct {
-	userKs    mpc.Share
-	valKs     mpc.Share
-	address   string
-	chainID   string
-	ethAddr   string
-	btcAddr   string
-	publicKey []byte
-}
-
-func (c *controller) GetTableEntry() (*didv1.Controller, error) {
-	valKs, err := c.valKs.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	return &didv1.Controller{
-		KsVal:       valKs,
-		Did:         fmt.Sprintf("did:sonr:%s", c.address),
-		SonrAddress: c.address,
-		EthAddress:  c.ethAddr,
-		BtcAddress:  c.btcAddr,
-		PublicKey:   c.publicKey,
-	}, nil
-}
-
-func (c *controller) ExportUserKs() (string, error) {
-	return c.userKs.Marshal()
-}
-
-func (c *controller) ChainID() string {
-	return c.chainID
-}
-
-func (c *controller) SonrAddress() string {
-	return c.address
-}
-
-func (c *controller) EthAddress() string {
-	return c.ethAddr
-}
-
-func (c *controller) BtcAddress() string {
-	return c.btcAddr
-}
-
-func (c *controller) PublicKey() []byte {
-	return c.publicKey
-}
-
 type ControllerI interface {
 	ChainID() string
 	SonrAddress() string
@@ -98,4 +49,53 @@ func NewController(shares []mpc.Share) (ControllerI, error) {
 		chainID:   "sonr-testnet-1",
 		publicKey: pbBz,
 	}, nil
+}
+
+type controller struct {
+	userKs    mpc.Share
+	valKs     mpc.Share
+	address   string
+	chainID   string
+	ethAddr   string
+	btcAddr   string
+	publicKey []byte
+}
+
+func (c *controller) BtcAddress() string {
+	return c.btcAddr
+}
+
+func (c *controller) ChainID() string {
+	return c.chainID
+}
+
+func (c *controller) EthAddress() string {
+	return c.ethAddr
+}
+
+func (c *controller) ExportUserKs() (string, error) {
+	return c.userKs.Marshal()
+}
+
+func (c *controller) GetTableEntry() (*didv1.Controller, error) {
+	valKs, err := c.valKs.Marshal()
+	if err != nil {
+		return nil, err
+	}
+	return &didv1.Controller{
+		KsVal:       valKs,
+		Did:         fmt.Sprintf("did:sonr:%s", c.address),
+		SonrAddress: c.address,
+		EthAddress:  c.ethAddr,
+		BtcAddress:  c.btcAddr,
+		PublicKey:   c.publicKey,
+	}, nil
+}
+
+func (c *controller) PublicKey() []byte {
+	return c.publicKey
+}
+
+func (c *controller) SonrAddress() string {
+	return c.address
 }

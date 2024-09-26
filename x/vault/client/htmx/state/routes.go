@@ -2,7 +2,6 @@ package state
 
 import (
 	"github.com/labstack/echo/v4"
-	middleware "github.com/onsonr/sonr/x/vault/client/dwn/middleware"
 )
 
 func RegisterHandlers(e *echo.Echo) {
@@ -14,9 +13,4 @@ func RegisterHandlers(e *echo.Echo) {
 	g.POST("/:origin/grant/:subject", grantAuthorization)
 	g.POST("/register/:subject", handleCredentialCreation)
 	g.POST("/register/:subject/check", checkSubjectIsValid)
-}
-
-func RegisterSync(e *echo.Echo) {
-	g := e.Group("sync")
-	g.Use(middleware.MacaroonMiddleware("test", "test"))
 }

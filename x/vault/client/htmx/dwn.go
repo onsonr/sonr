@@ -15,8 +15,8 @@ import (
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
 	"github.com/onsonr/sonr/nebula/pages"
-	"github.com/onsonr/sonr/x/vault/client/dwn/middleware"
-	"github.com/onsonr/sonr/x/vault/client/dwn/state"
+	"github.com/onsonr/sonr/x/vault/client/htmx/middleware"
+	"github.com/onsonr/sonr/x/vault/client/htmx/state"
 )
 
 func main() {
