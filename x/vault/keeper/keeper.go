@@ -15,9 +15,9 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
 
-	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
+	"github.com/onsonr/sonr/config/dwn"
 
 	"github.com/onsonr/sonr/x/vault/types"
 
@@ -89,66 +89,48 @@ func NewKeeper(
 	return k
 }
 
-func (k Keeper) Logger() log.Logger {
-	return k.logger
-}
-
-// InitGenesis initializes the module's state from a genesis state.
-func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) error {
-	// this line is used by starport scaffolding # genesis/module/init
-	if err := data.Params.Validate(); err != nil {
-		return err
-	}
-
-	return k.Params.Set(ctx, data.Params)
-}
-
-// ExportGenesis exports the module's state to a genesis state.
-func (k *Keeper) ExportGenesis(ctx context.Context) *types.GenesisState {
-	params, err := k.Params.Get(ctx)
+// currentSchema returns the current schema
+func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwn.Schema, error) {
+	p, err := k.Params.Get(ctx)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-
-	// this line is used by starport scaffolding # genesis/module/export
-
-	return &types.GenesisState{
-		Params: params,
-	}
+	schema := p.Schema
+	return &dwn.Schema{
+		Version:    int(schema.Version),
+		Account:    schema.Account,
+		Asset:      schema.Asset,
+		Chain:      schema.Chain,
+		Credential: schema.Credential,
+		Jwk:        schema.Jwk,
+		Grant:      schema.Grant,
+		Keyshare:   schema.Keyshare,
+		PublicKey:  schema.PublicKey,
+		Profile:    schema.Profile,
+	}, nil
 }
 
-// IPFSConnected returns true if the IPFS client is initialized
-func (c Keeper) IPFSConnected() bool {
-	if c.ipfsClient == nil {
-		ipfsClient, err := rpc.NewLocalApi()
-		if err != nil {
-			return false
-		}
-		c.ipfsClient = ipfsClient
-	}
-	return c.ipfsClient != nil
-}
-
-// CalculateExpiration calculates the expiration time for a vault
-func (k Keeper) CalculateExpiration(c sdk.Context, duration time.Duration) int64 {
-	blockTime := c.BlockTime()
-	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
-	return int64(duration.Seconds() / avgBlockTime)
-}
-
-// HasPathInIPFS checks if a file is in the local IPFS node
-func (k Keeper) HasPathInIPFS(ctx sdk.Context, cid string) (bool, error) {
-	path, err := path.NewPath(cid)
+// assembleVault assembles the initial vault
+func (k Keeper) AssembleVault(ctx sdk.Context) (string, int64, error) {
+	_, con, err := k.DIDKeeper.NewController(ctx)
 	if err != nil {
-		return false, err
+		return "", 0, err
 	}
-	v, err := k.ipfsClient.Unixfs().Get(ctx, path)
+	usrKs, err := con.ExportUserKs()
 	if err != nil {
-		return false, err
+		return "", 0, err
 	}
-
-	if v == nil {
-		return false, nil
+	sch, err := k.CurrentSchema(ctx)
+	if err != nil {
+		return "", 0, err
 	}
-	return true, nil
+	v, err := types.NewVault(usrKs, con.SonrAddress(), con.ChainID(), sch)
+	if err != nil {
+		return "", 0, err
+	}
+	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
+	if err != nil {
+		return "", 0, err
+	}
+	return cid.String(), k.CalculateExpiration(ctx, time.Second*15), nil
 }

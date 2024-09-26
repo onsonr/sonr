@@ -20,7 +20,7 @@ message Params {
 
   bool ipfs_active = 1;
   bool local_registration_enabled = 2;
-  Schema schema = 3;
+  Schema schema = 4;
 }
 
 message Schema {

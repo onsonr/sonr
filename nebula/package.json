@@ -13,6 +13,7 @@
     "typescript": "^4.9.0"
   },
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.15",
     "alpinejs": "^3.14.1",
     "htmx.org": "^1.9.12",
     "node-fetch": "^3.3.2"
