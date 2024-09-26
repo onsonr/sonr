@@ -51,7 +51,7 @@
         "make sh-testnet"
       ],
       "serve:proxy": [
-        "go run ./cmd/sonrd/main.go dwn-proxy"
+        "./build/sonrd dwn-proxy"
       ],
       "watch:air": [
         "make air"

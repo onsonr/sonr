@@ -1,3 +1,3 @@
-"use strict";
-// src/ts/main.ts
+import "htmx.org";
+import "alpinejs";
 console.log("Hello from TypeScript!");

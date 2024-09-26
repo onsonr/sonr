@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./assets",
+    "outDir": "./assets/js",
     "rootDir": "./src",
     "target": "ES6",
     "module": "ES6",
