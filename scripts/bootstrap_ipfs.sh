@@ -3,16 +3,10 @@
 # Exit immediately if a command exits with a non-zero status.
 set -e
 
-# check if ~/.ipfs exists, if not create it
-if [ ! -d ~/.ipfs ]; then
-  ipfs init
-  setup_ipfs
-  start_ipfs
-else
-  start_ipfs
-fi
-
 function setup_ipfs() {
+  # Install IPFS
+  ipfs init
+
   # Optimize local discovery and connectivity
   ipfs config --json Discovery.MDNS.Enabled true
   ipfs config --json Routing.Type "dhtclient"
@@ -48,3 +42,12 @@ function start_ipfs() {
   # Start the IPFS daemon with additional options for better performance and compatibility
   ipfs daemon --enable-gc --migrate --enable-pubsub-experiment --enable-namesys-pubsub
 }
+
+# check if ~/.ipfs exists, if not create it
+if [ ! -d ~/.ipfs ]; then
+  setup_ipfs
+  start_ipfs
+else
+  start_ipfs
+fi
+
