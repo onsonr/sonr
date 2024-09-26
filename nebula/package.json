@@ -1,0 +1,14 @@
+{
+  "scripts": {
+    "build:ts": "tsc",
+    "build:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/styles.css",
+    "build": "bun run build:ts && bun run build:css",
+    "watch:ts": "tsc -w",
+    "watch:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/styles.css --watch",
+    "watch": "bun run watch:ts & bun run watch:css"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.3.0",
+    "typescript": "^4.9.0"
+  }
+}

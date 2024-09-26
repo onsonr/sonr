@@ -9,6 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
+	"github.com/onsonr/sonr/nebula"
 	"github.com/onsonr/sonr/nebula/pages"
 )
 
@@ -18,6 +19,7 @@ func startServer() {
 	e.Logger.SetLevel(log.INFO)
 
 	// Configure the server
+	nebula.UseAssets(e)
 	e.GET("/", pages.Home)
 	e.GET("/allocate", pages.Profile)
 
