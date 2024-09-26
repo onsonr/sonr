@@ -10,14 +10,16 @@ func Login(c echo.Context) error {
 }
 
 templ loginView(c echo.Context) {
-	@blocks.Card("login-view", blocks.SizeLarge) {
-		@blocks.H1("Sonr.ID")
-		@blocks.Text("Neo-tree is a file manager for NeoFS.")
-		@blocks.Spacer()
-		@blocks.RadioGroup()
-		@blocks.Spacer()
-		@blocks.Button(blocks.GET("/", "#login-view")) {
-			@blocks.Text("Cancel")
+	@blocks.Layout("Sonr.ID", true) {
+		@blocks.Card("login-view", blocks.SizeLarge) {
+			@blocks.H1("Sonr.ID")
+			@blocks.Text("Neo-tree is a file manager for NeoFS.")
+			@blocks.Spacer()
+			@blocks.RadioGroup()
+			@blocks.Spacer()
+			@blocks.Button(blocks.GET("/", "#login-view")) {
+				@blocks.Text("Cancel")
+			}
 		}
 	}
 }

@@ -1,9 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": [
-    "go@1.22",
-    "bun@latest"
-  ],
+  "packages": ["go@1.22", "bun@latest"],
   "env": {
     "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
     "GOPATH": "$HOME/go",
@@ -17,48 +14,14 @@
   },
   "shell": {
     "scripts": {
-      "install": [
-        "make install"
-      ],
-      "build": [
-        "make build"
-      ],
-      "build:dwn": [
-        "make dwn"
-      ],
-      "build:image": [
-        "make local-image"
-      ],
-      "build:nebula": [
-        "cd nebula && bun run build"
-      ],
-      "gen:proto": [
-        "make proto-gen"
-      ],
-      "gen:pkl": [
-        "make pkl"
-      ],
-      "gen:templ": [
-        "make templ"
-      ],
-      "serve:ipfs": [
-        "make ipfs"
-      ],
-      "serve:xcaddy": [
-        "make xcaddy"
-      ],
-      "serve:sonr": [
-        "make sh-testnet"
-      ],
-      "serve:proxy": [
-        "./build/sonrd dwn-proxy"
-      ],
-      "watch:air": [
-        "make air"
-      ],
-      "watch:nebula": [
-        "cd nebula && bun run watch"
-      ]
+      "install": ["make install"],
+      "build": ["bun --cwd nebula run build", "make dwn", "make build"],
+      "docker": ["make local-image"],
+      "proto": ["make proto-gen"],
+      "pkl": ["make pkl"],
+      "templ": ["make templ"],
+      "proxy": ["./build/sonrd dwn-proxy"],
+      "watch:nebula": ["bun --cwd nebula run watch"]
     }
   }
 }

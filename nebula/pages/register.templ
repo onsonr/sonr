@@ -19,14 +19,16 @@ func Register(c echo.Context) error {
 }
 
 templ registerView(c echo.Context) {
-	@blocks.Card("register-view", blocks.SizeMedium) {
-		@blocks.H2("Account Registration")
-		@blocks.Spacer()
-		@blocks.Breadcrumbs()
-		@basicInfoForm(InitialForm)
-		@blocks.Spacer()
-		@blocks.Button(blocks.GET("/", "#register-view")) {
-			@blocks.Text("Cancel")
+	@blocks.Layout("Sonr.ID", true) {
+		@blocks.Card("register-view", blocks.SizeMedium) {
+			@blocks.H2("Account Registration")
+			@blocks.Spacer()
+			@blocks.Breadcrumbs()
+			@basicInfoForm(InitialForm)
+			@blocks.Spacer()
+			@blocks.Button(blocks.GET("/", "#register-view")) {
+				@blocks.Text("Cancel")
+			}
 		}
 	}
 }

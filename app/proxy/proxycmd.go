@@ -24,7 +24,10 @@ func NewProxyCmd() *cobra.Command {
 			e.Logger.SetLevel(log.INFO)
 
 			// Configure the server
-			nebula.UseAssets(e)
+			if err := nebula.UseAssets(e); err != nil {
+				e.Logger.Fatal(err)
+			}
+
 			e.GET("/", pages.Home)
 			e.GET("/allocate", pages.Profile)
 

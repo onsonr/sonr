@@ -1,17 +1,26 @@
 version: "0.6"
 
 processes:
-  air:
+  ipfs:
     namespace: testnet
-    command: "devbox run serve:air"
+    command: "sh scripts/bootstrap_ipfs.sh"
     background: true
     availability:
       restart: on_failure
-      max_restarts: 3
+      max_restarts: 0
 
   sonr:
     namespace: testnet
-    command: "devbox run serve:sonr"
+    command: "make sh-testnet"
     restart: on_failure
     max_restarts: 3
     depends:
+      - ipfs
+
+  proxy:
+    namespace: testnet
+    command: "devbox run proxy"
+    restart: on_failure
+    max_restarts: 3
+    depends:
+      - sonr

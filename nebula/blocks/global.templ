@@ -10,6 +10,10 @@ type Variant interface {
 	Attributes() templ.Attributes
 }
 
+var stylesHandle = templ.NewOnceHandle()
+var alpineHandle = templ.NewOnceHandle()
+var htmxHandle = templ.NewOnceHandle()
+
 func clsxMerge(variants ...Variant) templ.Attributes {
 	combinedAttrs := templ.Attributes{}
 	var classElements []string
@@ -46,22 +50,27 @@ templ Spacer() {
 	<br/>
 }
 
-templ ServiceWorker(path string) {
-	<script>
-	  navigator.serviceWorker.register({ path })
-  </script>
+templ Styles(local bool) {
+	@stylesHandle.Once() {
+		<link href="/assets/css/styles.css" rel="stylesheet"/>
+		<style>
+			[x-cloak] {
+				display: none;
+			}
+		</style>
+	}
 }
 
-templ defaultStyles() {
-	<meta charset="UTF-8"/>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-	<script src="https://cdn.sonr.io/js/htmx.min.js"></script>
-	<link href="https://cdn.sonr.io/stylesheet.css" rel="stylesheet"/>
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script src="https://unpkg.com/alpinejs" defer></script>
-	<style>[x-cloak]{display:none}</style>
-	<style>font-family: R-Flex, system-ui, Inter, Helvetica, Arial, sans-serif;</style>
+templ Alpine(local bool) {
+	@alpineHandle.Once() {
+		<script src="/assets/js/alpine.min.js" defer></script>
+	}
+}
+
+templ Htmx(local bool) {
+	@htmxHandle.Once() {
+		<script src="/assets/js/htmx.min.js"></script>
+	}
 }
 
 templ Rows() {
