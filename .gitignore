@@ -77,6 +77,7 @@ deploy/**/data
 x/.DS_Store
 .aider*
 buildenv*
+nebula/node_modules
 
 !devbox.lock
 !motr/build
