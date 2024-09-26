@@ -299,6 +299,10 @@ sh-testnet: mod-tidy
 
 .PHONY: dwn motr templ
 
+motr:
+	@echo "(motr) Building motr gateway"
+	go build -o ./build/motr ./cmd/motr
+
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./x/vault/types/internal/app.wasm ./x/vault/client/dwn/dwn.go
@@ -312,6 +316,14 @@ pkl:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
+
+start-caddy:
+	@echo "(start-caddy) Starting caddy"
+	./build/caddy run --config ./config/caddy/Caddyfile
+
+start-proxy:
+	@echo "(start-proxy) Starting proxy server"
+	./build/motr proxy
 
 ###############################################################################
 ###                                     help                                ###

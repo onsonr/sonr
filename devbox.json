@@ -1,27 +1,61 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["go@1.22", "bun@latest"],
+  "packages": [
+    "go@1.22",
+    "bun@latest",
+    "ipfs@latest",
+    "skate@latest",
+    "cloudflared@latest"
+  ],
   "env": {
-    "CLOUDFLARE_API_TOKEN": "$CLOUDFLARE_API_TOKEN",
+    "CLOUDFLARE_TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH",
     "TEMPL_EXPERIMENT": "rawgo",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
-    "MONIKER": "florence",
-    "ENV": "$ENVIRONMENT"
+    "MONIKER": "florence"
   },
   "shell": {
     "scripts": {
-      "install": ["make install"],
-      "build": ["bun --cwd nebula run build", "make dwn", "make build"],
-      "docker": ["make local-image"],
-      "proto": ["make proto-gen"],
-      "pkl": ["make pkl"],
-      "templ": ["make templ"],
-      "proxy": ["./build/sonrd dwn-proxy"],
-      "watch:nebula": ["bun --cwd nebula run watch"]
+      "install": [
+        "make install",
+        "bun --cwd nebula run fetch:deps"
+      ],
+      "build:docker": [
+        "make local-image"
+      ],
+      "build:dwn": [
+        "make dwn"
+      ],
+      "build:motr": [
+        "make motr"
+      ],
+      "build:nebula": [
+        "bun --cwd nebula run build"
+      ],
+      "build:sonrd": [
+        "make build"
+      ],
+      "build:xcaddy": [
+        "sh scripts/build_xcaddy.sh"
+      ],
+      "gen:proto": [
+        "make proto-gen"
+      ],
+      "gen:pkl": [
+        "make pkl"
+      ],
+      "gen:templ": [
+        "make templ"
+      ],
+      "start:tunnel": [
+        "cloudflared tunnel run --token $(skate get CLOUDFLARE_TUNNEL_TOKEN)"
+      ],
+      "watch:nebula": [
+        "bun --cwd nebula run watch"
+      ]
     }
   }
 }

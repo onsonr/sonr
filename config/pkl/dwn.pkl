@@ -24,6 +24,9 @@ class Config {
 
   @JsonField
   schema: Schema
+
+  @JsonField
+  proxyUrl: String
 }
 
 class IPFS {

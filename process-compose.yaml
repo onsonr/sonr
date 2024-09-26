@@ -13,14 +13,23 @@ processes:
     namespace: testnet
     command: "make sh-testnet"
     restart: on_failure
-    max_restarts: 3
+    max_restarts: 1
     depends:
       - ipfs
 
-  proxy:
+  motr:
     namespace: testnet
-    command: "devbox run proxy"
+    command: "make start-proxy"
     restart: on_failure
-    max_restarts: 3
+    max_restarts: 1
     depends:
       - sonr
+      - ipfs
+
+  tunnel:
+    namespace: public
+    command: "devbox run start:tunnel"
+    restart: on_failure
+    max_restarts: 1
+    depends:
+      - caddy

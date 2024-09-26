@@ -9,4 +9,6 @@ type Config struct {
 	Motr *Motr `pkl:"motr" json:"motr,omitempty"`
 
 	Schema *Schema `pkl:"schema" json:"schema,omitempty"`
+
+	ProxyUrl string `pkl:"proxyUrl" json:"proxyUrl,omitempty"`
 }

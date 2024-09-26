@@ -1,33 +1,43 @@
 {
-	email team@sonr.id
+    # Global options
+    email team@sonr.id
 }
 
-# Vaults at vault.sonr.id
+# Services exposed via Cloudflare Tunnel
+:1323 {
+    reverse_proxy localhost:1323
+}
+
+:1317 {
+    reverse_proxy localhost:1317
+}
+
+:9090 {
+    reverse_proxy localhost:9091
+}
+
+:26657 {
+    reverse_proxy localhost:26657
+}
+
 vault.sonr.id {
-	tls {
-		dns cloudflare {env.CLOUDFLARE_API_TOKEN}
-	  resolvers 1.1.1.1
-	}
+    # Since vault.sonr.id has specific configurations, we can specify the hostname
 
-	# Match paths that are bech32 addresses
-	@vault path_regexp vaultPath ^/([a-z0-9]{42})(/.*|)$
+    reverse_proxy localhost:8080
 
-	handle @vault {
-		# Rewrite to IPFS gateway format
-		uri replace /{re.vaultPath.0} /ipns/{re.vaultPath.1}{re.vaultPath.2}
+    @vault path_regexp vaultPath ^/([a-z0-9]{42})(/.*|)$
 
-		# Proxy to IPFS gateway
-		reverse_proxy http://localhost:8080
-	}
+    handle @vault {
+        uri replace /{re.vaultPath.0} /ipns/{re.vaultPath.1}{re.vaultPath.2}
+        reverse_proxy localhost:8080
+    }
 
-	file_server
+    file_server
 
-	header {
-		Content-Type .wasm application/wasm
-		Service-Worker-Allowed "/"
-		# Add any other necessary headers
-	}
+    header {
+        Content-Type .wasm application/wasm
+        Service-Worker-Allowed "/"
+    }
 
-	# Optional: Enable compression
-	encode zstd gzip
+    encode zstd gzip
 }
