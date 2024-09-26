@@ -93,14 +93,3 @@ message PubKey {
     string e = 6; // Exponent (for RSA keys)
   }
 }
-
-// Service defines a Decentralized Service on the Sonr Blockchain
-message Service {
-  string id = 1;
-  string service_type = 2;
-  string authority = 3;
-  string origin = 4;
-  string description = 5;
-  map<string, string> service_endpoints = 6;
-  map<string, string> permissions = 7;
-}

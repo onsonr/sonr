@@ -1,8 +1,8 @@
 syntax = "proto3";
 package service.v1;
 
-import "gogoproto/gogo.proto";
 import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/service/types";
 
@@ -19,4 +19,15 @@ message Params {
   option (gogoproto.goproto_stringer) = false;
 
   bool some_value = 2;
+}
+
+// Service defines a Decentralized Service on the Sonr Blockchain
+message Service {
+  string id = 1;
+  string service_type = 2;
+  string authority = 3;
+  string origin = 4;
+  string description = 5;
+  map<string, string> service_endpoints = 6;
+  map<string, string> permissions = 7;
 }

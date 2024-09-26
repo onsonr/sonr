@@ -32,7 +32,6 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
-
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -141,6 +140,9 @@ import (
 	macaroon "github.com/onsonr/sonr/x/macaroon"
 	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	macaroontypes "github.com/onsonr/sonr/x/macaroon/types"
+	oracle "github.com/onsonr/sonr/x/oracle"
+	oraclekeeper "github.com/onsonr/sonr/x/oracle/keeper"
+	oracletypes "github.com/onsonr/sonr/x/oracle/types"
 	service "github.com/onsonr/sonr/x/service"
 	servicekeeper "github.com/onsonr/sonr/x/service/keeper"
 	servicetypes "github.com/onsonr/sonr/x/service/types"
@@ -238,6 +240,7 @@ type SonrApp struct {
 	VaultKeeper        vaultkeeper.Keeper
 	MacaroonKeeper     macaroonkeeper.Keeper
 	ServiceKeeper      servicekeeper.Keeper
+	OracleKeeper       oraclekeeper.Keeper
 	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
 	ModuleManager      *module.Manager
@@ -373,6 +376,7 @@ func NewChainApp(
 		vaulttypes.StoreKey,
 		macaroontypes.StoreKey,
 		servicetypes.StoreKey,
+		oracletypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -620,6 +624,14 @@ func NewChainApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	// Create the oracle Keeper
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[oracletypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	// Create the service Keeper
 	app.ServiceKeeper = servicekeeper.NewKeeper(
@@ -918,6 +930,7 @@ func NewChainApp(
 		macaroon.NewAppModule(appCodec, app.MacaroonKeeper),
 
 		service.NewAppModule(appCodec, app.ServiceKeeper),
+		oracle.NewAppModule(appCodec, app.OracleKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -969,6 +982,7 @@ func NewChainApp(
 		vaulttypes.ModuleName,
 		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -991,6 +1005,7 @@ func NewChainApp(
 		vaulttypes.ModuleName,
 		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
+		oracletypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1022,6 +1037,7 @@ func NewChainApp(
 		vaulttypes.ModuleName,
 		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
+		oracletypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1484,6 +1500,7 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(vaulttypes.ModuleName)
 	paramsKeeper.Subspace(macaroontypes.ModuleName)
 	paramsKeeper.Subspace(servicetypes.ModuleName)
+	paramsKeeper.Subspace(oracletypes.ModuleName)
 
 	return paramsKeeper
 }
