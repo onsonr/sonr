@@ -79,5 +79,7 @@ x/.DS_Store
 buildenv*
 nebula/node_modules
 
+mprocs.yaml
+
 !devbox.lock
 !motr/build

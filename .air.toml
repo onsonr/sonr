@@ -10,7 +10,7 @@ exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = true
 follow_symlink = false
-full_bin = "bunx wrangler -c ./cmd/motr/wrangler.toml dev"
+full_bin = "make start-proxy"
 include_dir = ["cmd/dwn", "cmd/motr", "internal", "models", "pkl"]
 include_ext = ["go", "templ", "html", "pkl", "js", "mjs"]
 include_file = [
@@ -21,15 +21,15 @@ include_file = [
   "devbox.json",
   ".air.toml",
 ]
-kill_delay = "2s"
+kill_delay = "10s"
 log = "build-errors.log"
 poll = false
 poll_interval = 0
 post_cmd = []
 pre_cmd = ["templ generate"]
 rerun = false
-rerun_delay = 500
-send_interrupt = false
+rerun_delay = 1000
+send_interrupt = true
 stop_on_error = false
 
 [color]

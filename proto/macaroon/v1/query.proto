@@ -1,0 +1,24 @@
+syntax = "proto3";
+package macaroon.v1;
+
+import "google/api/annotations.proto";
+import "macaroon/v1/genesis.proto";
+
+option go_package = "github.com/onsonr/sonr/x/macaroon/types";
+
+// Query provides defines the gRPC querier service.
+service Query {
+  // Params queries all parameters of the module.
+  rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
+    option (google.api.http).get = "/macaroon/v1/params";
+  }
+}
+
+// QueryParamsRequest is the request type for the Query/Params RPC method.
+message QueryParamsRequest {}
+
+// QueryParamsResponse is the response type for the Query/Params RPC method.
+message QueryParamsResponse {
+  // params defines the parameters of the module.
+  Params params = 1;
+}

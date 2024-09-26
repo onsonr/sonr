@@ -38,9 +38,6 @@
       "build:sonrd": [
         "make build"
       ],
-      "build:xcaddy": [
-        "sh scripts/build_xcaddy.sh"
-      ],
       "gen:proto": [
         "make proto-gen"
       ],

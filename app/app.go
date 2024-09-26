@@ -32,6 +32,7 @@ import (
 	"cosmossdk.io/x/upgrade"
 	upgradekeeper "cosmossdk.io/x/upgrade/keeper"
 	upgradetypes "cosmossdk.io/x/upgrade/types"
+
 	abci "github.com/cometbft/cometbft/abci/types"
 	tmproto "github.com/cometbft/cometbft/proto/tendermint/types"
 	dbm "github.com/cosmos/cosmos-db"
@@ -137,6 +138,12 @@ import (
 	did "github.com/onsonr/sonr/x/did"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	didtypes "github.com/onsonr/sonr/x/did/types"
+	macaroon "github.com/onsonr/sonr/x/macaroon"
+	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
+	macaroontypes "github.com/onsonr/sonr/x/macaroon/types"
+	service "github.com/onsonr/sonr/x/service"
+	servicekeeper "github.com/onsonr/sonr/x/service/keeper"
+	servicetypes "github.com/onsonr/sonr/x/service/types"
 	vault "github.com/onsonr/sonr/x/vault"
 	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 	vaulttypes "github.com/onsonr/sonr/x/vault/types"
@@ -229,6 +236,8 @@ type SonrApp struct {
 	UpgradeKeeper      *upgradekeeper.Keeper
 	legacyAmino        *codec.LegacyAmino
 	VaultKeeper        vaultkeeper.Keeper
+	MacaroonKeeper     macaroonkeeper.Keeper
+	ServiceKeeper      servicekeeper.Keeper
 	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
 	ModuleManager      *module.Manager
@@ -362,6 +371,8 @@ func NewChainApp(
 		packetforwardtypes.StoreKey,
 		didtypes.StoreKey,
 		vaulttypes.StoreKey,
+		macaroontypes.StoreKey,
+		servicetypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -609,6 +620,22 @@ func NewChainApp(
 	)
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
+
+	// Create the service Keeper
+	app.ServiceKeeper = servicekeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
+
+	// Create the macaroon Keeper
+	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	)
 
 	// Create the vault Keeper
 	app.VaultKeeper = vaultkeeper.NewKeeper(
@@ -888,6 +915,9 @@ func NewChainApp(
 
 		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
 		vault.NewAppModule(appCodec, app.VaultKeeper),
+		macaroon.NewAppModule(appCodec, app.MacaroonKeeper),
+
+		service.NewAppModule(appCodec, app.ServiceKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -937,6 +967,8 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
+		macaroontypes.ModuleName,
+		servicetypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -957,6 +989,8 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
+		macaroontypes.ModuleName,
+		servicetypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -986,6 +1020,8 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
+		macaroontypes.ModuleName,
+		servicetypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1446,6 +1482,8 @@ func initParamsKeeper(
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(vaulttypes.ModuleName)
+	paramsKeeper.Subspace(macaroontypes.ModuleName)
+	paramsKeeper.Subspace(servicetypes.ModuleName)
 
 	return paramsKeeper
 }
