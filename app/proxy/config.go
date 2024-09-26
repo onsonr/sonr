@@ -3,11 +3,8 @@ package proxy
 import "github.com/spf13/viper"
 
 type Config struct {
-	Host     string `mapstructure:"HOST"`
-	Port     string `mapstructure:"PORT"`
-	SSL      bool   `mapstructure:"SSL"`
-	CertFile string `mapstructure:"CERT_FILE"`
-	KeyFile  string `mapstructure:"KEY_FILE"`
+	Host string `mapstructure:"HOST"`
+	Port string `mapstructure:"PORT"`
 }
 
 func (c *Config) GetHostname() string {
