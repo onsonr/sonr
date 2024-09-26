@@ -1,9 +1,9 @@
 {
   "scripts": {
-    "fetch:dependencies": "bun run .deps.mjs",
+    "fetch:deps": "bun run .deps.mjs",
     "build:ts": "tsc",
     "build:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/css/styles.css",
-    "build": "bun run fetch:dependencies && bun run build:ts && bun run build:css",
+    "build": "bun run fetch:deps && bun run build:ts && bun run build:css",
     "watch:ts": "tsc -w",
     "watch:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/css/styles.css --watch",
     "watch": "bun run watch:ts & bun run watch:css"
