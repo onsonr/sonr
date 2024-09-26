@@ -4,6 +4,7 @@ package vault.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "gogoproto/gogo.proto";
+import "google/api/annotations.proto";
 import "vault/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/vault/types";
@@ -14,7 +15,9 @@ service Msg {
   // AllocateVault assembles a sqlite3 database in a local directory and returns
   // the CID of the database. this operation is called by services initiating a
   // controller registration.
-  rpc AllocateVault(MsgAllocateVault) returns (MsgAllocateVaultResponse);
+  rpc AllocateVault(MsgAllocateVault) returns (MsgAllocateVaultResponse) {
+    option (google.api.http).post = "/vault/v1/allocate";
+  }
 
   // UpdateParams defines a governance operation for updating the parameters.
   //
