@@ -23,6 +23,7 @@ jobs:
         with:
           input: proto
           buf_token: ${{ secrets.BUF_TOKEN }}
+
   upload_pkl:
     runs-on: ubuntu-latest
     steps:
