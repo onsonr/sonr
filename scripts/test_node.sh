@@ -65,9 +65,9 @@ from_scratch () {
   }
 
   # idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y
-  add_key $KEY "$ACC0_MNEMONIC"
+  add_key $KEY "decorate bright ozone fork gallery riot bus exhaust worth way bone indoor calm squirrel merry zero scheme cotton until shop any excess stage laundry"
   # idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd
-  add_key $KEY2 "$ACC1_MNEMONIC"
+  add_key $KEY2 "wealth flavor believe regret funny network recall kiss grape useless pepper cram hint member few certain unveil rather brick bargain curious require crowd raise"
 
   # chain initial setup
   BINARY init $MONIKER --chain-id $CHAIN_ID --default-denom $DENOM
