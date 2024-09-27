@@ -3,7 +3,7 @@ version: "0.6"
 processes:
   ipfs:
     namespace: testnet
-    command: "sh scripts/bootstrap_ipfs.sh"
+    command: "sh scripts/setup_ipfs.sh"
     background: true
     availability:
       restart: on_failure
@@ -17,9 +17,18 @@ processes:
     depends:
       - ipfs
 
+  motr:
+    namespace: testnet
+    command: "make start-motr"
+    restart: on_failure
+    max_restarts: 1
+    depends:
+      - ipfs
+      - sonr
+
   tunnel:
     namespace: public
-    command: "devbox run start:tunnel"
+    command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
     restart: on_failure
     max_restarts: 1
     depends:

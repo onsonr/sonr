@@ -4,7 +4,7 @@
 # Sonr Node - Identity
 - name: sonr
   github-organization: onsonr
-  github-repo: core
+  github-repo: sonr
   dockerfile: cosmos
   build-target: make install
   binaries:

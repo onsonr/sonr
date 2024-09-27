@@ -43,7 +43,7 @@ func NewProxyCmd() *cobra.Command {
 
 			// Wait for interrupt signal to gracefully shutdown the server with a timeout of 10 seconds.
 			<-ctx.Done()
-			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 			defer cancel()
 
 			// Shutdown the server with 10 seconds timeout.

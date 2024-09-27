@@ -321,7 +321,7 @@ start-caddy:
 	@echo "(start-caddy) Starting caddy"
 	./build/caddy run --config ./config/caddy/Caddyfile
 
-start-proxy:
+start-motr: motr
 	@echo "(start-proxy) Starting proxy server"
 	./build/motr proxy
 

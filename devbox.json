@@ -8,7 +8,14 @@
     "cloudflared@latest"
   ],
   "env": {
-    "CLOUDFLARE_TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
+    "ACC0_ADDRESS": "idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y",
+    "ACC0_MNEMONIC": "$(skate get ACC0_MNEMONIC)",
+    "ACC0_NAME": "acc0",
+    "ACC1_ADDRESS": "idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd",
+    "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)",
+    "ACC1_NAME": "acc1",
+    "BINARY": "sonrd",
+    "TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
     "GOPATH": "$HOME/go",
     "PATH": "$HOME/go/bin:$PATH",
     "TEMPL_EXPERIMENT": "rawgo",
@@ -19,40 +26,17 @@
   },
   "shell": {
     "scripts": {
-      "install": [
-        "make install",
-        "bun --cwd nebula run fetch:deps"
-      ],
-      "build:docker": [
-        "make local-image"
-      ],
-      "build:dwn": [
-        "make dwn"
-      ],
-      "build:motr": [
-        "make motr"
-      ],
-      "build:nebula": [
-        "bun --cwd nebula run build"
-      ],
-      "build:sonrd": [
-        "make build"
-      ],
-      "gen:proto": [
-        "make proto-gen"
-      ],
-      "gen:pkl": [
-        "make pkl"
-      ],
-      "gen:templ": [
-        "make templ"
-      ],
-      "start:tunnel": [
-        "cloudflared tunnel run --token $(skate get CLOUDFLARE_TUNNEL_TOKEN)"
-      ],
-      "watch:nebula": [
-        "bun --cwd nebula run watch"
-      ]
+      "install": ["make install"],
+      "build:docker": ["make local-image"],
+      "build:dwn": ["make dwn"],
+      "build:motr": ["make motr"],
+      "build:nebula": ["bun --cwd nebula run build"],
+      "build:sonrd": ["make build"],
+      "gen:proto": ["make proto-gen"],
+      "gen:pkl": ["make pkl"],
+      "gen:templ": ["make templ"],
+      "start:motr": ["make start-motr"],
+      "watch:nebula": ["bun --cwd nebula run watch"]
     }
   }
 }
