@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/config/dwn" }
+@go.Package { name = "github.com/onsonr/sonr/app/config/dwn" }
 
 module dwn
 

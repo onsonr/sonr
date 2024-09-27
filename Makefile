@@ -314,8 +314,8 @@ templ:
 
 pkl:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./app/config/pkl/dwn.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./app/config/pkl/orm.pkl
 
 start-caddy:
 	@echo "(start-caddy) Starting caddy"
