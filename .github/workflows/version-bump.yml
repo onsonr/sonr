@@ -5,6 +5,10 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   bump-version:
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
@@ -14,7 +18,7 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
         with:
-          token: "${{ secrets.GH_PAT_TOKEN }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - uses: actions/setup-go@v5
@@ -28,4 +32,4 @@ jobs:
       - name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.GH_PAT_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
