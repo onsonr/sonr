@@ -7,12 +7,10 @@
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/onsonr/sonr)
 ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/onsonr/sonr)
 [![Static Badge](https://img.shields.io/badge/homepage-sonr.io-blue?style=flat-square)](https://sonr.io)
-![Discord](https://img.shields.io/discord/843061375160156170?logo=discord&label=Discord%20Chat)
 
 [![Go Report Card](https://goreportcard.com/badge/github.com/onsonr/sonr)](https://goreportcard.com/report/github.com/onsonr/sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=vulnerabilities)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
-[![Mutable.ai Auto Wiki](https://img.shields.io/badge/Auto_Wiki-Mutable.ai-blue)](https://wiki.mutable.ai/di-dao/sonr)
 
 </div>
 <br />
