@@ -5,9 +5,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 )
 
-var (
-	_ sdk.Msg = &MsgUpdateParams{}
-)
+var _ sdk.Msg = &MsgUpdateParams{}
 
 // NewMsgUpdateParams creates new instance of MsgUpdateParams
 func NewMsgUpdateParams(
@@ -16,8 +14,8 @@ func NewMsgUpdateParams(
 ) *MsgUpdateParams {
 	return &MsgUpdateParams{
 		Authority: sender.String(),
-		Params: Params{
-			SomeValue: someValue,
+		Params:    Params{
+			// SomeValue: someValue,
 		},
 	}
 }

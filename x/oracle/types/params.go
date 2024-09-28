@@ -7,9 +7,7 @@ import (
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
 	// TODO:
-	return Params{
-		SomeValue: true,
-	}
+	return Params{}
 }
 
 // Stringer method for Params.

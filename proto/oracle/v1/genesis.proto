@@ -24,13 +24,15 @@ message Params {
 message Assets {
   option (amino.name) = "oracle/assets";
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
 
   repeated AssetInfo assets = 1;
 }
 
 // AssetInfo defines the asset info
 message AssetInfo {
+  option (amino.name) = "oracle/asset_info";
+  option (gogoproto.equal) = true;
+
   // The coin type index for bip44 path
   int64 index = 1;
 

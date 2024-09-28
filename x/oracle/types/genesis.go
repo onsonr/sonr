@@ -1,5 +1,9 @@
 package types
 
+import (
+	"github.com/onsonr/sonr/x/did/types/orm/assettype"
+)
+
 // this line is used by starport scaffolding # genesis/types/import
 
 // DefaultIndex is the default global index
@@ -19,4 +23,34 @@ func (gs GenesisState) Validate() error {
 	// this line is used by starport scaffolding # genesis/types/validate
 
 	return gs.Params.Validate()
+}
+
+// DefaultAssets returns the default asset infos: BTC, ETH, SNR, and USDC
+func DefaultAssets() []*AssetInfo {
+	return []*AssetInfo{
+		{
+			Name:      "Bitcoin",
+			Symbol:    "BTC",
+			Hrp:       "bc",
+			Index:     0,
+			AssetType: assettype.Native.String(),
+			IconUrl:   "https://cdn.sonr.land/BTC.svg",
+		},
+		{
+			Name:      "Ethereum",
+			Symbol:    "ETH",
+			Hrp:       "eth",
+			Index:     64,
+			AssetType: assettype.Native.String(),
+			IconUrl:   "https://cdn.sonr.land/ETH.svg",
+		},
+		{
+			Name:      "Sonr",
+			Symbol:    "SNR",
+			Hrp:       "idx",
+			Index:     703,
+			AssetType: assettype.Native.String(),
+			IconUrl:   "https://cdn.sonr.land/SNR.svg",
+		},
+	}
 }

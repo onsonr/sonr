@@ -32,7 +32,6 @@ message Params {
 message Methods {
   option (amino.name) = "macaroon/methods";
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
 
   repeated string methods = 1;
 }
@@ -41,7 +40,6 @@ message Methods {
 message Scopes {
   option (amino.name) = "macaroon/scopes";
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
 
   repeated string scopes = 1;
 }
@@ -50,7 +48,6 @@ message Scopes {
 message Caveats {
   option (amino.name) = "macaroon/caveat";
   option (gogoproto.equal) = true;
-  option (gogoproto.goproto_stringer) = false;
 
   repeated string caveats = 1;
 }

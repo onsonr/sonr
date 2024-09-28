@@ -27,19 +27,6 @@ func (ms msgServer) RegisterController(goCtx context.Context, msg *types.MsgRegi
 	return &types.MsgRegisterControllerResponse{}, nil
 }
 
-// AuthorizeService implements types.MsgServer.
-func (ms msgServer) AuthorizeService(goCtx context.Context, msg *types.MsgAuthorizeService) (*types.MsgAuthorizeServiceResponse, error) {
-	if ms.k.authority != msg.Controller {
-		return nil, errors.Wrapf(
-			govtypes.ErrInvalidSigner,
-			"invalid authority; expected %s, got %s",
-			ms.k.authority,
-			msg.Controller,
-		)
-	}
-	return &types.MsgAuthorizeServiceResponse{}, nil
-}
-
 // UpdateParams updates the x/did module parameters.
 func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams) (*types.MsgUpdateParamsResponse, error) {
 	if ms.k.authority != msg.Authority {

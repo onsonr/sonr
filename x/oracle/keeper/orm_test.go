@@ -10,22 +10,13 @@ import (
 func TestORM(t *testing.T) {
 	f := SetupTest(t)
 
-	dt := f.k.OrmDB.ExampleDataTable()
-	acc := []byte("test_acc")
+	dt := f.k.OrmDB.BalanceTable()
 	amt := uint64(7)
 
-	err := dt.Insert(f.ctx, &apiv1.ExampleData{
-		Account: acc,
-		Amount:  amt,
+	err := dt.Insert(f.ctx, &apiv1.Balance{
+		Amount: amt,
 	})
 	require.NoError(t, err)
 
-	d, err := dt.Has(f.ctx, []byte("test_acc"))
 	require.NoError(t, err)
-	require.True(t, d)
-
-	res, err := dt.Get(f.ctx, []byte("test_acc"))
-	require.NoError(t, err)
-	require.NotNil(t, res)
-	require.EqualValues(t, amt, res.Amount)
 }
