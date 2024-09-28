@@ -11,6 +11,8 @@ func Home(c echo.Context) error {
 
 templ homeView() {
 	@blocks.Layout("Sonr.ID", true) {
+		@blocks.HeaderMarketingNav()
+		@blocks.SectionHero()
 		@blocks.Card("home-view", blocks.SizeLarge) {
 			@blocks.H1("Sonr.ID")
 			@blocks.Text("A Decentralized Web Node Client for the Sonr Network.")
@@ -25,5 +27,6 @@ templ homeView() {
 			</div>
 			@blocks.PoweredBySonr()
 		}
+		@blocks.FooterMarketingNav()
 	}
 }

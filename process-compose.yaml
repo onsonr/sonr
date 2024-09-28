@@ -11,7 +11,7 @@ processes:
 
   sonr:
     namespace: testnet
-    command: "make sh-testnet"
+    command: "devbox run start:testnet"
     restart: on_failure
     max_restarts: 1
     depends:
@@ -19,7 +19,7 @@ processes:
 
   motr:
     namespace: testnet
-    command: "make start-motr"
+    command: "devbox run start:motr"
     restart: on_failure
     max_restarts: 1
     depends:
