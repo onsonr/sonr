@@ -2,8 +2,8 @@ name: Publish to buf.build/didao/sonr
 on:
   push:
     branches:
-      - master
       - develop
+      - master
 
 permissions:
   contents: write
