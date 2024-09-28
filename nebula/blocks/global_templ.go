@@ -116,7 +116,7 @@ func Styles(local bool) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link href=\"/assets/css/styles.css\" rel=\"stylesheet\"><style>\n\t\t\t[x-cloak] {\n\t\t\t\tdisplay: none;\n\t\t\t}\n\t\t</style>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<link href=\"/assets/css/styles.css\" rel=\"stylesheet\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -296,16 +296,6 @@ func Columns() templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
-}
-
-func main() templ.CSSClass {
-	templ_7745c5c3_CSSBuilder := templruntime.GetBuilder()
-	templ_7745c5c3_CSSBuilder.WriteString(`font-family:R-Flex, system-ui, Avenir, Helvetica, Arial, sans-serif;`)
-	templ_7745c5c3_CSSID := templ.CSSID(`main`, templ_7745c5c3_CSSBuilder.String())
-	return templ.ComponentCSSClass{
-		ID:    templ_7745c5c3_CSSID,
-		Class: templ.SafeCSS(`.` + templ_7745c5c3_CSSID + `{` + templ_7745c5c3_CSSBuilder.String() + `}`),
-	}
 }
 
 var _ = templruntime.GeneratedTemplate
