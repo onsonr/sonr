@@ -144,9 +144,9 @@ type AccountTable interface {
 	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
 	Get(ctx context.Context, id uint64) (*Account, error)
-	HasByAccount(ctx context.Context, account string) (found bool, err error)
-	// GetByAccount returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByAccount(ctx context.Context, account string) (*Account, error)
+	HasByAddressChainNetwork(ctx context.Context, address string, chain string, network string) (found bool, err error)
+	// GetByAddressChainNetwork returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAddressChainNetwork(ctx context.Context, address string, chain string, network string) (*Account, error)
 	List(ctx context.Context, prefixKey AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
 	ListRange(ctx context.Context, from, to AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
 	DeleteBy(ctx context.Context, prefixKey AccountIndexKey) error
@@ -187,16 +187,26 @@ func (this AccountIdIndexKey) WithId(id uint64) AccountIdIndexKey {
 	return this
 }
 
-type AccountAccountIndexKey struct {
+type AccountAddressChainNetworkIndexKey struct {
 	vs []interface{}
 }
 
-func (x AccountAccountIndexKey) id() uint32            { return 1 }
-func (x AccountAccountIndexKey) values() []interface{} { return x.vs }
-func (x AccountAccountIndexKey) accountIndexKey()      {}
+func (x AccountAddressChainNetworkIndexKey) id() uint32            { return 1 }
+func (x AccountAddressChainNetworkIndexKey) values() []interface{} { return x.vs }
+func (x AccountAddressChainNetworkIndexKey) accountIndexKey()      {}
 
-func (this AccountAccountIndexKey) WithAccount(account string) AccountAccountIndexKey {
-	this.vs = []interface{}{account}
+func (this AccountAddressChainNetworkIndexKey) WithAddress(address string) AccountAddressChainNetworkIndexKey {
+	this.vs = []interface{}{address}
+	return this
+}
+
+func (this AccountAddressChainNetworkIndexKey) WithAddressChain(address string, chain string) AccountAddressChainNetworkIndexKey {
+	this.vs = []interface{}{address, chain}
+	return this
+}
+
+func (this AccountAddressChainNetworkIndexKey) WithAddressChainNetwork(address string, chain string, network string) AccountAddressChainNetworkIndexKey {
+	this.vs = []interface{}{address, chain, network}
 	return this
 }
 
@@ -236,16 +246,20 @@ func (this accountTable) Get(ctx context.Context, id uint64) (*Account, error) {
 	return &account, nil
 }
 
-func (this accountTable) HasByAccount(ctx context.Context, account string) (found bool, err error) {
+func (this accountTable) HasByAddressChainNetwork(ctx context.Context, address string, chain string, network string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		account,
+		address,
+		chain,
+		network,
 	)
 }
 
-func (this accountTable) GetByAccount(ctx context.Context, account string) (*Account, error) {
+func (this accountTable) GetByAddressChainNetwork(ctx context.Context, address string, chain string, network string) (*Account, error) {
 	var account Account
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &account,
-		account,
+		address,
+		chain,
+		network,
 	)
 	if err != nil {
 		return nil, err

@@ -27,13 +27,13 @@ message Account {
     primary_key: {fields: "id"}
     index: {
       id: 1
-      fields: "account"
+      fields: "address,chain,network"
       unique: true
     }
   };
 
   uint64 id = 1;
-  string account = 2;
+  string address = 2;
   string chain = 3;
   string network = 4;
 }
