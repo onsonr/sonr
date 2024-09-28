@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/nebula/blocks"
+	"github.com/onsonr/sonr/nebula/components/blocks"
 )
 
 func Login(c echo.Context) error {

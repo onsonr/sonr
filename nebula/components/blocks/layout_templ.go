@@ -52,13 +52,13 @@ func Layout(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `nebula/blocks/layout.templ`, Line: 13, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `nebula/components/blocks/layout.templ`, Line: 13, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title></head><body class=\"flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"></head><body class=\"flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -118,13 +118,13 @@ func LayoutNoBody(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `nebula/blocks/layout.templ`, Line: 33, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `nebula/components/blocks/layout.templ`, Line: 36, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title></head><main class=\"grow\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"></head><main class=\"grow\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -11,6 +11,9 @@ templ Layout(title string, remote bool) {
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title }</title>
+			<!-- Sets the status bar style to transparent -->
+			<meta name="apple-mobile-web-app-capable" content="yes"/>
+			<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 		</head>
 		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
 			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
@@ -31,6 +34,9 @@ templ LayoutNoBody(title string, remote bool) {
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ title }</title>
+			<!-- Sets the status bar style to transparent -->
+			<meta name="apple-mobile-web-app-capable" content="yes"/>
+			<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 		</head>
 		<main class="grow">
 			{ children... }
