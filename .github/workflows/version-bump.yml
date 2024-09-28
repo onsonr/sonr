@@ -1,31 +1,43 @@
-name: Bump version
+name: Bump Version
 
 on:
   push:
     branches:
       - master
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
-  bump-version:
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+  run-tests:
     runs-on: ubuntu-latest
-    name: "Bump version and create changelog with commitizen"
+    name: "Run tests"
     steps:
-      - name: Check out
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: "1.22"
           check-latest: true
 
-      - name: Tests
+      - name: Run tests
         run: make test
 
+  bump-version:
+    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    runs-on: ubuntu-latest
+    name: "Bump Version"
+    needs: run-tests
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
       - name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
