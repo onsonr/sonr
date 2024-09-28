@@ -14,15 +14,15 @@ jobs:
       - name: Check out
         uses: actions/checkout@v4
         with:
-          token: "${{ secrets.PERSONAL_ACCESS_TOKEN }}"
+          token: "${{ secrets.GH_PAT_TOKEN }}"
           fetch-depth: 0
 
       - uses: actions/setup-go@v5
         with:
-          go-version: ${{ env.GO_VERSION }}
+          go-version: "1.22"
           check-latest: true
 
-      - name: Tests
+      - name: Run tests
         run: make test
 
       - name: Create bump and changelog
