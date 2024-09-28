@@ -9,6 +9,7 @@ import (
 
 type ControllerI interface {
 	ChainID() string
+	GetPubKey() *didv1.PubKey
 	SonrAddress() string
 	EthAddress() string
 	BtcAddress() string
@@ -77,6 +78,17 @@ func (c *controller) ExportUserKs() (string, error) {
 	return c.userKs.Marshal()
 }
 
+func (c *controller) GetPubKey() *didv1.PubKey {
+	return &didv1.PubKey{
+		KeyType: "ecdsa",
+		RawKey: &didv1.RawKey{
+			Algorithm: "secp256k1",
+			Key:       c.publicKey,
+		},
+		Role: "authentication",
+	}
+}
+
 func (c *controller) GetTableEntry() (*didv1.Controller, error) {
 	valKs, err := c.valKs.Marshal()
 	if err != nil {
@@ -88,7 +100,7 @@ func (c *controller) GetTableEntry() (*didv1.Controller, error) {
 		SonrAddress: c.address,
 		EthAddress:  c.ethAddr,
 		BtcAddress:  c.btcAddr,
-		PublicKey:   c.publicKey,
+		PublicKey:   c.GetPubKey(),
 	}, nil
 }
 

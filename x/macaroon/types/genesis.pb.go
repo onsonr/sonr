@@ -72,7 +72,12 @@ func (m *GenesisState) GetParams() Params {
 
 // Params defines the set of module parameters.
 type Params struct {
-	SomeValue bool `protobuf:"varint,2,opt,name=some_value,json=someValue,proto3" json:"some_value,omitempty"`
+	// The list of methods
+	Methods *Methods `protobuf:"bytes,1,opt,name=methods,proto3" json:"methods,omitempty"`
+	// The list of scopes
+	Scopes *Scopes `protobuf:"bytes,2,opt,name=scopes,proto3" json:"scopes,omitempty"`
+	// The list of caveats
+	Caveats *Caveats `protobuf:"bytes,3,opt,name=caveats,proto3" json:"caveats,omitempty"`
 }
 
 func (m *Params) Reset()      { *m = Params{} }
@@ -107,38 +112,193 @@ func (m *Params) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Params proto.InternalMessageInfo
 
-func (m *Params) GetSomeValue() bool {
+func (m *Params) GetMethods() *Methods {
 	if m != nil {
-		return m.SomeValue
+		return m.Methods
 	}
-	return false
+	return nil
+}
+
+func (m *Params) GetScopes() *Scopes {
+	if m != nil {
+		return m.Scopes
+	}
+	return nil
+}
+
+func (m *Params) GetCaveats() *Caveats {
+	if m != nil {
+		return m.Caveats
+	}
+	return nil
+}
+
+// Methods defines the available DID methods
+type Methods struct {
+	Methods []string `protobuf:"bytes,1,rep,name=methods,proto3" json:"methods,omitempty"`
+}
+
+func (m *Methods) Reset()      { *m = Methods{} }
+func (*Methods) ProtoMessage() {}
+func (*Methods) Descriptor() ([]byte, []int) {
+	return fileDescriptor_06e0b5dfdf5e52ba, []int{2}
+}
+func (m *Methods) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Methods) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Methods.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Methods) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Methods.Merge(m, src)
+}
+func (m *Methods) XXX_Size() int {
+	return m.Size()
+}
+func (m *Methods) XXX_DiscardUnknown() {
+	xxx_messageInfo_Methods.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Methods proto.InternalMessageInfo
+
+func (m *Methods) GetMethods() []string {
+	if m != nil {
+		return m.Methods
+	}
+	return nil
+}
+
+// Scopes defines the set of scopes
+type Scopes struct {
+	Scopes []string `protobuf:"bytes,1,rep,name=scopes,proto3" json:"scopes,omitempty"`
+}
+
+func (m *Scopes) Reset()      { *m = Scopes{} }
+func (*Scopes) ProtoMessage() {}
+func (*Scopes) Descriptor() ([]byte, []int) {
+	return fileDescriptor_06e0b5dfdf5e52ba, []int{3}
+}
+func (m *Scopes) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Scopes) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Scopes.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Scopes) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Scopes.Merge(m, src)
+}
+func (m *Scopes) XXX_Size() int {
+	return m.Size()
+}
+func (m *Scopes) XXX_DiscardUnknown() {
+	xxx_messageInfo_Scopes.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Scopes proto.InternalMessageInfo
+
+func (m *Scopes) GetScopes() []string {
+	if m != nil {
+		return m.Scopes
+	}
+	return nil
+}
+
+// Caveats defines the available caveats
+type Caveats struct {
+	Caveats []string `protobuf:"bytes,1,rep,name=caveats,proto3" json:"caveats,omitempty"`
+}
+
+func (m *Caveats) Reset()      { *m = Caveats{} }
+func (*Caveats) ProtoMessage() {}
+func (*Caveats) Descriptor() ([]byte, []int) {
+	return fileDescriptor_06e0b5dfdf5e52ba, []int{4}
+}
+func (m *Caveats) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Caveats) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Caveats.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Caveats) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Caveats.Merge(m, src)
+}
+func (m *Caveats) XXX_Size() int {
+	return m.Size()
+}
+func (m *Caveats) XXX_DiscardUnknown() {
+	xxx_messageInfo_Caveats.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Caveats proto.InternalMessageInfo
+
+func (m *Caveats) GetCaveats() []string {
+	if m != nil {
+		return m.Caveats
+	}
+	return nil
 }
 
 func init() {
 	proto.RegisterType((*GenesisState)(nil), "macaroon.v1.GenesisState")
 	proto.RegisterType((*Params)(nil), "macaroon.v1.Params")
+	proto.RegisterType((*Methods)(nil), "macaroon.v1.Methods")
+	proto.RegisterType((*Scopes)(nil), "macaroon.v1.Scopes")
+	proto.RegisterType((*Caveats)(nil), "macaroon.v1.Caveats")
 }
 
 func init() { proto.RegisterFile("macaroon/v1/genesis.proto", fileDescriptor_06e0b5dfdf5e52ba) }
 
 var fileDescriptor_06e0b5dfdf5e52ba = []byte{
-	// 245 bytes of a gzipped FileDescriptorProto
+	// 340 bytes of a gzipped FileDescriptorProto
 	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcc, 0x4d, 0x4c, 0x4e,
 	0x2c, 0xca, 0xcf, 0xcf, 0xd3, 0x2f, 0x33, 0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x86, 0x49, 0xe9, 0x95, 0x19, 0x4a, 0x89, 0xa4, 0xe7,
-	0xa7, 0xe7, 0x83, 0xc5, 0xf5, 0x41, 0x2c, 0x88, 0x12, 0x29, 0xc1, 0xc4, 0xdc, 0xcc, 0xbc, 0x7c,
-	0x7d, 0x30, 0x09, 0x11, 0x52, 0x72, 0xe4, 0xe2, 0x71, 0x87, 0x18, 0x13, 0x5c, 0x92, 0x58, 0x92,
-	0x2a, 0x64, 0xc8, 0xc5, 0x56, 0x90, 0x58, 0x94, 0x98, 0x5b, 0x2c, 0xc1, 0xa8, 0xc0, 0xa8, 0xc1,
-	0x6d, 0x24, 0xac, 0x87, 0x64, 0xac, 0x5e, 0x00, 0x58, 0xca, 0x89, 0xe5, 0xc4, 0x3d, 0x79, 0x86,
-	0x20, 0xa8, 0x42, 0x25, 0x57, 0x2e, 0x36, 0x88, 0xb8, 0x90, 0x2c, 0x17, 0x57, 0x71, 0x7e, 0x6e,
-	0x6a, 0x7c, 0x59, 0x62, 0x4e, 0x69, 0xaa, 0x04, 0x93, 0x02, 0xa3, 0x06, 0x47, 0x10, 0x27, 0x48,
-	0x24, 0x0c, 0x24, 0x60, 0x25, 0x33, 0x63, 0x81, 0x3c, 0xc3, 0x8b, 0x05, 0xf2, 0x8c, 0x5d, 0xcf,
-	0x37, 0x68, 0xf1, 0xc3, 0x7d, 0x02, 0x31, 0xc6, 0xc9, 0xf1, 0xc4, 0x23, 0x39, 0xc6, 0x0b, 0x8f,
-	0xe4, 0x18, 0x1f, 0x3c, 0x92, 0x63, 0x9c, 0xf0, 0x58, 0x8e, 0xe1, 0xc2, 0x63, 0x39, 0x86, 0x1b,
-	0x8f, 0xe5, 0x18, 0xa2, 0xd4, 0xd3, 0x33, 0x4b, 0x32, 0x4a, 0x93, 0xf4, 0x92, 0xf3, 0x73, 0xf5,
-	0xf3, 0xf3, 0x8a, 0xf3, 0xf3, 0x8a, 0xf4, 0xc1, 0x44, 0x85, 0x3e, 0xdc, 0x8c, 0x92, 0xca, 0x82,
-	0xd4, 0xe2, 0x24, 0x36, 0xb0, 0x9f, 0x8c, 0x01, 0x01, 0x00, 0x00, 0xff, 0xff, 0xc2, 0xd2, 0x5a,
-	0x72, 0x26, 0x01, 0x00, 0x00,
+	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x86, 0x49, 0xe9, 0x95, 0x19, 0x4a, 0x09, 0x26, 0xe6,
+	0x66, 0xe6, 0xe5, 0xeb, 0x83, 0x49, 0x88, 0xbc, 0x94, 0x48, 0x7a, 0x7e, 0x7a, 0x3e, 0x98, 0xa9,
+	0x0f, 0x62, 0x41, 0x44, 0x95, 0x1c, 0xb9, 0x78, 0xdc, 0x21, 0xc6, 0x04, 0x97, 0x24, 0x96, 0xa4,
+	0x0a, 0x19, 0x72, 0xb1, 0x15, 0x24, 0x16, 0x25, 0xe6, 0x16, 0x4b, 0x30, 0x2a, 0x30, 0x6a, 0x70,
+	0x1b, 0x09, 0xeb, 0x21, 0x19, 0xab, 0x17, 0x00, 0x96, 0x72, 0x62, 0x39, 0x71, 0x4f, 0x9e, 0x21,
+	0x08, 0xaa, 0x50, 0x69, 0x33, 0x23, 0x17, 0x1b, 0x44, 0x42, 0x48, 0x8f, 0x8b, 0x3d, 0x37, 0xb5,
+	0x24, 0x23, 0x3f, 0x05, 0xa6, 0x5d, 0x04, 0x45, 0xbb, 0x2f, 0x44, 0x2e, 0x08, 0xa6, 0x48, 0x48,
+	0x9b, 0x8b, 0xad, 0x38, 0x39, 0xbf, 0x20, 0xb5, 0x58, 0x82, 0x09, 0x8b, 0x6d, 0xc1, 0x60, 0xa9,
+	0x20, 0xa8, 0x12, 0x90, 0xe1, 0xc9, 0x89, 0x65, 0xa9, 0x89, 0x25, 0xc5, 0x12, 0xcc, 0x58, 0x0c,
+	0x77, 0x86, 0xc8, 0x05, 0xc1, 0x14, 0x59, 0xc9, 0xcc, 0x58, 0x20, 0xcf, 0xf0, 0x62, 0x81, 0x3c,
+	0x63, 0xd7, 0xf3, 0x0d, 0x5a, 0xfc, 0xf0, 0x80, 0x83, 0xba, 0xda, 0x89, 0x8b, 0x1d, 0xea, 0x1c,
+	0x21, 0x09, 0x64, 0x57, 0x33, 0x6b, 0x70, 0xc2, 0xdd, 0x67, 0x25, 0x8b, 0x6c, 0x84, 0x00, 0xdc,
+	0x08, 0xa8, 0xb4, 0x92, 0x1d, 0x17, 0x1b, 0xc4, 0x8d, 0x42, 0x62, 0x70, 0x8f, 0x40, 0x4c, 0x80,
+	0xf2, 0x70, 0xb9, 0x01, 0x22, 0xab, 0xe4, 0xc8, 0xc5, 0x0e, 0x75, 0x35, 0xc8, 0x0d, 0x30, 0xcf,
+	0x41, 0xdd, 0x40, 0xc0, 0x1b, 0x10, 0x69, 0x27, 0xc7, 0x13, 0x8f, 0xe4, 0x18, 0x2f, 0x3c, 0x92,
+	0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5, 0x18, 0x6e, 0x3c,
+	0x96, 0x63, 0x88, 0x52, 0x4f, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce, 0xcf, 0xd5, 0xcf,
+	0xcf, 0x2b, 0xce, 0xcf, 0x2b, 0xd2, 0x07, 0x13, 0x15, 0xfa, 0x70, 0x33, 0x4a, 0x2a, 0x0b, 0x52,
+	0x8b, 0x93, 0xd8, 0xc0, 0x29, 0xc1, 0x18, 0x10, 0x00, 0x00, 0xff, 0xff, 0xe1, 0xf9, 0x89, 0xc0,
+	0x5c, 0x02, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -160,8 +320,101 @@ func (this *Params) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if this.SomeValue != that1.SomeValue {
+	if !this.Methods.Equal(that1.Methods) {
 		return false
+	}
+	if !this.Scopes.Equal(that1.Scopes) {
+		return false
+	}
+	if !this.Caveats.Equal(that1.Caveats) {
+		return false
+	}
+	return true
+}
+func (this *Methods) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Methods)
+	if !ok {
+		that2, ok := that.(Methods)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Methods) != len(that1.Methods) {
+		return false
+	}
+	for i := range this.Methods {
+		if this.Methods[i] != that1.Methods[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *Scopes) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Scopes)
+	if !ok {
+		that2, ok := that.(Scopes)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Scopes) != len(that1.Scopes) {
+		return false
+	}
+	for i := range this.Scopes {
+		if this.Scopes[i] != that1.Scopes[i] {
+			return false
+		}
+	}
+	return true
+}
+func (this *Caveats) Equal(that interface{}) bool {
+	if that == nil {
+		return this == nil
+	}
+
+	that1, ok := that.(*Caveats)
+	if !ok {
+		that2, ok := that.(Caveats)
+		if ok {
+			that1 = &that2
+		} else {
+			return false
+		}
+	}
+	if that1 == nil {
+		return this == nil
+	} else if this == nil {
+		return false
+	}
+	if len(this.Caveats) != len(that1.Caveats) {
+		return false
+	}
+	for i := range this.Caveats {
+		if this.Caveats[i] != that1.Caveats[i] {
+			return false
+		}
 	}
 	return true
 }
@@ -218,15 +471,137 @@ func (m *Params) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if m.SomeValue {
-		i--
-		if m.SomeValue {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
+	if m.Caveats != nil {
+		{
+			size, err := m.Caveats.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
 		}
 		i--
-		dAtA[i] = 0x10
+		dAtA[i] = 0x1a
+	}
+	if m.Scopes != nil {
+		{
+			size, err := m.Scopes.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Methods != nil {
+		{
+			size, err := m.Methods.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintGenesis(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Methods) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Methods) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Methods) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Methods) > 0 {
+		for iNdEx := len(m.Methods) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Methods[iNdEx])
+			copy(dAtA[i:], m.Methods[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Methods[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Scopes) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Scopes) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Scopes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Scopes) > 0 {
+		for iNdEx := len(m.Scopes) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Scopes[iNdEx])
+			copy(dAtA[i:], m.Scopes[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Scopes[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *Caveats) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *Caveats) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *Caveats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Caveats) > 0 {
+		for iNdEx := len(m.Caveats) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Caveats[iNdEx])
+			copy(dAtA[i:], m.Caveats[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Caveats[iNdEx])))
+			i--
+			dAtA[i] = 0xa
+		}
 	}
 	return len(dAtA) - i, nil
 }
@@ -259,8 +634,62 @@ func (m *Params) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if m.SomeValue {
-		n += 2
+	if m.Methods != nil {
+		l = m.Methods.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.Scopes != nil {
+		l = m.Scopes.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if m.Caveats != nil {
+		l = m.Caveats.Size()
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	return n
+}
+
+func (m *Methods) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Methods) > 0 {
+		for _, s := range m.Methods {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *Scopes) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Scopes) > 0 {
+		for _, s := range m.Scopes {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	return n
+}
+
+func (m *Caveats) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if len(m.Caveats) > 0 {
+		for _, s := range m.Caveats {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
 	}
 	return n
 }
@@ -383,11 +812,11 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: Params: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
-		case 2:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field SomeValue", wireType)
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Methods", wireType)
 			}
-			var v int
+			var msglen int
 			for shift := uint(0); ; shift += 7 {
 				if shift >= 64 {
 					return ErrIntOverflowGenesis
@@ -397,12 +826,346 @@ func (m *Params) Unmarshal(dAtA []byte) error {
 				}
 				b := dAtA[iNdEx]
 				iNdEx++
-				v |= int(b&0x7F) << shift
+				msglen |= int(b&0x7F) << shift
 				if b < 0x80 {
 					break
 				}
 			}
-			m.SomeValue = bool(v != 0)
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Methods == nil {
+				m.Methods = &Methods{}
+			}
+			if err := m.Methods.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Scopes == nil {
+				m.Scopes = &Scopes{}
+			}
+			if err := m.Scopes.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Caveats", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Caveats == nil {
+				m.Caveats = &Caveats{}
+			}
+			if err := m.Caveats.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Methods) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Methods: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Methods: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Methods", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Methods = append(m.Methods, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Scopes) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Scopes: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Scopes: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Scopes = append(m.Scopes, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipGenesis(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *Caveats) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowGenesis
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: Caveats: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: Caveats: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Caveats", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Caveats = append(m.Caveats, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipGenesis(dAtA[iNdEx:])

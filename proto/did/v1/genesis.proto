@@ -19,7 +19,6 @@ message Params {
   option (gogoproto.goproto_stringer) = false;
 
   // Whitelisted Assets
-  repeated AssetInfo whitelisted_assets = 1;
 
   // Whitelisted Key Types
   map<string, KeyInfo> allowed_public_keys = 2;
@@ -31,38 +30,6 @@ message Params {
   repeated string attestation_formats = 4;
 }
 
-// AssetInfo defines the asset info
-message AssetInfo {
-  // The coin type index for bip44 path
-  int64 index = 1;
-
-  // The hrp for bech32 address
-  string hrp = 2;
-
-  // The coin symbol
-  string symbol = 3;
-
-  // The coin name
-  string asset_type = 4;
-
-  // The name of the asset
-  string name = 5;
-
-  // The icon url
-  string icon_url = 6;
-}
-
-// Document defines a DID document
-message Document {
-  string id = 1;
-  string controller = 2; // The DID of the controller
-  repeated string authentication = 3;
-  repeated string assertion_method = 4;
-  repeated string capability_delegation = 5;
-  repeated string capability_invocation = 6;
-  repeated string service = 7;
-}
-
 // KeyInfo defines information for accepted PubKey types
 message KeyInfo {
   string role = 1;
@@ -70,26 +37,4 @@ message KeyInfo {
   string encoding = 3; // e.g., "hex", "base64", "multibase"
   string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448",
   // "Ed25519", "Ed448", "secp256k1"
-  string type = 5; // e.g., "Octet", "Elliptic", "RSA", "Symmetric", "HMAC"
-}
-
-// PubKey defines a public key for a did
-message PubKey {
-  string role = 1;
-  string algorithm = 2;
-  string encoding = 3;
-  string curve = 4;
-  string key_type = 5;
-  bytes raw = 6;
-  JWK jwk = 7;
-
-  // JWK represents a JSON Web Key
-  message JWK {
-    string kty = 1; // Key Type
-    string crv = 2; // Curve (for EC and OKP keys)
-    string x = 3; // X coordinate (for EC and OKP keys)
-    string y = 4; // Y coordinate (for EC keys)
-    string n = 5; // Modulus (for RSA keys)
-    string e = 6; // Exponent (for RSA keys)
-  }
 }

@@ -9,145 +9,301 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type ExampleDataTable interface {
-	Insert(ctx context.Context, exampleData *ExampleData) error
-	Update(ctx context.Context, exampleData *ExampleData) error
-	Save(ctx context.Context, exampleData *ExampleData) error
-	Delete(ctx context.Context, exampleData *ExampleData) error
-	Has(ctx context.Context, account []byte) (found bool, err error)
+type BalanceTable interface {
+	Insert(ctx context.Context, balance *Balance) error
+	Update(ctx context.Context, balance *Balance) error
+	Save(ctx context.Context, balance *Balance) error
+	Delete(ctx context.Context, balance *Balance) error
+	Has(ctx context.Context, account string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, account []byte) (*ExampleData, error)
-	List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error
-	DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error
+	Get(ctx context.Context, account string) (*Balance, error)
+	List(ctx context.Context, prefixKey BalanceIndexKey, opts ...ormlist.Option) (BalanceIterator, error)
+	ListRange(ctx context.Context, from, to BalanceIndexKey, opts ...ormlist.Option) (BalanceIterator, error)
+	DeleteBy(ctx context.Context, prefixKey BalanceIndexKey) error
+	DeleteRange(ctx context.Context, from, to BalanceIndexKey) error
 
 	doNotImplement()
 }
 
-type ExampleDataIterator struct {
+type BalanceIterator struct {
 	ormtable.Iterator
 }
 
-func (i ExampleDataIterator) Value() (*ExampleData, error) {
-	var exampleData ExampleData
-	err := i.UnmarshalMessage(&exampleData)
-	return &exampleData, err
+func (i BalanceIterator) Value() (*Balance, error) {
+	var balance Balance
+	err := i.UnmarshalMessage(&balance)
+	return &balance, err
 }
 
-type ExampleDataIndexKey interface {
+type BalanceIndexKey interface {
 	id() uint32
 	values() []interface{}
-	exampleDataIndexKey()
+	balanceIndexKey()
 }
 
 // primary key starting index..
-type ExampleDataPrimaryKey = ExampleDataAccountIndexKey
+type BalancePrimaryKey = BalanceAccountIndexKey
 
-type ExampleDataAccountIndexKey struct {
+type BalanceAccountIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAccountIndexKey) id() uint32            { return 0 }
-func (x ExampleDataAccountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAccountIndexKey) exampleDataIndexKey()  {}
+func (x BalanceAccountIndexKey) id() uint32            { return 0 }
+func (x BalanceAccountIndexKey) values() []interface{} { return x.vs }
+func (x BalanceAccountIndexKey) balanceIndexKey()      {}
 
-func (this ExampleDataAccountIndexKey) WithAccount(account []byte) ExampleDataAccountIndexKey {
+func (this BalanceAccountIndexKey) WithAccount(account string) BalanceAccountIndexKey {
 	this.vs = []interface{}{account}
 	return this
 }
 
-type ExampleDataAmountIndexKey struct {
+type BalanceAmountIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAmountIndexKey) id() uint32            { return 1 }
-func (x ExampleDataAmountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAmountIndexKey) exampleDataIndexKey()  {}
+func (x BalanceAmountIndexKey) id() uint32            { return 1 }
+func (x BalanceAmountIndexKey) values() []interface{} { return x.vs }
+func (x BalanceAmountIndexKey) balanceIndexKey()      {}
 
-func (this ExampleDataAmountIndexKey) WithAmount(amount uint64) ExampleDataAmountIndexKey {
+func (this BalanceAmountIndexKey) WithAmount(amount uint64) BalanceAmountIndexKey {
 	this.vs = []interface{}{amount}
 	return this
 }
 
-type exampleDataTable struct {
+type balanceTable struct {
 	table ormtable.Table
 }
 
-func (this exampleDataTable) Insert(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Insert(ctx, exampleData)
+func (this balanceTable) Insert(ctx context.Context, balance *Balance) error {
+	return this.table.Insert(ctx, balance)
 }
 
-func (this exampleDataTable) Update(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Update(ctx, exampleData)
+func (this balanceTable) Update(ctx context.Context, balance *Balance) error {
+	return this.table.Update(ctx, balance)
 }
 
-func (this exampleDataTable) Save(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Save(ctx, exampleData)
+func (this balanceTable) Save(ctx context.Context, balance *Balance) error {
+	return this.table.Save(ctx, balance)
 }
 
-func (this exampleDataTable) Delete(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Delete(ctx, exampleData)
+func (this balanceTable) Delete(ctx context.Context, balance *Balance) error {
+	return this.table.Delete(ctx, balance)
 }
 
-func (this exampleDataTable) Has(ctx context.Context, account []byte) (found bool, err error) {
+func (this balanceTable) Has(ctx context.Context, account string) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, account)
 }
 
-func (this exampleDataTable) Get(ctx context.Context, account []byte) (*ExampleData, error) {
-	var exampleData ExampleData
-	found, err := this.table.PrimaryKey().Get(ctx, &exampleData, account)
+func (this balanceTable) Get(ctx context.Context, account string) (*Balance, error) {
+	var balance Balance
+	found, err := this.table.PrimaryKey().Get(ctx, &balance, account)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &exampleData, nil
+	return &balance, nil
 }
 
-func (this exampleDataTable) List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this balanceTable) List(ctx context.Context, prefixKey BalanceIndexKey, opts ...ormlist.Option) (BalanceIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return BalanceIterator{it}, err
 }
 
-func (this exampleDataTable) ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this balanceTable) ListRange(ctx context.Context, from, to BalanceIndexKey, opts ...ormlist.Option) (BalanceIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return BalanceIterator{it}, err
 }
 
-func (this exampleDataTable) DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error {
+func (this balanceTable) DeleteBy(ctx context.Context, prefixKey BalanceIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this exampleDataTable) DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error {
+func (this balanceTable) DeleteRange(ctx context.Context, from, to BalanceIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this exampleDataTable) doNotImplement() {}
+func (this balanceTable) doNotImplement() {}
 
-var _ ExampleDataTable = exampleDataTable{}
+var _ BalanceTable = balanceTable{}
 
-func NewExampleDataTable(db ormtable.Schema) (ExampleDataTable, error) {
-	table := db.GetTable(&ExampleData{})
+func NewBalanceTable(db ormtable.Schema) (BalanceTable, error) {
+	table := db.GetTable(&Balance{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&ExampleData{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Balance{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return exampleDataTable{table}, nil
+	return balanceTable{table}, nil
+}
+
+type AccountTable interface {
+	Insert(ctx context.Context, account *Account) error
+	Update(ctx context.Context, account *Account) error
+	Save(ctx context.Context, account *Account) error
+	Delete(ctx context.Context, account *Account) error
+	Has(ctx context.Context, id uint64) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, id uint64) (*Account, error)
+	HasByAccount(ctx context.Context, account string) (found bool, err error)
+	// GetByAccount returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAccount(ctx context.Context, account string) (*Account, error)
+	List(ctx context.Context, prefixKey AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
+	ListRange(ctx context.Context, from, to AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AccountIndexKey) error
+	DeleteRange(ctx context.Context, from, to AccountIndexKey) error
+
+	doNotImplement()
+}
+
+type AccountIterator struct {
+	ormtable.Iterator
+}
+
+func (i AccountIterator) Value() (*Account, error) {
+	var account Account
+	err := i.UnmarshalMessage(&account)
+	return &account, err
+}
+
+type AccountIndexKey interface {
+	id() uint32
+	values() []interface{}
+	accountIndexKey()
+}
+
+// primary key starting index..
+type AccountPrimaryKey = AccountIdIndexKey
+
+type AccountIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x AccountIdIndexKey) id() uint32            { return 0 }
+func (x AccountIdIndexKey) values() []interface{} { return x.vs }
+func (x AccountIdIndexKey) accountIndexKey()      {}
+
+func (this AccountIdIndexKey) WithId(id uint64) AccountIdIndexKey {
+	this.vs = []interface{}{id}
+	return this
+}
+
+type AccountAccountIndexKey struct {
+	vs []interface{}
+}
+
+func (x AccountAccountIndexKey) id() uint32            { return 1 }
+func (x AccountAccountIndexKey) values() []interface{} { return x.vs }
+func (x AccountAccountIndexKey) accountIndexKey()      {}
+
+func (this AccountAccountIndexKey) WithAccount(account string) AccountAccountIndexKey {
+	this.vs = []interface{}{account}
+	return this
+}
+
+type accountTable struct {
+	table ormtable.Table
+}
+
+func (this accountTable) Insert(ctx context.Context, account *Account) error {
+	return this.table.Insert(ctx, account)
+}
+
+func (this accountTable) Update(ctx context.Context, account *Account) error {
+	return this.table.Update(ctx, account)
+}
+
+func (this accountTable) Save(ctx context.Context, account *Account) error {
+	return this.table.Save(ctx, account)
+}
+
+func (this accountTable) Delete(ctx context.Context, account *Account) error {
+	return this.table.Delete(ctx, account)
+}
+
+func (this accountTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, id)
+}
+
+func (this accountTable) Get(ctx context.Context, id uint64) (*Account, error) {
+	var account Account
+	found, err := this.table.PrimaryKey().Get(ctx, &account, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &account, nil
+}
+
+func (this accountTable) HasByAccount(ctx context.Context, account string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		account,
+	)
+}
+
+func (this accountTable) GetByAccount(ctx context.Context, account string) (*Account, error) {
+	var account Account
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &account,
+		account,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &account, nil
+}
+
+func (this accountTable) List(ctx context.Context, prefixKey AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return AccountIterator{it}, err
+}
+
+func (this accountTable) ListRange(ctx context.Context, from, to AccountIndexKey, opts ...ormlist.Option) (AccountIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return AccountIterator{it}, err
+}
+
+func (this accountTable) DeleteBy(ctx context.Context, prefixKey AccountIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this accountTable) DeleteRange(ctx context.Context, from, to AccountIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this accountTable) doNotImplement() {}
+
+var _ AccountTable = accountTable{}
+
+func NewAccountTable(db ormtable.Schema) (AccountTable, error) {
+	table := db.GetTable(&Account{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Account{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return accountTable{table}, nil
 }
 
 type StateStore interface {
-	ExampleDataTable() ExampleDataTable
+	BalanceTable() BalanceTable
+	AccountTable() AccountTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	exampleData ExampleDataTable
+	balance BalanceTable
+	account AccountTable
 }
 
-func (x stateStore) ExampleDataTable() ExampleDataTable {
-	return x.exampleData
+func (x stateStore) BalanceTable() BalanceTable {
+	return x.balance
+}
+
+func (x stateStore) AccountTable() AccountTable {
+	return x.account
 }
 
 func (stateStore) doNotImplement() {}
@@ -155,12 +311,18 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	exampleDataTable, err := NewExampleDataTable(db)
+	balanceTable, err := NewBalanceTable(db)
+	if err != nil {
+		return nil, err
+	}
+
+	accountTable, err := NewAccountTable(db)
 	if err != nil {
 		return nil, err
 	}
 
 	return stateStore{
-		exampleDataTable,
+		balanceTable,
+		accountTable,
 	}, nil
 }

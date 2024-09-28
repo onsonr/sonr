@@ -129,35 +129,177 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
+// MsgIssueMacaroon is the message type for the AuthorizeService RPC.
+type MsgIssueMacaroon struct {
+	// Controller is the address of the controller to authenticate.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	// Origin is the origin of the request in wildcard form.
+	Origin string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
+	// Permissions is the scope of the service.
+	Permissions map[string]string `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	// token is the macron token to authenticate the operation.
+	Token string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
+}
+
+func (m *MsgIssueMacaroon) Reset()         { *m = MsgIssueMacaroon{} }
+func (m *MsgIssueMacaroon) String() string { return proto.CompactTextString(m) }
+func (*MsgIssueMacaroon) ProtoMessage()    {}
+func (*MsgIssueMacaroon) Descriptor() ([]byte, []int) {
+	return fileDescriptor_68f908349d9da51a, []int{2}
+}
+func (m *MsgIssueMacaroon) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgIssueMacaroon) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgIssueMacaroon.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgIssueMacaroon) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgIssueMacaroon.Merge(m, src)
+}
+func (m *MsgIssueMacaroon) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgIssueMacaroon) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgIssueMacaroon.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgIssueMacaroon proto.InternalMessageInfo
+
+func (m *MsgIssueMacaroon) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+func (m *MsgIssueMacaroon) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *MsgIssueMacaroon) GetPermissions() map[string]string {
+	if m != nil {
+		return m.Permissions
+	}
+	return nil
+}
+
+func (m *MsgIssueMacaroon) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
+// MsgIssueMacaroonResponse is the response type for the AuthorizeService
+// RPC.
+type MsgIssueMacaroonResponse struct {
+	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	Token   string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
+}
+
+func (m *MsgIssueMacaroonResponse) Reset()         { *m = MsgIssueMacaroonResponse{} }
+func (m *MsgIssueMacaroonResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgIssueMacaroonResponse) ProtoMessage()    {}
+func (*MsgIssueMacaroonResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_68f908349d9da51a, []int{3}
+}
+func (m *MsgIssueMacaroonResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgIssueMacaroonResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgIssueMacaroonResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgIssueMacaroonResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgIssueMacaroonResponse.Merge(m, src)
+}
+func (m *MsgIssueMacaroonResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgIssueMacaroonResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgIssueMacaroonResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgIssueMacaroonResponse proto.InternalMessageInfo
+
+func (m *MsgIssueMacaroonResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *MsgIssueMacaroonResponse) GetToken() string {
+	if m != nil {
+		return m.Token
+	}
+	return ""
+}
+
 func init() {
 	proto.RegisterType((*MsgUpdateParams)(nil), "macaroon.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "macaroon.v1.MsgUpdateParamsResponse")
+	proto.RegisterType((*MsgIssueMacaroon)(nil), "macaroon.v1.MsgIssueMacaroon")
+	proto.RegisterMapType((map[string]string)(nil), "macaroon.v1.MsgIssueMacaroon.PermissionsEntry")
+	proto.RegisterType((*MsgIssueMacaroonResponse)(nil), "macaroon.v1.MsgIssueMacaroonResponse")
 }
 
 func init() { proto.RegisterFile("macaroon/v1/tx.proto", fileDescriptor_68f908349d9da51a) }
 
 var fileDescriptor_68f908349d9da51a = []byte{
-	// 318 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x12, 0xc9, 0x4d, 0x4c, 0x4e,
-	0x2c, 0xca, 0xcf, 0xcf, 0xd3, 0x2f, 0x33, 0xd4, 0x2f, 0xa9, 0xd0, 0x2b, 0x28, 0xca, 0x2f, 0xc9,
-	0x17, 0xe2, 0x86, 0x89, 0xea, 0x95, 0x19, 0x4a, 0x89, 0x27, 0xe7, 0x17, 0xe7, 0xe6, 0x17, 0xeb,
-	0xe7, 0x16, 0xa7, 0x83, 0x14, 0xe5, 0x16, 0xa7, 0x43, 0x54, 0x49, 0x49, 0x22, 0xeb, 0x4d, 0x4f,
-	0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0x86, 0x4a, 0x89, 0xa4, 0xe7, 0xa7, 0xe7, 0x83, 0x99, 0xfa, 0x20,
-	0x16, 0x4c, 0x03, 0xc4, 0xa4, 0x78, 0x88, 0x04, 0x84, 0x03, 0x91, 0x52, 0xea, 0x61, 0xe4, 0xe2,
-	0xf7, 0x2d, 0x4e, 0x0f, 0x2d, 0x48, 0x49, 0x2c, 0x49, 0x0d, 0x48, 0x2c, 0x4a, 0xcc, 0x2d, 0x16,
-	0x32, 0xe3, 0xe2, 0x4c, 0x2c, 0x2d, 0xc9, 0xc8, 0x2f, 0xca, 0x2c, 0xa9, 0x94, 0x60, 0x54, 0x60,
-	0xd4, 0xe0, 0x74, 0x92, 0xb8, 0xb4, 0x45, 0x57, 0x04, 0xaa, 0xd1, 0x31, 0x25, 0xa5, 0x28, 0xb5,
-	0xb8, 0x38, 0xb8, 0xa4, 0x28, 0x33, 0x2f, 0x3d, 0x08, 0xa1, 0x54, 0xc8, 0x90, 0x8b, 0xad, 0x00,
-	0x6c, 0x82, 0x04, 0x93, 0x02, 0xa3, 0x06, 0xb7, 0x91, 0xb0, 0x1e, 0x92, 0x77, 0xf4, 0x20, 0x86,
-	0x3b, 0xb1, 0x9c, 0xb8, 0x27, 0xcf, 0x10, 0x04, 0x55, 0x68, 0xc5, 0xd7, 0xf4, 0x7c, 0x83, 0x16,
-	0xc2, 0x08, 0x25, 0x49, 0x2e, 0x71, 0x34, 0xd7, 0x04, 0xa5, 0x16, 0x17, 0xe4, 0xe7, 0x15, 0xa7,
-	0x1a, 0x25, 0x70, 0x31, 0xfb, 0x16, 0xa7, 0x0b, 0x05, 0x71, 0xf1, 0xa0, 0x38, 0x56, 0x06, 0xc5,
-	0x12, 0x34, 0xcd, 0x52, 0x2a, 0xf8, 0x64, 0x61, 0x46, 0x4b, 0xb1, 0x36, 0x3c, 0xdf, 0xa0, 0xc5,
-	0xe8, 0xe4, 0x78, 0xe2, 0x91, 0x1c, 0xe3, 0x85, 0x47, 0x72, 0x8c, 0x0f, 0x1e, 0xc9, 0x31, 0x4e,
-	0x78, 0x2c, 0xc7, 0x70, 0xe1, 0xb1, 0x1c, 0xc3, 0x8d, 0xc7, 0x72, 0x0c, 0x51, 0xea, 0xe9, 0x99,
-	0x25, 0x19, 0xa5, 0x49, 0x7a, 0xc9, 0xf9, 0xb9, 0xfa, 0xf9, 0x79, 0xc5, 0xf9, 0x79, 0x45, 0xfa,
-	0x60, 0xa2, 0x42, 0x1f, 0x1e, 0x15, 0x25, 0x95, 0x05, 0xa9, 0xc5, 0x49, 0x6c, 0xe0, 0x50, 0x35,
-	0x06, 0x04, 0x00, 0x00, 0xff, 0xff, 0x6f, 0xc5, 0x76, 0xac, 0xdf, 0x01, 0x00, 0x00,
+	// 507 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x53, 0x4f, 0x6b, 0x13, 0x4f,
+	0x18, 0xce, 0x24, 0x6d, 0x7e, 0xbf, 0x4c, 0xc4, 0x86, 0x31, 0xd8, 0xed, 0xa2, 0x6b, 0x08, 0x8a,
+	0xa1, 0xe0, 0x2e, 0x89, 0x20, 0x25, 0x07, 0x21, 0x01, 0x0f, 0x0a, 0x81, 0xb0, 0x45, 0x10, 0x2f,
+	0xb2, 0xdd, 0x0c, 0xd3, 0xa1, 0xd9, 0x99, 0x65, 0xde, 0xd9, 0xd0, 0x78, 0x12, 0xcf, 0x1e, 0xfc,
+	0x02, 0x7e, 0x87, 0x1e, 0x3c, 0xf9, 0x09, 0x7a, 0x2c, 0x9e, 0x3c, 0x89, 0x24, 0x87, 0x7e, 0x0d,
+	0xd9, 0x7f, 0xcd, 0x76, 0x0f, 0xf1, 0x12, 0xe6, 0x99, 0xf7, 0x7d, 0x9e, 0xf7, 0x79, 0x9f, 0xec,
+	0xe0, 0x76, 0xe0, 0xf9, 0x9e, 0x92, 0x52, 0x38, 0x8b, 0xbe, 0xa3, 0xcf, 0xed, 0x50, 0x49, 0x2d,
+	0x49, 0x33, 0xbf, 0xb5, 0x17, 0x7d, 0x73, 0xdf, 0x97, 0x10, 0x48, 0x70, 0x02, 0x60, 0x71, 0x53,
+	0x00, 0x2c, 0xed, 0x32, 0x0f, 0xd2, 0xc2, 0x87, 0x04, 0x39, 0x29, 0xc8, 0x4a, 0x6d, 0x26, 0x99,
+	0x4c, 0xef, 0xe3, 0x53, 0x4e, 0x28, 0x0e, 0x63, 0x54, 0x50, 0xe0, 0x19, 0xa1, 0xfb, 0x05, 0xe1,
+	0xbd, 0x09, 0xb0, 0xb7, 0xe1, 0xcc, 0xd3, 0x74, 0xea, 0x29, 0x2f, 0x00, 0xf2, 0x02, 0x37, 0xbc,
+	0x48, 0x9f, 0x4a, 0xc5, 0xf5, 0xd2, 0x40, 0x1d, 0xd4, 0x6b, 0x8c, 0x8d, 0x9f, 0xdf, 0x9f, 0xb5,
+	0xb3, 0x49, 0xa3, 0xd9, 0x4c, 0x51, 0x80, 0x63, 0xad, 0xb8, 0x60, 0xee, 0xa6, 0x95, 0xf4, 0x71,
+	0x3d, 0x4c, 0x14, 0x8c, 0x6a, 0x07, 0xf5, 0x9a, 0x83, 0x7b, 0x76, 0x61, 0x1d, 0x3b, 0x15, 0x1f,
+	0xef, 0x5c, 0xfe, 0x7e, 0x54, 0x71, 0xb3, 0xc6, 0xe1, 0xdd, 0xcf, 0xd7, 0x17, 0x87, 0x1b, 0x89,
+	0xee, 0x01, 0xde, 0x2f, 0xb9, 0x71, 0x29, 0x84, 0x52, 0x00, 0xed, 0x7e, 0xab, 0xe2, 0xd6, 0x04,
+	0xd8, 0x6b, 0x80, 0x88, 0x4e, 0x32, 0x5d, 0x72, 0x84, 0xb1, 0x2f, 0x85, 0x56, 0x72, 0x3e, 0xa7,
+	0xea, 0x9f, 0x5e, 0x0b, 0xbd, 0xe4, 0x3e, 0xae, 0x4b, 0xc5, 0x19, 0x17, 0x89, 0xd9, 0x86, 0x9b,
+	0x21, 0x32, 0xc5, 0xcd, 0x90, 0xaa, 0x80, 0x03, 0x70, 0x29, 0xc0, 0xa8, 0x75, 0x6a, 0xbd, 0xe6,
+	0xc0, 0xbe, 0xb5, 0x49, 0xd9, 0x85, 0x3d, 0xdd, 0x10, 0x5e, 0x09, 0xad, 0x96, 0x6e, 0x51, 0x82,
+	0xb4, 0xf1, 0xae, 0x96, 0x67, 0x54, 0x18, 0x3b, 0xc9, 0xa0, 0x14, 0x98, 0x2f, 0x71, 0xab, 0x4c,
+	0x23, 0x2d, 0x5c, 0x3b, 0xa3, 0x59, 0xe4, 0x6e, 0x7c, 0x8c, 0xb9, 0x0b, 0x6f, 0x1e, 0xd1, 0xcc,
+	0x64, 0x0a, 0x86, 0xd5, 0x23, 0x34, 0xdc, 0x8b, 0x93, 0x2b, 0x2c, 0xd4, 0x7d, 0x83, 0x8d, 0xb2,
+	0xb1, 0x3c, 0x3b, 0x62, 0xe0, 0xff, 0x20, 0xf2, 0x7d, 0x0a, 0x90, 0x88, 0xff, 0xef, 0xe6, 0x70,
+	0x63, 0xae, 0x5a, 0x30, 0x37, 0xf8, 0x81, 0x70, 0x6d, 0x02, 0x8c, 0xb8, 0xf8, 0xce, 0xad, 0x2f,
+	0xe3, 0x41, 0x39, 0x87, 0x62, 0xd5, 0x7c, 0xbc, 0xad, 0x7a, 0xe3, 0xe5, 0x1d, 0x6e, 0x8d, 0xd2,
+	0xff, 0xfb, 0x23, 0x3d, 0xa6, 0x6a, 0xc1, 0x7d, 0x4a, 0x1e, 0x6e, 0xcd, 0xd7, 0x7c, 0xb2, 0xb5,
+	0x9c, 0x2b, 0x9b, 0xbb, 0x9f, 0xae, 0x2f, 0x0e, 0xd1, 0x78, 0x74, 0xb9, 0xb2, 0xd0, 0xd5, 0xca,
+	0x42, 0x7f, 0x56, 0x16, 0xfa, 0xba, 0xb6, 0x2a, 0x57, 0x6b, 0xab, 0xf2, 0x6b, 0x6d, 0x55, 0xde,
+	0x3f, 0x65, 0x5c, 0x9f, 0x46, 0x27, 0xb6, 0x2f, 0x03, 0x47, 0x0a, 0x90, 0x42, 0x39, 0xc9, 0xcf,
+	0xb9, 0x73, 0xf3, 0x40, 0xf4, 0x32, 0xa4, 0x70, 0x52, 0x4f, 0x1e, 0xc7, 0xf3, 0xbf, 0x01, 0x00,
+	0x00, 0xff, 0xff, 0x0d, 0x7b, 0xef, 0xfd, 0xa6, 0x03, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -176,6 +318,9 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
+	// AuthorizeService asserts the given controller is the owner of the given
+	// address.
+	AuthorizeService(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error)
 }
 
 type msgClient struct {
@@ -195,12 +340,24 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
+func (c *msgClient) AuthorizeService(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error) {
+	out := new(MsgIssueMacaroonResponse)
+	err := c.cc.Invoke(ctx, "/macaroon.v1.Msg/AuthorizeService", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
 	// UpdateParams defines a governance operation for updating the parameters.
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
+	// AuthorizeService asserts the given controller is the owner of the given
+	// address.
+	AuthorizeService(context.Context, *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error)
 }
 
 // UnimplementedMsgServer can be embedded to have forward compatible implementations.
@@ -209,6 +366,9 @@ type UnimplementedMsgServer struct {
 
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
+}
+func (*UnimplementedMsgServer) AuthorizeService(ctx context.Context, req *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeService not implemented")
 }
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
@@ -233,6 +393,24 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Msg_AuthorizeService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgIssueMacaroon)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).AuthorizeService(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/macaroon.v1.Msg/AuthorizeService",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).AuthorizeService(ctx, req.(*MsgIssueMacaroon))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _Msg_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "macaroon.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
@@ -240,6 +418,10 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateParams",
 			Handler:    _Msg_UpdateParams_Handler,
+		},
+		{
+			MethodName: "AuthorizeService",
+			Handler:    _Msg_AuthorizeService_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -309,6 +491,109 @@ func (m *MsgUpdateParamsResponse) MarshalToSizedBuffer(dAtA []byte) (int, error)
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgIssueMacaroon) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgIssueMacaroon) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgIssueMacaroon) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Token) > 0 {
+		i -= len(m.Token)
+		copy(dAtA[i:], m.Token)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Token)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Permissions) > 0 {
+		for k := range m.Permissions {
+			v := m.Permissions[k]
+			baseI := i
+			i -= len(v)
+			copy(dAtA[i:], v)
+			i = encodeVarintTx(dAtA, i, uint64(len(v)))
+			i--
+			dAtA[i] = 0x12
+			i -= len(k)
+			copy(dAtA[i:], k)
+			i = encodeVarintTx(dAtA, i, uint64(len(k)))
+			i--
+			dAtA[i] = 0xa
+			i = encodeVarintTx(dAtA, i, uint64(baseI-i))
+			i--
+			dAtA[i] = 0x1a
+		}
+	}
+	if len(m.Origin) > 0 {
+		i -= len(m.Origin)
+		copy(dAtA[i:], m.Origin)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Origin)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgIssueMacaroonResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgIssueMacaroonResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgIssueMacaroonResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Token) > 0 {
+		i -= len(m.Token)
+		copy(dAtA[i:], m.Token)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Token)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	offset -= sovTx(v)
 	base := offset
@@ -341,6 +626,51 @@ func (m *MsgUpdateParamsResponse) Size() (n int) {
 	}
 	var l int
 	_ = l
+	return n
+}
+
+func (m *MsgIssueMacaroon) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Origin)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	if len(m.Permissions) > 0 {
+		for k, v := range m.Permissions {
+			_ = k
+			_ = v
+			mapEntrySize := 1 + len(k) + sovTx(uint64(len(k))) + 1 + len(v) + sovTx(uint64(len(v)))
+			n += mapEntrySize + 1 + sovTx(uint64(mapEntrySize))
+		}
+	}
+	l = len(m.Token)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgIssueMacaroonResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Token)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
 	return n
 }
 
@@ -494,6 +824,381 @@ func (m *MsgUpdateParamsResponse) Unmarshal(dAtA []byte) error {
 			return fmt.Errorf("proto: MsgUpdateParamsResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgIssueMacaroon) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgIssueMacaroon: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgIssueMacaroon: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Origin = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Permissions == nil {
+				m.Permissions = make(map[string]string)
+			}
+			var mapkey string
+			var mapvalue string
+			for iNdEx < postIndex {
+				entryPreIndex := iNdEx
+				var wire uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return ErrIntOverflowTx
+					}
+					if iNdEx >= l {
+						return io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					wire |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				fieldNum := int32(wire >> 3)
+				if fieldNum == 1 {
+					var stringLenmapkey uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapkey |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapkey := int(stringLenmapkey)
+					if intStringLenmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					postStringIndexmapkey := iNdEx + intStringLenmapkey
+					if postStringIndexmapkey < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postStringIndexmapkey > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
+					iNdEx = postStringIndexmapkey
+				} else if fieldNum == 2 {
+					var stringLenmapvalue uint64
+					for shift := uint(0); ; shift += 7 {
+						if shift >= 64 {
+							return ErrIntOverflowTx
+						}
+						if iNdEx >= l {
+							return io.ErrUnexpectedEOF
+						}
+						b := dAtA[iNdEx]
+						iNdEx++
+						stringLenmapvalue |= uint64(b&0x7F) << shift
+						if b < 0x80 {
+							break
+						}
+					}
+					intStringLenmapvalue := int(stringLenmapvalue)
+					if intStringLenmapvalue < 0 {
+						return ErrInvalidLengthTx
+					}
+					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
+					if postStringIndexmapvalue < 0 {
+						return ErrInvalidLengthTx
+					}
+					if postStringIndexmapvalue > l {
+						return io.ErrUnexpectedEOF
+					}
+					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
+					iNdEx = postStringIndexmapvalue
+				} else {
+					iNdEx = entryPreIndex
+					skippy, err := skipTx(dAtA[iNdEx:])
+					if err != nil {
+						return err
+					}
+					if (skippy < 0) || (iNdEx+skippy) < 0 {
+						return ErrInvalidLengthTx
+					}
+					if (iNdEx + skippy) > postIndex {
+						return io.ErrUnexpectedEOF
+					}
+					iNdEx += skippy
+				}
+			}
+			m.Permissions[mapkey] = mapvalue
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Token = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgIssueMacaroonResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgIssueMacaroonResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgIssueMacaroonResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Token = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipTx(dAtA[iNdEx:])

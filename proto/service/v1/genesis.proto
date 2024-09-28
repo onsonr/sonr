@@ -18,16 +18,34 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
-  bool some_value = 2;
+  ServiceCategories categories = 1;
+  ServiceTypes types = 2;
+}
+
+message ServiceCategories {
+  option (amino.name) = "service/categories";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated string categories = 1;
+}
+
+message ServiceTypes {
+  option (amino.name) = "service/types";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated string types = 1;
 }
 
 // Service defines a Decentralized Service on the Sonr Blockchain
 message Service {
   string id = 1;
-  string service_type = 2;
-  string authority = 3;
-  string origin = 4;
+  string authority = 2;
+  string origin = 3;
+  string name = 4;
   string description = 5;
-  map<string, string> service_endpoints = 6;
-  map<string, string> permissions = 7;
+  string category = 6;
+  repeated string tags = 7;
+  int64 expiry_height = 8;
 }

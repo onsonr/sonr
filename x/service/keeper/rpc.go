@@ -27,3 +27,10 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
+
+// RegisterService implements types.MsgServer.
+func (ms msgServer) RegisterService(ctx context.Context, msg *types.MsgRegisterService) (*types.MsgRegisterServiceResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("RegisterService is unimplemented")
+	return &types.MsgRegisterServiceResponse{}, nil
+}

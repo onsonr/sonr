@@ -2,9 +2,9 @@ syntax = "proto3";
 package macaroon.v1;
 
 import "cosmos/msg/v1/msg.proto";
-import "macaroon/v1/genesis.proto";
-import "gogoproto/gogo.proto";
 import "cosmos_proto/cosmos.proto";
+import "gogoproto/gogo.proto";
+import "macaroon/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
@@ -16,6 +16,10 @@ service Msg {
   //
   // Since: cosmos-sdk 0.47
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
+
+  // AuthorizeService asserts the given controller is the owner of the given
+  // address.
+  rpc AuthorizeService(MsgIssueMacaroon) returns (MsgIssueMacaroonResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -38,3 +42,27 @@ message MsgUpdateParams {
 //
 // Since: cosmos-sdk 0.47
 message MsgUpdateParamsResponse {}
+
+// MsgIssueMacaroon is the message type for the AuthorizeService RPC.
+message MsgIssueMacaroon {
+  option (cosmos.msg.v1.signer) = "controller";
+
+  // Controller is the address of the controller to authenticate.
+  string controller = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // Origin is the origin of the request in wildcard form.
+  string origin = 2;
+
+  // Permissions is the scope of the service.
+  map<string, string> permissions = 3;
+
+  // token is the macron token to authenticate the operation.
+  string token = 4;
+}
+
+// MsgIssueMacaroonResponse is the response type for the AuthorizeService
+// RPC.
+message MsgIssueMacaroonResponse {
+  bool success = 1;
+  string token = 2;
+}

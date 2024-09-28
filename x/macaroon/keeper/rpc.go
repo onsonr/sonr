@@ -27,3 +27,10 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 
 	return nil, ms.k.Params.Set(ctx, msg.Params)
 }
+
+// AuthorizeService implements types.MsgServer.
+func (ms msgServer) AuthorizeService(ctx context.Context, msg *types.MsgIssueMacaroon) (*types.MsgIssueMacaroonResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("AuthorizeService is unimplemented")
+	return &types.MsgIssueMacaroonResponse{}, nil
+}

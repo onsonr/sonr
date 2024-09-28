@@ -12,6 +12,16 @@ service Query {
   rpc Params(QueryParamsRequest) returns (QueryParamsResponse) {
     option (google.api.http).get = "/macaroon/v1/params";
   }
+
+  // RefreshToken refreshes a macaroon token as post authentication.
+  rpc RefreshToken(QueryRefreshTokenRequest) returns (QueryRefreshTokenResponse) {
+    option (google.api.http).post = "/macaroon/v1/refresh";
+  }
+
+  // ValidateToken validates a macaroon token as pre authentication.
+  rpc ValidateToken(QueryValidateTokenRequest) returns (QueryValidateTokenResponse) {
+    option (google.api.http).post = "/macaroon/v1/validate";
+  }
 }
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
@@ -21,4 +31,32 @@ message QueryParamsRequest {}
 message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
+}
+
+// QueryRefreshTokenRequest is the request type for the Query/RefreshToken RPC
+// method.
+message QueryRefreshTokenRequest {
+  // The macaroon token to refresh
+  string token = 1;
+}
+
+// QueryRefreshTokenResponse is the response type for the Query/RefreshToken
+// RPC method.
+message QueryRefreshTokenResponse {
+  // The macaroon token
+  string token = 1;
+}
+
+// QueryValidateTokenRequest is the request type for the Query/ValidateToken
+// RPC method.
+message QueryValidateTokenRequest {
+  // The macaroon token to validate
+  string token = 1;
+}
+
+// QueryValidateTokenResponse is the response type for the Query/ValidateToken
+// RPC method.
+message QueryValidateTokenResponse {
+  // The macaroon token
+  bool valid = 1;
 }

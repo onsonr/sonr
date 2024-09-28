@@ -1,8 +1,8 @@
 syntax = "proto3";
 package macaroon.v1;
 
-import "gogoproto/gogo.proto";
 import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
@@ -18,5 +18,39 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
-  bool some_value = 2;
+  // The list of methods
+  Methods methods = 1;
+
+  // The list of scopes
+  Scopes scopes = 2;
+
+  // The list of caveats
+  Caveats caveats = 3;
+}
+
+// Methods defines the available DID methods
+message Methods {
+  option (amino.name) = "macaroon/methods";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated string methods = 1;
+}
+
+// Scopes defines the set of scopes
+message Scopes {
+  option (amino.name) = "macaroon/scopes";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated string scopes = 1;
+}
+
+// Caveats defines the available caveats
+message Caveats {
+  option (amino.name) = "macaroon/caveat";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated string caveats = 1;
 }

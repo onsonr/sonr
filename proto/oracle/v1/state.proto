@@ -7,13 +7,33 @@ option go_package = "github.com/onsonr/sonr/x/oracle/types";
 
 // https://github.com/cosmos/cosmos-sdk/blob/main/orm/README.md
 
-message ExampleData {
-    option (cosmos.orm.v1.table) = {
-      id: 1;
-      primary_key: { fields: "account" }
-      index: { id: 1 fields: "amount" }
-    };
+message Balance {
+  option (cosmos.orm.v1.table) = {
+    id: 1
+    primary_key: {fields: "account"}
+    index: {
+      id: 1
+      fields: "amount"
+    }
+  };
 
-    bytes account = 1;
-    uint64 amount  = 2;
+  string account = 1;
+  uint64 amount = 2;
+}
+
+message Account {
+  option (cosmos.orm.v1.table) = {
+    id: 2
+    primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "account"
+      unique: true
+    }
+  };
+
+  uint64 id = 1;
+  string account = 2;
+  string chain = 3;
+  string network = 4;
 }

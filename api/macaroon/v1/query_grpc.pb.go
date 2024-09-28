@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/macaroon.v1.Query/Params"
+	Query_Params_FullMethodName        = "/macaroon.v1.Query/Params"
+	Query_RefreshToken_FullMethodName  = "/macaroon.v1.Query/RefreshToken"
+	Query_ValidateToken_FullMethodName = "/macaroon.v1.Query/ValidateToken"
 )
 
 // QueryClient is the client API for Query service.
@@ -28,6 +30,10 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
+	// RefreshToken refreshes a macaroon token as post authentication.
+	RefreshToken(ctx context.Context, in *QueryRefreshTokenRequest, opts ...grpc.CallOption) (*QueryRefreshTokenResponse, error)
+	// ValidateToken validates a macaroon token as pre authentication.
+	ValidateToken(ctx context.Context, in *QueryValidateTokenRequest, opts ...grpc.CallOption) (*QueryValidateTokenResponse, error)
 }
 
 type queryClient struct {
@@ -47,12 +53,34 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) RefreshToken(ctx context.Context, in *QueryRefreshTokenRequest, opts ...grpc.CallOption) (*QueryRefreshTokenResponse, error) {
+	out := new(QueryRefreshTokenResponse)
+	err := c.cc.Invoke(ctx, Query_RefreshToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) ValidateToken(ctx context.Context, in *QueryValidateTokenRequest, opts ...grpc.CallOption) (*QueryValidateTokenResponse, error) {
+	out := new(QueryValidateTokenResponse)
+	err := c.cc.Invoke(ctx, Query_ValidateToken_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
+	// RefreshToken refreshes a macaroon token as post authentication.
+	RefreshToken(context.Context, *QueryRefreshTokenRequest) (*QueryRefreshTokenResponse, error)
+	// ValidateToken validates a macaroon token as pre authentication.
+	ValidateToken(context.Context, *QueryValidateTokenRequest) (*QueryValidateTokenResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -62,6 +90,12 @@ type UnimplementedQueryServer struct {
 
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
+}
+func (UnimplementedQueryServer) RefreshToken(context.Context, *QueryRefreshTokenRequest) (*QueryRefreshTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RefreshToken not implemented")
+}
+func (UnimplementedQueryServer) ValidateToken(context.Context, *QueryValidateTokenRequest) (*QueryValidateTokenResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateToken not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -94,6 +128,42 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_RefreshToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryRefreshTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).RefreshToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_RefreshToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).RefreshToken(ctx, req.(*QueryRefreshTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_ValidateToken_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryValidateTokenRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).ValidateToken(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_ValidateToken_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).ValidateToken(ctx, req.(*QueryValidateTokenRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -104,6 +174,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Params",
 			Handler:    _Query_Params_Handler,
+		},
+		{
+			MethodName: "RefreshToken",
+			Handler:    _Query_RefreshToken_Handler,
+		},
+		{
+			MethodName: "ValidateToken",
+			Handler:    _Query_ValidateToken_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

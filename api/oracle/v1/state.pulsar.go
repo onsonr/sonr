@@ -14,27 +14,27 @@ import (
 )
 
 var (
-	md_ExampleData         protoreflect.MessageDescriptor
-	fd_ExampleData_account protoreflect.FieldDescriptor
-	fd_ExampleData_amount  protoreflect.FieldDescriptor
+	md_Balance         protoreflect.MessageDescriptor
+	fd_Balance_account protoreflect.FieldDescriptor
+	fd_Balance_amount  protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_oracle_v1_state_proto_init()
-	md_ExampleData = File_oracle_v1_state_proto.Messages().ByName("ExampleData")
-	fd_ExampleData_account = md_ExampleData.Fields().ByName("account")
-	fd_ExampleData_amount = md_ExampleData.Fields().ByName("amount")
+	md_Balance = File_oracle_v1_state_proto.Messages().ByName("Balance")
+	fd_Balance_account = md_Balance.Fields().ByName("account")
+	fd_Balance_amount = md_Balance.Fields().ByName("amount")
 }
 
-var _ protoreflect.Message = (*fastReflection_ExampleData)(nil)
+var _ protoreflect.Message = (*fastReflection_Balance)(nil)
 
-type fastReflection_ExampleData ExampleData
+type fastReflection_Balance Balance
 
-func (x *ExampleData) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_ExampleData)(x)
+func (x *Balance) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Balance)(x)
 }
 
-func (x *ExampleData) slowProtoReflect() protoreflect.Message {
+func (x *Balance) slowProtoReflect() protoreflect.Message {
 	mi := &file_oracle_v1_state_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,43 +46,43 @@ func (x *ExampleData) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_ExampleData_messageType fastReflection_ExampleData_messageType
-var _ protoreflect.MessageType = fastReflection_ExampleData_messageType{}
+var _fastReflection_Balance_messageType fastReflection_Balance_messageType
+var _ protoreflect.MessageType = fastReflection_Balance_messageType{}
 
-type fastReflection_ExampleData_messageType struct{}
+type fastReflection_Balance_messageType struct{}
 
-func (x fastReflection_ExampleData_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_ExampleData)(nil)
+func (x fastReflection_Balance_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Balance)(nil)
 }
-func (x fastReflection_ExampleData_messageType) New() protoreflect.Message {
-	return new(fastReflection_ExampleData)
+func (x fastReflection_Balance_messageType) New() protoreflect.Message {
+	return new(fastReflection_Balance)
 }
-func (x fastReflection_ExampleData_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExampleData
+func (x fastReflection_Balance_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Balance
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_ExampleData) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExampleData
+func (x *fastReflection_Balance) Descriptor() protoreflect.MessageDescriptor {
+	return md_Balance
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_ExampleData) Type() protoreflect.MessageType {
-	return _fastReflection_ExampleData_messageType
+func (x *fastReflection_Balance) Type() protoreflect.MessageType {
+	return _fastReflection_Balance_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_ExampleData) New() protoreflect.Message {
-	return new(fastReflection_ExampleData)
+func (x *fastReflection_Balance) New() protoreflect.Message {
+	return new(fastReflection_Balance)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_ExampleData) Interface() protoreflect.ProtoMessage {
-	return (*ExampleData)(x)
+func (x *fastReflection_Balance) Interface() protoreflect.ProtoMessage {
+	return (*Balance)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -90,16 +90,16 @@ func (x *fastReflection_ExampleData) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_ExampleData) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Account) != 0 {
-		value := protoreflect.ValueOfBytes(x.Account)
-		if !f(fd_ExampleData_account, value) {
+func (x *fastReflection_Balance) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Account != "" {
+		value := protoreflect.ValueOfString(x.Account)
+		if !f(fd_Balance_account, value) {
 			return
 		}
 	}
 	if x.Amount != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.Amount)
-		if !f(fd_ExampleData_amount, value) {
+		if !f(fd_Balance_amount, value) {
 			return
 		}
 	}
@@ -116,17 +116,17 @@ func (x *fastReflection_ExampleData) Range(f func(protoreflect.FieldDescriptor, 
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_ExampleData) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Balance) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "oracle.v1.ExampleData.account":
-		return len(x.Account) != 0
-	case "oracle.v1.ExampleData.amount":
+	case "oracle.v1.Balance.account":
+		return x.Account != ""
+	case "oracle.v1.Balance.amount":
 		return x.Amount != uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -136,17 +136,17 @@ func (x *fastReflection_ExampleData) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Balance) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "oracle.v1.ExampleData.account":
-		x.Account = nil
-	case "oracle.v1.ExampleData.amount":
+	case "oracle.v1.Balance.account":
+		x.Account = ""
+	case "oracle.v1.Balance.amount":
 		x.Amount = uint64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -156,19 +156,19 @@ func (x *fastReflection_ExampleData) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_ExampleData) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Balance) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "oracle.v1.ExampleData.account":
+	case "oracle.v1.Balance.account":
 		value := x.Account
-		return protoreflect.ValueOfBytes(value)
-	case "oracle.v1.ExampleData.amount":
+		return protoreflect.ValueOfString(value)
+	case "oracle.v1.Balance.amount":
 		value := x.Amount
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -182,17 +182,17 @@ func (x *fastReflection_ExampleData) Get(descriptor protoreflect.FieldDescriptor
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Balance) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "oracle.v1.ExampleData.account":
-		x.Account = value.Bytes()
-	case "oracle.v1.ExampleData.amount":
+	case "oracle.v1.Balance.account":
+		x.Account = value.Interface().(string)
+	case "oracle.v1.Balance.amount":
 		x.Amount = value.Uint()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -206,44 +206,44 @@ func (x *fastReflection_ExampleData) Set(fd protoreflect.FieldDescriptor, value 
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Balance) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "oracle.v1.ExampleData.account":
-		panic(fmt.Errorf("field account of message oracle.v1.ExampleData is not mutable"))
-	case "oracle.v1.ExampleData.amount":
-		panic(fmt.Errorf("field amount of message oracle.v1.ExampleData is not mutable"))
+	case "oracle.v1.Balance.account":
+		panic(fmt.Errorf("field account of message oracle.v1.Balance is not mutable"))
+	case "oracle.v1.Balance.amount":
+		panic(fmt.Errorf("field amount of message oracle.v1.Balance is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_ExampleData) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Balance) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "oracle.v1.ExampleData.account":
-		return protoreflect.ValueOfBytes(nil)
-	case "oracle.v1.ExampleData.amount":
+	case "oracle.v1.Balance.account":
+		return protoreflect.ValueOfString("")
+	case "oracle.v1.Balance.amount":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Balance"))
 		}
-		panic(fmt.Errorf("message oracle.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message oracle.v1.Balance does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_ExampleData) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Balance) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in oracle.v1.ExampleData", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in oracle.v1.Balance", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -251,7 +251,7 @@ func (x *fastReflection_ExampleData) WhichOneof(d protoreflect.OneofDescriptor) 
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_ExampleData) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Balance) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -262,7 +262,7 @@ func (x *fastReflection_ExampleData) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Balance) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -274,7 +274,7 @@ func (x *fastReflection_ExampleData) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_ExampleData) IsValid() bool {
+func (x *fastReflection_Balance) IsValid() bool {
 	return x != nil
 }
 
@@ -284,9 +284,9 @@ func (x *fastReflection_ExampleData) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Balance) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Balance)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -315,7 +315,7 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Balance)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -357,7 +357,7 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Balance)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -389,17 +389,17 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExampleData: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Balance: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExampleData: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Balance: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
 				}
-				var byteLen int
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -409,25 +409,23 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Account = append(x.Account[:0], dAtA[iNdEx:postIndex]...)
-				if x.Account == nil {
-					x.Account = []byte{}
-				}
+				x.Account = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 0 {
@@ -483,6 +481,602 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var (
+	md_Account         protoreflect.MessageDescriptor
+	fd_Account_id      protoreflect.FieldDescriptor
+	fd_Account_account protoreflect.FieldDescriptor
+	fd_Account_chain   protoreflect.FieldDescriptor
+	fd_Account_network protoreflect.FieldDescriptor
+)
+
+func init() {
+	file_oracle_v1_state_proto_init()
+	md_Account = File_oracle_v1_state_proto.Messages().ByName("Account")
+	fd_Account_id = md_Account.Fields().ByName("id")
+	fd_Account_account = md_Account.Fields().ByName("account")
+	fd_Account_chain = md_Account.Fields().ByName("chain")
+	fd_Account_network = md_Account.Fields().ByName("network")
+}
+
+var _ protoreflect.Message = (*fastReflection_Account)(nil)
+
+type fastReflection_Account Account
+
+func (x *Account) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Account)(x)
+}
+
+func (x *Account) slowProtoReflect() protoreflect.Message {
+	mi := &file_oracle_v1_state_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+var _fastReflection_Account_messageType fastReflection_Account_messageType
+var _ protoreflect.MessageType = fastReflection_Account_messageType{}
+
+type fastReflection_Account_messageType struct{}
+
+func (x fastReflection_Account_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Account)(nil)
+}
+func (x fastReflection_Account_messageType) New() protoreflect.Message {
+	return new(fastReflection_Account)
+}
+func (x fastReflection_Account_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Account
+}
+
+// Descriptor returns message descriptor, which contains only the protobuf
+// type information for the message.
+func (x *fastReflection_Account) Descriptor() protoreflect.MessageDescriptor {
+	return md_Account
+}
+
+// Type returns the message type, which encapsulates both Go and protobuf
+// type information. If the Go type information is not needed,
+// it is recommended that the message descriptor be used instead.
+func (x *fastReflection_Account) Type() protoreflect.MessageType {
+	return _fastReflection_Account_messageType
+}
+
+// New returns a newly allocated and mutable empty message.
+func (x *fastReflection_Account) New() protoreflect.Message {
+	return new(fastReflection_Account)
+}
+
+// Interface unwraps the message reflection interface and
+// returns the underlying ProtoMessage interface.
+func (x *fastReflection_Account) Interface() protoreflect.ProtoMessage {
+	return (*Account)(x)
+}
+
+// Range iterates over every populated field in an undefined order,
+// calling f for each field descriptor and value encountered.
+// Range returns immediately if f returns false.
+// While iterating, mutating operations may only be performed
+// on the current field descriptor.
+func (x *fastReflection_Account) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_Account_id, value) {
+			return
+		}
+	}
+	if x.Account != "" {
+		value := protoreflect.ValueOfString(x.Account)
+		if !f(fd_Account_account, value) {
+			return
+		}
+	}
+	if x.Chain != "" {
+		value := protoreflect.ValueOfString(x.Chain)
+		if !f(fd_Account_chain, value) {
+			return
+		}
+	}
+	if x.Network != "" {
+		value := protoreflect.ValueOfString(x.Network)
+		if !f(fd_Account_network, value) {
+			return
+		}
+	}
+}
+
+// Has reports whether a field is populated.
+//
+// Some fields have the property of nullability where it is possible to
+// distinguish between the default value of a field and whether the field
+// was explicitly populated with the default value. Singular message fields,
+// member fields of a oneof, and proto2 scalar fields are nullable. Such
+// fields are populated only if explicitly set.
+//
+// In other cases (aside from the nullable cases above),
+// a proto3 scalar field is populated if it contains a non-zero value, and
+// a repeated field is populated if it is non-empty.
+func (x *fastReflection_Account) Has(fd protoreflect.FieldDescriptor) bool {
+	switch fd.FullName() {
+	case "oracle.v1.Account.id":
+		return x.Id != uint64(0)
+	case "oracle.v1.Account.account":
+		return x.Account != ""
+	case "oracle.v1.Account.chain":
+		return x.Chain != ""
+	case "oracle.v1.Account.network":
+		return x.Network != ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", fd.FullName()))
+	}
+}
+
+// Clear clears the field such that a subsequent Has call reports false.
+//
+// Clearing an extension field clears both the extension type and value
+// associated with the given field number.
+//
+// Clear is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Account) Clear(fd protoreflect.FieldDescriptor) {
+	switch fd.FullName() {
+	case "oracle.v1.Account.id":
+		x.Id = uint64(0)
+	case "oracle.v1.Account.account":
+		x.Account = ""
+	case "oracle.v1.Account.chain":
+		x.Chain = ""
+	case "oracle.v1.Account.network":
+		x.Network = ""
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", fd.FullName()))
+	}
+}
+
+// Get retrieves the value for a field.
+//
+// For unpopulated scalars, it returns the default value, where
+// the default value of a bytes scalar is guaranteed to be a copy.
+// For unpopulated composite types, it returns an empty, read-only view
+// of the value; to obtain a mutable reference, use Mutable.
+func (x *fastReflection_Account) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+	switch descriptor.FullName() {
+	case "oracle.v1.Account.id":
+		value := x.Id
+		return protoreflect.ValueOfUint64(value)
+	case "oracle.v1.Account.account":
+		value := x.Account
+		return protoreflect.ValueOfString(value)
+	case "oracle.v1.Account.chain":
+		value := x.Chain
+		return protoreflect.ValueOfString(value)
+	case "oracle.v1.Account.network":
+		value := x.Network
+		return protoreflect.ValueOfString(value)
+	default:
+		if descriptor.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", descriptor.FullName()))
+	}
+}
+
+// Set stores the value for a field.
+//
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType.
+// When setting a composite type, it is unspecified whether the stored value
+// aliases the source's memory in any way. If the composite value is an
+// empty, read-only value, then it panics.
+//
+// Set is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Account) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+	switch fd.FullName() {
+	case "oracle.v1.Account.id":
+		x.Id = value.Uint()
+	case "oracle.v1.Account.account":
+		x.Account = value.Interface().(string)
+	case "oracle.v1.Account.chain":
+		x.Chain = value.Interface().(string)
+	case "oracle.v1.Account.network":
+		x.Network = value.Interface().(string)
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", fd.FullName()))
+	}
+}
+
+// Mutable returns a mutable reference to a composite type.
+//
+// If the field is unpopulated, it may allocate a composite value.
+// For a field belonging to a oneof, it implicitly clears any other field
+// that may be currently set within the same oneof.
+// For extension fields, it implicitly stores the provided ExtensionType
+// if not already stored.
+// It panics if the field does not contain a composite type.
+//
+// Mutable is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Account) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "oracle.v1.Account.id":
+		panic(fmt.Errorf("field id of message oracle.v1.Account is not mutable"))
+	case "oracle.v1.Account.account":
+		panic(fmt.Errorf("field account of message oracle.v1.Account is not mutable"))
+	case "oracle.v1.Account.chain":
+		panic(fmt.Errorf("field chain of message oracle.v1.Account is not mutable"))
+	case "oracle.v1.Account.network":
+		panic(fmt.Errorf("field network of message oracle.v1.Account is not mutable"))
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", fd.FullName()))
+	}
+}
+
+// NewField returns a new value that is assignable to the field
+// for the given descriptor. For scalars, this returns the default value.
+// For lists, maps, and messages, this returns a new, empty, mutable value.
+func (x *fastReflection_Account) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+	switch fd.FullName() {
+	case "oracle.v1.Account.id":
+		return protoreflect.ValueOfUint64(uint64(0))
+	case "oracle.v1.Account.account":
+		return protoreflect.ValueOfString("")
+	case "oracle.v1.Account.chain":
+		return protoreflect.ValueOfString("")
+	case "oracle.v1.Account.network":
+		return protoreflect.ValueOfString("")
+	default:
+		if fd.IsExtension() {
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: oracle.v1.Account"))
+		}
+		panic(fmt.Errorf("message oracle.v1.Account does not contain field %s", fd.FullName()))
+	}
+}
+
+// WhichOneof reports which field within the oneof is populated,
+// returning nil if none are populated.
+// It panics if the oneof descriptor does not belong to this message.
+func (x *fastReflection_Account) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+	switch d.FullName() {
+	default:
+		panic(fmt.Errorf("%s is not a oneof field in oracle.v1.Account", d.FullName()))
+	}
+	panic("unreachable")
+}
+
+// GetUnknown retrieves the entire list of unknown fields.
+// The caller may only mutate the contents of the RawFields
+// if the mutated bytes are stored back into the message with SetUnknown.
+func (x *fastReflection_Account) GetUnknown() protoreflect.RawFields {
+	return x.unknownFields
+}
+
+// SetUnknown stores an entire list of unknown fields.
+// The raw fields must be syntactically valid according to the wire format.
+// An implementation may panic if this is not the case.
+// Once stored, the caller must not mutate the content of the RawFields.
+// An empty RawFields may be passed to clear the fields.
+//
+// SetUnknown is a mutating operation and unsafe for concurrent use.
+func (x *fastReflection_Account) SetUnknown(fields protoreflect.RawFields) {
+	x.unknownFields = fields
+}
+
+// IsValid reports whether the message is valid.
+//
+// An invalid message is an empty, read-only value.
+//
+// An invalid message often corresponds to a nil pointer of the concrete
+// message type, but the details are implementation dependent.
+// Validity is not part of the protobuf data model, and may not
+// be preserved in marshaling or other operations.
+func (x *fastReflection_Account) IsValid() bool {
+	return x != nil
+}
+
+// ProtoMethods returns optional fastReflectionFeature-path implementations of various operations.
+// This method may return nil.
+//
+// The returned methods type is identical to
+// "google.golang.org/protobuf/runtime/protoiface".Methods.
+// Consult the protoiface package documentation for details.
+func (x *fastReflection_Account) ProtoMethods() *protoiface.Methods {
+	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
+		x := input.Message.Interface().(*Account)
+		if x == nil {
+			return protoiface.SizeOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Size:              0,
+			}
+		}
+		options := runtime.SizeInputToOptions(input)
+		_ = options
+		var n int
+		var l int
+		_ = l
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
+		}
+		l = len(x.Account)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Chain)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Network)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.unknownFields != nil {
+			n += len(x.unknownFields)
+		}
+		return protoiface.SizeOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Size:              n,
+		}
+	}
+
+	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
+		x := input.Message.Interface().(*Account)
+		if x == nil {
+			return protoiface.MarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Buf:               input.Buf,
+			}, nil
+		}
+		options := runtime.MarshalInputToOptions(input)
+		_ = options
+		size := options.Size(x)
+		dAtA := make([]byte, size)
+		i := len(dAtA)
+		_ = i
+		var l int
+		_ = l
+		if x.unknownFields != nil {
+			i -= len(x.unknownFields)
+			copy(dAtA[i:], x.unknownFields)
+		}
+		if len(x.Network) > 0 {
+			i -= len(x.Network)
+			copy(dAtA[i:], x.Network)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Network)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.Chain) > 0 {
+			i -= len(x.Chain)
+			copy(dAtA[i:], x.Chain)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Chain)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Account) > 0 {
+			i -= len(x.Account)
+			copy(dAtA[i:], x.Account)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Account)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
+			i--
+			dAtA[i] = 0x8
+		}
+		if input.Buf != nil {
+			input.Buf = append(input.Buf, dAtA...)
+		} else {
+			input.Buf = dAtA
+		}
+		return protoiface.MarshalOutput{
+			NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+			Buf:               input.Buf,
+		}, nil
+	}
+	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
+		x := input.Message.Interface().(*Account)
+		if x == nil {
+			return protoiface.UnmarshalOutput{
+				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
+				Flags:             input.Flags,
+			}, nil
+		}
+		options := runtime.UnmarshalInputToOptions(input)
+		_ = options
+		dAtA := input.Buf
+		l := len(dAtA)
+		iNdEx := 0
+		for iNdEx < l {
+			preIndex := iNdEx
+			var wire uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+				}
+				if iNdEx >= l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				wire |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			fieldNum := int32(wire >> 3)
+			wireType := int(wire & 0x7)
+			if wireType == 4 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Account: wiretype end group for non-group")
+			}
+			if fieldNum <= 0 {
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Account: illegal tag %d (wire type %d)", fieldNum, wire)
+			}
+			switch fieldNum {
+			case 1:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
+				}
+				x.Id = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.Id |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Account = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Chain", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Chain = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Network", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Network = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			default:
+				iNdEx = preIndex
+				skippy, err := runtime.Skip(dAtA[iNdEx:])
+				if err != nil {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, err
+				}
+				if (skippy < 0) || (iNdEx+skippy) < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if (iNdEx + skippy) > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				if !options.DiscardUnknown {
+					x.unknownFields = append(x.unknownFields, dAtA[iNdEx:iNdEx+skippy]...)
+				}
+				iNdEx += skippy
+			}
+		}
+
+		if iNdEx > l {
+			return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+		}
+		return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, nil
+	}
+	return &protoiface.Methods{
+		NoUnkeyedLiterals: struct{}{},
+		Flags:             protoiface.SupportMarshalDeterministic | protoiface.SupportUnmarshalDiscardUnknown,
+		Size:              size,
+		Marshal:           marshal,
+		Unmarshal:         unmarshal,
+		Merge:             nil,
+		CheckInitialized:  nil,
+	}
+}
+
 // Code generated by protoc-gen-go. DO NOT EDIT.
 // versions:
 // 	protoc-gen-go v1.27.0
@@ -496,17 +1090,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ExampleData struct {
+type Balance struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Account []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
+	Account string `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
 	Amount  uint64 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
 }
 
-func (x *ExampleData) Reset() {
-	*x = ExampleData{}
+func (x *Balance) Reset() {
+	*x = Balance{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_oracle_v1_state_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -514,29 +1108,88 @@ func (x *ExampleData) Reset() {
 	}
 }
 
-func (x *ExampleData) String() string {
+func (x *Balance) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ExampleData) ProtoMessage() {}
+func (*Balance) ProtoMessage() {}
 
-// Deprecated: Use ExampleData.ProtoReflect.Descriptor instead.
-func (*ExampleData) Descriptor() ([]byte, []int) {
+// Deprecated: Use Balance.ProtoReflect.Descriptor instead.
+func (*Balance) Descriptor() ([]byte, []int) {
 	return file_oracle_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ExampleData) GetAccount() []byte {
+func (x *Balance) GetAccount() string {
 	if x != nil {
 		return x.Account
 	}
-	return nil
+	return ""
 }
 
-func (x *ExampleData) GetAmount() uint64 {
+func (x *Balance) GetAmount() uint64 {
 	if x != nil {
 		return x.Amount
 	}
 	return 0
+}
+
+type Account struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Id      uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Account string `protobuf:"bytes,2,opt,name=account,proto3" json:"account,omitempty"`
+	Chain   string `protobuf:"bytes,3,opt,name=chain,proto3" json:"chain,omitempty"`
+	Network string `protobuf:"bytes,4,opt,name=network,proto3" json:"network,omitempty"`
+}
+
+func (x *Account) Reset() {
+	*x = Account{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_oracle_v1_state_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Account) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Account) ProtoMessage() {}
+
+// Deprecated: Use Account.ProtoReflect.Descriptor instead.
+func (*Account) Descriptor() ([]byte, []int) {
+	return file_oracle_v1_state_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *Account) GetId() uint64 {
+	if x != nil {
+		return x.Id
+	}
+	return 0
+}
+
+func (x *Account) GetAccount() string {
+	if x != nil {
+		return x.Account
+	}
+	return ""
+}
+
+func (x *Account) GetChain() string {
+	if x != nil {
+		return x.Chain
+	}
+	return ""
+}
+
+func (x *Account) GetNetwork() string {
+	if x != nil {
+		return x.Network
+	}
+	return ""
 }
 
 var File_oracle_v1_state_proto protoreflect.FileDescriptor
@@ -545,23 +1198,31 @@ var file_oracle_v1_state_proto_rawDesc = []byte{
 	0x0a, 0x15, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74,
 	0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x09, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e,
 	0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76,
-	0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x60, 0x0a, 0x0b, 0x45,
-	0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63,
-	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x61, 0x63, 0x63,
-	0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02,
-	0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e,
-	0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x09, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12,
-	0x0a, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x10, 0x01, 0x18, 0x01, 0x42, 0x8f, 0x01,
-	0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x76, 0x31, 0x42,
-	0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2d, 0x67,
-	0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72,
-	0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65,
-	0x2f, 0x76, 0x31, 0x3b, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4f,
-	0x58, 0x58, 0xaa, 0x02, 0x09, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x56, 0x31, 0xca, 0x02,
-	0x09, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x15, 0x4f, 0x72, 0x61,
-	0x63, 0x6c, 0x65, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0xea, 0x02, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x3a, 0x3a, 0x56, 0x31, 0x62,
-	0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x5c, 0x0a, 0x07, 0x42,
+	0x61, 0x6c, 0x61, 0x6e, 0x63, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19,
+	0x0a, 0x09, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x10, 0x01, 0x18, 0x01, 0x22, 0x82, 0x01, 0x0a, 0x07, 0x41, 0x63,
+	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12,
+	0x14, 0x0a, 0x05, 0x63, 0x68, 0x61, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x63, 0x68, 0x61, 0x69, 0x6e, 0x12, 0x18, 0x0a, 0x07, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b,
+	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6e, 0x65, 0x74, 0x77, 0x6f, 0x72, 0x6b, 0x3a,
+	0x1d, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x17, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12, 0x0d, 0x0a,
+	0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x10, 0x01, 0x18, 0x01, 0x18, 0x02, 0x42, 0x8f,
+	0x01, 0x0a, 0x0d, 0x63, 0x6f, 0x6d, 0x2e, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x76, 0x31,
+	0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x2d,
+	0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e,
+	0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6f, 0x72, 0x61, 0x63, 0x6c,
+	0x65, 0x2f, 0x76, 0x31, 0x3b, 0x6f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x76, 0x31, 0xa2, 0x02, 0x03,
+	0x4f, 0x58, 0x58, 0xaa, 0x02, 0x09, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x2e, 0x56, 0x31, 0xca,
+	0x02, 0x09, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x15, 0x4f, 0x72,
+	0x61, 0x63, 0x6c, 0x65, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64,
+	0x61, 0x74, 0x61, 0xea, 0x02, 0x0a, 0x4f, 0x72, 0x61, 0x63, 0x6c, 0x65, 0x3a, 0x3a, 0x56, 0x31,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -576,9 +1237,10 @@ func file_oracle_v1_state_proto_rawDescGZIP() []byte {
 	return file_oracle_v1_state_proto_rawDescData
 }
 
-var file_oracle_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_oracle_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_oracle_v1_state_proto_goTypes = []interface{}{
-	(*ExampleData)(nil), // 0: oracle.v1.ExampleData
+	(*Balance)(nil), // 0: oracle.v1.Balance
+	(*Account)(nil), // 1: oracle.v1.Account
 }
 var file_oracle_v1_state_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -595,7 +1257,19 @@ func file_oracle_v1_state_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_oracle_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExampleData); i {
+			switch v := v.(*Balance); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_oracle_v1_state_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Account); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -613,7 +1287,7 @@ func file_oracle_v1_state_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_oracle_v1_state_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

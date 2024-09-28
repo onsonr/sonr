@@ -1,8 +1,8 @@
 syntax = "proto3";
 package oracle.v1;
 
-import "gogoproto/gogo.proto";
 import "amino/amino.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/oracle/types";
 
@@ -18,5 +18,34 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
-  bool some_value = 2;
+  Assets assets = 1;
+}
+
+message Assets {
+  option (amino.name) = "oracle/assets";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  repeated AssetInfo assets = 1;
+}
+
+// AssetInfo defines the asset info
+message AssetInfo {
+  // The coin type index for bip44 path
+  int64 index = 1;
+
+  // The hrp for bech32 address
+  string hrp = 2;
+
+  // The coin symbol
+  string symbol = 3;
+
+  // The coin name
+  string asset_type = 4;
+
+  // The name of the asset
+  string name = 5;
+
+  // The icon url
+  string icon_url = 6;
 }
