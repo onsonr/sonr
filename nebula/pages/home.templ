@@ -10,7 +10,7 @@ func Home(c echo.Context) error {
 }
 
 templ homeView() {
-	@blocks.Layout("Sonr.ID", true) {
+	@blocks.LayoutNoBody("Sonr.ID", true) {
 		@blocks.HeaderMarketingNav()
 		@blocks.SectionHero()
 		@blocks.Card("home-view", blocks.SizeLarge) {
