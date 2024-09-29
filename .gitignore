@@ -16,7 +16,6 @@ aof*
 **/.DS_Store
 # Output of the go coverage tool
 *.out
-buf.lock
 
 # Exclude embedded files
 !internal/files/dist
@@ -32,12 +31,6 @@ go.work.sum
 .env
 **/*.env
 
-# Lock files
-package-lock.json
-devbox.lock
-
-# Config files
-pkg/config/static/
 
 # Terraform
 **/.terraform/*
