@@ -1,7 +1,7 @@
 package types
 
 import (
-	"github.com/onsonr/sonr/x/did/types/orm/assettype"
+	"github.com/onsonr/sonr/pkg/orm/assettype"
 )
 
 // this line is used by starport scaffolding # genesis/types/import

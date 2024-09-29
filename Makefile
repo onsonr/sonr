@@ -297,7 +297,7 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: dwn motr templ
+.PHONY: dwn motr templ pkl nebula
 
 motr:
 	@echo "(motr) Building motr gateway"
@@ -312,10 +312,14 @@ templ:
 	go install github.com/a-h/templ/cmd/templ@latest
 	templ generate
 
+nebula:
+	@echo "(nebula) Building nebula"
+	cd pkg/nebula && bun run build
+
 pkl:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./app/config/pkl/dwn.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./app/config/pkl/orm.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/dwn.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl
 
 start-caddy:
 	@echo "(start-caddy) Starting caddy"

@@ -17,6 +17,16 @@ service Query {
   rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
     option (google.api.http).get = "/did/{did}";
   }
+
+  // Sign signs a message with the DID document
+  rpc Sign(QuerySignRequest) returns (QuerySignResponse) {
+    option (google.api.http).post = "/did/{did}/sign";
+  }
+
+  // Verify verifies a message with the DID document
+  rpc Verify(QueryVerifyRequest) returns (QueryVerifyResponse) {
+    option (google.api.http).post = "/did/{did}/verify";
+  }
 }
 
 // Queryequest is the request type for the Query/Params RPC method.
@@ -37,6 +47,37 @@ message QueryParamsResponse {
 message QueryResolveResponse {
   // document is the DID document
   Document document = 1;
+}
+
+// QuerySignRequest is the request type for the Query/Sign RPC method.
+message QuerySignRequest {
+  string did = 1;
+  string origin = 2;
+  string key = 3;
+  string asset = 4;
+  string message = 5;
+}
+
+// QuerySignResponse is the response type for the Query/Sign RPC method.
+message QuerySignResponse {
+  // signature is the signature of the message
+  string signature = 1;
+}
+
+// QueryVerifyRequest is the request type for the Query/Verify RPC method.
+message QueryVerifyRequest {
+  string did = 1;
+  string origin = 2;
+  string key = 3;
+  string asset = 4;
+  string message = 5;
+  string signature = 6;
+}
+
+// QueryVerifyResponse is the response type for the Query/Verify RPC method.
+message QueryVerifyResponse {
+  // valid is the validity of the signature
+  bool valid = 1;
 }
 
 // Document defines a DID document

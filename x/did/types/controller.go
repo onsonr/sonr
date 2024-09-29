@@ -4,6 +4,7 @@ import (
 	fmt "fmt"
 
 	"github.com/onsonr/crypto/mpc"
+
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 )
 

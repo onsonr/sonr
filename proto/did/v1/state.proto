@@ -28,6 +28,15 @@ message Authentication {
 
   // PubKey is the verification method
   PubKey public_key = 4;
+
+  // CredentialID is the byte representation of the credential ID
+  bytes credential_id = 5;
+
+  // Metadata of the authentication
+  map<string, string> metadata = 6;
+
+  // CreationBlock is the block number of the creation of the authentication
+  int64 creation_block = 7;
 }
 
 // Controller represents a Sonr DWN Vault
@@ -78,14 +87,17 @@ message Controller {
   // PubKey is the verification method
   PubKey public_key = 6;
 
-  // Val Keyshare
+  // Pointer to the Keyshares
   string ks_val = 7;
 
-  // The Status of the claims for the controller
-  bool claimed = 8;
+  // The block number of when a user claimed the controller
+  int64 claimed_block = 8;
+
+  // CreationBlock is the block number of the creation of the controller
+  int64 creation_block = 9;
 }
 
-// Verification reprsents a method of verifying membership in a DID
+// Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
     id: 4
@@ -125,9 +137,20 @@ message Verification {
   // The public key of the verification
   PubKey public_key = 6;
 
-  // The Verification Type (Authentication, Assertion, CapabilityDelegation,
-  // CapabilityInvocation)
+  // The verification method type
   string verification_type = 7;
+
+  // Metadata of the verification
+  map<string, string> metadata = 8;
+
+  // CreationBlock is the block number of the creation of the controller
+  int64 creation_block = 9;
+}
+
+message Keyshares {
+  string validator_cid = 1;
+  string user_cid = 2;
+  int64 last_updated_block = 3;
 }
 
 // PubKey defines a public key for a did

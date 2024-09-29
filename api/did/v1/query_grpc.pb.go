@@ -21,6 +21,8 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Query_Params_FullMethodName  = "/did.v1.Query/Params"
 	Query_Resolve_FullMethodName = "/did.v1.Query/Resolve"
+	Query_Sign_FullMethodName    = "/did.v1.Query/Sign"
+	Query_Verify_FullMethodName  = "/did.v1.Query/Verify"
 )
 
 // QueryClient is the client API for Query service.
@@ -31,6 +33,10 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
+	// Sign signs a message with the DID document
+	Sign(ctx context.Context, in *QuerySignRequest, opts ...grpc.CallOption) (*QuerySignResponse, error)
+	// Verify verifies a message with the DID document
+	Verify(ctx context.Context, in *QueryVerifyRequest, opts ...grpc.CallOption) (*QueryVerifyResponse, error)
 }
 
 type queryClient struct {
@@ -59,6 +65,24 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
+func (c *queryClient) Sign(ctx context.Context, in *QuerySignRequest, opts ...grpc.CallOption) (*QuerySignResponse, error) {
+	out := new(QuerySignResponse)
+	err := c.cc.Invoke(ctx, Query_Sign_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) Verify(ctx context.Context, in *QueryVerifyRequest, opts ...grpc.CallOption) (*QueryVerifyResponse, error) {
+	out := new(QueryVerifyResponse)
+	err := c.cc.Invoke(ctx, Query_Verify_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // QueryServer is the server API for Query service.
 // All implementations must embed UnimplementedQueryServer
 // for forward compatibility
@@ -67,6 +91,10 @@ type QueryServer interface {
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
+	// Sign signs a message with the DID document
+	Sign(context.Context, *QuerySignRequest) (*QuerySignResponse, error)
+	// Verify verifies a message with the DID document
+	Verify(context.Context, *QueryVerifyRequest) (*QueryVerifyResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -79,6 +107,12 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryRequest) (*QueryPa
 }
 func (UnimplementedQueryServer) Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
+}
+func (UnimplementedQueryServer) Sign(context.Context, *QuerySignRequest) (*QuerySignResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sign not implemented")
+}
+func (UnimplementedQueryServer) Verify(context.Context, *QueryVerifyRequest) (*QueryVerifyResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -129,6 +163,42 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Sign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySignRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Sign(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Sign_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Sign(ctx, req.(*QuerySignRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QueryVerifyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Verify(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Verify_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Verify(ctx, req.(*QueryVerifyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Query_ServiceDesc is the grpc.ServiceDesc for Query service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -143,6 +213,14 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
+		},
+		{
+			MethodName: "Sign",
+			Handler:    _Query_Sign_Handler,
+		},
+		{
+			MethodName: "Verify",
+			Handler:    _Query_Verify_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
