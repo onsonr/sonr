@@ -35,7 +35,7 @@ jobs:
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: pkljar
-          source-dir: app/config/pkl
+          source-dir: pkl
           destination-dir: .
 
   upload_nebula_cdn:
@@ -50,5 +50,5 @@ jobs:
           r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: nebula
-          source-dir: nebula/assets
+          source-dir: pkg/nebula/assets
           destination-dir: .
