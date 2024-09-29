@@ -16,14 +16,14 @@ import (
 
 func Home(c echo.Context) error {
 	hero := sections.Hero{
-		TitleFirst:          "Sonr.ID",
-		TitleEmphasis:       "platform",
-		TitleSecond:         "for cross-functional work",
-		Subtitle:            "Turbocharge your creative process with a powerful AI design platform that gives creatives the power of creating without limits.",
-		PrimaryButtonText:   "Request Demo",
-		PrimaryButtonLink:   "request-demo.html",
-		SecondaryButtonText: "Try for Free",
-		SecondaryButtonLink: "#0",
+		TitleFirst:          "Simplified",
+		TitleEmphasis:       "self-custody",
+		TitleSecond:         "for everyone",
+		Subtitle:            "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
+		PrimaryButtonText:   "Get Started",
+		PrimaryButtonLink:   "/register",
+		SecondaryButtonText: "Learn More",
+		SecondaryButtonLink: "/about",
 	}
 	return echoResponse(c, homeView(hero))
 }
