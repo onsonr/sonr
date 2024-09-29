@@ -2,31 +2,28 @@ package pages
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/nebula/blocks"
+	"github.com/onsonr/sonr/nebula/components/blocks"
+	"github.com/onsonr/sonr/nebula/components/sections"
 )
 
 func Home(c echo.Context) error {
-	return echoResponse(c, homeView())
+	hero := sections.Hero{
+		TitleFirst:          "Sonr.ID",
+		TitleEmphasis:       "platform",
+		TitleSecond:         "for cross-functional work",
+		Subtitle:            "Turbocharge your creative process with a powerful AI design platform that gives creatives the power of creating without limits.",
+		PrimaryButtonText:   "Request Demo",
+		PrimaryButtonLink:   "request-demo.html",
+		SecondaryButtonText: "Try for Free",
+		SecondaryButtonLink: "#0",
+	}
+	return echoResponse(c, homeView(hero))
 }
 
-templ homeView() {
-	@blocks.Layout("Sonr.ID", true) {
-		@blocks.HeaderMarketingNav()
-		@blocks.SectionHero()
-		@blocks.Card("home-view", blocks.SizeLarge) {
-			@blocks.H1("Sonr.ID")
-			@blocks.Text("A Decentralized Web Node Client for the Sonr Network.")
-			@blocks.Spacer()
-			<div class="flex flex-col gap-3">
-				@blocks.Button(blocks.GET("/register", "#home-view"), blocks.PrimaryButtonStyle()) {
-					@blocks.Text("Get Started")
-				}
-				@blocks.Button(blocks.GET("/login", "#home-view")) {
-					@blocks.Text("Login")
-				}
-			</div>
-			@blocks.PoweredBySonr()
-		}
-		@blocks.FooterMarketingNav()
+templ homeView(hero sections.Hero) {
+	@blocks.LayoutNoBody("Sonr.ID", true) {
+		@sections.HeaderMarketingNav()
+		@sections.SectionHero(hero)
+		@sections.FooterMarketingNav()
 	}
 }
