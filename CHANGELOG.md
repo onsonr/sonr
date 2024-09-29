@@ -1,3 +1,9 @@
+## v0.3.1 (2024-09-29)
+
+### Refactor
+
+- move nebula/pages to pkg/nebula/pages
+
 ## v0.3.0 (2024-09-29)
 
 ### Feat
