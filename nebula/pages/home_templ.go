@@ -15,10 +15,20 @@ import (
 )
 
 func Home(c echo.Context) error {
-	return echoResponse(c, homeView())
+	hero := sections.Hero{
+		TitleFirst:          "Sonr.ID",
+		TitleEmphasis:       "platform",
+		TitleSecond:         "for cross-functional work",
+		Subtitle:            "Turbocharge your creative process with a powerful AI design platform that gives creatives the power of creating without limits.",
+		PrimaryButtonText:   "Request Demo",
+		PrimaryButtonLink:   "request-demo.html",
+		SecondaryButtonText: "Try for Free",
+		SecondaryButtonLink: "#0",
+	}
+	return echoResponse(c, homeView(hero))
 }
 
-func homeView() templ.Component {
+func homeView(hero sections.Hero) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -59,7 +69,7 @@ func homeView() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.SectionHero().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.SectionHero(hero).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

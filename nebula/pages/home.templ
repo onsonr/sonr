@@ -7,13 +7,23 @@ import (
 )
 
 func Home(c echo.Context) error {
-	return echoResponse(c, homeView())
+	hero := sections.Hero{
+		TitleFirst:          "Sonr.ID",
+		TitleEmphasis:       "platform",
+		TitleSecond:         "for cross-functional work",
+		Subtitle:            "Turbocharge your creative process with a powerful AI design platform that gives creatives the power of creating without limits.",
+		PrimaryButtonText:   "Request Demo",
+		PrimaryButtonLink:   "request-demo.html",
+		SecondaryButtonText: "Try for Free",
+		SecondaryButtonLink: "#0",
+	}
+	return echoResponse(c, homeView(hero))
 }
 
-templ homeView() {
+templ homeView(hero sections.Hero) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
 		@sections.HeaderMarketingNav()
-		@sections.SectionHero()
+		@sections.SectionHero(hero)
 		@sections.FooterMarketingNav()
 	}
 }
