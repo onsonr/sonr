@@ -195,14 +195,11 @@ proto-format:
 	@echo "Formatting Protobuf files"
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
-proto-swagger-gen:
-	@./scripts/protoc-swagger-gen.sh
-
 proto-lint:
 	@$(protoImage) buf lint --error-format=json
 
 proto-check-breaking:
-	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=master
 
 .PHONY: all install install-debug \
 	go-mod-cache draw-deps clean build format \
