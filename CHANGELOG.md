@@ -1,3 +1,18 @@
+## v0.3.0 (2024-09-29)
+
+### Feat
+
+- add buf.lock for proto definitions
+
+### Fix
+
+- remove unused linting rules
+- update proto breaking check target to master branch
+
+### Refactor
+
+- remove unused lock files and configurations
+
 ## v0.2.0 (2024-09-29)
 
 ### Feat
