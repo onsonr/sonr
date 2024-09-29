@@ -83,3 +83,4 @@ mprocs.yaml
 
 !devbox.lock
 !motr/build
+!buf.lock
