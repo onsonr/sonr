@@ -10,14 +10,14 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 )
 
-func Profile(c echo.Context) error {
-	return echoResponse(c, profileView(c))
+func Authorize(c echo.Context) error {
+	return echoResponse(c, authorizeView(c))
 }
 
-func profileView(c echo.Context) templ.Component {
+func authorizeView(c echo.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -62,7 +62,7 @@ func profileView(c echo.Context) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = blocks.ProfileCard().Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = blocks.H1("Sonr.ID").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -70,13 +70,13 @@ func profileView(c echo.Context) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = blocks.Tabs().Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = blocks.Text("Neo-tree is a file manager for NeoFS.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = blocks.Card("profile-view", blocks.SizeLarge).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = blocks.Card("authorize-view", blocks.SizeMedium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -9,9 +9,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
-	"github.com/onsonr/sonr/nebula"
-	"github.com/onsonr/sonr/nebula/pages"
 	"github.com/spf13/cobra"
+
+	"github.com/onsonr/sonr/pkg/nebula"
+	"github.com/onsonr/sonr/pkg/nebula/pages"
 )
 
 func NewProxyCmd() *cobra.Command {

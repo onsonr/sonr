@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/nebula/components/blocks"
-	"github.com/onsonr/sonr/nebula/components/sections"
+	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/components/sections"
 )
 
 func Home(c echo.Context) error {

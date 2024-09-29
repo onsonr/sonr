@@ -4,24 +4,20 @@ import (
 	"context"
 	"time"
 
-	"github.com/cosmos/cosmos-sdk/codec"
-	sdk "github.com/cosmos/cosmos-sdk/types"
-
-	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
-
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
-
+	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
+	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
+	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/ipfs/kubo/client/rpc"
+
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
-	"github.com/onsonr/sonr/app/config/dwn"
-
-	"github.com/onsonr/sonr/x/vault/types"
-
+	"github.com/onsonr/sonr/pkg/dwn"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	"github.com/onsonr/sonr/x/vault/types"
 )
 
 type Keeper struct {

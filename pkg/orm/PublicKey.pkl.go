@@ -2,11 +2,11 @@
 package orm
 
 import (
-	"github.com/onsonr/sonr/x/did/types/orm/keyalgorithm"
-	"github.com/onsonr/sonr/x/did/types/orm/keycurve"
-	"github.com/onsonr/sonr/x/did/types/orm/keyencoding"
-	"github.com/onsonr/sonr/x/did/types/orm/keyrole"
-	"github.com/onsonr/sonr/x/did/types/orm/keytype"
+	"github.com/onsonr/sonr/pkg/orm/keyalgorithm"
+	"github.com/onsonr/sonr/pkg/orm/keycurve"
+	"github.com/onsonr/sonr/pkg/orm/keyencoding"
+	"github.com/onsonr/sonr/pkg/orm/keyrole"
+	"github.com/onsonr/sonr/pkg/orm/keytype"
 )
 
 type PublicKey struct {

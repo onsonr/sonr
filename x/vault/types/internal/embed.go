@@ -8,7 +8,8 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/app/config/dwn"
+
+	"github.com/onsonr/sonr/pkg/dwn"
 )
 
 //go:embed app.wasm

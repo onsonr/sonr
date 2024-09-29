@@ -88,7 +88,7 @@ message Controller {
   PubKey public_key = 6;
 
   // Pointer to the Keyshares
-  Keyshares keyshares = 7;
+  string ks_val = 7;
 
   // The block number of when a user claimed the controller
   int64 claimed_block = 8;
