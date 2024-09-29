@@ -14,16 +14,18 @@ import (
 )
 
 var (
-	md_DWN         protoreflect.MessageDescriptor
-	fd_DWN_account protoreflect.FieldDescriptor
-	fd_DWN_amount  protoreflect.FieldDescriptor
+	md_DWN       protoreflect.MessageDescriptor
+	fd_DWN_id    protoreflect.FieldDescriptor
+	fd_DWN_alias protoreflect.FieldDescriptor
+	fd_DWN_cid   protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_vault_v1_state_proto_init()
 	md_DWN = File_vault_v1_state_proto.Messages().ByName("DWN")
-	fd_DWN_account = md_DWN.Fields().ByName("account")
-	fd_DWN_amount = md_DWN.Fields().ByName("amount")
+	fd_DWN_id = md_DWN.Fields().ByName("id")
+	fd_DWN_alias = md_DWN.Fields().ByName("alias")
+	fd_DWN_cid = md_DWN.Fields().ByName("cid")
 }
 
 var _ protoreflect.Message = (*fastReflection_DWN)(nil)
@@ -91,15 +93,21 @@ func (x *fastReflection_DWN) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_DWN) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Account) != 0 {
-		value := protoreflect.ValueOfBytes(x.Account)
-		if !f(fd_DWN_account, value) {
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_DWN_id, value) {
 			return
 		}
 	}
-	if x.Amount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Amount)
-		if !f(fd_DWN_amount, value) {
+	if x.Alias != "" {
+		value := protoreflect.ValueOfString(x.Alias)
+		if !f(fd_DWN_alias, value) {
+			return
+		}
+	}
+	if x.Cid != "" {
+		value := protoreflect.ValueOfString(x.Cid)
+		if !f(fd_DWN_cid, value) {
 			return
 		}
 	}
@@ -118,10 +126,12 @@ func (x *fastReflection_DWN) Range(f func(protoreflect.FieldDescriptor, protoref
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_DWN) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "vault.v1.DWN.account":
-		return len(x.Account) != 0
-	case "vault.v1.DWN.amount":
-		return x.Amount != uint64(0)
+	case "vault.v1.DWN.id":
+		return x.Id != uint64(0)
+	case "vault.v1.DWN.alias":
+		return x.Alias != ""
+	case "vault.v1.DWN.cid":
+		return x.Cid != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -138,10 +148,12 @@ func (x *fastReflection_DWN) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_DWN) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "vault.v1.DWN.account":
-		x.Account = nil
-	case "vault.v1.DWN.amount":
-		x.Amount = uint64(0)
+	case "vault.v1.DWN.id":
+		x.Id = uint64(0)
+	case "vault.v1.DWN.alias":
+		x.Alias = ""
+	case "vault.v1.DWN.cid":
+		x.Cid = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -158,12 +170,15 @@ func (x *fastReflection_DWN) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_DWN) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "vault.v1.DWN.account":
-		value := x.Account
-		return protoreflect.ValueOfBytes(value)
-	case "vault.v1.DWN.amount":
-		value := x.Amount
+	case "vault.v1.DWN.id":
+		value := x.Id
 		return protoreflect.ValueOfUint64(value)
+	case "vault.v1.DWN.alias":
+		value := x.Alias
+		return protoreflect.ValueOfString(value)
+	case "vault.v1.DWN.cid":
+		value := x.Cid
+		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -184,10 +199,12 @@ func (x *fastReflection_DWN) Get(descriptor protoreflect.FieldDescriptor) protor
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_DWN) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "vault.v1.DWN.account":
-		x.Account = value.Bytes()
-	case "vault.v1.DWN.amount":
-		x.Amount = value.Uint()
+	case "vault.v1.DWN.id":
+		x.Id = value.Uint()
+	case "vault.v1.DWN.alias":
+		x.Alias = value.Interface().(string)
+	case "vault.v1.DWN.cid":
+		x.Cid = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -208,10 +225,12 @@ func (x *fastReflection_DWN) Set(fd protoreflect.FieldDescriptor, value protoref
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_DWN) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "vault.v1.DWN.account":
-		panic(fmt.Errorf("field account of message vault.v1.DWN is not mutable"))
-	case "vault.v1.DWN.amount":
-		panic(fmt.Errorf("field amount of message vault.v1.DWN is not mutable"))
+	case "vault.v1.DWN.id":
+		panic(fmt.Errorf("field id of message vault.v1.DWN is not mutable"))
+	case "vault.v1.DWN.alias":
+		panic(fmt.Errorf("field alias of message vault.v1.DWN is not mutable"))
+	case "vault.v1.DWN.cid":
+		panic(fmt.Errorf("field cid of message vault.v1.DWN is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -225,10 +244,12 @@ func (x *fastReflection_DWN) Mutable(fd protoreflect.FieldDescriptor) protorefle
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_DWN) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "vault.v1.DWN.account":
-		return protoreflect.ValueOfBytes(nil)
-	case "vault.v1.DWN.amount":
+	case "vault.v1.DWN.id":
 		return protoreflect.ValueOfUint64(uint64(0))
+	case "vault.v1.DWN.alias":
+		return protoreflect.ValueOfString("")
+	case "vault.v1.DWN.cid":
+		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: vault.v1.DWN"))
@@ -298,12 +319,16 @@ func (x *fastReflection_DWN) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Account)
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
+		}
+		l = len(x.Alias)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Amount != 0 {
-			n += 1 + runtime.Sov(uint64(x.Amount))
+		l = len(x.Cid)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -334,17 +359,24 @@ func (x *fastReflection_DWN) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Amount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Amount))
+		if len(x.Cid) > 0 {
+			i -= len(x.Cid)
+			copy(dAtA[i:], x.Cid)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Cid)))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x1a
 		}
-		if len(x.Account) > 0 {
-			i -= len(x.Account)
-			copy(dAtA[i:], x.Account)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Account)))
+		if len(x.Alias) > 0 {
+			i -= len(x.Alias)
+			copy(dAtA[i:], x.Alias)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Alias)))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
+		}
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
+			i--
+			dAtA[i] = 0x8
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -396,10 +428,10 @@ func (x *fastReflection_DWN) ProtoMethods() *protoiface.Methods {
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 				}
-				var byteLen int
+				x.Id = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -409,31 +441,48 @@ func (x *fastReflection_DWN) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					x.Id |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Alias", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Account = append(x.Account[:0], dAtA[iNdEx:postIndex]...)
-				if x.Account == nil {
-					x.Account = []byte{}
-				}
+				x.Alias = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Cid", wireType)
 				}
-				x.Amount = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -443,11 +492,24 @@ func (x *fastReflection_DWN) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Amount |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Cid = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
 				skippy, err := runtime.Skip(dAtA[iNdEx:])
@@ -501,8 +563,9 @@ type DWN struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Account []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
-	Amount  uint64 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Id    uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Alias string `protobuf:"bytes,2,opt,name=alias,proto3" json:"alias,omitempty"`
+	Cid   string `protobuf:"bytes,3,opt,name=cid,proto3" json:"cid,omitempty"`
 }
 
 func (x *DWN) Reset() {
@@ -525,18 +588,25 @@ func (*DWN) Descriptor() ([]byte, []int) {
 	return file_vault_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *DWN) GetAccount() []byte {
+func (x *DWN) GetId() uint64 {
 	if x != nil {
-		return x.Account
-	}
-	return nil
-}
-
-func (x *DWN) GetAmount() uint64 {
-	if x != nil {
-		return x.Amount
+		return x.Id
 	}
 	return 0
+}
+
+func (x *DWN) GetAlias() string {
+	if x != nil {
+		return x.Alias
+	}
+	return ""
+}
+
+func (x *DWN) GetCid() string {
+	if x != nil {
+		return x.Cid
+	}
+	return ""
 }
 
 var File_vault_v1_state_proto protoreflect.FileDescriptor
@@ -545,22 +615,23 @@ var file_vault_v1_state_proto_rawDesc = []byte{
 	0x0a, 0x14, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x65,
 	0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x08, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x2e, 0x76, 0x31,
 	0x1a, 0x17, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f,
-	0x6f, 0x72, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x58, 0x0a, 0x03, 0x44, 0x57, 0x4e,
-	0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28,
-	0x0c, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d,
-	0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x09, 0x0a, 0x07, 0x61, 0x63,
-	0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x10,
-	0x01, 0x18, 0x01, 0x42, 0x88, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x61, 0x75, 0x6c,
-	0x74, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f,
-	0x50, 0x01, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f,
-	0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76,
-	0x61, 0x75, 0x6c, 0x74, 0x2f, 0x76, 0x31, 0x3b, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x76, 0x31, 0xa2,
-	0x02, 0x03, 0x56, 0x58, 0x58, 0xaa, 0x02, 0x08, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x2e, 0x56, 0x31,
-	0xca, 0x02, 0x08, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x14, 0x56, 0x61,
-	0x75, 0x6c, 0x74, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0xea, 0x02, 0x09, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x72, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x67, 0x0a, 0x03, 0x44, 0x57, 0x4e,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x14, 0x0a, 0x05, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x05, 0x61, 0x6c, 0x69, 0x61, 0x73, 0x12, 0x10, 0x0a, 0x03, 0x63, 0x69, 0x64, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x03, 0x63, 0x69, 0x64, 0x3a, 0x28, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x22,
+	0x0a, 0x06, 0x0a, 0x02, 0x69, 0x64, 0x10, 0x01, 0x12, 0x0b, 0x0a, 0x05, 0x61, 0x6c, 0x69, 0x61,
+	0x73, 0x10, 0x01, 0x18, 0x01, 0x12, 0x09, 0x0a, 0x03, 0x63, 0x69, 0x64, 0x10, 0x02, 0x18, 0x01,
+	0x18, 0x01, 0x42, 0x88, 0x01, 0x0a, 0x0c, 0x63, 0x6f, 0x6d, 0x2e, 0x76, 0x61, 0x75, 0x6c, 0x74,
+	0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50,
+	0x01, 0x5a, 0x2b, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e,
+	0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x76, 0x61,
+	0x75, 0x6c, 0x74, 0x2f, 0x76, 0x31, 0x3b, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x56, 0x58, 0x58, 0xaa, 0x02, 0x08, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x2e, 0x56, 0x31, 0xca,
+	0x02, 0x08, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x14, 0x56, 0x61, 0x75,
+	0x6c, 0x74, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74,
+	0x61, 0xea, 0x02, 0x09, 0x56, 0x61, 0x75, 0x6c, 0x74, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
