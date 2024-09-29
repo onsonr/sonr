@@ -17,9 +17,9 @@ service Msg {
   // Since: cosmos-sdk 0.47
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
-  // AuthorizeService asserts the given controller is the owner of the given
+  // IssueMacaroon asserts the given controller is the owner of the given
   // address.
-  rpc AuthorizeService(MsgIssueMacaroon) returns (MsgIssueMacaroonResponse);
+  rpc IssueMacaroon(MsgIssueMacaroon) returns (MsgIssueMacaroonResponse);
 }
 
 // MsgUpdateParams is the Msg/UpdateParams request type.
@@ -43,7 +43,7 @@ message MsgUpdateParams {
 // Since: cosmos-sdk 0.47
 message MsgUpdateParamsResponse {}
 
-// MsgIssueMacaroon is the message type for the AuthorizeService RPC.
+// MsgIssueMacaroon is the message type for the IssueMacaroon RPC.
 message MsgIssueMacaroon {
   option (cosmos.msg.v1.signer) = "controller";
 
@@ -60,7 +60,7 @@ message MsgIssueMacaroon {
   string token = 4;
 }
 
-// MsgIssueMacaroonResponse is the response type for the AuthorizeService
+// MsgIssueMacaroonResponse is the response type for the IssueMacaroon
 // RPC.
 message MsgIssueMacaroonResponse {
   bool success = 1;

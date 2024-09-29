@@ -26,15 +26,36 @@
   },
   "shell": {
     "scripts": {
-      "build:docker": ["make local-image"],
-      "build:motr": ["cd nebula && bun run build", "make motr"],
-      "build:nebula": ["cd nebula && bun run build"],
-      "build:sonrd": ["make dwn", "make build"],
-      "gen:proto": ["make proto-gen"],
-      "gen:pkl": ["make pkl"],
-      "gen:templ": ["make templ"],
-      "start:motr": ["make templ", "make motr", "make start-motr"],
-      "start:testnet": ["make templ", "make install", "make sh-testnet"]
+      "build:docker": [
+        "make local-image"
+      ],
+      "build:motr": [
+        "make nebula",
+        "make motr"
+      ],
+      "build:sonrd": [
+        "make dwn",
+        "make build"
+      ],
+      "gen:proto": [
+        "make proto-gen"
+      ],
+      "gen:pkl": [
+        "make pkl"
+      ],
+      "gen:templ": [
+        "make templ"
+      ],
+      "start:motr": [
+        "make templ",
+        "make motr",
+        "make start-motr"
+      ],
+      "start:testnet": [
+        "make templ",
+        "make install",
+        "make sh-testnet"
+      ]
     }
   }
 }

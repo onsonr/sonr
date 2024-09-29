@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_UpdateParams_FullMethodName     = "/macaroon.v1.Msg/UpdateParams"
-	Msg_AuthorizeService_FullMethodName = "/macaroon.v1.Msg/AuthorizeService"
+	Msg_UpdateParams_FullMethodName  = "/macaroon.v1.Msg/UpdateParams"
+	Msg_IssueMacaroon_FullMethodName = "/macaroon.v1.Msg/IssueMacaroon"
 )
 
 // MsgClient is the client API for Msg service.
@@ -31,9 +31,9 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// AuthorizeService asserts the given controller is the owner of the given
+	// IssueMacaroon asserts the given controller is the owner of the given
 	// address.
-	AuthorizeService(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error)
+	IssueMacaroon(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error)
 }
 
 type msgClient struct {
@@ -53,9 +53,9 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) AuthorizeService(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error) {
+func (c *msgClient) IssueMacaroon(ctx context.Context, in *MsgIssueMacaroon, opts ...grpc.CallOption) (*MsgIssueMacaroonResponse, error) {
 	out := new(MsgIssueMacaroonResponse)
-	err := c.cc.Invoke(ctx, Msg_AuthorizeService_FullMethodName, in, out, opts...)
+	err := c.cc.Invoke(ctx, Msg_IssueMacaroon_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -70,9 +70,9 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// AuthorizeService asserts the given controller is the owner of the given
+	// IssueMacaroon asserts the given controller is the owner of the given
 	// address.
-	AuthorizeService(context.Context, *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error)
+	IssueMacaroon(context.Context, *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -83,8 +83,8 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (UnimplementedMsgServer) AuthorizeService(context.Context, *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeService not implemented")
+func (UnimplementedMsgServer) IssueMacaroon(context.Context, *MsgIssueMacaroon) (*MsgIssueMacaroonResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method IssueMacaroon not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 
@@ -117,20 +117,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_AuthorizeService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _Msg_IssueMacaroon_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgIssueMacaroon)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).AuthorizeService(ctx, in)
+		return srv.(MsgServer).IssueMacaroon(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_AuthorizeService_FullMethodName,
+		FullMethod: Msg_IssueMacaroon_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AuthorizeService(ctx, req.(*MsgIssueMacaroon))
+		return srv.(MsgServer).IssueMacaroon(ctx, req.(*MsgIssueMacaroon))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -147,8 +147,8 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "AuthorizeService",
-			Handler:    _Msg_AuthorizeService_Handler,
+			MethodName: "IssueMacaroon",
+			Handler:    _Msg_IssueMacaroon_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
