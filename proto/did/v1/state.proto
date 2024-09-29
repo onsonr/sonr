@@ -3,30 +3,40 @@ syntax = "proto3";
 package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
-import "did/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-// Alias represents a DID alias
-message Alias {
+message Authentication {
   option (cosmos.orm.v1.table) = {
     id: 1
-    primary_key: {fields: "id"}
+    primary_key: {fields: "did"}
     index: {
       id: 1
-      fields: "subject,origin"
+      fields: "controller,subject"
       unique: true
     }
   };
 
-  // The unique identifier of the alias
-  string id = 1;
+  // The unique identifier of the authentication
+  string did = 1;
 
-  // The alias of the DID
-  string subject = 2;
+  // The authentication of the DID
+  string controller = 2;
 
-  // Origin of the alias
-  string origin = 3;
+  // Origin of the authentication
+  string subject = 3;
+
+  // PubKey is the verification method
+  PubKey public_key = 4;
+
+  // CredentialID is the byte representation of the credential ID
+  bytes credential_id = 5;
+
+  // Metadata of the authentication
+  map<string, string> metadata = 6;
+
+  // CreationBlock is the block number of the creation of the authentication
+  int64 creation_block = 7;
 }
 
 // Controller represents a Sonr DWN Vault
@@ -75,16 +85,19 @@ message Controller {
   string btc_address = 5;
 
   // PubKey is the verification method
-  bytes public_key = 6;
+  PubKey public_key = 6;
 
-  // Val Keyshare
+  // Pointer to the Keyshares
   string ks_val = 7;
 
-  // The Status of the claims for the controller
-  bool claimed = 8;
+  // The block number of when a user claimed the controller
+  int64 claimed_block = 8;
+
+  // CreationBlock is the block number of the creation of the controller
+  int64 creation_block = 9;
 }
 
-// Verification reprsents a method of verifying membership in a DID
+// Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
     id: 4
@@ -124,7 +137,43 @@ message Verification {
   // The public key of the verification
   PubKey public_key = 6;
 
-  // The Verification Type (Authentication, Assertion, CapabilityDelegation,
-  // CapabilityInvocation)
+  // The verification method type
   string verification_type = 7;
+
+  // Metadata of the verification
+  map<string, string> metadata = 8;
+
+  // CreationBlock is the block number of the creation of the controller
+  int64 creation_block = 9;
+}
+
+message Keyshares {
+  string validator_cid = 1;
+  string user_cid = 2;
+  int64 last_updated_block = 3;
+}
+
+// PubKey defines a public key for a did
+message PubKey {
+  string role = 1;
+  string key_type = 2;
+  RawKey raw_key = 3;
+  JSONWebKey jwk = 4;
+}
+
+// JWK represents a JSON Web Key
+message JSONWebKey {
+  string kty = 1; // Key Type
+  string crv = 2; // Curve (for EC and OKP keys)
+  string x = 3; // X coordinate (for EC and OKP keys)
+  string y = 4; // Y coordinate (for EC keys)
+  string n = 5; // Modulus (for RSA keys)
+  string e = 6; // Exponent (for RSA keys)
+}
+
+message RawKey {
+  string algorithm = 1;
+  string encoding = 2;
+  string curve = 3;
+  bytes key = 4;
 }

@@ -7,13 +7,23 @@ option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
 // https://github.com/cosmos/cosmos-sdk/blob/main/orm/README.md
 
-message ExampleData {
-    option (cosmos.orm.v1.table) = {
-      id: 1;
-      primary_key: { fields: "account" }
-      index: { id: 1 fields: "amount" }
-    };
+message Grant {
+  option (cosmos.orm.v1.table) = {
+    id: 1
+    primary_key: {
+      fields: "id"
+      auto_increment: true
+    }
+    index: {
+      id: 1
+      fields: "subject,origin"
+      unique: true
+    }
+  };
 
-    bytes account = 1;
-    uint64 amount  = 2;
+  uint64 id = 1;
+  string controller = 2;
+  string subject = 3;
+  string origin = 4;
+  int64 expiry_height = 5;
 }

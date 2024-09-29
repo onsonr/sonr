@@ -9,123 +9,123 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type AliasTable interface {
-	Insert(ctx context.Context, alias *Alias) error
-	Update(ctx context.Context, alias *Alias) error
-	Save(ctx context.Context, alias *Alias) error
-	Delete(ctx context.Context, alias *Alias) error
-	Has(ctx context.Context, id string) (found bool, err error)
+type AuthenticationTable interface {
+	Insert(ctx context.Context, authentication *Authentication) error
+	Update(ctx context.Context, authentication *Authentication) error
+	Save(ctx context.Context, authentication *Authentication) error
+	Delete(ctx context.Context, authentication *Authentication) error
+	Has(ctx context.Context, did string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Alias, error)
-	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
-	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Alias, error)
-	List(ctx context.Context, prefixKey AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error)
-	ListRange(ctx context.Context, from, to AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error)
-	DeleteBy(ctx context.Context, prefixKey AliasIndexKey) error
-	DeleteRange(ctx context.Context, from, to AliasIndexKey) error
+	Get(ctx context.Context, did string) (*Authentication, error)
+	HasByControllerSubject(ctx context.Context, controller string, subject string) (found bool, err error)
+	// GetByControllerSubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerSubject(ctx context.Context, controller string, subject string) (*Authentication, error)
+	List(ctx context.Context, prefixKey AuthenticationIndexKey, opts ...ormlist.Option) (AuthenticationIterator, error)
+	ListRange(ctx context.Context, from, to AuthenticationIndexKey, opts ...ormlist.Option) (AuthenticationIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AuthenticationIndexKey) error
+	DeleteRange(ctx context.Context, from, to AuthenticationIndexKey) error
 
 	doNotImplement()
 }
 
-type AliasIterator struct {
+type AuthenticationIterator struct {
 	ormtable.Iterator
 }
 
-func (i AliasIterator) Value() (*Alias, error) {
-	var alias Alias
-	err := i.UnmarshalMessage(&alias)
-	return &alias, err
+func (i AuthenticationIterator) Value() (*Authentication, error) {
+	var authentication Authentication
+	err := i.UnmarshalMessage(&authentication)
+	return &authentication, err
 }
 
-type AliasIndexKey interface {
+type AuthenticationIndexKey interface {
 	id() uint32
 	values() []interface{}
-	aliasIndexKey()
+	authenticationIndexKey()
 }
 
 // primary key starting index..
-type AliasPrimaryKey = AliasIdIndexKey
+type AuthenticationPrimaryKey = AuthenticationDidIndexKey
 
-type AliasIdIndexKey struct {
+type AuthenticationDidIndexKey struct {
 	vs []interface{}
 }
 
-func (x AliasIdIndexKey) id() uint32            { return 0 }
-func (x AliasIdIndexKey) values() []interface{} { return x.vs }
-func (x AliasIdIndexKey) aliasIndexKey()        {}
+func (x AuthenticationDidIndexKey) id() uint32              { return 0 }
+func (x AuthenticationDidIndexKey) values() []interface{}   { return x.vs }
+func (x AuthenticationDidIndexKey) authenticationIndexKey() {}
 
-func (this AliasIdIndexKey) WithId(id string) AliasIdIndexKey {
-	this.vs = []interface{}{id}
+func (this AuthenticationDidIndexKey) WithDid(did string) AuthenticationDidIndexKey {
+	this.vs = []interface{}{did}
 	return this
 }
 
-type AliasSubjectOriginIndexKey struct {
+type AuthenticationControllerSubjectIndexKey struct {
 	vs []interface{}
 }
 
-func (x AliasSubjectOriginIndexKey) id() uint32            { return 1 }
-func (x AliasSubjectOriginIndexKey) values() []interface{} { return x.vs }
-func (x AliasSubjectOriginIndexKey) aliasIndexKey()        {}
+func (x AuthenticationControllerSubjectIndexKey) id() uint32              { return 1 }
+func (x AuthenticationControllerSubjectIndexKey) values() []interface{}   { return x.vs }
+func (x AuthenticationControllerSubjectIndexKey) authenticationIndexKey() {}
 
-func (this AliasSubjectOriginIndexKey) WithSubject(subject string) AliasSubjectOriginIndexKey {
-	this.vs = []interface{}{subject}
+func (this AuthenticationControllerSubjectIndexKey) WithController(controller string) AuthenticationControllerSubjectIndexKey {
+	this.vs = []interface{}{controller}
 	return this
 }
 
-func (this AliasSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) AliasSubjectOriginIndexKey {
-	this.vs = []interface{}{subject, origin}
+func (this AuthenticationControllerSubjectIndexKey) WithControllerSubject(controller string, subject string) AuthenticationControllerSubjectIndexKey {
+	this.vs = []interface{}{controller, subject}
 	return this
 }
 
-type aliasTable struct {
+type authenticationTable struct {
 	table ormtable.Table
 }
 
-func (this aliasTable) Insert(ctx context.Context, alias *Alias) error {
-	return this.table.Insert(ctx, alias)
+func (this authenticationTable) Insert(ctx context.Context, authentication *Authentication) error {
+	return this.table.Insert(ctx, authentication)
 }
 
-func (this aliasTable) Update(ctx context.Context, alias *Alias) error {
-	return this.table.Update(ctx, alias)
+func (this authenticationTable) Update(ctx context.Context, authentication *Authentication) error {
+	return this.table.Update(ctx, authentication)
 }
 
-func (this aliasTable) Save(ctx context.Context, alias *Alias) error {
-	return this.table.Save(ctx, alias)
+func (this authenticationTable) Save(ctx context.Context, authentication *Authentication) error {
+	return this.table.Save(ctx, authentication)
 }
 
-func (this aliasTable) Delete(ctx context.Context, alias *Alias) error {
-	return this.table.Delete(ctx, alias)
+func (this authenticationTable) Delete(ctx context.Context, authentication *Authentication) error {
+	return this.table.Delete(ctx, authentication)
 }
 
-func (this aliasTable) Has(ctx context.Context, id string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, id)
+func (this authenticationTable) Has(ctx context.Context, did string) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, did)
 }
 
-func (this aliasTable) Get(ctx context.Context, id string) (*Alias, error) {
-	var alias Alias
-	found, err := this.table.PrimaryKey().Get(ctx, &alias, id)
+func (this authenticationTable) Get(ctx context.Context, did string) (*Authentication, error) {
+	var authentication Authentication
+	found, err := this.table.PrimaryKey().Get(ctx, &authentication, did)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &alias, nil
+	return &authentication, nil
 }
 
-func (this aliasTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
+func (this authenticationTable) HasByControllerSubject(ctx context.Context, controller string, subject string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		controller,
 		subject,
-		origin,
 	)
 }
 
-func (this aliasTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Alias, error) {
-	var alias Alias
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &alias,
+func (this authenticationTable) GetByControllerSubject(ctx context.Context, controller string, subject string) (*Authentication, error) {
+	var authentication Authentication
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &authentication,
+		controller,
 		subject,
-		origin,
 	)
 	if err != nil {
 		return nil, err
@@ -133,37 +133,37 @@ func (this aliasTable) GetBySubjectOrigin(ctx context.Context, subject string, o
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &alias, nil
+	return &authentication, nil
 }
 
-func (this aliasTable) List(ctx context.Context, prefixKey AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error) {
+func (this authenticationTable) List(ctx context.Context, prefixKey AuthenticationIndexKey, opts ...ormlist.Option) (AuthenticationIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return AliasIterator{it}, err
+	return AuthenticationIterator{it}, err
 }
 
-func (this aliasTable) ListRange(ctx context.Context, from, to AliasIndexKey, opts ...ormlist.Option) (AliasIterator, error) {
+func (this authenticationTable) ListRange(ctx context.Context, from, to AuthenticationIndexKey, opts ...ormlist.Option) (AuthenticationIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return AliasIterator{it}, err
+	return AuthenticationIterator{it}, err
 }
 
-func (this aliasTable) DeleteBy(ctx context.Context, prefixKey AliasIndexKey) error {
+func (this authenticationTable) DeleteBy(ctx context.Context, prefixKey AuthenticationIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this aliasTable) DeleteRange(ctx context.Context, from, to AliasIndexKey) error {
+func (this authenticationTable) DeleteRange(ctx context.Context, from, to AuthenticationIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this aliasTable) doNotImplement() {}
+func (this authenticationTable) doNotImplement() {}
 
-var _ AliasTable = aliasTable{}
+var _ AuthenticationTable = authenticationTable{}
 
-func NewAliasTable(db ormtable.Schema) (AliasTable, error) {
-	table := db.GetTable(&Alias{})
+func NewAuthenticationTable(db ormtable.Schema) (AuthenticationTable, error) {
+	table := db.GetTable(&Authentication{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Alias{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Authentication{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return aliasTable{table}, nil
+	return authenticationTable{table}, nil
 }
 
 type ControllerTable interface {
@@ -692,7 +692,7 @@ func NewVerificationTable(db ormtable.Schema) (VerificationTable, error) {
 }
 
 type StateStore interface {
-	AliasTable() AliasTable
+	AuthenticationTable() AuthenticationTable
 	ControllerTable() ControllerTable
 	VerificationTable() VerificationTable
 
@@ -700,13 +700,13 @@ type StateStore interface {
 }
 
 type stateStore struct {
-	alias        AliasTable
-	controller   ControllerTable
-	verification VerificationTable
+	authentication AuthenticationTable
+	controller     ControllerTable
+	verification   VerificationTable
 }
 
-func (x stateStore) AliasTable() AliasTable {
-	return x.alias
+func (x stateStore) AuthenticationTable() AuthenticationTable {
+	return x.authentication
 }
 
 func (x stateStore) ControllerTable() ControllerTable {
@@ -722,7 +722,7 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	aliasTable, err := NewAliasTable(db)
+	authenticationTable, err := NewAuthenticationTable(db)
 	if err != nil {
 		return nil, err
 	}
@@ -738,7 +738,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	}
 
 	return stateStore{
-		aliasTable,
+		authenticationTable,
 		controllerTable,
 		verificationTable,
 	}, nil

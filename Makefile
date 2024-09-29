@@ -195,14 +195,11 @@ proto-format:
 	@echo "Formatting Protobuf files"
 	@$(protoImage) find ./ -name "*.proto" -exec clang-format -i {} \;
 
-proto-swagger-gen:
-	@./scripts/protoc-swagger-gen.sh
-
 proto-lint:
 	@$(protoImage) buf lint --error-format=json
 
 proto-check-breaking:
-	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=main
+	@$(protoImage) buf breaking --against $(HTTPS_GIT)#branch=master
 
 .PHONY: all install install-debug \
 	go-mod-cache draw-deps clean build format \
@@ -297,7 +294,7 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: dwn motr templ
+.PHONY: dwn motr templ pkl nebula
 
 motr:
 	@echo "(motr) Building motr gateway"
@@ -312,16 +309,20 @@ templ:
 	go install github.com/a-h/templ/cmd/templ@latest
 	templ generate
 
+nebula:
+	@echo "(nebula) Building nebula"
+	cd pkg/nebula && bun run build
+
 pkl:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/dwn.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./config/pkl/orm.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/dwn.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl
 
 start-caddy:
 	@echo "(start-caddy) Starting caddy"
 	./build/caddy run --config ./config/caddy/Caddyfile
 
-start-proxy:
+start-motr: motr
 	@echo "(start-proxy) Starting proxy server"
 	./build/motr proxy
 

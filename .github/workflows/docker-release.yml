@@ -1,11 +1,9 @@
 name: Publish Docker Image
 
-# NOTE: For this action to work, you must enable write permissions in your github repository settings.
-# Settings -> Actions -> General. "Workflow Permissions". Select "Read and write permissions".
-# If you forget to enable, the action will fail on push with a 401 error. Just re-run the failed action after enabling.
-
 on:
   push:
+    branches:
+      - master
     tags:
       - "v[0-9]+.[0-9]+.[0-9]+" # ignore rc
 
@@ -54,7 +52,7 @@ jobs:
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.GH_PAT_TOKEN }}
 
       # make sure to update package to be public in repo ghcr settings
       - name: Build and push Docker image

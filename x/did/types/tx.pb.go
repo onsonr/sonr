@@ -287,242 +287,6 @@ func (m *MsgExecuteTxResponse) GetTxHash() string {
 	return ""
 }
 
-// MsgAuthorizeService is the message type for the AuthorizeService RPC.
-type MsgAuthorizeService struct {
-	// Controller is the address of the controller to authenticate.
-	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
-	// Origin is the origin of the request in wildcard form.
-	Origin string `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
-	// Permissions is the scope of the service.
-	Permissions map[string]string `protobuf:"bytes,3,rep,name=permissions,proto3" json:"permissions,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
-	// token is the macron token to authenticate the operation.
-	Token string `protobuf:"bytes,4,opt,name=token,proto3" json:"token,omitempty"`
-}
-
-func (m *MsgAuthorizeService) Reset()         { *m = MsgAuthorizeService{} }
-func (m *MsgAuthorizeService) String() string { return proto.CompactTextString(m) }
-func (*MsgAuthorizeService) ProtoMessage()    {}
-func (*MsgAuthorizeService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{4}
-}
-func (m *MsgAuthorizeService) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgAuthorizeService) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgAuthorizeService.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgAuthorizeService) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAuthorizeService.Merge(m, src)
-}
-func (m *MsgAuthorizeService) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgAuthorizeService) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAuthorizeService.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgAuthorizeService proto.InternalMessageInfo
-
-func (m *MsgAuthorizeService) GetController() string {
-	if m != nil {
-		return m.Controller
-	}
-	return ""
-}
-
-func (m *MsgAuthorizeService) GetOrigin() string {
-	if m != nil {
-		return m.Origin
-	}
-	return ""
-}
-
-func (m *MsgAuthorizeService) GetPermissions() map[string]string {
-	if m != nil {
-		return m.Permissions
-	}
-	return nil
-}
-
-func (m *MsgAuthorizeService) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-// MsgAuthorizeServiceResponse is the response type for the AuthorizeService
-// RPC.
-type MsgAuthorizeServiceResponse struct {
-	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Token   string `protobuf:"bytes,2,opt,name=token,proto3" json:"token,omitempty"`
-}
-
-func (m *MsgAuthorizeServiceResponse) Reset()         { *m = MsgAuthorizeServiceResponse{} }
-func (m *MsgAuthorizeServiceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgAuthorizeServiceResponse) ProtoMessage()    {}
-func (*MsgAuthorizeServiceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{5}
-}
-func (m *MsgAuthorizeServiceResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgAuthorizeServiceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgAuthorizeServiceResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgAuthorizeServiceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgAuthorizeServiceResponse.Merge(m, src)
-}
-func (m *MsgAuthorizeServiceResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgAuthorizeServiceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgAuthorizeServiceResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgAuthorizeServiceResponse proto.InternalMessageInfo
-
-func (m *MsgAuthorizeServiceResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-func (m *MsgAuthorizeServiceResponse) GetToken() string {
-	if m != nil {
-		return m.Token
-	}
-	return ""
-}
-
-// MsgRegisterService is the message type for the RegisterService RPC.
-type MsgRegisterService struct {
-	// authority is the address of the governance account.
-	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
-	// origin is the origin of the request in wildcard form. Requires valid TXT
-	// record in DNS.
-	Service *Service `protobuf:"bytes,2,opt,name=service,proto3" json:"service,omitempty"`
-}
-
-func (m *MsgRegisterService) Reset()         { *m = MsgRegisterService{} }
-func (m *MsgRegisterService) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterService) ProtoMessage()    {}
-func (*MsgRegisterService) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{6}
-}
-func (m *MsgRegisterService) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRegisterService) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRegisterService.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRegisterService) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterService.Merge(m, src)
-}
-func (m *MsgRegisterService) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRegisterService) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterService.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRegisterService proto.InternalMessageInfo
-
-func (m *MsgRegisterService) GetController() string {
-	if m != nil {
-		return m.Controller
-	}
-	return ""
-}
-
-func (m *MsgRegisterService) GetService() *Service {
-	if m != nil {
-		return m.Service
-	}
-	return nil
-}
-
-// MsgRegisterServiceResponse is the response type for the RegisterService RPC.
-type MsgRegisterServiceResponse struct {
-	Success bool   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Did     string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
-}
-
-func (m *MsgRegisterServiceResponse) Reset()         { *m = MsgRegisterServiceResponse{} }
-func (m *MsgRegisterServiceResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterServiceResponse) ProtoMessage()    {}
-func (*MsgRegisterServiceResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{7}
-}
-func (m *MsgRegisterServiceResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *MsgRegisterServiceResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_MsgRegisterServiceResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *MsgRegisterServiceResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterServiceResponse.Merge(m, src)
-}
-func (m *MsgRegisterServiceResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *MsgRegisterServiceResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterServiceResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_MsgRegisterServiceResponse proto.InternalMessageInfo
-
-func (m *MsgRegisterServiceResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-func (m *MsgRegisterServiceResponse) GetDid() string {
-	if m != nil {
-		return m.Did
-	}
-	return ""
-}
-
 // MsgUpdateParams is the Msg/UpdateParams request type.
 //
 // Since: cosmos-sdk 0.47
@@ -539,7 +303,7 @@ func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
 func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParams) ProtoMessage()    {}
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{8}
+	return fileDescriptor_d73284df019ff211, []int{4}
 }
 func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -600,7 +364,7 @@ func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{9}
+	return fileDescriptor_d73284df019ff211, []int{5}
 }
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -636,11 +400,6 @@ func init() {
 	proto.RegisterType((*MsgExecuteTx)(nil), "did.v1.MsgExecuteTx")
 	proto.RegisterMapType((map[string][]byte)(nil), "did.v1.MsgExecuteTx.MessagesEntry")
 	proto.RegisterType((*MsgExecuteTxResponse)(nil), "did.v1.MsgExecuteTxResponse")
-	proto.RegisterType((*MsgAuthorizeService)(nil), "did.v1.MsgAuthorizeService")
-	proto.RegisterMapType((map[string]string)(nil), "did.v1.MsgAuthorizeService.PermissionsEntry")
-	proto.RegisterType((*MsgAuthorizeServiceResponse)(nil), "did.v1.MsgAuthorizeServiceResponse")
-	proto.RegisterType((*MsgRegisterService)(nil), "did.v1.MsgRegisterService")
-	proto.RegisterType((*MsgRegisterServiceResponse)(nil), "did.v1.MsgRegisterServiceResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "did.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "did.v1.MsgUpdateParamsResponse")
 }
@@ -648,58 +407,48 @@ func init() {
 func init() { proto.RegisterFile("did/v1/tx.proto", fileDescriptor_d73284df019ff211) }
 
 var fileDescriptor_d73284df019ff211 = []byte{
-	// 809 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xa4, 0x56, 0x4f, 0x6f, 0xe3, 0x44,
-	0x14, 0x8f, 0xe3, 0x6e, 0xda, 0xbc, 0xa4, 0x4d, 0x34, 0x04, 0x92, 0xf5, 0xee, 0x66, 0x57, 0x86,
-	0x95, 0x96, 0xd5, 0xe2, 0x68, 0xb3, 0x12, 0x5a, 0x15, 0xb4, 0xa8, 0x45, 0x2b, 0x95, 0x43, 0xa0,
-	0xb8, 0xe5, 0xd2, 0x4b, 0xe5, 0xda, 0x83, 0x63, 0xb5, 0xf6, 0x44, 0xf3, 0x26, 0x51, 0xc2, 0x09,
-	0x38, 0x72, 0xe2, 0x03, 0x00, 0x9f, 0xa1, 0x07, 0xbe, 0x01, 0x97, 0x1e, 0x2b, 0x4e, 0x9c, 0x10,
-	0x6a, 0x0f, 0xfd, 0x14, 0x48, 0xc8, 0x1e, 0xdb, 0x71, 0xfe, 0x34, 0x4d, 0xe9, 0x25, 0xf2, 0xbc,
-	0xf7, 0xe6, 0x37, 0xbf, 0xdf, 0x6f, 0x9e, 0x9f, 0x03, 0x15, 0xc7, 0x73, 0x5a, 0x83, 0x97, 0x2d,
-	0x31, 0x34, 0x7a, 0x9c, 0x09, 0x46, 0x0a, 0x8e, 0xe7, 0x18, 0x83, 0x97, 0x5a, 0xdd, 0x66, 0xe8,
-	0x33, 0x6c, 0xf9, 0xe8, 0x86, 0x79, 0x1f, 0x5d, 0x59, 0xa0, 0xdd, 0x97, 0x89, 0xc3, 0x68, 0xd5,
-	0x92, 0x8b, 0x38, 0x55, 0x8b, 0xc1, 0x5c, 0x1a, 0x50, 0xf4, 0xd2, 0xa8, 0xcb, 0x5c, 0x26, 0xab,
-	0xc3, 0x27, 0x19, 0xd5, 0xff, 0x50, 0xe0, 0xdd, 0x0e, 0xba, 0x26, 0x75, 0x3d, 0x14, 0x94, 0x7f,
-	0xce, 0x02, 0xc1, 0xd9, 0xc9, 0x09, 0xe5, 0xe4, 0x63, 0x28, 0x5a, 0x7d, 0xd1, 0x65, 0xdc, 0x13,
-	0xa3, 0x86, 0xf2, 0x44, 0x79, 0x56, 0xdc, 0x6e, 0xfc, 0xf9, 0xfb, 0x47, 0xb5, 0xf8, 0xa8, 0x2d,
-	0xc7, 0xe1, 0x14, 0x71, 0x4f, 0x70, 0x2f, 0x70, 0xcd, 0x71, 0x29, 0x69, 0x02, 0x58, 0x88, 0x94,
-	0x0b, 0x8f, 0x05, 0xd8, 0xc8, 0x3f, 0x51, 0x9f, 0x95, 0xcd, 0x4c, 0x84, 0x3c, 0x84, 0xe2, 0x31,
-	0x1d, 0x61, 0xd7, 0xe2, 0x14, 0x1b, 0x6a, 0x94, 0x1e, 0x07, 0xc8, 0x07, 0xb0, 0x3e, 0xa0, 0xdc,
-	0xfb, 0xd6, 0xb3, 0x2d, 0x09, 0xb0, 0x12, 0x55, 0x4c, 0x06, 0x37, 0x37, 0x7e, 0xbc, 0x3a, 0x7d,
-	0x3e, 0x3e, 0x53, 0xff, 0x21, 0x0f, 0x8f, 0xe6, 0xaa, 0x30, 0x29, 0xf6, 0x58, 0x80, 0x94, 0x34,
-	0x60, 0x15, 0xfb, 0xb6, 0x4d, 0x11, 0x23, 0x2d, 0x6b, 0x66, 0xb2, 0x24, 0xaf, 0x01, 0xec, 0xb4,
-	0xbe, 0x91, 0xbf, 0x41, 0x68, 0xa6, 0x96, 0x7c, 0x05, 0x6b, 0x96, 0x6d, 0xb3, 0x7e, 0x20, 0xa4,
-	0x90, 0x52, 0xfb, 0x95, 0x21, 0xaf, 0xcd, 0x58, 0x48, 0xc6, 0xd8, 0x8a, 0x77, 0xbd, 0x0d, 0x04,
-	0x1f, 0x99, 0x29, 0x88, 0xf6, 0x09, 0xac, 0x4f, 0xa4, 0x48, 0x15, 0xd4, 0x63, 0x1a, 0xbb, 0x6f,
-	0x86, 0x8f, 0xa4, 0x06, 0xf7, 0x06, 0xd6, 0x49, 0x9f, 0x4a, 0xa2, 0xa6, 0x5c, 0x6c, 0xe6, 0x5f,
-	0x2b, 0xfa, 0xbf, 0x0a, 0x94, 0x3b, 0xe8, 0xbe, 0x1d, 0x52, 0xbb, 0x2f, 0xe8, 0xfe, 0x70, 0x4a,
-	0x98, 0x72, 0x0b, 0x61, 0x6f, 0x60, 0xcd, 0xa7, 0x88, 0x96, 0x4b, 0xe5, 0x05, 0x96, 0xda, 0x7a,
-	0x46, 0x58, 0x7a, 0x82, 0xd1, 0x89, 0x8b, 0x62, 0x1d, 0xc9, 0x1e, 0xf2, 0x14, 0x36, 0x7c, 0xcb,
-	0xb6, 0x38, 0x63, 0xc1, 0xa1, 0x60, 0xc7, 0x34, 0x68, 0xa8, 0x11, 0xdb, 0xf5, 0x24, 0xba, 0x1f,
-	0x06, 0x43, 0xb9, 0x13, 0x08, 0x37, 0xc9, 0x2d, 0x67, 0xe4, 0x6e, 0x56, 0xc2, 0x16, 0xc8, 0x90,
-	0xd6, 0xbf, 0x80, 0x5a, 0x96, 0xdc, 0x12, 0x37, 0x5f, 0x87, 0x55, 0x31, 0x3c, 0xec, 0x5a, 0xd8,
-	0x8d, 0xdd, 0x2c, 0x88, 0xe1, 0x8e, 0x85, 0x5d, 0xfd, 0xb7, 0x3c, 0xbc, 0xd3, 0x41, 0x77, 0x4b,
-	0xf6, 0xd7, 0x77, 0x74, 0x8f, 0xf2, 0x81, 0x67, 0xd3, 0x3b, 0x38, 0xfa, 0x1e, 0x14, 0x18, 0xf7,
-	0x5c, 0x2f, 0x48, 0x4e, 0x92, 0x2b, 0xf2, 0x25, 0x94, 0x7a, 0x94, 0xfb, 0x1e, 0x62, 0xd4, 0xec,
-	0xb2, 0x8b, 0x5e, 0x64, 0xcc, 0x9e, 0xe6, 0x60, 0xec, 0x8e, 0xcb, 0xa5, 0xed, 0x59, 0x80, 0xd0,
-	0x2f, 0x69, 0xf8, 0x8a, 0x6c, 0x8f, 0x68, 0xa1, 0xbd, 0x81, 0xea, 0xf4, 0xb6, 0xdb, 0xb4, 0xd6,
-	0xac, 0xd7, 0x1d, 0x78, 0x30, 0x87, 0xdb, 0x12, 0x96, 0xa7, 0xfc, 0xf2, 0x19, 0x7e, 0xfa, 0x4f,
-	0x0a, 0x90, 0xcc, 0x1b, 0x73, 0x77, 0xbb, 0x3f, 0x84, 0x55, 0x94, 0x20, 0xd1, 0x41, 0xa5, 0x76,
-	0x25, 0xb1, 0x34, 0xa1, 0x9a, 0xe4, 0x67, 0xb5, 0xed, 0x80, 0x36, 0xcb, 0x65, 0x09, 0x69, 0x55,
-	0x50, 0x1d, 0xcf, 0x89, 0x85, 0x85, 0x8f, 0xfa, 0xaf, 0x0a, 0x54, 0x3a, 0xe8, 0x7e, 0xd3, 0x73,
-	0x2c, 0x41, 0x77, 0x2d, 0x6e, 0xf9, 0xf8, 0xbf, 0xa7, 0xea, 0x0b, 0x28, 0xf4, 0x22, 0x84, 0x58,
-	0xd0, 0x46, 0x22, 0x48, 0xe2, 0x6e, 0xaf, 0x9c, 0xfd, 0xfd, 0x38, 0x67, 0xc6, 0x35, 0x63, 0x9b,
-	0xd5, 0x8c, 0xcd, 0x33, 0x53, 0xf3, 0x3e, 0xd4, 0xa7, 0xe8, 0x25, 0x32, 0xdb, 0xbf, 0xa8, 0xa0,
-	0x76, 0xd0, 0x25, 0xfb, 0x50, 0x9d, 0x79, 0x0b, 0x1e, 0x2c, 0x68, 0x4f, 0xed, 0xfd, 0x05, 0xc9,
-	0xd4, 0xc4, 0xcf, 0xa0, 0x38, 0x1e, 0x53, 0xb5, 0x79, 0xa3, 0x45, 0x7b, 0x38, 0x2f, 0x9a, 0x02,
-	0x1c, 0x00, 0x99, 0xf3, 0xc5, 0x7a, 0xb4, 0x70, 0xfa, 0x6a, 0x4f, 0x97, 0x1a, 0xce, 0xe4, 0x6b,
-	0xa8, 0x4c, 0x37, 0xa2, 0x36, 0x67, 0x67, 0x22, 0x58, 0xbf, 0x3e, 0x97, 0x42, 0xee, 0x40, 0x79,
-	0xa2, 0x09, 0xea, 0x99, 0x3d, 0xd9, 0x84, 0xf6, 0xf8, 0x9a, 0x44, 0x82, 0xa4, 0xdd, 0xfb, 0xfe,
-	0xea, 0xf4, 0xb9, 0xb2, 0xfd, 0xe9, 0xd9, 0x45, 0x53, 0x39, 0xbf, 0x68, 0x2a, 0xff, 0x5c, 0x34,
-	0x95, 0x9f, 0x2f, 0x9b, 0xb9, 0xf3, 0xcb, 0x66, 0xee, 0xaf, 0xcb, 0x66, 0xee, 0x40, 0x77, 0x3d,
-	0xd1, 0xed, 0x1f, 0x19, 0x36, 0xf3, 0x5b, 0x2c, 0x40, 0x16, 0xf0, 0x56, 0xf4, 0x33, 0x6c, 0x85,
-	0x7f, 0x0a, 0xc4, 0xa8, 0x47, 0xf1, 0xa8, 0x10, 0x7d, 0xfa, 0x5f, 0xfd, 0x17, 0x00, 0x00, 0xff,
-	0xff, 0x70, 0x88, 0x77, 0x6a, 0x75, 0x08, 0x00, 0x00,
+	// 642 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xcf, 0x4e, 0xdb, 0x4e,
+	0x10, 0x8e, 0x13, 0x08, 0x64, 0x08, 0xf0, 0xd3, 0x2a, 0x3f, 0xc5, 0x58, 0x60, 0x90, 0x55, 0x24,
+	0x84, 0x5a, 0x5b, 0x04, 0xa9, 0x42, 0xb4, 0x6a, 0x05, 0x15, 0x12, 0x3d, 0x44, 0xad, 0x5c, 0x7a,
+	0xe1, 0x82, 0x16, 0x7b, 0xeb, 0x58, 0x60, 0x6f, 0xb4, 0xb3, 0x89, 0x92, 0x5b, 0xdb, 0x27, 0xe8,
+	0x0b, 0xf4, 0x1d, 0x38, 0xf4, 0x0d, 0x7a, 0xe1, 0x88, 0x7a, 0xea, 0xa9, 0xaa, 0xc8, 0x81, 0x07,
+	0xe8, 0xb9, 0x52, 0xe5, 0x3f, 0x49, 0x1c, 0x9a, 0x02, 0xed, 0xc5, 0xda, 0xf9, 0xe6, 0xdb, 0x99,
+	0xf9, 0x66, 0xc6, 0x0b, 0xf3, 0xae, 0xef, 0x5a, 0xed, 0x0d, 0x4b, 0x76, 0xcc, 0xa6, 0xe0, 0x92,
+	0x93, 0xa2, 0xeb, 0xbb, 0x66, 0x7b, 0x43, 0xab, 0x3a, 0x1c, 0x03, 0x8e, 0x56, 0x80, 0x5e, 0xe4,
+	0x0f, 0xd0, 0x4b, 0x08, 0xda, 0x42, 0xe2, 0x38, 0x8a, 0x2d, 0x2b, 0x31, 0x52, 0x57, 0x25, 0x0d,
+	0xe6, 0xb1, 0x90, 0xa1, 0x3f, 0x40, 0x3d, 0xee, 0xf1, 0x84, 0x1d, 0x9d, 0x12, 0xd4, 0xf8, 0xac,
+	0xc0, 0xff, 0x75, 0xf4, 0x6c, 0xe6, 0xf9, 0x28, 0x99, 0x78, 0xc6, 0x43, 0x29, 0xf8, 0xe9, 0x29,
+	0x13, 0xe4, 0x21, 0x94, 0x68, 0x4b, 0x36, 0xb8, 0xf0, 0x65, 0x57, 0x55, 0x56, 0x94, 0xb5, 0xd2,
+	0xae, 0xfa, 0xe5, 0xd3, 0x83, 0x4a, 0x9a, 0x6a, 0xc7, 0x75, 0x05, 0x43, 0x7c, 0x25, 0x85, 0x1f,
+	0x7a, 0xf6, 0x90, 0x4a, 0x74, 0x00, 0x8a, 0xc8, 0x84, 0xf4, 0x79, 0x88, 0x6a, 0x7e, 0xa5, 0xb0,
+	0x56, 0xb6, 0x33, 0x08, 0x59, 0x84, 0xd2, 0x09, 0xeb, 0x62, 0x83, 0x0a, 0x86, 0x6a, 0x21, 0x76,
+	0x0f, 0x01, 0x72, 0x0f, 0x66, 0xdb, 0x4c, 0xf8, 0x6f, 0x7c, 0x87, 0x26, 0x01, 0x26, 0x62, 0xc6,
+	0x28, 0xb8, 0x3d, 0xf7, 0xfe, 0xea, 0x6c, 0x7d, 0x98, 0xd3, 0x78, 0x97, 0x87, 0xa5, 0xb1, 0x2a,
+	0x6c, 0x86, 0x4d, 0x1e, 0x22, 0x23, 0x2a, 0x4c, 0x61, 0xcb, 0x71, 0x18, 0x62, 0xac, 0x65, 0xda,
+	0xee, 0x9b, 0x64, 0x0b, 0xc0, 0x19, 0xf0, 0xd5, 0xfc, 0x2d, 0x42, 0x33, 0x5c, 0xf2, 0x02, 0xa6,
+	0xa9, 0xe3, 0xf0, 0x56, 0x28, 0x13, 0x21, 0x33, 0xb5, 0x4d, 0x33, 0x19, 0x9b, 0x79, 0x63, 0x31,
+	0xe6, 0x4e, 0x7a, 0x6b, 0x2f, 0x94, 0xa2, 0x6b, 0x0f, 0x82, 0x68, 0x8f, 0x60, 0x76, 0xc4, 0x45,
+	0xfe, 0x83, 0xc2, 0x09, 0x4b, 0xbb, 0x6f, 0x47, 0x47, 0x52, 0x81, 0xc9, 0x36, 0x3d, 0x6d, 0xb1,
+	0xa4, 0x50, 0x3b, 0x31, 0xb6, 0xf3, 0x5b, 0x8a, 0xf1, 0x53, 0x81, 0x72, 0x1d, 0xbd, 0xbd, 0x0e,
+	0x73, 0x5a, 0x92, 0x1d, 0x74, 0xae, 0x09, 0x53, 0xfe, 0x42, 0xd8, 0x13, 0x98, 0x0e, 0x18, 0x22,
+	0xf5, 0x58, 0x32, 0xc0, 0x99, 0x9a, 0x91, 0x11, 0x36, 0xc8, 0x60, 0xd6, 0x53, 0x52, 0xaa, 0xa3,
+	0x7f, 0x87, 0xac, 0xc2, 0x5c, 0x40, 0x1d, 0x2a, 0x38, 0x0f, 0x8f, 0x24, 0x3f, 0x61, 0xa1, 0x5a,
+	0x88, 0xab, 0x9d, 0xed, 0xa3, 0x07, 0x11, 0x18, 0xc9, 0x1d, 0x89, 0x70, 0x9b, 0xdc, 0x72, 0x46,
+	0xee, 0xf6, 0x7c, 0xb4, 0x02, 0x99, 0xa2, 0x8d, 0xe7, 0x50, 0xc9, 0x16, 0x77, 0x87, 0xc9, 0x57,
+	0x61, 0x4a, 0x76, 0x8e, 0x1a, 0x14, 0x1b, 0x69, 0x37, 0x8b, 0xb2, 0xb3, 0x4f, 0xb1, 0x61, 0x7c,
+	0x54, 0x60, 0xbe, 0x8e, 0xde, 0xeb, 0xa6, 0x4b, 0x25, 0x7b, 0x49, 0x05, 0x0d, 0xf0, 0x9f, 0x7f,
+	0x87, 0xfb, 0x50, 0x6c, 0xc6, 0x11, 0xe2, 0x1c, 0x33, 0xb5, 0xb9, 0x7e, 0x27, 0x93, 0xb8, 0xbb,
+	0x13, 0xe7, 0xdf, 0x96, 0x73, 0x76, 0xca, 0x89, 0xf4, 0x66, 0x1b, 0x96, 0x18, 0xbf, 0xad, 0xfb,
+	0x02, 0x54, 0xaf, 0x95, 0xd7, 0x57, 0x5b, 0xfb, 0xa1, 0x40, 0xa1, 0x8e, 0x1e, 0x79, 0x0a, 0xa5,
+	0xe1, 0x26, 0x54, 0xc6, 0x4d, 0x4f, 0x5b, 0x1c, 0x87, 0x0e, 0xda, 0x76, 0x08, 0x64, 0xcc, 0xa3,
+	0xb0, 0x74, 0xe3, 0x82, 0x6b, 0xab, 0x77, 0xda, 0x7f, 0xb2, 0x0f, 0xe5, 0x91, 0xde, 0x56, 0x33,
+	0xd7, 0xb2, 0x0e, 0x6d, 0xf9, 0x0f, 0x8e, 0x7e, 0x24, 0x6d, 0xf2, 0xed, 0xd5, 0xd9, 0xba, 0xb2,
+	0xfb, 0xf8, 0xfc, 0x52, 0x57, 0x2e, 0x2e, 0x75, 0xe5, 0xfb, 0xa5, 0xae, 0x7c, 0xe8, 0xe9, 0xb9,
+	0x8b, 0x9e, 0x9e, 0xfb, 0xda, 0xd3, 0x73, 0x87, 0x86, 0xe7, 0xcb, 0x46, 0xeb, 0xd8, 0x74, 0x78,
+	0x60, 0xf1, 0x10, 0x79, 0x28, 0xac, 0xf8, 0xd3, 0xb1, 0xa2, 0x47, 0x52, 0x76, 0x9b, 0x0c, 0x8f,
+	0x8b, 0xf1, 0x53, 0xb8, 0xf9, 0x2b, 0x00, 0x00, 0xff, 0xff, 0x41, 0xc8, 0xb6, 0x40, 0x85, 0x05,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -714,18 +463,12 @@ const _ = grpc.SupportPackageIsVersion4
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type MsgClient interface {
-	// AuthorizeService asserts the given controller is the owner of the given
-	// address.
-	AuthorizeService(ctx context.Context, in *MsgAuthorizeService, opts ...grpc.CallOption) (*MsgAuthorizeServiceResponse, error)
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error)
 	// RegisterController initializes a controller with the given authentication
 	// set, address, cid, publicKey, and user-defined alias.
 	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
-	// RegisterService initializes a Service with a given permission scope and
-	// URI. The domain must have a valid TXT record containing the public key.
-	RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -736,15 +479,6 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc1.ClientConn) MsgClient {
 	return &msgClient{cc}
-}
-
-func (c *msgClient) AuthorizeService(ctx context.Context, in *MsgAuthorizeService, opts ...grpc.CallOption) (*MsgAuthorizeServiceResponse, error) {
-	out := new(MsgAuthorizeServiceResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Msg/AuthorizeService", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *msgClient) ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error) {
@@ -765,15 +499,6 @@ func (c *msgClient) RegisterController(ctx context.Context, in *MsgRegisterContr
 	return out, nil
 }
 
-func (c *msgClient) RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error) {
-	out := new(MsgRegisterServiceResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Msg/RegisterService", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, "/did.v1.Msg/UpdateParams", in, out, opts...)
@@ -785,18 +510,12 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 
 // MsgServer is the server API for Msg service.
 type MsgServer interface {
-	// AuthorizeService asserts the given controller is the owner of the given
-	// address.
-	AuthorizeService(context.Context, *MsgAuthorizeService) (*MsgAuthorizeServiceResponse, error)
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error)
 	// RegisterController initializes a controller with the given authentication
 	// set, address, cid, publicKey, and user-defined alias.
 	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
-	// RegisterService initializes a Service with a given permission scope and
-	// URI. The domain must have a valid TXT record containing the public key.
-	RegisterService(context.Context, *MsgRegisterService) (*MsgRegisterServiceResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 }
@@ -805,17 +524,11 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (*UnimplementedMsgServer) AuthorizeService(ctx context.Context, req *MsgAuthorizeService) (*MsgAuthorizeServiceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeService not implemented")
-}
 func (*UnimplementedMsgServer) ExecuteTx(ctx context.Context, req *MsgExecuteTx) (*MsgExecuteTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExecuteTx not implemented")
 }
 func (*UnimplementedMsgServer) RegisterController(ctx context.Context, req *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
-}
-func (*UnimplementedMsgServer) RegisterService(ctx context.Context, req *MsgRegisterService) (*MsgRegisterServiceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterService not implemented")
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -823,24 +536,6 @@ func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateP
 
 func RegisterMsgServer(s grpc1.Server, srv MsgServer) {
 	s.RegisterService(&_Msg_serviceDesc, srv)
-}
-
-func _Msg_AuthorizeService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthorizeService)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AuthorizeService(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Msg/AuthorizeService",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AuthorizeService(ctx, req.(*MsgAuthorizeService))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_ExecuteTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -879,24 +574,6 @@ func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RegisterService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterService)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RegisterService(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Msg/RegisterService",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterService(ctx, req.(*MsgRegisterService))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -920,20 +597,12 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AuthorizeService",
-			Handler:    _Msg_AuthorizeService_Handler,
-		},
-		{
 			MethodName: "ExecuteTx",
 			Handler:    _Msg_ExecuteTx_Handler,
 		},
 		{
 			MethodName: "RegisterController",
 			Handler:    _Msg_RegisterController_Handler,
-		},
-		{
-			MethodName: "RegisterService",
-			Handler:    _Msg_RegisterService_Handler,
 		},
 		{
 			MethodName: "UpdateParams",
@@ -1158,191 +827,6 @@ func (m *MsgExecuteTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgAuthorizeService) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgAuthorizeService) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgAuthorizeService) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Token) > 0 {
-		i -= len(m.Token)
-		copy(dAtA[i:], m.Token)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Token)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Permissions) > 0 {
-		for k := range m.Permissions {
-			v := m.Permissions[k]
-			baseI := i
-			i -= len(v)
-			copy(dAtA[i:], v)
-			i = encodeVarintTx(dAtA, i, uint64(len(v)))
-			i--
-			dAtA[i] = 0x12
-			i -= len(k)
-			copy(dAtA[i:], k)
-			i = encodeVarintTx(dAtA, i, uint64(len(k)))
-			i--
-			dAtA[i] = 0xa
-			i = encodeVarintTx(dAtA, i, uint64(baseI-i))
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
-	if len(m.Origin) > 0 {
-		i -= len(m.Origin)
-		copy(dAtA[i:], m.Origin)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Origin)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Controller) > 0 {
-		i -= len(m.Controller)
-		copy(dAtA[i:], m.Controller)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgAuthorizeServiceResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgAuthorizeServiceResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgAuthorizeServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Token) > 0 {
-		i -= len(m.Token)
-		copy(dAtA[i:], m.Token)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Token)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Success {
-		i--
-		if m.Success {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRegisterService) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRegisterService) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRegisterService) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if m.Service != nil {
-		{
-			size, err := m.Service.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintTx(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Controller) > 0 {
-		i -= len(m.Controller)
-		copy(dAtA[i:], m.Controller)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *MsgRegisterServiceResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *MsgRegisterServiceResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *MsgRegisterServiceResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Did) > 0 {
-		i -= len(m.Did)
-		copy(dAtA[i:], m.Did)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Success {
-		i--
-		if m.Success {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
 func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -1518,84 +1002,6 @@ func (m *MsgExecuteTxResponse) Size() (n int) {
 		n += 2
 	}
 	l = len(m.TxHash)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgAuthorizeService) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Controller)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	l = len(m.Origin)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if len(m.Permissions) > 0 {
-		for k, v := range m.Permissions {
-			_ = k
-			_ = v
-			mapEntrySize := 1 + len(k) + sovTx(uint64(len(k))) + 1 + len(v) + sovTx(uint64(len(v)))
-			n += mapEntrySize + 1 + sovTx(uint64(mapEntrySize))
-		}
-	}
-	l = len(m.Token)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgAuthorizeServiceResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Success {
-		n += 2
-	}
-	l = len(m.Token)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgRegisterService) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Controller)
-	if l > 0 {
-		n += 1 + l + sovTx(uint64(l))
-	}
-	if m.Service != nil {
-		l = m.Service.Size()
-		n += 1 + l + sovTx(uint64(l))
-	}
-	return n
-}
-
-func (m *MsgRegisterServiceResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Success {
-		n += 2
-	}
-	l = len(m.Did)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -2365,601 +1771,6 @@ func (m *MsgExecuteTxResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.TxHash = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgAuthorizeService) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAuthorizeService: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAuthorizeService: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Controller = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Origin = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Permissions", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Permissions == nil {
-				m.Permissions = make(map[string]string)
-			}
-			var mapkey string
-			var mapvalue string
-			for iNdEx < postIndex {
-				entryPreIndex := iNdEx
-				var wire uint64
-				for shift := uint(0); ; shift += 7 {
-					if shift >= 64 {
-						return ErrIntOverflowTx
-					}
-					if iNdEx >= l {
-						return io.ErrUnexpectedEOF
-					}
-					b := dAtA[iNdEx]
-					iNdEx++
-					wire |= uint64(b&0x7F) << shift
-					if b < 0x80 {
-						break
-					}
-				}
-				fieldNum := int32(wire >> 3)
-				if fieldNum == 1 {
-					var stringLenmapkey uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowTx
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapkey |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapkey := int(stringLenmapkey)
-					if intStringLenmapkey < 0 {
-						return ErrInvalidLengthTx
-					}
-					postStringIndexmapkey := iNdEx + intStringLenmapkey
-					if postStringIndexmapkey < 0 {
-						return ErrInvalidLengthTx
-					}
-					if postStringIndexmapkey > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapkey = string(dAtA[iNdEx:postStringIndexmapkey])
-					iNdEx = postStringIndexmapkey
-				} else if fieldNum == 2 {
-					var stringLenmapvalue uint64
-					for shift := uint(0); ; shift += 7 {
-						if shift >= 64 {
-							return ErrIntOverflowTx
-						}
-						if iNdEx >= l {
-							return io.ErrUnexpectedEOF
-						}
-						b := dAtA[iNdEx]
-						iNdEx++
-						stringLenmapvalue |= uint64(b&0x7F) << shift
-						if b < 0x80 {
-							break
-						}
-					}
-					intStringLenmapvalue := int(stringLenmapvalue)
-					if intStringLenmapvalue < 0 {
-						return ErrInvalidLengthTx
-					}
-					postStringIndexmapvalue := iNdEx + intStringLenmapvalue
-					if postStringIndexmapvalue < 0 {
-						return ErrInvalidLengthTx
-					}
-					if postStringIndexmapvalue > l {
-						return io.ErrUnexpectedEOF
-					}
-					mapvalue = string(dAtA[iNdEx:postStringIndexmapvalue])
-					iNdEx = postStringIndexmapvalue
-				} else {
-					iNdEx = entryPreIndex
-					skippy, err := skipTx(dAtA[iNdEx:])
-					if err != nil {
-						return err
-					}
-					if (skippy < 0) || (iNdEx+skippy) < 0 {
-						return ErrInvalidLengthTx
-					}
-					if (iNdEx + skippy) > postIndex {
-						return io.ErrUnexpectedEOF
-					}
-					iNdEx += skippy
-				}
-			}
-			m.Permissions[mapkey] = mapvalue
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Token = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgAuthorizeServiceResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgAuthorizeServiceResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgAuthorizeServiceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Success = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Token", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Token = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRegisterService) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterService: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterService: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Controller = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Service", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Service == nil {
-				m.Service = &Service{}
-			}
-			if err := m.Service.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRegisterServiceResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterServiceResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterServiceResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Success = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Did = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

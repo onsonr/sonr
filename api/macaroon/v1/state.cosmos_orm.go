@@ -9,145 +9,185 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type ExampleDataTable interface {
-	Insert(ctx context.Context, exampleData *ExampleData) error
-	Update(ctx context.Context, exampleData *ExampleData) error
-	Save(ctx context.Context, exampleData *ExampleData) error
-	Delete(ctx context.Context, exampleData *ExampleData) error
-	Has(ctx context.Context, account []byte) (found bool, err error)
+type GrantTable interface {
+	Insert(ctx context.Context, grant *Grant) error
+	InsertReturningId(ctx context.Context, grant *Grant) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
+	Update(ctx context.Context, grant *Grant) error
+	Save(ctx context.Context, grant *Grant) error
+	Delete(ctx context.Context, grant *Grant) error
+	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, account []byte) (*ExampleData, error)
-	List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error
-	DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error
+	Get(ctx context.Context, id uint64) (*Grant, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Grant, error)
+	List(ctx context.Context, prefixKey GrantIndexKey, opts ...ormlist.Option) (GrantIterator, error)
+	ListRange(ctx context.Context, from, to GrantIndexKey, opts ...ormlist.Option) (GrantIterator, error)
+	DeleteBy(ctx context.Context, prefixKey GrantIndexKey) error
+	DeleteRange(ctx context.Context, from, to GrantIndexKey) error
 
 	doNotImplement()
 }
 
-type ExampleDataIterator struct {
+type GrantIterator struct {
 	ormtable.Iterator
 }
 
-func (i ExampleDataIterator) Value() (*ExampleData, error) {
-	var exampleData ExampleData
-	err := i.UnmarshalMessage(&exampleData)
-	return &exampleData, err
+func (i GrantIterator) Value() (*Grant, error) {
+	var grant Grant
+	err := i.UnmarshalMessage(&grant)
+	return &grant, err
 }
 
-type ExampleDataIndexKey interface {
+type GrantIndexKey interface {
 	id() uint32
 	values() []interface{}
-	exampleDataIndexKey()
+	grantIndexKey()
 }
 
 // primary key starting index..
-type ExampleDataPrimaryKey = ExampleDataAccountIndexKey
+type GrantPrimaryKey = GrantIdIndexKey
 
-type ExampleDataAccountIndexKey struct {
+type GrantIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAccountIndexKey) id() uint32            { return 0 }
-func (x ExampleDataAccountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAccountIndexKey) exampleDataIndexKey()  {}
+func (x GrantIdIndexKey) id() uint32            { return 0 }
+func (x GrantIdIndexKey) values() []interface{} { return x.vs }
+func (x GrantIdIndexKey) grantIndexKey()        {}
 
-func (this ExampleDataAccountIndexKey) WithAccount(account []byte) ExampleDataAccountIndexKey {
-	this.vs = []interface{}{account}
+func (this GrantIdIndexKey) WithId(id uint64) GrantIdIndexKey {
+	this.vs = []interface{}{id}
 	return this
 }
 
-type ExampleDataAmountIndexKey struct {
+type GrantSubjectOriginIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAmountIndexKey) id() uint32            { return 1 }
-func (x ExampleDataAmountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAmountIndexKey) exampleDataIndexKey()  {}
+func (x GrantSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x GrantSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x GrantSubjectOriginIndexKey) grantIndexKey()        {}
 
-func (this ExampleDataAmountIndexKey) WithAmount(amount uint64) ExampleDataAmountIndexKey {
-	this.vs = []interface{}{amount}
+func (this GrantSubjectOriginIndexKey) WithSubject(subject string) GrantSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
 	return this
 }
 
-type exampleDataTable struct {
-	table ormtable.Table
+func (this GrantSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) GrantSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
+	return this
 }
 
-func (this exampleDataTable) Insert(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Insert(ctx, exampleData)
+type grantTable struct {
+	table ormtable.AutoIncrementTable
 }
 
-func (this exampleDataTable) Update(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Update(ctx, exampleData)
+func (this grantTable) Insert(ctx context.Context, grant *Grant) error {
+	return this.table.Insert(ctx, grant)
 }
 
-func (this exampleDataTable) Save(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Save(ctx, exampleData)
+func (this grantTable) Update(ctx context.Context, grant *Grant) error {
+	return this.table.Update(ctx, grant)
 }
 
-func (this exampleDataTable) Delete(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Delete(ctx, exampleData)
+func (this grantTable) Save(ctx context.Context, grant *Grant) error {
+	return this.table.Save(ctx, grant)
 }
 
-func (this exampleDataTable) Has(ctx context.Context, account []byte) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, account)
+func (this grantTable) Delete(ctx context.Context, grant *Grant) error {
+	return this.table.Delete(ctx, grant)
 }
 
-func (this exampleDataTable) Get(ctx context.Context, account []byte) (*ExampleData, error) {
-	var exampleData ExampleData
-	found, err := this.table.PrimaryKey().Get(ctx, &exampleData, account)
+func (this grantTable) InsertReturningId(ctx context.Context, grant *Grant) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, grant)
+}
+
+func (this grantTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
+}
+
+func (this grantTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, id)
+}
+
+func (this grantTable) Get(ctx context.Context, id uint64) (*Grant, error) {
+	var grant Grant
+	found, err := this.table.PrimaryKey().Get(ctx, &grant, id)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &exampleData, nil
+	return &grant, nil
 }
 
-func (this exampleDataTable) List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this grantTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
+		origin,
+	)
+}
+
+func (this grantTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Grant, error) {
+	var grant Grant
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &grant,
+		subject,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &grant, nil
+}
+
+func (this grantTable) List(ctx context.Context, prefixKey GrantIndexKey, opts ...ormlist.Option) (GrantIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return GrantIterator{it}, err
 }
 
-func (this exampleDataTable) ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this grantTable) ListRange(ctx context.Context, from, to GrantIndexKey, opts ...ormlist.Option) (GrantIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return GrantIterator{it}, err
 }
 
-func (this exampleDataTable) DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error {
+func (this grantTable) DeleteBy(ctx context.Context, prefixKey GrantIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this exampleDataTable) DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error {
+func (this grantTable) DeleteRange(ctx context.Context, from, to GrantIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this exampleDataTable) doNotImplement() {}
+func (this grantTable) doNotImplement() {}
 
-var _ ExampleDataTable = exampleDataTable{}
+var _ GrantTable = grantTable{}
 
-func NewExampleDataTable(db ormtable.Schema) (ExampleDataTable, error) {
-	table := db.GetTable(&ExampleData{})
+func NewGrantTable(db ormtable.Schema) (GrantTable, error) {
+	table := db.GetTable(&Grant{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&ExampleData{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Grant{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return exampleDataTable{table}, nil
+	return grantTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 type StateStore interface {
-	ExampleDataTable() ExampleDataTable
+	GrantTable() GrantTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	exampleData ExampleDataTable
+	grant GrantTable
 }
 
-func (x stateStore) ExampleDataTable() ExampleDataTable {
-	return x.exampleData
+func (x stateStore) GrantTable() GrantTable {
+	return x.grant
 }
 
 func (stateStore) doNotImplement() {}
@@ -155,12 +195,12 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	exampleDataTable, err := NewExampleDataTable(db)
+	grantTable, err := NewGrantTable(db)
 	if err != nil {
 		return nil, err
 	}
 
 	return stateStore{
-		exampleDataTable,
+		grantTable,
 	}, nil
 }

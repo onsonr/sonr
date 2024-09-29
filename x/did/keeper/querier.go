@@ -31,3 +31,17 @@ func (k Querier) Params(goCtx context.Context, req *types.QueryRequest) (*types.
 func (k Querier) Resolve(goCtx context.Context, req *types.QueryRequest) (*types.QueryResolveResponse, error) {
 	return &types.QueryResolveResponse{}, nil
 }
+
+// Sign implements types.QueryServer.
+func (k Querier) Sign(goCtx context.Context, req *types.QuerySignRequest) (*types.QuerySignResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Sign is unimplemented")
+	return &types.QuerySignResponse{}, nil
+}
+
+// Verify implements types.QueryServer.
+func (k Querier) Verify(goCtx context.Context, req *types.QueryVerifyRequest) (*types.QueryVerifyResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("Verify is unimplemented")
+	return &types.QueryVerifyResponse{}, nil
+}

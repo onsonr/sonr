@@ -14,17 +14,19 @@ permissions:
 
 jobs:
   goreleaser:
+    if: false
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2.3.4
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v5
         with:
-          go-version: "1.21"
+          go-version: "1.22"
+          check-latest: true
 
       - name: Clean up dist directory
         run: rm -rf dist
@@ -42,4 +44,4 @@ jobs:
           version: latest
           args: release --skip-validate --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_PAT_TOKEN }}

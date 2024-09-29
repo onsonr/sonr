@@ -14,27 +14,33 @@ import (
 )
 
 var (
-	md_ExampleData         protoreflect.MessageDescriptor
-	fd_ExampleData_account protoreflect.FieldDescriptor
-	fd_ExampleData_amount  protoreflect.FieldDescriptor
+	md_Grant               protoreflect.MessageDescriptor
+	fd_Grant_id            protoreflect.FieldDescriptor
+	fd_Grant_controller    protoreflect.FieldDescriptor
+	fd_Grant_subject       protoreflect.FieldDescriptor
+	fd_Grant_origin        protoreflect.FieldDescriptor
+	fd_Grant_expiry_height protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_macaroon_v1_state_proto_init()
-	md_ExampleData = File_macaroon_v1_state_proto.Messages().ByName("ExampleData")
-	fd_ExampleData_account = md_ExampleData.Fields().ByName("account")
-	fd_ExampleData_amount = md_ExampleData.Fields().ByName("amount")
+	md_Grant = File_macaroon_v1_state_proto.Messages().ByName("Grant")
+	fd_Grant_id = md_Grant.Fields().ByName("id")
+	fd_Grant_controller = md_Grant.Fields().ByName("controller")
+	fd_Grant_subject = md_Grant.Fields().ByName("subject")
+	fd_Grant_origin = md_Grant.Fields().ByName("origin")
+	fd_Grant_expiry_height = md_Grant.Fields().ByName("expiry_height")
 }
 
-var _ protoreflect.Message = (*fastReflection_ExampleData)(nil)
+var _ protoreflect.Message = (*fastReflection_Grant)(nil)
 
-type fastReflection_ExampleData ExampleData
+type fastReflection_Grant Grant
 
-func (x *ExampleData) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_ExampleData)(x)
+func (x *Grant) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Grant)(x)
 }
 
-func (x *ExampleData) slowProtoReflect() protoreflect.Message {
+func (x *Grant) slowProtoReflect() protoreflect.Message {
 	mi := &file_macaroon_v1_state_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,43 +52,43 @@ func (x *ExampleData) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_ExampleData_messageType fastReflection_ExampleData_messageType
-var _ protoreflect.MessageType = fastReflection_ExampleData_messageType{}
+var _fastReflection_Grant_messageType fastReflection_Grant_messageType
+var _ protoreflect.MessageType = fastReflection_Grant_messageType{}
 
-type fastReflection_ExampleData_messageType struct{}
+type fastReflection_Grant_messageType struct{}
 
-func (x fastReflection_ExampleData_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_ExampleData)(nil)
+func (x fastReflection_Grant_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Grant)(nil)
 }
-func (x fastReflection_ExampleData_messageType) New() protoreflect.Message {
-	return new(fastReflection_ExampleData)
+func (x fastReflection_Grant_messageType) New() protoreflect.Message {
+	return new(fastReflection_Grant)
 }
-func (x fastReflection_ExampleData_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExampleData
+func (x fastReflection_Grant_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Grant
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_ExampleData) Descriptor() protoreflect.MessageDescriptor {
-	return md_ExampleData
+func (x *fastReflection_Grant) Descriptor() protoreflect.MessageDescriptor {
+	return md_Grant
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_ExampleData) Type() protoreflect.MessageType {
-	return _fastReflection_ExampleData_messageType
+func (x *fastReflection_Grant) Type() protoreflect.MessageType {
+	return _fastReflection_Grant_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_ExampleData) New() protoreflect.Message {
-	return new(fastReflection_ExampleData)
+func (x *fastReflection_Grant) New() protoreflect.Message {
+	return new(fastReflection_Grant)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_ExampleData) Interface() protoreflect.ProtoMessage {
-	return (*ExampleData)(x)
+func (x *fastReflection_Grant) Interface() protoreflect.ProtoMessage {
+	return (*Grant)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -90,16 +96,34 @@ func (x *fastReflection_ExampleData) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_ExampleData) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Account) != 0 {
-		value := protoreflect.ValueOfBytes(x.Account)
-		if !f(fd_ExampleData_account, value) {
+func (x *fastReflection_Grant) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+	if x.Id != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.Id)
+		if !f(fd_Grant_id, value) {
 			return
 		}
 	}
-	if x.Amount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Amount)
-		if !f(fd_ExampleData_amount, value) {
+	if x.Controller != "" {
+		value := protoreflect.ValueOfString(x.Controller)
+		if !f(fd_Grant_controller, value) {
+			return
+		}
+	}
+	if x.Subject != "" {
+		value := protoreflect.ValueOfString(x.Subject)
+		if !f(fd_Grant_subject, value) {
+			return
+		}
+	}
+	if x.Origin != "" {
+		value := protoreflect.ValueOfString(x.Origin)
+		if !f(fd_Grant_origin, value) {
+			return
+		}
+	}
+	if x.ExpiryHeight != int64(0) {
+		value := protoreflect.ValueOfInt64(x.ExpiryHeight)
+		if !f(fd_Grant_expiry_height, value) {
 			return
 		}
 	}
@@ -116,17 +140,23 @@ func (x *fastReflection_ExampleData) Range(f func(protoreflect.FieldDescriptor, 
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_ExampleData) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Grant) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		return len(x.Account) != 0
-	case "macaroon.v1.ExampleData.amount":
-		return x.Amount != uint64(0)
+	case "macaroon.v1.Grant.id":
+		return x.Id != uint64(0)
+	case "macaroon.v1.Grant.controller":
+		return x.Controller != ""
+	case "macaroon.v1.Grant.subject":
+		return x.Subject != ""
+	case "macaroon.v1.Grant.origin":
+		return x.Origin != ""
+	case "macaroon.v1.Grant.expiry_height":
+		return x.ExpiryHeight != int64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -136,17 +166,23 @@ func (x *fastReflection_ExampleData) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Grant) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		x.Account = nil
-	case "macaroon.v1.ExampleData.amount":
-		x.Amount = uint64(0)
+	case "macaroon.v1.Grant.id":
+		x.Id = uint64(0)
+	case "macaroon.v1.Grant.controller":
+		x.Controller = ""
+	case "macaroon.v1.Grant.subject":
+		x.Subject = ""
+	case "macaroon.v1.Grant.origin":
+		x.Origin = ""
+	case "macaroon.v1.Grant.expiry_height":
+		x.ExpiryHeight = int64(0)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -156,19 +192,28 @@ func (x *fastReflection_ExampleData) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_ExampleData) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Grant) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		value := x.Account
-		return protoreflect.ValueOfBytes(value)
-	case "macaroon.v1.ExampleData.amount":
-		value := x.Amount
+	case "macaroon.v1.Grant.id":
+		value := x.Id
 		return protoreflect.ValueOfUint64(value)
+	case "macaroon.v1.Grant.controller":
+		value := x.Controller
+		return protoreflect.ValueOfString(value)
+	case "macaroon.v1.Grant.subject":
+		value := x.Subject
+		return protoreflect.ValueOfString(value)
+	case "macaroon.v1.Grant.origin":
+		value := x.Origin
+		return protoreflect.ValueOfString(value)
+	case "macaroon.v1.Grant.expiry_height":
+		value := x.ExpiryHeight
+		return protoreflect.ValueOfInt64(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -182,17 +227,23 @@ func (x *fastReflection_ExampleData) Get(descriptor protoreflect.FieldDescriptor
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Grant) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		x.Account = value.Bytes()
-	case "macaroon.v1.ExampleData.amount":
-		x.Amount = value.Uint()
+	case "macaroon.v1.Grant.id":
+		x.Id = value.Uint()
+	case "macaroon.v1.Grant.controller":
+		x.Controller = value.Interface().(string)
+	case "macaroon.v1.Grant.subject":
+		x.Subject = value.Interface().(string)
+	case "macaroon.v1.Grant.origin":
+		x.Origin = value.Interface().(string)
+	case "macaroon.v1.Grant.expiry_height":
+		x.ExpiryHeight = value.Int()
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -206,44 +257,56 @@ func (x *fastReflection_ExampleData) Set(fd protoreflect.FieldDescriptor, value 
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Grant) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		panic(fmt.Errorf("field account of message macaroon.v1.ExampleData is not mutable"))
-	case "macaroon.v1.ExampleData.amount":
-		panic(fmt.Errorf("field amount of message macaroon.v1.ExampleData is not mutable"))
+	case "macaroon.v1.Grant.id":
+		panic(fmt.Errorf("field id of message macaroon.v1.Grant is not mutable"))
+	case "macaroon.v1.Grant.controller":
+		panic(fmt.Errorf("field controller of message macaroon.v1.Grant is not mutable"))
+	case "macaroon.v1.Grant.subject":
+		panic(fmt.Errorf("field subject of message macaroon.v1.Grant is not mutable"))
+	case "macaroon.v1.Grant.origin":
+		panic(fmt.Errorf("field origin of message macaroon.v1.Grant is not mutable"))
+	case "macaroon.v1.Grant.expiry_height":
+		panic(fmt.Errorf("field expiry_height of message macaroon.v1.Grant is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_ExampleData) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Grant) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.ExampleData.account":
-		return protoreflect.ValueOfBytes(nil)
-	case "macaroon.v1.ExampleData.amount":
+	case "macaroon.v1.Grant.id":
 		return protoreflect.ValueOfUint64(uint64(0))
+	case "macaroon.v1.Grant.controller":
+		return protoreflect.ValueOfString("")
+	case "macaroon.v1.Grant.subject":
+		return protoreflect.ValueOfString("")
+	case "macaroon.v1.Grant.origin":
+		return protoreflect.ValueOfString("")
+	case "macaroon.v1.Grant.expiry_height":
+		return protoreflect.ValueOfInt64(int64(0))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.ExampleData"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Grant"))
 		}
-		panic(fmt.Errorf("message macaroon.v1.ExampleData does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message macaroon.v1.Grant does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_ExampleData) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Grant) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in macaroon.v1.ExampleData", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in macaroon.v1.Grant", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -251,7 +314,7 @@ func (x *fastReflection_ExampleData) WhichOneof(d protoreflect.OneofDescriptor) 
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_ExampleData) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Grant) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -262,7 +325,7 @@ func (x *fastReflection_ExampleData) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_ExampleData) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Grant) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -274,7 +337,7 @@ func (x *fastReflection_ExampleData) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_ExampleData) IsValid() bool {
+func (x *fastReflection_Grant) IsValid() bool {
 	return x != nil
 }
 
@@ -284,9 +347,9 @@ func (x *fastReflection_ExampleData) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Grant) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Grant)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -298,12 +361,23 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Account)
+		if x.Id != 0 {
+			n += 1 + runtime.Sov(uint64(x.Id))
+		}
+		l = len(x.Controller)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Amount != 0 {
-			n += 1 + runtime.Sov(uint64(x.Amount))
+		l = len(x.Subject)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.Origin)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.ExpiryHeight != 0 {
+			n += 1 + runtime.Sov(uint64(x.ExpiryHeight))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -315,7 +389,7 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Grant)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -334,17 +408,36 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Amount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Amount))
+		if x.ExpiryHeight != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.ExpiryHeight))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x28
 		}
-		if len(x.Account) > 0 {
-			i -= len(x.Account)
-			copy(dAtA[i:], x.Account)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Account)))
+		if len(x.Origin) > 0 {
+			i -= len(x.Origin)
+			copy(dAtA[i:], x.Origin)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Origin)))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x22
+		}
+		if len(x.Subject) > 0 {
+			i -= len(x.Subject)
+			copy(dAtA[i:], x.Subject)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Subject)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Controller) > 0 {
+			i -= len(x.Controller)
+			copy(dAtA[i:], x.Controller)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Controller)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if x.Id != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.Id))
+			i--
+			dAtA[i] = 0x8
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -357,7 +450,7 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*ExampleData)
+		x := input.Message.Interface().(*Grant)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -389,17 +482,17 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExampleData: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Grant: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: ExampleData: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Grant: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
-				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 				}
-				var byteLen int
+				x.Id = 0
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -409,31 +502,48 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					byteLen |= int(b&0x7F) << shift
+					x.Id |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
 				}
-				if byteLen < 0 {
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
-				postIndex := iNdEx + byteLen
+				postIndex := iNdEx + intStringLen
 				if postIndex < 0 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
 				}
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Account = append(x.Account[:0], dAtA[iNdEx:postIndex]...)
-				if x.Account == nil {
-					x.Account = []byte{}
-				}
+				x.Controller = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
-			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
 				}
-				x.Amount = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -443,7 +553,71 @@ func (x *fastReflection_ExampleData) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Amount |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Subject = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Origin", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Origin = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 5:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field ExpiryHeight", wireType)
+				}
+				x.ExpiryHeight = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.ExpiryHeight |= int64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -496,17 +670,20 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ExampleData struct {
+type Grant struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Account []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
-	Amount  uint64 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Id           uint64 `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	Controller   string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	Subject      string `protobuf:"bytes,3,opt,name=subject,proto3" json:"subject,omitempty"`
+	Origin       string `protobuf:"bytes,4,opt,name=origin,proto3" json:"origin,omitempty"`
+	ExpiryHeight int64  `protobuf:"varint,5,opt,name=expiry_height,json=expiryHeight,proto3" json:"expiry_height,omitempty"`
 }
 
-func (x *ExampleData) Reset() {
-	*x = ExampleData{}
+func (x *Grant) Reset() {
+	*x = Grant{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_macaroon_v1_state_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -514,27 +691,48 @@ func (x *ExampleData) Reset() {
 	}
 }
 
-func (x *ExampleData) String() string {
+func (x *Grant) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ExampleData) ProtoMessage() {}
+func (*Grant) ProtoMessage() {}
 
-// Deprecated: Use ExampleData.ProtoReflect.Descriptor instead.
-func (*ExampleData) Descriptor() ([]byte, []int) {
+// Deprecated: Use Grant.ProtoReflect.Descriptor instead.
+func (*Grant) Descriptor() ([]byte, []int) {
 	return file_macaroon_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ExampleData) GetAccount() []byte {
+func (x *Grant) GetId() uint64 {
 	if x != nil {
-		return x.Account
+		return x.Id
 	}
-	return nil
+	return 0
 }
 
-func (x *ExampleData) GetAmount() uint64 {
+func (x *Grant) GetController() string {
 	if x != nil {
-		return x.Amount
+		return x.Controller
+	}
+	return ""
+}
+
+func (x *Grant) GetSubject() string {
+	if x != nil {
+		return x.Subject
+	}
+	return ""
+}
+
+func (x *Grant) GetOrigin() string {
+	if x != nil {
+		return x.Origin
+	}
+	return ""
+}
+
+func (x *Grant) GetExpiryHeight() int64 {
+	if x != nil {
+		return x.ExpiryHeight
 	}
 	return 0
 }
@@ -546,23 +744,28 @@ var file_macaroon_v1_state_proto_rawDesc = []byte{
 	0x61, 0x74, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x0b, 0x6d, 0x61, 0x63, 0x61, 0x72,
 	0x6f, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f, 0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f,
 	0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22,
-	0x60, 0x0a, 0x0b, 0x45, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x44, 0x61, 0x74, 0x61, 0x12, 0x18,
-	0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52,
-	0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x09, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f,
-	0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x10, 0x01, 0x18,
-	0x01, 0x42, 0x9d, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f,
-	0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74,
-	0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
-	0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f,
-	0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x3b, 0x6d, 0x61, 0x63, 0x61,
-	0x72, 0x6f, 0x6f, 0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4d, 0x58, 0x58, 0xaa, 0x02, 0x0b, 0x4d,
-	0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0b, 0x4d, 0x61, 0x63,
-	0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x17, 0x4d, 0x61, 0x63, 0x61, 0x72,
-	0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0xea, 0x02, 0x0c, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x3a, 0x3a, 0x56,
-	0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0xb6, 0x01, 0x0a, 0x05, 0x47, 0x72, 0x61, 0x6e, 0x74, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18,
+	0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e,
+	0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63,
+	0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62,
+	0x6a, 0x65, 0x63, 0x74, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a,
+	0x65, 0x63, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x04, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x23, 0x0a, 0x0d, 0x65,
+	0x78, 0x70, 0x69, 0x72, 0x79, 0x5f, 0x68, 0x65, 0x69, 0x67, 0x68, 0x74, 0x18, 0x05, 0x20, 0x01,
+	0x28, 0x03, 0x52, 0x0c, 0x65, 0x78, 0x70, 0x69, 0x72, 0x79, 0x48, 0x65, 0x69, 0x67, 0x68, 0x74,
+	0x3a, 0x26, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x20, 0x0a, 0x06, 0x0a, 0x02, 0x69, 0x64, 0x10, 0x01,
+	0x12, 0x14, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c, 0x6f, 0x72, 0x69, 0x67,
+	0x69, 0x6e, 0x10, 0x01, 0x18, 0x01, 0x18, 0x01, 0x42, 0x9d, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d,
+	0x2e, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74,
+	0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68,
+	0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f,
+	0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f,
+	0x76, 0x31, 0x3b, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03,
+	0x4d, 0x58, 0x58, 0xaa, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x56,
+	0x31, 0xca, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2,
+	0x02, 0x17, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x4d, 0x61, 0x63, 0x61,
+	0x72, 0x6f, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -579,7 +782,7 @@ func file_macaroon_v1_state_proto_rawDescGZIP() []byte {
 
 var file_macaroon_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
 var file_macaroon_v1_state_proto_goTypes = []interface{}{
-	(*ExampleData)(nil), // 0: macaroon.v1.ExampleData
+	(*Grant)(nil), // 0: macaroon.v1.Grant
 }
 var file_macaroon_v1_state_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -596,7 +799,7 @@ func file_macaroon_v1_state_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_macaroon_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*ExampleData); i {
+			switch v := v.(*Grant); i {
 			case 0:
 				return &v.state
 			case 1:

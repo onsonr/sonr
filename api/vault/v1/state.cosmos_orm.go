@@ -11,12 +11,20 @@ import (
 
 type DWNTable interface {
 	Insert(ctx context.Context, dWN *DWN) error
+	InsertReturningId(ctx context.Context, dWN *DWN) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
 	Update(ctx context.Context, dWN *DWN) error
 	Save(ctx context.Context, dWN *DWN) error
 	Delete(ctx context.Context, dWN *DWN) error
-	Has(ctx context.Context, account []byte) (found bool, err error)
+	Has(ctx context.Context, id uint64) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, account []byte) (*DWN, error)
+	Get(ctx context.Context, id uint64) (*DWN, error)
+	HasByAlias(ctx context.Context, alias string) (found bool, err error)
+	// GetByAlias returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByAlias(ctx context.Context, alias string) (*DWN, error)
+	HasByCid(ctx context.Context, cid string) (found bool, err error)
+	// GetByCid returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByCid(ctx context.Context, cid string) (*DWN, error)
 	List(ctx context.Context, prefixKey DWNIndexKey, opts ...ormlist.Option) (DWNIterator, error)
 	ListRange(ctx context.Context, from, to DWNIndexKey, opts ...ormlist.Option) (DWNIterator, error)
 	DeleteBy(ctx context.Context, prefixKey DWNIndexKey) error
@@ -42,36 +50,49 @@ type DWNIndexKey interface {
 }
 
 // primary key starting index..
-type DWNPrimaryKey = DWNAccountIndexKey
+type DWNPrimaryKey = DWNIdIndexKey
 
-type DWNAccountIndexKey struct {
+type DWNIdIndexKey struct {
 	vs []interface{}
 }
 
-func (x DWNAccountIndexKey) id() uint32            { return 0 }
-func (x DWNAccountIndexKey) values() []interface{} { return x.vs }
-func (x DWNAccountIndexKey) dWNIndexKey()          {}
+func (x DWNIdIndexKey) id() uint32            { return 0 }
+func (x DWNIdIndexKey) values() []interface{} { return x.vs }
+func (x DWNIdIndexKey) dWNIndexKey()          {}
 
-func (this DWNAccountIndexKey) WithAccount(account []byte) DWNAccountIndexKey {
-	this.vs = []interface{}{account}
+func (this DWNIdIndexKey) WithId(id uint64) DWNIdIndexKey {
+	this.vs = []interface{}{id}
 	return this
 }
 
-type DWNAmountIndexKey struct {
+type DWNAliasIndexKey struct {
 	vs []interface{}
 }
 
-func (x DWNAmountIndexKey) id() uint32            { return 1 }
-func (x DWNAmountIndexKey) values() []interface{} { return x.vs }
-func (x DWNAmountIndexKey) dWNIndexKey()          {}
+func (x DWNAliasIndexKey) id() uint32            { return 1 }
+func (x DWNAliasIndexKey) values() []interface{} { return x.vs }
+func (x DWNAliasIndexKey) dWNIndexKey()          {}
 
-func (this DWNAmountIndexKey) WithAmount(amount uint64) DWNAmountIndexKey {
-	this.vs = []interface{}{amount}
+func (this DWNAliasIndexKey) WithAlias(alias string) DWNAliasIndexKey {
+	this.vs = []interface{}{alias}
+	return this
+}
+
+type DWNCidIndexKey struct {
+	vs []interface{}
+}
+
+func (x DWNCidIndexKey) id() uint32            { return 2 }
+func (x DWNCidIndexKey) values() []interface{} { return x.vs }
+func (x DWNCidIndexKey) dWNIndexKey()          {}
+
+func (this DWNCidIndexKey) WithCid(cid string) DWNCidIndexKey {
+	this.vs = []interface{}{cid}
 	return this
 }
 
 type dWNTable struct {
-	table ormtable.Table
+	table ormtable.AutoIncrementTable
 }
 
 func (this dWNTable) Insert(ctx context.Context, dWN *DWN) error {
@@ -90,13 +111,61 @@ func (this dWNTable) Delete(ctx context.Context, dWN *DWN) error {
 	return this.table.Delete(ctx, dWN)
 }
 
-func (this dWNTable) Has(ctx context.Context, account []byte) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, account)
+func (this dWNTable) InsertReturningId(ctx context.Context, dWN *DWN) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, dWN)
 }
 
-func (this dWNTable) Get(ctx context.Context, account []byte) (*DWN, error) {
+func (this dWNTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
+}
+
+func (this dWNTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, id)
+}
+
+func (this dWNTable) Get(ctx context.Context, id uint64) (*DWN, error) {
 	var dWN DWN
-	found, err := this.table.PrimaryKey().Get(ctx, &dWN, account)
+	found, err := this.table.PrimaryKey().Get(ctx, &dWN, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &dWN, nil
+}
+
+func (this dWNTable) HasByAlias(ctx context.Context, alias string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		alias,
+	)
+}
+
+func (this dWNTable) GetByAlias(ctx context.Context, alias string) (*DWN, error) {
+	var dWN DWN
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &dWN,
+		alias,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &dWN, nil
+}
+
+func (this dWNTable) HasByCid(ctx context.Context, cid string) (found bool, err error) {
+	return this.table.GetIndexByID(2).(ormtable.UniqueIndex).Has(ctx,
+		cid,
+	)
+}
+
+func (this dWNTable) GetByCid(ctx context.Context, cid string) (*DWN, error) {
+	var dWN DWN
+	found, err := this.table.GetIndexByID(2).(ormtable.UniqueIndex).Get(ctx, &dWN,
+		cid,
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -133,7 +202,7 @@ func NewDWNTable(db ormtable.Schema) (DWNTable, error) {
 	if table == nil {
 		return nil, ormerrors.TableNotFound.Wrap(string((&DWN{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return dWNTable{table}, nil
+	return dWNTable{table.(ormtable.AutoIncrementTable)}, nil
 }
 
 type StateStore interface {

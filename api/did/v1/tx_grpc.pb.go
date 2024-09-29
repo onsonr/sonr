@@ -19,10 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_AuthorizeService_FullMethodName   = "/did.v1.Msg/AuthorizeService"
 	Msg_ExecuteTx_FullMethodName          = "/did.v1.Msg/ExecuteTx"
 	Msg_RegisterController_FullMethodName = "/did.v1.Msg/RegisterController"
-	Msg_RegisterService_FullMethodName    = "/did.v1.Msg/RegisterService"
 	Msg_UpdateParams_FullMethodName       = "/did.v1.Msg/UpdateParams"
 )
 
@@ -30,18 +28,12 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type MsgClient interface {
-	// AuthorizeService asserts the given controller is the owner of the given
-	// address.
-	AuthorizeService(ctx context.Context, in *MsgAuthorizeService, opts ...grpc.CallOption) (*MsgAuthorizeServiceResponse, error)
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error)
 	// RegisterController initializes a controller with the given authentication
 	// set, address, cid, publicKey, and user-defined alias.
 	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
-	// RegisterService initializes a Service with a given permission scope and
-	// URI. The domain must have a valid TXT record containing the public key.
-	RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -52,15 +44,6 @@ type msgClient struct {
 
 func NewMsgClient(cc grpc.ClientConnInterface) MsgClient {
 	return &msgClient{cc}
-}
-
-func (c *msgClient) AuthorizeService(ctx context.Context, in *MsgAuthorizeService, opts ...grpc.CallOption) (*MsgAuthorizeServiceResponse, error) {
-	out := new(MsgAuthorizeServiceResponse)
-	err := c.cc.Invoke(ctx, Msg_AuthorizeService_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *msgClient) ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error) {
@@ -81,15 +64,6 @@ func (c *msgClient) RegisterController(ctx context.Context, in *MsgRegisterContr
 	return out, nil
 }
 
-func (c *msgClient) RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error) {
-	out := new(MsgRegisterServiceResponse)
-	err := c.cc.Invoke(ctx, Msg_RegisterService_FullMethodName, in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error) {
 	out := new(MsgUpdateParamsResponse)
 	err := c.cc.Invoke(ctx, Msg_UpdateParams_FullMethodName, in, out, opts...)
@@ -103,18 +77,12 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 // All implementations must embed UnimplementedMsgServer
 // for forward compatibility
 type MsgServer interface {
-	// AuthorizeService asserts the given controller is the owner of the given
-	// address.
-	AuthorizeService(context.Context, *MsgAuthorizeService) (*MsgAuthorizeServiceResponse, error)
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error)
 	// RegisterController initializes a controller with the given authentication
 	// set, address, cid, publicKey, and user-defined alias.
 	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
-	// RegisterService initializes a Service with a given permission scope and
-	// URI. The domain must have a valid TXT record containing the public key.
-	RegisterService(context.Context, *MsgRegisterService) (*MsgRegisterServiceResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -124,17 +92,11 @@ type MsgServer interface {
 type UnimplementedMsgServer struct {
 }
 
-func (UnimplementedMsgServer) AuthorizeService(context.Context, *MsgAuthorizeService) (*MsgAuthorizeServiceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method AuthorizeService not implemented")
-}
 func (UnimplementedMsgServer) ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExecuteTx not implemented")
 }
 func (UnimplementedMsgServer) RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
-}
-func (UnimplementedMsgServer) RegisterService(context.Context, *MsgRegisterService) (*MsgRegisterServiceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterService not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -150,24 +112,6 @@ type UnsafeMsgServer interface {
 
 func RegisterMsgServer(s grpc.ServiceRegistrar, srv MsgServer) {
 	s.RegisterService(&Msg_ServiceDesc, srv)
-}
-
-func _Msg_AuthorizeService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgAuthorizeService)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).AuthorizeService(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_AuthorizeService_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).AuthorizeService(ctx, req.(*MsgAuthorizeService))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _Msg_ExecuteTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -206,24 +150,6 @@ func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RegisterService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterService)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MsgServer).RegisterService(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: Msg_RegisterService_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterService(ctx, req.(*MsgRegisterService))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(MsgUpdateParams)
 	if err := dec(in); err != nil {
@@ -250,20 +176,12 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "AuthorizeService",
-			Handler:    _Msg_AuthorizeService_Handler,
-		},
-		{
 			MethodName: "ExecuteTx",
 			Handler:    _Msg_ExecuteTx_Handler,
 		},
 		{
 			MethodName: "RegisterController",
 			Handler:    _Msg_RegisterController_Handler,
-		},
-		{
-			MethodName: "RegisterService",
-			Handler:    _Msg_RegisterService_Handler,
 		},
 		{
 			MethodName: "UpdateParams",
