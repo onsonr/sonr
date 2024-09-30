@@ -9,6 +9,7 @@
 .DS_Store
 .session.vim
 aof*
+dist
 
 # Test binary
 *.test
@@ -73,7 +74,7 @@ buildenv*
 nebula/node_modules
 
 mprocs.yaml
+build
 
 !devbox.lock
-!motr/build
 !buf.lock

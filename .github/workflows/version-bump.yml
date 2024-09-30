@@ -1,4 +1,4 @@
-name: Bump Version
+name: Bump version
 
 on:
   push:
@@ -31,12 +31,12 @@ jobs:
     if: "!startsWith(github.event.head_commit.message, 'bump:')"
     runs-on: ubuntu-latest
     name: "Bump Version"
-    needs: run-tests
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
+
       - name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
