@@ -81,3 +81,22 @@ release:
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
+
+brews:
+  - name: sonr
+    ids:
+      - default
+      - motr
+    commit_author:
+      name: goreleaserbot
+      email: bot@goreleaser.com
+    directory: Formula
+    caveats: "Run a local sonr node and access it with the motr proxy"
+    homepage: "https://sonr.io/"
+    description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
+    dependencies:
+      - name: ipfs
+        os: mac
+    repository:
+      owner: onsonr
+      name: homebrew-tap
