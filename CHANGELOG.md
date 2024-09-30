@@ -1,3 +1,9 @@
+## v0.6.0 (2024-09-30)
+
+### Feat
+
+- add Homebrew tap for sonr
+
 ## v0.5.0 (2024-09-30)
 
 ### Feat
