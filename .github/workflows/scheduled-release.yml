@@ -12,7 +12,6 @@ permissions:
 
 jobs:
   goreleaser:
-    if: false
     permissions: write-all
     runs-on: ubuntu-latest
     steps:
