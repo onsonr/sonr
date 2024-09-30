@@ -18,7 +18,19 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          repository: onsonr/sonr
           fetch-depth: 0
+          fetch-tags: true
+
+      - name: Get latest tag
+        run: |
+          # Fetch all tags
+          git fetch --tags
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "Latest Tag: $LATEST_TAG"
+          # Checkout the latest tag
+          git checkout $LATEST_TAG
 
       - uses: actions/setup-go@v5
         with:
