@@ -1,3 +1,26 @@
+## v0.4.0 (2024-09-30)
+
+### Feat
+
+- **dwn**: add wasm build for dwn
+- add macaroon and oracle genesis states
+- add scheduled binary release workflow
+- introduce process-compose for process management
+- add counter animation to hero section
+- add registration page
+
+### Fix
+
+- Enable scheduled release workflow
+
+### Refactor
+
+- remove old changelog entries
+- remove unnecessary checkout in scheduled-release workflow
+- rename build ID to sonr
+- remove unnecessary release existence check
+- move dwn wasm build to pkg directory
+
 ## v0.3.1 (2024-09-29)
 
 ### Refactor
