@@ -28,29 +28,12 @@ jobs:
           # Checkout the latest tag
           git checkout $LATEST_TAG
 
-      - name: Check if release exists
-        id: check_release
-        run: |
-          TAG_NAME=${{ env.latest_tag }}
-          echo "Checking for existing release for tag: $TAG_NAME"
-          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GH_PAT_TOKEN }}" \
-            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG_NAME")
-
-          if echo "$RESPONSE" | grep -q '"id":'; then
-            echo "Release already exists for tag $TAG_NAME."
-            echo "release_exists=true" >> $GITHUB_ENV
-          else
-            echo "No release found for tag $TAG_NAME."
-            echo "release_exists=false" >> $GITHUB_ENV
-          fi
-
       - uses: actions/setup-go@v5
         with:
           go-version: "1.22"
           check-latest: true
 
       - name: Release
-        if: env.release_exists == 'false'
         uses: goreleaser/goreleaser-action@v6
         with:
           distribution: goreleaser-pro
