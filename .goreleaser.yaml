@@ -2,7 +2,7 @@ version: 2
 project_name: sonr
 
 builds:
-  - id: core
+  - id: sonr
     goos:
       - linux
       - darwin
@@ -45,7 +45,7 @@ builds:
 archives:
   - id: default
     builds:
-      - core
+      - sonr
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
     format: tar.gz
     files:
