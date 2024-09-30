@@ -4,7 +4,6 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/pkg/dwn"
-	vault "github.com/onsonr/sonr/x/vault/types/internal"
 )
 
 type Vault struct {
@@ -18,7 +17,7 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.
 		Sonr:   defaultSonrConfig(chainID),
 		Schema: schema,
 	}
-	fileMap, err := vault.NewVaultDirectory(dwnCfg)
+	fileMap, err := dwn.NewVaultDirectory(dwnCfg)
 	if err != nil {
 		return nil, err
 	}

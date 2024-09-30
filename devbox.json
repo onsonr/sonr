@@ -30,7 +30,7 @@
         "make local-image"
       ],
       "build:motr": [
-        "make nebula",
+        "make dwn",
         "make motr"
       ],
       "build:sonrd": [

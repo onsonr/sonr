@@ -302,7 +302,7 @@ motr:
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./x/vault/types/internal/app.wasm ./x/vault/client/dwn/dwn.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./x/vault/client/dwn/dwn.go
 
 templ:
 	@echo "(templ) Generating templ files"
