@@ -1,3 +1,9 @@
+## v0.5.0 (2024-09-30)
+
+### Feat
+
+- update release workflow to use latest tag
+
 ## v0.4.0 (2024-09-30)
 
 ### Feat
