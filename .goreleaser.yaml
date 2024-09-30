@@ -1,8 +1,6 @@
 version: 2
 project_name: sonr
 
-# Only uncomment os, arch, and targets if you are NOT using cosmwasm / wasm-light-client.
-# Windows, 386 (32bit), and ARM are not Wasm compatible.
 builds:
   - id: core
     goos:
@@ -12,6 +10,21 @@ builds:
       - amd64
     main: ./cmd/sonrd
     binary: sonrd
+    builder: go
+    gobinary: go
+    command: build
+    ldflags:
+      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
+
+  - id: motr
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    main: ./cmd/motrd
+    binary: motrd
     builder: go
     gobinary: go
     command: build
@@ -28,21 +41,6 @@ builds:
     builder: go
     gobinary: go
     command: build
-
-  - id: motr
-    goos:
-      - linux
-      - darwin
-    goarch:
-      - amd64
-      - arm64
-    main: ./cmd/motrd
-    binary: motrd
-    builder: go
-    gobinary: go
-    command: build
-    ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 
 archives:
   - id: default
@@ -84,19 +82,3 @@ release:
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
-
-snapshot:
-  name_template: "{{ .Version }}-SNAPSHOT-{{ .ShortCommit }}"
-
-source:
-  name_template: "{{ .ProjectName }}-{{ .Version }}"
-  format: tar.gz
-
-git:
-  tag_sort: -version:refname
-
-github_urls:
-  download: https://github.com
-
-gitlab_urls:
-  download: https://gitlab.com
