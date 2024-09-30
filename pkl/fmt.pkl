@@ -1,0 +1,37 @@
+@go.Package { name = "github.com/onsonr/sonr/pkg/format" }
+
+module format
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class JsonField extends go.Field {
+  structTags {
+    ["json"] = "%{name},omitempty"
+  }
+}
+
+typealias DID = String
+
+typealias DIDMethod = "ipfs"|"sonr"|"bitcoin"|"ethereum"|"ibc"|"webauthn"|"dwn"|"service"
+
+class Macaroon {
+  @JsonField
+  location: String
+  
+  @JsonField
+  originator: String
+
+  @JsonField
+  identifier: String
+
+  @JsonField
+  first_party: List<String>
+
+  @JsonField
+  third_party: List<String>
+
+  @JsonField
+  expiration: Int
+}
+
+typealias MacaroonToken = String

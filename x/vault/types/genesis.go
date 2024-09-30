@@ -49,9 +49,6 @@ func (s *Schema) Equal(that *Schema) bool {
 	if s.Keyshare != that.Keyshare {
 		return false
 	}
-	if s.PublicKey != that.PublicKey {
-		return false
-	}
 	if s.Profile != that.Profile {
 		return false
 	}

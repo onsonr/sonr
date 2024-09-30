@@ -18,7 +18,5 @@ type Schema struct {
 
 	Keyshare string `pkl:"keyshare" json:"keyshare,omitempty"`
 
-	PublicKey string `pkl:"publicKey" json:"publicKey,omitempty"`
-
 	Profile string `pkl:"profile" json:"profile,omitempty"`
 }

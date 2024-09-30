@@ -317,7 +317,9 @@ nebula:
 pkl:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/dwn.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/fmt.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/orm.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/txns.pkl
 
 start-caddy:
 	@echo "(start-caddy) Starting caddy"

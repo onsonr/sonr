@@ -73,9 +73,6 @@ class Schema {
   keyshare: String
 
   @JsonField
-  publicKey: String
-
-  @JsonField
   profile: String
 }
 

@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/internal/orm/transactions" }
+@go.Package { name = "github.com/onsonr/sonr/pkg/orm/transactions" }
 
 module transactions
 

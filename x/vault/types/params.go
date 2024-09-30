@@ -40,7 +40,6 @@ func DefaultSchema() *Schema {
 		Jwk:        "++, kty, crv, x, y, n, e",
 		Grant:      "++, subject, controller, origin, token, scopes, createdAt, updatedAt",
 		Keyshare:   "++, id, data, role, createdAt, lastRefreshed",
-		PublicKey:  "++, role, algorithm, encoding, curve, key_type, raw, jwk",
 		Profile:    "++, id, subject, controller, originUri, publicMetadata, privateMetadata, createdAt, updatedAt",
 	}
 }

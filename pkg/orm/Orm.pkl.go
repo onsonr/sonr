@@ -1,4 +1,4 @@
-// Code generated from Pkl module `models`. DO NOT EDIT.
+// Code generated from Pkl module `orm`. DO NOT EDIT.
 package orm
 
 import (
@@ -7,14 +7,14 @@ import (
 	"github.com/apple/pkl-go/pkl"
 )
 
-type Models struct {
+type Orm struct {
 	DbName string `pkl:"db_name"`
 
 	DbVersion int `pkl:"db_version"`
 }
 
-// LoadFromPath loads the pkl module at the given path and evaluates it into a Models
-func LoadFromPath(ctx context.Context, path string) (ret *Models, err error) {
+// LoadFromPath loads the pkl module at the given path and evaluates it into a Orm
+func LoadFromPath(ctx context.Context, path string) (ret *Orm, err error) {
 	evaluator, err := pkl.NewEvaluator(ctx, pkl.PreconfiguredOptions)
 	if err != nil {
 		return nil, err
@@ -29,9 +29,9 @@ func LoadFromPath(ctx context.Context, path string) (ret *Models, err error) {
 	return ret, err
 }
 
-// Load loads the pkl module at the given source and evaluates it with the given evaluator into a Models
-func Load(ctx context.Context, evaluator pkl.Evaluator, source *pkl.ModuleSource) (*Models, error) {
-	var ret Models
+// Load loads the pkl module at the given source and evaluates it with the given evaluator into a Orm
+func Load(ctx context.Context, evaluator pkl.Evaluator, source *pkl.ModuleSource) (*Orm, error) {
+	var ret Orm
 	if err := evaluator.EvaluateModule(ctx, source, &ret); err != nil {
 		return nil, err
 	}

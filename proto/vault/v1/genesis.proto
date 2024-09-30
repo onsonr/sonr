@@ -32,6 +32,5 @@ message Schema {
   string jwk = 6;
   string grant = 7;
   string keyshare = 8;
-  string publicKey = 9;
-  string profile = 10;
+  string profile = 9;
 }

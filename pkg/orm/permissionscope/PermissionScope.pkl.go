@@ -1,4 +1,4 @@
-// Code generated from Pkl module `models`. DO NOT EDIT.
+// Code generated from Pkl module `orm`. DO NOT EDIT.
 package permissionscope
 
 import (

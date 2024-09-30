@@ -101,7 +101,6 @@ func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwn.Schema, error) {
 		Jwk:        schema.Jwk,
 		Grant:      schema.Grant,
 		Keyshare:   schema.Keyshare,
-		PublicKey:  schema.PublicKey,
 		Profile:    schema.Profile,
 	}, nil
 }
