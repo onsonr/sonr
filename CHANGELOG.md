@@ -1,3 +1,16 @@
+## v0.4.0 (2024-09-30)
+
+### Feat
+
+- add scheduled binary release workflow
+- introduce process-compose for process management
+- add counter animation to hero section
+- add registration page
+
+### Refactor
+
+- move dwn wasm build to pkg directory
+
 ## v0.3.1 (2024-09-29)
 
 ### Refactor
