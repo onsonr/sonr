@@ -179,7 +179,7 @@ func heroImage() templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Image --><div class=\"max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10\"><img class=\"rounded-lg\" src=\"https://cdn.sonr.id/img/hero-clipped.svg\" width=\"560\" height=\"560\" alt=\"Hero\"></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Image --><div class=\"max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10 from-zinc-100 to-white\"><img class=\"rounded-lg\" src=\"https://cdn.sonr.id/img/hero-clipped.svg\" width=\"560\" height=\"560\" alt=\"Hero\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

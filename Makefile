@@ -94,6 +94,7 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/motrd
 
 ########################################
 ### Tools & dependencies
@@ -298,11 +299,11 @@ sh-testnet: mod-tidy
 
 motr:
 	@echo "(motr) Building motr gateway"
-	go build -o ./build/motr ./cmd/motr
+	go build -o ./build/motrd ./cmd/motrd
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./x/vault/client/dwn/dwn.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/dwn/dwn.go
 
 templ:
 	@echo "(templ) Generating templ files"
@@ -324,7 +325,7 @@ start-caddy:
 
 start-motr: motr
 	@echo "(start-proxy) Starting proxy server"
-	./build/motr proxy
+	./build/motrd proxy
 
 ###############################################################################
 ###                                     help                                ###

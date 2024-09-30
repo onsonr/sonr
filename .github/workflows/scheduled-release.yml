@@ -1,0 +1,62 @@
+name: "Release Binary"
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - v*
+
+permissions:
+  contents: write
+
+jobs:
+  goreleaser:
+    if: false
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Get latest tag
+        run: |
+          # Fetch all tags
+          git fetch --tags
+          # Get the latest tag
+          LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)
+          echo "Latest Tag: $LATEST_TAG"
+          # Checkout the latest tag
+          git checkout $LATEST_TAG
+
+      - name: Check if release exists
+        id: check_release
+        run: |
+          TAG_NAME=${{ env.latest_tag }}
+          echo "Checking for existing release for tag: $TAG_NAME"
+          RESPONSE=$(curl -s -H "Authorization: token ${{ secrets.GH_PAT_TOKEN }}" \
+            "https://api.github.com/repos/${{ github.repository }}/releases/tags/$TAG_NAME")
+
+          if echo "$RESPONSE" | grep -q '"id":'; then
+            echo "Release already exists for tag $TAG_NAME."
+            echo "release_exists=true" >> $GITHUB_ENV
+          else
+            echo "No release found for tag $TAG_NAME."
+            echo "release_exists=false" >> $GITHUB_ENV
+          fi
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+
+      - name: Release
+        if: env.release_exists == 'false'
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          distribution: goreleaser-pro
+          version: latest
+          args: release --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
