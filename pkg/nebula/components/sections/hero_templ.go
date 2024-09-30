@@ -138,11 +138,15 @@ func SectionHero(hero Hero) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div></div></div><!-- Image --><div class=\"max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10\"><img class=\"rounded-lg shadow-2xl\" src=\"https://cdn.sonr.id/img/hero-portrait.png\" width=\"700\" height=\"700\" alt=\"Hero\"></div><!-- Stats --><div class=\"max-w-5xl mx-auto px-4 sm:px-6\"><div class=\"max-w-sm mx-auto grid gap-12 sm:grid-cols-2 md:grid-cols-4 md:-mx-5 md:gap-0 items-start md:max-w-none\"><!-- 1st item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(476)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 2nd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.44)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 3rd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.5)\" x-text=\"counterValue\">0</span>M+</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 4th item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(192)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = counterAnimation().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = heroImage().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = stats().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -154,60 +158,126 @@ func SectionHero(hero Hero) templ.Component {
 	})
 }
 
+func heroImage() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var10 == nil {
+			templ_7745c5c3_Var10 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Image --><div class=\"max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10\"><img class=\"rounded-lg\" src=\"https://cdn.sonr.id/img/hero-clipped.svg\" width=\"560\" height=\"560\" alt=\"Hero\"></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func stats() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Stats --><div class=\"max-w-4xl mx-auto px-4 sm:px-6 justify-center items-center\"><div class=\"max-w-sm mx-auto grid gap-12 sm:grid-cols-2 md:grid-cols-4 md:-mx-5 md:gap-0 items-end md:max-w-none\"><!-- 1st item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(476)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 2nd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.44)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 3rd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.5)\" x-text=\"counterValue\">0</span>M+</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = counterAnimation().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
 func counterAnimation() templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_counterAnimation_57a0`,
-		Function: `function __templ_counterAnimation_57a0(){document.addEventListener('alpine:init', () => {
-                                Alpine.data('counter', (target = 0, duration = 3000) => ({
-                                    startTimestamp: null,
-                                    step: null,
-                                    rawValue: 0,
-                                    counterValue: 0,
-                                    target: target,
-                                    precision: (target % 1 === 0) ? 0 : (target.toString().split('.')[1] || []).length,
-                                    animationRequestId: null,
-                                    animationCompleted: false,
-                                    observer: null,
-                                    init() {
-                                        // Intersection observer to watch visibility
-                                        this.observer = new IntersectionObserver(entries => {
-                                            entries.forEach(entry => {
-                                                // Check if element is in view
-                                                if (entry.isIntersecting && !this.animationCompleted) {
-                                                    this.startAnimation()
-                                                }
-                                            })
-                                        })
-                                        this.observer.observe(this.$el)
-                                    },
-                                    startAnimation() {
-                                        this.step = (timestamp) => {
-                                            if (!this.startTimestamp) this.startTimestamp = timestamp
-                                            const progress = Math.min((timestamp - this.startTimestamp) / duration, 1)
-                                            const easedProgress = this.easeOut(progress)
-                                            this.rawValue = parseFloat((easedProgress * this.target).toFixed(this.precision))
-                                            this.counterValue = this.rawValue.toFixed(this.precision)
-                                            if (progress < 1) {
-                                                this.animationRequestId = window.requestAnimationFrame(this.step)
-                                            } else {
-                                                this.animationCompleted = true
-                                            }
-                                        }
-                                        this.animationRequestId = window.requestAnimationFrame(this.step);
-                                    },                                        
-                                    easeOut(t) {
-                                        return 1 - Math.pow(1 - t, 5)
-                                    },                                                                            
-                                    destroy() {
-                                        // Detach the handler, avoiding memory and side-effect leakage
-                                        this.animationRequestId && window.cancelAnimationFrame(this.step)
-                                        this.observer && this.observer.disconnect()
-                                    },
-                                }))
-                            })
+		Name: `__templ_counterAnimation_524d`,
+		Function: `function __templ_counterAnimation_524d(){document.addEventListener('alpine:init', () => {
+                      Alpine.data('counter', (target = 0, duration = 3000) => ({
+                          startTimestamp: null,
+                          step: null,
+                          rawValue: 0,
+                          counterValue: 0,
+                          target: target,
+                          precision: (target % 1 === 0) ? 0 : (target.toString().split('.')[1] || []).length,
+                          animationRequestId: null,
+                          animationCompleted: false,
+                          observer: null,
+                          init() {
+                              // Intersection observer to watch visibility
+                              this.observer = new IntersectionObserver(entries => {
+                                  entries.forEach(entry => {
+                                      // Check if element is in view
+                                      if (entry.isIntersecting && !this.animationCompleted) {
+                                          this.startAnimation()
+                                      }
+                                  })
+                              })
+                              this.observer.observe(this.$el)
+                          },
+                          startAnimation() {
+                              this.step = (timestamp) => {
+                                  if (!this.startTimestamp) this.startTimestamp = timestamp
+                                  const progress = Math.min((timestamp - this.startTimestamp) / duration, 1)
+                                  const easedProgress = this.easeOut(progress)
+                                  this.rawValue = parseFloat((easedProgress * this.target).toFixed(this.precision))
+                                  this.counterValue = this.rawValue.toFixed(this.precision)
+                                  if (progress < 1) {
+                                      this.animationRequestId = window.requestAnimationFrame(this.step)
+                                  } else {
+                                      this.animationCompleted = true
+                                  }
+                              }
+                              this.animationRequestId = window.requestAnimationFrame(this.step);
+                          },                                        
+                          easeOut(t) {
+                              return 1 - Math.pow(1 - t, 5)
+                          },                                                                            
+                          destroy() {
+                              // Detach the handler, avoiding memory and side-effect leakage
+                              this.animationRequestId && window.cancelAnimationFrame(this.step)
+                              this.observer && this.observer.disconnect()
+                          },
+                      }))
+                  })
 }`,
-		Call:       templ.SafeScript(`__templ_counterAnimation_57a0`),
-		CallInline: templ.SafeScriptInline(`__templ_counterAnimation_57a0`),
+		Call:       templ.SafeScript(`__templ_counterAnimation_524d`),
+		CallInline: templ.SafeScriptInline(`__templ_counterAnimation_524d`),
 	}
 }
 

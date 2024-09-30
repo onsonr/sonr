@@ -39,7 +39,11 @@ templ LayoutNoBody(title string, remote bool) {
 			<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 		</head>
 		<main class="grow">
-			{ children... }
+			<body class="font-inter antialiased bg-white text-zinc-900 tracking-tight">
+				<div class="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
+					{ children... }
+				</div>
+			</body>
 		</main>
 	</html>
 }
