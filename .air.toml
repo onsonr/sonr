@@ -10,11 +10,10 @@ exclude_file = []
 exclude_regex = ["_test.go"]
 exclude_unchanged = true
 follow_symlink = false
-full_bin = "make start-proxy"
+full_bin = "devbox run start"
 include_dir = ["cmd/dwn", "cmd/motr", "internal", "models", "pkl"]
-include_ext = ["go", "templ", "html", "pkl", "js", "mjs"]
+include_ext = ["go", "templ", "html", "pkl", "js", "mjs", "proto"]
 include_file = [
-  "wrangler.toml",
   "Dockerfile",
   ".goreleaser.yaml",
   "go.mod",
@@ -25,7 +24,7 @@ kill_delay = "10s"
 log = "build-errors.log"
 poll = false
 poll_interval = 0
-post_cmd = []
+post_cmd = ["devbox run stop"]
 pre_cmd = ["templ generate"]
 rerun = false
 rerun_delay = 1000

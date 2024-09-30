@@ -2,10 +2,12 @@
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
   "packages": [
     "go@1.22",
+    "air@latest",
     "bun@latest",
     "ipfs@latest",
     "skate@latest",
-    "cloudflared@latest"
+    "cloudflared@latest",
+    "process-compose@latest"
   ],
   "env": {
     "GOPATH": "$HOME/go",
@@ -26,36 +28,21 @@
   },
   "shell": {
     "scripts": {
-      "build:docker": [
-        "make local-image"
-      ],
-      "build:motr": [
-        "make dwn",
-        "make motr"
-      ],
-      "build:sonrd": [
-        "make dwn",
-        "make build"
-      ],
-      "gen:proto": [
-        "make proto-gen"
-      ],
-      "gen:pkl": [
-        "make pkl"
-      ],
-      "gen:templ": [
-        "make templ"
-      ],
-      "start:motr": [
-        "make templ",
-        "make motr",
-        "make start-motr"
-      ],
-      "start:testnet": [
-        "make templ",
-        "make install",
-        "make sh-testnet"
-      ]
+      "dev": ["air"],
+      "build:docker": ["make local-image"],
+      "build:motr": ["make nebula", "make motr"],
+      "build:sonrd": ["make dwn", "make build"],
+      "build": ["make dwn", "make build", "make motr"],
+      "gen:proto": ["make proto-gen"],
+      "gen:pkl": ["make pkl"],
+      "gen:templ": ["make templ"],
+      "start:motr": ["make templ", "make motr", "make start-motr"],
+      "start:testnet": ["make templ", "make install", "make sh-testnet"],
+      "start": ["process-compose up -d"],
+      "stop": ["process-compose down"],
+      "test:e2e": ["make templ", "make test-e2e"],
+      "test:unit": ["make templ", "make test-unit"],
+      "test": ["make templ", "make test"]
     }
   }
 }
