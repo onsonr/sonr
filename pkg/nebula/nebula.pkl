@@ -14,9 +14,9 @@ hero = new Hero {
 		href = "/about";
 	};
 	image = new Image {
-		src = "https://cdn.sonr.id/img/hero-clipped.png";
-		width = "520";
-		height = "520";
+		src = "https://cdn.sonr.id/img/hero-clipped.svg";
+		width = "500";
+		height = "500";
 	};
 };
 
