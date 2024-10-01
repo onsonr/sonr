@@ -1,3 +1,21 @@
+## v0.9.0 (2024-10-01)
+
+### Feat
+
+- add Input and RegistrationForm models
+- add new utility classes
+- add login and registration pages
+- add tailwindcss utilities
+
+### Fix
+
+- **cta**: Fix typo in CTA title
+- change bento section title to reflect security focus
+
+### Refactor
+
+- move home page sections to home package
+
 ## v0.8.0 (2024-10-01)
 
 ### Feat
