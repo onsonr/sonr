@@ -1,3 +1,9 @@
+## v0.8.0 (2024-10-01)
+
+### Feat
+
+- add support for ARM64 architecture
+
 ## v0.7.0 (2024-10-01)
 
 ### Feat
