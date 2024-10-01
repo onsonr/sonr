@@ -1,3 +1,39 @@
+## v0.4.1 (2024-10-01)
+
+### Feat
+
+- allow manual release triggers
+- add Input and RegistrationForm models
+- add new utility classes
+- add login and registration pages
+- add tailwindcss utilities
+- add support for ARM64 architecture
+- add DWN resolver field
+- add stats section to homepage
+- implement hero section using Pkl
+- add PKL schema for message formats
+- add Homebrew tap for sonr
+- update release workflow to use latest tag
+
+### Fix
+
+- update release workflow to use latest tag
+- **versioning**: revert version to 0.9.0
+- **cta**: Fix typo in CTA title
+- change bento section title to reflect security focus
+- adjust hero image dimensions
+- **Input**: Change  type from  to
+- update hero image height in config.pkl
+
+### Refactor
+
+- move home page sections to home package
+- rename motrd to motr
+- update hero image dimensions
+- move nebula configuration to static file
+- rename buf-publish.yml to publish-assets.yml
+- remove unused  field from
+
 ## v0.4.0 (2024-09-30)
 
 ### Feat
