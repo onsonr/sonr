@@ -80,6 +80,7 @@ brews:
       owner: onsonr
       name: homebrew-tap
       branch: master
+      token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
   - name: motr
     ids: [motr]

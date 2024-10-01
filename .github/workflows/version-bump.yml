@@ -19,21 +19,37 @@ jobs:
         with:
           go-version: "1.22"
           check-latest: true
-
       - name: Run tests
         run: make test
 
+  check-protos:
+    name: "Check Protobuf Breaking Changes"
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    outputs:
+      has_breaking_changes: ${{ steps.check_breaking.outputs.has_breaking_changes }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: bufbuild/buf-setup-action@v1
+      - id: check_breaking
+        uses: bufbuild/buf-breaking-action@v1
+        with:
+          against: "https://github.com/onsonr/sonr.git#branch=master"
+      - name: Set output
+        run: echo "has_breaking_changes=${{ steps.check_breaking.outcome == 'failure' }}" >> $GITHUB_OUTPUT
+
   bump-version:
-    if: "!startsWith(github.event.head_commit.message, 'bump:')"
+    needs: [run-tests, check-protos]
     runs-on: ubuntu-latest
     name: "Bump Version"
+    if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
     steps:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-
       - name: Create bump and changelog
         uses: commitizen-tools/commitizen-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          increment: ${{ needs.check-protos.outputs.has_breaking_changes == 'true' && 'MINOR' || 'PATCH' }}
