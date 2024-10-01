@@ -3,7 +3,7 @@ package pages
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
-	"github.com/onsonr/sonr/pkg/nebula/components/sections"
+	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
@@ -17,13 +17,13 @@ func Home(c echo.Context) error {
 
 templ homeView(hero *models.Hero) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
-		@sections.MarketingHeader()
-		@sections.SectionHero(hero)
-		@sections.Highlights()
-		@sections.Features()
-		@sections.Bento()
-		@sections.Lowlights()
-		@sections.CallToAction()
-		@sections.MarketingFooter()
+		@home.MarketingHeader()
+		@home.SectionHero(hero)
+		@home.Highlights()
+		@home.Features()
+		@home.Bento()
+		@home.Lowlights()
+		@home.CallToAction()
+		@home.MarketingFooter()
 	}
 }

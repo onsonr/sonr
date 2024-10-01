@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
-	"github.com/onsonr/sonr/pkg/nebula/components/sections"
+	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
@@ -56,7 +56,7 @@ func homeView(hero *models.Hero) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = sections.MarketingHeader().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.MarketingHeader().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -64,7 +64,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.SectionHero(hero).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.SectionHero(hero).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -72,7 +72,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Highlights().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.Highlights().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -80,7 +80,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Features().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.Features().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -88,7 +88,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Bento().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.Bento().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -96,7 +96,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Lowlights().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.Lowlights().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -104,7 +104,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.CallToAction().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.CallToAction().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -112,7 +112,7 @@ func homeView(hero *models.Hero) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.MarketingFooter().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = home.MarketingFooter().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
