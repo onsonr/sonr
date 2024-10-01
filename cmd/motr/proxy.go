@@ -26,6 +26,9 @@ func NewProxyCmd() *cobra.Command {
 			}
 
 			e.GET("/", pages.Home)
+			e.GET("/login", pages.Login)
+			e.GET("/register", pages.Register)
+			e.GET("/profile", pages.Profile)
 			e.GET("/allocate", pages.Profile)
 
 			if err := e.Start(":1323"); err != http.ErrServerClosed {

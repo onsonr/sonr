@@ -1,0 +1,19 @@
+package home
+
+import (
+	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/models"
+)
+
+templ View(hero *models.Hero) {
+	@blocks.LayoutNoBody("Sonr.ID", true) {
+		@MarketingHeader()
+		@SectionHero(hero)
+		@Highlights()
+		@Features()
+		@Bento()
+		@Lowlights()
+		@CallToAction()
+		@MarketingFooter()
+	}
+}

@@ -1,15 +1,11 @@
-package pages
+package grant
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 )
 
-func Authorize(c echo.Context) error {
-	return echoResponse(c, authorizeView(c))
-}
-
-templ authorizeView(c echo.Context) {
+templ View(c echo.Context) {
 	@blocks.Layout("Sonr.ID", true) {
 		@blocks.Card("authorize-view", blocks.SizeMedium) {
 			@blocks.H1("Sonr.ID")

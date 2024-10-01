@@ -14,7 +14,7 @@ import (
 //go:embed assets
 var embeddedFiles embed.FS
 
-//go:embed assets/static.pkl
+//go:embed nebula.pkl
 var config []byte
 
 func getHTTPFS() (http.FileSystem, error) {

@@ -1,4 +1,4 @@
-package pages
+package register
 
 import (
 	"github.com/labstack/echo/v4"
@@ -6,11 +6,7 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models/formstate"
 )
 
-func Register(c echo.Context) error {
-	return echoResponse(c, registerView(c))
-}
-
-templ registerView(c echo.Context) {
+templ View(c echo.Context) {
 	@blocks.Layout("Sonr.ID", true) {
 		@blocks.Card("register-view", blocks.SizeMedium) {
 			@blocks.H2("Account Registration")

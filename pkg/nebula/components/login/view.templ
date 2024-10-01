@@ -1,15 +1,11 @@
-package pages
+package login
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 )
 
-func Login(c echo.Context) error {
-	return echoResponse(c, loginView(c))
-}
-
-templ loginView(c echo.Context) {
+templ View(c echo.Context) {
 	@blocks.Layout("Sonr.ID", true) {
 		@blocks.Card("login-view", blocks.SizeLarge) {
 			@blocks.H1("Sonr.ID")

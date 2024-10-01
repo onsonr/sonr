@@ -1,15 +1,11 @@
-package pages
+package profile
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 )
 
-func Profile(c echo.Context) error {
-	return echoResponse(c, profileView(c))
-}
-
-templ profileView(c echo.Context) {
+templ View(c echo.Context) {
 	@blocks.Layout("Sonr.ID", true) {
 		@blocks.Card("profile-view", blocks.SizeLarge) {
 			@blocks.ProfileCard()
