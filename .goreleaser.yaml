@@ -62,7 +62,7 @@ release:
     - glob: ./CHANGELOG*
     - glob: ./README*
     - glob: ./LICENSE*
-    - glob: ./pkl/dwn.pkl
+    - glob: ./pkl/*
 
 brews:
   - name: sonr
