@@ -1,3 +1,9 @@
+## v0.4.2 (2024-10-01)
+
+### Refactor
+
+- use single GITHUB_TOKEN for release workflow
+
 ## v0.4.1 (2024-10-01)
 
 ### Feat
