@@ -39,7 +39,7 @@ class Input {
 	value: String?
 	error: String?
 	help: String?
-	required: Bool
+	required: Boolean
 }
 
 // ╭───────────────────────────────────────────────────────────╮
