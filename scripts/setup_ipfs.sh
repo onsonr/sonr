@@ -21,4 +21,7 @@ ipfs config --json Peering.Peers '[
 {"ID": "QmcfV2sg9zaq7UUHVCGuSvT2M2rnLBAPsiE79vVyK3Cuev", "Addrs": ["/dnsaddr/node-12.ingress.cloudflare-ipfs.com"]}
 ]'
 
+# Make sure ipfs is publicly accessible
+ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '["*"]'
+
 ipfs daemon

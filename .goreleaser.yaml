@@ -22,8 +22,8 @@ builds:
     goarch:
       - amd64
       - arm64
-    main: ./cmd/motrd
-    binary: motrd
+    main: ./cmd/motr
+    binary: motr
     builder: go
     gobinary: go
     command: build
@@ -60,27 +60,22 @@ archives:
       - src: README*
       - src: CHANGELOG*
 
-  - id: dwn
-    builds:
-      - dwn
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
-    format: zip
-    files:
-      - src: CHANGELOG*
-      - src: pkl/dwn.pkl
-
 release:
   github:
     owner: onsonr
     name: sonr
-  name_template: "{{.Tag}}"
+  name_template: "{{.Now.Format '2006.11.22'}}"
   ids:
     - default
     - motr
-    - dwn
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
+  extra_files:
+    - glob: ./CHANGELOG*
+    - glob: ./README*
+    - glob: ./LICENSE*
+    - glob: ./pkl/dwn.pkl
 
 brews:
   - name: sonr
@@ -100,3 +95,4 @@ brews:
     repository:
       owner: onsonr
       name: homebrew-tap
+      branch: master

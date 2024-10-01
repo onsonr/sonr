@@ -299,7 +299,7 @@ sh-testnet: mod-tidy
 
 motr:
 	@echo "(motr) Building motr gateway"
-	go build -o ./build/motrd ./cmd/motrd
+	go build -o ./build/motr ./cmd/motr
 
 dwn:
 	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
@@ -328,7 +328,7 @@ start-caddy:
 
 start-motr: motr
 	@echo "(start-proxy) Starting proxy server"
-	./build/motrd start
+	./build/motr start
 
 ###############################################################################
 ###                                     help                                ###
