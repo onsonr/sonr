@@ -16,7 +16,7 @@ hero = new Hero {
 	image = new Image {
 		src = "https://cdn.sonr.id/img/hero-clipped.svg";
 		width = "560";
-		height = "560;
+		height = "560";
 	};
 };
 

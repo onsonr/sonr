@@ -15,7 +15,7 @@ import (
 var embeddedFiles embed.FS
 
 //go:embed assets/config.pkl
-var config string
+var config []byte
 
 func getHTTPFS() (http.FileSystem, error) {
 	fsys, err := fs.Sub(embeddedFiles, "assets")
@@ -27,7 +27,7 @@ func getHTTPFS() (http.FileSystem, error) {
 
 // UseAssets is a middleware that serves static files from the embedded assets
 func UseAssets(e *echo.Echo) error {
-	err := models.LoadFromString(context.Background(), config)
+	err := models.LoadFromString(context.Background(), string(config))
 	if err != nil {
 		return err
 	}
@@ -38,5 +38,10 @@ func UseAssets(e *echo.Echo) error {
 	assets := http.FileServer(fsys)
 	e.GET("/", echo.WrapHandler(assets))
 	e.GET("/assets/*", echo.WrapHandler(http.StripPrefix("/assets/", assets)))
+	e.GET("/_nebula/config", handleGetConfig)
 	return nil
+}
+
+func handleGetConfig(c echo.Context) error {
+	return c.Blob(http.StatusOK, "application/octet-stream", config)
 }

@@ -3,15 +3,7 @@ package pages
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
-)
-
-type FormState string
-
-const (
-	InitialForm FormState = "initial"
-	ErrorForm   FormState = "error"
-	SuccessForm FormState = "success"
-	WarningForm FormState = "warning"
+	"github.com/onsonr/sonr/pkg/nebula/models/formstate"
 )
 
 func Register(c echo.Context) error {
@@ -24,7 +16,7 @@ templ registerView(c echo.Context) {
 			@blocks.H2("Account Registration")
 			@blocks.Spacer()
 			@blocks.Breadcrumbs()
-			@basicInfoForm(InitialForm)
+			@basicInfoForm(formstate.Initial)
 			@blocks.Spacer()
 			@blocks.Button(blocks.GET("/", "#register-view")) {
 				@blocks.Text("Cancel")
@@ -33,7 +25,7 @@ templ registerView(c echo.Context) {
 	}
 }
 
-templ basicInfoForm(state FormState) {
+templ basicInfoForm(state formstate.FormState) {
 	switch (state) {
 		default:
 			<div class="border rounded-lg shadow-sm bg-card text-neutral-900">
