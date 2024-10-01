@@ -19,6 +19,11 @@ templ homeView(hero *models.Hero) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
 		@sections.HeaderMarketingNav()
 		@sections.SectionHero(hero)
+		@sections.Highlights()
+		@sections.Features()
+		@sections.Bento()
+		@sections.Testimonials()
+		@sections.CTA()
 		@sections.FooterMarketingNav()
 	}
 }

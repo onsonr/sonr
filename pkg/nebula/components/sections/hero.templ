@@ -72,6 +72,11 @@ templ stats() {
 				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(1.5)" x-text="counterValue">0</span>M+</h4>
 				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
 			</div>
+			<!-- 4th item -->
+			<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
+				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(750)" x-text="counterValue">0</span>K</h4>
+				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
+			</div>
 		</div>
 		@counterAnimation()
 	</div>
