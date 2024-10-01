@@ -9,9 +9,10 @@ func init() {
 	pkl.RegisterMapping("orm#Asset", Asset{})
 	pkl.RegisterMapping("orm#Chain", Chain{})
 	pkl.RegisterMapping("orm#Credential", Credential{})
+	pkl.RegisterMapping("orm#DID", DID{})
 	pkl.RegisterMapping("orm#JWK", JWK{})
 	pkl.RegisterMapping("orm#Grant", Grant{})
 	pkl.RegisterMapping("orm#Keyshare", Keyshare{})
-	pkl.RegisterMapping("orm#PublicKey", PublicKey{})
 	pkl.RegisterMapping("orm#Profile", Profile{})
+	pkl.RegisterMapping("orm#Session", Session{})
 }

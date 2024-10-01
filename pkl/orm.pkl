@@ -10,7 +10,6 @@ typealias Base64 = String
 typealias Bech32 = String
 typealias Keccak = String
 
-typealias DID = String
 typealias ChainCode = UInt
 typealias Scope = String
 
@@ -53,7 +52,7 @@ typealias PermissionScope = "profile"|"metadata"|"permissions"|"wallets"|"transa
 
 class Account {
   @PrimaryKey
-  id: DID
+  id: String
 
   @JsonField
   name: String 
@@ -79,7 +78,7 @@ class Account {
 
 class Asset {
   @PrimaryKey
-  id: DID
+  id: String
 
   @JsonField
   name: String
@@ -99,7 +98,7 @@ class Asset {
 
 class Chain {
   @PrimaryKey
-  id: DID
+  id: String
 
   @JsonField
   name: String
@@ -116,7 +115,7 @@ class Chain {
 
 class Credential {
   @PrimaryKey
-  id: DID
+  id: String
 
   @JsonField
   subject: String
@@ -170,6 +169,18 @@ class Credential {
   updatedAt: String?
 }
 
+class DID {
+  @PrimaryKey
+  id: String
+  role: KeyRole
+  algorithm: KeyAlgorithm
+  encoding: KeyEncoding
+  curve: KeyCurve
+  key_type: KeyType
+  raw: Base64
+  jwk: JWK
+}
+
 class JWK {
   @JsonField
   kty: String
@@ -218,7 +229,7 @@ class Grant {
 
 class Keyshare {
   @PrimaryKey
-  id: DID
+  id: String
 
   @JsonField
   data: Base64
@@ -231,17 +242,6 @@ class Keyshare {
 
   @JsonField
   lastRefreshed: String?
-}
-
-class PublicKey {
-  @PrimaryKey
-  role: KeyRole
-  algorithm: KeyAlgorithm
-  encoding: KeyEncoding
-  curve: KeyCurve
-  key_type: KeyType
-  raw: Base58
-  jwk: JWK
 }
 
 class Profile {
@@ -289,7 +289,6 @@ class Session {
   @JsonField
   updatedAt: String?
 }
-
 
 db_name: String = "vault"
 db_version: Int = 1

@@ -29,8 +29,9 @@ message Schema {
   string asset = 3;
   string chain = 4;
   string credential = 5;
-  string jwk = 6;
-  string grant = 7;
-  string keyshare = 8;
-  string profile = 9;
+  string did = 6;
+  string jwk = 7;
+  string grant = 8;
+  string keyshare = 9;
+  string profile = 10;
 }
