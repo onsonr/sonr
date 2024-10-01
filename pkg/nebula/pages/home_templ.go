@@ -12,23 +12,18 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 	"github.com/onsonr/sonr/pkg/nebula/components/sections"
+	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
 func Home(c echo.Context) error {
-	hero := sections.Hero{
-		TitleFirst:          "Simplified",
-		TitleEmphasis:       "self-custody",
-		TitleSecond:         "for everyone",
-		Subtitle:            "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
-		PrimaryButtonText:   "Get Started",
-		PrimaryButtonLink:   "/register",
-		SecondaryButtonText: "Learn More",
-		SecondaryButtonLink: "/about",
+	mdls, err := models.GetModels()
+	if err != nil {
+		return err
 	}
-	return echoResponse(c, homeView(hero))
+	return echoResponse(c, homeView(mdls.Hero))
 }
 
-func homeView(hero sections.Hero) templ.Component {
+func homeView(hero *models.Hero) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

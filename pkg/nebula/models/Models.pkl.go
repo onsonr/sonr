@@ -8,6 +8,7 @@ import (
 )
 
 type Models struct {
+	Hero *Hero `pkl:"hero"`
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Models
@@ -23,22 +24,6 @@ func LoadFromPath(ctx context.Context, path string) (ret *Models, err error) {
 		}
 	}()
 	ret, err = Load(ctx, evaluator, pkl.FileSource(path))
-	return ret, err
-}
-
-// LoadFromURL loads the pkl module at the given URL and evaluates it into a Models
-func LoadFromURL(ctx context.Context, url string) (ret *Models, err error) {
-	evaluator, err := pkl.NewEvaluator(ctx, pkl.PreconfiguredOptions)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		cerr := evaluator.Close()
-		if err == nil {
-			err = cerr
-		}
-	}()
-	ret, err = Load(ctx, evaluator, pkl.UriSource(url))
 	return ret, err
 }
 

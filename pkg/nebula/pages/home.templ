@@ -4,23 +4,18 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 	"github.com/onsonr/sonr/pkg/nebula/components/sections"
+	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
 func Home(c echo.Context) error {
-	hero := sections.Hero{
-		TitleFirst:          "Simplified",
-		TitleEmphasis:       "self-custody",
-		TitleSecond:         "for everyone",
-		Subtitle:            "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
-		PrimaryButtonText:   "Get Started",
-		PrimaryButtonLink:   "/register",
-		SecondaryButtonText: "Learn More",
-		SecondaryButtonLink: "/about",
+	mdls, err := models.GetModels()
+	if err != nil {
+		return err
 	}
-	return echoResponse(c, homeView(hero))
+	return echoResponse(c, homeView(mdls.Hero))
 }
 
-templ homeView(hero sections.Hero) {
+templ homeView(hero *models.Hero) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
 		@sections.HeaderMarketingNav()
 		@sections.SectionHero(hero)

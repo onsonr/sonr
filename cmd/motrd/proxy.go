@@ -26,7 +26,6 @@ func NewProxyCmd() *cobra.Command {
 			}
 
 			e.GET("/", pages.Home)
-			e.GET("/config", nebula.GetConfig)
 			e.GET("/allocate", pages.Profile)
 
 			if err := e.Start(":1323"); err != http.ErrServerClosed {

@@ -1,19 +1,8 @@
 package sections
 
-type Hero struct {
-	TitleFirst    string
-	TitleEmphasis string
-	TitleSecond   string
-	Subtitle      string
+import "github.com/onsonr/sonr/pkg/nebula/models"
 
-	PrimaryButtonText string
-	PrimaryButtonLink string
-
-	SecondaryButtonText string
-	SecondaryButtonLink string
-}
-
-templ SectionHero(hero Hero) {
+templ SectionHero(hero *models.Hero) {
 	<!-- Hero -->
 	<section class="relative before:absolute before:inset-0 before:h-80 before:pointer-events-none before:bg-gradient-to-b before:from-zinc-100 before:-z-10">
 		<div class="pt-32 pb-12 md:pt-40 md:pb-20">
@@ -36,29 +25,29 @@ templ SectionHero(hero Hero) {
 						</p>
 						<div class="max-w-xs mx-auto sm:max-w-none sm:inline-flex sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
 							<div>
-								<a class="btn text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" href={ templ.SafeURL(hero.PrimaryButtonLink) }>{ hero.PrimaryButtonText }</a>
+								<a class="btn text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" href={ templ.SafeURL(hero.PrimaryButton.Href) }>{ hero.PrimaryButton.Text }</a>
 							</div>
 							<div>
-								<a class="btn text-zinc-600 bg-white hover:text-zinc-900 w-full shadow" href={ templ.SafeURL(hero.SecondaryButtonLink) }>{ hero.SecondaryButtonText }</a>
+								<a class="btn text-zinc-600 bg-white hover:text-zinc-900 w-full shadow" href={ templ.SafeURL(hero.SecondaryButton.Href) }>{ hero.SecondaryButton.Text }</a>
 							</div>
 						</div>
 					</div>
 				</div>
-				@heroImage()
+				@heroImage(hero)
 				@stats()
 			</div>
 		</div>
 	</section>
 }
 
-templ heroImage() {
+templ heroImage(hero *models.Hero) {
 	<!-- Image -->
 	<div class="max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10 from-zinc-100 to-white">
 		<img
 			class="rounded-lg"
-			src="https://cdn.sonr.id/img/hero-clipped.svg"
-			width="560"
-			height="560"
+			src={ hero.Image.Src }
+			width={ hero.Image.Width }
+			height={ hero.Image.Height }
 			alt="Hero"
 		/>
 	</div>

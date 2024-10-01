@@ -4,7 +4,7 @@ package models
 type Image struct {
 	Src string `pkl:"src"`
 
-	Width int `pkl:"width"`
+	Width string `pkl:"width"`
 
-	Height int `pkl:"height"`
+	Height string `pkl:"height"`
 }

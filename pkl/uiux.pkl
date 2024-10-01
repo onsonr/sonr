@@ -6,8 +6,8 @@ import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 class Image {
 	src: String
-	width: Int
-	height: Int
+	width: String
+	height: String
 }
 
 class Link {
@@ -25,9 +25,13 @@ class Button {
 	href: String
 }
 
-class Stat {
-	value: String
-	label: String
+class Stats {
+	firstValue: String	
+	firstLabel: String
+	secondValue: String
+	secondLabel: String
+	thirdValue: String
+	thirdLabel: String
 }
 
 class Hero {
@@ -38,7 +42,17 @@ class Hero {
   primaryButton: Button
   secondaryButton: Button
   image: Image
-  stats: List<Stat>
 }
 
+class Footer {
+	logo: Image
+	mediumLink: SocialLink
+	twitterLink: SocialLink
+	discordLink: SocialLink
+	githubLink: SocialLink
+	companyLinks: List<Link>
+	resourcesLinks: List<Link>
+}
 
+hero : Hero
+stats : Stats
