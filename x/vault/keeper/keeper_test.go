@@ -3,12 +3,9 @@ package keeper_test
 import (
 	"testing"
 
-	"github.com/stretchr/testify/require"
-	"github.com/stretchr/testify/suite"
-
+	"cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	storetypes "cosmossdk.io/store/types"
-
 	"github.com/cosmos/cosmos-sdk/runtime"
 	"github.com/cosmos/cosmos-sdk/testutil"
 	simtestutil "github.com/cosmos/cosmos-sdk/testutil/sims"
@@ -23,8 +20,8 @@ import (
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 	stakingtypes "github.com/cosmos/cosmos-sdk/x/staking/types"
-
-	"cosmossdk.io/core/store"
+	"github.com/stretchr/testify/require"
+	"github.com/stretchr/testify/suite"
 
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	module "github.com/onsonr/sonr/x/vault"
@@ -84,7 +81,7 @@ func SetupTest(t *testing.T) *testFixture {
 	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.didk)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
-	f.appModule = module.NewAppModule(encCfg.Codec, f.k)
+	f.appModule = module.NewAppModule(encCfg.Codec, f.k, f.didk)
 
 	return f
 }

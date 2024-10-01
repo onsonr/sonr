@@ -328,7 +328,7 @@ start-caddy:
 
 start-motr: motr
 	@echo "(start-proxy) Starting proxy server"
-	./build/motrd proxy
+	./build/motrd start
 
 ###############################################################################
 ###                                     help                                ###

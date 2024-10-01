@@ -134,6 +134,17 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	"github.com/spf13/cast"
+	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
+	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
+	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
+	poa "github.com/strangelove-ventures/poa"
+	poakeeper "github.com/strangelove-ventures/poa/keeper"
+	poamodule "github.com/strangelove-ventures/poa/module"
+	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
+	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
+	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
+
 	did "github.com/onsonr/sonr/x/did"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	didtypes "github.com/onsonr/sonr/x/did/types"
@@ -149,16 +160,6 @@ import (
 	vault "github.com/onsonr/sonr/x/vault"
 	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 	vaulttypes "github.com/onsonr/sonr/x/vault/types"
-	"github.com/spf13/cast"
-	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
-	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
-	globalfeetypes "github.com/strangelove-ventures/globalfee/x/globalfee/types"
-	poa "github.com/strangelove-ventures/poa"
-	poakeeper "github.com/strangelove-ventures/poa/keeper"
-	poamodule "github.com/strangelove-ventures/poa/module"
-	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
-	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
-	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
 )
 
 const appName = "sonr"
@@ -926,11 +927,12 @@ func NewChainApp(
 		),
 
 		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
-		vault.NewAppModule(appCodec, app.VaultKeeper),
-		macaroon.NewAppModule(appCodec, app.MacaroonKeeper),
 
-		service.NewAppModule(appCodec, app.ServiceKeeper),
-		oracle.NewAppModule(appCodec, app.OracleKeeper),
+		macaroon.NewAppModule(appCodec, app.MacaroonKeeper, app.DidKeeper),
+		vault.NewAppModule(appCodec, app.VaultKeeper, app.DidKeeper),
+
+		service.NewAppModule(appCodec, app.ServiceKeeper, app.DidKeeper, app.MacaroonKeeper),
+		oracle.NewAppModule(appCodec, app.OracleKeeper, app.DidKeeper, app.MacaroonKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,

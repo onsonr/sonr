@@ -4,23 +4,20 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/gorilla/mux"
-	"github.com/grpc-ecosystem/grpc-gateway/runtime"
-
-	abci "github.com/cometbft/cometbft/abci/types"
-
 	"cosmossdk.io/client/v2/autocli"
 	errorsmod "cosmossdk.io/errors"
-
+	abci "github.com/cometbft/cometbft/abci/types"
 	"github.com/cosmos/cosmos-sdk/client"
 	"github.com/cosmos/cosmos-sdk/codec"
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/module"
+	"github.com/gorilla/mux"
+	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	"github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/macaroon/types"
-	// this line is used by starport scaffolding # 1
 )
 
 const (
@@ -47,16 +44,19 @@ type AppModule struct {
 	AppModuleBasic
 
 	keeper keeper.Keeper
+	didk   didkeeper.Keeper
 }
 
 // NewAppModule constructor
 func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
+	didkeeper didkeeper.Keeper,
 ) *AppModule {
 	return &AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
+		didk:           didkeeper,
 	}
 }
 

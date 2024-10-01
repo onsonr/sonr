@@ -13,7 +13,7 @@ import (
 
 func NewProxyCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "proxy",
+		Use:   "start",
 		Short: "Starts the DWN proxy server for the local IPFS node",
 		Run: func(cmd *cobra.Command, args []string) {
 			// Echo instance

@@ -4,6 +4,11 @@ module models
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  General Components                       │
+// ╰───────────────────────────────────────────────────────────╯
+
 typealias FormState = "initial" | "error" | "success" | "warning"
 
 class Image {
@@ -26,6 +31,20 @@ class Button {
 	text: String
 	href: String
 }
+
+class Input {
+	label: String
+	type: String
+	placeholder: String
+	value: String?
+	error: String?
+	help: String?
+	required: Bool
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Homepage Components                      │
+// ╰───────────────────────────────────────────────────────────╯
 
 class Stats {
 	firstValue: String	
@@ -58,3 +77,58 @@ class Footer {
 
 hero : Hero
 stats : Stats
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Registration Components                  │
+// ╰───────────────────────────────────────────────────────────╯
+
+class RegistrationForm {
+	title: String
+	description: String
+	state: FormState
+	inputs: List<Input>
+}
+
+registrationForm : RegistrationForm = new RegistrationForm {
+	title = "Register";
+	description = "Create your Sonr account";
+	state = "initial";
+	inputs = [
+		new Input {
+			label = "Username";
+			type = "text";
+			placeholder = "Enter your username";
+			value = "";
+			error = "";
+			help = "";
+			required = true;
+		},
+		new Input {
+			label = "Email";
+			type = "email";
+			placeholder = "Enter your email";
+			value = "";
+			error = "";
+			help = "";
+			required = true;
+		},
+		new Input {
+			label = "Password";
+			type = "password";
+			placeholder = "Enter your password";
+			value = "";
+			error = "";
+			help = "";
+			required = true;
+		},
+		new Input {
+			label = "Confirm Password";
+			type = "password";
+			placeholder = "Confirm your password";
+			value = "";
+			error = "";
+			help = "";
+			required = true;
+		}
+	];
+};
