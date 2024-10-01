@@ -1,14 +1,36 @@
+## v0.6.0 (2024-09-30)
+
+### Feat
+
+- add Homebrew tap for sonr
+
+## v0.5.0 (2024-09-30)
+
+### Feat
+
+- update release workflow to use latest tag
+
 ## v0.4.0 (2024-09-30)
 
 ### Feat
 
+- **dwn**: add wasm build for dwn
+- add macaroon and oracle genesis states
 - add scheduled binary release workflow
 - introduce process-compose for process management
 - add counter animation to hero section
 - add registration page
 
+### Fix
+
+- Enable scheduled release workflow
+
 ### Refactor
 
+- remove old changelog entries
+- remove unnecessary checkout in scheduled-release workflow
+- rename build ID to sonr
+- remove unnecessary release existence check
 - move dwn wasm build to pkg directory
 
 ## v0.3.1 (2024-09-29)
@@ -124,7 +146,7 @@
 - extract root command creation to separate file
 - move ipfs setup to function
 - remove unnecessary proxy config
-- rename  script to
+- rename script to
 - move DWN proxy server logic to separate file
 - use htmx instead of dwn for vault client
 - remove unused environment variables
@@ -132,7 +154,7 @@
 - use staking keeper in DID keeper
 - remove unused dependencies
 - remove unused image building workflow
-- add  field to
+- add field to
 - Update KeyKind Enum to have proper naming conventions
 - Update `DIDNamespace` to have proper naming convention
 - expose ports directly in docker-compose
