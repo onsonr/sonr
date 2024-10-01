@@ -9,7 +9,6 @@ import (
 templ View(c echo.Context) {
 	@blocks.Layout("Sonr.ID", true) {
 		@blocks.Card("register-view", blocks.SizeMedium) {
-			@blocks.H2("Account Registration")
 			@blocks.Spacer()
 			@blocks.Breadcrumbs()
 			@basicInfoForm(formstate.Initial)
