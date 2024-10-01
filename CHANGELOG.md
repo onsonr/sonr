@@ -1,3 +1,26 @@
+## v0.7.0 (2024-10-01)
+
+### Feat
+
+- add DWN resolver field
+- add stats section to homepage
+- implement hero section using Pkl
+- add PKL schema for message formats
+
+### Fix
+
+- adjust hero image dimensions
+- **Input**: Change  type from  to
+- update hero image height in config.pkl
+
+### Refactor
+
+- rename motrd to motr
+- update hero image dimensions
+- move nebula configuration to static file
+- rename buf-publish.yml to publish-assets.yml
+- remove unused  field from
+
 ## v0.6.0 (2024-09-30)
 
 ### Feat
