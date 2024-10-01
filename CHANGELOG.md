@@ -1,3 +1,13 @@
+## v0.10.0 (2024-10-01)
+
+### Feat
+
+- allow manual release triggers
+
+### Fix
+
+- **versioning**: revert version to 0.9.0
+
 ## v0.9.0 (2024-10-01)
 
 ### Feat
