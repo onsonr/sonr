@@ -17,13 +17,13 @@ func Home(c echo.Context) error {
 
 templ homeView(hero *models.Hero) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
-		@sections.HeaderMarketingNav()
+		@sections.MarketingHeader()
 		@sections.SectionHero(hero)
 		@sections.Highlights()
 		@sections.Features()
 		@sections.Bento()
-		@sections.Testimonials()
-		@sections.CTA()
-		@sections.FooterMarketingNav()
+		@sections.Lowlights()
+		@sections.CallToAction()
+		@sections.MarketingFooter()
 	}
 }
