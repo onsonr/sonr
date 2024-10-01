@@ -82,7 +82,6 @@ brews:
   - name: sonr
     ids:
       - default
-      - motr
     commit_author:
       name: goreleaserbot
       email: bot@goreleaser.com
