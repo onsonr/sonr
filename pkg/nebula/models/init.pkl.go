@@ -11,5 +11,7 @@ func init() {
 	pkl.RegisterMapping("models#Stats", Stats{})
 	pkl.RegisterMapping("models#Link", Link{})
 	pkl.RegisterMapping("models#SocialLink", SocialLink{})
+	pkl.RegisterMapping("models#Input", Input{})
 	pkl.RegisterMapping("models#Footer", Footer{})
+	pkl.RegisterMapping("models#RegistrationForm", RegistrationForm{})
 }
