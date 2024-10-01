@@ -1,9 +1,3 @@
-## v0.10.0 (2024-10-01)
-
-### Feat
-
-- allow manual release triggers
-
 ## v0.9.0 (2024-10-01)
 
 ### Feat
@@ -40,7 +34,7 @@
 ### Fix
 
 - adjust hero image dimensions
-- **Input**: Change  type from  to
+- **Input**: Change type from to
 - update hero image height in config.pkl
 
 ### Refactor
@@ -49,7 +43,7 @@
 - update hero image dimensions
 - move nebula configuration to static file
 - rename buf-publish.yml to publish-assets.yml
-- remove unused  field from
+- remove unused field from
 
 ## v0.6.0 (2024-09-30)
 
