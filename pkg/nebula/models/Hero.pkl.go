@@ -15,6 +15,4 @@ type Hero struct {
 	SecondaryButton *Button `pkl:"secondaryButton"`
 
 	Image *Image `pkl:"image"`
-
-	Stats []*Stat `pkl:"stats"`
 }

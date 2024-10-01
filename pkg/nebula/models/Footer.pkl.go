@@ -4,7 +4,13 @@ package models
 type Footer struct {
 	Logo *Image `pkl:"logo"`
 
-	SocialLinks []*SocialLink `pkl:"socialLinks"`
+	MediumLink *SocialLink `pkl:"mediumLink"`
+
+	TwitterLink *SocialLink `pkl:"twitterLink"`
+
+	DiscordLink *SocialLink `pkl:"discordLink"`
+
+	GithubLink *SocialLink `pkl:"githubLink"`
 
 	CompanyLinks []*Link `pkl:"companyLinks"`
 

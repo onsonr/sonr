@@ -9,6 +9,8 @@ import (
 
 type Models struct {
 	Hero *Hero `pkl:"hero"`
+
+	Stats *Stats `pkl:"stats"`
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Models
