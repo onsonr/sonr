@@ -270,6 +270,26 @@ class Profile {
   updatedAt: String?
 }
 
+class Session {
+  @PrimaryKey
+  id: String
+  
+  @JsonField
+  subject: String
+  
+  @JsonField
+  controller: Bech32
+  
+  @JsonField
+  origin: String
+  
+  @JsonField
+  createdAt: String?
+  
+  @JsonField
+  updatedAt: String?
+}
+
 
 db_name: String = "vault"
 db_version: Int = 1
