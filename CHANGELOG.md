@@ -1,3 +1,9 @@
+## v0.10.0 (2024-10-01)
+
+### Feat
+
+- allow manual release triggers
+
 ## v0.9.0 (2024-10-01)
 
 ### Feat
