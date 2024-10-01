@@ -1,4 +1,4 @@
-name: "Release Binary"
+name: Scheduled Release
 
 on:
   push:
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   goreleaser:
+    name: Release motr, sonrd, and DWN
     permissions: write-all
     runs-on: ubuntu-latest
     steps:

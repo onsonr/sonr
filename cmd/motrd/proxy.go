@@ -1,11 +1,7 @@
 package main
 
 import (
-	"context"
 	"net/http"
-	"os"
-	"os/signal"
-	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/gommon/log"
@@ -30,26 +26,11 @@ func NewProxyCmd() *cobra.Command {
 			}
 
 			e.GET("/", pages.Home)
+			e.GET("/config", nebula.GetConfig)
 			e.GET("/allocate", pages.Profile)
 
-			// Start server
-			ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-			defer stop()
-			// Start server
-			go func() {
-				if err := e.Start(":1323"); err != nil && err != http.ErrServerClosed {
-					e.Logger.Fatal("shutting down the server")
-				}
-			}()
-
-			// Wait for interrupt signal to gracefully shutdown the server with a timeout of 10 seconds.
-			<-ctx.Done()
-			ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-			defer cancel()
-
-			// Shutdown the server with 10 seconds timeout.
-			if err := e.Shutdown(ctx); err != nil {
-				e.Logger.Fatal(err)
+			if err := e.Start(":1323"); err != http.ErrServerClosed {
+				log.Fatal(err)
 			}
 		},
 	}

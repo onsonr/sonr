@@ -1,4 +1,4 @@
-name: Publish to buf.build/didao/sonr
+name: Upload Public Assets
 on:
   push:
     branches:
@@ -10,6 +10,7 @@ permissions:
 
 jobs:
   buf_push:
+    name: Publish to buf.build/onsonr/sonr
     runs-on: ubuntu-latest
     steps:
       # Run `git checkout`
@@ -25,6 +26,7 @@ jobs:
 
   upload_pkl:
     runs-on: ubuntu-latest
+    name: Publish to pkl.sh
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -40,6 +42,7 @@ jobs:
 
   upload_nebula_cdn:
     runs-on: ubuntu-latest
+    name: Publish to cdn.sonr.id
     steps:
       - name: checkout
         uses: actions/checkout@v4

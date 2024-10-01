@@ -1,0 +1,44 @@
+@go.Package { name = "github.com/onsonr/sonr/pkg/nebula/models" }
+
+module models
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class Image {
+	src: String
+	width: Int
+	height: Int
+}
+
+class Link {
+	text: String
+	href: String
+}
+
+class SocialLink {
+	link: Link
+	icon: String
+}
+
+class Button {
+	text: String
+	href: String
+}
+
+class Stat {
+	value: String
+	label: String
+}
+
+class Hero {
+	titleFirst: String
+	titleEmphasis: String
+	titleSecond: String
+	subtitle: String
+  primaryButton: Button
+  secondaryButton: Button
+  image: Image
+  stats: List<Stat>
+}
+
+

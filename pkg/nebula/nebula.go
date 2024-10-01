@@ -11,6 +11,9 @@ import (
 //go:embed assets
 var embeddedFiles embed.FS
 
+//go:embed assets/config.pkl
+var config []byte
+
 func getHTTPFS() (http.FileSystem, error) {
 	fsys, err := fs.Sub(embeddedFiles, "assets")
 	if err != nil {
@@ -29,4 +32,9 @@ func UseAssets(e *echo.Echo) error {
 	e.GET("/", echo.WrapHandler(assets))
 	e.GET("/assets/*", echo.WrapHandler(http.StripPrefix("/assets/", assets)))
 	return nil
+}
+
+// GetConfig is a middleware that serves the config file
+func GetConfig(e echo.Context) error {
+	return e.Blob(http.StatusOK, "application/octet-stream", config)
 }
