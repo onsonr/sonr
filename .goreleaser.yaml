@@ -54,7 +54,7 @@ release:
   github:
     owner: onsonr
     name: sonr
-  name_template: "{{.Now.Format '2006.11.22'}}"
+  name_template: '{{.Now.Format "2006.01.02"}}'
   draft: false
   replace_existing_draft: true
   replace_existing_artifacts: true
