@@ -1,3 +1,9 @@
+## v0.5.3 (2024-10-02)
+
+### Fix
+
+- remove unnecessary telegram message template
+
 ## v0.5.2 (2024-10-02)
 
 ### Feat
