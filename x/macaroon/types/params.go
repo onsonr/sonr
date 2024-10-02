@@ -6,8 +6,11 @@ import (
 
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
-	// TODO:
-	return Params{}
+	return Params{
+		Methods: DefaultMethods(),
+		Scopes:  DefaultScopes(),
+		Caveats: DefaultCaveats(),
+	}
 }
 
 // Stringer method for Params.
@@ -22,6 +25,28 @@ func (p Params) String() string {
 
 // Validate does the sanity check on the params.
 func (p Params) Validate() error {
-	// TODO:
 	return nil
+}
+
+func DefaultMethods() *Methods {
+	return &Methods{
+		Default:   "did:sonr",
+		Supported: []string{"did:key", "did:web", "did:sonr", "did:ipfs", "did:btcr", "did:ethr"},
+	}
+}
+
+func DefaultScopes() *Scopes {
+	return &Scopes{
+		Base:      "openid profile sonr.address",
+		Supported: []string{"create", "read", "update", "delete", "sign", "verify", "simulate", "execute", "broadcast", "admin"},
+	}
+}
+
+func DefaultCaveats() *Caveats {
+	return &Caveats{
+		// First party - JWT Format
+		SupportedFirstParty: []string{"aud", "exp", "iat", "iss", "nbf", "nonce", "sub"},
+		// Third party - UCAN Format
+		SupportedThirdParty: []string{"cap", "nbf", "exp", "att", "prf", "rmt", "sig", "ucv"},
+	}
 }

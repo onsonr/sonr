@@ -6,10 +6,12 @@ import (
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
 	"github.com/cosmos/cosmos-sdk/codec"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/onsonr/sonr/api/macaroon/v1"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	"github.com/onsonr/sonr/x/macaroon/types"
 )
 
@@ -23,6 +25,9 @@ type Keeper struct {
 	Params collections.Item[types.Params]
 	OrmDB  apiv1.StateStore
 
+	AccountKeeper authkeeper.AccountKeeper
+	DIDKeeper     didkeeper.Keeper
+
 	authority string
 }
 
@@ -32,6 +37,8 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	logger log.Logger,
 	authority string,
+	accKeeper authkeeper.AccountKeeper,
+	didKeeper didkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 
@@ -57,6 +64,9 @@ func NewKeeper(
 
 		Params: collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		OrmDB:  store,
+
+		AccountKeeper: accKeeper,
+		DIDKeeper:     didKeeper,
 
 		authority: authority,
 	}

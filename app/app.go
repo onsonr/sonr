@@ -626,12 +626,34 @@ func NewChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	// Create the oracle Keeper
-	app.OracleKeeper = oraclekeeper.NewKeeper(
+	// Create the did Keeper
+	app.DidKeeper = didkeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[oracletypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.NFTKeeper,
+		app.StakingKeeper,
+	)
+
+	// Create the vault Keeper
+	app.VaultKeeper = vaultkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.DidKeeper,
+	)
+	// Create the macaroon Keeper
+	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.DidKeeper,
 	)
 
 	// Create the service Keeper
@@ -642,30 +664,10 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)
 
-	// Create the macaroon Keeper
-	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
+	// Create the oracle Keeper
+	app.OracleKeeper = oraclekeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Create the vault Keeper
-	app.VaultKeeper = vaultkeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.DidKeeper,
-	)
-
-	// Create the did Keeper
-	app.DidKeeper = didkeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
-		app.AccountKeeper,
-		app.NFTKeeper,
-		app.StakingKeeper,
+		sdkruntime.NewKVStoreService(keys[oracletypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

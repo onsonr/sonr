@@ -135,7 +135,8 @@ func (m *Params) GetCaveats() *Caveats {
 
 // Methods defines the available DID methods
 type Methods struct {
-	Methods []string `protobuf:"bytes,1,rep,name=methods,proto3" json:"methods,omitempty"`
+	Default   string   `protobuf:"bytes,1,opt,name=default,proto3" json:"default,omitempty"`
+	Supported []string `protobuf:"bytes,2,rep,name=supported,proto3" json:"supported,omitempty"`
 }
 
 func (m *Methods) Reset()         { *m = Methods{} }
@@ -171,16 +172,24 @@ func (m *Methods) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Methods proto.InternalMessageInfo
 
-func (m *Methods) GetMethods() []string {
+func (m *Methods) GetDefault() string {
 	if m != nil {
-		return m.Methods
+		return m.Default
+	}
+	return ""
+}
+
+func (m *Methods) GetSupported() []string {
+	if m != nil {
+		return m.Supported
 	}
 	return nil
 }
 
 // Scopes defines the set of scopes
 type Scopes struct {
-	Scopes []string `protobuf:"bytes,1,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	Base      string   `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
+	Supported []string `protobuf:"bytes,2,rep,name=supported,proto3" json:"supported,omitempty"`
 }
 
 func (m *Scopes) Reset()         { *m = Scopes{} }
@@ -216,16 +225,24 @@ func (m *Scopes) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Scopes proto.InternalMessageInfo
 
-func (m *Scopes) GetScopes() []string {
+func (m *Scopes) GetBase() string {
 	if m != nil {
-		return m.Scopes
+		return m.Base
+	}
+	return ""
+}
+
+func (m *Scopes) GetSupported() []string {
+	if m != nil {
+		return m.Supported
 	}
 	return nil
 }
 
 // Caveats defines the available caveats
 type Caveats struct {
-	Caveats []string `protobuf:"bytes,1,rep,name=caveats,proto3" json:"caveats,omitempty"`
+	SupportedFirstParty []string `protobuf:"bytes,1,rep,name=supported_first_party,json=supportedFirstParty,proto3" json:"supported_first_party,omitempty"`
+	SupportedThirdParty []string `protobuf:"bytes,2,rep,name=supported_third_party,json=supportedThirdParty,proto3" json:"supported_third_party,omitempty"`
 }
 
 func (m *Caveats) Reset()         { *m = Caveats{} }
@@ -261,9 +278,16 @@ func (m *Caveats) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Caveats proto.InternalMessageInfo
 
-func (m *Caveats) GetCaveats() []string {
+func (m *Caveats) GetSupportedFirstParty() []string {
 	if m != nil {
-		return m.Caveats
+		return m.SupportedFirstParty
+	}
+	return nil
+}
+
+func (m *Caveats) GetSupportedThirdParty() []string {
+	if m != nil {
+		return m.SupportedThirdParty
 	}
 	return nil
 }
@@ -279,29 +303,33 @@ func init() {
 func init() { proto.RegisterFile("macaroon/v1/genesis.proto", fileDescriptor_06e0b5dfdf5e52ba) }
 
 var fileDescriptor_06e0b5dfdf5e52ba = []byte{
-	// 343 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0x92, 0xcc, 0x4d, 0x4c, 0x4e,
-	0x2c, 0xca, 0xcf, 0xcf, 0xd3, 0x2f, 0x33, 0xd4, 0x4f, 0x4f, 0xcd, 0x4b, 0x2d, 0xce, 0x2c, 0xd6,
-	0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0xe2, 0x86, 0x49, 0xe9, 0x95, 0x19, 0x4a, 0x09, 0x26, 0xe6,
-	0x66, 0xe6, 0xe5, 0xeb, 0x83, 0x49, 0x88, 0xbc, 0x94, 0x48, 0x7a, 0x7e, 0x7a, 0x3e, 0x98, 0xa9,
-	0x0f, 0x62, 0x41, 0x44, 0x95, 0x1c, 0xb9, 0x78, 0xdc, 0x21, 0xc6, 0x04, 0x97, 0x24, 0x96, 0xa4,
-	0x0a, 0x19, 0x72, 0xb1, 0x15, 0x24, 0x16, 0x25, 0xe6, 0x16, 0x4b, 0x30, 0x2a, 0x30, 0x6a, 0x70,
-	0x1b, 0x09, 0xeb, 0x21, 0x19, 0xab, 0x17, 0x00, 0x96, 0x72, 0x62, 0x39, 0x71, 0x4f, 0x9e, 0x21,
-	0x08, 0xaa, 0x50, 0x69, 0x33, 0x23, 0x17, 0x1b, 0x44, 0x42, 0x48, 0x8f, 0x8b, 0x3d, 0x37, 0xb5,
-	0x24, 0x23, 0x3f, 0x05, 0xa6, 0x5d, 0x04, 0x45, 0xbb, 0x2f, 0x44, 0x2e, 0x08, 0xa6, 0x48, 0x48,
-	0x9b, 0x8b, 0xad, 0x38, 0x39, 0xbf, 0x20, 0xb5, 0x58, 0x82, 0x09, 0x8b, 0x6d, 0xc1, 0x60, 0xa9,
-	0x20, 0xa8, 0x12, 0x90, 0xe1, 0xc9, 0x89, 0x65, 0xa9, 0x89, 0x25, 0xc5, 0x12, 0xcc, 0x58, 0x0c,
-	0x77, 0x86, 0xc8, 0x05, 0xc1, 0x14, 0x59, 0xc9, 0xcc, 0x58, 0x20, 0xcf, 0xf0, 0x62, 0x81, 0x3c,
-	0x63, 0xd7, 0xf3, 0x0d, 0x5a, 0xfc, 0xf0, 0x80, 0x83, 0xba, 0xda, 0x8e, 0x8b, 0x1d, 0xea, 0x1c,
-	0x21, 0x09, 0x64, 0x57, 0x33, 0x6b, 0x70, 0xc2, 0xdd, 0x67, 0x25, 0x09, 0xd3, 0x2e, 0x00, 0xd7,
-	0x0e, 0x95, 0x52, 0xb2, 0xe2, 0x62, 0x83, 0xb8, 0x4f, 0x48, 0x0c, 0xee, 0x09, 0x88, 0x6e, 0x28,
-	0xcf, 0x4a, 0x02, 0xd3, 0x6e, 0x88, 0x8c, 0x92, 0x2d, 0x17, 0x3b, 0xd4, 0xb5, 0x20, 0xbb, 0x61,
-	0x9e, 0x82, 0xda, 0x0d, 0x73, 0x3e, 0x16, 0xed, 0x10, 0x29, 0x27, 0xc7, 0x13, 0x8f, 0xe4, 0x18,
-	0x2f, 0x3c, 0x92, 0x63, 0x7c, 0xf0, 0x48, 0x8e, 0x71, 0xc2, 0x63, 0x39, 0x86, 0x0b, 0x8f, 0xe5,
-	0x18, 0x6e, 0x3c, 0x96, 0x63, 0x88, 0x52, 0x4f, 0xcf, 0x2c, 0xc9, 0x28, 0x4d, 0xd2, 0x4b, 0xce,
-	0xcf, 0xd5, 0xcf, 0xcf, 0x2b, 0xce, 0xcf, 0x2b, 0xd2, 0x07, 0x13, 0x15, 0xfa, 0x70, 0x33, 0x4a,
-	0x2a, 0x0b, 0x52, 0x8b, 0x93, 0xd8, 0xc0, 0xb1, 0x6f, 0x0c, 0x08, 0x00, 0x00, 0xff, 0xff, 0xe5,
-	0x08, 0x7e, 0x28, 0x50, 0x02, 0x00, 0x00,
+	// 414 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0xcb, 0xd3, 0x30,
+	0x18, 0xc7, 0x9b, 0xbd, 0x2f, 0x2d, 0xcb, 0x2b, 0xa8, 0xd9, 0x84, 0x6e, 0x8c, 0x6e, 0xf4, 0xe2,
+	0x50, 0x68, 0xd9, 0xbc, 0xed, 0xb6, 0x09, 0x7a, 0x12, 0x46, 0xb7, 0x93, 0x08, 0x23, 0x6b, 0xb3,
+	0xae, 0x60, 0x9b, 0x92, 0x64, 0xc3, 0x7d, 0x05, 0xbd, 0x78, 0xf4, 0xb8, 0x8f, 0x20, 0xf8, 0x25,
+	0x76, 0xdc, 0xd1, 0x93, 0xc8, 0x76, 0xd0, 0x8f, 0x21, 0x4d, 0xd2, 0xea, 0x74, 0xe0, 0x25, 0x3c,
+	0xcd, 0xef, 0xf9, 0xff, 0xfb, 0x7f, 0x1e, 0x02, 0x5b, 0x29, 0x0e, 0x31, 0xa3, 0x34, 0xf3, 0xb7,
+	0x03, 0x3f, 0x26, 0x19, 0xe1, 0x09, 0xf7, 0x72, 0x46, 0x05, 0x45, 0x77, 0x25, 0xf2, 0xb6, 0x83,
+	0xf6, 0x43, 0x9c, 0x26, 0x19, 0xf5, 0xe5, 0xa9, 0x78, 0xbb, 0x19, 0xd3, 0x98, 0xca, 0xd2, 0x2f,
+	0x2a, 0x75, 0xeb, 0x8e, 0xe1, 0xbd, 0x97, 0xca, 0x66, 0x26, 0xb0, 0x20, 0x68, 0x00, 0xcd, 0x1c,
+	0x33, 0x9c, 0x72, 0x1b, 0xf4, 0x40, 0xff, 0x6e, 0xd8, 0xf0, 0xfe, 0xb0, 0xf5, 0xa6, 0x12, 0x4d,
+	0x6e, 0x0f, 0xdf, 0xba, 0x46, 0xa0, 0x1b, 0xdd, 0x2f, 0x00, 0x9a, 0x0a, 0x20, 0x0f, 0x5a, 0x29,
+	0x11, 0x6b, 0x1a, 0x95, 0xf2, 0xe6, 0x85, 0xfc, 0x95, 0x62, 0x41, 0xd9, 0x84, 0x9e, 0x42, 0x93,
+	0x87, 0x34, 0x27, 0xdc, 0xae, 0x5d, 0xf9, 0xdb, 0x4c, 0xa2, 0x40, 0xb7, 0x14, 0xe6, 0x21, 0xde,
+	0x12, 0x2c, 0xb8, 0x7d, 0x73, 0xc5, 0xfc, 0xb9, 0x62, 0x41, 0xd9, 0x34, 0xea, 0x7c, 0xda, 0x77,
+	0x8d, 0x9f, 0xfb, 0x2e, 0x78, 0xff, 0xe3, 0xf3, 0x93, 0xfb, 0xd5, 0xe2, 0x74, 0xea, 0x37, 0xd0,
+	0xd2, 0x71, 0x90, 0x0d, 0xad, 0x88, 0xac, 0xf0, 0xe6, 0xad, 0x90, 0xa9, 0xeb, 0x41, 0xf9, 0x89,
+	0x3a, 0xb0, 0xce, 0x37, 0x79, 0x4e, 0x99, 0x20, 0x91, 0x5d, 0xeb, 0xdd, 0xf4, 0xeb, 0xc1, 0xef,
+	0x8b, 0x51, 0xab, 0x34, 0x7f, 0x50, 0x99, 0xeb, 0xc1, 0xdc, 0x39, 0x34, 0x55, 0x7a, 0x84, 0xe0,
+	0xed, 0x12, 0x73, 0xa2, 0x9d, 0x65, 0xfd, 0x1f, 0x5b, 0xfb, 0xdf, 0xcc, 0x6a, 0x03, 0xee, 0x07,
+	0x00, 0x2d, 0x3d, 0x26, 0x1a, 0xc2, 0x47, 0x95, 0x64, 0xb1, 0x4a, 0x18, 0x17, 0x8b, 0x1c, 0x33,
+	0xb1, 0xb3, 0x81, 0xf4, 0x6b, 0x54, 0xf0, 0x45, 0xc1, 0xa6, 0x05, 0xba, 0xd4, 0x88, 0x75, 0xc2,
+	0x22, 0xad, 0xa9, 0xfd, 0xa5, 0x99, 0x17, 0x4c, 0x6a, 0xae, 0xa5, 0x51, 0x0b, 0x9e, 0x8c, 0x0f,
+	0x27, 0x07, 0x1c, 0x4f, 0x0e, 0xf8, 0x7e, 0x72, 0xc0, 0xc7, 0xb3, 0x63, 0x1c, 0xcf, 0x8e, 0xf1,
+	0xf5, 0xec, 0x18, 0xaf, 0x1f, 0xc7, 0x89, 0x58, 0x6f, 0x96, 0x5e, 0x48, 0x53, 0x9f, 0x66, 0x9c,
+	0x66, 0xcc, 0x97, 0xc7, 0x3b, 0xbf, 0xf2, 0x10, 0xbb, 0x9c, 0xf0, 0xa5, 0x29, 0x1f, 0xe1, 0xb3,
+	0x5f, 0x01, 0x00, 0x00, 0xff, 0xff, 0xa7, 0xa6, 0x33, 0x5b, 0xd7, 0x02, 0x00, 0x00,
 }
 
 func (this *Params) Equal(that interface{}) bool {
@@ -353,11 +381,14 @@ func (this *Methods) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if len(this.Methods) != len(that1.Methods) {
+	if this.Default != that1.Default {
 		return false
 	}
-	for i := range this.Methods {
-		if this.Methods[i] != that1.Methods[i] {
+	if len(this.Supported) != len(that1.Supported) {
+		return false
+	}
+	for i := range this.Supported {
+		if this.Supported[i] != that1.Supported[i] {
 			return false
 		}
 	}
@@ -382,11 +413,14 @@ func (this *Scopes) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if len(this.Scopes) != len(that1.Scopes) {
+	if this.Base != that1.Base {
 		return false
 	}
-	for i := range this.Scopes {
-		if this.Scopes[i] != that1.Scopes[i] {
+	if len(this.Supported) != len(that1.Supported) {
+		return false
+	}
+	for i := range this.Supported {
+		if this.Supported[i] != that1.Supported[i] {
 			return false
 		}
 	}
@@ -411,11 +445,19 @@ func (this *Caveats) Equal(that interface{}) bool {
 	} else if this == nil {
 		return false
 	}
-	if len(this.Caveats) != len(that1.Caveats) {
+	if len(this.SupportedFirstParty) != len(that1.SupportedFirstParty) {
 		return false
 	}
-	for i := range this.Caveats {
-		if this.Caveats[i] != that1.Caveats[i] {
+	for i := range this.SupportedFirstParty {
+		if this.SupportedFirstParty[i] != that1.SupportedFirstParty[i] {
+			return false
+		}
+	}
+	if len(this.SupportedThirdParty) != len(that1.SupportedThirdParty) {
+		return false
+	}
+	for i := range this.SupportedThirdParty {
+		if this.SupportedThirdParty[i] != that1.SupportedThirdParty[i] {
 			return false
 		}
 	}
@@ -533,14 +575,21 @@ func (m *Methods) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Methods) > 0 {
-		for iNdEx := len(m.Methods) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Methods[iNdEx])
-			copy(dAtA[i:], m.Methods[iNdEx])
-			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Methods[iNdEx])))
+	if len(m.Supported) > 0 {
+		for iNdEx := len(m.Supported) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Supported[iNdEx])
+			copy(dAtA[i:], m.Supported[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Supported[iNdEx])))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
 		}
+	}
+	if len(m.Default) > 0 {
+		i -= len(m.Default)
+		copy(dAtA[i:], m.Default)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Default)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -565,14 +614,21 @@ func (m *Scopes) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Scopes) > 0 {
-		for iNdEx := len(m.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Scopes[iNdEx])
-			copy(dAtA[i:], m.Scopes[iNdEx])
-			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Scopes[iNdEx])))
+	if len(m.Supported) > 0 {
+		for iNdEx := len(m.Supported) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.Supported[iNdEx])
+			copy(dAtA[i:], m.Supported[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Supported[iNdEx])))
 			i--
-			dAtA[i] = 0xa
+			dAtA[i] = 0x12
 		}
+	}
+	if len(m.Base) > 0 {
+		i -= len(m.Base)
+		copy(dAtA[i:], m.Base)
+		i = encodeVarintGenesis(dAtA, i, uint64(len(m.Base)))
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -597,11 +653,20 @@ func (m *Caveats) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	_ = i
 	var l int
 	_ = l
-	if len(m.Caveats) > 0 {
-		for iNdEx := len(m.Caveats) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Caveats[iNdEx])
-			copy(dAtA[i:], m.Caveats[iNdEx])
-			i = encodeVarintGenesis(dAtA, i, uint64(len(m.Caveats[iNdEx])))
+	if len(m.SupportedThirdParty) > 0 {
+		for iNdEx := len(m.SupportedThirdParty) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.SupportedThirdParty[iNdEx])
+			copy(dAtA[i:], m.SupportedThirdParty[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.SupportedThirdParty[iNdEx])))
+			i--
+			dAtA[i] = 0x12
+		}
+	}
+	if len(m.SupportedFirstParty) > 0 {
+		for iNdEx := len(m.SupportedFirstParty) - 1; iNdEx >= 0; iNdEx-- {
+			i -= len(m.SupportedFirstParty[iNdEx])
+			copy(dAtA[i:], m.SupportedFirstParty[iNdEx])
+			i = encodeVarintGenesis(dAtA, i, uint64(len(m.SupportedFirstParty[iNdEx])))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -658,8 +723,12 @@ func (m *Methods) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.Methods) > 0 {
-		for _, s := range m.Methods {
+	l = len(m.Default)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.Supported) > 0 {
+		for _, s := range m.Supported {
 			l = len(s)
 			n += 1 + l + sovGenesis(uint64(l))
 		}
@@ -673,8 +742,12 @@ func (m *Scopes) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.Scopes) > 0 {
-		for _, s := range m.Scopes {
+	l = len(m.Base)
+	if l > 0 {
+		n += 1 + l + sovGenesis(uint64(l))
+	}
+	if len(m.Supported) > 0 {
+		for _, s := range m.Supported {
 			l = len(s)
 			n += 1 + l + sovGenesis(uint64(l))
 		}
@@ -688,8 +761,14 @@ func (m *Caveats) Size() (n int) {
 	}
 	var l int
 	_ = l
-	if len(m.Caveats) > 0 {
-		for _, s := range m.Caveats {
+	if len(m.SupportedFirstParty) > 0 {
+		for _, s := range m.SupportedFirstParty {
+			l = len(s)
+			n += 1 + l + sovGenesis(uint64(l))
+		}
+	}
+	if len(m.SupportedThirdParty) > 0 {
+		for _, s := range m.SupportedThirdParty {
 			l = len(s)
 			n += 1 + l + sovGenesis(uint64(l))
 		}
@@ -975,7 +1054,7 @@ func (m *Methods) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Methods", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Default", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1003,7 +1082,39 @@ func (m *Methods) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Methods = append(m.Methods, string(dAtA[iNdEx:postIndex]))
+			m.Default = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Supported", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Supported = append(m.Supported, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1057,7 +1168,7 @@ func (m *Scopes) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field Base", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1085,7 +1196,39 @@ func (m *Scopes) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Scopes = append(m.Scopes, string(dAtA[iNdEx:postIndex]))
+			m.Base = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Supported", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Supported = append(m.Supported, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1139,7 +1282,7 @@ func (m *Caveats) Unmarshal(dAtA []byte) error {
 		switch fieldNum {
 		case 1:
 			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Caveats", wireType)
+				return fmt.Errorf("proto: wrong wireType = %d for field SupportedFirstParty", wireType)
 			}
 			var stringLen uint64
 			for shift := uint(0); ; shift += 7 {
@@ -1167,7 +1310,39 @@ func (m *Caveats) Unmarshal(dAtA []byte) error {
 			if postIndex > l {
 				return io.ErrUnexpectedEOF
 			}
-			m.Caveats = append(m.Caveats, string(dAtA[iNdEx:postIndex]))
+			m.SupportedFirstParty = append(m.SupportedFirstParty, string(dAtA[iNdEx:postIndex]))
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field SupportedThirdParty", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowGenesis
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthGenesis
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.SupportedThirdParty = append(m.SupportedThirdParty, string(dAtA[iNdEx:postIndex]))
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

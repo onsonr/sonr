@@ -1042,61 +1042,63 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Methods_1_list)(nil)
+var _ protoreflect.List = (*_Methods_2_list)(nil)
 
-type _Methods_1_list struct {
+type _Methods_2_list struct {
 	list *[]string
 }
 
-func (x *_Methods_1_list) Len() int {
+func (x *_Methods_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Methods_1_list) Get(i int) protoreflect.Value {
+func (x *_Methods_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Methods_1_list) Set(i int, value protoreflect.Value) {
+func (x *_Methods_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Methods_1_list) Append(value protoreflect.Value) {
+func (x *_Methods_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Methods_1_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Methods at list field Methods as it is not of Message kind"))
+func (x *_Methods_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Methods at list field Supported as it is not of Message kind"))
 }
 
-func (x *_Methods_1_list) Truncate(n int) {
+func (x *_Methods_2_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Methods_1_list) NewElement() protoreflect.Value {
+func (x *_Methods_2_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Methods_1_list) IsValid() bool {
+func (x *_Methods_2_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Methods         protoreflect.MessageDescriptor
-	fd_Methods_methods protoreflect.FieldDescriptor
+	md_Methods           protoreflect.MessageDescriptor
+	fd_Methods_default   protoreflect.FieldDescriptor
+	fd_Methods_supported protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_macaroon_v1_genesis_proto_init()
 	md_Methods = File_macaroon_v1_genesis_proto.Messages().ByName("Methods")
-	fd_Methods_methods = md_Methods.Fields().ByName("methods")
+	fd_Methods_default = md_Methods.Fields().ByName("default")
+	fd_Methods_supported = md_Methods.Fields().ByName("supported")
 }
 
 var _ protoreflect.Message = (*fastReflection_Methods)(nil)
@@ -1164,9 +1166,15 @@ func (x *fastReflection_Methods) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Methods) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Methods) != 0 {
-		value := protoreflect.ValueOfList(&_Methods_1_list{list: &x.Methods})
-		if !f(fd_Methods_methods, value) {
+	if x.Default != "" {
+		value := protoreflect.ValueOfString(x.Default)
+		if !f(fd_Methods_default, value) {
+			return
+		}
+	}
+	if len(x.Supported) != 0 {
+		value := protoreflect.ValueOfList(&_Methods_2_list{list: &x.Supported})
+		if !f(fd_Methods_supported, value) {
 			return
 		}
 	}
@@ -1185,8 +1193,10 @@ func (x *fastReflection_Methods) Range(f func(protoreflect.FieldDescriptor, prot
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Methods) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "macaroon.v1.Methods.methods":
-		return len(x.Methods) != 0
+	case "macaroon.v1.Methods.default":
+		return x.Default != ""
+	case "macaroon.v1.Methods.supported":
+		return len(x.Supported) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Methods"))
@@ -1203,8 +1213,10 @@ func (x *fastReflection_Methods) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Methods) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "macaroon.v1.Methods.methods":
-		x.Methods = nil
+	case "macaroon.v1.Methods.default":
+		x.Default = ""
+	case "macaroon.v1.Methods.supported":
+		x.Supported = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Methods"))
@@ -1221,11 +1233,14 @@ func (x *fastReflection_Methods) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Methods) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "macaroon.v1.Methods.methods":
-		if len(x.Methods) == 0 {
-			return protoreflect.ValueOfList(&_Methods_1_list{})
+	case "macaroon.v1.Methods.default":
+		value := x.Default
+		return protoreflect.ValueOfString(value)
+	case "macaroon.v1.Methods.supported":
+		if len(x.Supported) == 0 {
+			return protoreflect.ValueOfList(&_Methods_2_list{})
 		}
-		listValue := &_Methods_1_list{list: &x.Methods}
+		listValue := &_Methods_2_list{list: &x.Supported}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -1247,10 +1262,12 @@ func (x *fastReflection_Methods) Get(descriptor protoreflect.FieldDescriptor) pr
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Methods) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "macaroon.v1.Methods.methods":
+	case "macaroon.v1.Methods.default":
+		x.Default = value.Interface().(string)
+	case "macaroon.v1.Methods.supported":
 		lv := value.List()
-		clv := lv.(*_Methods_1_list)
-		x.Methods = *clv.list
+		clv := lv.(*_Methods_2_list)
+		x.Supported = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Methods"))
@@ -1271,12 +1288,14 @@ func (x *fastReflection_Methods) Set(fd protoreflect.FieldDescriptor, value prot
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Methods) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Methods.methods":
-		if x.Methods == nil {
-			x.Methods = []string{}
+	case "macaroon.v1.Methods.supported":
+		if x.Supported == nil {
+			x.Supported = []string{}
 		}
-		value := &_Methods_1_list{list: &x.Methods}
+		value := &_Methods_2_list{list: &x.Supported}
 		return protoreflect.ValueOfList(value)
+	case "macaroon.v1.Methods.default":
+		panic(fmt.Errorf("field default of message macaroon.v1.Methods is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Methods"))
@@ -1290,9 +1309,11 @@ func (x *fastReflection_Methods) Mutable(fd protoreflect.FieldDescriptor) protor
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Methods) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Methods.methods":
+	case "macaroon.v1.Methods.default":
+		return protoreflect.ValueOfString("")
+	case "macaroon.v1.Methods.supported":
 		list := []string{}
-		return protoreflect.ValueOfList(&_Methods_1_list{list: &list})
+		return protoreflect.ValueOfList(&_Methods_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Methods"))
@@ -1362,8 +1383,12 @@ func (x *fastReflection_Methods) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if len(x.Methods) > 0 {
-			for _, s := range x.Methods {
+		l = len(x.Default)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Supported) > 0 {
+			for _, s := range x.Supported {
 				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -1397,14 +1422,21 @@ func (x *fastReflection_Methods) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Methods) > 0 {
-			for iNdEx := len(x.Methods) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.Methods[iNdEx])
-				copy(dAtA[i:], x.Methods[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Methods[iNdEx])))
+		if len(x.Supported) > 0 {
+			for iNdEx := len(x.Supported) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.Supported[iNdEx])
+				copy(dAtA[i:], x.Supported[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Supported[iNdEx])))
 				i--
-				dAtA[i] = 0xa
+				dAtA[i] = 0x12
 			}
+		}
+		if len(x.Default) > 0 {
+			i -= len(x.Default)
+			copy(dAtA[i:], x.Default)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Default)))
+			i--
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -1457,7 +1489,7 @@ func (x *fastReflection_Methods) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Methods", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Default", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1485,7 +1517,39 @@ func (x *fastReflection_Methods) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Methods = append(x.Methods, string(dAtA[iNdEx:postIndex]))
+				x.Default = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Supported", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Supported = append(x.Supported, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1522,61 +1586,63 @@ func (x *fastReflection_Methods) ProtoMethods() *protoiface.Methods {
 	}
 }
 
-var _ protoreflect.List = (*_Scopes_1_list)(nil)
+var _ protoreflect.List = (*_Scopes_2_list)(nil)
 
-type _Scopes_1_list struct {
+type _Scopes_2_list struct {
 	list *[]string
 }
 
-func (x *_Scopes_1_list) Len() int {
+func (x *_Scopes_2_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Scopes_1_list) Get(i int) protoreflect.Value {
+func (x *_Scopes_2_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Scopes_1_list) Set(i int, value protoreflect.Value) {
+func (x *_Scopes_2_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Scopes_1_list) Append(value protoreflect.Value) {
+func (x *_Scopes_2_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Scopes_1_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Scopes at list field Scopes as it is not of Message kind"))
+func (x *_Scopes_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Scopes at list field Supported as it is not of Message kind"))
 }
 
-func (x *_Scopes_1_list) Truncate(n int) {
+func (x *_Scopes_2_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Scopes_1_list) NewElement() protoreflect.Value {
+func (x *_Scopes_2_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Scopes_1_list) IsValid() bool {
+func (x *_Scopes_2_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Scopes        protoreflect.MessageDescriptor
-	fd_Scopes_scopes protoreflect.FieldDescriptor
+	md_Scopes           protoreflect.MessageDescriptor
+	fd_Scopes_base      protoreflect.FieldDescriptor
+	fd_Scopes_supported protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_macaroon_v1_genesis_proto_init()
 	md_Scopes = File_macaroon_v1_genesis_proto.Messages().ByName("Scopes")
-	fd_Scopes_scopes = md_Scopes.Fields().ByName("scopes")
+	fd_Scopes_base = md_Scopes.Fields().ByName("base")
+	fd_Scopes_supported = md_Scopes.Fields().ByName("supported")
 }
 
 var _ protoreflect.Message = (*fastReflection_Scopes)(nil)
@@ -1644,9 +1710,15 @@ func (x *fastReflection_Scopes) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Scopes) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Scopes) != 0 {
-		value := protoreflect.ValueOfList(&_Scopes_1_list{list: &x.Scopes})
-		if !f(fd_Scopes_scopes, value) {
+	if x.Base != "" {
+		value := protoreflect.ValueOfString(x.Base)
+		if !f(fd_Scopes_base, value) {
+			return
+		}
+	}
+	if len(x.Supported) != 0 {
+		value := protoreflect.ValueOfList(&_Scopes_2_list{list: &x.Supported})
+		if !f(fd_Scopes_supported, value) {
 			return
 		}
 	}
@@ -1665,8 +1737,10 @@ func (x *fastReflection_Scopes) Range(f func(protoreflect.FieldDescriptor, proto
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Scopes) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "macaroon.v1.Scopes.scopes":
-		return len(x.Scopes) != 0
+	case "macaroon.v1.Scopes.base":
+		return x.Base != ""
+	case "macaroon.v1.Scopes.supported":
+		return len(x.Supported) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Scopes"))
@@ -1683,8 +1757,10 @@ func (x *fastReflection_Scopes) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Scopes) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "macaroon.v1.Scopes.scopes":
-		x.Scopes = nil
+	case "macaroon.v1.Scopes.base":
+		x.Base = ""
+	case "macaroon.v1.Scopes.supported":
+		x.Supported = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Scopes"))
@@ -1701,11 +1777,14 @@ func (x *fastReflection_Scopes) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Scopes) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "macaroon.v1.Scopes.scopes":
-		if len(x.Scopes) == 0 {
-			return protoreflect.ValueOfList(&_Scopes_1_list{})
+	case "macaroon.v1.Scopes.base":
+		value := x.Base
+		return protoreflect.ValueOfString(value)
+	case "macaroon.v1.Scopes.supported":
+		if len(x.Supported) == 0 {
+			return protoreflect.ValueOfList(&_Scopes_2_list{})
 		}
-		listValue := &_Scopes_1_list{list: &x.Scopes}
+		listValue := &_Scopes_2_list{list: &x.Supported}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -1727,10 +1806,12 @@ func (x *fastReflection_Scopes) Get(descriptor protoreflect.FieldDescriptor) pro
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Scopes) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "macaroon.v1.Scopes.scopes":
+	case "macaroon.v1.Scopes.base":
+		x.Base = value.Interface().(string)
+	case "macaroon.v1.Scopes.supported":
 		lv := value.List()
-		clv := lv.(*_Scopes_1_list)
-		x.Scopes = *clv.list
+		clv := lv.(*_Scopes_2_list)
+		x.Supported = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Scopes"))
@@ -1751,12 +1832,14 @@ func (x *fastReflection_Scopes) Set(fd protoreflect.FieldDescriptor, value proto
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Scopes) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Scopes.scopes":
-		if x.Scopes == nil {
-			x.Scopes = []string{}
+	case "macaroon.v1.Scopes.supported":
+		if x.Supported == nil {
+			x.Supported = []string{}
 		}
-		value := &_Scopes_1_list{list: &x.Scopes}
+		value := &_Scopes_2_list{list: &x.Supported}
 		return protoreflect.ValueOfList(value)
+	case "macaroon.v1.Scopes.base":
+		panic(fmt.Errorf("field base of message macaroon.v1.Scopes is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Scopes"))
@@ -1770,9 +1853,11 @@ func (x *fastReflection_Scopes) Mutable(fd protoreflect.FieldDescriptor) protore
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Scopes) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Scopes.scopes":
+	case "macaroon.v1.Scopes.base":
+		return protoreflect.ValueOfString("")
+	case "macaroon.v1.Scopes.supported":
 		list := []string{}
-		return protoreflect.ValueOfList(&_Scopes_1_list{list: &list})
+		return protoreflect.ValueOfList(&_Scopes_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Scopes"))
@@ -1842,8 +1927,12 @@ func (x *fastReflection_Scopes) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if len(x.Scopes) > 0 {
-			for _, s := range x.Scopes {
+		l = len(x.Base)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Supported) > 0 {
+			for _, s := range x.Supported {
 				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -1877,14 +1966,21 @@ func (x *fastReflection_Scopes) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Scopes) > 0 {
-			for iNdEx := len(x.Scopes) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.Scopes[iNdEx])
-				copy(dAtA[i:], x.Scopes[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Scopes[iNdEx])))
+		if len(x.Supported) > 0 {
+			for iNdEx := len(x.Supported) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.Supported[iNdEx])
+				copy(dAtA[i:], x.Supported[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Supported[iNdEx])))
 				i--
-				dAtA[i] = 0xa
+				dAtA[i] = 0x12
 			}
+		}
+		if len(x.Base) > 0 {
+			i -= len(x.Base)
+			copy(dAtA[i:], x.Base)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Base)))
+			i--
+			dAtA[i] = 0xa
 		}
 		if input.Buf != nil {
 			input.Buf = append(input.Buf, dAtA...)
@@ -1937,7 +2033,7 @@ func (x *fastReflection_Scopes) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Scopes", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Base", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1965,7 +2061,39 @@ func (x *fastReflection_Scopes) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Scopes = append(x.Scopes, string(dAtA[iNdEx:postIndex]))
+				x.Base = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Supported", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Supported = append(x.Supported, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2032,7 +2160,7 @@ func (x *_Caveats_1_list) Append(value protoreflect.Value) {
 }
 
 func (x *_Caveats_1_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Caveats at list field Caveats as it is not of Message kind"))
+	panic(fmt.Errorf("AppendMutable can not be called on message Caveats at list field SupportedFirstParty as it is not of Message kind"))
 }
 
 func (x *_Caveats_1_list) Truncate(n int) {
@@ -2048,15 +2176,63 @@ func (x *_Caveats_1_list) IsValid() bool {
 	return x.list != nil
 }
 
+var _ protoreflect.List = (*_Caveats_2_list)(nil)
+
+type _Caveats_2_list struct {
+	list *[]string
+}
+
+func (x *_Caveats_2_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Caveats_2_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Caveats_2_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Caveats_2_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Caveats_2_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Caveats at list field SupportedThirdParty as it is not of Message kind"))
+}
+
+func (x *_Caveats_2_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Caveats_2_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Caveats_2_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_Caveats         protoreflect.MessageDescriptor
-	fd_Caveats_caveats protoreflect.FieldDescriptor
+	md_Caveats                       protoreflect.MessageDescriptor
+	fd_Caveats_supported_first_party protoreflect.FieldDescriptor
+	fd_Caveats_supported_third_party protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_macaroon_v1_genesis_proto_init()
 	md_Caveats = File_macaroon_v1_genesis_proto.Messages().ByName("Caveats")
-	fd_Caveats_caveats = md_Caveats.Fields().ByName("caveats")
+	fd_Caveats_supported_first_party = md_Caveats.Fields().ByName("supported_first_party")
+	fd_Caveats_supported_third_party = md_Caveats.Fields().ByName("supported_third_party")
 }
 
 var _ protoreflect.Message = (*fastReflection_Caveats)(nil)
@@ -2124,9 +2300,15 @@ func (x *fastReflection_Caveats) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Caveats) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Caveats) != 0 {
-		value := protoreflect.ValueOfList(&_Caveats_1_list{list: &x.Caveats})
-		if !f(fd_Caveats_caveats, value) {
+	if len(x.SupportedFirstParty) != 0 {
+		value := protoreflect.ValueOfList(&_Caveats_1_list{list: &x.SupportedFirstParty})
+		if !f(fd_Caveats_supported_first_party, value) {
+			return
+		}
+	}
+	if len(x.SupportedThirdParty) != 0 {
+		value := protoreflect.ValueOfList(&_Caveats_2_list{list: &x.SupportedThirdParty})
+		if !f(fd_Caveats_supported_third_party, value) {
 			return
 		}
 	}
@@ -2145,8 +2327,10 @@ func (x *fastReflection_Caveats) Range(f func(protoreflect.FieldDescriptor, prot
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Caveats) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "macaroon.v1.Caveats.caveats":
-		return len(x.Caveats) != 0
+	case "macaroon.v1.Caveats.supported_first_party":
+		return len(x.SupportedFirstParty) != 0
+	case "macaroon.v1.Caveats.supported_third_party":
+		return len(x.SupportedThirdParty) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Caveats"))
@@ -2163,8 +2347,10 @@ func (x *fastReflection_Caveats) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Caveats) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "macaroon.v1.Caveats.caveats":
-		x.Caveats = nil
+	case "macaroon.v1.Caveats.supported_first_party":
+		x.SupportedFirstParty = nil
+	case "macaroon.v1.Caveats.supported_third_party":
+		x.SupportedThirdParty = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Caveats"))
@@ -2181,11 +2367,17 @@ func (x *fastReflection_Caveats) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Caveats) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "macaroon.v1.Caveats.caveats":
-		if len(x.Caveats) == 0 {
+	case "macaroon.v1.Caveats.supported_first_party":
+		if len(x.SupportedFirstParty) == 0 {
 			return protoreflect.ValueOfList(&_Caveats_1_list{})
 		}
-		listValue := &_Caveats_1_list{list: &x.Caveats}
+		listValue := &_Caveats_1_list{list: &x.SupportedFirstParty}
+		return protoreflect.ValueOfList(listValue)
+	case "macaroon.v1.Caveats.supported_third_party":
+		if len(x.SupportedThirdParty) == 0 {
+			return protoreflect.ValueOfList(&_Caveats_2_list{})
+		}
+		listValue := &_Caveats_2_list{list: &x.SupportedThirdParty}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
@@ -2207,10 +2399,14 @@ func (x *fastReflection_Caveats) Get(descriptor protoreflect.FieldDescriptor) pr
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Caveats) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "macaroon.v1.Caveats.caveats":
+	case "macaroon.v1.Caveats.supported_first_party":
 		lv := value.List()
 		clv := lv.(*_Caveats_1_list)
-		x.Caveats = *clv.list
+		x.SupportedFirstParty = *clv.list
+	case "macaroon.v1.Caveats.supported_third_party":
+		lv := value.List()
+		clv := lv.(*_Caveats_2_list)
+		x.SupportedThirdParty = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Caveats"))
@@ -2231,11 +2427,17 @@ func (x *fastReflection_Caveats) Set(fd protoreflect.FieldDescriptor, value prot
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Caveats) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Caveats.caveats":
-		if x.Caveats == nil {
-			x.Caveats = []string{}
+	case "macaroon.v1.Caveats.supported_first_party":
+		if x.SupportedFirstParty == nil {
+			x.SupportedFirstParty = []string{}
 		}
-		value := &_Caveats_1_list{list: &x.Caveats}
+		value := &_Caveats_1_list{list: &x.SupportedFirstParty}
+		return protoreflect.ValueOfList(value)
+	case "macaroon.v1.Caveats.supported_third_party":
+		if x.SupportedThirdParty == nil {
+			x.SupportedThirdParty = []string{}
+		}
+		value := &_Caveats_2_list{list: &x.SupportedThirdParty}
 		return protoreflect.ValueOfList(value)
 	default:
 		if fd.IsExtension() {
@@ -2250,9 +2452,12 @@ func (x *fastReflection_Caveats) Mutable(fd protoreflect.FieldDescriptor) protor
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Caveats) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "macaroon.v1.Caveats.caveats":
+	case "macaroon.v1.Caveats.supported_first_party":
 		list := []string{}
 		return protoreflect.ValueOfList(&_Caveats_1_list{list: &list})
+	case "macaroon.v1.Caveats.supported_third_party":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Caveats_2_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: macaroon.v1.Caveats"))
@@ -2322,8 +2527,14 @@ func (x *fastReflection_Caveats) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		if len(x.Caveats) > 0 {
-			for _, s := range x.Caveats {
+		if len(x.SupportedFirstParty) > 0 {
+			for _, s := range x.SupportedFirstParty {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		if len(x.SupportedThirdParty) > 0 {
+			for _, s := range x.SupportedThirdParty {
 				l = len(s)
 				n += 1 + l + runtime.Sov(uint64(l))
 			}
@@ -2357,11 +2568,20 @@ func (x *fastReflection_Caveats) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Caveats) > 0 {
-			for iNdEx := len(x.Caveats) - 1; iNdEx >= 0; iNdEx-- {
-				i -= len(x.Caveats[iNdEx])
-				copy(dAtA[i:], x.Caveats[iNdEx])
-				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Caveats[iNdEx])))
+		if len(x.SupportedThirdParty) > 0 {
+			for iNdEx := len(x.SupportedThirdParty) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.SupportedThirdParty[iNdEx])
+				copy(dAtA[i:], x.SupportedThirdParty[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SupportedThirdParty[iNdEx])))
+				i--
+				dAtA[i] = 0x12
+			}
+		}
+		if len(x.SupportedFirstParty) > 0 {
+			for iNdEx := len(x.SupportedFirstParty) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.SupportedFirstParty[iNdEx])
+				copy(dAtA[i:], x.SupportedFirstParty[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.SupportedFirstParty[iNdEx])))
 				i--
 				dAtA[i] = 0xa
 			}
@@ -2417,7 +2637,7 @@ func (x *fastReflection_Caveats) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Caveats", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SupportedFirstParty", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -2445,7 +2665,39 @@ func (x *fastReflection_Caveats) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Caveats = append(x.Caveats, string(dAtA[iNdEx:postIndex]))
+				x.SupportedFirstParty = append(x.SupportedFirstParty, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 2:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field SupportedThirdParty", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.SupportedThirdParty = append(x.SupportedThirdParty, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -2593,7 +2845,8 @@ type Methods struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Methods []string `protobuf:"bytes,1,rep,name=methods,proto3" json:"methods,omitempty"`
+	Default   string   `protobuf:"bytes,1,opt,name=default,proto3" json:"default,omitempty"`
+	Supported []string `protobuf:"bytes,2,rep,name=supported,proto3" json:"supported,omitempty"`
 }
 
 func (x *Methods) Reset() {
@@ -2616,9 +2869,16 @@ func (*Methods) Descriptor() ([]byte, []int) {
 	return file_macaroon_v1_genesis_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *Methods) GetMethods() []string {
+func (x *Methods) GetDefault() string {
 	if x != nil {
-		return x.Methods
+		return x.Default
+	}
+	return ""
+}
+
+func (x *Methods) GetSupported() []string {
+	if x != nil {
+		return x.Supported
 	}
 	return nil
 }
@@ -2629,7 +2889,8 @@ type Scopes struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Scopes []string `protobuf:"bytes,1,rep,name=scopes,proto3" json:"scopes,omitempty"`
+	Base      string   `protobuf:"bytes,1,opt,name=base,proto3" json:"base,omitempty"`
+	Supported []string `protobuf:"bytes,2,rep,name=supported,proto3" json:"supported,omitempty"`
 }
 
 func (x *Scopes) Reset() {
@@ -2652,9 +2913,16 @@ func (*Scopes) Descriptor() ([]byte, []int) {
 	return file_macaroon_v1_genesis_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *Scopes) GetScopes() []string {
+func (x *Scopes) GetBase() string {
 	if x != nil {
-		return x.Scopes
+		return x.Base
+	}
+	return ""
+}
+
+func (x *Scopes) GetSupported() []string {
+	if x != nil {
+		return x.Supported
 	}
 	return nil
 }
@@ -2665,7 +2933,8 @@ type Caveats struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Caveats []string `protobuf:"bytes,1,rep,name=caveats,proto3" json:"caveats,omitempty"`
+	SupportedFirstParty []string `protobuf:"bytes,1,rep,name=supported_first_party,json=supportedFirstParty,proto3" json:"supported_first_party,omitempty"`
+	SupportedThirdParty []string `protobuf:"bytes,2,rep,name=supported_third_party,json=supportedThirdParty,proto3" json:"supported_third_party,omitempty"`
 }
 
 func (x *Caveats) Reset() {
@@ -2688,9 +2957,16 @@ func (*Caveats) Descriptor() ([]byte, []int) {
 	return file_macaroon_v1_genesis_proto_rawDescGZIP(), []int{4}
 }
 
-func (x *Caveats) GetCaveats() []string {
+func (x *Caveats) GetSupportedFirstParty() []string {
 	if x != nil {
-		return x.Caveats
+		return x.SupportedFirstParty
+	}
+	return nil
+}
+
+func (x *Caveats) GetSupportedThirdParty() []string {
+	if x != nil {
+		return x.SupportedThirdParty
 	}
 	return nil
 }
@@ -2718,29 +2994,38 @@ var file_macaroon_v1_genesis_proto_rawDesc = []byte{
 	0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x61, 0x76, 0x65,
 	0x61, 0x74, 0x73, 0x52, 0x07, 0x63, 0x61, 0x76, 0x65, 0x61, 0x74, 0x73, 0x3a, 0x1c, 0x98, 0xa0,
 	0x1f, 0x00, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0f, 0x6d, 0x61, 0x63, 0x61, 0x72,
-	0x6f, 0x6f, 0x6e, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x3e, 0x0a, 0x07, 0x4d, 0x65,
-	0x74, 0x68, 0x6f, 0x64, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73,
-	0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73, 0x3a,
-	0x19, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x10, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f,
-	0x6f, 0x6e, 0x2f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73, 0x22, 0x3a, 0x0a, 0x06, 0x53, 0x63,
-	0x6f, 0x70, 0x65, 0x73, 0x12, 0x16, 0x0a, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x18, 0x01,
-	0x20, 0x03, 0x28, 0x09, 0x52, 0x06, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x3a, 0x18, 0xe8, 0xa0,
-	0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0f, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f,
-	0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x22, 0x3d, 0x0a, 0x07, 0x43, 0x61, 0x76, 0x65, 0x61, 0x74,
-	0x73, 0x12, 0x18, 0x0a, 0x07, 0x63, 0x61, 0x76, 0x65, 0x61, 0x74, 0x73, 0x18, 0x01, 0x20, 0x03,
-	0x28, 0x09, 0x52, 0x07, 0x63, 0x61, 0x76, 0x65, 0x61, 0x74, 0x73, 0x3a, 0x18, 0xe8, 0xa0, 0x1f,
-	0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0f, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x63,
-	0x61, 0x76, 0x65, 0x61, 0x74, 0x42, 0x9f, 0x01, 0x0a, 0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x6d, 0x61,
-	0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73,
-	0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75,
-	0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e,
-	0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x76,
-	0x31, 0x3b, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4d,
-	0x58, 0x58, 0xaa, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x56, 0x31,
-	0xca, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02,
-	0x17, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42,
-	0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x0c, 0x4d, 0x61, 0x63, 0x61, 0x72,
-	0x6f, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x6f, 0x6e, 0x2f, 0x70, 0x61, 0x72, 0x61, 0x6d, 0x73, 0x22, 0x5c, 0x0a, 0x07, 0x4d, 0x65,
+	0x74, 0x68, 0x6f, 0x64, 0x73, 0x12, 0x18, 0x0a, 0x07, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x64, 0x65, 0x66, 0x61, 0x75, 0x6c, 0x74, 0x12,
+	0x1c, 0x0a, 0x09, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x03,
+	0x28, 0x09, 0x52, 0x09, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x3a, 0x19, 0xe8,
+	0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x10, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e,
+	0x2f, 0x6d, 0x65, 0x74, 0x68, 0x6f, 0x64, 0x73, 0x22, 0x54, 0x0a, 0x06, 0x53, 0x63, 0x6f, 0x70,
+	0x65, 0x73, 0x12, 0x12, 0x0a, 0x04, 0x62, 0x61, 0x73, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x04, 0x62, 0x61, 0x73, 0x65, 0x12, 0x1c, 0x0a, 0x09, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72,
+	0x74, 0x65, 0x64, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x09, 0x73, 0x75, 0x70, 0x70, 0x6f,
+	0x72, 0x74, 0x65, 0x64, 0x3a, 0x18, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0f, 0x6d,
+	0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x73, 0x63, 0x6f, 0x70, 0x65, 0x73, 0x22, 0x8b,
+	0x01, 0x0a, 0x07, 0x43, 0x61, 0x76, 0x65, 0x61, 0x74, 0x73, 0x12, 0x32, 0x0a, 0x15, 0x73, 0x75,
+	0x70, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x5f, 0x66, 0x69, 0x72, 0x73, 0x74, 0x5f, 0x70, 0x61,
+	0x72, 0x74, 0x79, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x13, 0x73, 0x75, 0x70, 0x70, 0x6f,
+	0x72, 0x74, 0x65, 0x64, 0x46, 0x69, 0x72, 0x73, 0x74, 0x50, 0x61, 0x72, 0x74, 0x79, 0x12, 0x32,
+	0x0a, 0x15, 0x73, 0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x5f, 0x74, 0x68, 0x69, 0x72,
+	0x64, 0x5f, 0x70, 0x61, 0x72, 0x74, 0x79, 0x18, 0x02, 0x20, 0x03, 0x28, 0x09, 0x52, 0x13, 0x73,
+	0x75, 0x70, 0x70, 0x6f, 0x72, 0x74, 0x65, 0x64, 0x54, 0x68, 0x69, 0x72, 0x64, 0x50, 0x61, 0x72,
+	0x74, 0x79, 0x3a, 0x18, 0xe8, 0xa0, 0x1f, 0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0f, 0x6d, 0x61, 0x63,
+	0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x63, 0x61, 0x76, 0x65, 0x61, 0x74, 0x42, 0x9f, 0x01, 0x0a,
+	0x0f, 0x63, 0x6f, 0x6d, 0x2e, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x76, 0x31,
+	0x42, 0x0c, 0x47, 0x65, 0x6e, 0x65, 0x73, 0x69, 0x73, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
+	0x5a, 0x31, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73,
+	0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x6d, 0x61, 0x63,
+	0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x2f, 0x76, 0x31, 0x3b, 0x6d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f,
+	0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x4d, 0x58, 0x58, 0xaa, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61,
+	0x72, 0x6f, 0x6f, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x0b, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f,
+	0x6f, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x17, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e,
+	0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea,
+	0x02, 0x0c, 0x4d, 0x61, 0x63, 0x61, 0x72, 0x6f, 0x6f, 0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (

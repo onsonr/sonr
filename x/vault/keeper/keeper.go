@@ -10,6 +10,7 @@ import (
 	"cosmossdk.io/orm/model/ormdb"
 	"github.com/cosmos/cosmos-sdk/codec"
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/ipfs/kubo/client/rpc"
@@ -34,7 +35,8 @@ type Keeper struct {
 
 	ipfsClient *rpc.HttpApi
 
-	DIDKeeper didkeeper.Keeper
+	AccountKeeper authkeeper.AccountKeeper
+	DIDKeeper     didkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -43,6 +45,7 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	logger log.Logger,
 	authority string,
+	authKeeper authkeeper.AccountKeeper,
 	didk didkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
@@ -65,11 +68,12 @@ func NewKeeper(
 
 	ipfsClient, _ := rpc.NewLocalApi()
 	k := Keeper{
-		cdc:       cdc,
-		logger:    logger,
-		DIDKeeper: didk,
-		Params:    collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		OrmDB:     store,
+		cdc:           cdc,
+		logger:        logger,
+		DIDKeeper:     didk,
+		AccountKeeper: authKeeper,
+		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		OrmDB:         store,
 
 		ipfsClient: ipfsClient,
 		authority:  authority,

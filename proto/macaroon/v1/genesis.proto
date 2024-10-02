@@ -32,16 +32,16 @@ message Params {
 message Methods {
   option (amino.name) = "macaroon/methods";
   option (gogoproto.equal) = true;
-
-  repeated string methods = 1;
+  string default = 1;
+  repeated string supported = 2;
 }
 
 // Scopes defines the set of scopes
 message Scopes {
   option (amino.name) = "macaroon/scopes";
   option (gogoproto.equal) = true;
-
-  repeated string scopes = 1;
+  string base = 1;
+  repeated string supported = 2;
 }
 
 // Caveats defines the available caveats
@@ -49,5 +49,6 @@ message Caveats {
   option (amino.name) = "macaroon/caveat";
   option (gogoproto.equal) = true;
 
-  repeated string caveats = 1;
+  repeated string supported_first_party = 1;
+  repeated string supported_third_party = 2;
 }
