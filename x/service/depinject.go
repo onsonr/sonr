@@ -12,6 +12,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	groupkeeper "github.com/cosmos/cosmos-sdk/x/group/keeper"
 	slashingkeeper "github.com/cosmos/cosmos-sdk/x/slashing/keeper"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
 
@@ -44,6 +45,7 @@ type ModuleInputs struct {
 	AddressCodec address.Codec
 
 	DidKeeper      didkeeper.Keeper
+	GroupKeeper    groupkeeper.Keeper
 	MacaroonKeeper macaroonkeeper.Keeper
 	NFTKeeper      nftkeeper.Keeper
 	StakingKeeper  stakingkeeper.Keeper
@@ -60,7 +62,7 @@ type ModuleOutputs struct {
 func ProvideModule(in ModuleInputs) ModuleOutputs {
 	govAddr := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
-	k := keeper.NewKeeper(in.Cdc, in.StoreService, log.NewLogger(os.Stderr), govAddr, in.DidKeeper, in.MacaroonKeeper, in.NFTKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.StoreService, log.NewLogger(os.Stderr), govAddr, in.DidKeeper, in.GroupKeeper, in.MacaroonKeeper, in.NFTKeeper)
 	m := NewAppModule(in.Cdc, k, in.DidKeeper, in.MacaroonKeeper)
 
 	return ModuleOutputs{Module: m, Keeper: k, Out: depinject.Out{}}

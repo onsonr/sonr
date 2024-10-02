@@ -17,6 +17,7 @@ import (
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	bankkeeper "github.com/cosmos/cosmos-sdk/x/bank/keeper"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	groupkeeper "github.com/cosmos/cosmos-sdk/x/group/keeper"
 	mintkeeper "github.com/cosmos/cosmos-sdk/x/mint/keeper"
 	minttypes "github.com/cosmos/cosmos-sdk/x/mint/types"
 	stakingkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
@@ -51,6 +52,7 @@ type testFixture struct {
 	accountkeeper authkeeper.AccountKeeper
 	bankkeeper    bankkeeper.BaseKeeper
 	didkeeper     didkeeper.Keeper
+	groupkeeper   groupkeeper.Keeper
 	mack          macaroonkeeper.Keeper
 	stakingKeeper *stakingkeeper.Keeper
 	mintkeeper    mintkeeper.Keeper
@@ -82,7 +84,7 @@ func SetupTest(t *testing.T) *testFixture {
 	registerBaseSDKModules(f, encCfg, storeService, logger, require)
 
 	// Setup Keeper.
-	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.didkeeper, f.mack, f.nftkeeper)
+	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.didkeeper, f.groupkeeper, f.mack, f.nftkeeper)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
 	f.appModule = module.NewAppModule(encCfg.Codec, f.k, f.didkeeper, f.mack)

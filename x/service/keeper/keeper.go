@@ -9,6 +9,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
+	groupkeeper "github.com/cosmos/cosmos-sdk/x/group/keeper"
 
 	apiv1 "github.com/onsonr/sonr/api/service/v1"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
@@ -29,6 +30,7 @@ type Keeper struct {
 	authority string
 
 	DidKeeper      didkeeper.Keeper
+	GroupKeeper    groupkeeper.Keeper
 	MacaroonKeeper macaroonkeeper.Keeper
 	NFTKeeper      nftkeeper.Keeper
 }
@@ -40,6 +42,7 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 	didKeeper didkeeper.Keeper,
+	groupKeeper groupkeeper.Keeper,
 	macaroonKeeper macaroonkeeper.Keeper,
 	nftKeeper nftkeeper.Keeper,
 ) Keeper {
@@ -69,7 +72,11 @@ func NewKeeper(
 		OrmDB:  store,
 
 		authority: authority,
-		NFTKeeper: nftKeeper,
+
+		DidKeeper:      didKeeper,
+		GroupKeeper:    groupKeeper,
+		MacaroonKeeper: macaroonKeeper,
+		NFTKeeper:      nftKeeper,
 	}
 
 	schema, err := sb.Build()
