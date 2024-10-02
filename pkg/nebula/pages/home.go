@@ -2,6 +2,7 @@ package pages
 
 import (
 	"github.com/labstack/echo/v4"
+
 	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
@@ -11,5 +12,5 @@ func Home(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return echoResponse(c, home.View(mdls.Hero))
+	return echoResponse(c, home.View(mdls.Home.Hero))
 }

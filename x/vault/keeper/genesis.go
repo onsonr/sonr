@@ -8,6 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/ipfs/boxo/path"
 	"github.com/ipfs/kubo/client/rpc"
+
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
@@ -73,9 +74,4 @@ func (k Keeper) HasPathInIPFS(ctx sdk.Context, cid string) (bool, error) {
 		return false, nil
 	}
 	return true, nil
-}
-
-// validateSubjectOrigin checks if the subject and origin are valid
-func (k Keeper) validateSubjectOrigin(ctx sdk.Context, subject string, origin string) error {
-	return nil
 }

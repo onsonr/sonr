@@ -74,8 +74,12 @@ class Footer {
 	resourcesLinks: List<Link>
 }
 
-hero : Hero
-stats : Stats
+class Home {
+	hero: Hero
+	stats: Stats
+}
+
+home : Home
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                  Registration Components                  │

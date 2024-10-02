@@ -28,3 +28,8 @@ stats = new Stats {
 	thirdValue = "1.5M+";
 	thirdLabel = "Assets packed with power beyond your imagination.";
 };
+
+home = new Home {
+	hero = hero;
+	stats = stats;
+};
