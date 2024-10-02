@@ -137,4 +137,3 @@ announce:
   telegram:
     enabled: true
     chat_id: -1002222617755
-    parse_mode: MarkdownV2
