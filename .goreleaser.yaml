@@ -14,22 +14,22 @@ builds:
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 
-  - id: motr
+  - id: hway
     goos: [linux, darwin]
     goarch: [amd64, arm64]
-    main: ./cmd/motr
-    binary: motr
+    main: ./cmd/hway
+    binary: hway
     builder: go
     gobinary: go
     command: build
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 
-  - id: dwn
+  - id: motr
     goos: [js]
     goarch: [wasm]
-    main: ./cmd/dwn/dwn.go
-    binary: dwn
+    main: ./cmd/motr/motr.go
+    binary: motr
     builder: go
     gobinary: go
     command: build
@@ -43,8 +43,8 @@ archives:
       - src: README*
       - src: CHANGELOG*
 
-  - id: motr
-    builds: [motr]
+  - id: hway
+    builds: [hway]
     name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
     format: tar.gz
     files:
@@ -72,7 +72,7 @@ brews:
       name: goreleaserbot
       email: bot@goreleaser.com
     directory: Formula
-    caveats: "Run a local sonr node and access it with the motr proxy"
+    caveats: "Run a local sonr node and access it with the hway proxy"
     homepage: "https://sonr.io/"
     description: "Sonr is a decentralized, permissionless, and censorship-resistant identity network."
     dependencies:
@@ -83,13 +83,13 @@ brews:
       branch: master
       token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
-  - name: motr
-    ids: [motr]
+  - name: hway
+    ids: [hway]
     commit_author:
       name: goreleaserbot
       email: bot@goreleaser.com
     directory: Formula
-    caveats: "Use motr to interact with the Sonr network"
+    caveats: "Use hway to interact with the Sonr network"
     homepage: "https://sonr.io/"
     description: "Motr is a proxy for interacting with the Sonr network."
     dependencies:
@@ -118,18 +118,18 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
 
   - # Motr Binary
-    id: motr
+    id: hway
     goos: linux
     goarch: amd64
     ids:
-      - motr
+      - hway
     image_templates:
-      - "onsonr/motr:latest"
-      - "onsonr/motr:{{ .Tag }}"
-    dockerfile: "./deploy/release/motr.Dockerfile"
+      - "onsonr/hway:latest"
+      - "onsonr/hway:{{ .Tag }}"
+    dockerfile: "./deploy/release/hway.Dockerfile"
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title=motr"
+      - "--label=org.opencontainers.image.title=hway"
       - "--label=org.opencontainers.image.revision={{.FullCommit}}"
       - "--label=org.opencontainers.image.version={{.Version}}"
 

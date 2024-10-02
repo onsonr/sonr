@@ -18,6 +18,10 @@ func CredentialSchema() string {
 	return "++, id, subject, controller, attestationType, origin, label, deviceId, credentialId, publicKey, transport, signCount, userPresent, userVerified, backupEligible, backupState, cloneWarning, createdAt, updatedAt"
 }
 
+func DIDSchema() string {
+	return "++, id, role, algorithm, encoding, curve, key_type, raw, jwk"
+}
+
 func JwkSchema() string {
 	return "++, kty, crv, x, y, n, e"
 }
