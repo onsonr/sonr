@@ -27,3 +27,25 @@ message Grant {
   string origin = 4;
   int64 expiry_height = 5;
 }
+
+message Macaroon {
+  option (cosmos.orm.v1.table) = {
+    id: 1
+    primary_key: {
+      fields: "id"
+      auto_increment: true
+    }
+    index: {
+      id: 1
+      fields: "subject,origin"
+      unique: true
+    }
+  };
+
+  uint64 id = 1;
+  string controller = 2;
+  string subject = 3;
+  string origin = 4;
+  int64 expiry_height = 5;
+  string macaroon = 6;
+}

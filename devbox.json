@@ -34,21 +34,21 @@
       "build:docker": [
         "make local-image"
       ],
-      "build:motr": [
+      "build:hway": [
         "make nebula",
-        "make motr"
+        "make hway"
       ],
       "build:nebula": [
         "make nebula"
       ],
       "build:sonrd": [
-        "make dwn",
+        "make motr",
         "make build"
       ],
       "build": [
-        "make dwn",
+        "make motr",
         "make build",
-        "make motr"
+        "make hway"
       ],
       "gen:proto": [
         "make proto-gen"
@@ -59,10 +59,10 @@
       "gen:templ": [
         "make templ"
       ],
-      "start:motr": [
+      "start:hway": [
         "make templ",
-        "make motr",
-        "make start-motr"
+        "make hway",
+        "make start-hway"
       ],
       "start:testnet": [
         "make templ",

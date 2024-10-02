@@ -17,9 +17,9 @@ processes:
     depends:
       - ipfs
 
-  motr:
+  hway:
     namespace: testnet
-    command: "devbox run start:motr"
+    command: "devbox run start:hway"
     restart: on_failure
     max_restarts: 1
     depends:

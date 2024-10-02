@@ -13,12 +13,11 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
-	"gopkg.in/macaroon.v2"
-
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	stakkeeper "github.com/cosmos/cosmos-sdk/x/staking/keeper"
-
 	"github.com/onsonr/crypto/mpc"
+	"gopkg.in/macaroon.v2"
+
 	apiv1 "github.com/onsonr/sonr/api/did/v1"
 	"github.com/onsonr/sonr/x/did/types"
 )
@@ -45,11 +44,11 @@ type Keeper struct {
 func NewKeeper(
 	cdc codec.BinaryCodec,
 	storeService storetypes.KVStoreService,
+	logger log.Logger,
+	authority string,
 	accKeeper authkeeper.AccountKeeper,
 	nftKeeper nftkeeper.Keeper,
 	stkKeeper *stakkeeper.Keeper,
-	logger log.Logger,
-	authority string,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 	sb := collections.NewSchemaBuilder(storeService)

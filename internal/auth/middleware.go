@@ -1,4 +1,4 @@
-package middleware
+package auth
 
 import (
 	"net/http"
@@ -6,21 +6,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"gopkg.in/macaroon.v2"
 )
-
-// GetSession returns the current Session
-func GetSession(c echo.Context) *Session {
-	return c.(*Session)
-}
-
-// UseSession establishes a Session Cookie.
-func UseSession(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sc := initSession(c)
-		headers := new(RequestHeaders)
-		sc.Bind(headers)
-		return next(sc)
-	}
-}
 
 func MacaroonMiddleware(secretKeyStr string, location string) echo.MiddlewareFunc {
 	secretKey := []byte(secretKeyStr)

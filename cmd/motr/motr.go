@@ -15,14 +15,14 @@ import (
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
 
-	"github.com/onsonr/sonr/cmd/dwn/middleware"
-	"github.com/onsonr/sonr/cmd/dwn/state"
+	"github.com/onsonr/sonr/cmd/motr/handlers"
+	"github.com/onsonr/sonr/internal/session"
 	"github.com/onsonr/sonr/pkg/nebula/pages"
 )
 
 func main() {
 	e := echo.New()
-	e.Use(middleware.UseSession)
+	e.Use(session.UseSession)
 	registerViews(e)
 	registerState(e)
 	Serve(e)
@@ -30,13 +30,13 @@ func main() {
 
 func registerState(e *echo.Echo) {
 	g := e.Group("state")
-	g.POST("/login/:identifier", state.HandleCredentialAssertion)
+	g.POST("/login/:identifier", handlers.HandleCredentialAssertion)
 	//	g.GET("/discovery", state.GetDiscovery)
-	g.GET("/jwks", state.GetJWKS)
-	g.GET("/token", state.GetToken)
-	g.POST("/:origin/grant/:subject", state.GrantAuthorization)
-	g.POST("/register/:subject", state.HandleCredentialCreation)
-	g.POST("/register/:subject/check", state.CheckSubjectIsValid)
+	g.GET("/jwks", handlers.GetJWKS)
+	g.GET("/token", handlers.GetToken)
+	g.POST("/:origin/grant/:subject", handlers.GrantAuthorization)
+	g.POST("/register/:subject", handlers.HandleCredentialCreation)
+	g.POST("/register/:subject/check", handlers.CheckSubjectIsValid)
 }
 
 func registerViews(e *echo.Echo) {

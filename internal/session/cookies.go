@@ -1,4 +1,4 @@
-package middleware
+package session
 
 import (
 	"net/http"
@@ -6,7 +6,6 @@ import (
 
 	"github.com/donseba/go-htmx"
 	"github.com/labstack/echo/v4"
-	"github.com/segmentio/ksuid"
 )
 
 type Session struct {
@@ -20,15 +19,6 @@ func (c *Session) Htmx() *htmx.HTMX {
 
 func (c *Session) ID() string {
 	return ReadCookie(c, "session")
-}
-
-func initSession(c echo.Context) *Session {
-	s := &Session{Context: c}
-	if val := ReadCookie(c, "session"); val == "" {
-		id := ksuid.New().String()
-		WriteCookie(c, "session", id)
-	}
-	return s
 }
 
 func ReadCookie(c echo.Context, key string) string {

@@ -56,6 +56,7 @@ func NewAppModule(
 	return &AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
+		didk:           didkeeper,
 	}
 }
 

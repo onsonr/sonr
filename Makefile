@@ -295,15 +295,15 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: dwn motr templ pkl nebula
+.PHONY: motr hway templ pkl nebula
+
+hway:
+	@echo "(motr) Building Highway gateway"
+	go build -o ./build/hway ./cmd/hway
 
 motr:
-	@echo "(motr) Building motr gateway"
-	go build -o ./build/motr ./cmd/motr
-
-dwn:
-	@echo "(dwn) Building dwn.wasm -> IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/dwn/dwn.go
+	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
 
 templ:
 	@echo "(templ) Generating templ files"
@@ -325,9 +325,9 @@ start-caddy:
 	@echo "(start-caddy) Starting caddy"
 	./build/caddy run --config ./config/caddy/Caddyfile
 
-start-motr: motr
+start-hway: hway
 	@echo "(start-proxy) Starting proxy server"
-	./build/motr start
+	./build/hway start
 
 ###############################################################################
 ###                                     help                                ###

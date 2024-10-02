@@ -626,28 +626,15 @@ func NewChainApp(
 	// If evidence needs to be handled for the app, set routes in router here and seal
 	app.EvidenceKeeper = *evidenceKeeper
 
-	// Create the oracle Keeper
-	app.OracleKeeper = oraclekeeper.NewKeeper(
+	// Create the did Keeper
+	app.DidKeeper = didkeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[oracletypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Create the service Keeper
-	app.ServiceKeeper = servicekeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-	)
-
-	// Create the macaroon Keeper
-	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.NFTKeeper,
+		app.StakingKeeper,
 	)
 
 	// Create the vault Keeper
@@ -656,16 +643,34 @@ func NewChainApp(
 		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.DidKeeper,
+	)
+	// Create the macaroon Keeper
+	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
 		app.DidKeeper,
 	)
 
-	// Create the did Keeper
-	app.DidKeeper = didkeeper.NewKeeper(
+	// Create the service Keeper
+	app.ServiceKeeper = servicekeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[didtypes.StoreKey]),
-		app.AccountKeeper,
+		sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.DidKeeper,
+		app.MacaroonKeeper,
 		app.NFTKeeper,
-		app.StakingKeeper,
+	)
+
+	// Create the oracle Keeper
+	app.OracleKeeper = oraclekeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[oracletypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 	)

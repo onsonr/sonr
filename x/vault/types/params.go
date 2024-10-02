@@ -2,6 +2,8 @@ package types
 
 import (
 	"encoding/json"
+
+	"github.com/onsonr/sonr/pkg/orm"
 )
 
 // DefaultParams returns default module parameters.
@@ -32,14 +34,14 @@ func (p Params) Validate() error {
 // DefaultSchema returns the default schema
 func DefaultSchema() *Schema {
 	return &Schema{
-		Version:    1,
-		Account:    "++, id, name, address, publicKey, chainCode, index, controller, createdAt",
-		Asset:      "++, id, name, symbol, decimals, chainCode, createdAt",
-		Chain:      "++, id, name, networkId, chainCode, createdAt",
-		Credential: "++, id, subject, controller, attestationType, origin, label, deviceId, credentialId, publicKey, transport, signCount, userPresent, userVerified, backupEligible, backupState, cloneWarning, createdAt, updatedAt",
-		Jwk:        "++, kty, crv, x, y, n, e",
-		Grant:      "++, subject, controller, origin, token, scopes, createdAt, updatedAt",
-		Keyshare:   "++, id, data, role, createdAt, lastRefreshed",
-		Profile:    "++, id, subject, controller, originUri, publicMetadata, privateMetadata, createdAt, updatedAt",
+		Version:    orm.SCHEMA_VERSION,
+		Account:    orm.AccountSchema(),
+		Asset:      orm.AssetSchema(),
+		Chain:      orm.ChainSchema(),
+		Credential: orm.CredentialSchema(),
+		Jwk:        orm.JwkSchema(),
+		Grant:      orm.GrantSchema(),
+		Keyshare:   orm.KeyshareSchema(),
+		Profile:    orm.ProfileSchema(),
 	}
 }

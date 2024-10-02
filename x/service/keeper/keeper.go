@@ -5,11 +5,14 @@ import (
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
+	nftkeeper "cosmossdk.io/x/nft/keeper"
 	"github.com/cosmos/cosmos-sdk/codec"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	apiv1 "github.com/onsonr/sonr/api/service/v1"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/service/types"
 )
 
@@ -24,6 +27,10 @@ type Keeper struct {
 	OrmDB  apiv1.StateStore
 
 	authority string
+
+	DidKeeper      didkeeper.Keeper
+	MacaroonKeeper macaroonkeeper.Keeper
+	NFTKeeper      nftkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -32,6 +39,9 @@ func NewKeeper(
 	storeService storetypes.KVStoreService,
 	logger log.Logger,
 	authority string,
+	didKeeper didkeeper.Keeper,
+	macaroonKeeper macaroonkeeper.Keeper,
+	nftKeeper nftkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 
@@ -59,6 +69,7 @@ func NewKeeper(
 		OrmDB:  store,
 
 		authority: authority,
+		NFTKeeper: nftKeeper,
 	}
 
 	schema, err := sb.Build()
