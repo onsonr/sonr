@@ -32,13 +32,11 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 // RefreshToken implements types.QueryServer.
 func (k Querier) RefreshToken(goCtx context.Context, req *types.QueryRefreshTokenRequest) (*types.QueryRefreshTokenResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("RefreshToken is unimplemented")
 	return &types.QueryRefreshTokenResponse{}, nil
 }
 
 // ValidateToken implements types.QueryServer.
 func (k Querier) ValidateToken(goCtx context.Context, req *types.QueryValidateTokenRequest) (*types.QueryValidateTokenResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("ValidateToken is unimplemented")
 	return &types.QueryValidateTokenResponse{}, nil
 }

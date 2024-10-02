@@ -3,9 +3,9 @@ package keeper
 import (
 	"context"
 
+	"cosmossdk.io/errors"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
-	"cosmossdk.io/errors"
 	"github.com/onsonr/sonr/x/macaroon/types"
 )
 
@@ -31,13 +31,11 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 // AuthorizeService implements types.MsgServer.
 func (ms msgServer) AuthorizeService(ctx context.Context, msg *types.MsgIssueMacaroon) (*types.MsgIssueMacaroonResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("AuthorizeService is unimplemented")
 	return &types.MsgIssueMacaroonResponse{}, nil
 }
 
 // IssueMacaroon implements types.MsgServer.
 func (ms msgServer) IssueMacaroon(ctx context.Context, msg *types.MsgIssueMacaroon) (*types.MsgIssueMacaroonResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("IssueMacaroon is unimplemented")
 	return &types.MsgIssueMacaroonResponse{}, nil
 }

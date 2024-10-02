@@ -662,6 +662,9 @@ func NewChainApp(
 		sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.DidKeeper,
+		app.MacaroonKeeper,
+		app.NFTKeeper,
 	)
 
 	// Create the oracle Keeper
