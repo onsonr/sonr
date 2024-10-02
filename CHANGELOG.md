@@ -1,3 +1,9 @@
+## v0.5.0 (2024-10-02)
+
+### Feat
+
+- allow multiple macaroons with the same id
+
 ## v0.4.5 (2024-10-02)
 
 ### Fix
