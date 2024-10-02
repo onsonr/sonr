@@ -1,3 +1,9 @@
+## v0.4.5 (2024-10-02)
+
+### Fix
+
+- use correct secret for docker login
+
 ## v0.4.4 (2024-10-02)
 
 ## v0.4.3 (2024-10-02)
