@@ -663,6 +663,7 @@ func NewChainApp(
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.DidKeeper,
+		app.GroupKeeper,
 		app.MacaroonKeeper,
 		app.NFTKeeper,
 	)
