@@ -110,8 +110,6 @@ dockers:
     image_templates:
       - "onsonr/sonrd:latest"
       - "onsonr/sonrd:{{ .Tag }}"
-      - "onsonr/sonrd:v{{ .Major }}"
-      - "gcr.io/onsonr/sonrd:latest"
     dockerfile: "./deploy/release/sonrd.Dockerfile"
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
@@ -128,7 +126,6 @@ dockers:
     image_templates:
       - "onsonr/motr:latest"
       - "onsonr/motr:{{ .Tag }}"
-      - "onsonr/motr:v{{ .Major }}"
     dockerfile: "./deploy/release/motr.Dockerfile"
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
