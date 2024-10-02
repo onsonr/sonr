@@ -14,5 +14,4 @@ func init() {
 	pkl.RegisterMapping("orm#Grant", Grant{})
 	pkl.RegisterMapping("orm#Keyshare", Keyshare{})
 	pkl.RegisterMapping("orm#Profile", Profile{})
-	pkl.RegisterMapping("orm#Session", Session{})
 }
