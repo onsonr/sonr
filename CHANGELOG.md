@@ -1,3 +1,9 @@
+## v0.5.1 (2024-10-02)
+
+### Refactor
+
+- move Motr API to state package
+
 ## v0.5.0 (2024-10-02)
 
 ### Feat
