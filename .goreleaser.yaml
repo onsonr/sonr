@@ -137,5 +137,5 @@ announce:
   telegram:
     enabled: true
     chat_id: -1002222617755
-    message_template: "__*New Sonr Release*__ *{{.Tag}}* is out."
+    message_template: "__*New Sonr Release*__ *{{.Tag}}* is out"
     parse_mode: MarkdownV2
