@@ -1,3 +1,19 @@
+## v0.5.0 (2024-10-02)
+
+### Feat
+
+- **release**: add docker images for sonrd and motr
+- update homepage with new visual design
+- add DID to vault genesis schema
+- add video component
+- add video component
+- add hx-get attribute to primary button in hero section
+
+### Fix
+
+- **layout**: add missing favicon
+- **hero**: Use hx-swap for primary button to prevent flicker
+
 ## v0.4.2 (2024-10-01)
 
 ### Refactor
