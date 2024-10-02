@@ -1,3 +1,9 @@
+## v0.5.2 (2024-10-02)
+
+### Feat
+
+- **service**: integrate group module (#1104)
+
 ## v0.5.1 (2024-10-02)
 
 ### Refactor
