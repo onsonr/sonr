@@ -1,25 +1,3 @@
-## v0.5.0 (2024-10-02)
-
-### Feat
-
-- **release**: add docker images for sonrd and motr
-- update homepage with new visual design
-- add DID to vault genesis schema
-- add video component
-- add video component
-- add hx-get attribute to primary button in hero section
-
-### Fix
-
-- **layout**: add missing favicon
-- **hero**: Use hx-swap for primary button to prevent flicker
-
-## v0.4.2 (2024-10-01)
-
-### Refactor
-
-- use single GITHUB_TOKEN for release workflow
-
 ## v0.4.1 (2024-10-01)
 
 ### Feat
@@ -46,7 +24,7 @@
 - **cta**: Fix typo in CTA title
 - change bento section title to reflect security focus
 - adjust hero image dimensions
-- **Input**: Change  type from  to
+- **Input**: Change type from to
 - update hero image height in config.pkl
 
 ### Refactor
@@ -56,7 +34,7 @@
 - update hero image dimensions
 - move nebula configuration to static file
 - rename buf-publish.yml to publish-assets.yml
-- remove unused  field from
+- remove unused field from
 
 ## v0.4.0 (2024-09-30)
 
