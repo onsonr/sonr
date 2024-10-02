@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://goreleaser.com/static/schema-pro.json
 version: 2
 project_name: sonr
 
@@ -97,3 +98,47 @@ brews:
       owner: onsonr
       name: homebrew-tap
       branch: master
+
+# .goreleaser.yaml
+dockers:
+  - # Sonr Binary
+    id: sonrd
+    goos: linux
+    goarch: amd64
+    ids:
+      - sonr
+    image_templates:
+      - "onsonr/sonrd:latest"
+      - "onsonr/sonrd:{{ .Tag }}"
+      - "onsonr/sonrd:v{{ .Major }}"
+      - "gcr.io/onsonr/sonrd:latest"
+    dockerfile: "./deploy/release/sonrd.Dockerfile"
+    build_flag_templates:
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title=sonrd"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+
+  - # Motr Binary
+    id: motr
+    goos: linux
+    goarch: amd64
+    ids:
+      - motr
+    image_templates:
+      - "onsonr/motr:latest"
+      - "onsonr/motr:{{ .Tag }}"
+      - "onsonr/motr:v{{ .Major }}"
+    dockerfile: "./deploy/release/motr.Dockerfile"
+    build_flag_templates:
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title=motr"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+
+announce:
+  telegram:
+    enabled: true
+    chat_id: -1002222617755
+    message_template: 'New Sonr Release {{.Tag}} is out{{ mdv2escape "!" }}'
+    parse_mode: HTML

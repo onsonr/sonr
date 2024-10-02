@@ -58,7 +58,7 @@ func Layout(title string, remote bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"></head><body class=\"flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.sonr.id/favicon.png\"></head><body class=\"flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4\"><main class=\"flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -118,13 +118,13 @@ func LayoutNoBody(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/blocks/layout.templ`, Line: 36, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/blocks/layout.templ`, Line: 37, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"></head><main class=\"grow\"><body class=\"font-inter antialiased bg-white text-zinc-900 tracking-tight\"><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</title><link rel=\"icon\" type=\"image/png\" href=\"https://cdn.sonr.id/favicon.png\"><!-- Sets the status bar style to transparent --><meta name=\"apple-mobile-web-app-capable\" content=\"yes\"><meta name=\"apple-mobile-web-app-status-bar-style\" content=\"black-translucent\"></head><main class=\"grow\"><body class=\"font-inter antialiased bg-white text-zinc-900 tracking-tight\"><div class=\"flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

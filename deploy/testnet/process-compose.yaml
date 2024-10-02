@@ -1,0 +1,35 @@
+version: "0.6"
+
+processes:
+  ipfs:
+    namespace: testnet
+    command: "sh scripts/setup_ipfs.sh"
+    background: true
+    availability:
+      restart: on_failure
+      max_restarts: 0
+
+  sonr:
+    namespace: testnet
+    command: "devbox run start:testnet"
+    restart: on_failure
+    max_restarts: 1
+    depends:
+      - ipfs
+
+  motr:
+    namespace: testnet
+    command: "devbox run start:motr"
+    restart: on_failure
+    max_restarts: 1
+    depends:
+      - ipfs
+      - sonr
+
+  tunnel:
+    namespace: public
+    command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
+    restart: on_failure
+    max_restarts: 1
+    depends:
+      - caddy
