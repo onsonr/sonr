@@ -8,12 +8,33 @@ import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 // │                      General State                        │
 // ╰───────────────────────────────────────────────────────────╯
 
-typealias FormState = "initial" | "error" | "success" | "warning"
+typealias InputType = "text" | "password" | "email" | "credential" | "file"
+
+class Button {
+	text: String
+	href: String
+}
+
+abstract class Form {
+	title: String
+	description: String
+	inputs: List<Input>
+}
 
 class Image {
 	src: String
 	width: String
 	height: String
+}
+
+class Input {
+	label: String
+	type: InputType
+	placeholder: String
+	value: String?
+	error: String?
+	help: String?
+	required: Boolean?
 }
 
 class Link {
@@ -26,24 +47,16 @@ class SocialLink {
 	icon: String
 }
 
-class Button {
-	text: String
-	href: String
-}
-
-class Input {
-	label: String
-	type: String
-	placeholder: String
-	value: String?
-	error: String?
-	help: String?
-	required: Boolean
-}
-
 // ╭───────────────────────────────────────────────────────────╮
 // │                         Data Models                       │
 // ╰───────────────────────────────────────────────────────────╯
+
+class Feature {
+	title: String
+	description: String
+	icon: String
+	image: Image
+}
 
 class Highlight {
 	title: String
@@ -72,9 +85,9 @@ class Hero {
 }
 
 class Highlights {
-	title: String
-	description: String
-	image: Image
+	heading: String
+	subheading: String
+	highlights: Listing<Highlight>
 }
 
 class Features {
@@ -115,29 +128,13 @@ class Footer {
 
 class Home {
 	hero: Hero
+	highlights: Listing<Highlight>
+	features: Listing<Features>
+	bento: Bento
+	lowlights: Listing<Lowlights>
+	callToAction: CallToAction
+	footer: Footer
 }
 
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                  Registration View Model                  │
-// ╰───────────────────────────────────────────────────────────╯
-
-class RegistrationForm {
-	title: String
-	description: String
-	state: FormState
-	inputs: List<Input>
-}
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                    Login View Model                       │
-// ╰───────────────────────────────────────────────────────────╯
-
-
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                    FINAL INPUTS                           │
-// ╰───────────────────────────────────────────────────────────╯
-
-// Pages
 home : Home
+

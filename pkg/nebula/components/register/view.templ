@@ -1,21 +1,9 @@
 package register
 
 import (
-	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
 	"github.com/onsonr/sonr/pkg/nebula/models/formstate"
 )
-
-templ View(c echo.Context) {
-	@blocks.Layout("Sonr.ID", true) {
-		@blocks.Card("register-view", blocks.SizeMedium) {
-			@blocks.Spacer()
-			@blocks.Breadcrumbs()
-			@basicInfoForm(formstate.Initial)
-			@blocks.Spacer()
-		}
-	}
-}
 
 templ basicInfoForm(state formstate.FormState) {
 	switch (state) {

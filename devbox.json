@@ -6,6 +6,7 @@
     "bun@latest",
     "ipfs@latest",
     "skate@latest",
+    "templ@latest",
     "cloudflared@latest",
     "process-compose@latest"
   ],

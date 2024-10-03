@@ -1,6 +1,9 @@
 package home
 
-import "github.com/onsonr/sonr/pkg/nebula/models"
+import (
+	"github.com/onsonr/sonr/pkg/nebula/components/ui"
+	"github.com/onsonr/sonr/pkg/nebula/models"
+)
 
 templ SectionHero(hero *models.Hero) {
 	<!-- Hero -->
@@ -24,12 +27,8 @@ templ SectionHero(hero *models.Hero) {
 							{ hero.Subtitle }
 						</p>
 						<div class="max-w-xs mx-auto sm:max-w-none sm:inline-flex sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-							<div>
-								<div class="btn cursor-pointer text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get={ hero.PrimaryButton.Href }>{ hero.PrimaryButton.Text }</div>
-							</div>
-							<div>
-								<div class="btn cursor-pointer text-zinc-600 bg-white hover:text-zinc-900 w-full shadow" hx-swap="afterend" hx-get={ hero.SecondaryButton.Href }>{ hero.SecondaryButton.Text }</div>
-							</div>
+							@ui.PrimaryButton(hero.PrimaryButton.Href, hero.PrimaryButton.Text)
+							@ui.SecondaryButton(hero.SecondaryButton.Href, hero.SecondaryButton.Text)
 						</div>
 					</div>
 				</div>

@@ -1,6 +1,8 @@
-amends "https://pkl.sh/uiux.pkl";
+amends "https://pkl.sh/UIUX.pkl";
 
 home = new Home {
+
+	// Hero
 	hero = new Hero {
 		titleFirst = "Simplified";
 		titleEmphasis = "self-custody";
@@ -34,4 +36,198 @@ home = new Home {
 			}
 		};
 	};
+
+	// Highlights
+	highlights {
+		new Highlight {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/highlight-1.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+		new Highlight {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/highlight-2.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+	};	
+
+	// Features
+	features {
+		new Features {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/feature-1.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+		new Features {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/feature-2.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+		new Features {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/feature-3.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+	};
+
+	// Bento
+	bento = new Bento {
+		title = "Simplified";
+		description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+		primaryButton = new Button {
+			text = "Get Started";
+			href = "/register";
+		};
+		secondaryButton = new Button {
+			text = "Learn More";
+			href = "/about";
+		};
+	};
+
+	// Lowlights
+	lowlights {
+		new Lowlights {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/lowlight-1.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+		new Lowlights {
+			title = "Simplified";
+			description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+			image = new Image {
+				src = "https://cdn.sonr.id/img/lowlight-2.svg";
+				width = "500";
+				height = "500";
+			};
+		};
+	};	
+
+	// Call to Action
+	callToAction = new CallToAction {
+		title = "Simplified";
+		description = "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.";
+		primaryButton = new Button {
+			text = "Get Started";
+			href = "/register";
+		};
+		secondaryButton = new Button {
+			text = "Learn More";
+			href = "/about";
+		};
+	};
+
+	// Footer
+	footer = new Footer {
+		logo = new Image {
+			src = "https://cdn.sonr.id/img/logo.svg";
+			width = "500";
+			height = "500";
+		};
+
+		mediumLink = new SocialLink {
+			link = new Link {
+				text = "Medium";
+				href = "https://medium.com/sonr-io";
+			};
+			icon = "https://cdn.sonr.id/img/medium.svg";
+		};
+
+		twitterLink = new SocialLink {
+			link = new Link {
+				text = "Twitter";
+				href = "https://twitter.com/sonr";
+			};
+			icon = "https://cdn.sonr.id/img/twitter.svg";
+		};
+
+		discordLink = new SocialLink {
+			link = new Link {
+				text = "Discord";
+				href = "https://discord.com/invite/sonr";
+			};
+			icon = "https://cdn.sonr.id/img/discord.svg";
+		};
+
+		githubLink = new SocialLink {
+			link = new Link {
+				text = "GitHub";
+				href = "https://github.com/sonr-io";
+			};
+			icon = "https://cdn.sonr.id/img/github.svg";
+		};
+
+		companyLinks {
+			new Link {
+				text = "About";
+				href = "https://sonr.io/about";
+			};
+			new Link {
+				text = "Careers";
+				href = "https://sonr.io/careers";
+			};
+			new Link {
+				text = "Partners";
+				href = "https://sonr.io/partners";
+			};
+			new Link {
+				text = "Investors";
+				href = "https://sonr.io/investors";
+			};
+			new Link {
+				text = "Newsroom";
+				href = "https://sonr.io/newsroom";
+			};
+			new Link {
+				text = "Blog";
+				href = "https://sonr.io/blog";
+			};
+		};
+
+		resourcesLinks {
+			new Link {
+				text = "Docs";
+				href = "https://docs.sonr.io";
+			};
+			new Link {
+				text = "Whitepaper";
+				href = "https://sonr.io/whitepaper";
+			};
+			new Link {
+				text = "FAQ";
+				href = "https://sonr.io/faq";
+			};
+			new Link {
+				text = "Terms of Service";
+				href = "https://sonr.io/terms";
+			};
+			new Link {
+				text = "Privacy Policy";
+				href = "https://sonr.io/privacy";
+			};
+		};
+	}	
 };

@@ -2,9 +2,9 @@
 package models
 
 type Highlights struct {
-	Title string `pkl:"title"`
+	Heading string `pkl:"heading"`
 
-	Description string `pkl:"description"`
+	Subheading string `pkl:"subheading"`
 
-	Image *Image `pkl:"image"`
+	Highlights []*Highlight `pkl:"highlights"`
 }

@@ -1,10 +1,12 @@
 // Code generated from Pkl module `models`. DO NOT EDIT.
 package models
 
+import "github.com/onsonr/sonr/pkg/nebula/models/inputtype"
+
 type Input struct {
 	Label string `pkl:"label"`
 
-	Type string `pkl:"type"`
+	Type inputtype.InputType `pkl:"type"`
 
 	Placeholder string `pkl:"placeholder"`
 
@@ -14,5 +16,5 @@ type Input struct {
 
 	Help *string `pkl:"help"`
 
-	Required bool `pkl:"required"`
+	Required *bool `pkl:"required"`
 }
