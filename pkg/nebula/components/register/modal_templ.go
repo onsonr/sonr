@@ -11,7 +11,6 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
-	"github.com/onsonr/sonr/pkg/nebula/models/formstate"
 )
 
 func Modal(c echo.Context) templ.Component {
@@ -43,7 +42,7 @@ func Modal(c echo.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = basicInfoForm(formstate.Initial).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = basicInfoForm().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

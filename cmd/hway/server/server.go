@@ -29,7 +29,6 @@ func New() *Server {
 	s.GET("/login", pages.Login)
 	s.GET("/register", pages.Register)
 	s.GET("/profile", pages.Profile)
-	s.GET("/allocate", pages.Profile)
 
 	return s
 }

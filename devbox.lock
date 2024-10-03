@@ -294,6 +294,54 @@
           "store_path": "/nix/store/6zbyhj72wh0645lj6b9c392aqqg11a84-skate-1.0.0"
         }
       }
+    },
+    "templ@latest": {
+      "last_modified": "2024-09-10T15:01:03Z",
+      "resolved": "github:NixOS/nixpkgs/5ed627539ac84809c78b2dd6d26a5cebeb5ae269#templ",
+      "source": "devbox-search",
+      "version": "0.2.778",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/n3yqslisz9v81k4w4vhci1v2bl1sqf9s-templ-0.2.778",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/n3yqslisz9v81k4w4vhci1v2bl1sqf9s-templ-0.2.778"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/i4xjiw0vc25qpr3g01q0x401351w28hr-templ-0.2.778",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/i4xjiw0vc25qpr3g01q0x401351w28hr-templ-0.2.778"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/77w522agb5fgsr36jkifcccr9x4xwkf9-templ-0.2.778",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/77w522agb5fgsr36jkifcccr9x4xwkf9-templ-0.2.778"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/1g5ji5930j03cycpcjy12z6lr24l9c65-templ-0.2.778",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/1g5ji5930j03cycpcjy12z6lr24l9c65-templ-0.2.778"
+        }
+      }
     }
   }
 }
