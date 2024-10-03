@@ -13,6 +13,7 @@ func init() {
 	pkl.RegisterMapping("models#Link", Link{})
 	pkl.RegisterMapping("models#SocialLink", SocialLink{})
 	pkl.RegisterMapping("models#Input", Input{})
+	pkl.RegisterMapping("models#Highlight", Highlight{})
 	pkl.RegisterMapping("models#Highlights", Highlights{})
 	pkl.RegisterMapping("models#Features", Features{})
 	pkl.RegisterMapping("models#Bento", Bento{})
