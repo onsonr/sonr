@@ -1,3 +1,9 @@
+## v0.5.6 (2024-10-03)
+
+### Feat
+
+- add hway and sonr processes to dev environment
+
 ## v0.5.5 (2024-10-03)
 
 ### Feat
