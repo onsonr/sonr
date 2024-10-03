@@ -13,7 +13,7 @@
   ],
   "env": {
     "GOPATH": "$HOME/go",
-    "PATH": "$HOME/go/bin:$PATH",
+    "PATH": "./build:$HOME/go/bin:$PATH",
     "CHAIN_ID": "sonr-testnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
