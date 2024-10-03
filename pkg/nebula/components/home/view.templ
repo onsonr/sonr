@@ -5,15 +5,15 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-templ View(hero *models.Hero) {
+templ View(home *models.Home) {
 	@blocks.LayoutNoBody("Sonr.ID", true) {
-		@MarketingHeader()
-		@SectionHero(hero)
+		@Header()
+		@SectionHero(home.Hero)
 		@Highlights()
 		@Features()
 		@Bento()
 		@Lowlights()
 		@CallToAction()
-		@MarketingFooter()
+		@Footer()
 	}
 }

@@ -1,6 +1,7 @@
 amends "https://pkl.sh/uiux.pkl";
 
-hero = new Hero {
+home = new Home {
+	hero = new Hero {
 	titleFirst = "Simplified";
 	titleEmphasis = "self-custody";
 	titleSecond = "for everyone";
@@ -18,18 +19,19 @@ hero = new Hero {
 		width = "500";
 		height = "500";
 	};
+	stats {
+		new Stat {
+			value = "476K";
+			label = "Assets packed with power beyond your imagination.";
+		};
+		new Stat {
+			value = "1.44K";
+			label = "Assets packed with power beyond your imagination.";
+		};
+		new Stat {
+			value = "1.5M+";
+			label = "Assets packed with power beyond your imagination.";
+		}
+	};
 };
-
-stats = new Stats {
-	firstValue = "476K";
-	firstLabel = "Assets packed with power beyond your imagination.";
-	secondValue = "1.44K";
-	secondLabel = "Assets packed with power beyond your imagination.";
-	thirdValue = "1.5M+";
-	thirdLabel = "Assets packed with power beyond your imagination.";
-};
-
-home = new Home {
-	hero = hero;
-	stats = stats;
 };

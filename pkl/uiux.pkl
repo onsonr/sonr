@@ -5,7 +5,7 @@ module models
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                  General Components                       │
+// │                      General State                        │
 // ╰───────────────────────────────────────────────────────────╯
 
 typealias FormState = "initial" | "error" | "success" | "warning"
@@ -42,17 +42,23 @@ class Input {
 }
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                  Homepage Components                      │
+// │                         Data Models                       │
 // ╰───────────────────────────────────────────────────────────╯
 
-class Stats {
-	firstValue: String	
-	firstLabel: String
-	secondValue: String
-	secondLabel: String
-	thirdValue: String
-	thirdLabel: String
+class Highlight {
+	title: String
+	description: String
+	image: Image
 }
+
+class Stat {
+	value: String	
+	label: String
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Homepage View Model                      │
+// ╰───────────────────────────────────────────────────────────╯
 
 class Hero {
 	titleFirst: String
@@ -62,6 +68,39 @@ class Hero {
   primaryButton: Button
   secondaryButton: Button
   image: Image
+  stats: Listing<Stat>
+}
+
+class Highlights {
+	title: String
+	description: String
+	image: Image
+}
+
+class Features {
+	title: String
+	description: String
+	image: Image
+}
+
+class Bento {
+	title: String
+	description: String
+	primaryButton: Button
+	secondaryButton: Button
+}
+
+class Lowlights {
+	title: String
+	description: String
+	image: Image
+}
+
+class CallToAction {
+	title: String
+	description: String
+	primaryButton: Button
+	secondaryButton: Button
 }
 
 class Footer {
@@ -70,19 +109,17 @@ class Footer {
 	twitterLink: SocialLink
 	discordLink: SocialLink
 	githubLink: SocialLink
-	companyLinks: List<Link>
-	resourcesLinks: List<Link>
+	companyLinks: Listing<Link>
+	resourcesLinks: Listing<Link>
 }
 
 class Home {
 	hero: Hero
-	stats: Stats
 }
 
-home : Home
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                  Registration Components                  │
+// │                  Registration View Model                  │
 // ╰───────────────────────────────────────────────────────────╯
 
 class RegistrationForm {
@@ -92,3 +129,15 @@ class RegistrationForm {
 	inputs: List<Input>
 }
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                    Login View Model                       │
+// ╰───────────────────────────────────────────────────────────╯
+
+
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                    FINAL INPUTS                           │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Pages
+home : Home

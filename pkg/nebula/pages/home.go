@@ -12,5 +12,5 @@ func Home(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return echoResponse(c, home.View(mdls.Home.Hero))
+	return echoResponse(c, home.View(mdls.Home))
 }
