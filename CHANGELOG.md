@@ -1,3 +1,17 @@
+## v0.5.5 (2024-10-03)
+
+### Feat
+
+- add rudimentary DidController table
+- update home section with new features
+- introduce Home model and refactor views
+- **nebula**: create Home model for home page
+
+### Refactor
+
+- reorganize pkl files for better separation of concerns
+- rename msg_server_test.go to rpc_test.go
+
 ## v0.5.4 (2024-10-02)
 
 ## v0.5.3 (2024-10-02)
