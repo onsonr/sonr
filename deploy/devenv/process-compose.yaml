@@ -13,14 +13,13 @@ processes:
     namespace: testnet
     command: "devbox run start:testnet"
     restart: on_failure
-    env:
     max_restarts: 1
     depends:
       - ipfs
 
   hway:
     namespace: testnet
-    command: "hway start"
+    command: "devbox run start:hway"
     restart: on_failure
     max_restarts: 1
     depends:
