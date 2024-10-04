@@ -72,10 +72,10 @@
         "make sh-testnet"
       ],
       "start": [
-        "process-compose up -d"
+        "process-compose up -f ./deploy/testnet/process-compose.yaml"
       ],
       "stop": [
-        "process-compose down"
+        "process-compose down -f ./deploy/testnet/process-compose.yaml"
       ],
       "test:e2e": [
         "make templ",

@@ -41,9 +41,9 @@ templ SectionHero(hero *models.Hero) {
 
 templ heroImage(hero *models.Hero) {
 	<!-- Image -->
-	<div class="max-w-5xl mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10 from-zinc-100 to-white">
+	<div class="max-w-5xl motion-preset-slide-up mx-auto px-4 sm:px-6 flex justify-center pb-12 md:pb-20 relative before:absolute before:-top-12 before:w-96 before:h-96 before:bg-zinc-900 before:opacity-[.15] before:rounded-full before:blur-3xl before:-z-10 from-zinc-100 to-white">
 		<img
-			class="rounded-lg"
+			class="rounded-lg "
 			src={ hero.Image.Src }
 			width={ hero.Image.Width }
 			height={ hero.Image.Height }
