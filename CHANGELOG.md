@@ -1,3 +1,9 @@
+## v0.5.8 (2024-10-04)
+
+### Refactor
+
+- Remove unused logs configuration
+
 ## v0.5.7 (2024-10-04)
 
 ### Feat
