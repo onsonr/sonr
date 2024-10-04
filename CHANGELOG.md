@@ -1,3 +1,20 @@
+## v0.5.7 (2024-10-04)
+
+### Feat
+
+- **devbox**: use process-compose for testnet services
+- remove motr.mjs dependency
+- add markdown rendering to issue templates
+- update issue templates for better clarity
+- add issue templates for tracking and task issues
+- add issue templates for bug report and tracking
+- introduce docker-compose based setup
+
+### Refactor
+
+- update issue template headings
+- rename bug-report issue template to bug
+
 ## v0.5.6 (2024-10-03)
 
 ### Feat
