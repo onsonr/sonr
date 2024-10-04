@@ -16,6 +16,7 @@ body:
     attributes:
       label: Objective
       description: Explain the objective of the feature and add any relevant links.
+      render: markdown
     validations:
       required: false
   - type: textarea
