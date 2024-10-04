@@ -1,39 +1,39 @@
 package orm
 
-const SCHEMA_VERSION = 1
+import (
+	"reflect"
+	"strings"
+)
 
-func AccountSchema() string {
-	return "++, id, name, address, publicKey, chainCode, index, controller, createdAt"
+const SchemaVersion = 1
+
+func toCamelCase(s string) string {
+	if s == "" {
+		return s
+	}
+	if len(s) == 1 {
+		return strings.ToLower(s)
+	}
+	return strings.ToLower(s[:1]) + s[1:]
 }
 
-func AssetSchema() string {
-	return "++, id, name, symbol, decimals, chainCode, createdAt"
-}
+func GetSchema(structType interface{}) string {
+	t := reflect.TypeOf(structType)
+	if t.Kind() == reflect.Ptr {
+		t = t.Elem()
+	}
 
-func ChainSchema() string {
-	return "++, id, name, networkId, chainCode, createdAt"
-}
+	if t.Kind() != reflect.Struct {
+		return ""
+	}
 
-func CredentialSchema() string {
-	return "++, id, subject, controller, attestationType, origin, label, deviceId, credentialId, publicKey, transport, signCount, userPresent, userVerified, backupEligible, backupState, cloneWarning, createdAt, updatedAt"
-}
+	var fields []string
+	for i := 0; i < t.NumField(); i++ {
+		field := t.Field(i)
+		fieldName := toCamelCase(field.Name)
+		fields = append(fields, fieldName)
+	}
 
-func DIDSchema() string {
-	return "++, id, role, algorithm, encoding, curve, key_type, raw, jwk"
-}
-
-func JwkSchema() string {
-	return "++, kty, crv, x, y, n, e"
-}
-
-func GrantSchema() string {
-	return "++, subject, controller, origin, token, scopes, createdAt, updatedAt"
-}
-
-func KeyshareSchema() string {
-	return "++, id, data, role, createdAt, lastRefreshed"
-}
-
-func ProfileSchema() string {
-	return "++, id, subject, controller, originUri, publicMetadata, privateMetadata, createdAt, updatedAt"
+	// Add "++" at the beginning, separated by a comma
+	return "++, " + strings.Join(fields, ", ")
 }

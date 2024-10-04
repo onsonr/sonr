@@ -34,14 +34,13 @@ func (p Params) Validate() error {
 // DefaultSchema returns the default schema
 func DefaultSchema() *Schema {
 	return &Schema{
-		Version:    orm.SCHEMA_VERSION,
-		Account:    orm.AccountSchema(),
-		Asset:      orm.AssetSchema(),
-		Chain:      orm.ChainSchema(),
-		Credential: orm.CredentialSchema(),
-		Jwk:        orm.JwkSchema(),
-		Grant:      orm.GrantSchema(),
-		Keyshare:   orm.KeyshareSchema(),
-		Profile:    orm.ProfileSchema(),
+		Version:    orm.SchemaVersion,
+		Account:    orm.GetSchema(&orm.Account{}),
+		Asset:      orm.GetSchema(&orm.Asset{}),
+		Chain:      orm.GetSchema(&orm.Chain{}),
+		Credential: orm.GetSchema(&orm.Credential{}),
+		Grant:      orm.GetSchema(&orm.Grant{}),
+		Keyshare:   orm.GetSchema(&orm.Keyshare{}),
+		Profile:    orm.GetSchema(&orm.Profile{}),
 	}
 }

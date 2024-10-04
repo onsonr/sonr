@@ -13,15 +13,11 @@ import (
 //go:embed app.wasm
 var dwnWasmData []byte
 
-//go:embed motr.mjs
-var motrMJSData []byte
-
 //go:embed sw.js
 var swJSData []byte
 
 var (
 	dwnWasmFile = files.NewBytesFile(dwnWasmData)
-	motrMJSFile = files.NewBytesFile(motrMJSData)
 	swJSFile    = files.NewBytesFile(swJSData)
 )
 
@@ -43,7 +39,6 @@ func NewVaultDirectory(cnfg *Config) (files.Node, error) {
 	}
 	fileMap := map[string]files.Node{
 		"config.json": files.NewBytesFile(dwnJSON),
-		"motr.mjs":    motrMJSFile,
 		"sw.js":       swJSFile,
 		"app.wasm":    dwnWasmFile,
 		"index.html":  files.NewBytesFile(w.Bytes()),
