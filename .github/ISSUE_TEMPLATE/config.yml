@@ -2,7 +2,4 @@ blank_issues_enabled: false
 contact_links:
   - name: Sonr Community Support
     url: https://github.com/orgs/onsonr/discussions
-    about: Please ask and answer questions here.
-  - name: Sonr Security Bug Bounty
-    url: https://bounty.github.com/
-    about: Please report security vulnerabilities here.
+    about: Please submit ideas and suggestions here.

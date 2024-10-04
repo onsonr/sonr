@@ -2,15 +2,13 @@
 name: Tracking issue
 about: Use this template for tracking new features.
 title: "(v0.6): FEATURE NAME"
-labels: Tracking, Milestone
+labels: OKR
 assignees: prnk28
 projects: onsonr/37
 ---
 
 > [!IMPORTANT]  
 > **This is a tracking issue for tracking a new feature for a given milestone.**
-
----
 
 ## Objective
 
