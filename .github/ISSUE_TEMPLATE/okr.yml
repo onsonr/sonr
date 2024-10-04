@@ -1,0 +1,42 @@
+name: Default Todo
+description: Break down feature requirements into tasks.
+title: "Name of the new task"
+labels: ["TODO"]
+body:
+  - type: checkboxes
+    attributes:
+      label: Is this associated with a tracking issue?
+      description: This is a implementation issue for coompletion of a task for a Objective.
+      options:
+        - label: I have confirmed this is associated with a tracking issue.
+          required: true
+  - type: textarea
+    attributes:
+      label: Description
+      description: Write a "prompt" for the task.
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: Associated Files
+      description: |
+        - [proto/did/v1/state.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/state.proto)
+        - [proto/did/v1/tx.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/tx.proto)
+      render: markdown
+      value: |
+        - [proto/did/v1/state.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/state.proto)
+        - [proto/did/v1/tx.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/tx.proto)
+    validations:
+      required: false
+  - type: textarea
+    attributes:
+      label: References
+      description: |
+        - [Cosmos ORM Docs](https://github.com/cosmos/orm)
+        - [DID Document Spec](https://docs.cosmos.network)
+      render: markdown
+      value: |
+        - [Cosmos ORM Docs](https://github.com/cosmos/orm)
+        - [DID Document Spec](https://docs.cosmos.network)
+    validations:
+      required: false
