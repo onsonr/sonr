@@ -4,17 +4,11 @@ title: "Name of the new task"
 labels: ["TODO"]
 projects: ["onsonr/37"]
 body:
-  - type: checkboxes
-    attributes:
-      label: Is this associated with a tracking issue?
-      description: This is a implementation issue for coompletion of a task for a Objective.
-      options:
-        - label: I have confirmed this is associated with a tracking issue.
-          required: true
   - type: textarea
     attributes:
       label: Description
       description: The expected deliverable of the task.
+      render: markdown
     validations:
       required: false
   - type: textarea
@@ -22,7 +16,6 @@ body:
       label: Associated Files
       description: |
         These files will be modified by this task.
-      render: markdown
       value: |
         - [proto/did/v1/state.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/state.proto)
         - [proto/did/v1/tx.proto](https://github.com/onsonr/sonr/blob/develop/proto/did/v1/tx.proto)
@@ -33,7 +26,6 @@ body:
       label: References
       description: |
         Use these documents to help you complete the task.
-      render: markdown
       value: |
         - [Cosmos ORM Docs](https://github.com/cosmos/orm)
         - [DID Document Spec](https://docs.cosmos.network)
