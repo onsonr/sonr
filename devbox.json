@@ -30,22 +30,65 @@
   },
   "shell": {
     "scripts": {
-      "dev": ["air"],
-      "build:docker": ["make local-image"],
-      "build:hway": ["make nebula", "make hway"],
-      "build:nebula": ["make nebula"],
-      "build:sonrd": ["make motr", "make build"],
-      "build": ["make motr", "make build", "make hway"],
-      "gen:proto": ["make proto-gen"],
-      "gen:pkl": ["make pkl"],
-      "gen:templ": ["make templ"],
-      "start:hway": ["make templ", "make hway", "make start-hway"],
-      "start:testnet": ["make templ", "make install", "make sh-testnet"],
-      "start": ["process-compose up -d"],
-      "stop": ["process-compose down"],
-      "test:e2e": ["make templ", "make test-e2e"],
-      "test:unit": ["make templ", "make test-unit"],
-      "test": ["make templ", "make test"]
+      "dev": [
+        "air"
+      ],
+      "build:docker": [
+        "make local-image"
+      ],
+      "build:hway": [
+        "make nebula",
+        "make hway"
+      ],
+      "build:nebula": [
+        "make nebula"
+      ],
+      "build:sonrd": [
+        "make motr",
+        "make build"
+      ],
+      "build": [
+        "make motr",
+        "make build",
+        "make hway"
+      ],
+      "gen:proto": [
+        "make proto-gen"
+      ],
+      "gen:pkl": [
+        "make pkl"
+      ],
+      "gen:templ": [
+        "make templ"
+      ],
+      "start:hway": [
+        "make templ",
+        "make hway",
+        "make start-hway"
+      ],
+      "start:testnet": [
+        "make templ",
+        "make install",
+        "make sh-testnet"
+      ],
+      "start": [
+        "process-compose up -d"
+      ],
+      "stop": [
+        "process-compose down"
+      ],
+      "test:e2e": [
+        "make templ",
+        "make test-e2e"
+      ],
+      "test:unit": [
+        "make templ",
+        "make test-unit"
+      ],
+      "test": [
+        "make templ",
+        "make test"
+      ]
     }
   }
 }
