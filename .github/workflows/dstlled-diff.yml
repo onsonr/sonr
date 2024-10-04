@@ -1,0 +1,19 @@
+name: dstlled-diff
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  dstlled-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: get-dstlled-diff
+        uses: dhth/dstlled-diff-action@v0.1.0
+        with:
+          starting-commit: ${{ github.event.pull_request.base.sha }}
+          ending-commit: ${{ github.event.pull_request.head.sha }}
+          post-comment-on-pr: "true"
