@@ -1,7 +1,8 @@
 name: Default Todo
 description: Break down feature requirements into tasks.
 title: "Name of the new task"
-labels: ["TODO"]
+labels: ["#TODO", "#OKR"]
+assignees: ["prnk28"]
 projects: ["onsonr/37"]
 body:
   - type: textarea

@@ -1,7 +1,8 @@
 name: Tracking issue
 description: Use this template for tracking new features.
 title: "(v0.6): FEATURE NAME"
-labels: ["OKR"]
+labels: ["#TRACK", "#OKR"]
+assignees: ["prnk28"]
 projects: ["onsonr/37"]
 body:
   - type: checkboxes
@@ -14,25 +15,15 @@ body:
   - type: textarea
     attributes:
       label: Objective
-      description: Explain the objective of the feature.
-      render: markdown
+      description: Explain the objective of the feature and add any relevant links.
     validations:
       required: false
   - type: textarea
     attributes:
       label: Task List
       description: |
-        Break down of tasks to complete the objective.
+        Break down the objective into a list of tasks to be completed.
       value: |
-        - [ ] Task 1
-        - [ ] Task 2
-        - [ ] Task 3
-    validations:
-      required: false
-  - type: textarea
-    attributes:
-      label: Additional Resources
-      description: |
-        Provide additional context relevant to the feature.
+        - [ ]
     validations:
       required: false
