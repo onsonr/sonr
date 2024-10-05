@@ -315,10 +315,10 @@ nebula:
 
 pkl:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./deploy/config/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./deploy/config/ORM.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./deploy/config/Txns.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./deploy/config/UIUX.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/UIUX.pkl
 
 start-caddy:
 	@echo "(start-caddy) Starting caddy"

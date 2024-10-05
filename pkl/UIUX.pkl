@@ -54,14 +54,8 @@ class SocialLink {
 class Feature {
 	title: String
 	description: String
-	icon: String
-	image: Image
-}
-
-class Highlight {
-	title: String
-	description: String
-	image: Image
+	icon: String?
+	image: Image?
 }
 
 class Stat {
@@ -87,53 +81,10 @@ class Hero {
 class Highlights {
 	heading: String
 	subheading: String
-	highlights: Listing<Highlight>
+	highlights: Listing<Feature>
 }
-
-class Features {
-	title: String
-	description: String
-	image: Image
-}
-
-class Bento {
-	title: String
-	description: String
-	primaryButton: Button
-	secondaryButton: Button
-}
-
-class Lowlights {
-	title: String
-	description: String
-	image: Image
-}
-
-class CallToAction {
-	title: String
-	description: String
-	primaryButton: Button
-	secondaryButton: Button
-}
-
-class Footer {
-	logo: Image
-	mediumLink: SocialLink
-	twitterLink: SocialLink
-	discordLink: SocialLink
-	githubLink: SocialLink
-	companyLinks: Listing<Link>
-	resourcesLinks: Listing<Link>
-}
-
 class Home {
 	hero: Hero
-	highlights: Listing<Highlight>
-	features: Listing<Features>
-	bento: Bento
-	lowlights: Listing<Lowlights>
-	callToAction: CallToAction
-	footer: Footer
 }
 
 home : Home
