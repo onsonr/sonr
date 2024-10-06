@@ -6,7 +6,6 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/nebula/components/grant"
 	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/components/login"
 	"github.com/onsonr/sonr/pkg/nebula/components/profile"
@@ -14,10 +13,9 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-func Authorize(c echo.Context) error {
-	return echoResponse(c, grant.View(c))
-}
-
+//	func Authorize(c echo.Context) error {
+//		return echoResponse(c, grant.View(c))
+//	}
 func Home(c echo.Context) error {
 	mdls, err := models.GetModels()
 	if err != nil {
