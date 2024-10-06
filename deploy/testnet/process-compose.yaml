@@ -20,7 +20,7 @@ processes:
 
   hway:
     namespace: testnet
-    command: "hway start"
+    command: "devbox run start:hway"
     restart: on_failure
     max_restarts: 1
     depends:
@@ -32,5 +32,3 @@ processes:
     command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
     restart: on_failure
     max_restarts: 1
-    depends:
-      - caddy

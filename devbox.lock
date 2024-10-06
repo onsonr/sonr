@@ -247,6 +247,54 @@
       "source": "devbox-search",
       "version": "0.17.0"
     },
+    "mprocs@latest": {
+      "last_modified": "2024-09-10T15:01:03Z",
+      "resolved": "github:NixOS/nixpkgs/5ed627539ac84809c78b2dd6d26a5cebeb5ae269#mprocs",
+      "source": "devbox-search",
+      "version": "0.7.1",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/sri1rv6phxhcvgwknd3zv98km6s1740b-mprocs-0.7.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/sri1rv6phxhcvgwknd3zv98km6s1740b-mprocs-0.7.1"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/7q84qjs24xd9jf2wvn7f39gvxsn5n33q-mprocs-0.7.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/7q84qjs24xd9jf2wvn7f39gvxsn5n33q-mprocs-0.7.1"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/47j50bgr6mxlvdjddh0li810wkld34qb-mprocs-0.7.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/47j50bgr6mxlvdjddh0li810wkld34qb-mprocs-0.7.1"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6vrvg4jhv2yg8y326dmrxsz3yddkqgzq-mprocs-0.7.1",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6vrvg4jhv2yg8y326dmrxsz3yddkqgzq-mprocs-0.7.1"
+        }
+      }
+    },
     "process-compose@latest": {
       "last_modified": "2024-09-15T21:49:16Z",
       "resolved": "github:NixOS/nixpkgs/039b72d0c738c934e2e36d7fc5520d1b425287a6#process-compose",

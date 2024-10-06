@@ -1,0 +1,81 @@
+package blocks
+
+import "strings"
+
+type Icon interface {
+	Render() templ.Component
+}
+
+type Variant interface {
+	Attributes() templ.Attributes
+}
+
+var stylesHandle = templ.NewOnceHandle()
+var alpineHandle = templ.NewOnceHandle()
+var htmxHandle = templ.NewOnceHandle()
+
+func clsxMerge(variants ...Variant) templ.Attributes {
+	combinedAttrs := templ.Attributes{}
+	var classElements []string
+
+	for _, variant := range variants {
+		attrs := variant.Attributes()
+		if class, ok := attrs["class"].(string); ok {
+			classElements = append(classElements, strings.Fields(class)...)
+		}
+		for key, value := range attrs {
+			if key != "class" {
+				combinedAttrs[key] = value
+			}
+		}
+	}
+
+	if len(classElements) > 0 {
+		combinedAttrs["class"] = strings.Join(classElements, " ")
+	}
+	return combinedAttrs
+}
+
+func clsxBuilder(classes ...string) templ.Attributes {
+	if len(classes) == 0 {
+		return templ.Attributes{}
+	}
+	class := strings.Join(classes, " ")
+	return templ.Attributes{
+		"class": class,
+	}
+}
+
+templ Spacer() {
+	<br/>
+}
+
+templ Styles(local bool) {
+	@stylesHandle.Once() {
+		<link href="/assets/css/styles.css" rel="stylesheet"/>
+	}
+}
+
+templ Alpine(local bool) {
+	@alpineHandle.Once() {
+		<script src="/assets/js/alpine.min.js" defer></script>
+	}
+}
+
+templ Htmx(local bool) {
+	@htmxHandle.Once() {
+		<script src="/assets/js/htmx.min.js"></script>
+	}
+}
+
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4">
+		{ children... }
+	</div>
+}
+
+templ Columns() {
+	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
+		{ children... }
+	</div>
+}

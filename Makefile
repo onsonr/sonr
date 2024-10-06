@@ -299,6 +299,7 @@ sh-testnet: mod-tidy
 
 hway:
 	@echo "(motr) Building Highway gateway"
+	templ generate
 	go build -o ./build/hway ./cmd/hway
 
 motr:

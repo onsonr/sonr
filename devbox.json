@@ -6,6 +6,7 @@
     "bun@latest",
     "gum@latest",
     "ipfs@latest",
+    "mprocs@latest",
     "skate@latest",
     "templ@latest",
     "cloudflared@latest",
@@ -31,7 +32,7 @@
   "shell": {
     "scripts": {
       "dev": [
-        "air"
+        "cd deploy/devenv && mprocs"
       ],
       "build:docker": [
         "make local-image"
@@ -69,6 +70,14 @@
       ],
       "stop": [
         "process-compose down -f ./deploy/testnet/process-compose.yaml"
+      ],
+      "start:testnet": [
+        "make sh-testnet"
+      ],
+      "start:hway": [
+        "make nebula",
+        "make hway",
+        "./build/hway start"
       ]
     }
   }

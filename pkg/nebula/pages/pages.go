@@ -21,26 +21,26 @@ func Home(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return echoResponse(c, home.View(mdls.Home))
+	return Render(c, home.View(mdls.Home))
 }
 
 func Login(c echo.Context) error {
-	return echoResponse(c, login.Modal(c))
+	return Render(c, login.Modal(c))
 }
 
 func Profile(c echo.Context) error {
-	return echoResponse(c, profile.View(c))
+	return Render(c, profile.View(c))
 }
 
 func Register(c echo.Context) error {
-	return echoResponse(c, register.Modal(c))
+	return Render(c, register.Modal(c))
 }
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                       Helper Methods                      │
 // ╰───────────────────────────────────────────────────────────╯
 
-func echoResponse(c echo.Context, cmp templ.Component) error {
+func Render(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
 	// Render the component to the buffer
