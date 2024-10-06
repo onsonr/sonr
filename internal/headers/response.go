@@ -1,18 +1,6 @@
 package headers
 
 type ResponseHeaders struct {
-	AcceptCH                      *string `header:"Accept-CH"`
-	AccessControlAllowCredentials *string `header:"Access-Control-Allow-Credentials"`
-	AccessControlAllowHeaders     *string `header:"Access-Control-Allow-Headers"`
-	AccessControlAllowMethods     *string `header:"Access-Control-Allow-Methods"`
-	AccessControlExposeHeaders    *string `header:"Access-Control-Expose-Headers"`
-	AccessControlRequestHeaders   *string `header:"Access-Control-Request-Headers"`
-	ContentSecurityPolicy         *string `header:"Content-Security-Policy"`
-	CrossOriginEmbedderPolicy     *string `header:"Cross-Origin-Embedder-Policy"`
-	PermissionsPolicy             *string `header:"Permissions-Policy"`
-	ProxyAuthorization            *string `header:"Proxy-Authorization"`
-	WWWAuthenticate               *string `header:"WWW-Authenticate"`
-
 	// HTMX Specific
 	HXLocation           *string `header:"HX-Location"`
 	HXPushURL            *string `header:"HX-Push-Url"`
@@ -25,4 +13,18 @@ type ResponseHeaders struct {
 	HXTrigger            *string `header:"HX-Trigger"`
 	HXTriggerAfterSettle *string `header:"HX-Trigger-After-Settle"`
 	HXTriggerAfterSwap   *string `header:"HX-Trigger-After-Swap"`
+}
+
+type ProtectedResponseHeaders struct {
+	AcceptCH                      *string `header:"Accept-CH"`
+	AccessControlAllowCredentials *string `header:"Access-Control-Allow-Credentials"`
+	AccessControlAllowHeaders     *string `header:"Access-Control-Allow-Headers"`
+	AccessControlAllowMethods     *string `header:"Access-Control-Allow-Methods"`
+	AccessControlExposeHeaders    *string `header:"Access-Control-Expose-Headers"`
+	AccessControlRequestHeaders   *string `header:"Access-Control-Request-Headers"`
+	ContentSecurityPolicy         *string `header:"Content-Security-Policy"`
+	CrossOriginEmbedderPolicy     *string `header:"Cross-Origin-Embedder-Policy"`
+	PermissionsPolicy             *string `header:"Permissions-Policy"`
+	ProxyAuthorization            *string `header:"Proxy-Authorization"`
+	WWWAuthenticate               *string `header:"WWW-Authenticate"`
 }
