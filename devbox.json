@@ -31,9 +31,6 @@
   },
   "shell": {
     "scripts": {
-      "dev": [
-        "cd deploy/devenv && mprocs"
-      ],
       "build:docker": [
         "make local-image"
       ],
@@ -66,10 +63,10 @@
         "make templ"
       ],
       "start": [
-        "process-compose up -f ./deploy/testnet/process-compose.yaml"
+        "process-compose up -f ./deploy/process-compose.yaml"
       ],
       "stop": [
-        "process-compose down -f ./deploy/testnet/process-compose.yaml"
+        "process-compose down -f ./deploy/process-compose.yaml"
       ],
       "start:testnet": [
         "make sh-testnet"
