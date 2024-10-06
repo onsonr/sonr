@@ -43,6 +43,9 @@
       "build:nebula": [
         "make nebula"
       ],
+      "build:motr": [
+        "make motr"
+      ],
       "build:sonrd": [
         "make motr",
         "make build"
@@ -61,33 +64,11 @@
       "gen:templ": [
         "make templ"
       ],
-      "start:hway": [
-        "make templ",
-        "make hway",
-        "make start-hway"
-      ],
-      "start:testnet": [
-        "make templ",
-        "make install",
-        "make sh-testnet"
-      ],
       "start": [
         "process-compose up -f ./deploy/testnet/process-compose.yaml"
       ],
       "stop": [
         "process-compose down -f ./deploy/testnet/process-compose.yaml"
-      ],
-      "test:e2e": [
-        "make templ",
-        "make test-e2e"
-      ],
-      "test:unit": [
-        "make templ",
-        "make test-unit"
-      ],
-      "test": [
-        "make templ",
-        "make test"
       ]
     }
   }

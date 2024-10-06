@@ -2,9 +2,9 @@
 package dwn
 
 type Motr struct {
-	Keyshare string `pkl:"keyshare" json:"keyshare,omitempty"`
+	Keyshare string `pkl:"keyshare"`
 
-	Address string `pkl:"address" json:"address,omitempty"`
+	Address string `pkl:"address"`
 
-	Origin string `pkl:"origin" json:"origin,omitempty"`
+	Origin string `pkl:"origin"`
 }

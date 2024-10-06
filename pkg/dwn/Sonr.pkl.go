@@ -2,13 +2,13 @@
 package dwn
 
 type Sonr struct {
-	ApiUrl string `pkl:"apiUrl" json:"apiUrl,omitempty"`
+	ApiUrl string `pkl:"apiUrl"`
 
-	GrpcUrl string `pkl:"grpcUrl" json:"grpcUrl,omitempty"`
+	GrpcUrl string `pkl:"grpcUrl"`
 
-	RpcUrl string `pkl:"rpcUrl" json:"rpcUrl,omitempty"`
+	RpcUrl string `pkl:"rpcUrl"`
 
-	WebSocketUrl string `pkl:"webSocketUrl" json:"webSocketUrl,omitempty"`
+	WebSocketUrl string `pkl:"webSocketUrl"`
 
-	ChainId string `pkl:"chainId" json:"chainId,omitempty"`
+	ChainId string `pkl:"chainId"`
 }

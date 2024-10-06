@@ -6,5 +6,5 @@ type Highlights struct {
 
 	Subheading string `pkl:"subheading"`
 
-	Highlights []*Highlight `pkl:"highlights"`
+	Highlights []*Feature `pkl:"highlights"`
 }

@@ -6,7 +6,7 @@ type Feature struct {
 
 	Description string `pkl:"description"`
 
-	Icon string `pkl:"icon"`
+	Icon *string `pkl:"icon"`
 
 	Image *Image `pkl:"image"`
 }

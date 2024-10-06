@@ -4,19 +4,19 @@ package dwn
 type Schema struct {
 	Version int `pkl:"version"`
 
-	Account string `pkl:"account" json:"account,omitempty"`
+	Account string `pkl:"account"`
 
-	Asset string `pkl:"asset" json:"asset,omitempty"`
+	Asset string `pkl:"asset"`
 
-	Chain string `pkl:"chain" json:"chain,omitempty"`
+	Chain string `pkl:"chain"`
 
-	Credential string `pkl:"credential" json:"credential,omitempty"`
+	Credential string `pkl:"credential"`
 
-	Jwk string `pkl:"jwk" json:"jwk,omitempty"`
+	Jwk string `pkl:"jwk"`
 
-	Grant string `pkl:"grant" json:"grant,omitempty"`
+	Grant string `pkl:"grant"`
 
-	Keyshare string `pkl:"keyshare" json:"keyshare,omitempty"`
+	Keyshare string `pkl:"keyshare"`
 
-	Profile string `pkl:"profile" json:"profile,omitempty"`
+	Profile string `pkl:"profile"`
 }
