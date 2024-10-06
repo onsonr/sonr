@@ -1,3 +1,14 @@
+## v0.5.9 (2024-10-06)
+
+### Feat
+
+- add Motr support
+- update UIUX PKL to utilize optional fields
+
+### Fix
+
+- Update source directory for asset publishing
+
 ## v0.5.8 (2024-10-04)
 
 ### Refactor
