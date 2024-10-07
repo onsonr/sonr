@@ -1,8 +1,6 @@
 amends "https://pkl.sh/UIUX.pkl";
 
 home = new Home {
-
-	// Hero
 	hero = new Hero {
 		titleFirst = "Simplified";
 		titleEmphasis = "self-custody";

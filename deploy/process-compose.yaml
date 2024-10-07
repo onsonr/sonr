@@ -13,6 +13,7 @@ processes:
     namespace: testnet
     command: "devbox run start:testnet"
     restart: on_failure
+    env:
     max_restarts: 1
     depends:
       - ipfs
@@ -31,5 +32,3 @@ processes:
     command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
     restart: on_failure
     max_restarts: 1
-    depends:
-      - caddy

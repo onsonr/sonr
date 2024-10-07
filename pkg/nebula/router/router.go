@@ -1,4 +1,4 @@
-package pages
+package router
 
 import (
 	"bytes"
@@ -14,35 +14,42 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-func Authorize(c echo.Context) error {
-	return echoResponse(c, grant.View(c))
-}
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Marketing Pages                          │
+// ╰───────────────────────────────────────────────────────────╯
 
 func Home(c echo.Context) error {
 	mdls, err := models.GetModels()
 	if err != nil {
 		return err
 	}
-	return echoResponse(c, home.View(mdls.Home))
-}
-
-func Login(c echo.Context) error {
-	return echoResponse(c, login.Modal(c))
+	return render(c, home.View(mdls.Home))
 }
 
 func Profile(c echo.Context) error {
-	return echoResponse(c, profile.View(c))
+	return render(c, profile.View(c))
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Authentication Views                     │
+// ╰───────────────────────────────────────────────────────────╯
+func Authorize(c echo.Context) error {
+	return render(c, grant.View(c))
+}
+
+func Login(c echo.Context) error {
+	return render(c, login.Modal(c))
 }
 
 func Register(c echo.Context) error {
-	return echoResponse(c, register.Modal(c))
+	return render(c, register.Modal(c))
 }
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                       Helper Methods                      │
 // ╰───────────────────────────────────────────────────────────╯
 
-func echoResponse(c echo.Context, cmp templ.Component) error {
+func render(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
 	// Render the component to the buffer

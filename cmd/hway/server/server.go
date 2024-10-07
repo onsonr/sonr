@@ -8,7 +8,7 @@ import (
 
 	"github.com/onsonr/sonr/internal/session"
 	"github.com/onsonr/sonr/pkg/nebula"
-	"github.com/onsonr/sonr/pkg/nebula/pages"
+	"github.com/onsonr/sonr/pkg/nebula/router"
 )
 
 type Server struct {
@@ -25,11 +25,11 @@ func New() *Server {
 		s.Logger.Fatal(err)
 	}
 
-	s.GET("/", pages.Home)
-	s.GET("/login", pages.Login)
-	s.GET("/register", pages.Register)
-	s.GET("/profile", pages.Profile)
-
+	s.GET("/", router.Home)
+	s.GET("/login", router.Login)
+	s.GET("/register", router.Register)
+	s.GET("/profile", router.Profile)
+	s.GET("/authorize", router.Authorize)
 	return s
 }
 

@@ -8,7 +8,7 @@ import (
 templ Modal(c echo.Context) {
 	<div
 		x-data="{ modalOpen: true }"
-		@keydown.escape.window="modalOpen = false"
+		@keydown.escape="modalOpen=false"
 		:class="{ 'z-40': modalOpen }"
 		class="relative w-auto h-auto"
 	>

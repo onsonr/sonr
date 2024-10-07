@@ -18,7 +18,7 @@ templ Header() {
 						<!-- Desktop sign in links -->
 						<ul class="flex grow justify-end flex-wrap items-center">
 							<li>
-								<a class="text-sm font-medium text-zinc-500 hover:text-zinc-900 px-3 lg:px-5 py-2 flex items-center transition" href="/login">Log in</a>
+								<div class="text-sm cursor-pointer font-medium text-zinc-500 hover:text-zinc-900 px-3 lg:px-5 py-2 flex items-center transition" hx-swap="afterend" hx-get="/login">Log in</div>
 							</li>
 							<li class="ml-1">
 								<div class="btn-sm text-zinc-100 cursor-pointer bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get="/register">Register</div>

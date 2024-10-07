@@ -109,7 +109,7 @@ dockers:
     image_templates:
       - "onsonr/sonrd:latest"
       - "onsonr/sonrd:{{ .Tag }}"
-    dockerfile: "./deploy/release/sonrd.Dockerfile"
+    dockerfile: "./deploy/sonrd.Dockerfile"
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title=sonrd"
@@ -125,7 +125,7 @@ dockers:
     image_templates:
       - "onsonr/hway:latest"
       - "onsonr/hway:{{ .Tag }}"
-    dockerfile: "./deploy/release/hway.Dockerfile"
+    dockerfile: "./deploy/hway.Dockerfile"
     build_flag_templates:
       - "--label=org.opencontainers.image.created={{.Date}}"
       - "--label=org.opencontainers.image.title=hway"
