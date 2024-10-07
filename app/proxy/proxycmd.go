@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/onsonr/sonr/pkg/nebula"
-	"github.com/onsonr/sonr/pkg/nebula/pages"
+	"github.com/onsonr/sonr/pkg/nebula/router"
 )
 
 func NewProxyCmd() *cobra.Command {
@@ -29,8 +29,8 @@ func NewProxyCmd() *cobra.Command {
 				e.Logger.Fatal(err)
 			}
 
-			e.GET("/", pages.Home)
-			e.GET("/allocate", pages.Profile)
+			e.GET("/", router.Home)
+			e.GET("/allocate", router.Profile)
 
 			// Start server
 			ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
