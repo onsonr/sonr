@@ -2,13 +2,13 @@
 package dwn
 
 type Config struct {
-	Ipfs *IPFS `pkl:"ipfs"`
+	Ipfs *IPFS `pkl:"ipfs" json:"ipfs,omitempty"`
 
-	Sonr *Sonr `pkl:"sonr"`
+	Sonr *Sonr `pkl:"sonr" json:"sonr,omitempty"`
 
-	Motr *Motr `pkl:"motr"`
+	Motr *Motr `pkl:"motr" json:"motr,omitempty"`
 
-	Schema *Schema `pkl:"schema"`
+	Schema *Schema `pkl:"schema" json:"schema,omitempty"`
 
-	ProxyUrl string `pkl:"proxyUrl"`
+	ProxyUrl string `pkl:"proxyUrl" json:"proxyUrl,omitempty"`
 }

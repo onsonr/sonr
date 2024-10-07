@@ -2,7 +2,7 @@
 package dwn
 
 type IPFS struct {
-	ApiUrl string `pkl:"apiUrl"`
+	ApiUrl string `pkl:"apiUrl" json:"apiUrl,omitempty"`
 
-	GatewayUrl string `pkl:"gatewayUrl"`
+	GatewayUrl string `pkl:"gatewayUrl" json:"gatewayUrl,omitempty"`
 }
