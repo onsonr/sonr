@@ -6,10 +6,8 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/nebula/components/grant"
 	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/components/login"
-	"github.com/onsonr/sonr/pkg/nebula/components/profile"
 	"github.com/onsonr/sonr/pkg/nebula/components/register"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
@@ -26,16 +24,9 @@ func Home(c echo.Context) error {
 	return render(c, home.View(mdls.Home))
 }
 
-func Profile(c echo.Context) error {
-	return render(c, profile.View(c))
-}
-
 // ╭───────────────────────────────────────────────────────────╮
 // │                  Authentication Views                     │
 // ╰───────────────────────────────────────────────────────────╯
-func Authorize(c echo.Context) error {
-	return render(c, grant.View(c))
-}
 
 func Login(c echo.Context) error {
 	return render(c, login.Modal(c))

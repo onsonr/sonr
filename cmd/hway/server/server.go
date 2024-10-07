@@ -28,8 +28,8 @@ func New() *Server {
 	s.GET("/", router.Home)
 	s.GET("/login", router.Login)
 	s.GET("/register", router.Register)
-	s.GET("/profile", router.Profile)
-	s.GET("/authorize", router.Authorize)
+	// s.GET("/profile", router.Profile)
+	// s.GET("/authorize", router.Authorize)
 	return s
 }
 

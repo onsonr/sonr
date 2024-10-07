@@ -2,18 +2,19 @@ package home
 
 import (
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+		"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
 templ View(home *models.Home) {
 	@styles.LayoutNoBody("Sonr.ID", true) {
-		@Header()
-		@SectionHero(home.Hero)
-		@Highlights()
-		@Features()
-		@Bento()
-		@Lowlights()
-		@CallToAction()
-		@Footer()
+		@sections.Header()
+		@sections.SectionHero(home.Hero)
+		@sections.Highlights()
+		@sections.Features()
+		@sections.Bento()
+		@sections.Lowlights()
+		@sections.CallToAction()
+		@sections.Footer()
 	}
 }

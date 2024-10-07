@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
@@ -46,7 +47,7 @@ func View(home *models.Home) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = Header().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Header().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -54,7 +55,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = SectionHero(home.Hero).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.SectionHero(home.Hero).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -62,7 +63,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Highlights().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Highlights().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -70,7 +71,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Features().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Features().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -78,7 +79,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Bento().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Bento().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -86,7 +87,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Lowlights().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Lowlights().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -94,7 +95,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = CallToAction().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.CallToAction().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -102,7 +103,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = Footer().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Footer().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
