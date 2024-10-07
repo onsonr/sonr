@@ -17,7 +17,7 @@ import (
 
 	"github.com/onsonr/sonr/cmd/motr/state"
 	"github.com/onsonr/sonr/internal/session"
-	"github.com/onsonr/sonr/pkg/nebula/pages"
+	"github.com/onsonr/sonr/pkg/nebula/router"
 )
 
 func main() {
@@ -40,11 +40,11 @@ func registerState(e *echo.Echo) {
 }
 
 func registerViews(e *echo.Echo) {
-	e.GET("/home", pages.Home)
-	e.GET("/login", pages.Login)
-	e.GET("/register", pages.Register)
-	e.GET("/profile", pages.Profile)
-	e.GET("/authorize", pages.Authorize)
+	e.GET("/home", router.Home)
+	e.GET("/login", router.Login)
+	e.GET("/register", router.Register)
+	e.GET("/profile", router.Profile)
+	e.GET("/authorize", router.Authorize)
 }
 
 // Serve serves HTTP requests using handler or http.DefaultServeMux if handler is nil.
