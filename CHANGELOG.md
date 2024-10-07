@@ -1,3 +1,9 @@
+## v0.5.10 (2024-10-07)
+
+### Feat
+
+- **blocks**: remove button component
+
 ## v0.5.9 (2024-10-06)
 
 ### Feat
