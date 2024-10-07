@@ -17,3 +17,5 @@ The Vault module is responsible for the management of IPFS deployed Decentralize
 ## Operations
 
 [View on Eraser![](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz/preview?elements=_hAjUxIKPzF4ffIL4Ow_9w&type=embed)](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz?elements=_hAjUxIKPzF4ffIL4Ow_9w)
+
+<a href="https://app.eraser.io/workspace/Q7CKbYyprt9U2VdwCR70?elements=ywrPbfX1Oml1dLOfdEQEiA">View on Eraser<br /><img src="https://app.eraser.io/workspace/Q7CKbYyprt9U2VdwCR70/preview?elements=ywrPbfX1Oml1dLOfdEQEiA&type=embed" /></a>
