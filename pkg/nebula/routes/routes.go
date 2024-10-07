@@ -1,4 +1,4 @@
-package router
+package routes
 
 import (
 	"bytes"
@@ -6,9 +6,8 @@ import (
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 
+	"github.com/onsonr/sonr/pkg/nebula/components/auth"
 	"github.com/onsonr/sonr/pkg/nebula/components/home"
-	"github.com/onsonr/sonr/pkg/nebula/components/login"
-	"github.com/onsonr/sonr/pkg/nebula/components/register"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
@@ -28,12 +27,32 @@ func Home(c echo.Context) error {
 // │                  Authentication Views                     │
 // ╰───────────────────────────────────────────────────────────╯
 
-func Login(c echo.Context) error {
-	return render(c, login.Modal(c))
+func AuthorizeStart(c echo.Context) error {
+	return render(c, auth.Modal(c))
 }
 
-func Register(c echo.Context) error {
-	return render(c, register.Modal(c))
+func AuthorizeFinish(c echo.Context) error {
+	return render(c, auth.Modal(c))
+}
+
+func LoginDevice(c echo.Context) error {
+	return render(c, auth.Modal(c))
+}
+
+func LoginStart(c echo.Context) error {
+	return render(c, auth.Modal(c))
+}
+
+func LoginFinish(c echo.Context) error {
+	return render(c, auth.Modal(c))
+}
+
+func RegisterStart(c echo.Context) error {
+	return render(c, auth.Modal(c))
+}
+
+func RegisterFinish(c echo.Context) error {
+	return render(c, auth.Modal(c))
 }
 
 // ╭───────────────────────────────────────────────────────────╮
