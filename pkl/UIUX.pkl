@@ -31,7 +31,17 @@ class ModalForm {
 }
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                  Homepage View Model                      │
+// │                  Registration Components                  │
+// ╰───────────────────────────────────────────────────────────╯
+
+class PublicKeyCreationOptions {
+}
+
+class PublicKeyRequestOptions {
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                      View Models                          │
 // ╰───────────────────────────────────────────────────────────╯
 
 class Hero {
