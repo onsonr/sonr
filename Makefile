@@ -295,26 +295,26 @@ sh-testnet: mod-tidy
 ###                                 templ & vault                           ###
 ###############################################################################
 
-.PHONY: motr hway templ pkl nebula
+.PHONY: build-motr build-hway gen-templ gen-pkl build-nebula
 
-hway:
+build-hway:
 	@echo "(motr) Building Highway gateway"
 	go build -o ./build/hway ./cmd/hway
 
-motr:
+build-motr:
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
 
-templ:
+gen-templ:
 	@echo "(templ) Generating templ files"
 	templ generate
 
-nebula:
+build-nebula:
 	@echo "(nebula) Building nebula"
 	cd pkg/nebula && bun run build
 	templ generate
 
-pkl:
+gen-pkl:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
