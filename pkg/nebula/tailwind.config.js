@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./components/**/*.{templ,html}",
-    "./pages/**/*.{templ,html}",
+    "./global/**/*.{templ,html}",
     "./src/**/*.ts",
   ],
   theme: {
