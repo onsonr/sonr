@@ -299,7 +299,6 @@ sh-testnet: mod-tidy
 
 hway:
 	@echo "(motr) Building Highway gateway"
-	templ generate
 	go build -o ./build/hway ./cmd/hway
 
 motr:
@@ -313,6 +312,7 @@ templ:
 nebula:
 	@echo "(nebula) Building nebula"
 	cd pkg/nebula && bun run build
+	templ generate
 
 pkl:
 	@echo "(pkl) Building PKL"
