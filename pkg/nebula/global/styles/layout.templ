@@ -51,7 +51,7 @@ templ LayoutNoBody(title string, remote bool) {
 }
 
 
-templ Modal(title, description string) {
+templ OpenModal(title, description string) {
 	<div
 		x-data="{ modalOpen: true }"
 		@keydown.escape="modalOpen=false"
@@ -69,7 +69,7 @@ templ Modal(title, description string) {
 					x-transition:leave-start="opacity-100"
 					x-transition:leave-end="opacity-0"
 					@click="modalOpen=false"
-					class="absolute inset-0 w-full h-full bg-zinc-900 bg-opacity-50 backdrop-blur-sm"
+					class="absolute inset-0 w-full h-full bg-zinc-900 bg-opacity-90 backdrop-blur-sm"
 				></div>
 				<div
 					x-show="modalOpen"

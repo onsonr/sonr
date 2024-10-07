@@ -8,17 +8,9 @@ import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
 // │                      General State                        │
 // ╰───────────────────────────────────────────────────────────╯
 
-typealias InputType = "text" | "password" | "email" | "credential" | "file"
-
 class Button {
 	text: String
 	href: String
-}
-
-abstract class Form {
-	title: String
-	description: String
-	inputs: List<Input>
 }
 
 class Image {
@@ -27,40 +19,15 @@ class Image {
 	height: String
 }
 
-class Input {
-	label: String
-	type: InputType
-	placeholder: String
-	value: String?
-	error: String?
-	help: String?
-	required: Boolean?
-}
-
-class Link {
-	text: String
-	href: String
-}
-
-class SocialLink {
-	link: Link
-	icon: String
-}
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                         Data Models                       │
-// ╰───────────────────────────────────────────────────────────╯
-
-class Feature {
-	title: String
-	description: String
-	icon: String?
-	image: Image?
-}
-
 class Stat {
 	value: String	
 	label: String
+}
+
+class ModalForm {
+	title: String
+	description: String
+	id: String
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -78,14 +45,13 @@ class Hero {
   stats: Listing<Stat>
 }
 
-class Highlights {
-	heading: String
-	subheading: String
-	highlights: Listing<Feature>
-}
 class Home {
 	hero: Hero
 }
 
 home : Home
+register: ModalForm
+login: ModalForm
+authorize: ModalForm
+privacyConsent: ModalForm
 

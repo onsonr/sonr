@@ -35,3 +35,27 @@ home = new Home {
 		};
 	};
 };
+
+register = new ModalForm {
+	title = "Register";
+	description = "Register your Sonr account to start using the platform.";
+	id = "register-start";
+};
+
+login = new ModalForm {
+	title = "Login";
+	description = "Login to your Sonr account to start using the platform.";
+	id = "login-start";
+};
+
+authorize = new ModalForm {
+	title = "Authorize";
+	description = "Authorize your Sonr account to start using the platform.";
+	id = "authorize-start";
+};
+
+privacyConsent = new ModalForm {
+	title = "Privacy Consent";
+	description = "Privacy Consent";
+	id = "privacy-consent-start";
+};
