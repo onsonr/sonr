@@ -4,9 +4,22 @@ const (
   CDNPath = "https://cdn.sonr.id"
 )
 
-var serviceWorkerHandle = templ.NewOnceHandle()
+var (
+  serviceWorkerHandle = templ.NewOnceHandle()
+  stylesHandle = templ.NewOnceHandle()
+  alpineHandle = templ.NewOnceHandle()
+  htmxHandle = templ.NewOnceHandle()
+)
 
-script RegisterServiceWorker() {
+func cdnPath(path string, local bool) string {
+	if local {
+		return path
+	}
+	return CDNPath + path
+}
+
+templ RegisterServiceWorker() {
+  <script>
     if ("serviceWorker" in navigator) {
         window.addEventListener("load", function() {
             navigator.serviceWorker
@@ -19,78 +32,24 @@ script RegisterServiceWorker() {
                 });
         });
     }
+    </script>
 }
 
-templ ImportScripts() {
-	<script src="https://cdn.sonr.io/js/htmx.min.js"></script>
-	<script src="https://cdn.tailwindcss.com"></script>
-	<script src="https://unpkg.com/alpinejs" defer></script>
+templ Styles(local bool) {
+	@stylesHandle.Once() {
+		<link href={ cdnPath("/assets/css/styles.css", local) } rel="stylesheet"/>
+	}
 }
 
-templ indexFile(cfg string) {
-	<!DOCTYPE html>
-	<html lang="en">
-		<head>
-			<meta charset="UTF-8"/>
-			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link href="https://cdn.sonr.io/stylesheet.css" rel="stylesheet"/>
-			@importScripts()
-			<style>
-                [x-cloak] {
-                    display: none;
-                }
-            </style>
-			<title>Sonr DWN</title>
-			<script>
-                if ("serviceWorker" in navigator) {
-                    window.addEventListener("load", function() {
-                        navigator.serviceWorker
-                            .register("/sw.js")
-                            .then(function (registration) {
-                                console.log("Service Worker registered with scope:", registration.scope);
-                            })
-                            .catch(function (error) {
-                                console.log("Service Worker registration failed:", error);
-                            });
-                    });
-                }
-            </script>
-		</head>
-		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-				<div id="output">Loading...</div>
-			</main>
-			@ServiceWorkerHandle.Once() {
-				<script src="/assets/main.js" type="module"></script>
-				@initializeServiceWorker(cfg)
-			}
-		</body>
-	</html>
+templ Alpine(local bool) {
+	@alpineHandle.Once() {
+		<script src={ cdnPath("/js/alpine.min.js", local) } defer></script>
+	}
 }
 
-script initializeServiceWorker(config string) {
-    const serviceWorker = new ServiceWorker(JSON.parse(config));
-
-    async function demo() {
-        try {
-            // Insert a new account
-            const accountId = await serviceWorker.insertAccount({
-                name: 'John Doe',
-                address: '0x1234567890123456789012345678901234567890',
-                balance: 100,
-            });
-
-            console.log('Account created:', accountId);
-
-            // Get the account
-            const account = await serviceWorker.getAccount(accountId);
-
-            console.log('Account:', account);
-
-            }
-            catch (error) {
-                console.error('Error:', error);
-            }
-            }
+templ Htmx(local bool) {
+	@htmxHandle.Once() {
+    <script src={ cdnPath("/js/htmx.min.js", local) }></script>
+	}
 }
+
