@@ -13,3 +13,7 @@ The Vault module is responsible for the management of IPFS deployed Decentralize
 | WebAuthn (Web Authentication)               | A set of APIs that allow websites to request user authentication using biometric or non-biometric factors.                                                                            |           |
 | WebAssembly (Web Assembly)                  | A binary instruction format for a stack-based virtual machine.                                                                                                                        |           |
 | Verifiable Credential (VC)                  | A digital statement that can be cryptographically verified.                                                                                                                           |           |
+
+## Operations
+
+[View on Eraser![](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz/preview?elements=_hAjUxIKPzF4ffIL4Ow_9w&type=embed)](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz?elements=_hAjUxIKPzF4ffIL4Ow_9w)
