@@ -1,14 +1,11 @@
 {
   "name": "nebula",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "fetch:deps": "bun run .deps.mjs",
-    "build:ts": "tsc",
-    "build:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/css/styles.css",
-    "build": "bun run fetch:deps && bun run build:ts && bun run build:css",
-    "watch:ts": "tsc -w",
-    "watch:css": "bunx tailwindcss -i ./src/styles.css -o ./assets/css/styles.css --watch",
-    "watch": "bun run watch:ts & bun run watch:css"
+    "build:css": "bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css",
+    "build": "bun run fetch:deps && bun run build:css",
+    "watch": "bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css --watch"
   },
   "devDependencies": {
     "@tailwindcss/forms": "^0.5.7",

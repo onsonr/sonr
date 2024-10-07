@@ -14,3 +14,9 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(clients.claim());
 });
+
+self.addEventListener("canmakepayment", function (e) {
+  e.respondWith(new Promise(function (resolve, reject) {
+    resolve(true);
+  }));
+});
