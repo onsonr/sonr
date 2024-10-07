@@ -10,7 +10,9 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
 func View(c echo.Context) templ.Component {
@@ -58,7 +60,7 @@ func View(c echo.Context) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = blocks.H1("Sonr.ID").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = styles.H1("Sonr.ID").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -66,19 +68,19 @@ func View(c echo.Context) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = blocks.Text("Neo-tree is a file manager for NeoFS.").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = styles.Text("Neo-tree is a file manager for NeoFS.").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				return templ_7745c5c3_Err
 			})
-			templ_7745c5c3_Err = blocks.Card("authorize-view", blocks.SizeMedium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ui.Card("authorize-view", styles.SizeMedium).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = blocks.Layout("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = styles.Layout("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

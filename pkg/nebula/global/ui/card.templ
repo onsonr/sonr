@@ -1,6 +1,8 @@
-package blocks
+package ui
 
-func Card(id string, size Size) templ.Component {
+import "github.com/onsonr/sonr/pkg/nebula/global/styles"
+
+func Card(id string, size styles.Size) templ.Component {
 	return renderCard(id, size.CardAttributes())
 }
 

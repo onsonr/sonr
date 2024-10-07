@@ -10,7 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
 func Modal(c echo.Context) templ.Component {
@@ -38,7 +39,7 @@ func Modal(c echo.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = blocks.Breadcrumbs().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.Breadcrumbs().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -46,7 +47,7 @@ func Modal(c echo.Context) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = blocks.Spacer().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = styles.Spacer().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

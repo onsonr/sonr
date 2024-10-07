@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
@@ -108,7 +108,7 @@ func View(home *models.Home) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = blocks.LayoutNoBody("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = styles.LayoutNoBody("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -2,13 +2,14 @@ package profile
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/nebula/components/blocks"
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
 templ View(c echo.Context) {
-	@blocks.Layout("Sonr.ID", true) {
-		@blocks.Card("profile-view", blocks.SizeLarge) {
-			@blocks.ProfileCard()
+	@styles.Layout("Sonr.ID", true) {
+		@ui.Card("profile-view", styles.SizeLarge) {
+			@ui.ProfileCard()
 		}
 	}
 }

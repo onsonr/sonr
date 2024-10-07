@@ -1,7 +1,22 @@
-package blocks
+package ui
+
+import "github.com/onsonr/sonr/pkg/nebula/global/styles"
+
+templ PrimaryButton(href string, text string) {
+	<div>
+		<div class="btn cursor-pointer text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get={ href }>{ text }</div>
+	</div>
+}
+
+templ SecondaryButton(href string, text string) {
+	<div>
+		<div class="btn cursor-pointer text-zinc-600 bg-white hover:text-zinc-900 w-full shadow" hx-swap="afterend" hx-get={ href }>{ text }</div>
+	</div>
+}
+
 
 type button struct {
-	variant   Variant
+	variant   styles.Variant
 	hxGet     string
 	hxPost    string
 	hxTarget  string
