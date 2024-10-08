@@ -329,7 +329,7 @@ build-motr: gen-templ gen-pkl
 
 build-nebula:
 	@echo "(nebula) Building nebula"
-	cd pkg/nebula && bun run build
+	cd pkg/nebula && bun install && bun run build
 
 
 ###############################################################################

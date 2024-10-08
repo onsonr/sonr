@@ -8,6 +8,10 @@ package state
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+func UseNavigatorCredentials() {
+	templ.NewOnceHandle().Once()
+}
+
 func NavigatorCredentialsCreate() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -29,7 +33,7 @@ func NavigatorCredentialsCreate() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tnavigator.credentials.create({\n\t\t\tpublicKey: {\n\t\t\t\trp: {\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t\tid: \"sonr.id\",\n\t\t\t\t},\n\t\t\t\tuser: {\n\t\t\t\t\tid: new Uint8Array(0),\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t\tdisplayName: \"Sonr\",\n\t\t\t\t},\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tpubKeyCredParams: [{\n\t\t\t\t\ttype: \"public-key\",\n\t\t\t\t\talg: -7,\n\t\t\t\t}],\n\t\t\t\ttimeout: 60000,\n\t\t\t\texcludeCredentials: [],\n\t\t\t\tauthenticatorSelection: {\n\t\t\t\t\trequireResidentKey: false,\n\t\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\tfunction createCredential() {\n\t\tnavigator.credentials.create({\n\t\t\tpublicKey: {\n\t\t\t\trp: {\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t},\n\t\t\t\tuser: {\n\t\t\t\t\tid: new Uint8Array(0),\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t\tdisplayName: \"Sonr\",\n\t\t\t\t},\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tpubKeyCredParams: [{\n\t\t\t\t\ttype: \"public-key\",\n\t\t\t\t\talg: -7,\n\t\t\t\t}],\n\t\t\t\ttimeout: 60000,\n\t\t\t\texcludeCredentials: [],\n\t\t\t\tauthenticatorSelection: {\n\t\t\t\t\trequireResidentKey: false,\n\t\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -58,7 +62,7 @@ func NavigatorCredentialsGet() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tnavigator.credentials.get({\n\t\t\tpublicKey: {\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tallowCredentials: [],\n\t\t\t\ttimeout: 60000,\n\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tfunction getCredential() {\n\t\tnavigator.credentials.get({\n\t\t\tpublicKey: {\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tallowCredentials: [],\n\t\t\t\ttimeout: 60000,\n\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
