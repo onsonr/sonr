@@ -87,7 +87,7 @@ func NavigatorCredentialsGetAll() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tnavigator.credentials.getAll({\n\t\t\tpublicKey: {\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tallowCredentials: [],\n\t\t\t\ttimeout: 60000,\n\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t</script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\t\tnavigator.credentials.getAll({\n\t\t\tpublicKey: {\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tallowCredentials: [],\n\t\t\t\ttimeout: 60000,\n\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t\textensions: {\n\t\t\t\t\t\n\t\t\t\t}\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

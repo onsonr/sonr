@@ -18,15 +18,6 @@ processes:
     depends:
       - ipfs
 
-  hway:
-    namespace: testnet
-    command: "devbox run start:hway"
-    restart: on_failure
-    max_restarts: 1
-    depends:
-      - ipfs
-      - sonr
-
   tunnel:
     namespace: public
     command: "cloudflared tunnel run --token $TUNNEL_TOKEN"

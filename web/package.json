@@ -1,5 +1,5 @@
 {
-  "name": "@onsonr/nebula",
+  "name": "@onsonr/sonr.id",
   "version": "0.0.2",
   "scripts": {
     "fetch:deps": "bun run .deps.mjs",

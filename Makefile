@@ -289,11 +289,7 @@ testnet-basic: setup-testnet
 sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-start-hway: hway
-	@echo "(start-proxy) Starting proxy server"
-	./build/hway start
-
-.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet start-hway
+.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
 
 ###############################################################################
@@ -323,11 +319,13 @@ gen-pkl:
 
 build-hway: gen-templ gen-pkl
 	@echo "(motr) Building Highway gateway"
-	go build -o ./build/hway ./cmd/hway
+	go run github.com/syumai/workers/cmd/workers-assets-gen@v0.23.1 -o ./web/build -mode go
+	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/server.go
+
 
 build-motr: gen-templ gen-pkl
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./pkg/dwn/wasm/main.go
 
 build-nebula:
 	@echo "(nebula) Building nebula"

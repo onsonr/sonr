@@ -1,4 +1,4 @@
-package auth
+package swt
 
 import (
 	"net/http"
