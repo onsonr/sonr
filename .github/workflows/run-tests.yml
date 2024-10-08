@@ -1,0 +1,60 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - feature/*
+
+jobs:
+  test-unit:
+    runs-on: ubuntu-latest
+    name: Run Unit Tests
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+      - run: make test-unit
+  
+  test-race:
+    runs-on: ubuntu-latest
+    name: Run Race Tests
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+      - run: make test-race
+
+  test-cover:
+    runs-on: ubuntu-latest
+    name: Run Coverage Tests
+    continue-on-error: true
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          repository: onsonr/sonr
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          check-latest: true
+      - run: make test-cover
