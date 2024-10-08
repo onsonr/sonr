@@ -316,8 +316,8 @@ gen-pkl:
 
 build-hway: gen-templ gen-pkl
 	@echo "(motr) Building Highway gateway"
-	go run github.com/syumai/workers/cmd/workers-assets-gen@v0.23.1 -o ./web/build -mode go
-	GOOS=js GOARCH=wasm go build -o ./web/build/app.wasm ./web/server.go
+	go run github.com/syumai/workers/cmd/workers-assets-gen@v0.23.1 -o ./cmd/hway/build -mode go
+	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/server.go
 
 
 build-motr: gen-templ gen-pkl
