@@ -289,29 +289,21 @@ testnet-basic: setup-testnet
 sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+start-hway: hway
+	@echo "(start-proxy) Starting proxy server"
+	./build/hway start
+
+.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet start-hway
+
 
 ###############################################################################
-###                                 templ & vault                           ###
+###                             custom generation                           ###
 ###############################################################################
 
-.PHONY: build-motr build-hway gen-templ gen-pkl build-nebula
-
-build-hway:
-	@echo "(motr) Building Highway gateway"
-	go build -o ./build/hway ./cmd/hway
-
-build-motr:
-	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
+.PHONY: gen-templ gen-pkl 
 
 gen-templ:
 	@echo "(templ) Generating templ files"
-	templ generate
-
-build-nebula:
-	@echo "(nebula) Building nebula"
-	cd pkg/nebula && bun run build
 	templ generate
 
 gen-pkl:
@@ -321,13 +313,26 @@ gen-pkl:
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/UIUX.pkl
 
-start-caddy:
-	@echo "(start-caddy) Starting caddy"
-	./build/caddy run --config ./config/caddy/Caddyfile
 
-start-hway: hway
-	@echo "(start-proxy) Starting proxy server"
-	./build/hway start
+
+###############################################################################
+###                            motr, hway & nebula                          ###
+###############################################################################
+
+.PHONY: build-motr build-hway build-nebula
+
+build-hway: gen-templ gen-pkl
+	@echo "(motr) Building Highway gateway"
+	go build -o ./build/hway ./cmd/hway
+
+build-motr: gen-templ gen-pkl
+	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
+
+build-nebula:
+	@echo "(nebula) Building nebula"
+	cd pkg/nebula && bun run build
+
 
 ###############################################################################
 ###                                     help                                ###

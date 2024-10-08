@@ -10,10 +10,6 @@ type Variant interface {
 	Attributes() templ.Attributes
 }
 
-var stylesHandle = templ.NewOnceHandle()
-var alpineHandle = templ.NewOnceHandle()
-var htmxHandle = templ.NewOnceHandle()
-
 func clsxMerge(variants ...Variant) templ.Attributes {
 	combinedAttrs := templ.Attributes{}
 	var classElements []string
@@ -48,24 +44,6 @@ func clsxBuilder(classes ...string) templ.Attributes {
 
 templ Spacer() {
 	<br/>
-}
-
-templ Styles(local bool) {
-	@stylesHandle.Once() {
-		<link href="/assets/css/styles.css" rel="stylesheet"/>
-	}
-}
-
-templ Alpine(local bool) {
-	@alpineHandle.Once() {
-		<script src="/assets/js/alpine.min.js" defer></script>
-	}
-}
-
-templ Htmx(local bool) {
-	@htmxHandle.Once() {
-		<script src="/assets/js/htmx.min.js"></script>
-	}
 }
 
 templ Rows() {

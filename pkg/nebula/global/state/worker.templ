@@ -1,55 +1,24 @@
 package state
 
-const (
-  CDNPath = "https://cdn.sonr.id"
-)
-
 var (
-  serviceWorkerHandle = templ.NewOnceHandle()
-  stylesHandle = templ.NewOnceHandle()
-  alpineHandle = templ.NewOnceHandle()
-  htmxHandle = templ.NewOnceHandle()
+	serviceWorkerHandle = templ.NewOnceHandle()
 )
-
-func cdnPath(path string, local bool) string {
-	if local {
-		return path
-	}
-	return CDNPath + path
-}
 
 templ RegisterServiceWorker() {
-  <script>
-    if ("serviceWorker" in navigator) {
-        window.addEventListener("load", function() {
-            navigator.serviceWorker
-                .register("/sw.js")
-                .then(function (registration) {
-                    console.log("Service Worker registered with scope:", registration.scope);
-                })
-                .catch(function (error) {
-                    console.log("Service Worker registration failed:", error);
-                });
-        });
-    }
+	@serviceWorkerHandle.Once() {
+		<script>
+          if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function() {
+                navigator.serviceWorker
+                    .register("/sw.js")
+                    .then(function (registration) {
+                        console.log("Service Worker registered with scope:", registration.scope);
+                    })
+                    .catch(function (error) {
+                        console.log("Service Worker registration failed:", error);
+                    });
+            });
+        }
     </script>
-}
-
-templ Styles(local bool) {
-	@stylesHandle.Once() {
-		<link href={ cdnPath("/assets/css/styles.css", local) } rel="stylesheet"/>
 	}
 }
-
-templ Alpine(local bool) {
-	@alpineHandle.Once() {
-		<script src={ cdnPath("/js/alpine.min.js", local) } defer></script>
-	}
-}
-
-templ Htmx(local bool) {
-	@htmxHandle.Once() {
-    <script src={ cdnPath("/js/htmx.min.js", local) }></script>
-	}
-}
-

@@ -15,9 +15,9 @@ import (
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
 
-	"github.com/onsonr/sonr/cmd/motr/state"
 	"github.com/onsonr/sonr/internal/session"
-	"github.com/onsonr/sonr/pkg/nebula/router"
+	"github.com/onsonr/sonr/pkg/nebula/routes"
+	"github.com/onsonr/sonr/pkg/nebula/worker"
 )
 
 func main() {
@@ -30,21 +30,18 @@ func main() {
 
 func registerState(e *echo.Echo) {
 	g := e.Group("state")
-	g.POST("/login/:identifier", state.HandleCredentialAssertion)
-	//	g.GET("/discovery", state.GetDiscovery)
-	g.GET("/jwks", state.GetJWKS)
-	g.GET("/token", state.GetToken)
-	g.POST("/:origin/grant/:subject", state.GrantAuthorization)
-	g.POST("/register/:subject", state.HandleCredentialCreation)
-	g.POST("/register/:subject/check", state.CheckSubjectIsValid)
+	g.POST("/login/:identifier", worker.HandleCredentialAssertion)
+	g.GET("/jwks", worker.GetJWKS)
+	g.GET("/token", worker.GetToken)
+	g.POST("/:origin/grant/:subject", worker.GrantAuthorization)
+	g.POST("/register/:subject", worker.HandleCredentialCreation)
+	g.POST("/register/:subject/check", worker.CheckSubjectIsValid)
 }
 
 func registerViews(e *echo.Echo) {
-	e.GET("/home", router.Home)
-	e.GET("/login", router.Login)
-	e.GET("/register", router.Register)
-	e.GET("/profile", router.Profile)
-	e.GET("/authorize", router.Authorize)
+	e.GET("/home", routes.Home)
+	e.GET("/login", routes.LoginStart)
+	e.GET("/register", routes.RegisterStart)
 }
 
 // Serve serves HTTP requests using handler or http.DefaultServeMux if handler is nil.

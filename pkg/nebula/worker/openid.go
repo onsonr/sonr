@@ -1,4 +1,4 @@
-package state
+package worker
 
 import (
 	"github.com/labstack/echo/v4"

@@ -8,6 +8,8 @@ package styles
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/onsonr/sonr/pkg/nebula/global/cdn"
+
 func Layout(title string, remote bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -33,15 +35,15 @@ func Layout(title string, remote bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Alpine(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Alpine().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Htmx(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Htmx().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Styles(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Styles().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -52,7 +54,7 @@ func Layout(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 13, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 15, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -99,15 +101,15 @@ func LayoutNoBody(title string, remote bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Alpine(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Alpine().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Htmx(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Htmx().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = Styles(remote).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = cdn.Styles().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -118,7 +120,7 @@ func LayoutNoBody(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 37, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 39, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -168,7 +170,7 @@ func OpenModal(title, description string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 86, Col: 47}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 87, Col: 47}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -181,7 +183,7 @@ func OpenModal(title, description string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(description)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 92, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 93, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {

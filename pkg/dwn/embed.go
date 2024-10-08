@@ -6,8 +6,8 @@ import (
 	_ "embed"
 	"encoding/json"
 
-	"github.com/a-h/templ"
 	"github.com/ipfs/boxo/files"
+	"github.com/onsonr/sonr/pkg/nebula/global"
 )
 
 //go:embed app.wasm
@@ -28,12 +28,8 @@ func NewVaultDirectory(cnfg *Config) (files.Node, error) {
 		return nil, err
 	}
 
-	dwnStr, err := templ.JSONString(cnfg)
-	if err != nil {
-		return nil, err
-	}
 	w := bytes.NewBuffer(nil)
-	err = indexFile(dwnStr).Render(context.Background(), w)
+	err = global.IndexFile().Render(context.Background(), w)
 	if err != nil {
 		return nil, err
 	}
@@ -47,13 +43,9 @@ func NewVaultDirectory(cnfg *Config) (files.Node, error) {
 }
 
 // Use IndexHTML template to generate the index file
-func IndexHTMLFile(c *Config) (files.Node, error) {
-	str, err := templ.JSONString(c)
-	if err != nil {
-		return nil, err
-	}
+func IndexHTMLFile() (files.Node, error) {
 	w := bytes.NewBuffer(nil)
-	err = indexFile(str).Render(context.Background(), w)
+	err := global.IndexFile().Render(context.Background(), w)
 	if err != nil {
 		return nil, err
 	}

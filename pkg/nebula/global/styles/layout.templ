@@ -1,12 +1,14 @@
 package styles
 
+import "github.com/onsonr/sonr/pkg/nebula/global/cdn"
+
 templ Layout(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@Alpine(remote)
-			@Htmx(remote)
-			@Styles(remote)
+			@cdn.Alpine()
+			@cdn.Htmx()
+			@cdn.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -28,9 +30,9 @@ templ LayoutNoBody(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@Alpine(remote)
-			@Htmx(remote)
-			@Styles(remote)
+			@cdn.Alpine()
+			@cdn.Htmx()
+			@cdn.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -49,7 +51,6 @@ templ LayoutNoBody(title string, remote bool) {
 		</main>
 	</html>
 }
-
 
 templ OpenModal(title, description string) {
 	<div

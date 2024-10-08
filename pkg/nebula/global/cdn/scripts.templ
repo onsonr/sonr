@@ -1,0 +1,29 @@
+package cdn
+
+const (
+	CDNPath = "https://cdn.sonr.id"
+)
+
+var (
+	stylesHandle = templ.NewOnceHandle()
+	alpineHandle = templ.NewOnceHandle()
+	htmxHandle   = templ.NewOnceHandle()
+)
+
+templ Styles() {
+	@stylesHandle.Once() {
+		<link href={ "/assets/css/styles.css" } rel="stylesheet"/>
+	}
+}
+
+templ Alpine() {
+	@alpineHandle.Once() {
+		<script src={ "/js/alpine.min.js" } defer></script>
+	}
+}
+
+templ Htmx() {
+	@htmxHandle.Once() {
+		<script src={ "/js/htmx.min.js" }></script>
+	}
+}

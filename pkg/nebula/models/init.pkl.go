@@ -10,9 +10,7 @@ func init() {
 	pkl.RegisterMapping("models#Button", Button{})
 	pkl.RegisterMapping("models#Image", Image{})
 	pkl.RegisterMapping("models#Stat", Stat{})
-	pkl.RegisterMapping("models#Input", Input{})
-	pkl.RegisterMapping("models#Link", Link{})
-	pkl.RegisterMapping("models#SocialLink", SocialLink{})
-	pkl.RegisterMapping("models#Feature", Feature{})
-	pkl.RegisterMapping("models#Highlights", Highlights{})
+	pkl.RegisterMapping("models#ModalForm", ModalForm{})
+	pkl.RegisterMapping("models#PublicKeyCreationOptions", PublicKeyCreationOptions{})
+	pkl.RegisterMapping("models#PublicKeyRequestOptions", PublicKeyRequestOptions{})
 }

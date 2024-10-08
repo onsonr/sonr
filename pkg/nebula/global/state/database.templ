@@ -1,0 +1,17 @@
+package state
+
+templ InsertAccount(accountName string) {
+	<script>
+		const accountId = await motr.insertAccount({
+			name: accountName,
+			address: "0x1234567890123456789012345678901234567890",
+			publicKey: "sample_public_key",
+			chainCode: "SONR",
+			index: 0,
+			controller: "sample_controller",
+			createdAt: new Date(),
+		});
+
+		console.log("Inserted account with ID:", accountId);
+	</script>
+}

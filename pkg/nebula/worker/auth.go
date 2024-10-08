@@ -1,4 +1,4 @@
-package state
+package worker
 
 import (
 	"encoding/json"

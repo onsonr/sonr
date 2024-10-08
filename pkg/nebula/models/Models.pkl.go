@@ -9,6 +9,14 @@ import (
 
 type Models struct {
 	Home *Home `pkl:"home"`
+
+	Register *ModalForm `pkl:"register"`
+
+	Login *ModalForm `pkl:"login"`
+
+	Authorize *ModalForm `pkl:"authorize"`
+
+	PrivacyConsent *ModalForm `pkl:"privacyConsent"`
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Models
