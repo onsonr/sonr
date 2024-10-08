@@ -1,6 +1,10 @@
 {
   "name": "@onsonr/sonr.id",
   "version": "0.0.2",
-  "scripts": {},
+  "scripts": {
+    "dev": "bunx wrangler dev",
+    "build": "bunx wrangler build",
+    "deploy": "bunx wrangler deploy"
+  },
   "dependencies": {}
 }

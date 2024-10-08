@@ -27,8 +27,8 @@ templ SectionHero(hero *models.Hero) {
 							{ hero.Subtitle }
 						</p>
 						<div class="max-w-xs mx-auto sm:max-w-none sm:inline-flex sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-							@ui.PrimaryButton(hero.PrimaryButton.Href, hero.PrimaryButton.Text)
-							@ui.SecondaryButton(hero.SecondaryButton.Href, hero.SecondaryButton.Text)
+							@ui.PrimaryButton("/register", "Get Started")
+							@ui.SecondaryButton("/about", "Learn More")
 						</div>
 					</div>
 				</div>
