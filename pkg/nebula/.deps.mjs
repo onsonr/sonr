@@ -24,14 +24,20 @@ async function main() {
 
 	// Fetch htmx.min.js
 	await fetchAndSave(
-		"https://cdn.sonr.io/js/htmx.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/htmx/2.0.2/htmx.min.js",
 		"./assets/js/htmx.min.js",
 	);
 
 	// Fetch alpine.min.js
 	await fetchAndSave(
-		"https://unpkg.com/alpinejs@latest/dist/cdn.min.js",
+		"https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.14.1/cdn.min.js",
 		"./assets/js/alpine.min.js",
+	);
+
+	// Fetch dexie.min.js
+	await fetchAndSave(
+		"https://cdnjs.cloudflare.com/ajax/libs/dexie/4.0.8/dexie.min.js",
+		"./assets/js/dexie.min.js",
 	);
 }
 

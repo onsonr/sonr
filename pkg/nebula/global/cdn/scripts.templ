@@ -1,12 +1,13 @@
 package cdn
 
 const (
-	CDNPath = "https://cdn.sonr.id"
+	PublicOrigin = "https://cdn.sonr.id"
 )
 
 var (
 	stylesHandle = templ.NewOnceHandle()
 	alpineHandle = templ.NewOnceHandle()
+	dexieHandle  = templ.NewOnceHandle()
 	htmxHandle   = templ.NewOnceHandle()
 )
 
@@ -19,6 +20,12 @@ templ Styles() {
 templ Alpine() {
 	@alpineHandle.Once() {
 		<script src={ "/js/alpine.min.js" } defer></script>
+	}
+}
+
+templ Dexie() {
+	@dexieHandle.Once() {
+		<script src={ "/js/dexie.min.js" }></script>
 	}
 }
 
