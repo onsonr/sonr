@@ -13,5 +13,3 @@
 - **Does this PR Close an issue?** (If applicable, please add the number of the issue here with keyword Closes)
 
 - **Does this PR introduce a breaking change?** (What changes might users need to make in their application due to this PR?)
-
-- **Other information**:
