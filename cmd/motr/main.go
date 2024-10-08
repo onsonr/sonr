@@ -15,14 +15,14 @@ import (
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
 
-	"github.com/onsonr/sonr/internal/session"
+	"github.com/onsonr/sonr/internal/ctx"
 	"github.com/onsonr/sonr/pkg/nebula/routes"
 	"github.com/onsonr/sonr/pkg/nebula/worker"
 )
 
 func main() {
 	e := echo.New()
-	e.Use(session.UseSession)
+	e.Use(ctx.UseSession)
 	registerViews(e)
 	registerState(e)
 	Serve(e)

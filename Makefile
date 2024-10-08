@@ -322,7 +322,7 @@ build-hway: gen-templ gen-pkl
 
 build-motr: gen-templ gen-pkl
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./pkg/dwn/wasm/main.go
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
 
 build-nebula:
 	@echo "(nebula) Building nebula"

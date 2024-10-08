@@ -1,10 +1,8 @@
-package session
+package ctx
 
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
-
-	"github.com/onsonr/sonr/internal/headers"
 )
 
 // GetSession returns the current Session
@@ -16,7 +14,7 @@ func GetSession(c echo.Context) *Session {
 func UseSession(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sc := initSession(c)
-		headers := new(headers.RequestHeaders)
+		headers := new(RequestHeaders)
 		err := sc.Bind(headers)
 		if err != nil {
 			return err

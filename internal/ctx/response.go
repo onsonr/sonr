@@ -1,4 +1,4 @@
-package headers
+package ctx
 
 type ResponseHeaders struct {
 	// HTMX Specific
