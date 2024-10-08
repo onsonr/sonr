@@ -1,23 +1,6 @@
 {
   "name": "@onsonr/sonr.id",
   "version": "0.0.2",
-  "scripts": {
-    "fetch:deps": "bun run .deps.mjs",
-    "build:css": "bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css",
-    "build": "bun run fetch:deps && bun run build:css",
-    "watch": "bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css --watch"
-  },
-  "devDependencies": {
-    "@tailwindcss/forms": "^0.5.7",
-    "@tailwindcss/typography": "^0.5.15",
-    "alpinejs": "^3.14.1",
-    "htmx.org": "^1.9.12",
-    "tailwindcss": "^3.3.0",
-    "tailwindcss-motion": "^0.3.0-beta",
-    "typescript": "^4.9.0"
-  },
-  "dependencies": {
-    "node-fetch": "^3.3.2",
-    "sonr-es": "^0.5.3"
-  }
+  "scripts": {},
+  "dependencies": {}
 }

@@ -30,9 +30,6 @@
     "TEMPL_EXPERIMENT": "rawgo"
   },
   "shell": {
-    "init_hook": [
-      "cd web && bun install"
-    ],
     "scripts": {
       "build:docker": [
         "make local-image"
