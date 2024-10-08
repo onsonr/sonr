@@ -3,6 +3,7 @@ package macaroon.v1;
 
 import "amino/amino.proto";
 import "gogoproto/gogo.proto";
+import "did/v1/tx.proto";
 
 option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
@@ -46,9 +47,19 @@ message Scopes {
 
 // Caveats defines the available caveats
 message Caveats {
-  option (amino.name) = "macaroon/caveat";
+  option (amino.name) = "macaroon/caveats";
   option (gogoproto.equal) = true;
 
   repeated string supported_first_party = 1;
   repeated string supported_third_party = 2;
+}
+
+// Transactions defines the allowlist,denylist for transactions which can be 
+// broadcasted to the network with the Sonr DWN Signed macaroon.
+message Transactions {
+  option (amino.name) = "macaroon/transactions";
+  option (gogoproto.equal) = true;
+ 
+  repeated string allowlist = 1;
+  repeated string denylist = 2;
 }
