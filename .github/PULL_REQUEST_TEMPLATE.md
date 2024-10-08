@@ -4,7 +4,7 @@
 
 <!--- Describe your changes in detail -->
 
-## Related Issue
+## Related Issue(s)
 
 <!--- This project only accepts pull requests related to open issues -->
 <!--- If suggesting a new feature or change, please discuss it in an issue first -->
