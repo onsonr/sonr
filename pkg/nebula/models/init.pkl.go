@@ -11,6 +11,4 @@ func init() {
 	pkl.RegisterMapping("models#Image", Image{})
 	pkl.RegisterMapping("models#Stat", Stat{})
 	pkl.RegisterMapping("models#ModalForm", ModalForm{})
-	pkl.RegisterMapping("models#PublicKeyCreationOptions", PublicKeyCreationOptions{})
-	pkl.RegisterMapping("models#PublicKeyRequestOptions", PublicKeyRequestOptions{})
 }

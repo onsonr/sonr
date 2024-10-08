@@ -1,5 +1,5 @@
-// Code generated from Pkl module `dwn`. DO NOT EDIT.
-package dwn
+// Code generated from Pkl module `dwngen`. DO NOT EDIT.
+package gen
 
 type Config struct {
 	Ipfs *IPFS `pkl:"ipfs" json:"ipfs,omitempty"`

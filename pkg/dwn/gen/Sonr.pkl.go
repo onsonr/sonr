@@ -1,5 +1,5 @@
-// Code generated from Pkl module `dwn`. DO NOT EDIT.
-package dwn
+// Code generated from Pkl module `dwngen`. DO NOT EDIT.
+package gen
 
 type Sonr struct {
 	ApiUrl string `pkl:"apiUrl" json:"apiUrl,omitempty"`

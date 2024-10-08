@@ -4,14 +4,15 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/pkg/dwn"
+	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
 )
 
 type Vault struct {
 	FS files.Node
 }
 
-func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.Schema) (*Vault, error) {
-	dwnCfg := &dwn.Config{
+func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwngen.Schema) (*Vault, error) {
+	dwnCfg := &dwngen.Config{
 		Motr:   createMotrConfig(keyshareJSON, adddress, "sonr.id"),
 		Ipfs:   defaultIPFSConfig(),
 		Sonr:   defaultSonrConfig(chainID),
@@ -26,23 +27,23 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.
 	}, nil
 }
 
-func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwn.Motr {
-	return &dwn.Motr{
+func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwngen.Motr {
+	return &dwngen.Motr{
 		Keyshare: keyshareJSON,
 		Address:  adddress,
 		Origin:   origin,
 	}
 }
 
-func defaultIPFSConfig() *dwn.IPFS {
-	return &dwn.IPFS{
+func defaultIPFSConfig() *dwngen.IPFS {
+	return &dwngen.IPFS{
 		ApiUrl:     "https://api.sonr-ipfs.land",
 		GatewayUrl: "https://ipfs.sonr.land",
 	}
 }
 
-func defaultSonrConfig(chainID string) *dwn.Sonr {
-	return &dwn.Sonr{
+func defaultSonrConfig(chainID string) *dwngen.Sonr {
+	return &dwngen.Sonr{
 		ApiUrl:       "https://api.sonr.land",
 		GrpcUrl:      "https://grpc.sonr.land",
 		RpcUrl:       "https://rpc.sonr.land",

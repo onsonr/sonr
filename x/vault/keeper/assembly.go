@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/sonr/pkg/dwn"
+	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
@@ -35,13 +35,13 @@ func (k Keeper) AssembleVault(ctx sdk.Context) (string, int64, error) {
 }
 
 // currentSchema returns the current schema
-func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwn.Schema, error) {
+func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
 	p, err := k.Params.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
 	schema := p.Schema
-	return &dwn.Schema{
+	return &dwngen.Schema{
 		Version:    int(schema.Version),
 		Account:    schema.Account,
 		Asset:      schema.Asset,
