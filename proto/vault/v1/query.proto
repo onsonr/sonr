@@ -18,6 +18,12 @@ service Query {
     option (google.api.http).post = "/vault/v1/buildtx";
   }
 
+  // Schema queries the DID document by its id. And returns the required PKL
+  // information
+  rpc Schema(QuerySchemaRequest) returns (QuerySchemaResponse) {
+    option (google.api.http).get = "/vault/v1/schema";
+  }
+
   // Sync queries the DID document by its id. And returns the required PKL
   // information
   rpc Sync(SyncRequest) returns (SyncResponse) {
@@ -41,6 +47,15 @@ message QueryIPFSRequest {}
 message QueryIPFSResponse {
   // IPFS is the IPFS client status.
   bool ipfs = 1;
+}
+
+// QuerySchemaRequest is the request type for the Query/Schema RPC method.
+message QuerySchemaRequest {}
+
+// QuerySchemaResponse is the response type for the Query/Schema RPC method.
+message QuerySchemaResponse {
+  // Schema is the DID document.
+  Schema schema = 1;
 }
 
 // SyncRequest is the request type for the Sync RPC method.

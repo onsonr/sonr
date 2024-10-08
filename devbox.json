@@ -54,6 +54,7 @@
         "make build-hway"
       ],
       "gen:proto": [
+        "rm -rf ./pkg/nebula/node_modules",
         "make proto-gen"
       ],
       "gen:pkl": [

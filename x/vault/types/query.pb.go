@@ -194,6 +194,89 @@ func (m *QueryIPFSResponse) GetIpfs() bool {
 	return false
 }
 
+// QuerySchemaRequest is the request type for the Query/Schema RPC method.
+type QuerySchemaRequest struct {
+}
+
+func (m *QuerySchemaRequest) Reset()         { *m = QuerySchemaRequest{} }
+func (m *QuerySchemaRequest) String() string { return proto.CompactTextString(m) }
+func (*QuerySchemaRequest) ProtoMessage()    {}
+func (*QuerySchemaRequest) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e6d49a2800ab3e4b, []int{4}
+}
+func (m *QuerySchemaRequest) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySchemaRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySchemaRequest.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySchemaRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySchemaRequest.Merge(m, src)
+}
+func (m *QuerySchemaRequest) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySchemaRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySchemaRequest.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySchemaRequest proto.InternalMessageInfo
+
+// QuerySchemaResponse is the response type for the Query/Schema RPC method.
+type QuerySchemaResponse struct {
+	// Schema is the DID document.
+	Schema *Schema `protobuf:"bytes,1,opt,name=schema,proto3" json:"schema,omitempty"`
+}
+
+func (m *QuerySchemaResponse) Reset()         { *m = QuerySchemaResponse{} }
+func (m *QuerySchemaResponse) String() string { return proto.CompactTextString(m) }
+func (*QuerySchemaResponse) ProtoMessage()    {}
+func (*QuerySchemaResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_e6d49a2800ab3e4b, []int{5}
+}
+func (m *QuerySchemaResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *QuerySchemaResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_QuerySchemaResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *QuerySchemaResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_QuerySchemaResponse.Merge(m, src)
+}
+func (m *QuerySchemaResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *QuerySchemaResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_QuerySchemaResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_QuerySchemaResponse proto.InternalMessageInfo
+
+func (m *QuerySchemaResponse) GetSchema() *Schema {
+	if m != nil {
+		return m.Schema
+	}
+	return nil
+}
+
 // SyncRequest is the request type for the Sync RPC method.
 type SyncRequest struct {
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
@@ -203,7 +286,7 @@ func (m *SyncRequest) Reset()         { *m = SyncRequest{} }
 func (m *SyncRequest) String() string { return proto.CompactTextString(m) }
 func (*SyncRequest) ProtoMessage()    {}
 func (*SyncRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{4}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{6}
 }
 func (m *SyncRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -248,7 +331,7 @@ func (m *SyncResponse) Reset()         { *m = SyncResponse{} }
 func (m *SyncResponse) String() string { return proto.CompactTextString(m) }
 func (*SyncResponse) ProtoMessage()    {}
 func (*SyncResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{5}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{7}
 }
 func (m *SyncResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -294,7 +377,7 @@ func (m *BuildTxRequest) Reset()         { *m = BuildTxRequest{} }
 func (m *BuildTxRequest) String() string { return proto.CompactTextString(m) }
 func (*BuildTxRequest) ProtoMessage()    {}
 func (*BuildTxRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{6}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{8}
 }
 func (m *BuildTxRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -347,7 +430,7 @@ func (m *BuildTxResponse) Reset()         { *m = BuildTxResponse{} }
 func (m *BuildTxResponse) String() string { return proto.CompactTextString(m) }
 func (*BuildTxResponse) ProtoMessage()    {}
 func (*BuildTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{7}
+	return fileDescriptor_e6d49a2800ab3e4b, []int{9}
 }
 func (m *BuildTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -395,6 +478,8 @@ func init() {
 	proto.RegisterType((*QueryParamsResponse)(nil), "vault.v1.QueryParamsResponse")
 	proto.RegisterType((*QueryIPFSRequest)(nil), "vault.v1.QueryIPFSRequest")
 	proto.RegisterType((*QueryIPFSResponse)(nil), "vault.v1.QueryIPFSResponse")
+	proto.RegisterType((*QuerySchemaRequest)(nil), "vault.v1.QuerySchemaRequest")
+	proto.RegisterType((*QuerySchemaResponse)(nil), "vault.v1.QuerySchemaResponse")
 	proto.RegisterType((*SyncRequest)(nil), "vault.v1.SyncRequest")
 	proto.RegisterType((*SyncResponse)(nil), "vault.v1.SyncResponse")
 	proto.RegisterType((*BuildTxRequest)(nil), "vault.v1.BuildTxRequest")
@@ -404,34 +489,37 @@ func init() {
 func init() { proto.RegisterFile("vault/v1/query.proto", fileDescriptor_e6d49a2800ab3e4b) }
 
 var fileDescriptor_e6d49a2800ab3e4b = []byte{
-	// 424 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x92, 0x41, 0x8b, 0xd3, 0x40,
-	0x1c, 0xc5, 0x9b, 0xb8, 0x76, 0xd7, 0xff, 0x4a, 0xcd, 0xce, 0xae, 0x25, 0x1b, 0xd6, 0x28, 0x83,
-	0x60, 0x4f, 0x09, 0x5b, 0xbd, 0x09, 0x0a, 0x3d, 0x08, 0x1e, 0x84, 0xda, 0x7a, 0xd1, 0x8b, 0xa4,
-	0xe9, 0x18, 0x43, 0xd3, 0x99, 0x69, 0x66, 0x52, 0x92, 0xab, 0x9f, 0x40, 0xf4, 0x4b, 0x79, 0x2c,
-	0x78, 0xf1, 0x28, 0xad, 0x1f, 0x44, 0x32, 0x99, 0x34, 0xad, 0x5a, 0xbc, 0x84, 0xc9, 0x9b, 0xf7,
-	0x7e, 0xff, 0xcc, 0x9b, 0xc0, 0xc5, 0x32, 0xc8, 0x12, 0xe9, 0x2f, 0xaf, 0xfd, 0x45, 0x46, 0xd2,
-	0xc2, 0xe3, 0x29, 0x93, 0x0c, 0x9d, 0x28, 0xd5, 0x5b, 0x5e, 0x3b, 0x57, 0x11, 0x63, 0x51, 0x42,
-	0xfc, 0x80, 0xc7, 0x7e, 0x40, 0x29, 0x93, 0x81, 0x8c, 0x19, 0x15, 0x95, 0xcf, 0xe9, 0x6e, 0xd3,
-	0x11, 0xa1, 0x44, 0xc4, 0x5a, 0xc7, 0x17, 0x80, 0x5e, 0x97, 0xb8, 0x61, 0x90, 0x06, 0x73, 0x31,
-	0x22, 0x8b, 0x8c, 0x08, 0x89, 0x9f, 0xc3, 0xf9, 0x9e, 0x2a, 0x38, 0xa3, 0x82, 0xa0, 0x1e, 0xb4,
-	0xb9, 0x52, 0x6c, 0xe3, 0x81, 0xd1, 0x3b, 0xed, 0x5b, 0x5e, 0x3d, 0xdd, 0xd3, 0x4e, 0xbd, 0x8f,
-	0x11, 0x58, 0x0a, 0xf0, 0x72, 0xf8, 0x62, 0x5c, 0x43, 0x1f, 0xc1, 0xd9, 0x8e, 0xa6, 0x91, 0x08,
-	0x8e, 0x62, 0xfe, 0xa1, 0x02, 0x9e, 0x8c, 0xd4, 0x1a, 0xdf, 0x87, 0xd3, 0x71, 0x41, 0x43, 0x9d,
-	0x43, 0x16, 0xdc, 0x98, 0xc6, 0x53, 0xe5, 0xb8, 0x35, 0x2a, 0x97, 0xb8, 0x07, 0xb7, 0x2b, 0x83,
-	0x86, 0xd8, 0x70, 0x2c, 0xb2, 0x30, 0x24, 0xa2, 0xe6, 0xd4, 0xaf, 0xf8, 0x09, 0x74, 0x06, 0x59,
-	0x9c, 0x4c, 0xdf, 0xe4, 0x07, 0x69, 0xa5, 0xc2, 0x67, 0x89, 0x6d, 0x56, 0x0a, 0x9f, 0x25, 0xf8,
-	0x29, 0xdc, 0xd9, 0xa6, 0xfe, 0x37, 0x02, 0x75, 0xc0, 0x94, 0xb9, 0x4e, 0x9b, 0x32, 0xef, 0x7f,
-	0x31, 0xe1, 0xa6, 0x3a, 0x27, 0x7a, 0x0f, 0xed, 0xaa, 0x16, 0x74, 0xd5, 0x14, 0xf5, 0x77, 0xdb,
-	0xce, 0xbd, 0x03, 0xbb, 0xd5, 0x68, 0x6c, 0x7f, 0xfa, 0xfe, 0xeb, 0xab, 0x89, 0x90, 0xe5, 0x6f,
-	0xef, 0xb0, 0x6a, 0x19, 0xbd, 0x85, 0x63, 0xfd, 0x9d, 0xc8, 0x6e, 0x18, 0xfb, 0x07, 0x76, 0x2e,
-	0xff, 0xb1, 0xa3, 0xc9, 0x97, 0x8a, 0x7c, 0x8e, 0xcf, 0x1a, 0xf2, 0xa4, 0xb4, 0xc8, 0x1c, 0xbd,
-	0x82, 0xa3, 0xb2, 0x62, 0x74, 0xb7, 0x49, 0xef, 0xdc, 0x89, 0xd3, 0xfd, 0x53, 0xd6, 0xc4, 0xae,
-	0x22, 0x5a, 0xb8, 0xd3, 0x10, 0x45, 0x41, 0xc3, 0xc1, 0xb3, 0x6f, 0x6b, 0xd7, 0x58, 0xad, 0x5d,
-	0xe3, 0xe7, 0xda, 0x35, 0x3e, 0x6f, 0xdc, 0xd6, 0x6a, 0xe3, 0xb6, 0x7e, 0x6c, 0xdc, 0xd6, 0xbb,
-	0x87, 0x51, 0x2c, 0x3f, 0x66, 0x13, 0x2f, 0x64, 0x73, 0x9f, 0x51, 0xc1, 0x68, 0xea, 0xab, 0x47,
-	0xae, 0x09, 0xb2, 0xe0, 0x44, 0x4c, 0xda, 0xea, 0x6f, 0x7d, 0xfc, 0x3b, 0x00, 0x00, 0xff, 0xff,
-	0x76, 0x05, 0xd8, 0x03, 0x05, 0x03, 0x00, 0x00,
+	// 466 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x93, 0xc1, 0x6e, 0xd3, 0x30,
+	0x18, 0xc7, 0x9b, 0x30, 0xba, 0xf1, 0x0d, 0x95, 0xcc, 0x1b, 0x55, 0x16, 0x8d, 0x80, 0x2c, 0x24,
+	0x7a, 0x4a, 0xb4, 0xc1, 0x0d, 0x09, 0xa4, 0x1d, 0x90, 0x38, 0x20, 0x8d, 0x96, 0x0b, 0x5c, 0x50,
+	0x9a, 0x9a, 0x2e, 0x5a, 0x6a, 0x7b, 0xb5, 0x53, 0xa5, 0x57, 0x9e, 0x00, 0x89, 0x97, 0xe2, 0x38,
+	0x89, 0x0b, 0x47, 0xd4, 0xf2, 0x06, 0xbc, 0x00, 0x8a, 0xed, 0x24, 0xcd, 0xb2, 0x89, 0x4b, 0xe4,
+	0xfc, 0xbf, 0xef, 0xfb, 0xf9, 0xef, 0xfc, 0x1d, 0x38, 0x58, 0x44, 0x59, 0x2a, 0xc3, 0xc5, 0x71,
+	0x78, 0x99, 0x91, 0xf9, 0x32, 0xe0, 0x73, 0x26, 0x19, 0xda, 0x51, 0x6a, 0xb0, 0x38, 0xf6, 0x8e,
+	0xa6, 0x8c, 0x4d, 0x53, 0x12, 0x46, 0x3c, 0x09, 0x23, 0x4a, 0x99, 0x8c, 0x64, 0xc2, 0xa8, 0xd0,
+	0x7d, 0x5e, 0xbf, 0x9a, 0x9e, 0x12, 0x4a, 0x44, 0x62, 0x74, 0x7c, 0x00, 0xe8, 0x7d, 0x81, 0x3b,
+	0x8b, 0xe6, 0xd1, 0x4c, 0x0c, 0xc9, 0x65, 0x46, 0x84, 0xc4, 0xaf, 0x61, 0xbf, 0xa1, 0x0a, 0xce,
+	0xa8, 0x20, 0x68, 0x00, 0x5d, 0xae, 0x14, 0xd7, 0x7a, 0x62, 0x0d, 0x76, 0x4f, 0x9c, 0xa0, 0xdc,
+	0x3d, 0x30, 0x9d, 0xa6, 0x8e, 0x11, 0x38, 0x0a, 0xf0, 0xf6, 0xec, 0xcd, 0xa8, 0x84, 0x3e, 0x83,
+	0xbd, 0x0d, 0xcd, 0x20, 0x11, 0x6c, 0x25, 0xfc, 0x8b, 0x06, 0xee, 0x0c, 0xd5, 0xba, 0xf2, 0x34,
+	0x8a, 0xcf, 0xc9, 0x2c, 0xba, 0xee, 0xa9, 0x54, 0x6b, 0x4f, 0x42, 0x29, 0x6d, 0x4f, 0xa6, 0xd3,
+	0xd4, 0xf1, 0x63, 0xd8, 0x1d, 0x2d, 0x69, 0x6c, 0x78, 0xc8, 0x81, 0x3b, 0x93, 0x64, 0xa2, 0xa6,
+	0xee, 0x0d, 0x8b, 0x25, 0x1e, 0xc0, 0x7d, 0xdd, 0x60, 0xd0, 0x2e, 0x6c, 0x8b, 0x2c, 0x8e, 0x89,
+	0x28, 0xed, 0x95, 0xaf, 0xf8, 0x05, 0xf4, 0x4e, 0xb3, 0x24, 0x9d, 0x7c, 0xc8, 0x6f, 0xa5, 0x15,
+	0x0a, 0xbf, 0x48, 0x5d, 0x5b, 0x2b, 0xfc, 0x22, 0xc5, 0x2f, 0xe1, 0x41, 0x35, 0xf5, 0xbf, 0x2d,
+	0x50, 0x0f, 0x6c, 0x99, 0x9b, 0x69, 0x5b, 0xe6, 0x27, 0x7f, 0x6d, 0xb8, 0xab, 0xce, 0x8f, 0x3e,
+	0x43, 0x57, 0x7f, 0x6d, 0x74, 0x54, 0x9f, 0xb5, 0x1d, 0xa2, 0xf7, 0xe8, 0x96, 0xaa, 0xde, 0x1a,
+	0xbb, 0x5f, 0x7f, 0xfe, 0xf9, 0x6e, 0x23, 0xe4, 0x84, 0xd5, 0xd5, 0xd0, 0xe1, 0xa1, 0x8f, 0xb0,
+	0x6d, 0x7c, 0x22, 0xb7, 0x66, 0x34, 0x0f, 0xec, 0x1d, 0xde, 0x50, 0x31, 0xe4, 0x43, 0x45, 0xde,
+	0xc7, 0x7b, 0x35, 0x79, 0x5c, 0xb4, 0xc8, 0xbc, 0xf0, 0xae, 0x53, 0x69, 0x79, 0x6f, 0x84, 0xdd,
+	0xf2, 0xde, 0x0c, 0xfd, 0x26, 0xef, 0x3a, 0x64, 0xf4, 0x0e, 0xb6, 0x8a, 0x0c, 0xd1, 0xc3, 0x8d,
+	0x6b, 0x50, 0x87, 0xee, 0xf5, 0xaf, 0xcb, 0x06, 0xd8, 0x57, 0x40, 0x07, 0xf7, 0x36, 0x80, 0x4b,
+	0x1a, 0x9f, 0xbe, 0xfa, 0xb1, 0xf2, 0xad, 0xab, 0x95, 0x6f, 0xfd, 0x5e, 0xf9, 0xd6, 0xb7, 0xb5,
+	0xdf, 0xb9, 0x5a, 0xfb, 0x9d, 0x5f, 0x6b, 0xbf, 0xf3, 0xe9, 0xe9, 0x34, 0x91, 0xe7, 0xd9, 0x38,
+	0x88, 0xd9, 0x2c, 0x64, 0x54, 0x30, 0x3a, 0x0f, 0xd5, 0x23, 0x37, 0x04, 0xb9, 0xe4, 0x44, 0x8c,
+	0xbb, 0xea, 0x2f, 0x7b, 0xfe, 0x2f, 0x00, 0x00, 0xff, 0xff, 0xf3, 0xd1, 0xd1, 0xbc, 0xbd, 0x03,
+	0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -450,6 +538,9 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// BuildTx builds an unsigned transaction message for the given PKL.
 	BuildTx(ctx context.Context, in *BuildTxRequest, opts ...grpc.CallOption) (*BuildTxResponse, error)
+	// Schema queries the DID document by its id. And returns the required PKL
+	// information
+	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
@@ -481,6 +572,15 @@ func (c *queryClient) BuildTx(ctx context.Context, in *BuildTxRequest, opts ...g
 	return out, nil
 }
 
+func (c *queryClient) Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error) {
+	out := new(QuerySchemaResponse)
+	err := c.cc.Invoke(ctx, "/vault.v1.Query/Schema", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
 	out := new(SyncResponse)
 	err := c.cc.Invoke(ctx, "/vault.v1.Query/Sync", in, out, opts...)
@@ -496,6 +596,9 @@ type QueryServer interface {
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
 	// BuildTx builds an unsigned transaction message for the given PKL.
 	BuildTx(context.Context, *BuildTxRequest) (*BuildTxResponse, error)
+	// Schema queries the DID document by its id. And returns the required PKL
+	// information
+	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
@@ -510,6 +613,9 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryParamsReq
 }
 func (*UnimplementedQueryServer) BuildTx(ctx context.Context, req *BuildTxRequest) (*BuildTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BuildTx not implemented")
+}
+func (*UnimplementedQueryServer) Schema(ctx context.Context, req *QuerySchemaRequest) (*QuerySchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Schema not implemented")
 }
 func (*UnimplementedQueryServer) Sync(ctx context.Context, req *SyncRequest) (*SyncResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
@@ -555,6 +661,24 @@ func _Query_BuildTx_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Schema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySchemaRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Schema(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/vault.v1.Query/Schema",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Schema(ctx, req.(*QuerySchemaRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SyncRequest)
 	if err := dec(in); err != nil {
@@ -584,6 +708,10 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BuildTx",
 			Handler:    _Query_BuildTx_Handler,
+		},
+		{
+			MethodName: "Schema",
+			Handler:    _Query_Schema_Handler,
 		},
 		{
 			MethodName: "Sync",
@@ -704,6 +832,64 @@ func (m *QueryIPFSResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 		}
 		i--
 		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySchemaRequest) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySchemaRequest) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySchemaRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	return len(dAtA) - i, nil
+}
+
+func (m *QuerySchemaResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *QuerySchemaResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *QuerySchemaResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if m.Schema != nil {
+		{
+			size, err := m.Schema.MarshalToSizedBuffer(dAtA[:i])
+			if err != nil {
+				return 0, err
+			}
+			i -= size
+			i = encodeVarintQuery(dAtA, i, uint64(size))
+		}
+		i--
+		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
@@ -898,6 +1084,28 @@ func (m *QueryIPFSResponse) Size() (n int) {
 	_ = l
 	if m.Ipfs {
 		n += 2
+	}
+	return n
+}
+
+func (m *QuerySchemaRequest) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	return n
+}
+
+func (m *QuerySchemaResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Schema != nil {
+		l = m.Schema.Size()
+		n += 1 + l + sovQuery(uint64(l))
 	}
 	return n
 }
@@ -1201,6 +1409,142 @@ func (m *QueryIPFSResponse) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Ipfs = bool(v != 0)
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySchemaRequest) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySchemaRequest: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySchemaRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		default:
+			iNdEx = preIndex
+			skippy, err := skipQuery(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *QuerySchemaResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowQuery
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: QuerySchemaResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: QuerySchemaResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Schema", wireType)
+			}
+			var msglen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowQuery
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				msglen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if msglen < 0 {
+				return ErrInvalidLengthQuery
+			}
+			postIndex := iNdEx + msglen
+			if postIndex < 0 {
+				return ErrInvalidLengthQuery
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			if m.Schema == nil {
+				m.Schema = &Schema{}
+			}
+			if err := m.Schema.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
+				return err
+			}
+			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
