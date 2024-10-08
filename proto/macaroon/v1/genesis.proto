@@ -10,7 +10,7 @@ option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 // GenesisState defines the module genesis state
 message GenesisState {
   // Params defines all the parameters of the module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
 // Params defines the set of module parameters.
@@ -54,12 +54,12 @@ message Caveats {
   repeated string supported_third_party = 2;
 }
 
-// Transactions defines the allowlist,denylist for transactions which can be 
+// Transactions defines the allowlist,denylist for transactions which can be
 // broadcasted to the network with the Sonr DWN Signed macaroon.
 message Transactions {
   option (amino.name) = "macaroon/transactions";
   option (gogoproto.equal) = true;
- 
+
   repeated string allowlist = 1;
   repeated string denylist = 2;
 }

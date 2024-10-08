@@ -3,18 +3,15 @@ syntax = "proto3";
 package did.v1;
 
 import "cosmos/orm/v1/orm.proto";
+import "did/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
 message Authentication {
   option (cosmos.orm.v1.table) = {
-    id: 1
-    primary_key: {fields: "did"}
-    index: {
-      id: 1
-      fields: "controller,subject"
-      unique: true
-    }
+    id : 1
+    primary_key : {fields : "did"}
+    index : {id : 1 fields : "controller,subject" unique : true}
   };
 
   // The unique identifier of the authentication
@@ -42,31 +39,12 @@ message Authentication {
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id: 2
-    primary_key: {
-      fields: "number"
-      auto_increment: true
-    }
-    index: {
-      id: 1
-      fields: "sonr_address"
-      unique: true
-    }
-    index: {
-      id: 2
-      fields: "eth_address"
-      unique: true
-    }
-    index: {
-      id: 3
-      fields: "btc_address"
-      unique: true
-    }
-    index: {
-      id: 4
-      fields: "did"
-      unique: true
-    }
+    id : 2
+    primary_key : {fields : "number" auto_increment : true}
+    index : {id : 1 fields : "sonr_address" unique : true}
+    index : {id : 2 fields : "eth_address" unique : true}
+    index : {id : 3 fields : "btc_address" unique : true}
+    index : {id : 4 fields : "did" unique : true}
   };
 
   // The unique identifier of the controller
@@ -100,23 +78,11 @@ message Controller {
 // Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
-    id: 4
-    primary_key: {fields: "did"}
-    index: {
-      id: 1
-      fields: "issuer,subject"
-      unique: true
-    }
-    index: {
-      id: 2
-      fields: "controller,did_method,issuer"
-      unique: true
-    }
-    index: {
-      id: 3
-      fields: "verification_type,subject,issuer"
-      unique: true
-    }
+    id : 4
+    primary_key : {fields : "did"}
+    index : {id : 1 fields : "issuer,subject" unique : true}
+    index : {id : 2 fields : "controller,did_method,issuer" unique : true}
+    index : {id : 3 fields : "verification_type,subject,issuer" unique : true}
   };
 
   // The unique identifier of the verification
@@ -145,35 +111,4 @@ message Verification {
 
   // CreationBlock is the block number of the creation of the controller
   int64 creation_block = 9;
-}
-
-message Keyshares {
-  string validator_cid = 1;
-  string user_cid = 2;
-  int64 last_updated_block = 3;
-}
-
-// PubKey defines a public key for a did
-message PubKey {
-  string role = 1;
-  string key_type = 2;
-  RawKey raw_key = 3;
-  JSONWebKey jwk = 4;
-}
-
-// JWK represents a JSON Web Key
-message JSONWebKey {
-  string kty = 1; // Key Type
-  string crv = 2; // Curve (for EC and OKP keys)
-  string x = 3; // X coordinate (for EC and OKP keys)
-  string y = 4; // Y coordinate (for EC keys)
-  string n = 5; // Modulus (for RSA keys)
-  string e = 6; // Exponent (for RSA keys)
-}
-
-message RawKey {
-  string algorithm = 1;
-  string encoding = 2;
-  string curve = 3;
-  bytes key = 4;
 }
