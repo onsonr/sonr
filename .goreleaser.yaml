@@ -54,24 +54,6 @@ brews:
       branch: master
       token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
 
-# .goreleaser.yaml
-dockers:
-  - # Sonr Binary
-    id: sonrd
-    goos: linux
-    goarch: amd64
-    ids:
-      - sonr
-    image_templates:
-      - "onsonr/sonrd:latest"
-      - "onsonr/sonrd:{{ .Tag }}"
-    dockerfile: "./deploy/sonrd.Dockerfile"
-    build_flag_templates:
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title=sonrd"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-
 announce:
   telegram:
     enabled: true
