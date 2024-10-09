@@ -33,7 +33,6 @@ import (
 
 func main() {
 	e := echo.New()
-	e.Use(nebula.UseAssets)
 	e.GET("/", pages.Home)
 	e.GET("/login", pages.Login)
 	e.GET("/register", pages.Register)
