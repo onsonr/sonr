@@ -2,5 +2,9 @@ name = "sonr-id"
 main = "./build/worker.mjs"
 compatibility_date = "2024-10-07"
 
+routes = [
+  { pattern = "sonr.id", custom_domain = true }
+]
+
 [build]
 command = "devbox run build:hway"
