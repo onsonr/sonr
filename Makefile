@@ -313,17 +313,19 @@ gen-pkl:
 
 .PHONY: build-motr build-hway build-nebula
 
-build-hway: gen-templ gen-pkl
+hway-build: gen-templ
 	@echo "(motr) Building Highway gateway"
-	go run github.com/syumai/workers/cmd/workers-assets-gen@v0.23.1 -o ./cmd/hway/build -mode go
 	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/server.go
 
+hway-dev:
+	@echo "(motr) Deploying Highway gateway"
+	cd cmd/hway && bun run dev
 
-build-motr: gen-templ gen-pkl
+motr-build: gen-templ gen-pkl
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
 
-build-nebula:
+nebula-build:
 	@echo "(nebula) Building nebula"
 	cd pkg/nebula && bun install && bun run build
 
