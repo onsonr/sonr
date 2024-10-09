@@ -13,7 +13,7 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-func SectionHero(hero *models.Hero) templ.Component {
+func Hero(hero *models.Hero) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -106,7 +106,7 @@ func SectionHero(hero *models.Hero) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = stats().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = stats(hero.Stats).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -186,7 +186,7 @@ func heroImage(hero *models.Hero) templ.Component {
 	})
 }
 
-func stats() templ.Component {
+func stats(stats []*models.Stat) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -207,7 +207,56 @@ func stats() templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Stats --><div class=\"max-w-4xl mx-auto px-4 sm:px-6 justify-center items-center\"><div class=\"max-w-sm mx-auto grid gap-12 sm:grid-cols-2 md:grid-cols-4 md:-mx-5 md:gap-0 items-end md:max-w-none\"><!-- 1st item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(476)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 2nd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.44)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 3rd item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(1.5)\" x-text=\"counterValue\">0</span>M+</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div><!-- 4th item --><div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(750)\" x-text=\"counterValue\">0</span>K</h4><p class=\"text-sm text-zinc-500\">Assets packed with power beyond your imagination.</p></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Stats --><div class=\"max-w-4xl mx-auto px-4 sm:px-6 justify-center items-center\"><div class=\"max-w-sm mx-auto grid gap-12 sm:grid-cols-2 md:grid-cols-4 md:-mx-5 md:gap-0 items-end md:max-w-none\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, item := range stats {
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden\"><h4 class=\"font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2\"><span x-data=\"counter(476)\" x-text=\"counterValue\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var11 string
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(item.Value)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/home/sections/hero.templ`, Line: 61, Col: 145}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item.Denom)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/home/sections/hero.templ`, Line: 61, Col: 166}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><p class=\"text-sm text-zinc-500\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var13 string
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/home/sections/hero.templ`, Line: 62, Col: 50}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

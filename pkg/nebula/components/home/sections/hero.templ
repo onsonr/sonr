@@ -5,7 +5,7 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-templ SectionHero(hero *models.Hero) {
+templ Hero(hero *models.Hero) {
 	<!-- Hero -->
 	<section class="relative before:absolute before:inset-0 before:h-80 before:pointer-events-none before:bg-gradient-to-b before:from-zinc-100 before:-z-10">
 		<div class="pt-32 pb-12 md:pt-40 md:pb-20">
@@ -33,7 +33,7 @@ templ SectionHero(hero *models.Hero) {
 					</div>
 				</div>
 				@heroImage(hero)
-				@stats()
+				@stats(hero.Stats)
 			</div>
 		</div>
 	</section>
@@ -52,30 +52,16 @@ templ heroImage(hero *models.Hero) {
 	</div>
 }
 
-templ stats() {
+templ stats(stats []*models.Stat) {
 	<!-- Stats -->
 	<div class="max-w-4xl mx-auto px-4 sm:px-6 justify-center items-center">
 		<div class="max-w-sm mx-auto grid gap-12 sm:grid-cols-2 md:grid-cols-4 md:-mx-5 md:gap-0 items-end md:max-w-none">
-			<!-- 1st item -->
-			<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
-				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(476)" x-text="counterValue">0</span>K</h4>
-				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
-			</div>
-			<!-- 2nd item -->
-			<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
-				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(1.44)" x-text="counterValue">0</span>K</h4>
-				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
-			</div>
-			<!-- 3rd item -->
-			<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
-				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(1.5)" x-text="counterValue">0</span>M+</h4>
-				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
-			</div>
-			<!-- 4th item -->
-			<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
-				<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(750)" x-text="counterValue">0</span>K</h4>
-				<p class="text-sm text-zinc-500">Assets packed with power beyond your imagination.</p>
-			</div>
+			for _, item := range stats {
+				<div class="relative text-center md:px-5 after:hidden md:after:block after:absolute after:right-0 after:top-1/2 after:-translate-y-1/2 after:w-px after:h-8 after:border-l after:border-zinc-300 after:border-dashed last:after:hidden">
+					<h4 class="font-inter-tight text-2xl md:text-3xl font-bold tabular-nums mb-2"><span x-data="counter(476)" x-text="counterValue">{ item.Value }</span>{ item.Denom }</h4>
+					<p class="text-sm text-zinc-500">{ item.Label }</p>
+				</div>
+			}
 		</div>
 		@counterAnimation()
 	</div>

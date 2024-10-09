@@ -11,27 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-	"github.com/onsonr/sonr/pkg/nebula/models"
 )
-
-var hero = models.Hero{
-	TitleFirst:      "Simplified",
-	TitleEmphasis:   "self-custody",
-	TitleSecond:     "for everyone",
-	Subtitle:        "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
-	PrimaryButton:   &models.Button{Text: "Get Started", Href: "/register"},
-	SecondaryButton: &models.Button{Text: "Learn More", Href: "/about"},
-	Image: &models.Image{
-		Src:    "https://cdn.sonr.id/img/hero-clipped.svg",
-		Width:  "500",
-		Height: "500",
-	},
-	Stats: []*models.Stat{
-		{Value: "476K", Label: "Assets packed with power beyond your imagination."},
-		{Value: "1.44K", Label: "Assets packed with power beyond your imagination."},
-		{Value: "1.5M+", Label: "Assets packed with power beyond your imagination."},
-	},
-}
 
 func View() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -74,7 +54,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.SectionHero(&hero).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Hero(hero).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -82,7 +62,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Highlights().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Highlights(highlights).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -90,7 +70,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Features().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Mission().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -98,7 +78,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Bento().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Architecture().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

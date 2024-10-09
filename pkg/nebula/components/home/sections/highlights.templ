@@ -1,6 +1,8 @@
 package sections
 
-templ Highlights() {
+import "github.com/onsonr/sonr/pkg/nebula/models"
+
+templ Highlights(highlights *models.Highlights) {
 	<!-- Features -->
 	<section class="relative bg-zinc-50">
 		<div class="py-12 md:py-20">
@@ -9,11 +11,10 @@ templ Highlights() {
 					<h2
 						class="font-inter-tight text-3xl md:text-4xl font-bold text-zinc-900 mb-4"
 					>
-						The Internet Rebuilt for You
+						{ highlights.Heading }
 					</h2>
 					<p class="text-lg text-zinc-500">
-						Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while
-						providing Developers a cost-effective solution for decentralized authentication.
+						{ highlights.Subtitle }
 					</p>
 				</div>
 				<div x-data="{ tab: '1' }">
