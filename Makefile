@@ -329,6 +329,10 @@ hway-dev:
 	@echo "(motr) Deploying Highway gateway"
 	cd cmd/hway && bun run dev
 
+hway-deploy:
+	@echo "(motr) Deploying Highway gateway"
+	cd cmd/hway && bun run deploy
+
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################
