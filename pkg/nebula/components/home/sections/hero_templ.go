@@ -90,11 +90,11 @@ func SectionHero(hero *models.Hero) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ui.PrimaryButton(hero.PrimaryButton.Href, hero.PrimaryButton.Text).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.PrimaryButton("/register", "Get Started").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ui.SecondaryButton(hero.SecondaryButton.Href, hero.SecondaryButton.Text).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = ui.SecondaryButton("/about", "Learn More").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

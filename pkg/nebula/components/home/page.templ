@@ -1,15 +1,34 @@
 package home
 
 import (
+	"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-		"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-templ View(home *models.Home) {
+var hero = models.Hero{
+	TitleFirst:      "Simplified",
+	TitleEmphasis:   "self-custody",
+	TitleSecond:     "for everyone",
+	Subtitle:        "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
+	PrimaryButton:   &models.Button{Text: "Get Started", Href: "/register"},
+	SecondaryButton: &models.Button{Text: "Learn More", Href: "/about"},
+	Image: &models.Image{
+		Src:    "https://cdn.sonr.id/img/hero-clipped.svg",
+		Width:  "500",
+		Height: "500",
+	},
+	Stats: []*models.Stat{
+		{Value: "476K", Label: "Assets packed with power beyond your imagination."},
+		{Value: "1.44K", Label: "Assets packed with power beyond your imagination."},
+		{Value: "1.5M+", Label: "Assets packed with power beyond your imagination."},
+	},
+}
+
+templ View() {
 	@styles.LayoutNoBody("Sonr.ID", true) {
 		@sections.Header()
-		@sections.SectionHero(home.Hero)
+		@sections.SectionHero(&hero)
 		@sections.Highlights()
 		@sections.Features()
 		@sections.Bento()

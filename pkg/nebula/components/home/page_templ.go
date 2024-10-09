@@ -14,7 +14,26 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-func View(home *models.Home) templ.Component {
+var hero = models.Hero{
+	TitleFirst:      "Simplified",
+	TitleEmphasis:   "self-custody",
+	TitleSecond:     "for everyone",
+	Subtitle:        "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
+	PrimaryButton:   &models.Button{Text: "Get Started", Href: "/register"},
+	SecondaryButton: &models.Button{Text: "Learn More", Href: "/about"},
+	Image: &models.Image{
+		Src:    "https://cdn.sonr.id/img/hero-clipped.svg",
+		Width:  "500",
+		Height: "500",
+	},
+	Stats: []*models.Stat{
+		{Value: "476K", Label: "Assets packed with power beyond your imagination."},
+		{Value: "1.44K", Label: "Assets packed with power beyond your imagination."},
+		{Value: "1.5M+", Label: "Assets packed with power beyond your imagination."},
+	},
+}
+
+func View() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -55,7 +74,7 @@ func View(home *models.Home) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.SectionHero(home.Hero).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.SectionHero(&hero).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

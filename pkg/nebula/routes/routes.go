@@ -8,7 +8,6 @@ import (
 
 	"github.com/onsonr/sonr/pkg/nebula/components/auth"
 	"github.com/onsonr/sonr/pkg/nebula/components/home"
-	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -16,11 +15,7 @@ import (
 // ╰───────────────────────────────────────────────────────────╯
 
 func Home(c echo.Context) error {
-	mdls, err := models.GetModels()
-	if err != nil {
-		return err
-	}
-	return render(c, home.View(mdls.Home))
+	return render(c, home.View())
 }
 
 // ╭───────────────────────────────────────────────────────────╮

@@ -1,15 +1,13 @@
 package dash
 
 import (
+	"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-		"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
-	"github.com/onsonr/sonr/pkg/nebula/models"
 )
 
-templ View(home *models.Home) {
+templ View() {
 	@styles.LayoutNoBody("Sonr.ID", true) {
 		@sections.Header()
-		@sections.SectionHero(home.Hero)
 		@sections.Highlights()
 		@sections.Features()
 		@sections.Bento()
