@@ -16,7 +16,8 @@ import (
 	promise "github.com/nlepage/go-js-promise"
 
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/pkg/nebula/routes"
+	"github.com/onsonr/sonr/pkg/nebula/components/auth"
+	"github.com/onsonr/sonr/pkg/nebula/components/home"
 	"github.com/onsonr/sonr/pkg/nebula/worker"
 )
 
@@ -39,9 +40,9 @@ func registerState(e *echo.Echo) {
 }
 
 func registerViews(e *echo.Echo) {
-	e.GET("/home", routes.Home)
-	e.GET("/login", routes.LoginStart)
-	e.GET("/register", routes.RegisterStart)
+	e.GET("/home", home.Route)
+	e.GET("/login", auth.LoginRoute)
+	e.GET("/register", auth.RegisterRoute)
 }
 
 // Serve serves HTTP requests using handler or http.DefaultServeMux if handler is nil.
