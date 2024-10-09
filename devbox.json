@@ -31,47 +31,18 @@
   },
   "shell": {
     "scripts": {
-      "build:docker": [
-        "make local-image"
-      ],
-      "build:hway": [
-        "make build-nebula",
-        "make build-hway"
-      ],
-      "build:nebula": [
-        "make build-nebula"
-      ],
-      "build:motr": [
-        "make build-motr"
-      ],
-      "build:sonrd": [
-        "make build-motr",
-        "make build"
-      ],
-      "build": [
-        "make build-motr",
-        "make build",
-        "make build-hway"
-      ],
-      "gen:proto": [
-        "rm -rf ./pkg/nebula/node_modules",
-        "make proto-gen"
-      ],
-      "gen:pkl": [
-        "make gen-pkl"
-      ],
-      "gen:templ": [
-        "make gen-templ"
-      ],
-      "start": [
-        "process-compose up -f ./deploy/process-compose.yaml"
-      ],
-      "stop": [
-        "process-compose down -f ./deploy/process-compose.yaml"
-      ],
-      "start:testnet": [
-        "make sh-testnet"
-      ]
+      "build:docker": ["make local-image"],
+      "build:hway": ["make build-nebula", "make build-hway"],
+      "build:nebula": ["make build-nebula"],
+      "build:motr": ["make build-motr"],
+      "build:sonrd": ["make build-motr", "make build"],
+      "build": ["make build-motr", "make build", "make build-hway"],
+      "gen:proto": ["rm -rf ./pkg/nebula/node_modules", "make proto-gen"],
+      "gen:pkl": ["make gen-pkl"],
+      "gen:templ": ["make gen-templ"],
+      "start": ["process-compose up -f ./deploy/process-compose.yaml"],
+      "stop": ["process-compose down -f ./deploy/process-compose.yaml"],
+      "start:testnet": ["make sh-testnet"]
     }
   }
 }

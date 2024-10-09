@@ -311,9 +311,9 @@ gen-pkl:
 ###                            motr, hway & nebula                          ###
 ###############################################################################
 
-.PHONY: build-motr build-hway build-nebula
+.PHONY: motr-build hway-build nebula-build nebula-copy
 
-hway-build: gen-templ
+hway-build: nebula-build nebula-copy gen-templ
 	@echo "(motr) Building Highway gateway"
 	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/server.go
 
@@ -328,6 +328,10 @@ motr-build: gen-templ gen-pkl
 nebula-build:
 	@echo "(nebula) Building nebula"
 	cd pkg/nebula && bun install && bun run build
+
+nebula-copy:
+	@echo "(nebula) Copying assets to hway"
+	cp -r pkg/nebula/assets/js pkg/nebula/assets/css cmd/hway/build
 
 
 ###############################################################################

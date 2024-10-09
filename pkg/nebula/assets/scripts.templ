@@ -12,25 +12,17 @@ var (
 )
 
 templ Styles() {
-	@stylesHandle.Once() {
-		<link href={ "https://cdn.sonr.id/css/styles.css" } rel="stylesheet"/>
-	}
+	<link href={ "/css/styles.css" } rel="stylesheet"/>
 }
 
 templ Alpine() {
-	@alpineHandle.Once() {
-		<script src={ "https://cdn.sonr.id/js/alpine.min.js" } defer></script>
-	}
+	<script src={ "/js/alpine.min.js" } defer></script>
 }
 
 templ Dexie() {
-	@dexieHandle.Once() {
-		<script src={ "https://cdn.sonr.id/js/dexie.min.js" }></script>
-	}
+	<script src={ "/js/dexie.min.js" }></script>
 }
 
 templ Htmx() {
-	@htmxHandle.Once() {
-		<script src={ "https://cdn.sonr.id/js/htmx.min.js" }></script>
-	}
+	<script src={ "/js/htmx.min.js" }></script>
 }

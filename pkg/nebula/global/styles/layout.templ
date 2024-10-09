@@ -33,8 +33,6 @@ templ Layout(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@cdn.Alpine()
-			@cdn.Htmx()
 			@cdn.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -49,6 +47,8 @@ templ Layout(title string, remote bool) {
 			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
 				{ children... }
 			</main>
+			@cdn.Alpine()
+			@cdn.Htmx()
 		</body>
 	</html>
 }
@@ -57,8 +57,6 @@ templ LayoutNoBody(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@cdn.Alpine()
-			@cdn.Htmx()
 			@cdn.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -74,6 +72,8 @@ templ LayoutNoBody(title string, remote bool) {
 				<div class="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
 					{ children... }
 				</div>
+				@cdn.Alpine()
+				@cdn.Htmx()
 			</body>
 		</main>
 	</html>
