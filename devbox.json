@@ -32,11 +32,11 @@
   "shell": {
     "scripts": {
       "build:docker": ["make local-image"],
-      "build:hway": ["make build-nebula", "make build-hway"],
-      "build:nebula": ["make build-nebula"],
-      "build:motr": ["make build-motr"],
-      "build:sonrd": ["make build-motr", "make build"],
-      "build": ["make build-motr", "make build", "make build-hway"],
+      "build:hway": ["make hway-build"],
+      "build:nebula": ["make nebula-build"],
+      "build:motr": ["make motr-build"],
+      "build:sonrd": ["make motr-build", "make build"],
+      "build": ["make motr-build", "make build", "make hway-build"],
       "gen:proto": ["rm -rf ./pkg/nebula/node_modules", "make proto-gen"],
       "gen:pkl": ["make gen-pkl"],
       "gen:templ": ["make gen-templ"],
