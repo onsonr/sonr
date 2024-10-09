@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
+	"github.com/onsonr/sonr/pkg/dwn/gen"
 	"github.com/onsonr/sonr/pkg/nebula/routes"
 )
 
@@ -23,7 +23,7 @@ var (
 )
 
 // NewVaultDirectory creates a new directory with the default files
-func NewVaultDirectory(cnfg *dwngen.Config) (files.Node, error) {
+func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
 	dwnJSON, err := json.Marshal(cnfg)
 	if err != nil {
 		return nil, err
@@ -55,7 +55,7 @@ func IndexHTMLFile() (files.Node, error) {
 }
 
 // MarshalConfigFile uses the config template to generate the dwn config file
-func MarshalConfigFile(c *dwngen.Config) (files.Node, error) {
+func MarshalConfigFile(c *gen.Config) (files.Node, error) {
 	dwnConfigData, err := json.Marshal(c)
 	if err != nil {
 		return nil, err
