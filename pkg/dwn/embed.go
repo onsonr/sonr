@@ -8,7 +8,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
-	"github.com/onsonr/sonr/pkg/nebula/global"
+	"github.com/onsonr/sonr/pkg/nebula/routes"
 )
 
 //go:embed app.wasm
@@ -30,7 +30,7 @@ func NewVaultDirectory(cnfg *dwngen.Config) (files.Node, error) {
 	}
 
 	w := bytes.NewBuffer(nil)
-	err = global.IndexFile().Render(context.Background(), w)
+	err = routes.IndexFile().Render(context.Background(), w)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func NewVaultDirectory(cnfg *dwngen.Config) (files.Node, error) {
 // Use IndexHTML template to generate the index file
 func IndexHTMLFile() (files.Node, error) {
 	w := bytes.NewBuffer(nil)
-	err := global.IndexFile().Render(context.Background(), w)
+	err := routes.IndexFile().Render(context.Background(), w)
 	if err != nil {
 		return nil, err
 	}
