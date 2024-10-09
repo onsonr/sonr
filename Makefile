@@ -316,8 +316,6 @@ gen-pkl:
 nebula-build:
 	@echo "(nebula) Building nebula"
 	cd pkg/nebula && bun install && bun run build
-	@echo "(nebula) Copying assets to hway"
-	cp -r pkg/nebula/assets/js pkg/nebula/assets/css cmd/hway/build
 
 motr-build: gen-templ gen-pkl
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
