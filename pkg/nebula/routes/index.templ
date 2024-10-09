@@ -1,17 +1,17 @@
-package global
+package routes
 
 import (
-	cdn "github.com/onsonr/sonr/pkg/nebula/assets"
 	"github.com/onsonr/sonr/pkg/nebula/global/state"
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 )
 
 templ IndexFile() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			@cdn.Alpine()
-			@cdn.Htmx()
-			@cdn.Styles()
+			@styles.Alpine()
+			@styles.Htmx()
+			@styles.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
