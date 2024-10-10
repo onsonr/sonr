@@ -16,37 +16,19 @@ import (
 	promise "github.com/nlepage/go-js-promise"
 
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/nebula/components/auth"
-	"github.com/onsonr/sonr/nebula/components/home"
-	"github.com/onsonr/sonr/nebula/worker"
+	"github.com/onsonr/sonr/workers/client"
 )
 
 func main() {
 	e := echo.New()
 	e.Use(ctx.UseSession)
-	registerViews(e)
-	registerState(e)
-	Serve(e)
+	client.RegisterViews(e)
+	client.RegisterAPI(e)
+	serve(e)
 }
 
-func registerState(e *echo.Echo) {
-	g := e.Group("state")
-	g.POST("/login/:identifier", worker.HandleCredentialAssertion)
-	g.GET("/jwks", worker.GetJWKS)
-	g.GET("/token", worker.GetToken)
-	g.POST("/:origin/grant/:subject", worker.GrantAuthorization)
-	g.POST("/register/:subject", worker.HandleCredentialCreation)
-	g.POST("/register/:subject/check", worker.CheckSubjectIsValid)
-}
-
-func registerViews(e *echo.Echo) {
-	e.GET("/home", home.Route)
-	e.GET("/login", auth.LoginRoute)
-	e.GET("/register", auth.RegisterRoute)
-}
-
-// Serve serves HTTP requests using handler or http.DefaultServeMux if handler is nil.
-func Serve(handler http.Handler) func() {
+// serve serves HTTP requests using handler or http.DefaultServeMux if handler is nil.
+func serve(handler http.Handler) func() {
 	h := handler
 	if h == nil {
 		h = http.DefaultServeMux
