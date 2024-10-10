@@ -1,11 +1,58 @@
-package swt
+package ctx
 
 import (
+	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 	"gopkg.in/macaroon.v2"
 )
+
+const (
+	OriginMacroonCaveat  MacroonCaveat = "origin"
+	ScopesMacroonCaveat  MacroonCaveat = "scopes"
+	SubjectMacroonCaveat MacroonCaveat = "subject"
+	ExpMacroonCaveat     MacroonCaveat = "exp"
+	TokenMacroonCaveat   MacroonCaveat = "token"
+)
+
+var MacroonCaveats = []MacroonCaveat{OriginMacroonCaveat, ScopesMacroonCaveat, SubjectMacroonCaveat, ExpMacroonCaveat, TokenMacroonCaveat}
+
+type MacroonCaveat string
+
+func (c MacroonCaveat) Equal(other string) bool {
+	return string(c) == other
+}
+
+func (c MacroonCaveat) String() string {
+	return string(c)
+}
+
+func (c MacroonCaveat) Verify(value string) error {
+	switch c {
+	case OriginMacroonCaveat:
+		return nil
+	case ScopesMacroonCaveat:
+		return nil
+	case SubjectMacroonCaveat:
+		return nil
+	case ExpMacroonCaveat:
+		// Check if the expiration time is still valid
+		exp, err := time.Parse(time.RFC3339, value)
+		if err != nil {
+			return err
+		}
+		if time.Now().After(exp) {
+			return fmt.Errorf("expired")
+		}
+		return nil
+	case TokenMacroonCaveat:
+		return nil
+	default:
+		return fmt.Errorf("unknown caveat: %s", c)
+	}
+}
 
 func MacaroonMiddleware(secretKeyStr string, location string) echo.MiddlewareFunc {
 	secretKey := []byte(secretKeyStr)
