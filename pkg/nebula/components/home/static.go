@@ -1,6 +1,6 @@
 package home
 
-import "github.com/onsonr/sonr/internal/orm/models"
+import models "github.com/onsonr/sonr/internal/orm/marketing"
 
 var hero = &models.Hero{
 	TitleFirst:      "Simplified",

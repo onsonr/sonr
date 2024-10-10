@@ -1,6 +1,8 @@
-package ctx
+package client
 
 import (
+	"context"
+
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 	macaroonv1 "github.com/onsonr/sonr/api/macaroon/v1"
 	servicev1 "github.com/onsonr/sonr/api/service/v1"
@@ -22,7 +24,7 @@ type Client struct {
 	VaultClient    vaultv1.QueryClient
 }
 
-func UseGrpcClient() (*Client, error) {
+func UseClient(ctx context.Context) (*Client, error) {
 	// Create a connection to the gRPC server.
 	grpcConn, err := grpc.NewClient(kLocalGrpcWebAddr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDefaultCallOptions(grpc.ForceCodec(codec.NewProtoCodec(nil).GRPCCodec())))
 	if err != nil {

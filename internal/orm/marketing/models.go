@@ -1,4 +1,4 @@
-package models
+package marketing
 
 type Button struct {
 	Text string

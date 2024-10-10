@@ -6,13 +6,13 @@ import (
 )
 
 func AuthorizeRoute(c echo.Context) error {
-	return ctx.RenderTempl(c, Modal(c))
+	return ctx.RenderTempl(c, AuthorizeModal(c))
 }
 
 func LoginRoute(c echo.Context) error {
-	return ctx.RenderTempl(c, Modal(c))
+	return ctx.RenderTempl(c, LoginModal(c))
 }
 
 func RegisterRoute(c echo.Context) error {
-	return ctx.RenderTempl(c, Modal(c))
+	return ctx.RenderTempl(c, RegisterModal(c))
 }
