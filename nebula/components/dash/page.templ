@@ -1,0 +1,15 @@
+package dash
+
+import (
+	"github.com/onsonr/sonr/nebula/components/home/sections"
+	"github.com/onsonr/sonr/nebula/global/styles"
+)
+
+templ View() {
+	@styles.LayoutNoBody("Sonr.ID", true) {
+		@sections.Header()
+		@sections.Lowlights()
+		@sections.CallToAction()
+		@sections.Footer()
+	}
+}

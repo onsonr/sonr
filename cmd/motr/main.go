@@ -16,9 +16,9 @@ import (
 	promise "github.com/nlepage/go-js-promise"
 
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/pkg/nebula/components/auth"
-	"github.com/onsonr/sonr/pkg/nebula/components/home"
-	"github.com/onsonr/sonr/pkg/nebula/worker"
+	"github.com/onsonr/sonr/nebula/components/auth"
+	"github.com/onsonr/sonr/nebula/components/home"
+	"github.com/onsonr/sonr/nebula/worker"
 )
 
 func main() {

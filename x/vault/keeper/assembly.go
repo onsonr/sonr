@@ -5,7 +5,7 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
+	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 

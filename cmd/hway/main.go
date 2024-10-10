@@ -5,8 +5,8 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/pkg/nebula/components/auth"
-	"github.com/onsonr/sonr/pkg/nebula/components/home"
+	"github.com/onsonr/sonr/nebula/components/auth"
+	"github.com/onsonr/sonr/nebula/components/home"
 	"github.com/syumai/workers"
 )
 
