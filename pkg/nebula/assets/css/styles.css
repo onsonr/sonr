@@ -2498,6 +2498,19 @@ select{
   }
 }
 
+.motion-scale-in-50{
+  --motion-origin-scale-x: .5;
+  --motion-origin-scale-y: .5;
+  --motion-scale-in-animation: motion-scale-in calc(var(--motion-scale-duration) * var(--motion-scale-perceptual-duration-multiplier)) var(--motion-scale-timing) var(--motion-scale-delay) both;
+  animation: var(--motion-all-enter-animations);
+}
+
+.motion-opacity-in-0{
+  --motion-origin-opacity: 0.001;
+  --motion-opacity-in-animation: motion-opacity-in calc(var(--motion-opacity-duration) * var(--motion-opacity-perceptual-duration-multiplier)) var(--motion-opacity-timing) var(--motion-opacity-delay) both;
+  animation: var(--motion-all-enter-animations);
+}
+
 .\[animation-delay\:-7\.5s\]{
   animation-delay: -7.5s;
 }
