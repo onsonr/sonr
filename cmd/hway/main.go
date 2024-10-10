@@ -1,13 +1,18 @@
+//go:build js && wasm
+
 package main
 
 import (
-	"github.com/onsonr/sonr/cmd/hway/commands"
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/internal/ctx"
+	"github.com/onsonr/sonr/workers/routes"
+	"github.com/syumai/workers"
 )
 
 func main() {
-	rootCmd := commands.NewRootCmd()
-	rootCmd.AddCommand(commands.NewStartCmd())
-	if err := rootCmd.Execute(); err != nil {
-		panic(err)
-	}
+	s := echo.New()
+	s.Use(ctx.UseSession)
+	routes.RegisterProxyViews(s)
+	routes.RegisterProxyAPI(s)
+	workers.Serve(s)
 }

@@ -19,9 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName  = "/vault.v1.Query/Params"
-	Query_BuildTx_FullMethodName = "/vault.v1.Query/BuildTx"
-	Query_Sync_FullMethodName    = "/vault.v1.Query/Sync"
+	Query_Params_FullMethodName = "/vault.v1.Query/Params"
+	Query_Schema_FullMethodName = "/vault.v1.Query/Schema"
+	Query_Sync_FullMethodName   = "/vault.v1.Query/Sync"
 )
 
 // QueryClient is the client API for Query service.
@@ -30,8 +30,9 @@ const (
 type QueryClient interface {
 	// Params queries all parameters of the module.
 	Params(ctx context.Context, in *QueryParamsRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
-	// BuildTx builds an unsigned transaction message for the given PKL.
-	BuildTx(ctx context.Context, in *BuildTxRequest, opts ...grpc.CallOption) (*BuildTxResponse, error)
+	// Schema queries the DID document by its id. And returns the required PKL
+	// information
+	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
@@ -54,9 +55,9 @@ func (c *queryClient) Params(ctx context.Context, in *QueryParamsRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) BuildTx(ctx context.Context, in *BuildTxRequest, opts ...grpc.CallOption) (*BuildTxResponse, error) {
-	out := new(BuildTxResponse)
-	err := c.cc.Invoke(ctx, Query_BuildTx_FullMethodName, in, out, opts...)
+func (c *queryClient) Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error) {
+	out := new(QuerySchemaResponse)
+	err := c.cc.Invoke(ctx, Query_Schema_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -78,8 +79,9 @@ func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.Ca
 type QueryServer interface {
 	// Params queries all parameters of the module.
 	Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error)
-	// BuildTx builds an unsigned transaction message for the given PKL.
-	BuildTx(context.Context, *BuildTxRequest) (*BuildTxResponse, error)
+	// Schema queries the DID document by its id. And returns the required PKL
+	// information
+	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
@@ -93,8 +95,8 @@ type UnimplementedQueryServer struct {
 func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*QueryParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Params not implemented")
 }
-func (UnimplementedQueryServer) BuildTx(context.Context, *BuildTxRequest) (*BuildTxResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BuildTx not implemented")
+func (UnimplementedQueryServer) Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Schema not implemented")
 }
 func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
@@ -130,20 +132,20 @@ func _Query_Params_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_BuildTx_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BuildTxRequest)
+func _Query_Schema_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(QuerySchemaRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).BuildTx(ctx, in)
+		return srv.(QueryServer).Schema(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_BuildTx_FullMethodName,
+		FullMethod: Query_Schema_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).BuildTx(ctx, req.(*BuildTxRequest))
+		return srv.(QueryServer).Schema(ctx, req.(*QuerySchemaRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -178,8 +180,8 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Params_Handler,
 		},
 		{
-			MethodName: "BuildTx",
-			Handler:    _Query_BuildTx_Handler,
+			MethodName: "Schema",
+			Handler:    _Query_Schema_Handler,
 		},
 		{
 			MethodName: "Sync",

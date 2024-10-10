@@ -14,38 +14,10 @@ builds:
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
 
-  - id: hway
-    goos: [linux, darwin]
-    goarch: [amd64, arm64]
-    main: ./cmd/hway
-    binary: hway
-    builder: go
-    gobinary: go
-    command: build
-    ldflags:
-      - -s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}}
-
-  - id: motr
-    goos: [js]
-    goarch: [wasm]
-    main: ./cmd/motr/motr.go
-    binary: motr
-    builder: go
-    gobinary: go
-    command: build
-
 archives:
   - id: sonr
     builds: [sonr]
     name_template: '{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
-    format: tar.gz
-    files:
-      - src: README*
-      - src: CHANGELOG*
-
-  - id: hway
-    builds: [hway]
-    name_template: '{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ with .Arm }}v{{ . }}{{ end }}{{ with .Mips }}_{{ . }}{{ end }}{{ if not (eq .Amd64 "v1") }}{{ .Amd64 }}{{ end }}'
     format: tar.gz
     files:
       - src: README*
@@ -81,56 +53,6 @@ brews:
       name: homebrew-tap
       branch: master
       token: "{{ .Env.GITHUB_PERSONAL_AUTH_TOKEN }}"
-
-  - name: hway
-    ids: [hway]
-    commit_author:
-      name: goreleaserbot
-      email: bot@goreleaser.com
-    directory: Formula
-    caveats: "Use hway to interact with the Sonr network"
-    homepage: "https://sonr.io/"
-    description: "Motr is a proxy for interacting with the Sonr network."
-    dependencies:
-      - name: ipfs
-    repository:
-      owner: onsonr
-      name: homebrew-tap
-      branch: master
-
-# .goreleaser.yaml
-dockers:
-  - # Sonr Binary
-    id: sonrd
-    goos: linux
-    goarch: amd64
-    ids:
-      - sonr
-    image_templates:
-      - "onsonr/sonrd:latest"
-      - "onsonr/sonrd:{{ .Tag }}"
-    dockerfile: "./deploy/sonrd.Dockerfile"
-    build_flag_templates:
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title=sonrd"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
-
-  - # Motr Binary
-    id: hway
-    goos: linux
-    goarch: amd64
-    ids:
-      - hway
-    image_templates:
-      - "onsonr/hway:latest"
-      - "onsonr/hway:{{ .Tag }}"
-    dockerfile: "./deploy/hway.Dockerfile"
-    build_flag_templates:
-      - "--label=org.opencontainers.image.created={{.Date}}"
-      - "--label=org.opencontainers.image.title=hway"
-      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
-      - "--label=org.opencontainers.image.version={{.Version}}"
 
 announce:
   telegram:

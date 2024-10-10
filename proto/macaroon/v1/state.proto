@@ -9,16 +9,9 @@ option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
 message Grant {
   option (cosmos.orm.v1.table) = {
-    id: 1
-    primary_key: {
-      fields: "id"
-      auto_increment: true
-    }
-    index: {
-      id: 1
-      fields: "subject,origin"
-      unique: true
-    }
+    id : 1
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "subject,origin" unique : true}
   };
 
   uint64 id = 1;
@@ -30,16 +23,9 @@ message Grant {
 
 message Macaroon {
   option (cosmos.orm.v1.table) = {
-    id: 2
-    primary_key: {
-      fields: "id"
-      auto_increment: true
-    }
-    index: {
-      id: 1
-      fields: "subject,origin"
-      unique: true
-    }
+    id : 2
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "subject,origin" unique : true}
   };
 
   uint64 id = 1;

@@ -183,13 +183,10 @@ protoVer=0.13.2
 protoImageName=ghcr.io/cosmos/proto-builder:$(protoVer)
 protoImage=$(DOCKER) run --rm -v $(CURDIR):/workspace --workdir /workspace $(protoImageName)
 
-proto-all: proto-format proto-lint proto-gen format
-
 proto-gen:
 	@echo "Generating Protobuf files"
 	@go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
 	@$(protoImage) sh ./scripts/protocgen.sh
-# generate the stubs for the proto files from the proto directory
 	spawn stub-gen
 
 proto-format:
@@ -291,43 +288,51 @@ sh-testnet: mod-tidy
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
+
 ###############################################################################
-###                                 templ & vault                           ###
+###                             custom generation                           ###
 ###############################################################################
 
-.PHONY: motr hway templ pkl nebula
+.PHONY: templ-gen pkl-gen
 
-hway:
-	@echo "(motr) Building Highway gateway"
-	templ generate
-	go build -o ./build/hway ./cmd/hway
-
-motr:
-	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/motr.go
-
-templ:
+templ-gen:
 	@echo "(templ) Generating templ files"
 	templ generate
 
-nebula:
-	@echo "(nebula) Building nebula"
-	cd pkg/nebula && bun run build
-
-pkl:
+pkl-gen:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/UIUX.pkl
 
-start-caddy:
-	@echo "(start-caddy) Starting caddy"
-	./build/caddy run --config ./config/caddy/Caddyfile
 
-start-hway: hway
-	@echo "(start-proxy) Starting proxy server"
-	./build/hway start
+
+###############################################################################
+###                            motr, hway & nebula                          ###
+###############################################################################
+
+.PHONY: motr-build hway-build nebula-build
+
+nebula-build:
+	@echo "(ui) Building nebula"
+	cd nebula && bun install && bun run build
+	rm -rf ./nebula/node_modules
+
+motr-build: templ-gen pkl-gen
+	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
+	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
+
+hway-build: nebula-build templ-gen
+	@echo "(hway) Building Highway gateway"
+	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
+
+hway-dev:
+	@echo "(hway) Serving Highway gateway"
+	bunx wrangler dev
+
+hway-deploy:
+	@echo "(hway) Deploying Highway gateway"
+	bunx wrangler deploy
 
 ###############################################################################
 ###                                     help                                ###

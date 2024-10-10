@@ -9,7 +9,7 @@ option go_package = "github.com/onsonr/sonr/x/service/types";
 // GenesisState defines the module genesis state
 message GenesisState {
   // Params defines all the parameters of the module.
-  Params params = 1 [(gogoproto.nullable) = false];
+  Params params = 1 [ (gogoproto.nullable) = false ];
 }
 
 // Params defines the set of module parameters.

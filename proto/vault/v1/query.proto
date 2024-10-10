@@ -13,9 +13,10 @@ service Query {
     option (google.api.http).get = "/vault/v1/params";
   }
 
-  // BuildTx builds an unsigned transaction message for the given PKL.
-  rpc BuildTx(BuildTxRequest) returns (BuildTxResponse) {
-    option (google.api.http).post = "/vault/v1/buildtx";
+  // Schema queries the DID document by its id. And returns the required PKL
+  // information
+  rpc Schema(QuerySchemaRequest) returns (QuerySchemaResponse) {
+    option (google.api.http).get = "/vault/v1/schema";
   }
 
   // Sync queries the DID document by its id. And returns the required PKL
@@ -33,34 +34,17 @@ message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
 }
+// QuerySchemaRequest is the request type for the Query/Schema RPC method.
+message QuerySchemaRequest {}
 
-// QueryIPFSRequest is the request type for the Query/IPFS RPC method.
-message QueryIPFSRequest {}
-
-// QueryIPFSResponse is the response type for the Query/IPFS RPC method.
-message QueryIPFSResponse {
-  // IPFS is the IPFS client status.
-  bool ipfs = 1;
+// QuerySchemaResponse is the response type for the Query/Schema RPC method.
+message QuerySchemaResponse {
+  // Schema is the DID document.
+  Schema schema = 1;
 }
 
 // SyncRequest is the request type for the Sync RPC method.
-message SyncRequest {
-  string did = 1;
-}
+message SyncRequest { string did = 1; }
 
 // SyncResponse is the response type for the Sync RPC method.
-message SyncResponse {
-  bool success = 1;
-}
-
-// BuildTxRequest is the request type for the BuildTx RPC method.
-message BuildTxRequest {
-  string did = 1;
-  string pkl = 2;
-}
-
-// BuildTxResponse is the response type for the BuildTx RPC method.
-message BuildTxResponse {
-  bool success = 1;
-  string tx = 2;
-}
+message SyncResponse { bool success = 1; }

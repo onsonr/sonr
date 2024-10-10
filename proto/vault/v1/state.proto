@@ -9,21 +9,10 @@ option go_package = "github.com/onsonr/sonr/x/vault/types";
 
 message DWN {
   option (cosmos.orm.v1.table) = {
-    id: 1
-    primary_key: {
-      fields: "id"
-      auto_increment: true
-    }
-    index: {
-      id: 1
-      fields: "alias"
-      unique: true
-    }
-    index: {
-      id: 2
-      fields: "cid"
-      unique: true
-    }
+    id : 1
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "alias" unique : true}
+    index : {id : 2 fields : "cid" unique : true}
   };
   uint64 id = 1;
   string alias = 2;

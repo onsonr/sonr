@@ -1,0 +1,13 @@
+package auth
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/nebula/components/auth/sections"
+	"github.com/onsonr/sonr/nebula/global/styles"
+)
+
+templ Modal(c echo.Context) {
+	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
+		@sections.RegisterStart()
+	}
+}

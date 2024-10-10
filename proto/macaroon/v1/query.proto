@@ -14,12 +14,14 @@ service Query {
   }
 
   // RefreshToken refreshes a macaroon token as post authentication.
-  rpc RefreshToken(QueryRefreshTokenRequest) returns (QueryRefreshTokenResponse) {
+  rpc RefreshToken(QueryRefreshTokenRequest)
+      returns (QueryRefreshTokenResponse) {
     option (google.api.http).post = "/macaroon/v1/refresh";
   }
 
   // ValidateToken validates a macaroon token as pre authentication.
-  rpc ValidateToken(QueryValidateTokenRequest) returns (QueryValidateTokenResponse) {
+  rpc ValidateToken(QueryValidateTokenRequest)
+      returns (QueryValidateTokenResponse) {
     option (google.api.http).post = "/macaroon/v1/validate";
   }
 }

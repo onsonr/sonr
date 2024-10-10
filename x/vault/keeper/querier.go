@@ -35,8 +35,15 @@ func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.Syn
 	return &types.SyncResponse{}, nil
 }
 
-// BuildTx implements types.QueryServer.
-func (k Querier) BuildTx(goCtx context.Context, req *types.BuildTxRequest) (*types.BuildTxResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.BuildTxResponse{}, nil
+// Schema implements types.QueryServer.
+func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*types.QuerySchemaResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	p, err := k.Keeper.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return &types.QuerySchemaResponse{
+		Schema: p.Schema,
+	}, nil
 }

@@ -1,17 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": [
-    "go@1.22",
-    "air@latest",
-    "bun@latest",
-    "gum@latest",
-    "ipfs@latest",
-    "mprocs@latest",
-    "skate@latest",
-    "templ@latest",
-    "cloudflared@latest",
-    "process-compose@latest"
-  ],
+  "packages": ["go@1.22", "bun@latest", "ipfs@latest", "templ@latest"],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "./build:$HOME/go/bin:$PATH",
@@ -31,51 +20,18 @@
   },
   "shell": {
     "scripts": {
-      "build:docker": [
-        "make local-image"
-      ],
-      "build:hway": [
-        "make nebula",
-        "make hway"
-      ],
-      "build:nebula": [
-        "make nebula"
-      ],
-      "build:motr": [
-        "make motr"
-      ],
-      "build:sonrd": [
-        "make motr",
-        "make build"
-      ],
-      "build": [
-        "make motr",
-        "make build",
-        "make hway"
-      ],
-      "gen:proto": [
-        "make proto-gen"
-      ],
-      "gen:pkl": [
-        "make pkl"
-      ],
-      "gen:templ": [
-        "make templ"
-      ],
-      "start": [
-        "process-compose up -f ./deploy/process-compose.yaml"
-      ],
-      "stop": [
-        "process-compose down -f ./deploy/process-compose.yaml"
-      ],
-      "start:testnet": [
-        "make sh-testnet"
-      ],
-      "start:hway": [
-        "make nebula",
-        "make hway",
-        "./build/hway start"
-      ]
+      "build:docker": ["make local-image"],
+      "build:hway": ["make hway-build"],
+      "build:nebula": ["make nebula-build"],
+      "build:motr": ["make motr-build"],
+      "build:sonrd": ["make motr-build", "make build"],
+      "build": ["make motr-build", "make build", "make hway-build"],
+      "gen:proto": ["rm -rf ./pkg/nebula/node_modules", "make proto-gen"],
+      "gen:pkl": ["make gen-pkl"],
+      "gen:templ": ["make gen-templ"],
+      "start": ["process-compose up -f ./deploy/process-compose.yaml"],
+      "stop": ["process-compose down -f ./deploy/process-compose.yaml"],
+      "start:testnet": ["make sh-testnet"]
     }
   }
 }
