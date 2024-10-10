@@ -7,7 +7,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/cmd/motr/fetch"
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/workers/routes"
+	"github.com/onsonr/sonr/pkg/workers/routes"
 )
 
 func main() {

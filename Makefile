@@ -315,10 +315,10 @@ pkl-gen:
 
 nebula-build:
 	@echo "(ui) Building nebula"
-	cd nebula && bun install && bun run build
-	rm -rf ./nebula/node_modules
+	cd pkg/nebula && bun install && bun run build
+	rm -rf ./pkg/nebula/node_modules
 
-motr-build: templ-gen pkl-gen
+motr-build: nebula-build templ-gen pkl-gen
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
 
