@@ -5,13 +5,14 @@ package main
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/workers/proxy"
+	"github.com/onsonr/sonr/workers/routes"
 	"github.com/syumai/workers"
 )
 
 func main() {
 	s := echo.New()
 	s.Use(ctx.UseSession)
-	proxy.RegisterViews(s)
+	routes.RegisterProxyViews(s)
+	routes.RegisterProxyAPI(s)
 	workers.Serve(s)
 }
