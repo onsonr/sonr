@@ -5,16 +5,13 @@ package models
 // ╰───────────────────────────────────────────────────────────╯
 
 type PublicKeyParams struct {
-	Algorithm string `json:"algorithm"`
-	Encoding  string `json:"encoding"`
-	Curve     string `json:"curve"`
+	Type      string `json:"type"`
+	Algorithm string `json:"alg"`
 }
 
 type RelayingPartyEntity struct {
-	ID          []byte `json:"id"`
-	Name        string `json:"name"`
-	DisplayName string `json:"displayName"`
-	Icon        string `json:"icon"`
+	Name string `json:"name"`
+	Icon string `json:"icon"`
 }
 
 type UserEntity struct {
@@ -24,3 +21,14 @@ type UserEntity struct {
 }
 
 type WebauthnExtensions struct{}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Generic Methods                          │
+// ╰───────────────────────────────────────────────────────────╯
+
+func DefaultPublicKeyParams() *PublicKeyParams {
+	return &PublicKeyParams{
+		Type:      "public-key",
+		Algorithm: "-7",
+	}
+}
