@@ -2,20 +2,6 @@
 
 The Decentralized Identity module is responsible for managing native Sonr Accounts, their derived wallets, and associated user identification information.
 
-## Concepts
-
-### Account
-
-An Account represents a user's identity within the Sonr ecosystem. It includes information such as the user's public key, associated wallets, and other identification details.
-
-### Decentralized Identifier (DID)
-
-A Decentralized Identifier (DID) is a unique identifier that is created, owned, and controlled by the user. It is used to establish a secure and verifiable digital identity.
-
-### Verifiable Credential (VC)
-
-A Verifiable Credential (VC) is a digital statement that can be cryptographically verified. It contains claims about a subject (e.g., a user) and is issued by a trusted authority.
-
 ## State
 
 Specify and describe structures expected to marshalled into the store, and their keys
@@ -71,3 +57,15 @@ Acceptance tests.
 ## Appendix
 
 Supplementary details referenced elsewhere within the spec.
+
+### Account
+
+An Account represents a user's identity within the Sonr ecosystem. It includes information such as the user's public key, associated wallets, and other identification details.
+
+### Decentralized Identifier (DID)
+
+A Decentralized Identifier (DID) is a unique identifier that is created, owned, and controlled by the user. It is used to establish a secure and verifiable digital identity.
+
+### Verifiable Credential (VC)
+
+A Verifiable Credential (VC) is a digital statement that can be cryptographically verified. It contains claims about a subject (e.g., a user) and is issued by a trusted authority.
