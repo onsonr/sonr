@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/nebula/components/home/sections"
-	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+	"github.com/onsonr/sonr/nebula/components/home/sections"
+	"github.com/onsonr/sonr/nebula/global/styles"
 )
 
 func View() templ.Component {
