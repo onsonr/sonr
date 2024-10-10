@@ -12,8 +12,7 @@ import (
 
 func main() {
 	e := echo.New()
-	e.Use(ctx.UseSession)
-	routes.RegisterClientViews(e)
+	e.Use(ctx.SessionMiddleware)
 	routes.RegisterClientAPI(e)
 	fetch.Serve(e)
 }
