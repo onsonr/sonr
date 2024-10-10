@@ -1,12 +1,21 @@
 //go:build js && wasm
 
-package channel
+package ctx
 
 import (
 	"syscall/js"
 
 	"github.com/labstack/echo/v4"
 )
+
+type BroadcastContext struct {
+	echo.Context
+	Channel js.Value
+}
+
+func (c *BroadcastContext) BroadcastMessage(message string) {
+	c.Channel.Call("postMessage", message)
+}
 
 type JSHandler func(this js.Value, args []js.Value) interface{}
 

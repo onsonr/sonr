@@ -31,6 +31,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
       - name: Upload to R2
+        continue-on-error: true
         uses: ryand56/r2-upload-action@latest
         with:
           r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
