@@ -1,6 +1,6 @@
 package home
 
-import "github.com/onsonr/sonr/nebula/models"
+import "github.com/onsonr/sonr/internal/orm/models"
 
 var hero = &models.Hero{
 	TitleFirst:      "Simplified",
