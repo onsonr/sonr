@@ -293,13 +293,13 @@ sh-testnet: mod-tidy
 ###                             custom generation                           ###
 ###############################################################################
 
-.PHONY: gen-templ gen-pkl 
+.PHONY: templ-gen pkl-gen
 
-gen-templ:
+templ-gen:
 	@echo "(templ) Generating templ files"
 	templ generate
 
-gen-pkl:
+pkl-gen:
 	@echo "(pkl) Building PKL"
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
@@ -311,23 +311,28 @@ gen-pkl:
 ###                            motr, hway & nebula                          ###
 ###############################################################################
 
-.PHONY: motr-build hway-build nebula-build nebula-copy
+.PHONY: motr-build hway-build nebula-build
 
 nebula-build:
-	@echo "(nebula) Building nebula"
-	cd pkg/nebula && bun install && bun run build
+	@echo "(ui) Building nebula"
+	cd nebula && bun install && bun run build
+	rm -rf ./nebula/node_modules
 
-motr-build: gen-templ gen-pkl
+motr-build: templ-gen pkl-gen
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
 
-hway-build: nebula-build gen-templ
-	@echo "(motr) Building Highway gateway"
-	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/server.go
+hway-build: nebula-build templ-gen
+	@echo "(hway) Building Highway gateway"
+	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
 
 hway-dev:
-	@echo "(motr) Deploying Highway gateway"
-	cd cmd/hway && bun run dev
+	@echo "(hway) Serving Highway gateway"
+	bunx wrangler dev
+
+hway-deploy:
+	@echo "(hway) Deploying Highway gateway"
+	bunx wrangler deploy
 
 ###############################################################################
 ###                                     help                                ###

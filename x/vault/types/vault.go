@@ -3,8 +3,8 @@ package types
 import (
 	"github.com/ipfs/boxo/files"
 
-	"github.com/onsonr/sonr/pkg/dwn"
-	dwngen "github.com/onsonr/sonr/pkg/dwn/gen"
+	"github.com/onsonr/sonr/internal/dwn"
+	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 )
 
 type Vault struct {

@@ -1,17 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": [
-    "go@1.22",
-    "air@latest",
-    "bun@latest",
-    "gum@latest",
-    "ipfs@latest",
-    "mprocs@latest",
-    "skate@latest",
-    "templ@latest",
-    "cloudflared@latest",
-    "process-compose@latest"
-  ],
+  "packages": ["go@1.22", "bun@latest", "ipfs@latest", "templ@latest"],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "./build:$HOME/go/bin:$PATH",

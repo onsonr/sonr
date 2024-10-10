@@ -4,6 +4,62 @@ The Vault module is responsible for the management of IPFS deployed Decentralize
 
 ## Concepts
 
+## State
+
+Specify and describe structures expected to marshalled into the store, and their keys
+
+### Account State
+
+The Account state includes the user's public key, associated wallets, and other identification details. It is stored using the user's DID as the key.
+
+### Credential State
+
+The Credential state includes the claims about a subject and is stored using the credential ID as the key.
+
+## State Transitions
+
+Standard state transition operations triggered by hooks, messages, etc.
+
+## Messages
+
+Specify message structure(s) and expected state machine behaviour(s).
+
+## Begin Block
+
+Specify any begin-block operations.
+
+## End Block
+
+Specify any end-block operations.
+
+## Hooks
+
+Describe available hooks to be called by/from this module.
+
+## Events
+
+List and describe event tags used.
+
+## Client
+
+List and describe CLI commands and gRPC and REST endpoints.
+
+## Params
+
+List all module parameters, their types (in JSON) and identitys.
+
+## Future Improvements
+
+Describe future improvements of this module.
+
+## Tests
+
+Acceptance tests.
+
+## Appendix
+
+Supplementary details referenced elsewhere within the spec.
+
 | Concept                                     | Description                                                                                                                                                                           |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | Decentralized Web Node (DWN)                | A decentralized, distributed, and secure network of nodes that store and share data. It is a decentralized alternative to traditional web hosting services.                           |
@@ -13,9 +69,3 @@ The Vault module is responsible for the management of IPFS deployed Decentralize
 | WebAuthn (Web Authentication)               | A set of APIs that allow websites to request user authentication using biometric or non-biometric factors.                                                                            |
 | WebAssembly (Web Assembly)                  | A binary instruction format for a stack-based virtual machine.                                                                                                                        |
 | Verifiable Credential (VC)                  | A digital statement that can be cryptographically verified.                                                                                                                           |
-
-## Operations
-
-[View on Eraser![](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz/preview?elements=_hAjUxIKPzF4ffIL4Ow_9w&type=embed)](https://app.eraser.io/workspace/ZFigXnzF1bkQR1VBq7Mz?elements=_hAjUxIKPzF4ffIL4Ow_9w)
-
-<a href="https://app.eraser.io/workspace/Q7CKbYyprt9U2VdwCR70?elements=ywrPbfX1Oml1dLOfdEQEiA">View on Eraser<br /><img src="https://app.eraser.io/workspace/Q7CKbYyprt9U2VdwCR70/preview?elements=ywrPbfX1Oml1dLOfdEQEiA&type=embed" /></a>
