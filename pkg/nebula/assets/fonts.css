@@ -1,0 +1,18 @@
+@font-face {
+    font-family: 'ZT Bros Oskon 90s';
+    src: url('fonts/ZTBrosOskon90s-BoldSemExpIta.woff2') format('woff2'),
+        url('fonts/ZTBrosOskon90s-BoldSemExpIta.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'ZT Bros Oskon 90s';
+    src: url('fonts/ZTBrosOskon90s-BoldSemExp.woff2') format('woff2'),
+        url('fonts/ZTBrosOskon90s-BoldSemExp.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+

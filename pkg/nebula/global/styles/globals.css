@@ -10,6 +10,25 @@
   display: none;
 }
 
+@layer base {
+  @font-face {
+    font-family: "ZT Bros Oskon 90s";
+    font-style: italic;
+    font-weight: bold;
+    font-display: swap;
+    src: url(https://cdn.sonr.id/fonts/ZTBrosOskon90s-BoldSemExpIta.woff2)
+      format("woff2");
+  }
+  @font-face {
+    font-family: "ZT Bros Oskon 90s";
+    font-style: normal;
+    font-weight: bold;
+    font-display: swap;
+    src: url(https://cdn.sonr.id/fonts/ZTBrosOskon90s-BoldSemExp.woff2)
+      format("woff2");
+  }
+}
+
 /* Custom styles */
 .form-input:focus,
 .form-textarea:focus,
