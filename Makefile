@@ -311,11 +311,12 @@ gen-pkl:
 ###                            motr, hway & nebula                          ###
 ###############################################################################
 
-.PHONY: motr-build hway-build nebula-build nebula-copy
+.PHONY: motr-build hway-build nebula-build
 
 nebula-build:
 	@echo "(ui) Building nebula"
 	cd pkg/nebula && bun install && bun run build
+	rm -rf ./pkg/nebula/node_modules
 
 motr-build: gen-templ gen-pkl
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
