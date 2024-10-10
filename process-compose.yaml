@@ -17,9 +17,9 @@ processes:
     max_restarts: 1
     depends:
       - ipfs
-
-  tunnel:
-    namespace: public
-    command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
-    restart: on_failure
-    max_restarts: 1
+  #
+  # tunnel:
+  #   namespace: public
+  #   command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
+  #   restart: on_failure
+  #   max_restarts: 1
