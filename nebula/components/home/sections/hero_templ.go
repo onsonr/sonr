@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/onsonr/sonr/internal/orm/models"
 	"github.com/onsonr/sonr/nebula/global/ui"
-	"github.com/onsonr/sonr/nebula/models"
 )
 
 func Hero(hero *models.Hero) templ.Component {
