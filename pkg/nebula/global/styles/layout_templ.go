@@ -8,8 +8,6 @@ package styles
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "strings"
-
 type Icon interface {
 	Render() templ.Component
 }
@@ -146,6 +144,10 @@ func Layout(title string, remote bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = Fonts().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = Styles().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -165,7 +167,7 @@ func Layout(title string, remote bool) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 39, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/global/styles/layout.templ`, Line: 38, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -209,6 +211,10 @@ func LayoutNoBody(title string, remote bool) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!doctype html><html lang=\"en\"><head>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Fonts().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -314,38 +320,6 @@ func OpenModal(title, description string) templ.Component {
 		}
 		return templ_7745c5c3_Err
 	})
-}
-
-func clsxMerge(variants ...Variant) templ.Attributes {
-	combinedAttrs := templ.Attributes{}
-	var classElements []string
-
-	for _, variant := range variants {
-		attrs := variant.Attributes()
-		if class, ok := attrs["class"].(string); ok {
-			classElements = append(classElements, strings.Fields(class)...)
-		}
-		for key, value := range attrs {
-			if key != "class" {
-				combinedAttrs[key] = value
-			}
-		}
-	}
-
-	if len(classElements) > 0 {
-		combinedAttrs["class"] = strings.Join(classElements, " ")
-	}
-	return combinedAttrs
-}
-
-func clsxBuilder(classes ...string) templ.Attributes {
-	if len(classes) == 0 {
-		return templ.Attributes{}
-	}
-	class := strings.Join(classes, " ")
-	return templ.Attributes{
-		"class": class,
-	}
 }
 
 var _ = templruntime.GeneratedTemplate
