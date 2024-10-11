@@ -11,7 +11,7 @@ import (
 type directHandler struct{}
 
 func (s directHandler) Mode() signingv1beta1.SignMode {
-	return signingv1beta1.SignMode_SIGN_MODE_DIRECT
+	return signingv1beta1.SignMode_SIGN_MODE_DIRECT_AUX
 }
 
 func (s directHandler) GetSignBytes(
