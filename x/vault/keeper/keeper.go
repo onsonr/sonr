@@ -13,6 +13,7 @@ import (
 
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
@@ -30,8 +31,9 @@ type Keeper struct {
 
 	ipfsClient *rpc.HttpApi
 
-	AccountKeeper authkeeper.AccountKeeper
-	DIDKeeper     didkeeper.Keeper
+	AccountKeeper  authkeeper.AccountKeeper
+	DIDKeeper      didkeeper.Keeper
+	MacaroonKeeper macaroonkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -42,6 +44,7 @@ func NewKeeper(
 	authority string,
 	authKeeper authkeeper.AccountKeeper,
 	didk didkeeper.Keeper,
+	macaroonKeeper macaroonkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 
@@ -63,12 +66,13 @@ func NewKeeper(
 
 	ipfsClient, _ := rpc.NewLocalApi()
 	k := Keeper{
-		cdc:           cdc,
-		logger:        logger,
-		DIDKeeper:     didk,
-		AccountKeeper: authKeeper,
-		Params:        collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
-		OrmDB:         store,
+		cdc:            cdc,
+		logger:         logger,
+		DIDKeeper:      didk,
+		MacaroonKeeper: macaroonKeeper,
+		AccountKeeper:  authKeeper,
+		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
+		OrmDB:          store,
 
 		ipfsClient: ipfsClient,
 		authority:  authority,

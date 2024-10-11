@@ -15,6 +15,7 @@ import (
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/service/types"
+	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 )
 
 type Keeper struct {
@@ -33,6 +34,7 @@ type Keeper struct {
 	GroupKeeper    groupkeeper.Keeper
 	MacaroonKeeper macaroonkeeper.Keeper
 	NFTKeeper      nftkeeper.Keeper
+	VaultKeeper    vaultkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -45,6 +47,7 @@ func NewKeeper(
 	groupKeeper groupkeeper.Keeper,
 	macaroonKeeper macaroonkeeper.Keeper,
 	nftKeeper nftkeeper.Keeper,
+	vaultKeeper vaultkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 
