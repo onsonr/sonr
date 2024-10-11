@@ -1,3 +1,66 @@
+## v0.5.11 (2024-10-10)
+
+### Feat
+
+- nebula assets served from CDN
+- use CDN for nebula frontend assets
+- add static hero section content to homepage
+- add wrangler scripts for development, build, and deployment
+- remove build configuration
+- move gateway web code to dedicated directory
+- add PubKey fast reflection
+- **macaroon**: add transaction allowlist/denylist caveats
+- add PR labeler
+- **devbox**: remove hway start command
+- add GitHub Actions workflow for running tests
+- add workflow for deploying Hway to Cloudflare Workers
+- Publish configs to R2
+- integrate nebula UI with worker-assets-gen
+- extract reusable layout components
+- Implement service worker for IPFS vault
+- implement CDN support for assets
+- add payment method support
+- add support for public key management
+- add ModalForm component
+- add LoginStart and RegisterStart routes
+- implement authentication views
+- add json tags to config structs
+- implement templ forms for consent privacy, credential assert, credential register, and profile details
+- **vault**: introduce assembly of the initial vault
+- add client logos to homepage
+- add tailwind utility classes
+- implement new profile card component
+
+### Fix
+
+- Correct source directory for asset publishing
+- install dependencies before nebula build
+- update Schema service to use new API endpoint
+- fix broken logo image path
+
+### Refactor
+
+- remove unnecessary branch configuration from scheduled release workflow
+- update dwn configuration generation import path
+- use nebula/routes instead of nebula/global
+- move index template to routes package
+- remove cdn package and move assets to global styles
+- move nebula assets to hway build directory
+- remove docker build and deployment
+- rename internal/session package to internal/ctx
+- remove unused fields from
+- rename PR_TEMPLATE to PULL_REQUEST_TEMPLATE
+- remove devbox.json init hook
+- rename sonrd dockerfile to Dockerfile
+- remove unused dependency
+- rename 'global/cdn' to 'assets'
+- move CDN assets to separate folder
+- move Pkl module definitions to dedicated package
+- move CDN assets to js/ folder
+- remove unused component templates
+- move ui components to global
+- move view handlers to router package
+
 ## v0.5.10 (2024-10-07)
 
 ### Feat
