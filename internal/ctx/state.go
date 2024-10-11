@@ -2,38 +2,28 @@ package ctx
 
 import "github.com/labstack/echo/v4"
 
-type State string
+type AuthState string
 
 const (
-	StateAuthenticated      State = "authenticated"
-	StateUnauthenticated    State = "unauthenticated"
-	StatePendingCredentials State = "pending_credentials"
-	StatePendingAssertion   State = "pending_assertion"
-	StateDisabled           State = "disabled"
-	StateDisconnected       State = "disconnected"
+	Visitor       AuthState = "visitor"
+	Authenticated AuthState = "authenticated"
+	Expired       AuthState = "expired"
+
+	PendingCredentials AuthState = "pending_credentials"
+	PendingAssertion   AuthState = "pending_assertion"
 )
 
-func (s State) String() string {
+func (s AuthState) String() string {
 	return string(s)
 }
 
-func StateFromString(s string) State {
-	switch s {
-	case StateAuthenticated.String():
-		return StateAuthenticated
-	case StateUnauthenticated.String():
-		return StateUnauthenticated
-	case StatePendingCredentials.String():
-		return StatePendingCredentials
-	case StatePendingAssertion.String():
-		return StatePendingAssertion
-	case StateDisabled.String():
-		return StateDisabled
-	case StateDisconnected.String():
-		return StateDisconnected
-	default:
-		return State("")
+func GetAuthState(c echo.Context) AuthState {
+	vals := c.Request().Header.Values("Authorization")
+	if len(vals) == 0 {
+		return Visitor
 	}
+	s := AuthState(c.Request().Header.Get("Authorization"))
+	return s
 }
 
 func readSessionFromStore(c echo.Context, id string) (*session, error) {

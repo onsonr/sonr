@@ -45,6 +45,16 @@ func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
+func defaultSession(id string, s *sessions.Session) *session {
+	return &session{
+		session: s,
+		id:      id,
+		origin:  "",
+		address: "",
+		chainID: "",
+	}
+}
+
 func getSessionID(ctx context.Context) (string, error) {
 	sessionID, ok := ctx.Value(ctxKeySessionID{}).(string)
 	if !ok || sessionID == "" {

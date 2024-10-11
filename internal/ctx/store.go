@@ -20,19 +20,7 @@ type Session interface {
 	GetChallenge(subject string) (WebBytes, error)
 	ValidateChallenge(challenge WebBytes, subject string) error
 
-	IsState(State) bool
 	SaveHTTP(c echo.Context) error
-}
-
-func defaultSession(id string, s *sessions.Session) *session {
-	return &session{
-		session: s,
-		id:      id,
-		origin:  "",
-		address: "",
-		chainID: "",
-		state:   StateUnauthenticated,
-	}
 }
 
 func NewSessionFromValues(vals map[interface{}]interface{}) *session {
@@ -41,7 +29,6 @@ func NewSessionFromValues(vals map[interface{}]interface{}) *session {
 		origin:    vals["origin"].(string),
 		address:   vals["address"].(string),
 		chainID:   vals["chainID"].(string),
-		state:     StateFromString(vals["state"].(string)),
 		challenge: vals["challenge"].(WebBytes),
 		subject:   vals["subject"].(string),
 	}
@@ -61,9 +48,6 @@ type session struct {
 	// Authentication
 	challenge WebBytes // Webauthn mapping to Challenge; Per session based on origin
 	subject   string   // Webauthn mapping to User Displayable Name; Supplied by DWN frontend
-
-	// State
-	state State
 }
 
 func (s *session) ID() string {
@@ -97,12 +81,7 @@ func (s *session) ValidateChallenge(challenge WebBytes, subject string) error {
 		return fmt.Errorf("invalid challenge")
 	}
 	s.subject = subject
-	s.state = StateAuthenticated
 	return nil
-}
-
-func (s *session) IsState(state State) bool {
-	return s.state == state
 }
 
 func (s *session) SaveHTTP(c echo.Context) error {
@@ -123,7 +102,6 @@ func (s *session) Values() map[interface{}]interface{} {
 	vals["id"] = s.id
 	vals["address"] = s.address
 	vals["chainID"] = s.chainID
-	vals["state"] = s.state
 	vals["challenge"] = s.challenge
 	vals["subject"] = s.subject
 	return vals
