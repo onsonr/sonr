@@ -30,6 +30,7 @@ import (
 	module "github.com/onsonr/sonr/x/service"
 	"github.com/onsonr/sonr/x/service/keeper"
 	"github.com/onsonr/sonr/x/service/types"
+	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 )
 
 var maccPerms = map[string][]string{
@@ -57,6 +58,7 @@ type testFixture struct {
 	stakingKeeper *stakingkeeper.Keeper
 	mintkeeper    mintkeeper.Keeper
 	nftkeeper     nftkeeper.Keeper
+	vaultkeeper   vaultkeeper.Keeper
 
 	addrs      []sdk.AccAddress
 	govModAddr string
@@ -84,7 +86,7 @@ func SetupTest(t *testing.T) *testFixture {
 	registerBaseSDKModules(f, encCfg, storeService, logger, require)
 
 	// Setup Keeper.
-	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.didkeeper, f.groupkeeper, f.mack, f.nftkeeper)
+	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.didkeeper, f.groupkeeper, f.mack, f.nftkeeper, f.vaultkeeper)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
 	f.appModule = module.NewAppModule(encCfg.Codec, f.k, f.didkeeper, f.mack)

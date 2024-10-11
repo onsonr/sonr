@@ -1,3 +1,5 @@
-feature: ["feature/*", "feat/*"]
-fix: fix/*
-chore :hammer:: chore/*
+"@pr/feature": ["feature/*", "feat/*"]
+"@pr/fix": fix/*
+"@pr/chore": chore/*
+"@pr/docs": docs/*
+"@pr/refactor": refactor/*

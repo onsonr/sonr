@@ -1,33 +1,80 @@
 package ctx
 
 import (
+	"context"
+	"errors"
+	"net/http"
+	"time"
+
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 )
 
-// GetSession returns the current Session
-func GetSession(c echo.Context) *Session {
-	return c.(*Session)
-}
+var store sessions.Store
 
-// UseSession establishes a Session Cookie.
-func UseSession(next echo.HandlerFunc) echo.HandlerFunc {
+type ctxKeySessionID struct{}
+
+// SessionMiddleware establishes a Session Cookie.
+func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	return func(c echo.Context) error {
-		sc := initSession(c)
-		headers := new(RequestHeaders)
-		err := sc.Bind(headers)
+		ctx := c.Request().Context()
+
+		// Attempt to read the session ID from the "session" cookie
+		sessionID, err := readSessionIDFromCookie(c)
 		if err != nil {
-			return err
+			// Generate a new KSUID if the session cookie is missing or invalid
+			sessionID = ksuid.New().String()
+			// Write the new session ID to the "session" cookie
+			err = writeSessionIDToCookie(c, sessionID)
+			if err != nil {
+				return c.JSON(
+					http.StatusInternalServerError,
+					map[string]string{"error": "Failed to set session cookie"},
+				)
+			}
 		}
-		return next(sc)
+
+		// Inject the session ID into the context
+		ctx = context.WithValue(ctx, ctxKeySessionID{}, sessionID)
+		// Update the request with the new context
+		c.SetRequest(c.Request().WithContext(ctx))
+
+		return next(c)
 	}
 }
 
-func initSession(c echo.Context) *Session {
-	s := &Session{Context: c}
-	if val := ReadCookie(c, "session"); val == "" {
-		id := ksuid.New().String()
-		WriteCookie(c, "session", id)
+func getSessionID(ctx context.Context) (string, error) {
+	sessionID, ok := ctx.Value(ctxKeySessionID{}).(string)
+	if !ok || sessionID == "" {
+		return "", errors.New("session ID not found in context")
 	}
-	return s
+	return sessionID, nil
+}
+
+func readSessionIDFromCookie(c echo.Context) (string, error) {
+	cookie, err := c.Cookie("session")
+	if err != nil {
+		// Cookie not found or other error
+		return "", err
+	}
+	if cookie == nil || cookie.Value == "" {
+		// Cookie is empty
+		return "", http.ErrNoCookie
+	}
+	return cookie.Value, nil
+}
+
+func writeSessionIDToCookie(c echo.Context, sessionID string) error {
+	cookie := &http.Cookie{
+		Name:     "session",
+		Value:    sessionID,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HttpOnly: true,
+		Path:     "/",
+		// Add Secure and SameSite attributes as needed
+	}
+	c.SetCookie(cookie)
+	return nil
 }

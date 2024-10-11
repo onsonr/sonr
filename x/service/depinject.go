@@ -20,6 +20,7 @@ import (
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/service/keeper"
+	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 )
 
 var _ appmodule.AppModule = AppModule{}
@@ -50,6 +51,7 @@ type ModuleInputs struct {
 	NFTKeeper      nftkeeper.Keeper
 	StakingKeeper  stakingkeeper.Keeper
 	SlashingKeeper slashingkeeper.Keeper
+	VaultKeeper    vaultkeeper.Keeper
 }
 
 type ModuleOutputs struct {
@@ -62,7 +64,7 @@ type ModuleOutputs struct {
 func ProvideModule(in ModuleInputs) ModuleOutputs {
 	govAddr := authtypes.NewModuleAddress(govtypes.ModuleName).String()
 
-	k := keeper.NewKeeper(in.Cdc, in.StoreService, log.NewLogger(os.Stderr), govAddr, in.DidKeeper, in.GroupKeeper, in.MacaroonKeeper, in.NFTKeeper)
+	k := keeper.NewKeeper(in.Cdc, in.StoreService, log.NewLogger(os.Stderr), govAddr, in.DidKeeper, in.GroupKeeper, in.MacaroonKeeper, in.NFTKeeper, in.VaultKeeper)
 	m := NewAppModule(in.Cdc, k, in.DidKeeper, in.MacaroonKeeper)
 
 	return ModuleOutputs{Module: m, Keeper: k, Out: depinject.Out{}}

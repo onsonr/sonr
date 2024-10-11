@@ -5,7 +5,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/internal/dwn/gen"
-	"github.com/onsonr/sonr/nebula/components/index"
+	"github.com/onsonr/sonr/pkg/nebula/components/index"
 )
 
 //go:embed app.wasm

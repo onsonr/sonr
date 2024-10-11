@@ -632,15 +632,6 @@ func NewChainApp(
 		app.StakingKeeper,
 	)
 
-	// Create the vault Keeper
-	app.VaultKeeper = vaultkeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AccountKeeper,
-		app.DidKeeper,
-	)
 	// Create the macaroon Keeper
 	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
 		appCodec,
@@ -649,6 +640,17 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper,
 		app.DidKeeper,
+	)
+
+	// Create the vault Keeper
+	app.VaultKeeper = vaultkeeper.NewKeeper(
+		appCodec,
+		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
+		logger,
+		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+		app.AccountKeeper,
+		app.DidKeeper,
+		app.MacaroonKeeper,
 	)
 
 	// Create the service Keeper
@@ -661,6 +663,7 @@ func NewChainApp(
 		app.GroupKeeper,
 		app.MacaroonKeeper,
 		app.NFTKeeper,
+		app.VaultKeeper,
 	)
 
 	// Create the globalfee keeper

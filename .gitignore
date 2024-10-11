@@ -75,6 +75,7 @@ nebula/node_modules
 
 mprocs.yaml
 build
+sonr.wiki
 
 !devbox.lock
 !buf.lock
