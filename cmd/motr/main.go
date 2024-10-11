@@ -14,5 +14,6 @@ func main() {
 	e := echo.New()
 	e.Use(ctx.SessionMiddleware)
 	routes.RegisterClientAPI(e)
+	routes.RegisterClientViews(e)
 	dwn.Serve(e)
 }
