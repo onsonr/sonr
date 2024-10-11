@@ -35,7 +35,7 @@ func (s *session) ChainID() string {
 }
 
 func GetSession(c echo.Context) Session {
-	id, _ := GetSessionID(c.Request().Context())
+	id, _ := getSessionID(c.Request().Context())
 	s, _ := readSessionFromStore(c, id)
 	return s
 }

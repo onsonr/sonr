@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/gorilla/sessions"
@@ -16,17 +15,9 @@ var store sessions.Store
 
 type ctxKeySessionID struct{}
 
-func GetSessionID(ctx context.Context) (string, error) {
-	sessionID, ok := ctx.Value(ctxKeySessionID{}).(string)
-	if !ok || sessionID == "" {
-		return "", errors.New("session ID not found in context")
-	}
-	return sessionID, nil
-}
-
 // SessionMiddleware establishes a Session Cookie.
 func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_KEY")))
+	store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 
@@ -52,6 +43,14 @@ func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 
 		return next(c)
 	}
+}
+
+func getSessionID(ctx context.Context) (string, error) {
+	sessionID, ok := ctx.Value(ctxKeySessionID{}).(string)
+	if !ok || sessionID == "" {
+		return "", errors.New("session ID not found in context")
+	}
+	return sessionID, nil
 }
 
 func readSessionIDFromCookie(c echo.Context) (string, error) {
