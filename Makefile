@@ -113,6 +113,7 @@ draw-deps:
 	@goviz -i ./cmd/sonrd -d 2 | dot -Tpng -o dependency-graph.png
 
 clean:
+	rm -rf pkg/nebula/node_modules
 	rm -rf snapcraft-local.yaml build/
 
 distclean: clean
@@ -316,7 +317,6 @@ pkl-gen:
 nebula-build:
 	@echo "(ui) Building nebula"
 	cd pkg/nebula && bun install && bun run build
-	rm -rf ./pkg/nebula/node_modules
 
 motr-build: nebula-build templ-gen pkl-gen
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
