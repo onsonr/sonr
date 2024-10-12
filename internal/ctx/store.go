@@ -59,8 +59,7 @@ func (s *Session) ValidateChallenge(challenge WebBytes, subject string) error {
 }
 
 func GetSession(c echo.Context) *Session {
-	id, _ := getSessionID(c.Request().Context())
-	return buildSession(c, id)
+	return buildSession(c, ":")
 }
 
 func SetAddress(c echo.Context, address string) *Session {

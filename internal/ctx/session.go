@@ -1,24 +1,16 @@
 package ctx
 
 import (
-	"context"
-	"errors"
 	"net/http"
 	"net/url"
 	"time"
 
-	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 )
 
-var store sessions.Store
-
-type ctxKeySessionID struct{}
-
 // SessionMiddleware establishes a Session Cookie.
 func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	store = sessions.NewCookieStore([]byte("SESSION_KEY"))
 	return func(c echo.Context) error {
 		ctx := c.Request().Context()
 
@@ -38,7 +30,6 @@ func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		}
 
 		// Inject the session ID into the context
-		ctx = context.WithValue(ctx, ctxKeySessionID{}, sessionID)
 		// Update the request with the new context
 		c.SetRequest(c.Request().WithContext(ctx))
 
@@ -66,14 +57,6 @@ func getOrigin(o string) string {
 		return ""
 	}
 	return u.Hostname()
-}
-
-func getSessionID(ctx context.Context) (string, error) {
-	sessionID, ok := ctx.Value(ctxKeySessionID{}).(string)
-	if !ok || sessionID == "" {
-		return "", errors.New("session ID not found in context")
-	}
-	return sessionID, nil
 }
 
 func readSessionIDFromCookie(c echo.Context) (string, error) {
