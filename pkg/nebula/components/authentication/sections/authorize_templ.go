@@ -9,12 +9,12 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/nebula/components/auth/forms"
+	"github.com/onsonr/sonr/pkg/nebula/components/authentication/forms"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
-func RegisterStart() templ.Component {
+func AuthorizeStart() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

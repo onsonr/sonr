@@ -1,4 +1,4 @@
-package home
+package marketing
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
