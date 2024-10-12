@@ -3,13 +3,13 @@ module.exports = {
   content: [
     "./components/**/*.{templ,html}",
     "./global/**/*.{templ,html}",
-    "./src/**/*.ts",
   ],
   theme: {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
         "inter-tight": ["Inter Tight", "sans-serif"],
+        fancy: ['"ZT Bros Oskon 90s"', "sans-serif"],
       },
       fontSize: {
         xs: ["0.75rem", { lineHeight: "1.5" }],

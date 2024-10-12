@@ -23,9 +23,11 @@ templ IndexFile() {
 			@state.RegisterServiceWorker()
 		</head>
 		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-				<div id="output">Loading...</div>
-			</main>
+			@styles.Toaster() {
+				<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+					<div id="output" hx-get="/#">Loading...</div>
+				</main>
+			}
 		</body>
 	</html>
 }

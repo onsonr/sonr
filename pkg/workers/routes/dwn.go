@@ -23,7 +23,12 @@ func RegisterClientAPI(e *echo.Echo) {
 }
 
 func RegisterClientViews(e *echo.Echo) {
-	e.GET("/", authentication.CurrentRoute)
+	// Static Routes
+	e.File("/", "index.html")
+	e.File("/config.json", "config.json")
+
+	// DWN-Side Routes
+	e.GET("/#", authentication.CurrentRoute)
 	e.GET("/login", authentication.LoginRoute)
 	e.GET("/register", authentication.RegisterRoute)
 }

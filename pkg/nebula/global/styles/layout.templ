@@ -42,9 +42,11 @@ templ Layout(title string, remote bool) {
 			<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
 		</head>
 		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-				{ children... }
-			</main>
+			@Toaster() {
+				<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+					{ children... }
+				</main>
+			}
 		</body>
 	</html>
 }

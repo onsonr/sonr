@@ -216,4 +216,41 @@ func Htmx() templ.Component {
 	})
 }
 
+func Toaster() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var10 == nil {
+			templ_7745c5c3_Var10 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div x-data=\"{ \n            title: &#39;Default Toast Notification&#39;, \n            description: &#39;&#39;,\n            type: &#39;default&#39;,\n            position: &#39;top-center&#39;,\n            expanded: false,\n            popToast (custom){\n                let html = &#39;&#39;;\n                if(typeof custom != &#39;undefined&#39;){\n                    html = custom;\n                }\n                toast(this.title, { description: this.description, type: this.type, position: this.position, html: html })\n            }\n        }\" x-init=\"\n            window.toast = function(message, options = {}){\n                let description = &#39;&#39;;\n                let type = &#39;default&#39;;\n                let position = &#39;top-center&#39;;\n                let html = &#39;&#39;;\n                if(typeof options.description != &#39;undefined&#39;) description = options.description;\n                if(typeof options.type != &#39;undefined&#39;) type = options.type;\n                if(typeof options.position != &#39;undefined&#39;) position = options.position;\n                if(typeof options.html != &#39;undefined&#39;) html = options.html;\n                \n                window.dispatchEvent(new CustomEvent(&#39;toast-show&#39;, { detail : { type: type, message: message, description: description, position : position, html: html }}));\n            }\n\n            window.customToastHTML = `\n                &lt;div class=&#39;relative flex items-start justify-center p-4&#39;&gt;\n                    &lt;img src=&#39;https://cdn.devdojo.com/images/august2023/headshot-new.jpeg&#39; class=&#39;w-10 h-10 mr-2 rounded-full&#39;&gt;\n                    &lt;div class=&#39;flex flex-col&#39;&gt;\n                        &lt;p class=&#39;text-sm font-medium text-gray-800&#39;&gt;New Friend Request&lt;/p&gt;\n                        &lt;p class=&#39;mt-1 text-xs leading-none text-gray-800&#39;&gt;Friend request from John Doe.&lt;/p&gt;\n                        &lt;div class=&#39;flex mt-3&#39;&gt;\n                            &lt;button type=&#39;button&#39; @click=&#39;burnToast(toast.id)&#39; class=&#39;inline-flex items-center px-2 py-1 text-xs font-semibold text-white bg-indigo-600 rounded shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600&#39;&gt;Accept&lt;/button&gt;\n                            &lt;button type=&#39;button&#39; @click=&#39;burnToast(toast.id)&#39; class=&#39;inline-flex items-center px-2 py-1 ml-3 text-xs font-semibold text-gray-900 bg-white rounded shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50&#39;&gt;Decline&lt;/button&gt;\n                        &lt;/div&gt;\n                    &lt;/div&gt;\n                &lt;/div&gt;\n            `\n        \">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ_7745c5c3_Var10.Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
 var _ = templruntime.GeneratedTemplate

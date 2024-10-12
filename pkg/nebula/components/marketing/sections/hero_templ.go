@@ -34,7 +34,7 @@ func Hero(hero *models.Hero) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Hero --><section class=\"relative before:absolute before:inset-0 before:h-80 before:pointer-events-none before:bg-gradient-to-b before:from-zinc-100 before:-z-10\"><div class=\"pt-32 pb-12 md:pt-40 md:pb-20\"><!-- Section content --><div class=\"px-4 sm:px-6\"><div class=\"max-w-3xl mx-auto\"><div class=\"text-center pb-12 md:pb-16\"><h1 class=\"font-inter-tight text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-zinc-500 via-zinc-900 to-zinc-900 pb-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<!-- Hero --><section class=\"relative before:absolute before:inset-0 before:h-80 before:pointer-events-none before:bg-gradient-to-b before:from-zinc-100 before:-z-10\"><div class=\"pt-32 pb-12 md:pt-40 md:pb-20\"><!-- Section content --><div class=\"px-4 sm:px-6\"><div class=\"max-w-3xl mx-auto\"><div class=\"text-center pb-12 md:pb-16\"><h1 class=\"font-fancy text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-zinc-500 via-zinc-900 to-zinc-900 pb-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
