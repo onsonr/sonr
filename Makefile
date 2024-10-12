@@ -296,6 +296,10 @@ sh-testnet: mod-tidy
 
 .PHONY: templ-gen pkl-gen
 
+assets-gen:
+	@echo "(assets) Generating gateway cloudflare workers assets"
+	go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
+
 templ-gen:
 	@echo "(templ) Generating templ files"
 	templ generate
@@ -322,7 +326,7 @@ motr-build: nebula-build templ-gen pkl-gen
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
 	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
 
-hway-build: nebula-build templ-gen
+hway-build: nebula-build templ-gen assets-gen
 	@echo "(hway) Building Highway gateway"
 	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
 
