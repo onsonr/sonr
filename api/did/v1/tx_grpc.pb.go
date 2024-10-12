@@ -19,9 +19,12 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Msg_ExecuteTx_FullMethodName          = "/did.v1.Msg/ExecuteTx"
-	Msg_RegisterController_FullMethodName = "/did.v1.Msg/RegisterController"
-	Msg_UpdateParams_FullMethodName       = "/did.v1.Msg/UpdateParams"
+	Msg_ExecuteTx_FullMethodName            = "/did.v1.Msg/ExecuteTx"
+	Msg_LinkAssertion_FullMethodName        = "/did.v1.Msg/LinkAssertion"
+	Msg_LinkAuthentication_FullMethodName   = "/did.v1.Msg/LinkAuthentication"
+	Msg_UnlinkAssertion_FullMethodName      = "/did.v1.Msg/UnlinkAssertion"
+	Msg_UnlinkAuthentication_FullMethodName = "/did.v1.Msg/UnlinkAuthentication"
+	Msg_UpdateParams_FullMethodName         = "/did.v1.Msg/UpdateParams"
 )
 
 // MsgClient is the client API for Msg service.
@@ -31,9 +34,14 @@ type MsgClient interface {
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error)
-	// RegisterController initializes a controller with the given authentication
-	// set, address, cid, publicKey, and user-defined alias.
-	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
+	// LinkAssertion links an assertion to a controller.
+	LinkAssertion(ctx context.Context, in *MsgLinkAssertion, opts ...grpc.CallOption) (*MsgLinkAssertionResponse, error)
+	// LinkAuthentication links an authentication to a controller.
+	LinkAuthentication(ctx context.Context, in *MsgLinkAuthentication, opts ...grpc.CallOption) (*MsgLinkAuthenticationResponse, error)
+	// UnlinkAssertion unlinks an assertion from a controller.
+	UnlinkAssertion(ctx context.Context, in *MsgUnlinkAssertion, opts ...grpc.CallOption) (*MsgUnlinkAssertionResponse, error)
+	// UnlinkAuthentication unlinks an authentication from a controller.
+	UnlinkAuthentication(ctx context.Context, in *MsgUnlinkAuthentication, opts ...grpc.CallOption) (*MsgUnlinkAuthenticationResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -55,9 +63,36 @@ func (c *msgClient) ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grp
 	return out, nil
 }
 
-func (c *msgClient) RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error) {
-	out := new(MsgRegisterControllerResponse)
-	err := c.cc.Invoke(ctx, Msg_RegisterController_FullMethodName, in, out, opts...)
+func (c *msgClient) LinkAssertion(ctx context.Context, in *MsgLinkAssertion, opts ...grpc.CallOption) (*MsgLinkAssertionResponse, error) {
+	out := new(MsgLinkAssertionResponse)
+	err := c.cc.Invoke(ctx, Msg_LinkAssertion_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) LinkAuthentication(ctx context.Context, in *MsgLinkAuthentication, opts ...grpc.CallOption) (*MsgLinkAuthenticationResponse, error) {
+	out := new(MsgLinkAuthenticationResponse)
+	err := c.cc.Invoke(ctx, Msg_LinkAuthentication_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnlinkAssertion(ctx context.Context, in *MsgUnlinkAssertion, opts ...grpc.CallOption) (*MsgUnlinkAssertionResponse, error) {
+	out := new(MsgUnlinkAssertionResponse)
+	err := c.cc.Invoke(ctx, Msg_UnlinkAssertion_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnlinkAuthentication(ctx context.Context, in *MsgUnlinkAuthentication, opts ...grpc.CallOption) (*MsgUnlinkAuthenticationResponse, error) {
+	out := new(MsgUnlinkAuthenticationResponse)
+	err := c.cc.Invoke(ctx, Msg_UnlinkAuthentication_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,9 +115,14 @@ type MsgServer interface {
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error)
-	// RegisterController initializes a controller with the given authentication
-	// set, address, cid, publicKey, and user-defined alias.
-	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
+	// LinkAssertion links an assertion to a controller.
+	LinkAssertion(context.Context, *MsgLinkAssertion) (*MsgLinkAssertionResponse, error)
+	// LinkAuthentication links an authentication to a controller.
+	LinkAuthentication(context.Context, *MsgLinkAuthentication) (*MsgLinkAuthenticationResponse, error)
+	// UnlinkAssertion unlinks an assertion from a controller.
+	UnlinkAssertion(context.Context, *MsgUnlinkAssertion) (*MsgUnlinkAssertionResponse, error)
+	// UnlinkAuthentication unlinks an authentication from a controller.
+	UnlinkAuthentication(context.Context, *MsgUnlinkAuthentication) (*MsgUnlinkAuthenticationResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 	mustEmbedUnimplementedMsgServer()
@@ -95,8 +135,17 @@ type UnimplementedMsgServer struct {
 func (UnimplementedMsgServer) ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExecuteTx not implemented")
 }
-func (UnimplementedMsgServer) RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
+func (UnimplementedMsgServer) LinkAssertion(context.Context, *MsgLinkAssertion) (*MsgLinkAssertionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkAssertion not implemented")
+}
+func (UnimplementedMsgServer) LinkAuthentication(context.Context, *MsgLinkAuthentication) (*MsgLinkAuthenticationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkAuthentication not implemented")
+}
+func (UnimplementedMsgServer) UnlinkAssertion(context.Context, *MsgUnlinkAssertion) (*MsgUnlinkAssertionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnlinkAssertion not implemented")
+}
+func (UnimplementedMsgServer) UnlinkAuthentication(context.Context, *MsgUnlinkAuthentication) (*MsgUnlinkAuthenticationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnlinkAuthentication not implemented")
 }
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -132,20 +181,74 @@ func _Msg_ExecuteTx_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterController)
+func _Msg_LinkAssertion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLinkAssertion)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RegisterController(ctx, in)
+		return srv.(MsgServer).LinkAssertion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_RegisterController_FullMethodName,
+		FullMethod: Msg_LinkAssertion_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterController(ctx, req.(*MsgRegisterController))
+		return srv.(MsgServer).LinkAssertion(ctx, req.(*MsgLinkAssertion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_LinkAuthentication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLinkAuthentication)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LinkAuthentication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_LinkAuthentication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LinkAuthentication(ctx, req.(*MsgLinkAuthentication))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnlinkAssertion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnlinkAssertion)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnlinkAssertion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UnlinkAssertion_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnlinkAssertion(ctx, req.(*MsgUnlinkAssertion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnlinkAuthentication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnlinkAuthentication)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnlinkAuthentication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Msg_UnlinkAuthentication_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnlinkAuthentication(ctx, req.(*MsgUnlinkAuthentication))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -180,8 +283,20 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_ExecuteTx_Handler,
 		},
 		{
-			MethodName: "RegisterController",
-			Handler:    _Msg_RegisterController_Handler,
+			MethodName: "LinkAssertion",
+			Handler:    _Msg_LinkAssertion_Handler,
+		},
+		{
+			MethodName: "LinkAuthentication",
+			Handler:    _Msg_LinkAuthentication_Handler,
+		},
+		{
+			MethodName: "UnlinkAssertion",
+			Handler:    _Msg_UnlinkAssertion_Handler,
+		},
+		{
+			MethodName: "UnlinkAuthentication",
+			Handler:    _Msg_UnlinkAuthentication_Handler,
 		},
 		{
 			MethodName: "UpdateParams",

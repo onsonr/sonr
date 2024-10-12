@@ -7,9 +7,9 @@ import (
 
 var _ sdk.Msg = &MsgUpdateParams{}
 
-//
-// [UpdateParams]
-//
+// ╭────────────────────────────────────────────────────────╮
+// │                    MsgUpdateParams                     │
+// ╰────────────────────────────────────────────────────────╯
 
 // NewMsgUpdateParams creates new instance of MsgUpdateParams
 func NewMsgUpdateParams(
@@ -46,39 +46,4 @@ func (msg *MsgUpdateParams) Validate() error {
 	}
 
 	return msg.Params.Validate()
-}
-
-//
-// [RegisterController]
-//
-
-// NewMsgRegisterController creates a new instance of MsgRegisterController
-func NewMsgRegisterController(
-	sender sdk.Address,
-) (*MsgRegisterController, error) {
-	return &MsgRegisterController{
-		Authority: sender.String(),
-	}, nil
-}
-
-// Route returns the name of the module
-func (msg MsgRegisterController) Route() string { return ModuleName }
-
-// Type returns the the action
-func (msg MsgRegisterController) Type() string { return "register_controller" }
-
-// GetSignBytes implements the LegacyMsg interface.
-func (msg MsgRegisterController) GetSignBytes() []byte {
-	return sdk.MustSortJSON(AminoCdc.MustMarshalJSON(&msg))
-}
-
-// GetSigners returns the expected signers for a MsgUpdateParams message.
-func (msg *MsgRegisterController) GetSigners() []sdk.AccAddress {
-	addr, _ := sdk.AccAddressFromBech32(msg.Authority)
-	return []sdk.AccAddress{addr}
-}
-
-// ValidateBasic does a sanity check on the provided data.
-func (msg *MsgRegisterController) Validate() error {
-	return nil
 }

@@ -7,9 +7,38 @@ import "did/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-message Authentication {
+message Assertion {
   option (cosmos.orm.v1.table) = {
     id : 1
+    primary_key : {fields : "did"}
+    index : {id : 1 fields : "controller,subject" unique : true}
+  };
+
+  // The unique identifier of the assertion
+  string did = 1;
+
+  // The authentication of the DID
+  string controller = 2;
+
+  // Origin of the authentication
+  string subject = 3;
+
+  // PubKey is the verification method
+  PubKey public_key = 4;
+
+  // AssertionType is the assertion type
+  string assertion_type = 5;
+
+  // Metadata of the authentication
+  map<string, bytes> accumulator = 6;
+
+  // CreationBlock is the block number of the creation of the authentication
+  int64 creation_block = 7;
+}
+
+message Authentication {
+  option (cosmos.orm.v1.table) = {
+    id : 2
     primary_key : {fields : "did"}
     index : {id : 1 fields : "controller,subject" unique : true}
   };
@@ -39,7 +68,7 @@ message Authentication {
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id : 2
+    id : 3
     primary_key : {fields : "number" auto_increment : true}
     index : {id : 1 fields : "sonr_address" unique : true}
     index : {id : 2 fields : "eth_address" unique : true}
