@@ -4,7 +4,6 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/nebula/components/authentication"
-	"github.com/onsonr/sonr/pkg/nebula/components/marketing"
 	"github.com/onsonr/sonr/pkg/workers/handlers"
 )
 
@@ -24,7 +23,7 @@ func RegisterClientAPI(e *echo.Echo) {
 }
 
 func RegisterClientViews(e *echo.Echo) {
-	e.GET("/home", marketing.Route)
+	e.GET("/", authentication.CurrentRoute)
 	e.GET("/login", authentication.LoginRoute)
 	e.GET("/register", authentication.RegisterRoute)
 }

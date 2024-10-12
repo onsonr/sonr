@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/internal/ctx"
 )
 
-func Route(c echo.Context) error {
+func HomeRoute(c echo.Context) error {
 	s := ctx.GetSession(c)
 	log.Printf("Session ID: %s", s.ID)
 	log.Printf("Session Origin: %s", s.Origin)

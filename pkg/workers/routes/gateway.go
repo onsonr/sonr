@@ -11,7 +11,7 @@ func RegisterProxyAPI(e *echo.Echo) {
 }
 
 func RegisterProxyViews(e *echo.Echo) {
-	e.GET("/", marketing.Route)
+	e.GET("/", marketing.HomeRoute)
 	e.GET("/login", authentication.LoginRoute)
 	e.GET("/register", authentication.RegisterRoute)
 }
