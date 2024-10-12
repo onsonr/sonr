@@ -2,6 +2,7 @@ package dwn
 
 import (
 	_ "embed"
+	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/internal/dwn/gen"
@@ -19,16 +20,36 @@ var (
 	swJSFile    = files.NewBytesFile(swJSData)
 )
 
+const (
+	kConfigJSONFileName    = "config.json"
+	kServiceWorkerFileName = "sw.js"
+	kAppWasmFileName       = "app.wasm"
+	kIndexFileName         = "index.html"
+)
+
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
 	idxFile, err := index.BuildFile(cnfg)
 	if err != nil {
 		return nil, err
 	}
+	cnfgFile, err := createJSONConfig(cnfg)
+	if err != nil {
+		return nil, err
+	}
 	fileMap := map[string]files.Node{
-		"sw.js":      swJSFile,
-		"app.wasm":   dwnWasmFile,
-		"index.html": idxFile,
+		kServiceWorkerFileName: swJSFile,
+		kAppWasmFileName:       dwnWasmFile,
+		kIndexFileName:         idxFile,
+		kConfigJSONFileName:    cnfgFile,
 	}
 	return files.NewMapDirectory(fileMap), nil
+}
+
+func createJSONConfig(cnfg *gen.Config) (files.Node, error) {
+	bz, err := json.Marshal(cnfg)
+	if err != nil {
+		return nil, err
+	}
+	return files.NewBytesFile(bz), nil
 }
