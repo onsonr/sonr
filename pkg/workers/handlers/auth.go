@@ -3,6 +3,9 @@ package handlers
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
+
+	"github.com/onsonr/sonr/internal/ctx"
+	"github.com/onsonr/sonr/internal/orm"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -34,20 +37,25 @@ func LoginSubjectFinish(e echo.Context) error {
 // ╰───────────────────────────────────────────────────────────╯
 
 func RegisterSubjectCheck(e echo.Context) error {
-	credentialID := e.FormValue("credentialID")
-	return e.JSON(200, credentialID)
+	subject := e.FormValue("subject")
+	return e.JSON(200, subject)
 }
 
 func RegisterSubjectStart(e echo.Context) error {
-	opts := &protocol.PublicKeyCredentialCreationOptions{
-		RelyingParty: protocol.RelyingPartyEntity{
-			CredentialEntity: protocol.CredentialEntity{
-				Name: "Sonr",
-			},
-			ID: "https://sonr.io",
-		},
+	// Get subject and address
+	subject := e.FormValue("subject")
+	address := e.FormValue("address")
+
+	// Set address in session
+	s := ctx.GetSession(e)
+	s = ctx.SetAddress(e, address)
+
+	// Get challenge
+	chal, err := s.GetChallenge(subject)
+	if err != nil {
+		return err
 	}
-	return e.JSON(200, opts)
+	return e.JSON(201, orm.NewCredentialCreationOptions(subject, address, chal))
 }
 
 func RegisterSubjectFinish(e echo.Context) error {
@@ -65,5 +73,5 @@ func RegisterSubjectFinish(e echo.Context) error {
 	//
 	// // Create the Credential
 	// // credential := orm.NewCredential(parsedData, e.Request().Host, "")
-	return e.JSON(200, ccr)
+	return e.JSON(201, ccr)
 }

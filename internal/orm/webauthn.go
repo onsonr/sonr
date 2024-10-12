@@ -5,13 +5,9 @@ import (
 	"github.com/go-webauthn/webauthn/protocol/webauthncose"
 )
 
-func NewCredentialCreationOptions(subject, address string) (*protocol.PublicKeyCredentialCreationOptions, error) {
-	chl, err := protocol.CreateChallenge()
-	if err != nil {
-		return nil, err
-	}
+func NewCredentialCreationOptions(subject, address string, challenge protocol.URLEncodedBase64) *protocol.PublicKeyCredentialCreationOptions {
 	return &protocol.PublicKeyCredentialCreationOptions{
-		Challenge: chl,
+		Challenge: challenge,
 		User: protocol.UserEntity{
 			DisplayName: subject,
 			ID:          address,
@@ -19,7 +15,7 @@ func NewCredentialCreationOptions(subject, address string) (*protocol.PublicKeyC
 		Attestation:            defaultAttestation(),
 		AuthenticatorSelection: defaultAuthenticatorSelection(),
 		Parameters:             defaultCredentialParameters(),
-	}, nil
+	}
 }
 
 func buildUserEntity(userID string) protocol.UserEntity {
