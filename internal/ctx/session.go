@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gorilla/sessions"
@@ -45,14 +46,26 @@ func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func defaultSession(id string, s *sessions.Session) *session {
-	return &session{
-		session: s,
-		id:      id,
-		origin:  "",
-		address: "",
-		chainID: "",
+func buildSession(c echo.Context, id string) *Session {
+	return &Session{
+		ID:        id,
+		Origin:    getOrigin(c.Request().Header.Get("Host")),
+		UserAgent: c.Request().Header.Get("Sec-Ch-Ua"),
+		Platform:  c.Request().Header.Get("Sec-Ch-Ua-Platform"),
+		Address:   c.Request().Header.Get("X-Sonr-Address"),
+		ChainID:   "",
 	}
+}
+
+func getOrigin(o string) string {
+	if o == "" {
+		return ""
+	}
+	u, err := url.Parse(o)
+	if err != nil {
+		return ""
+	}
+	return u.Hostname()
 }
 
 func getSessionID(ctx context.Context) (string, error) {

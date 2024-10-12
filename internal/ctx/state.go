@@ -25,27 +25,3 @@ func GetAuthState(c echo.Context) AuthState {
 	s := AuthState(c.Request().Header.Get("Authorization"))
 	return s
 }
-
-func readSessionFromStore(c echo.Context, id string) (*session, error) {
-	sess, err := store.Get(c.Request(), id)
-	if err != nil {
-		return nil, err
-	}
-	return NewSessionFromValues(sess.Values), nil
-}
-
-func writeSessionToStore(
-	c echo.Context,
-	id string,
-) error {
-	sess, err := store.Get(c.Request(), id)
-	if err != nil {
-		return err
-	}
-	s := defaultSession(id, sess)
-	err = s.SaveHTTP(c)
-	if err != nil {
-		return err
-	}
-	return nil
-}
