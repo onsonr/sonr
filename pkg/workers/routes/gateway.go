@@ -7,10 +7,10 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/components/marketing"
 )
 
-func RegisterProxyAPI(e *echo.Echo) {
+func RegisterGatewayAPI(e *echo.Echo) {
 }
 
-func RegisterProxyViews(e *echo.Echo) {
+func RegisterGatewayViews(e *echo.Echo) {
 	e.GET("/", marketing.HomeRoute)
 	e.GET("/login", authentication.LoginModalRoute)
 	e.GET("/register", authentication.RegisterModalRoute)
