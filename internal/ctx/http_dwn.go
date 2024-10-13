@@ -36,7 +36,7 @@ func GetDWNContext(c echo.Context) (*DWNContext, error) {
 }
 
 // HighwaySessionMiddleware establishes a Session Cookie.
-func DWNSessionMiddleware(config *dwngen.Config) echo.MiddlewareFunc {
+func WebNodeSessionMiddleware(config *dwngen.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			sessionID := getSessionIDFromCookie(c)
