@@ -320,7 +320,8 @@ pkl-gen:
 
 nebula-build:
 	@echo "(ui) Building nebula"
-	cd pkg/nebula && bun install && bun run build
+	cd pkg/nebula && bun install && bun run deps.mjs
+	cd pkg/nebula && bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
 
 motr-build: nebula-build templ-gen pkl-gen
 	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"

@@ -28,7 +28,7 @@ func RegisterClientViews(e *echo.Echo) {
 	e.File("/config.json", "config.json")
 
 	// DWN-Side Routes
-	e.GET("/#", authentication.CurrentRoute)
-	e.GET("/login", authentication.LoginRoute)
-	e.GET("/register", authentication.RegisterRoute)
+	e.GET("/#", authentication.CurrentViewRoute)
+	e.GET("/login", authentication.LoginModalRoute)
+	e.GET("/register", authentication.RegisterModalRoute)
 }

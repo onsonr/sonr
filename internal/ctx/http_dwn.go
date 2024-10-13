@@ -1,6 +1,8 @@
 package ctx
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 )
@@ -25,8 +27,12 @@ func (s *DWNContext) ChainID() string {
 	return s.dwnCfg.Sonr.ChainId
 }
 
-func GetDWNContext(c echo.Context) *DWNContext {
-	return c.(*DWNContext)
+func GetDWNContext(c echo.Context) (*DWNContext, error) {
+	ctx, ok := c.(*DWNContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "DWN Context not found")
+	}
+	return ctx, nil
 }
 
 // HighwaySessionMiddleware establishes a Session Cookie.

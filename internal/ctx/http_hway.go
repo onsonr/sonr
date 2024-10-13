@@ -1,6 +1,8 @@
 package ctx
 
 import (
+	"net/http"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -10,10 +12,6 @@ type HighwayContext struct {
 	// Defaults
 	id string // Generated ksuid http cookie; Initialized on first request
 
-	// Initialization
-	address string // Webauthn mapping to User ID; Supplied by DWN frontend
-	chainID string // Macaroon mapping to location; Supplied by DWN frontend
-
 	// Authentication
 	challenge WebBytes // Webauthn mapping to Challenge; Per session based on origin
 }
@@ -22,16 +20,12 @@ func (s *HighwayContext) ID() string {
 	return s.id
 }
 
-func (s *HighwayContext) Address() string {
-	return s.address
-}
-
-func (s *HighwayContext) ChainID() string {
-	return s.chainID
-}
-
-func GetHighwayContext(c echo.Context) *HighwayContext {
-	return c.(*HighwayContext)
+func GetHighwayContext(c echo.Context) (*HighwayContext, error) {
+	ctx, ok := c.(*HighwayContext)
+	if !ok {
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Highway Context not found")
+	}
+	return ctx, nil
 }
 
 // HighwaySessionMiddleware establishes a Session Cookie.
@@ -41,8 +35,6 @@ func HighwaySessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		cc := &HighwayContext{
 			Context: c,
 			id:      sessionID,
-			address: c.Request().Header.Get("X-Sonr-Address"),
-			chainID: "",
 		}
 		return next(cc)
 	}
