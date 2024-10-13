@@ -21,7 +21,7 @@ var (
 )
 
 const (
-	kConfigJSONFileName    = "config.json"
+	kConfigJSONFileName    = "dwn.json"
 	kServiceWorkerFileName = "sw.js"
 	kAppWasmFileName       = "app.wasm"
 	kIndexFileName         = "index.html"
