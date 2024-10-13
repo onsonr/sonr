@@ -9,21 +9,21 @@ templ IndexFile() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
+			@styles.Styles()
 			@styles.Alpine()
 			@styles.Htmx()
-			@styles.Styles()
 			<meta charset="UTF-8"/>
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>Sonr DWN</title>
 			@state.RegisterServiceWorker()
 		</head>
-		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			@styles.Toaster() {
+		@styles.Toaster() {
+			<body class="flex items-center justify-center h-full bg-zinc-50 lg:p-24 md:16 p-4">
 				<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-					<div id="output" hx-get="/#">Loading...</div>
+					<div hx-get="/#" swap="outerHTML">Loading...</div>
 				</main>
-			}
-		</body>
+			</body>
+		}
 	</html>
 }
