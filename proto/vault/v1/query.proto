@@ -21,7 +21,13 @@ service Query {
 
   // Sync queries the DID document by its id. And returns the required PKL
   // information
-  rpc Sync(SyncRequest) returns (SyncResponse) {
+  rpc SyncInitial(SyncInitialRequest) returns (SyncInitialResponse) {
+    option (google.api.http).post = "/vault/v1/sync";
+  }
+
+  // SyncCurrent queries the DID document by its id. And returns the required PKL
+  // information
+  rpc SyncCurrent(SyncCurrentRequest) returns (SyncCurrentResponse) {
     option (google.api.http).post = "/vault/v1/sync";
   }
 }
@@ -34,6 +40,7 @@ message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
 }
+
 // QuerySchemaRequest is the request type for the Query/Schema RPC method.
 message QuerySchemaRequest {}
 
@@ -44,7 +51,39 @@ message QuerySchemaResponse {
 }
 
 // SyncRequest is the request type for the Sync RPC method.
-message SyncRequest { string did = 1; }
+message SyncInitialRequest {
+  string did = 1;
+}
 
-// SyncResponse is the response type for the Sync RPC method.
-message SyncResponse { bool success = 1; }
+// SyncInitialResponse is the response type for the Sync RPC method.
+message SyncInitialResponse {
+  bool success = 1;
+
+  // Schema is the DID document.
+  Schema schema = 2;
+
+  // Address is the address of the calling DID.
+  string address = 3;
+
+  // ChainID is the chain ID of the current network.
+  string chainID = 4;
+}
+
+// SyncCurrentRequest is the request type for the Sync RPC method.
+message SyncCurrentRequest {
+  string macaroon = 1;
+}
+
+// SyncCurrentResponse is the response type for the Sync RPC method.
+message SyncCurrentResponse {
+  bool success = 1;
+
+  // Schema is the DID document.
+  Schema schema = 2;
+
+  // Address is the address of the calling DID.
+  string address = 3;
+
+  // ChainID is the chain ID of the current network.
+  string chainID = 4;
+}

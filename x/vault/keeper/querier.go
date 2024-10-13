@@ -29,12 +29,6 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// Sync implements types.QueryServer.
-func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.SyncResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.SyncResponse{}, nil
-}
-
 // Schema implements types.QueryServer.
 func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*types.QuerySchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -46,4 +40,18 @@ func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*
 	return &types.QuerySchemaResponse{
 		Schema: p.Schema,
 	}, nil
+}
+
+// SyncInitial implements types.QueryServer.
+func (k Querier) SyncInitial(goCtx context.Context, req *types.SyncInitialRequest) (*types.SyncInitialResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("SyncInitial is unimplemented")
+	return &types.SyncInitialResponse{}, nil
+}
+
+// SyncCurrent implements types.QueryServer.
+func (k Querier) SyncCurrent(goCtx context.Context, req *types.SyncCurrentRequest) (*types.SyncCurrentResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	panic("SyncCurrent is unimplemented")
+	return &types.SyncCurrentResponse{}, nil
 }

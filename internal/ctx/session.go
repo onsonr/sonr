@@ -12,12 +12,10 @@ func GetSession(c echo.Context) *Session {
 	return c.(*Session)
 }
 
-// SessionMiddleware establishes a Session Cookie.
-func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+// HighwaySessionMiddleware establishes a Session Cookie.
+func HighwaySessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// Attempt to read the session ID from the "session" cookie
 		sessionID := getSessionIDFromCookie(c)
-
 		cc := &Session{
 			Context: c,
 			id:      sessionID,

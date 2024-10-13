@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Query_Params_FullMethodName = "/vault.v1.Query/Params"
-	Query_Schema_FullMethodName = "/vault.v1.Query/Schema"
-	Query_Sync_FullMethodName   = "/vault.v1.Query/Sync"
+	Query_Params_FullMethodName      = "/vault.v1.Query/Params"
+	Query_Schema_FullMethodName      = "/vault.v1.Query/Schema"
+	Query_SyncInitial_FullMethodName = "/vault.v1.Query/SyncInitial"
+	Query_SyncCurrent_FullMethodName = "/vault.v1.Query/SyncCurrent"
 )
 
 // QueryClient is the client API for Query service.
@@ -35,7 +36,10 @@ type QueryClient interface {
 	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
+	SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error)
+	// SyncCurrent queries the DID document by its id. And returns the required PKL
+	// information
+	SyncCurrent(ctx context.Context, in *SyncCurrentRequest, opts ...grpc.CallOption) (*SyncCurrentResponse, error)
 }
 
 type queryClient struct {
@@ -64,9 +68,18 @@ func (c *queryClient) Schema(ctx context.Context, in *QuerySchemaRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
-	out := new(SyncResponse)
-	err := c.cc.Invoke(ctx, Query_Sync_FullMethodName, in, out, opts...)
+func (c *queryClient) SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error) {
+	out := new(SyncInitialResponse)
+	err := c.cc.Invoke(ctx, Query_SyncInitial_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *queryClient) SyncCurrent(ctx context.Context, in *SyncCurrentRequest, opts ...grpc.CallOption) (*SyncCurrentResponse, error) {
+	out := new(SyncCurrentResponse)
+	err := c.cc.Invoke(ctx, Query_SyncCurrent_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +97,10 @@ type QueryServer interface {
 	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
+	SyncInitial(context.Context, *SyncInitialRequest) (*SyncInitialResponse, error)
+	// SyncCurrent queries the DID document by its id. And returns the required PKL
+	// information
+	SyncCurrent(context.Context, *SyncCurrentRequest) (*SyncCurrentResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -98,8 +114,11 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Schema not implemented")
 }
-func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
+func (UnimplementedQueryServer) SyncInitial(context.Context, *SyncInitialRequest) (*SyncInitialResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncInitial not implemented")
+}
+func (UnimplementedQueryServer) SyncCurrent(context.Context, *SyncCurrentRequest) (*SyncCurrentResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SyncCurrent not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
 
@@ -150,20 +169,38 @@ func _Query_Schema_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncRequest)
+func _Query_SyncInitial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncInitialRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).Sync(ctx, in)
+		return srv.(QueryServer).SyncInitial(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Query_Sync_FullMethodName,
+		FullMethod: Query_SyncInitial_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Sync(ctx, req.(*SyncRequest))
+		return srv.(QueryServer).SyncInitial(ctx, req.(*SyncInitialRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Query_SyncCurrent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncCurrentRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).SyncCurrent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_SyncCurrent_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).SyncCurrent(ctx, req.(*SyncCurrentRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -184,8 +221,12 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Schema_Handler,
 		},
 		{
-			MethodName: "Sync",
-			Handler:    _Query_Sync_Handler,
+			MethodName: "SyncInitial",
+			Handler:    _Query_SyncInitial_Handler,
+		},
+		{
+			MethodName: "SyncCurrent",
+			Handler:    _Query_SyncCurrent_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
