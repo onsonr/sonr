@@ -14,12 +14,12 @@ templ RegisterModal(c echo.Context) {
 
 templ LoginModal(c echo.Context) {
 	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
-		@sections.RegisterStart()
+		@sections.LoginStart()
 	}
 }
 
 templ AuthorizeModal(c echo.Context) {
 	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
-		@sections.RegisterStart()
+		@sections.AuthorizeStart()
 	}
 }

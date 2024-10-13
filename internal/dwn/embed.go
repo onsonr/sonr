@@ -6,7 +6,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/internal/dwn/gen"
-	"github.com/onsonr/sonr/pkg/nebula/components/index"
+	"github.com/onsonr/sonr/pkg/nebula/components/vaultindex"
 )
 
 //go:embed app.wasm
@@ -29,7 +29,7 @@ const (
 
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
-	idxFile, err := index.BuildFile(cnfg)
+	idxFile, err := vaultindex.BuildFile(cnfg)
 	if err != nil {
 		return nil, err
 	}

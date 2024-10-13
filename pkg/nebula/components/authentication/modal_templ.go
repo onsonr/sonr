@@ -94,7 +94,7 @@ func LoginModal(c echo.Context) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = sections.RegisterStart().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.LoginStart().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -141,7 +141,7 @@ func AuthorizeModal(c echo.Context) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = sections.RegisterStart().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.AuthorizeStart().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
