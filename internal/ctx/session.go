@@ -2,61 +2,42 @@ package ctx
 
 import (
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 )
 
+func GetSession(c echo.Context) *Session {
+	return c.(*Session)
+}
+
 // SessionMiddleware establishes a Session Cookie.
 func SessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		ctx := c.Request().Context()
-
 		// Attempt to read the session ID from the "session" cookie
-		sessionID, err := readSessionIDFromCookie(c)
-		if err != nil {
-			// Generate a new KSUID if the session cookie is missing or invalid
-			sessionID = ksuid.New().String()
-			// Write the new session ID to the "session" cookie
-			err = writeSessionIDToCookie(c, sessionID)
-			if err != nil {
-				return c.JSON(
-					http.StatusInternalServerError,
-					map[string]string{"error": "Failed to set session cookie"},
-				)
-			}
+		sessionID := getSessionIDFromCookie(c)
+
+		cc := &Session{
+			Context: c,
+			id:      sessionID,
+			address: c.Request().Header.Get("X-Sonr-Address"),
+			chainID: "",
 		}
-
-		// Inject the session ID into the context
-		// Update the request with the new context
-		c.SetRequest(c.Request().WithContext(ctx))
-
-		return next(c)
+		return next(cc)
 	}
 }
 
-func buildSession(c echo.Context, id string) *Session {
-	return &Session{
-		ID:        id,
-		Origin:    getOrigin(c.Request().Header.Get("Host")),
-		UserAgent: c.Request().Header.Get("Sec-Ch-Ua"),
-		Platform:  c.Request().Header.Get("Sec-Ch-Ua-Platform"),
-		Address:   c.Request().Header.Get("X-Sonr-Address"),
-		ChainID:   "",
-	}
-}
-
-func getOrigin(o string) string {
-	if o == "" {
-		return ""
-	}
-	u, err := url.Parse(o)
+func getSessionIDFromCookie(c echo.Context) string {
+	// Attempt to read the session ID from the "session" cookie
+	sessionID, err := readSessionIDFromCookie(c)
 	if err != nil {
-		return ""
+		// Generate a new KSUID if the session cookie is missing or invalid
+		sessionID = ksuid.New().String()
+		// Write the new session ID to the "session" cookie
+		writeSessionIDToCookie(c, sessionID)
 	}
-	return u.Hostname()
+	return sessionID
 }
 
 func readSessionIDFromCookie(c echo.Context) (string, error) {

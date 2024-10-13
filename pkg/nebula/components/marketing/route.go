@@ -10,9 +10,6 @@ import (
 
 func HomeRoute(c echo.Context) error {
 	s := ctx.GetSession(c)
-	log.Printf("Session ID: %s", s.ID)
-	log.Printf("Session Origin: %s", s.Origin)
-	log.Printf("Session Address: %s", s.Address)
-	log.Printf("Session ChainID: %s", s.ChainID)
+	log.Printf("Session ID: %s", s.ID())
 	return ctx.RenderTempl(c, View())
 }

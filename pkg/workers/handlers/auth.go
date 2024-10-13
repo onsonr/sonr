@@ -4,7 +4,6 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/internal/ctx"
 	"github.com/onsonr/sonr/internal/orm"
 )
 
@@ -46,12 +45,8 @@ func RegisterSubjectStart(e echo.Context) error {
 	subject := e.FormValue("subject")
 	address := e.FormValue("address")
 
-	// Set address in session
-	s := ctx.GetSession(e)
-	s = ctx.SetAddress(e, address)
-
 	// Get challenge
-	chal, err := s.GetChallenge(subject)
+	chal, err := protocol.CreateChallenge()
 	if err != nil {
 		return err
 	}
