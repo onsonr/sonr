@@ -42,27 +42,23 @@ func (ms msgServer) ExecuteTx(ctx context.Context, msg *types.MsgExecuteTx) (*ty
 // LinkAssertion implements types.MsgServer.
 func (ms msgServer) LinkAssertion(ctx context.Context, msg *types.MsgLinkAssertion) (*types.MsgLinkAssertionResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("LinkAssertion is unimplemented")
 	return &types.MsgLinkAssertionResponse{}, nil
 }
 
 // LinkAuthentication implements types.MsgServer.
 func (ms msgServer) LinkAuthentication(ctx context.Context, msg *types.MsgLinkAuthentication) (*types.MsgLinkAuthenticationResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("LinkAuthentication is unimplemented")
 	return &types.MsgLinkAuthenticationResponse{}, nil
 }
 
 // UnlinkAssertion implements types.MsgServer.
 func (ms msgServer) UnlinkAssertion(ctx context.Context, msg *types.MsgUnlinkAssertion) (*types.MsgUnlinkAssertionResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("UnlinkAssertion is unimplemented")
 	return &types.MsgUnlinkAssertionResponse{}, nil
 }
 
 // UnlinkAuthentication implements types.MsgServer.
 func (ms msgServer) UnlinkAuthentication(ctx context.Context, msg *types.MsgUnlinkAuthentication) (*types.MsgUnlinkAuthenticationResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("UnlinkAuthentication is unimplemented")
 	return &types.MsgUnlinkAuthenticationResponse{}, nil
 }

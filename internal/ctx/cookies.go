@@ -4,27 +4,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 )
 
-func GetSession(c echo.Context) *Session {
-	return c.(*Session)
-}
-
-// HighwaySessionMiddleware establishes a Session Cookie.
-func HighwaySessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		sessionID := getSessionIDFromCookie(c)
-		cc := &Session{
-			Context: c,
-			id:      sessionID,
-			address: c.Request().Header.Get("X-Sonr-Address"),
-			chainID: "",
-		}
-		return next(cc)
-	}
-}
+type WebBytes = protocol.URLEncodedBase64
 
 func getSessionIDFromCookie(c echo.Context) string {
 	// Attempt to read the session ID from the "session" cookie

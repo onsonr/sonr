@@ -11,7 +11,7 @@ import (
 
 func main() {
 	s := echo.New()
-	s.Use(ctx.SessionMiddleware)
+	s.Use(ctx.HighwaySessionMiddleware)
 	routes.RegisterProxyViews(s)
 	routes.RegisterProxyAPI(s)
 	workers.Serve(s)

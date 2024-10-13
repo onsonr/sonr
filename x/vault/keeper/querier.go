@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -44,14 +45,27 @@ func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*
 
 // SyncInitial implements types.QueryServer.
 func (k Querier) SyncInitial(goCtx context.Context, req *types.SyncInitialRequest) (*types.SyncInitialResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("SyncInitial is unimplemented")
-	return &types.SyncInitialResponse{}, nil
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	p, err := k.Keeper.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	c, _ := k.DIDKeeper.ResolveController(ctx, req.Did)
+	if c == nil {
+		return nil, errors.New("controller not found")
+	}
+
+	return &types.SyncInitialResponse{
+		Success: true,
+		Schema:  p.Schema,
+		ChainID: ctx.ChainID(),
+		Address: c.SonrAddress(),
+	}, nil
 }
 
 // SyncCurrent implements types.QueryServer.
 func (k Querier) SyncCurrent(goCtx context.Context, req *types.SyncCurrentRequest) (*types.SyncCurrentResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
-	panic("SyncCurrent is unimplemented")
 	return &types.SyncCurrentResponse{}, nil
 }
