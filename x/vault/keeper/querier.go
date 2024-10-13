@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"errors"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
@@ -50,12 +49,14 @@ func (k Querier) SyncInitial(goCtx context.Context, req *types.SyncInitialReques
 	if err != nil {
 		return nil, err
 	}
-
 	c, _ := k.DIDKeeper.ResolveController(ctx, req.Did)
 	if c == nil {
-		return nil, errors.New("controller not found")
+		return &types.SyncInitialResponse{
+			Success: false,
+			Schema:  p.Schema,
+			ChainID: ctx.ChainID(),
+		}, nil
 	}
-
 	return &types.SyncInitialResponse{
 		Success: true,
 		Schema:  p.Schema,
