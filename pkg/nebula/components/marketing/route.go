@@ -9,7 +9,7 @@ import (
 )
 
 func HomeRoute(c echo.Context) error {
-	s := ctx.GetHwaySession(c)
+	s := ctx.GetHighwayContext(c)
 	log.Printf("Session ID: %s", s.ID())
 	return ctx.RenderTempl(c, View())
 }

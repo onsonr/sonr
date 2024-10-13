@@ -7,8 +7,6 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type EchoMiddlewareFunc func(next echo.HandlerFunc) echo.HandlerFunc
-
 func RenderTempl(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}

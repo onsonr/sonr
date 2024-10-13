@@ -24,7 +24,7 @@ func main() {
 
 	// Setup HTTP server
 	e := echo.New()
-	e.Use(ctx.DWNSessionMiddleware)
+	e.Use(ctx.DWNSessionMiddleware(config))
 	routes.RegisterClientAPI(e)
 	routes.RegisterClientViews(e)
 	dwn.Serve(e)
