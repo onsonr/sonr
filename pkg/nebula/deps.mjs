@@ -34,11 +34,19 @@ async function main() {
 		"./assets/js/alpine.min.js",
 	);
 
+	// Fetch alpin-focus.min.js
+	await fetchAndSave(
+		"https://cdnjs.cloudflare.com/ajax/libs/alpinejs-focus/3.14.1/cdn.min.js",
+		"./assets/js/alpin-focus.min.js",
+	);
+
 	// Fetch dexie.min.js
 	await fetchAndSave(
 		"https://cdnjs.cloudflare.com/ajax/libs/dexie/4.0.8/dexie.min.js",
 		"./assets/js/dexie.min.js",
 	);
+
+
 }
 
 main();

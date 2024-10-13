@@ -9,13 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/pkg/nebula/global/state"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 )
-
-func ConfigFile(dwnConfig *gen.Config) {
-}
 
 func IndexFile() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {

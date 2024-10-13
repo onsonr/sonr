@@ -27,22 +27,22 @@ var highlights = &models.Highlights{
 	Subtitle: "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
 	Features: []*models.Feature{
 		{
-			Title: "Infinite-Factor Authentication",
+			Title: "∞-Factor Auth",
 			Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
 			Icon:  nil,
 		},
 		{
-			Title: "Self-Custody BTC & ETH",
+			Title: "Data Ownership",
 			Desc:  "Sonr leverages advanced cryptography to permit facilitating Wallet Operations directly on-chain, without the need for a centralized server.",
 			Icon:  nil,
 		},
 		{
-			Title: "mAiNsTrEaM Ready",
+			Title: "Everyday Transactions",
 			Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 			Icon:  nil,
 		},
 		{
-			Title: "DAO Governed",
+			Title: "Limitless Possibilities",
 			Desc:  "Sonr is a proudly American Project which operates under the new Wyoming DUNA Legal Framework, ensuring the protection of your digital rights.",
 			Icon:  nil,
 		},
@@ -54,25 +54,18 @@ var mission = &models.Mission{
 	Heading:  "The Protocol for Decentralized Identity & Authentication",
 	Subtitle: "We're creating the Global Standard for Decentralized Identity. Authenticate users with PassKeys, Issue Crypto Wallets, Build Payment flows, Send Encrypted Messages - all on a single platform.",
 	Experience: &models.Feature{
-		Title: "Experience",
+		Title: "Less is More",
 		Desc:  "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
 		Icon:  nil,
 	},
 	Compliance: &models.Feature{
-		Title: "Compliance",
+		Title: "Works where there's Internet",
 		Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
 		Icon:  nil,
 	},
 	Interoperability: &models.Feature{
-		Title: "Interoperability",
+		Title: "American Made DUNA",
 		Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 		Icon:  nil,
-	},
-	Standards: []*models.Feature{
-		{
-			Title: "Standards",
-			Desc:  "Sonr is a proudly American Project which operates under the new Wyoming DUNA Legal Framework, ensuring the protection of your digital rights.",
-			Icon:  nil,
-		},
 	},
 }
