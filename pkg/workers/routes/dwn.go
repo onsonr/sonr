@@ -7,7 +7,7 @@ import (
 	"github.com/onsonr/sonr/pkg/workers/handlers"
 )
 
-func RegisterClientAPI(e *echo.Echo) {
+func RegisterWebNodeAPI(e *echo.Echo) {
 	g1 := e.Group("api")
 	g1.GET("/register/:subject/start", handlers.RegisterSubjectStart)
 	g1.POST("/register/:subject/check", handlers.RegisterSubjectCheck)
@@ -22,7 +22,7 @@ func RegisterClientAPI(e *echo.Echo) {
 	g1.POST("/:origin/grant/:subject", handlers.GrantAuthorization)
 }
 
-func RegisterClientViews(e *echo.Echo) {
+func RegisterWebNodeViews(e *echo.Echo) {
 	// Static Routes
 	e.File("/", "index.html")
 	e.File("/config.json", "config.json")

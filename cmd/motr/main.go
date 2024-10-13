@@ -25,8 +25,8 @@ func main() {
 	// Setup HTTP server
 	e := echo.New()
 	e.Use(ctx.WebNodeSessionMiddleware(config))
-	routes.RegisterClientAPI(e)
-	routes.RegisterClientViews(e)
+	routes.RegisterWebNodeAPI(e)
+	routes.RegisterWebNodeViews(e)
 	dwn.Serve(e)
 }
 
