@@ -1,6 +1,7 @@
 package ctx
 
 import (
+	"encoding/json"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -14,23 +15,42 @@ type DWNContext struct {
 	id string // Generated ksuid http cookie; Initialized on first request
 }
 
+func (s *DWNContext) HasAuthorization() bool {
+	v := ReadHeader(s.Context, HeaderAuthorization)
+	return v != ""
+}
+
 func (s *DWNContext) ID() string {
 	return s.id
 }
 
 func (s *DWNContext) Address() string {
-	cnfg, _ := GetConfig(s.Context)
-	return cnfg.Motr.Address
+	v, err := ReadCookie(s.Context, CookieKeySonrAddr)
+	if err != nil {
+		return ""
+	}
+	return v
+}
+
+func (s *DWNContext) IPFSGatewayURL() string {
+	return ReadHeader(s.Context, HeaderIPFSGatewayURL)
 }
 
 func (s *DWNContext) ChainID() string {
-	cnfg, _ := GetConfig(s.Context)
-	return cnfg.Sonr.ChainId
+	return ReadHeader(s.Context, HeaderSonrChainID)
 }
 
 func (s *DWNContext) Schema() *dwngen.Schema {
-	cnfg, _ := GetConfig(s.Context)
-	return cnfg.Schema
+	v, err := ReadCookie(s.Context, CookieKeyVaultSchema)
+	if err != nil {
+		return nil
+	}
+	var schema dwngen.Schema
+	err = json.Unmarshal([]byte(v), &schema)
+	if err != nil {
+		return nil
+	}
+	return &schema
 }
 
 func GetDWNContext(c echo.Context) (*DWNContext, error) {

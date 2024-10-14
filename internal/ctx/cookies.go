@@ -8,8 +8,11 @@ import (
 type CookieKey string
 
 const (
-	CookieKeySessionID CookieKey = "session.id"
-	CookieKeyConfig    CookieKey = "dwn.config"
+	CookieKeySessionID   CookieKey = "session.id"
+	CookieKeySonrAddr    CookieKey = "sonr.addr"
+	CookieKeySonrDID     CookieKey = "sonr.did"
+	CookieKeyVaultCID    CookieKey = "vault.cid"
+	CookieKeyVaultSchema CookieKey = "vault.schema"
 )
 
 func (c CookieKey) String() string {

@@ -2,13 +2,17 @@
 package gen
 
 type Config struct {
-	Ipfs *IPFS `pkl:"ipfs" json:"ipfs,omitempty"`
+	IpfsGatewayUrl string `pkl:"ipfsGatewayUrl" json:"ipfsGatewayUrl,omitempty"`
 
-	Sonr *Sonr `pkl:"sonr" json:"sonr,omitempty"`
+	MotrKeyshare string `pkl:"motrKeyshare" json:"motrKeyshare,omitempty"`
 
-	Motr *Motr `pkl:"motr" json:"motr,omitempty"`
+	MotrAddress string `pkl:"motrAddress" json:"motrAddress,omitempty"`
 
-	Schema *Schema `pkl:"schema" json:"schema,omitempty"`
+	SonrApiUrl string `pkl:"sonrApiUrl" json:"sonrApiUrl,omitempty"`
 
-	ProxyUrl string `pkl:"proxyUrl" json:"proxyUrl,omitempty"`
+	SonrRpcUrl string `pkl:"sonrRpcUrl" json:"sonrRpcUrl,omitempty"`
+
+	SonrChainId string `pkl:"sonrChainId" json:"sonrChainId,omitempty"`
+
+	VaultSchema *Schema `pkl:"vaultSchema" json:"vaultSchema,omitempty"`
 }
