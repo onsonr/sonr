@@ -29,11 +29,3 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwng
 		FS: fileMap,
 	}, nil
 }
-
-func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwngen.Motr {
-	return &dwngen.Motr{
-		Keyshare: keyshareJSON,
-		Address:  adddress,
-		Origin:   origin,
-	}
-}
