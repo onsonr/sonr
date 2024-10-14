@@ -8,6 +8,7 @@ templ RegisterServiceWorker() {
 	@serviceWorkerHandle.Once() {
 		<script>
           if ("serviceWorker" in navigator) {
+            // Register the service worker
             window.addEventListener("load", function() {
                 navigator.serviceWorker
                     .register("/sw.js")
@@ -17,6 +18,11 @@ templ RegisterServiceWorker() {
                     .catch(function (error) {
                         console.log("Service Worker registration failed:", error);
                     });
+            });
+
+            // Wait for the service worker to be ready
+            navigator.serviceWorker.ready.then(function(registration) {
+                console.log("Service Worker is ready:", registration);
             });
         }
     </script>

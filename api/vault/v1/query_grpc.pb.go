@@ -21,6 +21,7 @@ const _ = grpc.SupportPackageIsVersion7
 const (
 	Query_Params_FullMethodName      = "/vault.v1.Query/Params"
 	Query_Schema_FullMethodName      = "/vault.v1.Query/Schema"
+	Query_Allocate_FullMethodName    = "/vault.v1.Query/Allocate"
 	Query_SyncInitial_FullMethodName = "/vault.v1.Query/SyncInitial"
 	Query_SyncCurrent_FullMethodName = "/vault.v1.Query/SyncCurrent"
 )
@@ -34,6 +35,9 @@ type QueryClient interface {
 	// Schema queries the DID document by its id. And returns the required PKL
 	// information
 	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
+	// Allocate initializes a Target Vault available for claims with a compatible
+	// Authentication mechanism. The default authentication mechanism is WebAuthn.
+	Allocate(ctx context.Context, in *AllocateRequest, opts ...grpc.CallOption) (*AllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error)
@@ -68,6 +72,15 @@ func (c *queryClient) Schema(ctx context.Context, in *QuerySchemaRequest, opts .
 	return out, nil
 }
 
+func (c *queryClient) Allocate(ctx context.Context, in *AllocateRequest, opts ...grpc.CallOption) (*AllocateResponse, error) {
+	out := new(AllocateResponse)
+	err := c.cc.Invoke(ctx, Query_Allocate_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *queryClient) SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error) {
 	out := new(SyncInitialResponse)
 	err := c.cc.Invoke(ctx, Query_SyncInitial_FullMethodName, in, out, opts...)
@@ -95,6 +108,9 @@ type QueryServer interface {
 	// Schema queries the DID document by its id. And returns the required PKL
 	// information
 	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
+	// Allocate initializes a Target Vault available for claims with a compatible
+	// Authentication mechanism. The default authentication mechanism is WebAuthn.
+	Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
 	SyncInitial(context.Context, *SyncInitialRequest) (*SyncInitialResponse, error)
@@ -113,6 +129,9 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 }
 func (UnimplementedQueryServer) Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Schema not implemented")
+}
+func (UnimplementedQueryServer) Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Allocate not implemented")
 }
 func (UnimplementedQueryServer) SyncInitial(context.Context, *SyncInitialRequest) (*SyncInitialResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SyncInitial not implemented")
@@ -169,6 +188,24 @@ func _Query_Schema_Handler(srv interface{}, ctx context.Context, dec func(interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Query_Allocate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AllocateRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(QueryServer).Allocate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Query_Allocate_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(QueryServer).Allocate(ctx, req.(*AllocateRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Query_SyncInitial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(SyncInitialRequest)
 	if err := dec(in); err != nil {
@@ -219,6 +256,10 @@ var Query_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Schema",
 			Handler:    _Query_Schema_Handler,
+		},
+		{
+			MethodName: "Allocate",
+			Handler:    _Query_Allocate_Handler,
 		},
 		{
 			MethodName: "SyncInitial",

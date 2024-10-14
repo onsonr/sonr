@@ -70,3 +70,20 @@ func (k Querier) SyncCurrent(goCtx context.Context, req *types.SyncCurrentReques
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.SyncCurrentResponse{}, nil
 }
+
+// Allocate implements types.QueryServer.
+func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*types.AllocateResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
+	cid, expiryBlock, err := k.AssembleVault(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.AllocateResponse{
+		Success:     true,
+		Cid:         cid,
+		ExpiryBlock: expiryBlock,
+	}, nil
+}
