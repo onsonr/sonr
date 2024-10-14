@@ -11,8 +11,7 @@ type DWNContext struct {
 	echo.Context
 
 	// Defaults
-	id     string         // Generated ksuid http cookie; Initialized on first request
-	dwnCfg *dwngen.Config // Provided by DWN frontend
+	id string // Generated ksuid http cookie; Initialized on first request
 }
 
 func (s *DWNContext) ID() string {
@@ -20,11 +19,13 @@ func (s *DWNContext) ID() string {
 }
 
 func (s *DWNContext) Address() string {
-	return s.dwnCfg.Motr.Address
+	cnfg, _ := GetConfig(s.Context)
+	return cnfg.Motr.Address
 }
 
 func (s *DWNContext) ChainID() string {
-	return s.dwnCfg.Sonr.ChainId
+	cnfg, _ := GetConfig(s.Context)
+	return cnfg.Sonr.ChainId
 }
 
 func GetDWNContext(c echo.Context) (*DWNContext, error) {
@@ -36,14 +37,14 @@ func GetDWNContext(c echo.Context) (*DWNContext, error) {
 }
 
 // HighwaySessionMiddleware establishes a Session Cookie.
-func WebNodeSessionMiddleware(config *dwngen.Config) echo.MiddlewareFunc {
+func DWNSessionMiddleware(config *dwngen.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			sessionID := getSessionIDFromCookie(c)
+			sessionID := GetSessionID(c)
+			SetConfig(c, config)
 			cc := &DWNContext{
 				Context: c,
 				id:      sessionID,
-				dwnCfg:  config,
 			}
 			return next(cc)
 		}

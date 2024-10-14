@@ -9,23 +9,18 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/components/vaultindex"
 )
 
+const (
+	FileNameAppWASM    = "app.wasm"
+	FileNameConfigJSON = "dwn.json"
+	FileNameIndexHTML  = "index.html"
+	FileNameWorkerJS   = "sw.js"
+)
+
 //go:embed app.wasm
 var dwnWasmData []byte
 
 //go:embed sw.js
 var swJSData []byte
-
-var (
-	dwnWasmFile = files.NewBytesFile(dwnWasmData)
-	swJSFile    = files.NewBytesFile(swJSData)
-)
-
-const (
-	kConfigJSONFileName    = "dwn.json"
-	kServiceWorkerFileName = "sw.js"
-	kAppWasmFileName       = "app.wasm"
-	kIndexFileName         = "index.html"
-)
 
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
@@ -33,23 +28,15 @@ func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
 	if err != nil {
 		return nil, err
 	}
-	cnfgFile, err := createJSONConfig(cnfg)
+	cnfgBz, err := json.Marshal(cnfg)
 	if err != nil {
 		return nil, err
 	}
 	fileMap := map[string]files.Node{
-		kServiceWorkerFileName: swJSFile,
-		kAppWasmFileName:       dwnWasmFile,
-		kIndexFileName:         idxFile,
-		kConfigJSONFileName:    cnfgFile,
+		FileNameAppWASM:    files.NewBytesFile(dwnWasmData),
+		FileNameConfigJSON: files.NewBytesFile(cnfgBz),
+		FileNameIndexHTML:  idxFile,
+		FileNameWorkerJS:   files.NewBytesFile(swJSData),
 	}
 	return files.NewMapDirectory(fileMap), nil
-}
-
-func createJSONConfig(cnfg *gen.Config) (files.Node, error) {
-	bz, err := json.Marshal(cnfg)
-	if err != nil {
-		return nil, err
-	}
-	return files.NewBytesFile(bz), nil
 }

@@ -14,6 +14,8 @@ import (
 	"github.com/onsonr/sonr/pkg/workers/routes"
 )
 
+const FileNameConfigJSON = "dwn.json"
+
 var config *dwngen.Config
 
 func main() {
@@ -24,7 +26,7 @@ func main() {
 
 	// Setup HTTP server
 	e := echo.New()
-	e.Use(ctx.WebNodeSessionMiddleware(config))
+	e.Use(ctx.DWNSessionMiddleware(config))
 	routes.RegisterWebNodeAPI(e)
 	routes.RegisterWebNodeViews(e)
 	fetch.Serve(e)
@@ -32,11 +34,11 @@ func main() {
 
 func loadDwnConfig() error {
 	// Read dwn.json config
-	dwnBz, err := os.ReadFile("dwn.json")
+	dwnBz, err := os.ReadFile(FileNameConfigJSON)
 	if err != nil {
 		return err
 	}
-	dwnConfig := &dwngen.Config{}
+	dwnConfig := new(dwngen.Config)
 	err = json.Unmarshal(dwnBz, dwnConfig)
 	if err != nil {
 		return err

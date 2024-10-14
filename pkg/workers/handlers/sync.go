@@ -6,16 +6,20 @@ import "github.com/labstack/echo/v4"
 // │                  Dexie Database Handlers                  │
 // ╰───────────────────────────────────────────────────────────╯
 
-func FetchDatabaseSchema(e echo.Context) error {
+func (a *syncAPI) FetchInitial(e echo.Context) error {
 	// Implement database schema endpoint
 	return nil
 }
 
-// ╭───────────────────────────────────────────────────────────╮
-// │                  Registration Components                  │
-// ╰───────────────────────────────────────────────────────────╯
-
-func ListAccountEntries(e echo.Context) error {
+func (a *syncAPI) FetchCurrent(e echo.Context) error {
 	// Implement account entries endpoint
 	return nil
 }
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                 Group Structures                          │
+// ╰───────────────────────────────────────────────────────────╯
+
+type syncAPI struct{}
+
+var Sync = new(syncAPI)

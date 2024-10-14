@@ -1,12 +1,13 @@
 package state
 
 var (
-	serviceWorkerHandle = templ.NewOnceHandle()
+	serviceWorkerInstall = templ.NewOnceHandle()
+	serviceWorkerReady   = templ.NewOnceHandle()
 )
 
 templ RegisterServiceWorker() {
-	@serviceWorkerHandle.Once() {
-		<script>
+	@serviceWorkerInstall.Once() {
+		<script type="text/javascript">
           if ("serviceWorker" in navigator) {
             // Register the service worker
             window.addEventListener("load", function() {
@@ -18,11 +19,6 @@ templ RegisterServiceWorker() {
                     .catch(function (error) {
                         console.log("Service Worker registration failed:", error);
                     });
-            });
-
-            // Wait for the service worker to be ready
-            navigator.serviceWorker.ready.then(function(registration) {
-                console.log("Service Worker is ready:", registration);
             });
         }
     </script>
