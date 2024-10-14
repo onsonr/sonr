@@ -1,12 +1,17 @@
 version: "3"
 
 vars:
-  GREETING: Hello, World!
+  ROOT_DIR:
+    sh: pwd
 
 tasks:
   hway:build:
+    dir: cmd/hway
+    env:
+      GOOS: js
+      GOARCH: wasm
     cmds:
-      - GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
+      - go build -o build/app.wasm main.go
 
   hway:dev:
     dir: cmd/hway
@@ -19,8 +24,12 @@ tasks:
       - bunx wrangler deploy
 
   motr:build:
+    dir: internal/dwn
+    env:
+      GOOS: js
+      GOARCH: wasm
     cmds:
-      - GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
+      - go build -o app.wasm wasm/main.go
 
   nebula:build:
     dir: pkg/nebula

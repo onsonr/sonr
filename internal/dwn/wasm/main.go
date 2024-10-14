@@ -9,7 +9,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/internal/dwn"
+	"github.com/onsonr/sonr/internal/dwn/fetch"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/pkg/workers/routes"
 )
@@ -27,7 +27,7 @@ func main() {
 	e.Use(ctx.WebNodeSessionMiddleware(config))
 	routes.RegisterWebNodeAPI(e)
 	routes.RegisterWebNodeViews(e)
-	dwn.Serve(e)
+	fetch.Serve(e)
 }
 
 func loadDwnConfig() error {

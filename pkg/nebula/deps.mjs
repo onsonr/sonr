@@ -46,6 +46,23 @@ async function main() {
 		"./assets/js/dexie.min.js",
 	);
 
+	// Fetch d3.min.js
+	await fetchAndSave(
+		"https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js",
+		"./assets/js/d3.min.js",
+	);
+
+	// TopoJSON
+	await fetchAndSave(
+		"https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js",
+		"./assets/js/topojson.min.js",
+	);
+
+	// Datamaps
+	await fetchAndSave(
+		"https://cdnjs.cloudflare.com/ajax/libs/datamaps/0.5.9/datamaps.world.min.js",
+		"./assets/js/datamaps.world.min.js",
+	);
 
 }
 

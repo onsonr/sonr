@@ -17,18 +17,3 @@ processes:
     max_restarts: 1
     depends:
       - ipfs
-
-  hway:
-    namespace: public
-    command: "task hway:dev"
-    restart: on_failure
-    max_restarts: 1
-    depends:
-      - ipfs
-
-  tunnel:
-    namespace: public
-    enabled: false
-    command: "#cloudflared tunnel run --token $TUNNEL_TOKEN"
-    restart: on_failure
-    max_restarts: 1
