@@ -310,34 +310,14 @@ pkl-gen:
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
 
-
-
 ###############################################################################
-###                            motr, hway & nebula                          ###
+###                              taskfile                                   ###
 ###############################################################################
 
-.PHONY: motr-build hway-build nebula-build
+.PHONY: task-deps
 
-nebula-build:
-	@echo "(ui) Building nebula"
-	cd pkg/nebula && bun install && bun run deps.mjs
-	cd pkg/nebula && bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
-
-motr-build: nebula-build templ-gen pkl-gen
-	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
-
-hway-build: nebula-build templ-gen assets-gen
-	@echo "(hway) Building Highway gateway"
-	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
-
-hway-dev:
-	@echo "(hway) Serving Highway gateway"
-	bunx wrangler dev
-
-hway-deploy:
-	@echo "(hway) Deploying Highway gateway"
-	bunx wrangler deploy
+task-deps:
+	go install github.com/go-task/task/v3/cmd/task@latest
 
 ###############################################################################
 ###                                     help                                ###
