@@ -9,7 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 var (
-	serviceWorkerHandle = templ.NewOnceHandle()
+	serviceWorkerInstall = templ.NewOnceHandle()
+	serviceWorkerReady   = templ.NewOnceHandle()
 )
 
 func RegisterServiceWorker() templ.Component {
@@ -45,13 +46,13 @@ func RegisterServiceWorker() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n          if (\"serviceWorker\" in navigator) {\n            window.addEventListener(\"load\", function() {\n                navigator.serviceWorker\n                    .register(\"/sw.js\")\n                    .then(function (registration) {\n                        console.log(\"Service Worker registered with scope:\", registration.scope);\n                    })\n                    .catch(function (error) {\n                        console.log(\"Service Worker registration failed:\", error);\n                    });\n            });\n        }\n    </script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script type=\"text/javascript\">\n          if (\"serviceWorker\" in navigator) {\n            // Register the service worker\n            window.addEventListener(\"load\", function() {\n                navigator.serviceWorker\n                    .register(\"/sw.js\")\n                    .then(function (registration) {\n                        console.log(\"Service Worker registered with scope:\", registration.scope);\n                    })\n                    .catch(function (error) {\n                        console.log(\"Service Worker registration failed:\", error);\n                    });\n            });\n        }\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = serviceWorkerHandle.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = serviceWorkerInstall.Once().Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

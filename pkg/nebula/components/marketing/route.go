@@ -9,7 +9,7 @@ import (
 )
 
 func HomeRoute(c echo.Context) error {
-	s, err := ctx.GetHighwayContext(c)
+	s, err := ctx.GetHWAYContext(c)
 	if err != nil {
 		return err
 	}

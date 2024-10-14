@@ -22,7 +22,12 @@ templ Highlights(highlights *models.Highlights) {
 				</div>
 				<div x-data="{ tab: '1' }">
 					<!-- Tabs buttons -->
-					<div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6"></div>
+					<div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+						@highlightTab(1, highlights.Features[0])
+						@highlightTab(2, highlights.Features[1])
+						@highlightTab(3, highlights.Features[2])
+						@highlightTab(4, highlights.Features[3])
+					</div>
 				</div>
 			</div>
 		</div>
