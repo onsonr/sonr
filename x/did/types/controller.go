@@ -72,6 +72,7 @@ type controller struct {
 	ethAddr   string
 	btcAddr   string
 	publicKey []byte
+	did       string
 }
 
 func (c *controller) BtcAddress() string {

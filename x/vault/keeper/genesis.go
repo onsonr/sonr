@@ -2,7 +2,6 @@ package keeper
 
 import (
 	"context"
-	"time"
 
 	"cosmossdk.io/log"
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -50,13 +49,6 @@ func (c Keeper) IPFSConnected() bool {
 		c.ipfsClient = ipfsClient
 	}
 	return c.ipfsClient != nil
-}
-
-// CalculateExpiration calculates the expiration time for a vault
-func (k Keeper) CalculateExpiration(c sdk.Context, duration time.Duration) int64 {
-	blockTime := c.BlockTime()
-	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
-	return int64(duration.Seconds() / avgBlockTime)
 }
 
 // HasPathInIPFS checks if a file is in the local IPFS node
