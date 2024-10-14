@@ -6,30 +6,30 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type HighwayContext struct {
+type HwayContext struct {
 	echo.Context
 
 	// Defaults
 	id string // Generated ksuid http cookie; Initialized on first request
 }
 
-func (s *HighwayContext) ID() string {
+func (s *HwayContext) ID() string {
 	return s.id
 }
 
-func GetHWAYContext(c echo.Context) (*HighwayContext, error) {
-	ctx, ok := c.(*HighwayContext)
+func GetHWAYContext(c echo.Context) (*HwayContext, error) {
+	ctx, ok := c.(*HwayContext)
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Highway Context not found")
 	}
 	return ctx, nil
 }
 
-// HWAYSessionMiddleware establishes a Session Cookie.
-func HWAYSessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+// HighwaySessionMiddleware establishes a Session Cookie.
+func HighwaySessionMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		sessionID := GetSessionID(c)
-		cc := &HighwayContext{
+		cc := &HwayContext{
 			Context: c,
 			id:      sessionID,
 		}

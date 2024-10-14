@@ -28,6 +28,11 @@ func (s *DWNContext) ChainID() string {
 	return cnfg.Sonr.ChainId
 }
 
+func (s *DWNContext) Schema() *dwngen.Schema {
+	cnfg, _ := GetConfig(s.Context)
+	return cnfg.Schema
+}
+
 func GetDWNContext(c echo.Context) (*DWNContext, error) {
 	ctx, ok := c.(*DWNContext)
 	if !ok {
