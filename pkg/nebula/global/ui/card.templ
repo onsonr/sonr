@@ -18,6 +18,12 @@ templ renderCard(id string, attrs templ.Attributes) {
 	</div>
 }
 
+templ IdentityCard() {
+	renderCard("identity-card", templ.Attributes{
+		"class": "relative max-w-sm overflow-hidden bg-white border rounded-lg shadow-sm border-neutral-200/60",
+	})
+}
+
 templ ProfileCard() {
 	<div class="relative max-w-sm overflow-hidden bg-white border rounded-lg shadow-sm border-neutral-200/60">
 		<img src="https://cdn.devdojo.com/images/august2023/wallpaper.jpeg" class="relative z-20 object-cover w-full h-32"/>
