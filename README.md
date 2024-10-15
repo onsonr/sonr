@@ -19,22 +19,6 @@ Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-t
 
 ![Alt](https://repobeats.axiom.co/api/embed/8d0b17e889942889c5b6e632da09bd597efd84c4.svg "Repobeats analytics image")
 
-## Components
-
-### `sonrd`
-
-The main blockchain node that runs the `sonr` chain. It is responsible for maintaining the state of the chain, including IPFS based vaults, and did documents.
-
-### `vault`
-
-The `vault` is a wasm module that is compiled and deployed to IPFS on behalf of the user. It is responsible for storing and retrieving encrypted data.
-
-- SQLite Database backend
-- Encryption via admonition
-- Authentication via webauthn
-- Authorization via Macroons
-- HTTP API
-
 ## Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following individuals:
