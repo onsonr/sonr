@@ -30,24 +30,32 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-// MsgRegisterController is the message type for the InitializeController RPC.
-type MsgRegisterController struct {
-	// authority is the address of the governance account.
-	Authority string `protobuf:"bytes,1,opt,name=authority,proto3" json:"authority,omitempty"`
+// MsgLinkAuthentication is the message type for the LinkAuthentication RPC.
+type MsgLinkAuthentication struct {
+	// Controller is the address of the controller to authenticate.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	// Subject is the subject of the authentication.
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	// Assertion is the assertion of the authentication.
+	Assertion string `protobuf:"bytes,3,opt,name=assertion,proto3" json:"assertion,omitempty"`
+	// Authentication is the authentication of the authentication.
+	CredentialId []byte `protobuf:"bytes,4,opt,name=credential_id,json=credentialId,proto3" json:"credential_id,omitempty"`
+	// token is the macron token to authenticate the operation.
+	MacaroonToken string `protobuf:"bytes,5,opt,name=macaroon_token,json=macaroonToken,proto3" json:"macaroon_token,omitempty"`
 }
 
-func (m *MsgRegisterController) Reset()         { *m = MsgRegisterController{} }
-func (m *MsgRegisterController) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterController) ProtoMessage()    {}
-func (*MsgRegisterController) Descriptor() ([]byte, []int) {
+func (m *MsgLinkAuthentication) Reset()         { *m = MsgLinkAuthentication{} }
+func (m *MsgLinkAuthentication) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkAuthentication) ProtoMessage()    {}
+func (*MsgLinkAuthentication) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d73284df019ff211, []int{0}
 }
-func (m *MsgRegisterController) XXX_Unmarshal(b []byte) error {
+func (m *MsgLinkAuthentication) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRegisterController) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgLinkAuthentication) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRegisterController.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgLinkAuthentication.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -57,47 +65,75 @@ func (m *MsgRegisterController) XXX_Marshal(b []byte, deterministic bool) ([]byt
 		return b[:n], nil
 	}
 }
-func (m *MsgRegisterController) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterController.Merge(m, src)
+func (m *MsgLinkAuthentication) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkAuthentication.Merge(m, src)
 }
-func (m *MsgRegisterController) XXX_Size() int {
+func (m *MsgLinkAuthentication) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRegisterController) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterController.DiscardUnknown(m)
+func (m *MsgLinkAuthentication) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkAuthentication.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRegisterController proto.InternalMessageInfo
+var xxx_messageInfo_MsgLinkAuthentication proto.InternalMessageInfo
 
-func (m *MsgRegisterController) GetAuthority() string {
+func (m *MsgLinkAuthentication) GetController() string {
 	if m != nil {
-		return m.Authority
+		return m.Controller
 	}
 	return ""
 }
 
-// MsgRegisterControllerResponse is the response type for the
-// InitializeController RPC.
-type MsgRegisterControllerResponse struct {
+func (m *MsgLinkAuthentication) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *MsgLinkAuthentication) GetAssertion() string {
+	if m != nil {
+		return m.Assertion
+	}
+	return ""
+}
+
+func (m *MsgLinkAuthentication) GetCredentialId() []byte {
+	if m != nil {
+		return m.CredentialId
+	}
+	return nil
+}
+
+func (m *MsgLinkAuthentication) GetMacaroonToken() string {
+	if m != nil {
+		return m.MacaroonToken
+	}
+	return ""
+}
+
+// MsgLinkAuthenticationResponse is the response type for the
+// LinkAuthentication RPC.
+type MsgLinkAuthenticationResponse struct {
 	// Success returns true if the specified cid is valid and not already
 	// encrypted.
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// Controller is the address of the initialized controller.
-	Controller string `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
 }
 
-func (m *MsgRegisterControllerResponse) Reset()         { *m = MsgRegisterControllerResponse{} }
-func (m *MsgRegisterControllerResponse) String() string { return proto.CompactTextString(m) }
-func (*MsgRegisterControllerResponse) ProtoMessage()    {}
-func (*MsgRegisterControllerResponse) Descriptor() ([]byte, []int) {
+func (m *MsgLinkAuthenticationResponse) Reset()         { *m = MsgLinkAuthenticationResponse{} }
+func (m *MsgLinkAuthenticationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkAuthenticationResponse) ProtoMessage()    {}
+func (*MsgLinkAuthenticationResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_d73284df019ff211, []int{1}
 }
-func (m *MsgRegisterControllerResponse) XXX_Unmarshal(b []byte) error {
+func (m *MsgLinkAuthenticationResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *MsgRegisterControllerResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *MsgLinkAuthenticationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_MsgRegisterControllerResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_MsgLinkAuthenticationResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -107,28 +143,158 @@ func (m *MsgRegisterControllerResponse) XXX_Marshal(b []byte, deterministic bool
 		return b[:n], nil
 	}
 }
-func (m *MsgRegisterControllerResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_MsgRegisterControllerResponse.Merge(m, src)
+func (m *MsgLinkAuthenticationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkAuthenticationResponse.Merge(m, src)
 }
-func (m *MsgRegisterControllerResponse) XXX_Size() int {
+func (m *MsgLinkAuthenticationResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *MsgRegisterControllerResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_MsgRegisterControllerResponse.DiscardUnknown(m)
+func (m *MsgLinkAuthenticationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkAuthenticationResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_MsgRegisterControllerResponse proto.InternalMessageInfo
+var xxx_messageInfo_MsgLinkAuthenticationResponse proto.InternalMessageInfo
 
-func (m *MsgRegisterControllerResponse) GetSuccess() bool {
+func (m *MsgLinkAuthenticationResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *MsgRegisterControllerResponse) GetController() string {
+func (m *MsgLinkAuthenticationResponse) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
+// MsgLinkAssertion is the message type for the LinkAssertion RPC.
+type MsgLinkAssertion struct {
+	// Controller is the address of the controller to authenticate.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	// Subject is the subject of the authentication.
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	// Assertion is the assertion of the authentication.
+	Assertion string `protobuf:"bytes,3,opt,name=assertion,proto3" json:"assertion,omitempty"`
+	// token is the macron token to authenticate the operation.
+	MacaroonToken string `protobuf:"bytes,4,opt,name=macaroon_token,json=macaroonToken,proto3" json:"macaroon_token,omitempty"`
+}
+
+func (m *MsgLinkAssertion) Reset()         { *m = MsgLinkAssertion{} }
+func (m *MsgLinkAssertion) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkAssertion) ProtoMessage()    {}
+func (*MsgLinkAssertion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{2}
+}
+func (m *MsgLinkAssertion) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgLinkAssertion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgLinkAssertion.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgLinkAssertion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkAssertion.Merge(m, src)
+}
+func (m *MsgLinkAssertion) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgLinkAssertion) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkAssertion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgLinkAssertion proto.InternalMessageInfo
+
+func (m *MsgLinkAssertion) GetController() string {
 	if m != nil {
 		return m.Controller
+	}
+	return ""
+}
+
+func (m *MsgLinkAssertion) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
+}
+
+func (m *MsgLinkAssertion) GetAssertion() string {
+	if m != nil {
+		return m.Assertion
+	}
+	return ""
+}
+
+func (m *MsgLinkAssertion) GetMacaroonToken() string {
+	if m != nil {
+		return m.MacaroonToken
+	}
+	return ""
+}
+
+// MsgLinkAssertionResponse is the response type for the
+// LinkAssertion RPC.
+type MsgLinkAssertionResponse struct {
+	// Success returns true if the specified cid is valid and not already
+	// encrypted.
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// Controller is the address of the initialized controller.
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (m *MsgLinkAssertionResponse) Reset()         { *m = MsgLinkAssertionResponse{} }
+func (m *MsgLinkAssertionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgLinkAssertionResponse) ProtoMessage()    {}
+func (*MsgLinkAssertionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{3}
+}
+func (m *MsgLinkAssertionResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgLinkAssertionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgLinkAssertionResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgLinkAssertionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgLinkAssertionResponse.Merge(m, src)
+}
+func (m *MsgLinkAssertionResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgLinkAssertionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgLinkAssertionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgLinkAssertionResponse proto.InternalMessageInfo
+
+func (m *MsgLinkAssertionResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *MsgLinkAssertionResponse) GetDid() string {
+	if m != nil {
+		return m.Did
 	}
 	return ""
 }
@@ -147,7 +313,7 @@ func (m *MsgExecuteTx) Reset()         { *m = MsgExecuteTx{} }
 func (m *MsgExecuteTx) String() string { return proto.CompactTextString(m) }
 func (*MsgExecuteTx) ProtoMessage()    {}
 func (*MsgExecuteTx) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{2}
+	return fileDescriptor_d73284df019ff211, []int{4}
 }
 func (m *MsgExecuteTx) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -207,7 +373,7 @@ func (m *MsgExecuteTxResponse) Reset()         { *m = MsgExecuteTxResponse{} }
 func (m *MsgExecuteTxResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgExecuteTxResponse) ProtoMessage()    {}
 func (*MsgExecuteTxResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{3}
+	return fileDescriptor_d73284df019ff211, []int{5}
 }
 func (m *MsgExecuteTxResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -250,6 +416,248 @@ func (m *MsgExecuteTxResponse) GetTxHash() string {
 	return ""
 }
 
+// MsgUnlinkAssertion is the message type for the UnlinkAssertion RPC.
+type MsgUnlinkAssertion struct {
+	// Controller is the address of the controller to authenticate.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	// Assertion is the assertion of the authentication.
+	AssertionDid string `protobuf:"bytes,2,opt,name=assertion_did,json=assertionDid,proto3" json:"assertion_did,omitempty"`
+	// token is the macron token to authenticate the operation.
+	MacaroonToken string `protobuf:"bytes,3,opt,name=macaroon_token,json=macaroonToken,proto3" json:"macaroon_token,omitempty"`
+}
+
+func (m *MsgUnlinkAssertion) Reset()         { *m = MsgUnlinkAssertion{} }
+func (m *MsgUnlinkAssertion) String() string { return proto.CompactTextString(m) }
+func (*MsgUnlinkAssertion) ProtoMessage()    {}
+func (*MsgUnlinkAssertion) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{6}
+}
+func (m *MsgUnlinkAssertion) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnlinkAssertion) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnlinkAssertion.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnlinkAssertion) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnlinkAssertion.Merge(m, src)
+}
+func (m *MsgUnlinkAssertion) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnlinkAssertion) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnlinkAssertion.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnlinkAssertion proto.InternalMessageInfo
+
+func (m *MsgUnlinkAssertion) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+func (m *MsgUnlinkAssertion) GetAssertionDid() string {
+	if m != nil {
+		return m.AssertionDid
+	}
+	return ""
+}
+
+func (m *MsgUnlinkAssertion) GetMacaroonToken() string {
+	if m != nil {
+		return m.MacaroonToken
+	}
+	return ""
+}
+
+// MsgUnlinkAssertionResponse is the response type for the
+// UnlinkAssertion RPC.
+type MsgUnlinkAssertionResponse struct {
+	// Success returns true if the specified cid is valid and not already
+	// encrypted.
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// Controller is the address of the initialized controller.
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (m *MsgUnlinkAssertionResponse) Reset()         { *m = MsgUnlinkAssertionResponse{} }
+func (m *MsgUnlinkAssertionResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUnlinkAssertionResponse) ProtoMessage()    {}
+func (*MsgUnlinkAssertionResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{7}
+}
+func (m *MsgUnlinkAssertionResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnlinkAssertionResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnlinkAssertionResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnlinkAssertionResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnlinkAssertionResponse.Merge(m, src)
+}
+func (m *MsgUnlinkAssertionResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnlinkAssertionResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnlinkAssertionResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnlinkAssertionResponse proto.InternalMessageInfo
+
+func (m *MsgUnlinkAssertionResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *MsgUnlinkAssertionResponse) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
+// MsgUnlinkAuthentication is the message type for the UnlinkAuthentication RPC.
+type MsgUnlinkAuthentication struct {
+	// Controller is the address of the controller to authenticate.
+	Controller string `protobuf:"bytes,1,opt,name=controller,proto3" json:"controller,omitempty"`
+	// Subject is the subject of the authentication.
+	AuthenticationDid string `protobuf:"bytes,2,opt,name=authentication_did,json=authenticationDid,proto3" json:"authentication_did,omitempty"`
+	// token is the macron token to authenticate the operation.
+	MacaroonToken string `protobuf:"bytes,3,opt,name=macaroon_token,json=macaroonToken,proto3" json:"macaroon_token,omitempty"`
+}
+
+func (m *MsgUnlinkAuthentication) Reset()         { *m = MsgUnlinkAuthentication{} }
+func (m *MsgUnlinkAuthentication) String() string { return proto.CompactTextString(m) }
+func (*MsgUnlinkAuthentication) ProtoMessage()    {}
+func (*MsgUnlinkAuthentication) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{8}
+}
+func (m *MsgUnlinkAuthentication) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnlinkAuthentication) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnlinkAuthentication.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnlinkAuthentication) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnlinkAuthentication.Merge(m, src)
+}
+func (m *MsgUnlinkAuthentication) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnlinkAuthentication) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnlinkAuthentication.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnlinkAuthentication proto.InternalMessageInfo
+
+func (m *MsgUnlinkAuthentication) GetController() string {
+	if m != nil {
+		return m.Controller
+	}
+	return ""
+}
+
+func (m *MsgUnlinkAuthentication) GetAuthenticationDid() string {
+	if m != nil {
+		return m.AuthenticationDid
+	}
+	return ""
+}
+
+func (m *MsgUnlinkAuthentication) GetMacaroonToken() string {
+	if m != nil {
+		return m.MacaroonToken
+	}
+	return ""
+}
+
+// MsgUnlinkAuthenticationResponse is the response type for the
+// UnlinkAuthentication RPC.
+type MsgUnlinkAuthenticationResponse struct {
+	// Success returns true if the specified cid is valid and not already
+	// encrypted.
+	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
+	// Controller is the address of the initialized controller.
+	Did string `protobuf:"bytes,2,opt,name=did,proto3" json:"did,omitempty"`
+}
+
+func (m *MsgUnlinkAuthenticationResponse) Reset()         { *m = MsgUnlinkAuthenticationResponse{} }
+func (m *MsgUnlinkAuthenticationResponse) String() string { return proto.CompactTextString(m) }
+func (*MsgUnlinkAuthenticationResponse) ProtoMessage()    {}
+func (*MsgUnlinkAuthenticationResponse) Descriptor() ([]byte, []int) {
+	return fileDescriptor_d73284df019ff211, []int{9}
+}
+func (m *MsgUnlinkAuthenticationResponse) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *MsgUnlinkAuthenticationResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_MsgUnlinkAuthenticationResponse.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *MsgUnlinkAuthenticationResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_MsgUnlinkAuthenticationResponse.Merge(m, src)
+}
+func (m *MsgUnlinkAuthenticationResponse) XXX_Size() int {
+	return m.Size()
+}
+func (m *MsgUnlinkAuthenticationResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_MsgUnlinkAuthenticationResponse.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_MsgUnlinkAuthenticationResponse proto.InternalMessageInfo
+
+func (m *MsgUnlinkAuthenticationResponse) GetSuccess() bool {
+	if m != nil {
+		return m.Success
+	}
+	return false
+}
+
+func (m *MsgUnlinkAuthenticationResponse) GetDid() string {
+	if m != nil {
+		return m.Did
+	}
+	return ""
+}
+
 // MsgUpdateParams is the Msg/UpdateParams request type.
 //
 // Since: cosmos-sdk 0.47
@@ -266,7 +674,7 @@ func (m *MsgUpdateParams) Reset()         { *m = MsgUpdateParams{} }
 func (m *MsgUpdateParams) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParams) ProtoMessage()    {}
 func (*MsgUpdateParams) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{4}
+	return fileDescriptor_d73284df019ff211, []int{10}
 }
 func (m *MsgUpdateParams) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -327,7 +735,7 @@ func (m *MsgUpdateParamsResponse) Reset()         { *m = MsgUpdateParamsResponse
 func (m *MsgUpdateParamsResponse) String() string { return proto.CompactTextString(m) }
 func (*MsgUpdateParamsResponse) ProtoMessage()    {}
 func (*MsgUpdateParamsResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_d73284df019ff211, []int{5}
+	return fileDescriptor_d73284df019ff211, []int{11}
 }
 func (m *MsgUpdateParamsResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -357,11 +765,17 @@ func (m *MsgUpdateParamsResponse) XXX_DiscardUnknown() {
 var xxx_messageInfo_MsgUpdateParamsResponse proto.InternalMessageInfo
 
 func init() {
-	proto.RegisterType((*MsgRegisterController)(nil), "did.v1.MsgRegisterController")
-	proto.RegisterType((*MsgRegisterControllerResponse)(nil), "did.v1.MsgRegisterControllerResponse")
+	proto.RegisterType((*MsgLinkAuthentication)(nil), "did.v1.MsgLinkAuthentication")
+	proto.RegisterType((*MsgLinkAuthenticationResponse)(nil), "did.v1.MsgLinkAuthenticationResponse")
+	proto.RegisterType((*MsgLinkAssertion)(nil), "did.v1.MsgLinkAssertion")
+	proto.RegisterType((*MsgLinkAssertionResponse)(nil), "did.v1.MsgLinkAssertionResponse")
 	proto.RegisterType((*MsgExecuteTx)(nil), "did.v1.MsgExecuteTx")
 	proto.RegisterMapType((map[string][]byte)(nil), "did.v1.MsgExecuteTx.MessagesEntry")
 	proto.RegisterType((*MsgExecuteTxResponse)(nil), "did.v1.MsgExecuteTxResponse")
+	proto.RegisterType((*MsgUnlinkAssertion)(nil), "did.v1.MsgUnlinkAssertion")
+	proto.RegisterType((*MsgUnlinkAssertionResponse)(nil), "did.v1.MsgUnlinkAssertionResponse")
+	proto.RegisterType((*MsgUnlinkAuthentication)(nil), "did.v1.MsgUnlinkAuthentication")
+	proto.RegisterType((*MsgUnlinkAuthenticationResponse)(nil), "did.v1.MsgUnlinkAuthenticationResponse")
 	proto.RegisterType((*MsgUpdateParams)(nil), "did.v1.MsgUpdateParams")
 	proto.RegisterType((*MsgUpdateParamsResponse)(nil), "did.v1.MsgUpdateParamsResponse")
 }
@@ -369,43 +783,55 @@ func init() {
 func init() { proto.RegisterFile("did/v1/tx.proto", fileDescriptor_d73284df019ff211) }
 
 var fileDescriptor_d73284df019ff211 = []byte{
-	// 561 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x9c, 0x54, 0xcf, 0x6a, 0x13, 0x41,
-	0x1c, 0xce, 0x36, 0x36, 0x6d, 0x7f, 0x6d, 0x13, 0x19, 0x22, 0xd9, 0x2e, 0x76, 0x5b, 0x16, 0x0a,
-	0xa5, 0xe8, 0x2e, 0x8d, 0x20, 0x25, 0x8a, 0x62, 0xa4, 0x50, 0x0f, 0x01, 0x59, 0xeb, 0xa5, 0x97,
-	0xb0, 0xdd, 0x1d, 0x26, 0x4b, 0xb3, 0x3b, 0x61, 0x7e, 0x93, 0xb0, 0xb9, 0x89, 0x4f, 0xe0, 0x0b,
-	0xf8, 0x0e, 0x3d, 0xf8, 0x10, 0x3d, 0x16, 0x4f, 0x9e, 0x44, 0x92, 0x43, 0x1f, 0xc0, 0xb3, 0x20,
-	0xfb, 0x27, 0xc9, 0xb6, 0x8d, 0x5a, 0xbc, 0x2c, 0xf3, 0xfb, 0x7d, 0xdf, 0x7c, 0xdf, 0xcc, 0x37,
-	0xb3, 0x03, 0x15, 0xcf, 0xf7, 0xac, 0xc1, 0xbe, 0x25, 0x23, 0xb3, 0x27, 0xb8, 0xe4, 0xa4, 0xe4,
-	0xf9, 0x9e, 0x39, 0xd8, 0xd7, 0x6a, 0x2e, 0xc7, 0x80, 0xa3, 0x15, 0x20, 0x8b, 0xf1, 0x00, 0x59,
-	0x4a, 0xd0, 0x36, 0x52, 0xa0, 0x9d, 0x54, 0x56, 0x5a, 0x64, 0x50, 0x35, 0x13, 0x63, 0x34, 0xa4,
-	0xe8, 0x4f, 0xbb, 0x8c, 0x33, 0x9e, 0xb2, 0xe3, 0x51, 0xda, 0x35, 0xda, 0xf0, 0xa0, 0x85, 0xcc,
-	0xa6, 0xcc, 0x47, 0x49, 0xc5, 0x6b, 0x1e, 0x4a, 0xc1, 0xbb, 0x5d, 0x2a, 0xc8, 0x53, 0x58, 0x71,
-	0xfa, 0xb2, 0xc3, 0x85, 0x2f, 0x87, 0xaa, 0xb2, 0xad, 0xec, 0xae, 0x34, 0xd5, 0xaf, 0x5f, 0x1e,
-	0x57, 0x33, 0xa7, 0x57, 0x9e, 0x27, 0x28, 0xe2, 0x3b, 0x29, 0xfc, 0x90, 0xd9, 0x33, 0x6a, 0xa3,
-	0xfc, 0xf1, 0xea, 0x7c, 0x6f, 0x56, 0x1b, 0x08, 0x9b, 0x73, 0x0d, 0x6c, 0x8a, 0x3d, 0x1e, 0x22,
-	0x25, 0x2a, 0x2c, 0x61, 0xdf, 0x75, 0x29, 0x62, 0x62, 0xb3, 0x6c, 0x4f, 0x4a, 0x72, 0x00, 0xe0,
-	0x4e, 0xf9, 0xea, 0xc2, 0x3f, 0xd6, 0x90, 0xe3, 0x1a, 0xbf, 0x14, 0x58, 0x6b, 0x21, 0x3b, 0x8c,
-	0xa8, 0xdb, 0x97, 0xf4, 0x38, 0xba, 0x21, 0xa5, 0xdc, 0x5d, 0x8a, 0xbc, 0x80, 0xe5, 0x80, 0x22,
-	0x3a, 0x8c, 0xa2, 0xba, 0xb0, 0x5d, 0xdc, 0x5d, 0xad, 0x1b, 0x66, 0x7a, 0x36, 0x66, 0xde, 0xc1,
-	0x6c, 0x65, 0xa4, 0xc3, 0x50, 0x8a, 0xa1, 0x3d, 0x9d, 0x43, 0x76, 0xa0, 0x1c, 0x38, 0xae, 0x23,
-	0x38, 0x0f, 0xdb, 0x92, 0x9f, 0xd1, 0x50, 0x2d, 0xc6, 0xee, 0xf6, 0xfa, 0xa4, 0x7b, 0x1c, 0x37,
-	0xb5, 0x67, 0xb0, 0x7e, 0x4d, 0x81, 0xdc, 0x87, 0xe2, 0x19, 0xcd, 0x92, 0xb7, 0xe3, 0x21, 0xa9,
-	0xc2, 0xe2, 0xc0, 0xe9, 0xf6, 0x69, 0x92, 0xc4, 0x9a, 0x9d, 0x16, 0x8d, 0x85, 0x03, 0xa5, 0x51,
-	0x89, 0x33, 0xcf, 0xef, 0xff, 0x0d, 0x54, 0xf3, 0x8b, 0xbb, 0x43, 0xd6, 0x35, 0x58, 0x92, 0x51,
-	0xbb, 0xe3, 0x60, 0x27, 0x0d, 0xda, 0x2e, 0xc9, 0xe8, 0xc8, 0xc1, 0x8e, 0xf1, 0x59, 0x81, 0x4a,
-	0x0b, 0xd9, 0xfb, 0x9e, 0xe7, 0x48, 0xfa, 0xd6, 0x11, 0x4e, 0x80, 0xff, 0x7b, 0x37, 0xc8, 0x23,
-	0x28, 0xf5, 0x12, 0x85, 0xc4, 0x63, 0xb5, 0x5e, 0x9e, 0x24, 0x99, 0xea, 0x36, 0xef, 0x5d, 0x7c,
-	0xdf, 0x2a, 0xd8, 0x19, 0x27, 0xde, 0x6f, 0x3e, 0xb0, 0xb4, 0xb8, 0x75, 0xbf, 0x36, 0xa0, 0x76,
-	0x63, 0x79, 0x93, 0xdd, 0xd6, 0x7f, 0x2a, 0x50, 0x6c, 0x21, 0x23, 0x2f, 0x61, 0x65, 0x76, 0x13,
-	0xaa, 0xf3, 0x4e, 0x4f, 0x7b, 0x38, 0xaf, 0x3b, 0x8d, 0xed, 0x04, 0xc8, 0x9c, 0x3f, 0x64, 0x33,
-	0x37, 0xe7, 0x36, 0xac, 0xed, 0xfc, 0x15, 0x9e, 0x6a, 0x1f, 0xc1, 0xda, 0xb5, 0x6c, 0x6b, 0xb9,
-	0x69, 0x79, 0x40, 0xdb, 0xfa, 0x03, 0x30, 0x51, 0xd2, 0x16, 0x3f, 0x5c, 0x9d, 0xef, 0x29, 0xcd,
-	0xe7, 0x17, 0x23, 0x5d, 0xb9, 0x1c, 0xe9, 0xca, 0x8f, 0x91, 0xae, 0x7c, 0x1a, 0xeb, 0x85, 0xcb,
-	0xb1, 0x5e, 0xf8, 0x36, 0xd6, 0x0b, 0x27, 0x06, 0xf3, 0x65, 0xa7, 0x7f, 0x6a, 0xba, 0x3c, 0xb0,
-	0x78, 0x88, 0x3c, 0x14, 0x56, 0xf2, 0x89, 0xac, 0xf8, 0xc1, 0x90, 0xc3, 0x1e, 0xc5, 0xd3, 0x52,
-	0xf2, 0x2c, 0x3c, 0xf9, 0x1d, 0x00, 0x00, 0xff, 0xff, 0x69, 0xb7, 0x5b, 0x5c, 0x91, 0x04, 0x00,
-	0x00,
+	// 767 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xbc, 0x56, 0xcd, 0x4e, 0xdb, 0x4c,
+	0x14, 0xcd, 0x10, 0x08, 0xe4, 0x92, 0x10, 0xbe, 0x51, 0x3e, 0xc5, 0x58, 0x90, 0x44, 0x46, 0xa8,
+	0x08, 0x95, 0x44, 0x50, 0xa9, 0x42, 0xb4, 0x6a, 0x05, 0x2a, 0x15, 0x88, 0x46, 0x6a, 0x5d, 0xba,
+	0x61, 0x93, 0x1a, 0x7b, 0xe4, 0xb8, 0x24, 0x9e, 0xc8, 0x33, 0x41, 0xc9, 0xae, 0xea, 0x13, 0xf4,
+	0x05, 0xfa, 0x04, 0xdd, 0xb0, 0xe8, 0xaa, 0xea, 0x03, 0xb0, 0x44, 0x5d, 0x75, 0x55, 0x55, 0x20,
+	0x95, 0x27, 0xe8, 0xb2, 0x52, 0x35, 0x76, 0xe2, 0xd8, 0xf9, 0x29, 0x08, 0x50, 0x37, 0x91, 0xef,
+	0x3d, 0xf7, 0x9e, 0x39, 0xf7, 0x78, 0x66, 0x62, 0x48, 0x19, 0x96, 0x51, 0x3c, 0x5a, 0x29, 0xf2,
+	0x66, 0xa1, 0xee, 0x50, 0x4e, 0x71, 0xcc, 0xb0, 0x8c, 0xc2, 0xd1, 0x8a, 0x9c, 0xd1, 0x29, 0xab,
+	0x51, 0x56, 0xac, 0x31, 0x53, 0xe0, 0x35, 0x66, 0x7a, 0x05, 0xf2, 0x8c, 0x07, 0x94, 0xdd, 0xa8,
+	0xe8, 0x05, 0x6d, 0x28, 0xdd, 0x26, 0x33, 0x89, 0x4d, 0x98, 0xe5, 0x67, 0x4d, 0x6a, 0x52, 0xaf,
+	0x5a, 0x3c, 0x79, 0x59, 0xe5, 0x27, 0x82, 0xff, 0x4b, 0xcc, 0x7c, 0x66, 0xd9, 0x87, 0x1b, 0x0d,
+	0x5e, 0x21, 0x36, 0xb7, 0x74, 0x8d, 0x5b, 0xd4, 0xc6, 0x6b, 0x00, 0x3a, 0xb5, 0xb9, 0x43, 0xab,
+	0x55, 0xe2, 0x48, 0x28, 0x8f, 0x16, 0xe3, 0x9b, 0xd2, 0xd7, 0x4f, 0xcb, 0xe9, 0xf6, 0x5a, 0x1b,
+	0x86, 0xe1, 0x10, 0xc6, 0x5e, 0x72, 0xc7, 0xb2, 0x4d, 0x35, 0x50, 0x8b, 0x25, 0x18, 0x67, 0x8d,
+	0x83, 0x37, 0x44, 0xe7, 0xd2, 0x88, 0x68, 0x53, 0x3b, 0x21, 0x9e, 0x85, 0xb8, 0xc6, 0x18, 0x71,
+	0xc4, 0x02, 0x52, 0xd4, 0xc5, 0xba, 0x09, 0x3c, 0x0f, 0x49, 0xdd, 0x21, 0x86, 0xd0, 0xa0, 0x55,
+	0xcb, 0x96, 0x21, 0x8d, 0xe6, 0xd1, 0x62, 0x42, 0x4d, 0x74, 0x93, 0x3b, 0x06, 0x5e, 0x80, 0xa9,
+	0x9a, 0xa6, 0x6b, 0x0e, 0xa5, 0x76, 0x99, 0xd3, 0x43, 0x62, 0x4b, 0x63, 0x2e, 0x4f, 0xb2, 0x93,
+	0xdd, 0x13, 0xc9, 0xf5, 0xd4, 0xbb, 0x8b, 0xe3, 0xa5, 0x80, 0x28, 0x65, 0x17, 0xe6, 0x06, 0xce,
+	0xa9, 0x12, 0x56, 0xa7, 0x36, 0x23, 0x9e, 0x6a, 0x5d, 0x27, 0x8c, 0xb9, 0xc3, 0x4e, 0xa8, 0x9d,
+	0x10, 0x4f, 0x43, 0xd4, 0xb0, 0x8c, 0xf6, 0x2c, 0xe2, 0x51, 0xf9, 0x82, 0x60, 0xba, 0xc3, 0xe6,
+	0xcb, 0xff, 0xf7, 0x86, 0xf5, 0x7b, 0x31, 0x7a, 0x25, 0x2f, 0x9e, 0x82, 0xd4, 0xab, 0xfe, 0x5a,
+	0x36, 0xfc, 0x46, 0x90, 0x28, 0x31, 0x73, 0xab, 0x49, 0xf4, 0x06, 0x27, 0x7b, 0xcd, 0x1b, 0x58,
+	0xf0, 0x08, 0x26, 0x6a, 0x84, 0x31, 0xcd, 0x24, 0x4c, 0x1a, 0xc9, 0x47, 0x17, 0x27, 0x57, 0x95,
+	0x82, 0x77, 0x04, 0x0a, 0xc1, 0x15, 0x0a, 0xa5, 0x76, 0xd1, 0x96, 0xcd, 0x9d, 0x96, 0xea, 0xf7,
+	0x0c, 0xb0, 0x22, 0x3a, 0xc0, 0x0a, 0xf9, 0x01, 0x24, 0x43, 0x0c, 0x62, 0xa8, 0x43, 0xd2, 0xf2,
+	0xa4, 0xaa, 0xe2, 0x11, 0xa7, 0x61, 0xec, 0x48, 0xab, 0x36, 0x88, 0x3b, 0x68, 0x42, 0xf5, 0x82,
+	0xf5, 0x91, 0x35, 0xd4, 0xef, 0xe3, 0x0e, 0xa4, 0x83, 0xe2, 0xae, 0xe0, 0x61, 0x06, 0xc6, 0x79,
+	0xb3, 0x5c, 0xd1, 0x58, 0xa5, 0xed, 0x63, 0x8c, 0x37, 0xb7, 0x35, 0x56, 0x51, 0x3e, 0x22, 0xc0,
+	0x25, 0x66, 0xbe, 0xb2, 0xab, 0xb7, 0xb4, 0xa7, 0xe6, 0x21, 0xe9, 0x6f, 0x94, 0x72, 0xf7, 0xbd,
+	0x25, 0xfc, 0xe4, 0x13, 0xcb, 0xb8, 0xa2, 0x6b, 0xfd, 0x83, 0x6f, 0x83, 0xdc, 0x2f, 0xf6, 0x5a,
+	0x5b, 0xe8, 0x33, 0x82, 0x4c, 0x97, 0xea, 0xb6, 0x6e, 0xa0, 0x65, 0xc0, 0x5a, 0x88, 0x2b, 0xe0,
+	0xc0, 0x7f, 0x61, 0xe4, 0x26, 0x36, 0x94, 0x20, 0x37, 0x44, 0xfb, 0xb5, 0xbc, 0xf8, 0x80, 0x20,
+	0x25, 0xf8, 0xea, 0x86, 0xc6, 0xc9, 0x73, 0xcd, 0xd1, 0x6a, 0x0c, 0xdf, 0x87, 0xb8, 0xd0, 0x4b,
+	0x1d, 0x8b, 0xb7, 0x2e, 0xb5, 0xa0, 0x5b, 0x8a, 0xef, 0x42, 0xac, 0xee, 0x32, 0xb8, 0x0b, 0x4c,
+	0xae, 0x4e, 0x75, 0x4e, 0x93, 0xc7, 0xbb, 0x39, 0x7a, 0xf2, 0x3d, 0x17, 0x51, 0xdb, 0x35, 0x62,
+	0xcf, 0x07, 0xe7, 0xf6, 0x82, 0xf5, 0x29, 0x31, 0x6f, 0x97, 0x53, 0x99, 0xf1, 0x5e, 0x55, 0x40,
+	0x5e, 0x67, 0xcc, 0xd5, 0x5f, 0x51, 0x88, 0x96, 0x98, 0x89, 0x1f, 0x43, 0xbc, 0x7b, 0x1b, 0xa4,
+	0x07, 0x9d, 0x60, 0x79, 0x76, 0x50, 0xd6, 0xf7, 0x6b, 0x17, 0x92, 0xe1, 0x5b, 0x55, 0x0a, 0x94,
+	0x87, 0x10, 0x39, 0x3f, 0x0c, 0xf1, 0xc9, 0xf6, 0x01, 0x0f, 0xf8, 0x63, 0x9b, 0xeb, 0xed, 0x0b,
+	0xc1, 0xf2, 0xc2, 0x5f, 0x61, 0x9f, 0xfb, 0x05, 0xa4, 0x7a, 0x0f, 0xab, 0x1c, 0xe8, 0xec, 0xc1,
+	0x64, 0x65, 0x38, 0xe6, 0x53, 0xbe, 0x86, 0xf4, 0xc0, 0x73, 0x90, 0xeb, 0xef, 0x0d, 0x4b, 0xbe,
+	0x73, 0x49, 0x81, 0xbf, 0xc2, 0x36, 0x24, 0x42, 0xbb, 0x2b, 0x13, 0x6c, 0x0c, 0x00, 0x72, 0x6e,
+	0x08, 0xd0, 0x61, 0x92, 0xc7, 0xde, 0x5e, 0x1c, 0x2f, 0xa1, 0xcd, 0x87, 0x27, 0x67, 0x59, 0x74,
+	0x7a, 0x96, 0x45, 0x3f, 0xce, 0xb2, 0xe8, 0xfd, 0x79, 0x36, 0x72, 0x7a, 0x9e, 0x8d, 0x7c, 0x3b,
+	0xcf, 0x46, 0xf6, 0x15, 0xd3, 0xe2, 0x95, 0xc6, 0x41, 0x41, 0xa7, 0xb5, 0x22, 0xb5, 0x19, 0xb5,
+	0x9d, 0xa2, 0xfb, 0xd3, 0x2c, 0x8a, 0xaf, 0x13, 0xde, 0xaa, 0x13, 0x76, 0x10, 0x73, 0xbf, 0x41,
+	0xee, 0xfd, 0x09, 0x00, 0x00, 0xff, 0xff, 0x93, 0x06, 0x64, 0x08, 0xfe, 0x08, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -423,9 +849,14 @@ type MsgClient interface {
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grpc.CallOption) (*MsgExecuteTxResponse, error)
-	// RegisterController initializes a controller with the given authentication
-	// set, address, cid, publicKey, and user-defined alias.
-	RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error)
+	// LinkAssertion links an assertion to a controller.
+	LinkAssertion(ctx context.Context, in *MsgLinkAssertion, opts ...grpc.CallOption) (*MsgLinkAssertionResponse, error)
+	// LinkAuthentication links an authentication to a controller.
+	LinkAuthentication(ctx context.Context, in *MsgLinkAuthentication, opts ...grpc.CallOption) (*MsgLinkAuthenticationResponse, error)
+	// UnlinkAssertion unlinks an assertion from a controller.
+	UnlinkAssertion(ctx context.Context, in *MsgUnlinkAssertion, opts ...grpc.CallOption) (*MsgUnlinkAssertionResponse, error)
+	// UnlinkAuthentication unlinks an authentication from a controller.
+	UnlinkAuthentication(ctx context.Context, in *MsgUnlinkAuthentication, opts ...grpc.CallOption) (*MsgUnlinkAuthenticationResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
 }
@@ -447,9 +878,36 @@ func (c *msgClient) ExecuteTx(ctx context.Context, in *MsgExecuteTx, opts ...grp
 	return out, nil
 }
 
-func (c *msgClient) RegisterController(ctx context.Context, in *MsgRegisterController, opts ...grpc.CallOption) (*MsgRegisterControllerResponse, error) {
-	out := new(MsgRegisterControllerResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Msg/RegisterController", in, out, opts...)
+func (c *msgClient) LinkAssertion(ctx context.Context, in *MsgLinkAssertion, opts ...grpc.CallOption) (*MsgLinkAssertionResponse, error) {
+	out := new(MsgLinkAssertionResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/LinkAssertion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) LinkAuthentication(ctx context.Context, in *MsgLinkAuthentication, opts ...grpc.CallOption) (*MsgLinkAuthenticationResponse, error) {
+	out := new(MsgLinkAuthenticationResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/LinkAuthentication", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnlinkAssertion(ctx context.Context, in *MsgUnlinkAssertion, opts ...grpc.CallOption) (*MsgUnlinkAssertionResponse, error) {
+	out := new(MsgUnlinkAssertionResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/UnlinkAssertion", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *msgClient) UnlinkAuthentication(ctx context.Context, in *MsgUnlinkAuthentication, opts ...grpc.CallOption) (*MsgUnlinkAuthenticationResponse, error) {
+	out := new(MsgUnlinkAuthenticationResponse)
+	err := c.cc.Invoke(ctx, "/did.v1.Msg/UnlinkAuthentication", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -470,9 +928,14 @@ type MsgServer interface {
 	// ExecuteTx executes a transaction on the Sonr Blockchain. It leverages
 	// Macaroon for verification.
 	ExecuteTx(context.Context, *MsgExecuteTx) (*MsgExecuteTxResponse, error)
-	// RegisterController initializes a controller with the given authentication
-	// set, address, cid, publicKey, and user-defined alias.
-	RegisterController(context.Context, *MsgRegisterController) (*MsgRegisterControllerResponse, error)
+	// LinkAssertion links an assertion to a controller.
+	LinkAssertion(context.Context, *MsgLinkAssertion) (*MsgLinkAssertionResponse, error)
+	// LinkAuthentication links an authentication to a controller.
+	LinkAuthentication(context.Context, *MsgLinkAuthentication) (*MsgLinkAuthenticationResponse, error)
+	// UnlinkAssertion unlinks an assertion from a controller.
+	UnlinkAssertion(context.Context, *MsgUnlinkAssertion) (*MsgUnlinkAssertionResponse, error)
+	// UnlinkAuthentication unlinks an authentication from a controller.
+	UnlinkAuthentication(context.Context, *MsgUnlinkAuthentication) (*MsgUnlinkAuthenticationResponse, error)
 	// UpdateParams defines a governance operation for updating the parameters.
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
 }
@@ -484,8 +947,17 @@ type UnimplementedMsgServer struct {
 func (*UnimplementedMsgServer) ExecuteTx(ctx context.Context, req *MsgExecuteTx) (*MsgExecuteTxResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ExecuteTx not implemented")
 }
-func (*UnimplementedMsgServer) RegisterController(ctx context.Context, req *MsgRegisterController) (*MsgRegisterControllerResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method RegisterController not implemented")
+func (*UnimplementedMsgServer) LinkAssertion(ctx context.Context, req *MsgLinkAssertion) (*MsgLinkAssertionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkAssertion not implemented")
+}
+func (*UnimplementedMsgServer) LinkAuthentication(ctx context.Context, req *MsgLinkAuthentication) (*MsgLinkAuthenticationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method LinkAuthentication not implemented")
+}
+func (*UnimplementedMsgServer) UnlinkAssertion(ctx context.Context, req *MsgUnlinkAssertion) (*MsgUnlinkAssertionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnlinkAssertion not implemented")
+}
+func (*UnimplementedMsgServer) UnlinkAuthentication(ctx context.Context, req *MsgUnlinkAuthentication) (*MsgUnlinkAuthenticationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UnlinkAuthentication not implemented")
 }
 func (*UnimplementedMsgServer) UpdateParams(ctx context.Context, req *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
@@ -513,20 +985,74 @@ func _Msg_ExecuteTx_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_RegisterController_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgRegisterController)
+func _Msg_LinkAssertion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLinkAssertion)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).RegisterController(ctx, in)
+		return srv.(MsgServer).LinkAssertion(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/did.v1.Msg/RegisterController",
+		FullMethod: "/did.v1.Msg/LinkAssertion",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).RegisterController(ctx, req.(*MsgRegisterController))
+		return srv.(MsgServer).LinkAssertion(ctx, req.(*MsgLinkAssertion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_LinkAuthentication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgLinkAuthentication)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).LinkAuthentication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/did.v1.Msg/LinkAuthentication",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).LinkAuthentication(ctx, req.(*MsgLinkAuthentication))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnlinkAssertion_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnlinkAssertion)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnlinkAssertion(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/did.v1.Msg/UnlinkAssertion",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnlinkAssertion(ctx, req.(*MsgUnlinkAssertion))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Msg_UnlinkAuthentication_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgUnlinkAuthentication)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MsgServer).UnlinkAuthentication(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/did.v1.Msg/UnlinkAuthentication",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MsgServer).UnlinkAuthentication(ctx, req.(*MsgUnlinkAuthentication))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -558,8 +1084,20 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_ExecuteTx_Handler,
 		},
 		{
-			MethodName: "RegisterController",
-			Handler:    _Msg_RegisterController_Handler,
+			MethodName: "LinkAssertion",
+			Handler:    _Msg_LinkAssertion_Handler,
+		},
+		{
+			MethodName: "LinkAuthentication",
+			Handler:    _Msg_LinkAuthentication_Handler,
+		},
+		{
+			MethodName: "UnlinkAssertion",
+			Handler:    _Msg_UnlinkAssertion_Handler,
+		},
+		{
+			MethodName: "UnlinkAuthentication",
+			Handler:    _Msg_UnlinkAuthentication_Handler,
 		},
 		{
 			MethodName: "UpdateParams",
@@ -570,7 +1108,7 @@ var _Msg_serviceDesc = grpc.ServiceDesc{
 	Metadata: "did/v1/tx.proto",
 }
 
-func (m *MsgRegisterController) Marshal() (dAtA []byte, err error) {
+func (m *MsgLinkAuthentication) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -580,27 +1118,55 @@ func (m *MsgRegisterController) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRegisterController) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgLinkAuthentication) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRegisterController) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgLinkAuthentication) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
-	if len(m.Authority) > 0 {
-		i -= len(m.Authority)
-		copy(dAtA[i:], m.Authority)
-		i = encodeVarintTx(dAtA, i, uint64(len(m.Authority)))
+	if len(m.MacaroonToken) > 0 {
+		i -= len(m.MacaroonToken)
+		copy(dAtA[i:], m.MacaroonToken)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MacaroonToken)))
+		i--
+		dAtA[i] = 0x2a
+	}
+	if len(m.CredentialId) > 0 {
+		i -= len(m.CredentialId)
+		copy(dAtA[i:], m.CredentialId)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.CredentialId)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Assertion) > 0 {
+		i -= len(m.Assertion)
+		copy(dAtA[i:], m.Assertion)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Assertion)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
 		i--
 		dAtA[i] = 0xa
 	}
 	return len(dAtA) - i, nil
 }
 
-func (m *MsgRegisterControllerResponse) Marshal() (dAtA []byte, err error) {
+func (m *MsgLinkAuthenticationResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -610,20 +1176,111 @@ func (m *MsgRegisterControllerResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *MsgRegisterControllerResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *MsgLinkAuthenticationResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *MsgRegisterControllerResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *MsgLinkAuthenticationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
 	_ = l
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgLinkAssertion) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgLinkAssertion) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgLinkAssertion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MacaroonToken) > 0 {
+		i -= len(m.MacaroonToken)
+		copy(dAtA[i:], m.MacaroonToken)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MacaroonToken)))
+		i--
+		dAtA[i] = 0x22
+	}
+	if len(m.Assertion) > 0 {
+		i -= len(m.Assertion)
+		copy(dAtA[i:], m.Assertion)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Assertion)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.Subject) > 0 {
+		i -= len(m.Subject)
+		copy(dAtA[i:], m.Subject)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Subject)))
+		i--
+		dAtA[i] = 0x12
+	}
 	if len(m.Controller) > 0 {
 		i -= len(m.Controller)
 		copy(dAtA[i:], m.Controller)
 		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgLinkAssertionResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgLinkAssertionResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgLinkAssertionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
 		i--
 		dAtA[i] = 0x12
 	}
@@ -738,6 +1395,174 @@ func (m *MsgExecuteTxResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
+func (m *MsgUnlinkAssertion) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnlinkAssertion) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnlinkAssertion) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MacaroonToken) > 0 {
+		i -= len(m.MacaroonToken)
+		copy(dAtA[i:], m.MacaroonToken)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MacaroonToken)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AssertionDid) > 0 {
+		i -= len(m.AssertionDid)
+		copy(dAtA[i:], m.AssertionDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.AssertionDid)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUnlinkAssertionResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnlinkAssertionResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnlinkAssertionResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUnlinkAuthentication) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnlinkAuthentication) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnlinkAuthentication) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.MacaroonToken) > 0 {
+		i -= len(m.MacaroonToken)
+		copy(dAtA[i:], m.MacaroonToken)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.MacaroonToken)))
+		i--
+		dAtA[i] = 0x1a
+	}
+	if len(m.AuthenticationDid) > 0 {
+		i -= len(m.AuthenticationDid)
+		copy(dAtA[i:], m.AuthenticationDid)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.AuthenticationDid)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if len(m.Controller) > 0 {
+		i -= len(m.Controller)
+		copy(dAtA[i:], m.Controller)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Controller)))
+		i--
+		dAtA[i] = 0xa
+	}
+	return len(dAtA) - i, nil
+}
+
+func (m *MsgUnlinkAuthenticationResponse) Marshal() (dAtA []byte, err error) {
+	size := m.Size()
+	dAtA = make([]byte, size)
+	n, err := m.MarshalToSizedBuffer(dAtA[:size])
+	if err != nil {
+		return nil, err
+	}
+	return dAtA[:n], nil
+}
+
+func (m *MsgUnlinkAuthenticationResponse) MarshalTo(dAtA []byte) (int, error) {
+	size := m.Size()
+	return m.MarshalToSizedBuffer(dAtA[:size])
+}
+
+func (m *MsgUnlinkAuthenticationResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+	i := len(dAtA)
+	_ = i
+	var l int
+	_ = l
+	if len(m.Did) > 0 {
+		i -= len(m.Did)
+		copy(dAtA[i:], m.Did)
+		i = encodeVarintTx(dAtA, i, uint64(len(m.Did)))
+		i--
+		dAtA[i] = 0x12
+	}
+	if m.Success {
+		i--
+		if m.Success {
+			dAtA[i] = 1
+		} else {
+			dAtA[i] = 0
+		}
+		i--
+		dAtA[i] = 0x8
+	}
+	return len(dAtA) - i, nil
+}
+
 func (m *MsgUpdateParams) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
@@ -819,20 +1644,36 @@ func encodeVarintTx(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *MsgRegisterController) Size() (n int) {
+func (m *MsgLinkAuthentication) Size() (n int) {
 	if m == nil {
 		return 0
 	}
 	var l int
 	_ = l
-	l = len(m.Authority)
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Assertion)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.CredentialId)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MacaroonToken)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
 	return n
 }
 
-func (m *MsgRegisterControllerResponse) Size() (n int) {
+func (m *MsgLinkAuthenticationResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -841,7 +1682,48 @@ func (m *MsgRegisterControllerResponse) Size() (n int) {
 	if m.Success {
 		n += 2
 	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgLinkAssertion) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
 	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Subject)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.Assertion)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MacaroonToken)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgLinkAssertionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Did)
 	if l > 0 {
 		n += 1 + l + sovTx(uint64(l))
 	}
@@ -893,6 +1775,80 @@ func (m *MsgExecuteTxResponse) Size() (n int) {
 	return n
 }
 
+func (m *MsgUnlinkAssertion) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.AssertionDid)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MacaroonToken)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUnlinkAssertionResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUnlinkAuthentication) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	l = len(m.Controller)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.AuthenticationDid)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	l = len(m.MacaroonToken)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
+func (m *MsgUnlinkAuthenticationResponse) Size() (n int) {
+	if m == nil {
+		return 0
+	}
+	var l int
+	_ = l
+	if m.Success {
+		n += 2
+	}
+	l = len(m.Did)
+	if l > 0 {
+		n += 1 + l + sovTx(uint64(l))
+	}
+	return n
+}
+
 func (m *MsgUpdateParams) Size() (n int) {
 	if m == nil {
 		return 0
@@ -927,7 +1883,7 @@ func sovTx(x uint64) (n int) {
 func sozTx(x uint64) (n int) {
 	return sovTx(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *MsgRegisterController) Unmarshal(dAtA []byte) error {
+func (m *MsgLinkAuthentication) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -950,115 +1906,13 @@ func (m *MsgRegisterController) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterController: wiretype end group for non-group")
+			return fmt.Errorf("proto: MsgLinkAuthentication: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterController: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: MsgLinkAuthentication: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Authority", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthTx
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthTx
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Authority = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipTx(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthTx
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *MsgRegisterControllerResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowTx
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: MsgRegisterControllerResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: MsgRegisterControllerResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowTx
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Success = bool(v != 0)
-		case 2:
 			if wireType != 2 {
 				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
 			}
@@ -1089,6 +1943,518 @@ func (m *MsgRegisterControllerResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Assertion", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Assertion = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field CredentialId", wireType)
+			}
+			var byteLen int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				byteLen |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			if byteLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + byteLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.CredentialId = append(m.CredentialId[:0], dAtA[iNdEx:postIndex]...)
+			if m.CredentialId == nil {
+				m.CredentialId = []byte{}
+			}
+			iNdEx = postIndex
+		case 5:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MacaroonToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MacaroonToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgLinkAuthenticationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgLinkAuthenticationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgLinkAuthenticationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgLinkAssertion) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgLinkAssertion: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgLinkAssertion: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Subject", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Subject = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Assertion", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Assertion = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 4:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MacaroonToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MacaroonToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgLinkAssertionResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgLinkAssertionResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgLinkAssertionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
@@ -1433,6 +2799,502 @@ func (m *MsgExecuteTxResponse) Unmarshal(dAtA []byte) error {
 				return io.ErrUnexpectedEOF
 			}
 			m.TxHash = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnlinkAssertion) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnlinkAssertion: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnlinkAssertion: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AssertionDid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AssertionDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MacaroonToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MacaroonToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnlinkAssertionResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnlinkAssertionResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnlinkAssertionResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnlinkAuthentication) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnlinkAuthentication: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnlinkAuthentication: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Controller = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field AuthenticationDid", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.AuthenticationDid = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		case 3:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field MacaroonToken", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.MacaroonToken = string(dAtA[iNdEx:postIndex])
+			iNdEx = postIndex
+		default:
+			iNdEx = preIndex
+			skippy, err := skipTx(dAtA[iNdEx:])
+			if err != nil {
+				return err
+			}
+			if (skippy < 0) || (iNdEx+skippy) < 0 {
+				return ErrInvalidLengthTx
+			}
+			if (iNdEx + skippy) > l {
+				return io.ErrUnexpectedEOF
+			}
+			iNdEx += skippy
+		}
+	}
+
+	if iNdEx > l {
+		return io.ErrUnexpectedEOF
+	}
+	return nil
+}
+func (m *MsgUnlinkAuthenticationResponse) Unmarshal(dAtA []byte) error {
+	l := len(dAtA)
+	iNdEx := 0
+	for iNdEx < l {
+		preIndex := iNdEx
+		var wire uint64
+		for shift := uint(0); ; shift += 7 {
+			if shift >= 64 {
+				return ErrIntOverflowTx
+			}
+			if iNdEx >= l {
+				return io.ErrUnexpectedEOF
+			}
+			b := dAtA[iNdEx]
+			iNdEx++
+			wire |= uint64(b&0x7F) << shift
+			if b < 0x80 {
+				break
+			}
+		}
+		fieldNum := int32(wire >> 3)
+		wireType := int(wire & 0x7)
+		if wireType == 4 {
+			return fmt.Errorf("proto: MsgUnlinkAuthenticationResponse: wiretype end group for non-group")
+		}
+		if fieldNum <= 0 {
+			return fmt.Errorf("proto: MsgUnlinkAuthenticationResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+		}
+		switch fieldNum {
+		case 1:
+			if wireType != 0 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
+			}
+			var v int
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				v |= int(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			m.Success = bool(v != 0)
+		case 2:
+			if wireType != 2 {
+				return fmt.Errorf("proto: wrong wireType = %d for field Did", wireType)
+			}
+			var stringLen uint64
+			for shift := uint(0); ; shift += 7 {
+				if shift >= 64 {
+					return ErrIntOverflowTx
+				}
+				if iNdEx >= l {
+					return io.ErrUnexpectedEOF
+				}
+				b := dAtA[iNdEx]
+				iNdEx++
+				stringLen |= uint64(b&0x7F) << shift
+				if b < 0x80 {
+					break
+				}
+			}
+			intStringLen := int(stringLen)
+			if intStringLen < 0 {
+				return ErrInvalidLengthTx
+			}
+			postIndex := iNdEx + intStringLen
+			if postIndex < 0 {
+				return ErrInvalidLengthTx
+			}
+			if postIndex > l {
+				return io.ErrUnexpectedEOF
+			}
+			m.Did = string(dAtA[iNdEx:postIndex])
 			iNdEx = postIndex
 		default:
 			iNdEx = preIndex

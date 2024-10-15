@@ -296,6 +296,10 @@ sh-testnet: mod-tidy
 
 .PHONY: templ-gen pkl-gen
 
+assets-gen:
+	@echo "(assets) Generating gateway cloudflare workers assets"
+	go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
+
 templ-gen:
 	@echo "(templ) Generating templ files"
 	templ generate
@@ -305,34 +309,6 @@ pkl-gen:
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
 	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
-
-
-
-###############################################################################
-###                            motr, hway & nebula                          ###
-###############################################################################
-
-.PHONY: motr-build hway-build nebula-build
-
-nebula-build:
-	@echo "(ui) Building nebula"
-	cd pkg/nebula && bun install && bun run build
-
-motr-build: nebula-build templ-gen pkl-gen
-	@echo "(dwn) Building motr.wasm -> Service Worker IPFS Vault"
-	GOOS=js GOARCH=wasm go build -o ./pkg/dwn/app.wasm ./cmd/motr/main.go
-
-hway-build: nebula-build templ-gen
-	@echo "(hway) Building Highway gateway"
-	GOOS=js GOARCH=wasm go build -o ./cmd/hway/build/app.wasm ./cmd/hway/main.go
-
-hway-dev:
-	@echo "(hway) Serving Highway gateway"
-	bunx wrangler dev
-
-hway-deploy:
-	@echo "(hway) Deploying Highway gateway"
-	bunx wrangler deploy
 
 ###############################################################################
 ###                                     help                                ###

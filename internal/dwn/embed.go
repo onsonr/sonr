@@ -2,10 +2,18 @@ package dwn
 
 import (
 	_ "embed"
+	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/internal/dwn/gen"
-	"github.com/onsonr/sonr/pkg/nebula/components/index"
+	"github.com/onsonr/sonr/pkg/nebula/components/vaultindex"
+)
+
+const (
+	FileNameAppWASM    = "app.wasm"
+	FileNameConfigJSON = "dwn.json"
+	FileNameIndexHTML  = "index.html"
+	FileNameWorkerJS   = "sw.js"
 )
 
 //go:embed app.wasm
@@ -14,21 +22,21 @@ var dwnWasmData []byte
 //go:embed sw.js
 var swJSData []byte
 
-var (
-	dwnWasmFile = files.NewBytesFile(dwnWasmData)
-	swJSFile    = files.NewBytesFile(swJSData)
-)
-
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
-	idxFile, err := index.BuildFile(cnfg)
+	idxFile, err := vaultindex.BuildFile(cnfg)
+	if err != nil {
+		return nil, err
+	}
+	cnfgBz, err := json.Marshal(cnfg)
 	if err != nil {
 		return nil, err
 	}
 	fileMap := map[string]files.Node{
-		"sw.js":      swJSFile,
-		"app.wasm":   dwnWasmFile,
-		"index.html": idxFile,
+		FileNameAppWASM:    files.NewBytesFile(dwnWasmData),
+		FileNameConfigJSON: files.NewBytesFile(cnfgBz),
+		FileNameIndexHTML:  idxFile,
+		FileNameWorkerJS:   files.NewBytesFile(swJSData),
 	}
 	return files.NewMapDirectory(fileMap), nil
 }

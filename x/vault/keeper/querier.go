@@ -29,12 +29,6 @@ func (k Querier) Params(c context.Context, req *types.QueryParamsRequest) (*type
 	return &types.QueryParamsResponse{Params: &p}, nil
 }
 
-// Sync implements types.QueryServer.
-func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.SyncResponse, error) {
-	// ctx := sdk.UnwrapSDKContext(goCtx)
-	return &types.SyncResponse{}, nil
-}
-
 // Schema implements types.QueryServer.
 func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*types.QuerySchemaResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
@@ -45,5 +39,51 @@ func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*
 	}
 	return &types.QuerySchemaResponse{
 		Schema: p.Schema,
+	}, nil
+}
+
+// SyncInitial implements types.QueryServer.
+func (k Querier) SyncInitial(goCtx context.Context, req *types.SyncInitialRequest) (*types.SyncInitialResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+	p, err := k.Keeper.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	c, _ := k.DIDKeeper.ResolveController(ctx, req.Did)
+	if c == nil {
+		return &types.SyncInitialResponse{
+			Success: false,
+			Schema:  p.Schema,
+			ChainID: ctx.ChainID(),
+		}, nil
+	}
+	return &types.SyncInitialResponse{
+		Success: true,
+		Schema:  p.Schema,
+		ChainID: ctx.ChainID(),
+		Address: c.SonrAddress(),
+	}, nil
+}
+
+// SyncCurrent implements types.QueryServer.
+func (k Querier) SyncCurrent(goCtx context.Context, req *types.SyncCurrentRequest) (*types.SyncCurrentResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.SyncCurrentResponse{}, nil
+}
+
+// Allocate implements types.QueryServer.
+func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*types.AllocateResponse, error) {
+	ctx := sdk.UnwrapSDKContext(goCtx)
+
+	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
+	cid, expiryBlock, err := k.AssembleVault(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	return &types.AllocateResponse{
+		Success:     true,
+		Cid:         cid,
+		ExpiryBlock: expiryBlock,
 	}, nil
 }

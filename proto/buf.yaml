@@ -14,6 +14,7 @@ lint:
     - COMMENTS
     - FILE_LOWER_SNAKE_CASE
   except:
+    - PACKAGE_NO_IMPORT_CYCLE
     - UNARY_RPC
     - COMMENT_FIELD
     - COMMENT_MESSAGE

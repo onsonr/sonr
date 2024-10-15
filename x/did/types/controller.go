@@ -5,6 +5,7 @@ import (
 
 	"github.com/onsonr/crypto/mpc"
 
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 )
 
@@ -19,7 +20,7 @@ type ControllerI interface {
 	ExportUserKs() (string, error)
 }
 
-func NewController(shares []mpc.Share) (ControllerI, error) {
+func NewController(ctx sdk.Context, shares []mpc.Share) (ControllerI, error) {
 	var (
 		valKs  = shares[0]
 		userKs = shares[1]
@@ -48,8 +49,18 @@ func NewController(shares []mpc.Share) (ControllerI, error) {
 		address:   sonrAddr,
 		btcAddr:   btcAddr,
 		ethAddr:   ethAddr,
-		chainID:   "sonr-testnet-1",
+		chainID:   ctx.ChainID(),
 		publicKey: pbBz,
+	}, nil
+}
+
+func LoadControllerFromTableEntry(ctx sdk.Context, entry *didv1.Controller) (ControllerI, error) {
+	return &controller{
+		address:   entry.Did,
+		btcAddr:   entry.BtcAddress,
+		ethAddr:   entry.EthAddress,
+		chainID:   ctx.ChainID(),
+		publicKey: entry.PublicKey.RawKey.Key,
 	}, nil
 }
 
@@ -61,6 +72,7 @@ type controller struct {
 	ethAddr   string
 	btcAddr   string
 	publicKey []byte
+	did       string
 }
 
 func (c *controller) BtcAddress() string {

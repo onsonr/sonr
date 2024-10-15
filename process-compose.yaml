@@ -6,20 +6,14 @@ processes:
     command: "sh scripts/setup_ipfs.sh"
     background: true
     availability:
-      restart: on_failure
+      restart: never
       max_restarts: 0
 
   sonr:
     namespace: testnet
-    command: "devbox run start:testnet"
-    restart: on_failure
-    env:
+    background: true
+    command: "make sh-testnet"
+    restart: never
     max_restarts: 1
     depends:
       - ipfs
-  #
-  # tunnel:
-  #   namespace: public
-  #   command: "cloudflared tunnel run --token $TUNNEL_TOKEN"
-  #   restart: on_failure
-  #   max_restarts: 1

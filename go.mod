@@ -66,14 +66,13 @@ require (
 	github.com/go-webauthn/webauthn v0.10.2
 	github.com/golang/protobuf v1.5.4
 	github.com/gorilla/mux v1.8.1
-	github.com/gorilla/sessions v1.4.0
 	github.com/grpc-ecosystem/grpc-gateway v1.16.0
 	github.com/ipfs/boxo v0.21.0
 	github.com/ipfs/kubo v0.29.0
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/nlepage/go-js-promise v1.0.0
-	github.com/onsonr/crypto v1.32.0
+	github.com/onsonr/crypto v1.33.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.0
@@ -183,7 +182,6 @@ require (
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
 	github.com/googleapis/gax-go/v2 v2.12.2 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
-	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
 	github.com/gsterjov/go-libsecret v0.0.0-20161001094733-a6f4afe4910c // indirect

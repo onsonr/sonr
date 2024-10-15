@@ -1,0 +1,39 @@
+version: "3"
+
+vars:
+  ROOT_DIR:
+    sh: pwd
+
+tasks:
+  hway:build:
+    dir: cmd/hway
+    env:
+      GOOS: js
+      GOARCH: wasm
+    cmds:
+      - go build -o build/app.wasm main.go
+
+  hway:dev:
+    dir: cmd/hway
+    cmds:
+      - bunx wrangler dev
+
+  hway:deploy:
+    dir: cmd/hway
+    cmds:
+      - bunx wrangler deploy
+
+  motr:build:
+    dir: internal/dwn
+    env:
+      GOOS: js
+      GOARCH: wasm
+    cmds:
+      - go build -o app.wasm wasm/main.go
+
+  nebula:build:
+    dir: pkg/nebula
+    cmds:
+      - bun install
+      - bun run deps.mjs
+      - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css

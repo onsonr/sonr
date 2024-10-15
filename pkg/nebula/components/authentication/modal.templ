@@ -1,0 +1,25 @@
+package authentication
+
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/nebula/components/authentication/sections"
+	"github.com/onsonr/sonr/pkg/nebula/global/styles"
+)
+
+templ RegisterModal(c echo.Context) {
+	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
+		@sections.RegisterStart()
+	}
+}
+
+templ LoginModal(c echo.Context) {
+	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
+		@sections.LoginStart()
+	}
+}
+
+templ AuthorizeModal(c echo.Context) {
+	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
+		@sections.AuthorizeStart()
+	}
+}

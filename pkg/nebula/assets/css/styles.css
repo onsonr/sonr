@@ -923,6 +923,40 @@ select{
       format("woff2");
 }
 
+.container{
+  width: 100%;
+}
+
+@media (min-width: 640px){
+  .container{
+    max-width: 640px;
+  }
+}
+
+@media (min-width: 768px){
+  .container{
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px){
+  .container{
+    max-width: 1024px;
+  }
+}
+
+@media (min-width: 1280px){
+  .container{
+    max-width: 1280px;
+  }
+}
+
+@media (min-width: 1536px){
+  .container{
+    max-width: 1536px;
+  }
+}
+
 .motion-preset-slide-up{
   --motion-origin-translate-y: 25%;
   --motion-origin-opacity: 0;
@@ -1072,16 +1106,6 @@ select{
 
 .m-2{
   margin: 0.5rem;
-}
-
-.-mx-6{
-  margin-left: -1.5rem;
-  margin-right: -1.5rem;
-}
-
-.mx-6{
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
 }
 
 .mx-auto{
@@ -2027,10 +2051,6 @@ select{
   padding-top: 0px;
 }
 
-.pt-12{
-  padding-top: 3rem;
-}
-
 .pt-2{
   padding-top: 0.5rem;
 }
@@ -2057,6 +2077,10 @@ select{
 
 .align-top{
   vertical-align: top;
+}
+
+.font-fancy{
+  font-family: "ZT Bros Oskon 90s", sans-serif;
 }
 
 .font-inter{
@@ -2547,11 +2571,6 @@ select{
 .\[mask-image\:linear-gradient\(to_right\2c transparent_8px\2c _theme\(colors\.white\/\.7\)_64px\2c _theme\(colors\.white\)_50\%\2c _theme\(colors\.white\/\.7\)_calc\(100\%-64px\)\2c _transparent_calc\(100\%-8px\)\)\]{
   -webkit-mask-image: linear-gradient(to right,transparent 8px, rgb(255 255 255 / .7) 64px, #fff 50%, rgb(255 255 255 / .7) calc(100% - 64px), transparent calc(100% - 8px));
           mask-image: linear-gradient(to right,transparent 8px, rgb(255 255 255 / .7) 64px, #fff 50%, rgb(255 255 255 / .7) calc(100% - 64px), transparent calc(100% - 8px));
-}
-
-.\[mask-image\:linear-gradient\(white_0\%\2c white_calc\(100\%-40px\)\2c _transparent_calc\(100\%-1px\)\)\]{
-  -webkit-mask-image: linear-gradient(white 0%,white calc(100% - 40px), transparent calc(100% - 1px));
-          mask-image: linear-gradient(white 0%,white calc(100% - 40px), transparent calc(100% - 1px));
 }
 
 /* See Alpine.js: https://github.com/alpinejs/alpine#x-cloak */
@@ -3460,10 +3479,6 @@ input[type="search"]::-webkit-search-results-decoration {
 
   .md\:pb-20{
     padding-bottom: 5rem;
-  }
-
-  .md\:pt-20{
-    padding-top: 5rem;
   }
 
   .md\:pt-40{

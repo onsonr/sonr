@@ -16,7 +16,6 @@ plugins:
   - name: go-grpc
     out: ..
     opt: paths=source_relative
-    # go install cosmossdk.io/orm/cmd/protoc-gen-go-cosmos-orm@latest
   - name: go-cosmos-orm
     out: ..
     opt: paths=source_relative

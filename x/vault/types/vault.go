@@ -13,10 +13,13 @@ type Vault struct {
 
 func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwngen.Schema) (*Vault, error) {
 	dwnCfg := &dwngen.Config{
-		Motr:   createMotrConfig(keyshareJSON, adddress, "sonr.id"),
-		Ipfs:   defaultIPFSConfig(),
-		Sonr:   defaultSonrConfig(chainID),
-		Schema: schema,
+		MotrKeyshare:   keyshareJSON,
+		MotrAddress:    adddress,
+		IpfsGatewayUrl: "https://ipfs.sonr.land",
+		SonrApiUrl:     "https://api.sonr.land",
+		SonrRpcUrl:     "https://rpc.sonr.land",
+		SonrChainId:    chainID,
+		VaultSchema:    schema,
 	}
 	fileMap, err := dwn.NewVaultDirectory(dwnCfg)
 	if err != nil {
@@ -25,29 +28,4 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwng
 	return &Vault{
 		FS: fileMap,
 	}, nil
-}
-
-func createMotrConfig(keyshareJSON string, adddress string, origin string) *dwngen.Motr {
-	return &dwngen.Motr{
-		Keyshare: keyshareJSON,
-		Address:  adddress,
-		Origin:   origin,
-	}
-}
-
-func defaultIPFSConfig() *dwngen.IPFS {
-	return &dwngen.IPFS{
-		ApiUrl:     "https://api.sonr-ipfs.land",
-		GatewayUrl: "https://ipfs.sonr.land",
-	}
-}
-
-func defaultSonrConfig(chainID string) *dwngen.Sonr {
-	return &dwngen.Sonr{
-		ApiUrl:       "https://api.sonr.land",
-		GrpcUrl:      "https://grpc.sonr.land",
-		RpcUrl:       "https://rpc.sonr.land",
-		WebSocketUrl: "wss://rpc.sonr.land/ws",
-		ChainId:      chainID,
-	}
 }

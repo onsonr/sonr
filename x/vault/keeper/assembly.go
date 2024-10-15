@@ -5,13 +5,14 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/onsonr/sonr/internal/ctx"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
 // assembleVault assembles the initial vault
-func (k Keeper) AssembleVault(ctx sdk.Context) (string, int64, error) {
-	_, con, err := k.DIDKeeper.NewController(ctx)
+func (k Keeper) AssembleVault(cotx sdk.Context) (string, int64, error) {
+	_, con, err := k.DIDKeeper.NewController(cotx)
 	if err != nil {
 		return "", 0, err
 	}
@@ -19,7 +20,7 @@ func (k Keeper) AssembleVault(ctx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	sch, err := k.CurrentSchema(ctx)
+	sch, err := k.CurrentSchema(cotx)
 	if err != nil {
 		return "", 0, err
 	}
@@ -31,7 +32,8 @@ func (k Keeper) AssembleVault(ctx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	return cid.String(), k.CalculateExpiration(ctx, time.Second*15), nil
+	sctx := ctx.GetSonrCTX(cotx)
+	return cid.String(), sctx.GetBlockExpiration(time.Second * 30), nil
 }
 
 // currentSchema returns the current schema

@@ -2,15 +2,15 @@ syntax = "proto3";
 package macaroon.v1;
 
 import "amino/amino.proto";
-import "gogoproto/gogo.proto";
 import "did/v1/tx.proto";
+import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
 // GenesisState defines the module genesis state
 message GenesisState {
   // Params defines all the parameters of the module.
-  Params params = 1 [ (gogoproto.nullable) = false ];
+  Params params = 1 [(gogoproto.nullable) = false];
 }
 
 // Params defines the set of module parameters.
@@ -50,8 +50,8 @@ message Caveats {
   option (amino.name) = "macaroon/caveats";
   option (gogoproto.equal) = true;
 
-  repeated string supported_first_party = 1;
-  repeated string supported_third_party = 2;
+  repeated Caveat supported_first_party = 1;
+  repeated Caveat supported_third_party = 2;
 }
 
 // Transactions defines the allowlist,denylist for transactions which can be
@@ -62,4 +62,10 @@ message Transactions {
 
   repeated string allowlist = 1;
   repeated string denylist = 2;
+}
+
+message Caveat {
+  repeated string scopes = 1;
+  string caveat = 2;
+  string description = 3;
 }

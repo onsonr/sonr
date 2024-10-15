@@ -14,38 +14,25 @@ class JsonField extends go.Field {
 
 class Config {
   @JsonField
-  ipfs: IPFS
+  ipfsGatewayUrl: String
 
   @JsonField
-  sonr: Sonr
+  motrKeyshare: String
 
   @JsonField
-  motr: Motr
+  motrAddress: String
 
   @JsonField
-  schema: Schema
+  sonrApiUrl: String
 
   @JsonField
-  proxyUrl: String
-}
+  sonrRpcUrl: String
 
-class IPFS {
   @JsonField
-  apiUrl: String
-  
-  @JsonField
-  gatewayUrl: String
-}
+  sonrChainId: String
 
-class Motr {
   @JsonField
-  keyshare: JSON
-  
-  @JsonField
-  address: String
-  
-  @JsonField
-  origin: String
+  vaultSchema: Schema
 }
 
 class Schema {
@@ -75,23 +62,4 @@ class Schema {
   @JsonField
   profile: String
 }
-
-class Sonr {
-  @JsonField
-  apiUrl: String
-
-  @JsonField
-  grpcUrl: String
-
-  @JsonField
-  rpcUrl: String
-
-  @JsonField
-  webSocketUrl: String
-
-  @JsonField
-  chainId: String
-}
-
-
 

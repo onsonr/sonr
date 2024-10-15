@@ -11,7 +11,7 @@ func (k Keeper) NewController(ctx sdk.Context) (uint64, types.ControllerI, error
 	if err != nil {
 		return 0, nil, err
 	}
-	controller, err := types.NewController(shares)
+	controller, err := types.NewController(ctx, shares)
 	if err != nil {
 		return 0, nil, err
 	}
@@ -24,4 +24,16 @@ func (k Keeper) NewController(ctx sdk.Context) (uint64, types.ControllerI, error
 		return 0, nil, err
 	}
 	return num, controller, nil
+}
+
+func (k Keeper) ResolveController(ctx sdk.Context, did string) (types.ControllerI, error) {
+	ct, err := k.OrmDB.ControllerTable().GetByDid(ctx, did)
+	if err != nil {
+		return nil, err
+	}
+	c, err := types.LoadControllerFromTableEntry(ctx, ct)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
 }

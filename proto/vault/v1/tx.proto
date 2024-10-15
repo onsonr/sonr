@@ -25,33 +25,12 @@ service Msg {
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 }
 
-// MsgUpdateParams is the Msg/UpdateParams request type.
-//
-// Since: cosmos-sdk 0.47
-message MsgUpdateParams {
-  option (cosmos.msg.v1.signer) = "authority";
-
-  // authority is the address of the governance account.
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
-
-  // params defines the parameters to update.
-  //
-  // NOTE: All parameters must be supplied.
-  Params params = 2 [ (gogoproto.nullable) = false ];
-}
-
-// MsgUpdateParamsResponse defines the response structure for executing a
-// MsgUpdateParams message.
-//
-// Since: cosmos-sdk 0.47
-message MsgUpdateParamsResponse {}
-
 // MsgAllocateVault is the message type for the AllocateVault RPC.
 message MsgAllocateVault {
   option (cosmos.msg.v1.signer) = "authority";
 
   // authority is the address of the service account.
-  string authority = 1 [ (cosmos_proto.scalar) = "cosmos.AddressString" ];
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
 
   // subject is a unique human-defined identifier to associate with the vault.
   string subject = 2;
@@ -75,3 +54,24 @@ message MsgAllocateVaultResponse {
   // IsLocalhost is a flag to indicate if the vault is localhost
   bool localhost = 4;
 }
+
+// MsgUpdateParams is the Msg/UpdateParams request type.
+//
+// Since: cosmos-sdk 0.47
+message MsgUpdateParams {
+  option (cosmos.msg.v1.signer) = "authority";
+
+  // authority is the address of the governance account.
+  string authority = 1 [(cosmos_proto.scalar) = "cosmos.AddressString"];
+
+  // params defines the parameters to update.
+  //
+  // NOTE: All parameters must be supplied.
+  Params params = 2 [(gogoproto.nullable) = false];
+}
+
+// MsgUpdateParamsResponse defines the response structure for executing a
+// MsgUpdateParams message.
+//
+// Since: cosmos-sdk 0.47
+message MsgUpdateParamsResponse {}

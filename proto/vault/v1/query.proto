@@ -19,10 +19,22 @@ service Query {
     option (google.api.http).get = "/vault/v1/schema";
   }
 
+  // Allocate initializes a Target Vault available for claims with a compatible
+  // Authentication mechanism. The default authentication mechanism is WebAuthn.
+  rpc Allocate(AllocateRequest) returns (AllocateResponse) {
+    option (google.api.http).post = "/vault/v1/allocate";
+  }
+
   // Sync queries the DID document by its id. And returns the required PKL
   // information
-  rpc Sync(SyncRequest) returns (SyncResponse) {
-    option (google.api.http).post = "/vault/v1/sync";
+  rpc SyncInitial(SyncInitialRequest) returns (SyncInitialResponse) {
+    option (google.api.http).post = "/vault/v1/sync-initial";
+  }
+
+  // SyncCurrent queries the DID document by its id. And returns the required PKL
+  // information
+  rpc SyncCurrent(SyncCurrentRequest) returns (SyncCurrentResponse) {
+    option (google.api.http).post = "/vault/v1/sync-current";
   }
 }
 
@@ -34,6 +46,7 @@ message QueryParamsResponse {
   // params defines the parameters of the module.
   Params params = 1;
 }
+
 // QuerySchemaRequest is the request type for the Query/Schema RPC method.
 message QuerySchemaRequest {}
 
@@ -43,8 +56,55 @@ message QuerySchemaResponse {
   Schema schema = 1;
 }
 
-// SyncRequest is the request type for the Sync RPC method.
-message SyncRequest { string did = 1; }
+// AllocateRequest is the request type for the Allocate RPC method.
+message AllocateRequest {
+  string origin = 1;
+  string subject = 2;
+}
 
-// SyncResponse is the response type for the Sync RPC method.
-message SyncResponse { bool success = 1; }
+// AllocateResponse is the response type for the Allocate RPC method.
+message AllocateResponse {
+  bool success = 1;
+  string cid = 2;
+  string macaroon = 3;
+  string public_uri = 4;
+  int64 expiry_block = 5;
+}
+
+// SyncRequest is the request type for the Sync RPC method.
+message SyncInitialRequest {
+  string did = 1;
+}
+
+// SyncInitialResponse is the response type for the Sync RPC method.
+message SyncInitialResponse {
+  bool success = 1;
+
+  // Schema is the DID document.
+  Schema schema = 2;
+
+  // Address is the address of the calling DID.
+  string address = 3;
+
+  // ChainID is the chain ID of the current network.
+  string chainID = 4;
+}
+
+// SyncCurrentRequest is the request type for the Sync RPC method.
+message SyncCurrentRequest {
+  string macaroon = 1;
+}
+
+// SyncCurrentResponse is the response type for the Sync RPC method.
+message SyncCurrentResponse {
+  bool success = 1;
+
+  // Schema is the DID document.
+  Schema schema = 2;
+
+  // Address is the address of the calling DID.
+  string address = 3;
+
+  // ChainID is the chain ID of the current network.
+  string chainID = 4;
+}
