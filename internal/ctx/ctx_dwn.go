@@ -66,7 +66,7 @@ func DWNSessionMiddleware(config *dwngen.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			sessionID := GetSessionID(c)
-			SetConfig(c, config)
+			injectConfig(c, config)
 			cc := &DWNContext{
 				Context: c,
 				id:      sessionID,

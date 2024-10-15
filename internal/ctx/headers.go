@@ -21,7 +21,7 @@ func (h HeaderKey) String() string {
 	return string(h)
 }
 
-func SetConfig(c echo.Context, config *dwngen.Config) {
+func injectConfig(c echo.Context, config *dwngen.Config) {
 	WriteHeader(c, HeaderIPFSGatewayURL, config.IpfsGatewayUrl)
 	WriteHeader(c, HeaderSonrChainID, config.SonrChainId)
 	WriteHeader(c, HeaderSonrKeyshare, config.MotrKeyshare)
