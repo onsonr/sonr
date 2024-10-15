@@ -1,3 +1,10 @@
+## v0.6.0 (2024-10-15)
+
+### Feat
+
+- add User-Agent and Platform to session
+- introduce AuthState enum for authentication state
+
 ## v0.5.12 (2024-10-11)
 
 ## v0.5.11 (2024-10-10)
