@@ -5,7 +5,6 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/sonr/internal/ctx"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/x/vault/types"
 )
@@ -32,8 +31,7 @@ func (k Keeper) AssembleVault(cotx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	sctx := ctx.GetSonrCTX(cotx)
-	return cid.String(), sctx.GetBlockExpiration(time.Second * 30), nil
+	return cid.String(), calculateBlockExpiry(cotx, time.Second*30), nil
 }
 
 // currentSchema returns the current schema
@@ -54,4 +52,10 @@ func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
 		Keyshare:   schema.Keyshare,
 		Profile:    schema.Profile,
 	}, nil
+}
+
+func calculateBlockExpiry(sdkctx sdk.Context, duration time.Duration) int64 {
+	blockTime := sdkctx.BlockTime()
+	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
+	return int64(duration.Seconds() / avgBlockTime)
 }
