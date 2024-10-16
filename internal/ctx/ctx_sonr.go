@@ -19,3 +19,7 @@ func (s *SonrContext) GetBlockExpiration(duration time.Duration) int64 {
 	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
 	return int64(duration.Seconds() / avgBlockTime)
 }
+
+func (s *SonrContext) GetBlockTime() time.Time {
+	return s.BlockTime()
+}
