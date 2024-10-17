@@ -8,16 +8,6 @@ type Variant interface {
 	Attributes() templ.Attributes
 }
 
-templ Spacer() {
-	<br/>
-}
-
-templ Rows() {
-	<div class="flex flex-row w-full gap-2 md:gap-4">
-		{ children... }
-	</div>
-}
-
 templ Columns() {
 	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
 		{ children... }
@@ -125,4 +115,14 @@ templ OpenModal(title, description string) {
 			</div>
 		</template>
 	</div>
+}
+
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4">
+		{ children... }
+	</div>
+}
+
+templ Spacer() {
+	<br/>
 }
