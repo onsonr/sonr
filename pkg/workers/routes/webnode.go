@@ -7,6 +7,7 @@ import (
 	"github.com/onsonr/sonr/pkg/workers/handlers"
 )
 
+// RegisterWebNodeAPI registers the Decentralized Web Node API routes.
 func RegisterWebNodeAPI(e *echo.Echo) {
 	g1 := e.Group("api")
 	g1.GET("/register/:subject/start", handlers.Auth.RegisterSubjectStart)
@@ -22,6 +23,7 @@ func RegisterWebNodeAPI(e *echo.Echo) {
 	g1.POST("/:origin/grant/:subject", handlers.OpenID.GrantAuthorization)
 }
 
+// RegisterWebNodeViews registers the Decentralized Web Node HTMX views.
 func RegisterWebNodeViews(e *echo.Echo) {
 	e.File("/", "index.html")
 	e.GET("/#", authentication.CurrentViewRoute)
