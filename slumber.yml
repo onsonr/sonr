@@ -46,3 +46,6 @@ requests:
       get_vault_schema: !request
         method: GET
         url: "{{host}}/vault/v1/schema"
+      get_vault_allocate: !request
+        method: GET
+        url: "{{host}}/vault/v1/allocate"

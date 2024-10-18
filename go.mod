@@ -72,7 +72,7 @@ require (
 	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.10.2
 	github.com/nlepage/go-js-promise v1.0.0
-	github.com/onsonr/crypto v1.33.0
+	github.com/onsonr/crypto v1.34.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.0

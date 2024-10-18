@@ -21,7 +21,7 @@ type ControllerI interface {
 	ExportUserKs() (string, error)
 }
 
-func NewController(ctx sdk.Context, shares []mpc.Share) (ControllerI, error) {
+func NewController(shares []mpc.Share) (ControllerI, error) {
 	var (
 		valKs  = shares[0]
 		userKs = shares[1]
@@ -50,7 +50,6 @@ func NewController(ctx sdk.Context, shares []mpc.Share) (ControllerI, error) {
 		address:   sonrAddr,
 		btcAddr:   btcAddr,
 		ethAddr:   ethAddr,
-		chainID:   ctx.ChainID(),
 		publicKey: pbBz,
 	}, nil
 }

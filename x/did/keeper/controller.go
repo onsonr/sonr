@@ -11,7 +11,7 @@ func (k Keeper) NewController(ctx sdk.Context) (uint64, types.ControllerI, error
 	if err != nil {
 		return 0, nil, err
 	}
-	controller, err := types.NewController(ctx, shares)
+	controller, err := types.NewController(shares)
 	if err != nil {
 		return 0, nil, err
 	}
