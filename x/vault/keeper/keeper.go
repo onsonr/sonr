@@ -1,17 +1,21 @@
 package keeper
 
 import (
+	"time"
+
 	"cosmossdk.io/collections"
 	storetypes "cosmossdk.io/core/store"
 	"cosmossdk.io/log"
 	"cosmossdk.io/orm/model/ormdb"
 	"github.com/cosmos/cosmos-sdk/codec"
+	sdk "github.com/cosmos/cosmos-sdk/types"
 	authkeeper "github.com/cosmos/cosmos-sdk/x/auth/keeper"
 	authtypes "github.com/cosmos/cosmos-sdk/x/auth/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
+	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/vault/types"
@@ -43,7 +47,7 @@ func NewKeeper(
 	logger log.Logger,
 	authority string,
 	authKeeper authkeeper.AccountKeeper,
-	didk didkeeper.Keeper,
+	didKeeper didkeeper.Keeper,
 	macaroonKeeper macaroonkeeper.Keeper,
 ) Keeper {
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
@@ -64,11 +68,15 @@ func NewKeeper(
 		panic(err)
 	}
 
-	ipfsClient, _ := rpc.NewLocalApi()
+	ipfsClient, err := rpc.NewLocalApi()
+	if err != nil {
+		panic(err)
+	}
+
 	k := Keeper{
 		cdc:            cdc,
 		logger:         logger,
-		DIDKeeper:      didk,
+		DIDKeeper:      didKeeper,
 		MacaroonKeeper: macaroonKeeper,
 		AccountKeeper:  authKeeper,
 		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
@@ -86,4 +94,30 @@ func NewKeeper(
 	k.Schema = schema
 
 	return k
+}
+
+// currentSchema returns the current schema
+func (k Keeper) currentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
+	p, err := k.Params.Get(ctx)
+	if err != nil {
+		return nil, err
+	}
+	schema := p.Schema
+	return &dwngen.Schema{
+		Version:    int(schema.Version),
+		Account:    schema.Account,
+		Asset:      schema.Asset,
+		Chain:      schema.Chain,
+		Credential: schema.Credential,
+		Jwk:        schema.Jwk,
+		Grant:      schema.Grant,
+		Keyshare:   schema.Keyshare,
+		Profile:    schema.Profile,
+	}, nil
+}
+
+func calculateBlockExpiry(sdkctx sdk.Context, duration time.Duration) int64 {
+	blockTime := sdkctx.BlockTime()
+	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
+	return int64(duration.Seconds() / avgBlockTime)
 }

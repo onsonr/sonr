@@ -36,10 +36,10 @@ type QueryClient interface {
 	Schema(ctx context.Context, in *QuerySchemaRequest, opts ...grpc.CallOption) (*QuerySchemaResponse, error)
 	// Allocate initializes a Target Vault available for claims with a compatible
 	// Authentication mechanism. The default authentication mechanism is WebAuthn.
-	Allocate(ctx context.Context, in *AllocateRequest, opts ...grpc.CallOption) (*AllocateResponse, error)
+	Allocate(ctx context.Context, in *QueryAllocateRequest, opts ...grpc.CallOption) (*QueryAllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
+	Sync(ctx context.Context, in *QuerySyncRequest, opts ...grpc.CallOption) (*QuerySyncResponse, error)
 }
 
 type queryClient struct {
@@ -68,8 +68,8 @@ func (c *queryClient) Schema(ctx context.Context, in *QuerySchemaRequest, opts .
 	return out, nil
 }
 
-func (c *queryClient) Allocate(ctx context.Context, in *AllocateRequest, opts ...grpc.CallOption) (*AllocateResponse, error) {
-	out := new(AllocateResponse)
+func (c *queryClient) Allocate(ctx context.Context, in *QueryAllocateRequest, opts ...grpc.CallOption) (*QueryAllocateResponse, error) {
+	out := new(QueryAllocateResponse)
 	err := c.cc.Invoke(ctx, Query_Allocate_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -77,8 +77,8 @@ func (c *queryClient) Allocate(ctx context.Context, in *AllocateRequest, opts ..
 	return out, nil
 }
 
-func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
-	out := new(SyncResponse)
+func (c *queryClient) Sync(ctx context.Context, in *QuerySyncRequest, opts ...grpc.CallOption) (*QuerySyncResponse, error) {
+	out := new(QuerySyncResponse)
 	err := c.cc.Invoke(ctx, Query_Sync_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -97,10 +97,10 @@ type QueryServer interface {
 	Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error)
 	// Allocate initializes a Target Vault available for claims with a compatible
 	// Authentication mechanism. The default authentication mechanism is WebAuthn.
-	Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error)
+	Allocate(context.Context, *QueryAllocateRequest) (*QueryAllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
+	Sync(context.Context, *QuerySyncRequest) (*QuerySyncResponse, error)
 	mustEmbedUnimplementedQueryServer()
 }
 
@@ -114,10 +114,10 @@ func (UnimplementedQueryServer) Params(context.Context, *QueryParamsRequest) (*Q
 func (UnimplementedQueryServer) Schema(context.Context, *QuerySchemaRequest) (*QuerySchemaResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Schema not implemented")
 }
-func (UnimplementedQueryServer) Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error) {
+func (UnimplementedQueryServer) Allocate(context.Context, *QueryAllocateRequest) (*QueryAllocateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Allocate not implemented")
 }
-func (UnimplementedQueryServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
+func (UnimplementedQueryServer) Sync(context.Context, *QuerySyncRequest) (*QuerySyncResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
 }
 func (UnimplementedQueryServer) mustEmbedUnimplementedQueryServer() {}
@@ -170,7 +170,7 @@ func _Query_Schema_Handler(srv interface{}, ctx context.Context, dec func(interf
 }
 
 func _Query_Allocate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AllocateRequest)
+	in := new(QueryAllocateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -182,13 +182,13 @@ func _Query_Allocate_Handler(srv interface{}, ctx context.Context, dec func(inte
 		FullMethod: Query_Allocate_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Allocate(ctx, req.(*AllocateRequest))
+		return srv.(QueryServer).Allocate(ctx, req.(*QueryAllocateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncRequest)
+	in := new(QuerySyncRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -200,7 +200,7 @@ func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interfac
 		FullMethod: Query_Sync_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Sync(ctx, req.(*SyncRequest))
+		return srv.(QueryServer).Sync(ctx, req.(*QuerySyncRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
