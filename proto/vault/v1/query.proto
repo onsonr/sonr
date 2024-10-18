@@ -34,7 +34,7 @@ service Query {
   // SyncCurrent queries the DID document by its id. And returns the required PKL
   // information
   rpc SyncCurrent(SyncCurrentRequest) returns (SyncCurrentResponse) {
-    option (google.api.http).post = "/vault/v1/sync-current";
+    option (google.api.http).post = "/vault/v1/sync";
   }
 }
 
