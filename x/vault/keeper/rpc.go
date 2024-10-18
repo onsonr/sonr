@@ -35,7 +35,7 @@ func (ms msgServer) AllocateVault(goCtx context.Context, msg *types.MsgAllocateV
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
-	cid, expiryBlock, err := ms.k.AssembleVault(ctx)
+	cid, expiryBlock, err := ms.k.assembleVault(ctx)
 	if err != nil {
 		return nil, err
 	}

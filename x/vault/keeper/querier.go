@@ -76,7 +76,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*t
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
 	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
-	cid, expiryBlock, err := k.AssembleVault(ctx)
+	cid, expiryBlock, err := k.assembleVault(ctx)
 	if err != nil {
 		return nil, err
 	}
