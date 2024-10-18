@@ -5,13 +5,12 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/sonr/internal/ctx"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
 // assembleVault assembles the initial vault
-func (k Keeper) AssembleVault(cotx sdk.Context) (string, int64, error) {
+func (k Keeper) assembleVault(cotx sdk.Context) (string, int64, error) {
 	_, con, err := k.DIDKeeper.NewController(cotx)
 	if err != nil {
 		return "", 0, err
@@ -20,7 +19,7 @@ func (k Keeper) AssembleVault(cotx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	sch, err := k.CurrentSchema(cotx)
+	sch, err := k.currentSchema(cotx)
 	if err != nil {
 		return "", 0, err
 	}
@@ -32,12 +31,11 @@ func (k Keeper) AssembleVault(cotx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	sctx := ctx.GetSonrCTX(cotx)
-	return cid.String(), sctx.GetBlockExpiration(time.Second * 30), nil
+	return cid.String(), calculateBlockExpiry(cotx, time.Second*30), nil
 }
 
 // currentSchema returns the current schema
-func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
+func (k Keeper) currentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
 	p, err := k.Params.Get(ctx)
 	if err != nil {
 		return nil, err
@@ -54,4 +52,10 @@ func (k Keeper) CurrentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
 		Keyshare:   schema.Keyshare,
 		Profile:    schema.Profile,
 	}, nil
+}
+
+func calculateBlockExpiry(sdkctx sdk.Context, duration time.Duration) int64 {
+	blockTime := sdkctx.BlockTime()
+	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
+	return int64(duration.Seconds() / avgBlockTime)
 }

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/sonr/internal/ctx"
 	didtypes "github.com/onsonr/sonr/x/did/types"
 	"gopkg.in/macaroon.v2"
 )
@@ -15,7 +14,6 @@ var fourYears = time.Hour * 24 * 365 * 4
 
 // IssueAdminMacaroon creates a macaroon with the specified parameters.
 func (k Keeper) IssueAdminMacaroon(sdkctx sdk.Context, controller didtypes.ControllerI) (*macaroon.Macaroon, error) {
-	sctx := ctx.GetSonrCTX(sdkctx)
 	// Derive the root key by hashing the shared MPC public key
 	rootKey := sha256.Sum256([]byte(controller.PublicKey()))
 	// Create the macaroon
@@ -25,7 +23,7 @@ func (k Keeper) IssueAdminMacaroon(sdkctx sdk.Context, controller didtypes.Contr
 	}
 
 	// Add the block expiry caveat
-	caveat := fmt.Sprintf("block-expiry=%d", sctx.GetBlockExpiration(fourYears))
+	caveat := fmt.Sprintf("block-expiry=%d", calculateBlockExpiry(sdkctx, fourYears))
 	err = m.AddFirstPartyCaveat([]byte(caveat))
 	if err != nil {
 		return nil, err
@@ -52,4 +50,10 @@ func (k Keeper) IssueServiceMacaroon(sdkctx sdk.Context, sharedMPCPubKey, locati
 	}
 
 	return m, nil
+}
+
+func calculateBlockExpiry(sdkctx sdk.Context, duration time.Duration) uint64 {
+	blockTime := sdkctx.BlockTime()
+	avgBlockTime := float64(blockTime.Sub(blockTime).Seconds())
+	return uint64(duration.Seconds() / avgBlockTime)
 }

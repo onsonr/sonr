@@ -1,29 +1,27 @@
 package styles
 
+// Icon is a component that renders an icon
 type Icon interface {
 	Render() templ.Component
 }
 
+// Variant is a component that has attributes
 type Variant interface {
 	Attributes() templ.Attributes
 }
 
-templ Spacer() {
-	<br/>
-}
+// ╭───────────────────────────────────────────────────────────╮
+// │                  General Layout Components                │
+// ╰───────────────────────────────────────────────────────────╯
 
-templ Rows() {
-	<div class="flex flex-row w-full gap-2 md:gap-4">
-		{ children... }
-	</div>
-}
-
+// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
 templ Columns() {
 	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
 		{ children... }
 	</div>
 }
 
+// Layout is a component that renders the general layout of the application
 templ Layout(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -51,6 +49,7 @@ templ Layout(title string, remote bool) {
 	</html>
 }
 
+// LayoutNoBody is a component that renders the general layout of the application without the body tag
 templ LayoutNoBody(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -80,6 +79,7 @@ templ LayoutNoBody(title string, remote bool) {
 	</html>
 }
 
+// OpenModal is a component that renders a modal with a title and description
 templ OpenModal(title, description string) {
 	<div
 		x-data="{ modalOpen: true }"
@@ -125,4 +125,16 @@ templ OpenModal(title, description string) {
 			</div>
 		</template>
 	</div>
+}
+
+// Rows is a component that renders a flex container with a gap of 2 and a max width of 100%
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4">
+		{ children... }
+	</div>
+}
+
+// Spacer is a component that renders a <br/> tag
+templ Spacer() {
+	<br/>
 }

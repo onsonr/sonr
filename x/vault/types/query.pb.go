@@ -325,22 +325,22 @@ func (m *AllocateResponse) GetExpiryBlock() int64 {
 }
 
 // SyncRequest is the request type for the Sync RPC method.
-type SyncInitialRequest struct {
+type SyncRequest struct {
 	Did string `protobuf:"bytes,1,opt,name=did,proto3" json:"did,omitempty"`
 }
 
-func (m *SyncInitialRequest) Reset()         { *m = SyncInitialRequest{} }
-func (m *SyncInitialRequest) String() string { return proto.CompactTextString(m) }
-func (*SyncInitialRequest) ProtoMessage()    {}
-func (*SyncInitialRequest) Descriptor() ([]byte, []int) {
+func (m *SyncRequest) Reset()         { *m = SyncRequest{} }
+func (m *SyncRequest) String() string { return proto.CompactTextString(m) }
+func (*SyncRequest) ProtoMessage()    {}
+func (*SyncRequest) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6d49a2800ab3e4b, []int{6}
 }
-func (m *SyncInitialRequest) XXX_Unmarshal(b []byte) error {
+func (m *SyncRequest) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SyncInitialRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SyncRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SyncInitialRequest.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SyncRequest.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -350,27 +350,27 @@ func (m *SyncInitialRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, 
 		return b[:n], nil
 	}
 }
-func (m *SyncInitialRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SyncInitialRequest.Merge(m, src)
+func (m *SyncRequest) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SyncRequest.Merge(m, src)
 }
-func (m *SyncInitialRequest) XXX_Size() int {
+func (m *SyncRequest) XXX_Size() int {
 	return m.Size()
 }
-func (m *SyncInitialRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SyncInitialRequest.DiscardUnknown(m)
+func (m *SyncRequest) XXX_DiscardUnknown() {
+	xxx_messageInfo_SyncRequest.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SyncInitialRequest proto.InternalMessageInfo
+var xxx_messageInfo_SyncRequest proto.InternalMessageInfo
 
-func (m *SyncInitialRequest) GetDid() string {
+func (m *SyncRequest) GetDid() string {
 	if m != nil {
 		return m.Did
 	}
 	return ""
 }
 
-// SyncInitialResponse is the response type for the Sync RPC method.
-type SyncInitialResponse struct {
+// SyncResponse is the response type for the Sync RPC method.
+type SyncResponse struct {
 	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	// Schema is the DID document.
 	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
@@ -380,18 +380,18 @@ type SyncInitialResponse struct {
 	ChainID string `protobuf:"bytes,4,opt,name=chainID,proto3" json:"chainID,omitempty"`
 }
 
-func (m *SyncInitialResponse) Reset()         { *m = SyncInitialResponse{} }
-func (m *SyncInitialResponse) String() string { return proto.CompactTextString(m) }
-func (*SyncInitialResponse) ProtoMessage()    {}
-func (*SyncInitialResponse) Descriptor() ([]byte, []int) {
+func (m *SyncResponse) Reset()         { *m = SyncResponse{} }
+func (m *SyncResponse) String() string { return proto.CompactTextString(m) }
+func (*SyncResponse) ProtoMessage()    {}
+func (*SyncResponse) Descriptor() ([]byte, []int) {
 	return fileDescriptor_e6d49a2800ab3e4b, []int{7}
 }
-func (m *SyncInitialResponse) XXX_Unmarshal(b []byte) error {
+func (m *SyncResponse) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
 }
-func (m *SyncInitialResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+func (m *SyncResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
 	if deterministic {
-		return xxx_messageInfo_SyncInitialResponse.Marshal(b, m, deterministic)
+		return xxx_messageInfo_SyncResponse.Marshal(b, m, deterministic)
 	} else {
 		b = b[:cap(b)]
 		n, err := m.MarshalToSizedBuffer(b)
@@ -401,157 +401,40 @@ func (m *SyncInitialResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte,
 		return b[:n], nil
 	}
 }
-func (m *SyncInitialResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SyncInitialResponse.Merge(m, src)
+func (m *SyncResponse) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SyncResponse.Merge(m, src)
 }
-func (m *SyncInitialResponse) XXX_Size() int {
+func (m *SyncResponse) XXX_Size() int {
 	return m.Size()
 }
-func (m *SyncInitialResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SyncInitialResponse.DiscardUnknown(m)
+func (m *SyncResponse) XXX_DiscardUnknown() {
+	xxx_messageInfo_SyncResponse.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_SyncInitialResponse proto.InternalMessageInfo
+var xxx_messageInfo_SyncResponse proto.InternalMessageInfo
 
-func (m *SyncInitialResponse) GetSuccess() bool {
+func (m *SyncResponse) GetSuccess() bool {
 	if m != nil {
 		return m.Success
 	}
 	return false
 }
 
-func (m *SyncInitialResponse) GetSchema() *Schema {
+func (m *SyncResponse) GetSchema() *Schema {
 	if m != nil {
 		return m.Schema
 	}
 	return nil
 }
 
-func (m *SyncInitialResponse) GetAddress() string {
+func (m *SyncResponse) GetAddress() string {
 	if m != nil {
 		return m.Address
 	}
 	return ""
 }
 
-func (m *SyncInitialResponse) GetChainID() string {
-	if m != nil {
-		return m.ChainID
-	}
-	return ""
-}
-
-// SyncCurrentRequest is the request type for the Sync RPC method.
-type SyncCurrentRequest struct {
-	Macaroon string `protobuf:"bytes,1,opt,name=macaroon,proto3" json:"macaroon,omitempty"`
-}
-
-func (m *SyncCurrentRequest) Reset()         { *m = SyncCurrentRequest{} }
-func (m *SyncCurrentRequest) String() string { return proto.CompactTextString(m) }
-func (*SyncCurrentRequest) ProtoMessage()    {}
-func (*SyncCurrentRequest) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{8}
-}
-func (m *SyncCurrentRequest) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SyncCurrentRequest) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SyncCurrentRequest.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SyncCurrentRequest) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SyncCurrentRequest.Merge(m, src)
-}
-func (m *SyncCurrentRequest) XXX_Size() int {
-	return m.Size()
-}
-func (m *SyncCurrentRequest) XXX_DiscardUnknown() {
-	xxx_messageInfo_SyncCurrentRequest.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SyncCurrentRequest proto.InternalMessageInfo
-
-func (m *SyncCurrentRequest) GetMacaroon() string {
-	if m != nil {
-		return m.Macaroon
-	}
-	return ""
-}
-
-// SyncCurrentResponse is the response type for the Sync RPC method.
-type SyncCurrentResponse struct {
-	Success bool `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	// Schema is the DID document.
-	Schema *Schema `protobuf:"bytes,2,opt,name=schema,proto3" json:"schema,omitempty"`
-	// Address is the address of the calling DID.
-	Address string `protobuf:"bytes,3,opt,name=address,proto3" json:"address,omitempty"`
-	// ChainID is the chain ID of the current network.
-	ChainID string `protobuf:"bytes,4,opt,name=chainID,proto3" json:"chainID,omitempty"`
-}
-
-func (m *SyncCurrentResponse) Reset()         { *m = SyncCurrentResponse{} }
-func (m *SyncCurrentResponse) String() string { return proto.CompactTextString(m) }
-func (*SyncCurrentResponse) ProtoMessage()    {}
-func (*SyncCurrentResponse) Descriptor() ([]byte, []int) {
-	return fileDescriptor_e6d49a2800ab3e4b, []int{9}
-}
-func (m *SyncCurrentResponse) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *SyncCurrentResponse) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_SyncCurrentResponse.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *SyncCurrentResponse) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_SyncCurrentResponse.Merge(m, src)
-}
-func (m *SyncCurrentResponse) XXX_Size() int {
-	return m.Size()
-}
-func (m *SyncCurrentResponse) XXX_DiscardUnknown() {
-	xxx_messageInfo_SyncCurrentResponse.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_SyncCurrentResponse proto.InternalMessageInfo
-
-func (m *SyncCurrentResponse) GetSuccess() bool {
-	if m != nil {
-		return m.Success
-	}
-	return false
-}
-
-func (m *SyncCurrentResponse) GetSchema() *Schema {
-	if m != nil {
-		return m.Schema
-	}
-	return nil
-}
-
-func (m *SyncCurrentResponse) GetAddress() string {
-	if m != nil {
-		return m.Address
-	}
-	return ""
-}
-
-func (m *SyncCurrentResponse) GetChainID() string {
+func (m *SyncResponse) GetChainID() string {
 	if m != nil {
 		return m.ChainID
 	}
@@ -565,53 +448,49 @@ func init() {
 	proto.RegisterType((*QuerySchemaResponse)(nil), "vault.v1.QuerySchemaResponse")
 	proto.RegisterType((*AllocateRequest)(nil), "vault.v1.AllocateRequest")
 	proto.RegisterType((*AllocateResponse)(nil), "vault.v1.AllocateResponse")
-	proto.RegisterType((*SyncInitialRequest)(nil), "vault.v1.SyncInitialRequest")
-	proto.RegisterType((*SyncInitialResponse)(nil), "vault.v1.SyncInitialResponse")
-	proto.RegisterType((*SyncCurrentRequest)(nil), "vault.v1.SyncCurrentRequest")
-	proto.RegisterType((*SyncCurrentResponse)(nil), "vault.v1.SyncCurrentResponse")
+	proto.RegisterType((*SyncRequest)(nil), "vault.v1.SyncRequest")
+	proto.RegisterType((*SyncResponse)(nil), "vault.v1.SyncResponse")
 }
 
 func init() { proto.RegisterFile("vault/v1/query.proto", fileDescriptor_e6d49a2800ab3e4b) }
 
 var fileDescriptor_e6d49a2800ab3e4b = []byte{
-	// 580 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x54, 0x41, 0x6f, 0xd3, 0x30,
-	0x18, 0x6d, 0xda, 0xad, 0x74, 0x2e, 0x12, 0x95, 0x57, 0x55, 0x21, 0xda, 0xa2, 0x11, 0x21, 0xd4,
-	0x0b, 0x0d, 0x1b, 0x77, 0x10, 0x1b, 0x97, 0xdd, 0xa0, 0x13, 0x17, 0x24, 0x54, 0xb9, 0xae, 0xd5,
-	0x7a, 0xa4, 0x76, 0x66, 0x3b, 0xd5, 0x7a, 0x43, 0xdc, 0x91, 0x90, 0xb8, 0xf2, 0x83, 0x38, 0x4e,
-	0xe2, 0xc2, 0x11, 0xb5, 0xfc, 0x10, 0x14, 0xdb, 0x49, 0x9a, 0xb6, 0x83, 0xe3, 0x2e, 0x55, 0xbe,
-	0xf7, 0x7d, 0x7e, 0xcf, 0xcf, 0x7a, 0x5f, 0x41, 0x7b, 0x86, 0x92, 0x48, 0x85, 0xb3, 0xe3, 0xf0,
-	0x2a, 0x21, 0x62, 0xde, 0x8b, 0x05, 0x57, 0x1c, 0x36, 0x34, 0xda, 0x9b, 0x1d, 0x7b, 0x07, 0x63,
-	0xce, 0xc7, 0x11, 0x09, 0x51, 0x4c, 0x43, 0xc4, 0x18, 0x57, 0x48, 0x51, 0xce, 0xa4, 0x99, 0xf3,
-	0x3a, 0xf9, 0xe9, 0x31, 0x61, 0x44, 0x52, 0x8b, 0x07, 0x6d, 0x00, 0xdf, 0xa6, 0x74, 0x6f, 0x90,
-	0x40, 0x53, 0xd9, 0x27, 0x57, 0x09, 0x91, 0x2a, 0x78, 0x09, 0xf6, 0x4b, 0xa8, 0x8c, 0x39, 0x93,
-	0x04, 0x76, 0x41, 0x3d, 0xd6, 0x88, 0xeb, 0x1c, 0x39, 0xdd, 0xe6, 0x49, 0xab, 0x97, 0xa9, 0xf7,
-	0xec, 0xa4, 0xed, 0xe7, 0xb4, 0x17, 0x78, 0x42, 0xa6, 0x68, 0x9d, 0x36, 0x43, 0x0b, 0x5a, 0xa9,
-	0x91, 0x4d, 0x5a, 0x3b, 0x69, 0xfb, 0xc1, 0x19, 0x78, 0xf0, 0x2a, 0x8a, 0x38, 0x46, 0x8a, 0x58,
-	0x4e, 0xd8, 0x01, 0x75, 0x2e, 0xe8, 0x98, 0x32, 0x7d, 0x78, 0xaf, 0x6f, 0x2b, 0xe8, 0x82, 0x7b,
-	0x32, 0x19, 0x5e, 0x12, 0xac, 0xdc, 0xaa, 0x6e, 0x64, 0x65, 0xf0, 0xdd, 0x01, 0xad, 0x82, 0xc5,
-	0xde, 0x41, 0x8f, 0x63, 0x4c, 0xa4, 0xf1, 0xd6, 0xe8, 0x67, 0x25, 0x6c, 0x81, 0x1a, 0xa6, 0x23,
-	0x4b, 0x92, 0x7e, 0x42, 0x0f, 0x34, 0xa6, 0x08, 0x23, 0xc1, 0x39, 0x73, 0x6b, 0x1a, 0xce, 0x6b,
-	0x78, 0x08, 0x40, 0x9c, 0x0c, 0x23, 0x8a, 0x07, 0x89, 0xa0, 0xee, 0x8e, 0xee, 0xee, 0x19, 0xe4,
-	0x9d, 0xa0, 0xf0, 0x11, 0xb8, 0x4f, 0xae, 0x63, 0x2a, 0xe6, 0x83, 0x61, 0xc4, 0xf1, 0x47, 0x77,
-	0xf7, 0xc8, 0xe9, 0xd6, 0xfa, 0x4d, 0x83, 0x9d, 0xa6, 0x50, 0xf0, 0x04, 0xc0, 0x8b, 0x39, 0xc3,
-	0xe7, 0x8c, 0x2a, 0x8a, 0xa2, 0xcc, 0x66, 0x0b, 0xd4, 0x46, 0x74, 0x64, 0x3d, 0xa6, 0x9f, 0xc1,
-	0x17, 0x07, 0xec, 0x97, 0x06, 0xff, 0xeb, 0xa4, 0x78, 0xe7, 0xea, 0xbf, 0xdf, 0x39, 0xe5, 0x40,
-	0xa3, 0x91, 0x48, 0x39, 0x8c, 0xc1, 0xac, 0x4c, 0x3b, 0x78, 0x82, 0x28, 0x3b, 0x7f, 0x6d, 0xcd,
-	0x65, 0x65, 0xf0, 0xcc, 0xdc, 0xfb, 0x2c, 0x11, 0x82, 0x30, 0x95, 0xdd, 0x7b, 0xf5, 0xad, 0x9c,
-	0xf2, 0x5b, 0xe5, 0x0e, 0xf2, 0x23, 0x77, 0xeb, 0xe0, 0xe4, 0xd3, 0x0e, 0xd8, 0xd5, 0xf9, 0x84,
-	0x03, 0x50, 0x37, 0x81, 0x86, 0x07, 0x85, 0xc2, 0xe6, 0x9e, 0x78, 0x87, 0xb7, 0x74, 0x8d, 0x91,
-	0xc0, 0xfd, 0xfc, 0xf3, 0xcf, 0xb7, 0x2a, 0x84, 0xad, 0x30, 0xdf, 0x3e, 0xb3, 0x1f, 0xa9, 0x80,
-	0xb9, 0xf0, 0x86, 0x40, 0x69, 0x63, 0x36, 0x04, 0xca, 0x9b, 0xb3, 0x4d, 0xc0, 0xfa, 0xff, 0x00,
-	0x1a, 0x59, 0xc6, 0xe1, 0xc3, 0x82, 0x64, 0x6d, 0x7b, 0x3c, 0x6f, 0x5b, 0xcb, 0x92, 0x7b, 0x9a,
-	0xbc, 0x1d, 0xc0, 0x82, 0x1c, 0x65, 0x94, 0x97, 0xa0, 0xb9, 0x92, 0xbd, 0x55, 0x13, 0x9b, 0xd9,
-	0x5d, 0x35, 0xb1, 0x25, 0xb0, 0x81, 0xaf, 0x75, 0xdc, 0xa0, 0xb3, 0x62, 0x62, 0xce, 0xf0, 0x53,
-	0x6a, 0xc9, 0xad, 0x96, 0x4d, 0xc9, 0xba, 0x56, 0x39, 0x6f, 0xeb, 0x5a, 0x6b, 0xd1, 0xba, 0x55,
-	0x0b, 0x9b, 0xb9, 0xd3, 0x17, 0x3f, 0x16, 0xbe, 0x73, 0xb3, 0xf0, 0x9d, 0xdf, 0x0b, 0xdf, 0xf9,
-	0xba, 0xf4, 0x2b, 0x37, 0x4b, 0xbf, 0xf2, 0x6b, 0xe9, 0x57, 0xde, 0x3f, 0x1e, 0x53, 0x35, 0x49,
-	0x86, 0x3d, 0xcc, 0xa7, 0x21, 0x67, 0x92, 0x33, 0x11, 0xea, 0x9f, 0x6b, 0xcb, 0xa4, 0xe6, 0x31,
-	0x91, 0xc3, 0xba, 0xfe, 0x57, 0x7d, 0xfe, 0x37, 0x00, 0x00, 0xff, 0xff, 0xaf, 0x30, 0x93, 0x81,
-	0xad, 0x05, 0x00, 0x00,
+	// 548 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x84, 0x54, 0x41, 0x6f, 0xd3, 0x30,
+	0x14, 0x6e, 0xda, 0xad, 0x74, 0xaf, 0x93, 0xa8, 0xcc, 0xa8, 0x42, 0xb4, 0x85, 0x11, 0x81, 0xe8,
+	0x65, 0x8d, 0x36, 0xee, 0x20, 0x06, 0x17, 0x6e, 0xd0, 0x69, 0x17, 0x2e, 0x95, 0xeb, 0x5a, 0xad,
+	0x21, 0xb5, 0xb3, 0xd8, 0xa9, 0x16, 0x4d, 0xbb, 0x70, 0xe0, 0x8c, 0xe0, 0xca, 0x0f, 0xe2, 0x38,
+	0x89, 0x0b, 0x47, 0xd4, 0xf2, 0x43, 0x50, 0x6c, 0xa7, 0x59, 0xdb, 0xc1, 0x2e, 0x55, 0xde, 0xf7,
+	0x9e, 0xbf, 0xcf, 0x9f, 0xdf, 0xa7, 0xc2, 0xce, 0x14, 0xa7, 0x91, 0x0a, 0xa7, 0x87, 0xe1, 0x59,
+	0x4a, 0x93, 0xac, 0x1b, 0x27, 0x42, 0x09, 0xd4, 0xd0, 0x68, 0x77, 0x7a, 0xe8, 0xed, 0x8e, 0x84,
+	0x18, 0x45, 0x34, 0xc4, 0x31, 0x0b, 0x31, 0xe7, 0x42, 0x61, 0xc5, 0x04, 0x97, 0x66, 0xce, 0x6b,
+	0x2f, 0x4e, 0x8f, 0x28, 0xa7, 0x92, 0x59, 0x3c, 0xd8, 0x01, 0xf4, 0x2e, 0xa7, 0x7b, 0x8b, 0x13,
+	0x3c, 0x91, 0x3d, 0x7a, 0x96, 0x52, 0xa9, 0x82, 0x17, 0x70, 0x6f, 0x09, 0x95, 0xb1, 0xe0, 0x92,
+	0xa2, 0x0e, 0xd4, 0x63, 0x8d, 0xb8, 0xce, 0xbe, 0xd3, 0x69, 0x1e, 0xb5, 0xba, 0x85, 0x7a, 0xd7,
+	0x4e, 0xda, 0xfe, 0x82, 0xf6, 0x84, 0x8c, 0xe9, 0x04, 0xaf, 0xd2, 0x16, 0x68, 0x49, 0x2b, 0x35,
+	0xb2, 0x4e, 0x6b, 0x27, 0x6d, 0x3f, 0x78, 0x05, 0x77, 0x5f, 0x46, 0x91, 0x20, 0x58, 0x51, 0xcb,
+	0x89, 0xda, 0x50, 0x17, 0x09, 0x1b, 0x31, 0xae, 0x0f, 0x6f, 0xf5, 0x6c, 0x85, 0x5c, 0xb8, 0x23,
+	0xd3, 0xc1, 0x07, 0x4a, 0x94, 0x5b, 0xd5, 0x8d, 0xa2, 0x0c, 0xbe, 0x3b, 0xd0, 0x2a, 0x59, 0xec,
+	0x1d, 0xf4, 0x38, 0x21, 0x54, 0x1a, 0x6f, 0x8d, 0x5e, 0x51, 0xa2, 0x16, 0xd4, 0x08, 0x1b, 0x5a,
+	0x92, 0xfc, 0x13, 0x79, 0xd0, 0x98, 0x60, 0x82, 0x13, 0x21, 0xb8, 0x5b, 0xd3, 0xf0, 0xa2, 0x46,
+	0x7b, 0x00, 0x71, 0x3a, 0x88, 0x18, 0xe9, 0xa7, 0x09, 0x73, 0x37, 0x74, 0x77, 0xcb, 0x20, 0xa7,
+	0x09, 0x43, 0x8f, 0x60, 0x9b, 0x9e, 0xc7, 0x2c, 0xc9, 0xfa, 0x83, 0x48, 0x90, 0x8f, 0xee, 0xe6,
+	0xbe, 0xd3, 0xa9, 0xf5, 0x9a, 0x06, 0x3b, 0xce, 0xa1, 0xe0, 0x21, 0x34, 0x4f, 0x32, 0x4e, 0x0a,
+	0x7f, 0x2d, 0xa8, 0x0d, 0xd9, 0xd0, 0x9a, 0xcb, 0x3f, 0x83, 0xcf, 0x0e, 0x6c, 0x9b, 0x89, 0x5b,
+	0xef, 0x5e, 0xbe, 0x6c, 0xf5, 0xff, 0x2f, 0x9b, 0x73, 0xe0, 0xe1, 0x30, 0xc9, 0x39, 0x8c, 0xa5,
+	0xa2, 0xcc, 0x3b, 0x64, 0x8c, 0x19, 0x7f, 0xf3, 0xda, 0xda, 0x29, 0xca, 0xa3, 0xaf, 0x35, 0xd8,
+	0xd4, 0xfb, 0x44, 0x7d, 0xa8, 0x9b, 0x00, 0xa0, 0xdd, 0x52, 0x61, 0x3d, 0x57, 0xde, 0xde, 0x3f,
+	0xba, 0xc6, 0x48, 0xe0, 0x7e, 0xfa, 0xf9, 0xe7, 0x5b, 0x15, 0xa1, 0x56, 0xb8, 0x48, 0xab, 0xc9,
+	0x53, 0x2e, 0x60, 0x2e, 0xbc, 0x26, 0xb0, 0x94, 0xb0, 0x35, 0x81, 0xe5, 0xa4, 0xdd, 0x24, 0x60,
+	0xfd, 0xc7, 0xd0, 0x28, 0x32, 0x81, 0x1e, 0x94, 0x24, 0x2b, 0x69, 0xf3, 0xbc, 0x9b, 0x5a, 0x96,
+	0xfc, 0x40, 0x93, 0x3f, 0x45, 0x4f, 0x4a, 0x72, 0x6c, 0x67, 0xc2, 0x0b, 0x93, 0xca, 0xcb, 0xf0,
+	0xc2, 0xa6, 0xf0, 0x12, 0x9d, 0xc2, 0x46, 0xbe, 0x45, 0x74, 0xff, 0xda, 0x4e, 0xca, 0xbd, 0x7b,
+	0xed, 0x55, 0xd8, 0xaa, 0xf8, 0x5a, 0xc5, 0x0d, 0xda, 0xd7, 0x2c, 0x64, 0x9c, 0x1c, 0x30, 0xce,
+	0x14, 0xc3, 0xd1, 0xf1, 0xf3, 0x1f, 0x33, 0xdf, 0xb9, 0x9a, 0xf9, 0xce, 0xef, 0x99, 0xef, 0x7c,
+	0x99, 0xfb, 0x95, 0xab, 0xb9, 0x5f, 0xf9, 0x35, 0xf7, 0x2b, 0xef, 0x1f, 0x8f, 0x98, 0x1a, 0xa7,
+	0x83, 0x2e, 0x11, 0x93, 0x50, 0x70, 0x29, 0x78, 0x12, 0xea, 0x9f, 0x73, 0xcb, 0xa4, 0xb2, 0x98,
+	0xca, 0x41, 0x5d, 0xff, 0x2f, 0x3c, 0xfb, 0x1b, 0x00, 0x00, 0xff, 0xff, 0x2d, 0x9f, 0x2a, 0xf0,
+	0x6f, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -636,10 +515,7 @@ type QueryClient interface {
 	Allocate(ctx context.Context, in *AllocateRequest, opts ...grpc.CallOption) (*AllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error)
-	// SyncCurrent queries the DID document by its id. And returns the required PKL
-	// information
-	SyncCurrent(ctx context.Context, in *SyncCurrentRequest, opts ...grpc.CallOption) (*SyncCurrentResponse, error)
+	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
 }
 
 type queryClient struct {
@@ -677,18 +553,9 @@ func (c *queryClient) Allocate(ctx context.Context, in *AllocateRequest, opts ..
 	return out, nil
 }
 
-func (c *queryClient) SyncInitial(ctx context.Context, in *SyncInitialRequest, opts ...grpc.CallOption) (*SyncInitialResponse, error) {
-	out := new(SyncInitialResponse)
-	err := c.cc.Invoke(ctx, "/vault.v1.Query/SyncInitial", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *queryClient) SyncCurrent(ctx context.Context, in *SyncCurrentRequest, opts ...grpc.CallOption) (*SyncCurrentResponse, error) {
-	out := new(SyncCurrentResponse)
-	err := c.cc.Invoke(ctx, "/vault.v1.Query/SyncCurrent", in, out, opts...)
+func (c *queryClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
+	out := new(SyncResponse)
+	err := c.cc.Invoke(ctx, "/vault.v1.Query/Sync", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -707,10 +574,7 @@ type QueryServer interface {
 	Allocate(context.Context, *AllocateRequest) (*AllocateResponse, error)
 	// Sync queries the DID document by its id. And returns the required PKL
 	// information
-	SyncInitial(context.Context, *SyncInitialRequest) (*SyncInitialResponse, error)
-	// SyncCurrent queries the DID document by its id. And returns the required PKL
-	// information
-	SyncCurrent(context.Context, *SyncCurrentRequest) (*SyncCurrentResponse, error)
+	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
 }
 
 // UnimplementedQueryServer can be embedded to have forward compatible implementations.
@@ -726,11 +590,8 @@ func (*UnimplementedQueryServer) Schema(ctx context.Context, req *QuerySchemaReq
 func (*UnimplementedQueryServer) Allocate(ctx context.Context, req *AllocateRequest) (*AllocateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Allocate not implemented")
 }
-func (*UnimplementedQueryServer) SyncInitial(ctx context.Context, req *SyncInitialRequest) (*SyncInitialResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SyncInitial not implemented")
-}
-func (*UnimplementedQueryServer) SyncCurrent(ctx context.Context, req *SyncCurrentRequest) (*SyncCurrentResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method SyncCurrent not implemented")
+func (*UnimplementedQueryServer) Sync(ctx context.Context, req *SyncRequest) (*SyncResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
 }
 
 func RegisterQueryServer(s grpc1.Server, srv QueryServer) {
@@ -791,38 +652,20 @@ func _Query_Allocate_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_SyncInitial_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncInitialRequest)
+func _Query_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(QueryServer).SyncInitial(ctx, in)
+		return srv.(QueryServer).Sync(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/vault.v1.Query/SyncInitial",
+		FullMethod: "/vault.v1.Query/Sync",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SyncInitial(ctx, req.(*SyncInitialRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _Query_SyncCurrent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SyncCurrentRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).SyncCurrent(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/vault.v1.Query/SyncCurrent",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).SyncCurrent(ctx, req.(*SyncCurrentRequest))
+		return srv.(QueryServer).Sync(ctx, req.(*SyncRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -844,12 +687,8 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 			Handler:    _Query_Allocate_Handler,
 		},
 		{
-			MethodName: "SyncInitial",
-			Handler:    _Query_SyncInitial_Handler,
-		},
-		{
-			MethodName: "SyncCurrent",
-			Handler:    _Query_SyncCurrent_Handler,
+			MethodName: "Sync",
+			Handler:    _Query_Sync_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
@@ -1068,7 +907,7 @@ func (m *AllocateResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SyncInitialRequest) Marshal() (dAtA []byte, err error) {
+func (m *SyncRequest) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1078,12 +917,12 @@ func (m *SyncInitialRequest) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SyncInitialRequest) MarshalTo(dAtA []byte) (int, error) {
+func (m *SyncRequest) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SyncInitialRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SyncRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1098,7 +937,7 @@ func (m *SyncInitialRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *SyncInitialResponse) Marshal() (dAtA []byte, err error) {
+func (m *SyncResponse) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -1108,101 +947,12 @@ func (m *SyncInitialResponse) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *SyncInitialResponse) MarshalTo(dAtA []byte) (int, error) {
+func (m *SyncResponse) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *SyncInitialResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.ChainID) > 0 {
-		i -= len(m.ChainID)
-		copy(dAtA[i:], m.ChainID)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.ChainID)))
-		i--
-		dAtA[i] = 0x22
-	}
-	if len(m.Address) > 0 {
-		i -= len(m.Address)
-		copy(dAtA[i:], m.Address)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Address)))
-		i--
-		dAtA[i] = 0x1a
-	}
-	if m.Schema != nil {
-		{
-			size, err := m.Schema.MarshalToSizedBuffer(dAtA[:i])
-			if err != nil {
-				return 0, err
-			}
-			i -= size
-			i = encodeVarintQuery(dAtA, i, uint64(size))
-		}
-		i--
-		dAtA[i] = 0x12
-	}
-	if m.Success {
-		i--
-		if m.Success {
-			dAtA[i] = 1
-		} else {
-			dAtA[i] = 0
-		}
-		i--
-		dAtA[i] = 0x8
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SyncCurrentRequest) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SyncCurrentRequest) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SyncCurrentRequest) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Macaroon) > 0 {
-		i -= len(m.Macaroon)
-		copy(dAtA[i:], m.Macaroon)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Macaroon)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
-func (m *SyncCurrentResponse) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *SyncCurrentResponse) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *SyncCurrentResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *SyncResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -1345,7 +1095,7 @@ func (m *AllocateResponse) Size() (n int) {
 	return n
 }
 
-func (m *SyncInitialRequest) Size() (n int) {
+func (m *SyncRequest) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1358,44 +1108,7 @@ func (m *SyncInitialRequest) Size() (n int) {
 	return n
 }
 
-func (m *SyncInitialResponse) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	if m.Success {
-		n += 2
-	}
-	if m.Schema != nil {
-		l = m.Schema.Size()
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Address)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.ChainID)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SyncCurrentRequest) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Macaroon)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	return n
-}
-
-func (m *SyncCurrentResponse) Size() (n int) {
+func (m *SyncResponse) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -1996,7 +1709,7 @@ func (m *AllocateResponse) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SyncInitialRequest) Unmarshal(dAtA []byte) error {
+func (m *SyncRequest) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2019,10 +1732,10 @@ func (m *SyncInitialRequest) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SyncInitialRequest: wiretype end group for non-group")
+			return fmt.Errorf("proto: SyncRequest: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SyncInitialRequest: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SyncRequest: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -2078,7 +1791,7 @@ func (m *SyncInitialRequest) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *SyncInitialResponse) Unmarshal(dAtA []byte) error {
+func (m *SyncResponse) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -2101,262 +1814,10 @@ func (m *SyncInitialResponse) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: SyncInitialResponse: wiretype end group for non-group")
+			return fmt.Errorf("proto: SyncResponse: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SyncInitialResponse: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 0 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Success", wireType)
-			}
-			var v int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				v |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			m.Success = bool(v != 0)
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Schema", wireType)
-			}
-			var msglen int
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				msglen |= int(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			if msglen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + msglen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			if m.Schema == nil {
-				m.Schema = &Schema{}
-			}
-			if err := m.Schema.Unmarshal(dAtA[iNdEx:postIndex]); err != nil {
-				return err
-			}
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Address", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Address = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field ChainID", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.ChainID = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SyncCurrentRequest) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SyncCurrentRequest: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SyncCurrentRequest: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Macaroon", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Macaroon = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *SyncCurrentResponse) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: SyncCurrentResponse: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: SyncCurrentResponse: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: SyncResponse: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:

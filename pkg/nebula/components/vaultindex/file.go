@@ -8,6 +8,7 @@ import (
 	"github.com/onsonr/sonr/internal/dwn/gen"
 )
 
+// BuildFile builds the index.html file for the vault
 func BuildFile(cnfg *gen.Config) (files.Node, error) {
 	w := bytes.NewBuffer(nil)
 	err := IndexFile().Render(context.Background(), w)
