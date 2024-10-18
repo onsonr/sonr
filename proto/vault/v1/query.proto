@@ -22,7 +22,7 @@ service Query {
   // Allocate initializes a Target Vault available for claims with a compatible
   // Authentication mechanism. The default authentication mechanism is WebAuthn.
   rpc Allocate(AllocateRequest) returns (AllocateResponse) {
-    option (google.api.http).post = "/vault/v1/allocate";
+    option (google.api.http).get = "/vault/v1/allocate/{origin}/{subject}";
   }
 
   // Sync queries the DID document by its id. And returns the required PKL
