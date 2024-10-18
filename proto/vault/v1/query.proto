@@ -6,6 +6,10 @@ import "vault/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/vault/types";
 
+// ╭─────────────────────────────────────────────────────────╮
+// │                  RPC Query Service                      │
+// ╰─────────────────────────────────────────────────────────╯
+
 // Query provides defines the gRPC querier service.
 service Query {
   // Params queries all parameters of the module.
@@ -31,6 +35,10 @@ service Query {
     option (google.api.http).get = "/vault/v1/sync-initial";
   }
 }
+
+// ╭──────────────────────────────────────────────────────────╮
+// │                  RPC Query Messages                      │
+// ╰──────────────────────────────────────────────────────────╯
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}

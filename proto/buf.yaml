@@ -32,4 +32,3 @@ lint:
     - ENUM_ZERO_VALUE_SUFFIX
   ignore:
     - tendermint
-    - amino
