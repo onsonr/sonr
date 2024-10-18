@@ -10,7 +10,7 @@ import (
 )
 
 // assembleVault assembles the initial vault
-func (k Keeper) assembleVault(cotx sdk.Context) (string, int64, error) {
+func (k Keeper) assembleVault(cotx sdk.Context, schema *dwngen.Schema) (string, int64, error) {
 	_, con, err := k.DIDKeeper.NewController(cotx)
 	if err != nil {
 		return "", 0, err
@@ -19,11 +19,7 @@ func (k Keeper) assembleVault(cotx sdk.Context) (string, int64, error) {
 	if err != nil {
 		return "", 0, err
 	}
-	sch, err := k.currentSchema(cotx)
-	if err != nil {
-		return "", 0, err
-	}
-	v, err := types.NewVault(usrKs, con.SonrAddress(), con.ChainID(), sch)
+	v, err := types.NewVault(usrKs, con.SonrAddress(), con.ChainID(), schema)
 	if err != nil {
 		return "", 0, err
 	}

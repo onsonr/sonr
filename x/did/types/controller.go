@@ -5,7 +5,6 @@ import (
 
 	"github.com/onsonr/crypto/mpc"
 
-	cryptotypes "github.com/cosmos/cosmos-sdk/crypto/types"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 )
@@ -16,8 +15,8 @@ type ControllerI interface {
 	SonrAddress() string
 	EthAddress() string
 	BtcAddress() string
-	// RawPublicKey() []byte
-	StdPublicKey() cryptotypes.PubKey
+	RawPublicKey() []byte
+	//	StdPublicKey() cryptotypes.PubKey
 	GetTableEntry() (*didv1.Controller, error)
 	ExportUserKs() (string, error)
 }
@@ -123,7 +122,6 @@ func (c *controller) RawPublicKey() []byte {
 	return c.publicKey
 }
 
-//
 // func (c *controller) StdPublicKey() cryptotypes.PubKey {
 // 	return c.stdPubKey
 // }

@@ -53,10 +53,16 @@ func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*
 func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*types.AllocateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
-	cid, expiryBlock, err := k.assembleVault(ctx)
+	// 1. Get current schema
+	sch, err := k.currentSchema(ctx)
 	if err != nil {
-		return nil, err
+		return nil, types.ErrInvalidSchema.Wrap(err.Error())
+	}
+
+	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
+	cid, expiryBlock, err := k.assembleVault(ctx, sch)
+	if err != nil {
+		return nil, types.ErrVaultAssembly.Wrap(err.Error())
 	}
 
 	return &types.AllocateResponse{
