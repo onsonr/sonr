@@ -1,3 +1,20 @@
+## v0.5.12 (2024-10-18)
+
+### Feat
+
+- add User-Agent and Platform to session
+- introduce AuthState enum for authentication state
+
+### Fix
+
+- **version**: revert version bump to 0.5.11
+- **version**: update version to 0.5.12
+
+### Refactor
+
+- remove dependency on proto change detection
+- update asset publishing configuration
+
 ## v0.5.11 (2024-10-10)
 
 ### Feat
