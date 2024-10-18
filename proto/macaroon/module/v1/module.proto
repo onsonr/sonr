@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package onsonr.sonr.macaroon.module.v1;
+package macaroon.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 

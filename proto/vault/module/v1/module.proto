@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package onsonr.sonr.vault.module.v1;
+package vault.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 
