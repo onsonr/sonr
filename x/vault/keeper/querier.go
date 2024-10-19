@@ -74,13 +74,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 		ctx.Logger().Error(fmt.Sprintf("Error creating controller: %s", err.Error()))
 		return nil, err
 	}
-
-	usrKs, err := con.ExportUserKs()
-	if err != nil {
-		ctx.Logger().Error(fmt.Sprintf("Error exporting user keyshare: %s", err.Error()))
-		return nil, types.ErrInvalidSchema.Wrap(err.Error())
-	}
-	v, err := types.NewVault(usrKs, con.SonrAddress(), con.ChainID(), sch)
+	v, err := types.NewVault("", con.SonrAddress(), con.ChainID(), sch)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())

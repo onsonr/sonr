@@ -1,8 +1,6 @@
 package types
 
 import (
-	fmt "fmt"
-
 	"github.com/onsonr/crypto/mpc"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -13,12 +11,7 @@ type ControllerI interface {
 	ChainID() string
 	GetPubKey() *didv1.PubKey
 	SonrAddress() string
-	EthAddress() string
-	BtcAddress() string
 	RawPublicKey() []byte
-	//	StdPublicKey() cryptotypes.PubKey
-	GetTableEntry() (*didv1.Controller, error)
-	ExportUserKs() (string, error)
 }
 
 func NewController(shares []mpc.Share) (ControllerI, error) {
@@ -26,39 +19,26 @@ func NewController(shares []mpc.Share) (ControllerI, error) {
 		valKs  = shares[0]
 		userKs = shares[1]
 	)
-	pbBz := valKs.GetPublicKey()
-	sonrAddr, err := ComputeSonrAddress(pbBz)
+	pb, err := valKs.PublicKey()
 	if err != nil {
 		return nil, err
 	}
-
-	btcAddr, err := ComputeBitcoinAddress(pbBz)
+	sonrAddr, err := ComputeSonrAddress(pb)
 	if err != nil {
 		return nil, err
 	}
-
-	ecdsaPub, err := valKs.ECDSAPublicKey()
-	if err != nil {
-		return nil, err
-	}
-
-	ethAddr := ComputeEthAddress(ecdsaPub)
 
 	return &controller{
 		valKs:     valKs,
 		userKs:    userKs,
 		address:   sonrAddr,
-		btcAddr:   btcAddr,
-		ethAddr:   ethAddr,
-		publicKey: pbBz,
+		publicKey: pb,
 	}, nil
 }
 
 func LoadControllerFromTableEntry(ctx sdk.Context, entry *didv1.Controller) (ControllerI, error) {
 	return &controller{
 		address:   entry.Did,
-		btcAddr:   entry.BtcAddress,
-		ethAddr:   entry.EthAddress,
 		chainID:   ctx.ChainID(),
 		publicKey: entry.PublicKey.RawKey.Key,
 	}, nil
@@ -69,26 +49,12 @@ type controller struct {
 	valKs     mpc.Share
 	address   string
 	chainID   string
-	ethAddr   string
-	btcAddr   string
 	publicKey []byte
 	did       string
 }
 
-func (c *controller) BtcAddress() string {
-	return c.btcAddr
-}
-
 func (c *controller) ChainID() string {
 	return c.chainID
-}
-
-func (c *controller) EthAddress() string {
-	return c.ethAddr
-}
-
-func (c *controller) ExportUserKs() (string, error) {
-	return c.userKs.Marshal()
 }
 
 func (c *controller) GetPubKey() *didv1.PubKey {
@@ -100,21 +66,6 @@ func (c *controller) GetPubKey() *didv1.PubKey {
 		},
 		Role: "authentication",
 	}
-}
-
-func (c *controller) GetTableEntry() (*didv1.Controller, error) {
-	valKs, err := c.valKs.Marshal()
-	if err != nil {
-		return nil, err
-	}
-	return &didv1.Controller{
-		KsVal:       valKs,
-		Did:         fmt.Sprintf("did:sonr:%s", c.address),
-		SonrAddress: c.address,
-		EthAddress:  c.ethAddr,
-		BtcAddress:  c.btcAddr,
-		PublicKey:   c.GetPubKey(),
-	}, nil
 }
 
 func (c *controller) RawPublicKey() []byte {
