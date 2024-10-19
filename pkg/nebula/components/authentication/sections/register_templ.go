@@ -11,7 +11,6 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/onsonr/sonr/pkg/nebula/components/authentication/forms"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
 func RegisterStart() templ.Component {
@@ -35,10 +34,6 @@ func RegisterStart() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = ui.Breadcrumbs().Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
 		templ_7745c5c3_Err = forms.BasicDetailsForm().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

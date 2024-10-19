@@ -3,11 +3,9 @@ package sections
 import (
 	"github.com/onsonr/sonr/pkg/nebula/components/authentication/forms"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
 templ RegisterStart() {
-	@ui.Breadcrumbs()
 	@forms.BasicDetailsForm()
 	@styles.Spacer()
 	<div class="flex flex-col-reverse sm:flex-row sm:justify-between sm:space-x-2">
