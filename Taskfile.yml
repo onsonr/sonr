@@ -16,6 +16,7 @@ tasks:
   hway:dev:
     dir: cmd/hway
     cmds:
+      - task: nebula:build
       - bunx wrangler dev
 
   hway:deploy:
@@ -37,3 +38,4 @@ tasks:
       - bun install
       - bun run deps.mjs
       - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
+      - templ generate
