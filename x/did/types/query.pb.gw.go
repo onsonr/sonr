@@ -508,13 +508,13 @@ func RegisterQueryHandlerClient(ctx context.Context, mux *runtime.ServeMux, clie
 }
 
 var (
-	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0}, []string{"params"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Params_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"did", "v1", "params"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Resolve_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 0}, []string{"did"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Resolve_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 0}, []string{"did", "v1"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Sign_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 0, 2, 1}, []string{"did", "sign"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Sign_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 0, 2, 2}, []string{"did", "v1", "sign"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Verify_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 1, 0, 4, 1, 5, 0, 2, 1}, []string{"did", "verify"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Verify_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 1, 0, 4, 1, 5, 0, 2, 2}, []string{"did", "v1", "verify"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

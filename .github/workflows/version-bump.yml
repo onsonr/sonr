@@ -22,24 +22,8 @@ jobs:
       - name: Run tests
         run: make test
 
-  check-proto-changes:
-    name: "Check Proto Changes"
-    runs-on: ubuntu-latest
-    outputs:
-      proto_changed: ${{ steps.check_proto.outputs.proto_changed }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Check for changes in proto directory
-        id: check_proto
-        run: |
-          git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q '^proto/' && \
-          echo "proto_changed=true" >> $GITHUB_OUTPUT || \
-          echo "proto_changed=false" >> $GITHUB_OUTPUT
-
   bump-version:
-    needs: [run-tests, check-proto-changes]
+    needs: [run-tests]
     runs-on: ubuntu-latest
     name: "Bump Version"
     if: ${{ !startsWith(github.event.head_commit.message, 'bump:') }}
@@ -52,4 +36,4 @@ jobs:
         uses: commitizen-tools/commitizen-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          increment: ${{ needs.check-proto-changes.outputs.proto_changed == 'true' && 'MINOR' || 'PATCH' }}
+          increment: "PATCH"

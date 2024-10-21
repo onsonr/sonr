@@ -1,9 +1,9 @@
 version: v1
 name: buf.build/onsonr/sonr
 deps:
-  - buf.build/cosmos/cosmos-sdk:05419252bcc241ea8023acf1ed4cadc5
-  - buf.build/cosmos/cosmos-proto:04467658e59e44bbb22fe568206e1f70
-  - buf.build/cosmos/gogo-proto:88ef6483f90f478fb938c37dde52ece3
+  - buf.build/cosmos/cosmos-sdk
+  - buf.build/cosmos/cosmos-proto
+  - buf.build/cosmos/gogo-proto
   - buf.build/googleapis/googleapis
 breaking:
   use:
@@ -14,7 +14,6 @@ lint:
     - COMMENTS
     - FILE_LOWER_SNAKE_CASE
   except:
-    - PACKAGE_NO_IMPORT_CYCLE
     - UNARY_RPC
     - COMMENT_FIELD
     - COMMENT_MESSAGE
@@ -31,5 +30,8 @@ lint:
     - COMMENT_ENUM
     - ENUM_ZERO_VALUE_SUFFIX
   ignore:
+    - PACKAGE_NO_IMPORT_CYCLE
+    - IMPORT_USED
     - tendermint
     - amino
+    - cosmos
