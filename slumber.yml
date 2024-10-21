@@ -6,7 +6,6 @@
 # Profiles are groups of data you can easily switch between. A common usage is
 # to define profiles for various environments of a REST service
 # slumber.yml
-# $schema: https://json.schemastore.org/github-workflow
 profiles:
   local:
     data:
