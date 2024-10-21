@@ -15,3 +15,14 @@ templ InsertAccount(accountName string) {
 		console.log("Inserted account with ID:", accountId);
 	</script>
 }
+
+templ InsertCredential(credentialName string) {
+	<script>
+		const credentialId = await motr.insertCredential({
+			name: credentialName,
+			createdAt: new Date(),
+		});
+
+		console.log("Inserted credential with ID:", credentialId);
+	</script>
+}

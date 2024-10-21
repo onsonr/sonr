@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"cosmossdk.io/errors"
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	govtypes "github.com/cosmos/cosmos-sdk/x/gov/types"
 
 	"github.com/onsonr/sonr/x/did/types"
@@ -19,12 +18,6 @@ var _ types.MsgServer = msgServer{}
 // NewMsgServerImpl returns an implementation of the module MsgServer interface.
 func NewMsgServerImpl(keeper Keeper) types.MsgServer {
 	return &msgServer{k: keeper}
-}
-
-// RegisterController implements types.MsgServer.
-func (ms msgServer) RegisterController(goCtx context.Context, msg *types.MsgRegisterController) (*types.MsgRegisterControllerResponse, error) {
-	_ = sdk.UnwrapSDKContext(goCtx)
-	return &types.MsgRegisterControllerResponse{}, nil
 }
 
 // UpdateParams updates the x/did module parameters.
@@ -44,4 +37,28 @@ func (ms msgServer) UpdateParams(ctx context.Context, msg *types.MsgUpdateParams
 func (ms msgServer) ExecuteTx(ctx context.Context, msg *types.MsgExecuteTx) (*types.MsgExecuteTxResponse, error) {
 	// ctx := sdk.UnwrapSDKContext(goCtx)
 	return &types.MsgExecuteTxResponse{}, nil
+}
+
+// LinkAssertion implements types.MsgServer.
+func (ms msgServer) LinkAssertion(ctx context.Context, msg *types.MsgLinkAssertion) (*types.MsgLinkAssertionResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgLinkAssertionResponse{}, nil
+}
+
+// LinkAuthentication implements types.MsgServer.
+func (ms msgServer) LinkAuthentication(ctx context.Context, msg *types.MsgLinkAuthentication) (*types.MsgLinkAuthenticationResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgLinkAuthenticationResponse{}, nil
+}
+
+// UnlinkAssertion implements types.MsgServer.
+func (ms msgServer) UnlinkAssertion(ctx context.Context, msg *types.MsgUnlinkAssertion) (*types.MsgUnlinkAssertionResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgUnlinkAssertionResponse{}, nil
+}
+
+// UnlinkAuthentication implements types.MsgServer.
+func (ms msgServer) UnlinkAuthentication(ctx context.Context, msg *types.MsgUnlinkAuthentication) (*types.MsgUnlinkAuthenticationResponse, error) {
+	// ctx := sdk.UnwrapSDKContext(goCtx)
+	return &types.MsgUnlinkAuthenticationResponse{}, nil
 }

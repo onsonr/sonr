@@ -10,7 +10,7 @@ templ PrimaryButton(href string, text string) {
 
 templ SecondaryButton(href string, text string) {
 	<div>
-		<div class="btn cursor-pointer text-zinc-600 bg-white hover:text-zinc-900 w-full shadow" hx-swap="afterend" hx-get={ href }>{ text }</div>
+		<div x-on:click="toast('Default Toast Notification', 'default', '', 'top-center')" class="btn cursor-pointer text-zinc-600 bg-white hover:text-zinc-900 w-full shadow">{ text }</div>
 	</div>
 }
 
@@ -91,7 +91,9 @@ func Button(opts ...ButtonOpt) templ.Component {
 }
 
 templ renderButton(attrs templ.Attributes) {
-	<button { attrs... }>
+	<button
+		{ attrs... }
+	>
 		{ children... }
 	</button>
 }

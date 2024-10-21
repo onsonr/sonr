@@ -1,29 +1,27 @@
 package styles
 
+// Icon is a component that renders an icon
 type Icon interface {
 	Render() templ.Component
 }
 
+// Variant is a component that has attributes
 type Variant interface {
 	Attributes() templ.Attributes
 }
 
-templ Spacer() {
-	<br/>
-}
+// ╭───────────────────────────────────────────────────────────╮
+// │                  General Layout Components                │
+// ╰───────────────────────────────────────────────────────────╯
 
-templ Rows() {
-	<div class="flex flex-row w-full gap-2 md:gap-4">
-		{ children... }
-	</div>
-}
-
+// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
 templ Columns() {
 	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
 		{ children... }
 	</div>
 }
 
+// Layout is a component that renders the general layout of the application
 templ Layout(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -42,13 +40,16 @@ templ Layout(title string, remote bool) {
 			<link rel="icon" type="image/png" href="https://cdn.sonr.id/favicon.png"/>
 		</head>
 		<body class="flex items-center justify-center h-full bg-neutral-50 lg:p-24 md:16 p-4">
-			<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
-				{ children... }
-			</main>
+			@Toaster() {
+				<main class="flex-row items-center justify-center mx-auto w-fit max-w-screen-sm gap-y-3">
+					{ children... }
+				</main>
+			}
 		</body>
 	</html>
 }
 
+// LayoutNoBody is a component that renders the general layout of the application without the body tag
 templ LayoutNoBody(title string, remote bool) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -68,14 +69,17 @@ templ LayoutNoBody(title string, remote bool) {
 		</head>
 		<main class="grow">
 			<body class="font-inter antialiased bg-white text-zinc-900 tracking-tight">
-				<div class="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
-					{ children... }
-				</div>
+				@Toaster() {
+					<div class="flex flex-col min-h-screen overflow-hidden supports-[overflow:clip]:overflow-clip">
+						{ children... }
+					</div>
+				}
 			</body>
 		</main>
 	</html>
 }
 
+// OpenModal is a component that renders a modal with a title and description
 templ OpenModal(title, description string) {
 	<div
 		x-data="{ modalOpen: true }"
@@ -121,4 +125,16 @@ templ OpenModal(title, description string) {
 			</div>
 		</template>
 	</div>
+}
+
+// Rows is a component that renders a flex container with a gap of 2 and a max width of 100%
+templ Rows() {
+	<div class="flex flex-row w-full gap-2 md:gap-4">
+		{ children... }
+	</div>
+}
+
+// Spacer is a component that renders a <br/> tag
+templ Spacer() {
+	<br/>
 }

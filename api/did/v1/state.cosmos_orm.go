@@ -9,6 +9,163 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
+type AssertionTable interface {
+	Insert(ctx context.Context, assertion *Assertion) error
+	Update(ctx context.Context, assertion *Assertion) error
+	Save(ctx context.Context, assertion *Assertion) error
+	Delete(ctx context.Context, assertion *Assertion) error
+	Has(ctx context.Context, did string) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, did string) (*Assertion, error)
+	HasByControllerSubject(ctx context.Context, controller string, subject string) (found bool, err error)
+	// GetByControllerSubject returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByControllerSubject(ctx context.Context, controller string, subject string) (*Assertion, error)
+	List(ctx context.Context, prefixKey AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
+	ListRange(ctx context.Context, from, to AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error)
+	DeleteBy(ctx context.Context, prefixKey AssertionIndexKey) error
+	DeleteRange(ctx context.Context, from, to AssertionIndexKey) error
+
+	doNotImplement()
+}
+
+type AssertionIterator struct {
+	ormtable.Iterator
+}
+
+func (i AssertionIterator) Value() (*Assertion, error) {
+	var assertion Assertion
+	err := i.UnmarshalMessage(&assertion)
+	return &assertion, err
+}
+
+type AssertionIndexKey interface {
+	id() uint32
+	values() []interface{}
+	assertionIndexKey()
+}
+
+// primary key starting index..
+type AssertionPrimaryKey = AssertionDidIndexKey
+
+type AssertionDidIndexKey struct {
+	vs []interface{}
+}
+
+func (x AssertionDidIndexKey) id() uint32            { return 0 }
+func (x AssertionDidIndexKey) values() []interface{} { return x.vs }
+func (x AssertionDidIndexKey) assertionIndexKey()    {}
+
+func (this AssertionDidIndexKey) WithDid(did string) AssertionDidIndexKey {
+	this.vs = []interface{}{did}
+	return this
+}
+
+type AssertionControllerSubjectIndexKey struct {
+	vs []interface{}
+}
+
+func (x AssertionControllerSubjectIndexKey) id() uint32            { return 1 }
+func (x AssertionControllerSubjectIndexKey) values() []interface{} { return x.vs }
+func (x AssertionControllerSubjectIndexKey) assertionIndexKey()    {}
+
+func (this AssertionControllerSubjectIndexKey) WithController(controller string) AssertionControllerSubjectIndexKey {
+	this.vs = []interface{}{controller}
+	return this
+}
+
+func (this AssertionControllerSubjectIndexKey) WithControllerSubject(controller string, subject string) AssertionControllerSubjectIndexKey {
+	this.vs = []interface{}{controller, subject}
+	return this
+}
+
+type assertionTable struct {
+	table ormtable.Table
+}
+
+func (this assertionTable) Insert(ctx context.Context, assertion *Assertion) error {
+	return this.table.Insert(ctx, assertion)
+}
+
+func (this assertionTable) Update(ctx context.Context, assertion *Assertion) error {
+	return this.table.Update(ctx, assertion)
+}
+
+func (this assertionTable) Save(ctx context.Context, assertion *Assertion) error {
+	return this.table.Save(ctx, assertion)
+}
+
+func (this assertionTable) Delete(ctx context.Context, assertion *Assertion) error {
+	return this.table.Delete(ctx, assertion)
+}
+
+func (this assertionTable) Has(ctx context.Context, did string) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, did)
+}
+
+func (this assertionTable) Get(ctx context.Context, did string) (*Assertion, error) {
+	var assertion Assertion
+	found, err := this.table.PrimaryKey().Get(ctx, &assertion, did)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &assertion, nil
+}
+
+func (this assertionTable) HasByControllerSubject(ctx context.Context, controller string, subject string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		controller,
+		subject,
+	)
+}
+
+func (this assertionTable) GetByControllerSubject(ctx context.Context, controller string, subject string) (*Assertion, error) {
+	var assertion Assertion
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &assertion,
+		controller,
+		subject,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &assertion, nil
+}
+
+func (this assertionTable) List(ctx context.Context, prefixKey AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return AssertionIterator{it}, err
+}
+
+func (this assertionTable) ListRange(ctx context.Context, from, to AssertionIndexKey, opts ...ormlist.Option) (AssertionIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return AssertionIterator{it}, err
+}
+
+func (this assertionTable) DeleteBy(ctx context.Context, prefixKey AssertionIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this assertionTable) DeleteRange(ctx context.Context, from, to AssertionIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this assertionTable) doNotImplement() {}
+
+var _ AssertionTable = assertionTable{}
+
+func NewAssertionTable(db ormtable.Schema) (AssertionTable, error) {
+	table := db.GetTable(&Assertion{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Assertion{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return assertionTable{table}, nil
+}
+
 type AuthenticationTable interface {
 	Insert(ctx context.Context, authentication *Authentication) error
 	Update(ctx context.Context, authentication *Authentication) error
@@ -692,6 +849,7 @@ func NewVerificationTable(db ormtable.Schema) (VerificationTable, error) {
 }
 
 type StateStore interface {
+	AssertionTable() AssertionTable
 	AuthenticationTable() AuthenticationTable
 	ControllerTable() ControllerTable
 	VerificationTable() VerificationTable
@@ -700,9 +858,14 @@ type StateStore interface {
 }
 
 type stateStore struct {
+	assertion      AssertionTable
 	authentication AuthenticationTable
 	controller     ControllerTable
 	verification   VerificationTable
+}
+
+func (x stateStore) AssertionTable() AssertionTable {
+	return x.assertion
 }
 
 func (x stateStore) AuthenticationTable() AuthenticationTable {
@@ -722,6 +885,11 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
+	assertionTable, err := NewAssertionTable(db)
+	if err != nil {
+		return nil, err
+	}
+
 	authenticationTable, err := NewAuthenticationTable(db)
 	if err != nil {
 		return nil, err
@@ -738,6 +906,7 @@ func NewStateStore(db ormtable.Schema) (StateStore, error) {
 	}
 
 	return stateStore{
+		assertionTable,
 		authenticationTable,
 		controllerTable,
 		verificationTable,

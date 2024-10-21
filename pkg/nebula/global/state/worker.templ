@@ -1,13 +1,14 @@
 package state
 
 var (
-	serviceWorkerHandle = templ.NewOnceHandle()
+	serviceWorkerInstall = templ.NewOnceHandle()
 )
 
 templ RegisterServiceWorker() {
-	@serviceWorkerHandle.Once() {
-		<script>
+	@serviceWorkerInstall.Once() {
+		<script type="text/javascript">
           if ("serviceWorker" in navigator) {
+            // Register the service worker
             window.addEventListener("load", function() {
                 navigator.serviceWorker
                     .register("/sw.js")

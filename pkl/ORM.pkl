@@ -269,5 +269,6 @@ class Profile {
   @JsonField
   updatedAt: String?
 }
+
 db_name: String = "vault"
 db_version: Int = 1
