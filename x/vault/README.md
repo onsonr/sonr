@@ -4,61 +4,135 @@ The Vault module is responsible for the management of IPFS deployed Decentralize
 
 ## Concepts
 
+The Vault module introduces several key concepts:
+
+1. Decentralized Web Node (DWN): A distributed network for storing and sharing data.
+2. Schema: A structure defining the format of various data types in the vault.
+3. IPFS Integration: The module can interact with IPFS for decentralized data storage.
+
 ## State
 
-Specify and describe structures expected to marshalled into the store, and their keys
+The Vault module maintains the following state:
 
-### Account State
+### DWN State
 
-The Account state includes the user's public key, associated wallets, and other identification details. It is stored using the user's DID as the key.
+The DWN state is stored using the following structure:
 
-### Credential State
+```protobuf
+message DWN {
+  uint64 id = 1;
+  string alias = 2;
+  string cid = 3;
+  string resolver = 4;
+}
+```
 
-The Credential state includes the claims about a subject and is stored using the credential ID as the key.
+This state is indexed by ID, alias, and CID for efficient querying.
+
+### Params State
+
+The module parameters are stored in the following structure:
+
+```protobuf
+message Params {
+  bool ipfs_active = 1;
+  bool local_registration_enabled = 2;
+  Schema schema = 4;
+}
+```
+
+### Schema State
+
+The Schema state defines the structure for various data types:
+
+```protobuf
+message Schema {
+  int32 version = 1;
+  string account = 2;
+  string asset = 3;
+  string chain = 4;
+  string credential = 5;
+  string did = 6;
+  string jwk = 7;
+  string grant = 8;
+  string keyshare = 9;
+  string profile = 10;
+}
+```
 
 ## State Transitions
 
-Standard state transition operations triggered by hooks, messages, etc.
+State transitions in the Vault module are primarily triggered by:
+
+1. Updating module parameters
+2. Allocating new vaults
+3. Syncing DID documents
 
 ## Messages
 
-Specify message structure(s) and expected state machine behaviour(s).
+The Vault module defines the following message:
+
+1. `MsgUpdateParams`: Used to update the module parameters.
+
+```protobuf
+message MsgUpdateParams {
+  string authority = 1;
+  Params params = 2;
+}
+```
 
 ## Begin Block
 
-Specify any begin-block operations.
+No specific begin-block operations are defined for this module.
 
 ## End Block
 
-Specify any end-block operations.
+No specific end-block operations are defined for this module.
 
 ## Hooks
 
-Describe available hooks to be called by/from this module.
+The Vault module does not define any hooks.
 
 ## Events
 
-List and describe event tags used.
+The Vault module does not explicitly define any events. However, standard Cosmos SDK events may be emitted during state transitions.
 
 ## Client
 
-List and describe CLI commands and gRPC and REST endpoints.
+The Vault module provides the following gRPC query endpoints:
+
+1. `Params`: Queries all parameters of the module.
+2. `Schema`: Queries the DID document schema.
+3. `Allocate`: Initializes a Target Vault available for claims.
+4. `Sync`: Queries the DID document by its ID and returns required information.
 
 ## Params
 
-List all module parameters, their types (in JSON) and identitys.
+The module parameters include:
+
+- `ipfs_active` (bool): Indicates if IPFS integration is active.
+- `local_registration_enabled` (bool): Indicates if local registration is enabled.
+- `schema` (Schema): Defines the structure for various data types in the vault.
 
 ## Future Improvements
 
-Describe future improvements of this module.
+Potential future improvements could include:
+
+1. Enhanced IPFS integration features.
+2. Additional authentication mechanisms beyond WebAuthn.
+3. Improved DID document management and querying capabilities.
 
 ## Tests
 
-Acceptance tests.
+Acceptance tests should cover:
+
+1. Parameter updates
+2. DWN state management
+3. Schema queries
+4. Vault allocation process
+5. DID document syncing
 
 ## Appendix
-
-Supplementary details referenced elsewhere within the spec.
 
 | Concept                                     | Description                                                                                                                                                                           |
 | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
