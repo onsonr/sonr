@@ -1,3 +1,15 @@
+## v0.5.13 (2024-10-21)
+
+### Feat
+
+- add custom secp256k1 pubkey
+
+### Refactor
+
+- update gRPC client to use new request types
+- use RawPublicKey instead of PublicKey in macaroon issuer
+- improve error handling in DID module
+
 ## v0.5.12 (2024-10-18)
 
 ### Feat
