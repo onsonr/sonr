@@ -11,13 +11,13 @@
 
 # Documentation
 
-- 1. [Quick Start](https://github.com/onsonr/sonr/wiki/1-%E2%80%90-Quick-Start)
-- 2. [Chain Modules](https://github.com/onsonr/sonr/wiki/2-%E2%80%90-Chain-Modules)
-- 3. [System Architecture](https://github.com/onsonr/sonr/wiki/3-%E2%80%90-System-Architecture)
-- 4. [Token Economy](https://github.com/onsonr/sonr/wiki/4-%E2%80%90-Token-Economy)
-- 5. [Service Mangement](https://github.com/onsonr/sonr/wiki/5-%E2%80%90-Service-Management)
-- 6. [Design System](https://github.com/onsonr/sonr/wiki/6-%E2%80%90-Design-System)
-- 7. [Self Custody](https://github.com/onsonr/sonr/wiki/7-%E2%80%90-Self-Custody)
+1. [Quick Start](https://github.com/onsonr/sonr/wiki/1-%E2%80%90-Quick-Start)
+2. [Chain Modules](https://github.com/onsonr/sonr/wiki/2-%E2%80%90-Chain-Modules)
+3. [System Architecture](https://github.com/onsonr/sonr/wiki/3-%E2%80%90-System-Architecture)
+4. [Token Economy](https://github.com/onsonr/sonr/wiki/4-%E2%80%90-Token-Economy)
+5. [Service Mangement](https://github.com/onsonr/sonr/wiki/5-%E2%80%90-Service-Management)
+6. [Design System](https://github.com/onsonr/sonr/wiki/6-%E2%80%90-Design-System)
+7. [Self Custody](https://github.com/onsonr/sonr/wiki/7-%E2%80%90-Self-Custody)
 
 # Stats
 
