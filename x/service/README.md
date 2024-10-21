@@ -1,63 +1,81 @@
 # `x/service`
 
-The Service module is responsible for managing the registration and authorization of services within the Sonr ecosystem. It leverages
-the native NFT module associated with DID Methods to provide a secure and verifiable mechanism for registering and authorizing services.
+The Service module is responsible for managing the registration and authorization of services within the Sonr ecosystem. It provides a secure and verifiable mechanism for registering and authorizing services using Decentralized Identifiers (DIDs).
 
 ## Concepts
 
+- **Service**: A decentralized service on the Sonr Blockchain with properties such as ID, authority, origin, name, description, category, tags, and expiry height.
+- **Profile**: Represents a DID alias with properties like ID, subject, origin, and controller.
+- **Metadata**: Contains information about a service, including name, description, category, icon, and tags.
+
 ## State
 
-Specify and describe structures expected to marshalled into the store, and their keys
+The module uses the following state structures:
 
-### Account State
+### Metadata
 
-The Account state includes the user's public key, associated wallets, and other identification details. It is stored using the user's DID as the key.
+Stores information about services:
+- Primary key: `id` (auto-increment)
+- Unique index: `origin`
+- Fields: id, origin, name, description, category, icon (URI), tags
 
-### Credential State
+### Profile
 
-The Credential state includes the claims about a subject and is stored using the credential ID as the key.
-
-## State Transitions
-
-Standard state transition operations triggered by hooks, messages, etc.
+Stores DID alias information:
+- Primary key: `id`
+- Unique index: `subject,origin`
+- Fields: id, subject, origin, controller
 
 ## Messages
 
-Specify message structure(s) and expected state machine behaviour(s).
+### MsgUpdateParams
 
-## Begin Block
+Updates the module parameters. Can only be executed by the governance account.
 
-Specify any begin-block operations.
+### MsgRegisterService
 
-## End Block
-
-Specify any end-block operations.
-
-## Hooks
-
-Describe available hooks to be called by/from this module.
-
-## Events
-
-List and describe event tags used.
-
-## Client
-
-List and describe CLI commands and gRPC and REST endpoints.
+Registers a new service on the blockchain. Requires a valid TXT record in DNS for the origin.
 
 ## Params
 
-List all module parameters, their types (in JSON) and identitys.
+The module has the following parameters:
+- `categories`: List of allowed service categories
+- `types`: List of allowed service types
+
+## Query
+
+The module provides the following query:
+
+### Params
+
+Retrieves all parameters of the module.
+
+## Client
+
+### gRPC
+
+The module provides a gRPC Query service with the following RPC:
+- `Params`: Get all parameters of the module
+
+### CLI
+
+(TODO: Add CLI commands for interacting with the module)
+
+## Events
+
+(TODO: List and describe event tags used by the module)
 
 ## Future Improvements
 
-Describe future improvements of this module.
+- Implement service discovery mechanisms
+- Add support for service reputation and rating systems
+- Enhance service metadata with more detailed information
+- Implement service update and deactivation functionality
 
 ## Tests
 
-Acceptance tests.
+(TODO: Add acceptance tests for the module)
 
 ## Appendix
 
-Supplementary details referenced elsewhere within the spec.
-his is a module base generated with [`spawn`](https://github.com/rollchains/spawn).
+This module is part of the Sonr blockchain project and interacts with other modules such as DID and NFT modules to provide a comprehensive decentralized service ecosystem.
