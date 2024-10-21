@@ -6,7 +6,6 @@
 # Profiles are groups of data you can easily switch between. A common usage is
 # to define profiles for various environments of a REST service
 # slumber.yml
-# $schema: https://json.schemastore.org/github-workflow
 profiles:
   local:
     data:
@@ -17,32 +16,27 @@ profiles:
 
 requests:
   did: !folder
-    name: x/did
+    name: Params
     requests:
-      get_did_params: !request
+      did_params: !request
         method: GET
         url: "{{host}}/did/v1/params"
-
-  macaroon: !folder
-    name: x/macaroon
-    requests:
-      get_macaroon_params: !request
+      macaroon_params: !request
         method: GET
         url: "{{host}}/macaroon/v1/params"
-
-  service: !folder
-    name: x/service
-    requests:
-      get_service_params: !request
+      service_params: !request
         method: GET
         url: "{{host}}/service/v1/params"
-
-  vault: !folder
-    name: x/vault
-    requests:
-      get_vault_params: !request
+      vault_params: !request
         method: GET
         url: "{{host}}/vault/v1/params"
-      get_vault_schema: !request
+
+  vault: !folder
+    name: Vault
+    requests:
+      vault_schema: !request
         method: GET
         url: "{{host}}/vault/v1/schema"
+      vault_allocate: !request
+        method: GET
+        url: "{{host}}/vault/v1/allocate"

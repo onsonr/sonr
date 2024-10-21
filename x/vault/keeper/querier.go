@@ -2,6 +2,7 @@ package keeper
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
@@ -59,33 +60,28 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	// 1. Get current schema
 	sch, err := k.currentSchema(ctx)
 	if err != nil {
-		ctx.Logger().Error(err.Error())
+		ctx.Logger().Error(fmt.Sprintf("Error getting current schema: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
 	shares, err := mpc.GenerateKeyshares()
 	if err != nil {
-		ctx.Logger().Error(err.Error())
-		return nil, err
-	}
-	con, err := didtypes.NewController(ctx, shares)
-	if err != nil {
-		ctx.Logger().Error(err.Error())
-		return nil, err
-	}
-
-	usrKs, err := con.ExportUserKs()
-	if err != nil {
-		ctx.Logger().Error(err.Error())
+		ctx.Logger().Error(fmt.Sprintf("Error generating keyshares: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
-	v, err := types.NewVault(usrKs, con.SonrAddress(), con.ChainID(), sch)
+
+	con, err := didtypes.NewController(shares)
 	if err != nil {
-		ctx.Logger().Error(err.Error())
+		ctx.Logger().Error(fmt.Sprintf("Error creating controller: %s", err.Error()))
+		return nil, err
+	}
+	v, err := types.NewVault("", con.SonrAddress(), con.ChainID(), sch)
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
 	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
 	if err != nil {
-		ctx.Logger().Error(err.Error())
+		ctx.Logger().Error(fmt.Sprintf("Error adding to IPFS: %s", err.Error()))
 		return nil, types.ErrVaultAssembly.Wrap(err.Error())
 	}
 

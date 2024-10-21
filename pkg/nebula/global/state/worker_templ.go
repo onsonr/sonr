@@ -10,7 +10,6 @@ import templruntime "github.com/a-h/templ/runtime"
 
 var (
 	serviceWorkerInstall = templ.NewOnceHandle()
-	serviceWorkerReady   = templ.NewOnceHandle()
 )
 
 func RegisterServiceWorker() templ.Component {
