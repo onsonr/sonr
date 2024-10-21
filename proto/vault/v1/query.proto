@@ -6,6 +6,10 @@ import "vault/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/vault/types";
 
+// ╭─────────────────────────────────────────────────────────╮
+// │                  RPC Query Service                      │
+// ╰─────────────────────────────────────────────────────────╯
+
 // Query provides defines the gRPC querier service.
 service Query {
   // Params queries all parameters of the module.
@@ -21,16 +25,20 @@ service Query {
 
   // Allocate initializes a Target Vault available for claims with a compatible
   // Authentication mechanism. The default authentication mechanism is WebAuthn.
-  rpc Allocate(AllocateRequest) returns (AllocateResponse) {
-    option (google.api.http).get = "/vault/v1/allocate/{origin}/{subject}";
+  rpc Allocate(QueryAllocateRequest) returns (QueryAllocateResponse) {
+    option (google.api.http).get = "/vault/v1/allocate";
   }
 
   // Sync queries the DID document by its id. And returns the required PKL
   // information
-  rpc Sync(SyncRequest) returns (SyncResponse) {
-    option (google.api.http).post = "/vault/v1/sync-initial";
+  rpc Sync(QuerySyncRequest) returns (QuerySyncResponse) {
+    option (google.api.http).get = "/vault/v1/sync-initial";
   }
 }
+
+// ╭──────────────────────────────────────────────────────────╮
+// │                  RPC Query Messages                      │
+// ╰──────────────────────────────────────────────────────────╯
 
 // QueryParamsRequest is the request type for the Query/Params RPC method.
 message QueryParamsRequest {}
@@ -50,14 +58,11 @@ message QuerySchemaResponse {
   Schema schema = 1;
 }
 
-// AllocateRequest is the request type for the Allocate RPC method.
-message AllocateRequest {
-  string origin = 1;
-  string subject = 2;
-}
+// QueryAllocateRequest is the request type for the Allocate RPC method.
+message QueryAllocateRequest {}
 
 // AllocateResponse is the response type for the Allocate RPC method.
-message AllocateResponse {
+message QueryAllocateResponse {
   bool success = 1;
   string cid = 2;
   string macaroon = 3;
@@ -66,12 +71,12 @@ message AllocateResponse {
 }
 
 // SyncRequest is the request type for the Sync RPC method.
-message SyncRequest {
+message QuerySyncRequest {
   string did = 1;
 }
 
 // SyncResponse is the response type for the Sync RPC method.
-message SyncResponse {
+message QuerySyncResponse {
   bool success = 1;
 
   // Schema is the DID document.

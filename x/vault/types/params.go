@@ -10,8 +10,9 @@ import (
 func DefaultParams() Params {
 	// TODO:
 	return Params{
-		IpfsActive: true,
-		Schema:     DefaultSchema(),
+		IpfsActive:               true,
+		LocalRegistrationEnabled: true,
+		Schema:                   DefaultSchema(),
 	}
 }
 

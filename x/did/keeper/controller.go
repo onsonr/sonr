@@ -6,24 +6,16 @@ import (
 	"github.com/onsonr/sonr/x/did/types"
 )
 
-func (k Keeper) NewController(ctx sdk.Context) (uint64, types.ControllerI, error) {
+func (k Keeper) NewController(ctx sdk.Context) (types.ControllerI, error) {
 	shares, err := mpc.GenerateKeyshares()
 	if err != nil {
-		return 0, nil, err
+		return nil, err
 	}
-	controller, err := types.NewController(ctx, shares)
+	controller, err := types.NewController(shares)
 	if err != nil {
-		return 0, nil, err
+		return nil, err
 	}
-	entry, err := controller.GetTableEntry()
-	if err != nil {
-		return 0, nil, err
-	}
-	num, err := k.OrmDB.ControllerTable().InsertReturningNumber(ctx, entry)
-	if err != nil {
-		return 0, nil, err
-	}
-	return num, controller, nil
+	return controller, nil
 }
 
 func (k Keeper) ResolveController(ctx sdk.Context, did string) (types.ControllerI, error) {

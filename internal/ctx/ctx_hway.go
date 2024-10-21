@@ -6,6 +6,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  HwayContext struct methods               │
+// ╰───────────────────────────────────────────────────────────╯
+
+// HwayContext is the context for Highway endpoints.
 type HwayContext struct {
 	echo.Context
 
@@ -13,10 +18,12 @@ type HwayContext struct {
 	id string // Generated ksuid http cookie; Initialized on first request
 }
 
+// ID returns the ksuid http cookie
 func (s *HwayContext) ID() string {
 	return s.id
 }
 
+// GetHwayContext returns the HwayContext from the echo context.
 func GetHWAYContext(c echo.Context) (*HwayContext, error) {
 	ctx, ok := c.(*HwayContext)
 	if !ok {

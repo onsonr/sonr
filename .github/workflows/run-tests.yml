@@ -19,10 +19,10 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.23"
           check-latest: true
       - run: make test-unit
-  
+
   test-race:
     runs-on: ubuntu-latest
     name: Run Race Tests
@@ -37,7 +37,7 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.23"
           check-latest: true
       - run: make test-race
 
@@ -55,6 +55,6 @@ jobs:
 
       - uses: actions/setup-go@v5
         with:
-          go-version: "1.22"
+          go-version: "1.23"
           check-latest: true
       - run: make test-cover

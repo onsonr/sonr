@@ -10,22 +10,22 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 service Query {
   // Params queries all parameters of the module.
   rpc Params(QueryRequest) returns (QueryParamsResponse) {
-    option (google.api.http).get = "/params";
+    option (google.api.http).get = "/did/v1/params";
   }
 
   // Resolve queries the DID document by its id.
   rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
-    option (google.api.http).get = "/did/{did}";
+    option (google.api.http).get = "/did/v1/{did}";
   }
 
   // Sign signs a message with the DID document
   rpc Sign(QuerySignRequest) returns (QuerySignResponse) {
-    option (google.api.http).post = "/did/{did}/sign";
+    option (google.api.http).post = "/did/v1/{did}/sign";
   }
 
   // Verify verifies a message with the DID document
   rpc Verify(QueryVerifyRequest) returns (QueryVerifyResponse) {
-    option (google.api.http).post = "/did/{did}/verify";
+    option (google.api.http).post = "/did/v1/{did}/verify";
   }
 }
 

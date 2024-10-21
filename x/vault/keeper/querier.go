@@ -2,8 +2,12 @@ package keeper
 
 import (
 	"context"
+	"fmt"
+	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
+	"github.com/onsonr/crypto/mpc"
+	didtypes "github.com/onsonr/sonr/x/did/types"
 
 	"github.com/onsonr/sonr/x/vault/types"
 )
@@ -50,19 +54,41 @@ func (k Querier) Schema(goCtx context.Context, req *types.QuerySchemaRequest) (*
 // ╰───────────────────────────────────────────────────────────╯
 
 // Allocate implements types.QueryServer.
-func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*types.AllocateResponse, error) {
+func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest) (*types.QueryAllocateResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 
-	// 2.Allocate the vault msg.GetSubject(), msg.GetOrigin()
-	cid, expiryBlock, err := k.assembleVault(ctx)
+	// 1. Get current schema
+	sch, err := k.currentSchema(ctx)
 	if err != nil {
-		return nil, err
+		ctx.Logger().Error(fmt.Sprintf("Error getting current schema: %s", err.Error()))
+		return nil, types.ErrInvalidSchema.Wrap(err.Error())
+	}
+	shares, err := mpc.GenerateKeyshares()
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Error generating keyshares: %s", err.Error()))
+		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
 
-	return &types.AllocateResponse{
+	con, err := didtypes.NewController(shares)
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Error creating controller: %s", err.Error()))
+		return nil, err
+	}
+	v, err := types.NewVault("", con.SonrAddress(), con.ChainID(), sch)
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
+		return nil, types.ErrInvalidSchema.Wrap(err.Error())
+	}
+	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
+	if err != nil {
+		ctx.Logger().Error(fmt.Sprintf("Error adding to IPFS: %s", err.Error()))
+		return nil, types.ErrVaultAssembly.Wrap(err.Error())
+	}
+
+	return &types.QueryAllocateResponse{
 		Success:     true,
-		Cid:         cid,
-		ExpiryBlock: expiryBlock,
+		Cid:         cid.String(),
+		ExpiryBlock: calculateBlockExpiry(ctx, time.Second*30),
 	}, nil
 }
 
@@ -71,7 +97,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.AllocateRequest) (*t
 // ╰───────────────────────────────────────────────────────────╯
 
 // Sync implements types.QueryServer.
-func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.SyncResponse, error) {
+func (k Querier) Sync(goCtx context.Context, req *types.QuerySyncRequest) (*types.QuerySyncResponse, error) {
 	ctx := sdk.UnwrapSDKContext(goCtx)
 	p, err := k.Keeper.Params.Get(ctx)
 	if err != nil {
@@ -79,13 +105,13 @@ func (k Querier) Sync(goCtx context.Context, req *types.SyncRequest) (*types.Syn
 	}
 	c, _ := k.DIDKeeper.ResolveController(ctx, req.Did)
 	if c == nil {
-		return &types.SyncResponse{
+		return &types.QuerySyncResponse{
 			Success: false,
 			Schema:  p.Schema,
 			ChainID: ctx.ChainID(),
 		}, nil
 	}
-	return &types.SyncResponse{
+	return &types.QuerySyncResponse{
 		Success: true,
 		Schema:  p.Schema,
 		ChainID: ctx.ChainID(),
