@@ -1,7 +1,5 @@
 # `sonr` - Sonr Chain
 
-<center>
-
 [![Go Reference](https://pkg.go.dev/badge/github.com/onsonr/sonr.svg)](https://pkg.go.dev/github.com/onsonr/sonr)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/onsonr/sonr)
 ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/onsonr/sonr)
@@ -9,11 +7,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/onsonr/sonr)](https://goreportcard.com/report/github.com/onsonr/sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 
-</center>
-
-## Overview
-
-Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
+> Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
 ## Stats
 
