@@ -1,7 +1,5 @@
 # `sonr` - Sonr Chain
 
-<center>
-
 [![Go Reference](https://pkg.go.dev/badge/github.com/onsonr/sonr.svg)](https://pkg.go.dev/github.com/onsonr/sonr)
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/onsonr/sonr)
 ![GitHub Release Date - Published_At](https://img.shields.io/github/release-date/onsonr/sonr)
@@ -9,17 +7,23 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/onsonr/sonr)](https://goreportcard.com/report/github.com/onsonr/sonr)
 [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sonrhq_sonr&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sonr-io_sonr)
 
-</center>
+> Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
-## Overview
+# Documentation
 
-Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
+- 1. [Quick Start](https://github.com/onsonr/sonr/wiki/1-%E2%80%90-Quick-Start)
+- 2. [Chain Modules](https://github.com/onsonr/sonr/wiki/2-%E2%80%90-Chain-Modules)
+- 3. [System Architecture](https://github.com/onsonr/sonr/wiki/3-%E2%80%90-System-Architecture)
+- 4. [Token Economy](https://github.com/onsonr/sonr/wiki/4-%E2%80%90-Token-Economy)
+- 5. [Service Mangement](https://github.com/onsonr/sonr/wiki/5-%E2%80%90-Service-Management)
+- 6. [Design System](https://github.com/onsonr/sonr/wiki/6-%E2%80%90-Design-System)
+- 7. [Self Custody](https://github.com/onsonr/sonr/wiki/7-%E2%80%90-Self-Custody)
 
-## Stats
+# Stats
 
 ![Alt](https://repobeats.axiom.co/api/embed/8d0b17e889942889c5b6e632da09bd597efd84c4.svg "Repobeats analytics image")
 
-## Acknowledgements
+# Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following individuals:
 
@@ -28,9 +32,7 @@ Sonr would not have been possible without the direct and indirect support of the
 - **Steve Jobs**: For User first UX.
 - **Tim Berners-Lee**: For the Internet.
 
-<br />
-
-## Community & Support
+# Community & Support
 
 - [Forum](https://github.com/onsonr/sonr/discussions)
 - [Issues](https://github.com/onsonr/sonr/issues)
