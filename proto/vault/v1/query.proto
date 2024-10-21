@@ -32,7 +32,7 @@ service Query {
   // Sync queries the DID document by its id. And returns the required PKL
   // information
   rpc Sync(QuerySyncRequest) returns (QuerySyncResponse) {
-    option (google.api.http).get = "/vault/v1/sync-initial";
+    option (google.api.http).get = "/vault/v1/sync";
   }
 }
 
