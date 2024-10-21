@@ -9,11 +9,11 @@
 
 > Sonr is a combination of decentralized primitives. Fundamentally, it is a peer-to-peer identity and asset management system that leverages DID documents, Webauthn, and IPFS—providing users with a secure, portable decentralized identity.
 
-## Stats
+# Stats
 
 ![Alt](https://repobeats.axiom.co/api/embed/8d0b17e889942889c5b6e632da09bd597efd84c4.svg "Repobeats analytics image")
 
-## Acknowledgements
+# Acknowledgements
 
 Sonr would not have been possible without the direct and indirect support of the following individuals:
 
@@ -22,9 +22,7 @@ Sonr would not have been possible without the direct and indirect support of the
 - **Steve Jobs**: For User first UX.
 - **Tim Berners-Lee**: For the Internet.
 
-<br />
-
-## Community & Support
+# Community & Support
 
 - [Forum](https://github.com/onsonr/sonr/discussions)
 - [Issues](https://github.com/onsonr/sonr/issues)
