@@ -11,6 +11,7 @@ tasks:
       GOOS: js
       GOARCH: wasm
     cmds:
+      - make assets-gen
       - go build -o build/app.wasm main.go
 
   hway:dev:
