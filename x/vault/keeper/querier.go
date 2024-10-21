@@ -63,28 +63,36 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 		ctx.Logger().Error(fmt.Sprintf("Error getting current schema: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
+
+	// 2. Generate MPC Keyshares for new Account
 	shares, err := mpc.GenerateKeyshares()
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error generating keyshares: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
 
+	// 3. Create Controller from Keyshares
 	con, err := didtypes.NewController(shares)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating controller: %s", err.Error()))
-		return nil, err
+		return nil, types.ErrControllerCreation.Wrap(err.Error())
 	}
+
+	// 4. Create a new vault PWA for service-worker
 	v, err := types.NewVault("", con.SonrAddress(), con.ChainID(), sch)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
+
+	// 5. Add to IPFS and Return CID for User Claims in Gateway
 	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error adding to IPFS: %s", err.Error()))
 		return nil, types.ErrVaultAssembly.Wrap(err.Error())
 	}
 
+	// 6. Return final response
 	return &types.QueryAllocateResponse{
 		Success:     true,
 		Cid:         cid.String(),
