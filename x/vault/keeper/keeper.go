@@ -33,7 +33,8 @@ type Keeper struct {
 
 	authority string
 
-	ipfsClient *rpc.HttpApi
+	ipfsClient  *rpc.HttpApi
+	hasIpfsConn bool
 
 	AccountKeeper  authkeeper.AccountKeeper
 	DIDKeeper      didkeeper.Keeper
@@ -50,6 +51,7 @@ func NewKeeper(
 	didKeeper didkeeper.Keeper,
 	macaroonKeeper macaroonkeeper.Keeper,
 ) Keeper {
+	var hasIpfs bool
 	logger = logger.With(log.ModuleKey, "x/"+types.ModuleName)
 
 	sb := collections.NewSchemaBuilder(storeService)
@@ -70,7 +72,11 @@ func NewKeeper(
 
 	ipfsClient, err := rpc.NewLocalApi()
 	if err != nil {
-		panic(err)
+		hasIpfs = false
+	}
+
+	if ipfsClient != nil {
+		hasIpfs = true
 	}
 
 	k := Keeper{
@@ -82,8 +88,9 @@ func NewKeeper(
 		Params:         collections.NewItem(sb, types.ParamsKey, "params", codec.CollValue[types.Params](cdc)),
 		OrmDB:          store,
 
-		ipfsClient: ipfsClient,
-		authority:  authority,
+		ipfsClient:  ipfsClient,
+		hasIpfsConn: hasIpfs,
+		authority:   authority,
 	}
 
 	schema, err := sb.Build()
