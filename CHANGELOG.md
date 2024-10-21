@@ -1,3 +1,9 @@
+## v0.5.14 (2024-10-21)
+
+### Refactor
+
+- remove StakingKeeper dependency from GlobalFeeDecorator
+
 ## v0.5.13 (2024-10-21)
 
 ### Feat
