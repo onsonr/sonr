@@ -7,9 +7,9 @@ import (
 
 var _ sdk.Msg = &MsgUpdateParams{}
 
-// ╭────────────────────────────────────────────────────────╮
-// │                    MsgUpdateParams                     │
-// ╰────────────────────────────────────────────────────────╯
+// ╭───────────────────────────────────────────────────────────╮
+// │                  MsgUpdateParams type definition          │
+// ╰───────────────────────────────────────────────────────────╯
 
 // NewMsgUpdateParams creates new instance of MsgUpdateParams
 func NewMsgUpdateParams(
