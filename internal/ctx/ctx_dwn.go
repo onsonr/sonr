@@ -8,6 +8,11 @@ import (
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  DWNContext struct methods                │
+// ╰───────────────────────────────────────────────────────────╯
+
+// DWNContext is the context for DWN endpoints.
 type DWNContext struct {
 	echo.Context
 
@@ -15,15 +20,18 @@ type DWNContext struct {
 	id string // Generated ksuid http cookie; Initialized on first request
 }
 
+// HasAuthorization returns true if the request has an Authorization header.
 func (s *DWNContext) HasAuthorization() bool {
 	v := ReadHeader(s.Context, HeaderAuthorization)
 	return v != ""
 }
 
+// ID returns the ksuid http cookie.
 func (s *DWNContext) ID() string {
 	return s.id
 }
 
+// Address returns the sonr address from the cookies.
 func (s *DWNContext) Address() string {
 	v, err := ReadCookie(s.Context, CookieKeySonrAddr)
 	if err != nil {
@@ -32,14 +40,17 @@ func (s *DWNContext) Address() string {
 	return v
 }
 
+// IPFSGatewayURL returns the IPFS gateway URL from the headers.
 func (s *DWNContext) IPFSGatewayURL() string {
 	return ReadHeader(s.Context, HeaderIPFSGatewayURL)
 }
 
+// ChainID returns the chain ID from the headers.
 func (s *DWNContext) ChainID() string {
 	return ReadHeader(s.Context, HeaderSonrChainID)
 }
 
+// Schema returns the vault schema from the cookies.
 func (s *DWNContext) Schema() *dwngen.Schema {
 	v, err := ReadCookie(s.Context, CookieKeyVaultSchema)
 	if err != nil {
@@ -53,6 +64,7 @@ func (s *DWNContext) Schema() *dwngen.Schema {
 	return &schema
 }
 
+// GetDWNContext returns the DWNContext from the echo context.
 func GetDWNContext(c echo.Context) (*DWNContext, error) {
 	ctx, ok := c.(*DWNContext)
 	if !ok {

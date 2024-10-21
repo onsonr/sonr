@@ -17,3 +17,13 @@ processes:
     max_restarts: 1
     depends:
       - ipfs
+
+  hway:
+    namespace: testnet
+    background: true
+    command: "task hway:dev"
+    restart: never
+    max_restarts: 1
+    depends:
+      - ipfs
+      - sonr
