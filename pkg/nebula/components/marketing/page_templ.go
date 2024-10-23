@@ -17,6 +17,23 @@ import (
 	"log"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Home Routes - Marketing                  │
+// ╰───────────────────────────────────────────────────────────╯
+
+func HomeRoute(c echo.Context) error {
+	s, err := ctx.GetHWAYContext(c)
+	if err != nil {
+		return err
+	}
+	log.Printf("Session ID: %s", s.ID())
+	return ctx.RenderTempl(c, View())
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Static Content Values                    │
+// ╰───────────────────────────────────────────────────────────╯
+
 var hero = &models.Hero{
 	TitleFirst:      "Simplified",
 	TitleEmphasis:   "self-custody",
@@ -42,23 +59,23 @@ var highlights = &models.Highlights{
 	Subtitle: "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
 	Features: []*models.Feature{
 		{
-			Title: "∞-Factor Auth",
+			Title: "∞ Factor Auth",
 			Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
 			Icon:  nil,
 		},
 		{
-			Title: "Data Ownership",
+			Title: "Control Your Data",
 			Desc:  "Sonr leverages advanced cryptography to permit facilitating Wallet Operations directly on-chain, without the need for a centralized server.",
 			Icon:  nil,
 		},
 		{
-			Title: "Everyday Transactions",
+			Title: "Crypto Enabled",
 			Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 			Icon:  nil,
 		},
 		{
-			Title: "Limitless Possibilities",
-			Desc:  "Sonr is a proudly American Project which operates under the new Wyoming DUNA Legal Framework, ensuring the protection of your digital rights.",
+			Title: "Works Everywhere",
+			Desc:  "Sonr anonymously associates your online identities with a Quantum-Resistant Vault which only you can access.",
 			Icon:  nil,
 		},
 	},
@@ -79,21 +96,17 @@ var mission = &models.Mission{
 		Icon:  nil,
 	},
 	Interoperability: &models.Feature{
-		Title: "American Made DUNA",
+		Title: "Made in the USA",
 		Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 		Icon:  nil,
 	},
 }
 
-func HomeRoute(c echo.Context) error {
-	s, err := ctx.GetHWAYContext(c)
-	if err != nil {
-		return err
-	}
-	log.Printf("Session ID: %s", s.ID())
-	return ctx.RenderTempl(c, View())
-}
+// ╭─────────────────────────────────────────────────────────╮
+// │                  Final Rendering                        │
+// ╰─────────────────────────────────────────────────────────╯
 
+// View renders the home page
 func View() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -151,7 +164,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Mission().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Mission(mission).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

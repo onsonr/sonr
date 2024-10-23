@@ -1,6 +1,8 @@
 package sections
 
-templ Mission() {
+import models "github.com/onsonr/sonr/internal/orm/marketing"
+
+templ Mission(mission *models.Mission) {
 	<!-- Features #3 -->
 	<section
 		class="relative bg-zinc-800 after:absolute after:top-0 after:right-0 after:h-full after:w-96 after:pointer-events-none after:bg-gradient-to-l after:from-zinc-800 max-lg:after:hidden"
@@ -18,17 +20,15 @@ templ Mission() {
 							<div
 								class="inline-flex text-sm font-medium text-zinc-400 px-4 py-0.5 border border-transparent [background:linear-gradient(theme(colors.zinc.800),theme(colors.zinc.800))_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] rounded-full mb-4"
 							>
-								L1 Blockchain
+								{ mission.Eyebrow }
 							</div>
 							<h3
 								class="font-inter-tight text-3xl font-bold text-zinc-200 mb-4"
 							>
-								The Protocol for Decentralized Identity & Authentication
+								{ mission.Heading }
 							</h3>
 							<p class="text-lg text-zinc-500">
-								We're creating the Global Standard for Decentralized Identity. 
-								Authenticate users with PassKeys, Issue Crypto Wallets, Build 
-								Payment flows, Send Encrypted Messages - all on a single platform.
+								{ mission.Subtitle }
 							</p>
 						</div>
 						<!-- Tabs buttons -->
@@ -52,11 +52,10 @@ templ Mission() {
 									<div
 										class="font-inter-tight text-lg font-semibold text-zinc-200 mb-1"
 									>
-										Make designs feel real
+										{ mission.Experience.Title }
 									</div>
 									<div class="text-zinc-500">
-										Save time and keep things consistent with reusable
-										images, and 3D assets in shared libraries.
+										{ mission.Experience.Desc }
 									</div>
 								</div>
 							</button>
@@ -79,11 +78,10 @@ templ Mission() {
 									<div
 										class="font-inter-tight text-lg font-semibold text-zinc-200 mb-1"
 									>
-										Bring creatives closer
+										{ mission.Compliance.Title }
 									</div>
 									<div class="text-zinc-500">
-										Save time and keep things consistent with reusable
-										images, and 3D assets in shared libraries.
+										{ mission.Compliance.Desc }
 									</div>
 								</div>
 							</button>
@@ -106,11 +104,10 @@ templ Mission() {
 									<div
 										class="font-inter-tight text-lg font-semibold text-zinc-200 mb-1"
 									>
-										Scale and align your design team
+										{ mission.Interoperability.Title }
 									</div>
 									<div class="text-zinc-500">
-										Save time and keep things consistent with reusable
-										images, and 3D assets in shared libraries.
+										{ mission.Interoperability.Desc }
 									</div>
 								</div>
 							</button>

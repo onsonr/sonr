@@ -1,6 +1,8 @@
 package sections
 
-templ Architecture() {
+import models "github.com/onsonr/sonr/internal/orm/marketing"
+
+templ Architecture(arch *models.Architecture) {
 	<!-- Features #2 -->
 	<section>
 		<div class="py-12 md:py-20">
@@ -11,12 +13,10 @@ templ Architecture() {
 					<h2
 						class="font-inter-tight text-3xl md:text-4xl font-bold text-zinc-900 mb-4"
 					>
-						Onchain Security with Offchain Privacy
+						{ arch.Heading }
 					</h2>
 					<p class="text-lg text-zinc-500">
-						Whenever you are ready, just hit publish to turn your site
-						sketches into an actual designs. No creating, no skills, no
-						reshaping.
+						{ arch.Subtitle }
 					</p>
 				</div>
 				<div
@@ -38,12 +38,11 @@ templ Architecture() {
 									></path>
 								</svg>
 								<h3 class="font-inter-tight font-semibold text-zinc-900">
-									Decentralized Identity
+									{ arch.Primary.Title }
 								</h3>
 							</div>
 							<p class="grow max-w-md text-sm text-zinc-500">
-								Create teams and organize your designs into folders using
-								project specs and insights.
+								{ arch.Primary.Desc }
 							</p>
 						</div>
 						<figure>
@@ -72,12 +71,11 @@ templ Architecture() {
 									></path>
 								</svg>
 								<h3 class="font-inter-tight font-semibold text-zinc-900">
-									IPFS Vaults
+									{ arch.Secondary.Title }
 								</h3>
 							</div>
 							<p class="grow max-w-md text-sm text-zinc-500">
-								Generate images and explore new ways of presenting your
-								designs with AI.
+								{ arch.Secondary.Desc }
 							</p>
 						</div>
 						<figure>
@@ -106,12 +104,11 @@ templ Architecture() {
 									></path>
 								</svg>
 								<h3 class="font-inter-tight font-semibold text-zinc-900">
-									Service Records
+									{ arch.Tertiary.Title }
 								</h3>
 							</div>
 							<p class="grow max-w-md text-sm text-zinc-500">
-								Get your scenes inside your projects using simple embed
-								code/snippets.
+								{ arch.Tertiary.Desc }
 							</p>
 						</div>
 						<figure>
@@ -140,11 +137,11 @@ templ Architecture() {
 									></path>
 								</svg>
 								<h3 class="font-inter-tight font-semibold text-zinc-900">
-									Authentication & Authorization
+									{ arch.Quaternary.Title }
 								</h3>
 							</div>
 							<p class="grow max-w-md text-sm text-zinc-500">
-								Easily make drag and drop interactions without coding.
+								{ arch.Quaternary.Desc }
 							</p>
 						</div>
 						<figure>
@@ -173,11 +170,11 @@ templ Architecture() {
 									></path>
 								</svg>
 								<h3 class="font-inter-tight font-semibold text-zinc-900">
-									Decentralized Exchange
+									{ arch.Quinary.Title }
 								</h3>
 							</div>
 							<p class="grow max-w-md text-sm text-zinc-500">
-								Create tasks, projects, issues and more in just seconds.
+								{ arch.Quinary.Desc }
 							</p>
 						</div>
 						<figure>
