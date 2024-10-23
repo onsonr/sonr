@@ -352,7 +352,7 @@ var (
 
 	pattern_Query_Allocate_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"vault", "v1", "allocate"}, "", runtime.AssumeColonVerbOpt(false)))
 
-	pattern_Query_Sync_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"vault", "v1", "sync-initial"}, "", runtime.AssumeColonVerbOpt(false)))
+	pattern_Query_Sync_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"vault", "v1", "sync"}, "", runtime.AssumeColonVerbOpt(false)))
 )
 
 var (

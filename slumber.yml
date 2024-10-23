@@ -34,9 +34,12 @@ requests:
   vault: !folder
     name: Vault
     requests:
-      vault_schema: !request
-        method: GET
-        url: "{{host}}/vault/v1/schema"
       vault_allocate: !request
         method: GET
         url: "{{host}}/vault/v1/allocate"
+      vault_schema: !request
+        method: GET
+        url: "{{host}}/vault/v1/schema"
+      vault_sync: !request
+        method: GET
+        url: "{{host}}/vault/v1/sync"
