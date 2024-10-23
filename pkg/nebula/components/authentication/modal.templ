@@ -6,18 +6,21 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 )
 
+// RegisterModal returns the Register Modal.
 templ RegisterModal(c echo.Context) {
 	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
 		@sections.RegisterStart()
 	}
 }
 
+// LoginModal returns the Login Modal.
 templ LoginModal(c echo.Context) {
 	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
 		@sections.LoginStart()
 	}
 }
 
+// AuthorizeModal returns the Authorize Modal.
 templ AuthorizeModal(c echo.Context) {
 	@styles.OpenModal("Account Registration", "Enter your account information below to create your account.") {
 		@sections.AuthorizeStart()
