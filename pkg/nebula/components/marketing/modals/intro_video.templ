@@ -116,7 +116,32 @@ seconds: result.substring(6, 8),
 };
 }
 }"
-		x-init={ IntroVideoScript() }
+		x-init="
+supportsVideo = document.createElement('video').canPlayType;
+if (!supportsVideo) {
+alert('This browser does not support the video element');
+}
+$refs.player.load();
+// Hide the default player controls
+$refs.player.controls = false;
+$watch('playing', (value) => {
+if (value) {
+ended = false;
+controlsHideTimeout = setTimeout(() => {
+controls = false;
+}, autoHideControlsDelay);
+} else {
+clearTimeout(controlsHideTimeout);
+controls = true;
+}
+});
+if (!document?.fullscreenEnabled) {
+$refs.fullscreenButton.style.display = 'none';
+}
+document.addEventListener('fullscreenchange', (e) => {
+fullscreen = !!document.fullscreenElement;
+});
+"
 		x-ref="videoContainer"
 		@mouseleave="mouseleave=true"
 		@mousemove="mousemoveVideo"
