@@ -14,6 +14,7 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 )
 
+// RegisterModal returns the Register Modal.
 func RegisterModal(c echo.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -61,6 +62,7 @@ func RegisterModal(c echo.Context) templ.Component {
 	})
 }
 
+// LoginModal returns the Login Modal.
 func LoginModal(c echo.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -108,6 +110,7 @@ func LoginModal(c echo.Context) templ.Component {
 	})
 }
 
+// AuthorizeModal returns the Authorize Modal.
 func AuthorizeModal(c echo.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
