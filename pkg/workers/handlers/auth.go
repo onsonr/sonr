@@ -7,14 +7,20 @@ import (
 	"github.com/onsonr/sonr/internal/orm"
 )
 
+type authAPI struct{}
+
+var Auth = new(authAPI)
+
 // ╭───────────────────────────────────────────────────────────╮
 // │                    Login Handlers                         │
 // ╰───────────────────────────────────────────────────────────╯
 
+// LoginSubjectCheck handles the login subject check.
 func (a *authAPI) LoginSubjectCheck(e echo.Context) error {
 	return e.JSON(200, "HandleCredentialAssertion")
 }
 
+// LoginSubjectStart handles the login subject start.
 func (a *authAPI) LoginSubjectStart(e echo.Context) error {
 	opts := &protocol.PublicKeyCredentialRequestOptions{
 		UserVerification: "preferred",
@@ -23,6 +29,7 @@ func (a *authAPI) LoginSubjectStart(e echo.Context) error {
 	return e.JSON(200, opts)
 }
 
+// LoginSubjectFinish handles the login subject finish.
 func (a *authAPI) LoginSubjectFinish(e echo.Context) error {
 	var crr protocol.CredentialAssertionResponse
 	if err := e.Bind(&crr); err != nil {
@@ -35,11 +42,13 @@ func (a *authAPI) LoginSubjectFinish(e echo.Context) error {
 // │                   Register Handlers                       │
 // ╰───────────────────────────────────────────────────────────╯
 
+// RegisterSubjectCheck handles the register subject check.
 func (a *authAPI) RegisterSubjectCheck(e echo.Context) error {
 	subject := e.FormValue("subject")
 	return e.JSON(200, subject)
 }
 
+// RegisterSubjectStart handles the register subject start.
 func (a *authAPI) RegisterSubjectStart(e echo.Context) error {
 	// Get subject and address
 	subject := e.FormValue("subject")
@@ -53,6 +62,7 @@ func (a *authAPI) RegisterSubjectStart(e echo.Context) error {
 	return e.JSON(201, orm.NewCredentialCreationOptions(subject, address, chal))
 }
 
+// RegisterSubjectFinish handles the register subject finish.
 func (a *authAPI) RegisterSubjectFinish(e echo.Context) error {
 	// Deserialize the JSON into a temporary struct
 	var ccr protocol.CredentialCreationResponse
@@ -70,11 +80,3 @@ func (a *authAPI) RegisterSubjectFinish(e echo.Context) error {
 	// // credential := orm.NewCredential(parsedData, e.Request().Host, "")
 	return e.JSON(201, ccr)
 }
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                 Group Structures                          │
-// ╰───────────────────────────────────────────────────────────╯
-
-type authAPI struct{}
-
-var Auth = new(authAPI)
