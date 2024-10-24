@@ -2,7 +2,29 @@ package sections
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
-templ Mission(mission *models.Mission) {
+// mission is the (3rd) home page mission section
+var mission = &models.Mission{
+	Eyebrow:  "L1 Blockchain",
+	Heading:  "The Protocol for Decentralized Identity & Authentication",
+	Subtitle: "We're creating the Global Standard for Decentralized Identity. Authenticate users with PassKeys, Issue Crypto Wallets, Build Payment flows, Send Encrypted Messages - all on a single platform.",
+	Experience: &models.Feature{
+		Title: "UX First Approach",
+		Desc:  "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
+		Icon:  nil,
+	},
+	Compliance: &models.Feature{
+		Title: "Universal Interoperability",
+		Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
+		Icon:  nil,
+	},
+	Interoperability: &models.Feature{
+		Title: "Made in the USA",
+		Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+		Icon:  nil,
+	},
+}
+
+templ Mission() {
 	<!-- Features #3 -->
 	<section
 		class="relative bg-zinc-800 after:absolute after:top-0 after:right-0 after:h-full after:w-96 after:pointer-events-none after:bg-gradient-to-l after:from-zinc-800 max-lg:after:hidden"

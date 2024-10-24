@@ -5,17 +5,21 @@ type Button struct {
 	Href string
 }
 
+type Image struct {
+	Src    string
+	Width  string
+	Height string
+}
+
+// ╭──────────────────────────────────────────────────────────╮
+// │                  Generic Models                          │
+// ╰──────────────────────────────────────────────────────────╯
+
 type Feature struct {
 	Title string
 	Desc  string
 	Icon  *string
 	Image *Image
-}
-
-type Image struct {
-	Src    string
-	Width  string
-	Height string
 }
 
 type Stat struct {

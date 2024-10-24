@@ -2,7 +2,33 @@ package sections
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
-templ Architecture(arch *models.Architecture) {
+// architecture is the (4th) home page architecture section
+var arch = &models.Architecture{
+	Heading:  "Onchain Security with Offchain Privacy",
+	Subtitle: "Whenever you are ready, just hit publish to turn your site sketches into an actual designs. No creating, no skills, no reshaping.",
+	Primary: &models.Technology{
+		Title: "Decentralized Identity",
+		Desc:  "Sonr leverages the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+	},
+	Secondary: &models.Technology{
+		Title: "IPFS Vaults",
+		Desc:  "Completely distributed, encrypted, and decentralized storage for your data.",
+	},
+	Tertiary: &models.Technology{
+		Title: "Service Records",
+		Desc:  "On-chain validated services created by Developers for secure transmission of user data.",
+	},
+	Quaternary: &models.Technology{
+		Title: "Authentication & Authorization",
+		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
+	},
+	Quinary: &models.Technology{
+		Title: "First-Class Exchange",
+		Desc:  "Sonr integrates with the IBC protocol allowing for seamless integration with popular exchanges such as OKX, Binance, and Osmosis.",
+	},
+}
+
+templ Architecture() {
 	<!-- Features #2 -->
 	<section>
 		<div class="py-12 md:py-20">

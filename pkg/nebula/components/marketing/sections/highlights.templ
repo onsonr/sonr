@@ -5,7 +5,35 @@ import (
 	models "github.com/onsonr/sonr/internal/orm/marketing"
 )
 
-templ Highlights(highlights *models.Highlights) {
+// highlights is the (2nd) home page highlights section
+var highlights = &models.Highlights{
+	Heading:  "The Internet Rebuilt for You",
+	Subtitle: "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
+	Features: []*models.Feature{
+		{
+			Title: "∞ Factor Auth",
+			Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
+			Icon:  nil,
+		},
+		{
+			Title: "Control Your Data",
+			Desc:  "Sonr leverages advanced cryptography to permit facilitating Wallet Operations directly on-chain, without the need for a centralized server.",
+			Icon:  nil,
+		},
+		{
+			Title: "Crypto Enabled",
+			Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+			Icon:  nil,
+		},
+		{
+			Title: "Works Everywhere",
+			Desc:  "Sonr anonymously associates your online identities with a Quantum-Resistant Vault which only you can access.",
+			Icon:  nil,
+		},
+	},
+}
+
+templ Highlights() {
 	<!-- Features -->
 	<section class="relative bg-zinc-50">
 		<div class="py-12 md:py-20">

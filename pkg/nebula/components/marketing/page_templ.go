@@ -34,6 +34,7 @@ func HomeRoute(c echo.Context) error {
 // │                  Static Content Values                    │
 // ╰───────────────────────────────────────────────────────────╯
 
+// hero is the (1st) home page hero section
 var hero = &models.Hero{
 	TitleFirst:      "Simplified",
 	TitleEmphasis:   "self-custody",
@@ -54,6 +55,7 @@ var hero = &models.Hero{
 	},
 }
 
+// highlights is the (2nd) home page highlights section
 var highlights = &models.Highlights{
 	Heading:  "The Internet Rebuilt for You",
 	Subtitle: "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
@@ -81,17 +83,18 @@ var highlights = &models.Highlights{
 	},
 }
 
+// mission is the (3rd) home page mission section
 var mission = &models.Mission{
 	Eyebrow:  "L1 Blockchain",
 	Heading:  "The Protocol for Decentralized Identity & Authentication",
 	Subtitle: "We're creating the Global Standard for Decentralized Identity. Authenticate users with PassKeys, Issue Crypto Wallets, Build Payment flows, Send Encrypted Messages - all on a single platform.",
 	Experience: &models.Feature{
-		Title: "Less is More",
+		Title: "UX First Approach",
 		Desc:  "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
 		Icon:  nil,
 	},
 	Compliance: &models.Feature{
-		Title: "Works where there's Internet",
+		Title: "Universal Interoperability",
 		Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
 		Icon:  nil,
 	},
@@ -99,6 +102,32 @@ var mission = &models.Mission{
 		Title: "Made in the USA",
 		Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 		Icon:  nil,
+	},
+}
+
+// architecture is the (4th) home page architecture section
+var architecture = &models.Architecture{
+	Heading:  "Onchain Security with Offchain Privacy",
+	Subtitle: "Whenever you are ready, just hit publish to turn your site sketches into an actual designs. No creating, no skills, no reshaping.",
+	Primary: &models.Technology{
+		Title: "Decentralized Identity",
+		Desc:  "Sonr leverages the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+	},
+	Secondary: &models.Technology{
+		Title: "IPFS Vaults",
+		Desc:  "Completely distributed, encrypted, and decentralized storage for your data.",
+	},
+	Tertiary: &models.Technology{
+		Title: "Service Records",
+		Desc:  "On-chain validated services created by Developers for secure transmission of user data.",
+	},
+	Quaternary: &models.Technology{
+		Title: "Authentication & Authorization",
+		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
+	},
+	Quinary: &models.Technology{
+		Title: "First-Class Exchange",
+		Desc:  "Sonr integrates with the IBC protocol allowing for seamless integration with popular exchanges such as OKX, Binance, and Osmosis.",
 	},
 }
 
@@ -172,7 +201,7 @@ func View() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = sections.Architecture().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = sections.Architecture(architecture).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
