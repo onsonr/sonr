@@ -5,6 +5,10 @@ import (
 	models "github.com/onsonr/sonr/internal/orm/marketing"
 )
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
 // highlights is the (2nd) home page highlights section
 var highlights = &models.Highlights{
 	Heading:  "The Internet Rebuilt for You",
@@ -33,6 +37,9 @@ var highlights = &models.Highlights{
 	},
 }
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
 templ Highlights() {
 	<!-- Features -->
 	<section class="relative bg-zinc-50">

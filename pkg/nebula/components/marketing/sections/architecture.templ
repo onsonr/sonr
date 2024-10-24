@@ -2,6 +2,10 @@ package sections
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
 // architecture is the (4th) home page architecture section
 var arch = &models.Architecture{
 	Heading:  "Onchain Security with Offchain Privacy",
@@ -28,6 +32,11 @@ var arch = &models.Architecture{
 	},
 }
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Architecture is the (4th) home page architecture section
 templ Architecture() {
 	<!-- Features #2 -->
 	<section>

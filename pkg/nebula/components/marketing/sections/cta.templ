@@ -2,6 +2,10 @@ package sections
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
 var cta = &models.CallToAction{
 	Logo: &models.Image{
 		Src:    "https://cdn.sonr.id/logo-zinc.svg",
@@ -20,6 +24,9 @@ var cta = &models.CallToAction{
 	},
 }
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
 templ CallToAction() {
 	<section>
 		<div class="py-12 md:py-20">

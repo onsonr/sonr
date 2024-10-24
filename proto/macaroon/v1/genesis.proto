@@ -54,16 +54,6 @@ message Caveats {
   repeated Caveat supported_third_party = 2;
 }
 
-// Transactions defines the allowlist,denylist for transactions which can be
-// broadcasted to the network with the Sonr DWN Signed macaroon.
-message Transactions {
-  option (amino.name) = "macaroon/transactions";
-  option (gogoproto.equal) = true;
-
-  repeated string allowlist = 1;
-  repeated string denylist = 2;
-}
-
 message Caveat {
   repeated string scopes = 1;
   string caveat = 2;
