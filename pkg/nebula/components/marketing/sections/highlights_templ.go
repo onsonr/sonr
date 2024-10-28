@@ -13,7 +13,42 @@ import (
 	models "github.com/onsonr/sonr/internal/orm/marketing"
 )
 
-func Highlights(highlights *models.Highlights) templ.Component {
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+// highlights is the (2nd) home page highlights section
+var highlights = &models.Highlights{
+	Heading:  "The Internet Rebuilt for You",
+	Subtitle: "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
+	Features: []*models.Feature{
+		{
+			Title: "∞ Factor Auth",
+			Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
+			Icon:  nil,
+		},
+		{
+			Title: "Control Your Data",
+			Desc:  "Sonr leverages advanced cryptography to permit facilitating Wallet Operations directly on-chain, without the need for a centralized server.",
+			Icon:  nil,
+		},
+		{
+			Title: "Crypto Enabled",
+			Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+			Icon:  nil,
+		},
+		{
+			Title: "Works Everywhere",
+			Desc:  "Sonr anonymously associates your online identities with a Quantum-Resistant Vault which only you can access.",
+			Icon:  nil,
+		},
+	},
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+func Highlights() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -41,7 +76,7 @@ func Highlights(highlights *models.Highlights) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(highlights.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 17, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 52, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -54,7 +89,7 @@ func Highlights(highlights *models.Highlights) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(highlights.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 20, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 55, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -116,7 +151,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(getSelectedClass(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 39, Col: 34}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 74, Col: 34}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -129,7 +164,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(getClickPrevent(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 41, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 76, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -142,7 +177,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 45, Col: 21}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 80, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -155,7 +190,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(getShowBorder(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 48, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 83, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -168,7 +203,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 60, Col: 19}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 95, Col: 19}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -210,7 +245,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(getXShow(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 68, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 103, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -223,7 +258,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 79, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 114, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -236,7 +271,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 80, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 115, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -249,7 +284,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 81, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 116, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -262,7 +297,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 82, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 117, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

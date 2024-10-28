@@ -13,8 +13,6 @@ service Msg {
   option (cosmos.msg.v1.service) = true;
 
   // UpdateParams defines a governance operation for updating the parameters.
-  //
-  // Since: cosmos-sdk 0.47
   rpc UpdateParams(MsgUpdateParams) returns (MsgUpdateParamsResponse);
 
   // IssueMacaroon asserts the given controller is the owner of the given

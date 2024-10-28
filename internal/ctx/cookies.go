@@ -47,6 +47,7 @@ func GetSessionID(c echo.Context) string {
 
 // GetSessionChallenge returns the session challenge from the cookies.
 func GetSessionChallenge(c echo.Context) (*protocol.URLEncodedBase64, error) {
+	// TODO: Implement a way to regenerate the challenge if it is invalid.
 	chal := new(protocol.URLEncodedBase64)
 	// Attempt to read the session challenge from the "session" cookie
 	sessionChal, err := ReadCookie(c, CookieKeySessionChal)

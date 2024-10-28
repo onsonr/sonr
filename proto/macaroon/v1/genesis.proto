@@ -54,6 +54,7 @@ message Caveats {
   repeated Caveat supported_third_party = 2;
 }
 
+// Caveat defines the caveat
 message Caveat {
   repeated string scopes = 1;
   string caveat = 2;

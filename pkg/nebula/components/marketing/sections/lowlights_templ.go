@@ -8,6 +8,15 @@ package sections
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Lowlights is the (4th) home page lowlights section
 func Lowlights() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

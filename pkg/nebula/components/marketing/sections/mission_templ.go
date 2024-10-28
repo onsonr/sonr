@@ -10,7 +10,29 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
-func Mission(mission *models.Mission) templ.Component {
+// mission is the (3rd) home page mission section
+var mission = &models.Mission{
+	Eyebrow:  "L1 Blockchain",
+	Heading:  "The Protocol for Decentralized Identity & Authentication",
+	Subtitle: "We're creating the Global Standard for Decentralized Identity. Authenticate users with PassKeys, Issue Crypto Wallets, Build Payment flows, Send Encrypted Messages - all on a single platform.",
+	Experience: &models.Feature{
+		Title: "UX First Approach",
+		Desc:  "Sonr is a comprehensive system for Identity Management which proteects users across their digital personas while providing Developers a cost-effective solution for decentralized authentication.",
+		Icon:  nil,
+	},
+	Compliance: &models.Feature{
+		Title: "Universal Interoperability",
+		Desc:  "Sonr is designed to work across all platforms and devices, building a encrypted and anonymous identity layer for each user on the internet.",
+		Icon:  nil,
+	},
+	Interoperability: &models.Feature{
+		Title: "Made in the USA",
+		Desc:  "Sonr follows the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+		Icon:  nil,
+	},
+}
+
+func Mission() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -38,7 +60,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Eyebrow)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 23, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 45, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -51,7 +73,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 28, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 50, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -64,7 +86,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 31, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 53, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -77,7 +99,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Experience.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 55, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 77, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -90,7 +112,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Experience.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 58, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 80, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -103,7 +125,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Compliance.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 81, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 103, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -116,7 +138,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Compliance.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 84, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 106, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -129,7 +151,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Interoperability.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 107, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 129, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -142,7 +164,7 @@ func Mission(mission *models.Mission) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Interoperability.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 110, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 132, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {

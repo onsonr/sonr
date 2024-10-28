@@ -8,6 +8,33 @@ package sections
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import models "github.com/onsonr/sonr/internal/orm/marketing"
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+var cta = &models.CallToAction{
+	Logo: &models.Image{
+		Src:    "https://cdn.sonr.id/logo-zinc.svg",
+		Width:  "60",
+		Height: "60",
+	},
+	Heading:  "Take control of your Identity",
+	Subtitle: "Sonr is a decentralized, permissionless, and censorship-resistant identity network.",
+	Primary: &models.Button{
+		Href: "request-demo.html",
+		Text: "Register",
+	},
+	Secondary: &models.Button{
+		Href: "#0",
+		Text: "Learn More",
+	},
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
 func CallToAction() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

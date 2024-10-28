@@ -7,6 +7,7 @@ option go_package = "github.com/onsonr/sonr/x/macaroon/types";
 
 // https://github.com/cosmos/cosmos-sdk/blob/main/orm/README.md
 
+// Grant is a Grant message type.
 message Grant {
   option (cosmos.orm.v1.table) = {
     id : 1
@@ -21,6 +22,7 @@ message Grant {
   int64 expiry_height = 5;
 }
 
+// Macaroon is a Macaroon message type.
 message Macaroon {
   option (cosmos.orm.v1.table) = {
     id : 2

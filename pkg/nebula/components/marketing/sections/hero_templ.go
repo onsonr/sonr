@@ -14,7 +14,35 @@ import (
 	"github.com/onsonr/sonr/pkg/nebula/global/ui"
 )
 
-func Hero(hero *models.Hero) templ.Component {
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+// hero is the (1st) home page hero section
+var hero = &models.Hero{
+	TitleFirst:      "Simplified",
+	TitleEmphasis:   "self-custody",
+	TitleSecond:     "for everyone",
+	Subtitle:        "Sonr is a modern re-imagination of online user identity, empowering users to take ownership of their digital footprint and unlocking a new era of self-sovereignty.",
+	PrimaryButton:   &models.Button{Text: "Get Started", Href: "/register"},
+	SecondaryButton: &models.Button{Text: "Learn More", Href: "/about"},
+	Image: &models.Image{
+		Src:    "https://cdn.sonr.id/img/hero-clipped.svg",
+		Width:  "500",
+		Height: "500",
+	},
+	Stats: []*models.Stat{
+		{Value: "476", Label: "Assets packed with power beyond your imagiation.", Denom: "K"},
+		{Value: "1.44", Label: "Assets packed with power beyond your imagination.", Denom: "K"},
+		{Value: "1.5", Label: "Assets packed with power beyond your imagination.", Denom: "M+"},
+		{Value: "750", Label: "Assets packed with power beyond your imagination.", Denom: "K"},
+	},
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+func Hero() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -42,7 +70,7 @@ func Hero(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(hero.TitleFirst)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 18, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 46, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -55,7 +83,7 @@ func Hero(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(hero.TitleEmphasis)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 20, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 48, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -68,7 +96,7 @@ func Hero(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(hero.TitleSecond)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 25, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 53, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -81,7 +109,7 @@ func Hero(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(hero.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 28, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 56, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -147,7 +175,7 @@ func heroImage(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(hero.Image.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 48, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 76, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -160,7 +188,7 @@ func heroImage(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(hero.Image.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 49, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 77, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -173,7 +201,7 @@ func heroImage(hero *models.Hero) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(hero.Image.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 50, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 78, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -220,7 +248,7 @@ func stats(stats []*models.Stat) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(counterXData(item.Value))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 62, Col: 122}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 90, Col: 122}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -233,7 +261,7 @@ func stats(stats []*models.Stat) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(item.Value)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 62, Col: 159}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 90, Col: 159}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -246,7 +274,7 @@ func stats(stats []*models.Stat) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(item.Denom)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 62, Col: 180}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 90, Col: 180}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -259,7 +287,7 @@ func stats(stats []*models.Stat) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(item.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 63, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/hero.templ`, Line: 91, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 			if templ_7745c5c3_Err != nil {

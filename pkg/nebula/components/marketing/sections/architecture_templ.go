@@ -10,7 +10,42 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import models "github.com/onsonr/sonr/internal/orm/marketing"
 
-func Architecture(arch *models.Architecture) templ.Component {
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+// architecture is the (4th) home page architecture section
+var arch = &models.Architecture{
+	Heading:  "Onchain Security with Offchain Privacy",
+	Subtitle: "Whenever you are ready, just hit publish to turn your site sketches into an actual designs. No creating, no skills, no reshaping.",
+	Primary: &models.Technology{
+		Title: "Decentralized Identity",
+		Desc:  "Sonr leverages the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+	},
+	Secondary: &models.Technology{
+		Title: "IPFS Vaults",
+		Desc:  "Completely distributed, encrypted, and decentralized storage for your data.",
+	},
+	Tertiary: &models.Technology{
+		Title: "Service Records",
+		Desc:  "On-chain validated services created by Developers for secure transmission of user data.",
+	},
+	Quaternary: &models.Technology{
+		Title: "Authentication & Authorization",
+		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
+	},
+	Quinary: &models.Technology{
+		Title: "First-Class Exchange",
+		Desc:  "Sonr integrates with the IBC protocol allowing for seamless integration with popular exchanges such as OKX, Binance, and Osmosis.",
+	},
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Architecture is the (4th) home page architecture section
+func Architecture() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -38,7 +73,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 16, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 51, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -51,7 +86,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 19, Col: 21}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 54, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -64,7 +99,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Primary.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 41, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 76, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -77,7 +112,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Primary.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 45, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 80, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -90,7 +125,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Secondary.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 74, Col: 31}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 109, Col: 31}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -103,7 +138,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Secondary.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 78, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 113, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -116,7 +151,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Tertiary.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 107, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 142, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -129,7 +164,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Tertiary.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 111, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 146, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -142,7 +177,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Quaternary.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 140, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 175, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -155,7 +190,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Quaternary.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 144, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 179, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -168,7 +203,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Quinary.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 173, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 208, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -181,7 +216,7 @@ func Architecture(arch *models.Architecture) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(arch.Quinary.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 177, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/architecture.templ`, Line: 212, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
