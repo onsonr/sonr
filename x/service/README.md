@@ -8,6 +8,12 @@ The Service module is responsible for managing the registration and authorizatio
 - **Profile**: Represents a DID alias with properties like ID, subject, origin, and controller.
 - **Metadata**: Contains information about a service, including name, description, category, icon, and tags.
 
+### Dependencies
+
+- [x/did](https://github.com/onsonr/sonr/tree/master/x/did)
+- [x/group](https://github.com/onsonr/sonr/tree/master/x/group)
+- [x/nft](https://github.com/onsonr/sonr/tree/master/x/nft)
+
 ## State
 
 The module uses the following state structures:
@@ -15,6 +21,7 @@ The module uses the following state structures:
 ### Metadata
 
 Stores information about services:
+
 - Primary key: `id` (auto-increment)
 - Unique index: `origin`
 - Fields: id, origin, name, description, category, icon (URI), tags
@@ -22,6 +29,7 @@ Stores information about services:
 ### Profile
 
 Stores DID alias information:
+
 - Primary key: `id`
 - Unique index: `subject,origin`
 - Fields: id, subject, origin, controller
@@ -39,6 +47,7 @@ Registers a new service on the blockchain. Requires a valid TXT record in DNS fo
 ## Params
 
 The module has the following parameters:
+
 - `categories`: List of allowed service categories
 - `types`: List of allowed service types
 
@@ -55,6 +64,7 @@ Retrieves all parameters of the module.
 ### gRPC
 
 The module provides a gRPC Query service with the following RPC:
+
 - `Params`: Get all parameters of the module
 
 ### CLI

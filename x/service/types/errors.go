@@ -6,4 +6,5 @@ var (
 	ErrInvalidGenesisState  = sdkerrors.Register(ModuleName, 100, "invalid genesis state")
 	ErrInvalidServiceOrigin = sdkerrors.Register(ModuleName, 200, "invalid service origin")
 	ErrUnrecognizedService  = sdkerrors.Register(ModuleName, 201, "unrecognized service")
+	ErrInvalidServiceGroup  = sdkerrors.Register(ModuleName, 202, "invalid group")
 )
