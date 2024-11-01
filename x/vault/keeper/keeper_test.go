@@ -24,7 +24,6 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
-	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	module "github.com/onsonr/sonr/x/vault"
 	"github.com/onsonr/sonr/x/vault/keeper"
 	"github.com/onsonr/sonr/x/vault/types"
@@ -52,7 +51,6 @@ type testFixture struct {
 	stakingKeeper *stakingkeeper.Keeper
 	mintkeeper    mintkeeper.Keeper
 	didk          didkeeper.Keeper
-	mack          macaroonkeeper.Keeper
 
 	addrs      []sdk.AccAddress
 	govModAddr string
@@ -80,7 +78,7 @@ func SetupTest(t *testing.T) *testFixture {
 	registerBaseSDKModules(f, encCfg, storeService, logger, require)
 
 	// Setup Keeper.
-	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.accountkeeper, f.didk, f.mack)
+	f.k = keeper.NewKeeper(encCfg.Codec, storeService, logger, f.govModAddr, f.accountkeeper, f.didk)
 	f.msgServer = keeper.NewMsgServerImpl(f.k)
 	f.queryServer = keeper.NewQuerier(f.k)
 	f.appModule = module.NewAppModule(encCfg.Codec, f.k, f.didk)

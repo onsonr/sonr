@@ -13,7 +13,6 @@ import (
 
 	apiv1 "github.com/onsonr/sonr/api/service/v1"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
-	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/service/types"
 	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
 )
@@ -30,11 +29,10 @@ type Keeper struct {
 
 	authority string
 
-	DidKeeper      didkeeper.Keeper
-	GroupKeeper    groupkeeper.Keeper
-	MacaroonKeeper macaroonkeeper.Keeper
-	NFTKeeper      nftkeeper.Keeper
-	VaultKeeper    vaultkeeper.Keeper
+	DidKeeper   didkeeper.Keeper
+	GroupKeeper groupkeeper.Keeper
+	NFTKeeper   nftkeeper.Keeper
+	VaultKeeper vaultkeeper.Keeper
 }
 
 // NewKeeper creates a new Keeper instance
@@ -45,7 +43,6 @@ func NewKeeper(
 	authority string,
 	didKeeper didkeeper.Keeper,
 	groupKeeper groupkeeper.Keeper,
-	macaroonKeeper macaroonkeeper.Keeper,
 	nftKeeper nftkeeper.Keeper,
 	vaultKeeper vaultkeeper.Keeper,
 ) Keeper {
@@ -76,10 +73,9 @@ func NewKeeper(
 
 		authority: authority,
 
-		DidKeeper:      didKeeper,
-		GroupKeeper:    groupKeeper,
-		MacaroonKeeper: macaroonKeeper,
-		NFTKeeper:      nftKeeper,
+		DidKeeper:   didKeeper,
+		GroupKeeper: groupKeeper,
+		NFTKeeper:   nftKeeper,
 	}
 
 	schema, err := sb.Build()

@@ -16,7 +16,6 @@ import (
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
-	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
 	"github.com/onsonr/sonr/x/service/keeper"
 	"github.com/onsonr/sonr/x/service/types"
 )
@@ -46,7 +45,6 @@ type AppModule struct {
 
 	keeper keeper.Keeper
 	didk   didkeeper.Keeper
-	mack   macaroonkeeper.Keeper
 }
 
 // NewAppModule constructor
@@ -54,13 +52,11 @@ func NewAppModule(
 	cdc codec.Codec,
 	keeper keeper.Keeper,
 	didkeeper didkeeper.Keeper,
-	macaroonkeeper macaroonkeeper.Keeper,
 ) *AppModule {
 	return &AppModule{
 		AppModuleBasic: AppModuleBasic{cdc: cdc},
 		keeper:         keeper,
 		didk:           didkeeper,
-		mack:           macaroonkeeper,
 	}
 }
 

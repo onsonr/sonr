@@ -148,9 +148,6 @@ import (
 	did "github.com/onsonr/sonr/x/did"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	didtypes "github.com/onsonr/sonr/x/did/types"
-	macaroon "github.com/onsonr/sonr/x/macaroon"
-	macaroonkeeper "github.com/onsonr/sonr/x/macaroon/keeper"
-	macaroontypes "github.com/onsonr/sonr/x/macaroon/types"
 	service "github.com/onsonr/sonr/x/service"
 	servicekeeper "github.com/onsonr/sonr/x/service/keeper"
 	servicetypes "github.com/onsonr/sonr/x/service/types"
@@ -236,7 +233,6 @@ type SonrApp struct {
 	UpgradeKeeper      *upgradekeeper.Keeper
 	legacyAmino        *codec.LegacyAmino
 	VaultKeeper        vaultkeeper.Keeper
-	MacaroonKeeper     macaroonkeeper.Keeper
 	ServiceKeeper      servicekeeper.Keeper
 	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
@@ -371,7 +367,6 @@ func NewChainApp(
 		packetforwardtypes.StoreKey,
 		didtypes.StoreKey,
 		vaulttypes.StoreKey,
-		macaroontypes.StoreKey,
 		servicetypes.StoreKey,
 	)
 
@@ -632,16 +627,6 @@ func NewChainApp(
 		app.StakingKeeper,
 	)
 
-	// Create the macaroon Keeper
-	app.MacaroonKeeper = macaroonkeeper.NewKeeper(
-		appCodec,
-		sdkruntime.NewKVStoreService(keys[macaroontypes.StoreKey]),
-		logger,
-		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AccountKeeper,
-		app.DidKeeper,
-	)
-
 	// Create the vault Keeper
 	app.VaultKeeper = vaultkeeper.NewKeeper(
 		appCodec,
@@ -650,7 +635,6 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.AccountKeeper,
 		app.DidKeeper,
-		app.MacaroonKeeper,
 	)
 
 	// Create the service Keeper
@@ -661,7 +645,6 @@ func NewChainApp(
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
 		app.DidKeeper,
 		app.GroupKeeper,
-		app.MacaroonKeeper,
 		app.NFTKeeper,
 		app.VaultKeeper,
 	)
@@ -924,10 +907,9 @@ func NewChainApp(
 
 		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
 
-		macaroon.NewAppModule(appCodec, app.MacaroonKeeper, app.DidKeeper),
 		vault.NewAppModule(appCodec, app.VaultKeeper, app.DidKeeper),
 
-		service.NewAppModule(appCodec, app.ServiceKeeper, app.DidKeeper, app.MacaroonKeeper),
+		service.NewAppModule(appCodec, app.ServiceKeeper, app.DidKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -977,7 +959,6 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
-		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
 	)
 
@@ -999,7 +980,6 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
-		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
 	)
 
@@ -1030,7 +1010,6 @@ func NewChainApp(
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
 		vaulttypes.ModuleName,
-		macaroontypes.ModuleName,
 		servicetypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
@@ -1491,7 +1470,6 @@ func initParamsKeeper(
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(didtypes.ModuleName)
 	paramsKeeper.Subspace(vaulttypes.ModuleName)
-	paramsKeeper.Subspace(macaroontypes.ModuleName)
 	paramsKeeper.Subspace(servicetypes.ModuleName)
 
 	return paramsKeeper

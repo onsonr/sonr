@@ -104,6 +104,37 @@ message Controller {
   int64 creation_block = 9;
 }
 
+// Grant is a Grant message type.
+message Grant {
+  option (cosmos.orm.v1.table) = {
+    id : 1
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "subject,origin" unique : true}
+  };
+
+  uint64 id = 1;
+  string controller = 2;
+  string subject = 3;
+  string origin = 4;
+  int64 expiry_height = 5;
+}
+
+// Macaroon is a Macaroon message type.
+message Macaroon {
+  option (cosmos.orm.v1.table) = {
+    id : 2
+    primary_key : {fields : "id" auto_increment : true}
+    index : {id : 1 fields : "subject,origin" unique : true}
+  };
+
+  uint64 id = 1;
+  string controller = 2;
+  string subject = 3;
+  string origin = 4;
+  int64 expiry_height = 5;
+  string macaroon = 6;
+}
+
 // Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
