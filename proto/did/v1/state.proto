@@ -107,7 +107,7 @@ message Controller {
 // Grant is a Grant message type.
 message Grant {
   option (cosmos.orm.v1.table) = {
-    id : 1
+    id : 4
     primary_key : {fields : "id" auto_increment : true}
     index : {id : 1 fields : "subject,origin" unique : true}
   };
@@ -122,7 +122,7 @@ message Grant {
 // Macaroon is a Macaroon message type.
 message Macaroon {
   option (cosmos.orm.v1.table) = {
-    id : 2
+    id : 5
     primary_key : {fields : "id" auto_increment : true}
     index : {id : 1 fields : "subject,origin" unique : true}
   };
@@ -138,7 +138,7 @@ message Macaroon {
 // Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
-    id : 4
+    id : 6
     primary_key : {fields : "did"}
     index : {id : 1 fields : "issuer,subject" unique : true}
     index : {id : 2 fields : "controller,did_method,issuer" unique : true}
