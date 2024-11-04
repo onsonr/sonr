@@ -13,22 +13,47 @@ var arch = &models.Architecture{
 	Primary: &models.Technology{
 		Title: "Decentralized Identity",
 		Desc:  "Sonr leverages the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
+		Image: &models.Image{
+			Src:    HardwareWallet.Src(),
+			Width:  "721",
+			Height: "280",
+		},
 	},
 	Secondary: &models.Technology{
 		Title: "IPFS Vaults",
 		Desc:  "Completely distributed, encrypted, and decentralized storage for your data.",
+		Image: &models.Image{
+			Src:    DecentralizedNetwork.Src(),
+			Width:  "342",
+			Height: "280",
+		},
 	},
 	Tertiary: &models.Technology{
 		Title: "Service Records",
 		Desc:  "On-chain validated services created by Developers for secure transmission of user data.",
+		Image: &models.Image{
+			Src:    DefiDashboard.Src(),
+			Width:  "342",
+			Height: "280",
+		},
 	},
 	Quaternary: &models.Technology{
-		Title: "Authentication & Authorization",
-		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
-	},
-	Quinary: &models.Technology{
 		Title: "First-Class Exchange",
 		Desc:  "Sonr integrates with the IBC protocol allowing for seamless integration with popular exchanges such as OKX, Binance, and Osmosis.",
+		Image: &models.Image{
+			Src:    PortfolioBalance.Src(),
+			Width:  "342",
+			Height: "280",
+		},
+	},
+	Quinary: &models.Technology{
+		Title: "Authentication & Authorization",
+		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
+		Image: &models.Image{
+			Src:    DecentralizedWebNode.Src(),
+			Width:  "342",
+			Height: "280",
+		},
 	},
 }
 
@@ -83,7 +108,7 @@ templ Architecture() {
 						<figure>
 							<img
 								class="h-[280px] object-cover object-left mx-auto sm:object-contain sm:h-auto"
-								src="./images/feature-post-01.png"
+								src={ arch.Primary.Image.Src }
 								width="721"
 								height="280"
 								alt="Feature Post 01"
@@ -116,7 +141,7 @@ templ Architecture() {
 						<figure>
 							<img
 								class="h-[280px] object-cover object-left mx-auto sm:object-contain sm:h-auto"
-								src="./images/feature-post-02.png"
+								src={ arch.Secondary.Image.Src }
 								width="342"
 								height="280"
 								alt="Feature Post 02"
@@ -149,7 +174,7 @@ templ Architecture() {
 						<figure>
 							<img
 								class="h-[280px] object-cover object-left mx-auto sm:object-contain sm:h-auto"
-								src="./images/feature-post-03.png"
+								src={ arch.Tertiary.Image.Src }
 								width="342"
 								height="280"
 								alt="Feature Post 03"
@@ -182,7 +207,7 @@ templ Architecture() {
 						<figure>
 							<img
 								class="h-[280px] object-cover object-left mx-auto sm:object-contain sm:h-auto"
-								src="./images/feature-post-04.png"
+								src={ arch.Quaternary.Image.Src }
 								width="342"
 								height="280"
 								alt="Feature Post 04"
@@ -215,7 +240,7 @@ templ Architecture() {
 						<figure>
 							<img
 								class="h-[280px] object-cover object-left mx-auto sm:object-contain sm:h-auto"
-								src="./images/feature-post-05.png"
+								src={ arch.Quinary.Image.Src }
 								width="342"
 								height="280"
 								alt="Feature Post 05"
