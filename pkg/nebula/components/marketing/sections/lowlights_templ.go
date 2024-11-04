@@ -8,9 +8,101 @@ package sections
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import (
+	models "github.com/onsonr/sonr/internal/orm/marketing"
+)
+
 // ╭───────────────────────────────────────────────────────────╮
 // │                         Data Model                        │
 // ╰───────────────────────────────────────────────────────────╯
+
+var lowlights = &models.Lowlights{
+	Heading: "The Fragmentation Problem in the Existing Web is seeping into Crypto",
+	UpperQuotes: []*models.Testimonial{
+		{
+			FullName: "0xDesigner",
+			Username: "@0xdesigner",
+			Avatar: &models.Image{
+				Src:    Avatar0xDesigner.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Alex Recouso",
+			Username: "@alexrecouso",
+			Avatar: &models.Image{
+				Src:    AvatarAlexRecouso.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Chjango",
+			Username: "@chjango",
+			Avatar: &models.Image{
+				Src:    AvatarChjango.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Gwart",
+			Username: "@gwart",
+			Avatar: &models.Image{
+				Src:    AvatarGwart.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+	},
+	LowerQuotes: []*models.Testimonial{
+		{
+			FullName: "HTMX Org",
+			Username: "@htmx_org",
+			Avatar: &models.Image{
+				Src:    AvatarHTMXOrg.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Jelena Noble",
+			Username: "@jelena_noble",
+			Avatar: &models.Image{
+				Src:    AvatarJelenaNoble.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Tanish",
+			Username: "@tanishqxyz",
+			Avatar: &models.Image{
+				Src:    AvatarTanishqXYZ.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+		{
+			FullName: "Unusual Whales",
+			Username: "@unusual_whales",
+			Avatar: &models.Image{
+				Src:    AvatarUnusualWhales.Src(),
+				Width:  "44",
+				Height: "44",
+			},
+			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+		},
+	},
+}
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                  Render Section View                      │
@@ -38,7 +130,147 @@ func Lowlights() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"bg-zinc-800\"><div class=\"py-12 md:py-20\"><div class=\"max-w-5xl mx-auto px-4 sm:px-6\"><div class=\"max-w-3xl mx-auto text-center pb-12 md:pb-20\"><h2 class=\"font-inter-tight text-3xl md:text-4xl font-bold text-zinc-200\">The Fragmentation Problem in the Existing Web is seeping into Crypto</h2></div></div><div class=\"max-w-[94rem] mx-auto space-y-6\"><!-- Row #1 --><div x-data=\"{}\" x-init=\"$nextTick(() =&gt; {\n                                let ul = $refs.testimonials;\n                                ul.insertAdjacentHTML(&#39;afterend&#39;, ul.outerHTML);\n                                ul.nextSibling.setAttribute(&#39;aria-hidden&#39;, &#39;true&#39;);\n                            })\" class=\"w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group\"><div x-ref=\"testimonials\" class=\"flex items-start justify-center md:justify-start [&amp;&gt;div]:mx-3 animate-infinite-scroll group-hover:[animation-play-state:paused]\"><!-- Item #1 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-01.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 01\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Lina James</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">linaj87</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #2 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-02.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 02\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Sarah Mendes</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">saramendes</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #3 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-03.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 03\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Michał Rutt</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">michrutt</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #4 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-04.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 04\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Mary Kahl</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">marykahl</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div></div></div><!-- Row #2 --><div x-data=\"{}\" x-init=\"$nextTick(() =&gt; {\n                                let ul = $refs.testimonials;\n                                ul.insertAdjacentHTML(&#39;afterend&#39;, ul.outerHTML);\n                                ul.nextSibling.setAttribute(&#39;aria-hidden&#39;, &#39;true&#39;);\n                            })\" class=\"w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group\"><div x-ref=\"testimonials\" class=\"flex items-start justify-center md:justify-start [&amp;&gt;div]:mx-3 animate-infinite-scroll-inverse group-hover:[animation-play-state:paused] [animation-delay:-7.5s]\"><!-- Item #5 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-05.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 05\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Katy Dragán</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">katyd</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #6 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-06.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 06\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Karl Ahmed</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">karl87</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #7 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-07.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 07\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Carlotta Grech</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">carlagrech</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div><!-- Item #8 --><div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"./images/testimonial-08.jpg\" width=\"44\" height=\"44\" alt=\"Testimonial 08\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">Alejandra Gok</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">alejandraIT</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.</div></div></div></div></div></div></section>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<section class=\"bg-zinc-800\"><div class=\"py-12 md:py-20\"><div class=\"max-w-5xl mx-auto px-4 sm:px-6\"><div class=\"max-w-3xl mx-auto text-center pb-12 md:pb-20\"><h2 class=\"font-inter-tight text-3xl md:text-4xl font-bold text-zinc-200\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var2 string
+		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(lowlights.Heading)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 110, Col: 25}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2></div></div><div class=\"max-w-[94rem] mx-auto space-y-6\"><!-- Row #1 --><div x-data=\"{}\" x-init=\"$nextTick(() =&gt; {\n                                let ul = $refs.testimonials;\n                                ul.insertAdjacentHTML(&#39;afterend&#39;, ul.outerHTML);\n                                ul.nextSibling.setAttribute(&#39;aria-hidden&#39;, &#39;true&#39;);\n                            })\" class=\"w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group\"><div x-ref=\"testimonials\" class=\"flex items-start justify-center md:justify-start [&amp;&gt;div]:mx-3 animate-infinite-scroll group-hover:[animation-play-state:paused]\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, quote := range lowlights.UpperQuotes {
+			templ_7745c5c3_Err = quoteItem(quote).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><!-- Row #2 --><div x-data=\"{}\" x-init=\"$nextTick(() =&gt; {\n                                let ul = $refs.testimonials;\n                                ul.insertAdjacentHTML(&#39;afterend&#39;, ul.outerHTML);\n                                ul.nextSibling.setAttribute(&#39;aria-hidden&#39;, &#39;true&#39;);\n                            })\" class=\"w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group\"><div x-ref=\"testimonials\" class=\"flex items-start justify-center md:justify-start [&amp;&gt;div]:mx-3 animate-infinite-scroll-inverse group-hover:[animation-play-state:paused] [animation-delay:-7.5s]\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for _, quote := range lowlights.LowerQuotes {
+			templ_7745c5c3_Err = quoteItem(quote).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></div></section>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func quoteItem(quote *models.Testimonial) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var3 == nil {
+			templ_7745c5c3_Var3 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5\"><div class=\"flex items-center mb-4\"><img class=\"shrink-0 rounded-full mr-3\" src=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var4 string
+		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Src)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 65}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" width=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Width)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 94}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" height=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Height)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 125}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" alt=\"Testimonial 01\"><div><div class=\"font-inter-tight font-bold text-zinc-200\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(quote.FullName)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 157, Col: 74}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><a class=\"text-sm font-medium text-zinc-500 hover:text-zinc-300 transition\" href=\"#0\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var8 string
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Username)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 159, Col: 107}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></div><div class=\"text-zinc-500 before:content-[&#39;\\0022&#39;] after:content-[&#39;\\0022&#39;]\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Quote)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 164, Col: 16}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -38,7 +38,7 @@ type Technology struct {
 type Testimonial struct {
 	FullName string
 	Username string
-	Avatar   string
+	Avatar   *Image
 	Quote    string
 }
 
@@ -84,8 +84,9 @@ type Architecture struct {
 }
 
 type Lowlights struct {
-	Heading string
-	Quotes  []*Testimonial
+	Heading     string
+	UpperQuotes []*Testimonial
+	LowerQuotes []*Testimonial
 }
 
 type CallToAction struct {

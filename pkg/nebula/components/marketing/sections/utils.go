@@ -3,6 +3,29 @@ package sections
 import "fmt"
 
 // ╭───────────────────────────────────────────────────────────╮
+// │                  Avatar Image Components                  │
+// ╰───────────────────────────────────────────────────────────╯
+
+type Avatar string
+
+const (
+	Avatar0xDesigner    Avatar = "0xdesigner.jpg"
+	AvatarAlexRecouso   Avatar = "alexrecouso.jpg"
+	AvatarChjango       Avatar = "chjango.jpg"
+	AvatarGwart         Avatar = "gwart.jpg"
+	AvatarHTMXOrg       Avatar = "htmx_org.jpg"
+	AvatarJelenaNoble   Avatar = "jelena_noble.jpg"
+	AvatarSonr          Avatar = "sonr.svg"
+	AvatarTanishqXYZ    Avatar = "tanishqxyz.jpg"
+	AvatarUnusualWhales Avatar = "unusual_whales.png"
+	AvatarWinnieLaux    Avatar = "winnielaux_.jpg"
+)
+
+func (a Avatar) Src() string {
+	return fmt.Sprintf("https://cdn.sonr.id/img/avatars/%s", string(a))
+}
+
+// ╭───────────────────────────────────────────────────────────╮
 // │                  SVG CDN Illustrations                    │
 // ╰───────────────────────────────────────────────────────────╯
 
