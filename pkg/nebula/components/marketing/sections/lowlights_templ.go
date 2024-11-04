@@ -137,7 +137,7 @@ func Lowlights() templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(lowlights.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 110, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 110, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +199,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -212,7 +212,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -225,7 +225,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 125}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 125}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -238,7 +238,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(quote.FullName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 157, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 157, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -251,7 +251,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Username)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 159, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 159, Col: 107}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -264,7 +264,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Quote)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 164, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 164, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
