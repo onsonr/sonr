@@ -1,3 +1,39 @@
+## v0.5.17 (2024-11-05)
+
+### Feat
+
+- add remote client constructor
+- add avatar image components
+- add SVG CDN Illustrations to marketing architecture
+- **marketing**: refactor marketing page components
+- Refactor intro video component to use a proper script template
+- Move Alpine.js script initialization to separate component
+- Add intro video modal component
+- add homepage architecture section
+- add Hero section component with stats and buttons
+- **css**: add new utility classes for group hover
+- implement authentication register finish endpoint
+- add controller creation step to allocate
+- Update service module README based on protobuf files
+- Update x/macaroon/README.md with details from protobuf files
+- update Vault README with details from proto files
+
+### Fix
+
+- update file paths in error messages
+- update intro video modal script
+- include assets generation in wasm build
+
+### Refactor
+
+- update marketing section architecture
+- change verification table id
+- **proto**: remove macaroon proto
+- rename ValidateBasic to Validate
+- rename session cookie key
+- remove unused sync-initial endpoint
+- remove formatter.go from service module
+
 ## v0.5.16 (2024-10-21)
 
 ## v0.5.15 (2024-10-21)
