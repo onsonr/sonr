@@ -10,6 +10,7 @@ type Avatar string
 
 const (
 	Avatar0xDesigner    Avatar = "0xdesigner.jpg"
+	AvatarAccountless   Avatar = "accountless.jpg"
 	AvatarAlexRecouso   Avatar = "alexrecouso.jpg"
 	AvatarChjango       Avatar = "chjango.jpg"
 	AvatarGwart         Avatar = "gwart.jpg"

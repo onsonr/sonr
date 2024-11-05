@@ -21,13 +21,13 @@ var lowlights = &models.Lowlights{
 	UpperQuotes: []*models.Testimonial{
 		{
 			FullName: "0xDesigner",
-			Username: "@0xdesigner",
+			Username: "@0xDesigner",
 			Avatar: &models.Image{
 				Src:    Avatar0xDesigner.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "what if the wallet ui appeared next to the click instead of in a new browser window?",
 		},
 		{
 			FullName: "Alex Recouso",
@@ -37,59 +37,59 @@ var lowlights = &models.Lowlights{
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "2024 resembles 1984, but it doesn't have to be that way for you",
 		},
 		{
-			FullName: "Chjango",
+			FullName: "Chjango Unchained",
 			Username: "@chjango",
 			Avatar: &models.Image{
 				Src:    AvatarChjango.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "IBC is the inter-blockchain highway of @cosmos. While not very cypherpunk, charging a 1.5 basis pt fee would go a long way if priced in $ATOM.",
 		},
 		{
 			FullName: "Gwart",
-			Username: "@gwart",
+			Username: "@GwartyGwart",
 			Avatar: &models.Image{
 				Src:    AvatarGwart.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "	Base is incredible. Most centralized l2. Least details about their plans to decentralize. Keeps OP cabal quiet by pretending to care about quadratic voting and giving 10% tithe. Pays Ethereum mainnet virtually nothing. Runs yuppie granola ad campaigns.",
 		},
 	},
 	LowerQuotes: []*models.Testimonial{
 		{
-			FullName: "HTMX Org",
-			Username: "@htmx_org",
+			FullName: "winnie",
+			Username: "@winnielaux_",
 			Avatar: &models.Image{
-				Src:    AvatarHTMXOrg.Src(),
+				Src:    AvatarWinnieLaux.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "the ability to download apps directly from the web or from “crypto-only” app stores will be a massive unlock for web3",
 		},
 		{
-			FullName: "Jelena Noble",
+			FullName: "Jelena",
 			Username: "@jelena_noble",
 			Avatar: &models.Image{
 				Src:    AvatarJelenaNoble.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "Excited for all the @cosmos nerds to be vindicated in the next bull run",
 		},
 		{
-			FullName: "Tanish",
-			Username: "@tanishqxyz",
+			FullName: "accountless",
+			Username: "@alexanderchopan",
 			Avatar: &models.Image{
-				Src:    AvatarTanishqXYZ.Src(),
+				Src:    AvatarAccountless.Src(),
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "sounds like webThree. Single key pair Requires the same signer At risk of infinite approvals Public history of all transactions different account on each chain different addresses for each account",
 		},
 		{
 			FullName: "Unusual Whales",
@@ -99,7 +99,7 @@ var lowlights = &models.Lowlights{
 				Width:  "44",
 				Height: "44",
 			},
-			Quote: "Extremely thoughtful approaches to business. I highly recommend this product to anyone wanting to jump into something new.",
+			Quote: "BREAKING: Fidelity & Fidelity Investments has confirmed that over 77,000 customers had personal information compromised, including Social Security numbers and driver’s licenses.",
 		},
 	},
 }
@@ -137,7 +137,7 @@ func Lowlights() templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(lowlights.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 110, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 110, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +199,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -212,7 +212,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -225,7 +225,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 155, Col: 125}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 155, Col: 125}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -238,7 +238,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(quote.FullName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 157, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 157, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -251,7 +251,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Username)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 159, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 159, Col: 107}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -264,7 +264,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Quote)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/lowlights.templ`, Line: 164, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/lowlights.templ`, Line: 164, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {

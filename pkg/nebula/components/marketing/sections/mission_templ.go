@@ -60,7 +60,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Eyebrow)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 45, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 45, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -73,7 +73,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 50, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 50, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -86,7 +86,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 53, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 53, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -99,7 +99,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Experience.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 77, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 77, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -112,7 +112,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Experience.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 80, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 80, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -125,7 +125,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Compliance.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 103, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 103, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -138,7 +138,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Compliance.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 106, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 106, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -151,7 +151,7 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Interoperability.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 129, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 129, Col: 42}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -164,13 +164,13 @@ func Mission() templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(mission.Interoperability.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/mission.templ`, Line: 132, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/mission.templ`, Line: 132, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></button></div></div><!-- Tabs items --><div class=\"relative lg:max-w-none\"><div class=\"relative flex flex-col\"><!-- Item 1 --><div class=\"w-full\" x-show=\"tab === &#39;1&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><img class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"./images/carousel-illustration-01.jpg\" width=\"800\" height=\"620\" alt=\"Carousel 01\"></div></div><!-- Item 2 --><div class=\"w-full\" x-show=\"tab === &#39;2&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><img class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"./images/carousel-illustration-01.jpg\" width=\"800\" height=\"620\" alt=\"Carousel 02\"></div></div><!-- Item 3 --><div class=\"w-full\" x-show=\"tab === &#39;3&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><img class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"./images/carousel-illustration-01.jpg\" width=\"800\" height=\"620\" alt=\"Carousel 03\"></div></div></div><!-- Gear illustration --><img class=\"absolute left-0 bottom-0 -translate-x-1/2 translate-y-1/3 mix-blend-exclusion max-lg:w-32\" src=\"https://cdn.sonr.id/img/secure-vault.svg\" alt=\"Features 02 illustration\" width=\"224\" height=\"224\" aria-hidden=\"true\"></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></button></div></div><!-- Tabs items --><div class=\"relative lg:max-w-none\"><div class=\"relative flex flex-col\"><!-- Item 1 --><div class=\"w-full\" x-show=\"tab === &#39;1&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><iframe class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"https://customer-rexp70scd8jht8wt.cloudflarestream.com/cc55547777cec7e044cedda239a89aaa/iframe?muted=true&amp;preload=true&amp;loop=true&amp;autoplay=true&amp;poster=https%3A%2F%2Fcustomer-rexp70scd8jht8wt.cloudflarestream.com%2Fcc55547777cec7e044cedda239a89aaa%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&amp;controls=false\" loading=\"lazy\" style=\"border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;\" allow=\"accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;\" allowfullscreen=\"true\"></iframe></div></div><!-- Item 2 --><div class=\"w-full\" x-show=\"tab === &#39;2&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><iframe class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"https://customer-rexp70scd8jht8wt.cloudflarestream.com/c1b8fc6a34e9cf0541c13751ab26c1fa/iframe?muted=true&amp;preload=true&amp;loop=true&amp;autoplay=true&amp;poster=https%3A%2F%2Fcustomer-rexp70scd8jht8wt.cloudflarestream.com%2Fc1b8fc6a34e9cf0541c13751ab26c1fa%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&amp;controls=false\" loading=\"lazy\" style=\"border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;\" allow=\"accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;\" allowfullscreen=\"true\"></iframe></div></div><!-- Item 3 --><div class=\"w-full\" x-show=\"tab === &#39;3&#39;\" x-transition:enter=\"transition ease-in-out duration-700 transform order-first\" x-transition:enter-start=\"opacity-0 translate-x-8\" x-transition:enter-end=\"opacity-100 translate-x-0\" x-transition:leave=\"transition ease-in-out duration-300 transform absolute\" x-transition:leave-start=\"opacity-100 translate-x-0\" x-transition:leave-end=\"opacity-0 -translate-x-8\"><div><iframe class=\"lg:max-w-none mx-auto rounded-lg shadow-2xl\" src=\"https://customer-rexp70scd8jht8wt.cloudflarestream.com/ff33ff3ee922f5826a0392bb3cda66ca/iframe?muted=true&amp;preload=true&amp;loop=true&amp;autoplay=true&amp;poster=https%3A%2F%2Fcustomer-rexp70scd8jht8wt.cloudflarestream.com%2Fff33ff3ee922f5826a0392bb3cda66ca%2Fthumbnails%2Fthumbnail.jpg%3Ftime%3D%26height%3D600&amp;controls=false\" loading=\"lazy\" style=\"border: none; position: absolute; top: 0; left: 0; height: 100%; width: 100%;\" allow=\"accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture;\" allowfullscreen=\"true\"></iframe></div></div></div><!-- Gear illustration --><img class=\"absolute left-0 bottom-0 -translate-x-1/2 translate-y-1/3 mix-blend-exclusion max-lg:w-32\" src=\"https://cdn.sonr.id/img/secure-vault.svg\" alt=\"Features 02 illustration\" width=\"224\" height=\"224\" aria-hidden=\"true\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

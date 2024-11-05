@@ -76,7 +76,7 @@ func Highlights() templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(highlights.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 52, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 52, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -89,7 +89,7 @@ func Highlights() templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(highlights.Subtitle)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 55, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 55, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -151,7 +151,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(getSelectedClass(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 74, Col: 34}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 74, Col: 34}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -164,7 +164,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(getClickPrevent(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 76, Col: 41}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 76, Col: 41}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -177,7 +177,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 80, Col: 21}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 80, Col: 21}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -190,7 +190,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(getShowBorder(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 83, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 83, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -203,7 +203,7 @@ func highlightTab(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Desc)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 95, Col: 19}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 95, Col: 19}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -245,7 +245,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(getXShow(index))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 103, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 103, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -258,7 +258,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 114, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 114, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -271,7 +271,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 115, Col: 33}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 115, Col: 33}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -284,7 +284,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var14 string
 		templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Image.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 116, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 116, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 		if templ_7745c5c3_Err != nil {
@@ -297,7 +297,7 @@ func highlightCard(index int, highlight *models.Feature) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(highlight.Title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/nebula/components/marketing/sections/highlights.templ`, Line: 117, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `components/marketing/sections/highlights.templ`, Line: 117, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
