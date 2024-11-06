@@ -8,25 +8,7 @@ package marketing
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/ctx"
-	"github.com/onsonr/sonr/pkg/nebula/global/styles"
-	"log"
-)
-
-// ╭───────────────────────────────────────────────────────────╮
-// │                  Home Routes - Marketing                  │
-// ╰───────────────────────────────────────────────────────────╯
-
-func HomeRoute(c echo.Context) error {
-	s, err := ctx.GetHWAYContext(c)
-	if err != nil {
-		return err
-	}
-	log.Printf("Session ID: %s", s.ID())
-	return ctx.RenderTempl(c, View())
-}
+import "github.com/onsonr/sonr/pkg/nebula/global/styles"
 
 // ╭─────────────────────────────────────────────────────────╮
 // │                  Final Rendering                        │
