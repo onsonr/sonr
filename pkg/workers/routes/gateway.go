@@ -3,8 +3,8 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/nebula/components/authentication"
-	"github.com/onsonr/sonr/pkg/nebula/components/marketing"
+	"github.com/onsonr/sonr/pkg/nebula/marketing"
+	"github.com/onsonr/sonr/pkg/nebula/routes"
 )
 
 func RegisterGatewayAPI(e *echo.Echo) {
@@ -12,6 +12,6 @@ func RegisterGatewayAPI(e *echo.Echo) {
 
 func RegisterGatewayViews(e *echo.Echo) {
 	e.GET("/", marketing.HomeRoute)
-	e.GET("/login", authentication.LoginModalRoute)
-	e.GET("/register", authentication.RegisterModalRoute)
+	e.GET("/login", routes.LoginModalRoute)
+	e.GET("/register", routes.RegisterModalRoute)
 }

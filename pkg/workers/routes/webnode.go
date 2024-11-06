@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/nebula/components/authentication"
+	"github.com/onsonr/sonr/pkg/nebula/routes"
 	"github.com/onsonr/sonr/pkg/workers/handlers"
 )
 
@@ -26,8 +26,8 @@ func RegisterWebNodeAPI(e *echo.Echo) {
 // RegisterWebNodeViews registers the Decentralized Web Node HTMX views.
 func RegisterWebNodeViews(e *echo.Echo) {
 	e.File("/", "index.html")
-	e.GET("/#", authentication.CurrentViewRoute)
-	e.GET("/login", authentication.LoginModalRoute)
+	e.GET("/#", routes.CurrentViewRoute)
+	e.GET("/login", routes.LoginModalRoute)
 	e.File("/config", "config.json")
-	e.GET("/register", authentication.RegisterModalRoute)
+	e.GET("/register", routes.RegisterModalRoute)
 }

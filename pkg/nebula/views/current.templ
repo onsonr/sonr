@@ -1,0 +1,23 @@
+package views
+
+import echo "github.com/labstack/echo/v4"
+
+// CurrentView checks if the user is logged in.
+templ CurrentView(c echo.Context) {
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Current Account</h3>
+					</div>
+					<div class="card-body">
+						<p class="card-text">
+							<a href="/logout">Logout</a>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+}

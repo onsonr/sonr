@@ -22,6 +22,7 @@ tasks:
   hway:deploy:
     dir: cmd/hway
     cmds:
+      - task: nebula:build
       - bunx wrangler deploy
 
   motr:build:
