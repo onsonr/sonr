@@ -6,7 +6,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/internal/dwn/gen"
-	"github.com/onsonr/sonr/pkg/nebula/components/vaultindex"
+	"github.com/onsonr/sonr/pkg/nebula"
 )
 
 const (
@@ -24,7 +24,7 @@ var swJSData []byte
 
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *gen.Config) (files.Node, error) {
-	idxFile, err := vaultindex.BuildFile(cnfg)
+	idxFile, err := nebula.BuildVaultFile(cnfg)
 	if err != nil {
 		return nil, err
 	}

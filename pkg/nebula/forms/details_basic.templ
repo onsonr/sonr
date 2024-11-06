@@ -1,0 +1,55 @@
+package forms
+
+templ BasicDetailsForm() {
+	<div class="border rounded-lg shadow-sm bg-card text-zinc-900">
+		<div class="flex flex-col space-y-1.5 p-6"></div>
+		@roleSelectInput()
+		@nameInput()
+		@usernameInput()
+		<div class="p-6 pt-0 space-y-2"></div>
+	</div>
+}
+
+templ roleSelectInput() {
+	<div
+		x-data="{
+    radioGroupSelectedValue: null,
+    radioGroupOptions: [
+        {
+            title: 'Trader',
+            description: 'You are experienced with DeFi.',
+            value: 'trader'
+        },
+        {
+            title: 'Developer',
+            description: 'You want to build on or integrate with the protocol.',
+            value: 'developer'
+        },
+        {
+            title: 'Hobbyist',
+            description: 'You are interested in what Sonr is all about.',
+            value: 'hobbyist'
+        }
+    ]
+}"
+		class="space-y-3"
+	>
+		<template x-for="(option, index) in radioGroupOptions" :key="index">
+			<label @click="radioGroupSelectedValue=option.value" class="flex items-start p-5 space-x-3 bg-white border rounded-md shadow-sm hover:bg-gray-50 border-neutral-200/70">
+				<input type="radio" name="radio-group" :value="option.value" class="text-gray-900 translate-y-px focus:ring-gray-700"/>
+				<span class="relative flex flex-col text-left space-y-1.5 leading-none">
+					<span x-text="option.title" class="font-semibold"></span>
+					<span x-text="option.description" class="text-sm opacity-50"></span>
+				</span>
+			</label>
+		</template>
+	</div>
+}
+
+templ nameInput() {
+	<div class="space-y-1"><label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">Name</label><input type="text" id="name" placeholder="Adam Wathan" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/></div>
+}
+
+templ usernameInput() {
+	<div class="space-y-1"><label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="username">Handle</label><input type="text" id="handle" placeholder="angelo.snr" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/></div>
+}
