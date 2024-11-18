@@ -1,16 +1,24 @@
 version: "3"
 
+includes:
+  pkl: ./third_party/pkl/Taskfile.yml
+
 vars:
   ROOT_DIR:
     sh: pwd
 
 tasks:
+  hway:assets-gen:
+    cmds:
+      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
+
   hway:build:
     dir: cmd/gateway
     env:
       GOOS: js
       GOARCH: wasm
     cmds:
+      - task: hway:assets-gen
       - go build -o build/app.wasm main.go
 
   hway:dev:

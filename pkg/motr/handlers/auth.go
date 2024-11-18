@@ -4,7 +4,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/internal/orm"
+	"github.com/onsonr/sonr/pkg/motr/types/orm"
 )
 
 // ╭───────────────────────────────────────────────────────────╮

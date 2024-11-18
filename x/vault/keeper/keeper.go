@@ -15,7 +15,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
-	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
+	dwngen "github.com/onsonr/sonr/pkg/motr/config"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	"github.com/onsonr/sonr/x/vault/types"
 )

@@ -3,8 +3,8 @@ package types
 import (
 	"github.com/ipfs/boxo/files"
 
-	"github.com/onsonr/sonr/internal/dwn"
-	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
+	dwngen "github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/motr/embed"
 )
 
 type Vault struct {
@@ -21,7 +21,7 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwng
 		SonrChainId:    chainID,
 		VaultSchema:    schema,
 	}
-	fileMap, err := dwn.NewVaultDirectory(dwnCfg)
+	fileMap, err := embed.NewVaultDirectory(dwnCfg)
 	if err != nil {
 		return nil, err
 	}

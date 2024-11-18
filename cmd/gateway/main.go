@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/syumai/workers"
 
-	"github.com/onsonr/sonr/internal/ctx"
+	"github.com/onsonr/sonr/pkg/common/ctx"
 	"github.com/onsonr/sonr/pkg/hway/routes"
 )
 
