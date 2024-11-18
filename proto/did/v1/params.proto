@@ -1,0 +1,34 @@
+syntax = "proto3";
+package did.v1;
+
+import "amino/amino.proto";
+import "gogoproto/gogo.proto";
+
+option go_package = "github.com/onsonr/sonr/x/did/types";
+
+// Params defines the set of module parameters.
+message Params {
+  option (amino.name) = "did/params";
+  option (gogoproto.equal) = true;
+  option (gogoproto.goproto_stringer) = false;
+
+  // Whitelisted Assets
+
+  // Whitelisted Key Types
+  map<string, KeyInfo> allowed_public_keys = 2;
+
+  // ConveyancePreference defines the conveyance preference
+  string conveyance_preference = 3;
+
+  // AttestationFormats defines the attestation formats
+  repeated string attestation_formats = 4;
+}
+
+// KeyInfo defines information for accepted PubKey types
+message KeyInfo {
+  string role = 1;
+  string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
+  string encoding = 3; // e.g., "hex", "base64", "multibase"
+  string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448",
+  // "Ed25519", "Ed448", "secp256k1"
+}

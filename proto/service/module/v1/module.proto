@@ -1,11 +1,11 @@
 syntax = "proto3";
 
-package onsonr.sonr.service.module.v1;
+package service.module.v1;
 
 import "cosmos/app/v1alpha1/module.proto";
 
 // Module is the app config object of the module.
 // Learn more: https://docs.cosmos.network/main/building-modules/depinject
 message Module {
-  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/onsonr/sonr/x/service"};
+  option (cosmos.app.v1alpha1.module) = {go_import: "github.com/onsonr/sonr"};
 }
