@@ -7,8 +7,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/onsonr/crypto/mpc"
 
+	"github.com/onsonr/sonr/x/did/controller"
 	"github.com/onsonr/sonr/x/did/types"
-	"github.com/onsonr/sonr/x/did/types/controller"
 )
 
 func (k Keeper) NewController(ctx sdk.Context) (controller.ControllerI, error) {

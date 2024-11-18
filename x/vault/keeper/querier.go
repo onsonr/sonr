@@ -8,7 +8,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/onsonr/crypto/mpc"
 
-	"github.com/onsonr/sonr/x/did/types/controller"
+	"github.com/onsonr/sonr/x/did/controller"
 	"github.com/onsonr/sonr/x/vault/types"
 )
 
