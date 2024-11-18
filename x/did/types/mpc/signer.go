@@ -1,4 +1,4 @@
-package types
+package mpc
 
 import (
 	"context"
@@ -25,6 +25,5 @@ func (s directHandler) GetSignBytes(
 		ChainId:       signerData.ChainID,
 		AccountNumber: signerData.AccountNumber,
 	}
-
 	return txDoc.Marshal()
 }
