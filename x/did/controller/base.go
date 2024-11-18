@@ -1,11 +1,18 @@
 package controller
 
 import (
-	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/onsonr/crypto/mpc"
 
 	didv1 "github.com/onsonr/sonr/api/did/v1"
+	"github.com/onsonr/sonr/x/did/controller/accstd"
 )
+
+type ControllerI interface {
+	ChainID() string
+	GetPubKey() *didv1.PubKey
+	SonrAddress() string
+	RawPublicKey() []byte
+}
 
 func New(shares []mpc.Share) (ControllerI, error) {
 	var (
@@ -16,7 +23,7 @@ func New(shares []mpc.Share) (ControllerI, error) {
 	if err != nil {
 		return nil, err
 	}
-	sonrAddr, err := ComputeSonrAddress(pb)
+	sonrAddr, err := accstd.ComputeSonrAddress(pb)
 	if err != nil {
 		return nil, err
 	}
@@ -26,14 +33,6 @@ func New(shares []mpc.Share) (ControllerI, error) {
 		userKs:    userKs,
 		address:   sonrAddr,
 		publicKey: pb,
-	}, nil
-}
-
-func LoadFromTableEntry(ctx sdk.Context, entry *didv1.Controller) (ControllerI, error) {
-	return &controller{
-		address:   entry.Did,
-		chainID:   ctx.ChainID(),
-		publicKey: entry.PublicKey.RawKey.Key,
 	}, nil
 }
 
