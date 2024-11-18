@@ -19,11 +19,6 @@ service Query {
     option (google.api.http).get = "/did/v1/{did}";
   }
 
-  // Sign signs a message with the DID document
-  rpc Sign(QuerySignRequest) returns (QuerySignResponse) {
-    option (google.api.http).post = "/did/v1/{did}/sign";
-  }
-
   // Verify verifies a message with the DID document
   rpc Verify(QueryVerifyRequest) returns (QueryVerifyResponse) {
     option (google.api.http).post = "/did/v1/{did}/verify";

@@ -40,3 +40,22 @@ tasks:
       - bun run deps.mjs
       - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
       - templ generate
+
+  buf:push:
+    cmds:
+      - task: buf:push:sonr
+      - task: buf:push:thirdparty
+
+  buf:push:sonr:
+    internal: true
+    dir: proto
+    cmds:
+      - buf build
+      - buf push
+
+  buf:push:thirdparty:
+    internal: true
+    dir: third_party/proto
+    cmds:
+      - buf build
+      - buf push

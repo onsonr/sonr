@@ -1,5 +1,5 @@
 version: v1
-name: buf.build/onsonr/third_party
+name: buf.build/onsonr/thirdparty
 deps:
   - buf.build/onsonr/sonr
 lint:
