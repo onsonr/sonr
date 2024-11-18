@@ -6,14 +6,15 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	didtypes "github.com/onsonr/sonr/x/did/types"
 	"gopkg.in/macaroon.v2"
+
+	"github.com/onsonr/sonr/x/did/types/controller"
 )
 
 var fourYears = time.Hour * 24 * 365 * 4
 
 // IssueAdminMacaroon creates a macaroon with the specified parameters.
-func (k Keeper) IssueAdminMacaroon(sdkctx sdk.Context, controller didtypes.ControllerI) (*macaroon.Macaroon, error) {
+func (k Keeper) IssueAdminMacaroon(sdkctx sdk.Context, controller controller.ControllerI) (*macaroon.Macaroon, error) {
 	// Derive the root key by hashing the shared MPC public key
 	rootKey := sha256.Sum256([]byte(controller.RawPublicKey()))
 	// Create the macaroon

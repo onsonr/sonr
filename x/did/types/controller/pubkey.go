@@ -1,4 +1,4 @@
-package pubkey
+package controller
 
 import (
 	"strings"
