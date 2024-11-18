@@ -1,4 +1,4 @@
-package implementation
+package accounts
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 	codectypes "github.com/cosmos/cosmos-sdk/codec/types"
 	"github.com/cosmos/gogoproto/proto"
 
-	"github.com/onsonr/sonr/pkg/common/transaction"
+	"github.com/onsonr/sonr/pkg/core/transaction"
 )
 
 // ProtoMsgG is a generic interface for protobuf messages.

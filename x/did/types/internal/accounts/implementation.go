@@ -1,4 +1,4 @@
-package implementation
+package accounts
 
 import (
 	"context"
@@ -9,8 +9,8 @@ import (
 	"github.com/cosmos/cosmos-sdk/codec"
 	gogoproto "github.com/cosmos/gogoproto/proto"
 
-	"github.com/onsonr/sonr/pkg/common/appmodule"
-	"github.com/onsonr/sonr/pkg/common/transaction"
+	"github.com/onsonr/sonr/pkg/core/appmodule"
+	"github.com/onsonr/sonr/pkg/core/transaction"
 )
 
 // Dependencies are passed to the constructor of a smart account.

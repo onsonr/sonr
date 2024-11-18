@@ -1,4 +1,4 @@
-package wallet
+package address
 
 import (
 	"crypto/ecdsa"
@@ -9,8 +9,8 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-// ComputeSonrAddress computes the Sonr address from a public key
-func ComputeSonrAddress(pk []byte) (string, error) {
+// ComputeSonr computes the Sonr address from a public key
+func ComputeSonr(pk []byte) (string, error) {
 	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
 	if err != nil {
 		return "", err
@@ -18,8 +18,8 @@ func ComputeSonrAddress(pk []byte) (string, error) {
 	return sonrAddr, nil
 }
 
-// ComputeBitcoinAddress computes the Bitcoin address from a public key
-func ComputeBitcoinAddress(pk []byte) (string, error) {
+// ComputeBitcoin computes the Bitcoin address from a public key
+func ComputeBitcoin(pk []byte) (string, error) {
 	btcAddr, err := bech32.ConvertAndEncode("bc", pk)
 	if err != nil {
 		return "", err
@@ -27,8 +27,8 @@ func ComputeBitcoinAddress(pk []byte) (string, error) {
 	return btcAddr, nil
 }
 
-// ComputeEthAddress computes the Ethereum address from a public key
-func ComputeEthAddress(pk *ecdsa.PublicKey) string {
+// ComputeEth computes the Ethereum address from a public key
+func ComputeEth(pk *ecdsa.PublicKey) string {
 	// Generate Ethereum address
 	address := ethcrypto.PubkeyToAddress(*pk)
 

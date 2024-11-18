@@ -1,4 +1,4 @@
-package implementation
+package accounts
 
 import (
 	"context"
@@ -8,8 +8,8 @@ import (
 	"cosmossdk.io/core/store"
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
-	"github.com/onsonr/sonr/pkg/common/transaction"
-	"github.com/onsonr/sonr/x/did/controller/accstd/internal/prefixstore"
+	"github.com/onsonr/sonr/pkg/core/transaction"
+	"github.com/onsonr/sonr/x/did/types/internal/prefixstore"
 )
 
 var AccountStatePrefix = collections.NewPrefix(255)

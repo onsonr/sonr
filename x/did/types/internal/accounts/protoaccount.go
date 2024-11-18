@@ -1,4 +1,4 @@
-package implementation
+package accounts
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/onsonr/sonr/pkg/common/transaction"
+	"github.com/onsonr/sonr/pkg/core/transaction"
 )
 
 // RegisterInitHandler registers an initialisation handler for a smart account that uses protobuf.

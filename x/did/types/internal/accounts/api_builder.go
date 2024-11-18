@@ -1,11 +1,11 @@
-package implementation
+package accounts
 
 import (
 	"context"
 	"errors"
 	"fmt"
 
-	"github.com/onsonr/sonr/pkg/common/transaction"
+	"github.com/onsonr/sonr/pkg/core/transaction"
 )
 
 var (

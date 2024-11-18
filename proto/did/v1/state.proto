@@ -27,8 +27,8 @@ message Assertion {
   // Origin of the authentication
   string subject = 3;
 
-  // PubKey is the verification method
-  PubKey public_key = 4;
+  // string is the verification method
+  string public_key_hex = 4;
 
   // AssertionType is the assertion type
   string assertion_type = 5;
@@ -60,8 +60,8 @@ message Authentication {
   // Origin of the authentication
   string subject = 3;
 
-  // PubKey is the verification method
-  PubKey public_key = 4;
+  // string is the verification method
+  string public_key_hex = 4;
 
   // CredentialID is the byte representation of the credential ID
   bytes credential_id = 5;
@@ -141,8 +141,8 @@ message Controller {
   // The DID of the controller
   string btc_address = 5;
 
-  // PubKey is the verification method
-  PubKey public_key = 6;
+  // string is the verification method
+  string public_key_hex = 6;
 
   // Pointer to the Keyshares
   string ks_val = 7;
@@ -192,7 +192,7 @@ message Verification {
   string subject = 5;
 
   // The public key of the verification
-  PubKey public_key = 6;
+  string public_key_hex = 6;
 
   // The verification method type
   string verification_type = 7;

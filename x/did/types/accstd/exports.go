@@ -10,8 +10,8 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 	"github.com/cosmos/cosmos-sdk/types/address"
 
-	"github.com/onsonr/sonr/pkg/common/transaction"
-	"github.com/onsonr/sonr/x/did/controller/accstd/internal/implementation"
+	"github.com/onsonr/sonr/pkg/core/transaction"
+	"github.com/onsonr/sonr/x/did/types/internal/accounts"
 )
 
 var (
@@ -20,19 +20,19 @@ var (
 )
 
 // Interface is the exported interface of an Account.
-type Interface = implementation.Account
+type Interface = accounts.Account
 
 // ExecuteBuilder is the exported type of ExecuteBuilder.
-type ExecuteBuilder = implementation.ExecuteBuilder
+type ExecuteBuilder = accounts.ExecuteBuilder
 
 // QueryBuilder is the exported type of QueryBuilder.
-type QueryBuilder = implementation.QueryBuilder
+type QueryBuilder = accounts.QueryBuilder
 
 // InitBuilder is the exported type of InitBuilder.
-type InitBuilder = implementation.InitBuilder
+type InitBuilder = accounts.InitBuilder
 
 // AccountCreatorFunc is the exported type of AccountCreatorFunc.
-type AccountCreatorFunc = implementation.AccountCreatorFunc
+type AccountCreatorFunc = accounts.AccountCreatorFunc
 
 func DIAccount[A Interface](name string, constructor func(deps Dependencies) (A, error)) DepinjectAccount {
 	return DepinjectAccount{MakeAccount: AddAccount(name, constructor)}
@@ -45,34 +45,34 @@ type DepinjectAccount struct {
 func (DepinjectAccount) IsManyPerContainerType() {}
 
 // Dependencies is the exported type of Dependencies.
-type Dependencies = implementation.Dependencies
+type Dependencies = accounts.Dependencies
 
 func RegisterExecuteHandler[
-	Req any, ProtoReq implementation.ProtoMsgG[Req], Resp any, ProtoResp implementation.ProtoMsgG[Resp],
+	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
 ](router *ExecuteBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
-	implementation.RegisterExecuteHandler(router, handler)
+	accounts.RegisterExecuteHandler(router, handler)
 }
 
 // RegisterQueryHandler registers a query handler for a smart account that uses protobuf.
 func RegisterQueryHandler[
-	Req any, ProtoReq implementation.ProtoMsgG[Req], Resp any, ProtoResp implementation.ProtoMsgG[Resp],
+	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
 ](router *QueryBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
-	implementation.RegisterQueryHandler(router, handler)
+	accounts.RegisterQueryHandler(router, handler)
 }
 
 // RegisterInitHandler registers an initialisation handler for a smart account that uses protobuf.
 func RegisterInitHandler[
-	Req any, ProtoReq implementation.ProtoMsgG[Req], Resp any, ProtoResp implementation.ProtoMsgG[Resp],
+	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
 ](router *InitBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
-	implementation.RegisterInitHandler(router, handler)
+	accounts.RegisterInitHandler(router, handler)
 }
 
 // AddAccount is a helper function to add a smart account to the list of smart accounts.
 func AddAccount[A Interface](name string, constructor func(deps Dependencies) (A, error)) AccountCreatorFunc {
-	return func(deps implementation.Dependencies) (string, implementation.Account, error) {
+	return func(deps accounts.Dependencies) (string, accounts.Account, error) {
 		acc, err := constructor(deps)
 		return name, acc, err
 	}
@@ -80,12 +80,12 @@ func AddAccount[A Interface](name string, constructor func(deps Dependencies) (A
 
 // Whoami returns the address of the account being invoked.
 func Whoami(ctx context.Context) []byte {
-	return implementation.Whoami(ctx)
+	return accounts.Whoami(ctx)
 }
 
 // Sender returns the sender of the execution request.
 func Sender(ctx context.Context) []byte {
-	return implementation.Sender(ctx)
+	return accounts.Sender(ctx)
 }
 
 // HasSender checks if the execution context was sent from the provided sender
@@ -103,10 +103,10 @@ func SenderIsAccountsModule(ctx context.Context) bool {
 
 // Funds returns if any funds were sent during the execute or init request. In queries this
 // returns nil.
-func Funds(ctx context.Context) sdk.Coins { return implementation.Funds(ctx) }
+func Funds(ctx context.Context) sdk.Coins { return accounts.Funds(ctx) }
 
 func ExecModule[MsgResp, Msg transaction.Msg](ctx context.Context, msg Msg) (resp MsgResp, err error) {
-	untyped, err := implementation.ExecModule(ctx, msg)
+	untyped, err := accounts.ExecModule(ctx, msg)
 	if err != nil {
 		return resp, err
 	}
@@ -115,7 +115,7 @@ func ExecModule[MsgResp, Msg transaction.Msg](ctx context.Context, msg Msg) (res
 
 // QueryModule can be used by an account to execute a module query.
 func QueryModule[Resp, Req transaction.Msg](ctx context.Context, req Req) (resp Resp, err error) {
-	untyped, err := implementation.QueryModule(ctx, req)
+	untyped, err := accounts.QueryModule(ctx, req)
 	if err != nil {
 		return resp, err
 	}
@@ -123,31 +123,31 @@ func QueryModule[Resp, Req transaction.Msg](ctx context.Context, req Req) (resp 
 }
 
 // UnpackAny unpacks a protobuf Any message generically.
-func UnpackAny[Msg any, ProtoMsg implementation.ProtoMsgG[Msg]](any *implementation.Any) (*Msg, error) {
-	return implementation.UnpackAny[Msg, ProtoMsg](any)
+func UnpackAny[Msg any, ProtoMsg accounts.ProtoMsgG[Msg]](any *accounts.Any) (*Msg, error) {
+	return accounts.UnpackAny[Msg, ProtoMsg](any)
 }
 
 // PackAny packs a protobuf Any message generically.
-func PackAny(msg transaction.Msg) (*implementation.Any, error) {
-	return implementation.PackAny(msg)
+func PackAny(msg transaction.Msg) (*accounts.Any, error) {
+	return accounts.PackAny(msg)
 }
 
 // ExecModuleAnys can be used to execute a list of messages towards a module
 // when those messages are packed in Any messages. The function returns a list
 // of responses packed in Any messages.
-func ExecModuleAnys(ctx context.Context, msgs []*implementation.Any) ([]*implementation.Any, error) {
-	responses := make([]*implementation.Any, len(msgs))
+func ExecModuleAnys(ctx context.Context, msgs []*accounts.Any) ([]*accounts.Any, error) {
+	responses := make([]*accounts.Any, len(msgs))
 	for i, msg := range msgs {
-		concreteMessage, err := implementation.UnpackAnyRaw(msg)
+		concreteMessage, err := accounts.UnpackAnyRaw(msg)
 		if err != nil {
 			return nil, fmt.Errorf("error unpacking message %d: %w", i, err)
 		}
-		resp, err := implementation.ExecModule(ctx, concreteMessage)
+		resp, err := accounts.ExecModule(ctx, concreteMessage)
 		if err != nil {
 			return nil, fmt.Errorf("error executing message %d: %w", i, err)
 		}
 		// pack again
-		respAnyPB, err := implementation.PackAny(resp)
+		respAnyPB, err := accounts.PackAny(resp)
 		if err != nil {
 			return nil, fmt.Errorf("error packing response %d: %w", i, err)
 		}

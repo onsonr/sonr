@@ -24,12 +24,6 @@ message Document {
   repeated string service = 7;
 }
 
-message Keyshares {
-  string validator_cid = 1;
-  string user_cid = 2;
-  int64 last_updated_block = 3;
-}
-
 // PubKey defines a public key for a did
 message PubKey {
   string role = 1;

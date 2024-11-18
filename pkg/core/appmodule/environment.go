@@ -6,10 +6,10 @@ import (
 	"cosmossdk.io/core/header"
 	"cosmossdk.io/core/store"
 
-	"github.com/onsonr/sonr/pkg/common/branch"
-	"github.com/onsonr/sonr/pkg/common/log"
-	"github.com/onsonr/sonr/pkg/common/router"
-	"github.com/onsonr/sonr/pkg/common/transaction"
+	"github.com/onsonr/sonr/pkg/core/branch"
+	"github.com/onsonr/sonr/pkg/core/log"
+	"github.com/onsonr/sonr/pkg/core/router"
+	"github.com/onsonr/sonr/pkg/core/transaction"
 )
 
 // Environment is used to get all services to their respective module.

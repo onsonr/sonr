@@ -1,4 +1,4 @@
-package implementation
+package accounts
 
 // Account defines a smart account interface.
 type Account interface {
