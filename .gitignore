@@ -71,7 +71,9 @@ deploy/**/data
 x/.DS_Store
 .aider*
 buildenv*
-nebula/node_modules
+node_modules
+cmd/gateway/node_modules
+pkg/nebula/node_modules
 
 mprocs.yaml
 build

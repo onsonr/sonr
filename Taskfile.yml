@@ -6,7 +6,7 @@ vars:
 
 tasks:
   hway:build:
-    dir: cmd/hway
+    dir: cmd/gateway
     env:
       GOOS: js
       GOARCH: wasm
@@ -14,13 +14,13 @@ tasks:
       - go build -o build/app.wasm main.go
 
   hway:dev:
-    dir: cmd/hway
+    dir: cmd/gateway
     cmds:
       - task: nebula:build
       - bunx wrangler dev
 
   hway:deploy:
-    dir: cmd/hway
+    dir: cmd/gateway
     cmds:
       - task: nebula:build
       - bunx wrangler deploy
@@ -41,10 +41,31 @@ tasks:
       - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
       - templ generate
 
+  # ╭───────────────────────────────────────────────────────────╮
+  # │                  Registration Components                  │
+  # ╰───────────────────────────────────────────────────────────╯
+
   buf:push:
     cmds:
       - task: buf:push:sonr
       - task: buf:push:thirdparty
+
+  buf:deps:
+    cmds:
+      - task: buf:deps:sonr
+      - task: buf:deps:thirdparty
+
+  buf:deps:sonr:
+    internal: true
+    dir: proto
+    cmds:
+      - buf dep update
+
+  buf:deps:thirdparty:
+    internal: true
+    dir: third_party/proto
+    cmds:
+      - buf dep update
 
   buf:push:sonr:
     internal: true

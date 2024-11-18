@@ -3,6 +3,7 @@
 set -e
 
 GO_MOD_PACKAGE="github.com/onsonr/sonr"
+ROOT_DIR=$(git rev-parse --show-toplevel)
 
 echo "Generating gogo proto code"
 cd proto
@@ -48,3 +49,19 @@ for module in $base_namespace; do
 
   rm -rf $module
 done
+
+cd $ROOT_DIR
+
+echo "Generating third-party proto code"
+cd third_party/proto
+buf generate
+
+echo "Copying generated proto code"
+cd $ROOT_DIR/github.com/onsonr/sonr/pkg
+
+cp -r hway/types/* $ROOT_DIR/pkg/hway/types
+cp -r common/types/* $ROOT_DIR/pkg/common/types
+cp -r motr/types/* $ROOT_DIR/pkg/motr/types
+
+echo "Cleaning up"
+rm -rf $ROOT_DIR/github.com

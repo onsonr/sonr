@@ -7,21 +7,17 @@ import (
 	"github.com/onsonr/sonr/internal/orm"
 )
 
-type authAPI struct{}
-
-var Auth = new(authAPI)
-
 // ╭───────────────────────────────────────────────────────────╮
 // │                    Login Handlers                         │
 // ╰───────────────────────────────────────────────────────────╯
 
 // LoginSubjectCheck handles the login subject check.
-func (a *authAPI) LoginSubjectCheck(e echo.Context) error {
+func LoginSubjectCheck(e echo.Context) error {
 	return e.JSON(200, "HandleCredentialAssertion")
 }
 
 // LoginSubjectStart handles the login subject start.
-func (a *authAPI) LoginSubjectStart(e echo.Context) error {
+func LoginSubjectStart(e echo.Context) error {
 	opts := &protocol.PublicKeyCredentialRequestOptions{
 		UserVerification: "preferred",
 		Challenge:        []byte("challenge"),
@@ -30,7 +26,7 @@ func (a *authAPI) LoginSubjectStart(e echo.Context) error {
 }
 
 // LoginSubjectFinish handles the login subject finish.
-func (a *authAPI) LoginSubjectFinish(e echo.Context) error {
+func LoginSubjectFinish(e echo.Context) error {
 	var crr protocol.CredentialAssertionResponse
 	if err := e.Bind(&crr); err != nil {
 		return err
@@ -43,13 +39,13 @@ func (a *authAPI) LoginSubjectFinish(e echo.Context) error {
 // ╰───────────────────────────────────────────────────────────╯
 
 // RegisterSubjectCheck handles the register subject check.
-func (a *authAPI) RegisterSubjectCheck(e echo.Context) error {
+func RegisterSubjectCheck(e echo.Context) error {
 	subject := e.FormValue("subject")
 	return e.JSON(200, subject)
 }
 
 // RegisterSubjectStart handles the register subject start.
-func (a *authAPI) RegisterSubjectStart(e echo.Context) error {
+func RegisterSubjectStart(e echo.Context) error {
 	// Get subject and address
 	subject := e.FormValue("subject")
 	address := e.FormValue("address")
@@ -63,7 +59,7 @@ func (a *authAPI) RegisterSubjectStart(e echo.Context) error {
 }
 
 // RegisterSubjectFinish handles the register subject finish.
-func (a *authAPI) RegisterSubjectFinish(e echo.Context) error {
+func RegisterSubjectFinish(e echo.Context) error {
 	// Deserialize the JSON into a temporary struct
 	var ccr protocol.CredentialCreationResponse
 	if err := e.Bind(&ccr); err != nil {

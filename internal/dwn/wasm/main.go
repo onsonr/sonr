@@ -8,10 +8,11 @@ import (
 	"os"
 
 	"github.com/labstack/echo/v4"
+
 	"github.com/onsonr/sonr/internal/ctx"
 	"github.com/onsonr/sonr/internal/dwn/fetch"
 	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
-	"github.com/onsonr/sonr/pkg/workers/routes"
+	"github.com/onsonr/sonr/pkg/motr/routes"
 )
 
 const FileNameConfigJSON = "dwn.json"

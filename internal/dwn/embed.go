@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
+
 	"github.com/onsonr/sonr/internal/dwn/gen"
 	"github.com/onsonr/sonr/pkg/nebula"
 )

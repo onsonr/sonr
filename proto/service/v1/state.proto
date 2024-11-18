@@ -9,9 +9,16 @@ option go_package = "github.com/onsonr/sonr/x/service/types";
 
 message Metadata {
   option (cosmos.orm.v1.table) = {
-    id : 1
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "origin" unique : true}
+    id: 1
+    primary_key: {
+      fields: "id"
+      auto_increment: true
+    }
+    index: {
+      id: 1
+      fields: "origin"
+      unique: true
+    }
   };
 
   uint64 id = 1;
@@ -19,16 +26,20 @@ message Metadata {
   string name = 3;
   string description = 4;
   string category = 5;
-  URI icon = 6;
+  string icon = 6;
   repeated string tags = 7;
 }
 
 // Profile represents a DID alias
 message Profile {
   option (cosmos.orm.v1.table) = {
-    id : 2
-    primary_key : {fields : "id"}
-    index : {id : 1 fields : "subject,origin" unique : true}
+    id: 2
+    primary_key: {fields: "id"}
+    index: {
+      id: 1
+      fields: "subject,origin"
+      unique: true
+    }
   };
 
   // The unique identifier of the alias
@@ -42,14 +53,4 @@ message Profile {
 
   // Controller of the alias
   string controller = 4;
-}
-
-message URI {
-  enum Protocol {
-    HTTPS = 0;
-    IPFS = 1;
-  }
-
-  Protocol protocol = 1;
-  string uri = 2;
 }

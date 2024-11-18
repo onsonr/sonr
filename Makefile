@@ -306,9 +306,8 @@ templ-gen:
 
 pkl-gen:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/DWN.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/ORM.pkl
 
 ###############################################################################
 ###                                     help                                ###

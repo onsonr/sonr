@@ -23,9 +23,9 @@ deps:
     digest: shake256:0ef3248c6235d420fe61f373154adcde6b94e3297f82472b1d8d8c3747240b61b4a10405e2a6f8ac1c98816ac6e690ea7871024aa5ae0e035cd540214667ceed
   - remote: buf.build
     owner: onsonr
-    repository: thirdparty
-    commit: 915d759135b04de684c86d9cf5daf256
-    digest: shake256:13d0254ab4884f2d47f21d229dc3b17ea859f81d8283c021956ccd0da864228a939d055c8c85a86c66307fd7bd19654da6b3fb89fccd6c6d38ee46651a5951b5
+    repository: sonr
+    commit: e2a05b1a59154da6be3fe148cf01a375
+    digest: shake256:0714d88978fe9a1d7b438b13ee1e95aeaef24c7f3667957da60b9a9d8f2ad55f40c2fb84409e21d47738969bff02fa16682340449653508a2ce6196ac2aec36b
   - remote: buf.build
     owner: protocolbuffers
     repository: wellknowntypes
