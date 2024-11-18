@@ -87,7 +87,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
 	google.golang.org/grpc v1.64.1
 	google.golang.org/protobuf v1.34.2
-	gopkg.in/macaroon.v2 v2.1.0
 )
 
 require (

@@ -1,4 +1,4 @@
-package embed
+package motr
 
 import (
 	_ "embed"
@@ -6,22 +6,22 @@ import (
 
 	"github.com/ipfs/boxo/files"
 
-	dwn "github.com/onsonr/sonr/pkg/motr/config"
-	"github.com/onsonr/sonr/pkg/nebula"
+	"github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/motr/static"
 )
 
 const (
-	FileNameConfigJSON = "dwn.json"
+	FileNameConfigJSON = "dwn.pkl"
 	FileNameIndexHTML  = "index.html"
 	FileNameWorkerJS   = "sw.js"
 )
 
-//go:embed sw.js
+//go:embed static/sw.js
 var swJSData []byte
 
 // NewVaultDirectory creates a new directory with the default files
-func NewVaultDirectory(cnfg *dwn.Config) (files.Node, error) {
-	idxFile, err := nebula.BuildVaultFile(cnfg)
+func NewVaultDirectory(cnfg *config.Config) (files.Node, error) {
+	idxFile, err := static.BuildVaultFile(cnfg)
 	if err != nil {
 		return nil, err
 	}
