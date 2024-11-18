@@ -1,4 +1,4 @@
-package accstd
+package wallet
 
 import (
 	"crypto/ecdsa"

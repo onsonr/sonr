@@ -4,7 +4,7 @@ import (
 	"github.com/onsonr/crypto/mpc"
 
 	didv1 "github.com/onsonr/sonr/api/did/v1"
-	"github.com/onsonr/sonr/x/did/controller/accstd"
+	"github.com/onsonr/sonr/x/did/controller/wallet"
 )
 
 type ControllerI interface {
@@ -23,7 +23,7 @@ func New(shares []mpc.Share) (ControllerI, error) {
 	if err != nil {
 		return nil, err
 	}
-	sonrAddr, err := accstd.ComputeSonrAddress(pb)
+	sonrAddr, err := wallet.ComputeSonrAddress(pb)
 	if err != nil {
 		return nil, err
 	}
