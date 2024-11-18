@@ -7,13 +7,6 @@ import (
 	didv1 "github.com/onsonr/sonr/api/did/v1"
 )
 
-type ControllerI interface {
-	ChainID() string
-	GetPubKey() *didv1.PubKey
-	SonrAddress() string
-	RawPublicKey() []byte
-}
-
 func New(shares []mpc.Share) (ControllerI, error) {
 	var (
 		valKs  = shares[0]
