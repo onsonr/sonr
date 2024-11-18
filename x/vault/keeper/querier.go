@@ -72,7 +72,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 3. Create Controller from Keyshares
-	con, err := controller.NewController(shares)
+	con, err := controller.New(shares)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating controller: %s", err.Error()))
 		return nil, types.ErrControllerCreation.Wrap(err.Error())

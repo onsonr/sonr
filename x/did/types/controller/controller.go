@@ -14,7 +14,7 @@ type ControllerI interface {
 	RawPublicKey() []byte
 }
 
-func NewController(shares []mpc.Share) (ControllerI, error) {
+func New(shares []mpc.Share) (ControllerI, error) {
 	var (
 		valKs  = shares[0]
 		userKs = shares[1]
@@ -36,7 +36,7 @@ func NewController(shares []mpc.Share) (ControllerI, error) {
 	}, nil
 }
 
-func LoadControllerFromTableEntry(ctx sdk.Context, entry *didv1.Controller) (ControllerI, error) {
+func LoadFromTableEntry(ctx sdk.Context, entry *didv1.Controller) (ControllerI, error) {
 	return &controller{
 		address:   entry.Did,
 		chainID:   ctx.ChainID(),
