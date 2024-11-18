@@ -3,13 +3,13 @@ package controller
 import (
 	"github.com/onsonr/crypto/mpc"
 
-	didv1 "github.com/onsonr/sonr/api/did/v1"
-	"github.com/onsonr/sonr/x/did/types/address"
+	commonv1 "github.com/onsonr/sonr/pkg/common/types"
+	"github.com/onsonr/sonr/x/did/types"
 )
 
 type ControllerI interface {
 	ChainID() string
-	GetPubKey() *didv1.PubKey
+	GetPubKey() *commonv1.PubKey
 	SonrAddress() string
 	RawPublicKey() []byte
 }
@@ -23,7 +23,7 @@ func New(shares []mpc.Share) (ControllerI, error) {
 	if err != nil {
 		return nil, err
 	}
-	sonrAddr, err := address.ComputeSonr(pb)
+	sonrAddr, err := types.ComputeSonrAddr(pb)
 	if err != nil {
 		return nil, err
 	}
@@ -49,10 +49,10 @@ func (c *controller) ChainID() string {
 	return c.chainID
 }
 
-func (c *controller) GetPubKey() *didv1.PubKey {
-	return &didv1.PubKey{
+func (c *controller) GetPubKey() *commonv1.PubKey {
+	return &commonv1.PubKey{
 		KeyType: "ecdsa",
-		RawKey: &didv1.RawKey{
+		RawKey: &commonv1.RawKey{
 			Algorithm: "secp256k1",
 			Key:       c.publicKey,
 		},

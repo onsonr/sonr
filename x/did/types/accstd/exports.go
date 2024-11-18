@@ -11,7 +11,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 
 	"github.com/onsonr/sonr/pkg/core/transaction"
-	"github.com/onsonr/sonr/x/did/types/internal/accounts"
+	"github.com/onsonr/sonr/x/did/types/accstd/internal/accounts"
 )
 
 var (
