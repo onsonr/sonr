@@ -9,7 +9,7 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/app/nebula/views/vault"
-	"github.com/onsonr/sonr/pkg/config/dwn"
+	"github.com/onsonr/sonr/pkg/core/dwn"
 )
 
 const (

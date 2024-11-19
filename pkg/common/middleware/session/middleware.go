@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	commonv1 "github.com/onsonr/sonr/pkg/common/types"
-	"github.com/onsonr/sonr/pkg/config/dwn"
+	"github.com/onsonr/sonr/pkg/core/dwn"
 )
 
 // HwayMiddleware establishes a Session Cookie.

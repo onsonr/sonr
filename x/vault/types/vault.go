@@ -3,7 +3,7 @@ package types
 import (
 	"github.com/ipfs/boxo/files"
 
-	"github.com/onsonr/sonr/pkg/config/dwn"
+	"github.com/onsonr/sonr/pkg/core/dwn"
 	"github.com/onsonr/sonr/pkg/motr"
 )
 
