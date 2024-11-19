@@ -38,7 +38,7 @@ tasks:
       - go build -o build/app.wasm ./cmd/dwn/main.go
 
   nebula:build:
-    dir: pkg/nebula
+    dir: app/nebula
     cmds:
       - bun install
       - bun run deps.mjs

@@ -17,6 +17,17 @@ var (
 	ErrUserNotFound      = echo.NewHTTPError(http.StatusNotFound, "User not found")
 )
 
+type SessionCtx interface {
+	ID() string
+
+	LoginOptions(credentials []CredDescriptor) *LoginOptions
+	RegisterOptions(subject string) *RegisterOptions
+
+	ClientConfig() *ClientConfig
+	UserAgent() *UserAgent
+	VaultDetails() *VaultDetails
+}
+
 type (
 	CredDescriptor  = protocol.CredentialDescriptor
 	LoginOptions    = protocol.PublicKeyCredentialRequestOptions
