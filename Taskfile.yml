@@ -95,9 +95,10 @@ tasks:
 
   pkl:gen:
     sources:
-      - third_party/pkl/packages/common.types/Ctx.pkl
-      - third_party/pkl/packages/commmon.types/DWN.pkl
-      - third_party/pkl/packages/common.types/ORM.pkl
+      - third_party/pkl/packages/base.types/Ctx.pkl
+      - third_party/pkl/packages/base.types/DWN.pkl
+      - third_party/pkl/packages/base.types/ORM.pkl
     cmds:
       - for: sources
         cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}
+      - rm -rf .task

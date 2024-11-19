@@ -101,7 +101,7 @@ func PaymentsScripts() templ.Component {
 	})
 }
 
-// Template for initiating payment request
+// StartPayment for initiating payment request
 func StartPayment(request PaymentRequest) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

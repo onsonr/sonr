@@ -8,9 +8,10 @@ import (
 
 // Constants for supported payment methods
 const (
-	MethodCard      = "basic-card"
-	MethodGooglePay = "https://google.com/pay"
-	MethodApplePay  = "https://apple.com/apple-pay"
+	MethodCard       = "basic-card"
+	MethodGooglePay  = "https://google.com/pay"
+	MethodApplePay   = "https://apple.com/apple-pay"
+	MethodSonrWallet = "https://sonr.id/wallet"
 )
 
 // InitiatePayment starts the payment request flow
