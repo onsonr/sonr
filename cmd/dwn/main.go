@@ -18,7 +18,7 @@ import (
 	promise "github.com/nlepage/go-js-promise"
 
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	dwngen "github.com/onsonr/sonr/pkg/motr/config"
+	dwngen "github.com/onsonr/sonr/pkg/config/dwn"
 	"github.com/onsonr/sonr/pkg/motr/routes"
 )
 
