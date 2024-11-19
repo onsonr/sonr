@@ -8,10 +8,7 @@ package sections
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	global "github.com/onsonr/sonr/app/nebula/global"
-	models "github.com/onsonr/sonr/app/nebula/models"
-)
+import models "github.com/onsonr/sonr/app/nebula/models"
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                         Data Model                        │
@@ -24,7 +21,7 @@ var lowlights = &models.Lowlights{
 			FullName: "0xDesigner",
 			Username: "@0xDesigner",
 			Avatar: &models.Image{
-				Src:    global.Avatar0xDesigner.Src(),
+				Src:    models.Avatar0xDesigner.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -34,7 +31,7 @@ var lowlights = &models.Lowlights{
 			FullName: "Alex Recouso",
 			Username: "@alexrecouso",
 			Avatar: &models.Image{
-				Src:    global.AvatarAlexRecouso.Src(),
+				Src:    models.AvatarAlexRecouso.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -44,7 +41,7 @@ var lowlights = &models.Lowlights{
 			FullName: "Chjango Unchained",
 			Username: "@chjango",
 			Avatar: &models.Image{
-				Src:    global.AvatarChjango.Src(),
+				Src:    models.AvatarChjango.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -54,7 +51,7 @@ var lowlights = &models.Lowlights{
 			FullName: "Gwart",
 			Username: "@GwartyGwart",
 			Avatar: &models.Image{
-				Src:    global.AvatarGwart.Src(),
+				Src:    models.AvatarGwart.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -66,7 +63,7 @@ var lowlights = &models.Lowlights{
 			FullName: "winnie",
 			Username: "@winnielaux_",
 			Avatar: &models.Image{
-				Src:    global.AvatarWinnieLaux.Src(),
+				Src:    models.AvatarWinnieLaux.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -76,7 +73,7 @@ var lowlights = &models.Lowlights{
 			FullName: "Jelena",
 			Username: "@jelena_noble",
 			Avatar: &models.Image{
-				Src:    global.AvatarJelenaNoble.Src(),
+				Src:    models.AvatarJelenaNoble.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -86,7 +83,7 @@ var lowlights = &models.Lowlights{
 			FullName: "accountless",
 			Username: "@alexanderchopan",
 			Avatar: &models.Image{
-				Src:    global.AvatarAccountless.Src(),
+				Src:    models.AvatarAccountless.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -96,7 +93,7 @@ var lowlights = &models.Lowlights{
 			FullName: "Unusual Whales",
 			Username: "@unusual_whales",
 			Avatar: &models.Image{
-				Src:    global.AvatarUnusualWhales.Src(),
+				Src:    models.AvatarUnusualWhales.Src(),
 				Width:  "44",
 				Height: "44",
 			},
@@ -138,7 +135,7 @@ func Lowlights() templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(lowlights.Heading)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 111, Col: 25}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 108, Col: 25}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 		if templ_7745c5c3_Err != nil {
@@ -200,7 +197,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Src)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 156, Col: 65}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 153, Col: 65}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -213,7 +210,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Width)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 156, Col: 94}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 153, Col: 94}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -226,7 +223,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Avatar.Height)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 156, Col: 125}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 153, Col: 125}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {
@@ -239,7 +236,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(quote.FullName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 158, Col: 74}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 155, Col: 74}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -252,7 +249,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Username)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 160, Col: 107}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 157, Col: 107}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -265,7 +262,7 @@ func quoteItem(quote *models.Testimonial) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(quote.Quote)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 165, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/views/home/sections/lowlights.templ`, Line: 162, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {

@@ -126,7 +126,7 @@ func registerServiceWorker() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script type=\"text/javascript\">\n          if (\"serviceWorker\" in navigator) {\n            // Register the service worker\n            window.addEventListener(\"load\", function() {\n                navigator.serviceWorker\n                    .register(\"/sw.js\")\n                    .then(function (registration) {\n                        console.log(\"Service Worker registered with scope:\", registration.scope);\n                    })\n                    .catch(function (error) {\n                        console.log(\"Service Worker registration failed:\", error);\n                    });\n            });\n        }\n    </script>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script type=\"text/javascript\">\n          if (\"serviceWorker\" in navigator) {\n            // Register the service worker\n            window.addEventListener(\"load\", function() {\n                navigator.serviceWorker\n                    .register(\"https://cdn.sonr.id/js/sw.js\")\n                    .then(function (registration) {\n                        console.log(\"Service Worker registered with scope:\", registration.scope);\n                    })\n                    .catch(function (error) {\n                        console.log(\"Service Worker registration failed:\", error);\n                    });\n            });\n        }\n    </script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
