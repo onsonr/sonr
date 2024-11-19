@@ -9,13 +9,13 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/pkg/nebula/auth"
 	"github.com/onsonr/sonr/pkg/nebula/global/styles"
 )
 
 // RegisterModal returns the Register Modal.
-func RegisterModal(c echo.Context) templ.Component {
+func RegisterModal(c session.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -63,7 +63,7 @@ func RegisterModal(c echo.Context) templ.Component {
 }
 
 // LoginModal returns the Login Modal.
-func LoginModal(c echo.Context) templ.Component {
+func LoginModal(c session.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -111,7 +111,7 @@ func LoginModal(c echo.Context) templ.Component {
 }
 
 // AuthorizeModal returns the Authorize Modal.
-func AuthorizeModal(c echo.Context) templ.Component {
+func AuthorizeModal(c session.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -150,7 +150,7 @@ func AuthorizeModal(c echo.Context) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = styles.OpenModal("Account Registration", "Enter your account information below to create your account.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = styles.OpenModal(c.ID(), "Enter your account information below to create your account.").Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

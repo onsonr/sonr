@@ -31,18 +31,15 @@ local function findRootModule(mod: reflect.Module): Module =
     if (supermodule == null || !supermodule.isAmend) mod.reflectee
     else findRootModule(supermodule)
 
-local allTests = import*("**/tests/**.pkl").keys.filter((it) -> !it.contains("tests/fixtures/"))
-
 package {
   name = packageName
   baseUri = "package://pkl.sh/\(name)@\(version)"
-  packageZipUrl = "https://github.com/onsonr/sonr/releases/download/\(name)@\(version)/\(name)@\(version).zip"
+  packageZipUrl = "https://github.com/onsonr/sonr/releases/download/\(name)@\(version).zip"
   license = "Apache-2.0"
   authors {
     "Prad N <prad@sonr.email>"
   }
   description = myModule.docComment
   issueTracker = "https://github.com/onsonr/sonr/issues"
-  sourceCode = "https://github.com/onsonr/sonr/tree/\(name)@\(version)/packages/\(name)"
-  sourceCodeUrlScheme = "https://github.com/onsonr/sonr/blob/\(name)@\(version)/packages/\(name)%{path}#L%{line}-%{endLine}"
+  sourceCode = "https://github.com/onsonr/sonr/tree/third_party/pkl/packages/\(name)"
 }

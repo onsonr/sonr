@@ -3,7 +3,7 @@ version: "3"
 tasks:
   build:
     cmds:
-      - ./gradlew createPackages
+      - pkl project package packages/*/
 
   gen:
     dir: src

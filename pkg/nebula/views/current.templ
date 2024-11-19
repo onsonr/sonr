@@ -1,9 +1,9 @@
 package views
 
-import echo "github.com/labstack/echo/v4"
+import "github.com/onsonr/sonr/pkg/common/middleware/session"
 
 // CurrentView checks if the user is logged in.
-templ CurrentView(c echo.Context) {
+templ CurrentView(c session.Context) {
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">

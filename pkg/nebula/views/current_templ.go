@@ -8,10 +8,10 @@ package views
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import echo "github.com/labstack/echo/v4"
+import "github.com/onsonr/sonr/pkg/common/middleware/session"
 
 // CurrentView checks if the user is logged in.
-func CurrentView(c echo.Context) templ.Component {
+func CurrentView(c session.Context) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
