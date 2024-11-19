@@ -3,6 +3,7 @@ package types
 import (
 	"encoding/json"
 
+	"github.com/onsonr/sonr/pkg/motr/types"
 	"github.com/onsonr/sonr/pkg/motr/types/orm"
 )
 
@@ -35,13 +36,13 @@ func (p Params) Validate() error {
 // DefaultSchema returns the default schema
 func DefaultSchema() *Schema {
 	return &Schema{
-		Version:    orm.SchemaVersion,
-		Account:    orm.GetSchema(&orm.Account{}),
-		Asset:      orm.GetSchema(&orm.Asset{}),
-		Chain:      orm.GetSchema(&orm.Chain{}),
-		Credential: orm.GetSchema(&orm.Credential{}),
-		Grant:      orm.GetSchema(&orm.Grant{}),
-		Keyshare:   orm.GetSchema(&orm.Keyshare{}),
-		Profile:    orm.GetSchema(&orm.Profile{}),
+		Version:    types.SchemaVersion,
+		Account:    types.GetSchema(&orm.Account{}),
+		Asset:      types.GetSchema(&orm.Asset{}),
+		Chain:      types.GetSchema(&orm.Chain{}),
+		Credential: types.GetSchema(&orm.Credential{}),
+		Grant:      types.GetSchema(&orm.Grant{}),
+		Keyshare:   types.GetSchema(&orm.Keyshare{}),
+		Profile:    types.GetSchema(&orm.Profile{}),
 	}
 }
