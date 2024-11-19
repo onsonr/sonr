@@ -1,9 +1,6 @@
 package sections
 
-import (
-	global "github.com/onsonr/sonr/app/nebula/global"
-	models "github.com/onsonr/sonr/app/nebula/models"
-)
+import models "github.com/onsonr/sonr/app/nebula/models"
 
 // ╭───────────────────────────────────────────────────────────╮
 // │                         Data Model                        │
@@ -17,7 +14,7 @@ var arch = &models.Architecture{
 		Title: "Decentralized Identity",
 		Desc:  "Sonr leverages the latest specifications from W3C, DIF, and ICF to essentially have an Interchain-Connected, Smart Account System - seamlessly authenticated with PassKeys.",
 		Image: &models.Image{
-			Src:    global.HardwareWallet.Src(),
+			Src:    models.HardwareWallet.Src(),
 			Width:  "721",
 			Height: "280",
 		},
@@ -26,7 +23,7 @@ var arch = &models.Architecture{
 		Title: "IPFS Vaults",
 		Desc:  "Completely distributed, encrypted, and decentralized storage for your data.",
 		Image: &models.Image{
-			Src:    global.DecentralizedNetwork.Src(),
+			Src:    models.DecentralizedNetwork.Src(),
 			Width:  "342",
 			Height: "280",
 		},
@@ -35,7 +32,7 @@ var arch = &models.Architecture{
 		Title: "Service Records",
 		Desc:  "On-chain validated services created by Developers for secure transmission of user data.",
 		Image: &models.Image{
-			Src:    global.DefiDashboard.Src(),
+			Src:    models.DefiDashboard.Src(),
 			Width:  "342",
 			Height: "280",
 		},
@@ -44,7 +41,7 @@ var arch = &models.Architecture{
 		Title: "Authentication & Authorization",
 		Desc:  "Sonr leverages decentralized Macaroons and Multi-Party Computation to provide a secure and decentralized authentication and authorization system.",
 		Image: &models.Image{
-			Src:    global.PrivateKey.Src(),
+			Src:    models.PrivateKey.Src(),
 			Width:  "342",
 			Height: "280",
 		},
@@ -53,7 +50,7 @@ var arch = &models.Architecture{
 		Title: "First-Class Exchange",
 		Desc:  "Sonr integrates with the IBC protocol allowing for seamless integration with popular exchanges such as OKX, Binance, and Osmosis.",
 		Image: &models.Image{
-			Src:    global.CrossChainBridge.Src(),
+			Src:    models.CrossChainBridge.Src(),
 			Width:  "342",
 			Height: "280",
 		},
