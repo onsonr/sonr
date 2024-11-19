@@ -31,22 +31,22 @@ replace (
 
 require (
 	cosmossdk.io/api v0.7.5
-	cosmossdk.io/client/v2 v2.0.0-beta.1
+	cosmossdk.io/client/v2 v2.0.0-beta.3
 	cosmossdk.io/collections v0.4.0
 	cosmossdk.io/core v0.12.0
-	cosmossdk.io/depinject v1.0.0-alpha.4
+	cosmossdk.io/depinject v1.0.0
 	cosmossdk.io/errors v1.0.1
-	cosmossdk.io/log v1.3.1
+	cosmossdk.io/log v1.4.0
 	cosmossdk.io/math v1.3.0
 	cosmossdk.io/orm v1.0.0-beta.3
 	cosmossdk.io/store v1.1.0
-	cosmossdk.io/tools/confix v0.1.1
-	cosmossdk.io/x/circuit v0.1.0
-	cosmossdk.io/x/evidence v0.1.0
-	cosmossdk.io/x/feegrant v0.1.0
+	cosmossdk.io/tools/confix v0.1.2
+	cosmossdk.io/x/circuit v0.1.1
+	cosmossdk.io/x/evidence v0.1.1
+	cosmossdk.io/x/feegrant v0.1.1
 	cosmossdk.io/x/nft v0.1.0
 	cosmossdk.io/x/tx v0.13.5
-	cosmossdk.io/x/upgrade v0.1.1
+	cosmossdk.io/x/upgrade v0.1.4
 	github.com/a-h/templ v0.2.778
 	github.com/apple/pkl-go v0.8.0
 	github.com/charmbracelet/bubbles v0.19.0
@@ -56,11 +56,11 @@ require (
 	github.com/cometbft/cometbft v0.38.12
 	github.com/cosmos/cosmos-db v1.0.2
 	github.com/cosmos/cosmos-proto v1.0.0-beta.5
-	github.com/cosmos/cosmos-sdk v0.50.5
+	github.com/cosmos/cosmos-sdk v0.50.9
 	github.com/cosmos/gogoproto v1.7.0
 	github.com/cosmos/ibc-apps/middleware/packet-forward-middleware/v8 v8.0.2
-	github.com/cosmos/ibc-go/modules/capability v1.0.0
-	github.com/cosmos/ibc-go/v8 v8.2.0
+	github.com/cosmos/ibc-go/modules/capability v1.0.1
+	github.com/cosmos/ibc-go/v8 v8.5.2
 	github.com/ethereum/go-ethereum v1.14.6
 	github.com/go-webauthn/webauthn v0.11.2
 	github.com/golang/protobuf v1.5.4
@@ -83,16 +83,18 @@ require (
 	github.com/stretchr/testify v1.9.0
 	github.com/syumai/workers v0.26.3
 	golang.org/x/crypto v0.27.0
-	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
+	google.golang.org/genproto/googleapis/api v0.0.0-20240624140628-dc46fd24d27d
 	google.golang.org/grpc v1.64.1
 	google.golang.org/protobuf v1.34.2
 )
 
 require (
-	cloud.google.com/go v0.112.1 // indirect
+	cloud.google.com/go v0.115.0 // indirect
+	cloud.google.com/go/auth v0.6.0 // indirect
+	cloud.google.com/go/auth/oauth2adapt v0.2.2 // indirect
 	cloud.google.com/go/compute/metadata v0.3.0 // indirect
-	cloud.google.com/go/iam v1.1.6 // indirect
-	cloud.google.com/go/storage v1.38.0 // indirect
+	cloud.google.com/go/iam v1.1.9 // indirect
+	cloud.google.com/go/storage v1.41.0 // indirect
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/99designs/go-keychain v0.0.0-20191008050251-8e49817e8af4 // indirect
 	github.com/99designs/keyring v1.2.1 // indirect
@@ -132,7 +134,7 @@ require (
 	github.com/cosmos/go-bip39 v1.0.0 // indirect
 	github.com/cosmos/gogogateway v1.2.0 // indirect
 	github.com/cosmos/iavl v1.1.2 // indirect
-	github.com/cosmos/ics23/go v0.10.0 // indirect
+	github.com/cosmos/ics23/go v0.11.0 // indirect
 	github.com/cosmos/ledger-cosmos-go v0.13.3 // indirect
 	github.com/crackcomm/go-gitignore v0.0.0-20231225121904-e25f5bc08668 // indirect
 	github.com/creachadair/atomicfile v0.3.1 // indirect
@@ -177,7 +179,7 @@ require (
 	github.com/google/s2a-go v0.1.7 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/googleapis/enterprise-certificate-proxy v0.3.2 // indirect
-	github.com/googleapis/gax-go/v2 v2.12.2 // indirect
+	github.com/googleapis/gax-go/v2 v2.12.5 // indirect
 	github.com/gorilla/handlers v1.5.2 // indirect
 	github.com/gorilla/websocket v1.5.3 // indirect
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
@@ -293,7 +295,7 @@ require (
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/rogpeppe/go-internal v1.12.0 // indirect
 	github.com/rs/cors v1.11.1 // indirect
-	github.com/rs/zerolog v1.32.0 // indirect
+	github.com/rs/zerolog v1.33.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/samber/lo v1.46.0 // indirect
@@ -339,9 +341,9 @@ require (
 	golang.org/x/tools v0.24.0 // indirect
 	golang.org/x/xerrors v0.0.0-20240903120638-7835f813f4da // indirect
 	gonum.org/v1/gonum v0.15.0 // indirect
-	google.golang.org/api v0.169.0 // indirect
-	google.golang.org/genproto v0.0.0-20240227224415-6ceb2ff114de // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240617180043-68d350f18fd4 // indirect
+	google.golang.org/api v0.186.0 // indirect
+	google.golang.org/genproto v0.0.0-20240701130421-f6361c86f094 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240709173604-40e1e62336c5 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
