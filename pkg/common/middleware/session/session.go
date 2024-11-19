@@ -3,35 +3,53 @@ package session
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/motr/config"
+	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 )
 
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
 	echo.Context
 
-	role   PeerRole
-	client *ClientConfig
-	peer   *PeerSession
-	user   *UserAgent
-	vault  *VaultConfig
+	role   commonv1.PeerRole
+	client *commonv1.ClientConfig
+	peer   *commonv1.PeerInfo
+	user   *commonv1.UserAgent
+	vault  *commonv1.VaultDetails
 }
 
-// loadHeaders loads the headers from the request.
-func loadHTTPContext(c echo.Context) *HTTPContext {
+// initHTTPContext loads the headers from the request.
+func initHTTPContext(c echo.Context) *HTTPContext {
 	var err error
 	cc := &HTTPContext{
 		Context: c,
 		role:    extractPeerRole(c),
 		client:  extractConfigClient(c),
-		peer:    extractPeerSession(c),
+		peer:    extractPeerInfo(c),
 		user:    extractUserAgent(c),
 	}
 
-	if ok := cc.role.Is(RoleMotr); ok {
+	if ok := cc.role.Is(commonv1.RoleMotr); ok {
 		cc.vault, err = extractConfigVault(c)
 		if err != nil {
 			c.Logger().Error(err)
+		}
+	}
+	return cc
+}
+
+// loadHTTPContext loads the headers into an existing context
+func loadHTTPContext(cc *HTTPContext) *HTTPContext {
+	var err error
+
+	cc.role = extractPeerRole(cc.Context)
+	cc.client = extractConfigClient(cc.Context)
+	cc.peer = extractPeerInfo(cc.Context)
+	cc.user = extractUserAgent(cc.Context)
+
+	if ok := cc.role.Is(commonv1.RoleMotr); ok {
+		cc.vault, err = extractConfigVault(cc.Context)
+		if err != nil {
+			cc.Logger().Error(err)
 		}
 	}
 	return cc
@@ -42,15 +60,15 @@ func (s *HTTPContext) ID() string {
 	return s.peer.ID
 }
 
-func (s *HTTPContext) GetLoginParams(credentials []CredDescriptor) *LoginOptions {
-	return &LoginOptions{
+func (s *HTTPContext) LoginOptions(credentials []commonv1.CredDescriptor) *commonv1.LoginOptions {
+	return &commonv1.LoginOptions{
 		Challenge:          s.peer.Challenge,
 		Timeout:            10000,
 		AllowedCredentials: credentials,
 	}
 }
 
-func (s *HTTPContext) GetRegisterParams(subject string) *RegisterOptions {
+func (s *HTTPContext) RegisterOptions(subject string) *commonv1.RegisterOptions {
 	opts := baseRegisterOptions()
 	opts.Challenge = s.peer.Challenge
 	opts.User = buildUserEntity(subject)
@@ -58,21 +76,16 @@ func (s *HTTPContext) GetRegisterParams(subject string) *RegisterOptions {
 }
 
 // Address returns the sonr address from the cookies.
-func (s *HTTPContext) Address() string {
-	return s.vault.Address
+func (s *HTTPContext) ClientConfig() *commonv1.ClientConfig {
+	return s.client
 }
 
 // IPFSGateway returns the IPFS gateway URL from the headers.
-func (s *HTTPContext) IPFSGateway() string {
-	return s.client.IPFSHost
+func (s *HTTPContext) UserAgent() *commonv1.UserAgent {
+	return s.user
 }
 
 // ChainID returns the chain ID from the headers.
-func (s *HTTPContext) ChainID() string {
-	return s.client.ChainID
-}
-
-// Schema returns the vault schema from the cookies.
-func (s *HTTPContext) Schema() *config.Schema {
-	return s.vault.Schema
+func (s *HTTPContext) VaultDetails() *commonv1.VaultDetails {
+	return s.vault
 }

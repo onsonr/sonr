@@ -5,19 +5,18 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/motr/config"
+	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 )
 
 type Context interface {
 	ID() string
 
-	GetLoginParams(credentials []CredDescriptor) *LoginOptions
-	GetRegisterParams(subject string) *RegisterOptions
+	LoginOptions(credentials []commonv1.CredDescriptor) *commonv1.LoginOptions
+	RegisterOptions(subject string) *commonv1.RegisterOptions
 
-	Address() string
-	ChainID() string
-
-	Schema() *config.Schema
+	ClientConfig() *commonv1.ClientConfig
+	UserAgent() *commonv1.UserAgent
+	VaultDetails() *commonv1.VaultDetails
 }
 
 // Get returns the session.Context from the echo context.
@@ -26,5 +25,5 @@ func Get(c echo.Context) (Context, error) {
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "DWN Context not found")
 	}
-	return ctx, nil
+	return loadHTTPContext(ctx), nil
 }

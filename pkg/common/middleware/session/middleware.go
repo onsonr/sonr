@@ -7,6 +7,7 @@ import (
 
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
+	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 	"github.com/onsonr/sonr/pkg/motr/config"
 )
 
@@ -14,7 +15,7 @@ import (
 func HwayMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := injectSession(c, RoleHway)
+			cc := injectSession(c, commonv1.RoleHway)
 			return next(cc)
 		}
 	}
@@ -28,7 +29,7 @@ func MotrMiddleware(config *config.Config) echo.MiddlewareFunc {
 			if err != nil {
 				return err
 			}
-			cc := injectSession(c, RoleMotr)
+			cc := injectSession(c, commonv1.RoleMotr)
 			return next(cc)
 		}
 	}
@@ -53,7 +54,7 @@ func injectConfig(c echo.Context, config *config.Config) error {
 }
 
 // injectSession returns the session injectSession from the cookies.
-func injectSession(c echo.Context, role PeerRole) *HTTPContext {
+func injectSession(c echo.Context, role commonv1.PeerRole) *HTTPContext {
 	cookie.Write(c, cookie.SessionRole, role.String())
 	err := loadOrGenKsuid(c)
 	if err != nil {
@@ -63,5 +64,5 @@ func injectSession(c echo.Context, role PeerRole) *HTTPContext {
 	if err != nil {
 		return nil
 	}
-	return loadHTTPContext(c)
+	return initHTTPContext(c)
 }

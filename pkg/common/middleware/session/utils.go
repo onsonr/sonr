@@ -12,6 +12,7 @@ import (
 
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
+	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 	"github.com/onsonr/sonr/pkg/motr/config"
 )
 
@@ -78,8 +79,8 @@ func loadOrGenKsuid(c echo.Context) error {
 // │                       Extraction                          │
 // ╰───────────────────────────────────────────────────────────╯
 
-func extractConfigClient(c echo.Context) *ClientConfig {
-	return &ClientConfig{
+func extractConfigClient(c echo.Context) *commonv1.ClientConfig {
+	return &commonv1.ClientConfig{
 		ChainID:    header.Read(c, header.ChainID),
 		IPFSHost:   header.Read(c, header.IPFSHost),
 		SonrAPIURL: header.Read(c, header.SonrAPIURL),
@@ -88,7 +89,7 @@ func extractConfigClient(c echo.Context) *ClientConfig {
 	}
 }
 
-func extractConfigVault(c echo.Context) (*VaultConfig, error) {
+func extractConfigVault(c echo.Context) (*commonv1.VaultDetails, error) {
 	schema := &config.Schema{}
 	schemaBz, _ := cookie.ReadBytes(c, cookie.VaultSchema)
 	err := json.Unmarshal(schemaBz, schema)
@@ -99,31 +100,28 @@ func extractConfigVault(c echo.Context) (*VaultConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &VaultConfig{
+	return &commonv1.VaultDetails{
 		Schema:  schema,
 		Address: addr,
 	}, nil
 }
 
-func extractPeerRole(c echo.Context) PeerRole {
+func extractPeerRole(c echo.Context) commonv1.PeerRole {
 	r, _ := cookie.Read(c, cookie.SessionRole)
-	return PeerRole(r)
+	return commonv1.PeerRole(r)
 }
 
-func extractPeerSession(c echo.Context) *PeerSession {
+func extractPeerInfo(c echo.Context) *commonv1.PeerInfo {
 	var chal protocol.URLEncodedBase64
 
 	id, _ := cookie.Read(c, cookie.SessionID)
 	chalRaw, _ := cookie.ReadBytes(c, cookie.SessionChallenge)
 	chal.UnmarshalJSON(chalRaw)
 
-	return &PeerSession{
-		ID:        id,
-		Challenge: chal,
-	}
+	return &commonv1.PeerInfo{ID: id, Challenge: chal}
 }
 
-func extractBrowserInfo(c echo.Context) *BrowserInfo {
+func extractBrowserInfo(c echo.Context) *commonv1.BrowserInfo {
 	secCHUA := header.Read(c, header.UserAgent)
 
 	// If header is empty, return empty BrowserInfo
@@ -132,7 +130,7 @@ func extractBrowserInfo(c echo.Context) *BrowserInfo {
 	}
 
 	// Split the header into individual browser entries
-	var selectedBrowser *BrowserInfo
+	var selectedBrowser *commonv1.BrowserInfo
 	entries := strings.Split(strings.TrimSpace(secCHUA), ",")
 	for _, entry := range entries {
 		// Remove leading/trailing spaces and quotes
@@ -158,39 +156,35 @@ func extractBrowserInfo(c echo.Context) *BrowserInfo {
 	return selectedBrowser
 }
 
-func extractUserAgent(c echo.Context) *UserAgent {
-	ua := &UserAgent{
-		Browser: extractBrowserInfo(c),
-		Device: &DeviceInfo{
-			Architecture: header.Read(c, header.Architecture),
-			Bitness:      header.Read(c, header.Bitness),
-			Model:        header.Read(c, header.Model),
-			Platform: &PlatformInfo{
-				Name:    header.Read(c, header.Platform),
-				Version: header.Read(c, header.PlatformVersion),
-			},
-		},
-		IsMobile: header.Equals(c, header.Mobile, "?1"),
+func extractUserAgent(c echo.Context) *commonv1.UserAgent {
+	ua := &commonv1.UserAgent{
+		Browser:         extractBrowserInfo(c),
+		Architecture:    header.Read(c, header.Architecture),
+		Bitness:         header.Read(c, header.Bitness),
+		Model:           header.Read(c, header.Model),
+		PlatformName:    header.Read(c, header.Platform),
+		PlatformVersion: header.Read(c, header.PlatformVersion),
+		IsMobile:        header.Equals(c, header.Mobile, "?1"),
 	}
 	return ua
 }
 
-func newBrowserInfo(name string, version string) *BrowserInfo {
-	return &BrowserInfo{
+func newBrowserInfo(name string, version string) *commonv1.BrowserInfo {
+	return &commonv1.BrowserInfo{
 		Name:    name,
 		Version: version,
 	}
 }
 
-func unknownBrowser() *BrowserInfo {
-	return &BrowserInfo{
+func unknownBrowser() *commonv1.BrowserInfo {
+	return &commonv1.BrowserInfo{
 		Name:    "Unknown",
 		Version: "-1",
 	}
 }
 
 func validBrowser(name string) bool {
-	return name != BrowserNameUnknown.String() && name != BrowserNameChromium.String()
+	return name != commonv1.BrowserNameUnknown.String() && name != commonv1.BrowserNameChromium.String()
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -204,7 +198,7 @@ func buildUserEntity(userID string) protocol.UserEntity {
 }
 
 // returns the base options for registering a new user without challenge or user entity.
-func baseRegisterOptions() *RegisterOptions {
+func baseRegisterOptions() *commonv1.RegisterOptions {
 	return &protocol.PublicKeyCredentialCreationOptions{
 		Timeout:     kWebAuthnTimeout,
 		Attestation: protocol.PreferDirectAttestation,

@@ -1,9 +1,21 @@
-package session
+package commonv1
 
 import (
+	"net/http"
+
 	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/motr/config"
+)
+
+var (
+	ErrInvalidCredentials = echo.NewHTTPError(http.StatusUnauthorized, "Invalid credentials")
+	ErrInvalidSubject     = echo.NewHTTPError(http.StatusBadRequest, "Invalid subject")
+	ErrInvalidUser        = echo.NewHTTPError(http.StatusBadRequest, "Invalid user")
+
+	ErrUserAlreadyExists = echo.NewHTTPError(http.StatusConflict, "User already exists")
+	ErrUserNotFound      = echo.NewHTTPError(http.StatusNotFound, "User not found")
 )
 
 type (
@@ -48,14 +60,9 @@ type ClientConfig struct {
 	SonrWSURL  string `json:"sonrWSURL"`
 }
 
-type PeerSession struct {
+type PeerInfo struct {
 	ID        string                    `json:"id"`
 	Challenge protocol.URLEncodedBase64 `json:"challenge"`
-}
-
-type PlatformInfo struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
 }
 
 type BrowserInfo struct {
@@ -63,20 +70,17 @@ type BrowserInfo struct {
 	Version string `json:"version"`
 }
 
-type DeviceInfo struct {
-	Architecture string        `json:"architecture"`
-	Bitness      string        `json:"bitness"`
-	Model        string        `json:"model"`
-	Platform     *PlatformInfo `json:"platform"`
-}
-
 type UserAgent struct {
-	Browser  *BrowserInfo `json:"browser"`
-	Device   *DeviceInfo  `json:"device"`
-	IsMobile bool         `json:"isMobile"`
+	Architecture    string       `json:"architecture"`
+	Bitness         string       `json:"bitness"`
+	Browser         *BrowserInfo `json:"browser"`
+	Model           string       `json:"model"`
+	PlatformName    string       `json:"platformName"`
+	PlatformVersion string       `json:"platformVersion"`
+	IsMobile        bool         `json:"isMobile"`
 }
 
-type VaultConfig struct {
+type VaultDetails struct {
 	Schema  *VaultSchema `json:"schema"`
 	Address string       `json:"address"`
 }
