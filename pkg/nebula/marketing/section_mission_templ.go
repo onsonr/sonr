@@ -8,7 +8,7 @@ package marketing
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import models "github.com/onsonr/sonr/internal/orm/marketing"
+import models "github.com/onsonr/sonr/pkg/nebula/types"
 
 // mission is the (3rd) home page mission section
 var mission = &models.Mission{

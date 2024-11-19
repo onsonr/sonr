@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	models "github.com/onsonr/sonr/internal/orm/marketing"
 	"github.com/onsonr/sonr/pkg/nebula/global/ui"
+	models "github.com/onsonr/sonr/pkg/nebula/types"
 )
 
 // ╭───────────────────────────────────────────────────────────╮

@@ -4,7 +4,8 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/internal/ctx"
+
+	"github.com/onsonr/sonr/pkg/common/ctx"
 	"github.com/onsonr/sonr/pkg/nebula/marketing"
 )
 

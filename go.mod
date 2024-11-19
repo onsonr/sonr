@@ -22,7 +22,6 @@ replace (
 	// dgrijalva/jwt-go is deprecated and doesn't receive security updates.
 	// See: https://github.com/cosmos/cosmos-sdk/issues/13134
 	github.com/dgrijalva/jwt-go => github.com/golang-jwt/jwt/v4 v4.4.2
-	// Fix upstream GHSA-h395-qcrw-5vmq vulnerability.
 	// See: https://github.com/cosmos/cosmos-sdk/issues/10409
 	github.com/gin-gonic/gin => github.com/gin-gonic/gin v1.8.1
 
@@ -87,7 +86,6 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20240617180043-68d350f18fd4
 	google.golang.org/grpc v1.64.1
 	google.golang.org/protobuf v1.34.2
-	gopkg.in/macaroon.v2 v2.1.0
 )
 
 require (

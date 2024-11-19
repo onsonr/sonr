@@ -9,9 +9,13 @@ option go_package = "github.com/onsonr/sonr/x/did/types";
 
 message Assertion {
   option (cosmos.orm.v1.table) = {
-    id : 1
-    primary_key : {fields : "did"}
-    index : {id : 1 fields : "controller,subject" unique : true}
+    id: 1
+    primary_key: {fields: "did"}
+    index: {
+      id: 1
+      fields: "controller,subject"
+      unique: true
+    }
   };
 
   // The unique identifier of the assertion
@@ -23,8 +27,8 @@ message Assertion {
   // Origin of the authentication
   string subject = 3;
 
-  // PubKey is the verification method
-  PubKey public_key = 4;
+  // string is the verification method
+  string public_key_hex = 4;
 
   // AssertionType is the assertion type
   string assertion_type = 5;
@@ -38,9 +42,13 @@ message Assertion {
 
 message Authentication {
   option (cosmos.orm.v1.table) = {
-    id : 2
-    primary_key : {fields : "did"}
-    index : {id : 1 fields : "controller,subject" unique : true}
+    id: 2
+    primary_key: {fields: "did"}
+    index: {
+      id: 1
+      fields: "controller,subject"
+      unique: true
+    }
   };
 
   // The unique identifier of the authentication
@@ -52,8 +60,8 @@ message Authentication {
   // Origin of the authentication
   string subject = 3;
 
-  // PubKey is the verification method
-  PubKey public_key = 4;
+  // string is the verification method
+  string public_key_hex = 4;
 
   // CredentialID is the byte representation of the credential ID
   bytes credential_id = 5;
@@ -65,15 +73,57 @@ message Authentication {
   int64 creation_block = 7;
 }
 
+// Macaroon is a Macaroon message type.
+message Biscuit {
+  option (cosmos.orm.v1.table) = {
+    id: 5
+    primary_key: {
+      fields: "id"
+      auto_increment: true
+    }
+    index: {
+      id: 1
+      fields: "subject,origin"
+      unique: true
+    }
+  };
+
+  uint64 id = 1;
+  string controller = 2;
+  string subject = 3;
+  string origin = 4;
+  int64 expiry_height = 5;
+  string macaroon = 6;
+}
+
 // Controller represents a Sonr DWN Vault
 message Controller {
   option (cosmos.orm.v1.table) = {
-    id : 3
-    primary_key : {fields : "number" auto_increment : true}
-    index : {id : 1 fields : "sonr_address" unique : true}
-    index : {id : 2 fields : "eth_address" unique : true}
-    index : {id : 3 fields : "btc_address" unique : true}
-    index : {id : 4 fields : "did" unique : true}
+    id: 3
+    primary_key: {
+      fields: "number"
+      auto_increment: true
+    }
+    index: {
+      id: 1
+      fields: "sonr_address"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "eth_address"
+      unique: true
+    }
+    index: {
+      id: 3
+      fields: "btc_address"
+      unique: true
+    }
+    index: {
+      id: 4
+      fields: "did"
+      unique: true
+    }
   };
 
   // The unique identifier of the controller
@@ -91,8 +141,8 @@ message Controller {
   // The DID of the controller
   string btc_address = 5;
 
-  // PubKey is the verification method
-  PubKey public_key = 6;
+  // string is the verification method
+  string public_key_hex = 6;
 
   // Pointer to the Keyshares
   string ks_val = 7;
@@ -104,45 +154,26 @@ message Controller {
   int64 creation_block = 9;
 }
 
-// Grant is a Grant message type.
-message Grant {
-  option (cosmos.orm.v1.table) = {
-    id : 4
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "subject,origin" unique : true}
-  };
-
-  uint64 id = 1;
-  string controller = 2;
-  string subject = 3;
-  string origin = 4;
-  int64 expiry_height = 5;
-}
-
-// Macaroon is a Macaroon message type.
-message Macaroon {
-  option (cosmos.orm.v1.table) = {
-    id : 5
-    primary_key : {fields : "id" auto_increment : true}
-    index : {id : 1 fields : "subject,origin" unique : true}
-  };
-
-  uint64 id = 1;
-  string controller = 2;
-  string subject = 3;
-  string origin = 4;
-  int64 expiry_height = 5;
-  string macaroon = 6;
-}
-
 // Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
-    id : 6
-    primary_key : {fields : "did"}
-    index : {id : 1 fields : "issuer,subject" unique : true}
-    index : {id : 2 fields : "controller,did_method,issuer" unique : true}
-    index : {id : 3 fields : "verification_type,subject,issuer" unique : true}
+    id: 6
+    primary_key: {fields: "did"}
+    index: {
+      id: 1
+      fields: "issuer,subject"
+      unique: true
+    }
+    index: {
+      id: 2
+      fields: "controller,did_method,issuer"
+      unique: true
+    }
+    index: {
+      id: 3
+      fields: "verification_type,subject,issuer"
+      unique: true
+    }
   };
 
   // The unique identifier of the verification
@@ -161,7 +192,7 @@ message Verification {
   string subject = 5;
 
   // The public key of the verification
-  PubKey public_key = 6;
+  string public_key_hex = 6;
 
   // The verification method type
   string verification_type = 7;

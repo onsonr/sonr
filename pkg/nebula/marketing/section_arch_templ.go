@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	models "github.com/onsonr/sonr/internal/orm/marketing"
 	"github.com/onsonr/sonr/pkg/nebula/global"
+	models "github.com/onsonr/sonr/pkg/nebula/types"
 )
 
 // ╭───────────────────────────────────────────────────────────╮

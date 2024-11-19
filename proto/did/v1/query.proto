@@ -2,6 +2,7 @@ syntax = "proto3";
 package did.v1;
 
 import "did/v1/genesis.proto";
+import "did/v1/params.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
@@ -16,11 +17,6 @@ service Query {
   // Resolve queries the DID document by its id.
   rpc Resolve(QueryRequest) returns (QueryResolveResponse) {
     option (google.api.http).get = "/did/v1/{did}";
-  }
-
-  // Sign signs a message with the DID document
-  rpc Sign(QuerySignRequest) returns (QuerySignResponse) {
-    option (google.api.http).post = "/did/v1/{did}/sign";
   }
 
   // Verify verifies a message with the DID document
@@ -78,15 +74,4 @@ message QueryVerifyRequest {
 message QueryVerifyResponse {
   // valid is the validity of the signature
   bool valid = 1;
-}
-
-// Document defines a DID document
-message Document {
-  string id = 1;
-  string controller = 2; // The DID of the controller
-  repeated string authentication = 3;
-  repeated string assertion_method = 4;
-  repeated string capability_delegation = 5;
-  repeated string capability_invocation = 6;
-  repeated string service = 7;
 }

@@ -3,6 +3,7 @@
 set -e
 
 GO_MOD_PACKAGE="github.com/onsonr/sonr"
+ROOT_DIR=$(git rev-parse --show-toplevel)
 
 echo "Generating gogo proto code"
 cd proto
@@ -28,7 +29,7 @@ rm -rf github.com
 
 # Copy files over for dep injection
 rm -rf api && mkdir api
-custom_modules=$(find . -name 'module' -type d -not -path "./proto/*")
+custom_modules=$(find . -name 'module' -type d -not -path "./proto/*" -not -path "./.cache/*")
 
 # get the 1 up directory (so ./cosmos/mint/module becomes ./cosmos/mint)
 # remove the relative path starter from base namespaces. so ./cosmos/mint becomes cosmos/mint
@@ -48,3 +49,19 @@ for module in $base_namespace; do
 
   rm -rf $module
 done
+
+cd $ROOT_DIR
+
+echo "Generating third-party proto code"
+cd third_party/proto
+buf generate
+
+echo "Copying generated proto code"
+cd $ROOT_DIR/github.com/onsonr/sonr/pkg
+
+cp -r hway/types/* $ROOT_DIR/pkg/hway/types
+cp -r common/types/* $ROOT_DIR/pkg/common/types
+cp -r motr/types/* $ROOT_DIR/pkg/motr/types
+
+echo "Cleaning up"
+rm -rf $ROOT_DIR/github.com

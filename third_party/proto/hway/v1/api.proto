@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package hway.v1;
+
+option go_package = "github.com/onsonr/sonr/pkg/hway/types";
+
+service Highway {
+  rpc GetJWKS(GetJWKSRequest) returns (GetJWKSResponse);
+  rpc GetToken(GetTokenRequest) returns (GetTokenResponse);
+  rpc GrantAuthorization(GrantAuthorizationRequest) returns (GrantAuthorizationResponse);
+}
+
+message GetJWKSRequest {}
+
+message GetJWKSResponse {
+  string jwks = 1;
+}
+
+message GetTokenRequest {
+  string subject = 1;
+  string origin = 2;
+  string key = 3;
+  string asset = 4;
+}
+
+message GetTokenResponse {
+  string token = 1;
+}
+
+message GrantAuthorizationRequest {
+  string subject = 1;
+  string origin = 2;
+  string key = 3;
+  string asset = 4;
+  string assertion = 5;
+}
+
+message GrantAuthorizationResponse {
+  string token = 1;
+}

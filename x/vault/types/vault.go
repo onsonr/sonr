@@ -3,16 +3,16 @@ package types
 import (
 	"github.com/ipfs/boxo/files"
 
-	"github.com/onsonr/sonr/internal/dwn"
-	dwngen "github.com/onsonr/sonr/internal/dwn/gen"
+	"github.com/onsonr/sonr/pkg/motr"
+	"github.com/onsonr/sonr/pkg/motr/config"
 )
 
 type Vault struct {
 	FS files.Node
 }
 
-func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwngen.Schema) (*Vault, error) {
-	dwnCfg := &dwngen.Config{
+func NewVault(keyshareJSON string, adddress string, chainID string, schema *config.Schema) (*Vault, error) {
+	dwnCfg := &config.Config{
 		MotrKeyshare:   keyshareJSON,
 		MotrAddress:    adddress,
 		IpfsGatewayUrl: "https://ipfs.sonr.land",
@@ -21,7 +21,7 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwng
 		SonrChainId:    chainID,
 		VaultSchema:    schema,
 	}
-	fileMap, err := dwn.NewVaultDirectory(dwnCfg)
+	fileMap, err := motr.NewVaultDirectory(dwnCfg)
 	if err != nil {
 		return nil, err
 	}

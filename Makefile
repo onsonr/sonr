@@ -296,19 +296,14 @@ sh-testnet: mod-tidy
 
 .PHONY: templ-gen pkl-gen
 
-assets-gen:
-	@echo "(assets) Generating gateway cloudflare workers assets"
-	go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
-
 templ-gen:
 	@echo "(templ) Generating templ files"
 	templ generate
 
 pkl-gen:
 	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/ORM.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./pkl/Txns.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/sonr.configs.v1/DWN.pkl
+	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/sonr.models.v1/ORM.pkl
 
 ###############################################################################
 ###                                     help                                ###

@@ -443,99 +443,6 @@ func (m *QueryVerifyResponse) GetValid() bool {
 	return false
 }
 
-// Document defines a DID document
-type Document struct {
-	Id                   string   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	Controller           string   `protobuf:"bytes,2,opt,name=controller,proto3" json:"controller,omitempty"`
-	Authentication       []string `protobuf:"bytes,3,rep,name=authentication,proto3" json:"authentication,omitempty"`
-	AssertionMethod      []string `protobuf:"bytes,4,rep,name=assertion_method,json=assertionMethod,proto3" json:"assertion_method,omitempty"`
-	CapabilityDelegation []string `protobuf:"bytes,5,rep,name=capability_delegation,json=capabilityDelegation,proto3" json:"capability_delegation,omitempty"`
-	CapabilityInvocation []string `protobuf:"bytes,6,rep,name=capability_invocation,json=capabilityInvocation,proto3" json:"capability_invocation,omitempty"`
-	Service              []string `protobuf:"bytes,7,rep,name=service,proto3" json:"service,omitempty"`
-}
-
-func (m *Document) Reset()         { *m = Document{} }
-func (m *Document) String() string { return proto.CompactTextString(m) }
-func (*Document) ProtoMessage()    {}
-func (*Document) Descriptor() ([]byte, []int) {
-	return fileDescriptor_ae1fa9bb626e2869, []int{7}
-}
-func (m *Document) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Document) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Document.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Document) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Document.Merge(m, src)
-}
-func (m *Document) XXX_Size() int {
-	return m.Size()
-}
-func (m *Document) XXX_DiscardUnknown() {
-	xxx_messageInfo_Document.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Document proto.InternalMessageInfo
-
-func (m *Document) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *Document) GetController() string {
-	if m != nil {
-		return m.Controller
-	}
-	return ""
-}
-
-func (m *Document) GetAuthentication() []string {
-	if m != nil {
-		return m.Authentication
-	}
-	return nil
-}
-
-func (m *Document) GetAssertionMethod() []string {
-	if m != nil {
-		return m.AssertionMethod
-	}
-	return nil
-}
-
-func (m *Document) GetCapabilityDelegation() []string {
-	if m != nil {
-		return m.CapabilityDelegation
-	}
-	return nil
-}
-
-func (m *Document) GetCapabilityInvocation() []string {
-	if m != nil {
-		return m.CapabilityInvocation
-	}
-	return nil
-}
-
-func (m *Document) GetService() []string {
-	if m != nil {
-		return m.Service
-	}
-	return nil
-}
-
 func init() {
 	proto.RegisterType((*QueryRequest)(nil), "did.v1.QueryRequest")
 	proto.RegisterType((*QueryParamsResponse)(nil), "did.v1.QueryParamsResponse")
@@ -544,53 +451,42 @@ func init() {
 	proto.RegisterType((*QuerySignResponse)(nil), "did.v1.QuerySignResponse")
 	proto.RegisterType((*QueryVerifyRequest)(nil), "did.v1.QueryVerifyRequest")
 	proto.RegisterType((*QueryVerifyResponse)(nil), "did.v1.QueryVerifyResponse")
-	proto.RegisterType((*Document)(nil), "did.v1.Document")
 }
 
 func init() { proto.RegisterFile("did/v1/query.proto", fileDescriptor_ae1fa9bb626e2869) }
 
 var fileDescriptor_ae1fa9bb626e2869 = []byte{
-	// 625 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x54, 0x41, 0x6f, 0xd3, 0x4c,
-	0x10, 0x6d, 0x92, 0xc6, 0x6d, 0xe7, 0xfb, 0x48, 0xc3, 0xe2, 0x56, 0x26, 0x44, 0x56, 0xb5, 0x87,
-	0xaa, 0x08, 0x14, 0xab, 0xed, 0x15, 0x2e, 0xa8, 0x17, 0x0e, 0x48, 0x90, 0x22, 0x90, 0xb8, 0x94,
-	0x6d, 0x76, 0x70, 0x57, 0x75, 0x76, 0x53, 0xef, 0xc6, 0x22, 0x42, 0x70, 0xe0, 0x17, 0x80, 0xb8,
-	0xf3, 0x7b, 0x38, 0x56, 0xe2, 0xc2, 0x11, 0xb5, 0x1c, 0xf9, 0x11, 0xc8, 0xeb, 0x75, 0x1a, 0x5b,
-	0x70, 0x44, 0x5c, 0xa2, 0xcc, 0x9b, 0x99, 0xb7, 0x6f, 0x76, 0xdf, 0x18, 0x08, 0x17, 0x3c, 0xca,
-	0x76, 0xa3, 0xb3, 0x29, 0xa6, 0xb3, 0xc1, 0x24, 0x55, 0x46, 0x11, 0x8f, 0x0b, 0x3e, 0xc8, 0x76,
-	0x7b, 0xbe, 0xcb, 0xc5, 0x28, 0x51, 0x0b, 0x5d, 0x64, 0x7b, 0xfd, 0x58, 0xa9, 0x38, 0xc1, 0x88,
-	0x4d, 0x44, 0xc4, 0xa4, 0x54, 0x86, 0x19, 0xa1, 0xa4, 0xcb, 0xd2, 0x97, 0xf0, 0xff, 0x93, 0x9c,
-	0x6a, 0x88, 0x67, 0x53, 0xd4, 0x86, 0x74, 0xa1, 0xc5, 0x05, 0x0f, 0x1a, 0x5b, 0x8d, 0x9d, 0xb5,
-	0x61, 0xfe, 0x97, 0x6c, 0x82, 0xa7, 0x52, 0x11, 0x0b, 0x19, 0x34, 0x2d, 0xe8, 0xa2, 0xbc, 0xf2,
-	0x14, 0x67, 0x41, 0xab, 0xa8, 0x3c, 0xc5, 0x19, 0xf1, 0xa1, 0xcd, 0xb4, 0x46, 0x13, 0x2c, 0x5b,
-	0xac, 0x08, 0xe8, 0x7d, 0xb8, 0x61, 0x4f, 0x78, 0xcc, 0x52, 0x36, 0xd6, 0x43, 0xd4, 0x13, 0x25,
-	0x35, 0x92, 0x6d, 0xf0, 0x26, 0x16, 0xb1, 0x67, 0xfd, 0xb7, 0xd7, 0x19, 0x14, 0x53, 0x0c, 0x5c,
-	0x9d, 0xcb, 0xd2, 0x03, 0xf0, 0x9d, 0x40, 0xad, 0x92, 0x0c, 0xe7, 0xfd, 0x77, 0x61, 0x95, 0xab,
-	0xd1, 0x74, 0x8c, 0xd2, 0x38, 0x86, 0x6e, 0xc9, 0x70, 0xe0, 0xf0, 0xe1, 0xbc, 0x82, 0xbe, 0x83,
-	0xae, 0x65, 0x39, 0x14, 0xb1, 0xfc, 0x6b, 0xa3, 0x92, 0x00, 0x56, 0xc6, 0xa8, 0x35, 0x8b, 0x31,
-	0x68, 0x5b, 0xbc, 0x0c, 0xe9, 0x2e, 0x5c, 0x5f, 0x38, 0xdf, 0x8d, 0xd0, 0x87, 0x35, 0x2d, 0x62,
-	0xc9, 0xcc, 0x34, 0x45, 0x27, 0xe3, 0x0a, 0xa0, 0x9f, 0x1b, 0x40, 0x6c, 0xcf, 0x33, 0x4c, 0xc5,
-	0xab, 0xd9, 0x3f, 0x50, 0x5d, 0x15, 0xe8, 0xd5, 0x05, 0xde, 0x71, 0x0f, 0x5b, 0xea, 0x73, 0x53,
-	0xf9, 0xd0, 0xce, 0x58, 0xe2, 0x24, 0xae, 0x0e, 0x8b, 0x80, 0x7e, 0x6c, 0xc2, 0x6a, 0xf9, 0x2e,
-	0xa4, 0x03, 0xcd, 0xf9, 0x08, 0x4d, 0xc1, 0x49, 0x08, 0x30, 0x52, 0xd2, 0xa4, 0x2a, 0x49, 0x30,
-	0x75, 0x53, 0x2c, 0x20, 0x64, 0x1b, 0x3a, 0x6c, 0x6a, 0x4e, 0x50, 0x1a, 0x31, 0xb2, 0xee, 0x0d,
-	0x5a, 0x5b, 0xad, 0x9d, 0xb5, 0x61, 0x0d, 0x25, 0xb7, 0xa1, 0x9b, 0x8f, 0x94, 0xe6, 0xc1, 0xd1,
-	0x18, 0xcd, 0x89, 0xe2, 0xc1, 0xb2, 0xad, 0x5c, 0x9f, 0xe3, 0x8f, 0x2c, 0x4c, 0xf6, 0x61, 0x63,
-	0xc4, 0x26, 0xec, 0x58, 0x24, 0xc2, 0xcc, 0x8e, 0x38, 0x26, 0x18, 0x17, 0xcc, 0x6d, 0x5b, 0xef,
-	0x5f, 0x25, 0x0f, 0xe6, 0xb9, 0x5a, 0x93, 0x90, 0x99, 0x72, 0x72, 0xbc, 0x7a, 0xd3, 0xc3, 0x79,
-	0x2e, 0xbf, 0x5e, 0x8d, 0x69, 0x26, 0x46, 0x18, 0xac, 0xd8, 0xb2, 0x32, 0xdc, 0xfb, 0xd9, 0x84,
-	0xb6, 0xbd, 0x41, 0x72, 0x08, 0x5e, 0x61, 0x7b, 0xe2, 0x97, 0x26, 0x5e, 0xdc, 0xca, 0xde, 0xad,
-	0x0a, 0x5a, 0xdd, 0x24, 0xba, 0xf9, 0xfe, 0xeb, 0x8f, 0x4f, 0xcd, 0x2e, 0xe9, 0x44, 0x6e, 0xff,
-	0x8b, 0xcd, 0x21, 0x4f, 0x61, 0xc5, 0x2d, 0xcd, 0x1f, 0x58, 0xfb, 0x35, 0xb4, 0xb2, 0x60, 0x74,
-	0xc3, 0xd2, 0xae, 0x93, 0x6b, 0x25, 0xed, 0x1b, 0x2e, 0xf8, 0x5b, 0xf2, 0x1c, 0x96, 0x73, 0x13,
-	0x93, 0xa0, 0xd2, 0xbc, 0xb0, 0x57, 0xbd, 0x9b, 0xbf, 0xc9, 0x38, 0xce, 0x9e, 0xe5, 0xf4, 0x29,
-	0xa9, 0x70, 0x46, 0xb9, 0xa7, 0xc8, 0x11, 0x78, 0x85, 0x93, 0x48, 0xaf, 0x42, 0x50, 0xb1, 0x7f,
-	0xed, 0x26, 0xaa, 0xd6, 0xa3, 0x7d, 0x4b, 0xbf, 0x49, 0xfd, 0x2a, 0x7d, 0x66, 0xab, 0x1e, 0xdc,
-	0xfb, 0x72, 0x11, 0x36, 0xce, 0x2f, 0xc2, 0xc6, 0xf7, 0x8b, 0xb0, 0xf1, 0xe1, 0x32, 0x5c, 0x3a,
-	0xbf, 0x0c, 0x97, 0xbe, 0x5d, 0x86, 0x4b, 0x2f, 0x68, 0x2c, 0xcc, 0xc9, 0xf4, 0x78, 0x30, 0x52,
-	0xe3, 0x48, 0x49, 0xad, 0x64, 0x1a, 0xd9, 0x9f, 0xd7, 0x96, 0xc7, 0xcc, 0x26, 0xa8, 0x8f, 0x3d,
-	0xfb, 0xbd, 0xdc, 0xff, 0x15, 0x00, 0x00, 0xff, 0xff, 0xb9, 0xc1, 0x21, 0x0f, 0x81, 0x05, 0x00,
-	0x00,
+	// 478 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xc4, 0x53, 0xc1, 0x6e, 0xd3, 0x40,
+	0x10, 0x8d, 0x53, 0xe2, 0xb6, 0x03, 0x94, 0xb0, 0x35, 0x91, 0x15, 0x22, 0x0b, 0xed, 0x01, 0x21,
+	0x81, 0x6c, 0xa5, 0x5c, 0xe1, 0x82, 0xfa, 0x01, 0xe0, 0x22, 0x0e, 0x5c, 0xc0, 0xed, 0x0e, 0x66,
+	0xd5, 0x64, 0xd7, 0xf5, 0xae, 0x2d, 0x2c, 0x04, 0x07, 0xbe, 0x00, 0xa9, 0x77, 0xbe, 0x87, 0x63,
+	0x25, 0x2e, 0x1c, 0x51, 0xc2, 0x87, 0xa0, 0xac, 0xd7, 0x25, 0x1b, 0x89, 0x23, 0xea, 0xc5, 0xf2,
+	0xbc, 0x79, 0xf3, 0xe6, 0x8d, 0x67, 0x0c, 0x84, 0x71, 0x96, 0xd4, 0xd3, 0xe4, 0xac, 0xc2, 0xb2,
+	0x89, 0x8b, 0x52, 0x6a, 0x49, 0x7c, 0xc6, 0x59, 0x5c, 0x4f, 0xc7, 0x81, 0xcd, 0xe5, 0x28, 0x50,
+	0x71, 0xd5, 0x66, 0xc7, 0xfb, 0x16, 0x2d, 0xb2, 0x32, 0x9b, 0x77, 0xe0, 0x24, 0x97, 0x32, 0x9f,
+	0x61, 0x92, 0x15, 0x3c, 0xc9, 0x84, 0x90, 0x3a, 0xd3, 0x5c, 0x0a, 0x9b, 0xa5, 0x6f, 0xe1, 0xc6,
+	0x8b, 0x95, 0x7e, 0x8a, 0x67, 0x15, 0x2a, 0x4d, 0x86, 0xb0, 0xc5, 0x38, 0x0b, 0xbd, 0x7b, 0xde,
+	0x83, 0xdd, 0x74, 0xf5, 0x4a, 0x46, 0xe0, 0xcb, 0x92, 0xe7, 0x5c, 0x84, 0x7d, 0x03, 0xda, 0x68,
+	0xc5, 0x3c, 0xc5, 0x26, 0xdc, 0x6a, 0x99, 0xa7, 0xd8, 0x90, 0x00, 0x06, 0x99, 0x52, 0xa8, 0xc3,
+	0x6b, 0x06, 0x6b, 0x03, 0xfa, 0x14, 0xf6, 0x4d, 0x87, 0xe7, 0xc6, 0x54, 0x8a, 0xaa, 0x90, 0x42,
+	0x21, 0xb9, 0x0f, 0x7e, 0x6b, 0xd3, 0xf4, 0xba, 0x7e, 0xb0, 0x17, 0xb7, 0xa3, 0xc5, 0x96, 0x67,
+	0xb3, 0xf4, 0x10, 0x02, 0x6b, 0x50, 0xc9, 0x59, 0x8d, 0x97, 0xf5, 0x8f, 0x60, 0x87, 0xc9, 0x93,
+	0x6a, 0x8e, 0x42, 0x5b, 0x85, 0x61, 0xa7, 0x70, 0x68, 0xf1, 0xf4, 0x92, 0x41, 0x3f, 0xc3, 0xd0,
+	0xa8, 0x1c, 0xf1, 0x5c, 0xfc, 0xb7, 0x51, 0x49, 0x08, 0xdb, 0x73, 0x54, 0x2a, 0xcb, 0x31, 0x1c,
+	0x18, 0xbc, 0x0b, 0xe9, 0x14, 0x6e, 0xaf, 0xf5, 0xb7, 0x23, 0x4c, 0x60, 0x57, 0xf1, 0x5c, 0x64,
+	0xba, 0x2a, 0xd1, 0xda, 0xf8, 0x0b, 0xd0, 0x6f, 0x1e, 0x10, 0x53, 0xf3, 0x0a, 0x4b, 0xfe, 0xae,
+	0xb9, 0x02, 0xd7, 0xae, 0x41, 0x7f, 0xd3, 0xe0, 0x43, 0xbb, 0xd8, 0xce, 0x9f, 0x9d, 0x2a, 0x80,
+	0x41, 0x9d, 0xcd, 0xac, 0xc5, 0x9d, 0xb4, 0x0d, 0x0e, 0xce, 0xfb, 0x30, 0x30, 0x6c, 0x72, 0x04,
+	0x7e, 0xbb, 0x62, 0x12, 0x74, 0x0b, 0x5b, 0xbf, 0xc0, 0xf1, 0x5d, 0x07, 0x75, 0xaf, 0x86, 0x8e,
+	0xbe, 0xfc, 0xf8, 0x7d, 0xde, 0x1f, 0x92, 0xbd, 0xc4, 0x39, 0x75, 0xf2, 0x12, 0xb6, 0xed, 0x81,
+	0xfc, 0x43, 0x75, 0xb2, 0x81, 0x3a, 0xc7, 0x44, 0xef, 0x18, 0xd9, 0x5b, 0xe4, 0x66, 0x27, 0xfb,
+	0x91, 0x71, 0xf6, 0x89, 0xbc, 0x01, 0xbf, 0x1d, 0x8e, 0x8c, 0x9d, 0x72, 0x67, 0x23, 0x1b, 0x86,
+	0xdd, 0xaf, 0x41, 0x27, 0x46, 0x79, 0x44, 0x03, 0x47, 0x39, 0xa9, 0x0d, 0xeb, 0xd9, 0x93, 0xef,
+	0x8b, 0xc8, 0xbb, 0x58, 0x44, 0xde, 0xaf, 0x45, 0xe4, 0x7d, 0x5d, 0x46, 0xbd, 0x8b, 0x65, 0xd4,
+	0xfb, 0xb9, 0x8c, 0x7a, 0xaf, 0x69, 0xce, 0xf5, 0xfb, 0xea, 0x38, 0x3e, 0x91, 0xf3, 0x44, 0x0a,
+	0x25, 0x45, 0x99, 0x98, 0xc7, 0x07, 0xa3, 0xa3, 0x9b, 0x02, 0xd5, 0xb1, 0x6f, 0x7e, 0xe1, 0xc7,
+	0x7f, 0x02, 0x00, 0x00, 0xff, 0xff, 0x63, 0xf5, 0x0e, 0x9a, 0x29, 0x04, 0x00, 0x00,
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -609,8 +505,6 @@ type QueryClient interface {
 	Params(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(ctx context.Context, in *QueryRequest, opts ...grpc.CallOption) (*QueryResolveResponse, error)
-	// Sign signs a message with the DID document
-	Sign(ctx context.Context, in *QuerySignRequest, opts ...grpc.CallOption) (*QuerySignResponse, error)
 	// Verify verifies a message with the DID document
 	Verify(ctx context.Context, in *QueryVerifyRequest, opts ...grpc.CallOption) (*QueryVerifyResponse, error)
 }
@@ -641,15 +535,6 @@ func (c *queryClient) Resolve(ctx context.Context, in *QueryRequest, opts ...grp
 	return out, nil
 }
 
-func (c *queryClient) Sign(ctx context.Context, in *QuerySignRequest, opts ...grpc.CallOption) (*QuerySignResponse, error) {
-	out := new(QuerySignResponse)
-	err := c.cc.Invoke(ctx, "/did.v1.Query/Sign", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *queryClient) Verify(ctx context.Context, in *QueryVerifyRequest, opts ...grpc.CallOption) (*QueryVerifyResponse, error) {
 	out := new(QueryVerifyResponse)
 	err := c.cc.Invoke(ctx, "/did.v1.Query/Verify", in, out, opts...)
@@ -665,8 +550,6 @@ type QueryServer interface {
 	Params(context.Context, *QueryRequest) (*QueryParamsResponse, error)
 	// Resolve queries the DID document by its id.
 	Resolve(context.Context, *QueryRequest) (*QueryResolveResponse, error)
-	// Sign signs a message with the DID document
-	Sign(context.Context, *QuerySignRequest) (*QuerySignResponse, error)
 	// Verify verifies a message with the DID document
 	Verify(context.Context, *QueryVerifyRequest) (*QueryVerifyResponse, error)
 }
@@ -680,9 +563,6 @@ func (*UnimplementedQueryServer) Params(ctx context.Context, req *QueryRequest) 
 }
 func (*UnimplementedQueryServer) Resolve(ctx context.Context, req *QueryRequest) (*QueryResolveResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Resolve not implemented")
-}
-func (*UnimplementedQueryServer) Sign(ctx context.Context, req *QuerySignRequest) (*QuerySignResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Sign not implemented")
 }
 func (*UnimplementedQueryServer) Verify(ctx context.Context, req *QueryVerifyRequest) (*QueryVerifyResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Verify not implemented")
@@ -728,24 +608,6 @@ func _Query_Resolve_Handler(srv interface{}, ctx context.Context, dec func(inter
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Query_Sign_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(QuerySignRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(QueryServer).Sign(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/did.v1.Query/Sign",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(QueryServer).Sign(ctx, req.(*QuerySignRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _Query_Verify_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(QueryVerifyRequest)
 	if err := dec(in); err != nil {
@@ -776,10 +638,6 @@ var _Query_serviceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Resolve",
 			Handler:    _Query_Resolve_Handler,
-		},
-		{
-			MethodName: "Sign",
-			Handler:    _Query_Sign_Handler,
 		},
 		{
 			MethodName: "Verify",
@@ -1097,88 +955,6 @@ func (m *QueryVerifyResponse) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Document) Marshal() (dAtA []byte, err error) {
-	size := m.Size()
-	dAtA = make([]byte, size)
-	n, err := m.MarshalToSizedBuffer(dAtA[:size])
-	if err != nil {
-		return nil, err
-	}
-	return dAtA[:n], nil
-}
-
-func (m *Document) MarshalTo(dAtA []byte) (int, error) {
-	size := m.Size()
-	return m.MarshalToSizedBuffer(dAtA[:size])
-}
-
-func (m *Document) MarshalToSizedBuffer(dAtA []byte) (int, error) {
-	i := len(dAtA)
-	_ = i
-	var l int
-	_ = l
-	if len(m.Service) > 0 {
-		for iNdEx := len(m.Service) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Service[iNdEx])
-			copy(dAtA[i:], m.Service[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Service[iNdEx])))
-			i--
-			dAtA[i] = 0x3a
-		}
-	}
-	if len(m.CapabilityInvocation) > 0 {
-		for iNdEx := len(m.CapabilityInvocation) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CapabilityInvocation[iNdEx])
-			copy(dAtA[i:], m.CapabilityInvocation[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.CapabilityInvocation[iNdEx])))
-			i--
-			dAtA[i] = 0x32
-		}
-	}
-	if len(m.CapabilityDelegation) > 0 {
-		for iNdEx := len(m.CapabilityDelegation) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.CapabilityDelegation[iNdEx])
-			copy(dAtA[i:], m.CapabilityDelegation[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.CapabilityDelegation[iNdEx])))
-			i--
-			dAtA[i] = 0x2a
-		}
-	}
-	if len(m.AssertionMethod) > 0 {
-		for iNdEx := len(m.AssertionMethod) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.AssertionMethod[iNdEx])
-			copy(dAtA[i:], m.AssertionMethod[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.AssertionMethod[iNdEx])))
-			i--
-			dAtA[i] = 0x22
-		}
-	}
-	if len(m.Authentication) > 0 {
-		for iNdEx := len(m.Authentication) - 1; iNdEx >= 0; iNdEx-- {
-			i -= len(m.Authentication[iNdEx])
-			copy(dAtA[i:], m.Authentication[iNdEx])
-			i = encodeVarintQuery(dAtA, i, uint64(len(m.Authentication[iNdEx])))
-			i--
-			dAtA[i] = 0x1a
-		}
-	}
-	if len(m.Controller) > 0 {
-		i -= len(m.Controller)
-		copy(dAtA[i:], m.Controller)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Controller)))
-		i--
-		dAtA[i] = 0x12
-	}
-	if len(m.Id) > 0 {
-		i -= len(m.Id)
-		copy(dAtA[i:], m.Id)
-		i = encodeVarintQuery(dAtA, i, uint64(len(m.Id)))
-		i--
-		dAtA[i] = 0xa
-	}
-	return len(dAtA) - i, nil
-}
-
 func encodeVarintQuery(dAtA []byte, offset int, v uint64) int {
 	offset -= sovQuery(v)
 	base := offset
@@ -1324,53 +1100,6 @@ func (m *QueryVerifyResponse) Size() (n int) {
 	_ = l
 	if m.Valid {
 		n += 2
-	}
-	return n
-}
-
-func (m *Document) Size() (n int) {
-	if m == nil {
-		return 0
-	}
-	var l int
-	_ = l
-	l = len(m.Id)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	l = len(m.Controller)
-	if l > 0 {
-		n += 1 + l + sovQuery(uint64(l))
-	}
-	if len(m.Authentication) > 0 {
-		for _, s := range m.Authentication {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if len(m.AssertionMethod) > 0 {
-		for _, s := range m.AssertionMethod {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if len(m.CapabilityDelegation) > 0 {
-		for _, s := range m.CapabilityDelegation {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if len(m.CapabilityInvocation) > 0 {
-		for _, s := range m.CapabilityInvocation {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
-	}
-	if len(m.Service) > 0 {
-		for _, s := range m.Service {
-			l = len(s)
-			n += 1 + l + sovQuery(uint64(l))
-		}
 	}
 	return n
 }
@@ -2314,280 +2043,6 @@ func (m *QueryVerifyResponse) Unmarshal(dAtA []byte) error {
 				}
 			}
 			m.Valid = bool(v != 0)
-		default:
-			iNdEx = preIndex
-			skippy, err := skipQuery(dAtA[iNdEx:])
-			if err != nil {
-				return err
-			}
-			if (skippy < 0) || (iNdEx+skippy) < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if (iNdEx + skippy) > l {
-				return io.ErrUnexpectedEOF
-			}
-			iNdEx += skippy
-		}
-	}
-
-	if iNdEx > l {
-		return io.ErrUnexpectedEOF
-	}
-	return nil
-}
-func (m *Document) Unmarshal(dAtA []byte) error {
-	l := len(dAtA)
-	iNdEx := 0
-	for iNdEx < l {
-		preIndex := iNdEx
-		var wire uint64
-		for shift := uint(0); ; shift += 7 {
-			if shift >= 64 {
-				return ErrIntOverflowQuery
-			}
-			if iNdEx >= l {
-				return io.ErrUnexpectedEOF
-			}
-			b := dAtA[iNdEx]
-			iNdEx++
-			wire |= uint64(b&0x7F) << shift
-			if b < 0x80 {
-				break
-			}
-		}
-		fieldNum := int32(wire >> 3)
-		wireType := int(wire & 0x7)
-		if wireType == 4 {
-			return fmt.Errorf("proto: Document: wiretype end group for non-group")
-		}
-		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Document: illegal tag %d (wire type %d)", fieldNum, wire)
-		}
-		switch fieldNum {
-		case 1:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Id = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 2:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Controller", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Controller = string(dAtA[iNdEx:postIndex])
-			iNdEx = postIndex
-		case 3:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Authentication", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Authentication = append(m.Authentication, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 4:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field AssertionMethod", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.AssertionMethod = append(m.AssertionMethod, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 5:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CapabilityDelegation", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CapabilityDelegation = append(m.CapabilityDelegation, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 6:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field CapabilityInvocation", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.CapabilityInvocation = append(m.CapabilityInvocation, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
-		case 7:
-			if wireType != 2 {
-				return fmt.Errorf("proto: wrong wireType = %d for field Service", wireType)
-			}
-			var stringLen uint64
-			for shift := uint(0); ; shift += 7 {
-				if shift >= 64 {
-					return ErrIntOverflowQuery
-				}
-				if iNdEx >= l {
-					return io.ErrUnexpectedEOF
-				}
-				b := dAtA[iNdEx]
-				iNdEx++
-				stringLen |= uint64(b&0x7F) << shift
-				if b < 0x80 {
-					break
-				}
-			}
-			intStringLen := int(stringLen)
-			if intStringLen < 0 {
-				return ErrInvalidLengthQuery
-			}
-			postIndex := iNdEx + intStringLen
-			if postIndex < 0 {
-				return ErrInvalidLengthQuery
-			}
-			if postIndex > l {
-				return io.ErrUnexpectedEOF
-			}
-			m.Service = append(m.Service, string(dAtA[iNdEx:postIndex]))
-			iNdEx = postIndex
 		default:
 			iNdEx = preIndex
 			skippy, err := skipQuery(dAtA[iNdEx:])
