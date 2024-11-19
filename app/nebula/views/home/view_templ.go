@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/app/nebula/components/styles"
+	"github.com/onsonr/sonr/app/nebula/global/styles"
 	"github.com/onsonr/sonr/app/nebula/views/home/sections"
 )
 

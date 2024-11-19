@@ -1,9 +1,6 @@
 package vault
 
-import (
-	"github.com/onsonr/sonr/app/nebula/components/state"
-	"github.com/onsonr/sonr/app/nebula/components/styles"
-)
+import "github.com/onsonr/sonr/app/nebula/global/styles"
 
 templ IndexFile() {
 	<!DOCTYPE html>
@@ -16,7 +13,7 @@ templ IndexFile() {
 			<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>Sonr DWN</title>
-			@state.RegisterServiceWorker()
+			@RegisterServiceWorker()
 		</head>
 		@styles.Toaster() {
 			<body class="flex items-center justify-center h-full bg-zinc-50 lg:p-24 md:16 p-4">

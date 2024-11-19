@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	global "github.com/onsonr/sonr/app/nebula/components"
+	global "github.com/onsonr/sonr/app/nebula/global"
 	models "github.com/onsonr/sonr/app/nebula/models"
 )
 

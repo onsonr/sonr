@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/onsonr/sonr/app/nebula/components/ui"
+	"github.com/onsonr/sonr/app/nebula/global/ui"
 	models "github.com/onsonr/sonr/app/nebula/models"
 )
 

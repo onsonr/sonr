@@ -8,10 +8,7 @@ package vault
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import (
-	"github.com/onsonr/sonr/app/nebula/components/state"
-	"github.com/onsonr/sonr/app/nebula/components/styles"
-)
+import "github.com/onsonr/sonr/app/nebula/global/styles"
 
 func IndexFile() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -54,7 +51,7 @@ func IndexFile() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = state.RegisterServiceWorker().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = RegisterServiceWorker().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

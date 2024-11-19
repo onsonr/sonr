@@ -9,9 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/app/nebula/components/forms"
-	"github.com/onsonr/sonr/app/nebula/components/styles"
-	"github.com/onsonr/sonr/app/nebula/components/ui"
+	"github.com/onsonr/sonr/app/nebula/global/styles"
+	"github.com/onsonr/sonr/app/nebula/global/ui"
+	"github.com/onsonr/sonr/app/nebula/views/auth/forms"
 )
 
 func loginStart() templ.Component {

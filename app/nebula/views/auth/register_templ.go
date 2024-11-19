@@ -8,7 +8,7 @@ package auth
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/app/nebula/components/forms"
+import "github.com/onsonr/sonr/app/nebula/views/auth/forms"
 
 func registerStart() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
