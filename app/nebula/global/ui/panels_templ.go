@@ -98,7 +98,7 @@ func breadcrumbItem(title string, active bool) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `global/ui/panels.templ`, Line: 23, Col: 126}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/global/ui/panels.templ`, Line: 23, Col: 126}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -116,7 +116,7 @@ func breadcrumbItem(title string, active bool) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `global/ui/panels.templ`, Line: 25, Col: 118}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `app/nebula/global/ui/panels.templ`, Line: 25, Col: 118}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
