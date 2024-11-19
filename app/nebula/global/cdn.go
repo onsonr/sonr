@@ -27,7 +27,7 @@ func (a Avatar) Src() string {
 }
 
 // ╭───────────────────────────────────────────────────────────╮
-// │                  SVG CDN Illustrations                    │
+// │                  General Illustrations                    │
 // ╰───────────────────────────────────────────────────────────╯
 
 type Illustration string
@@ -67,4 +67,35 @@ const (
 
 func (i Illustration) Src() string {
 	return fmt.Sprintf("https://cdn.sonr.id/img/illustrations/%s.svg", string(i))
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Empty State Illustrations                │
+// ╰───────────────────────────────────────────────────────────╯
+
+type ErrorIllustration string
+
+const (
+	ErrorIllustration404                ErrorIllustration = "404"
+	ErrorIllustrationEmptyCart          ErrorIllustration = "empty-cart"
+	ErrorIllustrationEmptyMessages      ErrorIllustration = "empty-messages"
+	ErrorIllustrationEmptyNotifications ErrorIllustration = "empty-notifications"
+	ErrorIllustrationEmptySearch        ErrorIllustration = "empty-search"
+	ErrorIllustrationFileNotFound       ErrorIllustration = "file-not-found"
+	ErrorIllustratinInternalError       ErrorIllustration = "internal-error"
+	ErrorIllustrationNoConnection       ErrorIllustration = "no-connection"
+	ErrorIllustrationOrderNotFound      ErrorIllustration = "order-not-found"
+	ErrorIllustrationPaymentFailed      ErrorIllustration = "payment-failed"
+)
+
+func (e ErrorIllustration) SrcDefault() string {
+	return fmt.Sprintf("https://cdn.sonr.id/img/empty-state/default/%s.svg", string(e))
+}
+
+func (e ErrorIllustration) SrcMono() string {
+	return fmt.Sprintf("https://cdn.sonr.id/img/empty-state/mono/%s.svg", string(e))
+}
+
+func (e ErrorIllustration) SrcRetro() string {
+	return fmt.Sprintf("https://cdn.sonr.id/img/empty-state/retro/%s.svg", string(e))
 }
