@@ -1,0 +1,12 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - ./gradlew createPackages
+
+  gen:
+    dir: src
+    cmds:
+      - go run github.com/apple/pkl-go/cmd/pkl-gen-go ./sonr.config.v1/DWN.pkl
+      - go run github.com/apple/pkl-go/cmd/pkl-gen-go ./models.v1/ORM.pkl

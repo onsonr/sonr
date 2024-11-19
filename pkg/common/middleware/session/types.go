@@ -7,6 +7,7 @@ import (
 )
 
 type (
+	CredDescriptor  = protocol.CredentialDescriptor
 	LoginOptions    = protocol.PublicKeyCredentialRequestOptions
 	RegisterOptions = protocol.PublicKeyCredentialCreationOptions
 	VaultSchema     = config.Schema

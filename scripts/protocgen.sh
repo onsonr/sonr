@@ -61,7 +61,6 @@ cd $ROOT_DIR/github.com/onsonr/sonr/pkg
 
 cp -r hway/types/* $ROOT_DIR/pkg/hway/types
 cp -r common/types/* $ROOT_DIR/pkg/common/types
-cp -r motr/types/* $ROOT_DIR/pkg/motr/types
 
 echo "Cleaning up"
 rm -rf $ROOT_DIR/github.com

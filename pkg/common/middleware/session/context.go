@@ -11,8 +11,8 @@ import (
 type Context interface {
 	ID() string
 
-	GetLoginParams() *LoginOptions
-	GetRegisterParams() *RegisterOptions
+	GetLoginParams(credentials []CredDescriptor) *LoginOptions
+	GetRegisterParams(subject string) *RegisterOptions
 
 	Address() string
 	ChainID() string

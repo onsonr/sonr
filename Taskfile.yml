@@ -3,6 +3,11 @@ vars:
   ROOT_DIR:
     sh: pwd
 
+includes:
+  pkl:
+    dir: ./third_party/pkl
+    taskfile: ./third_party/pkl/Taskfile.yml
+
 tasks:
   hway:assets:
     internal: true

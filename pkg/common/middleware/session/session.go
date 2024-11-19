@@ -42,16 +42,19 @@ func (s *HTTPContext) ID() string {
 	return s.peer.ID
 }
 
-func (s *HTTPContext) GetLoginParams() *LoginOptions {
+func (s *HTTPContext) GetLoginParams(credentials []CredDescriptor) *LoginOptions {
 	return &LoginOptions{
-		Challenge: s.peer.Challenge,
+		Challenge:          s.peer.Challenge,
+		Timeout:            10000,
+		AllowedCredentials: credentials,
 	}
 }
 
-func (s *HTTPContext) GetRegisterParams() *RegisterOptions {
-	return &RegisterOptions{
-		Challenge: s.peer.Challenge,
-	}
+func (s *HTTPContext) GetRegisterParams(subject string) *RegisterOptions {
+	opts := baseRegisterOptions()
+	opts.Challenge = s.peer.Challenge
+	opts.User = buildUserEntity(subject)
+	return opts
 }
 
 // Address returns the sonr address from the cookies.
@@ -59,8 +62,8 @@ func (s *HTTPContext) Address() string {
 	return s.vault.Address
 }
 
-// IPFSGatewayURL returns the IPFS gateway URL from the headers.
-func (s *HTTPContext) IPFSGatewayURL() string {
+// IPFSGateway returns the IPFS gateway URL from the headers.
+func (s *HTTPContext) IPFSGateway() string {
 	return s.client.IPFSHost
 }
 

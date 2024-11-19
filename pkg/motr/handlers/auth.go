@@ -4,7 +4,7 @@ import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/motr/types/orm"
+	"github.com/onsonr/sonr/pkg/motr/types"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -55,7 +55,7 @@ func RegisterSubjectStart(e echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return e.JSON(201, orm.NewCredentialCreationOptions(subject, address, chal))
+	return e.JSON(201, types.NewCredentialCreationOptions(subject, address, chal))
 }
 
 // RegisterSubjectFinish handles the register subject finish.
