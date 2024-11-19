@@ -17,7 +17,7 @@ import (
 	"github.com/labstack/echo/v4"
 	promise "github.com/nlepage/go-js-promise"
 
-	"github.com/onsonr/sonr/pkg/common/ctx"
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	dwngen "github.com/onsonr/sonr/pkg/motr/config"
 	"github.com/onsonr/sonr/pkg/motr/routes"
 )
@@ -34,7 +34,7 @@ func main() {
 
 	// Setup HTTP server
 	e := echo.New()
-	e.Use(ctx.DWNSessionMiddleware(config))
+	e.Use(session.MotrMiddleware(config))
 	routes.RegisterWebNodeAPI(e)
 	routes.RegisterWebNodeViews(e)
 	Serve(e)

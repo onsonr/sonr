@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	FileNameConfigJSON = "dwn.pkl"
+	FileNameConfigJSON = "dwn.json"
 	FileNameIndexHTML  = "index.html"
 	FileNameWorkerJS   = "sw.js"
 )

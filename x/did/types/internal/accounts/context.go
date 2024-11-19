@@ -9,7 +9,7 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/onsonr/sonr/pkg/core/transaction"
-	"github.com/onsonr/sonr/x/did/types/accstd/internal/prefixstore"
+	"github.com/onsonr/sonr/x/did/types/internal/prefixstore"
 )
 
 var AccountStatePrefix = collections.NewPrefix(255)

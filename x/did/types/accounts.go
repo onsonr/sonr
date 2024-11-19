@@ -1,5 +1,4 @@
-// Package accountstd exports the types and functions that are used by developers to implement smart accounts.
-package accstd
+package types
 
 import (
 	"bytes"
@@ -11,7 +10,7 @@ import (
 	"github.com/cosmos/cosmos-sdk/types/address"
 
 	"github.com/onsonr/sonr/pkg/core/transaction"
-	"github.com/onsonr/sonr/x/did/types/accstd/internal/accounts"
+	"github.com/onsonr/sonr/x/did/types/internal/accounts"
 )
 
 var (
@@ -19,22 +18,22 @@ var (
 	ErrInvalidType        = errors.New("invalid type")
 )
 
-// Interface is the exported interface of an Account.
-type Interface = accounts.Account
+// AccountsInterface is the exported interface of an Account.
+type AccountsInterface = accounts.Account
 
-// ExecuteBuilder is the exported type of ExecuteBuilder.
-type ExecuteBuilder = accounts.ExecuteBuilder
+// AccountsExecuteBuilder is the exported type of AccountsExecuteBuilder.
+type AccountsExecuteBuilder = accounts.ExecuteBuilder
 
-// QueryBuilder is the exported type of QueryBuilder.
-type QueryBuilder = accounts.QueryBuilder
+// AccountsQueryBuilder is the exported type of AccountsQueryBuilder.
+type AccountsQueryBuilder = accounts.QueryBuilder
 
-// InitBuilder is the exported type of InitBuilder.
-type InitBuilder = accounts.InitBuilder
+// AccountsInitBuilder is the exported type of AccountsInitBuilder.
+type AccountsInitBuilder = accounts.InitBuilder
 
 // AccountCreatorFunc is the exported type of AccountCreatorFunc.
 type AccountCreatorFunc = accounts.AccountCreatorFunc
 
-func DIAccount[A Interface](name string, constructor func(deps Dependencies) (A, error)) DepinjectAccount {
+func DIAccount[A AccountsInterface](name string, constructor func(deps Dependencies) (A, error)) DepinjectAccount {
 	return DepinjectAccount{MakeAccount: AddAccount(name, constructor)}
 }
 
@@ -47,31 +46,31 @@ func (DepinjectAccount) IsManyPerContainerType() {}
 // Dependencies is the exported type of Dependencies.
 type Dependencies = accounts.Dependencies
 
-func RegisterExecuteHandler[
+func RegisterAccountsExecuteHandler[
 	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
-](router *ExecuteBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
+](router *AccountsExecuteBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
 	accounts.RegisterExecuteHandler(router, handler)
 }
 
-// RegisterQueryHandler registers a query handler for a smart account that uses protobuf.
-func RegisterQueryHandler[
+// RegisterAccountsQueryHandler registers a query handler for a smart account that uses protobuf.
+func RegisterAccountsQueryHandler[
 	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
-](router *QueryBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
+](router *AccountsQueryBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
 	accounts.RegisterQueryHandler(router, handler)
 }
 
-// RegisterInitHandler registers an initialisation handler for a smart account that uses protobuf.
-func RegisterInitHandler[
+// RegisterAccountsInitHandler registers an initialisation handler for a smart account that uses protobuf.
+func RegisterAccountsInitHandler[
 	Req any, ProtoReq accounts.ProtoMsgG[Req], Resp any, ProtoResp accounts.ProtoMsgG[Resp],
-](router *InitBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
+](router *AccountsInitBuilder, handler func(ctx context.Context, req ProtoReq) (ProtoResp, error),
 ) {
 	accounts.RegisterInitHandler(router, handler)
 }
 
 // AddAccount is a helper function to add a smart account to the list of smart accounts.
-func AddAccount[A Interface](name string, constructor func(deps Dependencies) (A, error)) AccountCreatorFunc {
+func AddAccount[A AccountsInterface](name string, constructor func(deps Dependencies) (A, error)) AccountCreatorFunc {
 	return func(deps accounts.Dependencies) (string, accounts.Account, error) {
 		acc, err := constructor(deps)
 		return name, acc, err
