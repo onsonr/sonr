@@ -1,27 +1,25 @@
 package motr
 
 import (
+	"bytes"
+	"context"
 	_ "embed"
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
 
+	"github.com/onsonr/sonr/app/nebula/views/vault"
 	"github.com/onsonr/sonr/pkg/motr/config"
-	"github.com/onsonr/sonr/pkg/motr/static"
 )
 
 const (
 	FileNameConfigJSON = "dwn.json"
 	FileNameIndexHTML  = "index.html"
-	FileNameWorkerJS   = "sw.js"
 )
-
-//go:embed static/sw.js
-var swJSData []byte
 
 // NewVaultDirectory creates a new directory with the default files
 func NewVaultDirectory(cnfg *config.Config) (files.Node, error) {
-	idxFile, err := static.BuildVaultFile(cnfg)
+	idxFile, err := buildVaultFile(cnfg)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +30,17 @@ func NewVaultDirectory(cnfg *config.Config) (files.Node, error) {
 	fileMap := map[string]files.Node{
 		FileNameConfigJSON: files.NewBytesFile(cnfgBz),
 		FileNameIndexHTML:  idxFile,
-		FileNameWorkerJS:   files.NewBytesFile(swJSData),
 	}
 	return files.NewMapDirectory(fileMap), nil
+}
+
+// buildVaultFile builds the index.html file for the vault
+func buildVaultFile(cnfg *config.Config) (files.Node, error) {
+	w := bytes.NewBuffer(nil)
+	err := vault.IndexFile().Render(context.Background(), w)
+	if err != nil {
+		return nil, err
+	}
+	indexData := w.Bytes()
+	return files.NewBytesFile(indexData), nil
 }

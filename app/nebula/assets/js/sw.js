@@ -3,7 +3,7 @@ importScripts(
   "https://cdn.jsdelivr.net/gh/nlepage/go-wasm-http-server@v1.1.0/sw.js",
 );
 
-registerWasmHTTPListener("/app.wasm");
+registerWasmHTTPListener("https://cdn.sonr.id/wasm/app.wasm");
 
 // Skip installed stage and jump to activating stage
 self.addEventListener("install", (event) => {
@@ -16,7 +16,9 @@ self.addEventListener("activate", (event) => {
 });
 
 self.addEventListener("canmakepayment", function (e) {
-  e.respondWith(new Promise(function (resolve, reject) {
-    resolve(true);
-  }));
+  e.respondWith(
+    new Promise(function (resolve, reject) {
+      resolve(true);
+    }),
+  );
 });
