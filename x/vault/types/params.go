@@ -3,8 +3,8 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/onsonr/sonr/pkg/motr/types"
-	"github.com/onsonr/sonr/pkg/motr/types/orm"
+	"github.com/onsonr/sonr/pkg/common/types"
+	"github.com/onsonr/sonr/pkg/common/types/orm"
 )
 
 // DefaultParams returns default module parameters.

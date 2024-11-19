@@ -15,6 +15,7 @@ dist
 *.test
 .devon*
 **/.DS_Store
+.task
 
 # Output of the go coverage tool
 *.out

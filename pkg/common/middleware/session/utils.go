@@ -13,7 +13,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	commonv1 "github.com/onsonr/sonr/pkg/common/types"
-	"github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/config/dwn"
 )
 
 const kWebAuthnTimeout = 6000
@@ -82,7 +82,7 @@ func loadOrGenKsuid(c echo.Context) error {
 func extractConfigClient(c echo.Context) *commonv1.ClientConfig {
 	return &commonv1.ClientConfig{
 		ChainID:    header.Read(c, header.ChainID),
-		IPFSHost:   header.Read(c, header.IPFSHost),
+		IpfsHost:   header.Read(c, header.IPFSHost),
 		SonrAPIURL: header.Read(c, header.SonrAPIURL),
 		SonrRPCURL: header.Read(c, header.SonrRPCURL),
 		SonrWSURL:  header.Read(c, header.SonrWSURL),
@@ -90,7 +90,7 @@ func extractConfigClient(c echo.Context) *commonv1.ClientConfig {
 }
 
 func extractConfigVault(c echo.Context) (*commonv1.VaultDetails, error) {
-	schema := &config.Schema{}
+	schema := &dwn.Schema{}
 	schemaBz, _ := cookie.ReadBytes(c, cookie.VaultSchema)
 	err := json.Unmarshal(schemaBz, schema)
 	if err != nil {
@@ -118,7 +118,7 @@ func extractPeerInfo(c echo.Context) *commonv1.PeerInfo {
 	chalRaw, _ := cookie.ReadBytes(c, cookie.SessionChallenge)
 	chal.UnmarshalJSON(chalRaw)
 
-	return &commonv1.PeerInfo{ID: id, Challenge: chal}
+	return &commonv1.PeerInfo{Id: id, Challenge: commonv1.Base64Encode(chal)}
 }
 
 func extractBrowserInfo(c echo.Context) *commonv1.BrowserInfo {

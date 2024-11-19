@@ -57,20 +57,22 @@ func loadHTTPContext(cc *HTTPContext) *HTTPContext {
 
 // ID returns the ksuid http cookie.
 func (s *HTTPContext) ID() string {
-	return s.peer.ID
+	return s.peer.Id
 }
 
 func (s *HTTPContext) LoginOptions(credentials []commonv1.CredDescriptor) *commonv1.LoginOptions {
+	ch, _ := commonv1.Base64Decode(s.peer.Challenge)
 	return &commonv1.LoginOptions{
-		Challenge:          s.peer.Challenge,
+		Challenge:          ch,
 		Timeout:            10000,
 		AllowedCredentials: credentials,
 	}
 }
 
 func (s *HTTPContext) RegisterOptions(subject string) *commonv1.RegisterOptions {
+	ch, _ := commonv1.Base64Decode(s.peer.Challenge)
 	opts := baseRegisterOptions()
-	opts.Challenge = s.peer.Challenge
+	opts.Challenge = ch
 	opts.User = buildUserEntity(subject)
 	return opts
 }

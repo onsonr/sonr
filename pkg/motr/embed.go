@@ -9,7 +9,7 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/app/nebula/views/vault"
-	"github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/config/dwn"
 )
 
 const (
@@ -18,7 +18,7 @@ const (
 )
 
 // NewVaultDirectory creates a new directory with the default files
-func NewVaultDirectory(cnfg *config.Config) (files.Node, error) {
+func NewVaultDirectory(cnfg *dwn.Config) (files.Node, error) {
 	idxFile, err := buildVaultFile(cnfg)
 	if err != nil {
 		return nil, err
@@ -35,7 +35,7 @@ func NewVaultDirectory(cnfg *config.Config) (files.Node, error) {
 }
 
 // buildVaultFile builds the index.html file for the vault
-func buildVaultFile(cnfg *config.Config) (files.Node, error) {
+func buildVaultFile(cnfg *dwn.Config) (files.Node, error) {
 	w := bytes.NewBuffer(nil)
 	err := vault.IndexFile().Render(context.Background(), w)
 	if err != nil {

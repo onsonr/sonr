@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	commonv1 "github.com/onsonr/sonr/pkg/common/types"
-	"github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/config/dwn"
 )
 
 // HwayMiddleware establishes a Session Cookie.
@@ -22,7 +22,7 @@ func HwayMiddleware() echo.MiddlewareFunc {
 }
 
 // MotrMiddleware establishes a Session Cookie.
-func MotrMiddleware(config *config.Config) echo.MiddlewareFunc {
+func MotrMiddleware(config *dwn.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := injectConfig(c, config)
@@ -35,7 +35,7 @@ func MotrMiddleware(config *config.Config) echo.MiddlewareFunc {
 	}
 }
 
-func injectConfig(c echo.Context, config *config.Config) error {
+func injectConfig(c echo.Context, config *dwn.Config) error {
 	header.Write(c, header.IPFSHost, config.IpfsGatewayUrl)
 	header.Write(c, header.ChainID, config.SonrChainId)
 

@@ -3,8 +3,6 @@ package handlers
 import (
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-
-	"github.com/onsonr/sonr/pkg/motr/types"
 )
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -47,15 +45,11 @@ func RegisterSubjectCheck(e echo.Context) error {
 // RegisterSubjectStart handles the register subject start.
 func RegisterSubjectStart(e echo.Context) error {
 	// Get subject and address
-	subject := e.FormValue("subject")
-	address := e.FormValue("address")
+	// subject := e.FormValue("subject")
 
 	// Get challenge
-	chal, err := protocol.CreateChallenge()
-	if err != nil {
-		return err
-	}
-	return e.JSON(201, types.NewCredentialCreationOptions(subject, address, chal))
+
+	return nil
 }
 
 // RegisterSubjectFinish handles the register subject finish.

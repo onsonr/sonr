@@ -7,15 +7,13 @@ import (
 
 	sdk "github.com/cosmos/cosmos-sdk/crypto/types"
 	"google.golang.org/protobuf/proto"
-
-	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 )
 
 type PubKeyI interface {
 	GetRole() string
 	GetKeyType() string
-	GetRawKey() *commonv1.RawKey
-	GetJwk() *commonv1.JSONWebKey
+	// GetRawKey() *commonv1.RawKey
+	// GetJwk() *commonv1.JSONWebKey
 }
 
 // PubKey defines a generic pubkey.

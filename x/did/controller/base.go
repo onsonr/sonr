@@ -3,13 +3,12 @@ package controller
 import (
 	"github.com/onsonr/crypto/mpc"
 
-	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
 type ControllerI interface {
 	ChainID() string
-	GetPubKey() *commonv1.PubKey
+	// GetPubKey() *commonv1.PubKey
 	SonrAddress() string
 	RawPublicKey() []byte
 }
@@ -49,16 +48,17 @@ func (c *controller) ChainID() string {
 	return c.chainID
 }
 
-func (c *controller) GetPubKey() *commonv1.PubKey {
-	return &commonv1.PubKey{
-		KeyType: "ecdsa",
-		RawKey: &commonv1.RawKey{
-			Algorithm: "secp256k1",
-			Key:       c.publicKey,
-		},
-		Role: "authentication",
-	}
-}
+//
+// func (c *controller) GetPubKey() *commonv1.PubKey {
+// 	return &commonv1.PubKey{
+// 		KeyType: "ecdsa",
+// 		RawKey: &commonv1.RawKey{
+// 			Algorithm: "secp256k1",
+// 			Key:       c.publicKey,
+// 		},
+// 		Role: "authentication",
+// 	}
+// }
 
 func (c *controller) RawPublicKey() []byte {
 	return c.publicKey

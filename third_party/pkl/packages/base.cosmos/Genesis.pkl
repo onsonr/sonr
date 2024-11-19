@@ -1,3 +1,0 @@
-module base.cosmos.v1.Genesis
-
-

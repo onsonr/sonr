@@ -1,0 +1,197 @@
+module net.svcs.Wrangler
+
+class CloudflareWorker {
+  // Top-level configuration
+  name: String
+  main: String
+  compatibility_date: String
+  
+  workers_dev: Boolean? = true
+  route: Route?
+  routes: List<Route>?
+  
+  kv_namespaces: List<KvNamespace>?
+  
+  // Environments
+  envs: Mapping<String, Environment>?
+  
+  // Top-level only keys
+  keep_vars: Boolean?
+  send_metrics: Boolean?
+  site: Site?
+  
+  // Inheritable keys  
+  account_id: String?
+  compatibility_flags: List<String>?
+  tsconfig: String?
+  triggers: Triggers?
+  rules: List<Rule>?
+  build: Build?
+  no_bundle: Boolean?
+  minify: Boolean?
+  node_compat: Boolean?
+  preserve_file_names: Boolean?
+  logpush: Boolean?
+  limits: Limits?
+  
+  // Non-inheritable keys
+  define: Mapping<String, String>?
+  vars: Mapping<String, String>?
+  durable_objects: DurableObjects?
+  r2_buckets: List<R2Bucket>?
+  vectorize: List<VectorizeIndex>?
+  services: List<ServiceBinding>?
+  tail_consumers: List<TailWorker>?
+  
+  // Bindings
+  browser: BrowserBinding?
+  d1_databases: List<D1Database>?
+  dispatch_namespaces: List<DispatchNamespace>?
+  email: List<EmailBinding>?
+  hyperdrive: List<HyperdriveBinding>?
+  queues: Queues?
+  analytics_engine_datasets: List<AnalyticsEngineDataset>?
+  mtls_certificates: List<MtlsCertificate>?
+  ai: AiBinding?
+}
+
+class Route {
+  pattern: String
+  custom_domain: Boolean?
+  zone_id: String?
+  zone_name: String?
+}
+
+class KvNamespace {
+  binding: String  
+  id: String
+  preview_id: String?
+}
+
+class Environment {
+  // Inherits all properties from CloudflareWorker
+  // Can override inherited properties
+}
+
+class Site {
+  // TODO: Define Site properties
+}
+
+class Triggers {
+  crons: List<String>
+}
+
+class Rule {
+  // TODO: Define Rule properties  
+}
+
+class Build {
+  command: String?
+  cwd: String?
+  watch_dir: String?
+}
+
+class Limits {
+  cpu_ms: Int?
+}
+
+class DurableObjects {
+  bindings: List<DurableObjectBinding>
+}
+
+class DurableObjectBinding {
+  name: String
+  class_name: String
+  script_name: String?  
+  environment: String?
+}
+
+class R2Bucket {
+  binding: String
+  bucket_name: String
+  jurisdiction: String?
+  preview_bucket_name: String?
+}
+
+class VectorizeIndex {
+  binding: String
+  index_name: String  
+}
+
+class ServiceBinding {
+  binding: String
+  service: String
+  entrypoint: String?
+}
+
+class TailWorker {
+  // TODO: Define TailWorker properties
+}
+
+class BrowserBinding {
+  binding: String
+}
+
+class D1Database {
+  binding: String
+  database_name: String
+  database_id: String
+  preview_database_id: String?
+}
+
+class DispatchNamespace {
+  binding: String
+  namespace: String
+  outbound: OutboundWorker?
+}
+
+class OutboundWorker {
+  service: String
+  parameters: List<String>?
+}
+
+class EmailBinding {
+  name: String
+  destination_address: String?
+  allowed_destination_addresses: List<String>?
+}
+
+class HyperdriveBinding {
+  binding: String
+  id: String
+}
+
+class Queues {
+  producers: List<QueueProducer>?
+  consumers: List<QueueConsumer>?
+}
+
+class QueueProducer {
+  binding: String
+  queue: String
+  delivery_delay: Int?
+}
+
+class QueueConsumer {
+  queue: String
+  max_batch_size: Int?
+  max_batch_timeout: Int?
+  max_retries: Int?
+  dead_letter_queue: String?
+  max_concurrency: Int?
+  retry_delay: Int?
+}
+
+class AnalyticsEngineDataset {
+  binding: String
+  dataset: String?
+}
+
+class MtlsCertificate {
+  binding: String
+  certificate_id: String
+}
+
+class AiBinding {
+  binding: String
+}

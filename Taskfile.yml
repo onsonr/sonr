@@ -3,11 +3,6 @@ vars:
   ROOT_DIR:
     sh: pwd
 
-includes:
-  pkl:
-    dir: ./third_party/pkl
-    taskfile: ./third_party/pkl/Taskfile.yml
-
 tasks:
   hway:assets:
     internal: true
@@ -89,3 +84,20 @@ tasks:
     cmds:
       - buf build
       - buf push
+
+  # ╭───────────────────────────────────────────────────────────╮
+  # │                  Registration Components                  │
+  # ╰───────────────────────────────────────────────────────────╯
+
+  pkl:build:
+    cmds:
+      - pkl project package packages/*/
+
+  pkl:gen:
+    sources:
+      - third_party/pkl/packages/common.types/Ctx.pkl
+      - third_party/pkl/packages/commmon.types/DWN.pkl
+      - third_party/pkl/packages/common.types/ORM.pkl
+    cmds:
+      - for: sources
+        cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}
