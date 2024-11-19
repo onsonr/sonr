@@ -6,14 +6,14 @@ import (
 
 	"github.com/ipfs/boxo/files"
 
+	"github.com/onsonr/sonr/app/nebula/views/vault"
 	dwn "github.com/onsonr/sonr/pkg/motr/config"
-	"github.com/onsonr/sonr/pkg/nebula/views"
 )
 
 // BuildVaultFile builds the index.html file for the vault
 func BuildVaultFile(cnfg *dwn.Config) (files.Node, error) {
 	w := bytes.NewBuffer(nil)
-	err := views.VaultIndexFile().Render(context.Background(), w)
+	err := vault.IndexFile().Render(context.Background(), w)
 	if err != nil {
 		return nil, err
 	}

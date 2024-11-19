@@ -3,7 +3,6 @@ package handlers
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/app/nebula/views"
 	"github.com/onsonr/sonr/app/nebula/views/auth"
 	"github.com/onsonr/sonr/pkg/common/middleware/render"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
@@ -19,7 +18,7 @@ func CurrentViewRoute(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	return render.Templ(c, views.CurrentView(cc))
+	return render.Templ(c, auth.CurrentView(cc))
 }
 
 // ╭───────────────────────────────────────────────────────────╮
