@@ -8,20 +8,20 @@ import (
 // RegisterModal returns the Register Modal.
 templ RegisterModal(c session.Context) {
 	@styles.OpenModal(c.ID(), "Enter your account information below to create your account.") {
-		@RegisterStart()
+		@registerStart()
 	}
 }
 
 // LoginModal returns the Login Modal.
 templ LoginModal(c session.Context) {
 	@styles.OpenModal(c.ID(), "Enter your account information below to create your account.") {
-		@LoginStart()
+		@loginStart()
 	}
 }
 
 // AuthorizeModal returns the Authorize Modal.
 templ AuthorizeModal(c session.Context) {
 	@styles.OpenModal(c.ID(), "Enter your account information below to create your account.") {
-		@AuthorizeStart()
+		@authorizeStart()
 	}
 }
