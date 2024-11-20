@@ -7,7 +7,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/syumai/workers"
 
-	"github.com/onsonr/sonr/cmd/hway/routes"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/pkg/core/dwn"
 )
@@ -36,8 +35,8 @@ func New(env *dwn.Environment) Server {
 	s.e.Use(session.HwayMiddleware())
 
 	// Add WASM-specific routes
-	routes.RegisterGatewayAPI(s.e)
-	routes.RegisterFrontendViews(s.e)
+	RegisterGatewayAPI(s.e)
+	RegisterFrontendViews(s.e)
 	return s.loadEnv(env)
 }
 

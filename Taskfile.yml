@@ -7,10 +7,10 @@ tasks:
   hway:assets:
     internal: true
     cmds:
-      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/gateway/build
+      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
 
   hway:build:
-    dir: cmd/gateway
+    dir: cmd/hway
     env:
       GOOS: js
       GOARCH: wasm
@@ -19,26 +19,26 @@ tasks:
       - go build -o build/app.wasm main.go
 
   hway:dev:
-    dir: cmd/gateway
+    dir: cmd/hway
     cmds:
       - task: nebula:build
       - bunx wrangler dev
 
   hway:deploy:
-    dir: cmd/gateway
+    dir: cmd/hway
     cmds:
       - task: nebula:build
       - bunx wrangler deploy
 
-  dwn:build:
+  motr:build:
     env:
       GOOS: js
       GOARCH: wasm
     cmds:
-      - go build -o build/app.wasm ./cmd/dwn/main.go
+      - go build -o build/app.wasm ./cmd/motr/main.go
 
   nebula:build:
-    dir: app/nebula
+    dir: pkg/design
     cmds:
       - bun install
       - bun run deps.mjs

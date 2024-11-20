@@ -6,7 +6,8 @@ package server
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/cmd/motr/routes"
+	"github.com/onsonr/sonr/cmd/motr/server/bridge"
+	"github.com/onsonr/sonr/cmd/motr/server/routes"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/pkg/core/dwn"
 )
@@ -33,7 +34,7 @@ func New(env *dwn.Environment, config *dwn.Config) Server {
 	s := &MotrServer{e: echo.New()}
 
 	s.e.Use(session.MotrMiddleware(config))
-	s.e.Use(wasmContextMiddleware)
+	s.e.Use(bridge.WasmContextMiddleware)
 
 	// Add WASM-specific routes
 	routes.RegisterServerAPI(s.e)
@@ -56,5 +57,5 @@ func (s *MotrServer) Ctx(c echo.Context) session.Context {
 }
 
 func (s *MotrServer) Serve() func() {
-	return serveFetch(s.e)
+	return bridge.ServeFetch(s.e)
 }
