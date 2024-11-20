@@ -3,7 +3,7 @@ package routes
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/cmd/motr/handlers"
+	"github.com/onsonr/sonr/cmd/motr/server/handlers"
 )
 
 func RegisterFrontendViews(e *echo.Echo) {

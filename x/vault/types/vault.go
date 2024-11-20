@@ -3,6 +3,8 @@ package types
 import (
 	"github.com/ipfs/boxo/files"
 
+	"github.com/onsonr/sonr/cmd/motr/view"
+	"github.com/onsonr/sonr/pkg/common/middleware/render"
 	"github.com/onsonr/sonr/pkg/core/dwn"
 )
 
@@ -23,5 +25,23 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.
 		SonrChainId:    chainID,
 		VaultSchema:    schema,
 	}
-	return dwn.SpawnVault(dwnCfg)
+	return spawnVault(dwnCfg)
+}
+
+// spawnVaultDirectory creates a new directory with the default files
+func spawnVault(cnfg *dwn.Config) (files.Directory, error) {
+	idxf, err := render.TemplFileNode(view.IndexFile())
+	if err != nil {
+		return nil, err
+	}
+
+	cnf, err := cnfg.MarshalJSON()
+	if err != nil {
+		return nil, err
+	}
+
+	return files.NewMapDirectory(map[string]files.Node{
+		FileNameConfigJSON: files.NewBytesFile(cnf),
+		FileNameIndexHTML:  idxf,
+	}), nil
 }

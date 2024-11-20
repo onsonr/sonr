@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	s := server.New(nil)
+	s := server.New()
 	s.Serve()
 }

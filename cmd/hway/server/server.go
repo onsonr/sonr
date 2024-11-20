@@ -8,15 +8,12 @@ import (
 	"github.com/syumai/workers"
 
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	"github.com/onsonr/sonr/pkg/core/dwn"
 )
 
 // Server is the interface that wraps the Serve function.
 type Server interface {
 	Ctx(c echo.Context) session.Context
 	Serve()
-
-	loadEnv(e *dwn.Environment) Server
 }
 
 type HwayServer struct {
@@ -29,7 +26,7 @@ type HwayServer struct {
 	IsDev          bool
 }
 
-func New(env *dwn.Environment) Server {
+func New() Server {
 	s := &HwayServer{e: echo.New()}
 
 	s.e.Use(session.HwayMiddleware())
@@ -37,15 +34,6 @@ func New(env *dwn.Environment) Server {
 	// Add WASM-specific routes
 	RegisterGatewayAPI(s.e)
 	RegisterFrontendViews(s.e)
-	return s.loadEnv(env)
-}
-
-func (s *HwayServer) loadEnv(e *dwn.Environment) Server {
-	s.WasmPath = e.WasmPath
-	s.WasmExecPath = e.WasmExecPath
-	s.HTTPServerPath = e.HttpserverPath
-	s.CacheVersion = e.CacheVersion
-	s.IsDev = e.IsDevelopment
 	return s
 }
 
