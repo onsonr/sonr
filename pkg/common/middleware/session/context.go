@@ -5,10 +5,10 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/pkg/common/types"
+	"github.com/onsonr/sonr/pkg/common"
 )
 
-type Context = types.SessionCtx
+type Context = common.SessionCtx
 
 // Get returns the session.Context from the echo context.
 func Get(c echo.Context) (Context, error) {

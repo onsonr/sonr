@@ -1,4 +1,4 @@
-package types
+package common
 
 import (
 	"encoding/base64"
@@ -6,6 +6,8 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
+
+	models "github.com/onsonr/sonr/pkg/common/types"
 )
 
 var (
@@ -23,9 +25,9 @@ type SessionCtx interface {
 	LoginOptions(credentials []CredDescriptor) *LoginOptions
 	RegisterOptions(subject string) *RegisterOptions
 
-	ClientConfig() *ClientConfig
-	UserAgent() *UserAgent
-	VaultDetails() *VaultDetails
+	ClientConfig() *models.ClientConfig
+	UserAgent() *models.UserAgent
+	VaultDetails() *models.VaultDetails
 }
 
 type (

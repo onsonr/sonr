@@ -3,18 +3,19 @@ package session
 import (
 	"github.com/labstack/echo/v4"
 
-	commonv1 "github.com/onsonr/sonr/pkg/common/types"
+	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
 	echo.Context
 
-	role   commonv1.PeerRole
-	client *commonv1.ClientConfig
-	peer   *commonv1.PeerInfo
-	user   *commonv1.UserAgent
-	vault  *commonv1.VaultDetails
+	role   common.PeerRole
+	client *types.ClientConfig
+	peer   *types.PeerInfo
+	user   *types.UserAgent
+	vault  *types.VaultDetails
 }
 
 // initHTTPContext loads the headers from the request.
@@ -28,7 +29,7 @@ func initHTTPContext(c echo.Context) *HTTPContext {
 		user:    extractUserAgent(c),
 	}
 
-	if ok := cc.role.Is(commonv1.RoleMotr); ok {
+	if ok := cc.role.Is(common.RoleMotr); ok {
 		cc.vault, err = extractConfigVault(c)
 		if err != nil {
 			c.Logger().Error(err)
@@ -46,7 +47,7 @@ func loadHTTPContext(cc *HTTPContext) *HTTPContext {
 	cc.peer = extractPeerInfo(cc.Context)
 	cc.user = extractUserAgent(cc.Context)
 
-	if ok := cc.role.Is(commonv1.RoleMotr); ok {
+	if ok := cc.role.Is(common.RoleMotr); ok {
 		cc.vault, err = extractConfigVault(cc.Context)
 		if err != nil {
 			cc.Logger().Error(err)
@@ -60,17 +61,17 @@ func (s *HTTPContext) ID() string {
 	return s.peer.Id
 }
 
-func (s *HTTPContext) LoginOptions(credentials []commonv1.CredDescriptor) *commonv1.LoginOptions {
-	ch, _ := commonv1.Base64Decode(s.peer.Challenge)
-	return &commonv1.LoginOptions{
+func (s *HTTPContext) LoginOptions(credentials []common.CredDescriptor) *common.LoginOptions {
+	ch, _ := common.Base64Decode(s.peer.Challenge)
+	return &common.LoginOptions{
 		Challenge:          ch,
 		Timeout:            10000,
 		AllowedCredentials: credentials,
 	}
 }
 
-func (s *HTTPContext) RegisterOptions(subject string) *commonv1.RegisterOptions {
-	ch, _ := commonv1.Base64Decode(s.peer.Challenge)
+func (s *HTTPContext) RegisterOptions(subject string) *common.RegisterOptions {
+	ch, _ := common.Base64Decode(s.peer.Challenge)
 	opts := baseRegisterOptions()
 	opts.Challenge = ch
 	opts.User = buildUserEntity(subject)
@@ -78,16 +79,16 @@ func (s *HTTPContext) RegisterOptions(subject string) *commonv1.RegisterOptions 
 }
 
 // Address returns the sonr address from the cookies.
-func (s *HTTPContext) ClientConfig() *commonv1.ClientConfig {
+func (s *HTTPContext) ClientConfig() *types.ClientConfig {
 	return s.client
 }
 
 // IPFSGateway returns the IPFS gateway URL from the headers.
-func (s *HTTPContext) UserAgent() *commonv1.UserAgent {
+func (s *HTTPContext) UserAgent() *types.UserAgent {
 	return s.user
 }
 
 // ChainID returns the chain ID from the headers.
-func (s *HTTPContext) VaultDetails() *commonv1.VaultDetails {
+func (s *HTTPContext) VaultDetails() *types.VaultDetails {
 	return s.vault
 }

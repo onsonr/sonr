@@ -5,9 +5,9 @@ import (
 
 	"github.com/labstack/echo/v4"
 
+	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
-	commonv1 "github.com/onsonr/sonr/pkg/common/types"
 	"github.com/onsonr/sonr/pkg/core/dwn"
 )
 
@@ -15,7 +15,7 @@ import (
 func HwayMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := injectSession(c, commonv1.RoleHway)
+			cc := injectSession(c, common.RoleHway)
 			return next(cc)
 		}
 	}
@@ -29,7 +29,7 @@ func MotrMiddleware(config *dwn.Config) echo.MiddlewareFunc {
 			if err != nil {
 				return err
 			}
-			cc := injectSession(c, commonv1.RoleMotr)
+			cc := injectSession(c, common.RoleMotr)
 			return next(cc)
 		}
 	}
@@ -54,7 +54,7 @@ func injectConfig(c echo.Context, config *dwn.Config) error {
 }
 
 // injectSession returns the session injectSession from the cookies.
-func injectSession(c echo.Context, role commonv1.PeerRole) *HTTPContext {
+func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
 	cookie.Write(c, cookie.SessionRole, role.String())
 	err := loadOrGenKsuid(c)
 	if err != nil {

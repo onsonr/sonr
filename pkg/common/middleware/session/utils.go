@@ -10,6 +10,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/segmentio/ksuid"
 
+	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	"github.com/onsonr/sonr/pkg/common/types"
@@ -106,9 +107,9 @@ func extractConfigVault(c echo.Context) (*types.VaultDetails, error) {
 	}, nil
 }
 
-func extractPeerRole(c echo.Context) types.PeerRole {
+func extractPeerRole(c echo.Context) common.PeerRole {
 	r, _ := cookie.Read(c, cookie.SessionRole)
-	return types.PeerRole(r)
+	return common.PeerRole(r)
 }
 
 func extractPeerInfo(c echo.Context) *types.PeerInfo {
@@ -118,7 +119,7 @@ func extractPeerInfo(c echo.Context) *types.PeerInfo {
 	chalRaw, _ := cookie.ReadBytes(c, cookie.SessionChallenge)
 	chal.UnmarshalJSON(chalRaw)
 
-	return &types.PeerInfo{Id: id, Challenge: types.Base64Encode(chal)}
+	return &types.PeerInfo{Id: id, Challenge: common.Base64Encode(chal)}
 }
 
 func extractBrowserInfo(c echo.Context) *types.BrowserInfo {
@@ -184,7 +185,7 @@ func unknownBrowser() *types.BrowserInfo {
 }
 
 func validBrowser(name string) bool {
-	return name != types.BrowserNameUnknown.String() && name != types.BrowserNameChromium.String()
+	return name != common.BrowserNameUnknown.String() && name != common.BrowserNameChromium.String()
 }
 
 // ╭───────────────────────────────────────────────────────────╮
@@ -198,7 +199,7 @@ func buildUserEntity(userID string) protocol.UserEntity {
 }
 
 // returns the base options for registering a new user without challenge or user entity.
-func baseRegisterOptions() *types.RegisterOptions {
+func baseRegisterOptions() *common.RegisterOptions {
 	return &protocol.PublicKeyCredentialCreationOptions{
 		Timeout:     kWebAuthnTimeout,
 		Attestation: protocol.PreferDirectAttestation,

@@ -1,8 +1,7 @@
 package controller
 
 import (
-	"github.com/onsonr/crypto/mpc"
-
+	"github.com/onsonr/sonr/pkg/crypto/mpc"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
@@ -18,10 +17,7 @@ func New(shares []mpc.Share) (ControllerI, error) {
 		valKs  = shares[0]
 		userKs = shares[1]
 	)
-	pb, err := valKs.PublicKey()
-	if err != nil {
-		return nil, err
-	}
+	pb := valKs.GetPublicKey()
 	sonrAddr, err := types.ComputeSonrAddr(pb)
 	if err != nil {
 		return nil, err

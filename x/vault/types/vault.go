@@ -30,7 +30,7 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.
 
 // spawnVaultDirectory creates a new directory with the default files
 func spawnVault(cnfg *dwn.Config) (files.Directory, error) {
-	idxf, err := render.TemplFileNode(view.IndexFile())
+	idxf, err := render.TemplRawBytes(view.IndexFile())
 	if err != nil {
 		return nil, err
 	}
@@ -42,6 +42,6 @@ func spawnVault(cnfg *dwn.Config) (files.Directory, error) {
 
 	return files.NewMapDirectory(map[string]files.Node{
 		FileNameConfigJSON: files.NewBytesFile(cnf),
-		FileNameIndexHTML:  idxf,
+		FileNameIndexHTML:  files.NewBytesFile(idxf),
 	}), nil
 }
