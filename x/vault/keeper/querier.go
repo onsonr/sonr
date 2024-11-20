@@ -86,7 +86,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 5. Add to IPFS and Return CID for User Claims in Gateway
-	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
+	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error adding to IPFS: %s", err.Error()))
 		return nil, types.ErrVaultAssembly.Wrap(err.Error())

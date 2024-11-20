@@ -35,6 +35,23 @@ class Config {
   vaultSchema: Schema
 }
 
+class Environment {
+  @JsonField
+  isDevelopment: Boolean
+  
+  @JsonField
+  cacheVersion: String
+  
+  @JsonField
+  httpserverPath: String
+  
+  @JsonField
+  wasmExecPath: String
+  
+  @JsonField
+  wasmPath: String
+}
+
 class Schema {
   version: Int
 

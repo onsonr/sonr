@@ -4,14 +4,16 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/pkg/core/dwn"
-	"github.com/onsonr/sonr/pkg/motr"
 )
 
-type Vault struct {
-	FS files.Node
-}
+const (
+	FileNameConfigJSON = "dwn.json"
+	FileNameIndexHTML  = "index.html"
+)
 
-func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.Schema) (*Vault, error) {
+type Vault = files.Directory
+
+func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.Schema) (Vault, error) {
 	dwnCfg := &dwn.Config{
 		MotrKeyshare:   keyshareJSON,
 		MotrAddress:    adddress,
@@ -21,11 +23,5 @@ func NewVault(keyshareJSON string, adddress string, chainID string, schema *dwn.
 		SonrChainId:    chainID,
 		VaultSchema:    schema,
 	}
-	fileMap, err := motr.NewVaultDirectory(dwnCfg)
-	if err != nil {
-		return nil, err
-	}
-	return &Vault{
-		FS: fileMap,
-	}, nil
+	return dwn.SpawnVault(dwnCfg)
 }

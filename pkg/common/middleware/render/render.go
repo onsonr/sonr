@@ -2,11 +2,14 @@ package render
 
 import (
 	"bytes"
+	"context"
 
 	"github.com/a-h/templ"
+	"github.com/ipfs/boxo/files"
 	"github.com/labstack/echo/v4"
 )
 
+// Templ renders a component to the response
 func Templ(c echo.Context, cmp templ.Component) error {
 	// Create a buffer to store the rendered HTML
 	buf := &bytes.Buffer{}
@@ -22,4 +25,26 @@ func Templ(c echo.Context, cmp templ.Component) error {
 	// Write the buffered content to the response
 	_, err = c.Response().Write(buf.Bytes())
 	return err
+}
+
+// TemplFileNode renders a component to a file node
+func TemplFileNode(cmp templ.Component) (files.Node, error) {
+	// Create a buffer to store the rendered HTML
+	dat, err := TemplRawBytes(cmp)
+	if err != nil {
+		return nil, err
+	}
+	return files.NewBytesFile(dat), nil
+}
+
+// / TemplRawBytes renders a component to a byte slice
+func TemplRawBytes(cmp templ.Component) ([]byte, error) {
+	// Create a buffer to store the rendered HTML
+	w := bytes.NewBuffer(nil)
+	err := cmp.Render(context.Background(), w)
+	if err != nil {
+		return nil, err
+	}
+	dat := w.Bytes()
+	return dat, nil
 }

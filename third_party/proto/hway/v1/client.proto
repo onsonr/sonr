@@ -1,3 +1,0 @@
-package hway.v1;
-
-option go_package = "github.com/onsonr/sonr/pkg/hway/types";
