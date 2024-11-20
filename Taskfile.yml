@@ -50,38 +50,9 @@ tasks:
   # ╰───────────────────────────────────────────────────────────╯
 
   buf:push:
-    cmds:
-      - task: buf:push:sonr
-      - task: buf:push:thirdparty
-
-  buf:deps:
-    cmds:
-      - task: buf:deps:sonr
-      - task: buf:deps:thirdparty
-
-  buf:deps:sonr:
-    internal: true
     dir: proto
     cmds:
       - buf dep update
-
-  buf:deps:thirdparty:
-    internal: true
-    dir: proto
-    cmds:
-      - buf dep update
-
-  buf:push:sonr:
-    internal: true
-    dir: proto
-    cmds:
-      - buf build
-      - buf push
-
-  buf:push:thirdparty:
-    internal: true
-    dir: proto
-    cmds:
       - buf build
       - buf push
 
@@ -91,7 +62,7 @@ tasks:
 
   pkl:build:
     cmds:
-      - pkl project package packages/*/
+      - pkl project package pkl/*/
 
   pkl:gen:
     sources:
@@ -99,6 +70,6 @@ tasks:
       - pkl/base.types/DWN.pkl
       - pkl/base.types/ORM.pkl
     cmds:
+      - rm -rf .task
       - for: sources
         cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}
-      - rm -rf .task
