@@ -1,5 +1,5 @@
 // Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
-package orm
+package models
 
 type Grant struct {
 	Id uint `pkl:"id" json:"id,omitempty" query:"id"`

@@ -1,12 +1,12 @@
 // Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
-package orm
+package models
 
 import (
-	"github.com/onsonr/sonr/pkg/common/types/orm/keyalgorithm"
-	"github.com/onsonr/sonr/pkg/common/types/orm/keycurve"
-	"github.com/onsonr/sonr/pkg/common/types/orm/keyencoding"
-	"github.com/onsonr/sonr/pkg/common/types/orm/keyrole"
-	"github.com/onsonr/sonr/pkg/common/types/orm/keytype"
+	"github.com/onsonr/sonr/pkg/common/models/keyalgorithm"
+	"github.com/onsonr/sonr/pkg/common/models/keycurve"
+	"github.com/onsonr/sonr/pkg/common/models/keyencoding"
+	"github.com/onsonr/sonr/pkg/common/models/keyrole"
+	"github.com/onsonr/sonr/pkg/common/models/keytype"
 )
 
 type DID struct {

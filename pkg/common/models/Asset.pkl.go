@@ -1,5 +1,5 @@
 // Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
-package orm
+package models
 
 type Asset struct {
 	Id string `pkl:"id" json:"id,omitempty" query:"id"`

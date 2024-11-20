@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/types/orm"
+	orm "github.com/onsonr/sonr/pkg/common/models"
 )
 
 // DefaultParams returns default module parameters.

@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/pkg/common/types/orm" }
+@go.Package { name = "github.com/onsonr/sonr/pkg/common/models" }
 
 module common.types.ORM
 

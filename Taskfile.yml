@@ -67,7 +67,7 @@ tasks:
 
   buf:deps:thirdparty:
     internal: true
-    dir: third_party/proto
+    dir: proto
     cmds:
       - buf dep update
 
@@ -80,7 +80,7 @@ tasks:
 
   buf:push:thirdparty:
     internal: true
-    dir: third_party/proto
+    dir: proto
     cmds:
       - buf build
       - buf push
@@ -95,9 +95,9 @@ tasks:
 
   pkl:gen:
     sources:
-      - third_party/pkl/packages/base.types/Ctx.pkl
-      - third_party/pkl/packages/base.types/DWN.pkl
-      - third_party/pkl/packages/base.types/ORM.pkl
+      - pkl/base.types/Ctx.pkl
+      - pkl/base.types/DWN.pkl
+      - pkl/base.types/ORM.pkl
     cmds:
       - for: sources
         cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}

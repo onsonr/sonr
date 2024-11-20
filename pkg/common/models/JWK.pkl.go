@@ -1,5 +1,5 @@
 // Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
-package orm
+package models
 
 type JWK struct {
 	Kty string `pkl:"kty" json:"kty,omitempty"`
