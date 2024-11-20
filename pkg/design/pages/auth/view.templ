@@ -1,13 +1,13 @@
 package auth
 
 import (
-	"github.com/onsonr/sonr/pkg/design/global/styles"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/design/global/styles"
 )
 
 // RegisterModal returns the Register Modal.
 templ RegisterModal(c session.Context) {
-	@styles.OpenModal(c.ID(), "Enter your account information below to create your account.") {
+	@styles.OpenModal(c.ID(), "Sign up") {
 		@registerStart()
 	}
 }
