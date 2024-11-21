@@ -11,15 +11,11 @@ import (
 
 	"github.com/onsonr/sonr/pkg/core/dwn/bridge"
 	"github.com/onsonr/sonr/pkg/core/dwn/handlers"
-	"github.com/onsonr/sonr/pkg/webapp"
 )
 
 // Server is the interface that wraps the Serve function.
 type Server interface {
-	Ctx(c echo.Context) session.Context
 	Serve() func()
-
-	loadEnv(e *dwn.Environment) Server
 }
 
 type MotrServer struct {
@@ -39,31 +35,16 @@ func New(env *dwn.Environment, config *dwn.Config) Server {
 	s.e.Use(bridge.WasmContextMiddleware)
 
 	// Add WASM-specific routes
-	registerDWNAPI(s.e)
-	webapp.RegisterVaultFrontend(s.e)
-	return s.loadEnv(env)
-}
-
-func (s *MotrServer) loadEnv(e *dwn.Environment) Server {
-	s.WasmPath = e.WasmPath
-	s.WasmExecPath = e.WasmExecPath
-	s.HTTPServerPath = e.HttpserverPath
-	s.CacheVersion = e.CacheVersion
-	s.IsDev = e.IsDevelopment
+	registerAPI(s.e)
 	return s
-}
-
-func (s *MotrServer) Ctx(c echo.Context) session.Context {
-	cc, _ := session.Get(c)
-	return cc
 }
 
 func (s *MotrServer) Serve() func() {
 	return bridge.ServeFetch(s.e)
 }
 
-// registerDWNAPI registers the Decentralized Web Node API routes.
-func registerDWNAPI(e *echo.Echo) {
+// registerAPI registers the Decentralized Web Node API routes.
+func registerAPI(e *echo.Echo) {
 	g1 := e.Group("api")
 	g1.GET("/register/:subject/start", handlers.RegisterSubjectStart)
 	g1.POST("/register/:subject/check", handlers.RegisterSubjectCheck)

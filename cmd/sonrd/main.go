@@ -15,7 +15,6 @@ func main() {
 	rootCmd := NewRootCmd()
 	rootCmd.AddCommand(cli.NewBuildTxnTUICmd())
 	rootCmd.AddCommand(cli.NewExplorerTUICmd())
-	rootCmd.AddCommand(NewHwayCmd())
 
 	if err := svrcmd.Execute(rootCmd, "", app.DefaultNodeHome); err != nil {
 		log.NewLogger(rootCmd.OutOrStderr()).Error("failure when running app", "err", err)

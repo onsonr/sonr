@@ -47,15 +47,18 @@ tasks:
     cmds:
       - go build -o build/app.wasm ./cmd/motr/main.go
 
+  build:hway:
+    cmds:
+      - go build -o build/hway ./cmd/hway/main.go
+
   # ╭──────────────────────────────────────────────────╮
   # │                  Serve Commands                  │
   # ╰──────────────────────────────────────────────────╯
 
   serve:hway:
-    dir: cmd/hway
     cmds:
-      - task: gen:design
-      - bunx wrangler dev
+      - task: build:hway
+      - ./build/hway
 
   # ╭──────────────────────────────────────────────────╮
   # │                  Deploy Commands                 │

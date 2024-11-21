@@ -1,9 +1,16 @@
 package dwn
 
 import (
+	_ "embed"
 	"encoding/json"
 	"os"
 )
+
+//go:embed index.html
+var IndexHTML []byte
+
+//go:embed sw.js
+var WorkerJS []byte
 
 const dwnJSONFileName = "dwn.json"
 
