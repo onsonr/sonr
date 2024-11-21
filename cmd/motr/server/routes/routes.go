@@ -6,10 +6,6 @@ import (
 	"github.com/onsonr/sonr/cmd/motr/server/handlers"
 )
 
-func RegisterFrontendViews(e *echo.Echo) {
-	e.GET("/", handlers.IndexFileHandler())
-}
-
 // RegisterServerAPI registers the Decentralized Web Node API routes.
 func RegisterServerAPI(e *echo.Echo) {
 	g1 := e.Group("api")

@@ -10,6 +10,7 @@ import (
 	"github.com/onsonr/sonr/cmd/motr/server/routes"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/pkg/webapp"
 )
 
 // Server is the interface that wraps the Serve function.
@@ -38,7 +39,7 @@ func New(env *dwn.Environment, config *dwn.Config) Server {
 
 	// Add WASM-specific routes
 	routes.RegisterServerAPI(s.e)
-	routes.RegisterFrontendViews(s.e)
+	webapp.RegisterVaultRoutes(s.e)
 	return s.loadEnv(env)
 }
 

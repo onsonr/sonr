@@ -1,0 +1,27 @@
+package auth
+
+import (
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/design/ui"
+)
+
+// RegisterModal returns the Register Modal.
+templ RegisterModal(c session.Context) {
+	@ui.OpenModal(c.ID(), "Sign up") {
+		@registerStart()
+	}
+}
+
+// LoginModal returns the Login Modal.
+templ LoginModal(c session.Context) {
+	@ui.OpenModal(c.ID(), "Enter your account information below to create your account.") {
+		@loginStart()
+	}
+}
+
+// AuthorizeModal returns the Authorize Modal.
+templ AuthorizeModal(c session.Context) {
+	@ui.OpenModal(c.ID(), "Enter your account information below to create your account.") {
+		@authorizeStart()
+	}
+}

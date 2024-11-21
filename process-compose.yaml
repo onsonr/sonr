@@ -21,7 +21,7 @@ processes:
   hway:
     namespace: testnet
     background: true
-    command: "task hway:dev"
+    command: "task serve:hway"
     restart: never
     max_restarts: 1
     depends:

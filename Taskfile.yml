@@ -4,67 +4,24 @@ vars:
     sh: pwd
 
 tasks:
-  hway:assets:
-    internal: true
-    cmds:
-      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
+  # ╭──────────────────────────────────────────────────╮
+  # │               Generate Commands                  │
+  # ╰──────────────────────────────────────────────────╯
 
-  hway:build:
-    dir: cmd/hway
-    env:
-      GOOS: js
-      GOARCH: wasm
-    cmds:
-      - task: hway:assets
-      - go build -o build/app.wasm main.go
-
-  hway:dev:
-    dir: cmd/hway
-    cmds:
-      - task: nebula:build
-      - bunx wrangler dev
-
-  hway:deploy:
-    dir: cmd/hway
-    cmds:
-      - task: nebula:build
-      - bunx wrangler deploy
-
-  motr:build:
-    env:
-      GOOS: js
-      GOARCH: wasm
-    cmds:
-      - go build -o build/app.wasm ./cmd/motr/main.go
-
-  nebula:build:
+  gen:design:
     dir: pkg/design
     cmds:
       - bun install
       - bun run deps.mjs
       - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
-      - templ generate
+      - task: gen:templ
 
-  # ╭───────────────────────────────────────────────────────────╮
-  # │                  Registration Components                  │
-  # ╰───────────────────────────────────────────────────────────╯
-
-  buf:push:
-    dir: proto
+  gen:hway:
+    internal: true
     cmds:
-      - buf dep update
-      - buf build
-      - buf push
+      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
 
-  # ╭───────────────────────────────────────────────────────────╮
-  # │                  Registration Components                  │
-  # ╰───────────────────────────────────────────────────────────╯
-
-  pkl:build:
-    cmds:
-      - pkl project package pkl/*/
-
-  pkl:gen:
+  gen:pkl:
     sources:
       - pkl/base.types/Ctx.pkl
       - pkl/base.types/DWN.pkl
@@ -73,3 +30,58 @@ tasks:
       - rm -rf .task
       - for: sources
         cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}
+
+  gen:templ:
+    cmds:
+      - templ generate
+
+  # ╭──────────────────────────────────────────────────╮
+  # │                  Build Commands                  │
+  # ╰──────────────────────────────────────────────────╯
+
+  build:hway:
+    dir: cmd/hway
+    env:
+      GOOS: js
+      GOARCH: wasm
+    cmds:
+      - task: gen:hway
+      - go build -o build/app.wasm main.go
+
+  build:motr:
+    env:
+      GOOS: js
+      GOARCH: wasm
+    cmds:
+      - go build -o build/app.wasm ./cmd/motr/main.go
+
+  # ╭──────────────────────────────────────────────────╮
+  # │                  Serve Commands                  │
+  # ╰──────────────────────────────────────────────────╯
+
+  serve:hway:
+    dir: cmd/hway
+    cmds:
+      - task: gen:design
+      - bunx wrangler dev
+
+  # ╭──────────────────────────────────────────────────╮
+  # │                  Deploy Commands                 │
+  # ╰──────────────────────────────────────────────────╯
+
+  deploy:buf:
+    dir: proto
+    cmds:
+      - buf dep update
+      - buf build
+      - buf push
+
+  deploy:hway:
+    dir: cmd/hway
+    cmds:
+      - task: gen:design
+      - bunx wrangler deploy
+
+  deploy:pkl:
+    cmds:
+      - pkl project package pkl/*/

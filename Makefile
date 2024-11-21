@@ -289,22 +289,6 @@ sh-testnet: mod-tidy
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
-
-###############################################################################
-###                             custom generation                           ###
-###############################################################################
-
-.PHONY: templ-gen pkl-gen
-
-templ-gen:
-	@echo "(templ) Generating templ files"
-	templ generate
-
-pkl-gen:
-	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/configs.v1/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/models.v1/ORM.pkl
-
 ###############################################################################
 ###                                     help                                ###
 ###############################################################################

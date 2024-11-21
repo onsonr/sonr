@@ -3,10 +3,10 @@
 package main
 
 import (
-	"github.com/onsonr/sonr/cmd/hway/server"
+	"github.com/onsonr/sonr/pkg/gateway"
 )
 
 func main() {
-	s := server.New()
+	s := gateway.New()
 	s.Serve()
 }
