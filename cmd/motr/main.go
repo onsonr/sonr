@@ -4,8 +4,8 @@
 package main
 
 import (
-	"github.com/onsonr/sonr/cmd/motr/server"
 	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/pkg/core/dwn/server"
 )
 
 var (

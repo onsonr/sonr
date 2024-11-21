@@ -13,7 +13,7 @@ tasks:
     cmds:
       - bun install
       - bun run deps.mjs
-      - bunx tailwindcss -i ./global/styles/globals.css -o ./assets/css/styles.css
+      - bunx tailwindcss -i ./globals.css -o ./assets/css/styles.css
       - task: gen:templ
 
   gen:hway:

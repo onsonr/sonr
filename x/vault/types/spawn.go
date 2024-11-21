@@ -1,10 +1,11 @@
-package vault
+package types
 
 import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/pkg/common/middleware/render"
 	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/pkg/webapp/vault"
 )
 
 const (
@@ -29,7 +30,7 @@ func SpawnVault(keyshareJSON string, adddress string, chainID string, schema *dw
 
 // spawnVaultDirectory creates a new directory with the default files
 func setupVaultDirectory(cnfg *dwn.Config) (files.Directory, error) {
-	idxf, err := render.TemplRawBytes(IndexFile())
+	idxf, err := render.TemplRawBytes(vault.IndexFile())
 	if err != nil {
 		return nil, err
 	}

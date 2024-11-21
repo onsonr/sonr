@@ -30,7 +30,7 @@ func New() Server {
 	s.e.Use(session.HwayMiddleware())
 
 	// Add WASM-specific routes
-	webapp.RegisterLandingRoutes(s.e)
+	webapp.RegisterLandingFrontend(s.e)
 	return s
 }
 

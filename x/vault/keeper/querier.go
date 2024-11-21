@@ -8,7 +8,6 @@ import (
 	sdk "github.com/cosmos/cosmos-sdk/types"
 
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
-	"github.com/onsonr/sonr/pkg/webapp/vault"
 	"github.com/onsonr/sonr/x/did/controller"
 	"github.com/onsonr/sonr/x/vault/types"
 )
@@ -80,7 +79,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 4. Create a new vault PWA for service-worker
-	v, err := vault.SpawnVault("", con.SonrAddress(), con.ChainID(), sch)
+	v, err := types.SpawnVault("", con.SonrAddress(), con.ChainID(), sch)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
