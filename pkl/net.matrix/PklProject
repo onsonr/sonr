@@ -13,9 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //===----------------------------------------------------------------------===//
-/// Modules for describing [OpenAPI](https://www.openapis.org/) v3.x
+/// Configuration files for integrating the Matrix service
 amends "../basePklProject.pkl"
 
 package {
+  name = "net.matrix"
   version = "0.0.1"
 }

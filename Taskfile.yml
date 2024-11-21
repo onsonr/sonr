@@ -4,6 +4,13 @@ vars:
     sh: pwd
 
 tasks:
+  clean:
+    internal: true
+    cmds:
+      - rm -rf .task
+      - rm -rf pkg/design/node_modules
+      - rm -rf .out
+
   # ╭──────────────────────────────────────────────────╮
   # │               Generate Commands                  │
   # ╰──────────────────────────────────────────────────╯
@@ -12,14 +19,9 @@ tasks:
     dir: pkg/design
     cmds:
       - bun install
-      - bun run deps.mjs
       - bunx tailwindcss -i ./globals.css -o ./assets/css/styles.css
+      - task: clean
       - task: gen:templ
-
-  gen:hway:
-    internal: true
-    cmds:
-      - go run github.com/syumai/workers/cmd/workers-assets-gen -mode=go -o ./cmd/hway/build
 
   gen:pkl:
     sources:
@@ -27,9 +29,9 @@ tasks:
       - pkl/base.types/DWN.pkl
       - pkl/base.types/ORM.pkl
     cmds:
-      - rm -rf .task
       - for: sources
         cmd: go run github.com/apple/pkl-go/cmd/pkl-gen-go {{ .ITEM }}
+      - task: clean
 
   gen:templ:
     cmds:
@@ -38,16 +40,6 @@ tasks:
   # ╭──────────────────────────────────────────────────╮
   # │                  Build Commands                  │
   # ╰──────────────────────────────────────────────────╯
-
-  build:hway:
-    dir: cmd/hway
-    env:
-      GOOS: js
-      GOARCH: wasm
-    cmds:
-      - task: gen:hway
-      - go build -o build/app.wasm main.go
-
   build:motr:
     env:
       GOOS: js
@@ -68,13 +60,12 @@ tasks:
   # ╭──────────────────────────────────────────────────╮
   # │                  Deploy Commands                 │
   # ╰──────────────────────────────────────────────────╯
-
   deploy:buf:
     dir: proto
     cmds:
-      - buf dep update
-      - buf build
-      - buf push
+      - bunx buf dep update
+      - bunx buf build
+      - bunx buf push
 
   deploy:hway:
     dir: cmd/hway
@@ -84,4 +75,10 @@ tasks:
 
   deploy:pkl:
     cmds:
-      - pkl project package pkl/*/
+      - bunx pkl project package pkl/*/
+      - |
+        for dir in .out/*/; do
+          folder=$(basename "$dir")
+          rclone copy "$dir" "r2:pkljar/$folder"
+        done
+      - task: clean

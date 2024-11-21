@@ -94,7 +94,6 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
