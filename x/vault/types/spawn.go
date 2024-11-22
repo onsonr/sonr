@@ -4,6 +4,7 @@ import (
 	"github.com/ipfs/boxo/files"
 
 	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/x/vault/types/static"
 )
 
 const (
@@ -35,7 +36,7 @@ func SpawnVault(keyshareJSON string, adddress string, chainID string, schema *dw
 func setupVaultDirectory(cfgBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
 		kFileNameConfigJSON: files.NewBytesFile(cfgBz),
-		kFileNameIndexHTML:  files.NewBytesFile(dwn.IndexHTML),
-		kFileNameWorkerJS:   files.NewBytesFile(dwn.WorkerJS),
+		kFileNameIndexHTML:  files.NewBytesFile(static.IndexHTML),
+		kFileNameWorkerJS:   files.NewBytesFile(static.WorkerJS),
 	})
 }

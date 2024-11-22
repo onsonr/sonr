@@ -4,7 +4,26 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/ucan-wg/go-ucan"
+)
+
+type (
+	Token  = ucan.Token
+	Claims = ucan.Claims
+	Proof  = ucan.Proof
+
+	Attenuations = ucan.Attenuations
+	Fact         = ucan.Fact
+)
+
+var (
+	UCANVersion    = ucan.UCANVersion
+	UCANVersionKey = ucan.UCANVersionKey
+	PrfKey         = ucan.PrfKey
+	FctKey         = ucan.FctKey
+	AttKey         = ucan.AttKey
+	CapKey         = ucan.CapKey
 )
 
 type KeyshareSource interface {
@@ -14,85 +33,81 @@ type KeyshareSource interface {
 type keyshareSource struct {
 	userShare Share
 	valShare  Share
+
+	issuerDID string
 }
 
-func KeyshareSetFromArray(arr []Share) (KeyshareSource, error) {
+func KeyshareSourceFromArray(arr []Share) (KeyshareSource, error) {
 	if len(arr) != 2 {
 		return nil, fmt.Errorf("invalid keyshare array length")
+	}
+	iss, err := ComputeIssuerDID(arr[0].GetPublicKey())
+	if err != nil {
+		return nil, err
 	}
 	return keyshareSource{
 		userShare: arr[0],
 		valShare:  arr[1],
+		issuerDID: iss,
 	}, nil
 }
 
-func (k keyshareSource) NewOriginToken(audienceDID string, att ucan.Attenuations, fct []ucan.Fact, notBefore, expires time.Time) (*ucan.Token, error) {
-	// Create a new token with the user's keyshare
-	token := ucan.NewToken()
-	token.Issuer = k.userShare.GetPublicKey()
-	token.Audience = []byte(audienceDID)
-	token.Attenuations = att
-	token.Facts = fct
-	token.NotBefore = notBefore
-	token.Expiration = expires
-
-	// Sign the token using MPC
-	signFunc, err := k.userShare.SignFunc(token.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create sign function: %w", err)
-	}
-
-	valSignFunc, err := k.valShare.SignFunc(token.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create validator sign function: %w", err)
-	}
-
-	sig, err := RunSignProtocol(valSignFunc, signFunc)
-	if err != nil {
-		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
-	}
-
-	sigBytes, err := SerializeSignature(sig)
-	if err != nil {
-		return nil, fmt.Errorf("failed to serialize signature: %w", err)
-	}
-
-	token.Signature = sigBytes
-	return token, nil
+func (k keyshareSource) NewOriginToken(audienceDID string, att Attenuations, fct []Fact, notBefore, expires time.Time) (*ucan.Token, error) {
+	return k.newToken(audienceDID, nil, att, fct, notBefore, expires)
 }
 
-func (k keyshareSource) NewAttenuatedToken(parent *ucan.Token, audienceDID string, att ucan.Attenuations, fct []ucan.Fact, notBefore, expires time.Time) (*ucan.Token, error) {
-	// Create attenuated token
-	token := ucan.NewToken()
-	token.Issuer = k.userShare.GetPublicKey()
-	token.Audience = []byte(audienceDID)
-	token.Attenuations = att
-	token.Facts = fct
-	token.NotBefore = notBefore
-	token.Expiration = expires
-	token.Proof = parent
+func (k keyshareSource) NewAttenuatedToken(parent *Token, audienceDID string, att ucan.Attenuations, fct []ucan.Fact, nbf, exp time.Time) (*Token, error) {
+	if !parent.Attenuations.Contains(att) {
+		return nil, fmt.Errorf("scope of ucan attenuations must be less than it's parent")
+	}
+	return k.newToken(audienceDID, append(parent.Proofs, Proof(parent.Raw)), att, fct, nbf, exp)
+}
 
-	// Sign the token using MPC
-	signFunc, err := k.userShare.SignFunc(token.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create sign function: %w", err)
+func (k keyshareSource) newToken(audienceDID string, prf []Proof, att Attenuations, fct []Fact, nbf, exp time.Time) (*ucan.Token, error) {
+	t := jwt.New(NewMPCSigningMethod("MPC256", k))
+
+	// if _, err := did.Parse(audienceDID); err != nil {
+	// 	return nil, fmt.Errorf("invalid audience DID: %w", err)
+	// }
+
+	t.Header[UCANVersionKey] = UCANVersion
+
+	var (
+		nbfUnix int64
+		expUnix int64
+	)
+
+	if !nbf.IsZero() {
+		nbfUnix = nbf.Unix()
+	}
+	if !exp.IsZero() {
+		expUnix = exp.Unix()
 	}
 
-	valSignFunc, err := k.valShare.SignFunc(token.Bytes())
-	if err != nil {
-		return nil, fmt.Errorf("failed to create validator sign function: %w", err)
+	// set our claims
+	t.Claims = &Claims{
+		StandardClaims: &jwt.StandardClaims{
+			Issuer:    k.issuerDID,
+			Audience:  audienceDID,
+			NotBefore: nbfUnix,
+			// set the expire time
+			// see http://tools.ietf.org/html/draft-ietf-oauth-json-web-token-20#section-4.1.4
+			ExpiresAt: expUnix,
+		},
+		Attenuations: att,
+		Facts:        fct,
+		Proofs:       prf,
 	}
 
-	sig, err := RunSignProtocol(valSignFunc, signFunc)
+	raw, err := t.SignedString(nil)
 	if err != nil {
-		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
+		return nil, err
 	}
 
-	sigBytes, err := SerializeSignature(sig)
-	if err != nil {
-		return nil, fmt.Errorf("failed to serialize signature: %w", err)
-	}
-
-	token.Signature = sigBytes
-	return token, nil
+	return &Token{
+		Raw:          raw,
+		Attenuations: att,
+		Facts:        fct,
+		Proofs:       prf,
+	}, nil
 }

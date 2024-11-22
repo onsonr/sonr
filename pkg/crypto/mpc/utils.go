@@ -5,10 +5,27 @@ import (
 	"fmt"
 	"math/big"
 
+	"github.com/cosmos/cosmos-sdk/types/bech32"
 	"github.com/onsonr/sonr/pkg/crypto/core/curves"
 	"github.com/onsonr/sonr/pkg/crypto/core/protocol"
 	"golang.org/x/crypto/sha3"
 )
+
+func ComputeIssuerDID(pk []byte) (string, error) {
+	addr, err := ComputeSonrAddr(pk)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("did:sonr:%s", addr), nil
+}
+
+func ComputeSonrAddr(pk []byte) (string, error) {
+	sonrAddr, err := bech32.ConvertAndEncode("idx", pk)
+	if err != nil {
+		return "", err
+	}
+	return sonrAddr, nil
+}
 
 func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
 	var (

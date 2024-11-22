@@ -4,16 +4,18 @@ import (
 	"crypto/sha256"
 	"encoding/base64"
 	"fmt"
+
+	"github.com/golang-jwt/jwt"
 )
 
 // MPCSigningMethod implements the SigningMethod interface for MPC-based signing
 type MPCSigningMethod struct {
 	Name string
-	ks   KeyshareSource
+	ks   keyshareSource
 }
 
 // NewMPCSigningMethod creates a new MPC signing method with the given keyshare source
-func NewMPCSigningMethod(name string, ks KeyshareSource) *MPCSigningMethod {
+func NewMPCSigningMethod(name string, ks keyshareSource) *MPCSigningMethod {
 	return &MPCSigningMethod{
 		Name: name,
 		ks:   ks,
@@ -87,7 +89,7 @@ func (m *MPCSigningMethod) Sign(signingString string, key interface{}) (string, 
 
 func init() {
 	// Register the MPC signing method
-	RegisterSigningMethod("MPC256", func() SigningMethod {
+	jwt.RegisterSigningMethod("MPC256", func() jwt.SigningMethod {
 		return &MPCSigningMethod{
 			Name: "MPC256",
 		}
