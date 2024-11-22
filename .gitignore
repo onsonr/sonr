@@ -16,6 +16,7 @@ dist
 .devon*
 **/.DS_Store
 .task
+.air.toml
 .wrangler
 
 # Output of the go coverage tool

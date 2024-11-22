@@ -10,10 +10,10 @@ delay = 1000
 exclude_dir = ["assets", "tmp", "vendor", "testdata"]
 exclude_file = []
 exclude_regex = ["_test.go", "_templ.go"]
-exclude_unchanged = false
+exclude_unchanged = true
 follow_symlink = false
 full_bin = ""
-include_dir = []
+include_dir = ["pkg/webapp"]
 include_ext = ["go", "tpl", "templ", "html"]
 include_file = []
 kill_delay = "0s"
@@ -42,10 +42,10 @@ time = false
 clean_on_exit = false
 
 [proxy]
-app_port = 0
+app_port = 3000
 enabled = false
-proxy_port = 0
+proxy_port = 8787
 
 [screen]
-clear_on_rebuild = false
+clear_on_rebuild = true
 keep_scroll = true

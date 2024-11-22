@@ -18,7 +18,7 @@ templ RegisterModal() {
 
 // RedirectModal returns the Modal with a QR code to scan.
 templ RedirectModal() {
-	@ui.OpenModal(session.GetData(ctx).Id, "Continue on your Phone") {
+	@ui.FullScreenModal() {
 		<wa-qr-code value="https://shoelace.style/" error-correction="Q"></wa-qr-code>
 	}
 }
