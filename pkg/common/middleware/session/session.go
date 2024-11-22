@@ -47,16 +47,8 @@ func initHTTPContext(c echo.Context) *HTTPContext {
 	clc := extractConfigClient(c)
 	ua := extractUserAgent(c)
 
-	// Create a new context with the base context and the session ID
+	// Create a new context with the base context
 	baseCtx := c.Request().Context()
-	baseCtx = WithSessionID(baseCtx, pi.Id)
-	baseCtx = WithHasAuthorization(baseCtx, header.Exists(c, header.Authorization))
-	baseCtx = WithIsMobile(baseCtx, ua.IsMobile)
-	baseCtx = WithChainID(baseCtx, clc.ChainID)
-	baseCtx = WithIPFSHost(baseCtx, clc.IpfsHost)
-	baseCtx = WithSonrAPI(baseCtx, clc.SonrAPIURL)
-	baseCtx = WithSonrRPC(baseCtx, clc.SonrRPCURL)
-	baseCtx = WithSonrWS(baseCtx, clc.SonrWSURL)
 
 	// Add the user handle to the context if it exists
 	if ok := cookie.Exists(c, cookie.UserHandle); ok {
