@@ -11,12 +11,12 @@ import (
 	"golang.org/x/crypto/sha3"
 )
 
-func ComputeIssuerDID(pk []byte) (string, error) {
+func ComputeIssuerDID(pk []byte) (string, string, error) {
 	addr, err := ComputeSonrAddr(pk)
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
-	return fmt.Sprintf("did:sonr:%s", addr), nil
+	return fmt.Sprintf("did:sonr:%s", addr), addr, nil
 }
 
 func ComputeSonrAddr(pk []byte) (string, error) {

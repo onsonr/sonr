@@ -30,6 +30,7 @@ type keyshareSource struct {
 	userShare Share
 	valShare  Share
 
+	addr      string
 	issuerDID string
 }
 

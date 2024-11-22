@@ -10,24 +10,31 @@ import (
 type KeyshareSource interface {
 	ucan.Source
 
+	Address() string
 	Issuer() string
 	DefaultOriginToken() (*Token, error)
-	GetTokenParser() *ucan.TokenParser
+	TokenParser() *ucan.TokenParser
 }
 
 func KeyshareSourceFromArray(arr []Share) (KeyshareSource, error) {
 	if len(arr) != 2 {
 		return nil, fmt.Errorf("invalid keyshare array length")
 	}
-	iss, err := ComputeIssuerDID(arr[0].GetPublicKey())
+	iss, addr, err := ComputeIssuerDID(arr[0].GetPublicKey())
 	if err != nil {
 		return nil, err
 	}
 	return keyshareSource{
 		userShare: arr[0],
 		valShare:  arr[1],
+		addr:      addr,
 		issuerDID: iss,
 	}, nil
+}
+
+// Address returns the address of the keyshare
+func (k keyshareSource) Address() string {
+	return k.addr
 }
 
 // Issuer returns the DID of the issuer of the keyshare
@@ -37,18 +44,14 @@ func (k keyshareSource) Issuer() string {
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
 func (k keyshareSource) DefaultOriginToken() (*Token, error) {
-	accountAddr, err := ComputeSonrAddr(k.userShare.GetPublicKey())
-	if err != nil {
-		return nil, err
-	}
 	caps := NewSmartAccountCapabilities()
-	att := CreateSmartAccountAttenuations(caps, accountAddr)
+	att := CreateSmartAccountAttenuations(caps, k.addr)
 	zero := time.Time{}
 	return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
 }
 
-// GetTokenParser returns a token parser that can be used to parse tokens
-func (k keyshareSource) GetTokenParser() *ucan.TokenParser {
+// TokenParser returns a token parser that can be used to parse tokens
+func (k keyshareSource) TokenParser() *ucan.TokenParser {
 	caps := NewSmartAccountCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
