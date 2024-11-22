@@ -10,10 +10,11 @@ import (
 	"github.com/onsonr/sonr/pkg/common/types"
 )
 
-// HTTPContext is the context for DWN endpoints.
+// HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	role common.PeerRole
+	role        common.PeerRole
+	sessionData *types.Session
 }
 
 // Ensure HTTPContext implements context.Context
@@ -35,13 +36,14 @@ func (s *HTTPContext) Value(key interface{}) interface{} {
 
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
-	// Create HTTPContext with all the extracted data
-	WithData(c.Request().Context(), injectSessionData(c))
+	sessionData := injectSessionData(c)
 	cc := &HTTPContext{
-		Context: c,
-		role:    common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
+		Context:     c,
+		role:        common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
+		sessionData: sessionData,
 	}
-	// Set the HTTPContext in the context
+	// Set the session data in both contexts
+	c.SetRequest(c.Request().WithContext(WithData(c.Request().Context(), sessionData)))
 	return cc
 }
 
@@ -67,5 +69,5 @@ func (s *HTTPContext) RegisterOptions(subject string) *common.RegisterOptions {
 }
 
 func (s *HTTPContext) GetData() *types.Session {
-	return GetData(s.Context.Request().Context())
+	return s.sessionData
 }

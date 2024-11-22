@@ -23,20 +23,25 @@ type Context = common.SessionCtx
 func Get(c echo.Context) (Context, error) {
 	ctx, ok := c.(*HTTPContext)
 	if !ok {
-		return nil, echo.NewHTTPError(http.StatusInternalServerError, "DWN Context not found")
+		return nil, echo.NewHTTPError(http.StatusInternalServerError, "Session Context not found")
 	}
 	return ctx, nil
 }
 
-// WithHTTPContext sets the HTTP context in the context
+// WithData sets the session data in the context
 func WithData(ctx context.Context, data *types.Session) context.Context {
 	return context.WithValue(ctx, DataContextKey, data)
 }
 
-// GetData gets the HTTP context from the context
-func GetData(ctx context.Context) *types.Session {
-	if httpCtx, ok := ctx.Value(DataContextKey).(*types.Session); ok {
-		return httpCtx
+// GetData gets the session data from any context type
+func GetData(ctx interface{}) *types.Session {
+	switch c := ctx.(type) {
+	case *HTTPContext:
+		return c.sessionData
+	case context.Context:
+		if httpCtx, ok := c.Value(DataContextKey).(*types.Session); ok {
+			return httpCtx
+		}
 	}
 	return nil
 }
