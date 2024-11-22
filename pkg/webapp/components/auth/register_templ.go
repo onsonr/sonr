@@ -99,7 +99,15 @@ func RedirectModal() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<wa-qr-code value=\"https://shoelace.style/\" error-correction=\"Q\"></wa-qr-code>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"relative text-center\"><div class=\"flex flex-col mb-6 space-y-2\"><h1 class=\"text-2xl font-semibold tracking-tight\">Continue with your phone</h1><p class=\"text-sm text-neutral-500\">Creating a Sonr Vault requires a smartphone with W3C compliant biometrics enabled.</p></div><form onsubmit=\"event.preventDefault();\" class=\"space-y-2\"><input type=\"phone\" placeholder=\"+1 (555)-555-5555\" class=\"flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50\"> <button type=\"button\" class=\"inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none\">Reserve my Spot</button>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ui.Separator("Or Scan QR Code").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<wa-qr-code size=\"140\" value=\"https://shoelace.style/\" error-correction=\"Q\"></wa-qr-code></form></div><p class=\"mt-6 text-sm text-center text-neutral-500\">Already have an account? <a href=\"#_\" class=\"relative font-medium text-blue-600 group\"><span>Login here</span><span class=\"absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600\"></span></a></p><p class=\"px-8 mt-1 text-sm text-center text-neutral-500\">By continuing, you agree to our <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/terms\">Terms</a> and <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/privacy\">Policy</a>.</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
