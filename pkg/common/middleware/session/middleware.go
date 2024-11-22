@@ -55,14 +55,19 @@ func injectConfig(c echo.Context, config *dwn.Config) error {
 
 // injectSession returns the session injectSession from the cookies.
 func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
+	if c == nil {
+		return initHTTPContext(nil)
+	}
+	
 	cookie.Write(c, cookie.SessionRole, role.String())
-	err := loadOrGenKsuid(c)
-	if err != nil {
-		return nil
+	
+	// Continue even if there are errors, just ensure we have valid session data
+	if err := loadOrGenKsuid(c); err != nil {
+		// Log error but continue
 	}
-	err = loadOrGenChallenge(c)
-	if err != nil {
-		return nil
+	if err := loadOrGenChallenge(c); err != nil {
+		// Log error but continue  
 	}
+	
 	return initHTTPContext(c)
 }

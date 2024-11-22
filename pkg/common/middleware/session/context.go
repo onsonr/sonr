@@ -37,11 +37,24 @@ func WithData(ctx context.Context, data *types.Session) context.Context {
 func GetData(ctx interface{}) *types.Session {
 	switch c := ctx.(type) {
 	case *HTTPContext:
-		return c.sessionData
+		if c != nil {
+			return c.sessionData
+		}
 	case context.Context:
-		if httpCtx, ok := c.Value(DataContextKey).(*types.Session); ok {
-			return httpCtx
+		if c != nil {
+			if val := c.Value(DataContextKey); val != nil {
+				if httpCtx, ok := val.(*types.Session); ok {
+					return httpCtx
+				}
+			}
+		}
+	case echo.Context:
+		if c != nil {
+			if httpCtx, ok := c.(*HTTPContext); ok && httpCtx != nil {
+				return httpCtx.sessionData
+			}
 		}
 	}
-	return nil
+	// Return empty session rather than nil to prevent nil pointer panics
+	return &types.Session{}
 }

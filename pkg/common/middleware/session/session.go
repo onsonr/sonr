@@ -36,12 +36,23 @@ func (s *HTTPContext) Value(key interface{}) interface{} {
 
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
+	if c == nil {
+		return &HTTPContext{
+			sessionData: &types.Session{},
+		}
+	}
+	
 	sessionData := injectSessionData(c)
+	if sessionData == nil {
+		sessionData = &types.Session{}
+	}
+	
 	cc := &HTTPContext{
 		Context:     c,
 		role:        common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
 		sessionData: sessionData,
 	}
+	
 	// Set the session data in both contexts
 	c.SetRequest(c.Request().WithContext(WithData(c.Request().Context(), sessionData)))
 	return cc
