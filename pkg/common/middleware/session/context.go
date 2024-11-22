@@ -14,7 +14,7 @@ type contextKey string
 
 // Context keys
 const (
-	DataContextKey contextKey = "http_context"
+	DataContextKey contextKey = "http_session_data"
 )
 
 type Context = common.SessionCtx

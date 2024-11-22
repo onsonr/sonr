@@ -1,7 +1,6 @@
 package session
 
 import (
-	"context"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -14,38 +13,35 @@ import (
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
 	echo.Context
-	ctx  context.Context
-	data *types.Session
 	role common.PeerRole
 }
 
 // Ensure HTTPContext implements context.Context
 func (s *HTTPContext) Deadline() (deadline time.Time, ok bool) {
-	return s.ctx.Deadline()
+	return s.Context.Request().Context().Deadline()
 }
 
 func (s *HTTPContext) Done() <-chan struct{} {
-	return s.ctx.Done()
+	return s.Context.Request().Context().Done()
 }
 
 func (s *HTTPContext) Err() error {
-	return s.ctx.Err()
+	return s.Context.Request().Context().Err()
 }
 
 func (s *HTTPContext) Value(key interface{}) interface{} {
-	return s.ctx.Value(key)
+	return s.Context.Request().Context().Value(key)
 }
 
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
 	// Create HTTPContext with all the extracted data
+	WithData(c.Request().Context(), injectSessionData(c))
 	cc := &HTTPContext{
 		Context: c,
 		role:    common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
 	}
-
 	// Set the HTTPContext in the context
-	cc.ctx = WithData(c.Request().Context(), injectSessionData(cc))
 	return cc
 }
 
@@ -71,5 +67,5 @@ func (s *HTTPContext) RegisterOptions(subject string) *common.RegisterOptions {
 }
 
 func (s *HTTPContext) GetData() *types.Session {
-	return GetData(s.ctx)
+	return GetData(s.Context.Request().Context())
 }
