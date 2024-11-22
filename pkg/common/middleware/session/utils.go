@@ -82,19 +82,19 @@ func loadOrGenKsuid(c echo.Context) error {
 // │                       Extraction                          │
 // ╰───────────────────────────────────────────────────────────╯
 
-func injectSessionData(c *HTTPContext) *types.Session {
-	id, chal := extractPeerInfo(c.Context)
-	bn, bv := extractBrowserInfo(c.Context)
+func injectSessionData(c echo.Context) *types.Session {
+	id, chal := extractPeerInfo(c)
+	bn, bv := extractBrowserInfo(c)
 	return &types.Session{
 		Id:               id,
 		Challenge:        chal,
 		BrowserName:      bn,
 		BrowserVersion:   bv,
-		UserArchitecture: header.Read(c.Context, header.Architecture),
-		Platform:         header.Read(c.Context, header.Platform),
-		PlatformVersion:  header.Read(c.Context, header.PlatformVersion),
-		DeviceModel:      header.Read(c.Context, header.Model),
-		IsMobile:         header.Equals(c.Context, header.Mobile, "?1"),
+		UserArchitecture: header.Read(c, header.Architecture),
+		Platform:         header.Read(c, header.Platform),
+		PlatformVersion:  header.Read(c, header.PlatformVersion),
+		DeviceModel:      header.Read(c, header.Model),
+		IsMobile:         header.Equals(c, header.Mobile, "?1"),
 	}
 }
 

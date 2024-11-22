@@ -15,7 +15,6 @@ func main() {
 	// Setup
 	e := echo.New()
 	e.Use(session.HwayMiddleware())
-	// e.Use(staticCSS())
 
 	// Add Gateway Specific Routes
 	e.GET("/", render.Templ(pages.HomePage()))
