@@ -1,6 +1,7 @@
 package session
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
@@ -9,9 +10,12 @@ import (
 	"github.com/onsonr/sonr/pkg/common/types"
 )
 
+type contextKey string
+
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
 	echo.Context
+	context.Context
 
 	role   common.PeerRole
 	client *types.ClientConfig
@@ -20,11 +24,17 @@ type HTTPContext struct {
 	vault  *types.VaultDetails
 }
 
+// Context keys
+const (
+	ThemeKey contextKey = "theme"
+)
+
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
 	var err error
 	cc := &HTTPContext{
-		Context: c,
+		Context:  c,
+		Context:  context.Background(),
 		role:    extractPeerRole(c),
 		client:  extractConfigClient(c),
 		peer:    extractPeerInfo(c),
