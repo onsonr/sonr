@@ -14,8 +14,8 @@ type MPCSigningMethod struct {
 	ks   keyshareSource
 }
 
-// NewMPCSigningMethod creates a new MPC signing method with the given keyshare source
-func NewMPCSigningMethod(name string, ks keyshareSource) *MPCSigningMethod {
+// newMPCSigningMethod creates a new MPC signing method with the given keyshare source
+func newMPCSigningMethod(name string, ks keyshareSource) *MPCSigningMethod {
 	return &MPCSigningMethod{
 		Name: name,
 		ks:   ks,

@@ -3,6 +3,7 @@ package mpc
 import (
 	"crypto/ecdsa"
 	"encoding/json"
+	"errors"
 
 	"github.com/onsonr/sonr/pkg/crypto/core/curves"
 	"github.com/onsonr/sonr/pkg/crypto/core/protocol"
@@ -10,6 +11,8 @@ import (
 	"github.com/onsonr/sonr/pkg/crypto/tecdsa/dklsv1/dkg"
 	"golang.org/x/crypto/sha3"
 )
+
+var ErrInvalidKeyshareRole = errors.New("invalid keyshare role")
 
 type Role int
 

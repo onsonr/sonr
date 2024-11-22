@@ -26,30 +26,11 @@ var (
 	CapKey         = ucan.CapKey
 )
 
-type KeyshareSource interface {
-	ucan.Source
-}
-
 type keyshareSource struct {
 	userShare Share
 	valShare  Share
 
 	issuerDID string
-}
-
-func KeyshareSourceFromArray(arr []Share) (KeyshareSource, error) {
-	if len(arr) != 2 {
-		return nil, fmt.Errorf("invalid keyshare array length")
-	}
-	iss, err := ComputeIssuerDID(arr[0].GetPublicKey())
-	if err != nil {
-		return nil, err
-	}
-	return keyshareSource{
-		userShare: arr[0],
-		valShare:  arr[1],
-		issuerDID: iss,
-	}, nil
 }
 
 func (k keyshareSource) NewOriginToken(audienceDID string, att Attenuations, fct []Fact, notBefore, expires time.Time) (*ucan.Token, error) {
@@ -64,7 +45,7 @@ func (k keyshareSource) NewAttenuatedToken(parent *Token, audienceDID string, at
 }
 
 func (k keyshareSource) newToken(audienceDID string, prf []Proof, att Attenuations, fct []Fact, nbf, exp time.Time) (*ucan.Token, error) {
-	t := jwt.New(NewMPCSigningMethod("MPC256", k))
+	t := jwt.New(newMPCSigningMethod("MPC256", k))
 
 	// if _, err := did.Parse(audienceDID); err != nil {
 	// 	return nil, fmt.Errorf("invalid audience DID: %w", err)
