@@ -6,6 +6,18 @@ import (
 	"github.com/ucan-wg/go-ucan"
 )
 
+// Capability hierarchy for smart account operations
+// ----------------------------------------------
+// OWNER
+//   └─ OPERATOR
+//        ├─ EXECUTE
+//        ├─ PROPOSE
+//        └─ SIGN
+//   └─ SET_POLICY
+//        └─ SET_THRESHOLD
+//   └─ RECOVER
+//        └─ SOCIAL
+
 // Define capability hierarchy for smart account operations
 const (
 	// Root capabilities
