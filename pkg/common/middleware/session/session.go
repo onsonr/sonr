@@ -2,6 +2,7 @@ package session
 
 import (
 	"context"
+	"time"
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
@@ -15,13 +16,29 @@ type contextKey string
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
 	echo.Context
-	context.Context
-
+	ctx    context.Context
 	role   common.PeerRole
 	client *types.ClientConfig
 	peer   *types.PeerInfo
 	user   *types.UserAgent
 	vault  *types.VaultDetails
+}
+
+// Ensure HTTPContext implements context.Context
+func (s *HTTPContext) Deadline() (deadline time.Time, ok bool) {
+	return s.ctx.Deadline()
+}
+
+func (s *HTTPContext) Done() <-chan struct{} {
+	return s.ctx.Done()
+}
+
+func (s *HTTPContext) Err() error {
+	return s.ctx.Err()
+}
+
+func (s *HTTPContext) Value(key interface{}) interface{} {
+	return s.ctx.Value(key)
 }
 
 // Context keys
@@ -33,8 +50,8 @@ const (
 func initHTTPContext(c echo.Context) *HTTPContext {
 	var err error
 	cc := &HTTPContext{
-		Context:  c,
-		Context:  context.Background(),
+		Context: c,
+		ctx:     context.Background(),
 		role:    extractPeerRole(c),
 		client:  extractConfigClient(c),
 		peer:    extractPeerInfo(c),
