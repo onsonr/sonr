@@ -12,7 +12,7 @@ import (
 )
 
 func (k Keeper) NewController(ctx sdk.Context) (controller.ControllerI, error) {
-	shares, err := mpc.GenerateKeyshares()
+	shares, err := mpc.NewKeyshareSource()
 	if err != nil {
 		return nil, err
 	}

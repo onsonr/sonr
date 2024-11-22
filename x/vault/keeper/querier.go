@@ -65,7 +65,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 2. Generate MPC Keyshares for new Account
-	shares, err := mpc.GenerateKeyshares()
+	shares, err := mpc.NewKeyshareSource()
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error generating keyshares: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())

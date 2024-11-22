@@ -14,7 +14,7 @@ func TestKeyshareGeneration(t *testing.T) {
 	testData := []byte("hello world")
 
 	// Generate keyshares
-	src, err := mpc.GenerateKeyshares()
+	src, err := mpc.NewKeyshareSource()
 	require.NoError(t, err)
 	src.Address()
 

@@ -10,8 +10,8 @@ import (
 	"github.com/onsonr/sonr/pkg/crypto/tecdsa/dklsv1"
 )
 
-// GenerateKeyshares generates a new MPC keyshare
-func GenerateKeyshares() (KeyshareSource, error) {
+// NewKeyshareSource generates a new MPC keyshare
+func NewKeyshareSource() (KeyshareSource, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
