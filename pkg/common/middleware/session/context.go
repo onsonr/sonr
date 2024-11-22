@@ -32,3 +32,16 @@ func GetTheme(ctx context.Context) string {
 	}
 	return ""
 }
+
+// WithSessionID sets the session ID in the context
+func WithSessionID(ctx context.Context, id string) context.Context {
+	return context.WithValue(ctx, SessionIDKey, id)
+}
+
+// GetSessionID gets the session ID from the context
+func GetSessionID(ctx context.Context) string {
+	if id, ok := ctx.Value(SessionIDKey).(string); ok {
+		return id
+	}
+	return ""
+}

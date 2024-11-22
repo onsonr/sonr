@@ -43,15 +43,21 @@ func (s *HTTPContext) Value(key interface{}) interface{} {
 
 // Context keys
 const (
-	ThemeKey contextKey = "theme"
+	ThemeKey    contextKey = "theme"
+	SessionIDKey contextKey = "session_id"
 )
 
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
 	var err error
+	baseCtx := context.Background()
+	if peer := extractPeerInfo(c); peer != nil {
+		baseCtx = WithSessionID(baseCtx, peer.Id)
+	}
+	
 	cc := &HTTPContext{
 		Context: c,
-		ctx:     context.Background(),
+		ctx:     baseCtx,
 		role:    extractPeerRole(c),
 		client:  extractConfigClient(c),
 		peer:    extractPeerInfo(c),
