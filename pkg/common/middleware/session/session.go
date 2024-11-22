@@ -4,6 +4,8 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
+	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	"github.com/onsonr/sonr/pkg/common/types"
 )
 
@@ -56,9 +58,19 @@ func loadHTTPContext(cc *HTTPContext) *HTTPContext {
 	return cc
 }
 
+// HasHandle returns true if the user has a handle.
+func (s *HTTPContext) HasHandle() bool {
+	return cookie.Exists(s, cookie.UserHandle)
+}
+
 // ID returns the ksuid http cookie.
 func (s *HTTPContext) ID() string {
 	return s.peer.Id
+}
+
+// IsAuthenticated returns true if the user is authenticated.
+func (s *HTTPContext) IsAuthenticated() bool {
+	return header.Exists(s, header.Authorization)
 }
 
 func (s *HTTPContext) LoginOptions(credentials []common.CredDescriptor) *common.LoginOptions {
