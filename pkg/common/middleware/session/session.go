@@ -47,27 +47,18 @@ func initHTTPContext(c echo.Context) *HTTPContext {
 	clc := extractConfigClient(c)
 	ua := extractUserAgent(c)
 
-	// Create a new context with the base context
-	baseCtx := c.Request().Context()
-
-	// Add the user handle to the context if it exists
-	if ok := cookie.Exists(c, cookie.UserHandle); ok {
-		uh, err := cookie.Read(c, cookie.UserHandle)
-		if err != nil {
-			c.Logger().Error(err)
-		}
-		baseCtx = WithUserHandle(baseCtx, uh)
-	}
-
-	// Add the user to the context if it exists
+	// Create HTTPContext with all the extracted data
 	cc := &HTTPContext{
 		Context: c,
-		ctx:     baseCtx,
+		ctx:     c.Request().Context(),
 		role:    extractPeerRole(c),
 		client:  clc,
 		peer:    pi,
 		user:    ua,
 	}
+
+	// Set the HTTPContext in the context
+	cc.ctx = WithHTTPContext(cc.ctx, cc)
 
 	// Add the vault to the context if it exists
 	if ok := cc.role.Is(common.RoleMotr); ok {
