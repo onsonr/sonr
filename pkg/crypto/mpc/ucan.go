@@ -27,8 +27,8 @@ var (
 )
 
 type keyshareSource struct {
-	userShare Share
-	valShare  Share
+	userShare *UserKeyshare
+	valShare  *ValKeyshare
 
 	addr      string
 	issuerDID string

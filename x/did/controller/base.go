@@ -2,7 +2,6 @@ package controller
 
 import (
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
-	"github.com/onsonr/sonr/x/did/types"
 )
 
 type ControllerI interface {
@@ -12,28 +11,18 @@ type ControllerI interface {
 	RawPublicKey() []byte
 }
 
-func New(shares []mpc.Share) (ControllerI, error) {
-	var (
-		valKs  = shares[0]
-		userKs = shares[1]
-	)
-	pb := valKs.GetPublicKey()
-	sonrAddr, err := types.ComputeSonrAddr(pb)
-	if err != nil {
-		return nil, err
-	}
-
+func New(src mpc.KeyshareSource) (ControllerI, error) {
 	return &controller{
-		valKs:     valKs,
-		userKs:    userKs,
-		address:   sonrAddr,
-		publicKey: pb,
+		src:       src,
+		address:   src.Address(),
+		publicKey: src.PublicKey(),
+		did:       src.Issuer(),
+		chainID:   "sonr-testnet-1",
 	}, nil
 }
 
 type controller struct {
-	userKs    mpc.Share
-	valKs     mpc.Share
+	src       mpc.KeyshareSource
 	address   string
 	chainID   string
 	publicKey []byte
@@ -59,10 +48,6 @@ func (c *controller) ChainID() string {
 func (c *controller) RawPublicKey() []byte {
 	return c.publicKey
 }
-
-// func (c *controller) StdPublicKey() cryptotypes.PubKey {
-// 	return c.stdPubKey
-// }
 
 func (c *controller) SonrAddress() string {
 	return c.address

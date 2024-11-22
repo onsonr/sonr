@@ -8,7 +8,6 @@ import (
 	"github.com/onsonr/sonr/pkg/crypto/core/curves"
 	"github.com/onsonr/sonr/pkg/crypto/core/protocol"
 	"github.com/onsonr/sonr/pkg/crypto/tecdsa/dklsv1"
-	"github.com/onsonr/sonr/pkg/crypto/tecdsa/dklsv1/dkg"
 	"golang.org/x/crypto/sha3"
 )
 
@@ -37,34 +36,6 @@ type PublicKey *ecdsa.PublicKey
 
 type Signature *curves.EcdsaSignature
 
-type Share interface {
-	Equals(o Share) bool
-	GetPayloads() map[string][]byte
-	GetMetadata() map[string]string
-	GetPublicKey() []byte
-	GetProtocol() string
-	GetRole() int32
-	GetVersion() uint32
-	ECDSAPublicKey() (*ecdsa.PublicKey, error)
-	ExtractMessage() *protocol.Message
-	RefreshFunc() (RefreshFunc, error)
-	SignFunc(msg []byte) (SignFunc, error)
-	Marshal() (string, error)
-	Unmarshal(data string) error
-}
-
-func NewKeyshareArray(val Message, user Message) ([]Share, error) {
-	valShare, err := dklsv1.DecodeAliceDkgResult(val)
-	if err != nil {
-		return nil, err
-	}
-	userShare, err := dklsv1.DecodeBobDkgResult(user)
-	if err != nil {
-		return nil, err
-	}
-	return []Share{NewValKeyshare(valShare, val), NewUserKeyshare(userShare, user)}, nil
-}
-
 // RefreshFunc is the type for the refresh function
 type RefreshFunc interface {
 	protocol.Iterator
@@ -81,12 +52,16 @@ type ValKeyshare struct {
 	PublicKey []byte  `json:"public-key"`
 }
 
-func NewValKeyshare(out *dkg.AliceOutput, msg Message) ValKeyshare {
-	return ValKeyshare{
+func NewValKeyshare(msg Message) (*ValKeyshare, error) {
+	valShare, err := dklsv1.DecodeAliceDkgResult(msg)
+	if err != nil {
+		return nil, err
+	}
+	return &ValKeyshare{
 		Message:   msg,
 		Role:      1,
-		PublicKey: out.PublicKey.ToAffineUncompressed(),
-	}
+		PublicKey: valShare.PublicKey.ToAffineUncompressed(),
+	}, nil
 }
 
 func (v ValKeyshare) GetPayloads() map[string][]byte {
@@ -136,12 +111,6 @@ func (k ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, k.ExtractMessage(), protocol.Version1)
 }
 
-func (v ValKeyshare) Equals(o Share) bool {
-	return v.GetProtocol() == o.GetProtocol() &&
-		v.GetVersion() == o.GetVersion() &&
-		v.GetRole() == o.GetRole()
-}
-
 func (v ValKeyshare) Marshal() (string, error) {
 	jsonBytes, err := json.Marshal(v)
 	return string(jsonBytes), err
@@ -157,12 +126,16 @@ type UserKeyshare struct {
 	PublicKey []byte  `json:"public-key"`
 }
 
-func NewUserKeyshare(out *dkg.BobOutput, msg Message) UserKeyshare {
-	return UserKeyshare{
+func NewUserKeyshare(msg Message) (*UserKeyshare, error) {
+	out, err := dklsv1.DecodeBobDkgResult(msg)
+	if err != nil {
+		return nil, err
+	}
+	return &UserKeyshare{
 		Message:   msg,
 		Role:      2,
 		PublicKey: out.PublicKey.ToAffineUncompressed(),
-	}
+	}, nil
 }
 
 func (u UserKeyshare) GetPayloads() map[string][]byte {
@@ -191,12 +164,6 @@ func (u UserKeyshare) GetVersion() uint32 {
 
 func (k UserKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
 	return ComputeEcdsaPublicKey(k.PublicKey)
-}
-
-func (u UserKeyshare) Equals(o Share) bool {
-	return u.GetProtocol() == o.GetProtocol() &&
-		u.GetVersion() == o.GetVersion() &&
-		u.GetRole() == o.GetRole()
 }
 
 func (k UserKeyshare) ExtractMessage() *protocol.Message {
@@ -228,23 +195,4 @@ func (u UserKeyshare) Marshal() (string, error) {
 
 func (u UserKeyshare) Unmarshal(data string) error {
 	return json.Unmarshal([]byte(data), &u)
-}
-
-// GetRawPublicKey is the public key for the keyshare
-func GetRawPublicKey(ks Share) ([]byte, error) {
-	role := Role(ks.GetRole())
-	if role.IsUser() {
-		bobOut, err := dklsv1.DecodeBobDkgResult(ks.ExtractMessage())
-		if err != nil {
-			return nil, err
-		}
-		return bobOut.PublicKey.ToAffineUncompressed(), nil
-	} else if role.IsValidator() {
-		aliceOut, err := dklsv1.DecodeAliceDkgResult(ks.ExtractMessage())
-		if err != nil {
-			return nil, err
-		}
-		return aliceOut.PublicKey.ToAffineUncompressed(), nil
-	}
-	return nil, ErrInvalidKeyshareRole
 }

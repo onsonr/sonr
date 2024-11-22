@@ -27,7 +27,8 @@ func ComputeSonrAddr(pk []byte) (string, error) {
 	return sonrAddr, nil
 }
 
-func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
+// For DKG bob starts first. For refresh and sign, Alice starts first.
+func runIteratedProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
 	var (
 		message *protocol.Message
 		aErr    error
@@ -74,8 +75,8 @@ func ComputeEcdsaPublicKey(pubKey []byte) (*genericecdsa.PublicKey, error) {
 }
 
 // VerifySignature verifies the signature of a message
-func VerifySignature(ks Share, msg []byte, sig []byte) (bool, error) {
-	pp, err := ComputeEcPoint(ks.GetPublicKey())
+func VerifySignature(pk []byte, msg []byte, sig []byte) (bool, error) {
+	pp, err := ComputeEcPoint(pk)
 	if err != nil {
 		return false, err
 	}
@@ -90,4 +91,17 @@ func VerifySignature(ks Share, msg []byte, sig []byte) (bool, error) {
 	}
 	digest := hash.Sum(nil)
 	return curves.VerifyEcdsa(pp, digest[:], sigEd), nil
+}
+
+func checkIteratedErrors(aErr, bErr error) error {
+	if aErr == protocol.ErrProtocolFinished && bErr == protocol.ErrProtocolFinished {
+		return nil
+	}
+	if aErr != protocol.ErrProtocolFinished {
+		return aErr
+	}
+	if bErr != protocol.ErrProtocolFinished {
+		return bErr
+	}
+	return nil
 }

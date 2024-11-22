@@ -13,20 +13,20 @@ type KeyshareSource interface {
 	Address() string
 	Issuer() string
 	DefaultOriginToken() (*Token, error)
+	PublicKey() []byte
 	TokenParser() *ucan.TokenParser
+	SignData(data []byte) ([]byte, error)
+	VerifyData(data []byte, sig []byte) (bool, error)
 }
 
-func KeyshareSourceFromArray(arr []Share) (KeyshareSource, error) {
-	if len(arr) != 2 {
-		return nil, fmt.Errorf("invalid keyshare array length")
-	}
-	iss, addr, err := ComputeIssuerDID(arr[0].GetPublicKey())
+func createKeyshareSource(val *ValKeyshare, user *UserKeyshare) (KeyshareSource, error) {
+	iss, addr, err := ComputeIssuerDID(val.GetPublicKey())
 	if err != nil {
 		return nil, err
 	}
 	return keyshareSource{
-		userShare: arr[0],
-		valShare:  arr[1],
+		userShare: user,
+		valShare:  val,
 		addr:      addr,
 		issuerDID: iss,
 	}, nil
@@ -40,6 +40,11 @@ func (k keyshareSource) Address() string {
 // Issuer returns the DID of the issuer of the keyshare
 func (k keyshareSource) Issuer() string {
 	return k.issuerDID
+}
+
+// PublicKey returns the public key of the keyshare
+func (k keyshareSource) PublicKey() []byte {
+	return k.valShare.PublicKey
 }
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
@@ -79,4 +84,29 @@ func (k keyshareSource) TokenParser() *ucan.TokenParser {
 
 	store := ucan.NewMemTokenStore()
 	return ucan.NewTokenParser(ac, ucan.StringDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
+}
+
+func (k keyshareSource) SignData(data []byte) ([]byte, error) {
+
+	// Create signing functions
+	signFunc, err := k.userShare.SignFunc(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create sign function: %w", err)
+	}
+
+	valSignFunc, err := k.valShare.SignFunc(data)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create validator sign function: %w", err)
+	}
+
+	// Run the signing protocol
+	sig, err := RunSignProtocol(valSignFunc, signFunc)
+	if err != nil {
+		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
+	}
+	return SerializeSignature(sig)
+}
+
+func (k keyshareSource) VerifyData(data []byte, sig []byte) (bool, error) {
+	return VerifySignature(k.userShare.PublicKey, data, sig)
 }

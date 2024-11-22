@@ -41,7 +41,7 @@ func (m *MPCSigningMethod) Verify(signingString, signature string, key interface
 	digest := hasher.Sum(nil)
 
 	// Verify using the keyshare's public key
-	valid, err := VerifySignature(m.ks.userShare, digest, sig)
+	valid, err := VerifySignature(m.ks.valShare.PublicKey, digest, sig)
 	if err != nil {
 		return fmt.Errorf("failed to verify signature: %w", err)
 	}

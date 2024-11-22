@@ -11,18 +11,19 @@ import (
 )
 
 // GenerateKeyshares generates a new MPC keyshare
-func GenerateKeyshares() ([]Share, error) {
+func GenerateKeyshares() (KeyshareSource, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
-	aErr, bErr := RunProtocol(valKs, userKs)
-	if aErr != protocol.ErrProtocolFinished {
-		return nil, aErr
-	}
-	if bErr != protocol.ErrProtocolFinished {
-		return nil, bErr
+	aErr, bErr := runIteratedProtocol(userKs, valKs)
+	if err := checkIteratedErrors(aErr, bErr); err != nil {
+		return nil, err
 	}
 	valRes, err := valKs.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	valShare, err := NewValKeyshare(valRes)
 	if err != nil {
 		return nil, err
 	}
@@ -30,17 +31,18 @@ func GenerateKeyshares() ([]Share, error) {
 	if err != nil {
 		return nil, err
 	}
-	return NewKeyshareArray(valRes, userRes)
+	userShare, err := NewUserKeyshare(userRes)
+	if err != nil {
+		return nil, err
+	}
+	return createKeyshareSource(valShare, userShare)
 }
 
 // RunSignProtocol runs the MPC signing protocol
 func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
-	aErr, bErr := RunProtocol(signFuncVal, signFuncUser)
-	if aErr != protocol.ErrProtocolFinished {
-		return nil, aErr
-	}
-	if bErr != protocol.ErrProtocolFinished {
-		return nil, bErr
+	aErr, bErr := runIteratedProtocol(signFuncVal, signFuncUser)
+	if err := checkIteratedErrors(aErr, bErr); err != nil {
+		return nil, err
 	}
 	out, err := signFuncUser.Result(protocol.Version1)
 	if err != nil {
@@ -50,15 +52,16 @@ func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, er
 }
 
 // RunRefreshProtocol runs the MPC refresh protocol
-func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) ([]Share, error) {
-	aErr, bErr := RunProtocol(refreshFuncVal, refreshFuncUser)
-	if aErr != protocol.ErrProtocolFinished {
-		return nil, aErr
-	}
-	if bErr != protocol.ErrProtocolFinished {
-		return nil, bErr
+func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (KeyshareSource, error) {
+	aErr, bErr := runIteratedProtocol(refreshFuncVal, refreshFuncUser)
+	if err := checkIteratedErrors(aErr, bErr); err != nil {
+		return nil, err
 	}
 	valRefreshResult, err := refreshFuncVal.Result(protocol.Version1)
+	if err != nil {
+		return nil, err
+	}
+	valShare, err := NewValKeyshare(valRefreshResult)
 	if err != nil {
 		return nil, err
 	}
@@ -66,7 +69,11 @@ func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc)
 	if err != nil {
 		return nil, err
 	}
-	return NewKeyshareArray(valRefreshResult, userRefreshResult)
+	userShare, err := NewUserKeyshare(userRefreshResult)
+	if err != nil {
+		return nil, err
+	}
+	return createKeyshareSource(valShare, userShare)
 }
 
 // SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice
