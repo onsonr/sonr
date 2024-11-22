@@ -7,13 +7,14 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
+	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 type contextKey string
 
 // Context keys
 const (
-	HTTPContextKey contextKey = "http_context"
+	DataContextKey contextKey = "http_context"
 )
 
 type Context = common.SessionCtx
@@ -24,17 +25,17 @@ func Get(c echo.Context) (Context, error) {
 	if !ok {
 		return nil, echo.NewHTTPError(http.StatusInternalServerError, "DWN Context not found")
 	}
-	return loadHTTPContext(ctx), nil
+	return ctx, nil
 }
 
 // WithHTTPContext sets the HTTP context in the context
-func WithHTTPContext(ctx context.Context, httpCtx *HTTPContext) context.Context {
-	return context.WithValue(ctx, HTTPContextKey, httpCtx)
+func WithData(ctx context.Context, data *types.Session) context.Context {
+	return context.WithValue(ctx, DataContextKey, data)
 }
 
-// GetHTTPContext gets the HTTP context from the context
-func GetHTTPContext(ctx context.Context) *HTTPContext {
-	if httpCtx, ok := ctx.Value(HTTPContextKey).(*HTTPContext); ok {
+// GetData gets the HTTP context from the context
+func GetData(ctx context.Context) *types.Session {
+	if httpCtx, ok := ctx.Value(DataContextKey).(*types.Session); ok {
 		return httpCtx
 	}
 	return nil

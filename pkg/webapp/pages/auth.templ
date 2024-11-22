@@ -1,13 +1,16 @@
 package pages
 
-import "github.com/onsonr/sonr/pkg/common/middleware/session"
+import (
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/webapp/components/auth"
+)
 
 templ AuthPage() {
-	if session.GetIsMobile(ctx) {
-		if session.GetHasAuthorization(ctx) {
-			return auth.LoginModal(c)
+	if session.GetData(ctx).IsMobile {
+		if session.GetData(ctx).Challenge == "" {
+			@auth.LoginModal()
 		}
-		return auth.RegisterModal(c)
+		@auth.RegisterModal()
 	}
-	return auth.RedirectModal(c)
+	@auth.RedirectModal()
 }

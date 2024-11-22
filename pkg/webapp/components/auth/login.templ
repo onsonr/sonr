@@ -6,8 +6,8 @@ import (
 )
 
 // LoginModal returns the Login Modal.
-templ LoginModal(c session.Context) {
-	@ui.OpenModal(c.ID(), "Enter your account information below to create your account.") {
+templ LoginModal() {
+	@ui.OpenModal(session.GetData(ctx).Id, "Enter your account information below to create your account.") {
 		@loginStart()
 	}
 }

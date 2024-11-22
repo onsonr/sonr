@@ -11,43 +11,26 @@ class JsonField extends go.Field {
   }
 }
 
-/// Client configuration
-class ClientConfig {
-  chainID: String
-  ipfsHost: String
-  sonrAPIURL: String
-  sonrRPCURL: String 
-  sonrWSURL: String
-}
-
-/// Peer information
-class PeerInfo {
+class Session {
+  @JsonField
   id: String
-  challenge: String // Using String for URLEncodedBase64
-}
-
-/// Browser information
-class BrowserInfo {
-  name: String
-  version: String
-}
-
-/// User agent information
-class UserAgent {
-  architecture: String
-  bitness: String
-  browser: BrowserInfo?
-  model: String
-  platformName: String
+  @JsonField
+  challenge: String
+  @JsonField
+  browserName: String
+  @JsonField
+  browserVersion: String
+  @JsonField
+  userArchitecture: String
+  @JsonField
+  platform: String
+  @JsonField
   platformVersion: String
+  @JsonField
+  deviceModel: String
+  @JsonField
   isMobile: Boolean
+  @JsonField
+  vaultAddress: String
 }
-
-/// Vault details
-class VaultDetails {
-  schema: DWN.Schema? // Reference to external VaultSchema type
-  address: String
-}
-
-
 

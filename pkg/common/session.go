@@ -6,8 +6,7 @@ import (
 
 	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
-
-	models "github.com/onsonr/sonr/pkg/common/types"
+	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 var (
@@ -22,13 +21,10 @@ var (
 type SessionCtx interface {
 	ID() string
 
-	IsAuthenticated() bool
 	LoginOptions(credentials []CredDescriptor) *LoginOptions
 	RegisterOptions(subject string) *RegisterOptions
 
-	ClientConfig() *models.ClientConfig
-	UserAgent() *models.UserAgent
-	VaultDetails() *models.VaultDetails
+	GetData() *types.Session
 }
 
 type (

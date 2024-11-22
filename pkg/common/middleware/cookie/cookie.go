@@ -42,6 +42,14 @@ func ReadBytes(c echo.Context, key Key) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(cookie.Value)
 }
 
+func ReadUnsafe(c echo.Context, key Key) string {
+	ck, err := c.Cookie(key.String())
+	if err != nil {
+		return ""
+	}
+	return ck.Value
+}
+
 func Write(c echo.Context, key Key, value string) error {
 	cookie := &http.Cookie{
 		Name:     key.String(),

@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"log"
 	"net/http"
 
@@ -14,7 +15,7 @@ func main() {
 	// Setup
 	e := echo.New()
 	e.Use(session.HwayMiddleware())
-	e.Use(staticCSS())
+	// e.Use(staticCSS())
 
 	// Add Gateway Specific Routes
 	e.GET("/", render.Templ(pages.HomePage()))
@@ -23,5 +24,17 @@ func main() {
 
 	if err := e.Start(":3000"); err != http.ErrServerClosed {
 		log.Fatal(err)
+	}
+}
+
+//go:embed styles.css
+var cssData string
+
+func staticCSS() echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			c.Response().Header().Set("Content-Type", "text/css")
+			return c.String(200, cssData)
+		}
 	}
 }
