@@ -1,7 +1,7 @@
 version: "3"
 vars:
   ROOT_DIR:
-    sh: pwd
+    sh: git rev-parse --show-toplevel
 
 tasks:
   clean:
@@ -15,13 +15,10 @@ tasks:
   # │               Generate Commands                  │
   # ╰──────────────────────────────────────────────────╯
 
-  gen:design:
-    dir: pkg/design
+  gen:tailwind:
     cmds:
-      - bun install
-      - bunx tailwindcss -i ./globals.css -o ./assets/css/styles.css
-      - task: clean
-      - task: gen:templ
+      - cd ./pkg/webapp && bun run build
+      - cp ./pkg/webapp/components/styles/styles.css ./cmd/hway/styles.css
 
   gen:pkl:
     sources:
@@ -49,6 +46,8 @@ tasks:
 
   build:hway:
     cmds:
+      - task: gen:tailwind
+      - task: gen:templ
       - go build -o build/hway ./cmd/hway/main.go
 
   # ╭──────────────────────────────────────────────────╮

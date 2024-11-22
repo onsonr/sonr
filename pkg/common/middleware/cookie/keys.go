@@ -22,6 +22,9 @@ const (
 	// SonrDID is the key for the Sonr DID cookie.
 	SonrDID Key = "sonr.did"
 
+	// UserHandle is the key for the User Handle cookie.
+	UserHandle Key = "user.handle"
+
 	// VaultCID is the key for the Vault CID cookie.
 	VaultCID Key = "vault.cid"
 

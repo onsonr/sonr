@@ -3,6 +3,7 @@ package session
 import (
 	"context"
 	"time"
+
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
@@ -10,8 +11,6 @@ import (
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
 	"github.com/onsonr/sonr/pkg/common/types"
 )
-
-type contextKey string
 
 // HTTPContext is the context for DWN endpoints.
 type HTTPContext struct {
@@ -41,29 +40,44 @@ func (s *HTTPContext) Value(key interface{}) interface{} {
 	return s.ctx.Value(key)
 }
 
-// Context keys
-const (
-	ThemeKey    contextKey = "theme"
-	SessionIDKey contextKey = "session_id"
-)
-
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
 	var err error
-	baseCtx := context.Background()
-	if peer := extractPeerInfo(c); peer != nil {
-		baseCtx = WithSessionID(baseCtx, peer.Id)
+	pi := extractPeerInfo(c)
+	clc := extractConfigClient(c)
+	ua := extractUserAgent(c)
+
+	// Create a new context with the base context and the session ID
+	baseCtx := c.Request().Context()
+	baseCtx = WithSessionID(baseCtx, pi.Id)
+	baseCtx = WithHasAuthorization(baseCtx, header.Exists(c, header.Authorization))
+	baseCtx = WithIsMobile(baseCtx, ua.IsMobile)
+	baseCtx = WithChainID(baseCtx, clc.ChainID)
+	baseCtx = WithIPFSHost(baseCtx, clc.IpfsHost)
+	baseCtx = WithSonrAPI(baseCtx, clc.SonrAPIURL)
+	baseCtx = WithSonrRPC(baseCtx, clc.SonrRPCURL)
+	baseCtx = WithSonrWS(baseCtx, clc.SonrWSURL)
+
+	// Add the user handle to the context if it exists
+	if ok := cookie.Exists(c, cookie.UserHandle); ok {
+		uh, err := cookie.Read(c, cookie.UserHandle)
+		if err != nil {
+			c.Logger().Error(err)
+		}
+		baseCtx = WithUserHandle(baseCtx, uh)
 	}
-	
+
+	// Add the user to the context if it exists
 	cc := &HTTPContext{
 		Context: c,
 		ctx:     baseCtx,
 		role:    extractPeerRole(c),
-		client:  extractConfigClient(c),
-		peer:    extractPeerInfo(c),
-		user:    extractUserAgent(c),
+		client:  clc,
+		peer:    pi,
+		user:    ua,
 	}
 
+	// Add the vault to the context if it exists
 	if ok := cc.role.Is(common.RoleMotr); ok {
 		cc.vault, err = extractConfigVault(c)
 		if err != nil {

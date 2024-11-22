@@ -22,6 +22,7 @@ var (
 type SessionCtx interface {
 	ID() string
 
+	IsAuthenticated() bool
 	LoginOptions(credentials []CredDescriptor) *LoginOptions
 	RegisterOptions(subject string) *RegisterOptions
 

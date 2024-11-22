@@ -9,21 +9,27 @@ import (
 )
 
 // Templ renders a component to the response
-func Templ(c echo.Context, cmp templ.Component) error {
-	// Create a buffer to store the rendered HTML
-	buf := &bytes.Buffer{}
-	// Render the component to the buffer
-	err := cmp.Render(c.Request().Context(), buf)
-	if err != nil {
-		return err
+func Templ(cmp templ.Component) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		// Create a buffer to store the rendered HTML
+		buf := &bytes.Buffer{}
+		// Render the component to the buffer
+		err := cmp.Render(c.Request().Context(), buf)
+		if err != nil {
+			return err
+		}
+
+		// Set the content type
+		c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
+
+		// Write the buffered content to the response
+		_, err = c.Response().Write(buf.Bytes())
+		if err != nil {
+			return err
+		}
+		c.Response().WriteHeader(200)
+		return nil
 	}
-
-	// Set the content type
-	c.Response().Header().Set(echo.HeaderContentType, echo.MIMETextHTML)
-
-	// Write the buffered content to the response
-	_, err = c.Response().Write(buf.Bytes())
-	return err
 }
 
 // / TemplRawBytes renders a component to a byte slice

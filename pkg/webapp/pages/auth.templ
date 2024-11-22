@@ -1,0 +1,13 @@
+package pages
+
+import "github.com/onsonr/sonr/pkg/common/middleware/session"
+
+templ AuthPage() {
+	if session.GetIsMobile(ctx) {
+		if session.GetHasAuthorization(ctx) {
+			return auth.LoginModal(c)
+		}
+		return auth.RegisterModal(c)
+	}
+	return auth.RedirectModal(c)
+}
