@@ -4,6 +4,7 @@
     "go@1.22",
     "bun@latest",
     "ipfs@latest",
+    "air@latest",
     "templ@latest"
   ],
   "env": {

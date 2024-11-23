@@ -11,13 +11,9 @@ var (
 	htmxHandle   = templ.NewOnceHandle()
 )
 
-templ Fonts() {
-	<link rel="preload" href="https://cdn.sonr.id/fonts/ZTBrosOskon90s-BoldSemExp.woff2" as="font" type="font/woff2" crossorigin/>
-	<link rel="preload" href="https://cdn.sonr.id/fonts/ZTBrosOskon90s-BoldSemExpIta.woff2" as="font" type="font/woff2" crossorigin/>
-}
-
 templ Styles() {
 	<link href={ "https://cdn.sonr.id/css/styles.css" } rel="stylesheet"/>
+	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
 }
 
 templ Alpine() {

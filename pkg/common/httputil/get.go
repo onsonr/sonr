@@ -1,4 +1,4 @@
-package httpget
+package httputil
 
 import (
 	"encoding/json"

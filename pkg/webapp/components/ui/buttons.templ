@@ -2,7 +2,9 @@ package ui
 
 templ PrimaryButton(href string, text string) {
 	<div>
-		<div class="btn cursor-pointer text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get={ href }>{ text }</div>
+		<div class="btn cursor-pointer text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" hx-swap="afterend" hx-get={ href }>
+			{ text }
+		</div>
 	</div>
 }
 
