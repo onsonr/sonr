@@ -11,6 +11,12 @@ import (
 	"github.com/onsonr/sonr/pkg/webapp/pages"
 )
 
+type (
+	Host struct {
+		Echo *echo.Echo
+	}
+)
+
 func main() {
 	// Setup
 	e := echo.New()
@@ -23,17 +29,5 @@ func main() {
 
 	if err := e.Start(":3000"); err != http.ErrServerClosed {
 		log.Fatal(err)
-	}
-}
-
-//go:embed styles.css
-var cssData string
-
-func staticCSS() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			c.Response().Header().Set("Content-Type", "text/css")
-			return c.String(200, cssData)
-		}
 	}
 }
