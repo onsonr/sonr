@@ -20,7 +20,6 @@ dist
 
 # Output of the go coverage tool
 *.out
-.air.toml
 tmp
 # Exclude embedded files
 !internal/files/dist
@@ -85,3 +84,6 @@ sonr.wiki
 
 !devbox.lock
 !buf.lock
+
+.air.toml
+

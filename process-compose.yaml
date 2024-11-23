@@ -17,12 +17,3 @@ processes:
     max_restarts: 1
     depends:
       - ipfs
-
-  hway:
-    namespace: testnet
-    command: "air"
-    background: true
-    restart: never
-    max_restarts: 1
-    depends:
-      - sonr

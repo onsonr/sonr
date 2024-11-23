@@ -22,10 +22,8 @@ const (
 	FaBrands FontAwesome = "fa-brands"
 )
 
-func Icon(s FontAwesome) IconFunc {
-	return func(name string) templ.Component {
-		return renderIcon(s, name)
-	}
+func (s FontAwesome) Icon(name string) templ.Component {
+	return renderIcon(s, name)
 }
 
 func renderIcon(s FontAwesome, name string) templ.Component {
@@ -38,16 +36,4 @@ func formatIconClass(s FontAwesome, name string) string {
 
 templ faIcon(class string) {
 	<i class={ class }></i>
-}
-
-templ RegularIcon() {
-}
-
-templ LightIcon() {
-}
-
-templ ThinIcon() {
-}
-
-templ BrandsIcon() {
 }
