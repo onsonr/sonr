@@ -6,8 +6,8 @@ import (
 	"time"
 
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/crypto/mpc"
 
+	"github.com/onsonr/sonr/pkg/crypto/mpc"
 	"github.com/onsonr/sonr/x/did/controller"
 	"github.com/onsonr/sonr/x/vault/types"
 )
@@ -65,7 +65,7 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 2. Generate MPC Keyshares for new Account
-	shares, err := mpc.GenerateKeyshares()
+	shares, err := mpc.NewKeyshareSource()
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error generating keyshares: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
@@ -79,14 +79,14 @@ func (k Querier) Allocate(goCtx context.Context, req *types.QueryAllocateRequest
 	}
 
 	// 4. Create a new vault PWA for service-worker
-	v, err := types.NewVault("", con.SonrAddress(), con.ChainID(), sch)
+	v, err := types.SpawnVault("", con.SonrAddress(), con.ChainID(), sch)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error creating vault: %s", err.Error()))
 		return nil, types.ErrInvalidSchema.Wrap(err.Error())
 	}
 
 	// 5. Add to IPFS and Return CID for User Claims in Gateway
-	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v.FS)
+	cid, err := k.ipfsClient.Unixfs().Add(context.Background(), v)
 	if err != nil {
 		ctx.Logger().Error(fmt.Sprintf("Error adding to IPFS: %s", err.Error()))
 		return nil, types.ErrVaultAssembly.Wrap(err.Error())

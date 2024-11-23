@@ -5,14 +5,14 @@ import (
 
 	"cosmossdk.io/log"
 	sdk "github.com/cosmos/cosmos-sdk/types"
-	"github.com/onsonr/crypto/mpc"
 
+	"github.com/onsonr/sonr/pkg/crypto/mpc"
 	"github.com/onsonr/sonr/x/did/controller"
 	"github.com/onsonr/sonr/x/did/types"
 )
 
 func (k Keeper) NewController(ctx sdk.Context) (controller.ControllerI, error) {
-	shares, err := mpc.GenerateKeyshares()
+	shares, err := mpc.NewKeyshareSource()
 	if err != nil {
 		return nil, err
 	}

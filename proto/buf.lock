@@ -22,11 +22,6 @@ deps:
     commit: c0913f24652a4cfc95f77d97443a5005
     digest: shake256:0ef3248c6235d420fe61f373154adcde6b94e3297f82472b1d8d8c3747240b61b4a10405e2a6f8ac1c98816ac6e690ea7871024aa5ae0e035cd540214667ceed
   - remote: buf.build
-    owner: onsonr
-    repository: thirdparty
-    commit: 915d759135b04de684c86d9cf5daf256
-    digest: shake256:13d0254ab4884f2d47f21d229dc3b17ea859f81d8283c021956ccd0da864228a939d055c8c85a86c66307fd7bd19654da6b3fb89fccd6c6d38ee46651a5951b5
-  - remote: buf.build
     owner: protocolbuffers
     repository: wellknowntypes
     commit: 657250e6a39648cbb169d079a60bd9ba

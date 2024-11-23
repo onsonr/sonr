@@ -1,0 +1,69 @@
+package ui
+
+const (
+	PublicOrigin = "https://cdn.sonr.id"
+)
+
+var (
+	stylesHandle = templ.NewOnceHandle()
+	alpineHandle = templ.NewOnceHandle()
+	dexieHandle  = templ.NewOnceHandle()
+	htmxHandle   = templ.NewOnceHandle()
+)
+
+templ Styles() {
+	<link href={ "https://cdn.sonr.id/css/styles.css" } rel="stylesheet"/>
+	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
+}
+
+templ Alpine() {
+	<script src={ "https://cdn.sonr.id/js/alpine-focus.min.js" } defer></script>
+	<script src={ "https://cdn.sonr.id/js/alpine.min.js" } defer></script>
+}
+
+templ Dexie() {
+	<script src={ "https://cdn.sonr.id/js/dexie.min.js" }></script>
+}
+
+templ Htmx() {
+	<script src={ "https://cdn.sonr.id/js/htmx.min.js" }></script>
+}
+
+templ WebAwesome() {
+	<script type="module" src="https://early.webawesome.com/webawesome@3.0.0-alpha.4/dist/webawesome.loader.js"></script>
+	<link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.4/dist/themes/default.css"/>
+}
+
+templ Toaster() {
+	<div
+		x-data="{ 
+            title: 'Default Toast Notification', 
+            description: '',
+            type: 'default',
+            position: 'top-center',
+            expanded: false,
+            popToast (custom){
+                let html = '';
+                if(typeof custom != 'undefined'){
+                    html = custom;
+                }
+                toast(this.title, { description: this.description, type: this.type, position: this.position, html: html })
+            }
+        }"
+		x-init="
+            window.toast = function(message, options = {}){
+                let description = '';
+                let type = 'default';
+                let position = 'top-center';
+                let html = '';
+                if(typeof options.description != 'undefined') description = options.description;
+                if(typeof options.type != 'undefined') type = options.type;
+                if(typeof options.position != 'undefined') position = options.position;
+                if(typeof options.html != 'undefined') html = options.html;
+                window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }}));
+            }
+        "
+	>
+		{ children... }
+	</div>
+}

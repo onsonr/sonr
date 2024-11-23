@@ -15,7 +15,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 
 	apiv1 "github.com/onsonr/sonr/api/vault/v1"
-	dwngen "github.com/onsonr/sonr/pkg/motr/config"
+	"github.com/onsonr/sonr/pkg/core/dwn"
 	didkeeper "github.com/onsonr/sonr/x/did/keeper"
 	"github.com/onsonr/sonr/x/vault/types"
 )
@@ -100,13 +100,13 @@ func NewKeeper(
 }
 
 // currentSchema returns the current schema
-func (k Keeper) currentSchema(ctx sdk.Context) (*dwngen.Schema, error) {
+func (k Keeper) currentSchema(ctx sdk.Context) (*dwn.Schema, error) {
 	p, err := k.Params.Get(ctx)
 	if err != nil {
 		return nil, err
 	}
 	schema := p.Schema
-	return &dwngen.Schema{
+	return &dwn.Schema{
 		Version:    int(schema.Version),
 		Account:    schema.Account,
 		Asset:      schema.Asset,

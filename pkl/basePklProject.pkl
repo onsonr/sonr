@@ -1,0 +1,44 @@
+//===----------------------------------------------------------------------===//
+// Copyright © 2024 Apple Inc. and the Pkl project authors. All rights reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+//===----------------------------------------------------------------------===//
+module basePklProject
+
+amends "pkl:Project"
+
+import "pkl:reflect"
+
+local myModule = reflect.Module(module)
+
+local packageName: String =
+  findRootModule(reflect.Module(module))
+    .relativePathTo(module)
+    .last
+
+local function findRootModule(mod: reflect.Module): Module =
+  let (supermodule = mod.supermodule)
+    if (supermodule == null || !supermodule.isAmend) mod.reflectee
+    else findRootModule(supermodule)
+
+package {
+  baseUri = "package://pkl.sh/\(name)@\(version)"
+  packageZipUrl = "https://github.com/onsonr/sonr/releases/download/\(name)@\(version).zip"
+  license = "Apache-2.0"
+  authors {
+    "Prad N <prad@sonr.email>"
+  }
+  description = myModule.docComment
+  issueTracker = "https://github.com/onsonr/sonr/issues"
+  sourceCode = "https://github.com/onsonr/sonr/tree/third_party/pkl/packages/\(name)"
+}

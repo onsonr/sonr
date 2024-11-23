@@ -15,9 +15,13 @@ dist
 *.test
 .devon*
 **/.DS_Store
+.task
+.wrangler
+
 # Output of the go coverage tool
 *.out
-
+.air.toml
+tmp
 # Exclude embedded files
 !internal/files/dist
 

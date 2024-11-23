@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	fmt "fmt"
 
-	"github.com/onsonr/sonr/pkg/motr/types/orm/keyalgorithm"
-	"github.com/onsonr/sonr/pkg/motr/types/orm/keycurve"
-	"github.com/onsonr/sonr/pkg/motr/types/orm/keyencoding"
-	"github.com/onsonr/sonr/pkg/motr/types/orm/keyrole"
+	"github.com/onsonr/sonr/pkg/common/models/keyalgorithm"
+	"github.com/onsonr/sonr/pkg/common/models/keycurve"
+	"github.com/onsonr/sonr/pkg/common/models/keyencoding"
+	"github.com/onsonr/sonr/pkg/common/models/keyrole"
 )
 
 // DefaultParams returns default module parameters.

@@ -1,0 +1,16 @@
+package pages
+
+import (
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/webapp/components/auth"
+)
+
+templ AuthPage() {
+	if session.GetData(ctx).IsMobile {
+		if session.GetData(ctx).Challenge == "" {
+			@auth.LoginModal()
+		}
+		@auth.RegisterModal()
+	}
+	@auth.RedirectModal()
+}

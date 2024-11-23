@@ -94,7 +94,6 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -288,22 +287,6 @@ sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
-
-
-###############################################################################
-###                             custom generation                           ###
-###############################################################################
-
-.PHONY: templ-gen pkl-gen
-
-templ-gen:
-	@echo "(templ) Generating templ files"
-	templ generate
-
-pkl-gen:
-	@echo "(pkl) Building PKL"
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/sonr.configs.v1/DWN.pkl
-	go run github.com/apple/pkl-go/cmd/pkl-gen-go ./third_party/pkl/src/sonr.models.v1/ORM.pkl
 
 ###############################################################################
 ###                                     help                                ###

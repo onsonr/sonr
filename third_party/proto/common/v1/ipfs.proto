@@ -1,5 +1,0 @@
-syntax = "proto3";
-
-package common.v1;
-
-option go_package = "github.com/onsonr/sonr/pkg/common/types;commonv1";

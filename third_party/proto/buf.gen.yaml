@@ -1,7 +1,0 @@
-version: v1
-plugins:
-  - name: go
-    out: ../..
-  - name: grpc-gateway
-    out: ../..
-    opt: logtostderr=true,allow_colon_final_segments=true

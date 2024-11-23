@@ -1,0 +1,12 @@
+package auth
+
+import (
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+)
+
+templ AuthorizeView(c session.Context) {
+	@ui.OpenModal(c.ID(), "Enter your account information below to create your account.") {
+		@loginStart()
+	}
+}

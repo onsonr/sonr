@@ -20,10 +20,9 @@ processes:
 
   hway:
     namespace: testnet
+    command: "air"
     background: true
-    command: "task hway:dev"
     restart: never
     max_restarts: 1
     depends:
-      - ipfs
       - sonr

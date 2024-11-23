@@ -4,6 +4,7 @@
     "go@1.22",
     "bun@latest",
     "ipfs@latest",
+    "air@latest",
     "templ@latest"
   ],
   "env": {
@@ -21,7 +22,9 @@
     "ACC0_MNEMONIC": "$(skate get ACC0_MNEMONIC)",
     "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)",
     "TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
-    "TEMPL_EXPERIMENT": "rawgo"
+    "TEMPL_EXPERIMENT": "rawgo",
+    "R2_CDN_BUCKET": "cdn",
+    "R2_PKL_BUCKET": "pkljar"
   },
   "shell": {
     "scripts": {
@@ -31,11 +34,8 @@
       "gen:templ": [
         "make gen-templ"
       ],
-      "start": [
-        "process-compose up -f ./deploy/process-compose.yaml"
-      ],
-      "stop": [
-        "process-compose down -f ./deploy/process-compose.yaml"
+      "buf-push": [
+        "cd ./proto && bunx buf dep update && bunx buf build && bunx buf push"
       ]
     }
   }
