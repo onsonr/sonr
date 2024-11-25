@@ -286,7 +286,10 @@ testnet-basic: setup-testnet
 sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
-.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+buf-publish:
+	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
+
+.PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet buf-publish
 
 ###############################################################################
 ###                                     help                                ###

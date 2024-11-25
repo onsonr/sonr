@@ -1,0 +1,43 @@
+{
+  "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
+  "packages": [
+    "go@1.22",
+    "bun@latest",
+    "ipfs@latest",
+    "air@latest",
+    "templ@latest"
+  ],
+  "env": {
+    "GOPATH": "$HOME/go",
+    "PATH": "./build:$HOME/go/bin:$PATH",
+    "CHAIN_ID": "sonr-testnet-1",
+    "DENOM": "usnr",
+    "KEYRING": "test",
+    "MONIKER": "florence",
+    "BINARY": "sonrd",
+    "ACC0_NAME": "acc0",
+    "ACC1_NAME": "acc1",
+    "ACC0_ADDRESS": "idx1efd63aw40lxf3n4mhf7dzhjkr453axur9vjt6y",
+    "ACC1_ADDRESS": "idx1hj5fveer5cjtn4wd6wstzugjfdxzl0xpecp0nd",
+    "ACC0_MNEMONIC": "$(skate get ACC0_MNEMONIC)",
+    "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)",
+    "TUNNEL_TOKEN": "$(skate get CLOUDFLARE_TUNNEL_TOKEN)",
+    "TEMPL_EXPERIMENT": "rawgo",
+    "R2_CDN_BUCKET": "cdn",
+    "R2_PKL_BUCKET": "pkljar"
+  },
+  "shell": {
+    "init_hook": ["export ROOT=$(git rev-parse --show-toplevel)"],
+    "scripts": {
+      "start:testnet": ["make sh-testnet"],
+      "start:ipfs": ["sh scripts/setup_ipfs.sh"],
+      "start:air": ["air"],
+      "start:gex": ["go install github.com/cosmos/gex@latest", "gex"],
+      "gen:pkl": ["make gen-pkl"],
+      "gen:templ": ["make gen-templ"],
+      "buf-push": [
+        "cd ./proto && bunx buf dep update && bunx buf build && bunx buf push"
+      ]
+    }
+  }
+}
