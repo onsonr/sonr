@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"strconv"
-
 	"github.com/spf13/cobra"
 
 	"github.com/cosmos/cosmos-sdk/client"
@@ -46,16 +44,9 @@ func MsgUpdateParams() *cobra.Command {
 
 			senderAddress := cliCtx.GetFromAddress()
 
-			someValue, err := strconv.ParseBool(args[0])
-			if err != nil {
-				return err
-			}
-
 			msg := &types.MsgUpdateParams{
 				Authority: senderAddress.String(),
-				Params: types.Params{
-					SomeValue: someValue,
-				},
+				Params:    types.Params{},
 			}
 
 			if err := msg.Validate(); err != nil {
