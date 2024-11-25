@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: vault/v1/tx.proto
+// source: svc/v1/tx.proto
 
-package vaultv1
+package svcv1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_UpdateParams_FullMethodName = "/vault.v1.Msg/UpdateParams"
-	Msg_Initialize_FullMethodName   = "/vault.v1.Msg/Initialize"
+	Msg_UpdateParams_FullMethodName    = "/svc.v1.Msg/UpdateParams"
+	Msg_RegisterService_FullMethodName = "/svc.v1.Msg/RegisterService"
 )
 
 // MsgClient is the client API for Msg service.
@@ -33,8 +33,9 @@ type MsgClient interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(ctx context.Context, in *MsgUpdateParams, opts ...grpc.CallOption) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
-	Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error)
+	// RegisterService initializes a Service with a given permission scope and
+	// URI. The domain must have a valid TXT record containing the public key.
+	RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error)
 }
 
 type msgClient struct {
@@ -55,10 +56,10 @@ func (c *msgClient) UpdateParams(ctx context.Context, in *MsgUpdateParams, opts 
 	return out, nil
 }
 
-func (c *msgClient) Initialize(ctx context.Context, in *MsgInitialize, opts ...grpc.CallOption) (*MsgInitializeResponse, error) {
+func (c *msgClient) RegisterService(ctx context.Context, in *MsgRegisterService, opts ...grpc.CallOption) (*MsgRegisterServiceResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(MsgInitializeResponse)
-	err := c.cc.Invoke(ctx, Msg_Initialize_FullMethodName, in, out, cOpts...)
+	out := new(MsgRegisterServiceResponse)
+	err := c.cc.Invoke(ctx, Msg_RegisterService_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -75,8 +76,9 @@ type MsgServer interface {
 	//
 	// Since: cosmos-sdk 0.47
 	UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error)
-	// Initialize spawns a new Vault
-	Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error)
+	// RegisterService initializes a Service with a given permission scope and
+	// URI. The domain must have a valid TXT record containing the public key.
+	RegisterService(context.Context, *MsgRegisterService) (*MsgRegisterServiceResponse, error)
 	mustEmbedUnimplementedMsgServer()
 }
 
@@ -90,8 +92,8 @@ type UnimplementedMsgServer struct{}
 func (UnimplementedMsgServer) UpdateParams(context.Context, *MsgUpdateParams) (*MsgUpdateParamsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateParams not implemented")
 }
-func (UnimplementedMsgServer) Initialize(context.Context, *MsgInitialize) (*MsgInitializeResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Initialize not implemented")
+func (UnimplementedMsgServer) RegisterService(context.Context, *MsgRegisterService) (*MsgRegisterServiceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RegisterService not implemented")
 }
 func (UnimplementedMsgServer) mustEmbedUnimplementedMsgServer() {}
 func (UnimplementedMsgServer) testEmbeddedByValue()             {}
@@ -132,20 +134,20 @@ func _Msg_UpdateParams_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Msg_Initialize_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MsgInitialize)
+func _Msg_RegisterService_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(MsgRegisterService)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(MsgServer).Initialize(ctx, in)
+		return srv.(MsgServer).RegisterService(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: Msg_Initialize_FullMethodName,
+		FullMethod: Msg_RegisterService_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MsgServer).Initialize(ctx, req.(*MsgInitialize))
+		return srv.(MsgServer).RegisterService(ctx, req.(*MsgRegisterService))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -154,7 +156,7 @@ func _Msg_Initialize_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "vault.v1.Msg",
+	ServiceName: "svc.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -162,10 +164,10 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Msg_UpdateParams_Handler,
 		},
 		{
-			MethodName: "Initialize",
-			Handler:    _Msg_Initialize_Handler,
+			MethodName: "RegisterService",
+			Handler:    _Msg_RegisterService_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "vault/v1/tx.proto",
+	Metadata: "svc/v1/tx.proto",
 }

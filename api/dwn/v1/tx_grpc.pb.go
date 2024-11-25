@@ -2,9 +2,9 @@
 // versions:
 // - protoc-gen-go-grpc v1.5.1
 // - protoc             (unknown)
-// source: vault/v1/tx.proto
+// source: dwn/v1/tx.proto
 
-package vaultv1
+package dwnv1
 
 import (
 	context "context"
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	Msg_UpdateParams_FullMethodName = "/vault.v1.Msg/UpdateParams"
-	Msg_Initialize_FullMethodName   = "/vault.v1.Msg/Initialize"
+	Msg_UpdateParams_FullMethodName = "/dwn.v1.Msg/UpdateParams"
+	Msg_Initialize_FullMethodName   = "/dwn.v1.Msg/Initialize"
 )
 
 // MsgClient is the client API for Msg service.
@@ -154,7 +154,7 @@ func _Msg_Initialize_Handler(srv interface{}, ctx context.Context, dec func(inte
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Msg_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "vault.v1.Msg",
+	ServiceName: "dwn.v1.Msg",
 	HandlerType: (*MsgServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -167,5 +167,5 @@ var Msg_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "vault/v1/tx.proto",
+	Metadata: "dwn/v1/tx.proto",
 }

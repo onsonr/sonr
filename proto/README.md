@@ -10,10 +10,10 @@ This directory contains the protobuf definitions for the Sonr blockchain.
 
 The `did` directory contains the protobuf definitions for the DID module.
 
-### `service`
+### `dwn`
+
+The `dwn` directory contains the protobuf definitions for the Vault module.
+
+### `svc`
 
 The `service` directory contains the protobuf definitions for the Service module.
-
-### `vault`
-
-The `vault` directory contains the protobuf definitions for the Vault module.
