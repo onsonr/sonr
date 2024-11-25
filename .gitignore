@@ -10,6 +10,7 @@
 .session.vim
 aof*
 dist
+**/.haptic
 
 # Test binary
 *.test

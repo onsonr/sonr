@@ -1,17 +1,32 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["go@1.22", "bun@latest", "ipfs@latest", "templ@latest"],
+  "packages": [
+    "go@1.22",
+    "bun@latest",
+    "ipfs@latest",
+    "templ@latest",
+    "gum@latest"
+  ],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "./build:$HOME/go/bin:$PATH",
     "TEMPL_EXPERIMENT": "rawgo"
   },
   "shell": {
-    "init_hook": ["./scripts/init_env.sh"],
+    "init_hook": [
+      "./scripts/init_env.sh"
+    ],
     "scripts": {
-      "start-local": ["cd deploy/local && devbox services up"],
-      "start-testnet": ["cd deploy/testnet && devbox services up"],
-      "start-gex": ["go install github.com/cosmos/gex@latest", "gex"]
+      "start-local": [
+        "cd deploy/local && devbox services up"
+      ],
+      "start-testnet": [
+        "cd deploy/testnet && devbox services up"
+      ],
+      "start-gex": [
+        "go install github.com/cosmos/gex@latest",
+        "gex"
+      ]
     }
   }
 }
