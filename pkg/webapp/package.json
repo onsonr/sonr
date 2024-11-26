@@ -2,7 +2,7 @@
   "name": "@onsonr/nebula",
   "version": "0.0.2",
   "scripts": {
-    "build": "bunx tailwindcss -i ./components/globals.css -o ./components/styles/styles.css"
+    "build": "bunx tailwindcss -i ./globals.css -o ./dist/styles.css"
   },
   "dependencies": {
     "@tailwindcss/forms": "^0.5.7",

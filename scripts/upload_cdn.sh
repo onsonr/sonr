@@ -12,3 +12,6 @@ for dir in .out/*/; do
 done
 
 rm -rf .out
+
+rclone copy $ROOT_DIR/static "r2:nebula"
+rm -rf $ROOT_DIR/static

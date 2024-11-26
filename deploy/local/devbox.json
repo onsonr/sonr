@@ -26,9 +26,9 @@
     "init_hook": ["export ROOT=$(git rev-parse --show-toplevel)"],
     "scripts": {
       "devnet": ["cd $ROOT", "make sh-testnet"],
-      "ipfs": ["ipfs daemon"],
+      "ipfs": ["cd $ROOT", "make setup-ipfs", "ipfs daemon"],
       "air": ["cd $ROOT", "air"],
-      "gex": ["gex"]
+      "gex": ["go install github.com/cosmos/gex@latest", "gex"]
     }
   }
 }

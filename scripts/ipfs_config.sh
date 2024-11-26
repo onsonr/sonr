@@ -1,7 +1,5 @@
 #!/bin/bash
 
-go install github.com/cosmos/gex@latest
-go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
 
 rm -rf ~/.ipfs
 

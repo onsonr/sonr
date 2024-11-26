@@ -11,6 +11,8 @@
 aof*
 dist
 **/.haptic
+static
+pkg/webapp/dist
 
 # Test binary
 *.test
