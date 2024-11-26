@@ -11,6 +11,7 @@ message GenesisState {
   // Params defines all the parameters of the module.
   Params params = 1 [(gogoproto.nullable) = false];
 }
+
 // Params defines the set of module parameters.
 message Params {
   option (amino.name) = "vault/params";
@@ -22,6 +23,19 @@ message Params {
   Schema schema = 4;
 }
 
+// Capability reprensents the available capabilities of a decentralized web node
+message Capability {
+  string name = 1;
+  string description = 2;
+}
+
+// Resource reprensents the available resources of a decentralized web node
+message Resource {
+  string name = 1;
+  string description = 2;
+}
+
+// Schema is the Database Model for Decentralized Web Nodes
 message Schema {
   int32 version = 1;
   string account = 2;

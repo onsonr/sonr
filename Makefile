@@ -289,17 +289,44 @@ sh-testnet: mod-tidy
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
 
 ###############################################################################
-###                                    extras                                ###
+###                                generation                               ###
 ###############################################################################
+.PHONY: buf-deploy pkl-gen tailwind-gen templ-gen
 
-.PHONY: buf-publish templ-gen
+buf-deploy:
+	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
+
+pkl-deploy:
+	sh ./scripts/upload_pkl.sh
+
+pkl-gen:
+	pkl-gen-go pkl/base.types/Ctx.pkl
+	pkl-gen-go pkl/base.types/DWN.pkl
+	pkl-gen-go pkl/base.types/ORM.pkl
+
+tailwind-gen:
+	cd ./pkg/webapp && bun install && bun run build
+	cp ./pkg/webapp/components/styles/styles.css ./cmd/hway/styles.css
+	rm -rf ./pkg/webapp/node_modules
 
 templ-gen:
 	templ generate
 
-buf-publish:
+
+###############################################################################
+###                             custom builds                               ###
+###############################################################################
+.PHONY: motr-build hway-build hway-serve
+
+buf-deploy:
 	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
 
+
+motr-build:
+	GOOS=js GOARCH=wasm go build -o build/app.wasm ./cmd/motr/main.go
+
+hway-build: tailwind-gen templ-gen
+	go build -o build/hway ./cmd/hway/main.go
 
 
 ###############################################################################
