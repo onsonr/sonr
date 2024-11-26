@@ -144,60 +144,6 @@
           "store_path": "/nix/store/1bnivwijzrnzx5h0hd5rywwy8rlhxmw5-gum-0.14.5"
         }
       }
-    },
-    "ipfs@latest": {
-      "last_modified": "2023-02-24T09:01:09Z",
-      "resolved": "github:NixOS/nixpkgs/7d0ed7f2e5aea07ab22ccb338d27fbe347ed2f11#ipfs",
-      "source": "devbox-search",
-      "version": "0.17.0"
-    },
-    "templ@latest": {
-      "last_modified": "2024-10-13T23:44:06Z",
-      "resolved": "github:NixOS/nixpkgs/d4f247e89f6e10120f911e2e2d2254a050d0f732#templ",
-      "source": "devbox-search",
-      "version": "0.2.778",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/n7bmbwk126kiclzi317yprpnc6rkn0jv-templ-0.2.778",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/n7bmbwk126kiclzi317yprpnc6rkn0jv-templ-0.2.778"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/9fi535j2qw60x28vb5wlcz989z2wz959-templ-0.2.778",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/9fi535j2qw60x28vb5wlcz989z2wz959-templ-0.2.778"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/6r17bj68ahbf41xlk87pilbhj394anyy-templ-0.2.778",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/6r17bj68ahbf41xlk87pilbhj394anyy-templ-0.2.778"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/6c1sqrhl7a68npksq7jicsa310qj9k1q-templ-0.2.778",
-              "default": true
-            }
-          ],
-          "store_path": "/nix/store/6c1sqrhl7a68npksq7jicsa310qj9k1q-templ-0.2.778"
-        }
-      }
     }
   }
 }

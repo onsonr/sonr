@@ -13,6 +13,7 @@ dist
 **/.haptic
 static
 pkg/webapp/dist
+.agent
 
 # Test binary
 *.test
