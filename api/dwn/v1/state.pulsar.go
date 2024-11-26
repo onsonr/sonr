@@ -13,17 +13,71 @@ import (
 	sync "sync"
 )
 
+var _ protoreflect.List = (*_Credential_3_list)(nil)
+
+type _Credential_3_list struct {
+	list *[]string
+}
+
+func (x *_Credential_3_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Credential_3_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Credential_3_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Credential_3_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Credential_3_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Credential at list field Transports as it is not of Message kind"))
+}
+
+func (x *_Credential_3_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Credential_3_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Credential_3_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
-	md_Credential         protoreflect.MessageDescriptor
-	fd_Credential_account protoreflect.FieldDescriptor
-	fd_Credential_amount  protoreflect.FieldDescriptor
+	md_Credential                  protoreflect.MessageDescriptor
+	fd_Credential_id               protoreflect.FieldDescriptor
+	fd_Credential_type             protoreflect.FieldDescriptor
+	fd_Credential_transports       protoreflect.FieldDescriptor
+	fd_Credential_public_key       protoreflect.FieldDescriptor
+	fd_Credential_attestation_type protoreflect.FieldDescriptor
+	fd_Credential_created_at       protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_dwn_v1_state_proto_init()
 	md_Credential = File_dwn_v1_state_proto.Messages().ByName("Credential")
-	fd_Credential_account = md_Credential.Fields().ByName("account")
-	fd_Credential_amount = md_Credential.Fields().ByName("amount")
+	fd_Credential_id = md_Credential.Fields().ByName("id")
+	fd_Credential_type = md_Credential.Fields().ByName("type")
+	fd_Credential_transports = md_Credential.Fields().ByName("transports")
+	fd_Credential_public_key = md_Credential.Fields().ByName("public_key")
+	fd_Credential_attestation_type = md_Credential.Fields().ByName("attestation_type")
+	fd_Credential_created_at = md_Credential.Fields().ByName("created_at")
 }
 
 var _ protoreflect.Message = (*fastReflection_Credential)(nil)
@@ -91,15 +145,39 @@ func (x *fastReflection_Credential) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Credential) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if len(x.Account) != 0 {
-		value := protoreflect.ValueOfBytes(x.Account)
-		if !f(fd_Credential_account, value) {
+	if len(x.Id) != 0 {
+		value := protoreflect.ValueOfBytes(x.Id)
+		if !f(fd_Credential_id, value) {
 			return
 		}
 	}
-	if x.Amount != uint64(0) {
-		value := protoreflect.ValueOfUint64(x.Amount)
-		if !f(fd_Credential_amount, value) {
+	if x.Type_ != "" {
+		value := protoreflect.ValueOfString(x.Type_)
+		if !f(fd_Credential_type, value) {
+			return
+		}
+	}
+	if len(x.Transports) != 0 {
+		value := protoreflect.ValueOfList(&_Credential_3_list{list: &x.Transports})
+		if !f(fd_Credential_transports, value) {
+			return
+		}
+	}
+	if len(x.PublicKey) != 0 {
+		value := protoreflect.ValueOfBytes(x.PublicKey)
+		if !f(fd_Credential_public_key, value) {
+			return
+		}
+	}
+	if x.AttestationType != "" {
+		value := protoreflect.ValueOfString(x.AttestationType)
+		if !f(fd_Credential_attestation_type, value) {
+			return
+		}
+	}
+	if x.CreatedAt != uint64(0) {
+		value := protoreflect.ValueOfUint64(x.CreatedAt)
+		if !f(fd_Credential_created_at, value) {
 			return
 		}
 	}
@@ -118,10 +196,18 @@ func (x *fastReflection_Credential) Range(f func(protoreflect.FieldDescriptor, p
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Credential) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "dwn.v1.Credential.account":
-		return len(x.Account) != 0
-	case "dwn.v1.Credential.amount":
-		return x.Amount != uint64(0)
+	case "dwn.v1.Credential.id":
+		return len(x.Id) != 0
+	case "dwn.v1.Credential.type":
+		return x.Type_ != ""
+	case "dwn.v1.Credential.transports":
+		return len(x.Transports) != 0
+	case "dwn.v1.Credential.public_key":
+		return len(x.PublicKey) != 0
+	case "dwn.v1.Credential.attestation_type":
+		return x.AttestationType != ""
+	case "dwn.v1.Credential.created_at":
+		return x.CreatedAt != uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Credential"))
@@ -138,10 +224,18 @@ func (x *fastReflection_Credential) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Credential) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "dwn.v1.Credential.account":
-		x.Account = nil
-	case "dwn.v1.Credential.amount":
-		x.Amount = uint64(0)
+	case "dwn.v1.Credential.id":
+		x.Id = nil
+	case "dwn.v1.Credential.type":
+		x.Type_ = ""
+	case "dwn.v1.Credential.transports":
+		x.Transports = nil
+	case "dwn.v1.Credential.public_key":
+		x.PublicKey = nil
+	case "dwn.v1.Credential.attestation_type":
+		x.AttestationType = ""
+	case "dwn.v1.Credential.created_at":
+		x.CreatedAt = uint64(0)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Credential"))
@@ -158,11 +252,26 @@ func (x *fastReflection_Credential) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Credential) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "dwn.v1.Credential.account":
-		value := x.Account
+	case "dwn.v1.Credential.id":
+		value := x.Id
 		return protoreflect.ValueOfBytes(value)
-	case "dwn.v1.Credential.amount":
-		value := x.Amount
+	case "dwn.v1.Credential.type":
+		value := x.Type_
+		return protoreflect.ValueOfString(value)
+	case "dwn.v1.Credential.transports":
+		if len(x.Transports) == 0 {
+			return protoreflect.ValueOfList(&_Credential_3_list{})
+		}
+		listValue := &_Credential_3_list{list: &x.Transports}
+		return protoreflect.ValueOfList(listValue)
+	case "dwn.v1.Credential.public_key":
+		value := x.PublicKey
+		return protoreflect.ValueOfBytes(value)
+	case "dwn.v1.Credential.attestation_type":
+		value := x.AttestationType
+		return protoreflect.ValueOfString(value)
+	case "dwn.v1.Credential.created_at":
+		value := x.CreatedAt
 		return protoreflect.ValueOfUint64(value)
 	default:
 		if descriptor.IsExtension() {
@@ -184,10 +293,20 @@ func (x *fastReflection_Credential) Get(descriptor protoreflect.FieldDescriptor)
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Credential) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "dwn.v1.Credential.account":
-		x.Account = value.Bytes()
-	case "dwn.v1.Credential.amount":
-		x.Amount = value.Uint()
+	case "dwn.v1.Credential.id":
+		x.Id = value.Bytes()
+	case "dwn.v1.Credential.type":
+		x.Type_ = value.Interface().(string)
+	case "dwn.v1.Credential.transports":
+		lv := value.List()
+		clv := lv.(*_Credential_3_list)
+		x.Transports = *clv.list
+	case "dwn.v1.Credential.public_key":
+		x.PublicKey = value.Bytes()
+	case "dwn.v1.Credential.attestation_type":
+		x.AttestationType = value.Interface().(string)
+	case "dwn.v1.Credential.created_at":
+		x.CreatedAt = value.Uint()
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Credential"))
@@ -208,10 +327,22 @@ func (x *fastReflection_Credential) Set(fd protoreflect.FieldDescriptor, value p
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Credential) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dwn.v1.Credential.account":
-		panic(fmt.Errorf("field account of message dwn.v1.Credential is not mutable"))
-	case "dwn.v1.Credential.amount":
-		panic(fmt.Errorf("field amount of message dwn.v1.Credential is not mutable"))
+	case "dwn.v1.Credential.transports":
+		if x.Transports == nil {
+			x.Transports = []string{}
+		}
+		value := &_Credential_3_list{list: &x.Transports}
+		return protoreflect.ValueOfList(value)
+	case "dwn.v1.Credential.id":
+		panic(fmt.Errorf("field id of message dwn.v1.Credential is not mutable"))
+	case "dwn.v1.Credential.type":
+		panic(fmt.Errorf("field type of message dwn.v1.Credential is not mutable"))
+	case "dwn.v1.Credential.public_key":
+		panic(fmt.Errorf("field public_key of message dwn.v1.Credential is not mutable"))
+	case "dwn.v1.Credential.attestation_type":
+		panic(fmt.Errorf("field attestation_type of message dwn.v1.Credential is not mutable"))
+	case "dwn.v1.Credential.created_at":
+		panic(fmt.Errorf("field created_at of message dwn.v1.Credential is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Credential"))
@@ -225,9 +356,18 @@ func (x *fastReflection_Credential) Mutable(fd protoreflect.FieldDescriptor) pro
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Credential) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dwn.v1.Credential.account":
+	case "dwn.v1.Credential.id":
 		return protoreflect.ValueOfBytes(nil)
-	case "dwn.v1.Credential.amount":
+	case "dwn.v1.Credential.type":
+		return protoreflect.ValueOfString("")
+	case "dwn.v1.Credential.transports":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Credential_3_list{list: &list})
+	case "dwn.v1.Credential.public_key":
+		return protoreflect.ValueOfBytes(nil)
+	case "dwn.v1.Credential.attestation_type":
+		return protoreflect.ValueOfString("")
+	case "dwn.v1.Credential.created_at":
 		return protoreflect.ValueOfUint64(uint64(0))
 	default:
 		if fd.IsExtension() {
@@ -298,12 +438,30 @@ func (x *fastReflection_Credential) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Account)
+		l = len(x.Id)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		if x.Amount != 0 {
-			n += 1 + runtime.Sov(uint64(x.Amount))
+		l = len(x.Type_)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Transports) > 0 {
+			for _, s := range x.Transports {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
+		}
+		l = len(x.PublicKey)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		l = len(x.AttestationType)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if x.CreatedAt != 0 {
+			n += 1 + runtime.Sov(uint64(x.CreatedAt))
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -334,15 +492,45 @@ func (x *fastReflection_Credential) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if x.Amount != 0 {
-			i = runtime.EncodeVarint(dAtA, i, uint64(x.Amount))
+		if x.CreatedAt != 0 {
+			i = runtime.EncodeVarint(dAtA, i, uint64(x.CreatedAt))
 			i--
-			dAtA[i] = 0x10
+			dAtA[i] = 0x30
 		}
-		if len(x.Account) > 0 {
-			i -= len(x.Account)
-			copy(dAtA[i:], x.Account)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Account)))
+		if len(x.AttestationType) > 0 {
+			i -= len(x.AttestationType)
+			copy(dAtA[i:], x.AttestationType)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.AttestationType)))
+			i--
+			dAtA[i] = 0x2a
+		}
+		if len(x.PublicKey) > 0 {
+			i -= len(x.PublicKey)
+			copy(dAtA[i:], x.PublicKey)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.PublicKey)))
+			i--
+			dAtA[i] = 0x22
+		}
+		if len(x.Transports) > 0 {
+			for iNdEx := len(x.Transports) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.Transports[iNdEx])
+				copy(dAtA[i:], x.Transports[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Transports[iNdEx])))
+				i--
+				dAtA[i] = 0x1a
+			}
+		}
+		if len(x.Type_) > 0 {
+			i -= len(x.Type_)
+			copy(dAtA[i:], x.Type_)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Type_)))
+			i--
+			dAtA[i] = 0x12
+		}
+		if len(x.Id) > 0 {
+			i -= len(x.Id)
+			copy(dAtA[i:], x.Id)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Id)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -397,7 +585,7 @@ func (x *fastReflection_Credential) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Account", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Id", wireType)
 				}
 				var byteLen int
 				for shift := uint(0); ; shift += 7 {
@@ -424,16 +612,16 @@ func (x *fastReflection_Credential) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Account = append(x.Account[:0], dAtA[iNdEx:postIndex]...)
-				if x.Account == nil {
-					x.Account = []byte{}
+				x.Id = append(x.Id[:0], dAtA[iNdEx:postIndex]...)
+				if x.Id == nil {
+					x.Id = []byte{}
 				}
 				iNdEx = postIndex
 			case 2:
-				if wireType != 0 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Amount", wireType)
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Type_", wireType)
 				}
-				x.Amount = 0
+				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
 					if shift >= 64 {
 						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
@@ -443,7 +631,137 @@ func (x *fastReflection_Credential) ProtoMethods() *protoiface.Methods {
 					}
 					b := dAtA[iNdEx]
 					iNdEx++
-					x.Amount |= uint64(b&0x7F) << shift
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Type_ = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Transports", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Transports = append(x.Transports, string(dAtA[iNdEx:postIndex]))
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field PublicKey", wireType)
+				}
+				var byteLen int
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					byteLen |= int(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				if byteLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + byteLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.PublicKey = append(x.PublicKey[:0], dAtA[iNdEx:postIndex]...)
+				if x.PublicKey == nil {
+					x.PublicKey = []byte{}
+				}
+				iNdEx = postIndex
+			case 5:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field AttestationType", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.AttestationType = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 6:
+				if wireType != 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field CreatedAt", wireType)
+				}
+				x.CreatedAt = 0
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					x.CreatedAt |= uint64(b&0x7F) << shift
 					if b < 0x80 {
 						break
 					}
@@ -971,8 +1289,12 @@ type Credential struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Account []byte `protobuf:"bytes,1,opt,name=account,proto3" json:"account,omitempty"`
-	Amount  uint64 `protobuf:"varint,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Id              []byte   `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                                  // The credential ID as a byte array
+	Type_           string   `protobuf:"bytes,2,opt,name=type,proto3" json:"type,omitempty"`                                              // The credential type (e.g. "public-key")
+	Transports      []string `protobuf:"bytes,3,rep,name=transports,proto3" json:"transports,omitempty"`                                  // Optional transport hints (usb, nfc, ble, internal)
+	PublicKey       []byte   `protobuf:"bytes,4,opt,name=public_key,json=publicKey,proto3" json:"public_key,omitempty"`                   // The credential's public key
+	AttestationType string   `protobuf:"bytes,5,opt,name=attestation_type,json=attestationType,proto3" json:"attestation_type,omitempty"` // The attestation type used (e.g. "none", "indirect", etc)
+	CreatedAt       uint64   `protobuf:"varint,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`                  // Timestamp of when the credential was created
 }
 
 func (x *Credential) Reset() {
@@ -995,16 +1317,44 @@ func (*Credential) Descriptor() ([]byte, []int) {
 	return file_dwn_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Credential) GetAccount() []byte {
+func (x *Credential) GetId() []byte {
 	if x != nil {
-		return x.Account
+		return x.Id
 	}
 	return nil
 }
 
-func (x *Credential) GetAmount() uint64 {
+func (x *Credential) GetType_() string {
 	if x != nil {
-		return x.Amount
+		return x.Type_
+	}
+	return ""
+}
+
+func (x *Credential) GetTransports() []string {
+	if x != nil {
+		return x.Transports
+	}
+	return nil
+}
+
+func (x *Credential) GetPublicKey() []byte {
+	if x != nil {
+		return x.PublicKey
+	}
+	return nil
+}
+
+func (x *Credential) GetAttestationType() string {
+	if x != nil {
+		return x.AttestationType
+	}
+	return ""
+}
+
+func (x *Credential) GetCreatedAt() uint64 {
+	if x != nil {
+		return x.CreatedAt
 	}
 	return 0
 }
@@ -1058,27 +1408,34 @@ var file_dwn_v1_state_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x64, 0x77, 0x6e, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x64, 0x77, 0x6e, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x5f, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74,
-	0x69, 0x61, 0x6c, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01,
-	0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x0a,
-	0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x09, 0x0a,
-	0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75,
-	0x6e, 0x74, 0x10, 0x01, 0x18, 0x01, 0x22, 0x5c, 0x0a, 0x07, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c,
-	0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x01, 0x20, 0x01,
-	0x28, 0x0c, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x61,
-	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04, 0x52, 0x06, 0x61, 0x6d, 0x6f,
-	0x75, 0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19, 0x0a, 0x09, 0x0a, 0x07, 0x61,
-	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74,
-	0x10, 0x01, 0x18, 0x02, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x64, 0x77, 0x6e, 0x2e,
-	0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74, 0x6f, 0x50, 0x01,
-	0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x6f, 0x6e, 0x73,
-	0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x64, 0x77, 0x6e,
-	0x2f, 0x76, 0x31, 0x3b, 0x64, 0x77, 0x6e, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x44, 0x58, 0x58, 0xaa,
-	0x02, 0x06, 0x44, 0x77, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x44, 0x77, 0x6e, 0x5c, 0x56,
-	0x31, 0xe2, 0x02, 0x12, 0x44, 0x77, 0x6e, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50, 0x42, 0x4d, 0x65,
-	0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x77, 0x6e, 0x3a, 0x3a, 0x56, 0x31,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xd3, 0x01, 0x0a, 0x0a, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e,
+	0x74, 0x69, 0x61, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c,
+	0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x1e, 0x0a, 0x0a, 0x74, 0x72, 0x61, 0x6e,
+	0x73, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0a, 0x74, 0x72,
+	0x61, 0x6e, 0x73, 0x70, 0x6f, 0x72, 0x74, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x75, 0x62, 0x6c,
+	0x69, 0x63, 0x5f, 0x6b, 0x65, 0x79, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x09, 0x70, 0x75,
+	0x62, 0x6c, 0x69, 0x63, 0x4b, 0x65, 0x79, 0x12, 0x29, 0x0a, 0x10, 0x61, 0x74, 0x74, 0x65, 0x73,
+	0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0f, 0x61, 0x74, 0x74, 0x65, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x54, 0x79,
+	0x70, 0x65, 0x12, 0x1d, 0x0a, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x5f, 0x61, 0x74,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x04, 0x52, 0x09, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x64, 0x41,
+	0x74, 0x3a, 0x18, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x12, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12,
+	0x08, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x10, 0x01, 0x18, 0x01, 0x22, 0x5c, 0x0a, 0x07, 0x50,
+	0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x12, 0x16, 0x0a, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x04,
+	0x52, 0x06, 0x61, 0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x3a, 0x1f, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x19,
+	0x0a, 0x09, 0x0a, 0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x12, 0x0a, 0x0a, 0x06, 0x61,
+	0x6d, 0x6f, 0x75, 0x6e, 0x74, 0x10, 0x01, 0x18, 0x02, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d,
+	0x2e, 0x64, 0x77, 0x6e, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72,
+	0x6f, 0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
+	0x6d, 0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x64, 0x77, 0x6e, 0x2f, 0x76, 0x31, 0x3b, 0x64, 0x77, 0x6e, 0x76, 0x31, 0xa2, 0x02,
+	0x03, 0x44, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x44, 0x77, 0x6e, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06,
+	0x44, 0x77, 0x6e, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x44, 0x77, 0x6e, 0x5c, 0x56, 0x31, 0x5c,
+	0x47, 0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x44, 0x77,
+	0x6e, 0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
