@@ -13,84 +13,84 @@ import (
 	sync "sync"
 )
 
-var _ protoreflect.List = (*_Metadata_7_list)(nil)
+var _ protoreflect.List = (*_Domain_7_list)(nil)
 
-type _Metadata_7_list struct {
+type _Domain_7_list struct {
 	list *[]string
 }
 
-func (x *_Metadata_7_list) Len() int {
+func (x *_Domain_7_list) Len() int {
 	if x.list == nil {
 		return 0
 	}
 	return len(*x.list)
 }
 
-func (x *_Metadata_7_list) Get(i int) protoreflect.Value {
+func (x *_Domain_7_list) Get(i int) protoreflect.Value {
 	return protoreflect.ValueOfString((*x.list)[i])
 }
 
-func (x *_Metadata_7_list) Set(i int, value protoreflect.Value) {
+func (x *_Domain_7_list) Set(i int, value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	(*x.list)[i] = concreteValue
 }
 
-func (x *_Metadata_7_list) Append(value protoreflect.Value) {
+func (x *_Domain_7_list) Append(value protoreflect.Value) {
 	valueUnwrapped := value.String()
 	concreteValue := valueUnwrapped
 	*x.list = append(*x.list, concreteValue)
 }
 
-func (x *_Metadata_7_list) AppendMutable() protoreflect.Value {
-	panic(fmt.Errorf("AppendMutable can not be called on message Metadata at list field Tags as it is not of Message kind"))
+func (x *_Domain_7_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Domain at list field Tags as it is not of Message kind"))
 }
 
-func (x *_Metadata_7_list) Truncate(n int) {
+func (x *_Domain_7_list) Truncate(n int) {
 	*x.list = (*x.list)[:n]
 }
 
-func (x *_Metadata_7_list) NewElement() protoreflect.Value {
+func (x *_Domain_7_list) NewElement() protoreflect.Value {
 	v := ""
 	return protoreflect.ValueOfString(v)
 }
 
-func (x *_Metadata_7_list) IsValid() bool {
+func (x *_Domain_7_list) IsValid() bool {
 	return x.list != nil
 }
 
 var (
-	md_Metadata             protoreflect.MessageDescriptor
-	fd_Metadata_id          protoreflect.FieldDescriptor
-	fd_Metadata_origin      protoreflect.FieldDescriptor
-	fd_Metadata_name        protoreflect.FieldDescriptor
-	fd_Metadata_description protoreflect.FieldDescriptor
-	fd_Metadata_category    protoreflect.FieldDescriptor
-	fd_Metadata_icon        protoreflect.FieldDescriptor
-	fd_Metadata_tags        protoreflect.FieldDescriptor
+	md_Domain             protoreflect.MessageDescriptor
+	fd_Domain_id          protoreflect.FieldDescriptor
+	fd_Domain_origin      protoreflect.FieldDescriptor
+	fd_Domain_name        protoreflect.FieldDescriptor
+	fd_Domain_description protoreflect.FieldDescriptor
+	fd_Domain_category    protoreflect.FieldDescriptor
+	fd_Domain_icon        protoreflect.FieldDescriptor
+	fd_Domain_tags        protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_svc_v1_state_proto_init()
-	md_Metadata = File_svc_v1_state_proto.Messages().ByName("Metadata")
-	fd_Metadata_id = md_Metadata.Fields().ByName("id")
-	fd_Metadata_origin = md_Metadata.Fields().ByName("origin")
-	fd_Metadata_name = md_Metadata.Fields().ByName("name")
-	fd_Metadata_description = md_Metadata.Fields().ByName("description")
-	fd_Metadata_category = md_Metadata.Fields().ByName("category")
-	fd_Metadata_icon = md_Metadata.Fields().ByName("icon")
-	fd_Metadata_tags = md_Metadata.Fields().ByName("tags")
+	md_Domain = File_svc_v1_state_proto.Messages().ByName("Domain")
+	fd_Domain_id = md_Domain.Fields().ByName("id")
+	fd_Domain_origin = md_Domain.Fields().ByName("origin")
+	fd_Domain_name = md_Domain.Fields().ByName("name")
+	fd_Domain_description = md_Domain.Fields().ByName("description")
+	fd_Domain_category = md_Domain.Fields().ByName("category")
+	fd_Domain_icon = md_Domain.Fields().ByName("icon")
+	fd_Domain_tags = md_Domain.Fields().ByName("tags")
 }
 
-var _ protoreflect.Message = (*fastReflection_Metadata)(nil)
+var _ protoreflect.Message = (*fastReflection_Domain)(nil)
 
-type fastReflection_Metadata Metadata
+type fastReflection_Domain Domain
 
-func (x *Metadata) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Metadata)(x)
+func (x *Domain) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Domain)(x)
 }
 
-func (x *Metadata) slowProtoReflect() protoreflect.Message {
+func (x *Domain) slowProtoReflect() protoreflect.Message {
 	mi := &file_svc_v1_state_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -102,43 +102,43 @@ func (x *Metadata) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Metadata_messageType fastReflection_Metadata_messageType
-var _ protoreflect.MessageType = fastReflection_Metadata_messageType{}
+var _fastReflection_Domain_messageType fastReflection_Domain_messageType
+var _ protoreflect.MessageType = fastReflection_Domain_messageType{}
 
-type fastReflection_Metadata_messageType struct{}
+type fastReflection_Domain_messageType struct{}
 
-func (x fastReflection_Metadata_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Metadata)(nil)
+func (x fastReflection_Domain_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Domain)(nil)
 }
-func (x fastReflection_Metadata_messageType) New() protoreflect.Message {
-	return new(fastReflection_Metadata)
+func (x fastReflection_Domain_messageType) New() protoreflect.Message {
+	return new(fastReflection_Domain)
 }
-func (x fastReflection_Metadata_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Metadata
+func (x fastReflection_Domain_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Domain
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Metadata) Descriptor() protoreflect.MessageDescriptor {
-	return md_Metadata
+func (x *fastReflection_Domain) Descriptor() protoreflect.MessageDescriptor {
+	return md_Domain
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Metadata) Type() protoreflect.MessageType {
-	return _fastReflection_Metadata_messageType
+func (x *fastReflection_Domain) Type() protoreflect.MessageType {
+	return _fastReflection_Domain_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Metadata) New() protoreflect.Message {
-	return new(fastReflection_Metadata)
+func (x *fastReflection_Domain) New() protoreflect.Message {
+	return new(fastReflection_Domain)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Metadata) Interface() protoreflect.ProtoMessage {
-	return (*Metadata)(x)
+func (x *fastReflection_Domain) Interface() protoreflect.ProtoMessage {
+	return (*Domain)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -146,46 +146,46 @@ func (x *fastReflection_Metadata) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Metadata) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Domain) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != uint64(0) {
 		value := protoreflect.ValueOfUint64(x.Id)
-		if !f(fd_Metadata_id, value) {
+		if !f(fd_Domain_id, value) {
 			return
 		}
 	}
 	if x.Origin != "" {
 		value := protoreflect.ValueOfString(x.Origin)
-		if !f(fd_Metadata_origin, value) {
+		if !f(fd_Domain_origin, value) {
 			return
 		}
 	}
 	if x.Name != "" {
 		value := protoreflect.ValueOfString(x.Name)
-		if !f(fd_Metadata_name, value) {
+		if !f(fd_Domain_name, value) {
 			return
 		}
 	}
 	if x.Description != "" {
 		value := protoreflect.ValueOfString(x.Description)
-		if !f(fd_Metadata_description, value) {
+		if !f(fd_Domain_description, value) {
 			return
 		}
 	}
 	if x.Category != "" {
 		value := protoreflect.ValueOfString(x.Category)
-		if !f(fd_Metadata_category, value) {
+		if !f(fd_Domain_category, value) {
 			return
 		}
 	}
 	if x.Icon != "" {
 		value := protoreflect.ValueOfString(x.Icon)
-		if !f(fd_Metadata_icon, value) {
+		if !f(fd_Domain_icon, value) {
 			return
 		}
 	}
 	if len(x.Tags) != 0 {
-		value := protoreflect.ValueOfList(&_Metadata_7_list{list: &x.Tags})
-		if !f(fd_Metadata_tags, value) {
+		value := protoreflect.ValueOfList(&_Domain_7_list{list: &x.Tags})
+		if !f(fd_Domain_tags, value) {
 			return
 		}
 	}
@@ -202,27 +202,27 @@ func (x *fastReflection_Metadata) Range(f func(protoreflect.FieldDescriptor, pro
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Metadata) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Domain) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "svc.v1.Metadata.id":
+	case "svc.v1.Domain.id":
 		return x.Id != uint64(0)
-	case "svc.v1.Metadata.origin":
+	case "svc.v1.Domain.origin":
 		return x.Origin != ""
-	case "svc.v1.Metadata.name":
+	case "svc.v1.Domain.name":
 		return x.Name != ""
-	case "svc.v1.Metadata.description":
+	case "svc.v1.Domain.description":
 		return x.Description != ""
-	case "svc.v1.Metadata.category":
+	case "svc.v1.Domain.category":
 		return x.Category != ""
-	case "svc.v1.Metadata.icon":
+	case "svc.v1.Domain.icon":
 		return x.Icon != ""
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		return len(x.Tags) != 0
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -232,27 +232,27 @@ func (x *fastReflection_Metadata) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Metadata) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Domain) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "svc.v1.Metadata.id":
+	case "svc.v1.Domain.id":
 		x.Id = uint64(0)
-	case "svc.v1.Metadata.origin":
+	case "svc.v1.Domain.origin":
 		x.Origin = ""
-	case "svc.v1.Metadata.name":
+	case "svc.v1.Domain.name":
 		x.Name = ""
-	case "svc.v1.Metadata.description":
+	case "svc.v1.Domain.description":
 		x.Description = ""
-	case "svc.v1.Metadata.category":
+	case "svc.v1.Domain.category":
 		x.Category = ""
-	case "svc.v1.Metadata.icon":
+	case "svc.v1.Domain.icon":
 		x.Icon = ""
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		x.Tags = nil
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -262,37 +262,37 @@ func (x *fastReflection_Metadata) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Metadata) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Domain) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "svc.v1.Metadata.id":
+	case "svc.v1.Domain.id":
 		value := x.Id
 		return protoreflect.ValueOfUint64(value)
-	case "svc.v1.Metadata.origin":
+	case "svc.v1.Domain.origin":
 		value := x.Origin
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Metadata.name":
+	case "svc.v1.Domain.name":
 		value := x.Name
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Metadata.description":
+	case "svc.v1.Domain.description":
 		value := x.Description
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Metadata.category":
+	case "svc.v1.Domain.category":
 		value := x.Category
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Metadata.icon":
+	case "svc.v1.Domain.icon":
 		value := x.Icon
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		if len(x.Tags) == 0 {
-			return protoreflect.ValueOfList(&_Metadata_7_list{})
+			return protoreflect.ValueOfList(&_Domain_7_list{})
 		}
-		listValue := &_Metadata_7_list{list: &x.Tags}
+		listValue := &_Domain_7_list{list: &x.Tags}
 		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -306,29 +306,29 @@ func (x *fastReflection_Metadata) Get(descriptor protoreflect.FieldDescriptor) p
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Metadata) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Domain) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "svc.v1.Metadata.id":
+	case "svc.v1.Domain.id":
 		x.Id = value.Uint()
-	case "svc.v1.Metadata.origin":
+	case "svc.v1.Domain.origin":
 		x.Origin = value.Interface().(string)
-	case "svc.v1.Metadata.name":
+	case "svc.v1.Domain.name":
 		x.Name = value.Interface().(string)
-	case "svc.v1.Metadata.description":
+	case "svc.v1.Domain.description":
 		x.Description = value.Interface().(string)
-	case "svc.v1.Metadata.category":
+	case "svc.v1.Domain.category":
 		x.Category = value.Interface().(string)
-	case "svc.v1.Metadata.icon":
+	case "svc.v1.Domain.icon":
 		x.Icon = value.Interface().(string)
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		lv := value.List()
-		clv := lv.(*_Metadata_7_list)
+		clv := lv.(*_Domain_7_list)
 		x.Tags = *clv.list
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -342,69 +342,69 @@ func (x *fastReflection_Metadata) Set(fd protoreflect.FieldDescriptor, value pro
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Metadata) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Domain) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		if x.Tags == nil {
 			x.Tags = []string{}
 		}
-		value := &_Metadata_7_list{list: &x.Tags}
+		value := &_Domain_7_list{list: &x.Tags}
 		return protoreflect.ValueOfList(value)
-	case "svc.v1.Metadata.id":
-		panic(fmt.Errorf("field id of message svc.v1.Metadata is not mutable"))
-	case "svc.v1.Metadata.origin":
-		panic(fmt.Errorf("field origin of message svc.v1.Metadata is not mutable"))
-	case "svc.v1.Metadata.name":
-		panic(fmt.Errorf("field name of message svc.v1.Metadata is not mutable"))
-	case "svc.v1.Metadata.description":
-		panic(fmt.Errorf("field description of message svc.v1.Metadata is not mutable"))
-	case "svc.v1.Metadata.category":
-		panic(fmt.Errorf("field category of message svc.v1.Metadata is not mutable"))
-	case "svc.v1.Metadata.icon":
-		panic(fmt.Errorf("field icon of message svc.v1.Metadata is not mutable"))
+	case "svc.v1.Domain.id":
+		panic(fmt.Errorf("field id of message svc.v1.Domain is not mutable"))
+	case "svc.v1.Domain.origin":
+		panic(fmt.Errorf("field origin of message svc.v1.Domain is not mutable"))
+	case "svc.v1.Domain.name":
+		panic(fmt.Errorf("field name of message svc.v1.Domain is not mutable"))
+	case "svc.v1.Domain.description":
+		panic(fmt.Errorf("field description of message svc.v1.Domain is not mutable"))
+	case "svc.v1.Domain.category":
+		panic(fmt.Errorf("field category of message svc.v1.Domain is not mutable"))
+	case "svc.v1.Domain.icon":
+		panic(fmt.Errorf("field icon of message svc.v1.Domain is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Metadata) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Domain) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "svc.v1.Metadata.id":
+	case "svc.v1.Domain.id":
 		return protoreflect.ValueOfUint64(uint64(0))
-	case "svc.v1.Metadata.origin":
+	case "svc.v1.Domain.origin":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Metadata.name":
+	case "svc.v1.Domain.name":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Metadata.description":
+	case "svc.v1.Domain.description":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Metadata.category":
+	case "svc.v1.Domain.category":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Metadata.icon":
+	case "svc.v1.Domain.icon":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Metadata.tags":
+	case "svc.v1.Domain.tags":
 		list := []string{}
-		return protoreflect.ValueOfList(&_Metadata_7_list{list: &list})
+		return protoreflect.ValueOfList(&_Domain_7_list{list: &list})
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Domain"))
 		}
-		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Domain does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Metadata) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Domain) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in svc.v1.Metadata", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in svc.v1.Domain", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -412,7 +412,7 @@ func (x *fastReflection_Metadata) WhichOneof(d protoreflect.OneofDescriptor) pro
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Metadata) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Domain) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -423,7 +423,7 @@ func (x *fastReflection_Metadata) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Metadata) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Domain) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -435,7 +435,7 @@ func (x *fastReflection_Metadata) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Metadata) IsValid() bool {
+func (x *fastReflection_Domain) IsValid() bool {
 	return x != nil
 }
 
@@ -445,9 +445,9 @@ func (x *fastReflection_Metadata) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Domain) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Metadata)
+		x := input.Message.Interface().(*Domain)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -498,7 +498,7 @@ func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Metadata)
+		x := input.Message.Interface().(*Domain)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -577,7 +577,7 @@ func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Metadata)
+		x := input.Message.Interface().(*Domain)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -609,10 +609,10 @@ func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Metadata: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Domain: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Metadata: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Domain: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -862,31 +862,31 @@ func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Profile            protoreflect.MessageDescriptor
-	fd_Profile_id         protoreflect.FieldDescriptor
-	fd_Profile_subject    protoreflect.FieldDescriptor
-	fd_Profile_origin     protoreflect.FieldDescriptor
-	fd_Profile_controller protoreflect.FieldDescriptor
+	md_Metadata            protoreflect.MessageDescriptor
+	fd_Metadata_id         protoreflect.FieldDescriptor
+	fd_Metadata_subject    protoreflect.FieldDescriptor
+	fd_Metadata_origin     protoreflect.FieldDescriptor
+	fd_Metadata_controller protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_svc_v1_state_proto_init()
-	md_Profile = File_svc_v1_state_proto.Messages().ByName("Profile")
-	fd_Profile_id = md_Profile.Fields().ByName("id")
-	fd_Profile_subject = md_Profile.Fields().ByName("subject")
-	fd_Profile_origin = md_Profile.Fields().ByName("origin")
-	fd_Profile_controller = md_Profile.Fields().ByName("controller")
+	md_Metadata = File_svc_v1_state_proto.Messages().ByName("Metadata")
+	fd_Metadata_id = md_Metadata.Fields().ByName("id")
+	fd_Metadata_subject = md_Metadata.Fields().ByName("subject")
+	fd_Metadata_origin = md_Metadata.Fields().ByName("origin")
+	fd_Metadata_controller = md_Metadata.Fields().ByName("controller")
 }
 
-var _ protoreflect.Message = (*fastReflection_Profile)(nil)
+var _ protoreflect.Message = (*fastReflection_Metadata)(nil)
 
-type fastReflection_Profile Profile
+type fastReflection_Metadata Metadata
 
-func (x *Profile) ProtoReflect() protoreflect.Message {
-	return (*fastReflection_Profile)(x)
+func (x *Metadata) ProtoReflect() protoreflect.Message {
+	return (*fastReflection_Metadata)(x)
 }
 
-func (x *Profile) slowProtoReflect() protoreflect.Message {
+func (x *Metadata) slowProtoReflect() protoreflect.Message {
 	mi := &file_svc_v1_state_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -898,43 +898,43 @@ func (x *Profile) slowProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-var _fastReflection_Profile_messageType fastReflection_Profile_messageType
-var _ protoreflect.MessageType = fastReflection_Profile_messageType{}
+var _fastReflection_Metadata_messageType fastReflection_Metadata_messageType
+var _ protoreflect.MessageType = fastReflection_Metadata_messageType{}
 
-type fastReflection_Profile_messageType struct{}
+type fastReflection_Metadata_messageType struct{}
 
-func (x fastReflection_Profile_messageType) Zero() protoreflect.Message {
-	return (*fastReflection_Profile)(nil)
+func (x fastReflection_Metadata_messageType) Zero() protoreflect.Message {
+	return (*fastReflection_Metadata)(nil)
 }
-func (x fastReflection_Profile_messageType) New() protoreflect.Message {
-	return new(fastReflection_Profile)
+func (x fastReflection_Metadata_messageType) New() protoreflect.Message {
+	return new(fastReflection_Metadata)
 }
-func (x fastReflection_Profile_messageType) Descriptor() protoreflect.MessageDescriptor {
-	return md_Profile
+func (x fastReflection_Metadata_messageType) Descriptor() protoreflect.MessageDescriptor {
+	return md_Metadata
 }
 
 // Descriptor returns message descriptor, which contains only the protobuf
 // type information for the message.
-func (x *fastReflection_Profile) Descriptor() protoreflect.MessageDescriptor {
-	return md_Profile
+func (x *fastReflection_Metadata) Descriptor() protoreflect.MessageDescriptor {
+	return md_Metadata
 }
 
 // Type returns the message type, which encapsulates both Go and protobuf
 // type information. If the Go type information is not needed,
 // it is recommended that the message descriptor be used instead.
-func (x *fastReflection_Profile) Type() protoreflect.MessageType {
-	return _fastReflection_Profile_messageType
+func (x *fastReflection_Metadata) Type() protoreflect.MessageType {
+	return _fastReflection_Metadata_messageType
 }
 
 // New returns a newly allocated and mutable empty message.
-func (x *fastReflection_Profile) New() protoreflect.Message {
-	return new(fastReflection_Profile)
+func (x *fastReflection_Metadata) New() protoreflect.Message {
+	return new(fastReflection_Metadata)
 }
 
 // Interface unwraps the message reflection interface and
 // returns the underlying ProtoMessage interface.
-func (x *fastReflection_Profile) Interface() protoreflect.ProtoMessage {
-	return (*Profile)(x)
+func (x *fastReflection_Metadata) Interface() protoreflect.ProtoMessage {
+	return (*Metadata)(x)
 }
 
 // Range iterates over every populated field in an undefined order,
@@ -942,28 +942,28 @@ func (x *fastReflection_Profile) Interface() protoreflect.ProtoMessage {
 // Range returns immediately if f returns false.
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
-func (x *fastReflection_Profile) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
+func (x *fastReflection_Metadata) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
 	if x.Id != "" {
 		value := protoreflect.ValueOfString(x.Id)
-		if !f(fd_Profile_id, value) {
+		if !f(fd_Metadata_id, value) {
 			return
 		}
 	}
 	if x.Subject != "" {
 		value := protoreflect.ValueOfString(x.Subject)
-		if !f(fd_Profile_subject, value) {
+		if !f(fd_Metadata_subject, value) {
 			return
 		}
 	}
 	if x.Origin != "" {
 		value := protoreflect.ValueOfString(x.Origin)
-		if !f(fd_Profile_origin, value) {
+		if !f(fd_Metadata_origin, value) {
 			return
 		}
 	}
 	if x.Controller != "" {
 		value := protoreflect.ValueOfString(x.Controller)
-		if !f(fd_Profile_controller, value) {
+		if !f(fd_Metadata_controller, value) {
 			return
 		}
 	}
@@ -980,21 +980,21 @@ func (x *fastReflection_Profile) Range(f func(protoreflect.FieldDescriptor, prot
 // In other cases (aside from the nullable cases above),
 // a proto3 scalar field is populated if it contains a non-zero value, and
 // a repeated field is populated if it is non-empty.
-func (x *fastReflection_Profile) Has(fd protoreflect.FieldDescriptor) bool {
+func (x *fastReflection_Metadata) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "svc.v1.Profile.id":
+	case "svc.v1.Metadata.id":
 		return x.Id != ""
-	case "svc.v1.Profile.subject":
+	case "svc.v1.Metadata.subject":
 		return x.Subject != ""
-	case "svc.v1.Profile.origin":
+	case "svc.v1.Metadata.origin":
 		return x.Origin != ""
-	case "svc.v1.Profile.controller":
+	case "svc.v1.Metadata.controller":
 		return x.Controller != ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1004,21 +1004,21 @@ func (x *fastReflection_Profile) Has(fd protoreflect.FieldDescriptor) bool {
 // associated with the given field number.
 //
 // Clear is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Profile) Clear(fd protoreflect.FieldDescriptor) {
+func (x *fastReflection_Metadata) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "svc.v1.Profile.id":
+	case "svc.v1.Metadata.id":
 		x.Id = ""
-	case "svc.v1.Profile.subject":
+	case "svc.v1.Metadata.subject":
 		x.Subject = ""
-	case "svc.v1.Profile.origin":
+	case "svc.v1.Metadata.origin":
 		x.Origin = ""
-	case "svc.v1.Profile.controller":
+	case "svc.v1.Metadata.controller":
 		x.Controller = ""
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1028,25 +1028,25 @@ func (x *fastReflection_Profile) Clear(fd protoreflect.FieldDescriptor) {
 // the default value of a bytes scalar is guaranteed to be a copy.
 // For unpopulated composite types, it returns an empty, read-only view
 // of the value; to obtain a mutable reference, use Mutable.
-func (x *fastReflection_Profile) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Metadata) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "svc.v1.Profile.id":
+	case "svc.v1.Metadata.id":
 		value := x.Id
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Profile.subject":
+	case "svc.v1.Metadata.subject":
 		value := x.Subject
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Profile.origin":
+	case "svc.v1.Metadata.origin":
 		value := x.Origin
 		return protoreflect.ValueOfString(value)
-	case "svc.v1.Profile.controller":
+	case "svc.v1.Metadata.controller":
 		value := x.Controller
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", descriptor.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", descriptor.FullName()))
 	}
 }
 
@@ -1060,21 +1060,21 @@ func (x *fastReflection_Profile) Get(descriptor protoreflect.FieldDescriptor) pr
 // empty, read-only value, then it panics.
 //
 // Set is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Profile) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
+func (x *fastReflection_Metadata) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "svc.v1.Profile.id":
+	case "svc.v1.Metadata.id":
 		x.Id = value.Interface().(string)
-	case "svc.v1.Profile.subject":
+	case "svc.v1.Metadata.subject":
 		x.Subject = value.Interface().(string)
-	case "svc.v1.Profile.origin":
+	case "svc.v1.Metadata.origin":
 		x.Origin = value.Interface().(string)
-	case "svc.v1.Profile.controller":
+	case "svc.v1.Metadata.controller":
 		x.Controller = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
 	}
 }
 
@@ -1088,52 +1088,52 @@ func (x *fastReflection_Profile) Set(fd protoreflect.FieldDescriptor, value prot
 // It panics if the field does not contain a composite type.
 //
 // Mutable is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Profile) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Metadata) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "svc.v1.Profile.id":
-		panic(fmt.Errorf("field id of message svc.v1.Profile is not mutable"))
-	case "svc.v1.Profile.subject":
-		panic(fmt.Errorf("field subject of message svc.v1.Profile is not mutable"))
-	case "svc.v1.Profile.origin":
-		panic(fmt.Errorf("field origin of message svc.v1.Profile is not mutable"))
-	case "svc.v1.Profile.controller":
-		panic(fmt.Errorf("field controller of message svc.v1.Profile is not mutable"))
+	case "svc.v1.Metadata.id":
+		panic(fmt.Errorf("field id of message svc.v1.Metadata is not mutable"))
+	case "svc.v1.Metadata.subject":
+		panic(fmt.Errorf("field subject of message svc.v1.Metadata is not mutable"))
+	case "svc.v1.Metadata.origin":
+		panic(fmt.Errorf("field origin of message svc.v1.Metadata is not mutable"))
+	case "svc.v1.Metadata.controller":
+		panic(fmt.Errorf("field controller of message svc.v1.Metadata is not mutable"))
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
 	}
 }
 
 // NewField returns a new value that is assignable to the field
 // for the given descriptor. For scalars, this returns the default value.
 // For lists, maps, and messages, this returns a new, empty, mutable value.
-func (x *fastReflection_Profile) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
+func (x *fastReflection_Metadata) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "svc.v1.Profile.id":
+	case "svc.v1.Metadata.id":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Profile.subject":
+	case "svc.v1.Metadata.subject":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Profile.origin":
+	case "svc.v1.Metadata.origin":
 		return protoreflect.ValueOfString("")
-	case "svc.v1.Profile.controller":
+	case "svc.v1.Metadata.controller":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
-			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Profile"))
+			panic(fmt.Errorf("proto3 declared messages do not support extensions: svc.v1.Metadata"))
 		}
-		panic(fmt.Errorf("message svc.v1.Profile does not contain field %s", fd.FullName()))
+		panic(fmt.Errorf("message svc.v1.Metadata does not contain field %s", fd.FullName()))
 	}
 }
 
 // WhichOneof reports which field within the oneof is populated,
 // returning nil if none are populated.
 // It panics if the oneof descriptor does not belong to this message.
-func (x *fastReflection_Profile) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
+func (x *fastReflection_Metadata) WhichOneof(d protoreflect.OneofDescriptor) protoreflect.FieldDescriptor {
 	switch d.FullName() {
 	default:
-		panic(fmt.Errorf("%s is not a oneof field in svc.v1.Profile", d.FullName()))
+		panic(fmt.Errorf("%s is not a oneof field in svc.v1.Metadata", d.FullName()))
 	}
 	panic("unreachable")
 }
@@ -1141,7 +1141,7 @@ func (x *fastReflection_Profile) WhichOneof(d protoreflect.OneofDescriptor) prot
 // GetUnknown retrieves the entire list of unknown fields.
 // The caller may only mutate the contents of the RawFields
 // if the mutated bytes are stored back into the message with SetUnknown.
-func (x *fastReflection_Profile) GetUnknown() protoreflect.RawFields {
+func (x *fastReflection_Metadata) GetUnknown() protoreflect.RawFields {
 	return x.unknownFields
 }
 
@@ -1152,7 +1152,7 @@ func (x *fastReflection_Profile) GetUnknown() protoreflect.RawFields {
 // An empty RawFields may be passed to clear the fields.
 //
 // SetUnknown is a mutating operation and unsafe for concurrent use.
-func (x *fastReflection_Profile) SetUnknown(fields protoreflect.RawFields) {
+func (x *fastReflection_Metadata) SetUnknown(fields protoreflect.RawFields) {
 	x.unknownFields = fields
 }
 
@@ -1164,7 +1164,7 @@ func (x *fastReflection_Profile) SetUnknown(fields protoreflect.RawFields) {
 // message type, but the details are implementation dependent.
 // Validity is not part of the protobuf data model, and may not
 // be preserved in marshaling or other operations.
-func (x *fastReflection_Profile) IsValid() bool {
+func (x *fastReflection_Metadata) IsValid() bool {
 	return x != nil
 }
 
@@ -1174,9 +1174,9 @@ func (x *fastReflection_Profile) IsValid() bool {
 // The returned methods type is identical to
 // "google.golang.org/protobuf/runtime/protoiface".Methods.
 // Consult the protoiface package documentation for details.
-func (x *fastReflection_Profile) ProtoMethods() *protoiface.Methods {
+func (x *fastReflection_Metadata) ProtoMethods() *protoiface.Methods {
 	size := func(input protoiface.SizeInput) protoiface.SizeOutput {
-		x := input.Message.Interface().(*Profile)
+		x := input.Message.Interface().(*Metadata)
 		if x == nil {
 			return protoiface.SizeOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1214,7 +1214,7 @@ func (x *fastReflection_Profile) ProtoMethods() *protoiface.Methods {
 	}
 
 	marshal := func(input protoiface.MarshalInput) (protoiface.MarshalOutput, error) {
-		x := input.Message.Interface().(*Profile)
+		x := input.Message.Interface().(*Metadata)
 		if x == nil {
 			return protoiface.MarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1272,7 +1272,7 @@ func (x *fastReflection_Profile) ProtoMethods() *protoiface.Methods {
 		}, nil
 	}
 	unmarshal := func(input protoiface.UnmarshalInput) (protoiface.UnmarshalOutput, error) {
-		x := input.Message.Interface().(*Profile)
+		x := input.Message.Interface().(*Metadata)
 		if x == nil {
 			return protoiface.UnmarshalOutput{
 				NoUnkeyedLiterals: input.NoUnkeyedLiterals,
@@ -1304,10 +1304,10 @@ func (x *fastReflection_Profile) ProtoMethods() *protoiface.Methods {
 			fieldNum := int32(wire >> 3)
 			wireType := int(wire & 0x7)
 			if wireType == 4 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Profile: wiretype end group for non-group")
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Metadata: wiretype end group for non-group")
 			}
 			if fieldNum <= 0 {
-				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Profile: illegal tag %d (wire type %d)", fieldNum, wire)
+				return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: Metadata: illegal tag %d (wire type %d)", fieldNum, wire)
 			}
 			switch fieldNum {
 			case 1:
@@ -1486,7 +1486,7 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Metadata struct {
+type Domain struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1500,8 +1500,8 @@ type Metadata struct {
 	Tags        []string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
 }
 
-func (x *Metadata) Reset() {
-	*x = Metadata{}
+func (x *Domain) Reset() {
+	*x = Domain{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_svc_v1_state_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1509,68 +1509,68 @@ func (x *Metadata) Reset() {
 	}
 }
 
-func (x *Metadata) String() string {
+func (x *Domain) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Metadata) ProtoMessage() {}
+func (*Domain) ProtoMessage() {}
 
-// Deprecated: Use Metadata.ProtoReflect.Descriptor instead.
-func (*Metadata) Descriptor() ([]byte, []int) {
+// Deprecated: Use Domain.ProtoReflect.Descriptor instead.
+func (*Domain) Descriptor() ([]byte, []int) {
 	return file_svc_v1_state_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *Metadata) GetId() uint64 {
+func (x *Domain) GetId() uint64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *Metadata) GetOrigin() string {
+func (x *Domain) GetOrigin() string {
 	if x != nil {
 		return x.Origin
 	}
 	return ""
 }
 
-func (x *Metadata) GetName() string {
+func (x *Domain) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *Metadata) GetDescription() string {
+func (x *Domain) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
 }
 
-func (x *Metadata) GetCategory() string {
+func (x *Domain) GetCategory() string {
 	if x != nil {
 		return x.Category
 	}
 	return ""
 }
 
-func (x *Metadata) GetIcon() string {
+func (x *Domain) GetIcon() string {
 	if x != nil {
 		return x.Icon
 	}
 	return ""
 }
 
-func (x *Metadata) GetTags() []string {
+func (x *Domain) GetTags() []string {
 	if x != nil {
 		return x.Tags
 	}
 	return nil
 }
 
-// Profile represents a DID alias
-type Profile struct {
+// Metadata represents a DID alias
+type Metadata struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -1585,8 +1585,8 @@ type Profile struct {
 	Controller string `protobuf:"bytes,4,opt,name=controller,proto3" json:"controller,omitempty"`
 }
 
-func (x *Profile) Reset() {
-	*x = Profile{}
+func (x *Metadata) Reset() {
+	*x = Metadata{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_svc_v1_state_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -1594,39 +1594,39 @@ func (x *Profile) Reset() {
 	}
 }
 
-func (x *Profile) String() string {
+func (x *Metadata) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*Profile) ProtoMessage() {}
+func (*Metadata) ProtoMessage() {}
 
-// Deprecated: Use Profile.ProtoReflect.Descriptor instead.
-func (*Profile) Descriptor() ([]byte, []int) {
+// Deprecated: Use Metadata.ProtoReflect.Descriptor instead.
+func (*Metadata) Descriptor() ([]byte, []int) {
 	return file_svc_v1_state_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *Profile) GetId() string {
+func (x *Metadata) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-func (x *Profile) GetSubject() string {
+func (x *Metadata) GetSubject() string {
 	if x != nil {
 		return x.Subject
 	}
 	return ""
 }
 
-func (x *Profile) GetOrigin() string {
+func (x *Metadata) GetOrigin() string {
 	if x != nil {
 		return x.Origin
 	}
 	return ""
 }
 
-func (x *Profile) GetController() string {
+func (x *Metadata) GetController() string {
 	if x != nil {
 		return x.Controller
 	}
@@ -1639,37 +1639,37 @@ var file_svc_v1_state_proto_rawDesc = []byte{
 	0x0a, 0x12, 0x73, 0x76, 0x63, 0x2f, 0x76, 0x31, 0x2f, 0x73, 0x74, 0x61, 0x74, 0x65, 0x2e, 0x70,
 	0x72, 0x6f, 0x74, 0x6f, 0x12, 0x06, 0x73, 0x76, 0x63, 0x2e, 0x76, 0x31, 0x1a, 0x17, 0x63, 0x6f,
 	0x73, 0x6d, 0x6f, 0x73, 0x2f, 0x6f, 0x72, 0x6d, 0x2f, 0x76, 0x31, 0x2f, 0x6f, 0x72, 0x6d, 0x2e,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xcc, 0x01, 0x0a, 0x08, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61,
-	0x74, 0x61, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02,
-	0x69, 0x64, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61,
-	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20,
-	0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e,
-	0x12, 0x1a, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x05, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x12, 0x12, 0x0a, 0x04,
-	0x69, 0x63, 0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x69, 0x63, 0x6f, 0x6e,
-	0x12, 0x12, 0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04,
-	0x74, 0x61, 0x67, 0x73, 0x3a, 0x1e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x18, 0x0a, 0x06, 0x0a, 0x02,
-	0x69, 0x64, 0x10, 0x01, 0x12, 0x0c, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x01,
-	0x18, 0x01, 0x18, 0x01, 0x22, 0x91, 0x01, 0x0a, 0x07, 0x50, 0x72, 0x6f, 0x66, 0x69, 0x6c, 0x65,
-	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
-	0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28,
-	0x09, 0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72,
-	0x69, 0x67, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67,
-	0x69, 0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72,
-	0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c,
-	0x65, 0x72, 0x3a, 0x24, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x1e, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64,
-	0x12, 0x14, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c, 0x6f, 0x72, 0x69, 0x67,
-	0x69, 0x6e, 0x10, 0x01, 0x18, 0x01, 0x18, 0x02, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e,
-	0x73, 0x76, 0x63, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f,
-	0x74, 0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
-	0x2f, 0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69,
-	0x2f, 0x73, 0x76, 0x63, 0x2f, 0x76, 0x31, 0x3b, 0x73, 0x76, 0x63, 0x76, 0x31, 0xa2, 0x02, 0x03,
-	0x53, 0x58, 0x58, 0xaa, 0x02, 0x06, 0x53, 0x76, 0x63, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x53,
-	0x76, 0x63, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x53, 0x76, 0x63, 0x5c, 0x56, 0x31, 0x5c, 0x47,
-	0x50, 0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x53, 0x76, 0x63,
-	0x3a, 0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0xca, 0x01, 0x0a, 0x06, 0x44, 0x6f, 0x6d, 0x61, 0x69, 0x6e,
+	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x04, 0x52, 0x02, 0x69, 0x64,
+	0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
+	0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1a,
+	0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x05, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x12, 0x12, 0x0a, 0x04, 0x69, 0x63,
+	0x6f, 0x6e, 0x18, 0x06, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x69, 0x63, 0x6f, 0x6e, 0x12, 0x12,
+	0x0a, 0x04, 0x74, 0x61, 0x67, 0x73, 0x18, 0x07, 0x20, 0x03, 0x28, 0x09, 0x52, 0x04, 0x74, 0x61,
+	0x67, 0x73, 0x3a, 0x1e, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x18, 0x0a, 0x06, 0x0a, 0x02, 0x69, 0x64,
+	0x10, 0x01, 0x12, 0x0c, 0x0a, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69, 0x6e, 0x10, 0x01, 0x18, 0x01,
+	0x18, 0x01, 0x22, 0x92, 0x01, 0x0a, 0x08, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x18, 0x0a, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x07, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x6f, 0x72, 0x69,
+	0x67, 0x69, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x6f, 0x72, 0x69, 0x67, 0x69,
+	0x6e, 0x12, 0x1e, 0x0a, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65, 0x72, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x6c, 0x65,
+	0x72, 0x3a, 0x24, 0xf2, 0x9e, 0xd3, 0x8e, 0x03, 0x1e, 0x0a, 0x04, 0x0a, 0x02, 0x69, 0x64, 0x12,
+	0x14, 0x0a, 0x0e, 0x73, 0x75, 0x62, 0x6a, 0x65, 0x63, 0x74, 0x2c, 0x6f, 0x72, 0x69, 0x67, 0x69,
+	0x6e, 0x10, 0x01, 0x18, 0x01, 0x18, 0x02, 0x42, 0x7a, 0x0a, 0x0a, 0x63, 0x6f, 0x6d, 0x2e, 0x73,
+	0x76, 0x63, 0x2e, 0x76, 0x31, 0x42, 0x0a, 0x53, 0x74, 0x61, 0x74, 0x65, 0x50, 0x72, 0x6f, 0x74,
+	0x6f, 0x50, 0x01, 0x5a, 0x27, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f,
+	0x6f, 0x6e, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x73, 0x6f, 0x6e, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f,
+	0x73, 0x76, 0x63, 0x2f, 0x76, 0x31, 0x3b, 0x73, 0x76, 0x63, 0x76, 0x31, 0xa2, 0x02, 0x03, 0x53,
+	0x58, 0x58, 0xaa, 0x02, 0x06, 0x53, 0x76, 0x63, 0x2e, 0x56, 0x31, 0xca, 0x02, 0x06, 0x53, 0x76,
+	0x63, 0x5c, 0x56, 0x31, 0xe2, 0x02, 0x12, 0x53, 0x76, 0x63, 0x5c, 0x56, 0x31, 0x5c, 0x47, 0x50,
+	0x42, 0x4d, 0x65, 0x74, 0x61, 0x64, 0x61, 0x74, 0x61, 0xea, 0x02, 0x07, 0x53, 0x76, 0x63, 0x3a,
+	0x3a, 0x56, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -1686,8 +1686,8 @@ func file_svc_v1_state_proto_rawDescGZIP() []byte {
 
 var file_svc_v1_state_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_svc_v1_state_proto_goTypes = []interface{}{
-	(*Metadata)(nil), // 0: svc.v1.Metadata
-	(*Profile)(nil),  // 1: svc.v1.Profile
+	(*Domain)(nil),   // 0: svc.v1.Domain
+	(*Metadata)(nil), // 1: svc.v1.Metadata
 }
 var file_svc_v1_state_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -1704,7 +1704,7 @@ func file_svc_v1_state_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_svc_v1_state_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Metadata); i {
+			switch v := v.(*Domain); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1716,7 +1716,7 @@ func file_svc_v1_state_proto_init() {
 			}
 		}
 		file_svc_v1_state_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*Profile); i {
+			switch v := v.(*Metadata); i {
 			case 0:
 				return &v.state
 			case 1:

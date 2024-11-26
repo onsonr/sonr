@@ -7,9 +7,20 @@ option go_package = "github.com/onsonr/sonr/x/dwn/types";
 
 // https://github.com/cosmos/cosmos-sdk/blob/main/orm/README.md
 
-message ExampleData {
+message Credential {
     option (cosmos.orm.v1.table) = {
       id: 1;
+      primary_key: { fields: "account" }
+      index: { id: 1 fields: "amount" }
+    };
+
+    bytes account = 1;
+    uint64 amount  = 2;
+}
+
+message Profile {
+    option (cosmos.orm.v1.table) = {
+      id: 2;
       primary_key: { fields: "account" }
       index: { id: 1 fields: "amount" }
     };

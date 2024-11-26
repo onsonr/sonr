@@ -8,7 +8,7 @@ option go_package = "github.com/onsonr/sonr/x/svc/types";
 
 // https://github.com/cosmos/cosmos-sdk/blob/main/orm/README.md
 
-message Metadata {
+message Domain {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {
@@ -31,8 +31,8 @@ message Metadata {
   repeated string tags = 7;
 }
 
-// Profile represents a DID alias
-message Profile {
+// Metadata represents a DID alias
+message Metadata {
   option (cosmos.orm.v1.table) = {
     id: 2
     primary_key: {fields: "id"}

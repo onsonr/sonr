@@ -9,19 +9,177 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
+type DomainTable interface {
+	Insert(ctx context.Context, domain *Domain) error
+	InsertReturningId(ctx context.Context, domain *Domain) (uint64, error)
+	LastInsertedSequence(ctx context.Context) (uint64, error)
+	Update(ctx context.Context, domain *Domain) error
+	Save(ctx context.Context, domain *Domain) error
+	Delete(ctx context.Context, domain *Domain) error
+	Has(ctx context.Context, id uint64) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, id uint64) (*Domain, error)
+	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
+	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetByOrigin(ctx context.Context, origin string) (*Domain, error)
+	List(ctx context.Context, prefixKey DomainIndexKey, opts ...ormlist.Option) (DomainIterator, error)
+	ListRange(ctx context.Context, from, to DomainIndexKey, opts ...ormlist.Option) (DomainIterator, error)
+	DeleteBy(ctx context.Context, prefixKey DomainIndexKey) error
+	DeleteRange(ctx context.Context, from, to DomainIndexKey) error
+
+	doNotImplement()
+}
+
+type DomainIterator struct {
+	ormtable.Iterator
+}
+
+func (i DomainIterator) Value() (*Domain, error) {
+	var domain Domain
+	err := i.UnmarshalMessage(&domain)
+	return &domain, err
+}
+
+type DomainIndexKey interface {
+	id() uint32
+	values() []interface{}
+	domainIndexKey()
+}
+
+// primary key starting index..
+type DomainPrimaryKey = DomainIdIndexKey
+
+type DomainIdIndexKey struct {
+	vs []interface{}
+}
+
+func (x DomainIdIndexKey) id() uint32            { return 0 }
+func (x DomainIdIndexKey) values() []interface{} { return x.vs }
+func (x DomainIdIndexKey) domainIndexKey()       {}
+
+func (this DomainIdIndexKey) WithId(id uint64) DomainIdIndexKey {
+	this.vs = []interface{}{id}
+	return this
+}
+
+type DomainOriginIndexKey struct {
+	vs []interface{}
+}
+
+func (x DomainOriginIndexKey) id() uint32            { return 1 }
+func (x DomainOriginIndexKey) values() []interface{} { return x.vs }
+func (x DomainOriginIndexKey) domainIndexKey()       {}
+
+func (this DomainOriginIndexKey) WithOrigin(origin string) DomainOriginIndexKey {
+	this.vs = []interface{}{origin}
+	return this
+}
+
+type domainTable struct {
+	table ormtable.AutoIncrementTable
+}
+
+func (this domainTable) Insert(ctx context.Context, domain *Domain) error {
+	return this.table.Insert(ctx, domain)
+}
+
+func (this domainTable) Update(ctx context.Context, domain *Domain) error {
+	return this.table.Update(ctx, domain)
+}
+
+func (this domainTable) Save(ctx context.Context, domain *Domain) error {
+	return this.table.Save(ctx, domain)
+}
+
+func (this domainTable) Delete(ctx context.Context, domain *Domain) error {
+	return this.table.Delete(ctx, domain)
+}
+
+func (this domainTable) InsertReturningId(ctx context.Context, domain *Domain) (uint64, error) {
+	return this.table.InsertReturningPKey(ctx, domain)
+}
+
+func (this domainTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
+	return this.table.LastInsertedSequence(ctx)
+}
+
+func (this domainTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, id)
+}
+
+func (this domainTable) Get(ctx context.Context, id uint64) (*Domain, error) {
+	var domain Domain
+	found, err := this.table.PrimaryKey().Get(ctx, &domain, id)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &domain, nil
+}
+
+func (this domainTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
+	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		origin,
+	)
+}
+
+func (this domainTable) GetByOrigin(ctx context.Context, origin string) (*Domain, error) {
+	var domain Domain
+	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &domain,
+		origin,
+	)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &domain, nil
+}
+
+func (this domainTable) List(ctx context.Context, prefixKey DomainIndexKey, opts ...ormlist.Option) (DomainIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return DomainIterator{it}, err
+}
+
+func (this domainTable) ListRange(ctx context.Context, from, to DomainIndexKey, opts ...ormlist.Option) (DomainIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return DomainIterator{it}, err
+}
+
+func (this domainTable) DeleteBy(ctx context.Context, prefixKey DomainIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this domainTable) DeleteRange(ctx context.Context, from, to DomainIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this domainTable) doNotImplement() {}
+
+var _ DomainTable = domainTable{}
+
+func NewDomainTable(db ormtable.Schema) (DomainTable, error) {
+	table := db.GetTable(&Domain{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Domain{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return domainTable{table.(ormtable.AutoIncrementTable)}, nil
+}
+
 type MetadataTable interface {
 	Insert(ctx context.Context, metadata *Metadata) error
-	InsertReturningId(ctx context.Context, metadata *Metadata) (uint64, error)
-	LastInsertedSequence(ctx context.Context) (uint64, error)
 	Update(ctx context.Context, metadata *Metadata) error
 	Save(ctx context.Context, metadata *Metadata) error
 	Delete(ctx context.Context, metadata *Metadata) error
-	Has(ctx context.Context, id uint64) (found bool, err error)
+	Has(ctx context.Context, id string) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id uint64) (*Metadata, error)
-	HasByOrigin(ctx context.Context, origin string) (found bool, err error)
-	// GetByOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetByOrigin(ctx context.Context, origin string) (*Metadata, error)
+	Get(ctx context.Context, id string) (*Metadata, error)
+	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
+	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Metadata, error)
 	List(ctx context.Context, prefixKey MetadataIndexKey, opts ...ormlist.Option) (MetadataIterator, error)
 	ListRange(ctx context.Context, from, to MetadataIndexKey, opts ...ormlist.Option) (MetadataIterator, error)
 	DeleteBy(ctx context.Context, prefixKey MetadataIndexKey) error
@@ -57,26 +215,31 @@ func (x MetadataIdIndexKey) id() uint32            { return 0 }
 func (x MetadataIdIndexKey) values() []interface{} { return x.vs }
 func (x MetadataIdIndexKey) metadataIndexKey()     {}
 
-func (this MetadataIdIndexKey) WithId(id uint64) MetadataIdIndexKey {
+func (this MetadataIdIndexKey) WithId(id string) MetadataIdIndexKey {
 	this.vs = []interface{}{id}
 	return this
 }
 
-type MetadataOriginIndexKey struct {
+type MetadataSubjectOriginIndexKey struct {
 	vs []interface{}
 }
 
-func (x MetadataOriginIndexKey) id() uint32            { return 1 }
-func (x MetadataOriginIndexKey) values() []interface{} { return x.vs }
-func (x MetadataOriginIndexKey) metadataIndexKey()     {}
+func (x MetadataSubjectOriginIndexKey) id() uint32            { return 1 }
+func (x MetadataSubjectOriginIndexKey) values() []interface{} { return x.vs }
+func (x MetadataSubjectOriginIndexKey) metadataIndexKey()     {}
 
-func (this MetadataOriginIndexKey) WithOrigin(origin string) MetadataOriginIndexKey {
-	this.vs = []interface{}{origin}
+func (this MetadataSubjectOriginIndexKey) WithSubject(subject string) MetadataSubjectOriginIndexKey {
+	this.vs = []interface{}{subject}
+	return this
+}
+
+func (this MetadataSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) MetadataSubjectOriginIndexKey {
+	this.vs = []interface{}{subject, origin}
 	return this
 }
 
 type metadataTable struct {
-	table ormtable.AutoIncrementTable
+	table ormtable.Table
 }
 
 func (this metadataTable) Insert(ctx context.Context, metadata *Metadata) error {
@@ -95,19 +258,11 @@ func (this metadataTable) Delete(ctx context.Context, metadata *Metadata) error 
 	return this.table.Delete(ctx, metadata)
 }
 
-func (this metadataTable) InsertReturningId(ctx context.Context, metadata *Metadata) (uint64, error) {
-	return this.table.InsertReturningPKey(ctx, metadata)
-}
-
-func (this metadataTable) LastInsertedSequence(ctx context.Context) (uint64, error) {
-	return this.table.LastInsertedSequence(ctx)
-}
-
-func (this metadataTable) Has(ctx context.Context, id uint64) (found bool, err error) {
+func (this metadataTable) Has(ctx context.Context, id string) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, id)
 }
 
-func (this metadataTable) Get(ctx context.Context, id uint64) (*Metadata, error) {
+func (this metadataTable) Get(ctx context.Context, id string) (*Metadata, error) {
 	var metadata Metadata
 	found, err := this.table.PrimaryKey().Get(ctx, &metadata, id)
 	if err != nil {
@@ -119,15 +274,17 @@ func (this metadataTable) Get(ctx context.Context, id uint64) (*Metadata, error)
 	return &metadata, nil
 }
 
-func (this metadataTable) HasByOrigin(ctx context.Context, origin string) (found bool, err error) {
+func (this metadataTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
 	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
+		subject,
 		origin,
 	)
 }
 
-func (this metadataTable) GetByOrigin(ctx context.Context, origin string) (*Metadata, error) {
+func (this metadataTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Metadata, error) {
 	var metadata Metadata
 	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &metadata,
+		subject,
 		origin,
 	)
 	if err != nil {
@@ -166,184 +323,27 @@ func NewMetadataTable(db ormtable.Schema) (MetadataTable, error) {
 	if table == nil {
 		return nil, ormerrors.TableNotFound.Wrap(string((&Metadata{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return metadataTable{table.(ormtable.AutoIncrementTable)}, nil
-}
-
-type ProfileTable interface {
-	Insert(ctx context.Context, profile *Profile) error
-	Update(ctx context.Context, profile *Profile) error
-	Save(ctx context.Context, profile *Profile) error
-	Delete(ctx context.Context, profile *Profile) error
-	Has(ctx context.Context, id string) (found bool, err error)
-	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, id string) (*Profile, error)
-	HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error)
-	// GetBySubjectOrigin returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Profile, error)
-	List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
-	ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error
-	DeleteRange(ctx context.Context, from, to ProfileIndexKey) error
-
-	doNotImplement()
-}
-
-type ProfileIterator struct {
-	ormtable.Iterator
-}
-
-func (i ProfileIterator) Value() (*Profile, error) {
-	var profile Profile
-	err := i.UnmarshalMessage(&profile)
-	return &profile, err
-}
-
-type ProfileIndexKey interface {
-	id() uint32
-	values() []interface{}
-	profileIndexKey()
-}
-
-// primary key starting index..
-type ProfilePrimaryKey = ProfileIdIndexKey
-
-type ProfileIdIndexKey struct {
-	vs []interface{}
-}
-
-func (x ProfileIdIndexKey) id() uint32            { return 0 }
-func (x ProfileIdIndexKey) values() []interface{} { return x.vs }
-func (x ProfileIdIndexKey) profileIndexKey()      {}
-
-func (this ProfileIdIndexKey) WithId(id string) ProfileIdIndexKey {
-	this.vs = []interface{}{id}
-	return this
-}
-
-type ProfileSubjectOriginIndexKey struct {
-	vs []interface{}
-}
-
-func (x ProfileSubjectOriginIndexKey) id() uint32            { return 1 }
-func (x ProfileSubjectOriginIndexKey) values() []interface{} { return x.vs }
-func (x ProfileSubjectOriginIndexKey) profileIndexKey()      {}
-
-func (this ProfileSubjectOriginIndexKey) WithSubject(subject string) ProfileSubjectOriginIndexKey {
-	this.vs = []interface{}{subject}
-	return this
-}
-
-func (this ProfileSubjectOriginIndexKey) WithSubjectOrigin(subject string, origin string) ProfileSubjectOriginIndexKey {
-	this.vs = []interface{}{subject, origin}
-	return this
-}
-
-type profileTable struct {
-	table ormtable.Table
-}
-
-func (this profileTable) Insert(ctx context.Context, profile *Profile) error {
-	return this.table.Insert(ctx, profile)
-}
-
-func (this profileTable) Update(ctx context.Context, profile *Profile) error {
-	return this.table.Update(ctx, profile)
-}
-
-func (this profileTable) Save(ctx context.Context, profile *Profile) error {
-	return this.table.Save(ctx, profile)
-}
-
-func (this profileTable) Delete(ctx context.Context, profile *Profile) error {
-	return this.table.Delete(ctx, profile)
-}
-
-func (this profileTable) Has(ctx context.Context, id string) (found bool, err error) {
-	return this.table.PrimaryKey().Has(ctx, id)
-}
-
-func (this profileTable) Get(ctx context.Context, id string) (*Profile, error) {
-	var profile Profile
-	found, err := this.table.PrimaryKey().Get(ctx, &profile, id)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &profile, nil
-}
-
-func (this profileTable) HasBySubjectOrigin(ctx context.Context, subject string, origin string) (found bool, err error) {
-	return this.table.GetIndexByID(1).(ormtable.UniqueIndex).Has(ctx,
-		subject,
-		origin,
-	)
-}
-
-func (this profileTable) GetBySubjectOrigin(ctx context.Context, subject string, origin string) (*Profile, error) {
-	var profile Profile
-	found, err := this.table.GetIndexByID(1).(ormtable.UniqueIndex).Get(ctx, &profile,
-		subject,
-		origin,
-	)
-	if err != nil {
-		return nil, err
-	}
-	if !found {
-		return nil, ormerrors.NotFound
-	}
-	return &profile, nil
-}
-
-func (this profileTable) List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
-	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ProfileIterator{it}, err
-}
-
-func (this profileTable) ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
-	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ProfileIterator{it}, err
-}
-
-func (this profileTable) DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error {
-	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
-}
-
-func (this profileTable) DeleteRange(ctx context.Context, from, to ProfileIndexKey) error {
-	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
-}
-
-func (this profileTable) doNotImplement() {}
-
-var _ ProfileTable = profileTable{}
-
-func NewProfileTable(db ormtable.Schema) (ProfileTable, error) {
-	table := db.GetTable(&Profile{})
-	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&Profile{}).ProtoReflect().Descriptor().FullName()))
-	}
-	return profileTable{table}, nil
+	return metadataTable{table}, nil
 }
 
 type StateStore interface {
+	DomainTable() DomainTable
 	MetadataTable() MetadataTable
-	ProfileTable() ProfileTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
+	domain   DomainTable
 	metadata MetadataTable
-	profile  ProfileTable
+}
+
+func (x stateStore) DomainTable() DomainTable {
+	return x.domain
 }
 
 func (x stateStore) MetadataTable() MetadataTable {
 	return x.metadata
-}
-
-func (x stateStore) ProfileTable() ProfileTable {
-	return x.profile
 }
 
 func (stateStore) doNotImplement() {}
@@ -351,18 +351,18 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
+	domainTable, err := NewDomainTable(db)
+	if err != nil {
+		return nil, err
+	}
+
 	metadataTable, err := NewMetadataTable(db)
 	if err != nil {
 		return nil, err
 	}
 
-	profileTable, err := NewProfileTable(db)
-	if err != nil {
-		return nil, err
-	}
-
 	return stateStore{
+		domainTable,
 		metadataTable,
-		profileTable,
 	}, nil
 }

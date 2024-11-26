@@ -16,11 +16,6 @@ type PubKeyI interface {
 	// GetJwk() *commonv1.JSONWebKey
 }
 
-// PubKey defines a generic pubkey.
-type PublicKey interface {
-	VerifySignature(msg, sig []byte) bool
-}
-
 type PubKeyG[T any] interface {
 	*T
 	PublicKey

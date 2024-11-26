@@ -9,145 +9,278 @@ import (
 	ormerrors "cosmossdk.io/orm/types/ormerrors"
 )
 
-type ExampleDataTable interface {
-	Insert(ctx context.Context, exampleData *ExampleData) error
-	Update(ctx context.Context, exampleData *ExampleData) error
-	Save(ctx context.Context, exampleData *ExampleData) error
-	Delete(ctx context.Context, exampleData *ExampleData) error
+type CredentialTable interface {
+	Insert(ctx context.Context, credential *Credential) error
+	Update(ctx context.Context, credential *Credential) error
+	Save(ctx context.Context, credential *Credential) error
+	Delete(ctx context.Context, credential *Credential) error
 	Has(ctx context.Context, account []byte) (found bool, err error)
 	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
-	Get(ctx context.Context, account []byte) (*ExampleData, error)
-	List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error)
-	DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error
-	DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error
+	Get(ctx context.Context, account []byte) (*Credential, error)
+	List(ctx context.Context, prefixKey CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error)
+	ListRange(ctx context.Context, from, to CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error)
+	DeleteBy(ctx context.Context, prefixKey CredentialIndexKey) error
+	DeleteRange(ctx context.Context, from, to CredentialIndexKey) error
 
 	doNotImplement()
 }
 
-type ExampleDataIterator struct {
+type CredentialIterator struct {
 	ormtable.Iterator
 }
 
-func (i ExampleDataIterator) Value() (*ExampleData, error) {
-	var exampleData ExampleData
-	err := i.UnmarshalMessage(&exampleData)
-	return &exampleData, err
+func (i CredentialIterator) Value() (*Credential, error) {
+	var credential Credential
+	err := i.UnmarshalMessage(&credential)
+	return &credential, err
 }
 
-type ExampleDataIndexKey interface {
+type CredentialIndexKey interface {
 	id() uint32
 	values() []interface{}
-	exampleDataIndexKey()
+	credentialIndexKey()
 }
 
 // primary key starting index..
-type ExampleDataPrimaryKey = ExampleDataAccountIndexKey
+type CredentialPrimaryKey = CredentialAccountIndexKey
 
-type ExampleDataAccountIndexKey struct {
+type CredentialAccountIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAccountIndexKey) id() uint32            { return 0 }
-func (x ExampleDataAccountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAccountIndexKey) exampleDataIndexKey()  {}
+func (x CredentialAccountIndexKey) id() uint32            { return 0 }
+func (x CredentialAccountIndexKey) values() []interface{} { return x.vs }
+func (x CredentialAccountIndexKey) credentialIndexKey()   {}
 
-func (this ExampleDataAccountIndexKey) WithAccount(account []byte) ExampleDataAccountIndexKey {
+func (this CredentialAccountIndexKey) WithAccount(account []byte) CredentialAccountIndexKey {
 	this.vs = []interface{}{account}
 	return this
 }
 
-type ExampleDataAmountIndexKey struct {
+type CredentialAmountIndexKey struct {
 	vs []interface{}
 }
 
-func (x ExampleDataAmountIndexKey) id() uint32            { return 1 }
-func (x ExampleDataAmountIndexKey) values() []interface{} { return x.vs }
-func (x ExampleDataAmountIndexKey) exampleDataIndexKey()  {}
+func (x CredentialAmountIndexKey) id() uint32            { return 1 }
+func (x CredentialAmountIndexKey) values() []interface{} { return x.vs }
+func (x CredentialAmountIndexKey) credentialIndexKey()   {}
 
-func (this ExampleDataAmountIndexKey) WithAmount(amount uint64) ExampleDataAmountIndexKey {
+func (this CredentialAmountIndexKey) WithAmount(amount uint64) CredentialAmountIndexKey {
 	this.vs = []interface{}{amount}
 	return this
 }
 
-type exampleDataTable struct {
+type credentialTable struct {
 	table ormtable.Table
 }
 
-func (this exampleDataTable) Insert(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Insert(ctx, exampleData)
+func (this credentialTable) Insert(ctx context.Context, credential *Credential) error {
+	return this.table.Insert(ctx, credential)
 }
 
-func (this exampleDataTable) Update(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Update(ctx, exampleData)
+func (this credentialTable) Update(ctx context.Context, credential *Credential) error {
+	return this.table.Update(ctx, credential)
 }
 
-func (this exampleDataTable) Save(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Save(ctx, exampleData)
+func (this credentialTable) Save(ctx context.Context, credential *Credential) error {
+	return this.table.Save(ctx, credential)
 }
 
-func (this exampleDataTable) Delete(ctx context.Context, exampleData *ExampleData) error {
-	return this.table.Delete(ctx, exampleData)
+func (this credentialTable) Delete(ctx context.Context, credential *Credential) error {
+	return this.table.Delete(ctx, credential)
 }
 
-func (this exampleDataTable) Has(ctx context.Context, account []byte) (found bool, err error) {
+func (this credentialTable) Has(ctx context.Context, account []byte) (found bool, err error) {
 	return this.table.PrimaryKey().Has(ctx, account)
 }
 
-func (this exampleDataTable) Get(ctx context.Context, account []byte) (*ExampleData, error) {
-	var exampleData ExampleData
-	found, err := this.table.PrimaryKey().Get(ctx, &exampleData, account)
+func (this credentialTable) Get(ctx context.Context, account []byte) (*Credential, error) {
+	var credential Credential
+	found, err := this.table.PrimaryKey().Get(ctx, &credential, account)
 	if err != nil {
 		return nil, err
 	}
 	if !found {
 		return nil, ormerrors.NotFound
 	}
-	return &exampleData, nil
+	return &credential, nil
 }
 
-func (this exampleDataTable) List(ctx context.Context, prefixKey ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this credentialTable) List(ctx context.Context, prefixKey CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error) {
 	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return CredentialIterator{it}, err
 }
 
-func (this exampleDataTable) ListRange(ctx context.Context, from, to ExampleDataIndexKey, opts ...ormlist.Option) (ExampleDataIterator, error) {
+func (this credentialTable) ListRange(ctx context.Context, from, to CredentialIndexKey, opts ...ormlist.Option) (CredentialIterator, error) {
 	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
-	return ExampleDataIterator{it}, err
+	return CredentialIterator{it}, err
 }
 
-func (this exampleDataTable) DeleteBy(ctx context.Context, prefixKey ExampleDataIndexKey) error {
+func (this credentialTable) DeleteBy(ctx context.Context, prefixKey CredentialIndexKey) error {
 	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
 }
 
-func (this exampleDataTable) DeleteRange(ctx context.Context, from, to ExampleDataIndexKey) error {
+func (this credentialTable) DeleteRange(ctx context.Context, from, to CredentialIndexKey) error {
 	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
 }
 
-func (this exampleDataTable) doNotImplement() {}
+func (this credentialTable) doNotImplement() {}
 
-var _ ExampleDataTable = exampleDataTable{}
+var _ CredentialTable = credentialTable{}
 
-func NewExampleDataTable(db ormtable.Schema) (ExampleDataTable, error) {
-	table := db.GetTable(&ExampleData{})
+func NewCredentialTable(db ormtable.Schema) (CredentialTable, error) {
+	table := db.GetTable(&Credential{})
 	if table == nil {
-		return nil, ormerrors.TableNotFound.Wrap(string((&ExampleData{}).ProtoReflect().Descriptor().FullName()))
+		return nil, ormerrors.TableNotFound.Wrap(string((&Credential{}).ProtoReflect().Descriptor().FullName()))
 	}
-	return exampleDataTable{table}, nil
+	return credentialTable{table}, nil
+}
+
+type ProfileTable interface {
+	Insert(ctx context.Context, profile *Profile) error
+	Update(ctx context.Context, profile *Profile) error
+	Save(ctx context.Context, profile *Profile) error
+	Delete(ctx context.Context, profile *Profile) error
+	Has(ctx context.Context, account []byte) (found bool, err error)
+	// Get returns nil and an error which responds true to ormerrors.IsNotFound() if the record was not found.
+	Get(ctx context.Context, account []byte) (*Profile, error)
+	List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
+	ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error)
+	DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error
+	DeleteRange(ctx context.Context, from, to ProfileIndexKey) error
+
+	doNotImplement()
+}
+
+type ProfileIterator struct {
+	ormtable.Iterator
+}
+
+func (i ProfileIterator) Value() (*Profile, error) {
+	var profile Profile
+	err := i.UnmarshalMessage(&profile)
+	return &profile, err
+}
+
+type ProfileIndexKey interface {
+	id() uint32
+	values() []interface{}
+	profileIndexKey()
+}
+
+// primary key starting index..
+type ProfilePrimaryKey = ProfileAccountIndexKey
+
+type ProfileAccountIndexKey struct {
+	vs []interface{}
+}
+
+func (x ProfileAccountIndexKey) id() uint32            { return 0 }
+func (x ProfileAccountIndexKey) values() []interface{} { return x.vs }
+func (x ProfileAccountIndexKey) profileIndexKey()      {}
+
+func (this ProfileAccountIndexKey) WithAccount(account []byte) ProfileAccountIndexKey {
+	this.vs = []interface{}{account}
+	return this
+}
+
+type ProfileAmountIndexKey struct {
+	vs []interface{}
+}
+
+func (x ProfileAmountIndexKey) id() uint32            { return 1 }
+func (x ProfileAmountIndexKey) values() []interface{} { return x.vs }
+func (x ProfileAmountIndexKey) profileIndexKey()      {}
+
+func (this ProfileAmountIndexKey) WithAmount(amount uint64) ProfileAmountIndexKey {
+	this.vs = []interface{}{amount}
+	return this
+}
+
+type profileTable struct {
+	table ormtable.Table
+}
+
+func (this profileTable) Insert(ctx context.Context, profile *Profile) error {
+	return this.table.Insert(ctx, profile)
+}
+
+func (this profileTable) Update(ctx context.Context, profile *Profile) error {
+	return this.table.Update(ctx, profile)
+}
+
+func (this profileTable) Save(ctx context.Context, profile *Profile) error {
+	return this.table.Save(ctx, profile)
+}
+
+func (this profileTable) Delete(ctx context.Context, profile *Profile) error {
+	return this.table.Delete(ctx, profile)
+}
+
+func (this profileTable) Has(ctx context.Context, account []byte) (found bool, err error) {
+	return this.table.PrimaryKey().Has(ctx, account)
+}
+
+func (this profileTable) Get(ctx context.Context, account []byte) (*Profile, error) {
+	var profile Profile
+	found, err := this.table.PrimaryKey().Get(ctx, &profile, account)
+	if err != nil {
+		return nil, err
+	}
+	if !found {
+		return nil, ormerrors.NotFound
+	}
+	return &profile, nil
+}
+
+func (this profileTable) List(ctx context.Context, prefixKey ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
+	it, err := this.table.GetIndexByID(prefixKey.id()).List(ctx, prefixKey.values(), opts...)
+	return ProfileIterator{it}, err
+}
+
+func (this profileTable) ListRange(ctx context.Context, from, to ProfileIndexKey, opts ...ormlist.Option) (ProfileIterator, error) {
+	it, err := this.table.GetIndexByID(from.id()).ListRange(ctx, from.values(), to.values(), opts...)
+	return ProfileIterator{it}, err
+}
+
+func (this profileTable) DeleteBy(ctx context.Context, prefixKey ProfileIndexKey) error {
+	return this.table.GetIndexByID(prefixKey.id()).DeleteBy(ctx, prefixKey.values()...)
+}
+
+func (this profileTable) DeleteRange(ctx context.Context, from, to ProfileIndexKey) error {
+	return this.table.GetIndexByID(from.id()).DeleteRange(ctx, from.values(), to.values())
+}
+
+func (this profileTable) doNotImplement() {}
+
+var _ ProfileTable = profileTable{}
+
+func NewProfileTable(db ormtable.Schema) (ProfileTable, error) {
+	table := db.GetTable(&Profile{})
+	if table == nil {
+		return nil, ormerrors.TableNotFound.Wrap(string((&Profile{}).ProtoReflect().Descriptor().FullName()))
+	}
+	return profileTable{table}, nil
 }
 
 type StateStore interface {
-	ExampleDataTable() ExampleDataTable
+	CredentialTable() CredentialTable
+	ProfileTable() ProfileTable
 
 	doNotImplement()
 }
 
 type stateStore struct {
-	exampleData ExampleDataTable
+	credential CredentialTable
+	profile    ProfileTable
 }
 
-func (x stateStore) ExampleDataTable() ExampleDataTable {
-	return x.exampleData
+func (x stateStore) CredentialTable() CredentialTable {
+	return x.credential
+}
+
+func (x stateStore) ProfileTable() ProfileTable {
+	return x.profile
 }
 
 func (stateStore) doNotImplement() {}
@@ -155,12 +288,18 @@ func (stateStore) doNotImplement() {}
 var _ StateStore = stateStore{}
 
 func NewStateStore(db ormtable.Schema) (StateStore, error) {
-	exampleDataTable, err := NewExampleDataTable(db)
+	credentialTable, err := NewCredentialTable(db)
+	if err != nil {
+		return nil, err
+	}
+
+	profileTable, err := NewProfileTable(db)
 	if err != nil {
 		return nil, err
 	}
 
 	return stateStore{
-		exampleDataTable,
+		credentialTable,
+		profileTable,
 	}, nil
 }

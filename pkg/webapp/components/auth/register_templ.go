@@ -9,6 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/pkg/webapp/components/ui"
 )
@@ -47,11 +48,7 @@ func RegisterModal() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = BasicDetailsForm().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"flex flex-col-reverse sm:flex-row sm:justify-between sm:space-x-2\"><button @click=\"modalOpen=false\" type=\"button\" class=\"inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors border rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:ring-offset-2\">Cancel</button> <button @click=\"modalOpen=false\" type=\"button\" class=\"inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium text-white transition-colors border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 bg-neutral-950 hover:bg-neutral-900\">Next</button></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col-reverse sm:flex-row sm:justify-between sm:space-x-2\"><button @click=\"modalOpen=false\" type=\"button\" class=\"inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium transition-colors border rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-100 focus:ring-offset-2\">Cancel</button> <button @click=\"modalOpen=false\" type=\"button\" class=\"inline-flex items-center justify-center h-10 px-4 py-2 text-sm font-medium text-white transition-colors border border-transparent rounded-md focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 bg-neutral-950 hover:bg-neutral-900\">Next</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -65,8 +62,7 @@ func RegisterModal() templ.Component {
 	})
 }
 
-// RedirectModal returns the Modal with a QR code to scan.
-func RedirectModal() templ.Component {
+func RegisterCredentialForm() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -87,33 +83,36 @@ func RedirectModal() templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-			if !templ_7745c5c3_IsBuffer {
-				defer func() {
-					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err == nil {
-						templ_7745c5c3_Err = templ_7745c5c3_BufErr
-					}
-				}()
-			}
-			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"relative text-center\"><div class=\"flex flex-col mb-6 space-y-2\"><h1 class=\"text-2xl font-semibold tracking-tight\">Continue with your phone</h1><p class=\"text-sm text-neutral-500\">Creating a Sonr Vault requires a smartphone with W3C compliant biometrics enabled.</p></div><form onsubmit=\"event.preventDefault();\" class=\"space-y-2\"><input type=\"phone\" placeholder=\"+1 (555)-555-5555\" class=\"flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50\"> <button type=\"button\" class=\"inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none\">Reserve my Spot</button>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = ui.Separator("Or Scan QR Code").Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<wa-qr-code size=\"140\" value=\"https://shoelace.style/\" error-correction=\"Q\"></wa-qr-code></form></div><p class=\"mt-6 text-sm text-center text-neutral-500\">Already have an account? <a href=\"#_\" class=\"relative font-medium text-blue-600 group\"><span>Login here</span><span class=\"absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600\"></span></a></p><p class=\"px-8 mt-1 text-sm text-center text-neutral-500\">By continuing, you agree to our <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/terms\">Terms</a> and <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/privacy\">Policy</a>.</p></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"border rounded-lg shadow-sm bg-card text-zinc-900\"><div class=\"flex flex-col space-y-1.5 p-6\"></div><div class=\"p-6 pt-0 space-y-2\"><div class=\"space-y-1\"><label class=\"text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70\" for=\"name\">Name</label><input type=\"text\" id=\"name\" placeholder=\"Adam Wathan\" class=\"flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50\"></div><div class=\"space-y-1\"><label class=\"text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70\" for=\"username\">Handle</label><input type=\"text\" id=\"handle\" placeholder=\"angelo.snr\" class=\"flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50\"></div></div></div>")
+		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
-		})
-		templ_7745c5c3_Err = ui.FullScreenModal().Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+		}
+		return templ_7745c5c3_Err
+	})
+}
+
+func NavigatorCredentialsCreate(c echo.Context) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<script>\n\tfunction createCredential() {\n\t\tnavigator.credentials.create({\n\t\t\tpublicKey: {\n\t\t\t\trp: {\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t},\n\t\t\t\tuser: {\n\t\t\t\t\tid: new Uint8Array(0),\n\t\t\t\t\tname: \"Sonr\",\n\t\t\t\t\tdisplayName: \"Sonr\",\n\t\t\t\t},\n\t\t\t\tchallenge: new Uint8Array(0),\n\t\t\t\tpubKeyCredParams: [{\n\t\t\t\t\ttype: \"public-key\",\n\t\t\t\t\talg: -7,\n\t\t\t\t}],\n\t\t\t\ttimeout: 60000,\n\t\t\t\texcludeCredentials: [],\n\t\t\t\tauthenticatorSelection: {\n\t\t\t\t\trequireResidentKey: false,\n\t\t\t\t\tuserVerification: \"discouraged\",\n\t\t\t\t},\n\t\t\t},\n\t\t})\n\t\t\t.then((assertion) => {\n\t\t\t\tconsole.log(\"Assertion:\", assertion);\n\t\t\t})\n\t\t\t.catch((error) => {\n\t\t\t\tconsole.error(\"Error:\", error);\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

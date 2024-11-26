@@ -23,7 +23,7 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.GoGoProtoPackageIsVersion3 // please upgrade the proto package
 
-type Metadata struct {
+type Domain struct {
 	Id          uint64   `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Origin      string   `protobuf:"bytes,2,opt,name=origin,proto3" json:"origin,omitempty"`
 	Name        string   `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
@@ -33,11 +33,105 @@ type Metadata struct {
 	Tags        []string `protobuf:"bytes,7,rep,name=tags,proto3" json:"tags,omitempty"`
 }
 
+func (m *Domain) Reset()         { *m = Domain{} }
+func (m *Domain) String() string { return proto.CompactTextString(m) }
+func (*Domain) ProtoMessage()    {}
+func (*Domain) Descriptor() ([]byte, []int) {
+	return fileDescriptor_2859adb306f7c51f, []int{0}
+}
+func (m *Domain) XXX_Unmarshal(b []byte) error {
+	return m.Unmarshal(b)
+}
+func (m *Domain) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	if deterministic {
+		return xxx_messageInfo_Domain.Marshal(b, m, deterministic)
+	} else {
+		b = b[:cap(b)]
+		n, err := m.MarshalToSizedBuffer(b)
+		if err != nil {
+			return nil, err
+		}
+		return b[:n], nil
+	}
+}
+func (m *Domain) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Domain.Merge(m, src)
+}
+func (m *Domain) XXX_Size() int {
+	return m.Size()
+}
+func (m *Domain) XXX_DiscardUnknown() {
+	xxx_messageInfo_Domain.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Domain proto.InternalMessageInfo
+
+func (m *Domain) GetId() uint64 {
+	if m != nil {
+		return m.Id
+	}
+	return 0
+}
+
+func (m *Domain) GetOrigin() string {
+	if m != nil {
+		return m.Origin
+	}
+	return ""
+}
+
+func (m *Domain) GetName() string {
+	if m != nil {
+		return m.Name
+	}
+	return ""
+}
+
+func (m *Domain) GetDescription() string {
+	if m != nil {
+		return m.Description
+	}
+	return ""
+}
+
+func (m *Domain) GetCategory() string {
+	if m != nil {
+		return m.Category
+	}
+	return ""
+}
+
+func (m *Domain) GetIcon() string {
+	if m != nil {
+		return m.Icon
+	}
+	return ""
+}
+
+func (m *Domain) GetTags() []string {
+	if m != nil {
+		return m.Tags
+	}
+	return nil
+}
+
+// Metadata represents a DID alias
+type Metadata struct {
+	// The unique identifier of the alias
+	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// The alias of the DID
+	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
+	// Origin of the alias
+	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
+	// Controller of the alias
+	Controller string `protobuf:"bytes,4,opt,name=controller,proto3" json:"controller,omitempty"`
+}
+
 func (m *Metadata) Reset()         { *m = Metadata{} }
 func (m *Metadata) String() string { return proto.CompactTextString(m) }
 func (*Metadata) ProtoMessage()    {}
 func (*Metadata) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2859adb306f7c51f, []int{0}
+	return fileDescriptor_2859adb306f7c51f, []int{1}
 }
 func (m *Metadata) XXX_Unmarshal(b []byte) error {
 	return m.Unmarshal(b)
@@ -66,11 +160,18 @@ func (m *Metadata) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Metadata proto.InternalMessageInfo
 
-func (m *Metadata) GetId() uint64 {
+func (m *Metadata) GetId() string {
 	if m != nil {
 		return m.Id
 	}
-	return 0
+	return ""
+}
+
+func (m *Metadata) GetSubject() string {
+	if m != nil {
+		return m.Subject
+	}
+	return ""
 }
 
 func (m *Metadata) GetOrigin() string {
@@ -80,108 +181,7 @@ func (m *Metadata) GetOrigin() string {
 	return ""
 }
 
-func (m *Metadata) GetName() string {
-	if m != nil {
-		return m.Name
-	}
-	return ""
-}
-
-func (m *Metadata) GetDescription() string {
-	if m != nil {
-		return m.Description
-	}
-	return ""
-}
-
-func (m *Metadata) GetCategory() string {
-	if m != nil {
-		return m.Category
-	}
-	return ""
-}
-
-func (m *Metadata) GetIcon() string {
-	if m != nil {
-		return m.Icon
-	}
-	return ""
-}
-
-func (m *Metadata) GetTags() []string {
-	if m != nil {
-		return m.Tags
-	}
-	return nil
-}
-
-// Profile represents a DID alias
-type Profile struct {
-	// The unique identifier of the alias
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	// The alias of the DID
-	Subject string `protobuf:"bytes,2,opt,name=subject,proto3" json:"subject,omitempty"`
-	// Origin of the alias
-	Origin string `protobuf:"bytes,3,opt,name=origin,proto3" json:"origin,omitempty"`
-	// Controller of the alias
-	Controller string `protobuf:"bytes,4,opt,name=controller,proto3" json:"controller,omitempty"`
-}
-
-func (m *Profile) Reset()         { *m = Profile{} }
-func (m *Profile) String() string { return proto.CompactTextString(m) }
-func (*Profile) ProtoMessage()    {}
-func (*Profile) Descriptor() ([]byte, []int) {
-	return fileDescriptor_2859adb306f7c51f, []int{1}
-}
-func (m *Profile) XXX_Unmarshal(b []byte) error {
-	return m.Unmarshal(b)
-}
-func (m *Profile) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	if deterministic {
-		return xxx_messageInfo_Profile.Marshal(b, m, deterministic)
-	} else {
-		b = b[:cap(b)]
-		n, err := m.MarshalToSizedBuffer(b)
-		if err != nil {
-			return nil, err
-		}
-		return b[:n], nil
-	}
-}
-func (m *Profile) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Profile.Merge(m, src)
-}
-func (m *Profile) XXX_Size() int {
-	return m.Size()
-}
-func (m *Profile) XXX_DiscardUnknown() {
-	xxx_messageInfo_Profile.DiscardUnknown(m)
-}
-
-var xxx_messageInfo_Profile proto.InternalMessageInfo
-
-func (m *Profile) GetId() string {
-	if m != nil {
-		return m.Id
-	}
-	return ""
-}
-
-func (m *Profile) GetSubject() string {
-	if m != nil {
-		return m.Subject
-	}
-	return ""
-}
-
-func (m *Profile) GetOrigin() string {
-	if m != nil {
-		return m.Origin
-	}
-	return ""
-}
-
-func (m *Profile) GetController() string {
+func (m *Metadata) GetController() string {
 	if m != nil {
 		return m.Controller
 	}
@@ -189,39 +189,39 @@ func (m *Profile) GetController() string {
 }
 
 func init() {
+	proto.RegisterType((*Domain)(nil), "svc.v1.Domain")
 	proto.RegisterType((*Metadata)(nil), "svc.v1.Metadata")
-	proto.RegisterType((*Profile)(nil), "svc.v1.Profile")
 }
 
 func init() { proto.RegisterFile("svc/v1/state.proto", fileDescriptor_2859adb306f7c51f) }
 
 var fileDescriptor_2859adb306f7c51f = []byte{
-	// 343 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x91, 0xc1, 0x4a, 0x3b, 0x31,
-	0x10, 0xc6, 0x9b, 0xdd, 0xfd, 0x6f, 0xdb, 0xfc, 0xa5, 0x94, 0x20, 0x1a, 0x7a, 0x08, 0x4b, 0xf1,
-	0xd0, 0x83, 0x74, 0x29, 0xde, 0x8a, 0x27, 0xef, 0x82, 0xf4, 0xe8, 0x6d, 0x9b, 0x8d, 0x6b, 0xa4,
-	0x9b, 0x29, 0x49, 0xba, 0xd8, 0x97, 0x10, 0x7d, 0x01, 0x9f, 0xc7, 0x83, 0x87, 0x82, 0x17, 0x8f,
-	0xd2, 0xbe, 0x81, 0x4f, 0x20, 0x49, 0xb7, 0xb2, 0x5e, 0xc2, 0xcc, 0x37, 0xc3, 0x97, 0xef, 0xc7,
-	0x60, 0x62, 0x2a, 0x9e, 0x56, 0x93, 0xd4, 0xd8, 0xcc, 0x8a, 0xf1, 0x52, 0x83, 0x05, 0x12, 0x9b,
-	0x8a, 0x8f, 0xab, 0xc9, 0xe0, 0x94, 0x83, 0x29, 0xc1, 0xa4, 0xa0, 0x4b, 0xb7, 0x02, 0xba, 0xdc,
-	0x2f, 0x0c, 0xdf, 0x11, 0xee, 0x5c, 0x0b, 0x9b, 0xe5, 0x99, 0xcd, 0x48, 0x0f, 0x07, 0x32, 0xa7,
-	0x28, 0x41, 0xa3, 0x68, 0x16, 0xc8, 0x9c, 0x9c, 0xe0, 0x18, 0xb4, 0x2c, 0xa4, 0xa2, 0x41, 0x82,
-	0x46, 0xdd, 0x59, 0xdd, 0x11, 0x82, 0x23, 0x95, 0x95, 0x82, 0x86, 0x5e, 0xf5, 0x35, 0x49, 0xf0,
-	0xff, 0x5c, 0x18, 0xae, 0xe5, 0xd2, 0x4a, 0x50, 0x34, 0xf2, 0xa3, 0xa6, 0x44, 0x06, 0xb8, 0xc3,
-	0x33, 0x2b, 0x0a, 0xd0, 0x6b, 0xfa, 0xcf, 0x8f, 0x7f, 0x7b, 0xe7, 0x28, 0x39, 0x28, 0x1a, 0xef,
-	0x1d, 0x5d, 0xed, 0x34, 0x9b, 0x15, 0x86, 0xb6, 0x93, 0xd0, 0x69, 0xae, 0x9e, 0xb2, 0xef, 0xd7,
-	0x8f, 0xa7, 0x90, 0xe2, 0xd8, 0x25, 0xed, 0x23, 0x72, 0x74, 0x48, 0xd8, 0x47, 0x14, 0x51, 0x34,
-	0x7c, 0x41, 0xb8, 0x7d, 0xa3, 0xe1, 0x4e, 0x2e, 0x44, 0x83, 0xa6, 0xeb, 0x69, 0x28, 0x6e, 0x9b,
-	0xd5, 0xfc, 0x41, 0x70, 0x5b, 0xe3, 0x1c, 0xda, 0x06, 0x67, 0xf8, 0x87, 0x93, 0x61, 0xcc, 0x41,
-	0x59, 0x0d, 0x8b, 0x85, 0xd0, 0x35, 0x52, 0x43, 0x99, 0x9e, 0xf9, 0x34, 0x0c, 0x47, 0xee, 0x27,
-	0x72, 0x8c, 0x7b, 0xb5, 0xe1, 0x79, 0x23, 0x53, 0x70, 0x75, 0xf9, 0xb6, 0x65, 0x68, 0xb3, 0x65,
-	0xe8, 0x6b, 0xcb, 0xd0, 0xf3, 0x8e, 0xb5, 0x36, 0x3b, 0xd6, 0xfa, 0xdc, 0xb1, 0xd6, 0xed, 0xb0,
-	0x90, 0xf6, 0x7e, 0x35, 0x1f, 0x73, 0x28, 0x53, 0x50, 0x06, 0x94, 0x4e, 0xfd, 0xf3, 0x98, 0xba,
-	0x53, 0xda, 0xf5, 0x52, 0x98, 0x79, 0xec, 0xef, 0x74, 0xf1, 0x13, 0x00, 0x00, 0xff, 0xff, 0xd0,
-	0x82, 0x18, 0x99, 0xde, 0x01, 0x00, 0x00,
+	// 344 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x54, 0x91, 0xb1, 0x6a, 0x23, 0x31,
+	0x10, 0x86, 0xad, 0xdd, 0xbd, 0xb5, 0xad, 0x3b, 0x8c, 0x11, 0xc7, 0x9d, 0x70, 0x21, 0x16, 0x73,
+	0x85, 0x8b, 0xc3, 0x8b, 0x49, 0x67, 0x52, 0x85, 0xb4, 0x69, 0x5c, 0xa6, 0x93, 0xb5, 0x62, 0xa3,
+	0xe0, 0xd5, 0x18, 0x49, 0x5e, 0xe2, 0x97, 0x08, 0x21, 0x0f, 0x90, 0xe7, 0x09, 0xa9, 0x0c, 0x69,
+	0x52, 0x06, 0xfb, 0x0d, 0xf2, 0x04, 0x41, 0xf2, 0x3a, 0x6c, 0x1a, 0x31, 0xf3, 0xcf, 0xf0, 0xeb,
+	0xff, 0x18, 0x4c, 0x6c, 0x2d, 0xf2, 0x7a, 0x96, 0x5b, 0xc7, 0x9d, 0x9c, 0xae, 0x0d, 0x38, 0x20,
+	0xa9, 0xad, 0xc5, 0xb4, 0x9e, 0x8d, 0xfe, 0x0a, 0xb0, 0x15, 0xd8, 0x1c, 0x4c, 0xe5, 0x57, 0xc0,
+	0x54, 0xc7, 0x85, 0xf1, 0x0b, 0xc2, 0xe9, 0x25, 0x54, 0x5c, 0x69, 0x32, 0xc0, 0x91, 0x2a, 0x28,
+	0xca, 0xd0, 0x24, 0x59, 0x44, 0xaa, 0x20, 0x7f, 0x70, 0x0a, 0x46, 0x95, 0x4a, 0xd3, 0x28, 0x43,
+	0x93, 0xfe, 0xa2, 0xe9, 0x08, 0xc1, 0x89, 0xe6, 0x95, 0xa4, 0x71, 0x50, 0x43, 0x4d, 0x32, 0xfc,
+	0xb3, 0x90, 0x56, 0x18, 0xb5, 0x76, 0x0a, 0x34, 0x4d, 0xc2, 0xa8, 0x2d, 0x91, 0x11, 0xee, 0x09,
+	0xee, 0x64, 0x09, 0x66, 0x4b, 0x7f, 0x84, 0xf1, 0x57, 0xef, 0x1d, 0x95, 0x00, 0x4d, 0xd3, 0xa3,
+	0xa3, 0xaf, 0xbd, 0xe6, 0x78, 0x69, 0x69, 0x37, 0x8b, 0xbd, 0xe6, 0xeb, 0x39, 0xfb, 0x78, 0x7a,
+	0xbd, 0x8f, 0x29, 0x4e, 0x7d, 0xd2, 0x21, 0x22, 0xbf, 0x4e, 0x09, 0x87, 0x88, 0x22, 0x8a, 0xc6,
+	0x8f, 0x08, 0xf7, 0xae, 0xa4, 0xe3, 0x05, 0x77, 0xbc, 0x85, 0xd3, 0x0f, 0x38, 0x14, 0x77, 0xed,
+	0x66, 0x79, 0x2b, 0x85, 0x6b, 0x78, 0x4e, 0x6d, 0x0b, 0x34, 0xfe, 0x06, 0xca, 0x30, 0x16, 0xa0,
+	0x9d, 0x81, 0xd5, 0x4a, 0x9a, 0x86, 0xa9, 0xa5, 0xcc, 0xff, 0x85, 0x38, 0x0c, 0x27, 0xfe, 0x27,
+	0xf2, 0x1b, 0x0f, 0x1a, 0xc3, 0xff, 0xad, 0x50, 0xd1, 0xc5, 0xf9, 0xf3, 0x9e, 0xa1, 0xdd, 0x9e,
+	0xa1, 0xf7, 0x3d, 0x43, 0x0f, 0x07, 0xd6, 0xd9, 0x1d, 0x58, 0xe7, 0xed, 0xc0, 0x3a, 0xd7, 0xe3,
+	0x52, 0xb9, 0x9b, 0xcd, 0x72, 0x2a, 0xa0, 0xca, 0x41, 0x5b, 0xd0, 0x26, 0x0f, 0xcf, 0x5d, 0xee,
+	0x2f, 0xe9, 0xb6, 0x6b, 0x69, 0x97, 0x69, 0x38, 0xd3, 0xd9, 0x67, 0x00, 0x00, 0x00, 0xff, 0xff,
+	0x13, 0x81, 0x47, 0xf4, 0xdd, 0x01, 0x00, 0x00,
 }
 
-func (m *Metadata) Marshal() (dAtA []byte, err error) {
+func (m *Domain) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -231,12 +231,12 @@ func (m *Metadata) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Metadata) MarshalTo(dAtA []byte) (int, error) {
+func (m *Domain) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Metadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Domain) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -293,7 +293,7 @@ func (m *Metadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	return len(dAtA) - i, nil
 }
 
-func (m *Profile) Marshal() (dAtA []byte, err error) {
+func (m *Metadata) Marshal() (dAtA []byte, err error) {
 	size := m.Size()
 	dAtA = make([]byte, size)
 	n, err := m.MarshalToSizedBuffer(dAtA[:size])
@@ -303,12 +303,12 @@ func (m *Profile) Marshal() (dAtA []byte, err error) {
 	return dAtA[:n], nil
 }
 
-func (m *Profile) MarshalTo(dAtA []byte) (int, error) {
+func (m *Metadata) MarshalTo(dAtA []byte) (int, error) {
 	size := m.Size()
 	return m.MarshalToSizedBuffer(dAtA[:size])
 }
 
-func (m *Profile) MarshalToSizedBuffer(dAtA []byte) (int, error) {
+func (m *Metadata) MarshalToSizedBuffer(dAtA []byte) (int, error) {
 	i := len(dAtA)
 	_ = i
 	var l int
@@ -355,7 +355,7 @@ func encodeVarintState(dAtA []byte, offset int, v uint64) int {
 	dAtA[offset] = uint8(v)
 	return base
 }
-func (m *Metadata) Size() (n int) {
+func (m *Domain) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -393,7 +393,7 @@ func (m *Metadata) Size() (n int) {
 	return n
 }
 
-func (m *Profile) Size() (n int) {
+func (m *Metadata) Size() (n int) {
 	if m == nil {
 		return 0
 	}
@@ -424,7 +424,7 @@ func sovState(x uint64) (n int) {
 func sozState(x uint64) (n int) {
 	return sovState(uint64((x << 1) ^ uint64((int64(x) >> 63))))
 }
-func (m *Metadata) Unmarshal(dAtA []byte) error {
+func (m *Domain) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -447,10 +447,10 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Metadata: wiretype end group for non-group")
+			return fmt.Errorf("proto: Domain: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Metadata: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Domain: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
@@ -685,7 +685,7 @@ func (m *Metadata) Unmarshal(dAtA []byte) error {
 	}
 	return nil
 }
-func (m *Profile) Unmarshal(dAtA []byte) error {
+func (m *Metadata) Unmarshal(dAtA []byte) error {
 	l := len(dAtA)
 	iNdEx := 0
 	for iNdEx < l {
@@ -708,10 +708,10 @@ func (m *Profile) Unmarshal(dAtA []byte) error {
 		fieldNum := int32(wire >> 3)
 		wireType := int(wire & 0x7)
 		if wireType == 4 {
-			return fmt.Errorf("proto: Profile: wiretype end group for non-group")
+			return fmt.Errorf("proto: Metadata: wiretype end group for non-group")
 		}
 		if fieldNum <= 0 {
-			return fmt.Errorf("proto: Profile: illegal tag %d (wire type %d)", fieldNum, wire)
+			return fmt.Errorf("proto: Metadata: illegal tag %d (wire type %d)", fieldNum, wire)
 		}
 		switch fieldNum {
 		case 1:
