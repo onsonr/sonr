@@ -2,13 +2,13 @@
 package home
 
 import (
-	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	"github.com/onsonr/sonr/pkg/webapp/components/layout"
 	landing "github.com/onsonr/sonr/pkg/webapp/pages/home/internal"
 )
 
 // View renders the home page
 templ Page() {
-	@ui.LayoutNoBody("Sonr.ID", true) {
+	@layout.NoBody("Sonr.ID", true) {
 		@landing.Header(header)
 		@landing.Hero(hero)
 		@landing.Highlights(highlights)

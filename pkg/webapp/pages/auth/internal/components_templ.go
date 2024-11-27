@@ -58,7 +58,7 @@ func RegisterFooter() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-6 text-sm text-center text-neutral-500\">Already have an account? <a href=\"#_\" class=\"relative font-medium text-blue-600 group\"><span>Login here</span><span class=\"absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600\"></span></a></p><p class=\"px-8 mt-1 text-sm text-center text-neutral-500\">By continuing, you agree to our <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/terms\">Terms</a> and <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/privacy\">Policy</a>.</p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<p class=\"mt-6 text-sm text-center text-neutral-500\">Already have an account?  <a href=\"#_\" class=\"relative font-medium text-blue-600 group\"><span>Login here</span> <span class=\"absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600\"></span></a></p><p class=\"px-8 mt-1 text-sm text-center text-neutral-500\">By continuing, you agree to our  <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/terms\">Terms</a> and  <a class=\"underline underline-offset-4 hover:text-primary\" href=\"/privacy\">Policy</a>.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -10,7 +10,7 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	"github.com/onsonr/sonr/pkg/webapp/components/button"
 	models "github.com/onsonr/sonr/pkg/webapp/models"
 )
 
@@ -61,11 +61,11 @@ func Hero(hero *models.Hero) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ui.PrimaryButton("/register", "Get Started").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = button.Primary("/register", "Get Started").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = ui.SecondaryButton("/learn", "Learn More").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = button.Secondary("/learn", "Learn More").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

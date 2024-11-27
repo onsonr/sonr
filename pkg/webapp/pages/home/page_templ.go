@@ -10,7 +10,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	"github.com/onsonr/sonr/pkg/webapp/components/layout"
 	landing "github.com/onsonr/sonr/pkg/webapp/pages/home/internal"
 )
 
@@ -110,7 +110,7 @@ func Page() templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = ui.LayoutNoBody("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.NoBody("Sonr.ID", true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

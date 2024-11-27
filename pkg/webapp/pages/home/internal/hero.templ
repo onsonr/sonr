@@ -2,7 +2,7 @@ package internal
 
 import (
 	"fmt"
-	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	"github.com/onsonr/sonr/pkg/webapp/components/button"
 	models "github.com/onsonr/sonr/pkg/webapp/models"
 )
 
@@ -20,8 +20,8 @@ templ Hero(hero *models.Hero) {
 							{ hero.Subtitle }
 						</p>
 						<div class="max-w-xs mx-auto sm:max-w-none sm:inline-flex sm:justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-							@ui.PrimaryButton("/register", "Get Started")
-							@ui.SecondaryButton("/learn", "Learn More")
+							@button.Primary("/register", "Get Started")
+							@button.Secondary("/learn", "Learn More")
 						</div>
 					</div>
 				</div>
