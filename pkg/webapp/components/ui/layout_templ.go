@@ -334,7 +334,7 @@ func FullScreenModal() templ.Component {
 			templ_7745c5c3_Var11 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div x-data=\"{ fullscreenModal: true }\" x-init=\"\n$watch(&#39;fullscreenModal&#39;, function(value){\nif(value === true){\ndocument.body.classList.add(&#39;overflow-hidden&#39;);\n}else{\ndocument.body.classList.remove(&#39;overflow-hidden&#39;);\n}\n})\n\" @keydown.escape=\"fullscreenModal=false\"><template x-teleport=\"body\"><div x-show=\"fullscreenModal\" x-transition:enter=\"transition ease-out duration-150\" x-transition:enter-start=\"opacity-0\" x-transition:enter-end=\"opacity-100\" x-transition:leave=\"transition ease-in duration-150\" x-transition:leave-start=\"opacity-100\" x-transition:leave-end=\"opacity-0\" class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><button @click=\"fullscreenModal=false\" class=\"absolute top-0 right-0 z-30 flex items-center justify-center px-3 py-3 mt-5 mr-5 space-x-1 text-xs font-medium uppercase rounded-full text-zinc-500 hover:bg-zinc-200\"><svg class=\"w-8 h-8\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"relative flex flex-wrap items-center w-full h-full px-8\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div x-data=\"{ fullscreenModal: true }\" x-init=\"\n$watch(&#39;fullscreenModal&#39;, function(value){\nif(value === true){\ndocument.body.classList.add(&#39;overflow-hidden&#39;);\n}else{\ndocument.body.classList.remove(&#39;overflow-hidden&#39;);\n}\n})\n\" @keydown.escape=\"fullscreenModal=false\"><template x-teleport=\"body\"><div x-show=\"fullscreenModal\" x-transition:enter=\"transition ease-out duration-150\" x-transition:enter-start=\"opacity-0\" x-transition:enter-end=\"opacity-100\" x-transition:leave=\"transition ease-in duration-150\" x-transition:leave-start=\"opacity-100\" x-transition:leave-end=\"opacity-0\" class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><button @click=\"fullscreenModal=false\" class=\"absolute top-0 right-0 z-30 flex items-center justify-center px-3 py-3 mt-5 mr-5 space-x-1 text-xs font-medium uppercase rounded-full text-zinc-500 hover:bg-zinc-200\"><svg class=\"w-8 h-8\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"M6 18L18 6M6 6l12 12\"></path></svg></button><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -342,7 +342,7 @@ func FullScreenModal() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></template></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></template></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -446,7 +446,7 @@ func Separator(text string) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/webapp/components/ui/layout.templ`, Line: 177, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/webapp/components/ui/layout.templ`, Line: 179, Col: 54}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

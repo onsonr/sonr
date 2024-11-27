@@ -1,0 +1,37 @@
+package internal
+
+templ CreateCredentialsScript() {
+	<script>
+	function createCredential() {
+		navigator.credentials.create({
+			publicKey: {
+				rp: {
+					name: "Sonr",
+				},
+				user: {
+					id: new Uint8Array(0),
+					name: "Sonr",
+					displayName: "Sonr",
+				},
+				challenge: new Uint8Array(0),
+				pubKeyCredParams: [{
+					type: "public-key",
+					alg: -7,
+				}],
+				timeout: 60000,
+				excludeCredentials: [],
+				authenticatorSelection: {
+					requireResidentKey: false,
+					userVerification: "discouraged",
+				},
+			},
+		})
+			.then((assertion) => {
+				console.log("Assertion:", assertion);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
+		}
+	</script>
+}

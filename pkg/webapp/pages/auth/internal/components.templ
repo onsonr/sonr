@@ -1,0 +1,16 @@
+package internal
+
+templ RegisterHeader() {
+	<div class="flex flex-col mb-6 space-y-2">
+		<span>
+			<wa-qr-code size="140" value="https://shoelace.style/" error-correction="Q"></wa-qr-code>
+		</span>
+		<h1 class="text-2xl font-semibold tracking-tight">Continue with your phone</h1>
+		<p class="text-sm text-neutral-500">Creating a Sonr Vault requires a smartphone with W3C compliant biometrics enabled.</p>
+	</div>
+}
+
+templ RegisterFooter() {
+	<p class="mt-6 text-sm text-center text-neutral-500">Already have an account? <a href="#_" class="relative font-medium text-blue-600 group"><span>Login here</span><span class="absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600"></span></a></p>
+	<p class="px-8 mt-1 text-sm text-center text-neutral-500">By continuing, you agree to our <a class="underline underline-offset-4 hover:text-primary" href="/terms">Terms</a> and <a class="underline underline-offset-4 hover:text-primary" href="/privacy">Policy</a>.</p>
+}

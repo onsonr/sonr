@@ -1,0 +1,21 @@
+
+package home
+
+import (
+	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	landing "github.com/onsonr/sonr/pkg/webapp/pages/home/internal"
+)
+
+// View renders the home page
+templ Page() {
+	@ui.LayoutNoBody("Sonr.ID", true) {
+		@landing.Header(header)
+		@landing.Hero(hero)
+		@landing.Highlights(highlights)
+		@landing.Mission(mission)
+		@landing.Architecture(arch)
+		@landing.Lowlights(lowlights)
+		@landing.CallToAction(cta)
+		@landing.Footer()
+	}
+}

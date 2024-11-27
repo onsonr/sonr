@@ -1,0 +1,18 @@
+package register
+
+import (
+	"github.com/onsonr/sonr/pkg/webapp/components/ui"
+	"github.com/onsonr/sonr/pkg/webapp/pages/register/internal"
+)
+
+// RedirectModal returns the Modal with a QR code to scan.
+templ Page() {
+	@ui.FullScreenModal() {
+		<div class="relative text-center">
+			@internal.RegisterHeader()
+			@ui.Separator("Or Reserve Handle")
+			@internal.ReserveHandleForm()
+		</div>
+		@internal.RegisterFooter()
+	}
+}
