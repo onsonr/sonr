@@ -1,0 +1,17 @@
+package ui
+
+// Variant is a component that has attributes
+type Variant interface {
+	Attributes() templ.Attributes
+}
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  General Layout Components                │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
+templ Columns() {
+	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
+		{ children... }
+	</div>
+}

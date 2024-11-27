@@ -1,0 +1,19 @@
+version: "0.6"
+
+processes:
+  ipfs:
+    namespace: testnet
+    command: "devbox run start:ipfs"
+    background: true
+    availability:
+      restart: never
+      max_restarts: 0
+
+  sonr:
+    namespace: testnet
+    background: true
+    command: "devbox run start:testnet"
+    restart: never
+    max_restarts: 1
+    depends:
+      - ipfs

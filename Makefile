@@ -262,6 +262,9 @@ ictest-tokenfactory:
 ###                                    testnet                              ###
 ###############################################################################
 
+setup-ipfs:
+	./scripts/ipfs_config.sh
+
 setup-testnet: mod-tidy is-localic-installed install local-image set-testnet-configs setup-testnet-keys
 
 # Run this before testnet keys are added
@@ -287,6 +290,49 @@ sh-testnet: mod-tidy
 	CHAIN_ID="sonr-testnet-1" BLOCK_TIME="1000ms" CLEAN=true sh scripts/test_node.sh
 
 .PHONY: setup-testnet set-testnet-configs testnet testnet-basic sh-testnet
+
+###############################################################################
+###                                generation                               ###
+###############################################################################
+.PHONY: pkl-gen styles-gen templ-gen
+
+pkl-gen:
+	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
+	pkl-gen-go pkl/base.types/Ctx.pkl
+	pkl-gen-go pkl/base.types/DWN.pkl
+	pkl-gen-go pkl/base.types/ORM.pkl
+
+styles-gen:
+	sh ./scripts/tailwindgen.sh
+
+templ-gen:
+	@go install github.com/a-h/templ/cmd/templ@latest
+	templ generate
+
+
+###############################################################################
+###                             custom builds                               ###
+###############################################################################
+.PHONY: motr-build hway-build hway-serve
+
+motr-build:
+	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
+
+hway-build: styles-gen templ-gen
+	go build -o build/hway ./cmd/hway/main.go
+
+
+###############################################################################
+###                                     help                                ###
+###############################################################################
+.PHONY: deploy-buf deploy-cdn
+
+deploy-buf:
+	cd ./proto && bunx buf dep update && bunx buf build && bunx buf push
+
+deploy-cdn: 
+	sh ./scripts/upload_cdn.sh
+
 
 ###############################################################################
 ###                                     help                                ###

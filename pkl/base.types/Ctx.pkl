@@ -3,7 +3,6 @@
 module common.types.Ctx
 
 import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
-import "./DWN.pkl"
 
 class JsonField extends go.Field {
   structTags {

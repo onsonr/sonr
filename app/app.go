@@ -134,6 +134,15 @@ import (
 	ibcexported "github.com/cosmos/ibc-go/v8/modules/core/exported"
 	ibckeeper "github.com/cosmos/ibc-go/v8/modules/core/keeper"
 	ibctm "github.com/cosmos/ibc-go/v8/modules/light-clients/07-tendermint"
+	did "github.com/onsonr/sonr/x/did"
+	didkeeper "github.com/onsonr/sonr/x/did/keeper"
+	didtypes "github.com/onsonr/sonr/x/did/types"
+	dwn "github.com/onsonr/sonr/x/dwn"
+	dwnkeeper "github.com/onsonr/sonr/x/dwn/keeper"
+	dwntypes "github.com/onsonr/sonr/x/dwn/types"
+	svc "github.com/onsonr/sonr/x/svc"
+	svckeeper "github.com/onsonr/sonr/x/svc/keeper"
+	svctypes "github.com/onsonr/sonr/x/svc/types"
 	"github.com/spf13/cast"
 	globalfee "github.com/strangelove-ventures/globalfee/x/globalfee"
 	globalfeekeeper "github.com/strangelove-ventures/globalfee/x/globalfee/keeper"
@@ -144,16 +153,6 @@ import (
 	tokenfactory "github.com/strangelove-ventures/tokenfactory/x/tokenfactory"
 	tokenfactorykeeper "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/keeper"
 	tokenfactorytypes "github.com/strangelove-ventures/tokenfactory/x/tokenfactory/types"
-
-	did "github.com/onsonr/sonr/x/did"
-	didkeeper "github.com/onsonr/sonr/x/did/keeper"
-	didtypes "github.com/onsonr/sonr/x/did/types"
-	service "github.com/onsonr/sonr/x/service"
-	servicekeeper "github.com/onsonr/sonr/x/service/keeper"
-	servicetypes "github.com/onsonr/sonr/x/service/types"
-	vault "github.com/onsonr/sonr/x/vault"
-	vaultkeeper "github.com/onsonr/sonr/x/vault/keeper"
-	vaulttypes "github.com/onsonr/sonr/x/vault/types"
 )
 
 const appName = "sonr"
@@ -232,8 +231,8 @@ type SonrApp struct {
 	CrisisKeeper       *crisiskeeper.Keeper
 	UpgradeKeeper      *upgradekeeper.Keeper
 	legacyAmino        *codec.LegacyAmino
-	VaultKeeper        vaultkeeper.Keeper
-	ServiceKeeper      servicekeeper.Keeper
+	DwnKeeper          dwnkeeper.Keeper
+	SvcKeeper          svckeeper.Keeper
 	sm                 *module.SimulationManager
 	BasicModuleManager module.BasicManager
 	ModuleManager      *module.Manager
@@ -366,8 +365,8 @@ func NewChainApp(
 		globalfeetypes.StoreKey,
 		packetforwardtypes.StoreKey,
 		didtypes.StoreKey,
-		vaulttypes.StoreKey,
-		servicetypes.StoreKey,
+		dwntypes.StoreKey,
+		svctypes.StoreKey,
 	)
 
 	tkeys := storetypes.NewTransientStoreKeys(paramstypes.TStoreKey)
@@ -627,28 +626,43 @@ func NewChainApp(
 		app.StakingKeeper,
 	)
 
-	// Create the vault Keeper
-	app.VaultKeeper = vaultkeeper.NewKeeper(
+	// Create the svc Keeper
+	app.SvcKeeper = svckeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[svctypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.AccountKeeper,
-		app.DidKeeper,
 	)
 
-	// Create the service Keeper
-	app.ServiceKeeper = servicekeeper.NewKeeper(
+	// Create the dwn Keeper
+	app.DwnKeeper = dwnkeeper.NewKeeper(
 		appCodec,
-		sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
+		sdkruntime.NewKVStoreService(keys[dwntypes.StoreKey]),
 		logger,
 		authtypes.NewModuleAddress(govtypes.ModuleName).String(),
-		app.DidKeeper,
-		app.GroupKeeper,
-		app.NFTKeeper,
-		app.VaultKeeper,
 	)
-
+	// // Create the vault Keeper
+	// app.VaultKeeper = vaultkeeper.NewKeeper(
+	// 	appCodec,
+	// 	sdkruntime.NewKVStoreService(keys[vaulttypes.StoreKey]),
+	// 	logger,
+	// 	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	// 	app.AccountKeeper,
+	// 	app.DidKeeper,
+	// )
+	//
+	// // Create the service Keeper
+	// app.ServiceKeeper = servicekeeper.NewKeeper(
+	// 	appCodec,
+	// 	sdkruntime.NewKVStoreService(keys[servicetypes.StoreKey]),
+	// 	logger,
+	// 	authtypes.NewModuleAddress(govtypes.ModuleName).String(),
+	// 	app.DidKeeper,
+	// 	app.GroupKeeper,
+	// 	app.NFTKeeper,
+	// 	app.VaultKeeper,
+	// )
+	//
 	// Create the globalfee keeper
 	app.GlobalFeeKeeper = globalfeekeeper.NewKeeper(
 		appCodec,
@@ -906,10 +920,8 @@ func NewChainApp(
 		),
 
 		did.NewAppModule(appCodec, app.DidKeeper, app.NFTKeeper),
-
-		vault.NewAppModule(appCodec, app.VaultKeeper, app.DidKeeper),
-
-		service.NewAppModule(appCodec, app.ServiceKeeper, app.DidKeeper),
+		dwn.NewAppModule(appCodec, app.DwnKeeper),
+		svc.NewAppModule(appCodec, app.SvcKeeper),
 	)
 
 	// BasicModuleManager defines the module BasicManager is in charge of setting up basic,
@@ -958,8 +970,8 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
-		vaulttypes.ModuleName,
-		servicetypes.ModuleName,
+		dwntypes.ModuleName,
+		svctypes.ModuleName,
 	)
 
 	app.ModuleManager.SetOrderEndBlockers(
@@ -979,8 +991,8 @@ func NewChainApp(
 		tokenfactorytypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
-		vaulttypes.ModuleName,
-		servicetypes.ModuleName,
+		dwntypes.ModuleName,
+		svctypes.ModuleName,
 	)
 
 	// NOTE: The genutils module must occur after staking so that pools are
@@ -1009,8 +1021,8 @@ func NewChainApp(
 		globalfeetypes.ModuleName,
 		packetforwardtypes.ModuleName,
 		didtypes.ModuleName,
-		vaulttypes.ModuleName,
-		servicetypes.ModuleName,
+		dwntypes.ModuleName,
+		svctypes.ModuleName,
 	}
 	app.ModuleManager.SetOrderInitGenesis(genesisModuleOrder...)
 	app.ModuleManager.SetOrderExportGenesis(genesisModuleOrder...)
@@ -1469,8 +1481,8 @@ func initParamsKeeper(
 	paramsKeeper.Subspace(packetforwardtypes.ModuleName).
 		WithKeyTable(packetforwardtypes.ParamKeyTable())
 	paramsKeeper.Subspace(didtypes.ModuleName)
-	paramsKeeper.Subspace(vaulttypes.ModuleName)
-	paramsKeeper.Subspace(servicetypes.ModuleName)
+	paramsKeeper.Subspace(dwntypes.ModuleName)
+	paramsKeeper.Subspace(svctypes.ModuleName)
 
 	return paramsKeeper
 }

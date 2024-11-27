@@ -7,7 +7,7 @@ import "did/v1/genesis.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";
 
-message Assertion {
+message Account {
   option (cosmos.orm.v1.table) = {
     id: 1
     primary_key: {fields: "did"}
@@ -40,66 +40,10 @@ message Assertion {
   int64 creation_block = 7;
 }
 
-message Authentication {
+// PublicKey represents a public key
+message PublicKey {
   option (cosmos.orm.v1.table) = {
     id: 2
-    primary_key: {fields: "did"}
-    index: {
-      id: 1
-      fields: "controller,subject"
-      unique: true
-    }
-  };
-
-  // The unique identifier of the authentication
-  string did = 1;
-
-  // The authentication of the DID
-  string controller = 2;
-
-  // Origin of the authentication
-  string subject = 3;
-
-  // string is the verification method
-  string public_key_hex = 4;
-
-  // CredentialID is the byte representation of the credential ID
-  bytes credential_id = 5;
-
-  // Metadata of the authentication
-  map<string, string> metadata = 6;
-
-  // CreationBlock is the block number of the creation of the authentication
-  int64 creation_block = 7;
-}
-
-// Macaroon is a Macaroon message type.
-message Biscuit {
-  option (cosmos.orm.v1.table) = {
-    id: 5
-    primary_key: {
-      fields: "id"
-      auto_increment: true
-    }
-    index: {
-      id: 1
-      fields: "subject,origin"
-      unique: true
-    }
-  };
-
-  uint64 id = 1;
-  string controller = 2;
-  string subject = 3;
-  string origin = 4;
-  int64 expiry_height = 5;
-  string macaroon = 6;
-}
-
-// Controller represents a Sonr DWN Vault
-message Controller {
-  option (cosmos.orm.v1.table) = {
-    id: 3
     primary_key: {
       fields: "number"
       auto_increment: true
@@ -157,7 +101,7 @@ message Controller {
 // Verification represents a verification method
 message Verification {
   option (cosmos.orm.v1.table) = {
-    id: 6
+    id: 3
     primary_key: {fields: "did"}
     index: {
       id: 1

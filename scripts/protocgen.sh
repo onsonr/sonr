@@ -50,17 +50,3 @@ for module in $base_namespace; do
   rm -rf $module
 done
 
-cd $ROOT_DIR
-
-echo "Generating third-party proto code"
-cd third_party/proto
-buf generate
-
-echo "Copying generated proto code"
-cd $ROOT_DIR/github.com/onsonr/sonr/pkg
-
-cp -r hway/types/* $ROOT_DIR/pkg/hway/types
-cp -r common/types/* $ROOT_DIR/pkg/common/types
-
-echo "Cleaning up"
-rm -rf $ROOT_DIR/github.com

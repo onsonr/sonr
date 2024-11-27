@@ -23,18 +23,18 @@ func (k Keeper) NewController(ctx sdk.Context) (controller.ControllerI, error) {
 	return controller, nil
 }
 
-func (k Keeper) ResolveController(ctx sdk.Context, did string) (controller.ControllerI, error) {
-	ct, err := k.OrmDB.ControllerTable().GetByDid(ctx, did)
-	if err != nil {
-		return nil, err
-	}
-	c, err := controller.LoadFromTableEntry(ctx, ct)
-	if err != nil {
-		return nil, err
-	}
-	return c, nil
-}
-
+//	func (k Keeper) ResolveController(ctx sdk.Context, did string) (controller.ControllerI, error) {
+//		ct, err := k.OrmDB.ControllerTable().GetByDid(ctx, did)
+//		if err != nil {
+//			return nil, err
+//		}
+//		c, err := controller.LoadFromTableEntry(ctx, ct)
+//		if err != nil {
+//			return nil, err
+//		}
+//		return c, nil
+//	}
+//
 // Logger returns the logger
 func (k Keeper) Logger() log.Logger {
 	return k.logger
