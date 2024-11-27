@@ -81,7 +81,6 @@ func (k Keeper) Logger() log.Logger {
 
 // InitGenesis initializes the module's state from a genesis state.
 func (k *Keeper) InitGenesis(ctx context.Context, data *types.GenesisState) error {
-
 	if err := data.Params.Validate(); err != nil {
 		return err
 	}

@@ -26,13 +26,15 @@ message Params {
 // Capability reprensents the available capabilities of a decentralized web node
 message Capability {
   string name = 1;
-  string description = 2;
+  string parent = 2;
+  string description = 3;
+  repeated string resources = 4;
 }
 
 // Resource reprensents the available resources of a decentralized web node
 message Resource {
-  string name = 1;
-  string description = 2;
+  string kind = 1;
+  string template = 2;
 }
 
 // Schema is the Database Model for Decentralized Web Nodes

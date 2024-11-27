@@ -992,17 +992,67 @@ func (x *fastReflection_Params) ProtoMethods() *protoiface.Methods {
 	}
 }
 
+var _ protoreflect.List = (*_Capability_4_list)(nil)
+
+type _Capability_4_list struct {
+	list *[]string
+}
+
+func (x *_Capability_4_list) Len() int {
+	if x.list == nil {
+		return 0
+	}
+	return len(*x.list)
+}
+
+func (x *_Capability_4_list) Get(i int) protoreflect.Value {
+	return protoreflect.ValueOfString((*x.list)[i])
+}
+
+func (x *_Capability_4_list) Set(i int, value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	(*x.list)[i] = concreteValue
+}
+
+func (x *_Capability_4_list) Append(value protoreflect.Value) {
+	valueUnwrapped := value.String()
+	concreteValue := valueUnwrapped
+	*x.list = append(*x.list, concreteValue)
+}
+
+func (x *_Capability_4_list) AppendMutable() protoreflect.Value {
+	panic(fmt.Errorf("AppendMutable can not be called on message Capability at list field Resources as it is not of Message kind"))
+}
+
+func (x *_Capability_4_list) Truncate(n int) {
+	*x.list = (*x.list)[:n]
+}
+
+func (x *_Capability_4_list) NewElement() protoreflect.Value {
+	v := ""
+	return protoreflect.ValueOfString(v)
+}
+
+func (x *_Capability_4_list) IsValid() bool {
+	return x.list != nil
+}
+
 var (
 	md_Capability             protoreflect.MessageDescriptor
 	fd_Capability_name        protoreflect.FieldDescriptor
+	fd_Capability_parent      protoreflect.FieldDescriptor
 	fd_Capability_description protoreflect.FieldDescriptor
+	fd_Capability_resources   protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_dwn_v1_genesis_proto_init()
 	md_Capability = File_dwn_v1_genesis_proto.Messages().ByName("Capability")
 	fd_Capability_name = md_Capability.Fields().ByName("name")
+	fd_Capability_parent = md_Capability.Fields().ByName("parent")
 	fd_Capability_description = md_Capability.Fields().ByName("description")
+	fd_Capability_resources = md_Capability.Fields().ByName("resources")
 }
 
 var _ protoreflect.Message = (*fastReflection_Capability)(nil)
@@ -1076,9 +1126,21 @@ func (x *fastReflection_Capability) Range(f func(protoreflect.FieldDescriptor, p
 			return
 		}
 	}
+	if x.Parent != "" {
+		value := protoreflect.ValueOfString(x.Parent)
+		if !f(fd_Capability_parent, value) {
+			return
+		}
+	}
 	if x.Description != "" {
 		value := protoreflect.ValueOfString(x.Description)
 		if !f(fd_Capability_description, value) {
+			return
+		}
+	}
+	if len(x.Resources) != 0 {
+		value := protoreflect.ValueOfList(&_Capability_4_list{list: &x.Resources})
+		if !f(fd_Capability_resources, value) {
 			return
 		}
 	}
@@ -1099,8 +1161,12 @@ func (x *fastReflection_Capability) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
 	case "dwn.v1.Capability.name":
 		return x.Name != ""
+	case "dwn.v1.Capability.parent":
+		return x.Parent != ""
 	case "dwn.v1.Capability.description":
 		return x.Description != ""
+	case "dwn.v1.Capability.resources":
+		return len(x.Resources) != 0
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Capability"))
@@ -1119,8 +1185,12 @@ func (x *fastReflection_Capability) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
 	case "dwn.v1.Capability.name":
 		x.Name = ""
+	case "dwn.v1.Capability.parent":
+		x.Parent = ""
 	case "dwn.v1.Capability.description":
 		x.Description = ""
+	case "dwn.v1.Capability.resources":
+		x.Resources = nil
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Capability"))
@@ -1140,9 +1210,18 @@ func (x *fastReflection_Capability) Get(descriptor protoreflect.FieldDescriptor)
 	case "dwn.v1.Capability.name":
 		value := x.Name
 		return protoreflect.ValueOfString(value)
+	case "dwn.v1.Capability.parent":
+		value := x.Parent
+		return protoreflect.ValueOfString(value)
 	case "dwn.v1.Capability.description":
 		value := x.Description
 		return protoreflect.ValueOfString(value)
+	case "dwn.v1.Capability.resources":
+		if len(x.Resources) == 0 {
+			return protoreflect.ValueOfList(&_Capability_4_list{})
+		}
+		listValue := &_Capability_4_list{list: &x.Resources}
+		return protoreflect.ValueOfList(listValue)
 	default:
 		if descriptor.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Capability"))
@@ -1165,8 +1244,14 @@ func (x *fastReflection_Capability) Set(fd protoreflect.FieldDescriptor, value p
 	switch fd.FullName() {
 	case "dwn.v1.Capability.name":
 		x.Name = value.Interface().(string)
+	case "dwn.v1.Capability.parent":
+		x.Parent = value.Interface().(string)
 	case "dwn.v1.Capability.description":
 		x.Description = value.Interface().(string)
+	case "dwn.v1.Capability.resources":
+		lv := value.List()
+		clv := lv.(*_Capability_4_list)
+		x.Resources = *clv.list
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Capability"))
@@ -1187,8 +1272,16 @@ func (x *fastReflection_Capability) Set(fd protoreflect.FieldDescriptor, value p
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Capability) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
+	case "dwn.v1.Capability.resources":
+		if x.Resources == nil {
+			x.Resources = []string{}
+		}
+		value := &_Capability_4_list{list: &x.Resources}
+		return protoreflect.ValueOfList(value)
 	case "dwn.v1.Capability.name":
 		panic(fmt.Errorf("field name of message dwn.v1.Capability is not mutable"))
+	case "dwn.v1.Capability.parent":
+		panic(fmt.Errorf("field parent of message dwn.v1.Capability is not mutable"))
 	case "dwn.v1.Capability.description":
 		panic(fmt.Errorf("field description of message dwn.v1.Capability is not mutable"))
 	default:
@@ -1206,8 +1299,13 @@ func (x *fastReflection_Capability) NewField(fd protoreflect.FieldDescriptor) pr
 	switch fd.FullName() {
 	case "dwn.v1.Capability.name":
 		return protoreflect.ValueOfString("")
+	case "dwn.v1.Capability.parent":
+		return protoreflect.ValueOfString("")
 	case "dwn.v1.Capability.description":
 		return protoreflect.ValueOfString("")
+	case "dwn.v1.Capability.resources":
+		list := []string{}
+		return protoreflect.ValueOfList(&_Capability_4_list{list: &list})
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Capability"))
@@ -1281,9 +1379,19 @@ func (x *fastReflection_Capability) ProtoMethods() *protoiface.Methods {
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
+		l = len(x.Parent)
+		if l > 0 {
+			n += 1 + l + runtime.Sov(uint64(l))
+		}
 		l = len(x.Description)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
+		}
+		if len(x.Resources) > 0 {
+			for _, s := range x.Resources {
+				l = len(s)
+				n += 1 + l + runtime.Sov(uint64(l))
+			}
 		}
 		if x.unknownFields != nil {
 			n += len(x.unknownFields)
@@ -1314,10 +1422,26 @@ func (x *fastReflection_Capability) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
+		if len(x.Resources) > 0 {
+			for iNdEx := len(x.Resources) - 1; iNdEx >= 0; iNdEx-- {
+				i -= len(x.Resources[iNdEx])
+				copy(dAtA[i:], x.Resources[iNdEx])
+				i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Resources[iNdEx])))
+				i--
+				dAtA[i] = 0x22
+			}
+		}
 		if len(x.Description) > 0 {
 			i -= len(x.Description)
 			copy(dAtA[i:], x.Description)
 			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Description)))
+			i--
+			dAtA[i] = 0x1a
+		}
+		if len(x.Parent) > 0 {
+			i -= len(x.Parent)
+			copy(dAtA[i:], x.Parent)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Parent)))
 			i--
 			dAtA[i] = 0x12
 		}
@@ -1411,6 +1535,38 @@ func (x *fastReflection_Capability) ProtoMethods() *protoiface.Methods {
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Parent", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Parent = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 3:
+				if wireType != 2 {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
 				}
 				var stringLen uint64
@@ -1440,6 +1596,38 @@ func (x *fastReflection_Capability) ProtoMethods() *protoiface.Methods {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
 				x.Description = string(dAtA[iNdEx:postIndex])
+				iNdEx = postIndex
+			case 4:
+				if wireType != 2 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Resources", wireType)
+				}
+				var stringLen uint64
+				for shift := uint(0); ; shift += 7 {
+					if shift >= 64 {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrIntOverflow
+					}
+					if iNdEx >= l {
+						return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+					}
+					b := dAtA[iNdEx]
+					iNdEx++
+					stringLen |= uint64(b&0x7F) << shift
+					if b < 0x80 {
+						break
+					}
+				}
+				intStringLen := int(stringLen)
+				if intStringLen < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				postIndex := iNdEx + intStringLen
+				if postIndex < 0 {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, runtime.ErrInvalidLength
+				}
+				if postIndex > l {
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
+				}
+				x.Resources = append(x.Resources, string(dAtA[iNdEx:postIndex]))
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -1477,16 +1665,16 @@ func (x *fastReflection_Capability) ProtoMethods() *protoiface.Methods {
 }
 
 var (
-	md_Resource             protoreflect.MessageDescriptor
-	fd_Resource_name        protoreflect.FieldDescriptor
-	fd_Resource_description protoreflect.FieldDescriptor
+	md_Resource          protoreflect.MessageDescriptor
+	fd_Resource_kind     protoreflect.FieldDescriptor
+	fd_Resource_template protoreflect.FieldDescriptor
 )
 
 func init() {
 	file_dwn_v1_genesis_proto_init()
 	md_Resource = File_dwn_v1_genesis_proto.Messages().ByName("Resource")
-	fd_Resource_name = md_Resource.Fields().ByName("name")
-	fd_Resource_description = md_Resource.Fields().ByName("description")
+	fd_Resource_kind = md_Resource.Fields().ByName("kind")
+	fd_Resource_template = md_Resource.Fields().ByName("template")
 }
 
 var _ protoreflect.Message = (*fastReflection_Resource)(nil)
@@ -1554,15 +1742,15 @@ func (x *fastReflection_Resource) Interface() protoreflect.ProtoMessage {
 // While iterating, mutating operations may only be performed
 // on the current field descriptor.
 func (x *fastReflection_Resource) Range(f func(protoreflect.FieldDescriptor, protoreflect.Value) bool) {
-	if x.Name != "" {
-		value := protoreflect.ValueOfString(x.Name)
-		if !f(fd_Resource_name, value) {
+	if x.Kind != "" {
+		value := protoreflect.ValueOfString(x.Kind)
+		if !f(fd_Resource_kind, value) {
 			return
 		}
 	}
-	if x.Description != "" {
-		value := protoreflect.ValueOfString(x.Description)
-		if !f(fd_Resource_description, value) {
+	if x.Template != "" {
+		value := protoreflect.ValueOfString(x.Template)
+		if !f(fd_Resource_template, value) {
 			return
 		}
 	}
@@ -1581,10 +1769,10 @@ func (x *fastReflection_Resource) Range(f func(protoreflect.FieldDescriptor, pro
 // a repeated field is populated if it is non-empty.
 func (x *fastReflection_Resource) Has(fd protoreflect.FieldDescriptor) bool {
 	switch fd.FullName() {
-	case "dwn.v1.Resource.name":
-		return x.Name != ""
-	case "dwn.v1.Resource.description":
-		return x.Description != ""
+	case "dwn.v1.Resource.kind":
+		return x.Kind != ""
+	case "dwn.v1.Resource.template":
+		return x.Template != ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Resource"))
@@ -1601,10 +1789,10 @@ func (x *fastReflection_Resource) Has(fd protoreflect.FieldDescriptor) bool {
 // Clear is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Resource) Clear(fd protoreflect.FieldDescriptor) {
 	switch fd.FullName() {
-	case "dwn.v1.Resource.name":
-		x.Name = ""
-	case "dwn.v1.Resource.description":
-		x.Description = ""
+	case "dwn.v1.Resource.kind":
+		x.Kind = ""
+	case "dwn.v1.Resource.template":
+		x.Template = ""
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Resource"))
@@ -1621,11 +1809,11 @@ func (x *fastReflection_Resource) Clear(fd protoreflect.FieldDescriptor) {
 // of the value; to obtain a mutable reference, use Mutable.
 func (x *fastReflection_Resource) Get(descriptor protoreflect.FieldDescriptor) protoreflect.Value {
 	switch descriptor.FullName() {
-	case "dwn.v1.Resource.name":
-		value := x.Name
+	case "dwn.v1.Resource.kind":
+		value := x.Kind
 		return protoreflect.ValueOfString(value)
-	case "dwn.v1.Resource.description":
-		value := x.Description
+	case "dwn.v1.Resource.template":
+		value := x.Template
 		return protoreflect.ValueOfString(value)
 	default:
 		if descriptor.IsExtension() {
@@ -1647,10 +1835,10 @@ func (x *fastReflection_Resource) Get(descriptor protoreflect.FieldDescriptor) p
 // Set is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Resource) Set(fd protoreflect.FieldDescriptor, value protoreflect.Value) {
 	switch fd.FullName() {
-	case "dwn.v1.Resource.name":
-		x.Name = value.Interface().(string)
-	case "dwn.v1.Resource.description":
-		x.Description = value.Interface().(string)
+	case "dwn.v1.Resource.kind":
+		x.Kind = value.Interface().(string)
+	case "dwn.v1.Resource.template":
+		x.Template = value.Interface().(string)
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Resource"))
@@ -1671,10 +1859,10 @@ func (x *fastReflection_Resource) Set(fd protoreflect.FieldDescriptor, value pro
 // Mutable is a mutating operation and unsafe for concurrent use.
 func (x *fastReflection_Resource) Mutable(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dwn.v1.Resource.name":
-		panic(fmt.Errorf("field name of message dwn.v1.Resource is not mutable"))
-	case "dwn.v1.Resource.description":
-		panic(fmt.Errorf("field description of message dwn.v1.Resource is not mutable"))
+	case "dwn.v1.Resource.kind":
+		panic(fmt.Errorf("field kind of message dwn.v1.Resource is not mutable"))
+	case "dwn.v1.Resource.template":
+		panic(fmt.Errorf("field template of message dwn.v1.Resource is not mutable"))
 	default:
 		if fd.IsExtension() {
 			panic(fmt.Errorf("proto3 declared messages do not support extensions: dwn.v1.Resource"))
@@ -1688,9 +1876,9 @@ func (x *fastReflection_Resource) Mutable(fd protoreflect.FieldDescriptor) proto
 // For lists, maps, and messages, this returns a new, empty, mutable value.
 func (x *fastReflection_Resource) NewField(fd protoreflect.FieldDescriptor) protoreflect.Value {
 	switch fd.FullName() {
-	case "dwn.v1.Resource.name":
+	case "dwn.v1.Resource.kind":
 		return protoreflect.ValueOfString("")
-	case "dwn.v1.Resource.description":
+	case "dwn.v1.Resource.template":
 		return protoreflect.ValueOfString("")
 	default:
 		if fd.IsExtension() {
@@ -1761,11 +1949,11 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 		var n int
 		var l int
 		_ = l
-		l = len(x.Name)
+		l = len(x.Kind)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
-		l = len(x.Description)
+		l = len(x.Template)
 		if l > 0 {
 			n += 1 + l + runtime.Sov(uint64(l))
 		}
@@ -1798,17 +1986,17 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 			i -= len(x.unknownFields)
 			copy(dAtA[i:], x.unknownFields)
 		}
-		if len(x.Description) > 0 {
-			i -= len(x.Description)
-			copy(dAtA[i:], x.Description)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Description)))
+		if len(x.Template) > 0 {
+			i -= len(x.Template)
+			copy(dAtA[i:], x.Template)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Template)))
 			i--
 			dAtA[i] = 0x12
 		}
-		if len(x.Name) > 0 {
-			i -= len(x.Name)
-			copy(dAtA[i:], x.Name)
-			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Name)))
+		if len(x.Kind) > 0 {
+			i -= len(x.Kind)
+			copy(dAtA[i:], x.Kind)
+			i = runtime.EncodeVarint(dAtA, i, uint64(len(x.Kind)))
 			i--
 			dAtA[i] = 0xa
 		}
@@ -1863,7 +2051,7 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 			switch fieldNum {
 			case 1:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Name", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Kind", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1891,11 +2079,11 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Name = string(dAtA[iNdEx:postIndex])
+				x.Kind = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			case 2:
 				if wireType != 2 {
-					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Description", wireType)
+					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, fmt.Errorf("proto: wrong wireType = %d for field Template", wireType)
 				}
 				var stringLen uint64
 				for shift := uint(0); ; shift += 7 {
@@ -1923,7 +2111,7 @@ func (x *fastReflection_Resource) ProtoMethods() *protoiface.Methods {
 				if postIndex > l {
 					return protoiface.UnmarshalOutput{NoUnkeyedLiterals: input.NoUnkeyedLiterals, Flags: input.Flags}, io.ErrUnexpectedEOF
 				}
-				x.Description = string(dAtA[iNdEx:postIndex])
+				x.Template = string(dAtA[iNdEx:postIndex])
 				iNdEx = postIndex
 			default:
 				iNdEx = preIndex
@@ -3048,8 +3236,10 @@ type Capability struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Name        string   `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Parent      string   `protobuf:"bytes,2,opt,name=parent,proto3" json:"parent,omitempty"`
+	Description string   `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Resources   []string `protobuf:"bytes,4,rep,name=resources,proto3" json:"resources,omitempty"`
 }
 
 func (x *Capability) Reset() {
@@ -3079,11 +3269,25 @@ func (x *Capability) GetName() string {
 	return ""
 }
 
+func (x *Capability) GetParent() string {
+	if x != nil {
+		return x.Parent
+	}
+	return ""
+}
+
 func (x *Capability) GetDescription() string {
 	if x != nil {
 		return x.Description
 	}
 	return ""
+}
+
+func (x *Capability) GetResources() []string {
+	if x != nil {
+		return x.Resources
+	}
+	return nil
 }
 
 // Resource reprensents the available resources of a decentralized web node
@@ -3092,8 +3296,8 @@ type Resource struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Name        string `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description string `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	Kind     string `protobuf:"bytes,1,opt,name=kind,proto3" json:"kind,omitempty"`
+	Template string `protobuf:"bytes,2,opt,name=template,proto3" json:"template,omitempty"`
 }
 
 func (x *Resource) Reset() {
@@ -3116,16 +3320,16 @@ func (*Resource) Descriptor() ([]byte, []int) {
 	return file_dwn_v1_genesis_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *Resource) GetName() string {
+func (x *Resource) GetKind() string {
 	if x != nil {
-		return x.Name
+		return x.Kind
 	}
 	return ""
 }
 
-func (x *Resource) GetDescription() string {
+func (x *Resource) GetTemplate() string {
 	if x != nil {
-		return x.Description
+		return x.Template
 	}
 	return ""
 }
@@ -3260,15 +3464,18 @@ var file_dwn_v1_genesis_proto_rawDesc = []byte{
 	0x0e, 0x2e, 0x64, 0x77, 0x6e, 0x2e, 0x76, 0x31, 0x2e, 0x53, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x52,
 	0x06, 0x73, 0x63, 0x68, 0x65, 0x6d, 0x61, 0x3a, 0x19, 0x98, 0xa0, 0x1f, 0x00, 0xe8, 0xa0, 0x1f,
 	0x01, 0x8a, 0xe7, 0xb0, 0x2a, 0x0c, 0x76, 0x61, 0x75, 0x6c, 0x74, 0x2f, 0x70, 0x61, 0x72, 0x61,
-	0x6d, 0x73, 0x22, 0x42, 0x0a, 0x0a, 0x43, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79,
+	0x6d, 0x73, 0x22, 0x78, 0x0a, 0x0a, 0x43, 0x61, 0x70, 0x61, 0x62, 0x69, 0x6c, 0x69, 0x74, 0x79,
 	0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04,
-	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74,
-	0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72,
-	0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x40, 0x0a, 0x08, 0x52, 0x65, 0x73, 0x6f, 0x75, 0x72,
-	0x63, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09,
-	0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69,
-	0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73,
-	0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0xf8, 0x01, 0x0a, 0x06, 0x53, 0x63, 0x68,
+	0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x70, 0x61, 0x72, 0x65, 0x6e, 0x74, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x06, 0x70, 0x61, 0x72, 0x65, 0x6e, 0x74, 0x12, 0x20, 0x0a, 0x0b,
+	0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x1c,
+	0x0a, 0x09, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28,
+	0x09, 0x52, 0x09, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x22, 0x3a, 0x0a, 0x08,
+	0x52, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x6b, 0x69, 0x6e, 0x64,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6b, 0x69, 0x6e, 0x64, 0x12, 0x1a, 0x0a, 0x08,
+	0x74, 0x65, 0x6d, 0x70, 0x6c, 0x61, 0x74, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x74, 0x65, 0x6d, 0x70, 0x6c, 0x61, 0x74, 0x65, 0x22, 0xf8, 0x01, 0x0a, 0x06, 0x53, 0x63, 0x68,
 	0x65, 0x6d, 0x61, 0x12, 0x18, 0x0a, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x05, 0x52, 0x07, 0x76, 0x65, 0x72, 0x73, 0x69, 0x6f, 0x6e, 0x12, 0x18, 0x0a,
 	0x07, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07,
