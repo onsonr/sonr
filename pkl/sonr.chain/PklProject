@@ -17,6 +17,6 @@
 amends "../basePklProject.pkl"
 
 package {
-  name = "chain.sonr"
-  version = "0.0.1"
+  name = "sonr.chain"
+  version = "0.0.2"
 }

@@ -8,7 +8,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
 	"github.com/onsonr/sonr/pkg/common/middleware/header"
-	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/web/vault/types"
 )
 
 // HwayMiddleware establishes a Session Cookie.
@@ -22,7 +22,7 @@ func HwayMiddleware() echo.MiddlewareFunc {
 }
 
 // MotrMiddleware establishes a Session Cookie.
-func MotrMiddleware(config *dwn.Config) echo.MiddlewareFunc {
+func MotrMiddleware(config *types.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := injectConfig(c, config)
@@ -35,7 +35,7 @@ func MotrMiddleware(config *dwn.Config) echo.MiddlewareFunc {
 	}
 }
 
-func injectConfig(c echo.Context, config *dwn.Config) error {
+func injectConfig(c echo.Context, config *types.Config) error {
 	header.Write(c, header.IPFSHost, config.IpfsGatewayUrl)
 	header.Write(c, header.ChainID, config.SonrChainId)
 
@@ -58,16 +58,16 @@ func injectSession(c echo.Context, role common.PeerRole) *HTTPContext {
 	if c == nil {
 		return initHTTPContext(nil)
 	}
-	
+
 	cookie.Write(c, cookie.SessionRole, role.String())
-	
+
 	// Continue even if there are errors, just ensure we have valid session data
 	if err := loadOrGenKsuid(c); err != nil {
 		// Log error but continue
 	}
 	if err := loadOrGenChallenge(c); err != nil {
-		// Log error but continue  
+		// Log error but continue
 	}
-	
+
 	return initHTTPContext(c)
 }

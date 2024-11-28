@@ -5,11 +5,11 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/web/vault/types"
 )
 
 // generateRawServiceWorkerJS returns the service worker JavaScript as a string
-func generateRawServiceWorkerJS(cfg *dwn.Environment) string {
+func generateRawServiceWorkerJS(cfg *types.Environment) string {
 	return fmt.Sprintf(`const CACHE_NAMES = {
     wasm: "wasm-cache-%s",
     static: "static-cache-%s",
@@ -272,7 +272,7 @@ self.addEventListener('periodicsync', (event) => {
 }
 
 // ServiceWorkerHandler is an Echo handler that serves the service worker
-func ServiceWorkerHandler(cfg *dwn.Environment) echo.HandlerFunc {
+func ServiceWorkerHandler(cfg *types.Environment) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// Set appropriate headers for service worker
 		c.Response().Header().Set("Content-Type", "application/javascript")

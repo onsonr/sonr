@@ -1,9 +1,11 @@
 package types
 
 import (
+	"encoding/json"
+
 	"github.com/ipfs/boxo/files"
 
-	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/web/vault/types"
 	"github.com/onsonr/sonr/x/dwn/types/static"
 )
 
@@ -15,8 +17,8 @@ const (
 
 type Vault = files.Directory
 
-func SpawnVault(keyshareJSON string, adddress string, chainID string, schema *dwn.Schema) (Vault, error) {
-	dwnCfg := &dwn.Config{
+func SpawnVault(keyshareJSON string, adddress string, chainID string, schema *types.Schema) (Vault, error) {
+	dwnCfg := &types.Config{
 		MotrKeyshare:   keyshareJSON,
 		MotrAddress:    adddress,
 		IpfsGatewayUrl: "https://ipfs.sonr.land",
@@ -25,7 +27,7 @@ func SpawnVault(keyshareJSON string, adddress string, chainID string, schema *dw
 		SonrChainId:    chainID,
 		VaultSchema:    schema,
 	}
-	cnf, err := dwnCfg.MarshalJSON()
+	cnf, err := json.Marshal(dwnCfg)
 	if err != nil {
 		return nil, err
 	}

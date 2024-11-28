@@ -17,6 +17,6 @@
 amends "../basePklProject.pkl"
 
 package {
-  name = "net.matrix"
-  version = "0.0.1"
+  name = "matrix.net"
+  version = "0.0.2"
 }

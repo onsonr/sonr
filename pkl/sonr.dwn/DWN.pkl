@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/pkg/core/dwn" }
+@go.Package { name = "github.com/onsonr/sonr/web/vault/types" }
 
 module common.types.DWN
 
