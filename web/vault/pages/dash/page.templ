@@ -1,0 +1,19 @@
+package dash
+
+import (
+	"github.com/onsonr/sonr/pkg/webapp/components/layout"
+	"github.com/onsonr/sonr/pkg/webapp/components/view"
+	"github.com/onsonr/sonr/web/vault/pages/dash/internal"
+)
+
+// RedirectModal returns the Modal with a QR code to scan.
+templ Page() {
+	@view.FullScreenModal() {
+		<div class="relative text-center">
+			@internal.RegisterHeader()
+			@layout.Separator("Or Reserve Handle")
+			@internal.ReserveHandleForm()
+		</div>
+		@internal.RegisterFooter()
+	}
+}

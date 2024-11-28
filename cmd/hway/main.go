@@ -8,9 +8,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/middleware/response"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	"github.com/onsonr/sonr/pkg/webapp/pages/home"
-	"github.com/onsonr/sonr/pkg/webapp/pages/login"
-	"github.com/onsonr/sonr/pkg/webapp/pages/register"
+	"github.com/onsonr/sonr/web/landing/pages/home"
+	"github.com/onsonr/sonr/web/vault/pages/login"
+	"github.com/onsonr/sonr/web/vault/pages/register"
 )
 
 type (
