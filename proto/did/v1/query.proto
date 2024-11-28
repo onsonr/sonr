@@ -2,7 +2,6 @@ syntax = "proto3";
 package did.v1;
 
 import "did/v1/genesis.proto";
-import "did/v1/params.proto";
 import "google/api/annotations.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";

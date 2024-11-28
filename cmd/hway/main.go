@@ -2,10 +2,10 @@ package main
 
 import (
 	_ "embed"
-	"log"
-	"net/http"
 
 	"github.com/labstack/echo/v4"
+
+	"github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/sonr/pkg/common/middleware/response"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
 	"github.com/onsonr/sonr/web/landing/pages/home"
@@ -20,16 +20,35 @@ type (
 )
 
 func main() {
-	// Setup
+	// Setup Echo
+	hosts := map[string]*Host{}
+
+	//---------
+	// Website
+	//---------
+	site := echo.New()
+	site.Use(middleware.Logger())
+	site.Use(middleware.Recover())
+	site.Use(session.HwayMiddleware())
+	hosts["localhost:1323"] = &Host{Echo: site}
+	site.GET("/", response.Templ(home.Page()))
+	site.GET("/register", response.Templ(register.Page()))
+	site.GET("/login", response.Templ(login.Page()))
+
+	// Server
 	e := echo.New()
-	e.Use(session.HwayMiddleware())
+	e.Any("/*", func(c echo.Context) (err error) {
+		req := c.Request()
+		res := c.Response()
+		host := hosts[req.Host]
 
-	// Add Gateway Specific Routes
-	e.GET("/", response.Templ(home.Page()))
-	e.GET("/register", response.Templ(register.Page()))
-	e.GET("/login", response.Templ(login.Page()))
+		if host == nil {
+			err = echo.ErrNotFound
+		} else {
+			host.Echo.ServeHTTP(res, req)
+		}
 
-	if err := e.Start(":3000"); err != http.ErrServerClosed {
-		log.Fatal(err)
-	}
+		return
+	})
+	e.Logger.Fatal(e.Start(":3000"))
 }
