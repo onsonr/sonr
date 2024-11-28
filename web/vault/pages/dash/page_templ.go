@@ -9,8 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/webapp/components/layout"
-	"github.com/onsonr/sonr/pkg/webapp/components/view"
+	"github.com/onsonr/sonr/web/nebula/components/layout"
+	"github.com/onsonr/sonr/web/nebula/components/view"
 	"github.com/onsonr/sonr/web/vault/pages/dash/internal"
 )
 
