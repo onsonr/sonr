@@ -65,7 +65,7 @@ class P2p {
   laddr: String = "tcp://0.0.0.0:26656"
   external_address: String = ""
   seeds: String = ""
-  persistent_peers: String = "7698b304905ac4459e8bf5fe8f8373aa46a528a5@192.168.0.2:26656,b1aee1db2ac83c57ffe561624ba169bdcd80dc1a@192.168.0.4:26656,cda55214016021246cd26f8991bd842a0c1dc3fb@192.168.0.3:26656"
+  persistent_peers: String = read("env:SONR_PERSISTENT_PEERS") ?? ""
   addr_book_file: String = "config/addrbook.json"
   addr_book_strict: Boolean = true
   max_num_inbound_peers: Int = 40
@@ -138,7 +138,7 @@ class Storage {
 
 class TxIndex {
   indexer: String = "kv"
-  `psql-conn`: String = ""
+  `psql-conn`: String = read("env:SONR_PSQL_CONN") ?? ""
 }
 
 class Instrumentation {
