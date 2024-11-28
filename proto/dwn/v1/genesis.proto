@@ -21,6 +21,7 @@ message Params {
   bool ipfs_active = 1;
   bool local_registration_enabled = 2;
   Schema schema = 4;
+  repeated string allowed_operators = 5;
 }
 
 // Capability reprensents the available capabilities of a decentralized web node

@@ -3,17 +3,20 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/x/dwn/types/models"
 )
 
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
-	// TODO:
 	return Params{
 		IpfsActive:               true,
 		LocalRegistrationEnabled: true,
 		Schema:                   DefaultSchema(),
+		AllowedOperators: []string{ // TODO:
+			"localhost",
+			"didao.xyz",
+			"sonr.id",
+		},
 	}
 }
 
@@ -36,13 +39,13 @@ func (p Params) Validate() error {
 // DefaultSchema returns the default schema
 func DefaultSchema() *Schema {
 	return &Schema{
-		Version:    common.SchemaVersion,
-		Account:    common.GetSchema(&models.Account{}),
-		Asset:      common.GetSchema(&models.Asset{}),
-		Chain:      common.GetSchema(&models.Chain{}),
-		Credential: common.GetSchema(&models.Credential{}),
-		Grant:      common.GetSchema(&models.Grant{}),
-		Keyshare:   common.GetSchema(&models.Keyshare{}),
-		Profile:    common.GetSchema(&models.Profile{}),
+		Version:    SchemaVersion,
+		Account:    GetSchema(&models.Account{}),
+		Asset:      GetSchema(&models.Asset{}),
+		Chain:      GetSchema(&models.Chain{}),
+		Credential: GetSchema(&models.Credential{}),
+		Grant:      GetSchema(&models.Grant{}),
+		Keyshare:   GetSchema(&models.Keyshare{}),
+		Profile:    GetSchema(&models.Profile{}),
 	}
 }
