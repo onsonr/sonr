@@ -24,13 +24,23 @@ func main() {
 	hosts := map[string]*Host{}
 
 	//---------
+	// Gateway
+	//---------
+	gateway := echo.New()
+	gateway.Use(middleware.Logger())
+	gateway.Use(middleware.Recover())
+	gateway.Use(session.MotrMiddleware(nil))
+	hosts["*.localhost:3000"] = &Host{Echo: gateway}
+	gateway.GET("/*", response.Templ(register.Page()))
+
+	//---------
 	// Website
 	//---------
 	site := echo.New()
 	site.Use(middleware.Logger())
 	site.Use(middleware.Recover())
 	site.Use(session.HwayMiddleware())
-	hosts["localhost:1323"] = &Host{Echo: site}
+	hosts["localhost:3000"] = &Host{Echo: site}
 	site.GET("/", response.Templ(home.Page()))
 	site.GET("/register", response.Templ(register.Page()))
 	site.GET("/login", response.Templ(login.Page()))

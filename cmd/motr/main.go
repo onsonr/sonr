@@ -4,22 +4,19 @@
 package main
 
 import (
-	"github.com/onsonr/sonr/pkg/core/dwn"
-	"github.com/onsonr/sonr/pkg/core/dwn/server"
+	"github.com/onsonr/sonr/web/vault/server"
+	"github.com/onsonr/sonr/web/vault/types"
 )
 
 var (
-	env    *dwn.Environment
-	config *dwn.Config
+	env    *types.Environment
+	config *types.Config
 	srv    server.Server
 	err    error
 )
 
 func main() {
 	// Load dwn config
-	if config, err = dwn.LoadJSONConfig(); err != nil {
-		panic(err)
-	}
 
 	srv = server.New(env, config)
 	srv.Serve()

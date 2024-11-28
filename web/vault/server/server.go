@@ -7,10 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	"github.com/onsonr/sonr/pkg/core/dwn"
+	"github.com/onsonr/sonr/web/vault/types"
 
-	"github.com/onsonr/sonr/pkg/core/dwn/bridge"
-	"github.com/onsonr/sonr/pkg/core/dwn/handlers"
+	"github.com/onsonr/sonr/web/vault/bridge"
+	"github.com/onsonr/sonr/web/vault/handlers"
 )
 
 // Server is the interface that wraps the Serve function.
@@ -28,7 +28,7 @@ type MotrServer struct {
 	IsDev          bool
 }
 
-func New(env *dwn.Environment, config *dwn.Config) Server {
+func New(env *types.Environment, config *types.Config) Server {
 	s := &MotrServer{e: echo.New()}
 
 	s.e.Use(session.MotrMiddleware(config))
