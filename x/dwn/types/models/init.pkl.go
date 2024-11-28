@@ -1,17 +1,17 @@
-// Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.motr.ORM`. DO NOT EDIT.
 package models
 
 import "github.com/apple/pkl-go/pkl"
 
 func init() {
-	pkl.RegisterMapping("common.types.ORM", ORM{})
-	pkl.RegisterMapping("common.types.ORM#Account", Account{})
-	pkl.RegisterMapping("common.types.ORM#Asset", Asset{})
-	pkl.RegisterMapping("common.types.ORM#Chain", Chain{})
-	pkl.RegisterMapping("common.types.ORM#Credential", Credential{})
-	pkl.RegisterMapping("common.types.ORM#DID", DID{})
-	pkl.RegisterMapping("common.types.ORM#JWK", JWK{})
-	pkl.RegisterMapping("common.types.ORM#Grant", Grant{})
-	pkl.RegisterMapping("common.types.ORM#Keyshare", Keyshare{})
-	pkl.RegisterMapping("common.types.ORM#Profile", Profile{})
+	pkl.RegisterMapping("sonr.motr.ORM", ORM{})
+	pkl.RegisterMapping("sonr.motr.ORM#Account", Account{})
+	pkl.RegisterMapping("sonr.motr.ORM#Asset", Asset{})
+	pkl.RegisterMapping("sonr.motr.ORM#Chain", Chain{})
+	pkl.RegisterMapping("sonr.motr.ORM#Credential", Credential{})
+	pkl.RegisterMapping("sonr.motr.ORM#DID", DID{})
+	pkl.RegisterMapping("sonr.motr.ORM#JWK", JWK{})
+	pkl.RegisterMapping("sonr.motr.ORM#Grant", Grant{})
+	pkl.RegisterMapping("sonr.motr.ORM#Keyshare", Keyshare{})
+	pkl.RegisterMapping("sonr.motr.ORM#Profile", Profile{})
 }

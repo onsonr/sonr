@@ -1,9 +1,9 @@
-// Code generated from Pkl module `common.types.Ctx`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.hway.Ctx`. DO NOT EDIT.
 package types
 
 import "github.com/apple/pkl-go/pkl"
 
 func init() {
-	pkl.RegisterMapping("common.types.Ctx", Ctx{})
-	pkl.RegisterMapping("common.types.Ctx#Session", Session{})
+	pkl.RegisterMapping("sonr.hway.Ctx", Ctx{})
+	pkl.RegisterMapping("sonr.hway.Ctx#Session", Session{})
 }

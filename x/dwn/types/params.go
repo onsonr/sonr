@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/onsonr/sonr/pkg/common"
-	orm "github.com/onsonr/sonr/pkg/common/models"
+	"github.com/onsonr/sonr/x/dwn/types/models"
 )
 
 // DefaultParams returns default module parameters.
@@ -37,12 +37,12 @@ func (p Params) Validate() error {
 func DefaultSchema() *Schema {
 	return &Schema{
 		Version:    common.SchemaVersion,
-		Account:    common.GetSchema(&orm.Account{}),
-		Asset:      common.GetSchema(&orm.Asset{}),
-		Chain:      common.GetSchema(&orm.Chain{}),
-		Credential: common.GetSchema(&orm.Credential{}),
-		Grant:      common.GetSchema(&orm.Grant{}),
-		Keyshare:   common.GetSchema(&orm.Keyshare{}),
-		Profile:    common.GetSchema(&orm.Profile{}),
+		Account:    common.GetSchema(&models.Account{}),
+		Asset:      common.GetSchema(&models.Asset{}),
+		Chain:      common.GetSchema(&models.Chain{}),
+		Credential: common.GetSchema(&models.Credential{}),
+		Grant:      common.GetSchema(&models.Grant{}),
+		Keyshare:   common.GetSchema(&models.Keyshare{}),
+		Profile:    common.GetSchema(&models.Profile{}),
 	}
 }

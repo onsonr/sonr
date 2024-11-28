@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -49,7 +50,10 @@ func main() {
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
 
-	gateway.RegisterRoutes(highway)
+	if err := gateway.RegisterRoutes(highway); err != nil {
+		panic(err)
+	}
+
 	hosts["to.localhost:3000"] = &Host{Echo: highway}
 
 	// Server
@@ -75,13 +79,12 @@ func main() {
 	})
 
 	// Log startup information using Echo's logger
-	logger := e.Logger
-	logger.Info("\n----------------------------------")
-	logger.Info("Server Configuration:")
-	logger.Info("\nAvailable endpoints:")
-	logger.Info("➜ http://localhost:3000 (main site)")
-	logger.Info("➜ http://to.localhost:3000/QmHash/... (IPFS content)")
-	logger.Info("----------------------------------")
+	fmt.Println("\n----------------------------------")
+	fmt.Println("Server Configuration:")
+	fmt.Println("\nAvailable endpoints:")
+	fmt.Println("➜ http://localhost:3000 (main site)")
+	fmt.Println("➜ http://to.localhost:3000/QmHash/... (IPFS content)")
+	fmt.Println("----------------------------------")
 
 	e.Logger.Fatal(e.Start(":3000"))
 }

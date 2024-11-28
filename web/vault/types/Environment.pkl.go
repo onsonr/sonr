@@ -1,4 +1,4 @@
-// Code generated from Pkl module `common.types.DWN`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.motr.DWN`. DO NOT EDIT.
 package types
 
 type Environment struct {

@@ -298,9 +298,9 @@ sh-testnet: mod-tidy
 
 pkl-gen:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
-	pkl-gen-go pkl/base.types/Ctx.pkl
-	pkl-gen-go pkl/sonr.dwn/DWN.pkl
-	pkl-gen-go pkl/sonr.dwn/ORM.pkl
+	pkl-gen-go pkl/sonr.hway/Ctx.pkl
+	pkl-gen-go pkl/sonr.motr/DWN.pkl
+	pkl-gen-go pkl/sonr.motr/ORM.pkl
 
 styles-gen:
 	sh ./scripts/tailwindgen.sh

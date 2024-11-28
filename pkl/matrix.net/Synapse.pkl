@@ -1,4 +1,4 @@
-module net.svcs.Synapse
+module matrix.net.Synapse
 
 version = 2
 

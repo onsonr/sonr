@@ -1,11 +1,11 @@
-// Code generated from Pkl module `common.types.DWN`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.motr.DWN`. DO NOT EDIT.
 package types
 
 import "github.com/apple/pkl-go/pkl"
 
 func init() {
-	pkl.RegisterMapping("common.types.DWN", DWN{})
-	pkl.RegisterMapping("common.types.DWN#Config", Config{})
-	pkl.RegisterMapping("common.types.DWN#Schema", Schema{})
-	pkl.RegisterMapping("common.types.DWN#Environment", Environment{})
+	pkl.RegisterMapping("sonr.motr.DWN", DWN{})
+	pkl.RegisterMapping("sonr.motr.DWN#Config", Config{})
+	pkl.RegisterMapping("sonr.motr.DWN#Schema", Schema{})
+	pkl.RegisterMapping("sonr.motr.DWN#Environment", Environment{})
 }

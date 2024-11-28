@@ -1,4 +1,4 @@
-// Code generated from Pkl module `common.types.ORM`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.motr.ORM`. DO NOT EDIT.
 package models
 
 type JWK struct {

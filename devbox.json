@@ -13,7 +13,6 @@
   "shell": {
     "scripts": {
       "deploy": [
-        "gum spin --title='Deploying buf' -- make deploy-buf",
         "gum spin --title='Generating PKL' -- make pkl-gen",
         "gum spin --title='Generating Styles' -- make styles-gen",
         "gum spin --title='Building Motr WASM' -- make motr-build",

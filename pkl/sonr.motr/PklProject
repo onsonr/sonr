@@ -17,6 +17,6 @@
 amends "../basePklProject.pkl"
 
 package {
-  name = "base.types"
+  name = "sonr.motr"
   version = "0.0.1"
 }
