@@ -40,13 +40,13 @@ func CreateSmartAccountAttenuations(
 		{caps.Cap(ucancapability.CAPOWNER.String()), NewSmartAccountResource(ResourceType(ucanresourcetype.RESACCOUNT.String()), accountAddr)},
 
 		// Operation capabilities
-		{caps.Cap(CAP_EXECUTE), NewSmartAccountResource(RES_TRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
-		{caps.Cap(CAP_PROPOSE), NewSmartAccountResource(RES_TRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
-		{caps.Cap(CAP_SIGN), NewSmartAccountResource(RES_TRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
+		{caps.Cap(ucancapability.CAPEXECUTE.String()), NewSmartAccountResource(ucanresourcetype.RESTRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
+		{caps.Cap(ucancapability.CAPPROPOSE.String()), NewSmartAccountResource(ucanresourcetype.RESTRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
+		{caps.Cap(ucancapability.CAPSIGN.String()), NewSmartAccountResource(ucanresourcetype.RESTRANSACTION, fmt.Sprintf("%s:*", accountAddr))},
 
 		// Policy capabilities
-		{caps.Cap(CAP_SET_POLICY), NewSmartAccountResource(RES_POLICY, fmt.Sprintf("%s:*", accountAddr))},
-		{caps.Cap(CAP_SET_THRESHOLD), NewSmartAccountResource(RES_POLICY, fmt.Sprintf("%s:threshold", accountAddr))},
+		{caps.Cap(ucancapability.CAPSETPOLICY.String()), NewSmartAccountResource(ucanresourcetype.RESPOLICY, fmt.Sprintf("%s:*", accountAddr))},
+		{caps.Cap(ucancapability.CAPSETTHRESHOLD.String()), NewSmartAccountResource(ucanresourcetype.RESPOLICY, fmt.Sprintf("%s:threshold", accountAddr))},
 	}
 }
 
@@ -54,13 +54,13 @@ func CreateSmartAccountAttenuations(
 func CreatePolicyAttenuation(
 	caps ucan.NestedCapabilities,
 	accountAddr string,
-	policyType PolicyType,
+	policyType string,
 ) ucan.Attenuations {
 	return ucan.Attenuations{
 		{
-			caps.Cap(CAP_SET_POLICY),
+			caps.Cap(ucancapability.CAPSETPOLICY.String()),
 			NewSmartAccountResource(
-				RES_POLICY,
+				ucanresourcetype.RESPOLICY,
 				fmt.Sprintf("%s:%s", accountAddr, policyType),
 			),
 		},
