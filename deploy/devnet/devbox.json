@@ -10,10 +10,10 @@
   ],
   "env": {
     "GOPATH": "$HOME/go",
-    "CHAIN_ID": "sonr-testnet-1",
+    "CHAIN_ID": "sonr-devnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",
-    "MONIKER": "florence",
+    "MONIKER": "cupertino",
     "BINARY": "sonrd",
     "ACC0_NAME": "acc0",
     "ACC1_NAME": "acc1",
@@ -23,12 +23,27 @@
     "ACC1_MNEMONIC": "$(skate get ACC1_MNEMONIC)"
   },
   "shell": {
-    "init_hook": ["export ROOT=$(git rev-parse --show-toplevel)"],
+    "init_hook": [
+      "export ROOT=$(git rev-parse --show-toplevel)"
+    ],
     "scripts": {
-      "devnet": ["cd $ROOT", "make sh-testnet"],
-      "ipfs": ["cd $ROOT", "make setup-ipfs", "ipfs daemon"],
-      "air": ["cd $ROOT", "air"],
-      "gex": ["go install github.com/cosmos/gex@latest", "gex"]
+      "sonr": [
+        "cd $ROOT",
+        "make sh-testnet"
+      ],
+      "ipfs": [
+        "cd $ROOT",
+        "make setup-ipfs",
+        "ipfs daemon"
+      ],
+      "hway": [
+        "cd $ROOT",
+        "air"
+      ],
+      "gex": [
+        "go install github.com/cosmos/gex@latest",
+        "gex"
+      ]
     }
   }
 }

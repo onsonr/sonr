@@ -2,7 +2,7 @@ version: "0.6"
 
 processes:
   ipfs:
-    namespace: testnet
+    namespace: devnet
     command: "devbox run ipfs"
     background: true
     availability:
@@ -10,19 +10,20 @@ processes:
       max_restarts: 0
 
   sonr:
-    namespace: testnet
+    namespace: devnet
     background: true
-    command: "devbox run devnet"
+    command: "devbox run sonr"
     restart: never
     max_restarts: 1
     depends:
       - ipfs
 
-  hway-air:
-    namespace: testnet
+  hway:
+    namespace: devnet
     background: true
-    command: "devbox run air"
+    command: "devbox run hway"
     restart: never
     max_restarts: 1
     depends:
+      - ipfs
       - sonr
