@@ -1,0 +1,72 @@
+package components
+
+templ RegisterHeader() {
+	<div class="flex flex-col mb-6 space-y-2">
+		<span>
+			<wa-qr-code size="140" value="https://shoelace.style/" error-correction="Q"></wa-qr-code>
+		</span>
+		<h1 class="text-2xl font-semibold tracking-tight">Continue with your phone</h1>
+		<p class="text-sm text-neutral-500">Creating a Sonr Vault requires a smartphone with W3C compliant biometrics enabled.</p>
+	</div>
+}
+
+templ RegisterFooter() {
+	<p class="mt-6 text-sm text-center text-neutral-500">Already have an account? <a href="#_" class="relative font-medium text-blue-600 group"><span>Login here</span><span class="absolute bottom-0 left-0 w-0 group-hover:w-full ease-out duration-300 h-0.5 bg-blue-600"></span></a></p>
+	<p class="px-8 mt-1 text-sm text-center text-neutral-500">By continuing, you agree to our <a class="underline underline-offset-4 hover:text-primary" href="/terms">Terms</a> and <a class="underline underline-offset-4 hover:text-primary" href="/privacy">Policy</a>.</p>
+}
+
+templ RegisterCredentialForm() {
+	<div class="border rounded-lg shadow-sm bg-card text-zinc-900">
+		<div class="flex flex-col space-y-1.5 p-6"></div>
+		<div class="p-6 pt-0 space-y-2">
+			<div class="space-y-1"><label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="name">Name</label><input type="text" id="name" placeholder="Adam Wathan" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/></div>
+			<div class="space-y-1"><label class="text-xs font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70" for="username">Handle</label><input type="text" id="handle" placeholder="angelo.snr" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md peer border-zinc-300 ring-offset-background placeholder:text-zinc-400 focus:border-zinc-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/></div>
+		</div>
+	</div>
+}
+
+templ ReserveHandleForm() {
+	<form onsubmit="event.preventDefault();" class="space-y-2">
+		<input type="text" placeholder="@angelo" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+		<input type="phone" placeholder="+1 (555)-555-5555" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+		<button type="button" class="inline-flex items-center justify-center w-full h-10 px-4 py-2 text-sm font-medium tracking-wide text-white transition-colors duration-200 rounded-md bg-neutral-950 hover:bg-neutral-900 focus:ring-2 focus:ring-offset-2 focus:ring-neutral-900 focus:shadow-outline focus:outline-none">
+			Reserve my Spot
+		</button>
+	</form>
+}
+
+templ CreateCredentialsScript() {
+	<script>
+	function createCredential() {
+		navigator.credentials.create({
+			publicKey: {
+				rp: {
+					name: "Sonr",
+				},
+				user: {
+					id: new Uint8Array(0),
+					name: "Sonr",
+					displayName: "Sonr",
+				},
+				challenge: new Uint8Array(0),
+				pubKeyCredParams: [{
+					type: "public-key",
+					alg: -7,
+				}],
+				timeout: 60000,
+				excludeCredentials: [],
+				authenticatorSelection: {
+					requireResidentKey: false,
+					userVerification: "discouraged",
+				},
+			},
+		})
+			.then((assertion) => {
+				console.log("Assertion:", assertion);
+			})
+			.catch((error) => {
+				console.error("Error:", error);
+			});
+		}
+	</script>
+}

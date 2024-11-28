@@ -2,15 +2,13 @@ package main
 
 import (
 	_ "embed"
+	"net/http"
 
 	"github.com/labstack/echo/v4"
-
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/pkg/common/middleware/response"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	"github.com/onsonr/sonr/web/landing/pages/home"
-	"github.com/onsonr/sonr/web/vault/pages/login"
-	"github.com/onsonr/sonr/web/vault/pages/register"
+	"github.com/onsonr/sonr/web/gateway"
+	"github.com/onsonr/sonr/web/landing"
 )
 
 type (
@@ -24,41 +22,66 @@ func main() {
 	hosts := map[string]*Host{}
 
 	//---------
-	// Gateway
-	//---------
-	gateway := echo.New()
-	gateway.Use(middleware.Logger())
-	gateway.Use(middleware.Recover())
-	gateway.Use(session.MotrMiddleware(nil))
-	hosts["*.localhost:3000"] = &Host{Echo: gateway}
-	gateway.GET("/*", response.Templ(register.Page()))
-
-	//---------
 	// Website
 	//---------
 	site := echo.New()
 	site.Use(middleware.Logger())
 	site.Use(middleware.Recover())
 	site.Use(session.HwayMiddleware())
+	landing.RegisterRoutes(site)
 	hosts["localhost:3000"] = &Host{Echo: site}
-	site.GET("/", response.Templ(home.Page()))
-	site.GET("/register", response.Templ(register.Page()))
-	site.GET("/login", response.Templ(login.Page()))
+
+	//---------
+	// Gateway
+	//---------
+	highway := echo.New()
+	highway.Use(middleware.Logger())
+	highway.Use(middleware.Recover())
+	highway.Use(session.MotrMiddleware(nil))
+
+	// Custom error handler for gateway
+	highway.HTTPErrorHandler = func(err error, c echo.Context) {
+		if he, ok := err.(*echo.HTTPError); ok {
+			// Log the error if needed
+			c.Logger().Errorf("Gateway error: %v", he.Message)
+		}
+		// Redirect to main site
+		c.Redirect(http.StatusFound, "http://localhost:3000")
+	}
+
+	gateway.RegisterRoutes(highway)
+	hosts["to.localhost:3000"] = &Host{Echo: highway}
 
 	// Server
 	e := echo.New()
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowMethods: []string{http.MethodGet, http.MethodPut, http.MethodPost, http.MethodDelete, http.MethodOptions},
+	}))
+
 	e.Any("/*", func(c echo.Context) (err error) {
 		req := c.Request()
 		res := c.Response()
-		host := hosts[req.Host]
 
-		if host == nil {
-			err = echo.ErrNotFound
-		} else {
+		host := hosts[req.Host]
+		if host != nil {
 			host.Echo.ServeHTTP(res, req)
+			return nil
 		}
 
-		return
+		// Default to site for unmatched hosts
+		site.ServeHTTP(res, req)
+		return nil
 	})
+
+	// Log startup information using Echo's logger
+	logger := e.Logger
+	logger.Info("\n----------------------------------")
+	logger.Info("Server Configuration:")
+	logger.Info("\nAvailable endpoints:")
+	logger.Info("➜ http://localhost:3000 (main site)")
+	logger.Info("➜ http://to.localhost:3000/QmHash/... (IPFS content)")
+	logger.Info("----------------------------------")
+
 	e.Logger.Fatal(e.Start(":3000"))
 }

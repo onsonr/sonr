@@ -4,20 +4,28 @@
 package main
 
 import (
-	"github.com/onsonr/sonr/web/vault/server"
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/web/vault"
+	"github.com/onsonr/sonr/web/vault/bridge"
 	"github.com/onsonr/sonr/web/vault/types"
 )
 
 var (
 	env    *types.Environment
 	config *types.Config
-	srv    server.Server
 	err    error
 )
 
 func main() {
 	// Load dwn config
+	e := echo.New()
+	// if config, err = dwn.LoadJSONConfig(); err != nil {
+	// 	panic(err)
+	// }
 
-	srv = server.New(env, config)
-	srv.Serve()
+	e.Use(session.MotrMiddleware(config))
+	e.Use(bridge.WasmContextMiddleware)
+	vault.RegisterRoutes(e)
+	bridge.ServeFetch(e)
 }
