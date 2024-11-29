@@ -11,7 +11,7 @@ import (
 )
 
 // NewKeyshareSource generates a new MPC keyshare
-func NewKeyshareSource() (KeyshareSource, error) {
+func NewKeyset() (Keyset, error) {
 	curve := curves.K256()
 	valKs := dklsv1.NewAliceDkg(curve, protocol.Version1)
 	userKs := dklsv1.NewBobDkg(curve, protocol.Version1)
@@ -35,7 +35,7 @@ func NewKeyshareSource() (KeyshareSource, error) {
 	if err != nil {
 		return nil, err
 	}
-	return createKeyshareSource(valShare, userShare)
+	return keyset{val: valShare, user: userShare}, nil
 }
 
 // RunSignProtocol runs the MPC signing protocol
@@ -52,7 +52,7 @@ func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, er
 }
 
 // RunRefreshProtocol runs the MPC refresh protocol
-func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (KeyshareSource, error) {
+func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
 	aErr, bErr := runIteratedProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc)
 	if err != nil {
 		return nil, err
 	}
-	return createKeyshareSource(valShare, userShare)
+	return keyset{val: valShare, user: userShare}, nil
 }
 
 // SerializeSecp256k1Signature serializes an ECDSA signature into a byte slice

@@ -64,60 +64,55 @@ func NewValKeyshare(msg Message) (*ValKeyshare, error) {
 	}, nil
 }
 
-func (v ValKeyshare) GetPayloads() map[string][]byte {
+func (v *ValKeyshare) GetPayloads() map[string][]byte {
 	return v.Message.Payloads
 }
 
-func (v ValKeyshare) GetMetadata() map[string]string {
+func (v *ValKeyshare) GetMetadata() map[string]string {
 	return v.Message.Metadata
 }
 
-func (v ValKeyshare) GetPublicKey() []byte {
+func (v *ValKeyshare) GetPublicKey() []byte {
 	return v.PublicKey
 }
 
-func (v ValKeyshare) GetProtocol() string {
+func (v *ValKeyshare) GetProtocol() string {
 	return v.Message.Protocol
 }
 
-func (v ValKeyshare) GetRole() int32 {
+func (v *ValKeyshare) GetRole() int32 {
 	return int32(v.Role)
 }
 
-func (v ValKeyshare) GetVersion() uint32 {
+func (v *ValKeyshare) GetVersion() uint32 {
 	return uint32(v.Message.Version)
 }
 
-func (k ValKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(k.PublicKey)
+func (v *ValKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
+	return ComputeEcdsaPublicKey(v.PublicKey)
 }
 
-func (k ValKeyshare) ExtractMessage() *protocol.Message {
+func (v *ValKeyshare) ExtractMessage() *protocol.Message {
 	return &protocol.Message{
-		Payloads: k.GetPayloads(),
-		Metadata: k.GetMetadata(),
-		Protocol: k.GetProtocol(),
-		Version:  uint(k.GetVersion()),
+		Payloads: v.GetPayloads(),
+		Metadata: v.GetMetadata(),
+		Protocol: v.GetProtocol(),
+		Version:  uint(v.GetVersion()),
 	}
 }
 
-func (k ValKeyshare) RefreshFunc() (RefreshFunc, error) {
+func (v *ValKeyshare) RefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
-	return dklsv1.NewAliceRefresh(curve, k.ExtractMessage(), protocol.Version1)
+	return dklsv1.NewAliceRefresh(curve, v.ExtractMessage(), protocol.Version1)
 }
 
-func (k ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
+func (v *ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	curve := curves.K256()
-	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, k.ExtractMessage(), protocol.Version1)
+	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.ExtractMessage(), protocol.Version1)
 }
 
-func (v ValKeyshare) Marshal() (string, error) {
-	jsonBytes, err := json.Marshal(v)
-	return string(jsonBytes), err
-}
-
-func (v ValKeyshare) Unmarshal(data string) error {
-	return json.Unmarshal([]byte(data), &v)
+func (v *ValKeyshare) Marshal() ([]byte, error) {
+	return json.Marshal(v.Message)
 }
 
 type UserKeyshare struct {
@@ -138,61 +133,57 @@ func NewUserKeyshare(msg Message) (*UserKeyshare, error) {
 	}, nil
 }
 
-func (u UserKeyshare) GetPayloads() map[string][]byte {
+func (u *UserKeyshare) GetPayloads() map[string][]byte {
 	return u.Message.Payloads
 }
 
-func (u UserKeyshare) GetMetadata() map[string]string {
+func (u *UserKeyshare) GetMetadata() map[string]string {
 	return u.Message.Metadata
 }
 
-func (u UserKeyshare) GetPublicKey() []byte {
+func (u *UserKeyshare) GetPublicKey() []byte {
 	return u.PublicKey
 }
 
-func (u UserKeyshare) GetProtocol() string {
+func (u *UserKeyshare) GetProtocol() string {
 	return u.Message.Protocol
 }
 
-func (u UserKeyshare) GetRole() int32 {
+func (u *UserKeyshare) GetRole() int32 {
 	return int32(u.Role)
 }
 
-func (u UserKeyshare) GetVersion() uint32 {
+func (u *UserKeyshare) GetVersion() uint32 {
 	return uint32(u.Message.Version)
 }
 
-func (k UserKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
-	return ComputeEcdsaPublicKey(k.PublicKey)
+func (u *UserKeyshare) ECDSAPublicKey() (*ecdsa.PublicKey, error) {
+	return ComputeEcdsaPublicKey(u.PublicKey)
 }
 
-func (k UserKeyshare) ExtractMessage() *protocol.Message {
+func (u *UserKeyshare) ExtractMessage() *protocol.Message {
 	return &protocol.Message{
-		Payloads: k.GetPayloads(),
-		Metadata: k.GetMetadata(),
-		Protocol: k.GetProtocol(),
-		Version:  uint(k.GetVersion()),
+		Payloads: u.GetPayloads(),
+		Metadata: u.GetMetadata(),
+		Protocol: u.GetProtocol(),
+		Version:  uint(u.GetVersion()),
 	}
 }
 
-func (k UserKeyshare) RefreshFunc() (RefreshFunc, error) {
+func (u *UserKeyshare) RefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
-	return dklsv1.NewBobRefresh(curve, k.ExtractMessage(), protocol.Version1)
+	return dklsv1.NewBobRefresh(curve, u.ExtractMessage(), protocol.Version1)
 }
 
-func (k UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
+func (u *UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	curve := curves.K256()
-	return dklsv1.NewBobSign(curve, sha3.New256(), msg, k.ExtractMessage(), protocol.Version1)
+	return dklsv1.NewBobSign(curve, sha3.New256(), msg, u.ExtractMessage(), protocol.Version1)
 }
 
-func (u UserKeyshare) Marshal() (string, error) {
-	jsonBytes, err := json.Marshal(u)
+func (u *UserKeyshare) Marshal() ([]byte, error) {
+	jsonBytes, err := json.Marshal(u.Message)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return string(jsonBytes), nil
-}
-
-func (u UserKeyshare) Unmarshal(data string) error {
-	return json.Unmarshal([]byte(data), &u)
+	return jsonBytes, nil
 }

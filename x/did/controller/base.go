@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	dwntypes "github.com/onsonr/sonr/x/dwn/types"
 )
 
 type ControllerI interface {
@@ -11,7 +11,7 @@ type ControllerI interface {
 	RawPublicKey() []byte
 }
 
-func New(src mpc.KeyshareSource) (ControllerI, error) {
+func New(src dwntypes.KeyshareSource) (ControllerI, error) {
 	return &controller{
 		src:       src,
 		address:   src.Address(),
@@ -22,7 +22,7 @@ func New(src mpc.KeyshareSource) (ControllerI, error) {
 }
 
 type controller struct {
-	src       mpc.KeyshareSource
+	src       dwntypes.KeyshareSource
 	address   string
 	chainID   string
 	publicKey []byte

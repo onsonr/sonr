@@ -6,10 +6,37 @@ import (
 	"math/big"
 
 	"github.com/cosmos/cosmos-sdk/types/bech32"
+	"github.com/ipfs/boxo/files"
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/onsonr/sonr/pkg/crypto/core/curves"
 	"github.com/onsonr/sonr/pkg/crypto/core/protocol"
 	"golang.org/x/crypto/sha3"
 )
+
+type (
+	ExportedKeyset = []byte
+	IPFSClient     = *rpc.HttpApi
+	File           = files.File
+)
+
+type Keyset interface {
+	Val() *ValKeyshare
+	User() *UserKeyshare
+	Export(client IPFSClient, secret []byte) (ExportedKeyset, error)
+}
+
+type keyset struct {
+	val  *ValKeyshare
+	user *UserKeyshare
+}
+
+func (k keyset) Val() *ValKeyshare {
+	return k.val
+}
+
+func (k keyset) User() *UserKeyshare {
+	return k.user
+}
 
 func ComputeIssuerDID(pk []byte) (string, string, error) {
 	addr, err := ComputeSonrAddr(pk)

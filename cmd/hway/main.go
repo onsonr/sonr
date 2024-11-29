@@ -50,7 +50,7 @@ func main() {
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
 
-	if err := gateway.RegisterRoutes(highway); err != nil {
+	if err := gateway.InterceptRoutes(highway); err != nil {
 		panic(err)
 	}
 
