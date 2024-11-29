@@ -5,8 +5,8 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/web/vault/static"
 	"github.com/onsonr/sonr/web/vault/types"
-	"github.com/onsonr/sonr/x/dwn/types/static"
 )
 
 const (
