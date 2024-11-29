@@ -1,10 +1,15 @@
 // tailwind.config.js
 module.exports = {
   content: [
-    "./button/**/*.{templ,html}",
-    "./icon/**/*.{templ,html}",
-    "./layout/**/*.{templ,html}",
-    "./view/**/*.{templ,html}",
+    "./styles/button/**/*.{templ,html}",
+    "./styles/icon/**/*.{templ,html}",
+    "./styles/layout/**/*.{templ,html}",
+    "./styles/view/**/*.{templ,html}",
+
+    "./landing/pages/**/*.{templ,html}",
+    "./landing/sections/**/*.{templ,html}",
+
+    "./vault/**/*.{templ,html}",
   ],
   theme: {
     extend: {

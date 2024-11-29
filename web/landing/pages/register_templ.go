@@ -9,9 +9,9 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/styles/layout"
-	"github.com/onsonr/sonr/pkg/styles/view"
 	internal "github.com/onsonr/sonr/web/landing/components"
+	"github.com/onsonr/sonr/web/styles/layout"
+	"github.com/onsonr/sonr/web/styles/view"
 )
 
 // RedirectModal returns the Modal with a QR code to scan.

@@ -14,7 +14,7 @@
     "scripts": {
       "deploy": [
         "gum spin --title='Generating PKL' -- make pkl-gen",
-        "gum spin --title='Generating Styles' -- make styles-gen",
+        "gum spin --title='Generating Styles' -- make tailwind-gen",
         "gum spin --title='Building Motr WASM' -- make motr-build",
         "gum spin --title='Uploading to Bucket' -- make deploy-cdn"
       ],

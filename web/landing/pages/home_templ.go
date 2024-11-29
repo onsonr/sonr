@@ -10,8 +10,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"github.com/onsonr/sonr/pkg/styles/layout"
 	landing "github.com/onsonr/sonr/web/landing/sections"
+	"github.com/onsonr/sonr/web/styles/layout"
 )
 
 // View renders the home page

@@ -294,7 +294,7 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                generation                               ###
 ###############################################################################
-.PHONY: pkl-gen styles-gen templ-gen
+.PHONY: pkl-gen tailwind-gen templ-gen
 
 pkl-gen:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
@@ -303,7 +303,7 @@ pkl-gen:
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
 	pkl-gen-go pkl/sonr.motr/ORM.pkl
 
-styles-gen:
+tailwind-gen:
 	sh ./scripts/tailwindgen.sh
 
 templ-gen:

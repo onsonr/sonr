@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"github.com/onsonr/sonr/pkg/styles/button"
-	models "github.com/onsonr/sonr/web/landing/models"
+	"github.com/onsonr/sonr/web/landing/models"
+	"github.com/onsonr/sonr/web/styles/button"
 )
 
 // Hero Section
