@@ -2,7 +2,7 @@ package landing
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/middleware/response"
+	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/web/landing/pages"
 )
 

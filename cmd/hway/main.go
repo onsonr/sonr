@@ -8,7 +8,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/web/landing"
 )
