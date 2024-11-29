@@ -301,7 +301,7 @@ pkl-gen:
 	pkl-gen-go pkl/sonr.motr/ATN.pkl
 	pkl-gen-go pkl/sonr.hway/Ctx.pkl
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
-	pkl-gen-go pkl/sonr.motr/ORM.pkl
+	pkl-gen-go pkl/sonr.hway/ORM.pkl
 
 tailwind-gen:
 	sh ./scripts/tailwindgen.sh

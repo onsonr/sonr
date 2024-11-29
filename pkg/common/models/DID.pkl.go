@@ -2,11 +2,11 @@
 package models
 
 import (
-	"github.com/onsonr/sonr/x/dwn/types/models/keyalgorithm"
-	"github.com/onsonr/sonr/x/dwn/types/models/keycurve"
-	"github.com/onsonr/sonr/x/dwn/types/models/keyencoding"
-	"github.com/onsonr/sonr/x/dwn/types/models/keyrole"
-	"github.com/onsonr/sonr/x/dwn/types/models/keytype"
+	"github.com/onsonr/sonr/pkg/common/models/keyalgorithm"
+	"github.com/onsonr/sonr/pkg/common/models/keycurve"
+	"github.com/onsonr/sonr/pkg/common/models/keyencoding"
+	"github.com/onsonr/sonr/pkg/common/models/keyrole"
+	"github.com/onsonr/sonr/pkg/common/models/keytype"
 )
 
 type DID struct {

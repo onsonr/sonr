@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/x/dwn/types/models" }
+@go.Package { name = "github.com/onsonr/sonr/pkg/common/models" }
 
 module sonr.motr.ORM
 
@@ -25,27 +25,6 @@ typealias KeyShareRole = "user"|"validator"
 typealias PermissionGrant = "none"|"read"|"write"|"verify"|"broadcast"|"admin"
 
 typealias PermissionScope = "profile"|"metadata"|"permissions"|"wallets"|"transactions"|"user"|"validator"
-
-// Capability hierarchy for smart account operations
-// ----------------------------------------------
-// OWNER
-//   └─ OPERATOR
-//        ├─ EXECUTE
-//        ├─ PROPOSE
-//        └─ SIGN
-//   └─ SET_POLICY
-//        └─ SET_THRESHOLD
-//   └─ RECOVER
-//        └─ SOCIAL
-//        └─ VAULT
-
-
-typealias UCANCapability = "CAP_OWNER"|"CAP_OPERATOR"|"CAP_OBSERVER"|"CAP_EXECUTE"|"CAP_PROPOSE"|"CAP_SIGN"|"CAP_SET_POLICY"|"CAP_SET_THRESHOLD"|"CAP_RECOVER"|"CAP_SOCIAL" | "CAP_VAULT"
-
-typealias UCANResourceType = "RES_ACCOUNT"|"RES_TRANSACTION"|"RES_POLICY"|"RES_RECOVERY"
-
-typealias UCANPolicyType = "POLICY_THRESHOLD"|"POLICY_TIMELOCK"|"POLICY_WHITELIST"
-
 typealias Base58 = String
 typealias Base64 = String
 
