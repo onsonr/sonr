@@ -7,11 +7,20 @@
   "customizations": {
     "vscode": {
       "settings": {},
-      "extensions": ["jetpack-io.devbox"]
+      "extensions": [
+        "jetpack-io.devbox"
+      ]
     }
   },
   "remoteUser": "devbox",
-  "forwardPorts": [1317, 26657, 9090, 3000, 80, 5000],
+  "forwardPorts": [
+    1317,
+    26657,
+    9090,
+    3000,
+    80,
+    5000
+  ],
   "portsAttributes": {
     "1317": {
       "label": "sonr-api",
@@ -36,6 +45,11 @@
     "5000": {
       "label": "ipfs-api",
       "onAutoForward": "silent"
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/sshd:1": {
+      "version": "latest"
     }
   }
 }
