@@ -5,7 +5,7 @@ import (
 
 	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
-	"github.com/onsonr/sonr/web/vault/static"
+	"github.com/onsonr/sonr/web/vault/embed"
 	"github.com/onsonr/sonr/web/vault/types"
 )
 
@@ -59,7 +59,7 @@ func SpawnVault(chainID string, schema *types.Schema) (files.Directory, error) {
 func setupVaultDirectory(cfgBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
 		kFileNameConfigJSON: files.NewBytesFile(cfgBz),
-		kFileNameIndexHTML:  files.NewBytesFile(static.IndexHTML),
-		kFileNameWorkerJS:   files.NewBytesFile(static.WorkerJS),
+		kFileNameIndexHTML:  files.NewBytesFile(embed.IndexHTML),
+		kFileNameWorkerJS:   files.NewBytesFile(embed.WorkerJS),
 	})
 }
