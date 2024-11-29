@@ -5,7 +5,7 @@ package main
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/middleware/session"
+	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/web/vault"
 	"github.com/onsonr/sonr/web/vault/bridge"
 	"github.com/onsonr/sonr/web/vault/types"
