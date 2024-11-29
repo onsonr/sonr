@@ -1,11 +1,10 @@
-package types
+package mpc
 
 import (
 	"fmt"
 	"time"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
 	"github.com/ucan-wg/go-ucan"
 )
 
@@ -28,8 +27,8 @@ var (
 )
 
 type ucanKeyshare struct {
-	userShare *mpc.UserKeyshare
-	valShare  *mpc.ValKeyshare
+	userShare *UserKeyshare
+	valShare  *ValKeyshare
 
 	addr      string
 	issuerDID string
@@ -47,7 +46,7 @@ func (k ucanKeyshare) NewAttenuatedToken(parent *Token, audienceDID string, att 
 }
 
 func (k ucanKeyshare) newToken(audienceDID string, prf []Proof, att Attenuations, fct []Fact, nbf, exp time.Time) (*ucan.Token, error) {
-	t := jwt.New(newMPCSigningMethod("MPC256", k))
+	t := jwt.New(NewJWTSigningMethod("MPC256", k))
 
 	// if _, err := did.Parse(audienceDID); err != nil {
 	// 	return nil, fmt.Errorf("invalid audience DID: %w", err)

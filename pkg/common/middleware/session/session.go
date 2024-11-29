@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
+	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/types"
 )
 
@@ -41,18 +41,18 @@ func initHTTPContext(c echo.Context) *HTTPContext {
 			sessionData: &types.Session{},
 		}
 	}
-	
+
 	sessionData := injectSessionData(c)
 	if sessionData == nil {
 		sessionData = &types.Session{}
 	}
-	
+
 	cc := &HTTPContext{
 		Context:     c,
 		role:        common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
 		sessionData: sessionData,
 	}
-	
+
 	// Set the session data in both contexts
 	c.SetRequest(c.Request().WithContext(WithData(c.Request().Context(), sessionData)))
 	return cc

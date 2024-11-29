@@ -5,10 +5,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/onsonr/sonr/pkg/common/middleware/session"
-	"github.com/onsonr/sonr/web/gateway"
+	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/web/landing"
 )
 
@@ -21,6 +22,10 @@ type (
 func main() {
 	// Setup Echo
 	hosts := map[string]*Host{}
+	api, err := rpc.NewLocalApi()
+	if err != nil {
+		panic(err)
+	}
 
 	//---------
 	// Website
@@ -38,21 +43,7 @@ func main() {
 	highway := echo.New()
 	highway.Use(middleware.Logger())
 	highway.Use(middleware.Recover())
-	highway.Use(session.MotrMiddleware(nil))
-
-	// Custom error handler for gateway
-	highway.HTTPErrorHandler = func(err error, c echo.Context) {
-		if he, ok := err.(*echo.HTTPError); ok {
-			// Log the error if needed
-			c.Logger().Errorf("Gateway error: %v", he.Message)
-		}
-		// Redirect to main site
-		c.Redirect(http.StatusFound, "http://localhost:3000")
-	}
-
-	if err := gateway.InterceptRoutes(highway); err != nil {
-		panic(err)
-	}
+	gateway.InterceptRoutes(highway, api)
 
 	hosts["to.localhost:3000"] = &Host{Echo: highway}
 

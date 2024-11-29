@@ -10,8 +10,8 @@ import (
 	"github.com/segmentio/ksuid"
 
 	"github.com/onsonr/sonr/pkg/common"
-	"github.com/onsonr/sonr/pkg/common/middleware/cookie"
-	"github.com/onsonr/sonr/pkg/common/middleware/header"
+	"github.com/onsonr/sonr/pkg/common/cookie"
+	"github.com/onsonr/sonr/pkg/common/header"
 	"github.com/onsonr/sonr/pkg/common/types"
 )
 

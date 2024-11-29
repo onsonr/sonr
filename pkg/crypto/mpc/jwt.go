@@ -1,4 +1,4 @@
-package types
+package mpc
 
 import (
 	"crypto/sha256"
@@ -6,7 +6,6 @@ import (
 	"fmt"
 
 	"github.com/golang-jwt/jwt"
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
 )
 
 // MPCSigningMethod implements the SigningMethod interface for MPC-based signing
@@ -15,8 +14,8 @@ type MPCSigningMethod struct {
 	ks   ucanKeyshare
 }
 
-// newMPCSigningMethod creates a new MPC signing method with the given keyshare source
-func newMPCSigningMethod(name string, ks ucanKeyshare) *MPCSigningMethod {
+// NewJWTSigningMethod creates a new MPC signing method with the given keyshare source
+func NewJWTSigningMethod(name string, ks ucanKeyshare) *MPCSigningMethod {
 	return &MPCSigningMethod{
 		Name: name,
 		ks:   ks,
@@ -42,7 +41,7 @@ func (m *MPCSigningMethod) Verify(signingString, signature string, key interface
 	digest := hasher.Sum(nil)
 
 	// Verify using the keyshare's public key
-	valid, err := mpc.VerifySignature(m.ks.valShare.PublicKey, digest, sig)
+	valid, err := VerifySignature(m.ks.valShare.PublicKey, digest, sig)
 	if err != nil {
 		return fmt.Errorf("failed to verify signature: %w", err)
 	}
@@ -72,13 +71,13 @@ func (m *MPCSigningMethod) Sign(signingString string, key interface{}) (string, 
 	}
 
 	// Run the signing protocol
-	sig, err := mpc.RunSignProtocol(valSignFunc, signFunc)
+	sig, err := RunSignProtocol(valSignFunc, signFunc)
 	if err != nil {
 		return "", fmt.Errorf("failed to run sign protocol: %w", err)
 	}
 
 	// Serialize the signature
-	sigBytes, err := mpc.SerializeSignature(sig)
+	sigBytes, err := SerializeSignature(sig)
 	if err != nil {
 		return "", fmt.Errorf("failed to serialize signature: %w", err)
 	}

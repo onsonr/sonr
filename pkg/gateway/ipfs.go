@@ -19,15 +19,10 @@ type Gateway struct {
 	api *rpc.HttpApi
 }
 
-func New() (*Gateway, error) {
-	api, err := rpc.NewLocalApi()
-	if err != nil {
-		return nil, fmt.Errorf("failed to connect to local IPFS node: %w", err)
-	}
-
+func New(client *rpc.HttpApi) *Gateway {
 	return &Gateway{
-		api: api,
-	}, nil
+		api: client,
+	}
 }
 
 func (g *Gateway) Handler() echo.HandlerFunc {

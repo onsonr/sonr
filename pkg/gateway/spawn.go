@@ -1,4 +1,4 @@
-package types
+package gateway
 
 import (
 	"encoding/json"
@@ -18,7 +18,7 @@ const (
 type vault struct {
 	Config *types.Config
 	Schema *types.Schema
-	Source KeyshareSource
+	Source mpc.KeyshareSource
 	ks     mpc.Keyset
 }
 
@@ -27,7 +27,7 @@ func SpawnVault(chainID string, schema *types.Schema) (files.Directory, error) {
 	if err != nil {
 		return nil, err
 	}
-	src, err := createKeySource(ks)
+	src, err := mpc.NewSource(ks)
 	if err != nil {
 		return nil, err
 	}

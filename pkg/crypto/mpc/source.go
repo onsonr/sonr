@@ -1,10 +1,9 @@
-package types
+package mpc
 
 import (
 	"fmt"
 	"time"
 
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
 	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"github.com/ucan-wg/go-ucan"
 )
@@ -21,10 +20,10 @@ type KeyshareSource interface {
 	UCANParser() *ucan.TokenParser
 }
 
-func createKeySource(ks mpc.Keyset) (KeyshareSource, error) {
+func NewSource(ks Keyset) (KeyshareSource, error) {
 	val := ks.Val()
 	user := ks.User()
-	iss, addr, err := mpc.ComputeIssuerDID(val.GetPublicKey())
+	iss, addr, err := ComputeIssuerDID(val.GetPublicKey())
 	if err != nil {
 		return nil, err
 	}
@@ -72,15 +71,15 @@ func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
 	}
 
 	// Run the signing protocol
-	sig, err := mpc.RunSignProtocol(valSignFunc, signFunc)
+	sig, err := RunSignProtocol(valSignFunc, signFunc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
 	}
-	return mpc.SerializeSignature(sig)
+	return SerializeSignature(sig)
 }
 
 func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
-	return mpc.VerifySignature(k.userShare.PublicKey, data, sig)
+	return VerifySignature(k.userShare.PublicKey, data, sig)
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
