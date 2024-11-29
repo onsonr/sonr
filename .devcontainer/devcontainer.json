@@ -4,18 +4,38 @@
     "dockerfile": "./Dockerfile",
     "context": ".."
   },
-  "features": {
-    "ghcr.io/devcontainers/features/sshd:1": {
-      "version": "latest"
-    }
-  },
   "customizations": {
     "vscode": {
       "settings": {},
-      "extensions": [
-        "jetpack-io.devbox"
-      ]
+      "extensions": ["jetpack-io.devbox"]
     }
   },
-  "remoteUser": "devbox"
+  "remoteUser": "devbox",
+  "forwardPorts": [1317, 26657, 9090, 3000, 80, 5000],
+  "portsAttributes": {
+    "1317": {
+      "label": "sonr-api",
+      "onAutoForward": "notify"
+    },
+    "26657": {
+      "label": "sonr-rpc",
+      "onAutoForward": "notify"
+    },
+    "9090": {
+      "label": "sonr-grpc",
+      "onAutoForward": "silent"
+    },
+    "3000": {
+      "label": "hway-frontend",
+      "onAutoForward": "silent"
+    },
+    "80": {
+      "label": "ipfs-gateway",
+      "onAutoForward": "silent"
+    },
+    "5000": {
+      "label": "ipfs-api",
+      "onAutoForward": "silent"
+    }
+  }
 }
