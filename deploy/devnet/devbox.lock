@@ -246,6 +246,54 @@
           "store_path": "/nix/store/sn5h79d36r86i6a8rm1k52c2ij1s32kx-templ-0.2.793"
         }
       }
+    },
+    "tigerbeetle@latest": {
+      "last_modified": "2024-11-16T04:25:12Z",
+      "resolved": "github:NixOS/nixpkgs/34a626458d686f1b58139620a8b2793e9e123bba#tigerbeetle",
+      "source": "devbox-search",
+      "version": "0.16.12",
+      "systems": {
+        "aarch64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/mm3jzwf24p35afr55v7kl5a0h6962i6p-tigerbeetle-0.16.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/mm3jzwf24p35afr55v7kl5a0h6962i6p-tigerbeetle-0.16.12"
+        },
+        "aarch64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/4106973gg3crfxq0gwrgwn4hcx64mzyy-tigerbeetle-0.16.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/4106973gg3crfxq0gwrgwn4hcx64mzyy-tigerbeetle-0.16.12"
+        },
+        "x86_64-darwin": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/6lnwnr3mvdamm5lxjjqkaagw2pyqlq0a-tigerbeetle-0.16.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/6lnwnr3mvdamm5lxjjqkaagw2pyqlq0a-tigerbeetle-0.16.12"
+        },
+        "x86_64-linux": {
+          "outputs": [
+            {
+              "name": "out",
+              "path": "/nix/store/afrj2ph61xz0lh7f3d1g1d7v2rslbvny-tigerbeetle-0.16.12",
+              "default": true
+            }
+          ],
+          "store_path": "/nix/store/afrj2ph61xz0lh7f3d1g1d7v2rslbvny-tigerbeetle-0.16.12"
+        }
+      }
     }
   }
 }

@@ -11,6 +11,9 @@ import (
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/web/landing"
+
+	_ "github.com/tigerbeetle/tigerbeetle-go"
+	_ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )
 
 type (
