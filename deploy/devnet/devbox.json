@@ -11,6 +11,7 @@
   ],
   "env": {
     "GOPATH": "$HOME/go",
+    "PATH": "./build:$HOME/go/bin:$PATH",
     "CHAIN_ID": "sonr-devnet-1",
     "DENOM": "usnr",
     "KEYRING": "test",

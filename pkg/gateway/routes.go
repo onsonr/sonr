@@ -24,6 +24,6 @@ func RegisterRoutes(e *echo.Echo, client IPFSClient) {
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
 	gw := New(client)
-	e.POST("/_dwn/spawn", spawnVault)
+	e.POST("/_spawn", SpawnVault)
 	e.Any("/*", gw.Handler())
 }

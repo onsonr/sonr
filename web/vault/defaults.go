@@ -10,17 +10,21 @@ import (
 
 const SchemaVersion = 1
 
-func toCamelCase(s string) string {
-	if s == "" {
-		return s
+// DefaultSchema returns the default schema
+func DefaultSchema() *types.Schema {
+	return &types.Schema{
+		Version:    SchemaVersion,
+		Account:    getSchema(&models.Account{}),
+		Asset:      getSchema(&models.Asset{}),
+		Chain:      getSchema(&models.Chain{}),
+		Credential: getSchema(&models.Credential{}),
+		Grant:      getSchema(&models.Grant{}),
+		Keyshare:   getSchema(&models.Keyshare{}),
+		Profile:    getSchema(&models.Profile{}),
 	}
-	if len(s) == 1 {
-		return strings.ToLower(s)
-	}
-	return strings.ToLower(s[:1]) + s[1:]
 }
 
-func GetSchema(structType interface{}) string {
+func getSchema(structType interface{}) string {
 	t := reflect.TypeOf(structType)
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
@@ -41,16 +45,12 @@ func GetSchema(structType interface{}) string {
 	return "++, " + strings.Join(fields, ", ")
 }
 
-// DefaultSchema returns the default schema
-func DefaultSchema() *types.Schema {
-	return &types.Schema{
-		Version:    SchemaVersion,
-		Account:    GetSchema(&models.Account{}),
-		Asset:      GetSchema(&models.Asset{}),
-		Chain:      GetSchema(&models.Chain{}),
-		Credential: GetSchema(&models.Credential{}),
-		Grant:      GetSchema(&models.Grant{}),
-		Keyshare:   GetSchema(&models.Keyshare{}),
-		Profile:    GetSchema(&models.Profile{}),
+func toCamelCase(s string) string {
+	if s == "" {
+		return s
 	}
+	if len(s) == 1 {
+		return strings.ToLower(s)
+	}
+	return strings.ToLower(s[:1]) + s[1:]
 }

@@ -6,6 +6,7 @@ import (
 )
 
 const (
+	AppManifestFileName   = "app.webmanifest"
 	DWNConfigFileName     = "dwn.json"
 	IndexHTMLFileName     = "index.html"
 	MainJSFileName        = "main.js"
@@ -13,8 +14,9 @@ const (
 )
 
 // spawnVaultDirectory creates a new directory with the default files
-func setupVaultDirectory(cfgBz []byte) files.Directory {
+func setupVaultDirectory(cfgBz []byte, manifestBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
+		AppManifestFileName:   files.NewBytesFile(manifestBz),
 		DWNConfigFileName:     files.NewBytesFile(cfgBz),
 		IndexHTMLFileName:     files.NewBytesFile(embed.IndexHTML),
 		MainJSFileName:        files.NewBytesFile(embed.MainJS),

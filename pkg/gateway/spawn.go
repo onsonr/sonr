@@ -7,9 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/web/vault/types"
 )
 
-func spawnVault(c echo.Context) error {
+func SpawnVault(c echo.Context) error {
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
@@ -22,18 +23,28 @@ func spawnVault(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
+
+	// Create the vault keyshare auth token
 	kscid, err := tk.CID()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
+	// Create the vault config
 	cfg := session.GetVaultConfig(c, src.Address(), kscid.String())
 	cnf, err := json.Marshal(cfg)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	dir := setupVaultDirectory(cnf)
+	// Create the vault app manifest
+	manifest := types.NewWebManifest()
+	manifestBz, err := json.Marshal(manifest)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	dir := setupVaultDirectory(cnf, manifestBz)
 	path, err := ipfs.Unixfs().Add(c.Request().Context(), dir)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
