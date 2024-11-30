@@ -2,20 +2,20 @@ package gateway
 
 import (
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/web/vault/embed"
+	"github.com/onsonr/sonr/pkg/gateway/embed"
 )
 
 const (
-	kFileNameConfigJSON = "dwn.json"
-	kFileNameIndexHTML  = "index.html"
-	kFileNameWorkerJS   = "sw.js"
+	DWNConfigFileName     = "dwn.json"
+	IndexHTMLFileName     = "index.html"
+	ServiceWorkerFileName = "sw.js"
 )
 
 // spawnVaultDirectory creates a new directory with the default files
 func setupVaultDirectory(cfgBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
-		kFileNameConfigJSON: files.NewBytesFile(cfgBz),
-		kFileNameIndexHTML:  files.NewBytesFile(embed.IndexHTML),
-		kFileNameWorkerJS:   files.NewBytesFile(embed.WorkerJS),
+		DWNConfigFileName:     files.NewBytesFile(cfgBz),
+		IndexHTMLFileName:     files.NewBytesFile(embed.IndexHTML),
+		ServiceWorkerFileName: files.NewBytesFile(embed.WorkerJS),
 	})
 }

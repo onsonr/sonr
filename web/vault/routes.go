@@ -9,8 +9,8 @@ import (
 	"github.com/onsonr/sonr/web/vault/handlers"
 )
 
-// RegisterRoutes registers the Decentralized Web Node API routes.
-func RegisterRoutes(e *echo.Echo) {
+// RegisterAPI registers the Decentralized Web Node API routes.
+func RegisterAPI(e *echo.Echo) {
 	e.GET("/register/:subject/start", handlers.RegisterSubjectStart)
 	e.POST("/register/:subject/finish", handlers.RegisterSubjectFinish)
 
@@ -20,4 +20,11 @@ func RegisterRoutes(e *echo.Echo) {
 	e.GET("/authz/jwks", handlers.GetJWKS)
 	e.GET("/authz/token", handlers.GetToken)
 	e.POST("/:origin/grant/:subject", handlers.GrantAuthorization)
+}
+
+func ServeStatic(e *echo.Echo) {
+	// Serve static files
+	e.Static("/_config", DWNConfigFileName)
+	e.Static("/", IndexHTMLFileName)
+	e.Static("/sw.js", ServiceWorkerFileName)
 }
