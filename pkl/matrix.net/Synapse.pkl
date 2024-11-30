@@ -1,4 +1,4 @@
-module matrix.net.Synapse
+open module matrix.net.Synapse
 
 version = 2
 

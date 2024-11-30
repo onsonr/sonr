@@ -1,4 +1,4 @@
-module matrix.net.Homeserver
+open module matrix.net.Homeserver
 
 version = 2
 

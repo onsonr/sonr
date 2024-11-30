@@ -1,2 +1,3 @@
-import "package://pkl.sh/sonr.chain@0.0.3#/App.pkl"
+amends "https://pkl.sh/sonr.chain/0.0.1/App.pkl"
+
 
