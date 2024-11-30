@@ -8,12 +8,6 @@ import (
 	"github.com/onsonr/sonr/web/vault/types"
 )
 
-const (
-	DWNConfigFileName     = "dwn.json"
-	IndexHTMLFileName     = "index.html"
-	ServiceWorkerFileName = "sw.js"
-)
-
 const SchemaVersion = 1
 
 func toCamelCase(s string) string {

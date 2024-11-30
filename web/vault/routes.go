@@ -21,10 +21,3 @@ func RegisterAPI(e *echo.Echo) {
 	e.GET("/authz/token", handlers.GetToken)
 	e.POST("/:origin/grant/:subject", handlers.GrantAuthorization)
 }
-
-func ServeStatic(e *echo.Echo) {
-	// Serve static files
-	e.Static("/_config", DWNConfigFileName)
-	e.Static("/", IndexHTMLFileName)
-	e.Static("/sw.js", ServiceWorkerFileName)
-}

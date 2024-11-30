@@ -8,6 +8,7 @@ import (
 const (
 	DWNConfigFileName     = "dwn.json"
 	IndexHTMLFileName     = "index.html"
+	MainJSFileName        = "main.js"
 	ServiceWorkerFileName = "sw.js"
 )
 
@@ -16,6 +17,7 @@ func setupVaultDirectory(cfgBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
 		DWNConfigFileName:     files.NewBytesFile(cfgBz),
 		IndexHTMLFileName:     files.NewBytesFile(embed.IndexHTML),
+		MainJSFileName:        files.NewBytesFile(embed.MainJS),
 		ServiceWorkerFileName: files.NewBytesFile(embed.WorkerJS),
 	})
 }
