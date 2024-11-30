@@ -13,6 +13,19 @@ func GetChainID(c echo.Context) string {
 	return "sonr-testnet-1"
 }
 
+// GetVaultConfig returns the default vault config
+func GetVaultConfig(c echo.Context, addr string, ucanCID string) *types.Config {
+	return &types.Config{
+		MotrKeyshare:   ucanCID,
+		MotrAddress:    addr,
+		IpfsGatewayUrl: "http://localhost:80",
+		SonrApiUrl:     "http://localhost:1317",
+		SonrRpcUrl:     "http://localhost:26657",
+		SonrChainId:    GetChainID(c),
+		VaultSchema:    GetVaultSchema(c),
+	}
+}
+
 // GetVaultSchema returns the default vault schema
 func GetVaultSchema(c echo.Context) *types.Schema {
 	return vault.DefaultSchema()

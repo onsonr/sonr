@@ -9,7 +9,11 @@ import (
 
 type IPFSClient = *rpc.HttpApi
 
+var ipfs IPFSClient
+
 func RegisterRoutes(e *echo.Echo, client IPFSClient) {
+	ipfs = client
+
 	// Custom error handler for gateway
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		if he, ok := err.(*echo.HTTPError); ok {
@@ -20,6 +24,6 @@ func RegisterRoutes(e *echo.Echo, client IPFSClient) {
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
 	gw := New(client)
-	e.POST("/_dwn/spawn", spawnVault(client))
+	e.POST("/_dwn/spawn", spawnVault)
 	e.Any("/*", gw.Handler())
 }
