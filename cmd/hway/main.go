@@ -47,7 +47,6 @@ func main() {
 	highway.Use(middleware.Logger())
 	highway.Use(middleware.Recover())
 	gateway.RegisterRoutes(highway, api)
-
 	hosts["to.localhost:3000"] = &Host{Echo: highway}
 
 	// Server
