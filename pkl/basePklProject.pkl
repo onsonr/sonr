@@ -32,8 +32,8 @@ local function findRootModule(mod: reflect.Module): Module =
     else findRootModule(supermodule)
 
 package {
-  baseUri = "package://pkl.sh/\(name)@\(version)"
-  packageZipUrl = "https://pkl.sh/\(name)@\(version)/\(name).zip"
+  baseUri = "package://pkl.sh/\(name)"
+  packageZipUrl = "https://pkl.sh/\(name)@\(version).zip"
   license = "Apache-2.0"
   authors {
     "Prad N <prad@sonr.email>"

@@ -36,9 +36,6 @@ func MotrMiddleware(config *types.Config) echo.MiddlewareFunc {
 }
 
 func injectConfig(c echo.Context, config *types.Config) error {
-	header.Write(c, header.IPFSHost, config.IpfsGatewayUrl)
-	header.Write(c, header.ChainID, config.SonrChainId)
-
 	header.Write(c, header.SonrAPIURL, config.SonrApiUrl)
 	header.Write(c, header.SonrRPCURL, config.SonrRpcUrl)
 
