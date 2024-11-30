@@ -16,9 +16,6 @@ const (
 	// SonrAddress is the key for the Sonr address cookie.
 	SonrAddress Key = "sonr.address"
 
-	// SonrKeyshare is the key for the Sonr address cookie.
-	SonrKeyshare Key = "sonr.keyshare"
-
 	// SonrDID is the key for the Sonr DID cookie.
 	SonrDID Key = "sonr.did"
 

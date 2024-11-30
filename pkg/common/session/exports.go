@@ -16,7 +16,7 @@ func GetChainID(c echo.Context) string {
 // GetVaultConfig returns the default vault config
 func GetVaultConfig(c echo.Context, addr string, ucanCID string) *types.Config {
 	return &types.Config{
-		MotrKeyshare:   ucanCID,
+		MotrToken:      ucanCID,
 		MotrAddress:    addr,
 		IpfsGatewayUrl: "http://localhost:80",
 		SonrApiUrl:     "http://localhost:1317",

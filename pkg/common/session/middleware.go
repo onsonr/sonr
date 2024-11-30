@@ -40,8 +40,6 @@ func injectConfig(c echo.Context, config *types.Config) error {
 	header.Write(c, header.SonrRPCURL, config.SonrRpcUrl)
 
 	cookie.Write(c, cookie.SonrAddress, config.MotrAddress)
-	cookie.Write(c, cookie.SonrKeyshare, config.MotrKeyshare)
-
 	schemaBz, err := json.Marshal(config.VaultSchema)
 	if err != nil {
 		return err

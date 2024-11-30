@@ -4,7 +4,7 @@ package types
 type Config struct {
 	IpfsGatewayUrl string `pkl:"ipfsGatewayUrl" json:"ipfsGatewayUrl,omitempty"`
 
-	MotrKeyshare string `pkl:"motrKeyshare" json:"motrKeyshare,omitempty"`
+	MotrToken string `pkl:"motrToken" json:"motrToken,omitempty"`
 
 	MotrAddress string `pkl:"motrAddress" json:"motrAddress,omitempty"`
 
