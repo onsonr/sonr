@@ -16,8 +16,6 @@ const (
 	UserAgent       Key = "Sec-CH-UA"
 
 	// Sonr Injected
-	ChainID     Key = "X-Chain-ID"
-	IPFSHost    Key = "X-Host-IPFS"
 	SonrAPIURL  Key = "X-Sonr-API"
 	SonrgRPCURL Key = "X-Sonr-GRPC"
 	SonrRPCURL  Key = "X-Sonr-RPC"

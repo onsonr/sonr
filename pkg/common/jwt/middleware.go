@@ -5,43 +5,15 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
 )
 
-// UCANConfig defines the configuration for UCAN middleware
-type UCANConfig struct {
-	// Skipper defines a function to skip middleware
-	Skipper func(c echo.Context) bool
-
-	// KeySource provides the source for validating UCANs
-	KeySource mpc.KeyshareSource
-
-	// TokenLookup is a string in the form of "<source>:<name>" that is used
-	// to extract token from the request.
-	// Optional. Default value "header:Authorization".
-	// Possible values:
-	// - "header:<name>"
-	// - "query:<name>"
-	// - "param:<name>"
-	// - "cookie:<name>"
-	TokenLookup string
-
-	// AuthScheme to be used in the Authorization header.
-	// Optional. Default value "Bearer".
-	AuthScheme string
-}
-
-// DefaultUCANConfig is the default UCAN middleware config
-var DefaultUCANConfig = UCANConfig{
-	Skipper:     nil,
-	TokenLookup: "header:Authorization",
-	AuthScheme:  "Bearer",
-}
-
 // UCAN returns middleware to validate UCAN tokens
-func UCAN(source mpc.KeyshareSource) echo.MiddlewareFunc {
+func UCAN(source mpc.KeyshareSource, opts ...Option) echo.MiddlewareFunc {
 	c := DefaultUCANConfig
+	for _, opt := range opts {
+		opt(&c)
+	}
 	c.KeySource = source
 	return UCANWithConfig(c)
 }
@@ -83,7 +55,7 @@ func UCANWithConfig(config UCANConfig) echo.MiddlewareFunc {
 			}
 
 			parser := config.KeySource.UCANParser()
-			token, err := parser.Parse(auth)
+			token, err := parser.ParseAndVerify(c.Request().Context(), auth)
 			if err != nil {
 				return echo.NewHTTPError(401, "invalid UCAN token")
 			}

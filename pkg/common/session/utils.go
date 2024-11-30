@@ -186,3 +186,7 @@ func baseRegisterOptions() *common.RegisterOptions {
 		},
 	}
 }
+
+func formatAuth(ucanCID string) string {
+	return "Bearer " + ucanCID
+}

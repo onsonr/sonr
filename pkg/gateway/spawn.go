@@ -2,64 +2,50 @@ package gateway
 
 import (
 	"encoding/json"
+	"net/http"
 
-	"github.com/ipfs/boxo/files"
+	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/crypto/mpc"
-	"github.com/onsonr/sonr/web/vault/embed"
 	"github.com/onsonr/sonr/web/vault/types"
 )
 
-const (
-	kFileNameConfigJSON = "dwn.json"
-	kFileNameIndexHTML  = "index.html"
-	kFileNameWorkerJS   = "sw.js"
-)
-
-type vault struct {
-	Config *types.Config
-	Schema *types.Schema
-	Source mpc.KeyshareSource
-	ks     mpc.Keyset
-}
-
-func SpawnVault(chainID string, schema *types.Schema) (files.Directory, error) {
-	ks, err := mpc.NewKeyset()
-	if err != nil {
-		return nil, err
+func spawnVault(client IPFSClient) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		ks, err := mpc.NewKeyset()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		src, err := mpc.NewSource(ks)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		tk, err := src.OriginToken()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		kscid, err := tk.CID()
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		dwnCfg := &types.Config{
+			MotrKeyshare:   kscid.String(),
+			MotrAddress:    src.Address(),
+			IpfsGatewayUrl: "https://ipfs.sonr.land",
+			SonrApiUrl:     "https://api.sonr.land",
+			SonrRpcUrl:     "https://rpc.sonr.land",
+			SonrChainId:    session.GetChainID(c),
+			VaultSchema:    session.GetVaultSchema(c),
+		}
+		cnf, err := json.Marshal(dwnCfg)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		dir := setupVaultDirectory(cnf)
+		path, err := client.Unixfs().Add(c.Request().Context(), dir)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+		}
+		return c.Redirect(http.StatusFound, path.String())
 	}
-	src, err := mpc.NewSource(ks)
-	if err != nil {
-		return nil, err
-	}
-	tk, err := src.OriginToken()
-	if err != nil {
-		return nil, err
-	}
-	kscid, err := tk.CID()
-	if err != nil {
-		return nil, err
-	}
-	dwnCfg := &types.Config{
-		MotrKeyshare:   kscid.String(),
-		MotrAddress:    src.Address(),
-		IpfsGatewayUrl: "https://ipfs.sonr.land",
-		SonrApiUrl:     "https://api.sonr.land",
-		SonrRpcUrl:     "https://rpc.sonr.land",
-		SonrChainId:    chainID,
-		VaultSchema:    schema,
-	}
-	cnf, err := json.Marshal(dwnCfg)
-	if err != nil {
-		return nil, err
-	}
-	return setupVaultDirectory(cnf), nil
-}
-
-// spawnVaultDirectory creates a new directory with the default files
-func setupVaultDirectory(cfgBz []byte) files.Directory {
-	return files.NewMapDirectory(map[string]files.Node{
-		kFileNameConfigJSON: files.NewBytesFile(cfgBz),
-		kFileNameIndexHTML:  files.NewBytesFile(embed.IndexHTML),
-		kFileNameWorkerJS:   files.NewBytesFile(embed.WorkerJS),
-	})
 }

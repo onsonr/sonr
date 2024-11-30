@@ -43,7 +43,7 @@ func main() {
 	highway := echo.New()
 	highway.Use(middleware.Logger())
 	highway.Use(middleware.Recover())
-	gateway.InterceptRoutes(highway, api)
+	gateway.RegisterRoutes(highway, api)
 
 	hosts["to.localhost:3000"] = &Host{Echo: highway}
 
