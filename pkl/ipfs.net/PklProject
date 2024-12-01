@@ -13,10 +13,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //===----------------------------------------------------------------------===//
-/// Base configuration files for initializing a sonr chain
+/// Configuration files for integrating the Matrix service
 amends "../basePklProject.pkl"
 
 package {
-  name = "sonr.chain"
-  version = "0.0.2"
+  name = "ipfs.net"
+  version = "0.0.1"
 }
