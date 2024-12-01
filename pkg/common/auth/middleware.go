@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/mpc"
 )
 
 // UCAN returns middleware to validate UCAN tokens

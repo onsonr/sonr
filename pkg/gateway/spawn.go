@@ -6,7 +6,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/web/vault/types"
 )
 

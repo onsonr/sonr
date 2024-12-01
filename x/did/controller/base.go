@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/mpc"
 )
 
 type ControllerI interface {

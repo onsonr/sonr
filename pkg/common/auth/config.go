@@ -2,7 +2,7 @@ package auth
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/crypto/mpc"
+	"github.com/onsonr/sonr/crypto/mpc"
 )
 
 // UCANConfig defines the configuration for UCAN middleware
