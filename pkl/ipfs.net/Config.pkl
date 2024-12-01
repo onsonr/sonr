@@ -1,4 +1,4 @@
-open module ipfs.net.Config
+module ipfs.net.Config
 
 API: API
 
