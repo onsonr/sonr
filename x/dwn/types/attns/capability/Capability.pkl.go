@@ -12,6 +12,10 @@ const (
 	CAPOWNER        Capability = "CAP_OWNER"
 	CAPOPERATOR     Capability = "CAP_OPERATOR"
 	CAPOBSERVER     Capability = "CAP_OBSERVER"
+	CAPAUTHENTICATE Capability = "CAP_AUTHENTICATE"
+	CAPAUTHORIZE    Capability = "CAP_AUTHORIZE"
+	CAPDELEGATE     Capability = "CAP_DELEGATE"
+	CAPINVOKE       Capability = "CAP_INVOKE"
 	CAPEXECUTE      Capability = "CAP_EXECUTE"
 	CAPPROPOSE      Capability = "CAP_PROPOSE"
 	CAPSIGN         Capability = "CAP_SIGN"
@@ -19,7 +23,6 @@ const (
 	CAPSETTHRESHOLD Capability = "CAP_SET_THRESHOLD"
 	CAPRECOVER      Capability = "CAP_RECOVER"
 	CAPSOCIAL       Capability = "CAP_SOCIAL"
-	CAPVAULT        Capability = "CAP_VAULT"
 	CAPVOTE         Capability = "CAP_VOTE"
 )
 
@@ -39,6 +42,14 @@ func (rcv *Capability) UnmarshalBinary(data []byte) error {
 		*rcv = CAPOPERATOR
 	case "CAP_OBSERVER":
 		*rcv = CAPOBSERVER
+	case "CAP_AUTHENTICATE":
+		*rcv = CAPAUTHENTICATE
+	case "CAP_AUTHORIZE":
+		*rcv = CAPAUTHORIZE
+	case "CAP_DELEGATE":
+		*rcv = CAPDELEGATE
+	case "CAP_INVOKE":
+		*rcv = CAPINVOKE
 	case "CAP_EXECUTE":
 		*rcv = CAPEXECUTE
 	case "CAP_PROPOSE":
@@ -53,8 +64,6 @@ func (rcv *Capability) UnmarshalBinary(data []byte) error {
 		*rcv = CAPRECOVER
 	case "CAP_SOCIAL":
 		*rcv = CAPSOCIAL
-	case "CAP_VAULT":
-		*rcv = CAPVAULT
 	case "CAP_VOTE":
 		*rcv = CAPVOTE
 	default:

@@ -8,8 +8,8 @@ import (
 	"github.com/ucan-wg/go-ucan"
 )
 
-// SmartAccountCapabilities defines the capability hierarchy
-func NewSmartAccountCapabilities() ucan.NestedCapabilities {
+// VaultCapabilities defines the capability hierarchy
+func NewVaultCapabilities() ucan.NestedCapabilities {
 	return ucan.NewNestedCapabilities(
 		capability.CAPOWNER.String(),
 		capability.CAPOPERATOR.String(),
@@ -24,8 +24,8 @@ func NewSmartAccountCapabilities() ucan.NestedCapabilities {
 	)
 }
 
-// CreateSmartAccountAttenuations creates default attenuations for a smart account
-func CreateSmartAccountAttenuations(
+// CreateVaultAttenuations creates default attenuations for a smart account
+func CreateVaultAttenuations(
 	caps ucan.NestedCapabilities,
 	accountAddr string,
 ) ucan.Attenuations {
@@ -44,8 +44,8 @@ func CreateSmartAccountAttenuations(
 	}
 }
 
-// CreateSmartAccountPolicyAttenuation creates attenuations for policy management
-func CreateSmartAccountPolicyAttenuation(
+// CreateVaultPolicyAttenuation creates attenuations for policy management
+func CreateVaultPolicyAttenuation(
 	caps ucan.NestedCapabilities,
 	accountAddr string,
 	policyType string,
