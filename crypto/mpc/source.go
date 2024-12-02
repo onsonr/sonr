@@ -52,8 +52,7 @@ func (k ucanKeyshare) PublicKey() []byte {
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
 func (k ucanKeyshare) OriginToken() (*Token, error) {
-	caps := attns.NewSmartAccountCapabilities()
-	att := attns.CreateSmartAccountAttenuations(caps, k.addr)
+	att := attns.CreateSmartAccountAttenuations(k.addr)
 	zero := time.Time{}
 	return k.NewOriginToken(k.issuerDID, att, nil, zero, zero)
 }
@@ -84,7 +83,7 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 
 // TokenParser returns a token parser that can be used to parse tokens
 func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
-	caps := attns.NewSmartAccountCapabilities()
+	caps := attns.AttentuationSmartAccount.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
 			cap string
