@@ -50,7 +50,7 @@ require (
 	filippo.io/edwards25519 v1.1.0
 	git.sr.ht/~sircmpwn/go-bare v0.0.0-20210406120253-ab86bc2846d9
 	github.com/a-h/templ v0.2.793
-	github.com/apple/pkl-go v0.8.0
+	github.com/apple/pkl-go v0.8.1
 	github.com/btcsuite/btcd/btcec/v2 v2.3.4
 	github.com/bwesterb/go-ristretto v1.2.3
 	github.com/cometbft/cometbft v0.38.12
@@ -92,7 +92,6 @@ require (
 	github.com/strangelove-ventures/poa v0.50.0
 	github.com/strangelove-ventures/tokenfactory v0.50.0
 	github.com/stretchr/testify v1.9.0
-	github.com/tigerbeetle/tigerbeetle-go v0.16.14
 	github.com/ucan-wg/go-ucan v0.7.0
 	golang.org/x/crypto v0.28.0
 	google.golang.org/genproto/googleapis/api v0.0.0-20241007155032-5fefd90f89a9
