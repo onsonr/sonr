@@ -7,6 +7,7 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/onsonr/sonr/pkg/common/clients"
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/webui/landing"
@@ -38,6 +39,7 @@ func main() {
 	site.Use(middleware.Logger())
 	site.Use(middleware.Recover())
 	site.Use(session.HwayMiddleware())
+	site.Use(clients.GRPCClientsMiddleware("localhost:9090"))
 	landing.RegisterRoutes(site)
 	hosts["localhost:3000"] = &Host{Echo: site}
 
