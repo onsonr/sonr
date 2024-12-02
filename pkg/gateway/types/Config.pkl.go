@@ -1,4 +1,4 @@
-// Code generated from Pkl module `sonr.hway.Ctx`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.hway.Gate`. DO NOT EDIT.
 package types
 
 type Config struct {

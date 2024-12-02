@@ -43,6 +43,8 @@ func processConfig(this js.Value, args []js.Value) interface{} {
 
 func main() {
 	// Load dwn config
+	js.Global().Set("broadcastTx", js.FuncOf(broadcastTx))
+	js.Global().Set("simulateTx", js.FuncOf(simulateTx))
 	js.Global().Set("processConfig", js.FuncOf(processConfig))
 
 	e := echo.New()
