@@ -6,6 +6,7 @@ import (
 
 	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"github.com/ucan-wg/go-ucan"
+	"lukechampine.com/blake3"
 )
 
 type KeyshareSource interface {
@@ -13,6 +14,7 @@ type KeyshareSource interface {
 
 	Address() string
 	Issuer() string
+	ChainCode() ([]byte, error)
 	OriginToken() (*Token, error)
 	PublicKey() []byte
 	SignData(data []byte) ([]byte, error)
@@ -43,6 +45,17 @@ func (k ucanKeyshare) Address() string {
 // Issuer returns the DID of the issuer of the keyshare
 func (k ucanKeyshare) Issuer() string {
 	return k.issuerDID
+}
+
+// ChainCode returns the chain code of the keyshare
+func (k ucanKeyshare) ChainCode() ([]byte, error) {
+	sig, err := k.SignData([]byte(k.addr))
+	if err != nil {
+		return nil, err
+	}
+	hash := blake3.Sum256(sig)
+	// Return the first 32 bytes of the hash
+	return hash[:32], nil
 }
 
 // PublicKey returns the public key of the keyshare
