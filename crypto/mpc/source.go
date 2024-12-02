@@ -1,9 +1,11 @@
 package mpc
 
 import (
+	"context"
 	"fmt"
 	"time"
 
+	"github.com/onsonr/sonr/crypto/mpc/didkey"
 	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"github.com/ucan-wg/go-ucan"
 	"lukechampine.com/blake3"
@@ -16,10 +18,10 @@ type KeyshareSource interface {
 	Issuer() string
 	ChainCode() ([]byte, error)
 	OriginToken() (*Token, error)
-	PublicKey() []byte
+	PublicKey() PublicKey
 	SignData(data []byte) ([]byte, error)
 	VerifyData(data []byte, sig []byte) (bool, error)
-	UCANParser() *ucan.TokenParser
+	UCANParser() *didkey.TokenParser
 }
 
 func NewSource(ks Keyset) (KeyshareSource, error) {
@@ -59,8 +61,8 @@ func (k ucanKeyshare) ChainCode() ([]byte, error) {
 }
 
 // PublicKey returns the public key of the keyshare
-func (k ucanKeyshare) PublicKey() []byte {
-	return k.valShare.PublicKey
+func (k ucanKeyshare) PublicKey() PublicKey {
+	return createPublicKey(k.valShare.PublicKey, "secp256k1")
 }
 
 // DefaultOriginToken returns a default token with the keyshare's issuer as the audience
@@ -95,7 +97,7 @@ func (k ucanKeyshare) VerifyData(data []byte, sig []byte) (bool, error) {
 }
 
 // TokenParser returns a token parser that can be used to parse tokens
-func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
+func (k ucanKeyshare) UCANParser() *didkey.TokenParser {
 	caps := attns.AttentuationSmartAccount.GetCapabilities()
 	ac := func(m map[string]interface{}) (ucan.Attenuation, error) {
 		var (
@@ -122,5 +124,15 @@ func (k ucanKeyshare) UCANParser() *ucan.TokenParser {
 	}
 
 	store := ucan.NewMemTokenStore()
-	return ucan.NewTokenParser(ac, ucan.StringDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
+	return didkey.NewTokenParser(ac, customDIDPubKeyResolver{}, store.(ucan.CIDBytesResolver))
+}
+
+// customDIDPubKeyResolver implements the DIDPubKeyResolver interface without
+// any network backing. Works if the key string given contains the public key
+// itself
+type customDIDPubKeyResolver struct{}
+
+// ResolveDIDKey extracts a public key from  a did:key string
+func (customDIDPubKeyResolver) ResolveDIDKey(ctx context.Context, didStr string) (didkey.ID, error) {
+	return didkey.Parse(didStr)
 }

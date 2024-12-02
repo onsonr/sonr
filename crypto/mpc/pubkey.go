@@ -1,9 +1,11 @@
 package mpc
 
 import (
+	"bytes"
 	"crypto/ecdsa"
+	"fmt"
 
-	cosmoscrypto "github.com/cometbft/cometbft/crypto"
+	cometcrypto "github.com/cometbft/cometbft/crypto"
 )
 
 type PublicKeyType string
@@ -19,18 +21,50 @@ const (
 type ECDSAPublicKey *ecdsa.PublicKey
 
 type PublicKey interface {
-	// Bytes returns the byte representation of the public key
+	Address() cometcrypto.Address
 	Bytes() []byte
-
-	// Equals checks if two public keys are equal
-	Equals(other PublicKey) bool
-
-	// ToCosmosPubKey converts the public key to a Cosmos compatible public key
-	ToCosmosPubKey() cosmoscrypto.PubKey
-
-	// DID returns the DID of the public key
 	DID() string
+	VerifySignature(msg []byte, sig []byte) bool
+	Equals(cometcrypto.PubKey) bool
+	Type() string
+}
 
-	// ToIPFSPubKey converts the public key to an IPFS compatible public key
-	// ToIPFSPubKey() ipfs.PubKey // TODO: Implement this
+type rootPublicKey struct {
+	data []byte
+	kind string
+}
+
+func (k rootPublicKey) Address() cometcrypto.Address {
+	return cometcrypto.AddressHash(k.data)
+}
+
+func (k rootPublicKey) Bytes() []byte {
+	return k.data
+}
+
+func (k rootPublicKey) DID() string {
+	return fmt.Sprintf("did:sonr:%s", k.Address())
+}
+
+func (k rootPublicKey) VerifySignature(msg []byte, sig []byte) bool {
+	ok, err := VerifySignature(k.data, msg, sig)
+	if err != nil {
+		return false
+	}
+	return ok
+}
+
+func (k rootPublicKey) Equals(other cometcrypto.PubKey) bool {
+	return bytes.Equal(k.data, other.Bytes())
+}
+
+func (k rootPublicKey) Type() string {
+	return k.kind
+}
+
+func createPublicKey(pk []byte, kind string) PublicKey {
+	return rootPublicKey{
+		data: pk,
+		kind: kind,
+	}
 }
