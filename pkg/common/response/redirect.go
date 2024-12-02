@@ -10,10 +10,10 @@ func RedirectLanding(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "http://localhost:3000")
 }
 
-func RedirectVaultCID(c echo.Context, cid string) error {
+func RedirectIPFS(c echo.Context, cid string) error {
 	return c.Redirect(http.StatusFound, cid)
 }
 
-func RedirectVaultIPNS(c echo.Context, ipns string) error {
-	return c.Redirect(http.StatusFound, ipns)
+func RedirectAuth(c echo.Context) error {
+	return c.Redirect(http.StatusFound, "http://auth.localhost:3000")
 }
