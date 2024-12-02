@@ -13,8 +13,9 @@ import (
 	"github.com/onsonr/sonr/pkg/webui/landing"
 
 	gatewaymiddleware "github.com/onsonr/sonr/pkg/gateway/middleware"
-	_ "github.com/tigerbeetle/tigerbeetle-go"
-	_ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
+	// TODO: Integrate TigerBeetle
+	// _ "github.com/tigerbeetle/tigerbeetle-go"
+	// _ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )
 
 type (
@@ -49,7 +50,7 @@ func main() {
 	highway.Use(middleware.Recover())
 	highway.Use(gatewaymiddleware.IPFSMiddleware(api))
 	gateway.RegisterRoutes(highway)
-	hosts["to.localhost:3000"] = &Host{Echo: highway}
+	hosts["auth.localhost:3000"] = &Host{Echo: highway}
 
 	// Server
 	e := echo.New()

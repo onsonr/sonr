@@ -20,6 +20,14 @@ var (
 	err    error
 )
 
+func broadcastTx(this js.Value, args []js.Value) interface{} {
+	return nil
+}
+
+func simulateTx(this js.Value, args []js.Value) interface{} {
+	return nil
+}
+
 func processConfig(this js.Value, args []js.Value) interface{} {
 	if len(args) < 1 {
 		return nil
