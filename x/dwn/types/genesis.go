@@ -1,36 +1,18 @@
 package types
 
-// Define capability hierarchy for smart account operations
-const (
-	// Root capabilities
-	CAP_OWNER    = "OWNER"    // Full account control
-	CAP_OPERATOR = "OPERATOR" // Can perform operations
-	CAP_OBSERVER = "OBSERVER" // Can view account state
-
-	// Operation capabilities
-	CAP_EXECUTE = "EXECUTE" // Can execute transactions
-	CAP_PROPOSE = "PROPOSE" // Can propose transactions
-	CAP_SIGN    = "SIGN"    // Can sign transactions
-
-	// Policy capabilities
-	CAP_SET_POLICY    = "SET_POLICY"    // Can modify account policies
-	CAP_SET_THRESHOLD = "SET_THRESHOLD" // Can modify signing threshold
-
-	// Recovery capabilities
-	CAP_RECOVER = "RECOVER" // Can initiate recovery
-	CAP_SOCIAL  = "SOCIAL"  // Can act as social recovery
-)
-
-// Resource types for smart account operations
-type ResourceType string
-
-const (
-	RES_ACCOUNT     = "account"
-	RES_TRANSACTION = "tx"
-	RES_POLICY      = "policy"
-	RES_RECOVERY    = "recovery"
-)
-
+// Capability hierarchy for smart account operations
+// ----------------------------------------------
+// OWNER
+//
+//	└─ OPERATOR
+//	     ├─ EXECUTE
+//	     ├─ PROPOSE
+//	     └─ SIGN
+//	└─ SET_POLICY
+//	     └─ SET_THRESHOLD
+//	└─ RECOVER
+//	     └─ SOCIAL
+//
 // DefaultIndex is the default global index
 const DefaultIndex uint64 = 1
 

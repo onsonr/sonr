@@ -1,0 +1,77 @@
+package sections
+
+import models "github.com/onsonr/sonr/pkg/webui/landing/models"
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                         Data Model                        │
+// ╰───────────────────────────────────────────────────────────╯
+
+// ╭───────────────────────────────────────────────────────────╮
+// │                  Render Section View                      │
+// ╰───────────────────────────────────────────────────────────╯
+
+// Lowlights is the (4th) home page lowlights section
+templ Lowlights(lowlights *models.Lowlights) {
+	<section class="bg-zinc-800">
+		<div class="py-12 md:py-20">
+			<div class="max-w-5xl mx-auto px-4 sm:px-6">
+				<div class="max-w-3xl mx-auto text-center pb-12 md:pb-20">
+					<h2 class="font-inter-tight text-3xl md:text-4xl font-bold text-zinc-200">
+						{ lowlights.Heading }
+					</h2>
+				</div>
+			</div>
+			<div class="max-w-[94rem] mx-auto space-y-6">
+				<!-- Row #1 -->
+				<div
+					x-data="{}"
+					x-init="$nextTick(() => {
+                                let ul = $refs.testimonials;
+                                ul.insertAdjacentHTML('afterend', ul.outerHTML);
+                                ul.nextSibling.setAttribute('aria-hidden', 'true');
+                            })"
+					class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group"
+				>
+					<div x-ref="testimonials" class="flex items-start justify-center md:justify-start [&>div]:mx-3 animate-infinite-scroll group-hover:[animation-play-state:paused]">
+						for _,quote := range lowlights.UpperQuotes {
+							@quoteItem(quote)
+						}
+					</div>
+				</div>
+				<!-- Row #2 -->
+				<div
+					x-data="{}"
+					x-init="$nextTick(() => {
+                                let ul = $refs.testimonials;
+                                ul.insertAdjacentHTML('afterend', ul.outerHTML);
+                                ul.nextSibling.setAttribute('aria-hidden', 'true');
+                            })"
+					class="w-full inline-flex flex-nowrap overflow-hidden [mask-image:_linear-gradient(to_right,transparent_0,_black_28%,_black_calc(100%-28%),transparent_100%)] group"
+				>
+					<div x-ref="testimonials" class="flex items-start justify-center md:justify-start [&>div]:mx-3 animate-infinite-scroll-inverse group-hover:[animation-play-state:paused] [animation-delay:-7.5s]">
+						for _,quote := range lowlights.LowerQuotes {
+							@quoteItem(quote)
+						}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+}
+
+templ quoteItem(quote *models.Testimonial) {
+	<div class="rounded h-full w-[22rem] border border-transparent [background:linear-gradient(#323237,#323237)_padding-box,linear-gradient(120deg,theme(colors.zinc.700),theme(colors.zinc.700/0),theme(colors.zinc.700))_border-box] p-5">
+		<div class="flex items-center mb-4">
+			<img class="shrink-0 rounded-full mr-3" src={ quote.Avatar.Src } width={ quote.Avatar.Width } height={ quote.Avatar.Height } alt="Testimonial 01"/>
+			<div>
+				<div class="font-inter-tight font-bold text-zinc-200">{ quote.FullName }</div>
+				<div>
+					<a class="text-sm font-medium text-zinc-500 hover:text-zinc-300 transition" href="#0">{ quote.Username }</a>
+				</div>
+			</div>
+		</div>
+		<div class="text-zinc-500 before:content-['\0022'] after:content-['\0022']">
+			{ quote.Quote }
+		</div>
+	</div>
+}

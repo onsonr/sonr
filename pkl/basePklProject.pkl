@@ -32,13 +32,13 @@ local function findRootModule(mod: reflect.Module): Module =
     else findRootModule(supermodule)
 
 package {
-  baseUri = "package://pkl.sh/\(name)@\(version)"
-  packageZipUrl = "https://github.com/onsonr/sonr/releases/download/\(name)@\(version).zip"
+  baseUri = "package://pkl.sh/\(name)"
+  packageZipUrl = "https://pkl.sh/\(name)@\(version).zip"
   license = "Apache-2.0"
   authors {
     "Prad N <prad@sonr.email>"
   }
   description = myModule.docComment
   issueTracker = "https://github.com/onsonr/sonr/issues"
-  sourceCode = "https://github.com/onsonr/sonr/tree/third_party/pkl/packages/\(name)"
+  sourceCode = "https://github.com/onsonr/sonr/tree/pkl/\(name)"
 }

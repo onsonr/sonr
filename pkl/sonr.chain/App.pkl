@@ -1,4 +1,4 @@
-module config.sonr.App
+open module sonr.chain.App
 
 import "package://pkg.pkl-lang.org/pkl-pantry/pkl.toml@1.0.0#/toml.pkl"
 

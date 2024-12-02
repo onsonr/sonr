@@ -1,0 +1,35 @@
+@go.Package { name = "github.com/onsonr/sonr/pkg/common/types" }
+
+module sonr.hway.Ctx
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class JsonField extends go.Field {
+  structTags {
+    ["json"] = "%{name},omitempty"
+  }
+}
+
+class Session {
+  @JsonField
+  id: String
+  @JsonField
+  challenge: String
+  @JsonField
+  browserName: String
+  @JsonField
+  browserVersion: String
+  @JsonField
+  userArchitecture: String
+  @JsonField
+  platform: String
+  @JsonField
+  platformVersion: String
+  @JsonField
+  deviceModel: String
+  @JsonField
+  isMobile: Boolean
+  @JsonField
+  vaultAddress: String
+}
+

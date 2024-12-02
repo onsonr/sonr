@@ -3,17 +3,24 @@ package types
 import (
 	"encoding/json"
 
-	"github.com/onsonr/sonr/pkg/common"
-	orm "github.com/onsonr/sonr/pkg/common/models"
+	"github.com/onsonr/sonr/pkg/common/models"
+	"github.com/onsonr/sonr/pkg/common/models/keyalgorithm"
+	"github.com/onsonr/sonr/pkg/common/models/keycurve"
+	"github.com/onsonr/sonr/pkg/common/models/keyencoding"
+	"github.com/onsonr/sonr/pkg/common/models/keyrole"
 )
 
 // DefaultParams returns default module parameters.
 func DefaultParams() Params {
-	// TODO:
 	return Params{
-		IpfsActive:               true,
-		LocalRegistrationEnabled: true,
-		Schema:                   DefaultSchema(),
+		ConveyancePreference: "direct",
+		AttestationFormats:   []string{"packed", "android-key", "fido-u2f", "apple"},
+		Schema:               DefaultSchema(),
+		AllowedOperators: []string{ // TODO:
+			"localhost",
+			"didao.xyz",
+			"sonr.id",
+		},
 	}
 }
 
@@ -36,13 +43,83 @@ func (p Params) Validate() error {
 // DefaultSchema returns the default schema
 func DefaultSchema() *Schema {
 	return &Schema{
-		Version:    common.SchemaVersion,
-		Account:    common.GetSchema(&orm.Account{}),
-		Asset:      common.GetSchema(&orm.Asset{}),
-		Chain:      common.GetSchema(&orm.Chain{}),
-		Credential: common.GetSchema(&orm.Credential{}),
-		Grant:      common.GetSchema(&orm.Grant{}),
-		Keyshare:   common.GetSchema(&orm.Keyshare{}),
-		Profile:    common.GetSchema(&orm.Profile{}),
+		Version:    SchemaVersion,
+		Account:    GetSchema(&models.Account{}),
+		Asset:      GetSchema(&models.Asset{}),
+		Chain:      GetSchema(&models.Chain{}),
+		Credential: GetSchema(&models.Credential{}),
+		Grant:      GetSchema(&models.Grant{}),
+		Keyshare:   GetSchema(&models.Keyshare{}),
+		Profile:    GetSchema(&models.Profile{}),
 	}
+}
+
+func DefaultKeyInfos() map[string]*KeyInfo {
+	return map[string]*KeyInfo{
+		// Identity Key Info
+		// Sonr Controller Key Info - From MPC
+		"auth.dwn": {
+			Role:      keyrole.Invocation.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+		},
+
+		// Sonr Vault Shared Key Info - From Registration
+		"auth.zk": {
+			Role:      keyrole.Assertion.String(),
+			Curve:     keycurve.Bls12381.String(),
+			Algorithm: keyalgorithm.Es256k.String(),
+			Encoding:  keyencoding.Multibase.String(),
+		},
+
+		// Blockchain Key Info
+		// Ethereum Key Info
+		"auth.ethereum": {
+			Role:      keyrole.Delegation.String(),
+			Curve:     keycurve.Keccak256.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+		},
+		// Bitcoin/IBC Key Info
+		"auth.bitcoin": {
+			Role:      keyrole.Delegation.String(),
+			Curve:     keycurve.Secp256k1.String(),
+			Algorithm: keyalgorithm.Ecdsa.String(),
+			Encoding:  keyencoding.Hex.String(),
+		},
+
+		// Authentication Key Info
+		// Browser based WebAuthn
+		"webauthn.browser": {
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Es256.String(),
+			Encoding:  keyencoding.Raw.String(),
+		},
+		// FIDO U2F
+		"webauthn.fido": {
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.P256.String(),
+			Algorithm: keyalgorithm.Es256.String(),
+			Encoding:  keyencoding.Raw.String(),
+		},
+		// Cross-Platform Passkeys
+		"webauthn.passkey": {
+			Role:      keyrole.Authentication.String(),
+			Curve:     keycurve.Ed25519.String(),
+			Algorithm: keyalgorithm.Eddsa.String(),
+			Encoding:  keyencoding.Raw.String(),
+		},
+	}
+}
+
+// # Genesis Structures
+//
+// Equal returns true if two key infos are equal
+func (k *KeyInfo) Equal(b *KeyInfo) bool {
+	if k == nil && b == nil {
+		return true
+	}
+	return false
 }

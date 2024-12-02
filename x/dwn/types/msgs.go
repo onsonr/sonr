@@ -18,9 +18,7 @@ func NewMsgUpdateParams(
 ) *MsgUpdateParams {
 	return &MsgUpdateParams{
 		Authority: sender.String(),
-		Params: Params{
-			IpfsActive: someValue,
-		},
+		Params:    Params{},
 	}
 }
 

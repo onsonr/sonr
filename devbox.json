@@ -1,6 +1,10 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.12.0/.schema/devbox.schema.json",
-  "packages": ["go@1.22", "bun@latest", "gum@latest"],
+  "packages": [
+    "go@1.23",
+    "bun@latest",
+    "gum@latest"
+  ],
   "env": {
     "GOPATH": "$HOME/go",
     "PATH": "./build:$HOME/go/bin:$PATH",
@@ -8,16 +12,18 @@
   },
   "shell": {
     "scripts": {
-      "deploy-buf": ["gum spin --title='Deploying buf' -- make deploy-buf"],
-      "deploy-cdn": [
+      "deploy": [
         "gum spin --title='Generating PKL' -- make pkl-gen",
-        "gum spin --title='Generating Styles' -- make styles-gen",
+        "gum spin --title='Generating Styles' -- make tailwind-gen",
         "gum spin --title='Building Motr WASM' -- make motr-build",
         "gum spin --title='Uploading to Bucket' -- make deploy-cdn"
       ],
-      "start-local": ["cd deploy/local && devbox services up"],
-      "start-testnet": ["cd deploy/testnet && devbox services up"],
-      "start-gex": ["go install github.com/cosmos/gex@latest", "gex"]
+      "devnet": [
+        "cd deploy/devnet && devbox services up"
+      ],
+      "testnet": [
+        "cd deploy/testnet && devbox services up"
+      ]
     }
   }
 }

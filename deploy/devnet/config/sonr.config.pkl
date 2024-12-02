@@ -1,0 +1,3 @@
+amends "https://pkl.sh/sonr.chain/0.0.2/Genesis.pkl"
+
+

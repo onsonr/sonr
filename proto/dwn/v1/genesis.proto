@@ -18,9 +18,16 @@ message Params {
   option (gogoproto.equal) = true;
   option (gogoproto.goproto_stringer) = false;
 
-  bool ipfs_active = 1;
-  bool local_registration_enabled = 2;
+  // Whitelisted Key Types
+  map<string, KeyInfo> allowed_public_keys = 1;
+
+  // ConveyancePreference defines the conveyance preference
+  string conveyance_preference = 2;
+
+  // AttestationFormats defines the attestation formats
+  repeated string attestation_formats = 3;
   Schema schema = 4;
+  repeated string allowed_operators = 5;
 }
 
 // Capability reprensents the available capabilities of a decentralized web node
@@ -29,6 +36,15 @@ message Capability {
   string parent = 2;
   string description = 3;
   repeated string resources = 4;
+}
+
+// KeyInfo defines information for accepted PubKey types
+message KeyInfo {
+  string role = 1;
+  string algorithm = 2; // e.g., "ES256", "EdDSA", "ES256K"
+  string encoding = 3; // e.g., "hex", "base64", "multibase"
+  string curve = 4; // e.g., "P256", "P384", "P521", "X25519", "X448",
+  // "Ed25519", "Ed448", "secp256k1"
 }
 
 // Resource reprensents the available resources of a decentralized web node

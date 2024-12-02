@@ -5,7 +5,6 @@ package did.v1;
 import "cosmos/msg/v1/msg.proto";
 import "cosmos_proto/cosmos.proto";
 import "did/v1/genesis.proto";
-import "did/v1/params.proto";
 import "gogoproto/gogo.proto";
 
 option go_package = "github.com/onsonr/sonr/x/did/types";

@@ -3,7 +3,7 @@
 set -e
 
 ROOT_DIR=$(git rev-parse --show-toplevel)
-STYLES_DIR=$ROOT_DIR/pkg/webapp
+STYLES_DIR=$ROOT_DIR/pkg/webui
 DIST_DIR=$STYLES_DIR/dist
 OUT_DIR=$ROOT_DIR/static/css
 

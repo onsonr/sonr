@@ -94,6 +94,7 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
+	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -294,15 +295,17 @@ sh-testnet: mod-tidy
 ###############################################################################
 ###                                generation                               ###
 ###############################################################################
-.PHONY: pkl-gen styles-gen templ-gen
+.PHONY: pkl-gen tailwind-gen templ-gen
 
 pkl-gen:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
-	pkl-gen-go pkl/base.types/Ctx.pkl
-	pkl-gen-go pkl/base.types/DWN.pkl
-	pkl-gen-go pkl/base.types/ORM.pkl
+	pkl-gen-go pkl/sonr.motr/ATN.pkl
+	pkl-gen-go pkl/sonr.hway/Ctx.pkl
+	pkl-gen-go pkl/sonr.hway/Gate.pkl
+	pkl-gen-go pkl/sonr.motr/DWN.pkl
+	pkl-gen-go pkl/sonr.hway/ORM.pkl
 
-styles-gen:
+tailwind-gen:
 	sh ./scripts/tailwindgen.sh
 
 templ-gen:

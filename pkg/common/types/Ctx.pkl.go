@@ -1,4 +1,4 @@
-// Code generated from Pkl module `common.types.Ctx`. DO NOT EDIT.
+// Code generated from Pkl module `sonr.hway.Ctx`. DO NOT EDIT.
 package types
 
 import (

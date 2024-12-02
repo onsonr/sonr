@@ -1,0 +1,31 @@
+@go.Package { name = "github.com/onsonr/sonr/pkg/gateway/types" }
+
+module sonr.hway.Gate
+
+import "package://pkg.pkl-lang.org/pkl-go/pkl.golang@0.5.0#/go.pkl"
+
+class JsonField extends go.Field {
+  structTags {
+    ["json"] = "%{name},omitempty"
+  }
+}
+
+class Config {
+  @JsonField
+  chainId: String
+
+  @JsonField
+  ipfsGatewayUrl: String
+
+  @JsonField
+  landingUrl: String
+
+  @JsonField
+  authProxyUrl: String
+
+  @JsonField
+  sonrApiUrl: String
+
+  @JsonField
+  sonrRpcUrl: String
+}
