@@ -6,6 +6,7 @@
     "ipfs": "latest",
     "skate": "latest",
     "cloudflared": "latest",
+    "go-task": "latest",
     "tigerbeetle": "latest",
     "matrix-synapse": {
       "version": "latest",
