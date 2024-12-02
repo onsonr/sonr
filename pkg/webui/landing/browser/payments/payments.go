@@ -3,6 +3,8 @@
 package payments
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo/v4"
 )
 
@@ -91,4 +93,8 @@ func PaymentHandler(c echo.Context) error {
 	}
 
 	return InitiatePayment(c, request)
+}
+
+func formatAmount(amount float64) string {
+	return fmt.Sprintf("%.2f", amount)
 }
