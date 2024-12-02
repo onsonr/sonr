@@ -30,7 +30,22 @@ func IPFSMiddleware(client *rpc.HttpApi) echo.MiddlewareFunc {
 	}
 }
 
-func GetIPFSClient(c echo.Context) (*rpc.HttpApi, error) {
+func IPFSAdd(c echo.Context, data files.Node) (string, error) {
+	ipfs, err := getIPFSClient(c)
+	if err != nil {
+		return "", err
+	}
+	path, err := ipfs.Unixfs().Add(c.Request().Context(), data)
+	if err != nil {
+		return "", err
+	}
+	if err := c.Redirect(http.StatusFound, path.String()); err != nil {
+		return "", err
+	}
+	return path.String(), nil
+}
+
+func getIPFSClient(c echo.Context) (*rpc.HttpApi, error) {
 	cc, ok := c.(*IPFSContext)
 	if !ok {
 		return nil, errors.New("not an IPFSContext")

@@ -1,7 +1,9 @@
-package types
+package config
 
-func NewWebManifest() WebManifest {
-	return baseWebManifest
+import "encoding/json"
+
+func newWebManifestBytes() ([]byte, error) {
+	return json.Marshal(baseWebManifest)
 }
 
 var baseWebManifest = WebManifest{

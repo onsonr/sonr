@@ -4,6 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/header"
+	"github.com/onsonr/sonr/pkg/vault/config"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
@@ -27,7 +28,7 @@ func GetVaultConfig(c echo.Context, addr string, ucanCID string) *types.Config {
 
 // GetVaultSchema returns the default vault schema
 func GetVaultSchema(c echo.Context) *types.Schema {
-	return types.DefaultSchema()
+	return config.DefaultSchema()
 }
 
 // SetVaultAddress sets the address of the vault

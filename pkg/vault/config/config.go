@@ -1,17 +1,47 @@
-package types
+package config
 
 import (
+	"encoding/json"
 	"reflect"
 	"strings"
 
+	"github.com/ipfs/boxo/files"
 	"github.com/onsonr/sonr/pkg/common/models"
+	"github.com/onsonr/sonr/pkg/vault/config/internal"
+	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
 const SchemaVersion = 1
+const (
+	AppManifestFileName   = "app.webmanifest"
+	DWNConfigFileName     = "dwn.json"
+	IndexHTMLFileName     = "index.html"
+	MainJSFileName        = "main.js"
+	ServiceWorkerFileName = "sw.js"
+)
+
+// spawnVaultDirectory creates a new directory with the default files
+func NewFS(cfg *types.Config) (files.Directory, error) {
+	manifestBz, err := newWebManifestBytes()
+	if err != nil {
+		return nil, err
+	}
+	cnfBz, err := json.Marshal(cfg)
+	if err != nil {
+		return nil, err
+	}
+	return files.NewMapDirectory(map[string]files.Node{
+		AppManifestFileName:   files.NewBytesFile(manifestBz),
+		DWNConfigFileName:     files.NewBytesFile(cnfBz),
+		IndexHTMLFileName:     files.NewBytesFile(internal.IndexHTML),
+		MainJSFileName:        files.NewBytesFile(internal.MainJS),
+		ServiceWorkerFileName: files.NewBytesFile(internal.WorkerJS),
+	}), nil
+}
 
 // DefaultSchema returns the default schema
-func DefaultSchema() *Schema {
-	return &Schema{
+func DefaultSchema() *types.Schema {
+	return &types.Schema{
 		Version:    SchemaVersion,
 		Account:    getSchema(&models.Account{}),
 		Asset:      getSchema(&models.Asset{}),
