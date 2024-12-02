@@ -12,6 +12,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/web/landing"
 
+	gatewaymiddleware "github.com/onsonr/sonr/gateway/middleware"
 	_ "github.com/tigerbeetle/tigerbeetle-go"
 	_ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )
@@ -46,7 +47,8 @@ func main() {
 	highway := echo.New()
 	highway.Use(middleware.Logger())
 	highway.Use(middleware.Recover())
-	gateway.RegisterRoutes(highway, api)
+	highway.Use(gatewaymiddleware.IPFSMiddleware(api))
+	gateway.RegisterRoutes(highway)
 	hosts["to.localhost:3000"] = &Host{Echo: highway}
 
 	// Server

@@ -3,17 +3,11 @@ package gateway
 import (
 	"net/http"
 
-	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/gateway/handlers"
 )
 
-type IPFSClient = *rpc.HttpApi
-
-var ipfs IPFSClient
-
-func RegisterRoutes(e *echo.Echo, client IPFSClient) {
-	ipfs = client
-
+func RegisterRoutes(e *echo.Echo) {
 	// Custom error handler for gateway
 	e.HTTPErrorHandler = func(err error, c echo.Context) {
 		if he, ok := err.(*echo.HTTPError); ok {
@@ -23,7 +17,5 @@ func RegisterRoutes(e *echo.Echo, client IPFSClient) {
 		// Redirect to main site
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
-	gw := New(client)
-	e.POST("/_spawn", SpawnVault)
-	e.Any("/*", gw.Handler())
+	e.POST("/_spawn", handlers.SpawnVault)
 }

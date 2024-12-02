@@ -11,3 +11,8 @@ const (
 	CoinTypeEthereum CoinType = CoinType(60 + HardenedOffset)
 	CoinTypeSonr     CoinType = CoinType(703 + HardenedOffset)
 )
+
+// Uint32 returns the coin type as a uint32.
+func (c CoinType) Uint32() uint32 {
+	return uint32(c)
+}

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -8,11 +9,36 @@ import (
 	"strings"
 
 	"github.com/ipfs/boxo/files"
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 )
 
 type IPFSContext struct {
 	echo.Context
+	ipfs *rpc.HttpApi
+}
+
+func IPFSMiddleware(client *rpc.HttpApi) echo.MiddlewareFunc {
+	return func(next echo.HandlerFunc) echo.HandlerFunc {
+		return func(c echo.Context) error {
+			cc := &IPFSContext{
+				Context: c,
+				ipfs:    client,
+			}
+			return next(cc)
+		}
+	}
+}
+
+func GetIPFSClient(c echo.Context) (*rpc.HttpApi, error) {
+	cc, ok := c.(*IPFSContext)
+	if !ok {
+		return nil, errors.New("not an IPFSContext")
+	}
+	if cc.ipfs == nil {
+		return nil, errors.New("no IPFS client")
+	}
+	return cc.ipfs, nil
 }
 
 func getContentType(path string, defaultType string) string {
