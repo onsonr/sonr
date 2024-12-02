@@ -8,11 +8,11 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/gateway"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/web/landing"
+	"github.com/onsonr/sonr/pkg/gateway"
+	"github.com/onsonr/sonr/pkg/webui/landing"
 
-	gatewaymiddleware "github.com/onsonr/sonr/gateway/middleware"
+	gatewaymiddleware "github.com/onsonr/sonr/pkg/gateway/middleware"
 	_ "github.com/tigerbeetle/tigerbeetle-go"
 	_ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )

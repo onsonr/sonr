@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/vault/types" }
+@go.Package { name = "github.com/onsonr/sonr/pkg/vault/types" }
 
 module sonr.motr.DWN
 
@@ -38,16 +38,16 @@ class Config {
 class Environment {
   @JsonField
   isDevelopment: Boolean
-  
+
   @JsonField
   cacheVersion: String
-  
+
   @JsonField
   httpserverPath: String
-  
+
   @JsonField
   wasmExecPath: String
-  
+
   @JsonField
   wasmPath: String
 }
@@ -57,26 +57,25 @@ class Schema {
 
   @JsonField
   account: String
-  
+
   @JsonField
   asset: String
-  
+
   @JsonField
   chain: String
-  
+
   @JsonField
   credential: String
 
   @JsonField
   jwk: String
-  
+
   @JsonField
   grant: String
-  
+
   @JsonField
   keyshare: String
 
   @JsonField
   profile: String
 }
-

@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/header"
-	"github.com/onsonr/sonr/vault/types"
+	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
 // TODO: Returns fixed chain ID for testing.
