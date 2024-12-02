@@ -122,18 +122,3 @@ type ServiceWorker struct {
 	Src      string `json:"src"`
 	UseCache bool   `json:"use_cache"`
 }
-
-// Example usage:
-// manifest := WebManifest{
-//     Name:      "My Amazing App",
-//     ShortName: "MyApp",
-//     StartURL:  "/",
-//     Display:   "standalone",
-//     Icons: []IconDefinition{
-//         {
-//             Src:   "/icons/icon-192x192.png",
-//             Sizes: "192x192",
-//             Type:  "image/png",
-//         },
-//     },
-// }
