@@ -11,6 +11,10 @@ const (
 	CapOwner        = capability.CAPOWNER
 	CapOperator     = capability.CAPOPERATOR
 	CapObserver     = capability.CAPOBSERVER
+	CapAuthenticate = capability.CAPAUTHENTICATE
+	CapAuthorize    = capability.CAPAUTHORIZE
+	CapDelegate     = capability.CAPDELEGATE
+	CapInvoke       = capability.CAPINVOKE
 	CapExecute      = capability.CAPEXECUTE
 	CapPropose      = capability.CAPPROPOSE
 	CapSign         = capability.CAPSIGN
@@ -46,6 +50,11 @@ const (
 	AttentuationVault = Attenuation("vault")
 )
 
+// Cap returns the capability for the given Attenuation
+func (a Attenuation) NewCap(c capability.Capability) ucan.Capability {
+	return a.GetCapabilities().Cap(c.String())
+}
+
 // NestedCapabilities returns the nested capabilities for the given Attenuation
 func (a Attenuation) GetCapabilities() ucan.NestedCapabilities {
 	var caps []string
@@ -71,31 +80,30 @@ func (a Attenuation) String() string {
 // SmartAccountCapabilities defines the capability hierarchy
 func baseSmartAccountCapabilities() []string {
 	return []string{
-		capability.CAPOWNER.String(),
-		capability.CAPOPERATOR.String(),
-		capability.CAPOBSERVER.String(),
-		capability.CAPEXECUTE.String(),
-		capability.CAPPROPOSE.String(),
-		capability.CAPSIGN.String(),
-		capability.CAPSETPOLICY.String(),
-		capability.CAPSETTHRESHOLD.String(),
-		capability.CAPRECOVER.String(),
-		capability.CAPSOCIAL.String(),
+		CapOwner.String(),
+		CapOperator.String(),
+		CapObserver.String(),
+		CapExecute.String(),
+		CapPropose.String(),
+		CapSign.String(),
+		CapSetPolicy.String(),
+		CapSetThreshold.String(),
+		CapRecover.String(),
+		CapSocial.String(),
 	}
 }
 
 // VaultCapabilities defines the capability hierarchy
 func baseVaultCapabilities() []string {
 	return []string{
-		capability.CAPOWNER.String(),
-		capability.CAPOPERATOR.String(),
-		capability.CAPOBSERVER.String(),
-		capability.CAPEXECUTE.String(),
-		capability.CAPPROPOSE.String(),
-		capability.CAPSIGN.String(),
-		capability.CAPSETPOLICY.String(),
-		capability.CAPSETTHRESHOLD.String(),
-		capability.CAPRECOVER.String(),
-		capability.CAPSOCIAL.String(),
+		CapOwner.String(),
+		CapOperator.String(),
+		CapObserver.String(),
+		CapAuthenticate.String(),
+		CapAuthorize.String(),
+		CapDelegate.String(),
+		CapInvoke.String(),
+		CapExecute.String(),
+		CapRecover.String(),
 	}
 }

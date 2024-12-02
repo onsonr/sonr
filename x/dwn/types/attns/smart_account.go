@@ -15,7 +15,7 @@ func CreateSmartAccountAttenuations(
 	caps := AttentuationSmartAccount.GetCapabilities()
 	return ucan.Attenuations{
 		// Owner capabilities
-		{Cap: caps.Cap(capability.CAPOWNER.String()), Rsc: NewResource(ResAccount, accountAddr)},
+		{Cap: caps.Cap(CapOwner.String()), Rsc: NewResource(ResAccount, accountAddr)},
 
 		// Operation capabilities
 		{Cap: caps.Cap(capability.CAPEXECUTE.String()), Rsc: NewResource(ResTransaction, fmt.Sprintf("%s:*", accountAddr))},
