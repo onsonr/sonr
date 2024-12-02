@@ -10,8 +10,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/cmd/motr/internal"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/web/vault"
-	"github.com/onsonr/sonr/web/vault/types"
+	"github.com/onsonr/sonr/vault"
+	"github.com/onsonr/sonr/vault/types"
 )
 
 var (

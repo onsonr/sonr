@@ -4,8 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/header"
-	"github.com/onsonr/sonr/web/vault"
-	"github.com/onsonr/sonr/web/vault/types"
+	"github.com/onsonr/sonr/vault/types"
 )
 
 // TODO: Returns fixed chain ID for testing.
@@ -28,7 +27,7 @@ func GetVaultConfig(c echo.Context, addr string, ucanCID string) *types.Config {
 
 // GetVaultSchema returns the default vault schema
 func GetVaultSchema(c echo.Context) *types.Schema {
-	return vault.DefaultSchema()
+	return types.DefaultSchema()
 }
 
 // SetVaultAddress sets the address of the vault

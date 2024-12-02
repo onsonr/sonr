@@ -9,7 +9,7 @@ import (
 	"github.com/onsonr/sonr/gateway/embed"
 	"github.com/onsonr/sonr/gateway/middleware"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/web/vault/types"
+	"github.com/onsonr/sonr/vault/types"
 )
 
 func SpawnVault(c echo.Context) error {

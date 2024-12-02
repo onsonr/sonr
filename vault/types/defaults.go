@@ -1,18 +1,17 @@
-package vault
+package types
 
 import (
 	"reflect"
 	"strings"
 
 	"github.com/onsonr/sonr/pkg/common/models"
-	"github.com/onsonr/sonr/web/vault/types"
 )
 
 const SchemaVersion = 1
 
 // DefaultSchema returns the default schema
-func DefaultSchema() *types.Schema {
-	return &types.Schema{
+func DefaultSchema() *Schema {
+	return &Schema{
 		Version:    SchemaVersion,
 		Account:    getSchema(&models.Account{}),
 		Asset:      getSchema(&models.Asset{}),

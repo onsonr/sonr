@@ -6,7 +6,7 @@ package vault
 import (
 	"github.com/labstack/echo/v4"
 
-	"github.com/onsonr/sonr/web/vault/handlers"
+	"github.com/onsonr/sonr/vault/handlers"
 )
 
 // RegisterAPI registers the Decentralized Web Node API routes.
