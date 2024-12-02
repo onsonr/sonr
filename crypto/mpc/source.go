@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/onsonr/sonr/crypto/mpc/didkey"
+	"github.com/onsonr/sonr/crypto/didkey"
 	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"github.com/ucan-wg/go-ucan"
 	"lukechampine.com/blake3"

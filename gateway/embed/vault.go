@@ -1,8 +1,7 @@
-package gateway
+package embed
 
 import (
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/pkg/gateway/embed"
 )
 
 const (
@@ -14,12 +13,12 @@ const (
 )
 
 // spawnVaultDirectory creates a new directory with the default files
-func setupVaultDirectory(cfgBz []byte, manifestBz []byte) files.Directory {
+func NewFS(cfgBz []byte, manifestBz []byte) files.Directory {
 	return files.NewMapDirectory(map[string]files.Node{
 		AppManifestFileName:   files.NewBytesFile(manifestBz),
 		DWNConfigFileName:     files.NewBytesFile(cfgBz),
-		IndexHTMLFileName:     files.NewBytesFile(embed.IndexHTML),
-		MainJSFileName:        files.NewBytesFile(embed.MainJS),
-		ServiceWorkerFileName: files.NewBytesFile(embed.WorkerJS),
+		IndexHTMLFileName:     files.NewBytesFile(IndexHTML),
+		MainJSFileName:        files.NewBytesFile(MainJS),
+		ServiceWorkerFileName: files.NewBytesFile(WorkerJS),
 	})
 }

@@ -5,8 +5,9 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/gateway/embed"
+	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/web/vault/types"
 )
 
@@ -44,7 +45,7 @@ func SpawnVault(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 
-	dir := setupVaultDirectory(cnf, manifestBz)
+	dir := embed.NewFS(cnf, manifestBz)
 	path, err := ipfs.Unixfs().Add(c.Request().Context(), dir)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())

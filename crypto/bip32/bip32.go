@@ -10,11 +10,11 @@ import (
 	"github.com/btcsuite/btcd/btcec/v2"
 )
 
-// ComputePublicKey computes the public key of a child key given the extended public key, chain code, and index.
-func ComputePublicKey(extPubKey []byte, chainCode uint32, index int) ([]byte, error) {
+// ComputePublicKey computes the public key of a child key given the extended public key, chain code, coin type, and index.
+func ComputePublicKey(extPubKey []byte, chainCode []byte, coinType uint32, index int) ([]byte, error) {
 	// Check if the index is a hardened child key
-	if chainCode&0x80000000 != 0 && index < 0 {
-		return nil, errors.New("invalid index")
+	if uint32(index) >= HardenedOffset {
+		return nil, errors.New("cannot derive hardened child key from public key")
 	}
 
 	// Serialize the public key
@@ -29,7 +29,7 @@ func ComputePublicKey(extPubKey []byte, chainCode uint32, index int) ([]byte, er
 	binary.BigEndian.PutUint32(indexBytes, uint32(index))
 
 	// Compute the HMAC-SHA512
-	mac := hmac.New(sha512.New, []byte{byte(chainCode)})
+	mac := hmac.New(sha512.New, chainCode)
 	mac.Write(pubKeyBytes)
 	mac.Write(indexBytes)
 	I := mac.Sum(nil)
@@ -46,7 +46,7 @@ func ComputePublicKey(extPubKey []byte, chainCode uint32, index int) ([]byte, er
 		return nil, errors.New("invalid child key")
 	}
 
-	// Compute the child public key
+	// Compute the child public key: pubKey + IL * G
 	ilx, ily := curve.ScalarBaseMult(IL)
 	childX, childY := curve.Add(ilx, ily, pubKey.X(), pubKey.Y())
 	lx := newBigIntFieldVal(childX)
