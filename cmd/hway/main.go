@@ -2,7 +2,6 @@ package main
 
 import (
 	_ "embed"
-	"fmt"
 	"net/http"
 
 	"github.com/ipfs/kubo/client/rpc"
@@ -73,14 +72,5 @@ func main() {
 		site.ServeHTTP(res, req)
 		return nil
 	})
-
-	// Log startup information using Echo's logger
-	fmt.Println("\n----------------------------------")
-	fmt.Println("Server Configuration:")
-	fmt.Println("\nAvailable endpoints:")
-	fmt.Println("➜ http://localhost:3000 (main site)")
-	fmt.Println("➜ http://to.localhost:3000/QmHash/... (IPFS content)")
-	fmt.Println("----------------------------------")
-
 	e.Logger.Fatal(e.Start(":3000"))
 }
