@@ -12,9 +12,9 @@ templ ProfileFormView() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
 			<sl-card>
 				<form action={ templ.SafeURL("/register/profile") } method="POST">
-					<sl-input class="dark:bg-stone-900" id="user.first_name" label="First Name" placeholder="John" type="text"></sl-input>
-					<sl-input class="dark:bg-stone-900" label="Last Name" id="user.last_name" placeholder="Doe" type="text"></sl-input>
-					<sl-input class="dark:bg-stone-900" id="user.handle" label="Handle" placeholder="johndoe" type="text"></sl-input>
+					<sl-input id="user.first_name" label="First Name" placeholder="John" type="text"></sl-input>
+					<sl-input label="Last Name" id="user.last_name" placeholder="Doe" type="text"></sl-input>
+					<sl-input id="user.handle" label="Handle" placeholder="johndoe" type="text"></sl-input>
 					@form.Submit("Continue")
 				</form>
 			</sl-card>

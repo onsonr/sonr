@@ -72,7 +72,7 @@ func ProfileFormView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" method=\"POST\"><sl-input class=\"dark:bg-stone-900\" id=\"user.first_name\" label=\"First Name\" placeholder=\"John\" type=\"text\"></sl-input> <sl-input class=\"dark:bg-stone-900\" label=\"Last Name\" id=\"user.last_name\" placeholder=\"Doe\" type=\"text\"></sl-input> <sl-input class=\"dark:bg-stone-900\" id=\"user.handle\" label=\"Handle\" placeholder=\"johndoe\" type=\"text\"></sl-input>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" method=\"POST\"><sl-input id=\"user.first_name\" label=\"First Name\" placeholder=\"John\" type=\"text\"></sl-input> <sl-input label=\"Last Name\" id=\"user.last_name\" placeholder=\"Doe\" type=\"text\"></sl-input> <sl-input id=\"user.handle\" label=\"Handle\" placeholder=\"johndoe\" type=\"text\"></sl-input>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

@@ -33,6 +33,11 @@ type (
 	RegisterOptions = protocol.PublicKeyCredentialCreationOptions
 )
 
+type LargeBlob struct {
+	Support string `json:"support"`
+	Write   string `json:"write"`
+}
+
 type BrowserName string
 
 const (
