@@ -37,6 +37,3 @@ done
 # Cleanup .out directory
 rm -rf .out
 
-# Handle static files
-rclone copy $ROOT_DIR/static "r2:nebula"
-rm -rf $ROOT_DIR/static

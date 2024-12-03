@@ -134,14 +134,14 @@ func Separator(text string) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative py-6\"><div class=\"absolute inset-0 flex items-center\"><span class=\"w-full border-t\"></span></div><div class=\"relative flex justify-center text-xs uppercase\"><span class=\"px-2 bg-white text-neutral-500\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"relative py-6\"><div class=\"absolute inset-0 flex items-center\"><span class=\"w-full border-t\"></span></div><div class=\"relative flex justify-center text-xs uppercase\"><span class=\"px-2 text-neutral-500\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/layout/container.templ`, Line: 31, Col: 54}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `pkg/styles/layout/container.templ`, Line: 31, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {

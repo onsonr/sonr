@@ -12,7 +12,9 @@ templ ProfileFormView() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
 			@form.Form("/register/profile", "POST") {
 				@form.NameInput()
+				<br/>
 				@form.HandleInput()
+				<br/>
 				@form.Submit("Continue")
 			}
 		}

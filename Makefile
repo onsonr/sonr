@@ -305,9 +305,6 @@ pkl-gen:
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
 	pkl-gen-go pkl/sonr.hway/ORM.pkl
 
-tailwind-gen:
-	sh ./scripts/tailwindgen.sh
-
 templ-gen:
 	@go install github.com/a-h/templ/cmd/templ@latest
 	templ generate

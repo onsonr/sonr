@@ -1,27 +1,29 @@
 package form
 
+import "github.com/onsonr/sonr/pkg/styles/layout"
+
 // Form is a standard form styled like a card
 templ Form(action string, method string) {
 	<sl-card>
-		<form action={ templ.SafeURL(action) } method={ method }>
+		<form action={ templ.SafeURL(action) } method={ method } class="gap-4">
 			{ children... }
 		</form>
 	</sl-card>
 }
 
 templ NameInput() {
-	<div class="grid grid-cols-2 border-0 bg-zinc-900">
-		<sl-input id="user.first_name" placeholder="John" type="text" filled></sl-input>
-		<sl-input id="user.last_name" placeholder="Doe" type="text" filled></sl-input>
-	</div>
+	@layout.Rows() {
+		<sl-input id="user.first_name" placeholder="John" type="text" label="First Name"></sl-input>
+		<sl-input id="user.last_name" placeholder="Doe" type="text" label="Last Name"></sl-input>
+	}
 }
 
 templ HandleInput() {
-	<sl-input id="user.handle" placeholder="@johndoe" type="text" filled></sl-input>
+	<sl-input id="user.handle" placeholder="@johndoe" type="text" label="Handle"></sl-input>
 }
 
 templ CodeInput(id string) {
-	<input maxlength="1" type="text" id={ id } placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background rounded-full placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+	<sl-input id={ id } placeholder="●" type="text" maxlength="1" pill class="w-min"></sl-input>
 }
 
 // Hidden input and button which calls a javascript function to generate a passkey
@@ -34,7 +36,7 @@ templ PasskeyInput(id string) {
 }
 
 templ Submit(text string) {
-	<button type="submit" class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+	<sl-button type="submit">
 		{ text }
-	</button>
+	</sl-button>
 }
