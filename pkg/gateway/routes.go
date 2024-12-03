@@ -17,6 +17,13 @@ func RegisterRoutes(e *echo.Echo) {
 		// Redirect to main site
 		c.Redirect(http.StatusFound, "http://localhost:3000")
 	}
+	e.GET("/", handlers.HandleIndex)
+	e.GET("/register", handlers.HandleRegister)
+	e.POST("/register/profile", handlers.HandleRegisterProfile)
+	e.POST("/register/passcode", handlers.HandleRegisterPasscode)
+	e.POST("/register/confirm", handlers.HandleConfirmPasscode)
+	e.POST("/register/submit", handlers.HandleCredentialLink)
+
 	e.POST("/vault/spawn", handlers.SpawnVault)
 	e.POST("/vault/claim", handlers.ClaimVault)
 	e.POST("/vault/publish", handlers.PublishVault)

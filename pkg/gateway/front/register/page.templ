@@ -1,0 +1,128 @@
+package register
+
+import "github.com/onsonr/sonr/pkg/styles/layout"
+
+templ ProfileFormView() {
+	@layout.Root("Sonr.ID", false) {
+		<div class="flex fixed inset-0 z-[99] w-screen h-screen bg-white">
+			<div class="relative flex flex-wrap items-center w-full h-full px-8">
+				<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+					<div class="flex flex-col items-center justify-center h-full">
+						<div class="flex flex-col items-center justify-center h-full">
+							<h1 class="text-3xl font-bold text-zinc-900 mb-4">
+								Create a Profile
+							</h1>
+							<p class="text-lg text-zinc-500">
+								Enter some basic information about yourself.
+							</p>
+						</div>
+						<div class="flex flex-col items-center justify-center h-full">
+							<form action="/register/profile" method="POST">
+								<input type="text" id="name" placeholder="Name" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input type="text" id="handle" placeholder="Handle" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<button type="submit" class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+									Continue
+								</button>
+							</form>
+						</div>
+					</div>
+					{ children... }
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ SetPasscodeView() {
+	@layout.Root("Sonr.ID", false) {
+		<div class="flex fixed inset-0 z-[99] w-screen h-screen bg-white">
+			<div class="relative flex flex-wrap items-center w-full h-full px-8">
+				<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+					<div class="flex flex-col items-center justify-center h-full">
+						<div class="flex flex-col items-center justify-center h-full">
+							<h1 class="text-3xl font-bold text-zinc-900 mb-4">
+								Enter a Passcode
+							</h1>
+							<p class="text-lg text-zinc-500">
+								This will be used as a recovery method.
+							</p>
+						</div>
+						// Input code 4 circles
+						<div class="flex flex-row items-center justify-center h-full">
+							<form action="/register/passcode" method="POST">
+								<input maxlength="1" type="text" id="code1" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code2" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code3" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code4" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<button type="submit" class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+									Set Passcode
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+// Confirm passcode view follows the same pattern as set passcode
+templ ConfirmPasscodeView() {
+	@layout.Root("Sonr.ID", false) {
+		<div class="flex fixed inset-0 z-[99] w-screen h-screen bg-white">
+			<div class="relative flex flex-wrap items-center w-full h-full px-8">
+				<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+					<div class="flex flex-col items-center justify-center h-full">
+						<div class="flex flex-col items-center justify-center h-full">
+							<h1 class="text-3xl font-bold text-zinc-900 mb-4">
+								Confirm Passcode
+							</h1>
+							<p class="text-lg text-zinc-500">
+								Re-enter your passcode to confirm.
+							</p>
+						</div>
+						// Input code 4 circles
+						<div class="flex flex-row items-center justify-center h-full">
+							<form action="/register/confirm" method="POST">
+								<input maxlength="1" type="text" id="code1" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code2" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code3" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<input maxlength="1" type="text" id="code4" placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+								<button type="submit" class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+									Confirm Passcode
+								</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}
+
+templ LinkCredentialView() {
+	@layout.Root("Sonr.ID", false) {
+		<div class="flex fixed inset-0 z-[99] w-screen h-screen bg-white">
+			<div class="relative flex flex-wrap items-center w-full h-full px-8">
+				<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+					<div class="flex flex-col items-center justify-center h-full">
+						<div class="flex flex-col items-center justify-center h-full">
+							<h1 class="text-3xl font-bold text-zinc-900 mb-4">
+								Link a PassKey
+							</h1>
+							<p class="text-lg text-zinc-500">
+								This will be used to login to your vault.
+							</p>
+						</div>
+						<div class="flex flex-col items-center justify-center h-full">
+							<button class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+								Create PassKey
+							</button>
+						</div>
+					</div>
+					{ children... }
+				</div>
+			</div>
+		</div>
+	}
+}
