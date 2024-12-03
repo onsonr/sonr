@@ -10,7 +10,7 @@ templ ProfileFormView() {
 	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@form.Form("/register/profile", "POST") {
+			@form.Form("/register/start", "POST") {
 				@form.NameInput()
 				<br/>
 				@form.HandleInput()
@@ -25,11 +25,12 @@ templ LinkCredentialView(req LinkCredentialRequest) {
 	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			@form.Form("/register/link", "POST") {
+			@form.Form("/register/finish", "POST") {
 				<h3>{ req.Address }</h3>
 				<h3>{ req.Handle }</h3>
 				<h3>{ req.Platform }</h3>
 				<h3>{ req.DeviceModel }</h3>
+				<br/>
 				@form.PasskeyInput("passkey")
 			}
 		}

@@ -13,27 +13,23 @@ import (
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway/handlers/views/register"
-	"github.com/rs/zerolog/log"
 )
 
-func HandleRegisterStart(c echo.Context) error {
+func HandleRegisterView(c echo.Context) error {
 	return response.TemplEcho(c, register.ProfileFormView())
 }
 
-func HandleSubmitProfile(c echo.Context) error {
-	firstName := c.FormValue("user.first_name")
-	lastName := c.FormValue("user.last_name")
-	name := fmt.Sprintf("%s %s", firstName, lastName)
-	handle := c.FormValue("user.handle")
-	cookie.Write(c, cookie.UserName, name)
+func HandleRegisterStart(c echo.Context) error {
+	firstName := c.FormValue("first_name")
+	lastName := c.FormValue("last_name")
+	handle := c.FormValue("handle")
+	cookie.Write(c, cookie.UserName, fmt.Sprintf("%s %s", firstName, lastName))
 	cookie.Write(c, cookie.UserHandle, handle)
 	ks, err := mpc.NewKeyset()
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
-	log.Print("UserKSJSON: %s", ks.UserJSON())
-	log.Print("UserKSJSON Size: %v", len(ks.UserJSON()))
 	return response.TemplEcho(c, register.LinkCredentialView(req))
 }
 

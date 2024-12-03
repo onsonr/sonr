@@ -19,6 +19,7 @@ import (
 
 func main() {
 	e := echo.New()
+	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.HwayMiddleware())
