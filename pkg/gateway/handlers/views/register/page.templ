@@ -36,3 +36,11 @@ templ LinkCredentialView(req LinkCredentialRequest) {
 		}
 	}
 }
+
+templ LoadingVaultView() {
+	@layout.Root("Sonr.ID") {
+		@layout.Container() {
+			@text.Header("Loading Vault", "This will be used to login to your vault.")
+		}
+	}
+}

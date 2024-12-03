@@ -1,4 +1,4 @@
-package clients
+package signer
 
 import (
 	"errors"
@@ -12,35 +12,6 @@ import (
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 )
-
-type IPFSContext struct {
-	echo.Context
-	ipfs    *rpc.HttpApi
-	hasIPFS bool
-}
-
-func IPFSMiddleware() echo.MiddlewareFunc {
-	return func(next echo.HandlerFunc) echo.HandlerFunc {
-		return func(c echo.Context) error {
-			cc := initContext(c)
-			return next(cc)
-		}
-	}
-}
-
-func initContext(c echo.Context) *IPFSContext {
-	cc := &IPFSContext{
-		Context: c,
-	}
-	api, err := rpc.NewLocalApi()
-	if err != nil {
-		cc.hasIPFS = false
-		return cc
-	}
-	cc.ipfs = api
-	cc.hasIPFS = true
-	return cc
-}
 
 func IPFSAdd(c echo.Context, data files.Node) (string, error) {
 	ipfs, err := getIPFSClient(c)
@@ -58,7 +29,7 @@ func IPFSAdd(c echo.Context, data files.Node) (string, error) {
 }
 
 func getIPFSClient(c echo.Context) (*rpc.HttpApi, error) {
-	cc, ok := c.(*IPFSContext)
+	cc, ok := c.(*SignerContext)
 	if !ok {
 		return nil, errors.New("not an IPFSContext")
 	}

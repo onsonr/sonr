@@ -23,8 +23,7 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.HwayMiddleware())
-	e.Use(signer.UseMiddleware())
-	e.Use(clients.IPFSMiddleware())
+	e.Use(signer.UseMiddleware("test.db"))
 	e.Use(clients.GRPCClientsMiddleware("localhost:9090"))
 	gateway.RegisterRoutes(e)
 

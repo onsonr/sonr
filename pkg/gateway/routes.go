@@ -21,6 +21,4 @@ func RegisterRoutes(e *echo.Echo) {
 	e.GET("/register", handlers.HandleRegisterView)
 	e.POST("/register/start", handlers.HandleRegisterStart)
 	e.POST("/register/finish", handlers.HandleRegisterFinish)
-
-	e.POST("/vault/spawn", handlers.SpawnVault)
 }
