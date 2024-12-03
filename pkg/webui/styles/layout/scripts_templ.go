@@ -192,7 +192,7 @@ func Htmx() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><script src=\"https://unpkg.com/htmx-ext-include-vals@2.0.0/include-vals.js\"></script><script src=\"https://unpkg.com/htmx-ext-path-params@2.0.0/path-params.js\"></script><script src=\"https://unpkg.com/htmx-ext-alpine-morph@2.0.0/alpine-morph.js\"></script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
