@@ -8,6 +8,8 @@ package register
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+import "github.com/go-webauthn/webauthn/protocol"
+
 var credentialsHandle = templ.NewOnceHandle()
 
 // Base credentials script template
@@ -93,7 +95,7 @@ func CreateCredential(options PublicKeyCredentialCreationOptions) templ.Componen
 }
 
 // Template for getting credentials
-func GetCredential(options PublicKeyCredentialRequestOptions) templ.Component {
+func GetCredential(options *protocol.PublicKeyCredentialRequestOptions) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

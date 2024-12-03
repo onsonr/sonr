@@ -43,15 +43,7 @@ func InitialView() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Sonr.ID</h1><p class=\"text-lg text-zinc-500\">The decentralized identity layer for the web.</p></div><div class=\"flex flex-col items-center justify-center h-full\"><div hx-get=\"/register\" hx-swap=\"outerHTML\" class=\"pointer:cursor-pointer btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Get Started</div></div></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Sonr.ID</h1><p class=\"text-lg text-zinc-500\">The decentralized identity layer for the web.</p></div><br><div class=\"pt-3 flex flex-col items-center justify-center h-full\"><div hx-get=\"/register\" hx-swap=\"outerHTML\" class=\"pointer:cursor-pointer btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Get Started</div></div></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -98,15 +90,7 @@ func ReturningView() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Welcome Back!</h1><p class=\"text-lg text-zinc-500\">Continue with your existing Sonr.ID.</p></div><div class=\"flex flex-col items-center justify-center h-full\"><button class=\"btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Login</button></div></div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templ_7745c5c3_Var3.Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Welcome Back!</h1><p class=\"text-lg text-zinc-500\">Continue with your existing Sonr.ID.</p></div><br><div class=\"pt-3 flex flex-col items-center justify-center h-full\"><button class=\"btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Login</button></div></div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
