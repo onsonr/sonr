@@ -10,7 +10,10 @@ templ InitialView() {
 		@layout.Container() {
 			@text.Header("Sonr.ID", "The decentralized identity layer for the web.")
 			<div class="pt-3 flex flex-col items-center justify-center h-full">
-				<sl-button variant="primary" hx-get="/register" hx-swap="outerHTML">Get Started</sl-button>
+				<sl-button hx-target="#container" hx-get="/register" variant="primary" type="button">
+					<sl-icon slot="prefix" library="sonr" name="arrow-right"></sl-icon>
+					Get Started
+				</sl-button>
 			</div>
 		}
 	}
@@ -21,7 +24,7 @@ templ ReturningView() {
 		@layout.Container() {
 			@text.Header("Welcome Back!", "Continue with your existing Sonr.ID.")
 			<div class="pt-3 flex flex-col items-center justify-center h-full">
-				<sl-button hx-get="/register" hx-swap="outerHTML">
+				<sl-button hx-target="#container" hx-get="/register" variant="primary" type="button">
 					<sl-icon slot="prefix" library="sonr" name="arrow-right"></sl-icon>
 					Get Started
 				</sl-button>

@@ -12,17 +12,6 @@ var (
 )
 
 templ Styles() {
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:light)"
-		href="https://styles.sonr.id/themes/light.css"
-	/>
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:dark)"
-		href="https://styles.sonr.id/themes/dark.css"
-		onload="document.documentElement.classList.add('sl-theme-dark');"
-	/>
 	<link href={ "https://cdn.sonr.id/css/styles.css" } rel="stylesheet"/>
 	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
 }
@@ -44,39 +33,16 @@ templ Htmx() {
 }
 
 templ Shoelace() {
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href="https://styles.sonr.id/themes/light.css"
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href="https://styles.sonr.id/themes/dark.css"
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
 	<script type="module" src="https://styles.sonr.id/shoelace-autoloader.js"></script>
-}
-
-templ Toaster() {
-	<div
-		x-data="{ 
-            title: 'Default Toast Notification', 
-            description: '',
-            type: 'default',
-            position: 'top-center',
-            expanded: false,
-            popToast (custom){
-                let html = '';
-                if(typeof custom != 'undefined'){
-                    html = custom;
-                }
-                toast(this.title, { description: this.description, type: this.type, position: this.position, html: html })
-            }
-        }"
-		x-init="
-            window.toast = function(message, options = {}){
-                let description = '';
-                let type = 'default';
-                let position = 'top-center';
-                let html = '';
-                if(typeof options.description != 'undefined') description = options.description;
-                if(typeof options.type != 'undefined') type = options.type;
-                if(typeof options.position != 'undefined') position = options.position;
-                if(typeof options.html != 'undefined') html = options.html;
-                window.dispatchEvent(new CustomEvent('toast-show', { detail : { type: type, message: message, description: description, position : position, html: html }}));
-            }
-        "
-	>
-		{ children... }
-	</div>
 }

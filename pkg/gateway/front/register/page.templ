@@ -10,11 +10,14 @@ templ ProfileFormView() {
 	@layout.Root("Sonr.ID", false) {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@form.Form("/register/profile", "POST") {
-				@form.NameInput()
-				@form.HandleInput()
-				@form.Submit("Continue")
-			}
+			<sl-card>
+				<form action={ templ.SafeURL("/register/profile") } method="POST">
+					<sl-input class="dark:bg-stone-900" id="user.first_name" label="First Name" placeholder="John" type="text"></sl-input>
+					<sl-input class="dark:bg-stone-900" label="Last Name" id="user.last_name" placeholder="Doe" type="text"></sl-input>
+					<sl-input class="dark:bg-stone-900" id="user.handle" label="Handle" placeholder="johndoe" type="text"></sl-input>
+					@form.Submit("Continue")
+				</form>
+			</sl-card>
 		}
 	}
 }
@@ -23,13 +26,17 @@ templ SetPasscodeView() {
 	@layout.Root("Sonr.ID", false) {
 		@layout.Container() {
 			@text.Header("Enter a Passcode", "This will be used as a recovery method.")
-			@form.Form("/register/passcode", "POST") {
-				@form.CodeInput("code1")
-				@form.CodeInput("code2")
-				@form.CodeInput("code3")
-				@form.CodeInput("code4")
-				@form.Submit("Set Passcode")
-			}
+			<sl-card>
+				<form action={ templ.SafeURL("/register/passcode") } method="POST">
+					<div class="grid grid-cols-2">
+						<sl-input id="code1" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code2" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code3" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code4" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+					</div>
+					@form.Submit("Set Passcode")
+				</form>
+			</sl-card>
 		}
 	}
 }
@@ -39,13 +46,17 @@ templ ConfirmPasscodeView() {
 	@layout.Root("Sonr.ID", false) {
 		@layout.Container() {
 			@text.Header("Confirm Passcode", "Re-enter your passcode to confirm.")
-			@form.Form("/register/confirm", "POST") {
-				@form.CodeInput("code1")
-				@form.CodeInput("code2")
-				@form.CodeInput("code3")
-				@form.CodeInput("code4")
-				@form.Submit("Confirm Passcode")
-			}
+			<sl-card>
+				<form action={ templ.SafeURL("/register/confirm") } method="POST">
+					<div class="grid grid-cols-2">
+						<sl-input id="code1" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code2" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code3" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+						<sl-input id="code4" label="Passcode" placeholder="●●●●" type="text"></sl-input>
+					</div>
+					@form.Submit("Confirm Passcode")
+				</form>
+			</sl-card>
 		}
 	}
 }
@@ -54,10 +65,14 @@ templ LinkCredentialView() {
 	@layout.Root("Sonr.ID", false) {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			@form.Form("/register/link", "POST") {
-				@form.PasskeyInput("passkey")
-				@form.Submit("Create PassKey")
-			}
+			<sl-card>
+				<form action={ templ.SafeURL("/register/link") } method="POST">
+					<div class="grid grid-cols-2">
+						<sl-input id="passkey" label="Passkey" placeholder="●●●●●●●●●●●●" type="text"></sl-input>
+					</div>
+					@form.Submit("Create PassKey")
+				</form>
+			</sl-card>
 		}
 	}
 }

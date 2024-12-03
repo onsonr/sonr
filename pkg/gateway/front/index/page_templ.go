@@ -62,7 +62,7 @@ func InitialView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button variant=\"primary\" hx-get=\"/register\" hx-swap=\"outerHTML\">Get Started</sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" variant=\"primary\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"arrow-right\"></sl-icon> Get Started</sl-button></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -131,7 +131,7 @@ func ReturningView() templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button hx-get=\"/register\" hx-swap=\"outerHTML\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"arrow-right\"></sl-icon> Get Started</sl-button></div>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button hx-target=\"#container\" hx-get=\"/register\" variant=\"primary\" type=\"button\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"arrow-right\"></sl-icon> Get Started</sl-button></div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

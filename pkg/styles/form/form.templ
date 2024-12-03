@@ -1,33 +1,13 @@
 package form
 
-// Form is a standard form styled like a card
-templ Form(action string, method string) {
-	<sl-card>
-		<form action={ templ.SafeURL(action) } method={ method }>
-			{ children... }
-		</form>
-	</sl-card>
-}
-
-templ NameInput() {
-	<div class="grid grid-cols-2 border-0 bg-zinc-900">
-		<sl-input id="user.first_name" label="First Name" placeholder="John" type="text" class="border-0 bg-transparent"></sl-input>
-		<sl-input label="Last Name" id="user.last_name" placeholder="Doe" type="text" class="border-0 bg-transparent"></sl-input>
-	</div>
-}
-
-templ HandleInput() {
-	<sl-input id="user.handle" label="Handle" placeholder="johndoe" type="text" class="border-0 bg-transparent"></sl-input>
-}
-
 templ CodeInput(id string) {
-	<input maxlength="1" type="text" id={ id } placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background rounded-full placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+	<input maxlength="1" type="text" id={ id } placeholder="●" class="flex w-full h-10 px-3 py-2 text-sm border rounded-md border-neutral-300 ring-offset-background rounded-full placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
 }
 
 // Hidden input and button which calls a javascript function to generate a passkey
 templ PasskeyInput(id string) {
 	@CredentialsScripts()
-	<input type="hidden" id={ id } class="flex w-full h-10 px-3 py-2 text-sm bg-white border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
+	<input type="hidden" id={ id } class="flex w-full h-10 px-3 py-2 text-sm border rounded-md border-neutral-300 ring-offset-background placeholder:text-neutral-500 focus:border-neutral-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-neutral-400 disabled:cursor-not-allowed disabled:opacity-50"/>
 	<button type="button" id={ id } class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow" onclick="createPasskey({ id })">
 		Create PassKey
 	</button>
