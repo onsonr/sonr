@@ -1,15 +1,13 @@
-package register
+package login
 
-// Types for credential data
-type PublicKeyCredentialCreationOptions struct {
-	Challenge       string `json:"challenge"`
-	RpName          string `json:"rpName"`
-	RpID            string `json:"rpId"`
-	UserID          string `json:"userId"`
-	UserName        string `json:"userName"`
-	UserDisplayName string `json:"userDisplayName"`
-	Timeout         int    `json:"timeout,omitempty"`
-	AttestationType string `json:"attestationType,omitempty"`
+type LoginRequest struct {
+	Subject     string
+	Action      string
+	Origin      string
+	Status      string
+	Ping        string
+	BlockSpeed  string
+	BlockHeight string
 }
 
 type PublicKeyCredentialRequestOptions struct {

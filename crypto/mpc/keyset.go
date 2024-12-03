@@ -20,14 +20,21 @@ type (
 )
 
 type Keyset interface {
+	Address() string
 	Val() *ValKeyshare
+	ValJSON() (string, error)
 	User() *UserKeyshare
-	Export(client IPFSClient, secret []byte) (ExportedKeyset, error)
+	UserJSON() (string, error)
 }
 
 type keyset struct {
 	val  *ValKeyshare
 	user *UserKeyshare
+}
+
+func (k keyset) Address() string {
+	bech32Addr, _ := bech32.ConvertAndEncode("idx", k.val.PublicKey)
+	return bech32Addr
 }
 
 func (k keyset) Val() *ValKeyshare {
@@ -36,6 +43,14 @@ func (k keyset) Val() *ValKeyshare {
 
 func (k keyset) User() *UserKeyshare {
 	return k.user
+}
+
+func (k keyset) ValJSON() (string, error) {
+	return k.val.Marshal()
+}
+
+func (k keyset) UserJSON() (string, error) {
+	return k.user.Marshal()
 }
 
 func ComputeIssuerDID(pk []byte) (string, string, error) {

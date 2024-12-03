@@ -5,8 +5,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/crypto/mpc"
+	"github.com/onsonr/sonr/pkg/common/clients"
 	"github.com/onsonr/sonr/pkg/gateway/config"
-	"github.com/onsonr/sonr/pkg/gateway/middleware"
 )
 
 type SpawnVaultRequest struct {
@@ -33,7 +33,7 @@ func SpawnVault(c echo.Context) error {
 	}
 	// Create the vault config
 	dir, err := config.NewFS(config.GetVaultConfig(src.Address(), kscid.String()))
-	path, err := middleware.IPFSAdd(c, dir)
+	path, err := clients.IPFSAdd(c, dir)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}

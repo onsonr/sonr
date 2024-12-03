@@ -1,4 +1,4 @@
-package middleware
+package clients
 
 import (
 	"errors"
@@ -15,19 +15,31 @@ import (
 
 type IPFSContext struct {
 	echo.Context
-	ipfs *rpc.HttpApi
+	ipfs    *rpc.HttpApi
+	hasIPFS bool
 }
 
-func IPFSMiddleware(client *rpc.HttpApi) echo.MiddlewareFunc {
+func IPFSMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &IPFSContext{
-				Context: c,
-				ipfs:    client,
-			}
+			cc := initContext(c)
 			return next(cc)
 		}
 	}
+}
+
+func initContext(c echo.Context) *IPFSContext {
+	cc := &IPFSContext{
+		Context: c,
+	}
+	api, err := rpc.NewLocalApi()
+	if err != nil {
+		cc.hasIPFS = false
+		return cc
+	}
+	cc.ipfs = api
+	cc.hasIPFS = true
+	return cc
 }
 
 func IPFSAdd(c echo.Context, data files.Node) (string, error) {

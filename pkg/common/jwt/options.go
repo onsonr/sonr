@@ -1,4 +1,4 @@
-package auth
+package jwt
 
 import (
 	"github.com/labstack/echo/v4"

@@ -17,13 +17,15 @@ import (
 )
 
 func main() {
-	site := echo.New()
-	site.Use(middleware.Logger())
-	site.Use(middleware.Recover())
-	site.Use(session.HwayMiddleware())
-	site.Use(clients.GRPCClientsMiddleware("localhost:9090"))
-	gateway.RegisterRoutes(site)
-	if err := site.Start(":3000"); err != http.ErrServerClosed {
+	e := echo.New()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(session.HwayMiddleware())
+	e.Use(clients.IPFSMiddleware())
+	e.Use(clients.GRPCClientsMiddleware("localhost:9090"))
+	gateway.RegisterRoutes(e)
+
+	if err := e.Start(":3000"); err != http.ErrServerClosed {
 		log.Fatal(err)
 		os.Exit(1)
 		return

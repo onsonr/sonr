@@ -2,7 +2,6 @@ package mpc
 
 import (
 	"crypto/ecdsa"
-	"encoding/json"
 	"errors"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
@@ -109,8 +108,8 @@ func (v *ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.ExtractMessage(), protocol.Version1)
 }
 
-func (v *ValKeyshare) Marshal() ([]byte, error) {
-	return json.Marshal(v.Message)
+func (v *ValKeyshare) Marshal() (string, error) {
+	return encodeMessage(v.Message)
 }
 
 type UserKeyshare struct {
@@ -178,10 +177,14 @@ func (u *UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewBobSign(curve, sha3.New256(), msg, u.ExtractMessage(), protocol.Version1)
 }
 
-func (u *UserKeyshare) Marshal() ([]byte, error) {
-	jsonBytes, err := json.Marshal(u.Message)
-	if err != nil {
-		return nil, err
-	}
-	return jsonBytes, nil
+func (u *UserKeyshare) Marshal() (string, error) {
+	return encodeMessage(u.Message)
+}
+
+func encodeMessage(m *protocol.Message) (string, error) {
+	return protocol.EncodeMessage(m)
+}
+
+func decodeMessage(s string) (*protocol.Message, error) {
+	return protocol.DecodeMessage(s)
 }

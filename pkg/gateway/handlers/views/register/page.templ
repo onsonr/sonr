@@ -1,0 +1,37 @@
+package register
+
+import (
+	"github.com/onsonr/sonr/pkg/styles/form"
+	"github.com/onsonr/sonr/pkg/styles/layout"
+	"github.com/onsonr/sonr/pkg/styles/text"
+)
+
+templ ProfileFormView() {
+	@layout.Root("Sonr.ID", false) {
+		@layout.Container() {
+			@text.Header("Create a Profile", "Enter some basic information about yourself.")
+			@form.Form("/register/profile", "POST") {
+				@form.NameInput()
+				<br/>
+				@form.HandleInput()
+				<br/>
+				@form.Submit("Continue")
+			}
+		}
+	}
+}
+
+templ LinkCredentialView(req *LinkCredentialRequest) {
+	@layout.Root("Sonr.ID", false) {
+		@layout.Container() {
+			@text.Header("Link a PassKey", "This will be used to login to your vault.")
+			@form.Form("/register/link", "POST") {
+				<h3>{ req.Address }</h3>
+				<h3>{ req.Handle }</h3>
+				<h3>{ req.Platform }</h3>
+				<h3>{ req.DeviceModel }</h3>
+				@form.PasskeyInput("passkey")
+			}
+		}
+	}
+}
