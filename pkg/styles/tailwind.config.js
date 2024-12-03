@@ -2,8 +2,10 @@
 module.exports = {
   content: [
     "./styles/button/**/*.{templ,html}",
+    "./styles/form/**/*.{templ,html}",
     "./styles/icon/**/*.{templ,html}",
     "./styles/layout/**/*.{templ,html}",
+    "./styles/text/**/*.{templ,html}",
     "./styles/view/**/*.{templ,html}",
 
     "../gateway/front/**/*.{templ,html}",

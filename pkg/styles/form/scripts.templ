@@ -119,49 +119,6 @@ templ CredentialsScripts() {
 	}
 }
 
-templ cardStyles() {
-	<style>
-  .card-header {
-    max-width: 300px;
-  }
-
-  .card-header [slot='header'] {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .card-header h3 {
-    margin: 0;
-  }
-
-  .card-header sl-icon-button {
-    font-size: var(--sl-font-size-medium);
-  }
-</style>
-}
-
-templ inputValidation() {
-	<script type="module">
-  const form = document.querySelector('.input-validation-required');
-
-  // Wait for controls to be defined before attaching form listeners
-  await Promise.all([
-    customElements.whenDefined('sl-button'),
-    customElements.whenDefined('sl-checkbox'),
-    customElements.whenDefined('sl-input'),
-    customElements.whenDefined('sl-option'),
-    customElements.whenDefined('sl-select'),
-    customElements.whenDefined('sl-textarea')
-  ]).then(() => {
-    form.addEventListener('submit', event => {
-      event.preventDefault();
-      alert('All fields are valid!');
-    });
-  });
-  </script>
-}
-
 script CreatePasskey(id string) {
     function createPasskey(id) {
          const passkey = document.getElementById(id);

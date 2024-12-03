@@ -12,6 +12,17 @@ var (
 )
 
 templ Styles() {
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href="https://styles.sonr.id/themes/light.css"
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href="https://styles.sonr.id/themes/dark.css"
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
 	<link href={ "https://cdn.sonr.id/css/styles.css" } rel="stylesheet"/>
 	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
 }
@@ -34,17 +45,6 @@ templ Htmx() {
 
 templ Shoelace() {
 	<script type="module" src="https://styles.sonr.id/shoelace-autoloader.js"></script>
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:light)"
-		href="https://styles.sonr.id/themes/light.css"
-	/>
-	<link
-		rel="stylesheet"
-		media="(prefers-color-scheme:dark)"
-		href="https://styles.sonr.id/themes/dark.css"
-		onload="document.documentElement.classList.add('sl-theme-dark');"
-	/>
 }
 
 templ Toaster() {
