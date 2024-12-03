@@ -8,10 +8,7 @@ import (
 )
 
 func HandleRegister(c echo.Context) error {
-	if !hasProfile(c) {
-		return response.TemplEcho(c, register.ProfileFormView())
-	}
-	return nil
+	return response.TemplEcho(c, register.ProfileFormView())
 }
 
 func HandleRegisterProfile(c echo.Context) error {
@@ -55,15 +52,3 @@ func HandleCredentialLink(c echo.Context) error {
 // ╭────────────────────────────────────────────────────────╮
 // │                  	Utility Functions 	                │
 // ╰────────────────────────────────────────────────────────╯
-
-func hasProfile(c echo.Context) bool {
-	return false
-}
-
-func hasPasscode(c echo.Context) bool {
-	return false
-}
-
-func hasCredentials(c echo.Context) bool {
-	return false
-}

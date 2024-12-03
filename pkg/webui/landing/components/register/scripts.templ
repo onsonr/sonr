@@ -1,5 +1,7 @@
 package register
 
+import "github.com/go-webauthn/webauthn/protocol"
+
 var credentialsHandle = templ.NewOnceHandle()
 
 // Base credentials script template
@@ -142,7 +144,7 @@ templ CreateCredential(options PublicKeyCredentialCreationOptions) {
 }
 
 // Template for getting credentials
-templ GetCredential(options PublicKeyCredentialRequestOptions) {
+templ GetCredential(options *protocol.PublicKeyCredentialRequestOptions) {
 	@CredentialsScripts()
 	<script>
         (async () => {
