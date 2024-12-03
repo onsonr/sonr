@@ -7,7 +7,7 @@ import (
 )
 
 templ ProfileFormView() {
-	@layout.Root("Sonr.ID", false) {
+	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
 			@form.Form("/register/profile", "POST") {
@@ -21,8 +21,8 @@ templ ProfileFormView() {
 	}
 }
 
-templ LinkCredentialView(req *LinkCredentialRequest) {
-	@layout.Root("Sonr.ID", false) {
+templ LinkCredentialView(req LinkCredentialRequest) {
+	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
 			@form.Form("/register/link", "POST") {

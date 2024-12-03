@@ -1,7 +1,6 @@
 package mpc
 
 import (
-	"crypto/ecdsa"
 	"errors"
 
 	"github.com/onsonr/sonr/crypto/core/curves"
@@ -45,6 +44,7 @@ type SignFunc interface {
 
 type ValKeyshare struct {
 	BaseKeyshare
+	encoded string
 }
 
 func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
@@ -58,9 +58,9 @@ func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
 			Role:      1,
 			PublicKey: valShare.PublicKey.ToAffineUncompressed(),
 		},
+		encoded: "",
 	}, nil
 }
-
 
 func (v *ValKeyshare) RefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
@@ -72,12 +72,13 @@ func (v *ValKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewAliceSign(curve, sha3.New256(), msg, v.ExtractMessage(), protocol.Version1)
 }
 
-func (v *ValKeyshare) Marshal() (string, error) {
-	return encodeMessage(v.Message)
+func (v *ValKeyshare) String() string {
+	return v.encoded
 }
 
 type UserKeyshare struct {
 	BaseKeyshare
+	encoded string
 }
 
 func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
@@ -91,9 +92,9 @@ func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
 			Role:      2,
 			PublicKey: out.PublicKey.ToAffineUncompressed(),
 		},
+		encoded: "",
 	}, nil
 }
-
 
 func (u *UserKeyshare) RefreshFunc() (RefreshFunc, error) {
 	curve := curves.K256()
@@ -105,8 +106,8 @@ func (u *UserKeyshare) SignFunc(msg []byte) (SignFunc, error) {
 	return dklsv1.NewBobSign(curve, sha3.New256(), msg, u.ExtractMessage(), protocol.Version1)
 }
 
-func (u *UserKeyshare) Marshal() (string, error) {
-	return encodeMessage(u.Message)
+func (u *UserKeyshare) String() string {
+	return u.encoded
 }
 
 func encodeMessage(m *protocol.Message) (string, error) {

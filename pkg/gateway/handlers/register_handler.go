@@ -27,11 +27,7 @@ func HandleSubmitProfile(c echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
-	userKSJSON, err := ks.UserJSON()
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
-	}
-	req := getLinkCredentialRequest(c, ks.Address(), handle, userKSJSON)
+	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
 	return response.TemplEcho(c, register.LinkCredentialView(req))
 }
 
@@ -44,13 +40,13 @@ func HandleRegisterFinish(c echo.Context) error {
 // │                  Registration Components                  │
 // ╰───────────────────────────────────────────────────────────╯
 
-func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKSJSON string) *register.LinkCredentialRequest {
+func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKSJSON string) register.LinkCredentialRequest {
 	cc := session.GetData(c)
 	usr := buildUserEntity(addr, handle)
 	blob := buildLargeBlob(userKSJSON)
 	service := buildServiceEntity(c)
-	return &register.LinkCredentialRequest{
-		Platform:        cc.BrowserName,
+	return register.LinkCredentialRequest{
+		Platform:        cc.Platform,
 		Handle:          handle,
 		DeviceModel:     cc.DeviceModel,
 		Architecture:    cc.UserArchitecture,

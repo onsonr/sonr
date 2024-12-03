@@ -22,9 +22,9 @@ type (
 type Keyset interface {
 	Address() string
 	Val() *ValKeyshare
-	ValJSON() (string, error)
+	ValJSON() string
 	User() *UserKeyshare
-	UserJSON() (string, error)
+	UserJSON() string
 }
 
 type keyset struct {
@@ -45,12 +45,12 @@ func (k keyset) User() *UserKeyshare {
 	return k.user
 }
 
-func (k keyset) ValJSON() (string, error) {
-	return k.val.Marshal()
+func (k keyset) ValJSON() string {
+	return k.val.String()
 }
 
-func (k keyset) UserJSON() (string, error) {
-	return k.user.Marshal()
+func (k keyset) UserJSON() string {
+	return k.user.String()
 }
 
 func ComputeIssuerDID(pk []byte) (string, string, error) {

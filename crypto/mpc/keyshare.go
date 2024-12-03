@@ -2,7 +2,6 @@ package mpc
 
 import (
 	"crypto/ecdsa"
-	"encoding/json"
 
 	"github.com/onsonr/sonr/crypto/core/protocol"
 )
@@ -25,8 +24,8 @@ type Keyshare interface {
 // BaseKeyshare contains common fields and methods for both validator and user keyshares
 type BaseKeyshare struct {
 	Message   *protocol.Message `json:"message"`
-	Role      int              `json:"role"`
-	PublicKey []byte           `json:"public_key"`
+	Role      int               `json:"role"`
+	PublicKey []byte            `json:"public_key"`
 }
 
 func (b *BaseKeyshare) GetPayloads() map[string][]byte {
@@ -64,12 +63,4 @@ func (b *BaseKeyshare) ExtractMessage() *protocol.Message {
 		Protocol: b.GetProtocol(),
 		Version:  uint(b.GetVersion()),
 	}
-}
-
-func (b *BaseKeyshare) Marshal() (string, error) {
-	bytes, err := json.Marshal(b)
-	if err != nil {
-		return "", err
-	}
-	return string(bytes), nil
 }
