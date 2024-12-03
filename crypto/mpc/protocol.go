@@ -38,8 +38,8 @@ func NewKeyset() (Keyset, error) {
 	return keyset{val: valShare, user: userShare}, nil
 }
 
-// RunSignProtocol runs the MPC signing protocol
-func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
+// ExecuteSigning runs the MPC signing protocol
+func ExecuteSigning(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, error) {
 	aErr, bErr := runIteratedProtocol(signFuncVal, signFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err
@@ -51,8 +51,8 @@ func RunSignProtocol(signFuncVal SignFunc, signFuncUser SignFunc) (Signature, er
 	return dklsv1.DecodeSignature(out)
 }
 
-// RunRefreshProtocol runs the MPC refresh protocol
-func RunRefreshProtocol(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
+// ExecuteRefresh runs the MPC refresh protocol
+func ExecuteRefresh(refreshFuncVal RefreshFunc, refreshFuncUser RefreshFunc) (Keyset, error) {
 	aErr, bErr := runIteratedProtocol(refreshFuncVal, refreshFuncUser)
 	if err := checkIteratedErrors(aErr, bErr); err != nil {
 		return nil, err

@@ -85,7 +85,7 @@ func (k ucanKeyshare) SignData(data []byte) ([]byte, error) {
 	}
 
 	// Run the signing protocol
-	sig, err := RunSignProtocol(valSignFunc, signFunc)
+	sig, err := ExecuteSigning(valSignFunc, signFunc)
 	if err != nil {
 		return nil, fmt.Errorf("failed to run sign protocol: %w", err)
 	}

@@ -71,7 +71,7 @@ func (m *MPCSigningMethod) Sign(signingString string, key interface{}) (string, 
 	}
 
 	// Run the signing protocol
-	sig, err := RunSignProtocol(valSignFunc, signFunc)
+	sig, err := ExecuteSigning(valSignFunc, signFunc)
 	if err != nil {
 		return "", fmt.Errorf("failed to run sign protocol: %w", err)
 	}
