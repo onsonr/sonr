@@ -32,9 +32,19 @@ templ Htmx() {
 	<script src="https://unpkg.com/htmx-ext-alpine-morph@2.0.0/alpine-morph.js"></script>
 }
 
-templ WebAwesome() {
-	<script type="module" src="https://early.webawesome.com/webawesome@3.0.0-alpha.4/dist/webawesome.loader.js"></script>
-	<link rel="stylesheet" href="https://early.webawesome.com/webawesome@3.0.0-alpha.4/dist/themes/default.css"/>
+templ Shoelace() {
+	<script type="module" src="https://styles.sonr.id/shoelace-autoloader.js"></script>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:light)"
+		href="https://styles.sonr.id/themes/light.css"
+	/>
+	<link
+		rel="stylesheet"
+		media="(prefers-color-scheme:dark)"
+		href="https://styles.sonr.id/themes/dark.css"
+		onload="document.documentElement.classList.add('sl-theme-dark');"
+	/>
 }
 
 templ Toaster() {

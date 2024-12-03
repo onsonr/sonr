@@ -8,7 +8,10 @@ package index
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/onsonr/sonr/pkg/styles/layout"
+import (
+	"github.com/onsonr/sonr/pkg/styles/layout"
+	"github.com/onsonr/sonr/pkg/styles/text"
+)
 
 func InitialView() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -43,7 +46,29 @@ func InitialView() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Sonr.ID</h1><p class=\"text-lg text-zinc-500\">The decentralized identity layer for the web.</p></div><br><div class=\"pt-3 flex flex-col items-center justify-center h-full\"><div hx-get=\"/register\" hx-swap=\"outerHTML\" class=\"pointer:cursor-pointer btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Get Started</div></div></div></div></div></div>")
+			templ_7745c5c3_Var3 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = text.Header("Sonr.ID", "The decentralized identity layer for the web.").Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button variant=\"primary\" hx-get=\"/register\" hx-swap=\"outerHTML\">Get Started</sl-button></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				return templ_7745c5c3_Err
+			})
+			templ_7745c5c3_Err = layout.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -73,12 +98,12 @@ func ReturningView() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var3 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var3 == nil {
-			templ_7745c5c3_Var3 = templ.NopComponent
+		templ_7745c5c3_Var4 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var4 == nil {
+			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var5 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -90,13 +115,35 @@ func ReturningView() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex fixed inset-0 z-[99] w-screen h-screen bg-white\"><div class=\"relative flex flex-wrap items-center w-full h-full px-8\"><div class=\"relative w-full max-w-sm mx-auto lg:mb-0\"><div class=\"flex flex-col items-center justify-center h-full\"><div class=\"flex flex-col items-center justify-center h-full\"><h1 class=\"text-3xl font-bold text-zinc-900 mb-4\">Welcome Back!</h1><p class=\"text-lg text-zinc-500\">Continue with your existing Sonr.ID.</p></div><br><div class=\"pt-3 flex flex-col items-center justify-center h-full\"><button class=\"btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow\">Login</button></div></div></div></div></div>")
+			templ_7745c5c3_Var6 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				templ_7745c5c3_Err = text.Header("Welcome Back!", "Continue with your existing Sonr.ID.").Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"pt-3 flex flex-col items-center justify-center h-full\"><sl-button hx-get=\"/register\" hx-swap=\"outerHTML\"><sl-icon slot=\"prefix\" library=\"sonr\" name=\"arrow-right\"></sl-icon> Get Started</sl-button></div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				return templ_7745c5c3_Err
+			})
+			templ_7745c5c3_Err = layout.Container().Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Root("Sonr.ID", false).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Root("Sonr.ID", false).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

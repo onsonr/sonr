@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/ipfs/boxo/files"
-	"github.com/onsonr/sonr/pkg/vault/config/internal"
+	"github.com/onsonr/sonr/pkg/gateway/config/internal"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
@@ -34,4 +34,17 @@ func NewFS(cfg *types.Config) (files.Directory, error) {
 		MainJSFileName:        files.NewBytesFile(internal.MainJS),
 		ServiceWorkerFileName: files.NewBytesFile(internal.WorkerJS),
 	}), nil
+}
+
+// GetVaultConfig returns the default vault config
+func GetVaultConfig(addr string, ucanCID string) *types.Config {
+	return &types.Config{
+		MotrToken:      ucanCID,
+		MotrAddress:    addr,
+		IpfsGatewayUrl: "http://localhost:80",
+		SonrApiUrl:     "http://localhost:1317",
+		SonrRpcUrl:     "http://localhost:26657",
+		SonrChainId:    "sonr-testnet-1",
+		VaultSchema:    DefaultSchema(),
+	}
 }

@@ -1,0 +1,13 @@
+package layout
+
+templ Container() {
+	<div class="flex fixed inset-0 z-[99] w-screen h-screen">
+		<div class="relative flex flex-wrap items-center w-full h-full px-8">
+			<div class="relative w-full max-w-sm mx-auto lg:mb-0">
+				<div class="flex flex-col items-center justify-center h-full">
+					{ children... }
+				</div>
+			</div>
+		</div>
+	</div>
+}
