@@ -70,7 +70,12 @@ func DecodeMessage(s string) (*Message, error) {
 
 // MarshalJSON marshals the message to JSON.
 func (m *Message) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf(`{"payloads":%s,"metadata":%s,"protocol":%s,"version":%d}`, m.Payloads, m.Metadata, m.Protocol, m.Version)), nil
+	type Alias Message // Use type alias to avoid infinite recursion
+	return json.Marshal(&struct {
+		*Alias
+	}{
+		Alias: (*Alias)(m),
+	})
 }
 
 // UnmarshalJSON unmarshals the message from JSON.
