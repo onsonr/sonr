@@ -1,13 +1,15 @@
 package text
 
+import "github.com/onsonr/sonr/pkg/styles/layout"
+
 templ Header(title string, subtitle string) {
 	<div class="flex flex-col items-center justify-center h-full">
 		<h1 class="text-3xl font-bold mb-2.5">
 			{ title }
 		</h1>
-		<p class="text-lg text-stone-500/60">
+		<p class="text-lg sl-text-muted">
 			{ subtitle }
 		</p>
 	</div>
-	<br/>
+	@layout.Spacer()
 }
