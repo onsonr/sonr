@@ -48,6 +48,10 @@ type ValKeyshare struct {
 }
 
 func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
+	encoded, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
 	valShare, err := dklsv1.DecodeAliceDkgResult(msg)
 	if err != nil {
 		return nil, err
@@ -58,7 +62,7 @@ func NewValKeyshare(msg *protocol.Message) (*ValKeyshare, error) {
 			Role:      1,
 			PublicKey: valShare.PublicKey.ToAffineUncompressed(),
 		},
-		encoded: "",
+		encoded: encoded,
 	}, nil
 }
 
@@ -82,6 +86,10 @@ type UserKeyshare struct {
 }
 
 func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
+	encoded, err := protocol.EncodeMessage(msg)
+	if err != nil {
+		return nil, err
+	}
 	out, err := dklsv1.DecodeBobDkgResult(msg)
 	if err != nil {
 		return nil, err
@@ -92,7 +100,7 @@ func NewUserKeyshare(msg *protocol.Message) (*UserKeyshare, error) {
 			Role:      2,
 			PublicKey: out.PublicKey.ToAffineUncompressed(),
 		},
-		encoded: "",
+		encoded: encoded,
 	}, nil
 }
 

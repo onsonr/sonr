@@ -12,6 +12,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/gateway/handlers/views/register"
+	"github.com/rs/zerolog/log"
 )
 
 func HandleRegisterStart(c echo.Context) error {
@@ -28,6 +29,8 @@ func HandleSubmitProfile(c echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
 	}
 	req := getLinkCredentialRequest(c, ks.Address(), handle, ks.UserJSON())
+	log.Print("UserKSJSON: %s", ks.UserJSON())
+	log.Print("UserKSJSON Size: %v", len(ks.UserJSON()))
 	return response.TemplEcho(c, register.LinkCredentialView(req))
 }
 
