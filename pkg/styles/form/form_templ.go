@@ -103,7 +103,7 @@ func NameInput() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input id=\"user.first_name\" placeholder=\"John\" type=\"text\" label=\"First Name\"></sl-input> <sl-input id=\"user.last_name\" placeholder=\"Doe\" type=\"text\" label=\"Last Name\"></sl-input>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input id=\"user.first_name\" placeholder=\"John\" type=\"text\" label=\"First Name\" required autofocus></sl-input> <sl-input id=\"user.last_name\" placeholder=\"Doe\" type=\"text\" label=\"Last Name\"></sl-input>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -138,7 +138,7 @@ func HandleInput() templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input id=\"user.handle\" placeholder=\"@johndoe\" type=\"text\" label=\"Handle\"></sl-input>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-input id=\"user.handle\" placeholder=\"@johndoe\" type=\"text\" label=\"Handle\" minlength=\"4\" maxlength=\"12\" required></sl-input>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

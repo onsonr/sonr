@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/go-webauthn/webauthn/protocol"
@@ -20,8 +21,10 @@ func HandleRegisterStart(c echo.Context) error {
 }
 
 func HandleSubmitProfile(c echo.Context) error {
-	name := c.FormValue("name")
-	handle := c.FormValue("handle")
+	firstName := c.FormValue("user.first_name")
+	lastName := c.FormValue("user.last_name")
+	name := fmt.Sprintf("%s %s", firstName, lastName)
+	handle := c.FormValue("user.handle")
 	cookie.Write(c, cookie.UserName, name)
 	cookie.Write(c, cookie.UserHandle, handle)
 	ks, err := mpc.NewKeyset()

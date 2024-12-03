@@ -13,13 +13,13 @@ templ Form(action string, method string) {
 
 templ NameInput() {
 	@layout.Rows() {
-		<sl-input id="user.first_name" placeholder="John" type="text" label="First Name"></sl-input>
+		<sl-input id="user.first_name" placeholder="John" type="text" label="First Name" required autofocus></sl-input>
 		<sl-input id="user.last_name" placeholder="Doe" type="text" label="Last Name"></sl-input>
 	}
 }
 
 templ HandleInput() {
-	<sl-input id="user.handle" placeholder="@johndoe" type="text" label="Handle"></sl-input>
+	<sl-input id="user.handle" placeholder="@johndoe" type="text" label="Handle" minlength="4" maxlength="12" required></sl-input>
 }
 
 templ CodeInput(id string) {
