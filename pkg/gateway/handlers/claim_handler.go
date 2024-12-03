@@ -6,6 +6,6 @@ type PinRequest struct {
 	Name string `json:"name"`
 }
 
-func PinVault(c echo.Context) error {
+func ClaimVault(c echo.Context) error {
 	return nil
 }
