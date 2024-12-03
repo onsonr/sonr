@@ -19,8 +19,17 @@ const (
 	// SonrDID is the key for the Sonr DID cookie.
 	SonrDID Key = "sonr.did"
 
+	// UserAvatar is the key for the User Avatar cookie.
+	UserAvatar Key = "user.avatar"
+
 	// UserHandle is the key for the User Handle cookie.
 	UserHandle Key = "user.handle"
+
+	// UserName is the key for the User Name cookie.
+	UserName Key = "user.full_name"
+
+	// VaultAddress is the key for the Vault address cookie.
+	VaultAddress Key = "vault.address"
 
 	// VaultCID is the key for the Vault CID cookie.
 	VaultCID Key = "vault.cid"

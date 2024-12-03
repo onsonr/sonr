@@ -9,4 +9,9 @@ import (
 
 func RegisterRoutes(e *echo.Echo) {
 	e.GET("/", handlers.HandleIndex)
+	e.GET("/register", handlers.HandleRegister)
+	e.POST("/register/profile", handlers.HandleRegisterProfile)
+	e.POST("/register/passcode", handlers.HandleRegisterPasscode)
+	e.POST("/register/confirm", handlers.HandleConfirmPasscode)
+	e.POST("/register/submit", handlers.HandleCredentialLink)
 }

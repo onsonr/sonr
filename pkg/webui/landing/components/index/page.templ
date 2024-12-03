@@ -17,9 +17,9 @@ templ InitialView() {
 							</p>
 						</div>
 						<div class="flex flex-col items-center justify-center h-full">
-							<button class="btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
+							<div hx-get="/register" hx-swap="outerHTML" class="pointer:cursor-pointer btn btn-sm text-zinc-100 bg-zinc-900 hover:bg-zinc-800 w-full shadow">
 								Get Started
-							</button>
+							</div>
 						</div>
 					</div>
 					{ children... }

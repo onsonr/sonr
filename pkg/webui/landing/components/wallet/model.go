@@ -1,4 +1,4 @@
-package payments
+package wallet
 
 // Payment types
 type PaymentMethodData struct {
