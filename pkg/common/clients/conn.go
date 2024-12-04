@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"google.golang.org/grpc"
 )
 
@@ -24,10 +25,10 @@ func GetClientConn(c echo.Context) (*grpc.ClientConn, error) {
 	return grpcConn, nil
 }
 
-func GRPCClientsMiddleware(addr string) echo.MiddlewareFunc {
+func Middleware(env config.Env) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := &ClientsContext{Context: c, addr: addr}
+			cc := &ClientsContext{Context: c, addr: env.GetSonrGrpcUrl()}
 			return next(cc)
 		}
 	}

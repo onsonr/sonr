@@ -2,6 +2,7 @@ package database
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/database/internal"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -12,8 +13,8 @@ type DatabaseContext struct {
 	db *gorm.DB
 }
 
-func Middleware(sqlitePath string) echo.MiddlewareFunc {
-	cc := initDB(sqlitePath)
+func Middleware(env config.Env) echo.MiddlewareFunc {
+	cc := initDB(env.GetSqliteFile())
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc.Context = c

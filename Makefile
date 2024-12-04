@@ -94,7 +94,6 @@ endif
 
 install: go.sum
 	go install -mod=readonly $(BUILD_FLAGS) ./cmd/sonrd
-	go install -mod=readonly $(BUILD_FLAGS) ./cmd/hway
 
 ########################################
 ### Tools & dependencies
@@ -318,9 +317,11 @@ templ-gen:
 motr-build:
 	GOOS=js GOARCH=wasm go build -o static/wasm/app.wasm ./cmd/motr/main.go
 
-hway-build: styles-gen templ-gen
+hway-build: templ-gen
 	go build -o build/hway ./cmd/hway/main.go
 
+hway-serve: hway-build
+	./build/hway
 
 ###############################################################################
 ###                                     help                                ###

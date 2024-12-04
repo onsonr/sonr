@@ -15,9 +15,6 @@ import (
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/database"
-	// TODO: Integrate TigerBeetle
-	// _ "github.com/tigerbeetle/tigerbeetle-go"
-	// _ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )
 
 //go:embed config.pkl
@@ -32,10 +29,10 @@ func main() {
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.Use(session.HwayMiddleware())
+	e.Use(session.HwayMiddleware(env))
 	e.Use(signer.Middleware())
-	e.Use(database.Middleware(env.GetSqliteFile()))
-	e.Use(clients.GRPCClientsMiddleware(env.GetSonrGrpcUrl()))
+	e.Use(database.Middleware(env))
+	e.Use(clients.Middleware(env))
 	gateway.RegisterRoutes(e)
 
 	if err := e.Start(fmt.Sprintf(":%d", env.GetServePort())); err != http.ErrServerClosed {

@@ -8,11 +8,12 @@ import (
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/header"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
 // HwayMiddleware establishes a Session Cookie.
-func HwayMiddleware() echo.MiddlewareFunc {
+func HwayMiddleware(env config.Env) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := injectSession(c, common.RoleHway)
