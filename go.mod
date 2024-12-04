@@ -83,7 +83,6 @@ require (
 	github.com/multiformats/go-multicodec v0.9.0
 	github.com/multiformats/go-varint v0.0.7
 	github.com/pkg/errors v0.9.1
-	github.com/rs/zerolog v1.32.0
 	github.com/segmentio/ksuid v1.0.4
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.1
@@ -315,6 +314,7 @@ require (
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect
 	github.com/rs/cors v1.11.1 // indirect
+	github.com/rs/zerolog v1.32.0 // indirect
 	github.com/sagikazarmark/locafero v0.4.0 // indirect
 	github.com/sagikazarmark/slog-shim v0.1.0 // indirect
 	github.com/samber/lo v1.47.0 // indirect

@@ -2,6 +2,7 @@ package main
 
 import (
 	_ "embed"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -12,24 +13,36 @@ import (
 	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/common/signer"
 	"github.com/onsonr/sonr/pkg/gateway"
+	"github.com/onsonr/sonr/pkg/gateway/config"
 	// TODO: Integrate TigerBeetle
 	// _ "github.com/tigerbeetle/tigerbeetle-go"
 	// _ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
 )
 
+//go:embed config.pkl
+var configBz []byte
+
 func main() {
+	env, err := loadConfig()
+	if err != nil {
+		panic(err)
+	}
 	e := echo.New()
 	e.IPExtractor = echo.ExtractIPDirect()
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.HwayMiddleware())
-	e.Use(signer.UseMiddleware("test.db"))
-	e.Use(clients.GRPCClientsMiddleware("localhost:9090"))
+	e.Use(signer.UseMiddleware(env.GetSqliteFile()))
+	e.Use(clients.GRPCClientsMiddleware(env.GetSonrGrpcUrl()))
 	gateway.RegisterRoutes(e)
 
-	if err := e.Start(":3000"); err != http.ErrServerClosed {
+	if err := e.Start(fmt.Sprintf(":%d", env.GetServePort())); err != http.ErrServerClosed {
 		log.Fatal(err)
 		os.Exit(1)
 		return
 	}
+}
+
+func loadConfig() (config.Env, error) {
+	return config.LoadFromBytes(configBz)
 }

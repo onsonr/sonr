@@ -70,7 +70,7 @@ func ComputeSonrAddr(pk []byte) (string, error) {
 }
 
 // For DKG bob starts first. For refresh and sign, Alice starts first.
-func runIteratedProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
+func RunProtocol(firstParty protocol.Iterator, secondParty protocol.Iterator) (error, error) {
 	var (
 		message *protocol.Message
 		aErr    error

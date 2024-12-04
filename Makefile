@@ -301,7 +301,7 @@ pkl-gen:
 	go install github.com/apple/pkl-go/cmd/pkl-gen-go@latest
 	pkl-gen-go pkl/sonr.motr/ATN.pkl
 	pkl-gen-go pkl/sonr.hway/Ctx.pkl
-	pkl-gen-go pkl/sonr.hway/Gate.pkl
+	pkl-gen-go pkl/sonr.hway/Env.pkl
 	pkl-gen-go pkl/sonr.motr/DWN.pkl
 	pkl-gen-go pkl/sonr.hway/ORM.pkl
 
