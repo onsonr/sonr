@@ -4,7 +4,7 @@ import (
 	"encoding/base64"
 	"net/http"
 
-	"github.com/go-webauthn/webauthn/protocol"
+	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/types"
 )
@@ -21,17 +21,8 @@ var (
 type SessionCtx interface {
 	ID() string
 
-	LoginOptions(credentials []CredDescriptor) *LoginOptions
-	RegisterOptions(subject string) *RegisterOptions
-
 	GetData() *types.Session
 }
-
-type (
-	CredDescriptor  = protocol.CredentialDescriptor
-	LoginOptions    = protocol.PublicKeyCredentialRequestOptions
-	RegisterOptions = protocol.PublicKeyCredentialCreationOptions
-)
 
 type LargeBlob struct {
 	Support string `json:"support"`
@@ -72,3 +63,6 @@ func Base64Encode(data []byte) string {
 func Base64Decode(data string) ([]byte, error) {
 	return base64.RawURLEncoding.DecodeString(data)
 }
+
+// IPFSClient is an alias for the IPFS HTTP API
+type IPFSClient = *rpc.HttpApi

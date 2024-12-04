@@ -3,6 +3,7 @@ package session
 import (
 	"time"
 
+	"github.com/go-webauthn/webauthn/protocol"
 	"github.com/labstack/echo/v4"
 
 	"github.com/onsonr/sonr/pkg/common"
@@ -62,16 +63,16 @@ func (s *HTTPContext) ID() string {
 	return s.GetData().Id
 }
 
-func (s *HTTPContext) LoginOptions(credentials []common.CredDescriptor) *common.LoginOptions {
+func (s *HTTPContext) LoginOptions(credentials []protocol.CredentialDescriptor) *protocol.PublicKeyCredentialRequestOptions {
 	ch, _ := common.Base64Decode(s.GetData().Challenge)
-	return &common.LoginOptions{
+	return &protocol.PublicKeyCredentialRequestOptions{
 		Challenge:          ch,
 		Timeout:            10000,
 		AllowedCredentials: credentials,
 	}
 }
 
-func (s *HTTPContext) RegisterOptions(subject string) *common.RegisterOptions {
+func (s *HTTPContext) RegisterOptions(subject string) *protocol.PublicKeyCredentialCreationOptions {
 	ch, _ := common.Base64Decode(s.GetData().Challenge)
 	opts := baseRegisterOptions()
 	opts.Challenge = ch

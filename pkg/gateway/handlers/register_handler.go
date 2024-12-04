@@ -57,7 +57,7 @@ func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKS
 	}
 }
 
-func buildRegisterOptions(user protocol.UserEntity, blob common.LargeBlob, service protocol.RelyingPartyEntity) common.RegisterOptions {
+func buildRegisterOptions(user protocol.UserEntity, blob common.LargeBlob, service protocol.RelyingPartyEntity) protocol.PublicKeyCredentialCreationOptions {
 	return protocol.PublicKeyCredentialCreationOptions{
 		Timeout:     10000,
 		Attestation: protocol.PreferDirectAttestation,

@@ -161,7 +161,7 @@ func buildUserEntity(userID string) protocol.UserEntity {
 }
 
 // returns the base options for registering a new user without challenge or user entity.
-func baseRegisterOptions() *common.RegisterOptions {
+func baseRegisterOptions() *protocol.PublicKeyCredentialCreationOptions {
 	return &protocol.PublicKeyCredentialCreationOptions{
 		Timeout:     kWebAuthnTimeout,
 		Attestation: protocol.PreferDirectAttestation,
