@@ -1,0 +1,46 @@
+package details
+
+import "strings"
+
+// Helper function to shorten address
+func shortenAddress(address string) string {
+	if len(address) <= 12 {
+		return address
+	}
+	return address[:8] + "..." + address[len(address)-4:]
+}
+
+func formatValue(value string) string {
+	if value == "" {
+		return "N/A"
+	}
+	return value
+}
+
+templ Property(name string, value string, icon string) {
+	<div class="flex items-center w-full gap-4">
+		<div class="flex items-center gap-1">
+			<div class="text-white min-w-[24px]" style="color: var(--sl-color-neutral-0)">
+				<sl-icon name={ icon } style="color: var(--sl-color-neutral-0)" library="sonr"></sl-icon>
+			</div>
+			<span class="min-w-[80px]">{ name }</span>
+		</div>
+		<div class="w-[40px] border-b border-dotted border-gray-400"></div>
+		<span>
+			<sl-badge class="ml-2 text-right flex-grow">
+				if strings.HasPrefix(strings.ToLower(name), "address") {
+					{ shortenAddress(value) }
+					<sl-copy-button value={ value }></sl-copy-button>
+				} else {
+					{ formatValue(value) }
+				}
+			</sl-badge>
+		</span>
+	</div>
+}
+
+templ PropertyList() {
+	<div class="flex flex-col space-y-4 w-full">
+		{ children... }
+	</div>
+}

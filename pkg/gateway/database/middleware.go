@@ -1,6 +1,9 @@
 package database
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/gateway/config"
 	"github.com/onsonr/sonr/pkg/gateway/database/internal"
@@ -41,4 +44,15 @@ func initDB(path string) *DatabaseContext {
 	return &DatabaseContext{
 		db: db,
 	}
+}
+
+func formatDBPath(path string) string {
+	home := os.Getenv("HOME")
+	if home == "" {
+		home = os.Getenv("USERPROFILE")
+	}
+	if home == "" {
+		home = "."
+	}
+	return filepath.Join(home, ".config", "hway", path)
 }

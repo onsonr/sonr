@@ -1,6 +1,9 @@
 package form
 
-import "github.com/onsonr/sonr/pkg/styles/layout"
+import (
+	"fmt"
+	"github.com/onsonr/sonr/pkg/styles/layout"
+)
 
 // Form is a standard form styled like a card
 templ Form(action string, method string) {
@@ -39,4 +42,21 @@ templ Submit(text string) {
 	<sl-button type="submit" outline>
 		{ text }
 	</sl-button>
+}
+
+templ ProgressBar(progress string) {
+	<div class="max-w-md w-full">
+		<sl-progress-bar value={ progress }></sl-progress-bar>
+	</div>
+}
+
+func getValue(first, second int) string {
+	if first == 0 && second == 0 {
+		return "0"
+	}
+	perceent := first / second
+	if perceent > 100 {
+		return "100"
+	}
+	return fmt.Sprintf("%d", perceent)
 }
