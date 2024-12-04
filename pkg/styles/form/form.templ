@@ -1,28 +1,49 @@
 package form
 
-import (
-	"fmt"
-	"github.com/onsonr/sonr/pkg/styles/layout"
-)
+import "github.com/onsonr/sonr/pkg/styles/layout"
 
 // Form is a standard form styled like a card
-templ Form(action string, method string) {
-	<sl-card>
-		<form action={ templ.SafeURL(action) } method={ method } class="gap-4">
+templ Form(action string, method string, submit templ.Component, progress string) {
+	<form action={ templ.SafeURL(action) } method={ method }>
+		<sl-card class="card-form gap-4">
+			<div slot="header">
+				<div class="w-full py-1">
+					<sl-progress-bar value={ progress }></sl-progress-bar>
+				</div>
+			</div>
 			{ children... }
-		</form>
-	</sl-card>
+			<div slot="footer">
+				<sl-button hx-get="/" outline>
+					Cancel
+				</sl-button>
+				@submit
+			</div>
+			<style>
+  		.card-form [slot='footer'] {
+    		display: flex;
+    		justify-content: space-between;
+    		align-items: center;
+  		}
+		</style>
+		</sl-card>
+	</form>
 }
 
 templ NameInput() {
 	@layout.Rows() {
-		<sl-input name="first_name" placeholder="John" type="text" label="First Name" required autofocus></sl-input>
-		<sl-input name="last_name" placeholder="Doe" type="text" label="Last Name"></sl-input>
+		<sl-input name="first_name" placeholder="Steve" type="text" label="First Name" required autofocus></sl-input>
+		<sl-input name="last_name" placeholder="J" maxlength="1" type="text" label="Last Initial"></sl-input>
 	}
 }
 
 templ HandleInput() {
-	<sl-input name="handle" placeholder="@johndoe" type="text" label="Handle" minlength="4" maxlength="12" required></sl-input>
+	<sl-input name="handle" placeholder="thoughtdiff" type="text" label="Handle" minlength="4" maxlength="12" required>
+		<div slot="prefix">
+			<div style="color: #ffffff; font-size: 24px">
+				<sl-icon name="at-sign" library="sonr"></sl-icon>
+			</div>
+		</div>
+	</sl-input>
 }
 
 templ CodeInput(id string) {
@@ -39,24 +60,7 @@ templ PasskeyInput(id string) {
 }
 
 templ Submit(text string) {
-	<sl-button type="submit" outline>
+	<sl-button type="submit">
 		{ text }
 	</sl-button>
-}
-
-templ ProgressBar(progress string) {
-	<div class="max-w-md w-full">
-		<sl-progress-bar value={ progress }></sl-progress-bar>
-	</div>
-}
-
-func getValue(first, second int) string {
-	if first == 0 && second == 0 {
-		return "0"
-	}
-	perceent := first / second
-	if perceent > 100 {
-		return "100"
-	}
-	return fmt.Sprintf("%d", perceent)
 }

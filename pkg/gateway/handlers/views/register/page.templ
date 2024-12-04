@@ -11,14 +11,11 @@ templ ProfileFormView() {
 	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Create a Profile", "Enter some basic information about yourself.")
-			@form.ProgressBar("33")
 			<br/>
-			@form.Form("/register/start", "POST") {
+			@form.Form("/register/start", "POST", form.Submit("Continue"), "33") {
 				@form.NameInput()
 				<br/>
 				@form.HandleInput()
-				<br/>
-				@form.Submit("Continue")
 			}
 		}
 	}
@@ -28,17 +25,14 @@ templ LinkCredentialView(req LinkCredentialRequest) {
 	@layout.Root("Sonr.ID") {
 		@layout.Container() {
 			@text.Header("Link a PassKey", "This will be used to login to your vault.")
-			@form.ProgressBar("66")
 			<br/>
-			@form.Form("/register/finish", "POST") {
+			@form.Form("/register/finish", "POST", form.PasskeyInput("passkey"), "66") {
 				@details.PropertyList() {
 					@details.Property("Address", req.Address, "wallet")
 					@details.Property("Handle", req.Handle, "at-sign")
 					@details.Property("Platform", req.Platform, "device-iphone")
 					@details.Property("Model", req.DeviceModel, "laptop")
 				}
-				<br/>
-				@form.PasskeyInput("passkey")
 			}
 		}
 	}
