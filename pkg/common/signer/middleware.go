@@ -8,8 +8,7 @@ import (
 
 type SignerContext struct {
 	echo.Context
-	ipfs       *rpc.HttpApi
-	sqlitePath string
+	ipfs *rpc.HttpApi
 
 	signer    mpc.KeyshareSource
 	keyset    mpc.Keyset
@@ -18,10 +17,10 @@ type SignerContext struct {
 	hasKeyset bool
 }
 
-func UseMiddleware(sqlitePath string) echo.MiddlewareFunc {
+func Middleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			cc := initContext(c, sqlitePath)
+			cc := initContext(c)
 			return next(cc)
 		}
 	}
@@ -35,12 +34,11 @@ func FromContext(c echo.Context) (*SignerContext, error) {
 	return cc, nil
 }
 
-func initContext(c echo.Context, sqlpath string) *SignerContext {
+func initContext(c echo.Context) *SignerContext {
 	sc := &SignerContext{
-		Context:    c,
-		sqlitePath: sqlpath,
-		hasSigner:  false,
-		hasKeyset:  false,
+		Context:   c,
+		hasSigner: false,
+		hasKeyset: false,
 	}
 	api, err := rpc.NewLocalApi()
 	if err != nil {

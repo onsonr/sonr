@@ -14,6 +14,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/signer"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/gateway/config"
+	"github.com/onsonr/sonr/pkg/gateway/database"
 	// TODO: Integrate TigerBeetle
 	// _ "github.com/tigerbeetle/tigerbeetle-go"
 	// _ "github.com/tigerbeetle/tigerbeetle-go/pkg/types"
@@ -32,7 +33,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(session.HwayMiddleware())
-	e.Use(signer.UseMiddleware(env.GetSqliteFile()))
+	e.Use(signer.Middleware())
+	e.Use(database.Middleware(env.GetSqliteFile()))
 	e.Use(clients.GRPCClientsMiddleware(env.GetSonrGrpcUrl()))
 	gateway.RegisterRoutes(e)
 
