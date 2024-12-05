@@ -1,3 +1,4 @@
+// Package gateway provides the default routes for the Sonr hway.
 package gateway
 
 import (

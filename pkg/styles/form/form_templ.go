@@ -80,7 +80,7 @@ func Form(action string, method string, submit templ.Component, progress string,
 			return templ_7745c5c3_Err
 		}
 		if enableCancel {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button href=\"/\" outline size=\"small\"><sl-icon slot=\"prefix\" name=\"arrow-left\" library=\"sonr\"></sl-icon> Cancel</sl-button>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button href=\"/\" outline><sl-icon slot=\"prefix\" name=\"arrow-left\" library=\"sonr\"></sl-icon> Cancel</sl-button>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -241,7 +241,7 @@ func PasskeyInput(id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" size=\"large\" pill style=\"width: 100%;\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 22px;\"></sl-icon> Create PassKey <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\" style=\"font-size: 22px;\"></sl-icon></sl-button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" pill style=\"width: 100%;\"><sl-icon slot=\"prefix\" name=\"passkey\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon> Create PassKey <sl-icon slot=\"suffix\" name=\"arrow-right\" library=\"sonr\" style=\"font-size: 20px;\"></sl-icon></sl-button>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -314,7 +314,7 @@ func Submit(text string) templ.Component {
 			templ_7745c5c3_Var13 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\" size=\"small\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<sl-button type=\"submit\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

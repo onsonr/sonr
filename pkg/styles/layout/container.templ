@@ -1,5 +1,12 @@
 package layout
 
+// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
+templ Columns() {
+	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
+		{ children... }
+	</div>
+}
+
 templ Container() {
 	<div id="container" class="flex fixed inset-0 z-[99] w-screen h-screen">
 		<div class="relative flex flex-wrap items-center w-full h-full px-8">
@@ -30,12 +37,5 @@ templ Separator(text string) {
 		<div class="relative flex justify-center text-xs uppercase">
 			<span class="px-2 text-neutral-500">{ text }</span>
 		</div>
-	</div>
-}
-
-// Columns is a component that renders a flex container with a gap of 3 and a max width of 100%
-templ Columns() {
-	<div class="flex flex-col h-full w-full gap-3 md:gap-6 md:flex-row">
-		{ children... }
 	</div>
 }
