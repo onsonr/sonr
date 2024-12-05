@@ -1,4 +1,4 @@
-@go.Package { name = "github.com/onsonr/sonr/x/dwn/types/attns" }
+@go.Package { name = "github.com/onsonr/sonr/crypto/ucan/attns" }
 
 module sonr.motr.ATN
 

@@ -7,8 +7,8 @@ import (
 
 	"github.com/onsonr/sonr/crypto/mpc"
 	"github.com/onsonr/sonr/crypto/ucan"
+	"github.com/onsonr/sonr/crypto/ucan/attns"
 	"github.com/onsonr/sonr/crypto/ucan/didkey"
-	"github.com/onsonr/sonr/x/dwn/types/attns"
 	"lukechampine.com/blake3"
 )
 
