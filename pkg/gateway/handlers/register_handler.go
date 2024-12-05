@@ -12,7 +12,7 @@ import (
 	"github.com/onsonr/sonr/pkg/common/cookie"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/pkg/gateway/handlers/views/register"
+	"github.com/onsonr/sonr/pkg/gateway/internal/pages/register"
 )
 
 func HandleRegisterView(c echo.Context) error {

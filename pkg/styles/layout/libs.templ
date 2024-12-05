@@ -33,6 +33,10 @@ templ Tailwind() {
 	<script src="https://kit.fontawesome.com/9909219bb5.js" crossorigin="anonymous"></script>
 }
 
+templ Turnstile() {
+	<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+}
+
 templ Alpine() {
 	<script src={ jsDelivrURL("alpinejs", "3.14.6", "dist/cdn.min.js") }></script>
 	<script src={ jsDelivrURL("@alpinejs/focus", "3.14.6", "dist/cdn.min.js") }></script>

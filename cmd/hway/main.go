@@ -9,39 +9,44 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/onsonr/sonr/pkg/common/clients"
-	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/common/signer"
 	"github.com/onsonr/sonr/pkg/gateway"
 	"github.com/onsonr/sonr/pkg/gateway/config"
-	"github.com/onsonr/sonr/pkg/gateway/database"
 )
 
 //go:embed config.pkl
 var configBz []byte
 
+func loadConfig() (config.Env, error) {
+	return config.LoadFromBytes(configBz)
+}
+
+// setupServer sets up the server
+func setupServer(env config.Env) (*echo.Echo, error) {
+	e := echo.New()
+	e.IPExtractor = echo.ExtractIPDirect()
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
+	e.Use(signer.Middleware())
+	gateway.RegisterRoutes(e, env)
+	return e, nil
+}
+
+// main is the entry point for the application
 func main() {
 	env, err := loadConfig()
 	if err != nil {
 		panic(err)
 	}
-	e := echo.New()
-	e.IPExtractor = echo.ExtractIPDirect()
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(session.HwayMiddleware(env))
-	e.Use(signer.Middleware())
-	e.Use(database.Middleware(env))
-	e.Use(clients.Middleware(env))
-	gateway.RegisterRoutes(e)
+
+	e, err := setupServer(env)
+	if err != nil {
+		panic(err)
+	}
 
 	if err := e.Start(fmt.Sprintf(":%d", env.GetServePort())); err != http.ErrServerClosed {
 		log.Fatal(err)
 		os.Exit(1)
 		return
 	}
-}
-
-func loadConfig() (config.Env, error) {
-	return config.LoadFromBytes(configBz)
 }

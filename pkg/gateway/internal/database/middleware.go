@@ -6,7 +6,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/gateway/config"
-	"github.com/onsonr/sonr/pkg/gateway/database/internal"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -38,8 +37,8 @@ func initDB(path string) *DatabaseContext {
 		return cc
 	}
 	// Migrate the schema
-	db.AutoMigrate(&internal.Session{})
-	db.AutoMigrate(&internal.User{})
+	db.AutoMigrate(&Session{})
+	db.AutoMigrate(&User{})
 
 	return &DatabaseContext{
 		db: db,

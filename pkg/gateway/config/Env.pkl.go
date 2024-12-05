@@ -23,6 +23,8 @@ type Env interface {
 	GetSonrGrpcUrl() string
 
 	GetSonrRpcUrl() string
+
+	GetTurnstileSiteKey() string
 }
 
 var _ Env = (*EnvImpl)(nil)
@@ -43,6 +45,8 @@ type EnvImpl struct {
 	SonrGrpcUrl string `pkl:"sonrGrpcUrl"`
 
 	SonrRpcUrl string `pkl:"sonrRpcUrl"`
+
+	TurnstileSiteKey string `pkl:"turnstileSiteKey"`
 }
 
 func (rcv *EnvImpl) GetServePort() int {
@@ -75,6 +79,10 @@ func (rcv *EnvImpl) GetSonrGrpcUrl() string {
 
 func (rcv *EnvImpl) GetSonrRpcUrl() string {
 	return rcv.SonrRpcUrl
+}
+
+func (rcv *EnvImpl) GetTurnstileSiteKey() string {
+	return rcv.TurnstileSiteKey
 }
 
 // LoadFromPath loads the pkl module at the given path and evaluates it into a Env

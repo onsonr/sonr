@@ -12,8 +12,8 @@ import (
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
-// HwayMiddleware establishes a Session Cookie.
-func HwayMiddleware(env config.Env) echo.MiddlewareFunc {
+// GatewayMiddleware establishes a Session Cookie.
+func GatewayMiddleware(env config.Env) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			cc := injectSession(c, common.RoleHway)
@@ -22,8 +22,8 @@ func HwayMiddleware(env config.Env) echo.MiddlewareFunc {
 	}
 }
 
-// MotrMiddleware establishes a Session Cookie.
-func MotrMiddleware(config *types.Config) echo.MiddlewareFunc {
+// WebNodeMiddleware establishes a Session Cookie.
+func WebNodeMiddleware(config *types.Config) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			err := injectConfig(c, config)

@@ -6,11 +6,15 @@ package vault
 import (
 	"github.com/labstack/echo/v4"
 
+	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/vault/handlers"
+	"github.com/onsonr/sonr/pkg/vault/types"
 )
 
-// RegisterAPI registers the Decentralized Web Node API routes.
-func RegisterAPI(e *echo.Echo) {
+// RegisterRoutes registers the Decentralized Web Node API routes.
+func RegisterRoutes(e *echo.Echo, config *types.Config) {
+	e.Use(session.WebNodeMiddleware(config))
+
 	e.GET("/register/:subject/start", handlers.RegisterSubjectStart)
 	e.POST("/register/:subject/finish", handlers.RegisterSubjectFinish)
 

@@ -9,7 +9,6 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/cmd/motr/internal"
-	"github.com/onsonr/sonr/pkg/common/session"
 	"github.com/onsonr/sonr/pkg/vault"
 	"github.com/onsonr/sonr/pkg/vault/types"
 )
@@ -48,9 +47,7 @@ func main() {
 	js.Global().Set("processConfig", js.FuncOf(processConfig))
 
 	e := echo.New()
-	e.Use(session.MotrMiddleware(config))
 	e.Use(internal.WasmContextMiddleware)
-	vault.RegisterAPI(e)
-
+	vault.RegisterRoutes(e, config)
 	internal.ServeFetch(e)
 }

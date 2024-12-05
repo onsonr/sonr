@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/onsonr/sonr/pkg/common/response"
 	"github.com/onsonr/sonr/pkg/common/session"
-	"github.com/onsonr/sonr/pkg/vault/front/index"
+	"github.com/onsonr/sonr/pkg/vault/internal/pages/index"
 )
 
 func HandleIndex(c echo.Context) error {

@@ -1,4 +1,4 @@
-package internal
+package database
 
 type Session struct {
 	ID               string `json:"id"`
