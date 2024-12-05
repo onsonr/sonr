@@ -12,7 +12,6 @@ import (
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/session/cookie"
 	"github.com/onsonr/sonr/pkg/common/session/header"
-	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 const kWebAuthnTimeout = 6000
@@ -81,22 +80,6 @@ func loadOrGenKsuid(c echo.Context) error {
 // ╭───────────────────────────────────────────────────────────╮
 // │                       Extraction                          │
 // ╰───────────────────────────────────────────────────────────╯
-
-func injectSessionData(c echo.Context) *types.Session {
-	id, chal := extractPeerInfo(c)
-	bn, bv := extractBrowserInfo(c)
-	return &types.Session{
-		Id:               id,
-		Challenge:        chal,
-		BrowserName:      bn,
-		BrowserVersion:   bv,
-		UserArchitecture: header.Read(c, header.Architecture),
-		Platform:         header.Read(c, header.Platform),
-		PlatformVersion:  header.Read(c, header.PlatformVersion),
-		DeviceModel:      header.Read(c, header.Model),
-		IsMobile:         header.Equals(c, header.Mobile, "?1"),
-	}
-}
 
 func extractPeerInfo(c echo.Context) (string, string) {
 	var chal protocol.URLEncodedBase64

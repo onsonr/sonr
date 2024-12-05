@@ -47,15 +47,22 @@ func HandleRegisterFinish(c echo.Context) error {
 // ╰───────────────────────────────────────────────────────────╯
 
 func getLinkCredentialRequest(c echo.Context, addr string, handle string, userKSJSON string) register.LinkCredentialRequest {
-	cc := session.GetData(c)
+	cc, err := session.Get(c)
+	if err != nil {
+		return register.LinkCredentialRequest{
+			Handle:          handle,
+			Address:         addr,
+			RegisterOptions: buildRegisterOptions(buildUserEntity(addr, handle), buildLargeBlob(userKSJSON), buildServiceEntity(c)),
+		}
+	}
 	usr := buildUserEntity(addr, handle)
 	blob := buildLargeBlob(userKSJSON)
 	service := buildServiceEntity(c)
+
 	return register.LinkCredentialRequest{
-		Platform:        cc.Platform,
+		Platform:        cc.BrowserName(),
 		Handle:          handle,
-		DeviceModel:     cc.DeviceModel,
-		Architecture:    cc.UserArchitecture,
+		DeviceModel:     cc.BrowserVersion(),
 		Address:         addr,
 		RegisterOptions: buildRegisterOptions(usr, blob, service),
 	}

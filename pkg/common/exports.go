@@ -6,7 +6,6 @@ import (
 
 	"github.com/ipfs/kubo/client/rpc"
 	"github.com/labstack/echo/v4"
-	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 var (
@@ -20,8 +19,9 @@ var (
 
 type SessionCtx interface {
 	ID() string
-
-	GetData() *types.Session
+	Challenge() string
+	BrowserName() string
+	BrowserVersion() string
 }
 
 type LargeBlob struct {

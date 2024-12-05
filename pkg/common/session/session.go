@@ -8,14 +8,16 @@ import (
 
 	"github.com/onsonr/sonr/pkg/common"
 	"github.com/onsonr/sonr/pkg/common/session/cookie"
-	"github.com/onsonr/sonr/pkg/common/types"
 )
 
 // HTTPContext is the context for HTTP endpoints.
 type HTTPContext struct {
 	echo.Context
-	role        common.PeerRole
-	sessionData *types.Session
+	role common.PeerRole
+	id   string
+	chal string
+	bn   string
+	bv   string
 }
 
 // Ensure HTTPContext implements context.Context
@@ -38,33 +40,35 @@ func (s *HTTPContext) Value(key interface{}) interface{} {
 // initHTTPContext loads the headers from the request.
 func initHTTPContext(c echo.Context) *HTTPContext {
 	if c == nil {
-		return &HTTPContext{
-			sessionData: &types.Session{},
-		}
+		return &HTTPContext{}
 	}
 
-	sessionData := injectSessionData(c)
-	if sessionData == nil {
-		sessionData = &types.Session{}
-	}
+	id, chal := extractPeerInfo(c)
+	bn, bv := extractBrowserInfo(c)
 
 	cc := &HTTPContext{
-		Context:     c,
-		role:        common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
-		sessionData: sessionData,
+		Context: c,
+		role:    common.PeerRole(cookie.ReadUnsafe(c, cookie.SessionRole)),
+		id:      id,
+		chal:    chal,
+		bn:      bn,
+		bv:      bv,
 	}
 
 	// Set the session data in both contexts
-	c.SetRequest(c.Request().WithContext(WithData(c.Request().Context(), sessionData)))
 	return cc
 }
 
 func (s *HTTPContext) ID() string {
-	return s.GetData().Id
+	return s.id
+}
+
+func (s *HTTPContext) Challenge() string {
+	return s.chal
 }
 
 func (s *HTTPContext) LoginOptions(credentials []protocol.CredentialDescriptor) *protocol.PublicKeyCredentialRequestOptions {
-	ch, _ := common.Base64Decode(s.GetData().Challenge)
+	ch, _ := common.Base64Decode(s.chal)
 	return &protocol.PublicKeyCredentialRequestOptions{
 		Challenge:          ch,
 		Timeout:            10000,
@@ -73,13 +77,17 @@ func (s *HTTPContext) LoginOptions(credentials []protocol.CredentialDescriptor) 
 }
 
 func (s *HTTPContext) RegisterOptions(subject string) *protocol.PublicKeyCredentialCreationOptions {
-	ch, _ := common.Base64Decode(s.GetData().Challenge)
+	ch, _ := common.Base64Decode(s.chal)
 	opts := baseRegisterOptions()
 	opts.Challenge = ch
 	opts.User = buildUserEntity(subject)
 	return opts
 }
 
-func (s *HTTPContext) GetData() *types.Session {
-	return s.sessionData
+func (s *HTTPContext) BrowserName() string {
+	return s.bn
+}
+
+func (s *HTTPContext) BrowserVersion() string {
+	return s.bv
 }
